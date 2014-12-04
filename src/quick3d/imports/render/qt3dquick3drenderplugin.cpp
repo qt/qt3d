@@ -103,6 +103,7 @@
 #include <Qt3DQuickRenderer/quick3dsortmethod.h>
 #include <Qt3DQuickRenderer/quick3dparameter.h>
 #include <Qt3DQuickRenderer/quick3dshaderdata.h>
+#include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -137,6 +138,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
 
     // Textures
