@@ -68,16 +68,8 @@ void Quick3DParameterPrivate::setValue(const QVariant &value)
 {
     if (value.userType() == qjsValueTypeId) {
         QJSValue v = value.value<QJSValue>();
-        if (v.isArray()) {
-            QJSValueIterator it(v);
-            QVariantList values;
-            while (it.hasNext()) {
-                it.next();
-                if (it.hasNext()) // The last element in an Array is the count, which we don't want
-                    values << it.value().toVariant();
-            }
-            QParameterPrivate::setValue(values);
-        }
+        if (v.isArray())
+            QParameterPrivate::setValue(value.value<QVariantList>());
     } else {
         QParameterPrivate::setValue(value);
     }
