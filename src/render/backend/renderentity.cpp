@@ -66,6 +66,7 @@ namespace Render {
 
 RenderEntity::RenderEntity()
     : QBackendNode()
+    , m_renderer(Q_NULLPTR)
     , m_localBoundingVolume(new Qt3D::Sphere)
     , m_worldBoundingVolume(new Qt3D::Sphere)
 {
