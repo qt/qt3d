@@ -347,18 +347,22 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                            RenderEffect *effect,
                                            RenderTechnique *technique)
 {
-    // Material is preferred over Effect
-    // Effect is preferred over Technique
-    // By filling the hash in reverse preference order, we ensure that we preserve preference
-
-    if (effect)
-        addParametersForIds(infoList, manager, effect->parameters());
+    // The parameters are taken in the following priority order:
+    //
+    // 1) Material
+    // 2) Technique
+    // 3) Effect
+    //
+    // That way a user can override defaults in Effect's and Techniques on a
+    // object manner and a Technique can override global defaults from the Effect.
+    if (material)
+        addParametersForIds(infoList, manager, material->parameters());
 
     if (technique)
         addParametersForIds(infoList, manager, technique->parameters());
 
-    if (material)
-        addParametersForIds(infoList, manager, material->parameters());
+    if (effect)
+        addParametersForIds(infoList, manager, effect->parameters());
 }
 
 RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *allocator)
