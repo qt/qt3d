@@ -42,6 +42,10 @@
 #include "uniformbuffer_p.h"
 #include <private/qgraphicscontext_p.h>
 
+#if !defined(GL_UNIFORM_BUFFER)
+#define GL_UNIFORM_BUFFER 0x8A11
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
