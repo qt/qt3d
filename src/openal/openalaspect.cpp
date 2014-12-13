@@ -60,8 +60,9 @@ void OpenALAspect::sceneNodeRemoved(QSceneChangePtr &)
 
 }
 
-QVector<QAspectJobPtr> OpenALAspect::jobsToExecute()
+QVector<QAspectJobPtr> OpenALAspect::jobsToExecute(qint64 time)
 {
+    Q_UNUSED(time);
     QVector<QAspectJobPtr> jobs;
 
     return jobs;

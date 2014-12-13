@@ -43,6 +43,7 @@
 #include "renderview_p.h"
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qrendertarget.h>
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DRenderer/qshaderdata.h>
@@ -124,6 +125,7 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(QStringLiteral("modelViewNormal"), &RenderView::modelViewNormalMatrix);
     setters.insert(QStringLiteral("viewportMatrix"), &RenderView::viewportMatrix);
     setters.insert(QStringLiteral("inverseViewportMatrix"), &RenderView::inverseViewportMatrix);
+    setters.insert(QStringLiteral("time"), &RenderView::time);
 
     return setters;
 }
@@ -239,6 +241,14 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
     QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
     return QUniformValue::fromVariant(QVariant::fromValue(inverseViewportMatrix), m_allocator);
 
+}
+
+QUniformValue *RenderView::time(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    qint64 time = m_renderer->rendererAspect()->time();
+    float t = time / 1000000000.0f;
+    return QUniformValue::fromVariant(QVariant(t), m_allocator);
 }
 
 RenderView::RenderView()

@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QInputAspect : public QAbstractAspect
 public:
     explicit QInputAspect(QObject *parent = 0);
 
-    QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;

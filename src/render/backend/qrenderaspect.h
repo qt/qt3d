@@ -61,10 +61,12 @@ class QT3DRENDERERSHARED_EXPORT QRenderAspect : public QAbstractAspect
 public:
     explicit QRenderAspect(QObject *parent = 0);
 
-    QVector<QAspectJobPtr> jobsToExecute() Q_DECL_OVERRIDE;
+    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    qint64 time() const;
 
 protected:
     void registerBackendTypes();

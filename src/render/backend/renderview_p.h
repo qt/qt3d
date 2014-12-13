@@ -249,6 +249,7 @@ private:
     QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
     QUniformValue *viewportMatrix(const QMatrix4x4 &model) const;
     QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue *time(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value);

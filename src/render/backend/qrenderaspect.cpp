@@ -110,6 +110,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
     , m_renderer(new Render::Renderer)
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_surface(Q_NULLPTR)
+    , m_time(0)
     , m_initialized(false)
 {
     m_aspectType = QAbstractAspect::AspectRenderer;
@@ -196,13 +197,15 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShaderData, Render::ShaderDataManager>(d->m_renderer->shaderDataManager())));
 }
 
-QVector<QAspectJobPtr> QRenderAspect::jobsToExecute()
+QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
+    Q_D(QRenderAspect);
+    d->m_time = time;
+
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    Q_D(QRenderAspect);
     if (d->m_renderer != Q_NULLPTR) {
         QHash<QNodeId, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
         Q_FOREACH (const QNodeId &meshId, meshSources.keys()) {
@@ -259,6 +262,12 @@ void QRenderAspect::sceneNodeRemoved(QSceneChangePtr &e)
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QAbstractAspect::clearBackendNode(n);
+}
+
+qint64 QRenderAspect::time() const
+{
+    Q_D(const QRenderAspect);
+    return d->m_time;
 }
 
 void QRenderAspect::setRootEntity(QEntity *rootObject)

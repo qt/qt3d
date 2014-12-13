@@ -68,8 +68,9 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler)));
 }
 
-QVector<QAspectJobPtr> QInputAspect::jobsToExecute()
+QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 {
+    Q_UNUSED(time);
     Q_D(QInputAspect);
     QVector<QAspectJobPtr> jobs;
 

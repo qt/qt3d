@@ -55,7 +55,7 @@ class QAspectJobProviderInterface
 {
 public:
     virtual ~QAspectJobProviderInterface() {}
-    virtual QVector<QAspectJobPtr> jobsToExecute() = 0;
+    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
 };
 
 }

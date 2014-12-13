@@ -71,6 +71,7 @@ class QRenderAspectPrivate : public QAbstractAspectPrivate
     // via QScopedPointerDeleteLater
     QScopedPointer<Render::PlatformSurfaceFilter, QScopedPointerDeleteLater> m_surfaceEventFilter;
     QSurface *m_surface;
+    qint64 m_time;
 
     bool m_initialized;
 };
