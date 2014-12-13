@@ -21,7 +21,8 @@ SUBDIRS += \
     shadow-map-qml \
     bigscene-cpp \
     materials \
-    keyboardinput-qml
+    keyboardinput-qml \
+    wave
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
