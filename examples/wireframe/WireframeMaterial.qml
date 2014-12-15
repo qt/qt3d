@@ -41,7 +41,6 @@
 
 import Qt3D 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1 as QQ2
 
 Material {
     id: root
@@ -50,8 +49,8 @@ Material {
     property color diffuse: Qt.rgba( 0.7, 0.7, 0.7, 1.0 )
     property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
     property real shininess: 150.0
-    property real lineWidth: 1.0
-    property color lineColor: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
+    property real lineWidth: 0.8
+    property color lineColor: Qt.rgba( 0.0, 0.0, 0.0, 1.0 )
 
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },

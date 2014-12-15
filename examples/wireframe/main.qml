@@ -45,10 +45,8 @@ import QtQuick 2.1 as QQ2
 
 Entity {
     id: root
-    objectName: "root"
 
-    // Use the renderer configuration specified in ForwardRenderer.qml
-    // and render from the mainCamera
+    // Render from the mainCamera
     components: [
         FrameGraph {
             activeFrameGraph: ForwardRenderer {
@@ -60,7 +58,7 @@ Entity {
 
     BasicCamera {
         id: mainCamera
-        position: Qt.vector3d( 0.0, 0.0, 25.0 )
+        position: Qt.vector3d( 0.0, 0.0, 15.0 )
     }
 
     Configuration  {
@@ -81,17 +79,19 @@ Entity {
                 target: wireframeMaterial;
                 property: "lineWidth";
                 duration: 1000;
-                from: 1.0
-                to: 3.0
+                from: 0.8
+                to: 1.8
             }
 
             QQ2.NumberAnimation {
                 target: wireframeMaterial;
                 property: "lineWidth";
                 duration: 1000;
-                from: 3.0
-                to: 1.0
+                from: 1.8
+                to: 0.8
             }
+
+            QQ2.PauseAnimation { duration: 1500 }
         }
     }
 

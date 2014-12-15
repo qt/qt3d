@@ -44,7 +44,6 @@ import Qt3D.Render 2.0
 
 TechniqueFilter {
     id: root
-    objectName : "techniqueFilter"
 
     // Expose camera to allow user to choose which camera to use for rendering
     property alias camera: cameraSelector.camera
@@ -55,15 +54,14 @@ TechniqueFilter {
     // Use the whole viewport
     Viewport {
         id: viewport
-        objectName : "viewport"
         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+        clearColor: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
 
         // Use the specified camera
         CameraSelector {
             id : cameraSelector
-            objectName : "cameraSelector"
             ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
+                buffers: ClearBuffer.ColorDepthBuffer
             }
         }
     }

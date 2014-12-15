@@ -41,19 +41,10 @@
 
 import Qt3D 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1
 
 Effect {
     id: root
 
-    // These parameters act as default values for the effect. They take
-    // priority over any parameters specified in the RenderPasses below
-    // (none provided in this example). In turn these parameters can be
-    // overwritten by specifying them in a Material that references this
-    // effect.
-    // The priority order is:
-    //
-    // Material -> Effect -> Technique -> RenderPass -> GLSL default values
     parameters: [
         Parameter { name: "ambient";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
         Parameter { name: "diffuse";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
@@ -70,33 +61,26 @@ Effect {
                 minorVersion: 1
             }
 
-            annotations: [ Annotation { name : "renderingStyle"; value : "forward" } ]
+            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
             parameters: [
-                Parameter { name: "light.position"; value: Qt.vector4d(0.0, 0.0, 0.0, 1.0) },
-                Parameter { name: "light.intensity"; value: Qt.vector3d(1.0, 1.0, 1.0) },
-                // TODO: 1.0 gets mapped as an integer for line.width. Fix this by using type from glsl
-                // Works once we specify lineWidth property in WireframeMaterial as that is typed to a real
-                Parameter { name: "line.width"; value: 1.01 },
-                Parameter { name: "line.color"; value: Qt.vector4d(1.0, 1.0, 1.0, 1.0) }
+                Parameter { name: "light.position"; value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
+                Parameter { name: "light.intensity"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) },
+                Parameter { name: "line.width"; value: 1.0 },
+                Parameter { name: "line.color"; value: Qt.vector4d( 1.0, 1.0, 1.0, 1.0 ) }
             ]
 
             renderPasses: [
                 RenderPass {
 
-                    // The bindings property allows us to map from names of parameters (uniforms or vertex attributes)
-                    // within a shader to more friendly names in QML. By default the parameter names are exposed from
-                    // the shader so we only need to add add mappings where the names differ. E.g. here we map from the
-                    // ka uniform name in the shader to a property called ambient
                     bindings: [
-                        // Uniforms (those provided by the user)
                         ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
                         ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
                         ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
                     ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderCode: loadSource("qrc:/shaders/robustwireframe.vert")
+                        vertexShaderCode:   loadSource("qrc:/shaders/robustwireframe.vert")
                         geometryShaderCode: loadSource("qrc:/shaders/robustwireframe.geom")
                         fragmentShaderCode: loadSource("qrc:/shaders/robustwireframe.frag")
                     }
