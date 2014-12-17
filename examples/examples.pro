@@ -22,6 +22,7 @@ SUBDIRS += \
     bigscene-cpp \
     materials \
     keyboardinput-qml \
+    loader-qml \
     wave
 
 # TODO Port the old examples to new APIs

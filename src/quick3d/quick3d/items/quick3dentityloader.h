@@ -39,45 +39,57 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include "qt3dquick3dcoreplugin.h"
-#include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qcamera.h>
-#include <Qt3DCore/qscaletransform.h>
-#include <Qt3DCore/qlookattransform.h>
-#include <Qt3DCore/qmatrixtransform.h>
-#include <Qt3DCore/qtranslatetransform.h>
-#include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DQuick/quick3dentityloader.h>
-#include <Qt3DQuick/quick3dtransform.h>
-#include <Qt3DQuick/quick3dconfiguration.h>
-#include <private/qt3dquick_global_p.h>
+#ifndef QT3D_QUICK_QUICK3DENTITYLOADER_H
+#define QT3D_QUICK_QUICK3DENTITYLOADER_H
+
+#include <QObject>
+#include <QUrl>
+
+#include <Qt3DCore/QEntity>
+
+#include <Qt3DQuick/qt3dquick_global.h>
+
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QEntity;
+
+namespace Quick {
+
+class Quick3DEntityLoaderPrivate;
+
+class QT3DQUICKSHARED_EXPORT Quick3DEntityLoader : public QEntity
 {
-    Qt3D::Quick::Quick3D_initializeProviders();
+    Q_OBJECT
+    Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+public:
+    explicit Quick3DEntityLoader(QNode *parent = 0);
 
-    qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
+    QObject *entity() const;
 
-    qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
-    qmlRegisterExtendedType<Qt3D::QEntity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
-    qmlRegisterType<Qt3D::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
-    qmlRegisterExtendedType<Qt3D::QTransform, Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
-    // Ideally we want to make Node an uncreatable type
-    // We would need qmlRegisterUncreatableExtendedType for that
-    qmlRegisterExtendedUncreatableType<Qt3D::QNode, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
-    qmlRegisterExtendedType<Qt3D::QCamera, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Camera");
-    qmlRegisterType<Qt3D::QCameraLens>(uri, 2, 0, "CameraLens");
+    QUrl source() const;
+    void setSource(const QUrl &url);
 
-    qmlRegisterType<Qt3D::QMatrixTransform>(uri, 2, 0, "MatrixTransform");
-    qmlRegisterType<Qt3D::QTranslateTransform>(uri, 2, 0, "Translate");
-    qmlRegisterType<Qt3D::QRotateTransform>(uri, 2, 0, "Rotate");
-    qmlRegisterType<Qt3D::QLookAtTransform>(uri, 2, 0, "LookAt");
-    qmlRegisterType<Qt3D::QScaleTransform>(uri, 2, 0, "Scale");
-}
+Q_SIGNALS:
+    void entityChanged();
+    void sourceChanged();
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(Quick3DEntityLoader)
+    Q_PRIVATE_SLOT(d_func(), void _q_componentStatusChanged(QQmlComponent::Status))
+    QT3D_CLONEABLE(Quick3DEntityLoader)
+};
+
+} // Quick;
+
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QUICK3DENTITYLOADER_H
