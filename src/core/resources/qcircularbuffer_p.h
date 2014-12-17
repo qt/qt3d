@@ -144,17 +144,9 @@ public:
 
     }
 
-#ifndef Q_NO_USING_KEYWORD
     using CircularBufferData::wraparound;
-#else
-    inline int wraparound(int index) const { return CircularBufferData::wraparound(index); }
-#endif
     T *allocate(int count) { return static_cast<T*>(CircularBufferData::allocate(count, sizeof(T))); }
-#ifndef Q_NO_USING_KEYWORD
     using CircularBufferData::deallocate;
-#else
-    inline void deallocate(void *p) { return CircularBufferData::deallocate(p); }
-#endif
     T *data() const { return static_cast<T*>(CircularBufferData::data); }
     void setData(T *newdata) { CircularBufferData::data = static_cast<void*>(newdata); }
 };
