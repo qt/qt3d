@@ -154,7 +154,10 @@ public:
             m_buckets.append(Bucket(BucketSize));
             m_bucketDataPtrs[bucketIdx] = m_buckets.last().data();
         }
-        return m_bucketDataPtrs[bucketIdx] + localIdx;
+        // Make sure we got a properly constructed object at that point
+        // otherwise we might end up passing around bogus vtable pointers
+        // (shows up when we start releasing resources)
+        return new (m_bucketDataPtrs[bucketIdx] + localIdx) T;
     }
 
     void releaseResource(T *r)
@@ -177,9 +180,6 @@ public:
             const int idx = bucketIdx * BucketSize + localIdx;
             m_freeList.append(idx);
             performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
-            // release the actual resource by overwriting it with a default
-            // constructed item which can then be reused later
-            *r = T();
             break;
         }
     }
