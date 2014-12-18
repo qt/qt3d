@@ -77,7 +77,7 @@ public:
     // Later on we may decide to extend support for multiple observers.
     QChangeArbiter *m_changeArbiter;
     QSceneInterface *m_scene;
-    mutable QNodeId m_uuid;
+    mutable QNodeId m_id;
     bool m_blockNotifications;
 
     static QNodePrivate *get(QNode *q);

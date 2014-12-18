@@ -61,7 +61,7 @@ void RenderTarget::updateFromPeer(QNode *peer)
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
     m_renderAttachments.clear();
     Q_FOREACH (QRenderAttachment *att, target->attachments())
-        appendRenderAttachment(att->uuid());
+        appendRenderAttachment(att->id());
 }
 
 void RenderTarget::cleanup()

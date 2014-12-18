@@ -105,22 +105,22 @@ KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
 
 QBackendNode *KeyboardControllerFunctor::create(QNode *frontend) const
 {
-    KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->uuid());
+    KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
-    m_handler->appendKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->uuid()));
+    m_handler->appendKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));
     return controller;
 }
 
 QBackendNode *KeyboardControllerFunctor::get(QNode *frontend) const
 {
-    return m_handler->keyboardControllerManager()->lookupResource(frontend->uuid());
+    return m_handler->keyboardControllerManager()->lookupResource(frontend->id());
 }
 
 void KeyboardControllerFunctor::destroy(QNode *frontend) const
 {
-    m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->uuid()));
-    m_handler->keyboardControllerManager()->releaseResource(frontend->uuid());
+    m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));
+    m_handler->keyboardControllerManager()->releaseResource(frontend->id());
 }
 
 } // Inputs

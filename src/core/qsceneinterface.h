@@ -62,12 +62,12 @@ class QT3DCORESHARED_EXPORT QSceneInterface
 {
 public:
     virtual ~QSceneInterface() {}
-    virtual void addObservable(QObservableInterface *observable, const QNodeId &uuid) = 0;
+    virtual void addObservable(QObservableInterface *observable, const QNodeId &id) = 0;
     virtual void addObservable(QNode *observable) = 0;
-    virtual void removeObservable(QObservableInterface *observable, const QNodeId &uuid) = 0;
+    virtual void removeObservable(QObservableInterface *observable, const QNodeId &id) = 0;
     virtual void removeObservable(QNode *observable) = 0;
-    virtual QObservableList lookupObservables(const QNodeId &uuid) const = 0;
-    virtual QNode *lookupNode(const QNodeId &uuid) const = 0;
+    virtual QObservableList lookupObservables(const QNodeId &id) const = 0;
+    virtual QNode *lookupNode(const QNodeId &id) const = 0;
     virtual QNodeId nodeIdFromObservable(QObservableInterface *observable) const = 0;
     virtual void setArbiter(QChangeArbiter *arbiter) = 0;
 

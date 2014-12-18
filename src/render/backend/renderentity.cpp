@@ -125,7 +125,7 @@ void RenderEntity::updateFromPeer(QNode *peer)
     QEntity *entity = static_cast<QEntity *>(peer);
     QEntity *parentEntity = entity->parentEntity();
     if (parentEntity != Q_NULLPTR)
-        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->uuid()));
+        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->id()));
 
     if (!m_worldTransform.isNull())
         m_renderer->worldMatrixManager()->release(m_worldTransform);
@@ -231,17 +231,17 @@ void RenderEntity::addComponent(QComponent *component)
     // If that's not the case something has gone wrong
 
     if (qobject_cast<QTransform*>(component) != Q_NULLPTR)
-        m_transformComponent = component->uuid();
+        m_transformComponent = component->id();
     else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
-        m_meshComponent = component->uuid();
+        m_meshComponent = component->id();
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
-        m_cameraComponent = component->uuid();
+        m_cameraComponent = component->id();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponents.append(component->uuid());
+        m_layerComponents.append(component->id());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
-        m_materialComponent = component->uuid();
+        m_materialComponent = component->id();
     else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
-        m_shaderDataComponents.append(component->uuid());
+        m_shaderDataComponents.append(component->id());
 }
 
 void RenderEntity::removeComponent(QComponent *component)
@@ -253,11 +253,11 @@ void RenderEntity::removeComponent(QComponent *component)
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = QNodeId();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponents.removeAll(component->uuid());
+        m_layerComponents.removeAll(component->id());
     else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
         m_materialComponent = QNodeId();
     else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
-        m_shaderDataComponents.removeAll(component->uuid());
+        m_shaderDataComponents.removeAll(component->id());
 }
 
 template<>
@@ -370,7 +370,7 @@ RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
 
 QBackendNode *RenderEntityFunctor::create(QNode *frontend) const
 {
-    HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->uuid());
+    HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->id());
     RenderEntity *entity = m_renderer->renderNodesManager()->data(renderNodeHandle);
     entity->setRenderer(m_renderer);
     entity->setHandle(renderNodeHandle);
@@ -380,12 +380,12 @@ QBackendNode *RenderEntityFunctor::create(QNode *frontend) const
 
 QBackendNode *RenderEntityFunctor::get(QNode *frontend) const
 {
-    return m_renderer->renderNodesManager()->lookupResource(frontend->uuid());
+    return m_renderer->renderNodesManager()->lookupResource(frontend->id());
 }
 
 void RenderEntityFunctor::destroy(QNode *frontend) const
 {
-    m_renderer->renderNodesManager()->releaseResource(frontend->uuid());
+    m_renderer->renderNodesManager()->releaseResource(frontend->id());
 }
 
 } // namespace Render

@@ -106,7 +106,7 @@ void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
         propertyChange->setPropertyName(QByteArrayLiteral("require"));
-        propertyChange->setValue(QVariant::fromValue(criterion->uuid()));
+        propertyChange->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(propertyChange);
     }
     d->m_requireList.removeOne(criterion);

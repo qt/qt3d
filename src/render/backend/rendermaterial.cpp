@@ -78,9 +78,9 @@ void RenderMaterial::updateFromPeer(QNode *node)
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
     if (mat->effect() != Q_NULLPTR)
-        m_effectUuid = mat->effect()->uuid();
+        m_effectUuid = mat->effect()->id();
     Q_FOREACH (QParameter *p, mat->parameters())
-        m_parameterPack.appendParameter(p->uuid());
+        m_parameterPack.appendParameter(p->id());
 }
 
 void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)

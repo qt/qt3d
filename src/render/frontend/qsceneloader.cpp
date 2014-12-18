@@ -66,7 +66,7 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
             QEntity *scene = e->value().value<QEntity *>();
             // TO DO: We should send a QNodePtr so that it is release automatically
             if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
-                QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_uuid);
+                QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
                 if (entities.size() > 1) // TO DO: QComponent shareable property
                     qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
                 Q_FOREACH (const QNodeId &id, entities) {

@@ -195,7 +195,7 @@ public:
         m_lastChanges << e;
         // Sends reply to frontend
         Qt3D::QBackendScenePropertyChangePtr change(new Qt3D::QBackendScenePropertyChange(Qt3D::NodeUpdated, this));
-        change->setTargetNode(e->subject().m_node->uuid());
+        change->setTargetNode(e->subject().m_node->id());
         change->setPropertyName(QByteArrayLiteral("Reply"));
         notifyObservers(change);
     }
@@ -314,7 +314,7 @@ void tst_QChangeArbiter::registerObservers()
     QList<tst_SimpleObserver *> observers;
     for (int i = 0; i < 5; i++) {
         tst_SimpleObserver *s = new tst_SimpleObserver();
-        arbiter->registerObserver(s, root->uuid());
+        arbiter->registerObserver(s, root->id());
         observers << s;
     }
 
@@ -350,7 +350,7 @@ void tst_QChangeArbiter::registerSceneObserver()
     QList<tst_SimpleObserver *> observers;
     for (int i = 0; i < 5; i++) {
         tst_SimpleObserver *s = new tst_SimpleObserver();
-        arbiter->registerObserver(s, root->uuid());
+        arbiter->registerObserver(s, root->id());
         observers << s;
     }
 
@@ -411,7 +411,7 @@ void tst_QChangeArbiter::unregisterObservers()
     QList<tst_SimpleObserver *> observers;
     for (int i = 0; i < 5; i++) {
         tst_SimpleObserver *s = new tst_SimpleObserver();
-        arbiter->registerObserver(s, root->uuid());
+        arbiter->registerObserver(s, root->id());
         observers << s;
     }
 
@@ -429,7 +429,7 @@ void tst_QChangeArbiter::unregisterObservers()
     }
 
     Q_FOREACH (tst_SimpleObserver *o, observers)
-        arbiter->unregisterObserver(o, root->uuid());
+        arbiter->unregisterObserver(o, root->id());
 
     root->sendAllChangesNotification();
     arbiter->syncChanges();
@@ -458,7 +458,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     QList<tst_SimpleObserver *> observers;
     for (int i = 0; i < 5; i++) {
         tst_SimpleObserver *s = new tst_SimpleObserver();
-        arbiter->registerObserver(s, root->uuid());
+        arbiter->registerObserver(s, root->id());
         observers << s;
     }
 
@@ -550,13 +550,13 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     tst_SimpleObserver *backendComponentUpdatedObserver = new tst_SimpleObserver();
     tst_SimpleObserver *backendComponentRemovedObserver = new tst_SimpleObserver();
 
-    arbiter->registerObserver(backendAllChangedObserver, root->uuid());
-    arbiter->registerObserver(backendNodeAddedObserver, root->uuid(), Qt3D::NodeAdded);
-    arbiter->registerObserver(backendNodeUpdatedObserver, root->uuid(), Qt3D::NodeUpdated);
-    arbiter->registerObserver(backendNodeRemovedObserver, root->uuid(), Qt3D::NodeRemoved);
-    arbiter->registerObserver(backendComponentAddedObserver, root->uuid(), Qt3D::ComponentAdded);
-    arbiter->registerObserver(backendComponentUpdatedObserver, root->uuid(), Qt3D::ComponentUpdated);
-    arbiter->registerObserver(backendComponentRemovedObserver, root->uuid(), Qt3D::ComponentRemoved);
+    arbiter->registerObserver(backendAllChangedObserver, root->id());
+    arbiter->registerObserver(backendNodeAddedObserver, root->id(), Qt3D::NodeAdded);
+    arbiter->registerObserver(backendNodeUpdatedObserver, root->id(), Qt3D::NodeUpdated);
+    arbiter->registerObserver(backendNodeRemovedObserver, root->id(), Qt3D::NodeRemoved);
+    arbiter->registerObserver(backendComponentAddedObserver, root->id(), Qt3D::ComponentAdded);
+    arbiter->registerObserver(backendComponentUpdatedObserver, root->id(), Qt3D::ComponentUpdated);
+    arbiter->registerObserver(backendComponentRemovedObserver, root->id(), Qt3D::ComponentRemoved);
 
     arbiter->syncChanges();
 
@@ -665,8 +665,8 @@ void tst_QChangeArbiter::distributeBackendChanges()
     scene->addObservable(root);
 
     tst_ObserverObservable *backenObserverObservable = new tst_ObserverObservable();
-    arbiter->registerObserver(backenObserverObservable, root->uuid());
-    arbiter->scene()->addObservable(backenObserverObservable, root->uuid());
+    arbiter->registerObserver(backenObserverObservable, root->id());
+    arbiter->scene()->addObservable(backenObserverObservable, root->id());
 
     arbiter->syncChanges();
     QVERIFY(root->lastChange().isNull());
@@ -684,7 +684,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
     QCOMPARE(backenObserverObservable->lastChanges().count(), 2);
     Qt3D::QBackendScenePropertyChangePtr c = qSharedPointerDynamicCast<Qt3D::QBackendScenePropertyChange>(root->lastChange());
     QVERIFY(!c.isNull());
-    QVERIFY(c->targetNode() == root->uuid());
+    QVERIFY(c->targetNode() == root->id());
     QVERIFY(c->propertyName() == QByteArrayLiteral("Reply"));
     QVERIFY(c->type() == Qt3D::NodeUpdated);
 }

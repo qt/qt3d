@@ -53,19 +53,19 @@ class QT3DCORESHARED_EXPORT QNodeId
 {
 public:
     QNodeId()
-        : m_uuid(0)
+        : m_id(0)
     {}
 
-    static QNodeId createUuid();
+    static QNodeId createId();
 
     inline bool isNull() const
     {
-        return m_uuid == 0;
+        return m_id == 0;
     }
 
     inline bool operator ==(const QNodeId &other) const
     {
-        return other.m_uuid == m_uuid;
+        return other.m_id == m_id;
     }
 
     inline bool operator !=(const QNodeId &other) const
@@ -75,21 +75,21 @@ public:
 
     inline bool operator <(const QNodeId &other) const
     {
-        return m_uuid < other.m_uuid;
+        return m_id < other.m_id;
     }
 
     inline bool operator >(const QNodeId &other) const
     {
-        return m_uuid > other.m_uuid;
+        return m_id > other.m_id;
     }
 
-    inline quint64 guid() const
+    inline quint64 id() const
     {
-        return m_uuid;
+        return m_id;
     }
 
 private:
-    quint64 m_uuid;
+    quint64 m_id;
 };
 
 
@@ -97,9 +97,9 @@ private:
 QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeId &id);
 #endif
 
-QT3DCORESHARED_EXPORT inline uint qHash(const QNodeId &uuid, uint) Q_DECL_NOTHROW
+QT3DCORESHARED_EXPORT inline uint qHash(const QNodeId &id, uint) Q_DECL_NOTHROW
 {
-    return uuid.guid();
+    return id.id();
 }
 
 } // Qt3D

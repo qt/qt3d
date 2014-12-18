@@ -150,7 +150,7 @@ QBackendNode *FrameGraphComponentFunctor::create(QNode *frontend) const
     // to do that
     QFrameGraph *framegraph = static_cast<QFrameGraph *>(frontend);
     if (framegraph->activeFrameGraph() != Q_NULLPTR)
-        m_renderer->setFrameGraphRoot(framegraph->activeFrameGraph()->uuid());
+        m_renderer->setFrameGraphRoot(framegraph->activeFrameGraph()->id());
     return Q_NULLPTR;
 }
 

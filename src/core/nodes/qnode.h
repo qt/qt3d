@@ -74,7 +74,7 @@ public:
     explicit QNode(QNode *parent = 0);
     ~QNode();
 
-    const QNodeId uuid() const;
+    const QNodeId id() const;
     QNode *parentNode() const;
 
     bool notificationsBlocked() const;

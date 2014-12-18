@@ -146,8 +146,8 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
 
         case QSceneChange::Node: {
             QNode *subject = change->subject().m_node;
-            if (m_nodeObservations.contains(subject->uuid())) {
-                QObserverList &observers = m_nodeObservations[subject->uuid()];
+            if (m_nodeObservations.contains(subject->id())) {
+                QObserverList &observers = m_nodeObservations[subject->id()];
                 Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);

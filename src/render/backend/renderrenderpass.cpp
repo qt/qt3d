@@ -73,13 +73,13 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     QRenderPass *pass = static_cast<QRenderPass *>(peer);
 
     if (pass->shaderProgram() != Q_NULLPTR)
-        m_shaderUuid = pass->shaderProgram()->uuid();
+        m_shaderUuid = pass->shaderProgram()->id();
     // The RenderPass clones frontend bindings in case the frontend ever removes them
     // TO DO: We probably need a QParameterMapper manager
     Q_FOREACH (QParameterMapping *binding, pass->bindings())
         appendBinding(binding);
     Q_FOREACH (QAnnotation *c, pass->annotations())
-        appendAnnotation(c->uuid());
+        appendAnnotation(c->id());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState);
 }
@@ -159,8 +159,8 @@ void RenderRenderPass::removeAnnotation(const QNodeId &annotationId)
 
 void RenderRenderPass::appendBinding(QParameterMapping *binding)
 {
-    if (!m_bindings.contains(binding->uuid()))
-        m_bindings[binding->uuid()] = binding;
+    if (!m_bindings.contains(binding->id()))
+        m_bindings[binding->id()] = binding;
 }
 
 void RenderRenderPass::removeBinding(const QNodeId &bindingId)
@@ -170,8 +170,8 @@ void RenderRenderPass::removeBinding(const QNodeId &bindingId)
 
 void RenderRenderPass::appendRenderState(QRenderState *renderState)
 {
-    if (!m_renderStates.contains(renderState->uuid()))
-        m_renderStates[renderState->uuid()] = renderState;
+    if (!m_renderStates.contains(renderState->id()))
+        m_renderStates[renderState->id()] = renderState;
 }
 
 void RenderRenderPass::removeRenderState(const QNodeId &renderStateId)

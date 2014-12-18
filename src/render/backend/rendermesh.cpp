@@ -141,7 +141,7 @@ RenderMeshCreatorFunctor::RenderMeshCreatorFunctor(MeshManager *meshManager, Mes
 
 QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend) const
 {
-    RenderMesh *mesh = m_meshManager->getOrCreateResource(frontend->uuid());
+    RenderMesh *mesh = m_meshManager->getOrCreateResource(frontend->id());
     mesh->setMeshDataManager(m_meshDataManager);
     mesh->setPeer(frontend);
     return mesh;
@@ -149,12 +149,12 @@ QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend) const
 
 QBackendNode *RenderMeshCreatorFunctor::get(QNode *frontend) const
 {
-    return m_meshManager->lookupResource(frontend->uuid());
+    return m_meshManager->lookupResource(frontend->id());
 }
 
 void RenderMeshCreatorFunctor::destroy(QNode *frontend) const
 {
-    m_meshManager->releaseResource(frontend->uuid());
+    m_meshManager->releaseResource(frontend->id());
 }
 
 } // Render

@@ -59,7 +59,7 @@ void SortMethod::updateFromPeer(QNode *peer)
     QSortMethod *sortMethod = static_cast<QSortMethod *>(peer);
     m_criteria.clear();
     Q_FOREACH (QSortCriterion *c, sortMethod->criteria())
-        m_criteria.append(c->uuid());
+        m_criteria.append(c->id());
 }
 
 void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
@@ -69,9 +69,9 @@ void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
         QSortCriterion *c = propertyChange->value().value<QSortCriterion *>();
         if (c != Q_NULLPTR) {
             if (e->type() == NodeAdded)
-                m_criteria.append(c->uuid());
+                m_criteria.append(c->id());
             else if (e->type() == NodeRemoved)
-                m_criteria.removeAll(c->uuid());
+                m_criteria.removeAll(c->id());
         }
     }
 }

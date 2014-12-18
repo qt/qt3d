@@ -70,8 +70,8 @@ QList<QNodeId> TechniqueFilter::filters() const
 
 void TechniqueFilter::appendFilter(QAnnotation *criterion)
 {
-    if (!m_filters.contains(criterion->uuid()))
-        m_filters.append(criterion->uuid());
+    if (!m_filters.contains(criterion->id()))
+        m_filters.append(criterion->id());
 }
 
 void TechniqueFilter::removeFilter(const QNodeId &criterionId)

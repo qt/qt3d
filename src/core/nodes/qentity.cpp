@@ -110,7 +110,7 @@ void QEntity::addComponent(QComponent *comp)
         comp->setParent(this);
 
     if (d->m_scene != Q_NULLPTR)
-        d->m_scene->addEntityForComponent(comp->uuid(), d->m_uuid);
+        d->m_scene->addEntityForComponent(comp->id(), d->m_id);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
@@ -137,7 +137,7 @@ void QEntity::removeComponent(QComponent *comp)
     }
 
     if (d->m_scene != Q_NULLPTR)
-        d->m_scene->removeEntityForComponent(comp->uuid(), d->m_uuid);
+        d->m_scene->removeEntityForComponent(comp->id(), d->m_id);
 
     d->m_components.removeOne(comp);
 }

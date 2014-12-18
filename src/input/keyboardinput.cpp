@@ -65,7 +65,7 @@ void KeyboardInput::updateFromPeer(QNode *peer)
 {
     QKeyboardInput *input = static_cast<QKeyboardInput *>(peer);
     if (input->controller() != Q_NULLPTR)
-        setController(input->controller()->uuid());
+        setController(input->controller()->id());
     m_focus = false;
     if (input->focus())
         requestFocus();
@@ -152,7 +152,7 @@ KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)
 
 QBackendNode *KeyboardInputFunctor::create(QNode *frontend) const
 {
-    KeyboardInput *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->uuid());
+    KeyboardInput *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->id());
     input->setInputHandler(m_handler);
     input->setPeer(frontend);
     return input;
@@ -160,12 +160,12 @@ QBackendNode *KeyboardInputFunctor::create(QNode *frontend) const
 
 QBackendNode *KeyboardInputFunctor::get(QNode *frontend) const
 {
-    return m_handler->keyboardInputManager()->lookupResource(frontend->uuid());
+    return m_handler->keyboardInputManager()->lookupResource(frontend->id());
 }
 
 void KeyboardInputFunctor::destroy(QNode *frontend) const
 {
-    m_handler->keyboardInputManager()->releaseResource(frontend->uuid());
+    m_handler->keyboardInputManager()->releaseResource(frontend->id());
 }
 
 } // Input

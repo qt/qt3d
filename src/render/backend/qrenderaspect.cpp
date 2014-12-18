@@ -276,7 +276,7 @@ void QRenderAspect::setRootEntity(QEntity *rootObject)
     Q_D(QRenderAspect);
     QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
-    d->m_renderer->setSceneGraphRoot(d->m_renderer->renderNodesManager()->lookupResource(rootObject->uuid()));
+    d->m_renderer->setSceneGraphRoot(d->m_renderer->renderNodesManager()->lookupResource(rootObject->id()));
 }
 
 void QRenderAspect::onInitialize(const QVariantMap &data)

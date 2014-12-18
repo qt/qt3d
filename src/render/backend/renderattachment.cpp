@@ -65,7 +65,7 @@ void RenderAttachment::updateFromPeer(QNode *peer)
     m_attachmentData.m_face = attachment->face();
     m_attachmentData.m_name = attachment->name();
     if (attachment->texture())
-        m_attachmentData.m_textureUuid = attachment->texture()->uuid();
+        m_attachmentData.m_textureUuid = attachment->texture()->id();
 }
 
 QNodeId RenderAttachment::textureUuid() const

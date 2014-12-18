@@ -348,12 +348,12 @@ void tst_Nodes::checkCloning()
 //    QCOMPARE(entity->components().count(), 3);
 
 //    Qt3D::QNode *rootClone = root->clone();
-//    QVERIFY(rootClone->uuid() == root->uuid());
+//    QVERIFY(rootClone->id() == root->id());
 //    QVERIFY(qobject_cast<MyQNode *>(rootClone) != Q_NULLPTR);
 //    QVERIFY(qobject_cast<MyQNode *>(rootClone)->customProperty() == root->customProperty());
 
 //    Qt3D::QEntity *entityClone = qobject_cast<Qt3D::QEntity *>(rootClone->children().first());
-//    QVERIFY(entity->uuid() == entityClone->uuid());
+//    QVERIFY(entity->id() == entityClone->id());
 //    QCOMPARE(root->children().count(), rootClone->children().count());
 //    QCOMPARE(entityClone->children().count(), entity->children().count());
 //    QCOMPARE(entityClone->components().count(), entity->components().count());

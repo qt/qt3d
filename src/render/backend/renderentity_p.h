@@ -139,9 +139,9 @@ private:
     template<class Frontend, class Backend, class Manager>
     void createRenderComponentHelper(Frontend *frontend, Manager *manager)
     {
-        // We index using the Frontend uuid
-        if (!manager->contains(frontend->uuid())) {
-            Backend *backend = manager->getOrCreateResource(frontend->uuid());
+        // We index using the Frontend id
+        if (!manager->contains(frontend->id())) {
+            Backend *backend = manager->getOrCreateResource(frontend->id());
             backend->setRenderer(m_renderer);
             backend->setPeer(frontend);
         }

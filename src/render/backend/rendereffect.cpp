@@ -76,10 +76,10 @@ void RenderEffect::updateFromPeer(QNode *peer)
     m_parameterPack.clear();
 
     Q_FOREACH (QTechnique *t, effect->techniques())
-        appendRenderTechnique(t->uuid());
+        appendRenderTechnique(t->id());
 
     Q_FOREACH (QParameter *p, effect->parameters())
-        m_parameterPack.appendParameter(p->uuid());
+        m_parameterPack.appendParameter(p->id());
 }
 
 void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)

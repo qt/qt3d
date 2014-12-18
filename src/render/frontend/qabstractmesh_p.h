@@ -62,7 +62,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractMesh)
 
-    QNodeId m_uuid;
+    QNodeId m_id;
 };
 
 }

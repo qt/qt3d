@@ -69,8 +69,8 @@ QList<QNodeId> RenderPassFilter::filters() const
 
 void RenderPassFilter::appendFilter(QAnnotation *criterion)
 {
-    if (!m_filters.contains(criterion->uuid()))
-        m_filters.append(criterion->uuid());
+    if (!m_filters.contains(criterion->id()))
+        m_filters.append(criterion->id());
 }
 
 void RenderPassFilter::removeFilter(const QNodeId &criterionId)

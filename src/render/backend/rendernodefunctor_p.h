@@ -62,19 +62,19 @@ public:
 
     QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE
     {
-        Backend *backend = m_manager->getOrCreateResource(frontend->uuid());
+        Backend *backend = m_manager->getOrCreateResource(frontend->id());
         backend->setPeer(frontend);
         return backend;
     }
 
     QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE
     {
-        return m_manager->lookupResource(frontend->uuid());
+        return m_manager->lookupResource(frontend->id());
     }
 
     void destroy(QNode *frontend) const Q_DECL_OVERRIDE
     {
-        m_manager->releaseResource(frontend->uuid());
+        m_manager->releaseResource(frontend->id());
     }
 
 private:

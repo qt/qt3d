@@ -64,7 +64,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
         Q_Q(QComponent);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, q));
         e->setPropertyName(QByteArrayLiteral("entity"));
-        e->setValue(QVariant::fromValue(entity->uuid()));
+        e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);
     }
 }
@@ -76,7 +76,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
         Q_Q(QComponent);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, q));
         e->setPropertyName(QByteArrayLiteral("entity"));
-        e->setValue(QVariant::fromValue(entity->uuid()));
+        e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);
     }
 

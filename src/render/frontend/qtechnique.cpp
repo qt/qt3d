@@ -116,7 +116,7 @@ void QTechnique::addAnnotation(QAnnotation *criterion)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("annotation"));
-            change->setValue(QVariant::fromValue(criterion->uuid()));
+            change->setValue(QVariant::fromValue(criterion->id()));
             d->notifyObservers(change);
         }
     }
@@ -128,7 +128,7 @@ void QTechnique::removeAnnotation(QAnnotation *criterion)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("annotation"));
-        change->setValue(QVariant::fromValue(criterion->uuid()));
+        change->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(change);
     }
     d->m_annotationList.removeOne(criterion);
@@ -156,7 +156,7 @@ void QTechnique::addParameter(QParameter *parameter)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter->uuid()));
+            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -169,7 +169,7 @@ void QTechnique::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter->uuid()));
+        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
@@ -196,7 +196,7 @@ void QTechnique::addPass(QRenderPass *pass)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
             e->setPropertyName(QByteArrayLiteral("pass"));
-            e->setValue(QVariant::fromValue(pass->uuid()));
+            e->setValue(QVariant::fromValue(pass->id()));
             d->notifyObservers(e);
         }
     }
@@ -205,7 +205,7 @@ void QTechnique::addPass(QRenderPass *pass)
 /*!
  * Removes a \a pass from the technique. This posts a ComponentRemoved
  * QScenePropertyChange notification to the QChangeArbiter with the value
- * being the \a pass' uuid and the property name being "pass".
+ * being the \a pass' id and the property name being "pass".
  */
 void QTechnique::removePass(QRenderPass *pass)
 {
@@ -213,7 +213,7 @@ void QTechnique::removePass(QRenderPass *pass)
     if (d->m_changeArbiter) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
         e->setPropertyName(QByteArrayLiteral("pass"));
-        e->setValue(QVariant::fromValue(pass->uuid()));
+        e->setValue(QVariant::fromValue(pass->id()));
         d->notifyObservers(e);
     }
     d->m_renderPasses.removeOne(pass);

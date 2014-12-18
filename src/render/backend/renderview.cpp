@@ -385,9 +385,9 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
 {
     QTexture *tex = Q_NULLPTR;
     if ((tex = value.value<Qt3D::QTexture *>()) != Q_NULLPTR) {
-        uniformPack.setTexture(name, tex->uuid());
+        uniformPack.setTexture(name, tex->id());
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-        texUniform->setTextureId(tex->uuid());
+        texUniform->setTextureId(tex->id());
         uniformPack.setUniform(name, texUniform);
     } else {
         uniformPack.setUniform(name, QUniformValue::fromVariant(value, m_allocator));
@@ -407,7 +407,7 @@ void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUnifo
             for (int i = 0; i < list.size(); ++i) {
                 QShaderData *subData = Q_NULLPTR;
                 if ((subData = list.at(i).value<QShaderData *>())) {
-                    RenderShaderData *subShaderData = m_renderer->shaderDataManager()->lookupResource(subData->uuid());
+                    RenderShaderData *subShaderData = m_renderer->shaderDataManager()->lookupResource(subData->id());
                     if (subShaderData)
                         buildActiveUniformNameValueMapStructHelper(uniforms, subShaderData, blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i));
                 }
@@ -419,7 +419,7 @@ void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUnifo
         }
     } else if (value.value<QShaderData *>()) { // Struct qmlPropertyName.structMember
         QShaderData *subData = value.value<QShaderData *>();
-        RenderShaderData *rSubShaderData = m_renderer->shaderDataManager()->lookupResource(subData->uuid());
+        RenderShaderData *rSubShaderData = m_renderer->shaderDataManager()->lookupResource(subData->id());
         if (rSubShaderData)
             buildActiveUniformNameValueMapStructHelper(uniforms, rSubShaderData, blockName, qmlPropertyName);
     } else { // Scalar / Vec
@@ -449,7 +449,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
 {
     QShaderData *shaderData = Q_NULLPTR;
     if ((shaderData = value.value<QShaderData *>())) {
-        RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->uuid());
+        RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->id());
 
         // TODO: We need an independent UBO class rather than RenderShaderData
         // and index it by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
@@ -521,7 +521,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
-    // ShaderProgramManager[MaterialManager[frontentEntity->uuid()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
+    // ShaderProgramManager[MaterialManager[frontentEntity->id()]->Effect->Techniques[TechniqueFilter->name]->RenderPasses[RenderPassFilter->name]];
     // The Renderer knows that if one of those is null, a default material / technique / effect as to be used
 
     // Find all RenderPasses (in order) matching values set in the RenderPassFilter

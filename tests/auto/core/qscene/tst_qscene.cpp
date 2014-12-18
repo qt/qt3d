@@ -114,24 +114,24 @@ void tst_QScene::addObservable()
     scene->setArbiter(new Qt3D::QChangeArbiter());
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i), node1->uuid());
+        scene->addObservable(observables.at(i), node1->id());
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i + 5), node2->uuid());
+        scene->addObservable(observables.at(i + 5), node2->id());
 
-    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->uuid());
-    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->uuid());
+    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
+    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
     Q_FOREACH (Qt3D::QObservableInterface *o, obs1) {
-        QVERIFY(scene->nodeIdFromObservable(o) == node1->uuid());
-        QVERIFY(scene->lookupNode(node1->uuid()) == Q_NULLPTR);
+        QVERIFY(scene->nodeIdFromObservable(o) == node1->id());
+        QVERIFY(scene->lookupNode(node1->id()) == Q_NULLPTR);
     }
     Q_FOREACH (Qt3D::QObservableInterface *o, obs2) {
-        QVERIFY(scene->nodeIdFromObservable(o) == node2->uuid());
-        QVERIFY(scene->lookupNode(node2->uuid()) == Q_NULLPTR);
+        QVERIFY(scene->nodeIdFromObservable(o) == node2->id());
+        QVERIFY(scene->lookupNode(node2->id()) == Q_NULLPTR);
     }
 }
 
@@ -149,8 +149,8 @@ void tst_QScene::addNodeObservable()
         scene->addObservable(nodes.at(i));
 
     Q_FOREACH (Qt3D::QNode *n, nodes) {
-        QVERIFY(n == scene->lookupNode(n->uuid()));
-        QVERIFY(scene->lookupObservables(n->uuid()).isEmpty());
+        QVERIFY(n == scene->lookupNode(n->id()));
+        QVERIFY(scene->lookupObservables(n->id()).isEmpty());
     }
 }
 
@@ -168,29 +168,29 @@ void tst_QScene::removeObservable()
     scene->setArbiter(new Qt3D::QChangeArbiter());
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i), node1->uuid());
+        scene->addObservable(observables.at(i), node1->id());
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i + 5), node2->uuid());
+        scene->addObservable(observables.at(i + 5), node2->id());
 
-    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->uuid());
-    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->uuid());
+    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
+    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
-    scene->removeObservable(observables.at(0), node1->uuid());
-    QCOMPARE(scene->lookupObservables(node1->uuid()).count(), 4);
+    scene->removeObservable(observables.at(0), node1->id());
+    QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
 
-    scene->removeObservable(observables.at(0), node1->uuid());
-    QCOMPARE(scene->lookupObservables(node1->uuid()).count(), 4);
+    scene->removeObservable(observables.at(0), node1->id());
+    QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
 
-    scene->removeObservable(observables.at(6), node1->uuid());
-    QCOMPARE(scene->lookupObservables(node1->uuid()).count(), 4);
-    QCOMPARE(scene->lookupObservables(node2->uuid()).count(), 5);
+    scene->removeObservable(observables.at(6), node1->id());
+    QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
+    QCOMPARE(scene->lookupObservables(node2->id()).count(), 5);
 
-    scene->removeObservable(observables.at(0), node2->uuid());
-    QCOMPARE(scene->lookupObservables(node2->uuid()).count(), 5);
+    scene->removeObservable(observables.at(0), node2->id());
+    QCOMPARE(scene->lookupObservables(node2->id()).count(), 5);
 
     QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeId());
 }
@@ -212,26 +212,26 @@ void tst_QScene::removeNodeObservable()
     scene->addObservable(node2);
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i), node1->uuid());
+        scene->addObservable(observables.at(i), node1->id());
 
     for (int i = 0; i < 5; i++)
-        scene->addObservable(observables.at(i + 5), node2->uuid());
+        scene->addObservable(observables.at(i + 5), node2->id());
 
-    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->uuid());
-    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->uuid());
+    Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
+    Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
     scene->removeObservable(node1);
 
-    QVERIFY(scene->lookupNode(node1->uuid()) == Q_NULLPTR);
-    QVERIFY(scene->lookupObservables(node1->uuid()).empty());
+    QVERIFY(scene->lookupNode(node1->id()) == Q_NULLPTR);
+    QVERIFY(scene->lookupObservables(node1->id()).empty());
     QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeId());
 
-    QVERIFY(scene->lookupNode(node2->uuid()) == node2);
-    QCOMPARE(scene->lookupObservables(node2->uuid()).count(), 5);
-    QVERIFY(scene->nodeIdFromObservable(observables.at(9)) == node2->uuid());
+    QVERIFY(scene->lookupNode(node2->id()) == node2);
+    QCOMPARE(scene->lookupObservables(node2->id()).count(), 5);
+    QVERIFY(scene->nodeIdFromObservable(observables.at(9)) == node2->id());
 }
 
 void tst_QScene::addChildNode()
@@ -252,11 +252,11 @@ void tst_QScene::addChildNode()
         nodes.append(child);
     }
 
-    QVERIFY(scene->lookupNode(root->uuid()) == root);
+    QVERIFY(scene->lookupNode(root->id()) == root);
     QCoreApplication::processEvents();
 
     Q_FOREACH (Qt3D::QNode *n, nodes) {
-        QVERIFY(scene->lookupNode(n->uuid()) == n);
+        QVERIFY(scene->lookupNode(n->id()) == n);
     }
 }
 
@@ -280,11 +280,11 @@ void tst_QScene::removeChildNode()
 
     while (!nodes.isEmpty()) {
         Qt3D::QNode *lst = nodes.takeLast();
-        QVERIFY(scene->lookupNode(lst->uuid()) == lst);
+        QVERIFY(scene->lookupNode(lst->id()) == lst);
         if (lst->parentNode() != Q_NULLPTR) {
             lst->setParent(Q_NULLPTR);
             QCoreApplication::processEvents();
-            QVERIFY(scene->lookupNode(lst->uuid()) == Q_NULLPTR);
+            QVERIFY(scene->lookupNode(lst->id()) == Q_NULLPTR);
         }
     }
 }
@@ -314,8 +314,8 @@ void tst_QScene::addEntityForComponent()
     }
 
     for (int i = 0; i < 10; i++) {
-        QList<Qt3D::QNodeId> uuids = scene->entitiesForComponent(components.at(i)->uuid());
-        QCOMPARE(uuids.count(), 10);
+        QList<Qt3D::QNodeId> ids = scene->entitiesForComponent(components.at(i)->id());
+        QCOMPARE(ids.count(), 10);
     }
 }
 
@@ -347,7 +347,7 @@ void tst_QScene::removeEntityForComponent()
         Qt3D::QEntity *e = entities.at(i);
         for (int j = 0; j < 10; j++) {
             e->removeComponent(components.at(j));
-            QCOMPARE(scene->entitiesForComponent(components.at(j)->uuid()).count(), 10 - (i + 1));
+            QCOMPARE(scene->entitiesForComponent(components.at(j)->id()).count(), 10 - (i + 1));
         }
     }
 }

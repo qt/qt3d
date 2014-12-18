@@ -107,7 +107,7 @@ void QAspectEngine::initNodeTree(QNode *node) const
     QEntity *entity = qobject_cast<QEntity *>(node);
     if (entity != Q_NULLPTR)
         Q_FOREACH (QComponent *comp, entity->components())
-            d->m_scene->addEntityForComponent(comp->uuid(), entity->uuid());
+            d->m_scene->addEntityForComponent(comp->id(), entity->id());
 
     Q_FOREACH (QObject *c, node->children()) {
         QNode *childNode = qobject_cast<QNode *>(c);

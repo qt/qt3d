@@ -91,7 +91,7 @@ void QEffect::addParameter(QParameter *parameter)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
             change->setPropertyName(QByteArrayLiteral("parameter"));
-            change->setValue(QVariant::fromValue(parameter->uuid()));
+            change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
     }
@@ -104,7 +104,7 @@ void QEffect::removeParameter(QParameter *parameter)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
         change->setPropertyName(QByteArrayLiteral("parameter"));
-        change->setValue(QVariant::fromValue(parameter->uuid()));
+        change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
     d->m_parameters.removeOne(parameter);
@@ -138,7 +138,7 @@ void QEffect::addTechnique(QTechnique *t)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
             e->setPropertyName(QByteArrayLiteral("technique"));
-            e->setValue(QVariant::fromValue(t->uuid()));
+            e->setValue(QVariant::fromValue(t->id()));
             d->notifyObservers(e);
         }
     }
@@ -147,7 +147,7 @@ void QEffect::addTechnique(QTechnique *t)
 /*!
  * Removes a technique \t from the effect. This posts a ComponentRemoved
  * QScenePropertyChange notification to the QChangeArbiter, the value is
- * the removed technique's uuid and the property name is "technique".
+ * the removed technique's id and the property name is "technique".
  */
 void QEffect::removeTechnique(QTechnique *t)
 {
@@ -155,7 +155,7 @@ void QEffect::removeTechnique(QTechnique *t)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
         e->setPropertyName(QByteArrayLiteral("technique"));
-        e->setValue(QVariant::fromValue(t->uuid()));
+        e->setValue(QVariant::fromValue(t->id()));
         d->notifyObservers(e);
     }
     d->m_techniques.removeOne(t);

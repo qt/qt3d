@@ -122,7 +122,7 @@ public:
 
     QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE
     {
-        FrameGraphNode **node = m_manager->lookupResource(frontend->uuid());
+        FrameGraphNode **node = m_manager->lookupResource(frontend->id());
         if (node != Q_NULLPTR)
             return *node;
         return Q_NULLPTR;
@@ -130,7 +130,7 @@ public:
 
     void destroy(QNode *frontend) const Q_DECL_OVERRIDE
     {
-        m_manager->releaseResource(frontend->uuid());
+        m_manager->releaseResource(frontend->id());
     }
 
 protected:
@@ -138,16 +138,16 @@ protected:
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
-            HFrameGraphNode handle = m_manager->lookupHandle(n->uuid());
+            HFrameGraphNode handle = m_manager->lookupHandle(n->id());
             if (handle.isNull()) {
-                handle = m_manager->getOrAcquireHandle(n->uuid());
+                handle = m_manager->getOrAcquireHandle(n->id());
                 Backend *backend = new Backend();
                 *m_manager->data(handle) = backend;
                 backend->setFrameGraphManager(m_manager);
                 backend->setHandle(handle);
                 backend->setPeer(f);
                 if (qobject_cast<QFrameGraphNode *>(n->parentNode()))
-                    backend->setParentHandle(m_manager->lookupHandle(n->parentNode()->uuid()));
+                    backend->setParentHandle(m_manager->lookupHandle(n->parentNode()->id()));
                 return backend;
             }
             return static_cast<Backend *>(*m_manager->data(handle));

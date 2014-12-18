@@ -110,7 +110,7 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 
 QBackendNode *RenderSceneFunctor::create(QNode *frontend) const
 {
-    RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->uuid());
+    RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->id());
     scene->setSceneManager(m_sceneManager);
     scene->setPeer(frontend);
     return scene;
@@ -118,12 +118,12 @@ QBackendNode *RenderSceneFunctor::create(QNode *frontend) const
 
 QBackendNode *RenderSceneFunctor::get(QNode *frontend) const
 {
-    return m_sceneManager->lookupResource(frontend->uuid());
+    return m_sceneManager->lookupResource(frontend->id());
 }
 
 void RenderSceneFunctor::destroy(QNode *frontend) const
 {
-    m_sceneManager->releaseResource(frontend->uuid());
+    m_sceneManager->releaseResource(frontend->id());
 }
 
 } // Render

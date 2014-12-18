@@ -45,21 +45,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QNodeId QNodeId::createUuid()
+QNodeId QNodeId::createId()
 {
 #if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
     static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
 #else
     static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
 #endif
-    QNodeId uuid;
-    uuid.m_uuid = m_curId.fetchAndAddOrdered(1);
-    return uuid;
+    QNodeId id;
+    id.m_id = m_curId.fetchAndAddOrdered(1);
+    return id;
 }
 
 QDebug operator<<(QDebug d, const QNodeId &id)
 {
-    d << id.guid();
+    d << id.id();
     return d;
 }
 

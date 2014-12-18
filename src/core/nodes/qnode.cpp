@@ -63,7 +63,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
-    , m_uuid(QNodeId::createUuid())
+    , m_id(QNodeId::createId())
     , m_blockNotifications(false)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -96,7 +96,7 @@ void QNodePrivate::addChild(QNode *childNode)
         QNode *childClone = Q_NULLPTR;
         Q_FOREACH (QObject *c, parentClone->children()) {
             QNode *clone = qobject_cast<QNode *>(c);
-            if (clone != Q_NULLPTR && clone->uuid() == childNode->uuid()) {
+            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
                 childClone = clone;
                 break;
             }
@@ -123,7 +123,7 @@ void QNodePrivate::removeChild(QNode *childNode)
         QNode *childClone = Q_NULLPTR;
         Q_FOREACH (QObject *c, parentClone->children()) {
             QNode *clone = qobject_cast<QNode *>(c);
-            if (clone != Q_NULLPTR && clone->uuid() == childNode->uuid()) {
+            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
                 childClone = clone;
                 break;
             }
@@ -189,8 +189,8 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     const QVariant data = property.read(q);
     if (data.canConvert<QNode*>()) {
         const QNode * const node = data.value<QNode*>();
-        const QNodeId uuid = node ? node->uuid() : QNodeId();
-        notifyPropertyChange(property.name(), QVariant::fromValue(uuid));
+        const QNodeId id = node ? node->id() : QNodeId();
+        notifyPropertyChange(property.name(), QVariant::fromValue(id));
     } else {
         notifyPropertyChange(property.name(), data);
     }
@@ -301,17 +301,17 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 void QNode::copy(const QNode *ref)
 {
     if (ref)
-        d_func()->m_uuid = ref->d_func()->m_uuid;
+        d_func()->m_id = ref->d_func()->m_id;
 }
 
 QNode::~QNode()
 {
 }
 
-const QNodeId QNode::uuid() const
+const QNodeId QNode::id() const
 {
     Q_D(const QNode);
-    return d->m_uuid;
+    return d->m_id;
 }
 
 QNode *QNode::parentNode() const
@@ -359,12 +359,12 @@ QNode *QNode::clone(QNode *node)
     // We keep a reference of clones for the current subtree
     // In order to preserve relationships when multiple entities
     // reference the same component
-    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(node->uuid());
+    QNode *clonedNode = QNodePrivate::m_clonesLookupTable.value(node->id());
     if (clonedNode == Q_NULLPTR) {
         clonedNode = node->doClone();
         // doClone, returns new instance with content copied
         // and relationships added
-        QNodePrivate::m_clonesLookupTable.insert(clonedNode->uuid(), clonedNode);
+        QNodePrivate::m_clonesLookupTable.insert(clonedNode->id(), clonedNode);
     }
     Q_FOREACH (QObject *c, node->children()) {
         QNode *childNode = qobject_cast<QNode *>(c);

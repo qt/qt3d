@@ -64,7 +64,7 @@ void CameraSelector::updateFromPeer(QNode *peer)
     QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
     m_cameraUuid = QNodeId();
     if (selector->camera() != Q_NULLPTR)
-        m_cameraUuid = selector->camera()->uuid();
+        m_cameraUuid = selector->camera()->id();
 }
 
 void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)

@@ -69,7 +69,7 @@ void QAbstractMesh::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QAbstractMesh *abstractMesh = static_cast<const QAbstractMesh*>(ref);
-    d_func()->m_uuid = abstractMesh->d_func()->m_uuid;
+    d_func()->m_id = abstractMesh->d_func()->m_id;
 }
 
 

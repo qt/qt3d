@@ -63,7 +63,7 @@ void RenderTargetSelector::updateFromPeer(QNode *peer)
     QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
     m_renderTargetUuid = QNodeId();
     if (selector->target() != Q_NULLPTR)
-        m_renderTargetUuid = selector->target()->uuid();
+        m_renderTargetUuid = selector->target()->id();
 }
 
 void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)

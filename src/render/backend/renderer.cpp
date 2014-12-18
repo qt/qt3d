@@ -434,11 +434,11 @@ void Renderer::setSceneGraphRoot(RenderEntity *sgRoot)
         m_rendererAspect->createBackendNode(p);
 
 
-    m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->uuid());
-    m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->uuid());
-    m_defaultTechniqueHandle = m_techniqueManager->lookupHandle(m_defaultTechnique->uuid());
-    m_defaultRenderPassHandle = m_renderPassManager->lookupHandle(m_defaultTechnique->renderPasses().first()->uuid());
-    m_defaultRenderShader = m_shaderManager->lookupResource(m_defaultTechnique->renderPasses().first()->shaderProgram()->uuid());
+    m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->id());
+    m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->id());
+    m_defaultTechniqueHandle = m_techniqueManager->lookupHandle(m_defaultTechnique->id());
+    m_defaultRenderPassHandle = m_renderPassManager->lookupHandle(m_defaultTechnique->renderPasses().first()->id());
+    m_defaultRenderShader = m_shaderManager->lookupResource(m_defaultTechnique->renderPasses().first()->shaderProgram()->id());
 }
 
 // Called in RenderAspect Thread context

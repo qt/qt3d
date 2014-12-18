@@ -97,7 +97,7 @@ void QBackendNode::setPeer(QNode *peer)
     Q_D(QBackendNode);
     QNodeId peerUuid;
     if (peer != Q_NULLPTR)
-        peerUuid = peer->uuid();
+        peerUuid = peer->id();
     d->m_peerUuid = peerUuid;
     updateFromPeer(peer);
 }
