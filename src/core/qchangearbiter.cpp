@@ -57,25 +57,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
- * \class QChangeArbiter
- * \namespace Qt3D
- * \since 5.4
- *
- * \brief Act as a messages router between observables and observers.
- * Observables can be of two types : QNode observables and QObservableInterfaces.
- * QNode observables notifications are sent from the frontend QNode to the backend observers.
- * QObservableInterface notifications are sent from backend to backend observers and/or backend to  QPostman,
- * the QPostman to deliver the messages to the frontend QNode.
- *
- * QNode observables are registered automatically. However QObservableInterface have to be registered manually
- * by providing the NodeUuid of the frontend QNode that observables is mapped to.
- *
- * Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode NodeUuid.
- * When a notification from a QObservableInterface is received, it is then sent to all observers observing the
- * QNode NodeUuid as well as the QPostman to update the frontend QNode.
- */
+    \class Qt3D::QChangeArbiter
+    \inmodule Qt3DCore
+    \since 5.5
 
+    \brief Act as a messages router between observables and observers.
 
+    Observables can be of two types: QNode observables and QObservableInterfaces.
+    QNode notifications are sent from the frontend QNode and delivered to the backend observers.
+    QObservableInterface notifications are sent from backend nodes to backend observers and/or to the
+    registered QPostman, which in turn delivers the notifications to the target frontend QNode.
+
+    QNode observables are registered automatically. However QObservableInterface object have to be registered manually
+    by providing the QNodeId of the corresponding frontend QNode.
+
+    Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode NodeUuid.
+    When a notification from a QObservableInterface is received, it is then sent to all observers observing the
+    QNode NodeUuid as well as the QPostman to update the frontend QNode.
+*/
 QChangeArbiter::QChangeArbiter(QObject *parent)
     : QObject(parent)
     , m_mutex(QMutex::Recursive)
