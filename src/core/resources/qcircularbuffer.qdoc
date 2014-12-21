@@ -1416,7 +1416,7 @@
     \sa Qt3D::QCircularBuffer::begin() Qt3D::QCircularBuffer::end()
 */
 
-/*! \fn Qt3D::QCircularBuffer::const_iterator::const_iterator(QCircularBuffer<T> *buffer, int index)
+/*! \fn Qt3D::QCircularBuffer::const_iterator::const_iterator(const iterator &other)
 
     \internal
 */
