@@ -50,3 +50,11 @@
     The Qt3D Core module provides the foundations and core types used for near-realtime
     simulations built on the Qt3D framework.
 */
+
+/*!
+    \namespace Qt3D
+    \inmodule Qt3DCore
+
+    The Qt3D namespace contains classes and types that are in the foundation of the Qt3D simulation
+    framework.
+*/

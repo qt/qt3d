@@ -26,10 +26,10 @@ qhp.Qt3DCore.subprojects.classes.sortPages  = true
 
 tagfile                 = ../../../doc/qt3dcore/qt3dcore.tags
 
-depends                 += qtcore qtdoc
+depends                 += qtcore qtqml qtquick qtdoc
 
-headerdirs  += ..
-sourcedirs  += ..
+headerdirs += ..
+sourcedirs += ..
 exampledirs += src/snippets
 
 #excludedirs +=
