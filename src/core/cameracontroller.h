@@ -62,12 +62,12 @@ class QEntity;
 class QT3DCORESHARED_EXPORT CameraController : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY( float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged )
 
+    Q_PROPERTY( float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged )
     Q_PROPERTY( float orbitRate READ orbitRate WRITE setOrbitRate NOTIFY orbitRateChanged )
     Q_PROPERTY( float lookRate READ lookRate WRITE setLookRate NOTIFY lookRateChanged )
+    Q_PROPERTY( bool multisampleEnabled READ isMultisampleEnabled NOTIFY multisampleEnabledChanged )
 
-    Q_PROPERTY( bool multisampleEnabled READ isMultisampleEnabled() NOTIFY multisampleEnabledChanged )
 public:
     CameraController();
 
