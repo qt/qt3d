@@ -22,7 +22,4 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 include(../3rdparty/threadweaver/src/threadweaver.pri)
 include(core.pri)
 
-PUBLIC_HEADERS = $$HEADERS
-HEADERS += $$PRIVATE_HEADERS
-
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

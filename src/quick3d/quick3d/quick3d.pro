@@ -16,7 +16,7 @@ gcov {
     CONFIG += dll
 }
 
-HEADERS += $$PRIVATE_HEADERS \
+HEADERS += \
     qt3dquick_global.h \
     quickwindow.h \
     qt3dquick_global_p.h \

@@ -17,7 +17,7 @@ gcov {
     CONFIG += dll
 }
 
-HEADERS += $$PRIVATE_HEADERS \
+HEADERS += \
     qt3dquickrenderer_global.h
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

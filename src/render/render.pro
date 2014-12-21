@@ -28,7 +28,7 @@ gcov {
     CONFIG += dll
 }
 
-HEADERS += $$PRIVATE_HEADERS \
+HEADERS += \
     qt3drenderer_global.h \
     qt3drenderer_global_p.h \
     renderlogging_p.h
