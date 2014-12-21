@@ -12,8 +12,6 @@ gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
-} else {
-    CONFIG += dll
 }
 
 HEADERS += \

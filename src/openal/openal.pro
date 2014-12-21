@@ -14,8 +14,6 @@ gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
-} else {
-    CONFIG += dll
 }
 
 # otherwise mingw headers do not declare common functions like ::strcasecmp
