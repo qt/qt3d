@@ -101,6 +101,11 @@
 #include <QThread>
 #include <QWindow>
 
+static void initResources()
+{
+    Q_INIT_RESOURCE(render);
+}
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -113,6 +118,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
     , m_time(0)
     , m_initialized(false)
 {
+    initResources();
     m_aspectType = QAbstractAspect::AspectRenderer;
 }
 
