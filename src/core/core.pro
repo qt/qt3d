@@ -6,7 +6,7 @@ load(qt_module)
 
 DEFINES += QT3DCORE_LIBRARY
 
-#QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
+QMAKE_DOCS = $$PWD/doc/qt3dcore.qdocconf
 
 gcov {
     CONFIG += static

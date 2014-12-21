@@ -1,0 +1,40 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = Qt3DCore
+description             = Qt3D Core Reference Documentation
+version                 = $QT_VERSION
+
+examplesinstallpath     = qt3d
+
+qhp.projects            = Qt3DCore
+
+qhp.Qt3DCore.file                = qt3dcore.qhp
+qhp.Qt3DCore.namespace           = org.qt-project.qt3dcore.$QT_VERSION_TAG
+qhp.Qt3DCore.virtualFolder       = qt3dcore
+qhp.Qt3DCore.indexTitle          = Qt3D Core
+qhp.Qt3DCore.indexRoot           =
+
+qhp.Qt3DCore.filterAttributes                   = qt3dcore $QT_VERSION qtrefdoc
+qhp.Qt3DCore.customFilters.Qt.name              = Qt3DCore $QT_VERSION
+qhp.Qt3DCore.customFilters.Qt.filterAttributes  = qt3dcore $QT_VERSION
+
+qhp.Qt3DCore.subprojects                    = classes
+qhp.Qt3DCore.subprojects.classes.title      = C++ Classes
+qhp.Qt3DCore.subprojects.classes.indexTitle = Qt3D Core C++ Classes
+qhp.Qt3DCore.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3DCore.subprojects.classes.sortPages  = true
+
+tagfile                 = ../../../doc/qt3dcore/qt3dcore.tags
+
+depends                 += qtcore qtdoc
+
+headerdirs  += ..
+sourcedirs  += ..
+exampledirs += src/snippets
+
+#excludedirs +=
+
+imagedirs   += images
+
+navigation.landingpage = "Qt3D Core"
+navigation.cppclassespage = "Qt3D Core C++ Classes"
