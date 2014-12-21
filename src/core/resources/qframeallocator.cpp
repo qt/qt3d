@@ -40,13 +40,12 @@
 ****************************************************************************/
 
 /*!
- * \class QFrameAllocator
- *
- * \brief Provides a pool of memory chuncks to be used to allocate objects on a per frame basis.
- * The memory can be recycled by following frames by calling clear which won't deallocate any memory.
- *
- *
- */
+    \class Qt3D::QFrameAllocator
+    \inmodule Qt3DCore
+    \brief Provides a pool of memory chuncks to be used to allocate objects on a per frame basis.
+
+    The memory can be recycled by following frames by calling clear which won't deallocate any memory.
+*/
 
 #include "qframeallocator.h"
 #include "qframeallocator_p.h"
