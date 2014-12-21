@@ -40,7 +40,8 @@
 ****************************************************************************/
 
 /*!
-    \class QCircularBuffer
+    \class Qt3D::QCircularBuffer
+    \inmodule Qt3DCore
     \brief A template class providing a dynamic circular array.
 
     \ingroup tools
@@ -114,7 +115,7 @@
     Another way to access the data stored in a QCircularBuffer is to call data(),
     or dataOne() and dataTwo() depending on if the buffer is linearized or not.
     See the discussion in isLinearised() for more information. The data() function
-    returns a QCircularBuffer::array_range object describing the array of items stored
+    returns a Qt3D::QCircularBuffer::array_range object describing the array of items stored
     in the QCircularBuffer. You can use the pointer in the array_range to
     directly access and modify the elements stored in the circular buffer. The pointer is also
     useful if you need to pass a QCircularBuffer to a function that accepts a plain
@@ -190,26 +191,26 @@
 
     Like the other container classes, QCircularBuffer provides \l{Java-style
     iterators} (QCircularBufferIterator and QMutableCircularBufferIterator) and
-    \l{STL-style iterators} (QCircularBuffer::const_iterator and
-    QCircularBuffer::iterator). In practice, these are rarely used, because
+    \l{STL-style iterators} (Qt3D::QCircularBuffer::const_iterator and
+    Qt3D::QCircularBuffer::iterator). In practice, these are rarely used, because
     you can use indexes into the QCircularBuffer.
 
     QCircularBuffer does \e not support inserting, prepending, appending or replacing
     with references to its own values. Doing so will cause your application to
     abort with an error message.
 
-    \sa QCircularBuffer::iterator, QCircularBuffer::const_iterator,
+    \sa Qt3D::QCircularBuffer::iterator, Qt3D::QCircularBuffer::const_iterator,
     QCircularBufferIterator, QMutableCircularBufferIterator, QVector, QList, QLinkedList
 */
 
-/*! \fn QCircularBuffer::QCircularBuffer()
+/*! \fn Qt3D::QCircularBuffer::QCircularBuffer()
 
     Constructs an empty circular buffer with zero capacity.
 
     \sa resize(), setCapacity()
 */
 
-/*! \fn QCircularBuffer::QCircularBuffer(int capacity)
+/*! \fn Qt3D::QCircularBuffer::QCircularBuffer(int capacity)
 
     Constructs an empty circular buffer with an initial capacity of \a capacity
     elements.
@@ -217,7 +218,7 @@
     \sa resize(), setCapacity()
 */
 
-/*! \fn QCircularBuffer::QCircularBuffer(int capacity, const T &value)
+/*! \fn Qt3D::QCircularBuffer::QCircularBuffer(int capacity, const T &value)
 
     Constructs a circular buffer with an initial capacity and size of
     \a capacity elements.
@@ -227,7 +228,7 @@
     \sa resize(), setCapacity(), fill()
 */
 
-/*! \fn QCircularBuffer::QCircularBuffer(int capacity, int size, const T &value)
+/*! \fn Qt3D::QCircularBuffer::QCircularBuffer(int capacity, int size, const T &value)
 
     Constructs a circular buffer with an initial capacity of \a capacity
     elements and initial size of \a size elements.
@@ -237,7 +238,7 @@
     \sa resize(), setCapacity(), fill()
 */
 
-/*! \fn QCircularBuffer::QCircularBuffer(const QCircularBuffer<T> &other)
+/*! \fn Qt3D::QCircularBuffer::QCircularBuffer(const QCircularBuffer<T> &other)
 
     Constructs a copy of \a other.
 
@@ -249,18 +250,18 @@
     \sa operator=()
 */
 
-/*! \fn QCircularBuffer::~QCircularBuffer()
+/*! \fn Qt3D::QCircularBuffer::~QCircularBuffer()
 
     Destroys the circular buffer.
 */
 
-/*! \fn QCircularBuffer &QCircularBuffer::operator=(const QCircularBuffer<T> &other)
+/*! \fn QCircularBuffer &Qt3D::QCircularBuffer::operator=(const QCircularBuffer<T> &other)
 
     Assigns \a other to this circular buffer and returns a reference to this
     circular buffer.
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::begin()
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::begin()
 
     Returns an \l{STL-style iterator} pointing to the first item in
     the circular buffer.
@@ -268,12 +269,12 @@
     \sa constBegin(), end()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::begin() const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::begin() const
 
     \overload
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::constBegin() const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::constBegin() const
 
     Returns a const \l{STL-style iterator} pointing to the first item in
     the circular buffer.
@@ -281,7 +282,7 @@
     \sa begin(), constEnd()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::end()
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::end()
 
     Returns an \l{STL-style iterator} pointing to the imaginary item
     after the last item in the circular buffer.
@@ -289,12 +290,12 @@
     \sa begin(), constEnd()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::end() const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::end() const
 
     \overload
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::constEnd() const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::constEnd() const
 
     Returns a const \l{STL-style iterator} pointing to the imaginary item
     after the last item in the circular buffer.
@@ -302,7 +303,7 @@
     \sa constBegin(), end()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::erase(iterator pos)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::erase(const_iterator pos)
 
     Removes the item pointed to by the iterator \a pos from the
     circular buffer, and returns an iterator to the next item in the circular
@@ -311,7 +312,7 @@
     \sa insert(), remove()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::erase(iterator begin, iterator end)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::erase(const_iterator begin, const_iterator end)
 
     \overload
 
@@ -320,65 +321,65 @@
     before the call.
 */
 
-/*! \fn void QCircularBuffer::push_back(const T &value)
+/*! \fn void Qt3D::QCircularBuffer::push_back(const T &value)
 
     This function is provided for STL compatibility. It is equivalent
     to append(\a value).
 */
 
-/*! \fn void QCircularBuffer::push_front(const T &value)
+/*! \fn void Qt3D::QCircularBuffer::push_front(const T &value)
 
     This function is provided for STL compatibility. It is equivalent
     to prepend(\a value).
 */
 
-/*! \fn void QCircularBuffer::pop_back()
+/*! \fn void Qt3D::QCircularBuffer::pop_back()
 
     This function is provided for STL compatibility. It is equivalent
     to erase(end() - 1).
 */
 
-/*! \fn void QCircularBuffer::pop_front()
+/*! \fn void Qt3D::QCircularBuffer::pop_front()
 
     This function is provided for STL compatibility. It is equivalent
     to erase(begin()).
 */
 
-/*! \fn bool QCircularBuffer::empty() const
+/*! \fn bool Qt3D::QCircularBuffer::empty() const
 
     This function is provided for STL compatibility. It is equivalent
     to isEmpty(), returning true if the circular buffer is empty; otherwise
     returns false.
 */
 
-/*! \fn QCircularBuffer::reference QCircularBuffer::front()
+/*! \fn Qt3D::QCircularBuffer::reference Qt3D::QCircularBuffer::front()
 
     This function is provided for STL compatibility. It is equivalent
     to first().
 */
 
-/*! \fn QCircularBuffer::const_reference QCircularBuffer::front() const
+/*! \fn Qt3D::QCircularBuffer::const_reference Qt3D::QCircularBuffer::front() const
 
     \overload
 */
 
-/*! \fn QCircularBuffer::reference QCircularBuffer::back()
+/*! \fn Qt3D::QCircularBuffer::reference Qt3D::QCircularBuffer::back()
 
     This function is provided for STL compatibility. It is equivalent
     to last().
 */
 
-/*! \fn QCircularBuffer::const_reference QCircularBuffer::back() const
+/*! \fn Qt3D::QCircularBuffer::const_reference Qt3D::QCircularBuffer::back() const
 
     \overload
 */
 
-/*! \fn int QCircularBuffer::refCount() const
+/*! \fn int Qt3D::QCircularBuffer::refCount() const
 
     Returns the number of shallow copies that exist of this circular buffer.
 */
 
-/*! \fn QCircularBuffer::append(const T &value)
+/*! \fn Qt3D::QCircularBuffer::append(const T &value)
 
     Inserts \a value at the end of the circular buffer. If the circular buffer
     is full, then the oldest element is overwritten.
@@ -392,7 +393,7 @@
     \sa operator<<(), operator+=(), prepend(), insert()
 */
 
-/*! \fn const T &QCircularBuffer::at(int i) const
+/*! \fn const T &Qt3D::QCircularBuffer::at(int i) const
 
     Returns the item at index position \a i in the circular buffer.
 
@@ -402,7 +403,7 @@
     \sa value(), operator[]()
 */
 
-/*! \fn T &QCircularBuffer::operator[](int i)
+/*! \fn T &Qt3D::QCircularBuffer::operator[](int i)
 
     Returns the item at index position \a i as a modifiable reference.
 
@@ -415,14 +416,14 @@
     \sa at(), value()
 */
 
-/*! \fn const T &QCircularBuffer::operator[](int i) const
+/*! \fn const T &Qt3D::QCircularBuffer::operator[](int i) const
 
     \overload
 
     Same as at(\a i).
 */
 
-/*! \fn int QCircularBuffer::capacity() const
+/*! \fn int Qt3D::QCircularBuffer::capacity() const
 
     Returns the maximum number of elements that can be stored in
     the circular buffer.
@@ -430,7 +431,7 @@
     \sa setCapacity(), size()
 */
 
-/*! \fn void QCircularBuffer::clear()
+/*! \fn void Qt3D::QCircularBuffer::clear()
 
     Removes all elements from the circular buffer so that the size is
     zero. The capacity is unchanged.
@@ -438,7 +439,7 @@
     \sa isEmpty()
 */
 
-/*! \fn bool QCircularBuffer::contains(const T &value) const
+/*! \fn bool Qt3D::QCircularBuffer::contains(const T &value) const
 
     Returns true if the circular buffer contains an occurrence of \a value;
     otherwise returns false.
@@ -449,7 +450,7 @@
     \sa indexOf(), count()
 */
 
-/*! \fn int QCircularBuffer::count(const T &value) const
+/*! \fn int Qt3D::QCircularBuffer::count(const T &value) const
 
     Returns the number of occurrences of \a value in the circular buffer.
 
@@ -459,16 +460,16 @@
     \sa contains(), indexOf()
 */
 
-/*! \fn int QCircularBuffer::count() const
+/*! \fn int Qt3D::QCircularBuffer::count() const
 
     \overload
 
     Same as size().
 */
 
-/*! \fn QCircularBuffer::array_range QCircularBuffer::data()
+/*! \fn Qt3D::QCircularBuffer::array_range Qt3D::QCircularBuffer::data()
 
-    Returns a QCircularBuffer::array_range describing the internal array of data. If
+    Returns a Qt3D::QCircularBuffer::array_range describing the internal array of data. If
     the circular buffer is non-linearized, then this function causes it to be
     linearized. If the cost of linearisation is too high for your use case, then
     you should consider using the dataOne() and dataTwo() functions instead.
@@ -479,7 +480,7 @@
     \sa constData(), dataOne(), dataTwo(), isLinearised()
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::data() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::data() const
 
     \overload
 
@@ -488,9 +489,9 @@
     constness.
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::constData() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::constData() const
 
-    Returns a QCircularBuffer::const_array_range describing the internal array of
+    Returns a Qt3D::QCircularBuffer::const_array_range describing the internal array of
     data.
 
     If the circular buffer is non-linearized then the pointer and array size
@@ -503,14 +504,14 @@
     \sa data(), constDataOne(), constDataTwo(), isLinearised()
 */
 
-/*! \fn QCircularBuffer::array_range QCircularBuffer::dataOne()
+/*! \fn Qt3D::QCircularBuffer::array_range Qt3D::QCircularBuffer::dataOne()
 
-    Returns a QCircularBuffer::array_range describing the first internal array of
+    Returns a Qt3D::QCircularBuffer::array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then this function is
     equivalent to calling data(). If the circular buffer is non-linearized then
     the returned array range will describe a subset of the data contained in the
     circular buffer. This subset will consist of the earliest (lowest index) items
-    in the buffer. To obtain a QCircularBuffer::array_range for the remainder
+    in the buffer. To obtain a Qt3D::QCircularBuffer::array_range for the remainder
     of the data, use the dataTwo() function.
 
     If the circular buffer is empty, then the pointer and array size returned
@@ -519,22 +520,22 @@
     \sa constDataOne(), dataTwo(), data(), isLinearised()
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::dataOne() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::dataOne() const
 
     \overload
 
-    Unlike data() this function always returns a valid QCircularBuffer::const_array_range
+    Unlike data() this function always returns a valid Qt3D::QCircularBuffer::const_array_range
     (unless the circular buffer is empty).
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::constDataOne() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::constDataOne() const
 
-    Returns a QCircularBuffer::const_array_range describing the first internal array of
+    Returns a Qt3D::QCircularBuffer::const_array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then this function is
     equivalent to calling constData(). If the circular buffer is non-linearized, then
     the returned array range will describe a subset of the data contained in the
     circular buffer. This subset will consist of the earliest (lowest index) items
-    in the buffer. To obtain a QCircularBuffer::const_array_range for the remainder
+    in the buffer. To obtain a Qt3D::QCircularBuffer::const_array_range for the remainder
     of the data, use the constDataTwo() function.
 
     If the circular buffer is empty, then the pointer and array size returned
@@ -543,9 +544,9 @@
     \sa dataOne(), constDataTwo(), constData(), isLinearised()
 */
 
-/*! \fn QCircularBuffer::array_range QCircularBuffer::dataTwo()
+/*! \fn Qt3D::QCircularBuffer::array_range Qt3D::QCircularBuffer::dataTwo()
 
-    Returns a QCircularBuffer::array_range describing the first internal array of
+    Returns a Qt3D::QCircularBuffer::array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then the pointer and array size
     returned will both be 0 since all the data will be contained in the array
     described by calling the dataOne() function.
@@ -553,14 +554,14 @@
     \sa dataOne(), constDataTwo(), data(), isLinearised()
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::dataTwo() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::dataTwo() const
 
     \overload
 */
 
-/*! \fn QCircularBuffer::const_array_range QCircularBuffer::constDataTwo() const
+/*! \fn Qt3D::QCircularBuffer::const_array_range Qt3D::QCircularBuffer::constDataTwo() const
 
-    Returns a QCircularBuffer::const_array_range describing the first internal array of
+    Returns a Qt3D::QCircularBuffer::const_array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then the pointer and array size
     returned will both be 0 since all the data will be contained in the array
     described by calling the dataOne() function.
@@ -568,7 +569,7 @@
     \sa constDataOne(), dataTwo(), constData(), isLinearised()
 */
 
-/*! \fn bool QCircularBuffer::endsWith(const T &value) const
+/*! \fn bool Qt3D::QCircularBuffer::endsWith(const T &value) const
 
     Returns true if this circular buffer is not empty and its last
     item is equal to \a value; otherwise returns false.
@@ -576,7 +577,7 @@
     \sa isEmpty(), last(), startsWith()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::fill(const T &value, int size = -1)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::fill(const T &value, int size = -1)
 
     Assigns \a value to all items in the circular buffer. If \a size is
     different from -1 (the default), the circular buffer is resized to size \a
@@ -590,7 +591,7 @@
     \sa resize()
 */
 
-/*! \fn T &QCircularBuffer::first()
+/*! \fn T &Qt3D::QCircularBuffer::first()
 
     Returns a reference to the first item in the circular buffer. This
     function assumes that the circular buffer isn't empty.
@@ -598,12 +599,12 @@
     \sa last(), isEmpty()
 */
 
-/*! \fn const T &QCircularBuffer::first() const
+/*! \fn const T &Qt3D::QCircularBuffer::first() const
 
     \overload
 */
 
-/*! \fn int QCircularBuffer::freeSize() const
+/*! \fn int Qt3D::QCircularBuffer::freeSize() const
 
     Returns the number of items that can be added to the circular buffer
     without causing the earliest item to be overwritten. It is equivalent
@@ -612,7 +613,7 @@
     \sa sizeAvailable(), capacity(), isEmpty(), isFull(), size()
 */
 
-/*! \fn static QCircularBuffer<T> QCircularBuffer::fromList(const QList<T>& list)
+/*! \fn static QCircularBuffer<T> Qt3D::QCircularBuffer::fromList(const QList<T>& list)
 
     Returns a QCircularBuffer object with the data contained in \a list. The
     capacity and size of the circular buffer will be equal to the size of
@@ -624,7 +625,7 @@
     \sa fromVector(), toList(), toVector()
 */
 
-/*! \fn static QCircularBuffer<T> QCircularBuffer::fromVector(const QVector<T>& vector)
+/*! \fn static QCircularBuffer<T> Qt3D::QCircularBuffer::fromVector(const QVector<T>& vector)
 
     Returns a QCircularBuffer object with the data contained in \a vector. The
     capacity and size of the circular buffer will be equal to the size of
@@ -633,7 +634,7 @@
     \sa fromList(), toVector(), toList()
 */
 
-/*! \fn int QCircularBuffer::indexOf(const T &value, int from = 0) const
+/*! \fn int Qt3D::QCircularBuffer::indexOf(const T &value, int from = 0) const
 
     Returns the index position of the first occurrence of \a value in
     the circular buffer, searching forward from index position \a from.
@@ -648,7 +649,7 @@
     \sa lastIndexOf(), contains()
 */
 
-/*! \fn void QCircularBuffer::insert(int i, const T &value)
+/*! \fn void Qt3D::QCircularBuffer::insert(int i, const T &value)
 
     Inserts \a value at index position \a i in the circular buffer.
     If \a i is 0, the value is prepended to the circular buffer. If \a i
@@ -680,7 +681,7 @@
     \sa append(), prepend(), remove()
 */
 
-/*! \fn void QCircularBuffer::insert(int i, int count, const T &value)
+/*! \fn void Qt3D::QCircularBuffer::insert(int i, int count, const T &value)
 
     \overload
 
@@ -714,7 +715,7 @@
     \sa append(), prepend(), remove()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::insert(iterator before, int count, const T &value)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::insert(const_iterator before, int count, const T &value)
 
     \overload
 
@@ -725,7 +726,7 @@
     \sa append(), prepend(), remove()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::insert(iterator before, const T &value)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::insert(const_iterator before, const T &value)
 
     \overload
 
@@ -735,21 +736,21 @@
     \sa append(), prepend(), remove()
 */
 
-/*! \fn bool QCircularBuffer::isEmpty() const
+/*! \fn bool Qt3D::QCircularBuffer::isEmpty() const
 
     Returns true if the circular buffer has size 0; otherwise returns false.
 
     \sa capacity(), resize(), setCapacity(), size()
 */
 
-/*! \fn bool QCircularBuffer::isFull() const
+/*! \fn bool Qt3D::QCircularBuffer::isFull() const
 
     Returns true if the circular buffer is full ie if size() == capacity(); otherwise returns false.
 
     \sa capacity(), resize(), setCapacity(), size()
 */
 
-/*! \fn bool QCircularBuffer::isLinearised() const
+/*! \fn bool Qt3D::QCircularBuffer::isLinearised() const
 
     Returns true if the circular buffer is linearized; otherwise returns false.
 
@@ -807,7 +808,7 @@
     (perhaps for a plain C++ function call) then you can use the data()
     function. If the circular buffer is non-linearized, then the data()
     function will linearize it for you before returning a
-    QCircularBuffer::array_range describing the array.
+    Qt3D::QCircularBuffer::array_range describing the array.
 
     To prevent the cost of the linearisation process, you can instead
     call the dataOne() and dataTwo() functions to obtain the two arrays
@@ -823,7 +824,7 @@
     \sa linearise(), data(), dataOne(), dataTwo()
 */
 
-/*! \fn T &QCircularBuffer::last()
+/*! \fn T &Qt3D::QCircularBuffer::last()
 
     Returns a reference to the last item in the circular buffer. This
     function assumes that the circular buffer isn't empty.
@@ -831,12 +832,12 @@
     \sa first(), isEmpty()
 */
 
-/*! \fn const T &QCircularBuffer::last() const
+/*! \fn const T &Qt3D::QCircularBuffer::last() const
 
     \overload
 */
 
-/*! \fn int QCircularBuffer::lastIndexOf(const T &value, int from = -1) const
+/*! \fn int Qt3D::QCircularBuffer::lastIndexOf(const T &value, int from = -1) const
 
     Returns the index position of the last occurrence of the value \a
     value in the circular buffer, searching backward from index position \a
@@ -852,7 +853,7 @@
     \sa indexOf()
 */
 
-/*! \fn void QCircularBuffer::linearise()
+/*! \fn void Qt3D::QCircularBuffer::linearise()
 
     Linearizes the internal representation of the circular buffer such that
     all items are stored in a single contiguous array.
@@ -862,7 +863,7 @@
     \sa isLinearised()
 */
 
-/*! \fn void QCircularBuffer::prepend(const T &value)
+/*! \fn void Qt3D::QCircularBuffer::prepend(const T &value)
 
     Inserts \a value at the beginning of the circular buffer. If the circular buffer
     is full, then the highest index item is overwritten.
@@ -876,14 +877,14 @@
     \sa operator<<(), operator+=(), append(), insert()
 */
 
-/*! \fn void QCircularBuffer::remove(int i)
+/*! \fn void Qt3D::QCircularBuffer::remove(int i)
 
     Removes the element at index position \a i.
 
     \sa insert(), replace(), fill()
 */
 
-/*! \fn void QCircularBuffer::remove(int i, int count)
+/*! \fn void Qt3D::QCircularBuffer::remove(int i, int count)
 
     \overload
 
@@ -893,7 +894,7 @@
     \sa insert(), replace(), fill()
 */
 
-/*! \fn void QCircularBuffer::replace(int i, const T &value)
+/*! \fn void Qt3D::QCircularBuffer::replace(int i, const T &value)
 
     Replaces the item at index position \a i with \a value.
 
@@ -903,7 +904,7 @@
     \sa operator[](), remove()
 */
 
-/*! \fn void QCircularBuffer::reserve(int capacity)
+/*! \fn void Qt3D::QCircularBuffer::reserve(int capacity)
 
     Sets the capacity of the circular buffer to \a capacity. It is a synonym for
     setCapacity().
@@ -911,7 +912,7 @@
     \sa setCapacity()
 */
 
-/*! \fn void QCircularBuffer::resize(int size)
+/*! \fn void Qt3D::QCircularBuffer::resize(int size)
 
     Changes the size of the circular buffer to \a size which must be > 0 and
     <= capacity(). If \a size is less than the old size, then the highest indexed
@@ -922,21 +923,21 @@
     \sa size(), insert(), remove(), capacity(), setCapacity()
 */
 
-/*! \fn void QCircularBuffer::setCapacity(int capacity)
+/*! \fn void Qt3D::QCircularBuffer::setCapacity(int capacity)
 
     Sets the capacity of the circular buffer to \a capacity.
 
     \sa reserve(), capacity()
 */
 
-/*! \fn int QCircularBuffer::size() const
+/*! \fn int Qt3D::QCircularBuffer::size() const
 
     Returns the number of items in the circular buffer.
 
     \sa sizeAvailable(), capacity(), resize()
 */
 
-/*! \fn int QCircularBuffer::sizeAvailable() const
+/*! \fn int Qt3D::QCircularBuffer::sizeAvailable() const
 
     Returns the number of items that can be added to the circular buffer
     without causing the earliest item to be overwritten. It is equivalent
@@ -945,7 +946,7 @@
     \sa capacity(), isEmpty(), isFull(), size(), freeSize()
 */
 
-/*! \fn void QCircularBuffer::squeeze()
+/*! \fn void Qt3D::QCircularBuffer::squeeze()
 
     Releases any unused memory from the circular buffer. It is equivalent
     to calling setCapacity(size()).
@@ -953,7 +954,7 @@
     \sa setCapacity(), size(), resize(), sizeAvailable()
 */
 
-/*! \fn bool QCircularBuffer::startsWith(const T &value) const
+/*! \fn bool Qt3D::QCircularBuffer::startsWith(const T &value) const
 
     Returns true if the circular buffer is not empty and its first
     item is equal to \a value; otherwise returns false.
@@ -961,7 +962,7 @@
     \sa isEmpty(), first(), endsWith()
 */
 
-/*! \fn QList<T> QCircularBuffer::toList() const
+/*! \fn QList<T> Qt3D::QCircularBuffer::toList() const
 
     Returns a QList object with the data contained in this QCircularBuffer.
 
@@ -972,14 +973,14 @@
     \sa fromList(), toVector()
 */
 
-/*! \fn QVector<T> QCircularBuffer::toVector() const
+/*! \fn QVector<T> Qt3D::QCircularBuffer::toVector() const
 
     Returns a QVector object with the data contained in this QCircularBuffer.
 
     \sa fromVector(), toList()
 */
 
-/*! \fn T QCircularBuffer::value(int i) const
+/*! \fn T Qt3D::QCircularBuffer::value(int i) const
 
     Returns the value at index position \a i in the circular buffer.
 
@@ -991,7 +992,7 @@
     \sa at(), operator[]()
 */
 
-/*! \fn T QCircularBuffer::value(int i, const T &defaultValue) const
+/*! \fn T Qt3D::QCircularBuffer::value(int i, const T &defaultValue) const
 
     \overload
 
@@ -999,9 +1000,9 @@
     \a defaultValue.
 */
 
-/*! \fn bool QCircularBuffer::operator==(const QCircularBuffer<T> other) const
+/*! \fn bool Qt3D::operator==(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a other is equal to this circular buffer; otherwise
+    Returns true if the circular buffer \a lhs is equal to \a rhs; otherwise
     returns false.
 
     Two circular buffers are considered equal if they contain the same values
@@ -1013,9 +1014,9 @@
     \sa operator!=()
 */
 
-/*! \fn bool QCircularBuffer::operator!=(const QCircularBuffer<T> other) const
+/*! \fn bool Qt3D::operator!=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a other is not equal to this circular buffer; otherwise
+    Returns true if the circular buffer \a lhs is not equal to \a rhs; otherwise
     returns false.
 
     Two circular buffers are considered equal if they contain the same values
@@ -1027,7 +1028,7 @@
     \sa operator==()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator+=(const T &other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const T &other)
 
     Appends the item \a other to this circular buffer and returns a
     reference to this circular buffer.
@@ -1035,7 +1036,7 @@
     \sa operator+(), operator<<(), append()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator+=(const QCircularBuffer<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QCircularBuffer<T>& other)
 
     \overload
 
@@ -1045,17 +1046,17 @@
     \sa operator+(), operator<<(), append()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator+=(const QVector<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QVector<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator+=(const QList<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QList<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator<<(const T &other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const T &other)
 
     Appends the item \a other to this circular buffer and returns a
     reference to this circular buffer.
@@ -1063,7 +1064,7 @@
     \sa operator+(), operator+=(), append()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator<<(const QCircularBuffer<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QCircularBuffer<T>& other)
 
     \overload
 
@@ -1073,12 +1074,12 @@
     \sa operator+(), operator+=(), append()
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator<<(const QVector<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QVector<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& QCircularBuffer::operator<<(const QList<T>& other)
+/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QList<T>& other)
 
     \overload
 */
@@ -1088,55 +1089,55 @@
     Returns a circular buffer object with capacity of lhs.size() + rhs.size() containing
     the items from \a lhs followed by the items from \a rhs.
 
-    \sa QCircularBuffer::operator+=()
+    \sa Qt3D::QCircularBuffer::operator+=()
 */
 
-/*! \typedef QCircularBuffer::Iterator
+/*! \typedef Qt3D::QCircularBuffer::Iterator
 
-    Qt-style synonym for QCircularBuffer::iterator.
+    Qt-style synonym for Qt3D::QCircularBuffer::iterator.
 */
 
-/*! \typedef QCircularBuffer::ConstIterator
+/*! \typedef Qt3D::QCircularBuffer::ConstIterator
 
-    Qt-style synonym for QCircularBuffer::const_iterator.
+    Qt-style synonym for Qt3D::QCircularBuffer::const_iterator.
 */
 
-/*! \typedef QCircularBuffer::const_pointer
+/*! \typedef Qt3D::QCircularBuffer::const_pointer
 
     Typedef for const T *. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::const_reference
+/*! \typedef Qt3D::QCircularBuffer::const_reference
 
     Typedef for T &. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::difference_type
+/*! \typedef Qt3D::QCircularBuffer::difference_type
 
     Typedef for ptrdiff_t. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::pointer
+/*! \typedef Qt3D::QCircularBuffer::pointer
 
     Typedef for T *. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::reference
+/*! \typedef Qt3D::QCircularBuffer::reference
 
     Typedef for T &. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::size_type
+/*! \typedef Qt3D::QCircularBuffer::size_type
 
     Typedef for int. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::value_type
+/*! \typedef Qt3D::QCircularBuffer::value_type
 
     Typedef for T. Provided for STL compatibility.
 */
 
-/*! \typedef QCircularBuffer::array_range
+/*! \typedef Qt3D::QCircularBuffer::array_range
 
     Typedef for QPair<T*,int>. The first element is a pointer to the
     first element of an array of T. The second element is the number
@@ -1145,61 +1146,62 @@
     \sa data(), dataOne(), dataTwo()
 */
 
-/*! \typedef QCircularBuffer::const_array_range
+/*! \typedef Qt3D::QCircularBuffer::const_array_range
 
     Typedef for QPair<const T*,int>. The first element is a pointer to the
     first element of an array of const T. The second element is the number
     of elements in the array.
 */
 
-/*! \typedef QCircularBuffer::ArrayRange
+/*! \typedef Qt3D::QCircularBuffer::ArrayRange
 
-    Qt-style synonym for QCircularBuffer::array_range.
+    Qt-style synonym for Qt3D::QCircularBuffer::array_range.
 */
 
-/*! \typedef QCircularBuffer::ConstArrayRange
+/*! \typedef Qt3D::QCircularBuffer::ConstArrayRange
 
-    Qt-style synonym for QCircularBuffer::const_array_range.
+    Qt-style synonym for Qt3D::QCircularBuffer::const_array_range.
 */
 
 
-/*! \class QCircularBuffer::iterator
-    \brief The QCircularBuffer::iterator class provides an STL-style non-const iterator for QCircularBuffer.
+/*! \class Qt3D::QCircularBuffer::iterator
+    \inmodule Qt3DCore
+    \brief The Qt3D::QCircularBuffer::iterator class provides an STL-style non-const iterator for QCircularBuffer.
 
     QCircularBuffer provides both \l{STL-style iterators} and \l{Java-style
     iterators}.
 
-    \sa QCircularBuffer::begin(), QCircularBuffer::end(),
-    QCircularBuffer::const_iterator, QMutableCircularBufferIterator
+    \sa Qt3D::QCircularBuffer::begin(), Qt3D::QCircularBuffer::end(),
+    Qt3D::QCircularBuffer::const_iterator, QMutableCircularBufferIterator
 */
 
-/*! \typedef QCircularBuffer::iterator::iterator_category
+/*! \typedef Qt3D::QCircularBuffer::iterator::iterator_category
 
     A synonym for \e {std::random_access_iterator_tag} indicating
     this iterator is a random access iterator.
 */
 
-/*! \typedef QCircularBuffer::iterator::difference_type
+/*! \typedef Qt3D::QCircularBuffer::iterator::difference_type
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::iterator::value_type
+/*! \typedef Qt3D::QCircularBuffer::iterator::value_type
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::iterator::pointer
+/*! \typedef Qt3D::QCircularBuffer::iterator::pointer
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::iterator::reference
+/*! \typedef Qt3D::QCircularBuffer::iterator::reference
 
     \internal
 */
 
-/*! \fn QCircularBuffer::iterator::iterator()
+/*! \fn Qt3D::QCircularBuffer::iterator::iterator()
 
     Constructs an uninitialized iterator.
 
@@ -1207,20 +1209,15 @@
     on an uninitialized iterator. Use operator=() to assign a value
     to it before using it.
 
-    \sa QCircularBuffer::begin() QCircularBuffer::end()
+    \sa Qt3D::QCircularBuffer::begin() Qt3D::QCircularBuffer::end()
 */
 
-/*! \fn QCircularBuffer::iterator::iterator(QCircularBuffer<T> *buffer, int index)
+/*! \fn Qt3D::QCircularBuffer::iterator::iterator(QCircularBuffer<T> *buffer, int index)
 
     \internal
 */
 
-/*! \fn QCircularBuffer::iterator::iterator(const iterator &other)
-
-    Constructs a copy of \a other.
-*/
-
-/*! \fn T &QCircularBuffer::iterator::operator*() const
+/*! \fn T &Qt3D::QCircularBuffer::iterator::operator*() const
 
     Returns a modifiable reference to the current item.
 
@@ -1230,14 +1227,14 @@
     \sa operator->()
 */
 
-/*! \fn T *QCircularBuffer::iterator::operator->() const
+/*! \fn T *Qt3D::QCircularBuffer::iterator::operator->() const
 
     Returns a pointer to the current item.
 
     \sa operator*()
 */
 
-/*! \fn T &QCircularBuffer::iterator::operator[](int j) const
+/*! \fn T &Qt3D::QCircularBuffer::iterator::operator[](int j) const
 
     Returns a modifiable reference to the item at position *this +
     \a{j}.
@@ -1249,7 +1246,7 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator==(const iterator &other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator==(const iterator &other) const
 
     Returns true if \a other points to the same item as this
     iterator; otherwise returns false.
@@ -1258,7 +1255,7 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator!=(const iterator &other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator!=(const iterator &other) const
 
     Returns true if \a other points to a different item than this
     iterator; otherwise returns false.
@@ -1267,45 +1264,45 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator<(const iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator<(const iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs before
     the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator<=(const iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator<=(const iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs before
     or at the same position as the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator>(const iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator>(const iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs after
     the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::iterator::operator>=(const iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::iterator::operator>=(const iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs after
     or at the same position as the item pointed to by the \a other iterator.
 */
 
-/*! \fn QCircularBuffer::iterator &QCircularBuffer::iterator::operator++()
+/*! \fn Qt3D::QCircularBuffer::iterator &Qt3D::QCircularBuffer::iterator::operator++()
 
     The prefix ++ operator (\c{++it}) advances the iterator to the
     next item in the circular buffer and returns an iterator to the new current
     item.
 
-    Calling this function on QCircularBuffer::end() leads to undefined results.
+    Calling this function on Qt3D::QCircularBuffer::end() leads to undefined results.
 
     \sa operator--()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::iterator::operator++(int)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::iterator::operator++(int)
 
     \overload
 
@@ -1314,17 +1311,17 @@
     current item.
 */
 
-/*! \fn QCircularBuffer::iterator &QCircularBuffer::iterator::operator--()
+/*! \fn Qt3D::QCircularBuffer::iterator &Qt3D::QCircularBuffer::iterator::operator--()
 
     The prefix -- operator (\c{--it}) makes the preceding item
     the current item, and returns an iterator to the new current item.
 
-    Calling this function on QCircularBuffer::begin() leads to undefined results.
+    Calling this function on Qt3D::QCircularBuffer::begin() leads to undefined results.
 
     \sa operator++()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::iterator::operator--(int)
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::iterator::operator--(int)
 
     \overload
 
@@ -1332,7 +1329,7 @@
     the current item, and returns an iterator to the previously current item.
 */
 
-/*! \fn QCircularBuffer::iterator &QCircularBuffer::iterator::operator+=(int j)
+/*! \fn Qt3D::QCircularBuffer::iterator &Qt3D::QCircularBuffer::iterator::operator+=(int j)
 
     Advances the iterator by \a j items. (If \a j is negative, the
     iterator goes backward.)
@@ -1340,7 +1337,7 @@
     \sa operator-=(), operator+()
 */
 
-/*! \fn QCircularBuffer::iterator &QCircularBuffer::iterator::operator-=(int j)
+/*! \fn Qt3D::QCircularBuffer::iterator &Qt3D::QCircularBuffer::iterator::operator-=(int j)
 
     Makes the iterator go back by \a j items. (If \a j is negative,
     the iterator goes forward.)
@@ -1348,7 +1345,7 @@
     \sa operator+=(), operator-()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::iterator::operator+(int j) const
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::iterator::operator+(int j) const
 
     Returns an iterator to the item at \a j positions forward from
     this iterator. (If \a j is negative, the iterator goes backward.)
@@ -1356,7 +1353,7 @@
     \sa operator-(), operator+=()
 */
 
-/*! \fn QCircularBuffer::iterator QCircularBuffer::iterator::operator-(int j) const
+/*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::iterator::operator-(int j) const
 
     Returns an iterator to the item at \a j positions backward from
     this iterator. (If \a j is negative, the iterator goes forward.)
@@ -1364,50 +1361,51 @@
     \sa operator+(), operator-=()
 */
 
-/*! \fn int QCircularBuffer::iterator::operator-(iterator other) const
+/*! \fn int Qt3D::QCircularBuffer::iterator::operator-(iterator other) const
 
     Returns the number of items between the item pointed to by \a
     other and the item pointed to by this iterator.
 */
 
 
-/*! \class QCircularBuffer::const_iterator
-    \brief The QCircularBuffer::const_iterator class provides an STL-style const iterator for QCircularBuffer.
+/*! \class Qt3D::QCircularBuffer::const_iterator
+    \inmodule Qt3DCore
+    \brief The Qt3D::QCircularBuffer::const_iterator class provides an STL-style const iterator for QCircularBuffer.
 
     QCircularBuffer provides both \l{STL-style iterators} and \l{Java-style
     iterators}.
 
-    \sa QCircularBuffer::constBegin(), QCircularBuffer::constEnd(),
-    QCircularBuffer::iterator, QCircularBufferIterator
+    \sa Qt3D::QCircularBuffer::constBegin(), Qt3D::QCircularBuffer::constEnd(),
+    Qt3D::QCircularBuffer::iterator, QCircularBufferIterator
 */
 
-/*! \typedef QCircularBuffer::const_iterator::iterator_category
+/*! \typedef Qt3D::QCircularBuffer::const_iterator::iterator_category
 
     A synonym for \e {std::random_access_iterator_tag} indicating
     this iterator is a random access iterator.
 */
 
-/*! \typedef QCircularBuffer::const_iterator::difference_type
+/*! \typedef Qt3D::QCircularBuffer::const_iterator::difference_type
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::const_iterator::value_type
+/*! \typedef Qt3D::QCircularBuffer::const_iterator::value_type
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::const_iterator::pointer
+/*! \typedef Qt3D::QCircularBuffer::const_iterator::pointer
 
     \internal
 */
 
-/*! \typedef QCircularBuffer::const_iterator::reference
+/*! \typedef Qt3D::QCircularBuffer::const_iterator::reference
 
     \internal
 */
 
-/*! \fn QCircularBuffer::const_iterator::const_iterator()
+/*! \fn Qt3D::QCircularBuffer::const_iterator::const_iterator()
 
     Constructs an uninitialized const iterator.
 
@@ -1415,34 +1413,29 @@
     on an uninitialized iterator. Use operator=() to assign a value
     to it before using it.
 
-    \sa QCircularBuffer::begin() QCircularBuffer::end()
+    \sa Qt3D::QCircularBuffer::begin() Qt3D::QCircularBuffer::end()
 */
 
-/*! \fn QCircularBuffer::const_iterator::const_iterator(QCircularBuffer<T> *buffer, int index)
+/*! \fn Qt3D::QCircularBuffer::const_iterator::const_iterator(QCircularBuffer<T> *buffer, int index)
 
     \internal
 */
 
-/*! \fn QCircularBuffer::const_iterator::const_iterator(const iterator &other)
-
-    Constructs a copy of \a other.
-*/
-
-/*! \fn const T &QCircularBuffer::const_iterator::operator*() const
+/*! \fn const T &Qt3D::QCircularBuffer::const_iterator::operator*() const
 
     Returns a const reference to the current item.
 
     \sa operator->()
 */
 
-/*! \fn const T *QCircularBuffer::const_iterator::operator->() const
+/*! \fn const T *Qt3D::QCircularBuffer::const_iterator::operator->() const
 
     Returns a pointer to the current item.
 
     \sa operator*()
 */
 
-/*! \fn const T &QCircularBuffer::const_iterator::operator[](int j) const
+/*! \fn const T &Qt3D::QCircularBuffer::const_iterator::operator[](int j) const
 
     Returns a const reference to the item at position *this +
     \a{j}.
@@ -1454,7 +1447,7 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator==(const const_iterator &other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator==(const const_iterator &other) const
 
     Returns true if \a other points to the same item as this
     iterator; otherwise returns false.
@@ -1463,7 +1456,7 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator!=(const const_iterator &other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator!=(const const_iterator &other) const
 
     Returns true if \a other points to a different item than this
     iterator; otherwise returns false.
@@ -1472,45 +1465,45 @@
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator<(const const_iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator<(const const_iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs before
     the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator<=(const const_iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator<=(const const_iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs before,
     or at the same position as the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator>(const const_iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator>(const const_iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs after
     the item pointed to by the \a other iterator.
 */
 
 /*!
-    \fn bool QCircularBuffer::const_iterator::operator>=(const const_iterator& other) const
+    \fn bool Qt3D::QCircularBuffer::const_iterator::operator>=(const const_iterator& other) const
 
     Returns true if the item pointed to by this iterator occurs after,
     or at the same position as the item pointed to by the \a other iterator.
 */
 
-/*! \fn QCircularBuffer::const_iterator &QCircularBuffer::const_iterator::operator++()
+/*! \fn Qt3D::QCircularBuffer::const_iterator &Qt3D::QCircularBuffer::const_iterator::operator++()
 
     The prefix ++ operator (\c{++it}) advances the iterator to the
     next item in the circular buffer and returns an iterator to the new current
     item.
 
-    Calling this function on QCircularBuffer::constEnd() leads to undefined results.
+    Calling this function on Qt3D::QCircularBuffer::constEnd() leads to undefined results.
 
     \sa operator--()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::const_iterator::operator++(int)
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::const_iterator::operator++(int)
 
     \overload
 
@@ -1519,17 +1512,17 @@
     current item.
 */
 
-/*! \fn QCircularBuffer::const_iterator &QCircularBuffer::const_iterator::operator--()
+/*! \fn Qt3D::QCircularBuffer::const_iterator &Qt3D::QCircularBuffer::const_iterator::operator--()
 
     The prefix -- operator (\c{--it}) makes the preceding item the
     current and returns an iterator to the new current item.
 
-    Calling this function on QCircularBuffer::constBegin() leads to undefined results.
+    Calling this function on Qt3D::QCircularBuffer::constBegin() leads to undefined results.
 
     \sa operator++()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::const_iterator::operator--(int)
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::const_iterator::operator--(int)
 
     \overload
 
@@ -1537,7 +1530,7 @@
     current and returns an iterator to the previously current item.
 */
 
-/*! \fn QCircularBuffer::const_iterator &QCircularBuffer::const_iterator::operator+=(int j)
+/*! \fn Qt3D::QCircularBuffer::const_iterator &Qt3D::QCircularBuffer::const_iterator::operator+=(int j)
 
     Advances the iterator by \a j items. (If \a j is negative, the
     iterator goes backward.)
@@ -1545,7 +1538,7 @@
     \sa operator-=(), operator+()
 */
 
-/*! \fn QCircularBuffer::const_iterator &QCircularBuffer::const_iterator::operator-=(int j)
+/*! \fn Qt3D::QCircularBuffer::const_iterator &Qt3D::QCircularBuffer::const_iterator::operator-=(int j)
 
     Makes the iterator go back by \a j items. (If \a j is negative,
     the iterator goes forward.)
@@ -1553,7 +1546,7 @@
     \sa operator+=(), operator-()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::const_iterator::operator+(int j) const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::const_iterator::operator+(int j) const
 
     Returns an iterator to the item at \a j positions forward from
     this iterator. (If \a j is negative, the iterator goes backward.)
@@ -1561,7 +1554,7 @@
     \sa operator-(), operator+=()
 */
 
-/*! \fn QCircularBuffer::const_iterator QCircularBuffer::const_iterator::operator-(int j) const
+/*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::const_iterator::operator-(int j) const
 
     Returns an iterator to the item at \a j positions backward from
     this iterator. (If \a j is negative, the iterator goes forward.)
@@ -1569,7 +1562,7 @@
     \sa operator+(), operator-=()
 */
 
-/*! \fn int QCircularBuffer::const_iterator::operator-(const_iterator other) const
+/*! \fn int Qt3D::QCircularBuffer::const_iterator::operator-(const_iterator other) const
 
     Returns the number of items between the item pointed to by \a
     other and the item pointed to by this iterator.
