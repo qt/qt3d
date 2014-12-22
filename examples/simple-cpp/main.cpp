@@ -59,6 +59,7 @@
 #include <Qt3DRenderer/QClearBuffer>
 #include <Qt3DRenderer/QMaterial>
 #include <Qt3DRenderer/QEffect>
+#include <Qt3DRenderer/QPhongMaterial>
 
 #include <Qt3DRenderer/QCylinderMesh>
 #include <Qt3DRenderer/QSphereMesh>
@@ -108,12 +109,8 @@ int main(int argc, char* argv[])
 
     frameGraph->setActiveFrameGraph(viewport);
 
-
     // Material
-    Qt3D::QMaterial *material = new Qt3D::QMaterial(rootEntity);
-    Qt3D::QEffect *effect = new Qt3D::QEffect;
-    material->setEffect(effect);
-
+    Qt3D::QMaterial *material = new Qt3D::QPhongMaterial(rootEntity);
 
     // Torus
     Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
