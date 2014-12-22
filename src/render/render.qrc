@@ -15,5 +15,9 @@
         <file>shaders/normaldiffusemap.vert</file>
         <file>shaders/normaldiffusemap.frag</file>
         <file>shaders/normaldiffusemapalpha.frag</file>
+        <file>shaders/gl3/phong.vert</file>
+        <file>shaders/gl3/phong.frag</file>
+        <file>shaders/es2/phong.vert</file>
+        <file>shaders/es2/phong.frag</file>
     </qresource>
 </RCC>

@@ -14,11 +14,14 @@ load(qt_module)
 include (backend/render-backend.pri)
 include (frontend/render-frontend.pri)
 include (io/render-io.pri)
+include (defaults/defaults.pri)
 
 RESOURCES += $$PWD/render.qrc
 
 OTHER_FILES += \
-    $$PWD/shaders/*
+    $$PWD/shaders/* \
+    $$PWD/shaders/gl3/* \
+    $$PWD/shaders/es2/*
 
 gcov {
     CONFIG += static
