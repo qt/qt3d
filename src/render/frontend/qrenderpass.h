@@ -71,10 +71,6 @@ class QT3DRENDERERSHARED_EXPORT QRenderPass : public QNode
 public:
     explicit QRenderPass(QNode *parent = 0);
 
-    void addUniformBinding(QParameter* param, QString glslUniformName);
-
-    void addAttributeBinding(QParameter* param, QString glslAttributeName);
-
     QString glslNameForParameter(QString paramName) const;
 
     ParameterList attributes() const;
