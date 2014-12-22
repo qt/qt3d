@@ -542,7 +542,8 @@ void QGraphicsContext::frontFace(GLenum mode)
 
 void QGraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs)
 {
-    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT))
+    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT) &&
+            m_glHelper->supportsFeature(QGraphicsHelperInterface::BindableFragmentOutputs))
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 

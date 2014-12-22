@@ -60,7 +60,8 @@ public:
     enum Feature {
         MRT = 0,
         Tessellation,
-        UniformBufferObject
+        UniformBufferObject,
+        BindableFragmentOutputs
     };
 
     virtual ~QGraphicsHelperInterface() {}
