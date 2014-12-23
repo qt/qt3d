@@ -81,10 +81,8 @@ Entity {
         }
     ]
 
-
-    Material {
+    PhongMaterial {
         id: material
-        effect : Effect { }
     }
 
     TorusMesh {
@@ -108,8 +106,6 @@ Entity {
         id: torusEntity
         components: [ torusMesh, material, torusTransform ]
     }
-
-
 
     SphereMesh {
         id: sphereMesh

@@ -105,7 +105,19 @@
 #include <Qt3DQuickRenderer/quick3dshaderdata.h>
 #include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 
+static void initResources()
+{
+    Q_INIT_RESOURCE(defaults);
+}
+
 QT_BEGIN_NAMESPACE
+
+static const struct {
+    const char *type;
+    int major, minor;
+} qmldir [] = {
+    { "PhongMaterial", 2, 0 }
+};
 
 QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)
 {
@@ -131,6 +143,9 @@ QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Q
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
+    // Init resources for defaults QML files
+    initResources();
+
     // Converters from QJSValue
     QMetaType::registerConverter<QJSValue, QVariantList>(QJSValueToVariantListConverter);
     QMetaType::registerConverter<Qt3D::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
@@ -215,6 +230,15 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3D::QDithering>(uri, 2, 0, "Dithering");
     qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
+
+    // Register types provided as QML files compiled into the plugin
+    for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
+        QString path = QStringLiteral("qrc:/Qt3D/Render/defaults/qml/");
+        qmlRegisterType(QUrl(path + qmldir[i].type + QStringLiteral(".qml")),
+                        uri,
+                        qmldir[i].major, qmldir[i].minor,
+                        qmldir[i].type);
+    }
 }
 
 QT_END_NAMESPACE
