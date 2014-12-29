@@ -128,8 +128,10 @@ QMeshDataPtr MeshFunctor::operator()()
     loader.setTangentGenerationEnabled(true);
     qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
 
+
     // TO DO: Handle file download if remote url
-    QString filePath = m_sourcePath.toString().replace(QStringLiteral("qrc:/"), QStringLiteral(""));
+    // If the file contained :/ directly, is it mapped to "" when toString is called
+    QString filePath = m_sourcePath.toString().replace(QStringLiteral("qrc:/"), QStringLiteral(":/"));
     if (loader.load(filePath))
         return QMeshDataPtr(loader.mesh());
 

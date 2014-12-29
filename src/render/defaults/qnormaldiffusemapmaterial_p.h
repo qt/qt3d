@@ -39,30 +39,56 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QNORMALDIFFUSEMAPMATERIAL_P_H
+#define QT3D_RENDER_QNORMALDIFFUSEMAPMATERIAL_P_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/private/qmaterial_p.h>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QEffect;
+class QTexture;
+class QTechnique;
+class QParameter;
+class QShaderProgram;
+class QRenderPass;
+class QParameterMapping;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QNormalDiffuseMapMaterial;
+
+class QNormalDiffuseMapMaterialPrivate: public QMaterialPrivate
+{
+public:
+    QNormalDiffuseMapMaterialPrivate(QNormalDiffuseMapMaterial *qq);
+
+    virtual void init();
+
+    QEffect *m_normalDiffuseEffect;
+    QTexture *m_diffuseTexture;
+    QTexture *m_normalTexture;
+    QParameter *m_ambientParameter;
+    QParameter *m_diffuseParameter;
+    QParameter *m_normalParameter;
+    QParameter *m_specularParameter;
+    QParameter *m_shininessParameter;
+    QParameter *m_textureScaleParameter;
+    QTechnique *m_normalDiffuseGL3Technique;
+    QTechnique *m_normalDiffuseGL2Technique;
+    QTechnique *m_normalDiffuseES2Technique;
+    QRenderPass *m_normalDiffuseGL3RenderPass;
+    QRenderPass *m_normalDiffuseGL2RenderPass;
+    QRenderPass *m_normalDiffuseES2RenderPass;
+    QShaderProgram *m_normalDiffuseGL3Shader;
+    QShaderProgram *m_normalDiffuseGL2ES2Shader;
+
+    Q_DECLARE_PUBLIC(QNormalDiffuseMapMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QNORMALDIFFUSEMAPMATERIAL_P_H
+

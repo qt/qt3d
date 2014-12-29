@@ -58,7 +58,7 @@ Entity {
 
     RenderableEntity {
         id: pot
-        source: ":/assets/houseplants/" + root.potShape + "-pot.obj"
+        source: "assets/houseplants/" + root.potShape + "-pot.obj"
         scale: 0.03
 
         material: NormalDiffuseMapMaterial {
@@ -70,7 +70,7 @@ Entity {
         }
 
         RenderableEntity {
-            source: ":/assets/houseplants/" + root.potShape + "-" + root.plantType + ".obj"
+            source: "assets/houseplants/" + root.potShape + "-" + root.plantType + ".obj"
             material: NormalDiffuseMapMaterial {
                 effect: root.normalDiffuseMapAlphaEffect
                 diffuse: "assets/houseplants/"  + root.plantType + ".webp"
@@ -80,7 +80,7 @@ Entity {
         }
 
         RenderableEntity {
-            source: ":/assets/houseplants/" + root.potShape + "-pot-cover.obj"
+            source: "assets/houseplants/" + root.potShape + "-pot-cover.obj"
             material: NormalDiffuseMapMaterial {
                 effect: root.normalDiffuseMapEffect
                 diffuse: "assets/houseplants/cover.webp"

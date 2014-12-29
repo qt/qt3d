@@ -48,7 +48,6 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qparametermapping.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -58,9 +57,9 @@ namespace Qt3D {
 QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
     : QMaterialPrivate(qq)
     , m_phongEffect(new QEffect())
-    , m_ambientParameter(new QParameter(QStringLiteral("ambient"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
-    , m_diffuseParameter(new QParameter(QStringLiteral("diffuse"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
-    , m_specularParameter(new QParameter(QStringLiteral("specular"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
+    , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
+    , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
+    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
     , m_phongGL3Technique(new QTechnique())
     , m_phongGL2Technique(new QTechnique())
@@ -70,9 +69,6 @@ QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
     , m_phongES2RenderPass(new QRenderPass())
     , m_phongGL3Shader(new QShaderProgram())
     , m_phongGL2ES2Shader(new QShaderProgram())
-    , m_ambientParameterMapping(new QParameterMapping(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapping::Uniform))
-    , m_diffuseParameterMapping(new QParameterMapping(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapping::Uniform))
-    , m_specularParameterMapping(new QParameterMapping(QStringLiteral("specular"), QStringLiteral("ks"), QParameterMapping::Uniform))
 {
 }
 
@@ -95,7 +91,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
 
 /*!
     \fn QPhongMaterial::QPhongMaterial
-    Contrusts a new QPhongMaterial instance.
+    Constructs a new QPhongMaterial instance with parent object \a parent.
  */
 QPhongMaterial::QPhongMaterial(QNode *parent)
     : QMaterial(*new QPhongMaterialPrivate(this), parent)
@@ -154,12 +150,12 @@ float QPhongMaterial::shininess() const
 
 /*!
     \fn QPhongMaterial::setAmbient
-    Sets the current ambient color to \a color.
+    Sets the current ambient color to \a ambient.
  */
-void QPhongMaterial::setAmbient(const QColor &color)
+void QPhongMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(QPhongMaterial);
-    d->m_shininessParameter->setValue(color);
+    d->m_shininessParameter->setValue(ambient);
 }
 
 /*!
@@ -174,7 +170,7 @@ void QPhongMaterial::setDiffuse(const QColor &diffuse)
 
 /*!
     \fn QPhongMaterial::setSpecular
-    Sets the current specular color to \a color.
+    Sets the current specular color to \a specular.
  */
 void QPhongMaterial::setSpecular(const QColor &specular)
 {
@@ -217,19 +213,8 @@ void QPhongMaterialPrivate::init()
     m_phongES2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
 
     m_phongGL3RenderPass->setShaderProgram(m_phongGL3Shader);
-    m_phongGL3RenderPass->addBinding(m_ambientParameterMapping);
-    m_phongGL3RenderPass->addBinding(m_diffuseParameterMapping);
-    m_phongGL3RenderPass->addBinding(m_specularParameterMapping);
-
     m_phongGL2RenderPass->setShaderProgram(m_phongGL2ES2Shader);
-    m_phongGL2RenderPass->addBinding(m_ambientParameterMapping);
-    m_phongGL2RenderPass->addBinding(m_diffuseParameterMapping);
-    m_phongGL2RenderPass->addBinding(m_specularParameterMapping);
-
     m_phongES2RenderPass->setShaderProgram(m_phongGL2ES2Shader);
-    m_phongES2RenderPass->addBinding(m_ambientParameterMapping);
-    m_phongES2RenderPass->addBinding(m_diffuseParameterMapping);
-    m_phongES2RenderPass->addBinding(m_specularParameterMapping);
 
     m_phongGL3Technique->addPass(m_phongGL3RenderPass);
     m_phongGL2Technique->addPass(m_phongGL2RenderPass);

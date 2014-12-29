@@ -59,6 +59,7 @@ class QPhongMaterial;
 
 class QPhongMaterialPrivate : public QMaterialPrivate
 {
+public:
     QPhongMaterialPrivate(QPhongMaterial *qq);
 
     void init();
@@ -76,9 +77,6 @@ class QPhongMaterialPrivate : public QMaterialPrivate
     QRenderPass *m_phongES2RenderPass;
     QShaderProgram *m_phongGL3Shader;
     QShaderProgram *m_phongGL2ES2Shader;
-    QParameterMapping *m_ambientParameterMapping;
-    QParameterMapping *m_diffuseParameterMapping;
-    QParameterMapping *m_specularParameterMapping;
 
     Q_DECLARE_PUBLIC(QPhongMaterial)
 };

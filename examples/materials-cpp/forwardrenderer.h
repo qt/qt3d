@@ -39,30 +39,26 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef FORWARDRENDERER_H
+#define FORWARDRENDERER_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/QFrameGraph>
+#include <Qt3DRenderer/QViewport>
+#include <Qt3DRenderer/QCameraSelector>
+#include <Qt3DRenderer/QClearBuffer>
 
-    property Effect diffuseMapEffect
+class ForwardRenderer : public Qt3D::QFrameGraph
+{
+public:
+    ForwardRenderer(Qt3D::QNode *parent);
+    ~ForwardRenderer();
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+    void setCamera(Qt3D::QEntity *camera);
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+private:
+    Qt3D::QViewport *m_viewport;
+    Qt3D::QCameraSelector *m_cameraSelector;
+    Qt3D::QClearBuffer *m_clearBuffer;
+};
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+#endif // FORWARDRENDERER_H

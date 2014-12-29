@@ -39,30 +39,30 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef PLANEENTITY_H
+#define PLANEENTITY_H
 
-Entity {
-    id: root
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QTransform>
+#include <Qt3DCore/QScaleTransform>
+#include <Qt3DCore/QTranslateTransform>
+#include <Qt3DRenderer/QPlaneMesh>
 
-    property Effect diffuseMapEffect
+class PlaneEntity : public Qt3D::QEntity
+{
+public:
+    PlaneEntity(Qt3D::QNode *parent = 0);
+    ~PlaneEntity();
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+    Qt3D::QScaleTransform *scaleTransform() const;
+    Qt3D::QTranslateTransform *translateTransform() const;
+    Qt3D::QPlaneMesh *mesh() const;
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+private:
+    Qt3D::QPlaneMesh *m_mesh;
+    Qt3D::QTransform *m_transform;
+    Qt3D::QScaleTransform *m_scaleTransform;
+    Qt3D::QTranslateTransform *m_translateTransform;
+};
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+#endif // PLANEENTITY_H

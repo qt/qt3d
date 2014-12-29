@@ -59,7 +59,7 @@ Entity {
 
     RenderableEntity {
         id: barrel
-        source: ":/assets/metalbarrel/metal_barrel.obj"
+        source: "assets/metalbarrel/metal_barrel.obj"
         scale: 0.03
 
         material: NormalDiffuseSpecularMapMaterial {

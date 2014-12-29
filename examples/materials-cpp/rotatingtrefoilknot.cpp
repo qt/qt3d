@@ -39,30 +39,30 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include "rotatingtrefoilknot.h"
 
-Entity {
-    id: root
+RotatingTrefoilKnot::RotatingTrefoilKnot(Qt3D::QNode *parent)
+    : TrefoilKnot(parent)
+    , m_thetaAnimation(new QPropertyAnimation(this))
+    , m_phiAnimation(new QPropertyAnimation(this))
+{
+    m_thetaAnimation->setDuration(2000);
+    m_thetaAnimation->setStartValue(0.0f);
+    m_thetaAnimation->setEndValue(360.0f);
+    m_thetaAnimation->setLoopCount(-1);
+    m_thetaAnimation->setTargetObject(xaxisRotateTransform());
+    m_thetaAnimation->setPropertyName(QByteArrayLiteral("angle"));
+    m_thetaAnimation->start();
 
-    property Effect diffuseMapEffect
+    m_phiAnimation->setDuration(2000);
+    m_phiAnimation->setStartValue(0.0f);
+    m_phiAnimation->setEndValue(360.0f);
+    m_phiAnimation->setLoopCount(-1);
+    m_phiAnimation->setTargetObject(yaxisRotateTransform());
+    m_phiAnimation->setPropertyName(QByteArrayLiteral("angle"));
+    m_phiAnimation->start();
+}
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
-
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
-
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
+RotatingTrefoilKnot::~RotatingTrefoilKnot()
+{
 }

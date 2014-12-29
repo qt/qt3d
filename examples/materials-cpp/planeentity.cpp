@@ -39,30 +39,42 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include "planeentity.h"
 
-Entity {
-    id: root
+#include <Qt3DRenderer/QPlaneMesh>
+#include <Qt3DCore/QTransform>
+#include <Qt3DCore/QScaleTransform>
+#include <Qt3DCore/QTranslateTransform>
 
-    property Effect diffuseMapEffect
-
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
-
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
-
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
+PlaneEntity::PlaneEntity(Qt3D::QNode *parent)
+    : Qt3D::QEntity(new Qt3D::QEntity(parent))
+    , m_mesh(new Qt3D::QPlaneMesh())
+    , m_transform(new Qt3D::QTransform())
+    , m_scaleTransform(new Qt3D::QScaleTransform())
+    , m_translateTransform(new Qt3D::QTranslateTransform())
+{
+    m_transform->addTransform(m_translateTransform);
+    m_transform->addTransform(m_scaleTransform);
+    addComponent(m_mesh);
+    addComponent(m_transform);
 }
+
+PlaneEntity::~PlaneEntity()
+{
+}
+
+Qt3D::QScaleTransform *PlaneEntity::scaleTransform() const
+{
+    return m_scaleTransform;
+}
+
+Qt3D::QTranslateTransform *PlaneEntity::translateTransform() const
+{
+    return m_translateTransform;
+}
+
+Qt3D::QPlaneMesh *PlaneEntity::mesh() const
+{
+    return m_mesh;
+}
+

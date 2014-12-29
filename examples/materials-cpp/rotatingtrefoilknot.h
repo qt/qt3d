@@ -39,30 +39,22 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef ROTATINGTREFOILKNOT_H
+#define ROTATINGTREFOILKNOT_H
 
-Entity {
-    id: root
+#include "trefoilknot.h"
+#include <QPropertyAnimation>
 
-    property Effect diffuseMapEffect
+class RotatingTrefoilKnot : public TrefoilKnot
+{
+public:
+    explicit RotatingTrefoilKnot(Qt3D::QNode *parent = 0);
+    ~RotatingTrefoilKnot();
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+private:
+    QPropertyAnimation *m_thetaAnimation;
+    QPropertyAnimation *m_phiAnimation;
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+};
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+#endif // ROTATINGTREFOILKNOT_H

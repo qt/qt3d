@@ -39,30 +39,63 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef BARREL_H
+#define BARREL_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DRenderer/QTexture>
+#include "renderableentity.h"
 
-    property Effect diffuseMapEffect
+class Barrel : public RenderableEntity
+{
+public:
+    Barrel(Qt3D::QNode *parent = 0);
+    ~Barrel();
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+    enum DiffuseColor {
+        Red = 0,
+        Blue,
+        Green,
+        RustDiffuse,
+        StainlessSteelDiffuse
+    };
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+    enum SpecularColor {
+        RustSpecular = 0,
+        StainlessSteelSpecular,
+        None
+    };
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+    enum Bumps {
+        NoBumps = 0,
+        SoftBumps,
+        MiddleBumps,
+        HardBumps
+    };
+
+    void setDiffuse(DiffuseColor diffuse);
+    void setSpecular(SpecularColor specular);
+    void setBumps(Bumps bumps);
+    void setShininess(float shininess);
+
+    DiffuseColor diffuse() const;
+    SpecularColor specular() const;
+    Bumps bumps() const;
+    float shininess() const;
+
+private:
+    Bumps m_bumps;
+    DiffuseColor m_diffuseColor;
+    SpecularColor m_specularColor;
+    Qt3D::QNormalDiffuseSpecularMapMaterial *m_material;
+    Qt3D::QTexture *m_diffuseTexture;
+    Qt3D::QTexture *m_normalTexture;
+    Qt3D::QTexture *m_specularTexture;
+
+    void setNormalTextureSource();
+    void setDiffuseTextureSource();
+    void setSpecularTextureSource();
+
+};
+
+#endif // BARREL_H

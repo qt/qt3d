@@ -39,30 +39,44 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include "renderableentity.h"
 
-Entity {
-    id: root
+RenderableEntity::RenderableEntity(Qt3D::QNode *parent)
+    : Qt3D::QEntity(parent)
+    , m_mesh(new Qt3D::QMesh())
+    , m_transform(new Qt3D::QTransform())
+    , m_rotateTransform(new Qt3D::QRotateTransform())
+    , m_scaleTransform(new Qt3D::QScaleTransform())
+    , m_translateTransform(new Qt3D::QTranslateTransform())
+{
+    m_transform->addTransform(m_rotateTransform);
+    m_transform->addTransform(m_scaleTransform);
+    m_transform->addTransform(m_translateTransform);
+    addComponent(m_mesh);
+    addComponent(m_transform);
+}
 
-    property Effect diffuseMapEffect
+RenderableEntity::~RenderableEntity()
+{
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+}
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+Qt3D::QMesh *RenderableEntity::mesh() const
+{
+    return m_mesh;
+}
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
+Qt3D::QScaleTransform *RenderableEntity::scaleTransform() const
+{
+    return m_scaleTransform;
+}
+
+Qt3D::QTranslateTransform *RenderableEntity::translateTransform() const
+{
+    return m_translateTransform;
+}
+
+Qt3D::QRotateTransform *RenderableEntity::rotateTransform() const
+{
+    return m_rotateTransform;
 }

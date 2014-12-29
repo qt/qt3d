@@ -6,12 +6,14 @@ uniform vec3 lightIntensity = vec3(1.0, 1.0, 1.0);
 
 // TODO: Replace with a struct
 uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
+
+uniform sampler2D diffuseTexture;
+uniform sampler2D specularTexture;
 
 in vec3 position;
 in vec3 normal;
+in vec2 texCoord;
 
 out vec4 fragColor;
 
@@ -33,10 +35,14 @@ vec3 adsModel( const in vec3 pos, const in vec3 n )
     // Calculate the specular component
     float specular = 0.0;
     if ( dot( s, n ) > 0.0 )
-        specular = pow( max( dot( r, v ), 0.0 ), shininess );
+        specular = ( shininess / ( 8.0 * 3.14 ) ) * pow( max( dot( r, v ), 0.0 ), shininess );
+
+    // Lookup diffuse and specular factors
+    vec3 diffuseColor = texture( diffuseTexture, texCoord ).rgb;
+    vec3 specularColor = texture( specularTexture, texCoord ).rgb;
 
     // Combine the ambient, diffuse and specular contributions
-    return lightIntensity * ( ka + kd * diffuse + ks * specular );
+    return lightIntensity * ( ( ka + diffuse ) * diffuseColor + specular * specularColor );
 }
 
 void main()

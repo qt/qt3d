@@ -39,30 +39,57 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
+#define QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/qmaterial.h>
+#include <QColor>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QTexture;
+class QDiffuseSpecularMapMaterialPrivate;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QT3DRENDERERSHARED_EXPORT QDiffuseSpecularMapMaterial : public QMaterial
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
+    Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
+    Q_PROPERTY(QTexture *specular READ specular WRITE setSpecular NOTIFY specularChanged)
+    Q_PROPERTY(QTexture *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
+
+public:
+    explicit QDiffuseSpecularMapMaterial(QNode *parent = 0);
+    ~QDiffuseSpecularMapMaterial();
+
+    QColor ambient() const;
+    QTexture *diffuse() const;
+    QTexture *specular() const;
+    float shininess() const;
+    float textureScale() const;
+
+    void setAmbient(const QColor &ambient);
+    void setDiffuse(QTexture *diffuse);
+    void setSpecular(QTexture *specular);
+    void setShininess(float shininess);
+    void setTextureScale(float textureScale);
+
+Q_SIGNALS:
+    void ambientChanged();
+    void diffuseChanged();
+    void specularChanged();
+    void shininessChanged();
+    void textureScaleChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QDiffuseSpecularMapMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H

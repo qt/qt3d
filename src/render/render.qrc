@@ -19,5 +19,23 @@
         <file>shaders/gl3/phong.frag</file>
         <file>shaders/es2/phong.vert</file>
         <file>shaders/es2/phong.frag</file>
+        <file>shaders/gl3/normaldiffusespecularmap.vert</file>
+        <file>shaders/gl3/normaldiffusespecularmap.frag</file>
+        <file>shaders/gl3/diffusemap.vert</file>
+        <file>shaders/gl3/diffusemap.frag</file>
+        <file>shaders/es2/normaldiffusespecularmap.vert</file>
+        <file>shaders/es2/normaldiffusespecularmap.frag</file>
+        <file>shaders/es2/diffusemap.vert</file>
+        <file>shaders/es2/diffusemap.frag</file>
+        <file>shaders/es2/normaldiffusemap.vert</file>
+        <file>shaders/es2/normaldiffusemap.frag</file>
+        <file>shaders/es2/normaldiffusemapalpha.frag</file>
+        <file>shaders/gl3/normaldiffusemap.frag</file>
+        <file>shaders/gl3/normaldiffusemap.vert</file>
+        <file>shaders/gl3/normaldiffusemapalpha.frag</file>
+        <file>shaders/es2/diffusespecularmap.vert</file>
+        <file>shaders/es2/diffusespecularmap.frag</file>
+        <file>shaders/gl3/diffusespecularmap.vert</file>
+        <file>shaders/gl3/diffusespecularmap.frag</file>
     </qresource>
 </RCC>

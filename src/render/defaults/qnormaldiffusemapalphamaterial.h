@@ -39,30 +39,30 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
+#define QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/qnormaldiffusemapmaterial.h>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QNormalDiffuseMapAlphaMaterialPrivate;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapAlphaMaterial : public QNormalDiffuseMapMaterial
+{
+    Q_OBJECT
+public:
+    explicit QNormalDiffuseMapAlphaMaterial(QNode *parent = 0);
+    ~QNormalDiffuseMapAlphaMaterial();
+
+private:
+    Q_DECLARE_PRIVATE(QNormalDiffuseMapAlphaMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H

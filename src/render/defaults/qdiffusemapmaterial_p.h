@@ -39,30 +39,53 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QDIFFUSEMAPMATERIAL_P_H
+#define QT3D_RENDER_QDIFFUSEMAPMATERIAL_P_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/private/qmaterial_p.h>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QEffect;
+class QTexture;
+class QTechnique;
+class QParameter;
+class QShaderProgram;
+class QRenderPass;
+class QParameterMapping;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QDiffuseMapMaterial;
+
+class QDiffuseMapMaterialPrivate : public QMaterialPrivate
+{
+    QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq);
+
+    void init();
+
+    QEffect *m_diffuseMapEffect;
+    QTexture *m_diffuseTexture;
+    QParameter *m_ambientParameter;
+    QParameter *m_diffuseParameter;
+    QParameter *m_specularParameter;
+    QParameter *m_shininessParameter;
+    QParameter *m_textureScaleParameter;
+    QTechnique *m_diffuseMapGL3Technique;
+    QTechnique *m_diffuseMapGL2Technique;
+    QTechnique *m_diffuseMapES2Technique;
+    QRenderPass *m_diffuseMapGL3RenderPass;
+    QRenderPass *m_diffuseMapGL2RenderPass;
+    QRenderPass *m_diffuseMapES2RenderPass;
+    QShaderProgram *m_diffuseMapGL3Shader;
+    QShaderProgram *m_diffuseMapGL2ES2Shader;
+
+    Q_DECLARE_PUBLIC(QDiffuseMapMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QDIFFUSEAPMATERIAL_P_H
+

@@ -39,30 +39,55 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_P_H
+#define QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_P_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/private/qmaterial_p.h>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QEffect;
+class QTexture;
+class QTechnique;
+class QParameter;
+class QShaderProgram;
+class QRenderPass;
+class QParameterMapping;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QDiffuseSpecularMapMaterial;
+
+class QDiffuseSpecularMapMaterialPrivate : public QMaterialPrivate
+{
+public:
+    QDiffuseSpecularMapMaterialPrivate(QDiffuseSpecularMapMaterial *qq);
+
+    void init();
+
+    QEffect *m_diffuseSpecularMapEffect;
+    QTexture *m_diffuseTexture;
+    QTexture *m_specularTexture;
+    QParameter *m_ambientParameter;
+    QParameter *m_diffuseParameter;
+    QParameter *m_specularParameter;
+    QParameter *m_shininessParameter;
+    QParameter *m_textureScaleParameter;
+    QTechnique *m_diffuseSpecularMapGL3Technique;
+    QTechnique *m_diffuseSpecularMapGL2Technique;
+    QTechnique *m_diffuseSpecularMapES2Technique;
+    QRenderPass *m_diffuseSpecularMapGL3RenderPass;
+    QRenderPass *m_diffuseSpecularMapGL2RenderPass;
+    QRenderPass *m_diffuseSpecularMapES2RenderPass;
+    QShaderProgram *m_diffuseSpecularMapGL3Shader;
+    QShaderProgram *m_diffuseSpecularMapGL2ES2Shader;
+
+    Q_DECLARE_PUBLIC(QDiffuseSpecularMapMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_P_H
+

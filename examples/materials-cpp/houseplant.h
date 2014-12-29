@@ -39,30 +39,66 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef HOUSEPLANT_H
+#define HOUSEPLANT_H
 
-Entity {
-    id: root
+#include "renderableentity.h"
+#include <QEntity>
+#include <QNormalDiffuseMapAlphaMaterial>
+#include <QNormalDiffuseMapMaterial>
 
-    property Effect diffuseMapEffect
+class HousePlant : public Qt3D::QEntity
+{
+    Q_OBJECT
+public:
+    explicit HousePlant(Qt3D::QNode *parent = 0);
+    ~HousePlant();
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+    enum PotShape {
+        Cross = 0,
+        Square,
+        Triangle,
+        Sphere
+    };
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+    enum Plant {
+        Bamboo = 0,
+        Palm,
+        Pine,
+        Spikes,
+        Shrub
+    };
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+    void setPotShape(PotShape shape);
+    void setPlantType(Plant plant);
+
+    PotShape potShape() const;
+    Plant plantType() const;
+
+    void setX(float x);
+    void setY(float y);
+    void setZ(float z);
+    void setScale(float scale);
+
+    float x() const;
+    float y() const;
+    float z() const;
+    float scale() const;
+
+private:
+    RenderableEntity *m_pot;
+    RenderableEntity *m_plant;
+    RenderableEntity *m_cover;
+
+    Qt3D::QNormalDiffuseMapMaterial *m_potMaterial;
+    Qt3D::QNormalDiffuseMapAlphaMaterial *m_plantMaterial;
+    Qt3D::QNormalDiffuseMapMaterial *m_coverMaterial;
+
+    Plant m_plantType;
+    PotShape m_potShape;
+
+    void updatePotShape();
+    void updatePlantType();
+};
+
+#endif // HOUSEPLANT_H

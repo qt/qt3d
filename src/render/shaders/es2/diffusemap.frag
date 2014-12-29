@@ -1,21 +1,21 @@
-#version 150 core
+#version 120
 
 // TODO: Replace with a uniform block
-uniform vec4 lightPosition = vec4(1.0, 1.0, 0.0, 1.0);
+uniform vec4 lightPosition = vec4(0.0, 0.0, 0.0, 1.0);
 uniform vec3 lightIntensity = vec3(1.0, 1.0, 1.0);
 
 // TODO: Replace with a struct
 uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
 uniform vec3 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 
-in vec3 position;
-in vec3 normal;
+uniform sampler2D diffuseTexture;
 
-out vec4 fragColor;
+varying vec3 position;
+varying vec3 normal;
+varying vec2 texCoord;
 
-vec3 adsModel( const in vec3 pos, const in vec3 n )
+vec3 adsModel( const vec3 pos, const vec3 n )
 {
     // Calculate the vector from the light to the fragment
     vec3 s = normalize( vec3( lightPosition ) - pos );
@@ -35,11 +35,14 @@ vec3 adsModel( const in vec3 pos, const in vec3 n )
     if ( dot( s, n ) > 0.0 )
         specular = pow( max( dot( r, v ), 0.0 ), shininess );
 
+    // Lookup diffuse color
+    vec3 diffuseColor = texture2D( diffuseTexture, texCoord ).rgb;
+
     // Combine the ambient, diffuse and specular contributions
-    return lightIntensity * ( ka + kd * diffuse + ks * specular );
+    return lightIntensity * ( ( ka + diffuse ) * diffuseColor + ks * specular );
 }
 
 void main()
 {
-    fragColor = vec4( adsModel( position, normalize( normal ) ), 1.0 );
+    gl_FragColor = vec4( adsModel( position, normalize( normal ) ), 1.0 );
 }

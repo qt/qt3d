@@ -39,30 +39,57 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#ifndef QT3D_RENDER_QNORMALDIFFUSESPECULARMAPMATERIAL_P_H
+#define QT3D_RENDER_QNORMALDIFFUSESPECULARMAPMATERIAL_P_H
 
-Entity {
-    id: root
+#include <Qt3DRenderer/private/qmaterial_p.h>
 
-    property Effect diffuseMapEffect
+QT_BEGIN_NAMESPACE
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+namespace Qt3D {
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+class QEffect;
+class QTexture;
+class QTechnique;
+class QParameter;
+class QShaderProgram;
+class QRenderPass;
+class QParameterMapping;
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
-}
+class QNormalDiffuseSpecularMapMaterial;
+
+class QNormalDiffuseSpecularMapMaterialPrivate : public QMaterialPrivate
+{
+public:
+    QNormalDiffuseSpecularMapMaterialPrivate(QNormalDiffuseSpecularMapMaterial *qq);
+
+    void init();
+
+    QEffect *m_normalDiffuseSpecularEffect;
+    QTexture *m_diffuseTexture;
+    QTexture *m_normalTexture;
+    QTexture *m_specularTexture;
+    QParameter *m_ambientParameter;
+    QParameter *m_diffuseParameter;
+    QParameter *m_normalParameter;
+    QParameter *m_specularParameter;
+    QParameter *m_shininessParameter;
+    QParameter *m_textureScaleParameter;
+    QTechnique *m_normalDiffuseSpecularGL3Technique;
+    QTechnique *m_normalDiffuseSpecularGL2Technique;
+    QTechnique *m_normalDiffuseSpecularES2Technique;
+    QRenderPass *m_normalDiffuseSpecularGL3RenderPass;
+    QRenderPass *m_normalDiffuseSpecularGL2RenderPass;
+    QRenderPass *m_normalDiffuseSpecularES2RenderPass;
+    QShaderProgram *m_normalDiffuseSpecularGL3Shader;
+    QShaderProgram *m_normalDiffuseSpecularGL2ES2Shader;
+
+    Q_DECLARE_PUBLIC(QNormalDiffuseSpecularMapMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QNORMALDIFFUSESPECULARMAPMATERIAL_P_H
+

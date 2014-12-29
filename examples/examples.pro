@@ -23,7 +23,8 @@ SUBDIRS += \
     materials \
     keyboardinput-qml \
     loader-qml \
-    wave
+    wave \
+    materials-cpp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

@@ -39,30 +39,50 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include "trefoilknot.h"
 
-Entity {
-    id: root
+TrefoilKnot::TrefoilKnot(Qt3D::QNode *parent)
+    : Qt3D::QEntity(parent)
+    , m_mesh(new Qt3D::QMesh())
+    , m_transform(new Qt3D::QTransform())
+    , m_scaleTransform(new Qt3D::QScaleTransform())
+    , m_xaxisRotation(new Qt3D::QRotateTransform())
+    , m_yaxisRotation(new Qt3D::QRotateTransform())
+    , m_translateTransform(new Qt3D::QTranslateTransform())
+{
+    m_mesh->setSource(QUrl("qrc:/assets/obj/trefoil.obj"));
+    m_xaxisRotation->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
+    m_yaxisRotation->setAxis(QVector3D(0.0f, 1.0f, 0.0f));
 
-    property Effect diffuseMapEffect
+    m_transform->addTransform(m_scaleTransform);
+    m_transform->addTransform(m_xaxisRotation);
+    m_transform->addTransform(m_yaxisRotation);
+    m_transform->addTransform(m_translateTransform);
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
-    property alias scale: chest.scale
+    addComponent(m_mesh);
+    addComponent(m_transform);
+}
 
-    RenderableEntity {
-        id: chest
-        source: "assets/chest/Chest.obj"
-        scale: 0.03
+TrefoilKnot::~TrefoilKnot()
+{
+}
 
-        material: DiffuseMapMaterial {
-            id: material
-            effect: root.diffuseMapEffect
-            diffuse: "assets/chest/diffuse.webp"
-            specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
-            shininess: 2.0
-        }
-    }
+Qt3D::QScaleTransform *TrefoilKnot::scaleTransform() const
+{
+    return m_scaleTransform;
+}
+
+Qt3D::QRotateTransform *TrefoilKnot::xaxisRotateTransform() const
+{
+    return m_xaxisRotation;
+}
+
+Qt3D::QRotateTransform *TrefoilKnot::yaxisRotateTransform() const
+{
+    return m_yaxisRotation;
+}
+
+Qt3D::QTranslateTransform *TrefoilKnot::translateTransform() const
+{
+    return m_translateTransform;
 }
