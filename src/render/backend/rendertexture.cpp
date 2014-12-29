@@ -184,7 +184,7 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
-        return NULL;
+        return Q_NULLPTR;
     }
 
     // FIXME : make this conditional on Qt version
