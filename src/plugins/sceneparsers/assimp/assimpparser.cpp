@@ -52,6 +52,7 @@
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qphongmaterial.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
@@ -78,16 +79,16 @@ Q_LOGGING_CATEGORY(AssimpParserLog, "Qt3D.AssimpParser")
 
 namespace {
 
-const QString ASSIMP_MATERIAL_DIFFUSE_COLOR = QStringLiteral("diffuse");
-const QString ASSIMP_MATERIAL_SPECULAR_COLOR = QStringLiteral("specular");
-const QString ASSIMP_MATERIAL_AMBIENT_COLOR = QStringLiteral("ambient");
+const QString ASSIMP_MATERIAL_DIFFUSE_COLOR = QStringLiteral("kd");
+const QString ASSIMP_MATERIAL_SPECULAR_COLOR = QStringLiteral("ks");
+const QString ASSIMP_MATERIAL_AMBIENT_COLOR = QStringLiteral("ka");
 const QString ASSIMP_MATERIAL_EMISSIVE_COLOR = QStringLiteral("emissive");
 const QString ASSIMP_MATERIAL_TRANSPARENT_COLOR = QStringLiteral("transparent");
 const QString ASSIMP_MATERIAL_REFLECTIVE_COLOR = QStringLiteral("reflective");
 
-const QString ASSIMP_MATERIAL_DIFFUSE_TEXTURE = QStringLiteral("diffuseTex");
+const QString ASSIMP_MATERIAL_DIFFUSE_TEXTURE = QStringLiteral("diffuseTexture");
 const QString ASSIMP_MATERIAL_AMBIENT_TEXTURE = QStringLiteral("ambientTex");
-const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QStringLiteral("specularTex");
+const QString ASSIMP_MATERIAL_SPECULAR_TEXTURE = QStringLiteral("specularTexture");
 const QString ASSIMP_MATERIAL_EMISSIVE_TEXTURE = QStringLiteral("emissiveTex");
 const QString ASSIMP_MATERIAL_NORMALS_TEXTURE = QStringLiteral("normalsTex");
 const QString ASSIMP_MATERIAL_OPACITY_TEXTURE = QStringLiteral("opacityTex");
@@ -428,7 +429,7 @@ void AssimpParser::parse()
  */
 void AssimpParser::loadMaterial(uint materialIndex)
 {
-    QMaterial *material = new QMaterial();
+    QMaterial *material = new QPhongMaterial();
     aiMaterial *assimpMaterial = m_scene->m_aiScene->mMaterials[materialIndex];
     // Material Name
     copyMaterialName(material, assimpMaterial);
