@@ -73,26 +73,30 @@ QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
 }
 
 /*!
-    \class QPhongMaterial
-    \brief QPhongMaterial provides a default implementation of the phong lighting effect.
+    \class Qt3D::QPhongMaterial
+    \brief The QPhongMaterial class provides a default implementation of the phong lighting effect.
     \inmodule Qt3DRender
     \since 5.5
 
     The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
     The relative strengths of these components is controlled by means of their reflectivity coefficients which are modelled as RGB triplets:
+
+    \list
     \li Ambient is the color that is emitted by an object without any other light source.
     \li Diffuse is the color that is emitted for rought surface reflections with the lights.
     \li Specular is the color emitted for shiny surface reflections with the lights.
     \li The shininess of a surface is controlled by a float property.
+    \endlist
 
     This material uses an effect with a single render pass approach and performs per fragment lighting.
     Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 
 /*!
-    \fn QPhongMaterial::QPhongMaterial
+    \fn Qt3D::QPhongMaterial::QPhongMaterial(QNode *parent)
+
     Constructs a new QPhongMaterial instance with parent object \a parent.
- */
+*/
 QPhongMaterial::QPhongMaterial(QNode *parent)
     : QMaterial(*new QPhongMaterialPrivate(this), parent)
 {
@@ -104,14 +108,20 @@ QPhongMaterial::QPhongMaterial(QNode *parent)
     d->init();
 }
 
+/*!
+   \fn Qt3D::QPhongMaterial::~QPhongMaterial()
+
+   Destroys the QPhongMaterial
+*/
 QPhongMaterial::~QPhongMaterial()
 {
 }
 
 /*!
-    \fn QPhongMaterial::ambient
-    \return the current QColor ambient value.
- */
+    \fn QColor Qt3D::QPhongMaterial::ambient() const
+
+    Returns the ambient color.
+*/
 QColor QPhongMaterial::ambient() const
 {
     Q_D(const QPhongMaterial);
@@ -119,9 +129,10 @@ QColor QPhongMaterial::ambient() const
 }
 
 /*!
-    \fn QPhongMaterial::diffuse
-    \return the current QColor diffuse value.
- */
+    \fn QColor Qt3D::QPhongMaterial::diffuse() const
+
+    Returns the diffuse color.
+*/
 QColor QPhongMaterial::diffuse() const
 {
     Q_D(const QPhongMaterial);
@@ -129,9 +140,10 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \fn QPhongMaterial::specular
-    \return the current QColor specular value.
- */
+    \fn QColor Qt3D::QPhongMaterial::specular() const
+
+    Returns the specular color.
+*/
 QColor QPhongMaterial::specular() const
 {
     Q_D(const QPhongMaterial);
@@ -139,9 +151,10 @@ QColor QPhongMaterial::specular() const
 }
 
 /*!
-    \fn QPhongMaterial::shininess
-    \return the current shininess as a float value.
- */
+    \fn Qt3D::QPhongMaterial::shininess() const
+
+    Returns the shininess exponent.
+*/
 float QPhongMaterial::shininess() const
 {
     Q_D(const QPhongMaterial);
@@ -149,9 +162,10 @@ float QPhongMaterial::shininess() const
 }
 
 /*!
-    \fn QPhongMaterial::setAmbient
+    \fn Qt3D::QPhongMaterial::setAmbient(const QColor &ambient)
+
     Sets the current ambient color to \a ambient.
- */
+*/
 void QPhongMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(QPhongMaterial);
@@ -159,9 +173,10 @@ void QPhongMaterial::setAmbient(const QColor &ambient)
 }
 
 /*!
-    \fn QPhongMaterial::setDiffuse
+    \fn Qt3D::QPhongMaterial::setDiffuse(const QColor &diffuse)
+
     Sets the current diffuse color to \a diffuse.
- */
+*/
 void QPhongMaterial::setDiffuse(const QColor &diffuse)
 {
     Q_D(QPhongMaterial);
@@ -169,9 +184,10 @@ void QPhongMaterial::setDiffuse(const QColor &diffuse)
 }
 
 /*!
-    \fn QPhongMaterial::setSpecular
+    \fn Qt3D::QPhongMaterial::setSpecular(const QColor &specular)
+
     Sets the current specular color to \a specular.
- */
+*/
 void QPhongMaterial::setSpecular(const QColor &specular)
 {
     Q_D(QPhongMaterial);
@@ -179,17 +195,17 @@ void QPhongMaterial::setSpecular(const QColor &specular)
 }
 
 /*!
-    \fn QPhongMaterial::setShininess
-    Sets the current shininess value to \a shininess.
- */
+    \fn Qt3D::QPhongMaterial::setShininess(float shininess)
+
+    Sets the current shininess exponent to \a shininess.
+*/
 void QPhongMaterial::setShininess(float shininess)
 {
     Q_D(QPhongMaterial);
     d->m_shininessParameter->setValue(shininess);
 }
 
-//TO DO: Define how lights are properties are set in the shaders
-//Ideally using a QShaderData
+// TODO: Define how lights are properties are set in the shaders. Ideally using a QShaderData
 void QPhongMaterialPrivate::init()
 {
     m_phongGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.vert"))));

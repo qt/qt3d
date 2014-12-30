@@ -68,7 +68,7 @@ public:
     QColor specular() const;
     float shininess() const;
 
-    void setAmbient(const QColor &color);
+    void setAmbient(const QColor &ambient);
     void setDiffuse(const QColor &diffuse);
     void setSpecular(const QColor &specular);
     void setShininess(float shininess);
