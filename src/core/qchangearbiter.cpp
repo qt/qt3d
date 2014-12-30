@@ -108,7 +108,7 @@ void QChangeArbiter::initialize(QAbstractAspectJobManager *jobManager)
     m_jobManager->waitForPerThreadFunction(QChangeArbiter::createThreadLocalChangeQueue, this);
 }
 
-void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
+void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
 {
     for (int i = 0, n = changeQueue->size(); i < n; i++) {
         QSceneChangePtr& change = (*changeQueue)[i];
@@ -160,30 +160,30 @@ void QChangeArbiter::distributeQueueChanges(ChangeQueue *changeQueue)
     changeQueue->clear();
 }
 
-QThreadStorage<QChangeArbiter::ChangeQueue *> *QChangeArbiter::tlsChangeQueue()
+QThreadStorage<QChangeArbiter::QChangeQueue *> *QChangeArbiter::tlsChangeQueue()
 {
     return &(m_tlsChangeQueue);
 }
 
-void QChangeArbiter::appendChangeQueue(QChangeArbiter::ChangeQueue *queue)
+void QChangeArbiter::appendChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
     QMutexLocker locker(&m_mutex);
     m_changeQueues.append(queue);
 }
 
-void QChangeArbiter::removeChangeQueue(QChangeArbiter::ChangeQueue *queue)
+void QChangeArbiter::removeChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
     QMutexLocker locker(&m_mutex);
     m_changeQueues.removeOne(queue);
 }
 
-void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::ChangeQueue *queue)
+void QChangeArbiter::appendLockingChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
     QMutexLocker locker(&m_mutex);
     m_lockingChangeQueues.append(queue);
 }
 
-void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::ChangeQueue *queue)
+void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::QChangeQueue *queue)
 {
     QMutexLocker locker(&m_mutex);
     m_lockingChangeQueues.removeOne(queue);
@@ -192,10 +192,10 @@ void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::ChangeQueue *queue
 void QChangeArbiter::syncChanges()
 {
     QMutexLocker locker(&m_mutex);
-    Q_FOREACH (QChangeArbiter::ChangeQueue *changeQueue, m_changeQueues)
+    Q_FOREACH (QChangeArbiter::QChangeQueue *changeQueue, m_changeQueues)
         distributeQueueChanges(changeQueue);
 
-    Q_FOREACH (ChangeQueue *changeQueue, m_lockingChangeQueues)
+    Q_FOREACH (QChangeQueue *changeQueue, m_lockingChangeQueues)
         distributeQueueChanges(changeQueue);
 }
 
@@ -254,7 +254,7 @@ void QChangeArbiter::sceneChangeEvent(const QSceneChangePtr &e)
     //    qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
 
     // Add the change to the thread local storage queue - no locking required => yay!
-    ChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
+    QChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
     localChangeQueue->push_back(e);
 
     //    qCDebug(ChangeArbiter) << "Change queue for thread" << QThread::currentThread() << "now contains" << localChangeQueue->count() << "items";
@@ -284,7 +284,7 @@ void QChangeArbiter::createUnmanagedThreadLocalChangeQueue(void *changeArbiter)
 
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
     if (!arbiter->tlsChangeQueue()->hasLocalData()) {
-        ChangeQueue *localChangeQueue = new ChangeQueue;
+        QChangeQueue *localChangeQueue = new QChangeQueue;
         arbiter->tlsChangeQueue()->setLocalData(localChangeQueue);
         arbiter->appendLockingChangeQueue(localChangeQueue);
     }
@@ -297,7 +297,7 @@ void QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter)
     QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
     if (arbiter->tlsChangeQueue()->hasLocalData()) {
-        ChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
+        QChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
         arbiter->removeLockingChangeQueue(localChangeQueue);
         arbiter->tlsChangeQueue()->setLocalData(Q_NULLPTR);
     }
@@ -311,7 +311,7 @@ void QChangeArbiter::createThreadLocalChangeQueue(void *changeArbiter)
 
     qCDebug(ChangeArbiter) << Q_FUNC_INFO << QThread::currentThread();
     if (!arbiter->tlsChangeQueue()->hasLocalData()) {
-        ChangeQueue *localChangeQueue = new ChangeQueue;
+        QChangeQueue *localChangeQueue = new QChangeQueue;
         arbiter->tlsChangeQueue()->setLocalData(localChangeQueue);
         arbiter->appendChangeQueue(localChangeQueue);
     }
@@ -323,7 +323,7 @@ void QChangeArbiter::destroyThreadLocalChangeQueue(void *changeArbiter)
     Q_UNUSED(changeArbiter);
     QChangeArbiter *arbiter = static_cast<QChangeArbiter *>(changeArbiter);
     if (arbiter->tlsChangeQueue()->hasLocalData()) {
-        ChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
+        QChangeQueue *localChangeQueue = arbiter->tlsChangeQueue()->localData();
         arbiter->removeChangeQueue(localChangeQueue);
         arbiter->tlsChangeQueue()->setLocalData(Q_NULLPTR);
     }

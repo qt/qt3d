@@ -102,17 +102,17 @@ public:
     static void destroyThreadLocalChangeQueue(void *changeArbiter);
 
 protected:
-    typedef std::vector<QSceneChangePtr> ChangeQueue;
+    typedef std::vector<QSceneChangePtr> QChangeQueue;
     typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
     typedef QVector<QObserverPair> QObserverList;
 
-    void distributeQueueChanges(ChangeQueue *queue);
+    void distributeQueueChanges(QChangeQueue *queue);
 
-    QThreadStorage<ChangeQueue *> *tlsChangeQueue();
-    void appendChangeQueue(ChangeQueue *queue);
-    void removeChangeQueue(ChangeQueue *queue);
-    void appendLockingChangeQueue(ChangeQueue *queue);
-    void removeLockingChangeQueue(ChangeQueue *queue);
+    QThreadStorage<QChangeQueue *> *tlsChangeQueue();
+    void appendChangeQueue(QChangeQueue *queue);
+    void removeChangeQueue(QChangeQueue *queue);
+    void appendLockingChangeQueue(QChangeQueue *queue);
+    void removeLockingChangeQueue(QChangeQueue *queue);
 
 private:
     QMutex m_mutex;
@@ -131,12 +131,12 @@ private:
 
     // Each thread has a TLS ChangeQueue so we never need to lock whilst
     // receiving a QSceneChange.
-    QThreadStorage<ChangeQueue *> m_tlsChangeQueue;
+    QThreadStorage<QChangeQueue *> m_tlsChangeQueue;
 
     // We store a list of the ChangeQueue's from each thread. This will only
     // be accessed from the aspect thread during the syncChanges() phase.
-    QList<ChangeQueue *> m_changeQueues;
-    QList<ChangeQueue *> m_lockingChangeQueues;
+    QList<QChangeQueue *> m_changeQueues;
+    QList<QChangeQueue *> m_lockingChangeQueues;
     QObserverInterface *m_postman;
     QSceneInterface *m_scene;
 };
