@@ -617,6 +617,8 @@ inline bool operator<=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &
 
 // out-of-line function implementations:
 
+#ifndef Q_QDOC
+
 template <typename T>
 QCircularBuffer<T>::QCircularBuffer(int amount)
     : d(new Data())
@@ -1304,6 +1306,8 @@ QCircularBuffer<T> operator+(const QCircularBuffer<T> &lhs, const QCircularBuffe
         circ.append(rhs.at(i));
     return circ;
 }
+
+#endif // Q_QDOC
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(CircularBuffer)
 Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(CircularBuffer)

@@ -1028,7 +1028,7 @@
     \sa operator==()
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const T &other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const T &other)
 
     Appends the item \a other to this circular buffer and returns a
     reference to this circular buffer.
@@ -1036,7 +1036,7 @@
     \sa operator+(), operator<<(), append()
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QCircularBuffer<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QCircularBuffer<T>& other)
 
     \overload
 
@@ -1046,17 +1046,17 @@
     \sa operator+(), operator<<(), append()
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QVector<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QVector<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QList<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator+=(const QList<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const T &other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const T &other)
 
     Appends the item \a other to this circular buffer and returns a
     reference to this circular buffer.
@@ -1064,7 +1064,7 @@
     \sa operator+(), operator+=(), append()
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QCircularBuffer<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QCircularBuffer<T>& other)
 
     \overload
 
@@ -1074,22 +1074,48 @@
     \sa operator+(), operator+=(), append()
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QVector<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QVector<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QList<T>& other)
+/*! \fn Qt3D::QCircularBuffer<T>& Qt3D::QCircularBuffer::operator<<(const QList<T>& other)
 
     \overload
 */
 
-/*! \fn QCircularBuffer<T> operator+(const QCircularBuffer<T>& lhs, const QCircularBuffer<T>& rhs)
+/*! \fn Qt3D::QCircularBuffer<T> Qt3D::operator+(const QCircularBuffer<T>& lhs, const QCircularBuffer<T>& rhs)
 
     Returns a circular buffer object with capacity of lhs.size() + rhs.size() containing
     the items from \a lhs followed by the items from \a rhs.
 
     \sa Qt3D::QCircularBuffer::operator+=()
+*/
+
+/*! \fn void Qt3D::swap(QCircularBuffer<T> &lhs, QCircularBuffer<T> &rhs)
+
+    Swaps the contents of the circular buffer \a lhs with the contents of \a rhs.
+*/
+
+/*! \fn bool Qt3D::operator<(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
+
+    Returns true if \a lhs is lexographically less than \a rhs. This is equivalent to calling
+    \c{return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())}.
+*/
+
+/*! \fn bool Qt3D::operator>(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
+
+    Returns true if \a rhs is lexographically less than \a lhs.
+*/
+
+/*! \fn bool Qt3D::operator>=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
+
+    Returns true if \a lhs is lexographically less than or equal to \a rhs.
+*/
+
+/*! \fn bool Qt3D::operator<=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
+
+    Returns true if \a lhs is lexographically less than or equal to \a rhs.
 */
 
 /*! \typedef Qt3D::QCircularBuffer::Iterator
