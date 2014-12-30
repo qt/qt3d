@@ -47,6 +47,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \enum Qt3D::ChangeFlag
+
+    The types of change that can be sent and received by Qt3D's change notification system.
+
+    \value NodeCreated A new instance of a QNode subclass has been created.
+    \value NodeAboutToBeDeleted A QNode is about to be deleted from the scene.
+    \value NodeDeleted A QNode has been deleted.
+    \value NodeUpdated A QNode property has been updated.
+    \value NodeAdded A QNode has been added to the scene.
+    \value NodeRemoved A QNode has been removed from the scene.
+    \value ComponentAdded A QComponent has been added to a QEntity.
+    \value ComponentRemoved A QComponent has been removed from a QEntity.
+    \value AllChanges Allows an observer to monitor for any of the above changes.
+*/
+
 QSceneChangePrivate::QSceneChangePrivate(QSceneChange *qq)
     : q_ptr(qq)
 {
