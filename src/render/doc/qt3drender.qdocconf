@@ -1,0 +1,40 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = Qt3DRender
+description             = Qt3D Render Reference Documentation
+version                 = $QT_VERSION
+
+examplesinstallpath     = qt3d
+
+qhp.projects            = Qt3DRender
+
+qhp.Qt3DRender.file                = qt3drender.qhp
+qhp.Qt3DRender.namespace           = org.qt-project.qt3drender.$QT_VERSION_TAG
+qhp.Qt3DRender.virtualFolder       = qt3drender
+qhp.Qt3DRender.indexTitle          = Qt3D Render
+qhp.Qt3DRender.indexRoot           =
+
+qhp.Qt3DRender.filterAttributes                   = qt3drender $QT_VERSION qtrefdoc
+qhp.Qt3DRender.customFilters.Qt.name              = Qt3DRender $QT_VERSION
+qhp.Qt3DRender.customFilters.Qt.filterAttributes  = qt3drender $QT_VERSION
+
+qhp.Qt3DRender.subprojects                    = classes
+qhp.Qt3DRender.subprojects.classes.title      = C++ Classes
+qhp.Qt3DRender.subprojects.classes.indexTitle = Qt3D Render C++ Classes
+qhp.Qt3DRender.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3DRender.subprojects.classes.sortPages  = true
+
+tagfile                 = ../../../doc/qt3drender/qt3drender.tags
+
+depends                 += qtcore qtqml qtquick qt3dcore qtdoc
+
+headerdirs += ..
+sourcedirs += ..
+exampledirs += src/snippets
+
+#excludedirs +=
+
+imagedirs   += images
+
+navigation.landingpage = "Qt3D Render"
+navigation.cppclassespage = "Qt3D Render C++ Classes"
