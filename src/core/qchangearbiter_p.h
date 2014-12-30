@@ -65,10 +65,6 @@ class QSceneObserverInterface;
 class QPostman;
 class QSceneInterface;
 
-typedef QVector<QSceneChangePtr> ChangeQueue;
-typedef QPair<ChangeFlags, QObserverInterface *> QObserverPair;
-typedef QList<QObserverPair> QObserverList;
-
 class QT3DCORESHARED_EXPORT QChangeArbiter
         : public QObject
         , public QObserverInterface
