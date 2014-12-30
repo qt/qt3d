@@ -288,33 +288,26 @@ public:
         return QMatrix4x4(matVals);
     }
 
-    template<typename T>
-    bool typedCreate(QQmlValueType *&v)
-    {
-        v = new T;
-        return true;
-    }
-
-    bool create(int type, QQmlValueType *&v)
+    const QMetaObject *getMetaObjectForMetaType(int type)
     {
         switch (type) {
         case QMetaType::QColor:
-            return typedCreate<Quick3DColorValueType>(v);
+            return &Quick3DColorValueType::staticMetaObject;
         case QMetaType::QVector2D:
-            return typedCreate<Quick3DVector2DValueType>(v);
+            return &Quick3DVector2DValueType::staticMetaObject;
         case QMetaType::QVector3D:
-            return typedCreate<Quick3DVector3DValueType>(v);
+            return &Quick3DVector3DValueType::staticMetaObject;
         case QMetaType::QVector4D:
-            return typedCreate<Quick3DVector4DValueType>(v);
+            return &Quick3DVector4DValueType::staticMetaObject;
         case QMetaType::QQuaternion:
-            return typedCreate<Quick3DQuaternionValueType>(v);
+            return &Quick3DQuaternionValueType::staticMetaObject;
         case QMetaType::QMatrix4x4:
-            return typedCreate<Quick3DMatrix4x4ValueType>(v);
+            return &Quick3DMatrix4x4ValueType::staticMetaObject;
         default:
             break;
         }
 
-        return false;
+        return Q_NULLPTR;
     }
 
     template<typename T>

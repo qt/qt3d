@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -64,17 +65,16 @@ QT3DQUICKSHARED_PRIVATE_EXPORT void registerValueTypes();
 
 }
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DColorValueType : public QQmlValueTypeBase<QColor>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DColorValueType
 {
+    QColor v;
     Q_PROPERTY(qreal r READ r WRITE setR FINAL)
     Q_PROPERTY(qreal g READ g WRITE setG FINAL)
     Q_PROPERTY(qreal b READ b WRITE setB FINAL)
     Q_PROPERTY(qreal a READ a WRITE setA FINAL)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DColorValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
+    Q_INVOKABLE QString toString() const;
 
     qreal r() const;
     qreal g() const;
@@ -86,16 +86,14 @@ public:
     void setA(qreal);
 };
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector2DValueType : public QQmlValueTypeBase<QVector2D>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector2DValueType
 {
+    QVector2D v;
     Q_PROPERTY(qreal x READ x WRITE setX FINAL)
     Q_PROPERTY(qreal y READ y WRITE setY FINAL)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DVector2DValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
-    virtual bool isEqual(const QVariant &other) const;
+    Q_INVOKABLE QString toString() const;
 
     qreal x() const;
     qreal y() const;
@@ -115,17 +113,15 @@ public:
     Q_INVOKABLE bool fuzzyEquals(const QVector2D &vec) const;
 };
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector3DValueType : public QQmlValueTypeBase<QVector3D>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector3DValueType
 {
+    QVector3D v;
     Q_PROPERTY(qreal x READ x WRITE setX FINAL)
     Q_PROPERTY(qreal y READ y WRITE setY FINAL)
     Q_PROPERTY(qreal z READ z WRITE setZ FINAL)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DVector3DValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
-    virtual bool isEqual(const QVariant &other) const;
+    Q_INVOKABLE QString toString() const;
 
     qreal x() const;
     qreal y() const;
@@ -149,18 +145,16 @@ public:
     Q_INVOKABLE bool fuzzyEquals(const QVector3D &vec) const;
 };
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector4DValueType : public QQmlValueTypeBase<QVector4D>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DVector4DValueType
 {
+    QVector4D v;
     Q_PROPERTY(qreal x READ x WRITE setX FINAL)
     Q_PROPERTY(qreal y READ y WRITE setY FINAL)
     Q_PROPERTY(qreal z READ z WRITE setZ FINAL)
     Q_PROPERTY(qreal w READ w WRITE setW FINAL)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DVector4DValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
-    virtual bool isEqual(const QVariant &other) const;
+    Q_INVOKABLE QString toString() const;
 
     qreal x() const;
     qreal y() const;
@@ -185,17 +179,16 @@ public:
     Q_INVOKABLE bool fuzzyEquals(const QVector4D &vec) const;
 };
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DQuaternionValueType : public QQmlValueTypeBase<QQuaternion>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DQuaternionValueType
 {
+    QQuaternion v;
     Q_PROPERTY(qreal scalar READ scalar WRITE setScalar)
     Q_PROPERTY(qreal x READ x WRITE setX)
     Q_PROPERTY(qreal y READ y WRITE setY)
     Q_PROPERTY(qreal z READ z WRITE setZ)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DQuaternionValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
+    Q_INVOKABLE QString toString() const;
 
     qreal scalar() const;
     qreal x() const;
@@ -207,8 +200,9 @@ public:
     void setZ(qreal);
 };
 
-class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DMatrix4x4ValueType : public QQmlValueTypeBase<QMatrix4x4>
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DMatrix4x4ValueType
 {
+    QMatrix4x4 v;
     Q_PROPERTY(qreal m11 READ m11 WRITE setM11 FINAL)
     Q_PROPERTY(qreal m12 READ m12 WRITE setM12 FINAL)
     Q_PROPERTY(qreal m13 READ m13 WRITE setM13 FINAL)
@@ -225,12 +219,9 @@ class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DMatrix4x4ValueType : public QQmlValu
     Q_PROPERTY(qreal m42 READ m42 WRITE setM42 FINAL)
     Q_PROPERTY(qreal m43 READ m43 WRITE setM43 FINAL)
     Q_PROPERTY(qreal m44 READ m44 WRITE setM44 FINAL)
-    Q_OBJECT
+    Q_GADGET
 public:
-    Quick3DMatrix4x4ValueType(QObject *parent = 0);
-
-    virtual QString toString() const;
-    virtual bool isEqual(const QVariant &other) const;
+    Q_INVOKABLE QString toString() const;
 
     qreal m11() const { return v(0, 0); }
     qreal m12() const { return v(0, 1); }

@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -54,11 +55,6 @@ namespace Quick3DValueTypes {
     }
 }
 
-Quick3DColorValueType::Quick3DColorValueType(QObject *parent)
-    : QQmlValueTypeBase<QColor>(QMetaType::QColor, parent)
-{
-}
-
 QString Quick3DColorValueType::toString() const
 {
     // to maintain behaviour with QtQuick 1.0, we just output normal toString() value.
@@ -106,23 +102,9 @@ void Quick3DColorValueType::setA(qreal a)
 }
 
 
-Quick3DVector2DValueType::Quick3DVector2DValueType(QObject *parent)
-    : QQmlValueTypeBase<QVector2D>(QMetaType::QVector2D, parent)
-{
-}
-
 QString Quick3DVector2DValueType::toString() const
 {
     return QString(QLatin1String("QVector2D(%1, %2)")).arg(v.x()).arg(v.y());
-}
-
-bool Quick3DVector2DValueType::isEqual(const QVariant &other) const
-{
-    if (other.userType() != QMetaType::QVector2D)
-        return false;
-
-    QVector2D otherVector = other.value<QVector2D>();
-    return (v == otherVector);
 }
 
 qreal Quick3DVector2DValueType::x() const
@@ -206,23 +188,9 @@ bool Quick3DVector2DValueType::fuzzyEquals(const QVector2D &vec) const
 }
 
 
-Quick3DVector3DValueType::Quick3DVector3DValueType(QObject *parent)
-    : QQmlValueTypeBase<QVector3D>(QMetaType::QVector3D, parent)
-{
-}
-
 QString Quick3DVector3DValueType::toString() const
 {
     return QString(QLatin1String("QVector3D(%1, %2, %3)")).arg(v.x()).arg(v.y()).arg(v.z());
-}
-
-bool Quick3DVector3DValueType::isEqual(const QVariant &other) const
-{
-    if (other.userType() != QMetaType::QVector3D)
-        return false;
-
-    QVector3D otherVector = other.value<QVector3D>();
-    return (v == otherVector);
 }
 
 qreal Quick3DVector3DValueType::x() const
@@ -328,23 +296,9 @@ bool Quick3DVector3DValueType::fuzzyEquals(const QVector3D &vec) const
 }
 
 
-Quick3DVector4DValueType::Quick3DVector4DValueType(QObject *parent)
-    : QQmlValueTypeBase<QVector4D>(QMetaType::QVector4D, parent)
-{
-}
-
 QString Quick3DVector4DValueType::toString() const
 {
     return QString(QLatin1String("QVector4D(%1, %2, %3, %4)")).arg(v.x()).arg(v.y()).arg(v.z()).arg(v.w());
-}
-
-bool Quick3DVector4DValueType::isEqual(const QVariant &other) const
-{
-    if (other.userType() != QMetaType::QVector4D)
-        return false;
-
-    QVector4D otherVector = other.value<QVector4D>();
-    return (v == otherVector);
 }
 
 qreal Quick3DVector4DValueType::x() const
@@ -456,10 +410,6 @@ bool Quick3DVector4DValueType::fuzzyEquals(const QVector4D &vec) const
     return qFuzzyCompare(v, vec);
 }
 
-Quick3DQuaternionValueType::Quick3DQuaternionValueType(QObject *parent)
-    : QQmlValueTypeBase<QQuaternion>(QMetaType::QQuaternion, parent)
-{
-}
 
 QString Quick3DQuaternionValueType::toString() const
 {
@@ -506,11 +456,6 @@ void Quick3DQuaternionValueType::setZ(qreal z)
     v.setZ(z);
 }
 
-
-Quick3DMatrix4x4ValueType::Quick3DMatrix4x4ValueType(QObject *parent)
-    : QQmlValueTypeBase<QMatrix4x4>(QMetaType::QMatrix4x4, parent)
-{
-}
 
 QMatrix4x4 Quick3DMatrix4x4ValueType::times(const QMatrix4x4 &m) const
 {
@@ -592,16 +537,6 @@ QString Quick3DMatrix4x4ValueType::toString() const
             .arg(v(1, 0)).arg(v(1, 1)).arg(v(1, 2)).arg(v(1, 3))
             .arg(v(2, 0)).arg(v(2, 1)).arg(v(2, 2)).arg(v(2, 3))
             .arg(v(3, 0)).arg(v(3, 1)).arg(v(3, 2)).arg(v(3, 3));
-}
-
-bool Quick3DMatrix4x4ValueType::isEqual(const QVariant &other) const
-{
-    if (other.userType() != qMetaTypeId<QMatrix4x4>())
-        return false;
-
-    QMatrix4x4 otherMatrix = other.value<QMatrix4x4>();
-    return (v == otherMatrix);
-
 }
 
 } // Quick
