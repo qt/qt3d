@@ -87,6 +87,7 @@ void RenderShader::updateFromPeer(QNode *peer)
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         m_shaderCode[i] = shader->shaderCode(type);
     }
+    updateDNA();
 }
 
 QVector<QString> RenderShader::uniformsNames() const
@@ -129,12 +130,19 @@ void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
             m_shaderCode[QShaderProgram::Compute] = propertyValue.toByteArray();
             m_isLoaded = false;
         }
+        if (!m_isLoaded)
+            updateDNA();
     }
 }
 
 bool RenderShader::isLoaded() const
 {
     return m_isLoaded;
+}
+
+ProgramDNA RenderShader::dna() const
+{
+    return m_dna;
 }
 
 QVector<ShaderUniform> RenderShader::uniforms() const
@@ -197,22 +205,30 @@ static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
     }
 }
 
-QOpenGLShaderProgram* RenderShader::createProgram(QGraphicsContext *context)
+QOpenGLShaderProgram *RenderShader::createProgram(QGraphicsContext *context)
 {
     Q_ASSERT(QOpenGLContext::currentContext());
+
+    // Check if we already have a shader program matching all the shaderCode
+    QOpenGLShaderProgram *existingProg = context->containsProgram(m_dna);
+    if (existingProg)
+        return existingProg;
+
+    // When we arrive at that point, that means that no matching program
+    // was found, so we need to load it
     // Scoped pointer so early-returns delete automatically
     QScopedPointer<QOpenGLShaderProgram> p(new QOpenGLShaderProgram);
 
     for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i) {
-        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         // Compile shaders
-        if (!m_shaderCode[type].isEmpty()) {
-            if (!p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
-                qWarning() << "Failed to compile shader:" << p->log();
-        }
+        QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
+        if (!m_shaderCode[type].isEmpty() && !p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
+            qWarning() << "Failed to compile shader:" << p->log();
     }
 
     // Call glBindFragDataLocation and link the program
+    // Since we are sharing shaders in the backend, we assume that if using custom
+    // fragOutputs, they should all be the same for a given shader
     context->bindFragOutputs(p->programId(), m_fragOutputs);
     if (!p->link()) {
         qWarning() << "Failed to link shader program:" << p->log();
@@ -235,6 +251,16 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
     p->link();
 
     return p;
+}
+
+void RenderShader::updateDNA()
+{
+    m_dna = qHash(m_shaderCode[QShaderProgram::Vertex]
+                + m_shaderCode[QShaderProgram::TessellationControl]
+                + m_shaderCode[QShaderProgram::TessellationEvaluation]
+                + m_shaderCode[QShaderProgram::Geometry]
+                + m_shaderCode[QShaderProgram::Fragment]
+                + m_shaderCode[QShaderProgram::Compute]);
 }
 
 void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)

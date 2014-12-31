@@ -226,10 +226,12 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         return;
     }
 
-    if (!m_shaderHash.contains(shader)) {
+    // If RenderShader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
+    if (!m_shaderHash.contains(shader->dna()) || !shader->isLoaded()) {
         QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
         Q_ASSERT(prog);
-        m_shaderHash[shader] = prog;
+        m_shaderHash.insert(shader->dna(), prog);
+        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_shaderHash.count();
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         if (m_glHelper->supportsFeature(QGraphicsHelperInterface::UniformBufferObject))
@@ -242,7 +244,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         // no op
     } else {
         m_activeShader = shader;
-        QOpenGLShaderProgram* prog = m_shaderHash[shader];
+        QOpenGLShaderProgram* prog = m_shaderHash[shader->dna()];
         prog->bind();
         // ensure material uniforms are re-applied
         m_material = Q_NULLPTR;
@@ -619,7 +621,7 @@ void QGraphicsContext::decayTextureScores()
 QOpenGLShaderProgram* QGraphicsContext::activeShader()
 {
     Q_ASSERT(m_activeShader);
-    return m_shaderHash[m_activeShader];
+    return m_shaderHash[m_activeShader->dna()];
 }
 
 void QGraphicsContext::setRenderer(Renderer *renderer)
@@ -658,7 +660,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
         RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(ubos[i].second);
         if (shaderData != Q_NULLPTR) {
             // bind Uniform Block of index ubos[i].first to binding point i
-            bindUniformBlock(m_shaderHash.value(m_activeShader)->programId(), ubos[i].first, i);
+            bindUniformBlock(m_shaderHash.value(m_activeShader->dna())->programId(), ubos[i].first, i);
             // bind the UBO to the binding point i
             // Specs specify that there are at least 14 binding points
             shaderData->apply(this, i);

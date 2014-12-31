@@ -60,6 +60,8 @@ namespace Render {
 class ShaderManager;
 class AttachmentPack;
 
+typedef uint ProgramDNA;
+
 class RenderShader : public QBackendNode
 {
 public:
@@ -78,6 +80,7 @@ public:
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
+    ProgramDNA dna() const;
 
     QVector<ShaderUniform> uniforms() const;
     QVector<ShaderAttribute> attributes() const;
@@ -103,6 +106,9 @@ private:
     QVector<QByteArray> m_shaderCode;
 
     bool m_isLoaded;
+    ProgramDNA m_dna;
+
+    void updateDNA();
 
     // Private so that only GraphicContext can call it
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);

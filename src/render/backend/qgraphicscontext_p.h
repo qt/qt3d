@@ -56,6 +56,7 @@
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRenderer/private/rendershader_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,7 +72,6 @@ namespace Render {
 class Renderer;
 class QGraphicsHelperInterface;
 class RenderStateSet;
-class RenderShader;
 class RenderMaterial;
 class RenderTexture;
 class RenderCommand;
@@ -111,6 +111,10 @@ public:
     QOpenGLContext *openGLContext() { return m_gl; }
 
     void activateShader(RenderShader* shader);
+    QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna) const
+    {
+        return m_shaderHash.value(dna, Q_NULLPTR);
+    }
 
     void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments);
 
@@ -201,7 +205,7 @@ private:
     QGraphicsHelperInterface *m_glHelper;
 
     RenderShader *m_activeShader;
-    QHash<RenderShader *, QOpenGLShaderProgram *> m_shaderHash;
+    QHash<ProgramDNA, QOpenGLShaderProgram *> m_shaderHash;
     QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
     QHash<QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
