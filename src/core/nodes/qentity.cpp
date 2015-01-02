@@ -70,7 +70,10 @@ QEntity::~QEntity()
 {
     // If all children are removed
     // That includes the components that are parented by this entity
-    removeAllComponents();
+
+    // We need to call removeAllComponent only for real Entities (not clone)
+    if (d_func()->m_changeArbiter)
+        removeAllComponents();
 }
 
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)

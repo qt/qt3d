@@ -70,8 +70,8 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
     Qt3D::Window view;
+
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
     engine.initialize();
@@ -147,9 +147,6 @@ int main(int argc, char* argv[])
     sphereTranslateTransform->setTranslation(QVector3D(20, 0, 0));
 
     Qt3D::QRotateTransform *sphereRotateTransform = new Qt3D::QRotateTransform;
-    sphereRotateTransform->setAxis(QVector3D(0, 1, 0));
-    sphereRotateTransform->setAngleDeg(0);
-
     QPropertyAnimation *sphereRotateTransformAnimation = new QPropertyAnimation(sphereRotateTransform);
     sphereRotateTransformAnimation->setTargetObject(sphereRotateTransform);
     sphereRotateTransformAnimation->setPropertyName("angle");
@@ -158,6 +155,9 @@ int main(int argc, char* argv[])
     sphereRotateTransformAnimation->setDuration(10000);
     sphereRotateTransformAnimation->setLoopCount(-1);
     sphereRotateTransformAnimation->start();
+
+    sphereRotateTransform->setAxis(QVector3D(0, 1, 0));
+    sphereRotateTransform->setAngleDeg(0);
 
     sphereTransform->addTransform(sphereTranslateTransform);
     sphereTransform->addTransform(sphereRotateTransform);

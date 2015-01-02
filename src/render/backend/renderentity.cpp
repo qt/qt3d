@@ -85,16 +85,29 @@ void RenderEntity::cleanup()
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
             m_renderer->renderNodesManager()->release(m_childrenHandles[i]);
-        m_renderer->worldMatrixManager()->release(m_worldTransform);
+        // We need to release using peerUuid otherwise the handle will be cleared
+        // but would still remain in the Id to Handle table
+        m_renderer->worldMatrixManager()->releaseResource(peerUuid());
+        m_worldTransform = HMatrix();
 
         // Release all component will have to perform their own release when they receive the
         // NodeDeleted/NodeAboutToBeDeleted notification
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
+
+        // Clear components
+        m_transformComponent = QNodeId();
+        m_meshComponent = QNodeId();
+        m_cameraComponent = QNodeId();
+        m_materialComponent = QNodeId();
+        m_layerComponents.clear();
+        m_shaderDataComponents.clear();
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
     m_localBoundingVolume = Q_NULLPTR;
     m_worldBoundingVolume = Q_NULLPTR;
+
+
 }
 
 void RenderEntity::setParentHandle(HEntity parentHandle)
@@ -124,11 +137,7 @@ void RenderEntity::updateFromPeer(QNode *peer)
 {
     QEntity *entity = static_cast<QEntity *>(peer);
     QEntity *parentEntity = entity->parentEntity();
-    if (parentEntity != Q_NULLPTR)
-        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->id()));
 
-    if (!m_worldTransform.isNull())
-        m_renderer->worldMatrixManager()->release(m_worldTransform);
     m_objectName = peer->objectName();
     m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peerUuid());
 
@@ -142,6 +151,9 @@ void RenderEntity::updateFromPeer(QNode *peer)
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
+
+    if (parentEntity != Q_NULLPTR)
+        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->id()));
 }
 
 void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)

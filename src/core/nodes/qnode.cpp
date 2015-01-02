@@ -74,7 +74,6 @@ QNodePrivate::QNodePrivate(QNode *qq)
 // Called by QEvent::childAdded (main thread)
 void QNodePrivate::addChild(QNode *childNode)
 {
-
     Q_ASSERT(childNode);
     if (childNode == q_ptr)
         return ;
@@ -119,15 +118,22 @@ void QNodePrivate::removeChild(QNode *childNode)
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
         e->setPropertyName(QByteArrayLiteral("node"));
         // We need to clone the parent of the childNode we send
-        QNode *parentClone = QNode::clone(q_func());
-        QNode *childClone = Q_NULLPTR;
-        Q_FOREACH (QObject *c, parentClone->children()) {
-            QNode *clone = qobject_cast<QNode *>(c);
-            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
-                childClone = clone;
-                break;
-            }
-        }
+        //        QNode *parentClone = QNode::clone(childNode->parentNode());
+        //        QNode *childClone = Q_NULLPTR;
+        //        Q_FOREACH (QObject *c, parentClone->children()) {
+        //            QNode *clone = qobject_cast<QNode *>(c);
+        //            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
+        //                childClone = clone;
+        //                break;
+        //            }
+        //        }
+
+        // We cannot clone the parent as it seems that the childNode is already removed
+        // from the parent when the ChildRemoved event is triggered
+        // and that would therefore return us a childNode NULL (because not found in the parent's children list)
+        // and crash the backend
+
+        QNode *childClone = QNode::clone(childNode);
         e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
         notifyObservers(e);
     }
