@@ -60,7 +60,7 @@ typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
 class QT3DRENDERERSHARED_EXPORT QMeshData
 {
 public:
-    enum PrimitiveTypes {
+    enum PrimitiveType {
         Points = 0x0000,
         Lines = 0x0001,
         LineLoop = 0x0002,
@@ -75,7 +75,7 @@ public:
         Patches = 0x000E
     };
 
-    explicit QMeshData(PrimitiveTypes primitiveType = Triangles);
+    explicit QMeshData(PrimitiveType primitiveType = Triangles);
     virtual ~QMeshData();
 
     void addAttribute(const QString &name, const QAbstractAttributePtr &attr);
@@ -91,7 +91,7 @@ public:
     static const QString defaultTextureCoordinateAttributeName() { return QStringLiteral("vertexTexCoord"); }
     static const QString defaultTangentAttributeName() { return QStringLiteral("vertexTangent"); }
 
-    void setPrimitiveType(PrimitiveTypes primitiveType);
+    void setPrimitiveType(PrimitiveType primitiveType);
     int primitiveType() const;
 
     void setVerticesPerPatch(int verticesPerPatch);

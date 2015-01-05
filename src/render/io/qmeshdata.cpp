@@ -56,7 +56,7 @@ QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
 {
 }
 
-QMeshData::QMeshData(PrimitiveTypes primitiveType)
+QMeshData::QMeshData(PrimitiveType primitiveType)
     : d_ptr(new QMeshDataPrivate(this))
 {
     setPrimitiveType(primitiveType);
@@ -174,7 +174,7 @@ QAxisAlignedBoundingBox QMeshData::boundingBox() const
     return d->m_bbox;
 }
 
-void QMeshData::setPrimitiveType(PrimitiveTypes primitiveType)
+void QMeshData::setPrimitiveType(PrimitiveType primitiveType)
 {
     Q_D(QMeshData);
     d->m_primitiveType = primitiveType;
