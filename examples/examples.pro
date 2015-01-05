@@ -24,7 +24,8 @@ SUBDIRS += \
     keyboardinput-qml \
     loader-qml \
     wave \
-    materials-cpp
+    materials-cpp \
+    dynamicscene-cpp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
