@@ -70,9 +70,7 @@ void ParameterPack::appendParameter(const QNodeId &parameterId)
 
 void ParameterPack::removeParameter(const QNodeId &parameterId)
 {
-    if (m_peers.contains(parameterId)) {
-        m_peers.removeOne(parameterId);
-    }
+    m_peers.removeOne(parameterId);
 }
 
 QList<QNodeId> ParameterPack::parameters() const
