@@ -161,7 +161,7 @@ void QMeshData::computeBoundsFromAttribute(const QString &name)
     Q_D(QMeshData);
     QAbstractAttributePtr attr = attributeByName(name);
     if (!attr) {
-        qWarning() << Q_FUNC_INFO << "unknoen attribute:" << name;
+        qWarning() << Q_FUNC_INFO << "unknown attribute:" << name;
         return;
     }
     d->m_bbox.clear();
