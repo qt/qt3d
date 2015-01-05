@@ -11,8 +11,10 @@ SUBDIRS = \
     qentity \
     qaspectengine \
     qchangearbiter \
-    qscene
+    qscene \
 
 contains(QT_CONFIG, private_tests) {
-    SUBDIRS += qframeallocator
+    SUBDIRS += \
+    qframeallocator \
+    cloning
 }
