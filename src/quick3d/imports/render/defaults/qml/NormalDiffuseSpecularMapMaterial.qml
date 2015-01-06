@@ -53,23 +53,36 @@ Material {
     property real textureScale: 1.0
 
     parameters: [
-        Parameter { name: "ambient";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
+        Parameter { name: "ka"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
         Parameter {
-            name: "diffuse"
-            value: MipMappedTexture {
+            name: "diffuseTexture"
+            value: Texture2D {
                 id: diffuseTexture
+                minificationFilter: Texture.LinearMipMapLinear
+                magnificationFilter: Texture.Linear
+                wrapMode {
+                    x: WrapMode.Repeat
+                    y: WrapMode.Repeat
+                }
+                generateMipMaps: true
                 maximumAnisotropy: 16.0
             }
         },
-        Parameter {
-            name: "specular"
-            value: MipMappedTexture {
+        Parameter { name: "specularTexture";
+            value: Texture2D {
                 id: specularTexture
+                minificationFilter: Texture.LinearMipMapLinear
+                magnificationFilter: Texture.Linear
+                wrapMode {
+                    x: WrapMode.Repeat
+                    y: WrapMode.Repeat
+                }
+                generateMipMaps: true
                 maximumAnisotropy: 16.0
             }
         },
         Parameter {
-            name: "normal"
+            name: "normalTexture"
             value: Texture2D {
                 id: normalTexture
                 minificationFilter: Texture.Linear
@@ -82,6 +95,62 @@ Material {
             }
         },
         Parameter { name: "shininess"; value: root.shininess },
-        Parameter { name: "texCoordScale"; value: root.textureScale }
+        Parameter { name: "texCoordScale"; value: textureScale }
     ]
+
+    effect: Effect {
+
+        parameters: [
+            Parameter { name: "lightPosition";  value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
+            Parameter { name: "lightIntensity"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) }
+        ]
+
+        ShaderProgram {
+            id: gl2Es2Shader
+            vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusespecularmap.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/es2/normaldiffusespecularmap.frag")
+        }
+
+        ShaderProgram {
+            id: gl3Shader
+            vertexShaderCode:   loadSource("qrc:/shaders/gl3/normaldiffusespecularmap.vert")
+            fragmentShaderCode: loadSource("qrc:/shaders/gl3/normaldiffusespecularmap.frag")
+        }
+
+        techniques: [
+            // OpenGL 3.1
+            Technique {
+                openGLFilter {
+                    api: OpenGLFilter.Desktop
+                    profile: OpenGLFilter.Core
+                    majorVersion: 3
+                    minorVersion: 1
+                }
+                renderPasses: RenderPass { shaderProgram: gl3Shader }
+            },
+
+            // OpenGL 2.1
+            Technique {
+                openGLFilter {
+                    api: OpenGLFilter.Desktop
+                    profile: OpenGLFilter.None
+                    majorVersion: 2
+                    minorVersion: 0
+                }
+                renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
+            },
+
+            // OpenGL ES 2
+            Technique {
+                openGLFilter {
+                    api: OpenGLFilter.ES
+                    profile: OpenGLFilter.None
+                    majorVersion: 2
+                    minorVersion: 0
+                }
+                renderPasses: RenderPass { shaderProgram: gl2Es2Shader }
+            }
+        ]
+    }
 }
+

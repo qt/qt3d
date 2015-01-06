@@ -45,24 +45,20 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property Effect normalDiffuseMapEffect
-    property Effect normalDiffuseMapAlphaEffect
-
     property string potShape: "cross"
     property string plantType: "bamboo"
 
     property alias x: pot.x
     property alias y: pot.y
     property alias z: pot.z
-    property alias scale: pot.scale
+    property real scale: 1.0
 
     RenderableEntity {
         id: pot
         source: "assets/houseplants/" + root.potShape + "-pot.obj"
-        scale: 0.03
+        scale: 0.03 * root.scale
 
         material: NormalDiffuseMapMaterial {
-            effect: root.normalDiffuseMapEffect
             diffuse: "assets/houseplants/pot.webp"
             normal: "assets/houseplants/pot_normal.webp"
             specular: Qt.rgba( 0.75, 0.75, 0.75, 1.0 )
@@ -71,8 +67,7 @@ Entity {
 
         RenderableEntity {
             source: "assets/houseplants/" + root.potShape + "-" + root.plantType + ".obj"
-            material: NormalDiffuseMapMaterial {
-                effect: root.normalDiffuseMapAlphaEffect
+            material: NormalDiffuseMapAlphaMaterial {
                 diffuse: "assets/houseplants/"  + root.plantType + ".webp"
                 normal: "assets/houseplants/" + root.plantType + "_normal.webp"
                 shininess: 10.0
@@ -82,7 +77,6 @@ Entity {
         RenderableEntity {
             source: "assets/houseplants/" + root.potShape + "-pot-cover.obj"
             material: NormalDiffuseMapMaterial {
-                effect: root.normalDiffuseMapEffect
                 diffuse: "assets/houseplants/cover.webp"
                 normal: "assets/houseplants/cover_normal.webp"
                 specular: Qt.rgba( 0.05, 0.05, 0.05, 1.0 )

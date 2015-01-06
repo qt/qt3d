@@ -45,21 +45,18 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property Effect diffuseMapEffect
-
     property alias x: chest.x
     property alias y: chest.y
     property alias z: chest.z
-    property alias scale: chest.scale
+    property real scale: 1.0
 
     RenderableEntity {
         id: chest
         source: "assets/chest/Chest.obj"
-        scale: 0.03
+        scale: 0.03 * root.scale
 
         material: DiffuseMapMaterial {
             id: material
-            effect: root.diffuseMapEffect
             diffuse: "assets/chest/diffuse.webp"
             specular: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
             shininess: 2.0

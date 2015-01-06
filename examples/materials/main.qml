@@ -68,33 +68,8 @@ Entity {
         controlledCamera: mainCamera
     }
 
-    AdsEffect {
-        id: adsEffect
-    }
-
-    DiffuseMapEffect {
-        id: diffuseMapEffect
-    }
-
-    DiffuseSpecularMapEffect {
-        id: diffuseSpecularMapEffect
-    }
-
-    NormalDiffuseSpecularMapEffect {
-        id: normalDiffuseSpecularMapEffect
-    }
-
-    NormalDiffuseMapEffect {
-        id: normalDiffuseMapEffect
-    }
-
-    NormalDiffuseMapAlphaEffect {
-        id: normalDiffuseMapAlphaEffect
-    }
-
-    AdsMaterial {
+    PhongMaterial {
         id: redAdsMaterial
-        effect: adsEffect
         ambient: Qt.rgba( 0.2, 0.0, 0.0, 1.0 )
         diffuse: Qt.rgba( 0.8, 0.0, 0.0, 1.0 )
     }
@@ -107,8 +82,6 @@ Entity {
         resolution: Qt.size(20, 20)
 
         material: NormalDiffuseSpecularMapMaterial {
-            id: mat
-            effect: normalDiffuseSpecularMapEffect
             ambient: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
             diffuse:  "assets/textures/pattern_09/diffuse.webp"
             specular: "assets/textures/pattern_09/specular.webp"
@@ -146,45 +119,34 @@ Entity {
 
     Chest {
         x: -8
-        diffuseMapEffect: diffuseMapEffect
     }
 
     HousePlant {
         x: 4
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "square"
         plantType: "bamboo"
     }
 
     HousePlant {
         z: 4
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "triangle"
         plantType: "palm"
     }
 
     HousePlant {
         x: -4
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "sphere"
         plantType: "pine"
     }
 
     HousePlant {
         z: -4
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "cross"
         plantType: "spikes"
     }
 
     HousePlant {
         z: -8
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "cross"
         plantType: "palm"
         scale: 0.05
@@ -192,8 +154,6 @@ Entity {
 
     HousePlant {
         z: 8
-        normalDiffuseMapEffect: normalDiffuseMapEffect
-        normalDiffuseMapAlphaEffect: normalDiffuseMapAlphaEffect
         potShape: "cross"
         plantType: "shrub"
         scale: 0.05
@@ -201,12 +161,10 @@ Entity {
 
     Barrel {
         x: 8
-        normalDiffuseSpecularMapEffect: normalDiffuseSpecularMapEffect
     }
 
     Barrel {
         x: 10
-        normalDiffuseSpecularMapEffect: normalDiffuseSpecularMapEffect
         diffuseColor: "rust"
         bump: "hard_bumps"
         specular: "rust"
@@ -214,21 +172,18 @@ Entity {
 
     Barrel {
         x: 12
-        normalDiffuseSpecularMapEffect: normalDiffuseSpecularMapEffect
         diffuseColor: "blue"
         bump: "middle_bumps"
     }
 
     Barrel {
         x: 14
-        normalDiffuseSpecularMapEffect: normalDiffuseSpecularMapEffect
         diffuseColor: "green"
         bump: "soft_bumps"
     }
 
     Barrel {
         x: 16
-        normalDiffuseSpecularMapEffect: normalDiffuseSpecularMapEffect
         diffuseColor: "stainless_steel"
         bump: "no_bumps"
         specular: "stainless_steel"

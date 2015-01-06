@@ -45,8 +45,6 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property Effect normalDiffuseSpecularMapEffect
-
     property string diffuseColor: "red"
     property string bump: "no_bumps"
     property string specular: ""
@@ -54,17 +52,16 @@ Entity {
     property alias x: barrel.x
     property alias y: barrel.y
     property alias z: barrel.z
-    property alias scale: barrel.scale
     property alias shininess: material.shininess
+    property real scale: 1.0
 
     RenderableEntity {
         id: barrel
         source: "assets/metalbarrel/metal_barrel.obj"
-        scale: 0.03
+        scale: 0.03 * root.scale
 
         material: NormalDiffuseSpecularMapMaterial {
             id: material
-            effect: root.normalDiffuseSpecularMapEffect
             diffuse: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp"
             normal: "assets/metalbarrel/normal_" + root.bump + ".webp"
             specular: {
