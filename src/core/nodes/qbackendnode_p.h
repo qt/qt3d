@@ -45,6 +45,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 
@@ -52,7 +53,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QBackendNodePrivate
+class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
         : public QObserverInterface
         , public QObservableInterface
 {
