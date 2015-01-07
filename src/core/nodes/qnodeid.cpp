@@ -57,11 +57,13 @@ QNodeId QNodeId::createId()
     return id;
 }
 
+#ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug d, const QNodeId &id)
 {
     d << id.id();
     return d;
 }
+#endif
 
 }
 
