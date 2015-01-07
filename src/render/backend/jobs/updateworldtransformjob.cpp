@@ -55,22 +55,18 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node)
+void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node, const QMatrix4x4 &parentTransform)
 {
-    QMatrix4x4 localTransform;
-    QMatrix4x4 parentTransform;
-    if (node->parent())
-        parentTransform = *(node->parent()->worldTransform());
-
+    QMatrix4x4 worldTransform(parentTransform);
     RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
     if (nodeTransform != Q_NULLPTR)
-        localTransform = nodeTransform->transformMatrix();
+        worldTransform = worldTransform * nodeTransform->transformMatrix();
 
-    *(node->worldTransform()) = parentTransform * localTransform;
-    *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(*(node->worldTransform()));
+    *(node->worldTransform()) = worldTransform;
+    *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
 
     Q_FOREACH (Qt3D::Render::RenderEntity *child, node->children())
-        updateWorldTransformAndBounds(child);
+        updateWorldTransformAndBounds(child, worldTransform);
 }
 
 }
@@ -91,7 +87,13 @@ void UpdateWorldTransformJob::run()
     // implementation.
 
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
-    updateWorldTransformAndBounds(m_node);
+
+    QMatrix4x4 parentTransform;
+    RenderEntity *parent = m_node->parent();
+    if (parent != Q_NULLPTR)
+        parentTransform = *(parent->worldTransform());
+    updateWorldTransformAndBounds(m_node, parentTransform);
+
     qCDebug(Jobs) << "Exiting" << Q_FUNC_INFO << QThread::currentThread();
 }
 
