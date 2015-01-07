@@ -70,7 +70,7 @@ public:
     void removeComponent(QComponent *comp);
     void removeAllComponents();
 
-    QEntity *parentEntity();
+    QEntity *parentEntity() const;
 
 protected:
     QEntity(QEntityPrivate &dd, QNode *parent = 0);

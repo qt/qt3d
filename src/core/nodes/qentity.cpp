@@ -149,7 +149,7 @@ void QEntity::removeAllComponents()
         removeComponent(comp);
 }
 
-QEntity *QEntity::parentEntity()
+QEntity *QEntity::parentEntity() const
 {
     QNode *parentNode = QNode::parentNode();
     QEntity *parentEntity = qobject_cast<QEntity *>(parentNode);
