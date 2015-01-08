@@ -1,6 +1,6 @@
 TARGET   = Qt3DQuick
 
-QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
+QT      += core-private gui-private qml qml-private 3dcore 3dcore-private
 
 DEFINES += QT3DQUICK_LIBRARY
 

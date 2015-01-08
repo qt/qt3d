@@ -1,6 +1,6 @@
 TARGET   = Qt3DQuickRenderer
 
-QT      += core core-private qml qml-private quick 3dcore 3drenderer 3dquick 3dcore-private 3drenderer-private
+QT      += core core-private qml qml-private 3dcore 3drenderer 3dquick 3dcore-private 3drenderer-private
 CONFIG -= precompile_header
 
 DEFINES += QT3DQUICKRENDERER_LIBRARY
