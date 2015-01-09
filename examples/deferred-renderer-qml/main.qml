@@ -41,6 +41,7 @@
 
 import Qt3D 2.0
 import Qt3D.Render 2.0
+import QtQuick 2.0 as QQ2
 
 Entity {
     id : root
@@ -80,10 +81,18 @@ Entity {
             },
             Material {
                 parameters : [
-                    Parameter { name : "color"; value : gBuffer.color },
-                    Parameter { name : "position"; value : gBuffer.position },
-                    Parameter { name : "normal"; value : gBuffer.normal },
-                    Parameter { name : "winSize"; value : Qt.size(1024, 1024) }
+                    Parameter { name: "color"; value : gBuffer.color },
+                    Parameter { name: "position"; value : gBuffer.position },
+                    Parameter { name: "normal"; value : gBuffer.normal },
+                    Parameter { name: "winSize"; value : Qt.size(1024, 1024) },
+                    Parameter { name: "PointLightBlock"; value: ShaderData {
+                            property ShaderDataArray lights: ShaderDataArray {
+                                // hard coded lights until we have a way to filter
+                                // ShaderData in a scene
+                                values: [sceneEntity.light, sphere1.light, sphere2.light]
+                            }
+                        }
+                    }
                 ]
                 effect : FinalEffect {}
             }
@@ -94,10 +103,14 @@ Entity {
     Entity {
         id : sceneEntity
 
-        components : PointLight {
-            color : "red"
-            intensity : 3.0
+        property PointLight light: PointLight {
+            color : "white"
+            intensity : 1.0
+            QQ2.ColorAnimation on color { from: "white"; to: "blue"; duration: 4000; loops: 2 }
+            QQ2.NumberAnimation on intensity { from: 0; to: 15.0; duration: 1000; loops: QQ2.Animation.Infinite }
         }
+
+        components: light
 
         Camera {
             id: camera
@@ -140,7 +153,7 @@ Entity {
 
             property PointLight light : PointLight {
                 color : "yellow"
-                intensity : 1.0
+                intensity : 2.0
             }
 
             components : [

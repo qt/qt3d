@@ -81,7 +81,9 @@ Effect {
                         };
 
                         const int lightCount = 3;
-                        uniform PointLight pointLights[lightCount];
+                        uniform PointLightBlock {
+                             PointLight lights[lightCount];
+                        } pointLights;
 
                         void main()
                         {
@@ -92,8 +94,8 @@ Effect {
 
                             vec4 lightColor;
                             for (int i = 0; i < 3; i++) {
-                                vec3 s = normalize(pointLights[i].position - pos);
-                                lightColor += pointLights[i].color * (pointLights[i].intensity * max(dot(s, norm), 0.0));
+                                vec3 s = normalize(pointLights.lights[i].position - pos);
+                                lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
                             fragColor = col * lightColor;
