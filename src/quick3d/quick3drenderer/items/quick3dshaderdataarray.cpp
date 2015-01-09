@@ -57,7 +57,7 @@ public:
         : QNodePrivate(qq)
     {}
 
-    QList<Quick3DShaderData *> m_values;
+    QList<QShaderData *> m_values;
 };
 
 Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
@@ -65,16 +65,16 @@ Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
 {
 }
 
-QQmlListProperty<Quick3DShaderData> Quick3DShaderDataArray::valuesList()
+QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
 {
-    return QQmlListProperty<Quick3DShaderData>(this, 0,
-                                               &Quick3DShaderDataArray::appendValue,
-                                               &Quick3DShaderDataArray::valueCount,
-                                               &Quick3DShaderDataArray::valueAt,
-                                               &Quick3DShaderDataArray::clearValues);
+    return QQmlListProperty<QShaderData>(this, 0,
+                                         &Quick3DShaderDataArray::appendValue,
+                                         &Quick3DShaderDataArray::valueCount,
+                                         &Quick3DShaderDataArray::valueAt,
+                                         &Quick3DShaderDataArray::clearValues);
 }
 
-QList<Quick3DShaderData *> Quick3DShaderDataArray::values() const
+QList<QShaderData *> Quick3DShaderDataArray::values() const
 {
     Q_D(const Quick3DShaderDataArray);
     return d->m_values;
@@ -84,29 +84,29 @@ void Quick3DShaderDataArray::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const Quick3DShaderDataArray *dataArray = static_cast<const Quick3DShaderDataArray *>(ref);
-    Q_FOREACH (Quick3DShaderData *v, dataArray->d_func()->m_values)
-        d_func()->m_values.append(static_cast<Quick3DShaderData *>(QNode::clone(v)));
+    Q_FOREACH (QShaderData *v, dataArray->d_func()->m_values)
+        d_func()->m_values.append(static_cast<QShaderData *>(QNode::clone(v)));
 }
 
-void Quick3DShaderDataArray::appendValue(QQmlListProperty<Quick3DShaderData> *list, Quick3DShaderData *bar)
+void Quick3DShaderDataArray::appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.append(bar);
 }
 
-Quick3DShaderData *Quick3DShaderDataArray::valueAt(QQmlListProperty<Quick3DShaderData> *list, int index)
+QShaderData *Quick3DShaderDataArray::valueAt(QQmlListProperty<QShaderData> *list, int index)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.at(index);
 }
 
-int Quick3DShaderDataArray::valueCount(QQmlListProperty<Quick3DShaderData> *list)
+int Quick3DShaderDataArray::valueCount(QQmlListProperty<QShaderData> *list)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     return static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.count();
 }
 
-void Quick3DShaderDataArray::clearValues(QQmlListProperty<Quick3DShaderData> *list)
+void Quick3DShaderDataArray::clearValues(QQmlListProperty<QShaderData> *list)
 {
     Quick3DShaderDataArray *self = static_cast<Quick3DShaderDataArray *>(list->object);
     static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.clear();

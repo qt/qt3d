@@ -82,6 +82,13 @@ struct ShaderUniform
 
 struct ShaderUniformBlock
 {
+    ShaderUniformBlock()
+        : m_index(-1)
+        , m_binding(-1)
+        , m_activeUniformsCount(0)
+        , m_size(0)
+    {}
+
     QString m_name;
     int m_index;
     int m_binding;

@@ -86,6 +86,9 @@ public:
     QVector<ShaderAttribute> attributes() const;
     QVector<ShaderUniformBlock> uniformBlocks() const;
 
+    QHash<QString, ShaderUniform> activeUniformsForBlock(int blockIndex) const;
+    ShaderUniformBlock uniformBlock(int blockIndex);
+
 private:
     QOpenGLShaderProgram *m_program;
 
@@ -100,6 +103,7 @@ private:
 
     QVector<QString> m_uniformBlockNames;
     QVector<ShaderUniformBlock> m_uniformBlocks;
+    QHash<int, QHash<QString, ShaderUniform> > m_blockIndexToShaderUniforms;
 
     QHash<QString, int> m_fragOutputs;
 

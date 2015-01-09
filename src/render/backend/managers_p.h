@@ -61,6 +61,7 @@
 #include <Qt3DRenderer/private/renderparameter_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRenderer/private/uniformbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -276,6 +277,15 @@ class ShaderDataManager : public QResourceManager<
 {
 public:
     ShaderDataManager() {}
+};
+
+class UBOManager : public QResourceManager<
+        UniformBuffer,
+        ShaderDataShaderUboKey,
+        16,
+        Qt3D::ArrayAllocatingPolicy,
+        Qt3D::ObjectLevelLockingPolicy>
+{
 };
 
 } // Render

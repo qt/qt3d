@@ -97,7 +97,9 @@ QGraphicsContext::QGraphicsContext()
     , m_activeShader(Q_NULLPTR)
     , m_material(Q_NULLPTR)
     , m_stateSet(Q_NULLPTR)
+    , m_renderer(Q_NULLPTR)
     , m_contextInfo(new QOpenGLFilter())
+    , m_uboTempArray(QByteArray(1024, 0))
 {
     static_contexts[m_id] = this;
 }
@@ -659,18 +661,48 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
         }
     }
 
-    // Bind UniformBlocks to UBO
-    const QVector<BlockToUBO> &ubos = uniforms.uniformBuffers();
-    for (int i = 0; i < ubos.length(); ++i) {
-        RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(ubos[i].second);
-        if (shaderData != Q_NULLPTR) {
-            // bind Uniform Block of index ubos[i].first to binding point i
-            bindUniformBlock(m_shaderHash.value(m_activeShader->dna())->programId(), ubos[i].first, i);
+    // Bind UniformBlocks to UBO and update UBO from RenderShaderData
+    const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
+    for (int i = 0; i < blockToUbos.length(); ++i) {
+        const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
+        if (block.m_index != -1 && block.m_size > 0) {
+            UniformBuffer *ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
+                                                                                                 m_activeShader->peerUuid()));
+            // bind Uniform Block of index ubos[i].m_index to binding point i
+            bindUniformBlock(m_shaderHash.value(m_activeShader->dna())->programId(), block.m_index, i);
             // bind the UBO to the binding point i
             // Specs specify that there are at least 14 binding points
-            shaderData->apply(this, i);
+
+            // Allocate ubo if not allocated previously
+            if (!ubo->isCreated()) {
+                ubo->create(this);
+                ubo->allocate(this, block.m_size);
+            }
+
+            // update the ubo if needed
+            if (blockToUbos[i].m_needsUpdate) {
+                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForBlock(block.m_index);
+                const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
+                QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
+
+                while (uniformsIt != uniformsEnd) {
+                    if (blockToUbos[i].m_updatedProperties.contains(uniformsIt.key())) {
+                        buildUniformBuffer(blockToUbos[i].m_updatedProperties.value(uniformsIt.key()),
+                                           uniformsIt.value(),
+                                           m_uboTempArray);
+                        ubo->update(this, m_uboTempArray.constData() + uniformsIt.value().m_offset,
+                                    uniformsIt.value().m_rawByteSize,
+                                    uniformsIt.value().m_offset);
+                    }
+                    ++uniformsIt;
+                }
+            }
+            // bind UBO to binding point
+            ubo->bindToUniformBlock(this, i);
         }
     }
+
+    // Update uniforms in the Default Uniform Block
     m_activeShader->updateUniforms(this, uniforms);
 }
 

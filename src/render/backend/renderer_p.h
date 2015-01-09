@@ -124,6 +124,7 @@ class AttachmentManager;
 class SortCriterionManager;
 class ParameterManager;
 class ShaderDataManager;
+class UBOManager;
 
 class Renderer
 {
@@ -176,6 +177,7 @@ public:
     inline SortCriterionManager *sortCriterionManager() const { return m_sortCriterionManager; }
     inline ParameterManager *parameterManager() const { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const { return m_shaderDataManager; }
+    inline UBOManager *uboManager() const { return m_uboManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -257,6 +259,7 @@ private:
     SortCriterionManager *m_sortCriterionManager;
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
+    UBOManager *m_uboManager;
 
     QTimer *m_frameTimer;
 

@@ -50,10 +50,29 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+namespace {
+
+const int qListShaderDataTypeId = qMetaTypeId<QList<QShaderData*> >();
+const int qShaderDataTypeId = qMetaTypeId<QShaderData*>();
+
+}
+
 class QShaderDataPropertyReader: public PropertyReaderInterface
 {
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
+        QShaderData *shaderData = Q_NULLPTR;
+
+        if (v.userType() == qShaderDataTypeId && (shaderData = v.value<QShaderData *>()) != Q_NULLPTR) {
+            return QVariant::fromValue(shaderData->id());
+        } else if (v.userType() == qListShaderDataTypeId) {
+            QVariantList vlist;
+            Q_FOREACH (QShaderData *data, v.value<QList<QShaderData *> >()) {
+                if (data)
+                    vlist.append(QVariant::fromValue(data->id()));
+            }
+            return vlist;
+        }
         return v;
     }
 };

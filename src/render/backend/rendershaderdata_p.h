@@ -44,7 +44,6 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
-#include <private/uniformbuffer_p.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <QMutex>
 
@@ -55,6 +54,8 @@ namespace Qt3D {
 namespace Render {
 
 class QGraphicsContext;
+class UniformBuffer;
+class ShaderDataManager;
 
 class RenderShaderData : public QBackendNode
 {
@@ -65,31 +66,46 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<QString, QVariant> & properties() { return m_properties; }
     inline QHash<QString, QVariant> properties() const { return m_properties; }
-    inline QHash<QString, ShaderUniform> activeProperties() const { return m_activeProperties; }
-    inline bool initialized() const { return m_initialized; }
+    inline QHash<QString, QVariant> updatedProperties() const { return m_updatedProperties; }
 
-    void initialize(const ShaderUniformBlock &block);
-    void appendActiveProperty(const QString &propertyName, const ShaderUniform &description);
-    void setActiveUniformValues(const QHash<QString, QVariant> &newValues);
-    void apply(QGraphicsContext *ctx, int bindingPoint);
+    // Called by cleanup job
+    inline static QList<QNodeId> updatedShaderDataList() { return m_updatedShaderData; }
+    inline static void clearShaderDataList() { return m_updatedShaderData.clear(); }
+    void clearUpdate();
+
+    // Call by RenderViewJobs
+    void addToClearUpdateList();
+    bool needsUpdate();
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateUniformBuffer(QGraphicsContext *ctx);
 
 private:
     QHash<QString, QVariant> m_properties;
-    QHash<QString, ShaderUniform> m_activeProperties;
-    QHash<QString, QVariant> m_activeUniformToValues;
-    ShaderUniformBlock m_block;
-    QByteArray m_data;
-    UniformBuffer m_ubo;
-    QStringList m_updatedProperties;
-    bool m_initialized;
-    QAtomicInt m_needsBufferUpdate;
-    // QMutex has no copy operator
-    QMutex *m_mutex;
+    QHash<QString, QVariant> m_updatedProperties;
     PropertyReaderInterfacePtr m_propertyReader;
+    QHash<QString, QVariant> m_nestedShaderDataProperties;
+    ShaderDataManager *m_manager;
+    QMutex *m_mutex;
+    static QList<QNodeId> m_updatedShaderData;
+
+    void readPeerProperties(QShaderData *peer);
+    void setManager(ShaderDataManager *manager);
+
+    friend class RenderShaderDataFunctor;
+};
+
+class RenderShaderDataFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderShaderDataFunctor(ShaderDataManager *manager);
+
+    QBackendNode *create(QNode *frontend) const Q_DECL_FINAL;
+    QBackendNode *get(QNode *frontend) const Q_DECL_FINAL;
+    void destroy(QNode *frontend) const Q_DECL_FINAL;
+
+private:
+    ShaderDataManager *m_manager;
 };
 
 } // Render

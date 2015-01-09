@@ -117,7 +117,12 @@ private:
     int m_textureUnit;
 };
 
-typedef QPair<int, QNodeId> BlockToUBO;
+struct BlockToUBO {
+    int m_blockIndex;
+    QNodeId m_shaderDataID;
+    bool m_needsUpdate;
+    QHash<QString, QVariant> m_updatedProperties;
+};
 
 class QUniformPack
 {

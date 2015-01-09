@@ -395,21 +395,29 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
 }
 
 const QString blockArray = QStringLiteral("[%1]");
+const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
 
-// Build a QHash<QString, QString> -> QmlPropertyName / ActiveUniformName
-void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms, const QString &blockName, const QString &qmlPropertyName, const QVariant &value)
+// Builds a QHash<QString, QString> -> QmlPropertyName / ActiveUniformName
+void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
+                                                const QString &blockName,
+                                                const QString &qmlPropertyName,
+                                                const QVariant &value,
+                                                bool updatedPropertiesOnly)
 {
     // In the end, values are either scalar or a scalar array
     // Composed elements (structs, structs array) are simplified into simple scalars
     if (value.userType() == QMetaType::QVariantList) { // Array
         QVariantList list = value.value<QVariantList>();
-        if (list.at(0).value<QShaderData *>()) { // Array of struct qmlPropertyName[i].structMember
+        if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
             for (int i = 0; i < list.size(); ++i) {
-                QShaderData *subData = Q_NULLPTR;
-                if ((subData = list.at(i).value<QShaderData *>())) {
-                    RenderShaderData *subShaderData = m_renderer->shaderDataManager()->lookupResource(subData->id());
+                if (list.at(i).userType() == qNodeIdTypeId) {
+                    RenderShaderData *subShaderData = m_renderer->shaderDataManager()->lookupResource(list.at(i).value<QNodeId>());
                     if (subShaderData)
-                        buildActiveUniformNameValueMapStructHelper(uniforms, subShaderData, blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i));
+                        buildActiveUniformNameValueMapStructHelper(uniforms,
+                                                                   subShaderData,
+                                                                   blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i),
+                                                                   QStringLiteral(""),
+                                                                   updatedPropertiesOnly);
                 }
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
@@ -417,11 +425,14 @@ void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUnifo
             if (uniforms.contains(varName))
                 m_activeUniformNamesToValue.insert(varName, value);
         }
-    } else if (value.value<QShaderData *>()) { // Struct qmlPropertyName.structMember
-        QShaderData *subData = value.value<QShaderData *>();
-        RenderShaderData *rSubShaderData = m_renderer->shaderDataManager()->lookupResource(subData->id());
+    } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
+        RenderShaderData *rSubShaderData = m_renderer->shaderDataManager()->lookupResource(value.value<QNodeId>());
         if (rSubShaderData)
-            buildActiveUniformNameValueMapStructHelper(uniforms, rSubShaderData, blockName, qmlPropertyName);
+            buildActiveUniformNameValueMapStructHelper(uniforms,
+                                                       rSubShaderData,
+                                                       blockName,
+                                                       qmlPropertyName,
+                                                       updatedPropertiesOnly);
     } else { // Scalar / Vec
         QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
         if (uniforms.contains(varName))
@@ -429,9 +440,13 @@ void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUnifo
     }
 }
 
-void RenderView::buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms, RenderShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
+void RenderView::buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms,
+                                                            RenderShaderData *rShaderData,
+                                                            const QString &blockName,
+                                                            const QString &qmlPropertyName,
+                                                            bool updatedPropertiesOnly)
 {
-    const QHash<QString, QVariant> &properties = rShaderData->properties();
+    const QHash<QString, QVariant> &properties = updatedPropertiesOnly ? rShaderData->updatedProperties() : rShaderData->properties();
     QHash<QString, QVariant>::const_iterator it = properties.begin();
     const QHash<QString, QVariant>::const_iterator end = properties.end();
 
@@ -440,7 +455,8 @@ void RenderView::buildActiveUniformNameValueMapStructHelper(const QHash<QString,
         buildActiveUniformNameValueMap(uniforms,
                                        blockName + prefix + qmlPropertyName,
                                        it.key(),
-                                       it.value());
+                                       it.value(),
+                                       updatedPropertiesOnly);
         ++it;
     }
 }
@@ -451,51 +467,52 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
     if ((shaderData = value.value<QShaderData *>())) {
         RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->id());
 
-        // TODO: We need an independent UBO class rather than RenderShaderData
-        // and index it by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
+        // UBO are indexed by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
         // while still making sure that if they have a different layout everything will still work
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
+        // but how do we know that ? We'll need to compare ShaderUniformBlocks
 
-        if (rShaderData) {
-            if (!rShaderData->initialized()) {
-                // Provides necessary info to rShaderData
-                // to build the UBO
+        if (shaderData) {
+            // For now a UBO is unique to a Shader and a ShaderData
+            // later we might want to make them shareable across Shaders but
+            // that will require checking that all Shaders have the same layout for a given
+            // uniform block
+            ShaderDataShaderUboKey uboKey(rShaderData->peerUuid(),
+                                          shader->peerUuid());
 
-                // Find all active uniforms for the shader block
-                const QVector<ShaderUniform> &uniforms = shader->uniforms();
-                QVector<ShaderUniform>::const_iterator uniformsIt = uniforms.begin();
-                const QVector<ShaderUniform>::const_iterator uniformsEnd = uniforms.end();
-                const QVector<QString> &uniformNames = shader->uniformsNames();
-                QVector<QString>::const_iterator uniformNamesIt = uniformNames.begin();
-                const QVector<QString>::const_iterator uniformNamesEnd = uniformNames.end();
+            BlockToUBO uniformBlockUBO;
+            uniformBlockUBO.m_blockIndex = block.m_index;
+            uniformBlockUBO.m_shaderDataID = rShaderData->peerUuid();
+            bool uboNeedsUpdate = false;
 
-                while (uniformsIt != uniformsEnd && uniformNamesIt != uniformNamesEnd) {
-                    if (uniformsIt->m_blockIndex == block.m_index)
-                        rShaderData->appendActiveProperty(*uniformNamesIt, *uniformsIt);
-                    ++uniformsIt;
-                    ++uniformNamesIt;
-                }
-
-                // the RenderShaderData is initialized once even though it may be used by several different shaders
-                // the reasoning being that is that now matter which shader is using it, they should all be providing the same
-                // uniform block to interface it with (and the same layout)
-                // this is obviously wrong at the moment but will be changed once the solution above (dedicated UBO) has been implemented
-                // Be Careful, the block passed is used to store data shared by all shaders using the same UniformBlock (size, name)
-                // the index however could vary on a per shader basis so it shouldn't be used
-                rShaderData->initialize(block);
+            // build UBO at uboId if not created before
+            if (!m_renderer->uboManager()->contains(uboKey)) {
+                m_renderer->uboManager()->getOrCreateResource(uboKey);
+                uboNeedsUpdate = true;
             }
 
+            // If rShaderData  has been updated (property has changed or one of the nested properties has changed)
             // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
-            // TODO: We should do this only when we know that the content of the QShaderData has changed
-            // and not every time like at the moment
-            const QHash<QString, QVariant> &properties = rShaderData->properties();
-            QHash<QString, QVariant>::const_iterator it = properties.begin();
-            const QHash<QString, QVariant>::const_iterator end = properties.end();
+            // for all the updated properties (all the properties if the UBO was just created)
+            if (rShaderData->needsUpdate() || uboNeedsUpdate) {
+                // Retrieve names and description of each active uniforms in the uniform block
+                const QHash<QString, ShaderUniform> &activeProperties = shader->activeUniformsForBlock(block.m_index);
 
-            for (; it != end; ++it)
-                buildActiveUniformNameValueMap(rShaderData->activeProperties(), block.m_name, it.key(), it.value());
-            rShaderData->setActiveUniformValues(m_activeUniformNamesToValue);
-            uniformPack.setUniformBuffer(BlockToUBO(block.m_index, rShaderData->peerUuid()));
+                const QHash<QString, QVariant> &properties = uboNeedsUpdate ? rShaderData->properties() : rShaderData->updatedProperties();
+                QHash<QString, QVariant>::const_iterator it = properties.begin();
+                const QHash<QString, QVariant>::const_iterator end = properties.end();
+
+                for (; it != end; ++it)
+                    buildActiveUniformNameValueMap(activeProperties, block.m_name, it.key(), it.value(), !uboNeedsUpdate);
+
+                if (!uboNeedsUpdate)
+                    rShaderData->addToClearUpdateList();
+                uniformBlockUBO.m_updatedProperties = m_activeUniformNamesToValue;
+                uboNeedsUpdate = true;
+            }
+
+            uniformBlockUBO.m_needsUpdate = uboNeedsUpdate;
+            uniformPack.setUniformBuffer(uniformBlockUBO);
         }
     }
 }

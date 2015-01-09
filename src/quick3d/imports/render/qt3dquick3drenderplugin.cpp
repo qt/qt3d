@@ -139,10 +139,10 @@ QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
 {
-    QList<Qt3D::Render::Quick::Quick3DShaderData *> arrayValues = array->values();
+    QList<Qt3D::QShaderData *> arrayValues = array->values();
     QVariantList values;
     values.reserve(arrayValues.size());
-    Q_FOREACH (Qt3D::Render::Quick::Quick3DShaderData *data, arrayValues)
+    Q_FOREACH (Qt3D::QShaderData *data, arrayValues)
         values.append(QVariant::fromValue(data));
     return values;
 }
@@ -170,6 +170,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>(uri, 2, 0, "Material");
     qmlRegisterExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>(uri, 2, 0, "RenderPass");
     qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterUncreatableType<Qt3D::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
 

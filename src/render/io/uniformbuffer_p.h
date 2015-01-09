@@ -43,6 +43,7 @@
 #define QT3D_RENDER_UNIFORMBUFFER_P_H
 
 #include <QOpenGLContext>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,6 +52,8 @@ namespace Qt3D {
 namespace Render {
 
 class QGraphicsContext;
+
+typedef QPair<QNodeId, QNodeId> ShaderDataShaderUboKey;
 
 class UniformBuffer
 {

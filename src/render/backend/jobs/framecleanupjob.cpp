@@ -39,44 +39,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBACKENDNODE_P_H
-#define QT3D_QBACKENDNODE_P_H
-
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include "framecleanupjob_p.h"
+#include <private/renderer_p.h>
+#include <private/renderentity_p.h>
+#include <private/rendershaderdata_p.h>
+#include <private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
-        : public QObserverInterface
-        , public QObservableInterface
+namespace Render {
+
+FrameCleanupJob::FrameCleanupJob(Renderer *renderer)
+    : m_renderer(renderer)
 {
-public:
-    QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
+}
 
-    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
-    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+FrameCleanupJob::~FrameCleanupJob()
+{
+}
 
-    static QBackendNodePrivate *get(QBackendNode *n);
+void FrameCleanupJob::run()
+{
+    // set each RenderShaderData to not need an update
+    Q_FOREACH (const QNodeId &id, RenderShaderData::updatedShaderDataList()) {
+        RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
+        if (shaderData != Q_NULLPTR)
+            shaderData->clearUpdate();
+    }
+    RenderShaderData::clearShaderDataList();
+    // TO DO: Add anything that should be clean after all RenderViewJobs have been executed
+}
 
-    Q_DECLARE_PUBLIC(QBackendNode)
-    QBackendNode *q_ptr;
-    QBackendNode::Mode m_mode;
-
-    QChangeArbiter *m_arbiter;
-    QNodeId m_peerUuid;
-};
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QBACKENDNODE_P_H

@@ -46,6 +46,9 @@
 #include <QMetaObject>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <private/qgraphicscontext_p.h>
+#include <private/qbackendnode_p.h>
+#include <private/uniformbuffer_p.h>
+#include <private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,12 +56,13 @@ namespace Qt3D {
 
 namespace Render {
 
+QList<QNodeId> RenderShaderData::m_updatedShaderData;
+
 RenderShaderData::RenderShaderData()
     : QBackendNode()
-    , m_initialized(false)
-    , m_mutex(new QMutex)
+    , m_manager(Q_NULLPTR)
+    , m_mutex(new QMutex())
 {
-    m_needsBufferUpdate.fetchAndStoreOrdered(1);
 }
 
 RenderShaderData::~RenderShaderData()
@@ -71,110 +75,161 @@ void RenderShaderData::updateFromPeer(QNode *peer)
     m_properties.clear();
     const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
     m_propertyReader = shaderData->propertyReader();
-    if (!m_propertyReader.isNull()) {
-        const QMetaObject *metaObject = shaderData->metaObject();
-        const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
-        const int propertyCount = metaObject->propertyCount();
+    if (!m_propertyReader.isNull())
+        readPeerProperties(const_cast<QShaderData *>(shaderData));
+}
 
-        for (int i = propertyOffset; i < propertyCount; ++i) {
-            const QMetaProperty property = metaObject->property(i);
-            if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
-                continue;
-            // We should be making clones of inner QShaderData properties
-            // TO DO: If the property is a QShaderData as well, we should register ourself as an observer of updates
-            // otherwise we won't ever be notified about a nested property change
-            // Q_D(QBackendNode);
-            // d->m_arbiter->registerObserver(QBackendNodePrivate::get(this), subQShaderData->nodeId(),NodeUpdated)
-            m_properties.insert(QString::fromLatin1(property.name()),
-                                m_propertyReader->readProperty(shaderData->property(property.name())));
+// Call by cleanup job (single thread)
+void RenderShaderData::clearUpdate()
+{
+    m_updatedProperties.clear();
+    const QHash<QString, QVariant>::const_iterator end = m_nestedShaderDataProperties.end();
+    QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
+
+    while (it != end) {
+        if (it.value().userType() == QMetaType::QVariantList) {
+            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
+                RenderShaderData *nested = m_manager->lookupResource(v.value<QNodeId>());
+                if (nested != Q_NULLPTR)
+                    nested->clearUpdate();
+            }
+        } else {
+            RenderShaderData *nested = m_manager->lookupResource(it.value().value<QNodeId>());
+            if (nested != Q_NULLPTR)
+                nested->clearUpdate();
         }
+        ++it;
     }
 }
 
-void RenderShaderData::initialize(const ShaderUniformBlock &block)
+// Called by renderview jobs (several concurrent threads)
+bool RenderShaderData::needsUpdate()
 {
-    m_block = block;
-    Q_ASSERT(m_block.m_size > 0);
-    // Allocate CPU side buffer
-    m_data = QByteArray(m_block.m_size, 0);
-    m_initialized = true;
-    // Force UBO buffer to be allocated on the GPU when apply is called
-    m_needsBufferUpdate.fetchAndStoreOrdered(1);
+    // We can't perform this only once as we don't know if we would be call as the root or a
+    // nested RenderShaderData
+    QMutexLocker lock(m_mutex);
+    const QHash<QString, QVariant>::const_iterator end = m_nestedShaderDataProperties.end();
+    QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
+
+    while (it != end) {
+        if (it.value().userType() == QMetaType::QVariantList) {
+            QVariantList updatedNodes;
+            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
+                RenderShaderData *nested = m_manager->lookupResource(v.value<QNodeId>());
+                if (nested != Q_NULLPTR && nested->needsUpdate())
+                    updatedNodes << v;
+            }
+            if (!updatedNodes.empty())
+                m_updatedProperties.insert(it.key(), updatedNodes);
+        } else {
+            RenderShaderData *nested = m_manager->lookupResource(it.value().value<QNodeId>());
+            if (nested != Q_NULLPTR && nested->needsUpdate())
+                m_updatedProperties.insert(it.key(), it.value());
+        }
+        ++it;
+    }
+    return m_updatedProperties.size() > 0;
 }
 
-void RenderShaderData::appendActiveProperty(const QString &propertyName, const ShaderUniform &description)
-{
-    m_activeProperties.insert(propertyName, description);
-}
-
-// TO DO: This isn't the cleanest solution but for now, this helps us getting UBOs working
-// and we'll be able to correct that easily once we have something working
-void RenderShaderData::setActiveUniformValues(const QHash<QString, QVariant> &newValues)
+// This will add the RenderShaderData to be cleared from updates at the end of the frame
+// by the cleanup job
+// Called by renderview jobs (several concurrent threads)
+void RenderShaderData::addToClearUpdateList()
 {
     QMutexLocker lock(m_mutex);
-    m_activeUniformToValues = newValues;
+    if (!RenderShaderData::m_updatedShaderData.contains(peerUuid()))
+        RenderShaderData::m_updatedShaderData.append(peerUuid());
 }
 
-void RenderShaderData::updateUniformBuffer(QGraphicsContext *ctx)
+const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
+
+void RenderShaderData::readPeerProperties(QShaderData *shaderData)
 {
-    const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = m_activeProperties.end();
-    QHash<QString, ShaderUniform>::const_iterator uniformsIt = m_activeProperties.begin();
+    const QMetaObject *metaObject = shaderData->metaObject();
+    const int propertyOffset = QShaderData::staticMetaObject.propertyOffset();
+    const int propertyCount = metaObject->propertyCount();
 
-    if (!m_ubo.isCreated()) {
-        m_ubo.create(ctx);
-        m_ubo.allocate(ctx, m_block.m_size);
-        // We need to fill the UBO the first time it is created
-        while (uniformsIt != uniformsEnd) {
-            if (m_activeUniformToValues.contains(uniformsIt.key()))
-                ctx->buildUniformBuffer(m_activeUniformToValues.value(uniformsIt.key()), uniformsIt.value(), m_data);
-            ++uniformsIt;
+    for (int i = propertyOffset; i < propertyCount; ++i) {
+        const QMetaProperty property = metaObject->property(i);
+        if (strcmp(property.name(), "data") == 0 || strcmp(property.name(), "childNodes") == 0) // We don't handle default Node properties
+            continue;
+        QVariant propertyValue = m_propertyReader->readProperty(shaderData->property(property.name()));
+        QString propertyName = QString::fromLatin1(property.name());
+
+        m_properties.insert(propertyName, propertyValue);
+
+        // We check if the property is a QNodeId or QList<QNodeId> so that we can
+        // check nested QShaderData for update
+        if (propertyValue.userType() == qNodeIdTypeId) {
+            m_nestedShaderDataProperties.insert(propertyName, propertyValue);
+        } else if (propertyValue.userType() == QMetaType::QVariantList) {
+            QVariantList list = propertyValue.value<QVariantList>();
+            if (list.count() > 0 && list.at(0).userType() == qNodeIdTypeId)
+                m_nestedShaderDataProperties.insert(propertyName, propertyValue);
         }
-        // Upload the whole buffer to GPU for the first time
-        m_ubo.update(ctx, m_data.constData(), m_block.m_size);
     }
-    uniformsIt = m_activeProperties.begin();
-    while (uniformsIt != uniformsEnd) {
-            if (m_activeUniformToValues.contains(uniformsIt.key())) {
-                // Update CPU side sub buffer
-                ctx->buildUniformBuffer(m_activeUniformToValues.value(uniformsIt.key()), uniformsIt.value(), m_data);
-                // Upload sub buffer to GPU
-                m_ubo.update(ctx, m_data.constData() + uniformsIt.value().m_offset, uniformsIt.value().m_rawByteSize, uniformsIt.value().m_offset);
-        }
-        ++uniformsIt;
-    }
-    m_updatedProperties.clear();
 }
 
-// Make sure QGraphicsContext::bindUniformBlock is called prior to this
-void RenderShaderData::apply(QGraphicsContext *ctx, int bindingPoint)
+void RenderShaderData::setManager(ShaderDataManager *manager)
 {
-    // Upload new data to GPU if it has changed
-    if (m_needsBufferUpdate.fetchAndStoreOrdered(0)) {
-        QMutexLocker lock(m_mutex);
-        // We lock in case m_properties is being updated at the same time
-        updateUniformBuffer(ctx);
-    }
-    m_ubo.bindToUniformBlock(ctx, bindingPoint);
+    m_manager = manager;
 }
 
-// We have a concurrency issue here, updateUniformBuffer might be called
-// by the RenderThread while sceneChangeEvent is being called by the
-// AspectThread / Job thread for transformed properties
 void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    // TO DO check if property update comes from the root QShaderData
-    // or if it comes from one of the nested QShaderData
-    if (!m_propertyReader.isNull() && e->type() == NodeUpdated) {
+    if (!m_propertyReader.isNull()) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QString propertyName = QString::fromLatin1(propertyChange->propertyName());
-        QMutexLocker lock(m_mutex);
-        // lock to update m_properties;
-        if (m_properties.contains(propertyName)) {
+        switch (e->type()) {
+        case NodeUpdated: {
+            // Note we aren't notified about nested QShaderData in this call
+            // only scalar / vec properties
+            if (m_properties.contains(propertyName)) {
+                const QVariant &val = m_propertyReader->readProperty(propertyChange->value());
+                m_properties.insert(propertyName, val);
+                m_updatedProperties.insert(propertyName, val);
+            }
+            break;
+        }
+        case NodeAdded: {
             m_properties.insert(propertyName, m_propertyReader->readProperty(propertyChange->value()));
-            m_updatedProperties.append(propertyName);
-            m_needsBufferUpdate.fetchAndStoreOrdered(1);
+            m_nestedShaderDataProperties.insert(propertyName, propertyChange->value());
+            break;
+        }
+        case NodeRemoved: {
+            if (m_properties.contains(propertyName)) {
+                m_properties.remove(propertyName);
+                m_nestedShaderDataProperties.remove(propertyName);
+            }
+            break;
+        }
+        default:
+            break;
         }
     }
+}
+
+RenderShaderDataFunctor::RenderShaderDataFunctor(ShaderDataManager *manager)
+    : m_manager(manager)
+{
+}
+
+QBackendNode *RenderShaderDataFunctor::create(QNode *frontend) const
+{
+    RenderShaderData *backend = m_manager->getOrCreateResource(frontend->id());
+    backend->setManager(m_manager);
+    backend->setPeer(frontend);
+    return backend;
+}
+
+QBackendNode *RenderShaderDataFunctor::get(QNode *frontend) const
+{
+    return m_manager->lookupResource(frontend->id());
+}
+
+void RenderShaderDataFunctor::destroy(QNode *frontend) const
+{
+    m_manager->releaseResource(frontend->id());
 }
 
 } // Render

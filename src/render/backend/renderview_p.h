@@ -253,8 +253,16 @@ private:
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value);
-    void buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms, const QString &blockName, const QString &qmlPropertyName, const QVariant &value);
-    void buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms, RenderShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName = QString());
+    void buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
+                                        const QString &blockName,
+                                        const QString &qmlPropertyName,
+                                        const QVariant &value,
+                                        bool updatedPropertiesOnly);
+    void buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms,
+                                                    RenderShaderData *rShaderData,
+                                                    const QString &blockName,
+                                                    const QString &qmlPropertyName,
+                                                    bool updatedPropertiesOnlyue);
 
     void buildSortingKey(RenderCommand *command);
 };

@@ -228,6 +228,8 @@ private:
 
     Renderer *m_renderer;
     QOpenGLFilter *m_contextInfo;
+
+    QByteArray m_uboTempArray;
 };
 
 } // Render

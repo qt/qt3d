@@ -39,44 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBACKENDNODE_P_H
-#define QT3D_QBACKENDNODE_P_H
+#ifndef QT3D_RENDER_FRAMECLEANUPJOB_H
+#define QT3D_RENDER_FRAMECLEANUPJOB_H
 
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
-        : public QObserverInterface
-        , public QObservableInterface
+namespace Render {
+
+class Renderer;
+class RenderEntity;
+
+class FrameCleanupJob : public Qt3D::QAspectJob
 {
 public:
-    QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
+    explicit FrameCleanupJob(Renderer *renderer);
+    ~FrameCleanupJob();
 
-    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
-    void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+protected:
+    void run() Q_DECL_FINAL;
 
-    static QBackendNodePrivate *get(QBackendNode *n);
-
-    Q_DECLARE_PUBLIC(QBackendNode)
-    QBackendNode *q_ptr;
-    QBackendNode::Mode m_mode;
-
-    QChangeArbiter *m_arbiter;
-    QNodeId m_peerUuid;
+private:
+    Renderer *m_renderer;
 };
+
+typedef QSharedPointer<FrameCleanupJob> FrameCleanupJobPtr;
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBACKENDNODE_P_H
+#endif // QT3D_RENDER_FRAMECLEANUPJOB_H

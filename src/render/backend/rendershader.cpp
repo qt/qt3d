@@ -160,6 +160,20 @@ QVector<ShaderUniformBlock> RenderShader::uniformBlocks() const
     return m_uniformBlocks;
 }
 
+QHash<QString, ShaderUniform> RenderShader::activeUniformsForBlock(int blockIndex) const
+{
+    return m_blockIndexToShaderUniforms.value(blockIndex);
+}
+
+ShaderUniformBlock RenderShader::uniformBlock(int blockIndex)
+{
+    for (int i = 0; i < m_uniformBlocks.size(); ++i) {
+        if (m_uniformBlocks[i].m_index == blockIndex)
+            return m_uniformBlocks[i];
+    }
+    return ShaderUniformBlock();
+}
+
 /*!
  * Must be called with a valid, current QOpenGLContext
  */
@@ -283,8 +297,26 @@ void RenderShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &un
 {
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
-    for (int i = 0; i < uniformBlockDescription.size(); ++i)
+    for (int i = 0; i < uniformBlockDescription.size(); ++i) {
         m_uniformBlockNames[i] = uniformBlockDescription[i].m_name;
+
+        // Find all active uniforms for the shader block
+        QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.begin();
+        const QVector<ShaderUniform>::const_iterator uniformsEnd = m_uniforms.end();
+
+        QVector<QString>::const_iterator uniformNamesIt = m_uniformsNames.begin();
+        const QVector<QString>::const_iterator uniformNamesEnd = m_attributesNames.end();
+
+        QHash<QString, ShaderUniform> activeUniformsInBlock;
+
+        while (uniformsIt != uniformsEnd && uniformNamesIt != uniformNamesEnd) {
+            if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index)
+                activeUniformsInBlock.insert(*uniformNamesIt, *uniformsIt);
+            ++uniformsIt;
+            ++uniformNamesIt;
+        }
+        m_blockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
+    }
 }
 
 } // namespace Render

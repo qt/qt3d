@@ -88,4 +88,6 @@ private:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::QShaderData*)
+
 #endif // QT3D_QSHADERDATA_H

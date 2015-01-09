@@ -51,6 +51,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QShaderData;
+
 namespace Render {
 
 namespace Quick {
@@ -61,21 +63,21 @@ class Quick3DShaderData;
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderDataArray : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::Render::Quick::Quick3DShaderData> values READ valuesList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QShaderData> values READ valuesList)
     Q_CLASSINFO("DefaultProperty", "values")
 public:
     explicit Quick3DShaderDataArray(QNode *parent = 0);
-    QQmlListProperty<Quick3DShaderData> valuesList();
-    QList<Quick3DShaderData *> values() const;
+    QQmlListProperty<QShaderData> valuesList();
+    QList<QShaderData *> values() const;
 
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    static void appendValue(QQmlListProperty<Quick3DShaderData> *list, Quick3DShaderData *bar);
-    static Quick3DShaderData *valueAt(QQmlListProperty<Quick3DShaderData> *list, int index);
-    static int valueCount(QQmlListProperty<Quick3DShaderData> *list);
-    static void clearValues(QQmlListProperty<Quick3DShaderData> *list);
+    static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);
+    static QShaderData *valueAt(QQmlListProperty<QShaderData> *list, int index);
+    static int valueCount(QQmlListProperty<QShaderData> *list);
+    static void clearValues(QQmlListProperty<QShaderData> *list);
     Q_DECLARE_PRIVATE(Quick3DShaderDataArray)
     QT3D_CLONEABLE(Quick3DShaderDataArray)
 };
@@ -88,6 +90,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Render::Quick::Quick3DShaderDataArray *)
+Q_DECLARE_METATYPE(Qt3D::Render::Quick::Quick3DShaderDataArray*)
 
 #endif // QT3D_RENDER_QUICK_QUICK3DSHADERDATAARRAY_H

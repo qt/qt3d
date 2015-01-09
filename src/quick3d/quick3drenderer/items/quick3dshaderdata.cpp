@@ -57,6 +57,7 @@ namespace {
 
 const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 const int quick3DShaderDataArrayTypeId = qMetaTypeId<Quick3DShaderDataArray*>();
+const int quick3DShaderDataTypeId = qMetaTypeId<Quick3DShaderData*>();
 
 }
 
@@ -69,6 +70,7 @@ public:
 
     QVariant readProperty(const QVariant &v) Q_DECL_OVERRIDE
     {
+        // qjsValueTypeId are not compile time constant (no switch)
         if (v.userType() == qjsValueTypeId) {
             QJSValue jsValue = v.value<QJSValue>();
             if (jsValue.isArray())
@@ -76,7 +78,21 @@ public:
             else if (jsValue.isVariant())
                 return jsValue.toVariant();
         } else if (v.userType() == quick3DShaderDataArrayTypeId) {
-            return v.value<QVariantList>();
+            Quick3DShaderDataArray *array = v.value<Quick3DShaderDataArray *>();
+            QVariantList innerValues;
+            if (array) {
+                Q_FOREACH (QShaderData *d, array->values()) {
+                    if (d)
+                        innerValues.append(QVariant::fromValue(d->id()));
+                }
+            }
+            return innerValues;
+        } else if (v.userType() == quick3DShaderDataTypeId) {
+            QNodeId id;
+            QShaderData *shaderData = v.value<Quick3DShaderData *>();
+            if (shaderData)
+                id = shaderData->id();
+            return QVariant::fromValue(id);
         }
         return v;
     }

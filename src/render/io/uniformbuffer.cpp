@@ -52,6 +52,9 @@ namespace Qt3D {
 
 namespace Render {
 
+// A UBO is created for each RenderShaderData RenderShader Pair
+// That means a UBO is unique to a shader/shaderdata
+
 UniformBuffer::UniformBuffer()
     : m_bufferId(-1)
     , m_isCreated(false)

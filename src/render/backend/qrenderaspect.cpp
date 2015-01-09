@@ -73,6 +73,7 @@
 #include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
@@ -88,6 +89,7 @@
 #include <Qt3DRenderer/private/loadmeshdatajob_p.h>
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
+#include <Qt3DRenderer/private/framecleanupjob_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -207,7 +209,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
-    registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShaderData, Render::ShaderDataManager>(d->m_renderer->shaderDataManager())));
+    registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
@@ -263,11 +265,14 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // RenderBins with RenderCommands
         QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->createRenderBinJobs();
         // TODO: Add wrapper around ThreadWeaver::Collection
+        Render::FrameCleanupJobPtr cleanupJob(new Render::FrameCleanupJob(d->m_renderer));
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QAspectJobPtr renderBinJob = renderBinJobs.at(i);
             renderBinJob->addDependency(boundingVolumeJob);
             jobs.append(renderBinJob);
+            cleanupJob->addDependency(renderBinJob);
         }
+        jobs.append(cleanupJob);
     }
     return jobs;
 }
