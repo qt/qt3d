@@ -61,13 +61,13 @@ Entity {
     Mesh {
         id: ballMesh
         objectName: "ballMesh"
-        source: ":/assets/ball.obj"
+        source: "assets/ball.obj"
     }
 
     Mesh {
         id: cubeMesh
         objectName: "cubeMesh"
-        source: ":/assets/cube.obj"
+        source: "assets/cube.obj"
     }
 
     AnimatedDiffuseMaterial {

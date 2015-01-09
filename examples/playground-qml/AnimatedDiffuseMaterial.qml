@@ -51,11 +51,32 @@ Material {
     property bool enabled: true
     property Texture2D texture;
 
+    QQ2.Timer {
+        id: testTimer
+        interval: 5000
+        repeat: true
+        running: true
+        property bool even: true
+        onTriggered: {
+            console.log("Triggered");
+            even = !even
+            pointLightBlockShaderData.u.values[0].t = (even) ? null : shaderDataT
+        }
+    }
+
+    ShaderData {
+        id: shaderDataT
+        property real a: testTimer.even ? 1.0 : 0.0
+        property real b: 5.0
+        property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+    }
+
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(material.ambientColor.r, material.ambientColor.g, material.ambientColor.b) },
         Parameter { name: "lightIntensity"; value: Qt.vector3d(0.5, 0.5, 0.5)},
         Parameter { name: "texture"; value: texture},
         Parameter { name: "PointLightBlock"; value: ShaderData {
+                id: pointLightBlockShaderData
                 property color colorAmbient;
                 property color colorDiffuse;
                 property color colorSpecular;
@@ -74,23 +95,19 @@ Material {
                         property real innerV: 2.0
                         property vector3d innerVec3
                         property var innerVec3Array: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
-                        property ShaderData t: ShaderData {
-                            property real a: 1.0
-                            property real b: 5.0
-                            property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
-                        }
-                        property ShaderDataArray c: ShaderDataArray {
-                            ShaderData {
-                                property real a: 3.0
-                                property real b: 4.0
-                                property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                        property ShaderData t: shaderDataT
+                            property ShaderDataArray c: ShaderDataArray {
+                                ShaderData {
+                                    property real a: 3.0
+                                    property real b: 4.0
+                                    property var r: [Qt.vector3d(1, 1, 1), Qt.vector3d(2, 2, 2), Qt.vector3d(3, 3, 3), Qt.vector3d(4, 4, 4)]
+                                }
+                                ShaderData {
+                                    property real a: 2.0
+                                    property real b: 3.0
+                                    property var r: [Qt.vector3d(2, 2, 2), Qt.vector3d(1, 1, 1), Qt.vector3d(4, 4, 4), Qt.vector3d(3, 3, 3)]
+                                }
                             }
-                            ShaderData {
-                                property real a: 2.0
-                                property real b: 3.0
-                                property var r: [Qt.vector3d(2, 2, 2), Qt.vector3d(1, 1, 1), Qt.vector3d(4, 4, 4), Qt.vector3d(3, 3, 3)]
-                            }
-                        }
                     }
                     ShaderData {
                         property real innerV: 3.2
