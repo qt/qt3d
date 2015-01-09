@@ -63,6 +63,7 @@
 #include "deferredrenderer.h"
 #include "finaleffect.h"
 #include "sceneeffect.h"
+#include "pointlightblock.h"
 
 int main(int ac, char **av)
 {
@@ -180,6 +181,12 @@ int main(int ac, char **av)
     screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("normal"), gBuffer->normalTexture()));
     screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("color"), gBuffer->colorTexture()));
     screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("winSize"), QSize(1024, 1024)));
+    PointLightBlock *lightsData = new PointLightBlock(screenQuadMaterial);
+    lightsData->addLight(light1);
+    lightsData->addLight(light2);
+    lightsData->addLight(light3);
+
+    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("PointLightBlock"), QVariant::fromValue(lightsData)));
     screenQuadMaterial->setEffect(finalEffect);
 
     Qt3D::QRotateTransform *screenPlaneRotation = new Qt3D::QRotateTransform();

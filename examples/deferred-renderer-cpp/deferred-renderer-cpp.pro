@@ -8,14 +8,16 @@ HEADERS += \
     gbuffer.h \
     deferredrenderer.h \
     finaleffect.h \
-    sceneeffect.h
+    sceneeffect.h \
+    pointlightblock.h
 
 SOURCES += \
     main.cpp \
     gbuffer.cpp \
     deferredrenderer.cpp \
     finaleffect.cpp \
-    sceneeffect.cpp
+    sceneeffect.cpp \
+    pointlightblock.cpp
 
 RESOURCES += \
     deferred-renderer-cpp.qrc
