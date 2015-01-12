@@ -64,7 +64,7 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QPostman)
-    Q_INVOKABLE void notifyFrontendNode(QSceneChangePtr e);
+    Q_INVOKABLE void notifyFrontendNode(const QSceneChangePtr &e);
 
 };
 

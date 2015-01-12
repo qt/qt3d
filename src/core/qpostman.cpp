@@ -90,7 +90,7 @@ void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
     notifyFrontendNode.invoke(this, Q_ARG(QSceneChangePtr, e));
 }
 
-void QPostman::notifyFrontendNode(QSceneChangePtr e)
+void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 {
     Q_D(QPostman);
     QBackendScenePropertyChangePtr change = qSharedPointerDynamicCast<QBackendScenePropertyChange>(e);
