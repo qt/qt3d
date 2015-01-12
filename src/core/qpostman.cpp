@@ -77,11 +77,17 @@ void QPostman::setScene(QSceneInterface *scene)
     d->m_scene = scene;
 }
 
+static inline QMetaMethod notifyFrontendNodeMethod()
+{
+    int idx = QPostman::staticMetaObject.indexOfMethod("notifyFrontendNode(QSceneChangePtr)");
+    Q_ASSERT(idx != -1);
+    return QPostman::staticMetaObject.method(idx);
+}
+
 void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    QMetaObject::invokeMethod(this,
-                              "notifyFrontendNode",
-                              Q_ARG(QSceneChangePtr, e));
+    static const QMetaMethod notifyFrontendNode = notifyFrontendNodeMethod();
+    notifyFrontendNode.invoke(this, Q_ARG(QSceneChangePtr, e));
 }
 
 void QPostman::notifyFrontendNode(QSceneChangePtr e)
