@@ -42,6 +42,7 @@
 #include <QGuiApplication>
 #include <QPropertyAnimation>
 #include <QUrl>
+#include <QTimer>
 #include <Qt3DCore/Window>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
@@ -160,5 +161,9 @@ int main(int ac, char **av)
 
     engine.setRootEntity(root);
     view.show();
+
+    if (app.arguments().contains(("--bench")))
+        QTimer::singleShot(25 * 1000, &app, &QCoreApplication::quit);
+
     return app.exec();
 }
