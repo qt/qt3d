@@ -86,7 +86,6 @@ private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
     Q_PRIVATE_SLOT(d_func(), void _q_update())
-    QMatrix4x4 applyTransforms() const;
 };
 
 } // namespace Qt3D

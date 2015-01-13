@@ -64,6 +64,8 @@ public:
     mutable QMatrix4x4 m_matrix;
     QMatrix4x4 m_sceneMatrix;
 
+    QMatrix4x4 applyTransforms() const;
+
 private:
     void _q_update();
 };

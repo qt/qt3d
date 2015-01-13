@@ -98,11 +98,19 @@ void QTransformPrivate::_q_update()
     emit static_cast<QTransform *>(q_ptr)->matrixChanged();
 }
 
+QMatrix4x4 QTransformPrivate::applyTransforms() const
+{
+    QMatrix4x4 m;
+    Q_FOREACH (const QAbstractTransform *t, m_transforms)
+        m = t->transformMatrix() * m;
+    return m;
+}
+
 QMatrix4x4 QTransform::matrix() const
 {
     Q_D(const QTransform);
     if (d->m_transformsDirty) {
-        d->m_matrix = applyTransforms();
+        d->m_matrix = d->applyTransforms();
         d->m_transformsDirty = false;
     }
     return d->m_matrix;
@@ -144,15 +152,6 @@ void QTransform::removeTransform(QAbstractTransform *transform)
     d->m_transforms.removeOne(transform);
     QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
     d->_q_update();
-}
-
-QMatrix4x4 QTransform::applyTransforms() const
-{
-    Q_D(const QTransform);
-    QMatrix4x4 m;
-    Q_FOREACH (const QAbstractTransform *t, d->m_transforms)
-        m = t->transformMatrix() * m;
-    return m;
 }
 
 QList<QAbstractTransform *> QTransform::transformList() const
