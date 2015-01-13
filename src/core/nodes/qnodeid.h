@@ -97,7 +97,7 @@ private:
 QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeId &id);
 #endif
 
-QT3DCORESHARED_EXPORT inline uint qHash(const QNodeId &id, uint) Q_DECL_NOTHROW
+inline uint qHash(const QNodeId &id, uint) Q_DECL_NOTHROW
 {
     return id.id();
 }
