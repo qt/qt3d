@@ -57,16 +57,6 @@ RenderTransform::RenderTransform()
 {
 }
 
-RenderTransform::~RenderTransform()
-{
-    cleanup();
-}
-
-void RenderTransform::cleanup()
-{
-    m_transformMatrix.setToIdentity();
-}
-
 void RenderTransform::updateFromPeer(QNode *peer)
 {
     QTransform *transform = static_cast<QTransform *>(peer);

@@ -58,8 +58,6 @@ class RenderTransform : public QBackendNode
 {
 public:
     RenderTransform();
-    ~RenderTransform();
-    void cleanup();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
