@@ -60,7 +60,6 @@ namespace Qt3D {
 Window::Window(QScreen *screen)
     : QWindow(screen)
     , m_camera(Q_NULLPTR)
-    , m_controller(new CameraController())
 
 {
     setSurfaceType(QSurface::OpenGLSurface);
@@ -75,7 +74,7 @@ Window::Window(QScreen *screen)
     setFormat(format);
     create();
 
-    m_controller = new CameraController();
+    m_controller.reset(new CameraController());
 
     m_updateTimer = new QTimer(this);
     m_updateTimer->setInterval(16);

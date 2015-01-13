@@ -85,7 +85,7 @@ protected:
     QCamera* m_camera;
 
     // temporary, borrowed from training material
-    CameraController* m_controller;
+    QScopedPointer<CameraController> m_controller;
 
     QTimer* m_updateTimer;
 };
