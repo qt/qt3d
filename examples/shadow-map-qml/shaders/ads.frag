@@ -51,7 +51,7 @@ uniform vec3 kd;            // Diffuse reflectivity
 uniform vec3 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 
-uniform sampler2D shadowMapTexture;
+uniform sampler2DShadow shadowMapTexture;
 
 in vec4 positionInLightSpace;
 
@@ -60,7 +60,7 @@ in vec3 normal;
 
 out vec4 fragColor;
 
-vec3 adsModel(const in vec3 pos, const in vec3 n)
+vec3 dsModel(const in vec3 pos, const in vec3 n)
 {
     // Calculate the vector from the light to the fragment
     vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - pos);
@@ -80,18 +80,19 @@ vec3 adsModel(const in vec3 pos, const in vec3 n)
     if (dot(s, n) > 0.0)
         specular = pow(max(dot(r, v), 0.0), shininess);
 
-    // Combine the ambient, diffuse and specular contributions
-    return lightIntensity * (ka + kd * diffuse + ks * specular);
+    // Combine the diffuse and specular contributions (ambient is taken into account by the caller)
+    return lightIntensity * (kd * diffuse + ks * specular);
 }
 
 void main()
 {
-    vec3 adjustedPositionInLightSpace = positionInLightSpace.xyz / positionInLightSpace.w;
+    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
 
-    float projectedDepth = texture(shadowMapTexture, adjustedPositionInLightSpace.xy).r;
+    vec3 ambient = lightIntensity * ka;
 
-    if (adjustedPositionInLightSpace.z > projectedDepth)
-        fragColor = vec4(lightIntensity * ka, 1.0);
-    else
-        fragColor = vec4(adsModel(position, normalize(normal)), 1.0);
+    vec3 result = ambient;
+    if (shadowMapSample > 0)
+        result += dsModel(position, normalize(normal));
+
+    fragColor = vec4(result, 1.0);
 }

@@ -83,7 +83,7 @@ Effect {
                     }
 
                     renderStates: [
-                        CullFace { mode: CullFace.Front },
+                        PolygonOffset { factor: 4; units: 4 },
                         DepthTest { func: DepthTest.Less }
                     ]
                 },
@@ -107,12 +107,7 @@ Effect {
                         fragmentShaderCode: loadSource("qrc:/shaders/ads.frag")
                     }
 
-                    // no special render state set. this set of states is the default
-
-//                    renderStates: [
-//                        CullFace { mode: CullFace.Back },
-//                        DepthTest { func: DepthTest.Less }
-//                    ]
+                    // no special render state set => use the default set of states
                 }
             ]
         }

@@ -67,14 +67,16 @@ FrameGraph {
                                 id: depthTexture
                                 width: 1024
                                 height: 1024
-                                format: Texture.D32
+                                format: Texture.DepthFormat
                                 generateMipMaps: false
-                                magnificationFilter: Texture.Nearest
-                                minificationFilter: Texture.Nearest
+                                magnificationFilter: Texture.Linear
+                                minificationFilter: Texture.Linear
                                 wrapMode {
                                     x: WrapMode.ClampToEdge
                                     y: WrapMode.ClampToEdge
                                 }
+                                comparisonFunction: Texture.CompareLessEqual
+                                comparisonMode: Texture.CompareRefToTexture
                             }
                         }
                     ]
