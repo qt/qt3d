@@ -49,7 +49,7 @@ Entity {
 
     Mesh {
         id: trefoilMesh
-        source: ":/assets/obj/trefoil.obj"
+        source: "assets/obj/trefoil.obj"
     }
 
     Transform {

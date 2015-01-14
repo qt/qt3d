@@ -49,7 +49,7 @@ Entity {
 
     Mesh {
         id: toyplaneMesh
-        source: ":/assets/obj/toyplane.obj"
+        source: "assets/obj/toyplane.obj"
     }
 
     Transform {
