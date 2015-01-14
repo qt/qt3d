@@ -544,6 +544,10 @@ void Renderer::submitRenderViews()
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
+
+    // We might not want to render on the default FBO
+    const GLuint defaultFboId = m_graphicsContext->boundFrameBufferObject();
+
     while (m_renderQueues->queuedFrames() > 0)
     {
         // Lock the mutex to protect access to m_surface and check if we are still set
@@ -572,7 +576,7 @@ void Renderer::submitRenderViews()
             // Set RenderTarget ...
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
-                                                    renderViews[i]->attachmentPack());
+                                                    renderViews[i]->attachmentPack(), defaultFboId);
             // Clear BackBuffer
             m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
             // Set the Viewport

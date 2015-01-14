@@ -251,9 +251,9 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     }
 }
 
-void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments)
+void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
 {
-    GLuint fboId = 0; // Default FBO
+    GLuint fboId = defaultFboId; // Default FBO
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->peerUuid())) {

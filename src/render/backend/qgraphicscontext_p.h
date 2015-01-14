@@ -116,7 +116,7 @@ public:
         return m_shaderHash.value(dna, Q_NULLPTR);
     }
 
-    void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments);
+    void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
 
     RenderMaterial* activeMaterial() const
     { return m_material; }
