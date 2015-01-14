@@ -71,6 +71,8 @@ RenderTexture::RenderTexture()
     , m_wrapModeY(QTextureWrapMode::ClampToEdge)
     , m_wrapModeZ(QTextureWrapMode::ClampToEdge)
     , m_maximumAnisotropy(1.0f)
+    , m_comparisonFunction(QTexture::CompareLessEqual)
+    , m_comparisonMode(QTexture::CompareNone)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_lock(new QMutex())
@@ -109,6 +111,8 @@ void RenderTexture::updateFromPeer(QNode *peer)
         m_wrapModeY = texture->wrapMode()->y();
         m_wrapModeZ = texture->wrapMode()->z();
         m_maximumAnisotropy = texture->maximumAnisotropy();
+        m_comparisonFunction = texture->comparisonFunction();
+        m_comparisonMode = texture->comparisonMode();
         // See where it is best to handle source and loading
         Q_FOREACH (TexImageDataPtr imgData, texture->imageData())
             m_imageData.append(imgData);
@@ -241,6 +245,10 @@ void RenderTexture::updateWrapAndFilters()
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
     if (m_gl->hasFeature(QOpenGLTexture::AnisotropicFiltering))
         m_gl->setMaximumAnisotropy(m_maximumAnisotropy);
+    if (m_gl->hasFeature(QOpenGLTexture::TextureComparisonOperators)) {
+        m_gl->setComparisonFunction(static_cast<QOpenGLTexture::ComparisonFunction>(m_comparisonFunction));
+        m_gl->setComparisonMode(static_cast<QOpenGLTexture::ComparisonMode>(m_comparisonMode));
+    }
 }
 
 
@@ -313,6 +321,14 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             float oldMaximumAnisotropy = m_maximumAnisotropy;
             m_maximumAnisotropy = propertyChange->value().toFloat();
             m_filtersAndWrapUpdated = !qFuzzyCompare(oldMaximumAnisotropy, m_maximumAnisotropy);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
+            QTexture::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
+            m_comparisonFunction = propertyChange->value().value<QTexture::ComparisonFunction>();
+            m_filtersAndWrapUpdated = (oldComparisonFunction != m_comparisonFunction);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
+            QTexture::ComparisonMode oldComparisonMode = m_comparisonMode;
+            m_comparisonMode = propertyChange->value().value<QTexture::ComparisonMode>();
+            m_filtersAndWrapUpdated = (oldComparisonMode != m_comparisonMode);
         }
     }
 }

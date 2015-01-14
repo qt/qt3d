@@ -67,6 +67,8 @@ public :
         , m_magFilter(QTexture::Nearest)
         , m_status(QTexture::Loading)
         , m_maximumAnisotropy(1.0f)
+        , m_comparisonFunction(QTexture::CompareLessEqual)
+        , m_comparisonMode(QTexture::CompareNone)
     {}
 
     Q_DECLARE_PUBLIC(QTexture)
@@ -83,6 +85,8 @@ public :
     QTextureWrapMode m_wrapMode;
     QTexture::Status m_status;
     float m_maximumAnisotropy;
+    QTexture::ComparisonFunction m_comparisonFunction;
+    QTexture::ComparisonMode m_comparisonMode;
 };
 
 void QTexture::copy(const QNode *ref)
@@ -101,6 +105,8 @@ void QTexture::copy(const QNode *ref)
     d_func()->m_magFilter = t->d_func()->m_magFilter;
     d_func()->m_autoMipMap = t->d_func()->m_autoMipMap;
     d_func()->m_maximumAnisotropy = t->d_func()->m_maximumAnisotropy;
+    d_func()->m_comparisonFunction = t->d_func()->m_comparisonFunction;
+    d_func()->m_comparisonMode = t->d_func()->m_comparisonMode;
     // TO DO: Copy TexImageDataPtr
 }
 
@@ -118,7 +124,10 @@ QTexture::QTexture(Target target, QNode *parent)
 QTexture::QTexture(QTexture::Target target, QTexture::TextureFormat format,
                    int width, int height, int depth, bool mipMaps,
                    QTexture::Filter magnificationFilter, QTexture::Filter minificationFilter,
-                   float maximumAnisotropy, QNode *parent)
+                   float maximumAnisotropy,
+                   QTexture::ComparisonFunction comparisonFunction,
+                   QTexture::ComparisonMode comparisonMode,
+                   QNode *parent)
     : QNode(*new QTexturePrivate(this), parent)
 {
     d_func()->m_target = target;
@@ -130,6 +139,8 @@ QTexture::QTexture(QTexture::Target target, QTexture::TextureFormat format,
     d_func()->m_magFilter = magnificationFilter;
     d_func()->m_minFilter = minificationFilter;
     d_func()->m_maximumAnisotropy = maximumAnisotropy;
+    d_func()->m_comparisonFunction = comparisonFunction;
+    d_func()->m_comparisonMode = comparisonMode;
 }
 
 QTexture::QTexture(QTexturePrivate &dd, QNode *parent)
@@ -351,6 +362,36 @@ float QTexture::maximumAnisotropy() const
 {
     Q_D(const QTexture);
     return d->m_maximumAnisotropy;
+}
+
+void QTexture::setComparisonFunction(QTexture::ComparisonFunction function)
+{
+    Q_D(QTexture);
+    if (d->m_comparisonFunction != function) {
+        d->m_comparisonFunction = function;
+        emit comparisonFunctionChanged();
+    }
+}
+
+QTexture::ComparisonFunction QTexture::comparisonFunction() const
+{
+    Q_D(const QTexture);
+    return d->m_comparisonFunction;
+}
+
+void QTexture::setComparisonMode(QTexture::ComparisonMode mode)
+{
+    Q_D(QTexture);
+    if (d->m_comparisonMode != mode) {
+        d->m_comparisonMode = mode;
+        emit comparisonModeChanged();
+    }
+}
+
+QTexture::ComparisonMode QTexture::comparisonMode() const
+{
+    Q_D(const QTexture);
+    return d->m_comparisonMode;
 }
 
 class QTextureWrapModePrivate : public QObjectPrivate

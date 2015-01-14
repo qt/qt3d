@@ -98,6 +98,8 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_ENUMS(TextureFormat)
     Q_ENUMS(Filter)
     Q_ENUMS(Status)
+    Q_ENUMS(ComparisonFunction)
+    Q_ENUMS(ComparisonMode)
     Q_PROPERTY(Target target READ target CONSTANT)
     Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
@@ -109,6 +111,8 @@ class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
     Q_PROPERTY(Filter magnificationFilter READ magnificationFilter WRITE setMagnificationFilter NOTIFY magnificationFilterChanged)
     Q_PROPERTY(Filter minificationFilter READ minificationFilter WRITE setMinificationFilter NOTIFY minificationFilterChanged)
     Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
+    Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
+    Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
 
 public:
 
@@ -266,10 +270,29 @@ public:
         CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
 
+    enum ComparisonFunction {
+        CompareLessEqual    = 0x0203,   // GL_LEQUAL
+        CompareGreaterEqual = 0x0206,   // GL_GEQUAL
+        CompareLess         = 0x0201,   // GL_LESS
+        CompareGreater      = 0x0204,   // GL_GREATER
+        CompareEqual        = 0x0202,   // GL_EQUAL
+        CommpareNotEqual    = 0x0205,   // GL_NOTEQUAL
+        CompareAlways       = 0x0207,   // GL_ALWAYS
+        CompareNever        = 0x0200    // GL_NEVER
+    };
+
+    enum ComparisonMode {
+        CompareRefToTexture = 0x884E,   // GL_COMPARE_REF_TO_TEXTURE
+        CompareNone         = 0x0000    // GL_NONE
+    };
+
     explicit QTexture(Target target, QNode *parent = 0);
     explicit QTexture(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
                       bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
-                      float maximumAnisotropy = 1.0f, QNode *parent = 0);
+                      float maximumAnisotropy = 1.0f,
+                      ComparisonFunction comparisonFunction = CompareLessEqual,
+                      ComparisonMode comparisonMode = CompareNone,
+                      QNode *parent = 0);
     ~QTexture();
 
 
@@ -308,6 +331,12 @@ public:
     void setMaximumAnisotropy(float anisotropy);
     float maximumAnisotropy() const;
 
+    void setComparisonFunction(ComparisonFunction function);
+    ComparisonFunction comparisonFunction() const;
+
+    void setComparisonMode(ComparisonMode mode);
+    ComparisonMode comparisonMode() const;
+
     void setSize(int width, int height=1, int depth=1);
 
     void setWidth(int width);
@@ -328,6 +357,8 @@ Q_SIGNALS:
     void magnificationFilterChanged();
     void minificationFilterChanged();
     void maximumAnisotropyChanged();
+    void comparisonFunctionChanged();
+    void comparisonModeChanged();
 
 protected:
     explicit QTexture(QNode *parent = 0);
@@ -346,5 +377,7 @@ QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::QTexture*)
 Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
+Q_DECLARE_METATYPE(Qt3D::QTexture::ComparisonFunction)
+Q_DECLARE_METATYPE(Qt3D::QTexture::ComparisonMode)
 
 #endif // QT3D_QTEXTURE_H

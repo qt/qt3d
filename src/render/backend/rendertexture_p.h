@@ -96,6 +96,9 @@ private:
     QTextureWrapMode::WrapMode m_wrapModeY;
     QTextureWrapMode::WrapMode m_wrapModeZ;
     float m_maximumAnisotropy;
+    QTexture::ComparisonFunction m_comparisonFunction;
+    QTexture::ComparisonMode m_comparisonMode;
+
     QList<TexImageDataPtr> m_imageData;
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
