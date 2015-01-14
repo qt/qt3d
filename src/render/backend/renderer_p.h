@@ -146,7 +146,7 @@ public:
     RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
-    void doRender();
+    void doRender(int maxFrameCount = -1);
 
     QVector<QAspectJobPtr> createRenderBinJobs();
     QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
@@ -193,7 +193,7 @@ public:
     QSurface *surface() const;
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    void submitRenderViews();
+    void submitRenderViews(int maxFrameCount = -1);
 
     void initialize();
     void shutdown();

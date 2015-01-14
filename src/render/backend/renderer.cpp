@@ -490,10 +490,10 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender()
+void Renderer::doRender(int maxFrameCount)
 {
     // Render using current device state and renderer configuration
-    submitRenderViews();
+    submitRenderViews(maxFrameCount);
 }
 
 // Called by threadWeaver RenderViewJobs
@@ -535,7 +535,7 @@ bool Renderer::canRender() const
 }
 
 // Happens in RenderThread context when all RenderViewJobs are done
-void Renderer::submitRenderViews()
+void Renderer::submitRenderViews(int maxFrameCount)
 {
     QMutexLocker locker(&m_mutex);
     m_submitRenderViewsCondition.wait(locker.mutex());
@@ -550,6 +550,10 @@ void Renderer::submitRenderViews()
 
     while (m_renderQueues->queuedFrames() > 0)
     {
+        if (maxFrameCount > 0 && m_frameCount >= uint(maxFrameCount)) {
+            break;
+        }
+
         // Lock the mutex to protect access to m_surface and check if we are still set
         // to the running state and that we have a valid surface on which to draw
         locker.relock();
