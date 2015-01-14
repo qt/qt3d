@@ -242,6 +242,22 @@ AlphaCoverage *AlphaCoverage::getOrCreate()
     return getOrCreateImpl(AlphaCoverage());
 }
 
+void PolygonOffset::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glEnable(GL_POLYGON_OFFSET_FILL);
+    gc->openGLContext()->functions()->glPolygonOffset(m_1, m_2);
+}
+
+PolygonOffset *PolygonOffset::getOrCreate(GLfloat factor, GLfloat units)
+{
+    return getOrCreateImpl(PolygonOffset(factor, units));
+}
+
+PolygonOffset::PolygonOffset(GLfloat factor, GLfloat units)
+    : GenericState2(factor, units)
+{
+}
+
 } // Render
 } // Qt3D
 

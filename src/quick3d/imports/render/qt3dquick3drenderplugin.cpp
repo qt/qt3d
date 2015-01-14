@@ -87,6 +87,7 @@
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DRenderer/qalphacoverage.h>
+#include <Qt3DRenderer/qpolygonoffset.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
@@ -235,6 +236,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3D::QDithering>(uri, 2, 0, "Dithering");
     qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
+    qmlRegisterType<Qt3D::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {

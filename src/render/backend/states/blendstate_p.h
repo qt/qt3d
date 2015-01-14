@@ -201,6 +201,19 @@ private:
     AlphaCoverage();
 };
 
+class PolygonOffset : public GenericState2<PolygonOffset, GLfloat, GLfloat>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return PolygonOffsetStateMask; }
+
+    static PolygonOffset *getOrCreate(GLfloat factor, GLfloat units);
+
+private:
+    PolygonOffset(GLfloat factor, GLfloat units);
+};
+
 } // Render
 } // Qt3D
 

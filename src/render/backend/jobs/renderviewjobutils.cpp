@@ -51,6 +51,7 @@
 #include <Qt3DRenderer/qdithering.h>
 #include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRenderer/qpolygonoffset.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/sphere.h>
@@ -437,6 +438,11 @@ RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *all
         }
         else if (qobject_cast<QAlphaCoverage *>(renderState) != Q_NULLPTR) {
             stateSet->addState(AlphaCoverage::getOrCreate());
+        }
+        else if (qobject_cast<QPolygonOffset *>(renderState) != Q_NULLPTR) {
+            QPolygonOffset *polygonOffset = qobject_cast<QPolygonOffset *>(renderState);
+            stateSet->addState(PolygonOffset::getOrCreate(polygonOffset->factor(),
+                                                          polygonOffset->units()));
         }
     }
 

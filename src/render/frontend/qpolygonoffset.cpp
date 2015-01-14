@@ -1,7 +1,6 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,89 +39,72 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSTATE_H
-#define QT3D_RENDER_RENDERSTATE_H
-
-#include <QList>
-#include <QSet>
+#include "qpolygonoffset.h"
+#include <private/qrenderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-namespace Render {
 
-class QGraphicsContext;
-
-enum StateMask
-{
-    BlendStateMask          = 1 << 0,
-    StencilWriteStateMask   = 1 << 1,
-    StencilTestStateMask    = 1 << 2,
-    ScissorStateMask        = 1 << 3,
-    DepthTestStateMask      = 1 << 4,
-    DepthWriteStateMask     = 1 << 5,
-    CullFaceStateMask       = 1 << 6,
-    AlphaTestMask           = 1 << 7,
-    FrontFaceStateMask      = 1 << 8,
-    DitheringStateMask      = 1 << 9,
-    AlphaCoverageStateMask  = 1 << 10,
-    PolygonOffsetStateMask  = 1 << 11
-};
-
-typedef quint64 StateMaskSet;
-
-class RenderState
+class QPolygonOffsetPrivate : public QRenderStatePrivate
 {
 public:
-    virtual ~RenderState() {}
+    QPolygonOffsetPrivate(QPolygonOffset *qq)
+        : QRenderStatePrivate(qq)
+        , m_factor(0)
+        , m_units(0)
+    {
+    }
 
-    virtual void apply(QGraphicsContext* gc) const = 0;
+    float m_factor;
+    float m_units;
 
-    virtual StateMaskSet mask() const = 0;
-
-protected:
+    Q_DECLARE_PUBLIC(QPolygonOffset)
 };
 
-class RenderStateSet
+QPolygonOffset::QPolygonOffset(QNode *parent)
+    : QRenderState(*new QPolygonOffsetPrivate(this), parent)
 {
-public:
-    RenderStateSet();
+}
 
-    void addState(RenderState* ds);
+float QPolygonOffset::factor() const
+{
+    Q_D(const QPolygonOffset);
+    return d->m_factor;
+}
 
-    /**
-     * @brief changeCost - metric of cost to change to this state-set from
-     * a candidate previous state-set. This is used to find an optimal
-     * ordering of state-sets when sending draw commands.
-     * @param previousState
-     * @return
-     */
-    int changeCost(RenderStateSet* previousState);
+void QPolygonOffset::setFactor(float factor)
+{
+    Q_D(QPolygonOffset);
+    if (d->m_factor != factor) {
+        d->m_factor = factor;
+        emit factorChanged(d->m_factor);
+    }
+}
 
-    void apply(QGraphicsContext* gc);
+float QPolygonOffset::units() const
+{
+    Q_D(const QPolygonOffset);
+    return d->m_units;
+}
 
-    StateMaskSet stateMask() const;
+void QPolygonOffset::setUnits(float units)
+{
+    Q_D(QPolygonOffset);
+    if (d->m_units != units) {
+        d->m_units = units;
+        emit unitsChanged(d->m_units);
+    }
+}
 
-    void resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext* gc);
-private:
-    /**
-     * @brief contains - check if this set contains a matching piece of state
-     * @param ds
-     * @return
-     */
-    bool contains(RenderState* ds) const;
+void QPolygonOffset::copy(const QNode *ref)
+{
+    QRenderState::copy(ref);
+    const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
+    d_func()->m_factor = refState->d_func()->m_factor;
+    d_func()->m_units = refState->d_func()->m_units;
+}
 
-    QSet<RenderState*> m_states;
-
-    StateMaskSet m_stateMask;
-
-    RenderStateSet* m_cachedPrevious;
-    QList<RenderState*> m_cachedDeltaStates;
-};
-
-} // Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERSTATE_H
