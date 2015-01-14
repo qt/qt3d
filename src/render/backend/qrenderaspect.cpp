@@ -110,9 +110,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect *qq)
+QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type, QRenderAspect *qq)
     : QAbstractAspectPrivate(qq)
-    , m_renderer(new Render::Renderer)
+    , m_renderer(new Render::Renderer(type))
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_surface(Q_NULLPTR)
     , m_time(0)
@@ -157,7 +157,7 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(this), parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(Threaded, this), parent)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
@@ -165,7 +165,14 @@ QRenderAspect::QRenderAspect(QObject *parent)
     registerBackendTypes();
 }
 
+QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(type, this), parent)
+{
+    registerBackendTypes();
+}
+
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
+
     : QAbstractAspect(dd, parent)
 {
     registerBackendTypes();
@@ -201,6 +208,18 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShaderData, Render::ShaderDataManager>(d->m_renderer->shaderDataManager())));
+}
+
+void QRenderAspect::renderInitialize(QOpenGLContext *context)
+{
+    Q_D(QRenderAspect);
+    d->m_renderer->initialize(context);
+}
+
+void QRenderAspect::renderSynchronous()
+{
+    Q_D(QRenderAspect);
+    d->m_renderer->doRender(1);
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)

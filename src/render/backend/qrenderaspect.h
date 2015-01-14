@@ -47,6 +47,8 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLContext;
+
 namespace Qt3D {
 
 namespace Render {
@@ -59,7 +61,16 @@ class QT3DRENDERERSHARED_EXPORT QRenderAspect : public QAbstractAspect
 {
     Q_OBJECT
 public:
+    enum RenderType {
+        Synchronous,
+        Threaded
+    };
+
     explicit QRenderAspect(QObject *parent = 0);
+    explicit QRenderAspect(RenderType type, QObject *parent = 0);
+
+    void renderInitialize(QOpenGLContext *context);
+    void renderSynchronous();
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 

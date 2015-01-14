@@ -111,7 +111,7 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
-Renderer::Renderer(int cachedFrames)
+Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
@@ -140,7 +140,7 @@ Renderer::Renderer(int cachedFrames)
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
-    , m_renderThread(new RenderThread(this))
+    , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
@@ -149,8 +149,10 @@ Renderer::Renderer(int cachedFrames)
 
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
-    m_running.fetchAndStoreOrdered(1);
-    m_renderThread->waitForStart();
+    if (m_renderThread) {
+        m_running.fetchAndStoreOrdered(1);
+        m_renderThread->waitForStart();
+    }
 
     buildDefaultTechnique();
     buildDefaultMaterial();
@@ -231,9 +233,11 @@ Renderer::~Renderer()
     // Bail out of the main render loop. Ensure that even if the render thread
     // is waiting on RenderViews to be populated that we wake up the wait condition.
     // We check for termination immediately after being awoken.
-    m_running.fetchAndStoreOrdered(0);
-    m_submitRenderViewsCondition.wakeOne();
-    m_renderThread->wait();
+    if (m_renderThread) {
+        m_running.fetchAndStoreOrdered(0);
+        m_submitRenderViewsCondition.wakeOne();
+        m_renderThread->wait();
+    }
 
     // Clean up the TLS allocators
     destroyAllocators();
@@ -302,9 +306,10 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
-void Renderer::initialize()
+void Renderer::initialize(QOpenGLContext *context)
 {
-    m_waitForWindowToBeSetCondition.wait(mutex());
+    if (m_renderThread)
+        m_waitForWindowToBeSetCondition.wait(mutex());
 
     QByteArray debugLoggingMode = qgetenv("QT3D_DEBUG_LOGGING");
     bool enableDebugLogging = !debugLoggingMode.isEmpty();
@@ -316,10 +321,12 @@ void Renderer::initialize()
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
 
-    QOpenGLContext* ctx = new QOpenGLContext;
-    ctx->setFormat(sf);
-    if (!ctx->create())
-        qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+    QOpenGLContext* ctx = context ? context : new QOpenGLContext;
+    if (!context) {
+        ctx->setFormat(sf);
+        if (!ctx->create())
+            qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
+    }
     m_graphicsContext->setOpenGLContext(ctx, m_surface);
 
     if (enableDebugLogging) {
@@ -519,7 +526,7 @@ bool Renderer::canRender() const
 {
     // Make sure that we've not been told to terminate whilst waiting on
     // the above wait condition
-    if (!m_running.load()) {
+    if (m_renderThread && !m_running.load()) {
         qCDebug(Rendering) << "RenderThread termination requested whilst waiting";
         return false;
     }
@@ -538,7 +545,8 @@ bool Renderer::canRender() const
 void Renderer::submitRenderViews(int maxFrameCount)
 {
     QMutexLocker locker(&m_mutex);
-    m_submitRenderViewsCondition.wait(locker.mutex());
+    if (m_renderThread)
+        m_submitRenderViewsCondition.wait(locker.mutex());
     locker.unlock();
 
     QElapsedTimer timer;

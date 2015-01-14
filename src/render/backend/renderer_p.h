@@ -43,6 +43,7 @@
 #ifndef QT3D_RENDER_RENDERER_H
 #define QT3D_RENDER_RENDERER_H
 
+#include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
@@ -76,7 +77,6 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QRenderAspect;
 class QFrameAllocator;
 class QOpenGLFilter;
 class AbstractSceneParser;
@@ -128,7 +128,7 @@ class ShaderDataManager;
 class Renderer
 {
 public:
-    explicit Renderer(int cachedFrames = 5);
+    explicit Renderer(QRenderAspect::RenderType type, int cachedFrames = 5);
     ~Renderer();
 
     void setQRenderAspect(QRenderAspect *aspect) { m_rendererAspect = aspect; }
@@ -195,7 +195,7 @@ public:
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     void submitRenderViews(int maxFrameCount = -1);
 
-    void initialize();
+    void initialize(QOpenGLContext *context = Q_NULLPTR);
     void shutdown();
 
     QFrameAllocator *currentFrameAllocator(int frameIndex);
