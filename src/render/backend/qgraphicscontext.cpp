@@ -579,6 +579,11 @@ void QGraphicsContext::disableAlphaCoverage()
     m_glHelper->disableAlphaCoverage();
 }
 
+GLuint QGraphicsContext::boundFrameBufferObject()
+{
+    return m_glHelper->boundFrameBufferObject();
+}
+
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
 {
     int lowestScoredUnit = -1;

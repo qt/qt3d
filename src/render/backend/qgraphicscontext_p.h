@@ -180,6 +180,7 @@ public:
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    enableAlphaCoverage();
     void    disableAlphaCoverage();
+    GLuint  boundFrameBufferObject();
 
     // Helper methods
     static GLint elementType(GLint type);

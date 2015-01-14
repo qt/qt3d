@@ -413,6 +413,13 @@ void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
         qWarning() << "FBO not supported by your OpenGL hardware";
 }
 
+GLuint QGraphicsHelperGL2::boundFrameBufferObject()
+{
+    GLint id = 0;
+    m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
+    return id;
+}
+
 void QGraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     Q_UNUSED(programId)

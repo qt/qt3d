@@ -87,6 +87,7 @@ public:
     virtual GLuint  createFrameBufferObject() = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    bindFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual GLuint  boundFrameBufferObject() = 0;
     virtual bool    checkFrameBufferComplete() = 0;
     virtual void    bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) = 0;
     virtual bool    supportsFeature(Feature feature) const = 0;

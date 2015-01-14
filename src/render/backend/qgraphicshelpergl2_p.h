@@ -82,6 +82,7 @@ public:
     GLuint createFrameBufferObject() Q_DECL_OVERRIDE;
     void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
     void bindFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    GLuint boundFrameBufferObject() Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
     void bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment) Q_DECL_OVERRIDE;
     bool supportsFeature(Feature feature) const Q_DECL_OVERRIDE;

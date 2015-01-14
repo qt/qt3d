@@ -270,6 +270,13 @@ void QGraphicsHelperGL3::bindFrameBufferObject(GLuint frameBufferId)
     m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
 }
 
+GLuint QGraphicsHelperGL3::boundFrameBufferObject()
+{
+    GLint id = 0;
+    m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
+    return id;
+}
+
 bool QGraphicsHelperGL3::checkFrameBufferComplete()
 {
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
