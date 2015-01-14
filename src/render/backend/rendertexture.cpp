@@ -239,7 +239,8 @@ void RenderTexture::updateWrapAndFilters()
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
-    m_gl->setMaximumAnisotropy(m_maximumAnisotropy);
+    if (m_gl->hasFeature(QOpenGLTexture::AnisotropicFiltering))
+        m_gl->setMaximumAnisotropy(m_maximumAnisotropy);
 }
 
 

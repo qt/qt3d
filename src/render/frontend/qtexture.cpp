@@ -100,6 +100,7 @@ void QTexture::copy(const QNode *ref)
     d_func()->m_minFilter = t->d_func()->m_minFilter;
     d_func()->m_magFilter = t->d_func()->m_magFilter;
     d_func()->m_autoMipMap = t->d_func()->m_autoMipMap;
+    d_func()->m_maximumAnisotropy = t->d_func()->m_maximumAnisotropy;
     // TO DO: Copy TexImageDataPtr
 }
 
