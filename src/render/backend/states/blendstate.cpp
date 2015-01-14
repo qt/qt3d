@@ -67,7 +67,6 @@ State* getOrCreateImpl(const State& data)
 
 void BlendState::apply(QGraphicsContext* gc) const
 {
-    Q_UNUSED(gc);
     gc->openGLContext()->functions()->glEnable(GL_BLEND);
     gc->openGLContext()->functions()->glBlendFunc( m_1, m_2 );
 }
