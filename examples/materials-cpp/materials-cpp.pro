@@ -6,7 +6,6 @@ include("../exampleresources/exampleresources.pri")
 
 HEADERS += \
     planeentity.h \
-    forwardrenderer.h \
     renderableentity.h \
     trefoilknot.h \
     barrel.h \
@@ -16,7 +15,6 @@ HEADERS += \
 SOURCES += \
     main.cpp \
     planeentity.cpp \
-    forwardrenderer.cpp \
     renderableentity.cpp \
     trefoilknot.cpp \
     barrel.cpp \

@@ -49,9 +49,10 @@
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QPhongMaterial>
 #include <Qt3DRenderer/QDiffuseMapMaterial>
+#include <Qt3DRenderer/QForwardRenderer>
+#include <Qt3DRenderer/QFrameGraph>
 
 #include "planeentity.h"
-#include "forwardrenderer.h"
 #include "rotatingtrefoilknot.h"
 #include "barrel.h"
 #include "exampleresources.h"
@@ -85,9 +86,11 @@ int main(int argc, char* argv[])
     view.setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
-    ForwardRenderer *forwardRenderer = new ForwardRenderer(sceneRoot);
+    Qt3D::QFrameGraph *frameGraphComponent = new Qt3D::QFrameGraph(sceneRoot);
+    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
     forwardRenderer->setCamera(basicCamera);
-    sceneRoot->addComponent(forwardRenderer);
+    frameGraphComponent->setActiveFrameGraph(forwardRenderer);
+    sceneRoot->addComponent(frameGraphComponent);
 
     // Scene floor
     PlaneEntity *planeEntity = new PlaneEntity(sceneRoot);
