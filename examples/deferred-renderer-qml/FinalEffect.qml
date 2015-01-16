@@ -47,6 +47,14 @@ Effect {
         // OpenGL 3.1
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
+            parameters:  Parameter { name: "PointLightBlock"; value: ShaderData {
+                    property ShaderDataArray lights: ShaderDataArray {
+                        // hard coded lights until we have a way to filter
+                        // ShaderData in a scene
+                        values: [sceneEntity.light, sphere1.light, sphere2.light]
+                    }
+                }
+            }
             renderPasses : RenderPass {
                 annotations : Annotation { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
@@ -107,6 +115,14 @@ Effect {
         // OpenGL 2.0 with FBO extension
         Technique {
             openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.None; minorVersion : 0; majorVersion : 2 }
+            parameters: Parameter { name: "pointLights"; value: ShaderData {
+                                property ShaderDataArray lights: ShaderDataArray {
+                                    // hard coded lights until we have a way to filter
+                                    // ShaderData in a scene
+                                    values: [sceneEntity.light, sphere1.light, sphere2.light]
+                                }
+                            }
+                        }
             renderPasses : RenderPass {
                 annotations : Annotation { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
@@ -139,7 +155,10 @@ Effect {
                         };
 
                         const int lightCount = 3;
-                        uniform PointLight pointLights[lightCount];
+                        uniform struct
+                        {
+                            PointLight lights[lightCount];
+                        } pointLights;
 
                         void main()
                         {
@@ -150,8 +169,8 @@ Effect {
 
                             vec4 lightColor;
                             for (int i = 0; i < 3; i++) {
-                                vec3 s = normalize(pointLights[i].position - pos);
-                                lightColor += pointLights[i].color * (pointLights[i].intensity * max(dot(s, norm), 0.0));
+                                vec3 s = normalize(pointLights.lights[i].position - pos);
+                                lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
                             gl_FragColor = col * lightColor;

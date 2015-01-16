@@ -84,15 +84,7 @@ Entity {
                     Parameter { name: "color"; value : gBuffer.color },
                     Parameter { name: "position"; value : gBuffer.position },
                     Parameter { name: "normal"; value : gBuffer.normal },
-                    Parameter { name: "winSize"; value : Qt.size(1024, 1024) },
-                    Parameter { name: "PointLightBlock"; value: ShaderData {
-                            property ShaderDataArray lights: ShaderDataArray {
-                                // hard coded lights until we have a way to filter
-                                // ShaderData in a scene
-                                values: [sceneEntity.light, sphere1.light, sphere2.light]
-                            }
-                        }
-                    }
+                    Parameter { name: "winSize"; value : Qt.size(1024, 1024) }
                 ]
                 effect : FinalEffect {}
             }
