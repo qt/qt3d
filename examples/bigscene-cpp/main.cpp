@@ -51,21 +51,13 @@
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DRenderer/QViewport>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QRenderPass>
-#include <Qt3DRenderer/QTechnique>
-#include <Qt3DRenderer/QShaderProgram>
 #include <Qt3DRenderer/QParameter>
 #include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QClearBuffer>
 #include <Qt3DRenderer/QCylinderMesh>
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QCameraSelector>
-#include <Qt3DRenderer/QTechniqueFilter>
-#include <Qt3DRenderer/QOpenGLFilter>
 #include <Qt3DRenderer/QPhongMaterial>
+#include <Qt3DRenderer/QForwardRenderer>
 #include <qmath.h>
 
 using namespace Qt3D;
@@ -95,14 +87,10 @@ int main(int ac, char **av)
 
     // FrameGraph
     QFrameGraph *frameGraph = new QFrameGraph();
-    QTechniqueFilter *techniqueFilter = new QTechniqueFilter();
-    QViewport *viewport = new QViewport(techniqueFilter);
-    QClearBuffer *clearBuffer = new QClearBuffer(viewport);
-    QCameraSelector *cameraSelector = new QCameraSelector(clearBuffer);
-    viewport->setRect(QRectF(0, 0, 1, 1));
-    clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
-    cameraSelector->setCamera(cameraEntity);
-    frameGraph->setActiveFrameGraph(techniqueFilter);
+    QForwardRenderer *forwardRenderer = new QForwardRenderer();
+    forwardRenderer->setCamera(cameraEntity);
+    forwardRenderer->setClearColor(Qt::black);
+    frameGraph->setActiveFrameGraph(forwardRenderer);
     root->addComponent(frameGraph);
 
 
