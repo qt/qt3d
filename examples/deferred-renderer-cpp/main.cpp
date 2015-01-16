@@ -186,7 +186,8 @@ int main(int ac, char **av)
     lightsData->addLight(light2);
     lightsData->addLight(light3);
 
-    screenQuadMaterial->addParameter(new Qt3D::QParameter(QStringLiteral("PointLightBlock"), QVariant::fromValue(lightsData)));
+    finalEffect->gl3Technique()->addParameter(new Qt3D::QParameter(QStringLiteral("PointLightBlock"), QVariant::fromValue(lightsData)));
+    finalEffect->gl2Technique()->addParameter(new Qt3D::QParameter(QStringLiteral("pointLights"), QVariant::fromValue(lightsData)));
     screenQuadMaterial->setEffect(finalEffect);
 
     Qt3D::QRotateTransform *screenPlaneRotation = new Qt3D::QRotateTransform();

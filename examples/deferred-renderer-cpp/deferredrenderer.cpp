@@ -44,8 +44,8 @@
 
 DeferredRenderer::DeferredRenderer(Qt3D::QNode *parent)
     : Qt3D::QViewport(parent)
-    , m_screenQuadFilter(new Qt3D::QLayerFilter(this))
     , m_sceneFilter(new Qt3D::QLayerFilter(this))
+    , m_screenQuadFilter(new Qt3D::QLayerFilter(this))
     , m_clearScreenQuad(new Qt3D::QClearBuffer(m_screenQuadFilter))
     , m_gBufferTargetSelector(new Qt3D::QRenderTargetSelector(m_sceneFilter))
     , m_clearGBuffer(new Qt3D::QClearBuffer(m_gBufferTargetSelector))

@@ -51,6 +51,8 @@ public:
     explicit FinalEffect(Qt3D::QNode *parent = 0);
 
     QList<Qt3D::QAnnotation *> passCriteria() const;
+    inline Qt3D::QTechnique *gl3Technique() const { return m_gl3Technique; }
+    inline Qt3D::QTechnique *gl2Technique() const { return m_gl2Technique; }
 
 private :
     Qt3D::QTechnique *m_gl3Technique;
