@@ -117,12 +117,15 @@ static const struct {
     const char *type;
     int major, minor;
 } qmldir [] = {
+    // Materials
     { "PhongMaterial", 2, 0 },
     { "DiffuseMapMaterial", 2, 0 },
     { "DiffuseSpecularMapMaterial", 2, 0 },
     { "NormalDiffuseMapAlphaMaterial", 2, 0 },
     { "NormalDiffuseMapMaterial", 2, 0 },
-    { "NormalDiffuseSpecularMapMaterial", 2, 0 }
+    { "NormalDiffuseSpecularMapMaterial", 2, 0 },
+    // FrameGraphs
+    { "ForwardRenderer", 2, 0 }
 };
 
 QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)

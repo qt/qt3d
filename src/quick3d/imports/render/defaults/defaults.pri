@@ -10,4 +10,5 @@ QML_FILES = \
     $$PWD/qml/DiffuseSpecularMapMaterial.qml \
     $$PWD/qml/NormalDiffuseMapMaterial.qml \
     $$PWD/qml/NormalDiffuseMapAlphaMaterial.qml \
-    $$PWD/qml/NormalDiffuseSpecularMapMaterial.qml
+    $$PWD/qml/NormalDiffuseSpecularMapMaterial.qml \
+    $$PWD/qml/ForwardRenderer.qml \
