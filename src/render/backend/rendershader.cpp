@@ -281,8 +281,14 @@ void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDesc
 {
     m_uniforms = uniformsDescription;
     m_uniformsNames.resize(uniformsDescription.size());
-    for (int i = 0; i < uniformsDescription.size(); i++)
+    QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
+
+    for (int i = 0; i < uniformsDescription.size(); i++) {
         m_uniformsNames[i] = uniformsDescription[i].m_name;
+        if (uniformsDescription[i].m_blockIndex == -1) // Uniform is in default block
+            activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
+    }
+    m_blockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
 }
 
 void RenderShader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
