@@ -46,6 +46,8 @@
 #include <Qt3DCore/Window>
 
 #include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DRenderer/QFrameGraph>
+#include <Qt3DRenderer/QForwardRenderer>
 
 #include "forwardrenderer.h"
 #include "examplescene.h"
@@ -76,9 +78,11 @@ int main(int argc, char* argv[])
     view.setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
-    ForwardRenderer *forwardRenderer = new ForwardRenderer(sceneRoot);
+    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph(sceneRoot);
+    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
     forwardRenderer->setCamera(basicCamera);
-    sceneRoot->addComponent(forwardRenderer);
+    frameGraph->setActiveFrameGraph(forwardRenderer);
+    sceneRoot->addComponent(frameGraph);
 
     engine.setRootEntity(sceneRoot);
     view.show();
