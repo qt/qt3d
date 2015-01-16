@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>ForwardRenderer.qml</file>
         <file>BasicCamera.qml</file>
         <file>TessellatedWireframeEffect.qml</file>
         <file>TessellatedWireframeMaterial.qml</file>

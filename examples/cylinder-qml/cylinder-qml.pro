@@ -6,8 +6,7 @@ SOURCES += \
     main.cpp
 
 OTHER_FILES += \
-    main.qml \
-    ForwardRenderer.qml
+    main.qml
 
 RESOURCES += \
     cylinder-qml.qrc

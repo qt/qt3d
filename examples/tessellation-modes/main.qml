@@ -54,6 +54,7 @@ Entity {
             activeFrameGraph: ForwardRenderer {
                 id: renderer
                 camera: mainCamera
+                clearColor: "black"
             }
         }
     ]

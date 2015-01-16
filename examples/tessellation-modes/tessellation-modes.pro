@@ -17,7 +17,6 @@ OTHER_FILES += \
     TessellatedWireframeEffect.qml \
     TessellatedWireframeMaterial.qml \
     TessellatedQuad.qml \
-    ForwardRenderer.qml \
     shaders/*
 
 RESOURCES += \

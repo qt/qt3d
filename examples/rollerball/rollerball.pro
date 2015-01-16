@@ -13,8 +13,7 @@ OTHER_FILES += \
     main.qml \
     AdsEffect.qml \
     Renderable.qml \
-    SimpleEffect.qml \
-    ForwardRenderer.qml
+    SimpleEffect.qml
 
 RESOURCES += \
     rollerball.qrc

@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>AdsEffect.qml</file>
-        <file>ForwardRenderer.qml</file>
         <file>BasicCamera.qml</file>
         <file>AdsMaterial.qml</file>
         <file>BallEntity.qml</file>

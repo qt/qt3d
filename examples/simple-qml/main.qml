@@ -64,19 +64,9 @@ Entity {
 
     components: [
         FrameGraph {
-            activeFrameGraph: Viewport {
-                id: viewport
-                rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
+            activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
-
-                CameraSelector {
-                    id : cameraSelector
-                    camera: camera
-
-                    ClearBuffer {
-                        buffers : ClearBuffer.ColorDepthBuffer
-                    }
-                }
+                camera: camera
             }
         }
     ]

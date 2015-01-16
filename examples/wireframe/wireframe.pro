@@ -14,7 +14,6 @@ OTHER_FILES += \
     BasicCamera.qml \
     WireframeEffect.qml \
     WireframeMaterial.qml \
-    ForwardRenderer.qml \
     TrefoilKnot.qml
 
 RESOURCES += \
