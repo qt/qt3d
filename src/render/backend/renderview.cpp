@@ -101,6 +101,9 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     return false;
 }
 
+const QString blockArray = QStringLiteral("[%1]");
+const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
+
 } // anonymouse namespace
 
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
@@ -394,9 +397,6 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     }
 }
 
-const QString blockArray = QStringLiteral("[%1]");
-const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
-
 // Builds a QHash<QString, QString> -> QmlPropertyName / ActiveUniformName
 void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
                                                 const QString &blockName,
@@ -495,6 +495,8 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
             // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
             // for all the updated properties (all the properties if the UBO was just created)
             if (rShaderData->needsUpdate() || uboNeedsUpdate) {
+                // Clear previous values remaining in the hash
+                m_activeUniformNamesToValue.clear();
                 // Retrieve names and description of each active uniforms in the uniform block
                 const QHash<QString, ShaderUniform> &activeProperties = shader->activeUniformsForBlock(block.m_index);
 
@@ -513,6 +515,32 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
 
             uniformBlockUBO.m_needsUpdate = uboNeedsUpdate;
             uniformPack.setUniformBuffer(uniformBlockUBO);
+        }
+    }
+}
+
+void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, RenderShader *shader, QShaderData *shaderData, const QString &structName)
+{
+    m_activeUniformNamesToValue.clear();
+    RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->id());
+
+    if (rShaderData) {
+        // Retrieve names and description of each active uniforms in the uniform block
+        const QHash<QString, ShaderUniform> &activeUniformsInDefaultBlock = shader->activeUniformsForBlock(-1);
+
+        const QHash<QString, QVariant> &properties = rShaderData->properties();
+        QHash<QString, QVariant>::const_iterator pIt = properties.begin();
+        const QHash<QString, QVariant>::const_iterator pEnd = properties.end();
+
+        for (; pIt != pEnd; ++pIt)
+            buildActiveUniformNameValueMap(activeUniformsInDefaultBlock, structName, pIt.key(), pIt.value(), false);
+
+        QHash<QString, QVariant>::const_iterator activeValuesIt = m_activeUniformNamesToValue.begin();
+        const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_activeUniformNamesToValue.end();
+
+        while (activeValuesIt != activeValuesEnd) {
+            setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());
+            ++activeValuesIt;
         }
     }
 }
@@ -625,8 +653,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             setUniformBlockValue(command->m_uniforms, shader, shader->uniformBlocks().at(idx), it->value);
                             it = parameters.erase(it);
                         } else {
+                            const QVariant &v = it->value;
+                            QShaderData *shaderData = Q_NULLPTR;
+                            if ((shaderData = v.value<QShaderData *>()) != Q_NULLPTR) {
+                                // Try to check if we have a struct or array matching a QShaderData parameter
+                                setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader,shaderData, it->name);
+                                it = parameters.erase(it);
+                            } else {
                             // Else param unused by current shader
-                            ++it;
+                                ++it;
+                            }
                         }
                     }
                 }
