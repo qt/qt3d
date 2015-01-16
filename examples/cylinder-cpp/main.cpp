@@ -60,13 +60,9 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qaspectengine.h>
 
-#include <Qt3DRenderer/qcameraselector.h>
-#include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qtechniquefilter.h>
-#include <Qt3DRenderer/qviewport.h>
 #include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qframegraph.h>
-#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRenderer/qforwardrenderer.h>
 
 int main(int argc, char **argv)
 {
@@ -96,19 +92,13 @@ int main(int argc, char **argv)
 
     // FrameGraph
     Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QTechniqueFilter *techniqueFilter = new Qt3D::QTechniqueFilter();
-    Qt3D::QViewport *viewport = new Qt3D::QViewport(techniqueFilter);
-    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer(viewport);
-    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector(clearBuffer);
-    (void) new Qt3D::QRenderPassFilter(cameraSelector);
+    Qt3D::QForwardRenderer * forwardRenderer = new Qt3D::QForwardRenderer();
 
     // TechiqueFilter and renderPassFilter are not implement yet
+    forwardRenderer->setCamera(cameraEntity);
+    forwardRenderer->setClearColor(Qt::black);
 
-    viewport->setRect(QRectF(0, 0, 1, 1));
-    clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
-    cameraSelector->setCamera(cameraEntity);
-
-    frameGraph->setActiveFrameGraph(techniqueFilter);
+    frameGraph->setActiveFrameGraph(forwardRenderer);
 
 
     // Cylinder shape data
