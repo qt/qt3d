@@ -48,7 +48,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D
 {
+    class QAspectEngine;
     class QEntity;
+    class QRenderAspect;
 }
 
 class Scene3DItem : public QQuickFramebufferObject
@@ -67,11 +69,17 @@ public Q_SLOTS:
 Q_SIGNALS:
     void entityChanged();
 
+private Q_SLOTS:
+    void applyRootEntityChange();
+
 private:
     Renderer *createRenderer() const Q_DECL_OVERRIDE;
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
     Qt3D::QEntity *m_entity;
+
+    Qt3D::QAspectEngine *m_aspectEngine;
+    Qt3D::QRenderAspect *m_renderAspect;
 };
 
 QT_END_NAMESPACE

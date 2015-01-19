@@ -48,7 +48,6 @@
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFramebufferObjectFormat>
 
-#include <QScopedPointer>
 #include <QSurface>
 
 #include <QSGSimpleTextureNode>
@@ -81,27 +80,27 @@ private:
 class FrameBufferObjectRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
-    FrameBufferObjectRenderer(const Scene3DItem *item)
+    FrameBufferObjectRenderer(const Scene3DItem *item,
+                              Qt3D::QAspectEngine *aspectEngine,
+                              Qt3D::QRenderAspect *renderAspect)
         : m_item(item),
-          m_aspectEngine(new Qt3D::QAspectEngine),
-          m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
+          m_aspectEngine(aspectEngine),
+          m_renderAspect(renderAspect)
     {
         ContextSaver saver;
-
-        m_aspectEngine->registerAspect(m_renderAspect);
-        m_aspectEngine->initialize();
 
         QVariantMap data;
         data.insert(QStringLiteral("surface"), QVariant::fromValue(saver.surface()));
         m_aspectEngine->setData(data);
 
         m_renderAspect->renderInitialize(saver.context());
+        scheduleRootEntityChange();
     }
 
     void render() Q_DECL_OVERRIDE
     {
         if (m_aspectEngine->rootEntity() != m_item->entity())
-            m_aspectEngine->setRootEntity(m_item->entity());
+            scheduleRootEntityChange();
 
         ContextSaver saver;
         Q_UNUSED(saver)
@@ -118,16 +117,26 @@ public:
         return new QOpenGLFramebufferObject(size, format);
     }
 
+    void scheduleRootEntityChange()
+    {
+        Scene3DItem *item = const_cast<Scene3DItem*>(m_item);
+        QMetaObject::invokeMethod(item, "applyRootEntityChange", Qt::QueuedConnection);
+    }
+
     const Scene3DItem *m_item;
-    QScopedPointer<Qt3D::QAspectEngine> m_aspectEngine;
+    Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
 };
 
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickFramebufferObject(parent),
-      m_entity(Q_NULLPTR)
+      m_entity(Q_NULLPTR),
+      m_aspectEngine(new Qt3D::QAspectEngine(this)),
+      m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
 {
     setFlag(QQuickItem::ItemHasContents, true);
+    m_aspectEngine->registerAspect(m_renderAspect);
+    m_aspectEngine->initialize();
 }
 
 Qt3D::QEntity *Scene3DItem::entity() const
@@ -144,9 +153,15 @@ void Scene3DItem::setEntity(Qt3D::QEntity *entity)
     emit entityChanged();
 }
 
+void Scene3DItem::applyRootEntityChange()
+{
+    if (m_aspectEngine->rootEntity() != m_entity)
+        m_aspectEngine->setRootEntity(m_entity);
+}
+
 QQuickFramebufferObject::Renderer *Scene3DItem::createRenderer() const
 {
-    return new FrameBufferObjectRenderer(this);
+    return new FrameBufferObjectRenderer(this, m_aspectEngine, m_renderAspect);
 }
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
