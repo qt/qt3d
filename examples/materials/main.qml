@@ -149,14 +149,14 @@ Entity {
         z: -8
         potShape: "cross"
         plantType: "palm"
-        scale: 0.05
+        scale: 1.15
     }
 
     HousePlant {
         z: 8
         potShape: "cross"
         plantType: "shrub"
-        scale: 0.05
+        scale: 1.15
     }
 
     Barrel {
