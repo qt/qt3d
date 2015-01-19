@@ -45,6 +45,8 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qsceneinterface.h>
 
+#include <QScopedPointer>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -56,6 +58,7 @@ class QT3DCORESHARED_EXPORT QScene : public QSceneInterface
 {
 public:
     QScene();
+    ~QScene();
 
     void addObservable(QObservableInterface *observable, const QNodeId &id) Q_DECL_OVERRIDE;
     void addObservable(QNode *observable) Q_DECL_OVERRIDE;
@@ -75,7 +78,7 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QScene)
-    QScenePrivate *d_ptr;
+    QScopedPointer<QScenePrivate> d_ptr;
 };
 
 } // Qt3D

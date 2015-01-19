@@ -77,6 +77,10 @@ QScene::QScene()
 {
 }
 
+QScene::~QScene()
+{
+}
+
 // Called by any thread
 void QScene::addObservable(QObservableInterface *observable, const QNodeId &id)
 {
