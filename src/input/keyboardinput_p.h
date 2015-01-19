@@ -66,6 +66,8 @@ public:
     void setFocus(bool focus);
     void keyEvent(const Q3DKeyEventPtr &event);
 
+    inline bool isEnabled() const { return m_enabled; }
+
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void requestFocus();
@@ -75,6 +77,7 @@ private:
     InputHandler *m_inputHandler;
     QNodeId m_keyboardController;
     bool m_focus;
+    bool m_enabled;
 };
 
 class KeyboardInputFunctor : public QBackendNodeFunctor

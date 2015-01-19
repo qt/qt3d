@@ -56,6 +56,9 @@ QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
     m_shareable = false;
 }
 
+/*!
+    Constructs a new QKeyboardInput instance with parent \a parent.
+ */
 QKeyboardInput::QKeyboardInput(QNode *parent)
     : QComponent(*new QKeyboardInputPrivate(this), parent)
 {
@@ -163,6 +166,10 @@ void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
     }
 }
 
+/*!
+    Sets the keyboard controller to \a controller. Without a valid controller,
+    the QKeyboardInput won't receive any event.
+ */
 void QKeyboardInput::setController(QKeyboardController *controller)
 {
     Q_D(QKeyboardInput);
@@ -176,18 +183,27 @@ void QKeyboardInput::setController(QKeyboardController *controller)
     }
 }
 
+/*!
+    \returns the current keyboard controller.
+ */
 QKeyboardController *QKeyboardInput::controller() const
 {
     Q_D(const QKeyboardInput);
     return d->m_controller;
 }
 
+/*!
+    \returns the current focus.
+ */
 bool QKeyboardInput::focus() const
 {
     Q_D(const QKeyboardInput);
     return d->m_focus;
 }
 
+/*!
+    Sets the focus to \a focus. If focus is not currently set to true, this component will receive keyboard focus.
+ */
 void QKeyboardInput::setFocus(bool focus)
 {
     Q_D(QKeyboardInput);

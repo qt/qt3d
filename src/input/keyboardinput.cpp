@@ -67,6 +67,7 @@ void KeyboardInput::updateFromPeer(QNode *peer)
     if (input->controller() != Q_NULLPTR)
         setController(input->controller()->id());
     m_focus = false;
+    m_enabled = input->isEnabled();
     if (input->focus())
         requestFocus();
 }
@@ -117,6 +118,8 @@ void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
             }
         } else if (propertyChange->propertyName() == QByteArrayLiteral("focus")) {
             focusRequest = propertyChange->value().toBool();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            m_enabled = propertyChange->value().toBool();
         }
     }
     if (focusRequest)
@@ -126,7 +129,7 @@ void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
 void KeyboardInput::requestFocus()
 {
     KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-    if (controller)
+    if (controller && m_enabled)
         controller->requestFocusForInput(peerUuid());
 }
 
