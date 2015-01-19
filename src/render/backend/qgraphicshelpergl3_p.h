@@ -42,10 +42,10 @@
 #ifndef QT3D_RENDER_QGRAPHICSHELPERGL3_H
 #define QT3D_RENDER_QGRAPHICSHELPERGL3_H
 
-#ifndef QT_OPENGL_ES_2
-
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
+
+#ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 

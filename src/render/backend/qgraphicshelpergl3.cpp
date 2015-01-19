@@ -39,9 +39,9 @@
 **
 ****************************************************************************/
 
-#ifndef QT_OPENGL_ES_2
-
 #include "qgraphicshelpergl3_p.h"
+
+#ifndef QT_OPENGL_ES_2
 #include <QOpenGLFunctions_3_2_Core>
 #include <QtOpenGLExtensions/qopenglextensions.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>

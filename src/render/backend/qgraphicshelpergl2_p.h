@@ -42,9 +42,9 @@
 #ifndef QT3D_RENDER_QGRAPHICSHELPERGL2_H
 #define QT3D_RENDER_QGRAPHICSHELPERGL2_H
 
-#ifndef QT_OPENGL_ES_2
-
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+
+#ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 
