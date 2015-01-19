@@ -91,6 +91,7 @@ void RenderMesh::updateFromPeer(QNode *peer)
 {
     QAbstractMesh *mesh = static_cast<QAbstractMesh *>(peer);
     m_meshDirty = true;
+    m_enabled = mesh->isEnabled();
     setMeshFunctor(mesh->meshFunctor());
 }
 
@@ -101,6 +102,8 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("meshFunctor")) // Mesh with source
             setMeshFunctor(propertyChange->value().value<QAbstractMeshFunctorPtr>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().toBool();
         break;
     }
 

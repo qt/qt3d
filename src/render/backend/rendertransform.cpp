@@ -62,6 +62,7 @@ void RenderTransform::updateFromPeer(QNode *peer)
     QTransform *transform = static_cast<QTransform *>(peer);
 
     m_transformMatrix = transform->matrix();
+    m_enabled = transform->isEnabled();
 }
 
 QMatrix4x4 RenderTransform::transformMatrix() const
@@ -75,6 +76,8 @@ void RenderTransform::sceneChangeEvent(const QSceneChangePtr &e)
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("matrix"))
             m_transformMatrix = propertyChange->value().value<QMatrix4x4>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().toBool();
     }
 }
 

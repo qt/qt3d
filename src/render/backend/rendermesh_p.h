@@ -82,6 +82,7 @@ public:
     void setMeshDataManager(MeshDataManager *manager);
 
     QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
+    inline bool isEnabled() const { return m_enabled; }
 
 private:
     QAbstractMeshFunctorPtr m_functor;
@@ -89,6 +90,7 @@ private:
     bool m_meshDirty;
     HMeshData m_meshDataHandle;
     MeshDataManager *m_meshDataManager;
+    bool m_enabled;
 
     void setMeshFunctor(QAbstractMeshFunctorPtr);
 };

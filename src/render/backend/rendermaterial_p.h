@@ -73,6 +73,7 @@ public:
 
     void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline bool isEnabled() const { return m_enabled; }
 
     QList<QNodeId> parameters() const;
     QNodeId effect() const;
@@ -81,6 +82,7 @@ private:
     RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
     QNodeId m_effectUuid;
+    bool m_enabled;
 };
 
 } // Render

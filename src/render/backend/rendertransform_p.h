@@ -62,9 +62,11 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline bool isEnabled() const { return m_enabled; }
 
 private:
     QMatrix4x4 m_transformMatrix;
+    bool m_enabled;
 };
 
 } // Render

@@ -69,11 +69,14 @@ public:
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
+    inline bool isEnabled() const { return m_enabled; }
+
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QVector4D m_clearColor;
     QMatrix4x4 m_projection;
+    bool m_enabled;
 };
 
 } // Render

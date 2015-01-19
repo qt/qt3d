@@ -68,6 +68,7 @@ void RenderLayer::updateFromPeer(QNode *peer)
 {
     QLayer *layer = static_cast<QLayer *>(peer);
     m_layers = layer->names();
+    m_enabled = layer->isEnabled();
 }
 
 QStringList RenderLayer::layers() const
@@ -80,6 +81,8 @@ void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names"))
         m_layers = propertyChange->value().toStringList();
+    else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+        m_enabled = propertyChange->value().toBool();
 }
 
 } // Render

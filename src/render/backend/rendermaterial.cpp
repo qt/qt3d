@@ -77,6 +77,7 @@ void RenderMaterial::updateFromPeer(QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
+    m_enabled = mat->isEnabled();
     if (mat->effect() != Q_NULLPTR)
         m_effectUuid = mat->effect()->id();
     Q_FOREACH (QParameter *p, mat->parameters())
@@ -89,7 +90,8 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
 
     switch (e->type()) {
     case NodeUpdated: {
-        // Check for effect change
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().toBool();
         break;
     }
         // Check for shader parameter
@@ -97,7 +99,7 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
-                m_effectUuid = propertyChange->value().value<QNodeId>();
+            m_effectUuid = propertyChange->value().value<QNodeId>();
         break;
     }
     case NodeRemoved: {

@@ -74,6 +74,7 @@ void RenderCameraLens::updateFromPeer(QNode *peer)
 {
     QCameraLens *lens = static_cast<QCameraLens *>(peer);
     setProjection(lens->projectionMatrix());
+    m_enabled = lens->isEnabled();
 }
 
 void RenderCameraLens::setProjection(const QMatrix4x4 &projection)
@@ -86,8 +87,13 @@ void RenderCameraLens::sceneChangeEvent(const QSceneChangePtr &e)
     switch (e->type()) {
     case NodeUpdated: {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
-        m_projection = projectionMatrix;
+
+        if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
+            QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
+            m_projection = projectionMatrix;
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            m_enabled = propertyChange->value().toBool();
+        }
     }
         break;
 

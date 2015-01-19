@@ -67,9 +67,11 @@ public:
 
     QStringList layers() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline bool isEnabled() const { return m_enabled; }
 
 private:
     QStringList m_layers;
+    bool m_enabled;
 };
 
 } // Render

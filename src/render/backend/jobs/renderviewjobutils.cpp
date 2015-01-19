@@ -103,8 +103,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
                 RenderEntity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                 if (camNode) {
-                    rv->setRenderCamera(camNode->renderComponent<RenderCameraLens>());
-                    rv->setViewMatrix(*camNode->worldTransform());
+                    RenderCameraLens *lens = camNode->renderComponent<RenderCameraLens>();
+                    if (lens) {
+                        rv->setRenderCamera(lens);
+                        rv->setViewMatrix(lens->isEnabled() ? *camNode->worldTransform() : QMatrix4x4());
+                    }
 
                     // TODO: We can extract camera pos from the modelview matrix
                     rv->setEyePosition(camNode->worldBoundingVolume()->center());

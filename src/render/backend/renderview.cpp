@@ -93,9 +93,10 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
 
     QList<RenderLayer *> renderLayers = entity->renderComponents<RenderLayer>();
     Q_FOREACH (RenderLayer *layer, renderLayers) {
-        Q_FOREACH (const QString &layerName, layer->layers())
-            if (layers.contains(layerName))
-                return true;
+        if (layer->isEnabled())
+            Q_FOREACH (const QString &layerName, layer->layers())
+                if (layers.contains(layerName))
+                    return true;
     }
 
     return false;
@@ -327,7 +328,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
     if (isEntityInLayers(node, m_data->m_layers)) {
         RenderMesh *mesh = Q_NULLPTR;
         if (node->componentHandle<RenderMesh, 16>() != HMesh()
-                && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
+                && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR
+                && mesh->isEnabled()) {
             if (!mesh->meshData().isNull())
             {
                 // Perform culling here
@@ -337,7 +339,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 // Find the material, effect, technique and set of render passes to use
                 RenderMaterial *material = Q_NULLPTR;
                 RenderEffect *effect = Q_NULLPTR;
-                if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR)
+                if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR && material->isEnabled())
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 

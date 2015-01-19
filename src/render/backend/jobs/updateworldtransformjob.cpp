@@ -59,7 +59,7 @@ void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node, const QMatr
 {
     QMatrix4x4 worldTransform(parentTransform);
     RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
-    if (nodeTransform != Q_NULLPTR)
+    if (nodeTransform != Q_NULLPTR && nodeTransform->isEnabled())
         worldTransform = worldTransform * nodeTransform->transformMatrix();
 
     *(node->worldTransform()) = worldTransform;
