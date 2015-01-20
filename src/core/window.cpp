@@ -41,7 +41,6 @@
 
 #include "window.h"
 
-#include <QTimer>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QGuiApplication>
@@ -59,7 +58,6 @@ namespace Qt3D {
 
 Window::Window(QScreen *screen)
     : QWindow(screen)
-    , m_camera(Q_NULLPTR)
     , m_controller(new CameraController(this))
 
 {
@@ -76,29 +74,15 @@ Window::Window(QScreen *screen)
     create();
 
     installEventFilter(m_controller);
-
-    m_updateTimer = new QTimer(this);
-    m_updateTimer->setInterval(16);
-    connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onUpdate()));
 }
 
 Window::~Window()
 {
 }
 
-void Window::onUpdate()
-{
-    m_controller->update(1.0 / 60.0);
-}
-
 void Window::setCamera(QCamera *camera)
 {
-    m_camera = camera;
-    if (m_camera) {
-        qCDebug(Nodes) << "found a camera in the scene";
-        m_controller->setCamera(m_camera);
-        m_updateTimer->start();
-    }
+    m_controller->setCamera(camera);
 }
 
 void Window::keyPressEvent( QKeyEvent* e )

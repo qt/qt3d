@@ -43,6 +43,7 @@
 
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QTimer>
 
 #include <qcamera.h>
 #include <qcameralens.h>
@@ -70,8 +71,11 @@ CameraController::CameraController(QObject *parent) :
     m_orbitRate( -0.3f ),
     m_lookRate( 0.1f ),
     m_translateFast( false ),
-    m_multisampleEnabled( true )
+    m_multisampleEnabled( true ),
+    m_updateTimer(new QTimer(this))
 {
+    m_updateTimer->setInterval(16);
+    connect(m_updateTimer, SIGNAL(timeout()), this, SLOT(onUpdate()));
 }
 
 /*!
@@ -84,6 +88,11 @@ void CameraController::setCamera( QCamera* cam )
 {
     m_camera = cam;
     m_cameraEntity = cam;
+
+    if (m_camera)
+        m_updateTimer->start();
+    else
+        m_updateTimer->stop();
 }
 
 void CameraController::setLinearSpeed( float speed )
@@ -312,6 +321,11 @@ bool CameraController::eventFilter(QObject *receiver, QEvent *event)
     default:
         return QObject::eventFilter(receiver, event);
     }
+}
+
+void CameraController::onUpdate()
+{
+    update(1.0 / 60.0);
 }
 
 } // of namespace Qt3D

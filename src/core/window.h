@@ -47,8 +47,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QTimer;
-
 namespace Qt3D {
 
 class QAbstractAspect;
@@ -71,16 +69,9 @@ public:
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
 
-private Q_SLOTS:
-    void onUpdate();
-
 protected:
-    QCamera* m_camera;
-
     // temporary, borrowed from training material
     CameraController *m_controller;
-
-    QTimer* m_updateTimer;
 };
 
 } // namespace Qt3D

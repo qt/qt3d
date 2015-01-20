@@ -52,6 +52,7 @@ QT_BEGIN_NAMESPACE
 class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
+class QTimer;
 
 namespace Qt3D
 {
@@ -103,8 +104,11 @@ Q_SIGNALS:
     void lookRateChanged();
 
     void multisampleEnabledChanged();
-private:
 
+private Q_SLOTS:
+    void onUpdate();
+
+private:
     QCamera* m_camera;
     QEntity* m_cameraEntity;
 
@@ -127,6 +131,8 @@ private:
 
     bool m_translateFast;
     bool m_multisampleEnabled;
+
+    QTimer *m_updateTimer;
 };
 
 } // of namespace Qt3D
