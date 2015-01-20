@@ -53,12 +53,15 @@ namespace Qt3D {
 
 class QNode;
 class QScenePrivate;
+class QAspectEngine;
 
 class QT3DCORESHARED_EXPORT QScene : public QSceneInterface
 {
 public:
-    QScene();
+    QScene(QAspectEngine *engine = Q_NULLPTR);
     ~QScene();
+
+    QAspectEngine *engine() const;
 
     void addObservable(QObservableInterface *observable, const QNodeId &id) Q_DECL_OVERRIDE;
     void addObservable(QNode *observable) Q_DECL_OVERRIDE;

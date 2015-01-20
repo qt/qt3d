@@ -63,7 +63,7 @@ namespace Qt3D {
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
     , m_postman(new QPostman())
-    , m_scene(new QScene())
+    , m_scene(new QScene(qq))
 {
     q_ptr = qq;
     m_postman->setScene(m_scene);

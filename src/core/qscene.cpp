@@ -54,14 +54,16 @@ namespace Qt3D {
 class QScenePrivate
 {
 public:
-    QScenePrivate(QScene *qq)
+    QScenePrivate(QAspectEngine *engine, QScene *qq)
         : q_ptr(qq)
+        , m_engine(engine)
         , m_arbiter(Q_NULLPTR)
     {
     }
 
     Q_DECLARE_PUBLIC(QScene)
     QScene *q_ptr;
+    QAspectEngine *m_engine;
     QHash<QNodeId, QNode *> m_nodeLookupTable;
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
     QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
@@ -72,13 +74,19 @@ public:
 };
 
 
-QScene::QScene()
-    : d_ptr(new QScenePrivate(this))
+QScene::QScene(QAspectEngine *engine)
+    : d_ptr(new QScenePrivate(engine, this))
 {
 }
 
 QScene::~QScene()
 {
+}
+
+QAspectEngine *QScene::engine() const
+{
+    Q_D(const QScene);
+    return d->m_engine;
 }
 
 // Called by any thread
