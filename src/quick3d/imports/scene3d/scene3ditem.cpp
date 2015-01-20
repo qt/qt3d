@@ -80,7 +80,7 @@ private:
 class FrameBufferObjectRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
-    FrameBufferObjectRenderer(const Scene3DItem *item,
+    FrameBufferObjectRenderer(Scene3DItem *item,
                               Qt3D::QAspectEngine *aspectEngine,
                               Qt3D::QRenderAspect *renderAspect)
         : m_item(item),
@@ -119,11 +119,10 @@ public:
 
     void scheduleRootEntityChange()
     {
-        Scene3DItem *item = const_cast<Scene3DItem*>(m_item);
-        QMetaObject::invokeMethod(item, "applyRootEntityChange", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(m_item, "applyRootEntityChange", Qt::QueuedConnection);
     }
 
-    const Scene3DItem *m_item;
+    Scene3DItem *m_item;
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
 };
@@ -161,7 +160,8 @@ void Scene3DItem::applyRootEntityChange()
 
 QQuickFramebufferObject::Renderer *Scene3DItem::createRenderer() const
 {
-    return new FrameBufferObjectRenderer(this, m_aspectEngine, m_renderAspect);
+    Scene3DItem *self = const_cast<Scene3DItem*>(this);
+    return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect);
 }
 
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *nodeData)
