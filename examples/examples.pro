@@ -26,7 +26,8 @@ SUBDIRS += \
     wave \
     materials-cpp \
     dynamicscene-cpp \
-    scene3d
+    scene3d \
+    enabled-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
