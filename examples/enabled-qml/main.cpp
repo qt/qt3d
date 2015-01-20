@@ -42,7 +42,7 @@
 #include <QGuiApplication>
 
 #include <Qt3DCore/QCamera>
-#include <Qt3DQuick/QuickWindow>
+#include <Qt3DCore/Window>
 #include <Qt3DQuick/QQmlAspectEngine>
 
 #include <Qt3DRenderer/QRenderAspect>
@@ -53,13 +53,13 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3D::Quick::QuickWindow view;
+    Qt3D::Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
     engine.aspectEngine()->initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
     engine.aspectEngine()->setData(data);
     engine.setSource(QUrl(QStringLiteral("qrc:/main.qml")));
     view.show();

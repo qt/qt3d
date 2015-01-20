@@ -48,8 +48,25 @@ Entity {
     property int counter: 0
 
     components: FrameGraph {
-        ForwardRenderer {
-            camera: basicCamera
+        Viewport {
+            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+            clearColor: "white"
+            enabled: counter !== 5
+
+            ClearBuffer {
+                buffers : ClearBuffer.ColorDepthBuffer
+                enabled: counter !== 6
+            }
+
+            CameraSelector {
+                camera: basicCamera
+                enabled: counter !== 7
+
+                LayerFilter {
+                    enabled: counter === 12
+                    layers: "scene"
+                }
+            }
         }
     }
 
@@ -59,7 +76,7 @@ Entity {
         running: true
         onTriggered: {
             counter += 1;
-            if (counter > 6)
+            if (counter > 15)
                 counter = 0;
         }
     }
@@ -72,7 +89,7 @@ Entity {
             LookAt {
                 upVector: Qt.vector3d(0, 1, 0)
                 viewCenter: Qt.vector3d(0, 0, 0)
-                position: Qt.vector3d(0, 0, -10)
+                position: Qt.vector3d(0, 10, -10)
             }
         }
         components: [basicCameraTransform, cameraLens]
@@ -88,76 +105,101 @@ Entity {
         enabled: counter !== 4
     }
 
-    SphereMesh {
-        id: sphereMesh
-        enabled: counter !== 0
-    }
+    // Sphere
+    Entity {
+        SphereMesh {
+            id: sphereMesh
+            enabled: counter !== 0
+        }
 
-    PhongMaterial {
-        id: material
-        ambient: "dodgerblue"
-        diffuse: "chartreuse"
-        specular: "ghostwhite"
-        enabled: counter !== 1
-    }
+        PhongMaterial {
+            id: material
+            ambient: "dodgerblue"
+            diffuse: "chartreuse"
+            specular: "ghostwhite"
+            enabled: counter !== 1
+        }
 
-    Layer {
-        id: layer
-        enabled: counter !== 2
-    }
+        Layer {
+            id: layer
+            enabled: counter !== 2
+            names: "scene"
+        }
 
-    Transform {
-        id: transform
-        enabled: counter !== 3
+        Transform {
+            id: transform
+            enabled: counter !== 3
 
-        Translate {
-            id: translate
+            Translate {
+                id: translate
 
-            QQ2.SequentialAnimation {
-                running: true
-                loops: QQ2.Animation.Infinite
-                QQ2.NumberAnimation {
-                    target: translate; property: "dx"
-                    from: 0; to: 5;
-                    duration: 550
-                    easing.type: QQ2.Easing.InOutQuad
-                }
-                QQ2.NumberAnimation {
-                    target: translate; property: "dy"
-                    from: 0; to: 5;
-                    duration: 650
-                    easing.type: QQ2.Easing.InOutQuad
-                }
-                QQ2.NumberAnimation {
-                    target: translate; property: "dz"
-                    from: 0; to: 5;
-                    duration: 350
-                    easing.type: QQ2.Easing.InOutQuad
-                }
-                QQ2.NumberAnimation {
-                    target: translate; property: "dx"
-                    from: 5; to: 0;
-                    duration: 550
-                    easing.type: QQ2.Easing.InOutQuad
-                }
-                QQ2.NumberAnimation {
-                    target: translate; property: "dy"
-                    from: 5; to: 0;
-                    duration: 350
-                    easing.type: QQ2.Easing.InOutQuad
-                }
-                QQ2.NumberAnimation {
-                    target: translate; property: "dz"
-                    from: 5; to: 0;
-                    duration: 650
-                    easing.type: QQ2.Easing.InOutQuad
+                QQ2.SequentialAnimation {
+                    running: true
+                    loops: QQ2.Animation.Infinite
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dx"
+                        from: 0; to: 5;
+                        duration: 550
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dy"
+                        from: 0; to: 5;
+                        duration: 650
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dz"
+                        from: 0; to: 5;
+                        duration: 350
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dx"
+                        from: 5; to: 0;
+                        duration: 550
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dy"
+                        from: 5; to: 0;
+                        duration: 350
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
+                    QQ2.NumberAnimation {
+                        target: translate; property: "dz"
+                        from: 5; to: 0;
+                        duration: 650
+                        easing.type: QQ2.Easing.InOutQuad
+                    }
                 }
             }
         }
+        components: [sphereMesh, material, layer, transform]
     }
 
+    // Floor
     Entity {
-        components: [sphereMesh, material, layer, transform]
+        PlaneMesh {
+            id: planeMesh
+            width: 25.0
+            height: 10
+        }
+
+        PhongMaterial {
+            id: floorMaterial
+            ambient: "lawngreen"
+            diffuse: "forestgreen"
+            specular: "floralwhite"
+            shininess: 0.5
+        }
+
+        Layer {
+            id: floorLayer
+            names: "floor"
+        }
+
+        components: [planeMesh, floorMaterial, floorLayer]
     }
 }
 
