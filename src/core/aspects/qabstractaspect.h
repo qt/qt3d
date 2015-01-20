@@ -50,9 +50,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-class QSurface;
-
 namespace Qt3D {
 
 class QAspectManager;
