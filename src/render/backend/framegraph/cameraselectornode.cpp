@@ -65,6 +65,7 @@ void CameraSelector::updateFromPeer(QNode *peer)
     m_cameraUuid = QNodeId();
     if (selector->camera() != Q_NULLPTR)
         m_cameraUuid = selector->camera()->id();
+    setEnabled(selector->isEnabled());
 }
 
 void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
@@ -72,9 +73,10 @@ void CameraSelector::sceneChangeEvent(const QSceneChangePtr &e)
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("camera")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("camera"))
             m_cameraUuid = propertyChange->value().value<QNodeId>();
-        }
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
     }
 }
 

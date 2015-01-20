@@ -60,6 +60,7 @@ void SortMethod::updateFromPeer(QNode *peer)
     m_criteria.clear();
     Q_FOREACH (QSortCriterion *c, sortMethod->criteria())
         m_criteria.append(c->id());
+    setEnabled(sortMethod->isEnabled());
 }
 
 void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
@@ -73,6 +74,8 @@ void SortMethod::sceneChangeEvent(const QSceneChangePtr &e)
             else if (e->type() == NodeRemoved)
                 m_criteria.removeAll(c->id());
         }
+    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
+        setEnabled(propertyChange->value().toBool());
     }
 }
 

@@ -64,6 +64,7 @@ void RenderTargetSelector::updateFromPeer(QNode *peer)
     m_renderTargetUuid = QNodeId();
     if (selector->target() != Q_NULLPTR)
         m_renderTargetUuid = selector->target()->id();
+    setEnabled(selector->isEnabled());
 }
 
 void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
@@ -73,6 +74,8 @@ void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("target"))
             m_renderTargetUuid = propertyChange->value().value<QNodeId>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
     }
 }
 

@@ -61,6 +61,7 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
     m_filters.clear();
     Q_FOREACH (QAnnotation *criterion, filter->criteria())
         appendFilter(criterion);
+    setEnabled(filter->isEnabled());
 }
 
 QList<QNodeId> TechniqueFilter::filters() const
@@ -81,15 +82,21 @@ void TechniqueFilter::removeFilter(const QNodeId &criterionId)
 
 void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
 {
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+
     switch (e->type()) {
+    case NodeUpdated: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
+    }
+        break;
+
     case NodeAdded: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             appendFilter(propertyChange->value().value<QAnnotation *>());
     }
         break;
     case NodeRemoved: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             removeFilter(propertyChange->value().value<QNodeId>());
     }

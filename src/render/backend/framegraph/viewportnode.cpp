@@ -65,6 +65,7 @@ void ViewportNode::updateFromPeer(QNode *peer)
     setYMin(viewport->rect().y());
     setYMax(viewport->rect().height());
     m_clearColor = viewport->clearColor();
+    setEnabled(viewport->isEnabled());
 }
 
 float ViewportNode::xMin() const
@@ -122,6 +123,8 @@ void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
             m_clearColor = propertyChange->value().value<QColor>();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            setEnabled(propertyChange->value().toBool());
         }
     }
 }

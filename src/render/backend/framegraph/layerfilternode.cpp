@@ -58,6 +58,7 @@ void LayerFilterNode::updateFromPeer(QNode *peer)
 {
     QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
     m_layers = layerFilter->layers();
+    setEnabled(layerFilter->isEnabled());
 }
 
 void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
@@ -66,6 +67,8 @@ void LayerFilterNode::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("layers"))
             setLayers(propertyChange->value().value<QStringList>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
     }
 }
 

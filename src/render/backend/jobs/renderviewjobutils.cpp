@@ -96,90 +96,91 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
     while (node) {
         FrameGraphNode::FrameGraphNodeType type = node->nodeType();
-        switch (type) {
-        case FrameGraphNode::CameraSelector:
-            // Can be set only once and we take camera nearest to the leaf node
-            if (!rv->renderCamera()) {
-                const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
-                RenderEntity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
-                if (camNode) {
-                    RenderCameraLens *lens = camNode->renderComponent<RenderCameraLens>();
-                    if (lens) {
-                        rv->setRenderCamera(lens);
-                        rv->setViewMatrix(lens->isEnabled() ? *camNode->worldTransform() : QMatrix4x4());
-                    }
+        if (node->isEnabled())
+            switch (type) {
+            case FrameGraphNode::CameraSelector:
+                // Can be set only once and we take camera nearest to the leaf node
+                if (!rv->renderCamera()) {
+                    const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
+                    RenderEntity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
+                    if (camNode) {
+                        RenderCameraLens *lens = camNode->renderComponent<RenderCameraLens>();
+                        if (lens && lens->isEnabled()) {
+                            rv->setRenderCamera(lens);
+                            rv->setViewMatrix(*camNode->worldTransform());
+                        }
 
-                    // TODO: We can extract camera pos from the modelview matrix
-                    rv->setEyePosition(camNode->worldBoundingVolume()->center());
+                        // TODO: We can extract camera pos from the modelview matrix
+                        rv->setEyePosition(camNode->worldBoundingVolume()->center());
+                    }
+                    break;
+                }
+
+            case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
+                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layers());
+                break;
+
+            case FrameGraphNode::RenderPassFilter:
+                // Can be set once
+                // TODO: Amalgamate all render pass filters from leaf to root
+                if (!rv->renderPassFilter())
+                    rv->setRenderPassFilter(static_cast<const RenderPassFilter *>(node));
+                break;
+
+            case FrameGraphNode::RenderTarget: {
+                // Can be set once and we take render target nearest to the leaf node
+                QNodeId renderTargetUid = static_cast<const RenderTargetSelector *>(node)->renderTargetUuid();
+                HTarget renderTargetHandle = renderer->renderTargetManager()->lookupHandle(renderTargetUid);
+                if (rv->renderTargetHandle().isNull()) {
+                    rv->setRenderTargetHandle(renderTargetHandle);
+
+                    RenderTarget *renderTarget = renderer->renderTargetManager()->data(renderTargetHandle);
+                    if (renderTarget) {
+                        // Add renderTarget Handle and build renderCommand AttachmentPack
+                        Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
+                            RenderAttachment *attachment = renderer->attachmentManager()->lookupResource(attachmentId);
+                            if (attachment)
+                                rv->addRenderAttachment(attachment->attachment());
+                        }
+                    }
                 }
                 break;
             }
 
-        case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
-            rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layers());
-            break;
+            case FrameGraphNode::ClearBuffer:
+                rv->setClearBuffer(static_cast<const ClearBuffer *>(node)->type());
+                break;
 
-        case FrameGraphNode::RenderPassFilter:
-            // Can be set once
-            // TODO: Amalgamate all render pass filters from leaf to root
-            if (!rv->renderPassFilter())
-                rv->setRenderPassFilter(static_cast<const RenderPassFilter *>(node));
-            break;
+            case FrameGraphNode::TechniqueFilter:
+                // Can be set once
+                // TODO Amalgamate all technique filters from leaf to root
+                if (rv->techniqueFilter())
+                    rv->setTechniqueFilter(static_cast<const TechniqueFilter *>(node));
+                break;
 
-        case FrameGraphNode::RenderTarget: {
-            // Can be set once and we take render target nearest to the leaf node
-            QNodeId renderTargetUid = static_cast<const RenderTargetSelector *>(node)->renderTargetUuid();
-            HTarget renderTargetHandle = renderer->renderTargetManager()->lookupHandle(renderTargetUid);
-            if (rv->renderTargetHandle().isNull()) {
-                rv->setRenderTargetHandle(renderTargetHandle);
+            case FrameGraphNode::Viewport: {
+                // If the Viewport has already been set in a lower node
+                // Make it so that the new viewport is actually
+                // a subregion relative to that of the parent viewport
+                const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
+                rv->setViewport(computeViewport(rv->viewport(), vpNode));
 
-                RenderTarget *renderTarget = renderer->renderTargetManager()->data(renderTargetHandle);
-                if (renderTarget) {
-                    // Add renderTarget Handle and build renderCommand AttachmentPack
-                    Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
-                        RenderAttachment *attachment = renderer->attachmentManager()->lookupResource(attachmentId);
-                        if (attachment)
-                            rv->addRenderAttachment(attachment->attachment());
-                    }
-                }
+                // We take the clear color from the viewport node nearest the leaf
+                if (!rv->clearColor().isValid())
+                    rv->setClearColor(vpNode->clearColor());
+                break;
             }
-            break;
-        }
 
-        case FrameGraphNode::ClearBuffer:
-            rv->setClearBuffer(static_cast<const ClearBuffer *>(node)->type());
-            break;
+            case FrameGraphNode::SortMethod: {
+                const Render::SortMethod *sortMethod = static_cast<const Render::SortMethod *>(node);
+                rv->addSortCriteria(sortMethod->criteria());
+                break;
+            }
 
-        case FrameGraphNode::TechniqueFilter:
-            // Can be set once
-            // TODO Amalgamate all technique filters from leaf to root
-            if (rv->techniqueFilter())
-                rv->setTechniqueFilter(static_cast<const TechniqueFilter *>(node));
-            break;
-
-        case FrameGraphNode::Viewport: {
-            // If the Viewport has already been set in a lower node
-            // Make it so that the new viewport is actually
-            // a subregion relative to that of the parent viewport
-            const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
-            rv->setViewport(computeViewport(rv->viewport(), vpNode));
-
-            // We take the clear color from the viewport node nearest the leaf
-            if (!rv->clearColor().isValid())
-                rv->setClearColor(vpNode->clearColor());
-            break;
-        }
-
-        case FrameGraphNode::SortMethod: {
-            const Render::SortMethod *sortMethod = static_cast<const Render::SortMethod *>(node);
-            rv->addSortCriteria(sortMethod->criteria());
-            break;
-        }
-
-        default:
-            // Should never get here
-            qCWarning(Backend) << "Unhandled FrameGraphNode type";
-        }
+            default:
+                // Should never get here
+                qCWarning(Backend) << "Unhandled FrameGraphNode type";
+            }
 
         node = node->parent();
     }
@@ -201,36 +202,36 @@ void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
     // For each of entity that has a QShaderData component we need to save the worldTransform so that we can
     // later use the shaderData with the correct space transforms
 
-// COMMENTED FOR NOW AS THERE ARE ISSUES WITH MULTIPLE RENDERVIEWS
-// AS THE TRANSFORMS ARE COMPUTED BASED ON THE RENDERVIEWS' VIEWMATRIX
-// AND SINCE THERE CAN BE SEVERAL RENDERVIEWS FOR A SINGLE QSHADERDATA
-// THIS RESULT IN TWO JOBS UPDATING THE RENDERSHADERDATA AT THE SAME TIME
-// Moving that to the RenderView::setUniformBlock could solve that
+    // COMMENTED FOR NOW AS THERE ARE ISSUES WITH MULTIPLE RENDERVIEWS
+    // AS THE TRANSFORMS ARE COMPUTED BASED ON THE RENDERVIEWS' VIEWMATRIX
+    // AND SINCE THERE CAN BE SEVERAL RENDERVIEWS FOR A SINGLE QSHADERDATA
+    // THIS RESULT IN TWO JOBS UPDATING THE RENDERSHADERDATA AT THE SAME TIME
+    // Moving that to the RenderView::setUniformBlock could solve that
 
-//    QList<RenderShaderData *> shadersData = node->renderComponents<RenderShaderData>();
-//    Q_FOREACH (RenderShaderData *r, shadersData) {
-//        if (r) {
-//            QHash<QString, QVariant> &shaderProperties = r->properties();
-//            QHash<QString, QVariant>::iterator it = shaderProperties.begin();
-//            const QHash<QString, QVariant>::iterator itEnd = shaderProperties.end();
+    //    QList<RenderShaderData *> shadersData = node->renderComponents<RenderShaderData>();
+    //    Q_FOREACH (RenderShaderData *r, shadersData) {
+    //        if (r) {
+    //            QHash<QString, QVariant> &shaderProperties = r->properties();
+    //            QHash<QString, QVariant>::iterator it = shaderProperties.begin();
+    //            const QHash<QString, QVariant>::iterator itEnd = shaderProperties.end();
 
-//            while (it != itEnd) {
-//                if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
-//                    // If we have a QVector3D property value, we try to look
-//                    // if there is a matching QShaderData::TransformType propertyTransformed
-//                    QVariant value = shaderProperties.value(it.key() + QStringLiteral("Transformed"));
-//                    // if that's the case, we apply a space transformation to the property
-//                    if (value.isValid() && value.type() == QVariant::Int) {
-//                        if (static_cast<QShaderData::TransformType>(value.toInt()) == QShaderData::ModelToEye)
-//                            it.value() = QVariant(rv->viewmatrix() * *node->worldTransform() * it.value().value<QVector3D>());
-//                        else // ModelToWorld
-//                            it.value() = QVariant(*node->worldTransform() * it.value().value<QVector3D>());
-//                    }
-//                }
-//                ++it;
-//            }
-//        }
-//    }
+    //            while (it != itEnd) {
+    //                if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
+    //                    // If we have a QVector3D property value, we try to look
+    //                    // if there is a matching QShaderData::TransformType propertyTransformed
+    //                    QVariant value = shaderProperties.value(it.key() + QStringLiteral("Transformed"));
+    //                    // if that's the case, we apply a space transformation to the property
+    //                    if (value.isValid() && value.type() == QVariant::Int) {
+    //                        if (static_cast<QShaderData::TransformType>(value.toInt()) == QShaderData::ModelToEye)
+    //                            it.value() = QVariant(rv->viewmatrix() * *node->worldTransform() * it.value().value<QVector3D>());
+    //                        else // ModelToWorld
+    //                            it.value() = QVariant(*node->worldTransform() * it.value().value<QVector3D>());
+    //                    }
+    //                }
+    //                ++it;
+    //            }
+    //        }
+    //    }
 
     // Traverse children
     Q_FOREACH (RenderEntity *child, node->children())
@@ -300,8 +301,8 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
 
 RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
-                                                         RenderView *renderView,
-                                                         RenderTechnique *technique)
+                                                  RenderView *renderView,
+                                                  RenderTechnique *technique)
 {
     Q_ASSERT(renderer);
     Q_ASSERT(technique);

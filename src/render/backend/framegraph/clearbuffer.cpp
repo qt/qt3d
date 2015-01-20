@@ -58,7 +58,7 @@ void ClearBuffer::updateFromPeer(QNode *peer)
 {
     QClearBuffer *clearBuffer = static_cast<QClearBuffer *>(peer);
     m_type = clearBuffer->buffers();
-
+    setEnabled(clearBuffer->isEnabled());
 }
 
 void ClearBuffer::sceneChangeEvent(const QSceneChangePtr &e)
@@ -67,6 +67,8 @@ void ClearBuffer::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
             m_type = static_cast<QClearBuffer::BufferType>(propertyChange->value().toInt());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
     }
 }
 
