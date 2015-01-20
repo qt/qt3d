@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
     engine.aspectEngine()->setData(data);
     engine.aspectEngine()->initialize();
     engine.setSource(QUrl("qrc:/main.qml"));

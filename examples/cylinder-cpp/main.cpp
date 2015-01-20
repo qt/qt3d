@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     engine.initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
     engine.setData(data);
 
     // Root entity

@@ -50,7 +50,7 @@ namespace Qt3D {
 
 namespace Input {
 
-// The KeyboardEventFilter must be in the same thread as the QWindow it will be monitoring
+// The KeyboardEventFilter must be in the same thread as the view it will be monitoring
 
 KeyboardEventFilter::KeyboardEventFilter(QObject *parent)
     : QObject(parent)
@@ -62,7 +62,7 @@ void KeyboardEventFilter::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-// Triggered in QWindow thread (usually the main thread)
+// Triggered in the view thread (usually the main thread)
 bool KeyboardEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress || e->type() == QEvent::KeyRelease) {

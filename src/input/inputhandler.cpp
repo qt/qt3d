@@ -44,7 +44,6 @@
 #include "keyboardeventfilter_p.h"
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
-#include <QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,22 +54,22 @@ namespace Input {
 InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
-    , m_window(Q_NULLPTR)
+    , m_eventSource(Q_NULLPTR)
     , m_keyboardEventFilter(new KeyboardEventFilter())
 {
     m_keyboardEventFilter->setInputHandler(this);
 }
 
 // Called in MainThread
-void InputHandler::setWindow(QWindow *window)
+void InputHandler::setEventSource(QObject *object)
 {
-    if (window != m_window) {
-        if (m_window)
-            m_window->removeEventFilter(m_keyboardEventFilter);
+    if (object != m_eventSource) {
+        if (m_eventSource)
+            m_eventSource->removeEventFilter(m_keyboardEventFilter);
         clearPendingKeyEvents();
-        m_window = window;
-        if (m_window)
-            m_window->installEventFilter(m_keyboardEventFilter);
+        m_eventSource = object;
+        if (m_eventSource)
+            m_eventSource->installEventFilter(m_keyboardEventFilter);
     }
 }
 

@@ -59,7 +59,7 @@ int main(int ac, char **av)
     engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("window"), QVariant::fromValue(&view));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
     engine.aspectEngine()->setData(data);
     engine.aspectEngine()->initialize();
     engine.setSource(QUrl("qrc:/main.qml"));

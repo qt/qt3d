@@ -50,8 +50,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QWindow;
-
 namespace Qt3D {
 
 namespace Input {
@@ -65,8 +63,8 @@ class InputHandler
 public:
     InputHandler();
 
-    void setWindow(QWindow *window);
-    inline QWindow *window() const { return m_window; }
+    void setEventSource(QObject *object);
+    inline QObject *eventSource() const { return m_eventSource; }
 
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
@@ -84,7 +82,7 @@ private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
     QVector<HKeyboardController> m_activeKeyboardControllers;
-    QWindow *m_window;
+    QObject *m_eventSource;
     KeyboardEventFilter *m_keyboardEventFilter;
     QList<QKeyEvent> m_pendingEvents;
     mutable QMutex m_mutex;

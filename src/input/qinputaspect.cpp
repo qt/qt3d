@@ -49,7 +49,6 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
-#include <QWindow>
 
 QT_BEGIN_NAMESPACE
 
@@ -119,21 +118,21 @@ void QInputAspect::setRootEntity(QEntity *rootObject)
 
 void QInputAspect::onInitialize(const QVariantMap &data)
 {
-    QWindow *w = Q_NULLPTR;
-    const QVariant &v = data.value(QStringLiteral("window"));
+    QObject *object = Q_NULLPTR;
+    const QVariant &v = data.value(QStringLiteral("eventSource"));
     if (v.isValid())
-        w = v.value<QWindow *>();
+        object = v.value<QObject *>();
     Q_D(QInputAspect);
-    if (w)
-        w->installEventFilter(d->m_cameraController);
-    d->m_inputHandler->setWindow(w);
+    if (object)
+        object->installEventFilter(d->m_cameraController);
+    d->m_inputHandler->setEventSource(object);
 }
 
 void QInputAspect::onCleanup()
 {
     Q_D(QInputAspect);
-    d->m_inputHandler->window()->removeEventFilter(d->m_cameraController);
-    d->m_inputHandler->setWindow(Q_NULLPTR);
+    d->m_inputHandler->eventSource()->removeEventFilter(d->m_cameraController);
+    d->m_inputHandler->setEventSource(Q_NULLPTR);
 }
 
 void QInputAspect::visitNode(QNode *node)
