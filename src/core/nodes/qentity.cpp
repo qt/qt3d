@@ -112,8 +112,11 @@ void QEntity::addComponent(QComponent *comp)
     if (!comp->parent())
         comp->setParent(this);
 
-    if (d->m_scene != Q_NULLPTR)
+    if (d->m_scene != Q_NULLPTR) {
+        if (!comp->shareable() && !d->m_scene->entitiesForComponent(comp->id()).isEmpty())
+            qWarning() << "Trying to assign a non shareable component to more than one Entity";
         d->m_scene->addEntityForComponent(comp->id(), d->m_id);
+    }
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));

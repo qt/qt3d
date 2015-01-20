@@ -106,8 +106,11 @@ void QAspectEngine::initNodeTree(QNode *node) const
     d->m_scene->addObservable(node);
     QEntity *entity = qobject_cast<QEntity *>(node);
     if (entity != Q_NULLPTR)
-        Q_FOREACH (QComponent *comp, entity->components())
+        Q_FOREACH (QComponent *comp, entity->components()) {
+            if (!comp->shareable() && !d->m_scene->entitiesForComponent(comp->id()).isEmpty())
+                qWarning() << "Trying to assign a non shareable component to more than one Entity";
             d->m_scene->addEntityForComponent(comp->id(), entity->id());
+        }
 
     Q_FOREACH (QObject *c, node->children()) {
         QNode *childNode = qobject_cast<QNode *>(c);
