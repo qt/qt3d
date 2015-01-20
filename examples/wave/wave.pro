@@ -13,7 +13,7 @@ OTHER_FILES += \
     shaders/* \
     main.qml \
     BasicCamera.qml \
-    ForwardRenderer.qml \
+    WaveForwardRenderer.qml \
     Wave.qml \
     WaveEffect.qml \
     WaveMaterial.qml \

@@ -64,7 +64,7 @@ Entity {
 
     FrameGraph {
         id: frameGraph
-        activeFrameGraph: ForwardRenderer {
+        activeFrameGraph: WaveForwardRenderer {
             camera: mainCamera
         }
     }

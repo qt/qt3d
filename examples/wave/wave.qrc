@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>ForwardRenderer.qml</file>
         <file>BasicCamera.qml</file>
         <file>WaveEffect.qml</file>
         <file>WaveMaterial.qml</file>
@@ -14,5 +13,6 @@
         <file>shaders/ribbon.vert</file>
         <file>shaders/ribbonwireframe.frag</file>
         <file>shaders/robustwireframe.geom</file>
+        <file>WaveForwardRenderer.qml</file>
     </qresource>
 </RCC>
