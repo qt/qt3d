@@ -42,6 +42,7 @@
 #include "scene3ditem.h"
 
 #include <Qt3DCore/QAspectEngine>
+#include <Qt3DInput/QInputAspect>
 #include <Qt3DRenderer/QRenderAspect>
 
 #include <QOpenGLContext>
@@ -91,6 +92,7 @@ public:
 
         QVariantMap data;
         data.insert(QStringLiteral("surface"), QVariant::fromValue(saver.surface()));
+        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(m_item));
         m_aspectEngine->setData(data);
 
         m_renderAspect->renderInitialize(saver.context());
@@ -134,7 +136,11 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
       m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
 {
     setFlag(QQuickItem::ItemHasContents, true);
+    setAcceptedMouseButtons(Qt::MouseButtonMask);
+    setAcceptHoverEvents(true);
+
     m_aspectEngine->registerAspect(m_renderAspect);
+    m_aspectEngine->registerAspect(new Qt3D::QInputAspect);
     m_aspectEngine->initialize();
 }
 

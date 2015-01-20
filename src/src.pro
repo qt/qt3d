@@ -40,7 +40,7 @@ src_quick3d_imports_render.depends = src_quick3d_render
 
 src_quick3d_imports_scene3d.file = $$PWD/quick3d/imports/scene3d/importsscene3d.pro
 src_quick3d_imports_scene3d.target = sub-quick3d-imports-scene3d
-src_quick3d_imports_scene3d.depends = src_quick3d_render
+src_quick3d_imports_scene3d.depends = src_quick3d_render src_input
 
 src_quick3d_imports_bulletphysics.file = $$PWD/quick3d/imports/bulletphysics/importsbulletphysics.pro
 src_quick3d_imports_bulletphysics.target = sub-quick3d-imports-bulletphysics

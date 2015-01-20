@@ -74,6 +74,7 @@ Item {
         Scene3D {
             anchors.fill: parent
             anchors.margins: 10
+            focus: true
 
             AnimatedEntity {}
         }
