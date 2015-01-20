@@ -55,6 +55,7 @@ class QFrameGraphNodePrivate;
 class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public QNode
 {
     Q_OBJECT
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
     explicit QFrameGraphNode(QNode *parent = 0);
 
@@ -62,9 +63,15 @@ public:
     void removeFrameGraphNode(QFrameGraphNode *item);
     QList<QFrameGraphNode *> frameGraphChildren() const;
 
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
+
 protected:
     QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void enabledChanged();
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraphNode)

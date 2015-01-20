@@ -103,6 +103,21 @@ QList<QFrameGraphNode *> QFrameGraphNode::frameGraphChildren() const
     return d->m_fgChildren;
 }
 
+bool QFrameGraphNode::isEnabled() const
+{
+    Q_D(const QFrameGraphNode);
+    return d->m_enabled;
+}
+
+void QFrameGraphNode::setEnabled(bool enabled)
+{
+    Q_D(QFrameGraphNode);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
+    }
+}
+
 
 } // Qt3D
 

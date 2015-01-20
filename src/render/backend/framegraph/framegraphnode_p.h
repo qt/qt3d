@@ -76,7 +76,7 @@ public:
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
     void setEnabled(bool enabled) { m_enabled = enabled; }
-    bool isEnabled() const { return m_enabled; }
+    inline bool isEnabled() const { return m_enabled; }
 
     void setFrameGraphManager(FrameGraphManager *manager);
 
