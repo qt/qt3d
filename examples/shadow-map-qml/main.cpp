@@ -39,9 +39,10 @@
 **
 ****************************************************************************/
 
-#include <Qt3DQuick/quickwindow.h>
+#include <Qt3DCore/window.h>
 #include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DInput/QInputAspect>
+#include <Qt3DQuick/QQmlAspectEngine>
 
 #include <QGuiApplication>
 #include <QQmlContext>
@@ -55,7 +56,7 @@ int main(int argc, char* argv[])
 
     initializeAssetResources("../exampleresources/example-assets.qrb");
 
-    Qt3D::Quick::QuickWindow view;
+    Qt3D::Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
 
     view.resize(1600, 800);
