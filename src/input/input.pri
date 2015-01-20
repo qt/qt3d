@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/cameracontroller_p.h \
     $$PWD/qinputaspect.h \
     $$PWD/qkeyboardcontroller.h \
     $$PWD/qkeyboardcontroller_p.h \
@@ -16,6 +17,7 @@ HEADERS += \
     $$PWD/q3dkeyevent.h
 
 SOURCES += \
+    $$PWD/cameracontroller.cpp \
     $$PWD/qinputaspect.cpp \
     $$PWD/qkeyboardcontroller.cpp \
     $$PWD/qkeyboardinput.cpp \

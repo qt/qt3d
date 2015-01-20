@@ -52,6 +52,7 @@ class QInputAspect;
 
 namespace Input {
 
+class CameraController;
 class InputHandler;
 
 }
@@ -63,6 +64,7 @@ public:
 
     Q_DECLARE_PUBLIC(QInputAspect)
     Input::InputHandler *m_inputHandler;
+    Input::CameraController *m_cameraController;
 };
 
 } // Qt3D

@@ -22,7 +22,6 @@ HEADERS += \
     $$PWD/window.h \
     $$PWD/qtickclock_p.h \
     $$PWD/qscheduler_p.h \
-    $$PWD/cameracontroller.h \
     $$PWD/corelogging_p.h \
     $$PWD/qscenechange.h \
     $$PWD/qscenepropertychange.h \
@@ -43,7 +42,6 @@ SOURCES += \
     $$PWD/window.cpp \
     $$PWD/qtickclock.cpp \
     $$PWD/qscheduler.cpp \
-    $$PWD/cameracontroller.cpp \
     $$PWD/qchangearbiter.cpp \
     $$PWD/corelogging.cpp \
     $$PWD/qobservableinterface.cpp \

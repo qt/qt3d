@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#include "cameracontroller.h"
+#include "cameracontroller_p.h"
 
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -52,8 +52,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+using namespace Qt3D;
+using namespace Qt3D::Input;
 
 CameraController::CameraController(QObject *parent) :
     QObject(parent),
@@ -93,6 +93,11 @@ void CameraController::setCamera( QCamera* cam )
         m_updateTimer->start();
     else
         m_updateTimer->stop();
+}
+
+QCamera *CameraController::camera() const
+{
+    return m_camera;
 }
 
 void CameraController::setLinearSpeed( float speed )
@@ -327,7 +332,5 @@ void CameraController::onUpdate()
 {
     update(1.0 / 60.0);
 }
-
-} // of namespace Qt3D
 
 QT_END_NAMESPACE

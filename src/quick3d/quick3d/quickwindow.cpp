@@ -41,8 +41,6 @@
 
 #include "quickwindow.h"
 
-#include <Qt3DCore/cameracontroller.h>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {

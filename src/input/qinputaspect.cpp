@@ -41,6 +41,7 @@
 
 #include "qinputaspect.h"
 #include "qinputaspect_p.h"
+#include "cameracontroller_p.h"
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
 #include "keyboardinput_p.h"
@@ -57,6 +58,7 @@ namespace Qt3D {
 QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
     : QAbstractAspectPrivate(qq)
     , m_inputHandler(new Input::InputHandler())
+    , m_cameraController(new Input::CameraController())
 {
     m_aspectType = QAbstractAspect::AspectOther;
 }
@@ -66,6 +68,18 @@ QInputAspect::QInputAspect(QObject *parent)
 {
     registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler)));
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler)));
+}
+
+QCamera *QInputAspect::camera() const
+{
+    Q_D(const QInputAspect);
+    return d->m_cameraController->camera();
+}
+
+void QInputAspect::setCamera(QCamera *camera)
+{
+    Q_D(QInputAspect);
+    d->m_cameraController->setCamera(camera);
 }
 
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
@@ -110,12 +124,15 @@ void QInputAspect::onInitialize(const QVariantMap &data)
     if (v.isValid())
         w = v.value<QWindow *>();
     Q_D(QInputAspect);
+    if (w)
+        w->installEventFilter(d->m_cameraController);
     d->m_inputHandler->setWindow(w);
 }
 
 void QInputAspect::onCleanup()
 {
     Q_D(QInputAspect);
+    d->m_inputHandler->window()->removeEventFilter(d->m_cameraController);
     d->m_inputHandler->setWindow(Q_NULLPTR);
 }
 

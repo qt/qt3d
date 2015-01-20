@@ -49,14 +49,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QCamera;
 class QInputAspectPrivate;
 
 class QT3DINPUTSHARED_EXPORT QInputAspect : public QAbstractAspect
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QCamera* camera READ camera WRITE setCamera)
 public:
     explicit QInputAspect(QObject *parent = 0);
 
+    QCamera *camera() const;
+
+public Q_SLOTS:
+    void setCamera(QCamera *camera);
+
+public:
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;

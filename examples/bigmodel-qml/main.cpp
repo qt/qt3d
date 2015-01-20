@@ -41,6 +41,7 @@
 
 #include <Qt3DQuick/quickwindow.h>
 #include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DInput/QInputAspect>
 
 #include <QGuiApplication>
 #include <QtQml>
@@ -65,6 +66,7 @@ int main(int argc, char* argv[])
     Qt3D::Quick::QQmlAspectEngine engine;
 
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
     engine.qmlEngine()->rootContext()->setContextProperty("_meshFileNames", meshFileNames);
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));

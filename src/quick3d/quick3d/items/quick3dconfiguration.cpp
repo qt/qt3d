@@ -40,8 +40,14 @@
 ****************************************************************************/
 
 #include "quick3dconfiguration.h"
-#include "quickwindow.h"
 #include <QDebug>
+
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QCamera>
+#include <Qt3DCore/QScene>
+#include <Qt3DCore/private/qnode_p.h>
+
+#include <Qt3DInput/QInputAspect>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,13 +66,31 @@ void Quick3DConfiguration::setControlledCamera(QCamera *camera)
     if (m_camera != camera) {
         m_camera = camera;
         emit controlledCameraChanged();
-        Qt3D::Quick::QuickWindow::getInstance()->setCamera(camera);
+        QMetaObject::invokeMethod(this, "applyControlledCameraChange", Qt::QueuedConnection);
     }
 }
 
 QCamera *Quick3DConfiguration::controlledCamera() const
 {
     return m_camera;
+}
+
+void Quick3DConfiguration::applyControlledCameraChange()
+{
+    QScene *scene = static_cast<QScene*>(QNodePrivate::get(m_camera)->scene());
+
+    // Too early, let's try again later
+    if (!scene) {
+        QMetaObject::invokeMethod(this, "applyControlledCameraChange", Qt::QueuedConnection);
+        return;
+    }
+
+    Q_FOREACH (QAbstractAspect *aspect, scene->engine()->aspects()) {
+        if (aspect->property("camera").isValid()) {
+            aspect->setProperty("camera", QVariant::fromValue(m_camera));
+            break;
+        }
+    }
 }
 
 } // Quick

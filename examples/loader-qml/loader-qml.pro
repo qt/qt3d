@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT += 3dcore 3drenderer 3dquick qml quick
+QT += 3dcore 3drenderer 3dinput 3dquick qml quick
 
 SOURCES += \
     main.cpp

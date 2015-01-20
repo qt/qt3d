@@ -43,7 +43,6 @@
 #define CAMERA_CONTROLLER_H
 
 #include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QPoint>
 
@@ -54,13 +53,14 @@ class QWheelEvent;
 class QKeyEvent;
 class QTimer;
 
-namespace Qt3D
-{
+namespace Qt3D {
 
 class QCamera;
 class QEntity;
 
-class QT3DCORESHARED_EXPORT CameraController : public QObject
+namespace Input {
+
+class CameraController : public QObject
 {
     Q_OBJECT
 
@@ -73,6 +73,8 @@ public:
     explicit CameraController(QObject *parent = 0);
 
     void setCamera( QCamera* cam );
+    QCamera *camera() const;
+
     void setLinearSpeed( float speed );
     float linearSpeed() const;
 
@@ -134,6 +136,8 @@ private:
 
     QTimer *m_updateTimer;
 };
+
+} // of namespace Input
 
 } // of namespace Qt3D
 

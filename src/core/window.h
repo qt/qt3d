@@ -49,14 +49,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QAspectEngine;
-class QCamera;
-class QEntity;
-
-// temporary solution to get control over camera
-class CameraController;
-
 class QT3DCORESHARED_EXPORT Window : public QWindow
 {
     Q_OBJECT
@@ -64,14 +56,8 @@ public:
     explicit Window(QScreen *screen = 0);
     ~Window();
 
-    void setCamera(QCamera *camera);
-
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
-
-protected:
-    // temporary, borrowed from training material
-    CameraController *m_controller;
 };
 
 } // namespace Qt3D

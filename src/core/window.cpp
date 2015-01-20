@@ -49,7 +49,6 @@
 #include "qcamera.h"
 #include "qentity.h"
 #include "qaspectengine.h"
-#include "cameracontroller.h"
 #include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +57,6 @@ namespace Qt3D {
 
 Window::Window(QScreen *screen)
     : QWindow(screen)
-    , m_controller(new CameraController(this))
 
 {
     setSurfaceType(QSurface::OpenGLSurface);
@@ -72,17 +70,10 @@ Window::Window(QScreen *screen)
     format.setProfile(QSurfaceFormat::CoreProfile);
     setFormat(format);
     create();
-
-    installEventFilter(m_controller);
 }
 
 Window::~Window()
 {
-}
-
-void Window::setCamera(QCamera *camera)
-{
-    m_controller->setCamera(camera);
 }
 
 void Window::keyPressEvent( QKeyEvent* e )

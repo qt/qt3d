@@ -22,7 +22,7 @@ src_input.depends = src_render
 # Quick3D libs
 src_quick3d_core.subdir = $$PWD/quick3d/quick3d
 src_quick3d_core.target = sub-quick3d-core
-src_quick3d_core.depends = src_core
+src_quick3d_core.depends = src_core src_input
 
 src_quick3d_render.subdir = $$PWD/quick3d/quick3drenderer
 src_quick3d_render.target = sub-quick3d-render

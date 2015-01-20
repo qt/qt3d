@@ -41,6 +41,9 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/Window>
+
+#include <Qt3DInput/QInputAspect>
+
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QFrameGraph>
 #include <Qt3DRenderer/QMaterial>
@@ -72,6 +75,8 @@ int main(int ac, char **av)
     Qt3D::Window view;
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
+    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
@@ -121,7 +126,7 @@ int main(int ac, char **av)
     camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 10.0f));
 
-    view.setCamera(camera);
+    input->setCamera(camera);
 
     // FrameGraph
     Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();

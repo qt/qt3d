@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += 3dcore 3drenderer
+QT += 3dcore 3drenderer 3dinput
 
 SOURCES += main.cpp
 

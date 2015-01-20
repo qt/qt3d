@@ -66,6 +66,9 @@ public:
 Q_SIGNALS:
     void controlledCameraChanged();
 
+private Q_SLOTS:
+    void applyControlledCameraChange();
+
 private:
     QCamera *m_camera;
 };
