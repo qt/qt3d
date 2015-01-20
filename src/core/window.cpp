@@ -60,6 +60,7 @@ namespace Qt3D {
 Window::Window(QScreen *screen)
     : QWindow(screen)
     , m_camera(Q_NULLPTR)
+    , m_controller(new CameraController(this))
 
 {
     setSurfaceType(QSurface::OpenGLSurface);
@@ -74,7 +75,7 @@ Window::Window(QScreen *screen)
     setFormat(format);
     create();
 
-    m_controller.reset(new CameraController());
+    installEventFilter(m_controller);
 
     m_updateTimer = new QTimer(this);
     m_updateTimer->setInterval(16);
@@ -90,11 +91,6 @@ void Window::onUpdate()
     m_controller->update(1.0 / 60.0);
 }
 
-void Window::resizeEvent( QResizeEvent* e )
-{
-    Q_UNUSED( e );
-}
-
 void Window::setCamera(QCamera *camera)
 {
     m_camera = camera;
@@ -107,9 +103,6 @@ void Window::setCamera(QCamera *camera)
 
 void Window::keyPressEvent( QKeyEvent* e )
 {
-    if (m_controller->keyPressEvent(e))
-        return;
-
     switch ( e->key() )
     {
         case Qt::Key_Escape:
@@ -119,29 +112,6 @@ void Window::keyPressEvent( QKeyEvent* e )
         default:
             QWindow::keyPressEvent( e );
     }
-}
-
-void Window::keyReleaseEvent( QKeyEvent* e )
-{
-    if (m_controller->keyReleaseEvent(e))
-        return;
-
-    QWindow::keyReleaseEvent(e);
-}
-
-void Window::mousePressEvent( QMouseEvent* e )
-{
-    m_controller->mousePressEvent(e);
-}
-
-void Window::mouseReleaseEvent( QMouseEvent* e )
-{
-    m_controller->mouseReleaseEvent(e);
-}
-
-void Window::mouseMoveEvent( QMouseEvent* e )
-{
-    m_controller->mouseMoveEvent(e);
 }
 
 } // namespace Qt3D

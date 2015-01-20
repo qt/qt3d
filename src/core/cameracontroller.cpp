@@ -54,7 +54,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-CameraController::CameraController() :
+CameraController::CameraController(QObject *parent) :
+    QObject(parent),
     m_camera( 0 ),
     m_vx( 0.0f ),
     m_vy( 0.0f ),
@@ -290,6 +291,27 @@ void CameraController::toggleMSAA()
 {
     m_multisampleEnabled = !m_multisampleEnabled;
     emit multisampleEnabledChanged();
+}
+
+bool CameraController::eventFilter(QObject *receiver, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+        mousePressEvent(static_cast<QMouseEvent*>(event));
+        return true;
+    case QEvent::MouseButtonRelease:
+        mouseReleaseEvent(static_cast<QMouseEvent*>(event));
+        return true;
+    case QEvent::MouseMove:
+        mouseMoveEvent(static_cast<QMouseEvent*>(event));
+        return true;
+    case QEvent::KeyPress:
+        return keyPressEvent(static_cast<QKeyEvent*>(event));
+    case QEvent::KeyRelease:
+        return keyReleaseEvent(static_cast<QKeyEvent*>(event));
+    default:
+        return QObject::eventFilter(receiver, event);
+    }
 }
 
 } // of namespace Qt3D

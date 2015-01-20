@@ -69,7 +69,7 @@ class QT3DCORESHARED_EXPORT CameraController : public QObject
     Q_PROPERTY( bool multisampleEnabled READ isMultisampleEnabled NOTIFY multisampleEnabledChanged )
 
 public:
-    CameraController();
+    explicit CameraController(QObject *parent = 0);
 
     void setCamera( QCamera* cam );
     void setLinearSpeed( float speed );
@@ -88,15 +88,14 @@ public:
     bool keyPressEvent( QKeyEvent* aEvent );
     bool keyReleaseEvent( QKeyEvent* aEvent );
 
-    bool handleScroll( QWheelEvent* aWheel );
-
     void update( double t );
 
     bool isMultisampleEnabled() const;
 public Q_SLOTS:
     void toggleMSAA();
 
-
+protected:
+    bool eventFilter(QObject *receiver, QEvent *event) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void linearSpeedChanged();

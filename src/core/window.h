@@ -70,13 +70,6 @@ public:
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent( QKeyEvent* e );
-
-    virtual void mousePressEvent( QMouseEvent* e );
-    virtual void mouseReleaseEvent( QMouseEvent* e );
-    virtual void mouseMoveEvent( QMouseEvent* e );
-    virtual void resizeEvent(QResizeEvent *e);
-
 
 private Q_SLOTS:
     void onUpdate();
@@ -85,7 +78,7 @@ protected:
     QCamera* m_camera;
 
     // temporary, borrowed from training material
-    QScopedPointer<CameraController> m_controller;
+    CameraController *m_controller;
 
     QTimer* m_updateTimer;
 };
