@@ -72,6 +72,8 @@ public:
     void setData(const QVariantMap &data);
     void registerAspect(QAbstractAspect *aspect);
 
+    QList<QAbstractAspect*> aspects() const;
+
 protected:
     Q_DECLARE_PRIVATE(QAspectEngine)
     QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);

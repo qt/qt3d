@@ -68,6 +68,7 @@ public:
     QPostman *m_postman;
     QSceneInterface *m_scene;
     QSharedPointer<QEntity> m_root;
+    QList<QAbstractAspect*> m_aspects;
 };
 
 } // Qt3D

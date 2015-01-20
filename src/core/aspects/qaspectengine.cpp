@@ -163,10 +163,17 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);
     aspect->moveToThread(d->m_aspectThread);
+    d->m_aspects << aspect;
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
                               Qt::BlockingQueuedConnection,
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
+}
+
+QList<QAbstractAspect *> QAspectEngine::aspects() const
+{
+    Q_D(const QAspectEngine);
+    return d->m_aspects;
 }
 
 void QAspectEngine::setRootEntity(QEntity *root)
