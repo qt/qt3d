@@ -10,6 +10,7 @@ SUBDIRS = \
     nodes \
     qentity \
     qaspectengine \
+    qaspectfactory \
     qchangearbiter \
     qscene \
 
