@@ -52,6 +52,7 @@ namespace Qt3D {
 QComponentPrivate::QComponentPrivate(QComponent *qq)
     : QNodePrivate(qq)
     , m_shareable(true)
+    , m_enabled(true)
 {
 }
 
@@ -83,17 +84,58 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     m_entities.removeAll(entity);
 }
 
+/*!
+    Constructs a new QComponent instance with \a parent as the parent.
+    \note a QComponent should never be instanced directly,
+    instance one of the subclasses instead.
+ */
 QComponent::QComponent(QNode *parent)
     : QNode(*new QComponentPrivate(this), parent)
 {
 }
 
+QComponent::~QComponent()
+{
+}
+
+/*!
+    \return whether the QComponent is shareable across entities or not.
+ */
 bool QComponent::shareable() const
 {
     Q_D(const QComponent);
     return d->m_shareable;
 }
 
+/*!
+    \returns whether the QComponent is enabled or not.
+ */
+bool QComponent::isEnabled() const
+{
+    Q_D(const QComponent);
+    return d->m_enabled;
+}
+
+/*!
+    Set the QComponent to enabled if \a enabled is true.
+    By default a Qt3D::QComponent is always enabled.
+
+    \note the interpretation of what enabled means is aspect-dependent. Even if
+    enabled is set to false, some aspects may still consider the component in
+    some manner. This is documented on a class by class basis.
+ */
+void QComponent::setEnabled(bool enabled)
+{
+    Q_D(QComponent);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged();
+    }
+}
+
+/*!
+    The QComponent can be shared across several entities if \a shareable is true.
+ */
 void QComponent::setShareable(bool shareable)
 {
     Q_D(QComponent);
@@ -103,8 +145,15 @@ void QComponent::setShareable(bool shareable)
     }
 }
 
+void QComponent::copy(const QNode *ref)
+{
+    QNode::copy(ref);
+    const QComponent *comp = static_cast<const QComponent *>(ref);
+    setEnabled(comp->isEnabled());
+    setShareable(comp->shareable());
+}
+
 /*!
- * \brief QComponent::entities
  * \return a QVector containing all the entities that reference this component.
  */
 QVector<QEntity *> QComponent::entities() const

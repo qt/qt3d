@@ -55,20 +55,27 @@ class QT3DCORESHARED_EXPORT QComponent : public QNode
 {
     Q_OBJECT
     Q_PROPERTY(bool shareable READ shareable WRITE setShareable NOTIFY shareableChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
     explicit QComponent(QNode *parent = 0);
+    ~QComponent();
 
     bool shareable() const;
     void setShareable(bool shareable);
+
+    bool isEnabled() const;
+    void setEnabled(bool enabled);
 
     QVector<QEntity *> entities() const;
 
 protected:
     QComponent(QComponentPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void shareableChanged();
+    void enabledChanged();
 
 private:
     Q_DECLARE_PRIVATE(QComponent)
