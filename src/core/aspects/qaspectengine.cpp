@@ -173,6 +173,19 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
                               Q_ARG(Qt3D::QAbstractAspect *, aspect));
 }
 
+/*!
+ * Registers a new aspect to the AspectManager based on its \a name
+ * Uses the currently set aspect factory to create the actual aspect
+ * instance.
+ */
+void QAspectEngine::registerAspect(const QString &name)
+{
+    Q_D(QAspectEngine);
+    QAbstractAspect *aspect = d->m_factory.createAspect(name);
+    if (aspect)
+        registerAspect(aspect);
+}
+
 QList<QAbstractAspect *> QAspectEngine::aspects() const
 {
     Q_D(const QAspectEngine);
@@ -219,6 +232,18 @@ QSharedPointer<QEntity> QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);
     return d->m_root;
+}
+
+QAspectFactory QAspectEngine::aspectFactory() const
+{
+    Q_D(const QAspectEngine);
+    return d->m_factory;
+}
+
+void QAspectEngine::setAspectFactory(const QAspectFactory &factory)
+{
+    Q_D(QAspectEngine);
+    d->m_factory = factory;
 }
 
 } // namespace Qt3D

@@ -64,6 +64,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAspectEngine)
 
+    QAspectFactory m_factory;
     QAspectThread *m_aspectThread;
     QPostman *m_postman;
     QSceneInterface *m_scene;
