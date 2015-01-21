@@ -67,6 +67,8 @@ public:
     void setCenter(const QVector3D &c);
     QVector3D center() const;
 
+    inline bool isNull() { return m_center == QVector3D() && m_radius == 0.0f; }
+
     void setRadius(float r);
     float radius() const;
 

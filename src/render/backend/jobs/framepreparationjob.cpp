@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,79 +39,67 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERMESH_H
-#define QT3D_RENDER_RENDERMESH_H
-
-#include <Qt3DCore/qaxisalignedboundingbox.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DCore/qbackendnode.h>
+#include "framepreparationjob_p.h"
+#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/rendermesh_p.h>
+#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DRenderer/sphere.h>
 
 QT_BEGIN_NAMESPACE
 
-class QReadWriteLock;
-
 namespace Qt3D {
-
-class QAbstractMesh;
-class QAbstractMeshFunctor;
-class QRenderPass;
-class QMeshData;
-
-typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
 
 namespace Render {
 
-class MeshManager;
-class MeshDataManager;
-class RenderEntity;
-class RenderMaterial;
-class RenderTechnique;
-
-class RenderMesh : public QBackendNode
+FramePreparationJob::FramePreparationJob(Renderer *renderer, RenderEntity *root)
+    : m_renderer(renderer)
+    , m_root(root)
 {
-public:
-    RenderMesh();
-    ~RenderMesh();
-    void cleanup();
+}
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    HMeshData meshDataHandle() const;
-    QMeshData *meshData() const;
-    void setMeshData(HMeshData handle);
-    void setMeshDataManager(MeshDataManager *manager);
-
-    QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
-    inline bool isEnabled() const { return m_enabled; }
-
-private:
-    QAbstractMeshFunctorPtr m_functor;
-
-    bool m_meshDirty;
-    HMeshData m_meshDataHandle;
-    MeshDataManager *m_meshDataManager;
-    bool m_enabled;
-
-    void setMeshFunctor(QAbstractMeshFunctorPtr);
-};
-
-class RenderMeshCreatorFunctor : public QBackendNodeFunctor
+FramePreparationJob::~FramePreparationJob()
 {
-public:
-    explicit RenderMeshCreatorFunctor(MeshManager *meshManager, MeshDataManager *meshDataManager);
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
 
-private:
-    MeshManager *m_meshManager;
-    MeshDataManager *m_meshDataManager;
-};
+}
+
+void FramePreparationJob::run()
+{
+    parseNodeTree(m_root);
+}
+
+void FramePreparationJob::parseNodeTree(RenderEntity *node)
+{
+    // Initialize worldBoundingVolume if Mesh associated
+    Qt3D::Render::RenderMesh *mesh = Q_NULLPTR;
+    if ((node->localBoundingVolume()->isNull())
+            && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
+        if (!mesh->meshDataHandle().isNull()) {
+            Qt3D::QMeshData *meshData = mesh->meshData();
+            if (meshData != Q_NULLPTR) {
+                const QAxisAlignedBoundingBox box = meshData->boundingBox();
+                node->localBoundingVolume()->setCenter(box.center());
+                const QVector3D &radii = box.radii();
+                node->localBoundingVolume()->setRadius(qMax(radii.x(), qMax(radii.y(), radii.z())));
+                qDebug() << node->localBoundingVolume()->center() << node->localBoundingVolume()->radius();
+            }
+        }
+    }
+
+    // Update transform properties in RenderShaderData
+    QList<RenderShaderData *> shadersData = node->renderComponents<RenderShaderData>();
+    Q_FOREACH (RenderShaderData *r, shadersData) {
+        r->updateTransformedProperties(*node->worldTransform());
+    }
+
+    // Traverse children
+    Q_FOREACH (RenderEntity *child, node->children())
+        parseNodeTree(child);
+}
 
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERMESH_H

@@ -46,6 +46,7 @@
 #include <private/shadervariables_p.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <QMutex>
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +65,6 @@ public:
     ~RenderShaderData();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    inline QHash<QString, QVariant> & properties() { return m_properties; }
     inline QHash<QString, QVariant> properties() const { return m_properties; }
     inline QHash<QString, QVariant> updatedProperties() const { return m_updatedProperties; }
 
@@ -75,19 +75,30 @@ public:
 
     // Call by RenderViewJobs
     void addToClearUpdateList();
-    bool needsUpdate();
+    bool needsUpdate(const QMatrix4x4 &viewMatrix);
+
+    void updateTransformedProperties(const QMatrix4x4 &nodeWordlTransform);
 
 protected:
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    // 1 to 1 match with frontend properties, modified only by sceneChangeEvent
+    QHash<QString, QVariant> m_originalProperties;
+    // 1 to 1 match with frontend properties apart from Transformed
+    // properties which contain the matrices product
     QHash<QString, QVariant> m_properties;
+    // only updated properties, Transformed properties have the same
+    // value as in m_properties
     QHash<QString, QVariant> m_updatedProperties;
     PropertyReaderInterfacePtr m_propertyReader;
     QHash<QString, QVariant> m_nestedShaderDataProperties;
+    QHash<QString, QShaderData::TransformType> m_transformedProperties;
     ShaderDataManager *m_manager;
     QMutex *m_mutex;
     static QList<QNodeId> m_updatedShaderData;
+    QMatrix4x4 m_worldMatrix;
+    QMatrix4x4 m_viewMatrix;
 
     void readPeerProperties(QShaderData *peer);
     void setManager(ShaderDataManager *manager);

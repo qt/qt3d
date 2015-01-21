@@ -69,8 +69,6 @@ class Renderer;
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
-Q_AUTOTEST_EXPORT void preprocessRenderTree(RenderView *rv, const RenderEntity *node);
-
 Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
                                                           RenderView *renderView,
                                                           RenderEffect *effect);

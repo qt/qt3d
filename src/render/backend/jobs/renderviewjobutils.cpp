@@ -188,58 +188,6 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
 /*!
     \internal
-    Walks the scene graph of RenderEntities rooted at \p node and collects
-    together any resources needed by the \p rv.
-*/
-void preprocessRenderTree(RenderView *rv, const RenderEntity *node)
-{
-    // The goal is to use QShaderData in a later revision
-
-    // Note : Layer filtering isn't applied there
-    // TODO: Perhaps make this block of code configurable by allowing the Technique
-    // or similar to provide a functor?
-
-    // For each of entity that has a QShaderData component we need to save the worldTransform so that we can
-    // later use the shaderData with the correct space transforms
-
-    // COMMENTED FOR NOW AS THERE ARE ISSUES WITH MULTIPLE RENDERVIEWS
-    // AS THE TRANSFORMS ARE COMPUTED BASED ON THE RENDERVIEWS' VIEWMATRIX
-    // AND SINCE THERE CAN BE SEVERAL RENDERVIEWS FOR A SINGLE QSHADERDATA
-    // THIS RESULT IN TWO JOBS UPDATING THE RENDERSHADERDATA AT THE SAME TIME
-    // Moving that to the RenderView::setUniformBlock could solve that
-
-    //    QList<RenderShaderData *> shadersData = node->renderComponents<RenderShaderData>();
-    //    Q_FOREACH (RenderShaderData *r, shadersData) {
-    //        if (r) {
-    //            QHash<QString, QVariant> &shaderProperties = r->properties();
-    //            QHash<QString, QVariant>::iterator it = shaderProperties.begin();
-    //            const QHash<QString, QVariant>::iterator itEnd = shaderProperties.end();
-
-    //            while (it != itEnd) {
-    //                if (static_cast<QMetaType::Type>(it.value().type()) == QMetaType::QVector3D) {
-    //                    // If we have a QVector3D property value, we try to look
-    //                    // if there is a matching QShaderData::TransformType propertyTransformed
-    //                    QVariant value = shaderProperties.value(it.key() + QStringLiteral("Transformed"));
-    //                    // if that's the case, we apply a space transformation to the property
-    //                    if (value.isValid() && value.type() == QVariant::Int) {
-    //                        if (static_cast<QShaderData::TransformType>(value.toInt()) == QShaderData::ModelToEye)
-    //                            it.value() = QVariant(rv->viewmatrix() * *node->worldTransform() * it.value().value<QVector3D>());
-    //                        else // ModelToWorld
-    //                            it.value() = QVariant(*node->worldTransform() * it.value().value<QVector3D>());
-    //                    }
-    //                }
-    //                ++it;
-    //            }
-    //        }
-    //    }
-
-    // Traverse children
-    Q_FOREACH (RenderEntity *child, node->children())
-        preprocessRenderTree(rv, child);
-}
-
-/*!
-    \internal
     Searches the \a renderer for the best matching RenderTechnique from
     \a effect specified by the \a renderView.
 */

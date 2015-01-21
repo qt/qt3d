@@ -112,7 +112,12 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-HMeshData RenderMesh::meshData() const
+QMeshData *RenderMesh::meshData() const
+{
+    return m_meshDataManager->data(m_meshDataHandle);
+}
+
+HMeshData RenderMesh::meshDataHandle() const
 {
     return m_meshDataHandle;
 }

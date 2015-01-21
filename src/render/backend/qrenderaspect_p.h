@@ -44,7 +44,10 @@
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRenderer/qrenderaspect.h>
-
+#include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
+#include <Qt3DRenderer/private/updateworldtransformjob_p.h>
+#include <Qt3DRenderer/private/framepreparationjob_p.h>
+#include <Qt3DRenderer/private/framecleanupjob_p.h>
 #include <Qt3DRenderer/private/platformsurfacefilter_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +77,10 @@ class QRenderAspectPrivate : public QAbstractAspectPrivate
     qint64 m_time;
 
     bool m_initialized;
+    Render::FramePreparationJobPtr m_framePreparationJob;
+    Render::FrameCleanupJobPtr m_cleanupJob;
+    Render::UpdateWorldTransformJobPtr m_worldTransformJob;
+    Render::UpdateBoundingVolumeJobPtr m_boundingVolumeJob;
 };
 
 }

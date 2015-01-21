@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,79 +39,43 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERMESH_H
-#define QT3D_RENDER_RENDERMESH_H
+#ifndef QT3D_RENDER_FRAMEPREPARATIONJOB_H
+#define QT3D_RENDER_FRAMEPREPARATIONJOB_H
 
-#include <Qt3DCore/qaxisalignedboundingbox.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
-class QReadWriteLock;
-
 namespace Qt3D {
-
-class QAbstractMesh;
-class QAbstractMeshFunctor;
-class QRenderPass;
-class QMeshData;
-
-typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
 
 namespace Render {
 
-class MeshManager;
-class MeshDataManager;
+class Renderer;
 class RenderEntity;
-class RenderMaterial;
-class RenderTechnique;
 
-class RenderMesh : public QBackendNode
+class FramePreparationJob : public Qt3D::QAspectJob
 {
 public:
-    RenderMesh();
-    ~RenderMesh();
-    void cleanup();
+    FramePreparationJob(Renderer *renderer, RenderEntity *root);
+    ~FramePreparationJob();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    HMeshData meshDataHandle() const;
-    QMeshData *meshData() const;
-    void setMeshData(HMeshData handle);
-    void setMeshDataManager(MeshDataManager *manager);
-
-    QAbstractMeshFunctorPtr meshFunctor() const { return m_functor; }
-    inline bool isEnabled() const { return m_enabled; }
+protected:
+    void run() Q_DECL_FINAL;
 
 private:
-    QAbstractMeshFunctorPtr m_functor;
 
-    bool m_meshDirty;
-    HMeshData m_meshDataHandle;
-    MeshDataManager *m_meshDataManager;
-    bool m_enabled;
+    void parseNodeTree(RenderEntity *node);
 
-    void setMeshFunctor(QAbstractMeshFunctorPtr);
+    Renderer *m_renderer;
+    RenderEntity *m_root;
 };
 
-class RenderMeshCreatorFunctor : public QBackendNodeFunctor
-{
-public:
-    explicit RenderMeshCreatorFunctor(MeshManager *meshManager, MeshDataManager *meshDataManager);
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
-
-private:
-    MeshManager *m_meshManager;
-    MeshDataManager *m_meshDataManager;
-};
+typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;
 
 } // Render
+
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERMESH_H
+#endif // QT3D_RENDER_FRAMEPREPARATIONJOB_H

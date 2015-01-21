@@ -70,10 +70,6 @@ void RenderViewJob::run()
     // Populate the renderview's configuration from the framegraph
     setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);
 
-    // Gather resources needed for buildRenderCommand
-    // Ex lights, we need all lights in the scene before we can buildRenderCommands
-    preprocessRenderTree(renderView, m_renderer->renderSceneRoot());
-
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustrum while its parent isn't contained in it.
     renderView->buildRenderCommands(m_renderer->renderSceneRoot());

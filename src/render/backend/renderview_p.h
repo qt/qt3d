@@ -253,7 +253,10 @@ private:
     QUniformValue *time(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
-    void setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value);
+    void setUniformBlockValue(QUniformPack &uniformPack,
+                              RenderShader *shader,
+                              const ShaderUniformBlock &block,
+                              const QVariant &value);
     void buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
                                         const QString &blockName,
                                         const QString &qmlPropertyName,

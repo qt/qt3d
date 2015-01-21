@@ -330,9 +330,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
         if (node->componentHandle<RenderMesh, 16>() != HMesh()
                 && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR
                 && mesh->isEnabled()) {
-            if (!mesh->meshData().isNull())
-            {
-                // Perform culling here
+            if (!mesh->meshDataHandle().isNull()) {
+                // TO DO: Perform culling here
                 // As shaders may be deforming, transforming the mesh
                 // We might want to make that optional or dependent on an explicit bounding box item
 
@@ -361,7 +360,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 Q_FOREACH (RenderRenderPass *pass, passes) {
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                    command->m_meshData = mesh->meshData();
+                    command->m_meshData = mesh->meshDataHandle();
                     command->m_instancesCount = 0;
 
                     // TODO: Build the state set for a render pass only once per-pass. Not once per rendercommand and pass.
@@ -496,13 +495,14 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
             // If rShaderData  has been updated (property has changed or one of the nested properties has changed)
             // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
             // for all the updated properties (all the properties if the UBO was just created)
-            if (rShaderData->needsUpdate() || uboNeedsUpdate) {
+            if (rShaderData->needsUpdate(*m_data->m_viewMatrix) || uboNeedsUpdate) {
                 // Clear previous values remaining in the hash
                 m_activeUniformNamesToValue.clear();
                 // Retrieve names and description of each active uniforms in the uniform block
                 const QHash<QString, ShaderUniform> &activeProperties = shader->activeUniformsForBlock(block.m_index);
 
-                const QHash<QString, QVariant> &properties = uboNeedsUpdate ? rShaderData->properties() : rShaderData->updatedProperties();
+                // We want a copy here in case another RenderViewJobs modifies the updatedProperties of the RenderShaderData
+                const QHash<QString, QVariant> properties = uboNeedsUpdate ? rShaderData->properties() : rShaderData->updatedProperties();
                 QHash<QString, QVariant>::const_iterator it = properties.begin();
                 const QHash<QString, QVariant>::const_iterator end = properties.end();
 
@@ -527,6 +527,8 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     RenderShaderData *rShaderData = m_renderer->shaderDataManager()->lookupResource(shaderData->id());
 
     if (rShaderData) {
+        // updates transformed properties;
+        rShaderData->needsUpdate(*m_data->m_viewMatrix);
         // Retrieve names and description of each active uniforms in the uniform block
         const QHash<QString, ShaderUniform> &activeUniformsInDefaultBlock = shader->activeUniformsForBlock(-1);
 
@@ -576,8 +578,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
     // For each ParameterBinder in the RenderPass -> create a QUniformPack
     // Once that works, improve that to try and minimize QUniformPack updates
 
-    if (rPass != Q_NULLPTR)
-    {
+    if (rPass != Q_NULLPTR) {
         // Index RenderShader by Shader UUID
         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
         RenderShader *shader = Q_NULLPTR;
