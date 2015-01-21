@@ -41,6 +41,8 @@
 
 #include "openalaspect.h"
 
+#include <Qt3DCore/qaspectfactory.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -86,3 +88,5 @@ void OpenALAspect::onCleanup()
 } // Qt3D
 
 QT_END_NAMESPACE
+
+QT3D_REGISTER_NAMESPACED_ASPECT("openal", QT_PREPEND_NAMESPACE(Qt3D), OpenALAspect)

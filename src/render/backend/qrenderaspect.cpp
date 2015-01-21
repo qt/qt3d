@@ -97,6 +97,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/qaspectfactory.h>
 
 #include <QDebug>
 #include <QOffscreenSurface>
@@ -348,3 +349,5 @@ void QRenderAspect::visitNode(QNode *node)
 } // Qt3D
 
 QT_END_NAMESPACE
+
+QT3D_REGISTER_NAMESPACED_ASPECT("render", QT_PREPEND_NAMESPACE(Qt3D), QRenderAspect)

@@ -45,6 +45,7 @@
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
 #include "keyboardinput_p.h"
+#include <Qt3DCore/qaspectfactory.h>
 #include <Qt3DCore/qnodevisitor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
@@ -143,3 +144,5 @@ void QInputAspect::visitNode(QNode *node)
 } // Qt3D
 
 QT_END_NAMESPACE
+
+QT3D_REGISTER_NAMESPACED_ASPECT("input", QT_PREPEND_NAMESPACE(Qt3D), QInputAspect)

@@ -41,6 +41,8 @@
 
 #include "bulletphysicsaspect.h"
 
+#include <Qt3DCore/qaspectfactory.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -86,3 +88,5 @@ void BulletPhysicsAspect::onCleanup()
 } // Qt3D
 
 QT_END_NAMESPACE
+
+QT3D_REGISTER_NAMESPACED_ASPECT("bulletphysics", QT_PREPEND_NAMESPACE(Qt3D), BulletPhysicsAspect)
