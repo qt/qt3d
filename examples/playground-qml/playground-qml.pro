@@ -17,7 +17,7 @@ OTHER_FILES += \
     elements/TechniqueFilterEntity.qml \
     elements/RenderPassFilterEntity.qml \
     elements/CameraSelectorEntity.qml \
-    ForwardRenderer.qml \
+    MyForwardRenderer.qml \
     ComplexTechnique.qml \
     RenderableEntity.qml \
     MainView.qml \

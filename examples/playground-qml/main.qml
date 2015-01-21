@@ -51,7 +51,7 @@ Entity {
 
     FrameGraph {
         id : external_forward_renderer
-        activeFrameGraph: ForwardRenderer {
+        activeFrameGraph: MyForwardRenderer {
             mainCameraViewport: mainView.camera
             detailCameraViewport: detailCamera ? detailView.camera : mainView.camera
             clearColor: "black"
