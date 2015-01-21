@@ -1,5 +1,5 @@
 TEMPLATE = app
-QT += qml quick
+QT += qml quick 3dinput
 
 SOURCES += \
     main.cpp

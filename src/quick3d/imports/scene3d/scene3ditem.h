@@ -57,16 +57,20 @@ class Scene3DItem : public QQuickFramebufferObject
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
+    Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
 
+    QStringList aspects() const;
     Qt3D::QEntity *entity() const;
 
 public Q_SLOTS:
+    void setAspects(const QStringList &aspects);
     void setEntity(Qt3D::QEntity *entity);
 
 Q_SIGNALS:
+    void aspectsChanged();
     void entityChanged();
 
 private Q_SLOTS:
@@ -76,6 +80,7 @@ private:
     Renderer *createRenderer() const Q_DECL_OVERRIDE;
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
+    QStringList m_aspects;
     Qt3D::QEntity *m_entity;
 
     Qt3D::QAspectEngine *m_aspectEngine;

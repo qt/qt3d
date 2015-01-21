@@ -42,7 +42,6 @@
 #include "scene3ditem.h"
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DInput/QInputAspect>
 #include <Qt3DRenderer/QRenderAspect>
 
 #include <QOpenGLContext>
@@ -140,13 +139,36 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setAcceptHoverEvents(true);
 
     m_aspectEngine->registerAspect(m_renderAspect);
-    m_aspectEngine->registerAspect(new Qt3D::QInputAspect);
     m_aspectEngine->initialize();
+}
+
+QStringList Scene3DItem::aspects() const
+{
+    return m_aspects;
 }
 
 Qt3D::QEntity *Scene3DItem::entity() const
 {
     return m_entity;
+}
+
+void Scene3DItem::setAspects(const QStringList &aspects)
+{
+    if (!m_aspects.isEmpty()) {
+        qWarning() << "Aspects already set on the Scene3D, ignoring";
+        return;
+    }
+
+    m_aspects = aspects;
+
+    Q_FOREACH (const QString &aspect, m_aspects) {
+        if (aspect == QStringLiteral("render")) // This one is hardwired anyway
+            continue;
+
+        m_aspectEngine->registerAspect(aspect);
+    }
+
+    emit aspectsChanged();
 }
 
 void Scene3DItem::setEntity(Qt3D::QEntity *entity)
