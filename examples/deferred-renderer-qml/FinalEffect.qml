@@ -51,7 +51,7 @@ Effect {
                     property ShaderDataArray lights: ShaderDataArray {
                         // hard coded lights until we have a way to filter
                         // ShaderData in a scene
-                        values: [sceneEntity.light, sphere1.light, sphere2.light]
+                        values: [sceneEntity.light, sphere1.light, sphere2.light, light3.light, light4.light]
                     }
                 }
             }
@@ -88,7 +88,7 @@ Effect {
                             float intensity;
                         };
 
-                        const int lightCount = 3;
+                        const int lightCount = 5;
                         uniform PointLightBlock {
                              PointLight lights[lightCount];
                         } pointLights;
@@ -101,7 +101,7 @@ Effect {
                             vec3 norm = texture2D(normal, texCoord).xyz;
 
                             vec4 lightColor;
-                            for (int i = 0; i < 3; i++) {
+                            for (int i = 0; i < lightCount; i++) {
                                 vec3 s = normalize(pointLights.lights[i].position - pos);
                                 lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
                             }
@@ -119,7 +119,7 @@ Effect {
                                 property ShaderDataArray lights: ShaderDataArray {
                                     // hard coded lights until we have a way to filter
                                     // ShaderData in a scene
-                                    values: [sceneEntity.light, sphere1.light, sphere2.light]
+                                    values: [sceneEntity.light, sphere1.light, sphere2.light, light3.light, light4.light]
                                 }
                             }
                         }
@@ -154,7 +154,7 @@ Effect {
                             float intensity;
                         };
 
-                        const int lightCount = 3;
+                        const int lightCount = 5;
                         uniform struct
                         {
                             PointLight lights[lightCount];
@@ -168,7 +168,7 @@ Effect {
                             vec3 norm = texture2D(normal, texCoord).xyz;
 
                             vec4 lightColor;
-                            for (int i = 0; i < 3; i++) {
+                            for (int i = 0; i < lightCount; i++) {
                                 vec3 s = normalize(pointLights.lights[i].position - pos);
                                 lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
                             }

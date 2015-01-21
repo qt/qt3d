@@ -78,6 +78,9 @@ Viewport {
             RenderPassFilter {
                 id : finalPass
                 includes : Annotation { name : "pass"; value : "final" }
+                CameraSelector {
+                    camera: sceneCameraSelector.camera
+                }
             }
 
         }

@@ -97,12 +97,12 @@ Entity {
 
         property PointLight light: PointLight {
             color : "white"
-            intensity : 1.0
+            intensity : 4.0
             QQ2.ColorAnimation on color { from: "white"; to: "blue"; duration: 4000; loops: 2 }
-            QQ2.NumberAnimation on intensity { from: 0; to: 15.0; duration: 1000; loops: QQ2.Animation.Infinite }
+            QQ2.NumberAnimation on intensity { from: 0; to: 5.0; duration: 1000; loops: QQ2.Animation.Infinite }
         }
 
-        components: light
+        components: sceneEntity.light
 
         Camera {
             id: camera
@@ -111,7 +111,7 @@ Entity {
             aspectRatio: 16/9
             nearPlane : 0.01
             farPlane : 1000.0
-            position: Qt.vector3d( 10.0, 10.0, -25.0 )
+            position: Qt.vector3d( 0.0, 0.0, -25.0 )
             upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
             viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
         }
@@ -125,6 +125,7 @@ Entity {
             id : sphereMesh
             rings: 50
             slices: 100
+            shareable: false
         }
 
         SceneEffect {
@@ -140,19 +141,27 @@ Entity {
             }
 
             property Transform transform : Transform {
-                Translate{ dx: -10; dy: 0; dz : 25 }
+                Translate{ dx: -10; dy: 0; dz : 5
+                    id: sphere1Translate
+                    QQ2.SequentialAnimation {
+                        loops: QQ2.Animation.Infinite
+                        running: false
+                        QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: 6; duration: 2000 }
+                        QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: -10; duration: 2000 }
+                    }
+                }
             }
 
             property PointLight light : PointLight {
-                color : "yellow"
-                intensity : 2.0
+                color : "green"
+                intensity : 5.0
             }
 
             components : [
                 sphereMesh,
                 material,
-                transform,
-                light,
+                sphere1.transform,
+                sphere1.light,
                 sceneLayer
             ]
         }
@@ -166,17 +175,70 @@ Entity {
             }
 
             property PointLight light : PointLight {
-                color : "white"
-                intensity : 3.0
+                color : "orange"
+                intensity : 2.0
+            }
+
+            property Transform transform : Transform {
+                Translate{ dx: 5; dy: 0; dz : 5}
             }
 
             components : [
                 sphereMesh,
+                sphere2.transform,
                 material,
-                light,
+                sphere2.light,
                 sceneLayer
             ]
         }
 
+        Entity {
+            id: light3
+            property PointLight light : PointLight {
+                color : "white"
+                intensity : 2.0
+            }
+
+            property Material material : Material {
+                effect : sceneMaterialEffect
+                parameters : Parameter { name : "meshColor"; value : "red" }
+            }
+
+            property Transform transform : Transform {
+                Translate{ id: light3Translate; dx: 2; dy: 2; dz : 7
+                    QQ2.SequentialAnimation {
+                        loops: QQ2.Animation.Infinite
+                        running: true
+                        QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
+                        QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
+                    }
+                }
+            }
+
+            components: [
+                sphereMesh,
+                material,
+                light,
+                transform,
+                sceneLayer
+            ]
+        }
+
+        Entity {
+            id: light4
+            property PointLight light : PointLight {
+                color : "white"
+                intensity : 3.0
+            }
+            property Transform transform : Transform {
+                Translate{ dx: 5; dy: 2; dz : 7}
+            }
+
+            components: [
+                light4.light,
+                light4.transform,
+                sceneLayer
+            ]
+        }
     }
 }
