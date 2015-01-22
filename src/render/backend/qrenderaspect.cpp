@@ -83,6 +83,7 @@
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
+#include <Qt3DRenderer/private/framegraphsubtreeselector_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
@@ -208,6 +209,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QRenderTargetSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(d->m_renderer->frameGraphManager())));
     registerBackendType<QLayerFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(d->m_renderer->frameGraphManager())));
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QFrameGraphSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
