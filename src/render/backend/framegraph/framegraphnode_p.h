@@ -71,7 +71,8 @@ public:
         TechniqueFilter,
         Viewport,
         ClearBuffer,
-        SortMethod
+        SortMethod,
+        SubtreeSelector
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/layerfilternode_p.h \
     $$PWD/clearbuffer_p.h \
     $$PWD/sortmethod_p.h \
-    $$PWD/sortcriterion_p.h
+    $$PWD/sortcriterion_p.h \
+    $$PWD/framegraphsubtreeselector_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/layerfilternode.cpp \
     $$PWD/clearbuffer.cpp \
     $$PWD/sortmethod.cpp \
-    $$PWD/sortcriterion.cpp
+    $$PWD/sortcriterion.cpp \
+    $$PWD/framegraphsubtreeselector.cpp
 
 INCLUDEPATH += $$PWD
