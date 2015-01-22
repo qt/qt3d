@@ -66,7 +66,8 @@ HEADERS += \
     $$PWD/qparametermapping.h \
     $$PWD/qshaderdata.h \
     $$PWD/qshaderdata_p.h \
-    $$PWD/qpolygonoffset.h
+    $$PWD/qpolygonoffset.h \
+    $$PWD/qcolormask.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -110,4 +111,5 @@ SOURCES += \
     $$PWD/qabstractmesh.cpp \
     $$PWD/qparametermapping.cpp \
     $$PWD/qshaderdata.cpp \
-    $$PWD/qpolygonoffset.cpp
+    $$PWD/qpolygonoffset.cpp \
+    $$PWD/qcolormask.cpp
