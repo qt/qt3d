@@ -183,6 +183,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsCont
     if (maskOfStatesToReset & AlphaCoverageStateMask) {
         gc->disableAlphaCoverage();
     }
+
+    if (maskOfStatesToReset & PolygonOffsetStateMask) {
+        funcs->glDisable(GL_POLYGON_OFFSET_FILL);
+    }
 }
 
 bool RenderStateSet::contains(RenderState *ds) const
