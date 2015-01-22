@@ -258,6 +258,21 @@ PolygonOffset::PolygonOffset(GLfloat factor, GLfloat units)
 {
 }
 
+void ColorMask::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glColorMask(m_1, m_2, m_3, m_4);
+}
+
+ColorMask::ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
+    : GenericState4(red, green, blue, alpha)
+{
+}
+
+ColorMask *ColorMask::getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
+{
+    return getOrCreateImpl(ColorMask(red, green, blue, alpha));
+}
+
 } // Render
 } // Qt3D
 

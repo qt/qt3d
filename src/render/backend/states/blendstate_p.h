@@ -214,6 +214,18 @@ private:
     PolygonOffset(GLfloat factor, GLfloat units);
 };
 
+class ColorMask : public GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+    StateMaskSet mask() const Q_DECL_FINAL { return ColorStateMask; }
+
+    static ColorMask *getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+
+private:
+    ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+};
+
 } // Render
 } // Qt3D
 

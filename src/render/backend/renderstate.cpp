@@ -187,6 +187,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsCont
     if (maskOfStatesToReset & PolygonOffsetStateMask) {
         funcs->glDisable(GL_POLYGON_OFFSET_FILL);
     }
+
+    if (maskOfStatesToReset & ColorStateMask) {
+        funcs->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    }
 }
 
 bool RenderStateSet::contains(RenderState *ds) const
