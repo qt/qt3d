@@ -20,7 +20,9 @@ HEADERS += \
         $$PWD/qsortcriterion.h \
         $$PWD/qsortcriterion_p.h \
         $$PWD/qframegraphnode.h \
-        $$PWD/qframegraphnode_p.h
+        $$PWD/qframegraphnode_p.h \
+        $$PWD/qframegraphselector.h \
+        $$PWD/qframegraphselector_p.h
 
 SOURCES += \
         $$PWD/qframegraph.cpp \
@@ -33,6 +35,7 @@ SOURCES += \
         $$PWD/qclearbuffer.cpp \
         $$PWD/qsortmethod.cpp \
         $$PWD/qsortcriterion.cpp \
-        $$PWD/qframegraphnode.cpp
+        $$PWD/qframegraphnode.cpp \
+        $$PWD/qframegraphselector.cpp
 
 INCLUDEPATH += $$PWD
