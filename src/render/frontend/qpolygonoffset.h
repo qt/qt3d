@@ -43,7 +43,6 @@
 #define QT3D_QPOLYGONOFFSET_H
 
 #include <Qt3DRenderer/qrenderstate.h>
-#include <QtGui/qopengl.h>
 
 QT_BEGIN_NAMESPACE
 
