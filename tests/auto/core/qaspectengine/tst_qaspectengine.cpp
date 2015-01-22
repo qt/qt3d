@@ -42,6 +42,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qtransform.h>
 
 using namespace Qt3D;
 
@@ -55,6 +56,7 @@ public:
 private slots:
     void constructionDestruction();
     void setRootEntity();
+    void shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity();
 
     // TODO: Add more QAspectEngine tests
 };
@@ -81,6 +83,27 @@ void tst_QAspectEngine::setRootEntity()
     QVERIFY(engine->rootEntity()->objectName() == "root");
 
     delete engine;
+}
+
+void tst_QAspectEngine::shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity()
+{
+    // GIVEN
+    QEntity *root = new QEntity;
+    // A component parented to an entity...
+    QComponent *component = new Qt3D::QTransform(root);
+    // ... created *before* the entity it will be added to.
+    QEntity *entity = new QEntity(root);
+    entity->addComponent(component);
+
+    // An initialized engine (so that the arbiter has been fed)
+    QAspectEngine engine;
+    engine.initialize();
+
+    // WHEN
+    engine.setRootEntity(root);
+
+    // THEN
+    // Nothing particular happen on exit, especially no crash
 }
 
 QTEST_MAIN(tst_QAspectEngine)

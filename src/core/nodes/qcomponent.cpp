@@ -42,6 +42,7 @@
 #include "qcomponent.h"
 #include "qcomponent_p.h"
 #include "qentity.h"
+#include "qentity_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -96,6 +97,11 @@ QComponent::QComponent(QNode *parent)
 
 QComponent::~QComponent()
 {
+    Q_FOREACH (QEntity *entity, entities()) {
+        QEntityPrivate *entityPimpl = dynamic_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
+        if (entityPimpl)
+            entityPimpl->m_components.removeAll(this);
+    }
 }
 
 /*!
