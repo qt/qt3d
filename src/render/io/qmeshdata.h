@@ -85,11 +85,11 @@ public:
     QAbstractAttributePtr attributeByName(const QString &name) const;
     QAbstractAttributePtr indexAttribute() const;
 
-    static const QString defaultPositionAttributeName() { return QStringLiteral("vertexPosition"); }
-    static const QString defaultNormalAttributeName() { return QStringLiteral("vertexNormal"); }
-    static const QString defaultColorAttributeName() { return QStringLiteral("vertexColor"); }
-    static const QString defaultTextureCoordinateAttributeName() { return QStringLiteral("vertexTexCoord"); }
-    static const QString defaultTangentAttributeName() { return QStringLiteral("vertexTangent"); }
+    static QString defaultPositionAttributeName();
+    static QString defaultNormalAttributeName();
+    static QString defaultColorAttributeName();
+    static QString defaultTextureCoordinateAttributeName();
+    static QString defaultTangentAttributeName();
 
     void setPrimitiveType(PrimitiveType primitiveType);
     int primitiveType() const;

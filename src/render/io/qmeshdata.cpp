@@ -111,6 +111,31 @@ QAbstractAttributePtr QMeshData::indexAttribute() const
     return d->m_indexAttr;
 }
 
+QString QMeshData::defaultPositionAttributeName()
+{
+    return QStringLiteral("vertexPosition");
+}
+
+QString QMeshData::defaultNormalAttributeName()
+{
+    return QStringLiteral("vertexNormal");
+}
+
+QString QMeshData::defaultColorAttributeName()
+{
+    return QStringLiteral("vertexColor");
+}
+
+QString QMeshData::defaultTextureCoordinateAttributeName()
+{
+    return QStringLiteral("vertexTexCoord");
+}
+
+QString QMeshData::defaultTangentAttributeName()
+{
+    return QStringLiteral("vertexTangent");
+}
+
 void QMeshData::setVerticesPerPatch(int verticesPerPatch)
 {
     Q_D(QMeshData);
