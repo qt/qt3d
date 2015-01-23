@@ -49,27 +49,12 @@ namespace Render {
 
 RenderCommand::RenderCommand()
 {
+   m_sortingType.global = 0;
 }
 
-bool operator <(const RenderCommand &r1, const RenderCommand &r2)
+bool compareCommands(RenderCommand *r1, RenderCommand *r2)
 {
-    bool inf = true;
-    for (int i = 0; i < 4 && inf; i++) {
-        switch (r1.m_sortingType.sorts[i]) {
-        case 0:
-            return inf;
-        case QSortCriterion::StateChangeCost:
-            inf = r1.m_changeCost < r2.m_changeCost;
-            break;
-        case QSortCriterion::BackToFront:
-            inf = r1.m_depth < r2.m_depth;
-            break;
-        case QSortCriterion::Material:
-            inf = r1.m_shader != r2.m_shader;
-            break;
-        }
-    }
-    return inf;
+    return r1->m_sortingType.global < r2->m_sortingType.global;
 }
 
 } // namespace Render

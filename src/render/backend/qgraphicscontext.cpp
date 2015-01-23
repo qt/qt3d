@@ -239,7 +239,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         m_activeShader = Q_NULLPTR;
     }
 
-    if (m_activeShader == shader) {
+    if (m_activeShader != Q_NULLPTR && m_activeShader->dna() == shader->dna()) {
 
         // no op
     } else {

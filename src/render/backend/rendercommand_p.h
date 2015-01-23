@@ -80,6 +80,7 @@ public:
 
     float m_depth;
     int m_changeCost;
+    uint m_shaderDna;
 
     union sortingType {
         char sorts[4];
@@ -88,7 +89,7 @@ public:
 
 };
 
-bool operator < (const RenderCommand &r1, const RenderCommand &r2);
+bool compareCommands(RenderCommand *r1, RenderCommand *r2);
 
 } // Render
 

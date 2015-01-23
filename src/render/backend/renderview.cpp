@@ -317,8 +317,7 @@ void RenderView::sort()
 {
     // Compares the bitsetKey of the RenderCommands
     // Key[Depth | StateCost | Shader]
-
-    std::sort(m_commands.begin(), m_commands.end());
+    std::sort(m_commands.begin(), m_commands.end(), compareCommands);
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
@@ -553,16 +552,28 @@ void RenderView::buildSortingKey(RenderCommand *command)
 {
     // Build a bitset key depending on the SortingCriterion
     int sortCount = m_data->m_sortingCriteria.count();
-    command->m_sortingType.global = 0;
 
     // Default sorting
     if (sortCount == 0)
-        command->m_sortingType.sorts[0] = QSortCriterion::StateChangeCost;
+        command->m_sortingType.sorts[0] = command->m_changeCost; // State change cost
 
     // Handle at most 4 filters at once
     for (int i = 0; i < sortCount && i < 4; i++) {
         SortCriterion *sC = m_renderer->sortCriterionManager()->lookupResource(m_data->m_sortingCriteria[i]);
-        command->m_sortingType.sorts[i] = sC->sortType();
+
+        switch (sC->sortType()) {
+        case QSortCriterion::StateChangeCost:
+            command->m_sortingType.sorts[i] = command->m_changeCost; // State change cost
+            break;
+        case QSortCriterion::BackToFront:
+            command->m_sortingType.sorts[i] = 0; // Depth value (not implemented yet)
+            break;
+        case QSortCriterion::Material:
+            command->m_sortingType.sorts[i] = command->m_shaderDna; // Material
+            break;
+        default:
+            Q_UNREACHABLE();
+        }
     }
 }
 
@@ -583,6 +594,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
         RenderShader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
+
+            command->m_shaderDna = shader->dna();
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name

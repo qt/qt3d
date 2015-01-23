@@ -84,7 +84,7 @@ int RenderStateSet::changeCost(RenderStateSet *previousState)
     cost += bs.count();
 
 // now, find out how many states we're changing
-    foreach (RenderState* ds, m_states) {
+    Q_FOREACH (RenderState* ds, m_states) {
         // if the other state contains matching, then doesn't
         // contribute to cost at all
         if (previousState->contains(ds)) {
