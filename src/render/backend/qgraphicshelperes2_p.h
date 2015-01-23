@@ -44,12 +44,9 @@
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QOpenGLContext>
-
-#ifdef QT_OPENGL_ES_2
+#include <QOpenGLFunctions>
 
 QT_BEGIN_NAMESPACE
-
-class QOpenGLFunctions_ES2;
 
 namespace Qt3D {
 namespace Render {
@@ -96,14 +93,12 @@ public:
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions_ES2 *m_funcs;
+    QOpenGLFunctions *m_funcs;
 };
 
 } // Render
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT_OPENGL_ES2
 
 #endif // QT3D_RENDER_QGRAPHICSHELPERES2_H

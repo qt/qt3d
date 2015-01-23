@@ -40,12 +40,9 @@
 ****************************************************************************/
 
 #include "qgraphicshelperes2_p.h"
-#include "qopenglfunctions_es2.h"
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
-
-#ifdef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 
@@ -62,15 +59,11 @@ QGraphicsHelperES2::~QGraphicsHelperES2()
 }
 
 void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *functions)
+                                          QAbstractOpenGLFunctions *)
 {
-    Q_UNUSED(context)
-    m_funcs = static_cast<QOpenGLFunctions_ES2*>(functions);
-    const bool ok = m_funcs->initializeOpenGLFunctions();
-    Q_ASSERT(ok);
-    Q_UNUSED(ok);
-    // Check Vertex Array Object extension is present
-    Q_ASSERT(context->hasExtension(QByteArrayLiteral("GL_OES_vertex_array_object")));
+    Q_ASSERT(context);
+    m_funcs = context->functions();
+    Q_ASSERT(m_funcs);
 }
 
 void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
@@ -480,7 +473,3 @@ uint QGraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
 } //Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT_OPENGL_ES_2
-
-

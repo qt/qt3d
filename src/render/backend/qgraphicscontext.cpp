@@ -62,10 +62,8 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <Qt3DRenderer/private/qgraphicshelpergl2_p.h>
 #include <Qt3DRenderer/private/qgraphicshelpergl3_p.h>
-#else
-#include <QOpenGLFunctions_ES2>
-#include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
 #endif
+#include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
 
 #include <QSurface>
 #include <QOpenGLTexture>
@@ -387,25 +385,26 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
 {
     Q_ASSERT(m_gl);
 
-    QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
-
-#if defined QT_OPENGL_ES_2
-    glFunctions = m_gl->versionFunctions<QOpenGLFunctions_ES2>();
-    m_glHelper = new QGraphicsHelperES2();
-
-    qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
-#else
-    if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-        m_glHelper = new QGraphicsHelperGL3();
+    if (m_gl->isOpenGLES()) {
+        m_glHelper = new QGraphicsHelperES2();
+        m_glHelper->initializeHelper(m_gl, Q_NULLPTR);
+        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
-    else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
-        qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
-        m_glHelper = new QGraphicsHelperGL2();
+#ifndef QT_OPENGL_ES_2
+    else {
+        QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
+        if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
+            m_glHelper = new QGraphicsHelperGL3();
+        }
+        else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
+            m_glHelper = new QGraphicsHelperGL2();
+        }
+        Q_ASSERT_X(m_glHelper, "QGraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
+        m_glHelper->initializeHelper(m_gl, glFunctions);
     }
 #endif
-    Q_ASSERT_X(m_glHelper, "QGraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
-    m_glHelper->initializeHelper(m_gl, glFunctions);
 
     // Set Vendor and Extensions of reference OpenGLFilter
     QStringList extensions;
