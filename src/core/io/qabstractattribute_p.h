@@ -38,26 +38,31 @@
 #define QT3D_QABSTRACTATTRIBUTE_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/QAbstractAttribute>
+#include <Qt3DCore/QAbstractBuffer>
+#include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
+class QAbstractAttribute;
 
-typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
-
-class QT3DCORESHARED_EXPORT QAbstractAttributePrivate
+class QT3DCORESHARED_EXPORT QAbstractAttributePrivate : public QNodePrivate
 {
 public:
+    Q_DECLARE_PUBLIC(QAbstractAttribute)
+
     QAbstractAttributePrivate();
 
+    QAbstractBuffer *m_buffer;
+    QString m_name;
     int m_type;
     uint m_count;
-    uint m_stride;
-    uint m_offset;
+    uint m_byteStride;
+    uint m_byteOffset;
     uint m_divisor;
-    QAbstractBufferPtr m_buffer;
+    QAbstractAttribute::AttributeType m_attributeType;
 };
 
 } // Qt3D

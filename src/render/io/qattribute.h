@@ -39,33 +39,43 @@
 
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <QOpenGLBuffer>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class AttributePrivate;
+class QAttributePrivate;
+class QBuffer;
 
-class QT3DRENDERERSHARED_EXPORT Attribute : public QAbstractAttribute
+class QT3DRENDERERSHARED_EXPORT QAttribute : public QAbstractAttribute
 {
-public:
-    Attribute(QAbstractBufferPtr buf, int type, int count, int offset=0, int stride = 0);
+    Q_OBJECT
 
+public:
+    explicit QAttribute(QNode *parent = 0);
+    QAttribute(QBuffer *buf, int type, int count, int offset=0, int stride = 0);
+    QAttribute(QBuffer *buf, const QString &name, int type, int count, int offset=0, int stride = 0);
+    ~QAttribute();
+
+    QVector<QVector4D> asVector4D() const Q_DECL_OVERRIDE;
     QVector<QVector3D> asVector3D() const Q_DECL_OVERRIDE;
     QVector<QVector2D> asVector2D() const Q_DECL_OVERRIDE;
 
     void dump(int count) Q_DECL_OVERRIDE;
 
-protected:
-    Q_DECLARE_PRIVATE(Attribute)
-    Attribute(AttributePrivate &dd, QAbstractBufferPtr buf, int type, int count, int offset=0, int stride = 0);
-};
+    QBuffer *buffer() const;
 
-typedef QSharedPointer<Attribute> AttributePtr;
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    QT3D_CLONEABLE(QAttribute)
+    Q_DECLARE_PRIVATE(QAttribute)
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QATTRIBUTE_H
+#endif // QT3D_QATTRIBUTE_H

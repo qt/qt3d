@@ -114,7 +114,7 @@ private:
     // so record the association here for when we instantiate meshes
     QMap<QMeshData*, QString> m_meshMaterialDict;
 
-    QMap<QString, AttributePtr> m_attributeDict;
+    QMap<QString, QAttribute *> m_attributeDict;
 
     class BufferData
     {
@@ -131,7 +131,7 @@ private:
     QMap<QString, QMaterial*> m_materialCache;
 
     QMap<QString, BufferData> m_bufferDatas;
-    QMap<QString, BufferPtr> m_buffers;
+    QMap<QString, QBuffer*> m_buffers;
 
     QMap<QString, QString> m_shaderPaths;
     QMap<QString, QShaderProgram*> m_programs;

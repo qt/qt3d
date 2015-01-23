@@ -38,6 +38,7 @@
 #define QT3D_QBUFFER_P_H
 
 #include <private/qabstractbuffer_p.h>
+#include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QOpenGLBuffer>
 
@@ -45,15 +46,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Buffer;
-
-class QT3DRENDERERSHARED_EXPORT BufferPrivate : public QAbstractBufferPrivate
+class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public QAbstractBufferPrivate
 {
 public:
-    BufferPrivate();
+    QBufferPrivate();
 
-    QOpenGLBuffer::Type m_type;
-    QOpenGLBuffer::UsagePattern m_usage;
+    QBuffer::BufferType m_type;
+    QBuffer::UsageType m_usage;
 };
 
 } // Qt3D

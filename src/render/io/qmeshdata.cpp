@@ -49,9 +49,16 @@ namespace Qt3D {
     \internal
 */
 QMeshDataPrivate::QMeshDataPrivate()
-    : m_verticesPerPatch(0)
+    : m_indexAttr(Q_NULLPTR)
+    , m_verticesPerPatch(0)
     , m_primitiveType(0)
 {
+}
+
+QMeshDataPrivate::~QMeshDataPrivate()
+{
+    delete m_indexAttr;
+    qDeleteAll(m_attributes);
 }
 
 QMeshData::QMeshData(PrimitiveType primitiveType)
@@ -62,7 +69,10 @@ QMeshData::QMeshData(PrimitiveType primitiveType)
 
 QMeshData::~QMeshData()
 {
+//    delete d_ptr;
 }
+
+// TO DO: Be careful is QMeshData is copied to not leak memory
 
 /*! \internal */
 QMeshData::QMeshData(QMeshDataPrivate &dd)
@@ -70,7 +80,7 @@ QMeshData::QMeshData(QMeshDataPrivate &dd)
 {
 }
 
-void QMeshData::addAttribute(const QString &name, const QAbstractAttributePtr &attr)
+void QMeshData::addAttribute(const QString &name, QAbstractAttribute *attr)
 {
     Q_D(QMeshData);
     const int i = d->m_attributesNames.indexOf(name);
@@ -82,7 +92,7 @@ void QMeshData::addAttribute(const QString &name, const QAbstractAttributePtr &a
     }
 }
 
-void QMeshData::setIndexAttribute(const QAbstractAttributePtr &attr)
+void QMeshData::setIndexAttribute(QAbstractAttribute *attr)
 {
     Q_D(QMeshData);
     d->m_indexAttr = attr;
@@ -94,17 +104,17 @@ QStringList QMeshData::attributeNames() const
     return d->m_attributesNames;
 }
 
-QAbstractAttributePtr QMeshData::attributeByName(const QString &name) const
+QAbstractAttribute *QMeshData::attributeByName(const QString &name) const
 {
     Q_D(const QMeshData);
     const int i = d->m_attributesNames.indexOf(name);
     if (i != -1)
         return d->m_attributes[i];
     else
-        return QAbstractAttributePtr();
+        return Q_NULLPTR;
 }
 
-QAbstractAttributePtr QMeshData::indexAttribute() const
+QAbstractAttribute *QMeshData::indexAttribute() const
 {
     Q_D(const QMeshData);
     return d->m_indexAttr;
@@ -161,17 +171,17 @@ int QMeshData::primitiveCount() const
     }
 }
 
-QList<QAbstractBufferPtr> QMeshData::buffers() const
+QVector<QAbstractBuffer *> QMeshData::buffers() const
 {
     Q_D(const QMeshData);
-    QSet<QAbstractBufferPtr> r;
+    QVector<QAbstractBuffer*> r;
+    r.reserve(d->m_attributes.count() + 1);
     if (d->m_indexAttr)
-        r.insert(d->m_indexAttr->buffer());
+        r.push_back(d->m_indexAttr->buffer());
+    Q_FOREACH (QAbstractAttribute *attr, d->m_attributes)
+        r.push_back(attr->buffer());
 
-    Q_FOREACH (const QAbstractAttributePtr &v, d->m_attributes)
-        r.insert(v->buffer());
-
-    return r.toList();
+    return r;
 }
 
 void QMeshData::setBoundingBox(const QAxisAlignedBoundingBox &bbox)
@@ -183,7 +193,7 @@ void QMeshData::setBoundingBox(const QAxisAlignedBoundingBox &bbox)
 void QMeshData::computeBoundsFromAttribute(const QString &name)
 {
     Q_D(QMeshData);
-    QAbstractAttributePtr attr = attributeByName(name);
+    QAbstractAttribute *attr = attributeByName(name);
     if (!attr) {
         qWarning() << Q_FUNC_INFO << "unknown attribute:" << name;
         return;

@@ -227,27 +227,27 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     }
 
     // Wrap the raw bytes in a buffer
-    BufferPtr buf(new Buffer(QOpenGLBuffer::VertexBuffer));
-    buf->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
+    buf->setUsage(QBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
     // Create the mesh data, specify the vertex format and data
     QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
     quint32 offset = 0;
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
+                       new QAttribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
+                       new QAttribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
     offset += 2 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
+                       new QAttribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
-                       AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride)));
+                       new QAttribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride));
 
     // Create the index data. 2 triangles per rectangular face
     const int faces = 2 * (resolution.width() - 1) * (resolution.height() - 1);
@@ -276,12 +276,12 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     }
 
     // Wrap the index bytes in a buffer
-    BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
+    indexBuffer->setUsage(QBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
 
     // Specify index data on the mesh
-    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
+    mesh->setIndexAttribute(new QAttribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();

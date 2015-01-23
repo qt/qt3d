@@ -158,6 +158,7 @@ private:
     QNodeId m_cameraComponent;
     QList<QNodeId> m_layerComponents;
     QList<QNodeId> m_shaderDataComponents;
+    QNodeId m_geometryRendererComponent;
 
     QString m_objectName;
 };

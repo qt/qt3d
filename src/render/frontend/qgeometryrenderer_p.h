@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,35 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
+#ifndef QT3D_QGEOMETRYRENDERER_P_H
+#define QT3D_QGEOMETRYRENDERER_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
-
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+class QGeometryRendererPrivate : public QComponentPrivate
 {
 public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
+    QGeometryRendererPrivate();
+    Q_DECLARE_PUBLIC(QGeometryRenderer)
 
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+    int m_instanceCount;
+    int m_baseVertex;
+    int m_baseInstance;
+    int m_restartIndex;
+    bool m_primitiveRestart;
+    QGeometry *m_geometry;
+    QGeometryRenderer::PrimitiveType m_primitiveType;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTBUFFER_P_H
+
+#endif // QT3D_QGEOMETRYRENDERER_P_H
+

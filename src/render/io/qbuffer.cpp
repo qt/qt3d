@@ -46,55 +46,86 @@ namespace Qt3D {
     \class Qt3D::BufferPrivate
     \internal
 */
-BufferPrivate::BufferPrivate()
+QBufferPrivate::QBufferPrivate()
     : QAbstractBufferPrivate()
+    , m_usage(QBuffer::StaticDraw)
 {
 }
 
-Buffer::Buffer(QOpenGLBuffer::Type ty)
-    : QAbstractBuffer(*new BufferPrivate)
+
+QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
+    : QAbstractBuffer(*new QBufferPrivate(), parent)
 {
-    Q_D(Buffer);
+    Q_D(QBuffer);
     d->m_type = ty;
-    d->m_usage = QOpenGLBuffer::StaticDraw;
+}
+
+QBuffer::~QBuffer()
+{
+    QAbstractBuffer::cleanup();
 }
 
 /*! \internal */
-Buffer::Buffer(BufferPrivate &dd, QOpenGLBuffer::Type ty)
-    : QAbstractBuffer(dd)
+QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
+    : QAbstractBuffer(dd, parent)
 {
-    Q_D(Buffer);
+    Q_D(QBuffer);
     d->m_type = ty;
-    d->m_usage = QOpenGLBuffer::StaticDraw;
 }
 
-void Buffer::setUsage(QOpenGLBuffer::UsagePattern usage)
+void QBuffer::copy(const QNode *ref)
 {
-    Q_D(Buffer);
-    d->m_usage = usage;
+    QAbstractBuffer::copy(ref);
+    const QBuffer *buffer = static_cast<const QBuffer *>(ref);
+    d_func()->m_type = buffer->d_func()->m_type;
+    d_func()->m_usage = buffer->d_func()->m_usage;
 }
 
-QOpenGLBuffer::Type Buffer::type() const
+QBuffer::UsageType QBuffer::usage() const
 {
-    Q_D(const Buffer);
+    Q_D(const QBuffer);
+    return d->m_usage;
+}
+
+void QBuffer::setUsage(QBuffer::UsageType usage)
+{
+    Q_D(QBuffer);
+    if (usage != d->m_usage) {
+        d->m_usage = usage;
+        emit usageChanged();
+    }
+}
+
+QBuffer::BufferType QBuffer::type() const
+{
+    Q_D(const QBuffer);
     return d->m_type;
 }
 
-void Buffer::bind()
+void QBuffer::setType(QBuffer::BufferType type)
+{
+    Q_D(QBuffer);
+    if (type != d->m_type) {
+        d->m_type = type;
+        emit typeChanged();
+    }
+}
+
+void QBuffer::bind()
 {
 
 }
 
-void Buffer::create()
+void QBuffer::create()
 {
     // TO DO -> Wrap createGL in here
 }
 
-QOpenGLBuffer Buffer::createGL() const
+QOpenGLBuffer QBuffer::createGL() const
 {
-    Q_D(const Buffer);
-    QOpenGLBuffer b(d->m_type);
-    b.setUsagePattern(d->m_usage);
+    Q_D(const QBuffer);
+    QOpenGLBuffer b(static_cast<QOpenGLBuffer::Type>(d->m_type));
+    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(d->m_usage));
     if (!b.create())
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
 
@@ -106,9 +137,9 @@ QOpenGLBuffer Buffer::createGL() const
     return b;
 }
 
-void Buffer::upload(QOpenGLBuffer b)
+void QBuffer::upload(QOpenGLBuffer b)
 {
-    Q_D(Buffer);
+    Q_D(QBuffer);
     if (!b.bind())
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     b.allocate(NULL, d->m_data.count()); // orphan the buffer

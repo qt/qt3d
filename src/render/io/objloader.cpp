@@ -244,26 +244,26 @@ QMeshData *ObjLoader::mesh() const
         }
     } // of buffer filling loop
 
-    BufferPtr buf(new Buffer(QOpenGLBuffer::VertexBuffer));
-    buf->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
+    buf->setUsage(QBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
 
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, 0, stride)));
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), new QAttribute(buf, GL_FLOAT_VEC3, count, 0, stride));
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC2, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), new QAttribute(buf, GL_FLOAT_VEC2, count, offset, stride));
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC3, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), new QAttribute(buf, GL_FLOAT_VEC3, count, offset, stride));
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), AttributePtr(new Attribute(buf, GL_FLOAT_VEC4, count, offset, stride)));
+        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), new QAttribute(buf, GL_FLOAT_VEC4, count, offset, stride));
         offset += sizeof(float) * 4;
     }
 
@@ -284,10 +284,10 @@ QMeshData *ObjLoader::mesh() const
         memcpy(indexBytes.data(), reinterpret_cast<const char*>(m_indices.data()), indexBytes.size());
     }
 
-    BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
+    indexBuffer->setUsage(QBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
-    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, ty, m_indices.size(), 0, 0)));
+    mesh->setIndexAttribute(new QAttribute(indexBuffer, ty, m_indices.size(), 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();

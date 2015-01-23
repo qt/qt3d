@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
@@ -251,6 +252,8 @@ void RenderEntity::addComponent(QComponent *component)
         m_materialComponent = component->id();
     else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
         m_shaderDataComponents.append(component->id());
+    else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR)
+        m_geometryRendererComponent = component->id();
 }
 
 void RenderEntity::removeComponent(const QNodeId &nodeId)
@@ -267,6 +270,8 @@ void RenderEntity::removeComponent(const QNodeId &nodeId)
         m_materialComponent = QNodeId();
     else if (m_shaderDataComponents.contains(nodeId))
         m_shaderDataComponents.removeAll(nodeId);
+    else if (m_geometryRendererComponent == nodeId)
+        m_geometryRendererComponent = QNodeId();
 }
 
 template<>

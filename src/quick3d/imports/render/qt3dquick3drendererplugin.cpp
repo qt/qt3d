@@ -91,6 +91,10 @@
 #include <Qt3DRenderer/qstencilop.h>
 #include <Qt3DRenderer/qstencilopseparate.h>
 #include <Qt3DRenderer/qstencilmask.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -108,6 +112,7 @@
 #include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 #include <Qt3DQuickRenderer/quick3dstateset.h>
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
+#include <Qt3DQuickRenderer/quick3dgeometry.h>
 
 static void initResources()
 {
@@ -189,6 +194,14 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTextureBuffer, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "TextureBuffer");
     qmlRegisterUncreatableType<Qt3D::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3D::QTextureImage>(uri, 2, 0, "TextureImage");
+
+    // Geometry
+    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3D::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
+    qmlRegisterType<Qt3D::QAttribute>(uri, 2, 0, "Attribute");
+    qmlRegisterType<Qt3D::QBuffer>(uri, 2, 0, "Buffer");
+    qmlRegisterExtendedType<Qt3D::QGeometry, Qt3D::Render::Quick::Quick3DGeometry>(uri, 2, 0, "Geometry");
+    qmlRegisterType<Qt3D::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
 
     // Meshes
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));

@@ -43,6 +43,7 @@
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qrotatetransform.h>
+#include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DQuick/quick3dentity.h>
 #include <Qt3DQuick/quick3dentityloader.h>
 #include <Qt3DQuick/quick3dtransform.h>
@@ -75,6 +76,8 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QRotateTransform>(uri, 2, 0, "Rotate");
     qmlRegisterType<Qt3D::QLookAtTransform>(uri, 2, 0, "LookAt");
     qmlRegisterType<Qt3D::QScaleTransform>(uri, 2, 0, "Scale");
+
+    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "AbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
 }
 
 QT_END_NAMESPACE

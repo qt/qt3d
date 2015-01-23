@@ -70,13 +70,13 @@ public:
         positionBytes.resize(size);
         memcpy(positionBytes.data(), positionData, size);
 
-        Qt3D::BufferPtr vertexBuffer(new Qt3D::Buffer(QOpenGLBuffer::VertexBuffer));
-        vertexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+        Qt3D::QBuffer *vertexBuffer(new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer));
+        vertexBuffer->setUsage(Qt3D::QBuffer::StaticDraw);
         vertexBuffer->setData(positionBytes);
 
         Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(Qt3D::QMeshData::Patches));
         mesh->addAttribute(Qt3D::QMeshData::defaultPositionAttributeName(),
-                           Qt3D::AttributePtr(new Qt3D::Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts)));
+                           new Qt3D::QAttribute(vertexBuffer, GL_FLOAT_VEC3, nVerts));
         mesh->setVerticesPerPatch(4);
         return mesh;
     }

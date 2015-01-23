@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,24 +34,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMESHDATA_H
-#define QT3D_QMESHDATA_H
+#ifndef QT3D_QGEOMETRYRENDERER_H
+#define QT3D_QGEOMETRYRENDERER_H
 
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qaxisalignedboundingbox.h>
-#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAttribute;
-class QAbstractBuffer;
-class QMeshDataPrivate;
+class QGeometryRendererPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QMeshData
+class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public QComponent
 {
+    Q_OBJECT
+    Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
+    Q_PROPERTY(int baseVertex READ baseVertex WRITE setBaseVertex NOTIFY baseVertexChanged)
+    Q_PROPERTY(int baseInstance READ baseInstance WRITE setBaseInstance NOTIFY baseInstanceChanged)
+    Q_PROPERTY(int restartIndex READ restartIndex WRITE setRestartIndex NOTIFY restartIndexChanged)
+    Q_PROPERTY(bool primitiveRestart READ primitiveRestart WRITE setPrimitiveRestart NOTIFY primitiveRestartChanged)
+    Q_PROPERTY(Qt3D::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
+    Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
+
 public:
+    explicit QGeometryRenderer(QNode *parent = 0);
+    ~QGeometryRenderer();
+
     enum PrimitiveType {
         Points = 0x0000,
         Lines = 0x0001,
@@ -66,48 +76,47 @@ public:
         TriangleStripAdjacency = 0x000D,
         Patches = 0x000E
     };
+    Q_ENUM(PrimitiveType)
 
-    explicit QMeshData(PrimitiveType primitiveType = Triangles);
-    virtual ~QMeshData();
+    // how to figure out index count, bounding boxes, and all the fancy stuff that QMeshData provides for us?
+    // also how to figure out which attribute(s?) hold the indices?
 
-    void addAttribute(const QString &name, QAbstractAttribute *attr);
-    void setIndexAttribute(QAbstractAttribute *attr);
+    int instanceCount() const;
+    int baseVertex() const;
+    int baseInstance() const;
+    int restartIndex() const;
+    bool primitiveRestart() const;
+    QGeometry *geometry() const;
+    PrimitiveType primitiveType() const;
 
-    QStringList attributeNames() const;
-    QAbstractAttribute *attributeByName(const QString &name) const;
-    QAbstractAttribute *indexAttribute() const;
-
-    static QString defaultPositionAttributeName();
-    static QString defaultNormalAttributeName();
-    static QString defaultColorAttributeName();
-    static QString defaultTextureCoordinateAttributeName();
-    static QString defaultTangentAttributeName();
-
+    void setInstanceCount(int instanceCount);
+    void setBaseVertex(int baseVertex);
+    void setBaseInstance(int baseInstance);
+    void setRestartIndex(int index);
+    void setPrimitiveRestart(bool enabled);
+    void setGeometry(QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
-    int primitiveType() const;
 
-    void setVerticesPerPatch(int verticesPerPatch);
-    int verticesPerPatch() const;
-
-    int primitiveCount() const;
-
-    QVector<QAbstractBuffer *> buffers() const;
-
-    void setBoundingBox(const QAxisAlignedBoundingBox &bbox);
-    void computeBoundsFromAttribute(const QString &name);
-
-    QAxisAlignedBoundingBox boundingBox() const;
+Q_SIGNALS:
+    void instanceCountChanged();
+    void baseVertexChanged();
+    void baseInstanceChanged();
+    void restartIndexChanged();
+    void primitiveRestartChanged();
+    void geometryChanged();
+    void primitiveTypeChanged();
 
 protected:
-    Q_DECLARE_PRIVATE(QMeshData)
-    QMeshDataPrivate *d_ptr;
-    QMeshData(QMeshDataPrivate &dd);
-};
+    QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-typedef QSharedPointer<QMeshData> QMeshDataPtr;
+private:
+    Q_DECLARE_PRIVATE(QGeometryRenderer)
+    QT3D_CLONEABLE(QGeometryRenderer)
+};
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMESHDATA_H
+#endif // QT3D_QGEOMETRYRENDERER_H

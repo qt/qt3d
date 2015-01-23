@@ -56,10 +56,11 @@ class QMeshDataPrivate
 {
 public:
     QMeshDataPrivate();
+    ~QMeshDataPrivate();
 
     QStringList m_attributesNames;
-    QVector<QAbstractAttributePtr> m_attributes;
-    QAbstractAttributePtr m_indexAttr;
+    QVector<QAbstractAttribute *> m_attributes;
+    QAbstractAttribute *m_indexAttr;
     QAxisAlignedBoundingBox m_bbox;
     int m_verticesPerPatch;
     int m_primitiveType;

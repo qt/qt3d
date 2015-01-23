@@ -45,29 +45,42 @@ namespace Qt3D {
     \class Qt3D::QAbstractBufferPrivate
     \internal
 */
+
 QAbstractBufferPrivate::QAbstractBufferPrivate()
+    : QNodePrivate()
 {
 }
 
-QAbstractBuffer::QAbstractBuffer()
-    : d_ptr(new QAbstractBufferPrivate)
+QAbstractBuffer::QAbstractBuffer(QNode *parent)
+    : QNode(*new QAbstractBufferPrivate(), parent)
 {
 }
 
 QAbstractBuffer::~QAbstractBuffer()
 {
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractBuffer subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*! \internal */
-QAbstractBuffer::QAbstractBuffer(QAbstractBufferPrivate &dd)
-    : d_ptr(&dd)
+QAbstractBuffer::QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
+}
+
+void QAbstractBuffer::copy(const QNode *ref)
+{
+    QNode::copy(ref);
+    const QAbstractBuffer *buffer = static_cast<const QAbstractBuffer *>(ref);
+    d_func()->m_data = buffer->d_func()->m_data;
 }
 
 void QAbstractBuffer::setData(const QByteArray &bytes)
 {
     Q_D(QAbstractBuffer);
-    d->m_data = bytes;
+    if (bytes != d->m_data) {
+        d->m_data = bytes;
+        emit dataChanged();
+    }
 }
 
 QByteArray QAbstractBuffer::data() const

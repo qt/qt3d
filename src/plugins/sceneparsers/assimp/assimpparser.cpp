@@ -599,44 +599,44 @@ void AssimpParser::loadMesh(uint meshIndex)
         }
     }
     // Create a Buffer from the raw array
-    BufferPtr vbuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
-    vbuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *vbuffer(new QBuffer(QBuffer::VertexBuffer));
+    vbuffer->setUsage(QBuffer::StaticDraw);
     vbuffer->setData(bufferArray);
 
     // Add vertex attributes to the mesh with the right array
     meshData->addAttribute(VERTICES_ATTRIBUTE_NAME,
-                           AttributePtr(new Attribute(vbuffer,
-                                                      GL_FLOAT_VEC3,
-                                                      mesh->mNumVertices,
-                                                      0,
-                                                      chunkSize * sizeof(float))));
+                           new QAttribute(vbuffer,
+                                          GL_FLOAT_VEC3,
+                                          mesh->mNumVertices,
+                                          0,
+                                          chunkSize * sizeof(float)));
     meshData->addAttribute(NORMAL_ATTRIBUTE_NAME,
-                           AttributePtr(new Attribute(vbuffer,
-                                                      GL_FLOAT_VEC3,
-                                                      mesh->mNumVertices,
-                                                      3 * sizeof(float),
-                                                      chunkSize * sizeof(float))));
+                           new QAttribute(vbuffer,
+                                          GL_FLOAT_VEC3,
+                                          mesh->mNumVertices,
+                                          3 * sizeof(float),
+                                          chunkSize * sizeof(float)));
     if (hasTangent)
         meshData->addAttribute(TANGENT_ATTRIBUTE_NAME,
-                               AttributePtr(new Attribute(vbuffer,
-                                                          GL_FLOAT_VEC3,
-                                                          mesh->mNumVertices,
-                                                          6 * sizeof(float),
-                                                          chunkSize * sizeof(float))));
+                               new QAttribute(vbuffer,
+                                              GL_FLOAT_VEC3,
+                                              mesh->mNumVertices,
+                                              6 * sizeof(float),
+                                              chunkSize * sizeof(float)));
     if (hasTexture)
         meshData->addAttribute(TEXTCOORD_ATTRIBUTE_NAME,
-                               AttributePtr(new Attribute(vbuffer,
-                                                          GL_FLOAT_VEC2,
-                                                          mesh->mNumVertices,
-                                                          (hasTangent ? 9 : 6) * sizeof(float),
-                                                          chunkSize * sizeof(float))));
+                               new QAttribute(vbuffer,
+                                              GL_FLOAT_VEC2,
+                                              mesh->mNumVertices,
+                                              (hasTangent ? 9 : 6) * sizeof(float),
+                                              chunkSize * sizeof(float)));
     if (hasColor)
         meshData->addAttribute(COLOR_ATTRIBUTE_NAME,
-                               AttributePtr(new Attribute(vbuffer,
-                                                          GL_FLOAT_VEC4,
-                                                          mesh->mNumVertices,
-                                                          (6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0)) * sizeof(float),
-                                                          chunkSize * sizeof(float))));
+                               new QAttribute(vbuffer,
+                                              GL_FLOAT_VEC4,
+                                              mesh->mNumVertices,
+                                              (6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0)) * sizeof(float),
+                                              chunkSize * sizeof(float)));
     GLuint indiceType;
     QByteArray ibufferContent;
     uint indices = mesh->mNumFaces * 3;
@@ -663,12 +663,12 @@ void AssimpParser::loadMesh(uint meshIndex)
     }
 
     // Create Indices buffer
-    BufferPtr ibuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    ibuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *ibuffer(new QBuffer(QBuffer::IndexBuffer));
+    ibuffer->setUsage(QBuffer::StaticDraw);
     ibuffer->setData(ibufferContent);
 
     // Add indices attributes
-    meshData->setIndexAttribute(AttributePtr(new Attribute(ibuffer, indiceType, indices, 0, 0)));
+    meshData->setIndexAttribute(new QAttribute(ibuffer, indiceType, indices, 0, 0));
 
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 

@@ -108,6 +108,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 }
 
 QItemModelBuffer::QItemModelBuffer()
+    : m_buffer(Q_NULLPTR)
 {
 }
 
@@ -117,7 +118,8 @@ void QItemModelBuffer::setModel(QAbstractItemModel *model)
         return;
 
     m_model = model;
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 
     connect(m_model, SIGNAL(modelReset()), this, SLOT(onModelReset()));
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
@@ -127,7 +129,8 @@ void QItemModelBuffer::setModel(QAbstractItemModel *model)
 void QItemModelBuffer::setRoot(const QModelIndex &rootIndex)
 {
     m_rootIndex = rootIndex;
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 }
 
 void QItemModelBuffer::mapRoleName(QByteArray roleName, int elementType)
@@ -144,21 +147,23 @@ void QItemModelBuffer::mapRoleName(QByteArray roleName, QString attributeName, i
     }
 
     m_mappings.append(RoleMapping(roleName, attributeName, elementType));
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 }
 
-BufferPtr QItemModelBuffer::buffer()
+QBuffer *QItemModelBuffer::buffer()
 {
     if (!m_buffer) {
         if (!validateRoles())
             return m_buffer;
 
+        qDeleteAll(m_attributes);
         m_attributes.clear();
         m_itemStride = 0;
 
-        m_buffer.reset(new Buffer(QOpenGLBuffer::VertexBuffer));
+        m_buffer = new QBuffer(QBuffer::VertexBuffer);
         // assume model will change
-        m_buffer->setUsage(QOpenGLBuffer::DynamicDraw);
+        m_buffer->setUsage(QBuffer::DynamicDraw);
 
         int rowCount = m_model->rowCount(m_rootIndex);
         int offset = 0;
@@ -168,7 +173,7 @@ BufferPtr QItemModelBuffer::buffer()
 
         for (int m=0; m<mappingCount; ++m) {
             const RoleMapping mapping(m_mappings.at(m));
-            AttributePtr attr(new Attribute(m_buffer, mapping.type,
+            QAttribute *attr(new QAttribute(m_buffer, mapping.type,
                                             rowCount,
                                             offset, m_itemStride));
             m_attributes[mapping.attribute] = attr;
@@ -186,7 +191,7 @@ QStringList QItemModelBuffer::attributeNames() const
     return m_attributes.keys();
 }
 
-AttributePtr QItemModelBuffer::attributeByName(QString nm) const
+QAttribute *QItemModelBuffer::attributeByName(QString nm) const
 {
     return m_attributes.value(nm);
 }

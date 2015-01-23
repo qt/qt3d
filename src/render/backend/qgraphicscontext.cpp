@@ -831,9 +831,12 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     m_activeShader->updateUniforms(this, uniforms);
 }
 
-void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
+void QGraphicsContext::specifyAttribute(QString nm, QAttribute *attr)
 {
-    QOpenGLBuffer buf = glBufferFor(attr->buffer().staticCast<Buffer>());
+    if (attr == Q_NULLPTR)
+        return;
+
+    QOpenGLBuffer buf = glBufferFor(attr->buffer());
     buf.bind();
 
     QOpenGLShaderProgram* prog = activeShader();
@@ -857,21 +860,21 @@ void QGraphicsContext::specifyAttribute(QString nm, AttributePtr attr)
     buf.release();
 }
 
-void QGraphicsContext::specifyIndices(AttributePtr attr)
+void QGraphicsContext::specifyIndices(QAttribute *attr)
 {
-    if (attr->buffer().staticCast<Buffer>()->type() != QOpenGLBuffer::IndexBuffer) {
+    if (static_cast<QBuffer *>(attr->buffer())->type() != QBuffer::IndexBuffer) {
         qCWarning(Backend) << Q_FUNC_INFO << "provided buffer is not correct type";
         return;
     }
 
-    QOpenGLBuffer buf = glBufferFor(attr->buffer().staticCast<Buffer>());
+    QOpenGLBuffer buf = glBufferFor(attr->buffer());
     if (!buf.bind())
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bind within the current VAO
 }
 
-QOpenGLBuffer QGraphicsContext::glBufferFor(BufferPtr buf)
+QOpenGLBuffer QGraphicsContext::glBufferFor(QBuffer *buf)
 {
     if (m_bufferHash.contains(buf))
         return m_bufferHash.value(buf);

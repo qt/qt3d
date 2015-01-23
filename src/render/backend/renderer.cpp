@@ -811,7 +811,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Manager should have a VAO Manager that are indexed by QMeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
 
-        bool drawIndexed = !meshData->indexAttribute().isNull();
+        bool drawIndexed = (meshData->indexAttribute() != Q_NULLPTR);
 
         //// We activate the shader here
         // This will fill the attributes & uniforms info the first time the shader is loaded
@@ -834,14 +834,14 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
             // TO DO : Do that in a better / nicer way
             Q_FOREACH (QString nm, meshData->attributeNames()) {
-                AttributePtr attr(meshData->attributeByName(nm).staticCast<Attribute>());
+                QAttribute *attr(static_cast<QAttribute *>(meshData->attributeByName(nm)));
                 if (command->m_parameterAttributeToShaderNames.contains(nm))
                     m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
                 else
                     qCDebug(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
             }
             if (drawIndexed)
-                m_graphicsContext->specifyIndices(meshData->indexAttribute().staticCast<Attribute>());
+                m_graphicsContext->specifyIndices(static_cast<QAttribute *>(meshData->indexAttribute()));
 
             if (vao)
                 vao->release();

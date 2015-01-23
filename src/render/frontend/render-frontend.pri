@@ -79,7 +79,11 @@ HEADERS += \
     $$PWD/qstencilop.h \
     $$PWD/qstencilopseparate.h \
     $$PWD/qstenciltestseparate.h \
-    $$PWD/qstencilmask.h
+    $$PWD/qstencilmask.h \
+    $$PWD/qgeometryrenderer.h \
+    $$PWD/qgeometry.h \
+    $$PWD/qmeshv2.h \
+    $$PWD/qgeometryrenderer_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -133,4 +137,7 @@ SOURCES += \
     $$PWD/qstencilop.cpp \
     $$PWD/qstencilopseparate.cpp \
     $$PWD/qstenciltestseparate.cpp \
-    $$PWD/qstencilmask.cpp
+    $$PWD/qstencilmask.cpp \
+    $$PWD/qgeometryrenderer.cpp \
+    $$PWD/qgeometry.cpp \
+    $$PWD/qmeshv2.cpp

@@ -497,32 +497,32 @@ QMeshDataPtr createCuboidMesh(float xExtent,
                       vertices, indices, baseVertex);
 
     // Wrap the raw bytes in buffers and set attributes/indices on the mesh
-    BufferPtr vertexBuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
-    vertexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *vertexBuffer(new QBuffer(QBuffer::VertexBuffer));
+    vertexBuffer->setUsage(QBuffer::StaticDraw);
     vertexBuffer->setData(vertexBytes);
 
-    BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
+    indexBuffer->setUsage(QBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
 
     QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
     quint32 offset = 0;
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));
+                       new QAttribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC2, nVerts, offset, stride)));
+                       new QAttribute(vertexBuffer, GL_FLOAT_VEC2, nVerts, offset, stride));
     offset += 2 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride)));
+                       new QAttribute(vertexBuffer, GL_FLOAT_VEC3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
-                       AttributePtr(new Attribute(vertexBuffer, GL_FLOAT_VEC4, nVerts, offset, stride)));
+                       new QAttribute(vertexBuffer, GL_FLOAT_VEC4, nVerts, offset, stride));
 
-    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indexCount, 0, 0)));
+    mesh->setIndexAttribute(new QAttribute(indexBuffer, GL_UNSIGNED_SHORT, indexCount, 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();

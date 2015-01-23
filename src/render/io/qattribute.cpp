@@ -36,10 +36,11 @@
 
 #include "qattribute.h"
 #include "qattribute_p.h"
+#include <QVector4D>
 #include <QVector3D>
 #include <QVector2D>
 #include <QVector>
-#include <Qt3DCore/qabstractbuffer.h>
+#include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,28 +51,105 @@ namespace Qt3D {
     class Qt3D::AttributePrivate
     \internal
 */
-AttributePrivate::AttributePrivate()
+QAttributePrivate::QAttributePrivate()
     : QAbstractAttributePrivate()
 {
 }
 
-Attribute::Attribute(QAbstractBufferPtr buf, int type, int count, int offset, int stride)
-    : QAbstractAttribute(*new AttributePrivate, buf, type, count, offset, stride)
+QAttribute::QAttribute(QNode *parent)
+    : QAbstractAttribute(*new QAttributePrivate(), parent)
 {
 }
 
-/*! \internal */
-Attribute::Attribute(AttributePrivate &dd, QAbstractBufferPtr buf, int type, int count, int offset, int stride)
-    : QAbstractAttribute(dd, buf, type, count, offset, stride)
+QAttribute::QAttribute(QBuffer *buf, int type, int count, int offset, int stride)
+    : QAbstractAttribute(*new QAttributePrivate(), buf, QString(), type, count, offset, stride)
 {
 }
 
-QVector<QVector3D> Attribute::asVector3D() const
+QAttribute::QAttribute(QBuffer *buf, const QString &name, int type, int count, int offset, int stride)
+    : QAbstractAttribute(*new QAttributePrivate(), buf, name, type, count, offset, stride)
 {
-    Q_D(const Attribute);
+}
+
+QAttribute::~QAttribute()
+{
+    QAbstractAttribute::cleanup();
+}
+
+void QAttribute::copy(const QNode *ref)
+{
+    QAbstractAttribute::copy(ref);
+}
+
+QVector<QVector4D> QAttribute::asVector4D() const
+{
+    Q_D(const QAttribute);
     const QByteArray buffer = d->m_buffer->data();
     const char *rawBuffer = buffer.constData();
-    rawBuffer += d->m_offset;
+    rawBuffer += d->m_byteOffset;
+    const float* fptr;
+    int stride;
+
+    switch (type()) {
+    case GL_FLOAT_VEC2:
+        stride = sizeof(float) * 2; break;
+
+    case GL_FLOAT_VEC3:
+        stride = sizeof(float) * 3; break;
+
+    case GL_FLOAT_VEC4:
+        stride = sizeof(float) * 4; break;
+
+    default:
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector3D";
+        return QVector<QVector4D>();
+    }
+
+    if (d->m_byteStride != 0)
+        stride = d->m_byteStride;
+    QVector<QVector4D> result;
+    result.resize(d->m_count);
+
+    for (uint c = 0; c < d->m_count; ++c) {
+        QVector4D v;
+        fptr = reinterpret_cast<const float*>(rawBuffer);
+
+        switch (type()) {
+        case GL_FLOAT_VEC2:
+            v.setX(fptr[0]);
+            v.setY(fptr[1]);
+            break;
+
+        case GL_FLOAT_VEC3:
+            v.setX(fptr[0]);
+            v.setY(fptr[1]);
+            v.setZ(fptr[2]);
+            break;
+
+        case GL_FLOAT_VEC4:
+            v.setX(fptr[0]);
+            v.setY(fptr[1]);
+            v.setZ(fptr[2]);
+            v.setW(fptr[3]);
+            break;
+
+        default:
+            break; // should never happen, we check types above
+        }
+
+        result[c] = v;
+        rawBuffer += stride;
+    }
+
+    return result;
+}
+
+QVector<QVector3D> QAttribute::asVector3D() const
+{
+    Q_D(const QAttribute);
+    const QByteArray buffer = d->m_buffer->data();
+    const char *rawBuffer = buffer.constData();
+    rawBuffer += d->m_byteOffset;
     const float* fptr;
     int stride;
 
@@ -90,12 +168,12 @@ QVector<QVector3D> Attribute::asVector3D() const
         return QVector<QVector3D>();
     }
 
-    if (d->m_stride != 0)
-        stride = d->m_stride;
+    if (d->m_byteStride != 0)
+        stride = d->m_byteStride;
     QVector<QVector3D> result;
     result.resize(d->m_count);
 
-    for (uint c=0; c < d->m_count; ++c) {
+    for (uint c = 0; c < d->m_count; ++c) {
         QVector3D v;
         fptr = reinterpret_cast<const float*>(rawBuffer);
 
@@ -103,7 +181,6 @@ QVector<QVector3D> Attribute::asVector3D() const
         case GL_FLOAT_VEC2:
             v.setX(fptr[0]);
             v.setY(fptr[1]);
-            v.setZ(0.0f);
             break;
 
         case GL_FLOAT_VEC3:
@@ -124,11 +201,11 @@ QVector<QVector3D> Attribute::asVector3D() const
     return result;
 }
 
-QVector<QVector2D> Attribute::asVector2D() const
+QVector<QVector2D> QAttribute::asVector2D() const
 {
-    Q_D(const Attribute);
+    Q_D(const QAttribute);
     char* rawBuffer = d->m_buffer->data().data();
-    rawBuffer += d->m_offset;
+    rawBuffer += d->m_byteOffset;
     float* fptr;
     int stride;
 
@@ -147,13 +224,13 @@ QVector<QVector2D> Attribute::asVector2D() const
         return QVector<QVector2D>();
     }
 
-    if (d->m_stride != 0)
-        stride = d->m_stride;
+    if (d->m_byteStride != 0)
+        stride = d->m_byteStride;
 
     QVector<QVector2D> result;
     result.resize(d->m_count);
 
-    for (uint c=0; c < d->m_count; ++c) {
+    for (uint c = 0; c < d->m_count; ++c) {
         QVector2D v;
         fptr = reinterpret_cast<float*>(rawBuffer);
         v.setX(fptr[0]);
@@ -165,16 +242,16 @@ QVector<QVector2D> Attribute::asVector2D() const
     return result;
 }
 
-void Attribute::dump(int count)
+void QAttribute::dump(int count)
 {
-    Q_D(const Attribute);
-    const char* rawBuffer = d->m_buffer->data().constData();
-    rawBuffer += d->m_offset;
+    Q_D(const QAttribute);
+    const char* rawBuffer = d->m_buffer->data().data();
+    rawBuffer += d->m_byteOffset;
 
     const float* fptr;
     const quint16* usptr;
 
-    int stride = d->m_stride;
+    int stride = d->m_byteStride;
 
     for (int c=0; c<count; ++c) {
         switch (type()) {
@@ -206,6 +283,11 @@ void Attribute::dump(int count)
         default: qCDebug(Render::Io) << Q_FUNC_INFO << "unspported type:" << QString::number(type(), 16);
         }
     }
+}
+
+QBuffer *QAttribute::buffer() const
+{
+    return static_cast<QBuffer *>(QAbstractAttribute::buffer());
 }
 
 } // Qt3D

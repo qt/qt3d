@@ -38,6 +38,8 @@
 #define QT3D_QABSTRACTBUFFER_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/QNode>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,10 +47,12 @@ namespace Qt3D {
 
 class QAbstractBufferPrivate;
 
-class QT3DCORESHARED_EXPORT QAbstractBuffer
+class QT3DCORESHARED_EXPORT QAbstractBuffer : public QNode
 {
+    Q_OBJECT
+    Q_PROPERTY(QByteArray data READ data WRITE setData NOTIFY dataChanged)
 public:
-    QAbstractBuffer();
+    QAbstractBuffer(QNode *parent = 0);
     virtual ~QAbstractBuffer();
 
     virtual void setData(const QByteArray &bytes);
@@ -58,9 +62,14 @@ public:
     virtual void create() = 0;
 
 protected:
+    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void dataChanged();
+
+private:
     Q_DECLARE_PRIVATE(QAbstractBuffer)
-    QAbstractBufferPrivate *d_ptr;
-    QAbstractBuffer(QAbstractBufferPrivate &dd);
 };
 
 } // Qt3D

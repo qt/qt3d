@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,61 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
+#include "qmeshv2.h"
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include <private/qgeometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
-
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+class QMeshV2Private : public QGeometryRendererPrivate
 {
 public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
-
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+    Q_DECLARE_PUBLIC(QMeshV2)
+    QMeshV2Private();
+    QUrl m_source;
 };
 
-} // Qt3D
+QMeshV2Private::QMeshV2Private()
+    : QGeometryRendererPrivate()
+{
+}
+
+QMeshV2::QMeshV2(QNode *parent)
+    : QGeometryRenderer(*new QMeshV2Private(), parent)
+{
+}
+
+QMeshV2::~QMeshV2()
+{
+    QGeometryRenderer::cleanup();
+}
+
+QUrl QMeshV2::source() const
+{
+    Q_D(const QMeshV2);
+    return d->m_source;
+}
+
+void QMeshV2::setSource(const QUrl &source)
+{
+    Q_D(QMeshV2);
+    if (d->m_source == source)
+        return;
+
+    d->m_source = source;
+    emit sourceChanged(source);
+}
+
+
+void QMeshV2::copy(const QNode *ref)
+{
+    QGeometryRenderer::copy(ref);
+    const QMeshV2 *mesh = static_cast<const QMeshV2 *>(ref);
+    d_func()->m_source = mesh->d_func()->m_source;
+}
+
+}
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTBUFFER_P_H

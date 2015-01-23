@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
+#ifndef QT3D_QUICK3DGEOMETRY_H
+#define QT3D_QUICK3DGEOMETRY_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <QQmlListProperty>
+#include <Qt3DRenderer/QGeometry>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
+namespace Render {
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DGeometry : public QObject
 {
-public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<QAbstractAttribute> attributes READ attributeList)
+    Q_CLASSINFO("DefaultProperty", "attributeProviders")
 
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+public:
+    explicit Quick3DGeometry(QObject *parent = 0);
+    inline QGeometry *parentGeometry() const { return qobject_cast<QGeometry *>(parent()); }
+
+    QQmlListProperty<QAbstractAttribute> attributeList();
+
+private:
+    static void appendAttribute(QQmlListProperty<QAbstractAttribute> *list, QAbstractAttribute *provider);
+    static QAbstractAttribute *attributeAt(QQmlListProperty<QAbstractAttribute> *list, int index);
+    static int attributesCount(QQmlListProperty<QAbstractAttribute> *list);
+    static void clearAttributes(QQmlListProperty<QAbstractAttribute> *list);
 };
+
+} // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTBUFFER_P_H
+#endif // QT3D_QUICK3DGEOMETRY_H

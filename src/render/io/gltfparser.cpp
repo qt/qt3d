@@ -625,11 +625,11 @@ void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
     }
 
     int target = json.value(KEY_TARGET).toInt();
-    QOpenGLBuffer::Type ty(QOpenGLBuffer::VertexBuffer);
+    QBuffer::BufferType ty(QBuffer::VertexBuffer);
 
     switch (target) {
-    case GL_ARRAY_BUFFER:           ty = QOpenGLBuffer::VertexBuffer; break;
-    case GL_ELEMENT_ARRAY_BUFFER:   ty = QOpenGLBuffer::IndexBuffer; break;
+    case GL_ARRAY_BUFFER:           ty = QBuffer::VertexBuffer; break;
+    case GL_ELEMENT_ARRAY_BUFFER:   ty = QBuffer::IndexBuffer; break;
     default:
         qWarning() << Q_FUNC_INFO << "buffer" << id << "unsupported target:" << target;
         return;
@@ -654,7 +654,7 @@ void GLTFParser::processJSONBufferView( QString id, const QJsonObject& json )
     }
     delete f;
 
-    BufferPtr b(new Buffer(ty));
+    QBuffer *b(new QBuffer(ty));
     b->setData(bytes);
     m_buffers[id] = b;
 }
@@ -667,7 +667,7 @@ void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
         return;
     }
 
-    BufferPtr buf = m_buffers.value(bvName);
+    QBuffer *buf = m_buffers.value(bvName);
     int offset = 0, stride = 0;
     int type = json.value(KEY_TYPE).toInt();
     int count = json.value(KEY_COUNT).toInt();
@@ -677,7 +677,7 @@ void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
     if ( json.contains(KEY_BYTE_STRIDE))
         stride = json.value(KEY_BYTE_STRIDE).toInt();
 
-    AttributePtr attr( new Attribute( buf, type, count, offset, stride ) );
+    QAttribute *attr( new QAttribute( buf, type, count, offset, stride ) );
     m_attributeDict[id] = attr;
 }
 

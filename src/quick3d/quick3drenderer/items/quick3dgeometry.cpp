@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,59 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include "quick3dgeometry.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
+namespace Render {
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+namespace Quick {
+
+Quick3DGeometry::Quick3DGeometry(QObject *parent)
+    : QObject(parent)
 {
-public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
+}
 
-    QAbstractBufferPrivate();
-    QByteArray m_data;
-};
+QQmlListProperty<QAbstractAttribute> Quick3DGeometry::attributeList()
+{
+    return QQmlListProperty<QAbstractAttribute>(this, 0,
+                                                &Quick3DGeometry::appendAttribute,
+                                                &Quick3DGeometry::attributesCount,
+                                                &Quick3DGeometry::attributeAt,
+                                                &Quick3DGeometry::clearAttributes);
+}
+
+void Quick3DGeometry::appendAttribute(QQmlListProperty<QAbstractAttribute> *list, QAbstractAttribute *attribute)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    geometry->parentGeometry()->addAttribute(attribute);
+}
+
+QAbstractAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<QAbstractAttribute> *list, int index)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    return geometry->parentGeometry()->attributes().at(index);
+}
+
+int Quick3DGeometry::attributesCount(QQmlListProperty<QAbstractAttribute> *list)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    return geometry->parentGeometry()->attributes().count();
+}
+
+void Quick3DGeometry::clearAttributes(QQmlListProperty<QAbstractAttribute> *list)
+{
+    Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    Q_FOREACH (QAbstractAttribute *attribute, geometry->parentGeometry()->attributes())
+        geometry->parentGeometry()->removeAttribute(attribute);
+}
+
+} // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTBUFFER_P_H

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,43 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
+#ifndef QT3D_QGEOMETRY_H
+#define QT3D_QGEOMETRY_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
+class QGeometryPrivate;
+class QAbstractAttribute;
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+typedef QVector<QAbstractAttribute *> QAttributeList;
+
+class QT3DRENDERERSHARED_EXPORT QGeometry : public QNode
 {
-public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
+    Q_OBJECT
 
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+public:
+    explicit QGeometry(QNode *parent = 0);
+    ~QGeometry();
+
+    QAttributeList attributes() const;
+    void addAttribute(QAbstractAttribute *attribute);
+    void removeAttribute(QAbstractAttribute *attribute);
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QGeometry)
+    QT3D_CLONEABLE(QGeometry)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTBUFFER_P_H
+#endif // QT3D_QGEOMETRY_H

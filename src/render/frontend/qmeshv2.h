@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +34,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTBUFFER_P_H
-#define QT3D_QABSTRACTBUFFER_P_H
+#ifndef QT3D_QMESHV2_H
+#define QT3D_QMESHV2_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <private/qnode_p.h>
-
-#include <QByteArray>
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
+class QMeshV2Private;
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QMeshV2 : public QGeometryRenderer
 {
-public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+public:
+    QMeshV2(QNode *parent = 0);
+    ~QMeshV2();
+
+    QUrl source() const;
+    void setSource(const QUrl &arg);
+
+    // FIXME now this is an attribute provider directly. but we still do want
+    // a functor factory for loading the mesh data to load it in a aspect's job?
+    // so when THAT happens, how is the loaded mesh data connected to this class?
+
+    // should this class have something like
+    // * the usual mesh functor to create mesh data
+    // * a protected/private "setMeshData" that sets back the mesh data
+    // * and attributes() reading from that mesh data?
+
+Q_SIGNALS:
+    void sourceChanged(const QUrl &arg);
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DISABLE_COPY(QMeshV2)
+    Q_DECLARE_PRIVATE(QMeshV2)
+    QT3D_CLONEABLE(QMeshV2)
 };
 
-} // Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTBUFFER_P_H
+#endif // QT3D_QMESHV2_H

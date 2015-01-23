@@ -128,9 +128,9 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(QString nm, AttributePtr attr);
+    void specifyAttribute(QString nm, QAttribute *attr);
 
-    void specifyIndices(AttributePtr attr);
+    void specifyIndices(QAttribute *attr);
 
     void setUniforms(QUniformPack &uniforms);
 
@@ -140,7 +140,7 @@ public:
      * @param buf
      * @return
      */
-    QOpenGLBuffer glBufferFor(BufferPtr buf);
+    QOpenGLBuffer glBufferFor(QBuffer *buf);
 
     /**
      * @brief activateTexture - make a texture active on a hardware unit
@@ -210,7 +210,7 @@ private:
 
     RenderShader *m_activeShader;
     QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
-    QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
+    QHash<QBuffer *, QOpenGLBuffer> m_bufferHash;
     QHash<QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 

@@ -173,29 +173,29 @@ QMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 vertexSize, i
 {
     QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
 
-    BufferPtr verticesBuffer(new Buffer(QOpenGLBuffer::VertexBuffer));
-    verticesBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *verticesBuffer(new QBuffer(QBuffer::VertexBuffer));
+    verticesBuffer->setUsage(QBuffer::StaticDraw);
     verticesBuffer->setData(verticesBytes);
 
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC3,
-                                                           verticesCount, 0, vertexSize)));
+                       new QAttribute(verticesBuffer, GL_FLOAT_VEC3,
+                                                           verticesCount, 0, vertexSize));
     quint32 offset = sizeof(float) * 3;
 
     mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC2,
-                                                           verticesCount, offset, vertexSize)));
+                       new QAttribute(verticesBuffer, GL_FLOAT_VEC2,
+                                                           verticesCount, offset, vertexSize));
     offset += sizeof(float) * 2;
 
     mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       QAbstractAttributePtr(new Attribute(verticesBuffer, GL_FLOAT_VEC3,
-                                                           verticesCount, offset, vertexSize)));
+                       new QAttribute(verticesBuffer, GL_FLOAT_VEC3,
+                                                           verticesCount, offset, vertexSize));
     offset += sizeof(float) * 3;
 
-    BufferPtr indicesBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indicesBuffer->setUsage(QOpenGLBuffer::StaticDraw);
+    QBuffer *indicesBuffer(new QBuffer(QBuffer::IndexBuffer));
+    indicesBuffer->setUsage(QBuffer::StaticDraw);
     indicesBuffer->setData(indicesBytes);
-    mesh->setIndexAttribute(AttributePtr(new Attribute(indicesBuffer, GL_UNSIGNED_SHORT, indicesCount, 0, 0)));
+    mesh->setIndexAttribute(new QAttribute(indicesBuffer, GL_UNSIGNED_SHORT, indicesCount, 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
 
