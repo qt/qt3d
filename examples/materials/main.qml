@@ -51,7 +51,7 @@ Entity {
     // and render from the mainCamera
     components: [
         FrameGraph {
-            activeFrameGraph: ForwardRenderer {
+            activeFrameGraph: SortedForwardRenderer {
                 id: renderer
                 camera: mainCamera
             }

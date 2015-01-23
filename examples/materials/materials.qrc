@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>ForwardRenderer.qml</file>
         <file>BasicCamera.qml</file>
         <file>TrefoilKnot.qml</file>
         <file>PlaneEntity.qml</file>
@@ -9,5 +8,6 @@
         <file>HousePlant.qml</file>
         <file>Barrel.qml</file>
         <file>Chest.qml</file>
+        <file>SortedForwardRenderer.qml</file>
     </qresource>
 </RCC>
