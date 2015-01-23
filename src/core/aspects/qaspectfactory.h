@@ -70,8 +70,16 @@ public:
     QAspectFactory();
     QAspectFactory(const QAspectFactory &other);
     ~QAspectFactory();
-
     QAspectFactory &operator=(const QAspectFactory &other);
+#ifdef Q_COMPILER_RVALUE_REFS
+    QAspectFactory &operator=(QAspectFactory &&other) Q_DECL_NOTHROW
+    {
+        d.swap(other.d);
+        return *this;
+    }
+#endif
+
+    inline void swap(QAspectFactory &other) Q_DECL_NOTHROW { d.swap(other.d); }
 
     void addFactory(const QString &name, CreateFunction factory);
     QStringList availableFactories() const;
@@ -82,32 +90,26 @@ private:
     QSharedDataPointer<QAspectFactoryPrivate> d;
 };
 
-QT3DCORESHARED_EXPORT void _qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &name, QAspectFactory::CreateFunction);
-
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
 #define QT3D_REGISTER_NAMESPACED_ASPECT(name, AspectNamespace, AspectType) \
+    QT_BEGIN_NAMESPACE \
+    namespace Qt3D { \
+        QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &, QAspectFactory::CreateFunction); \
+    } \
+    QT_END_NAMESPACE \
     namespace { \
-    using namespace QT_PREPEND_NAMESPACE(Qt3D); \
-    \
-    void _qt3d_ ## AspectNamespace ## _ ## AspectType ## _registerFunction() \
+    void qt3d_ ## AspectType ## _registerFunction() \
     { \
-        _qt3d_QAspectFactoryPrivate_addDefaultFactory(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
+        QT_PREPEND_NAMESPACE(Qt3D::qt3d_QAspectFactoryPrivate_addDefaultFactory)(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
     } \
     \
-    Q_CONSTRUCTOR_FUNCTION(_qt3d_ ## AspectNamespace ## _ ## AspectType ## _registerFunction) \
+    Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
     }
 
 #define QT3D_REGISTER_ASPECT(name, AspectType) \
-    namespace { \
-    void _qt3d_ ## AspectType ## _registerFunction() \
-    { \
-        QT_PREPEND_NAMESPACE(Qt3D::_qt3d_QAspectFactoryPrivate_addDefaultFactory)(QStringLiteral(name), &QAspectFactory::functionHelper< ::AspectType>); \
-    } \
-    \
-    } \
-    Q_CONSTRUCTOR_FUNCTION(_qt3d_ ## AspectType ## _registerFunction)
+    QT3D_REGISTER_NAMESPACED_ASPECT(name, , AspectType)
 
 #endif // QT3D_QASPECTFACTORY_H

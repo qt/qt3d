@@ -57,8 +57,6 @@ class QAspectFactory;
 class QAspectFactoryPrivate : public QSharedData
 {
 public:
-    static QHash<QString, QAspectFactory::CreateFunction> m_defaultFactories;
-
     QAspectFactoryPrivate();
 
     QHash<QString, QAspectFactory::CreateFunction> m_factories;

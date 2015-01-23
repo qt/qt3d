@@ -42,22 +42,25 @@
 #include "qaspectfactory.h"
 #include "qaspectfactory_p.h"
 
+#include <QtGlobal>
+
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QHash<QString, QAspectFactory::CreateFunction> QAspectFactoryPrivate::m_defaultFactories;
+typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
+Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
 
-void _qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &name,
-                                                   QAspectFactory::CreateFunction factory)
+QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &name,
+                                                                        QAspectFactory::CreateFunction factory)
 {
-    QAspectFactoryPrivate::m_defaultFactories.insert(name, factory);
+    defaultFactories->insert(name, factory);
 }
 
 QAspectFactoryPrivate::QAspectFactoryPrivate()
-    : m_factories(m_defaultFactories)
+    : m_factories(*defaultFactories)
 {
 }
 
