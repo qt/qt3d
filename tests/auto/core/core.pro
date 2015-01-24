@@ -13,6 +13,7 @@ SUBDIRS = \
     qaspectfactory \
     qchangearbiter \
     qscene \
+    qservicelocator
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \

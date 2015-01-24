@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,43 +39,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_P_H
-#define QT3D_QABSTRACTASPECT_P_H
-
-#include <private/qobject_p.h>
-#include <private/qbackendnode_p.h>
-#include <private/qt3dcore_global_p.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include "qsysteminformationservice.h"
+#include "qsysteminformationservice_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QEntity;
-class QAspectManager;
-class QAbstractAspectJobManager;
-class QChangeArbiter;
+/*!
+    \class Qt3D::QSystemInformationService
+    \inmodule Qt3DCore
+    \brief Interface for a Qt3D system information service
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
+    This is an interface class that should be subclassesd by providers of the
+    system information service.
+*/
+
+/*!
+    Creates an instance of QSystemInformationService. This constructor is protected
+    so only subclasses can instantiate a QSystemInformationService object.
+*/
+QSystemInformationService::QSystemInformationService(const QString &description)
+    : QAbstractServiceProvider(*new QSystemInformationServicePrivate(description))
 {
-public:
-    QAbstractAspectPrivate(QAbstractAspect *qq);
+}
 
-    Q_DECLARE_PUBLIC(QAbstractAspect)
+/*!
+    \internal
+*/
+QSystemInformationService::QSystemInformationService(QSystemInformationServicePrivate &dd)
+    : QAbstractServiceProvider(dd)
+{
+}
 
-    QEntity *m_root;
-    QAspectManager *m_aspectManager;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_arbiter;
-    QAbstractAspect::AspectType m_aspectType;
-    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+/*!
+    \fn QStringList Qt3D::QSystemInformationService::aspectNames()
 
-    static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
-};
+    Subclasses should override this function and return a string list containing the
+    names of all registered aspects.
+*/
 
-} // Qt3D
+/*!
+    \fn int threadPoolThreadCount() const
+
+    Subclasses should override this function and return the number of threads in the
+    Qt3D task manager's threadpool.
+*/
+
+}
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTASPECT_P_H

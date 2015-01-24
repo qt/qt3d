@@ -48,6 +48,8 @@
 #include "qabstractaspectjobmanager.h"
 #include "qentity.h"
 
+#include <Qt3DCore/qservicelocator.h>
+
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
@@ -67,6 +69,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_scheduler(new QScheduler(this))
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
+    , m_serviceLocator(new QServiceLocator())
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     m_runMainLoop.fetchAndStoreOrdered(0);
@@ -141,6 +144,7 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
 
     if (aspect != Q_NULLPTR) {
         m_aspects.append(aspect);
+        QAbstractAspectPrivate::get(aspect)->m_aspectManager = this;
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
@@ -220,6 +224,11 @@ QAbstractAspectJobManager *QAspectManager::jobManager() const
 QChangeArbiter *QAspectManager::changeArbiter() const
 {
     return m_changeArbiter;
+}
+
+QServiceLocator *QAspectManager::serviceLocator() const
+{
+    return m_serviceLocator.data();
 }
 
 } // namespace Qt3D

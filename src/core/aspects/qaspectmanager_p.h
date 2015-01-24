@@ -43,9 +43,10 @@
 #define QT3D_QASPECTMANAGER_P_H
 
 #include <QObject>
-#include <QList>
-#include <QVariant>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <QList>
+#include <QScopedPointer>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +62,7 @@ class QChangeArbiter;
 class QAbstractAspect;
 class QAbstractAspectJobManager;
 class QSceneObserverInterface;
+class QServiceLocator;
 
 class QT3DCORESHARED_EXPORT QAspectManager : public QObject
 {
@@ -84,6 +86,7 @@ public Q_SLOTS:
     const QList<QAbstractAspect *> &aspects() const;
     QAbstractAspectJobManager *jobManager() const;
     QChangeArbiter *changeArbiter() const;
+    QServiceLocator *serviceLocator() const;
 
 private:
     QList<QAbstractAspect *> m_aspects;
@@ -94,6 +97,7 @@ private:
     QChangeArbiter *m_changeArbiter;
     QAtomicInt m_runMainLoop;
     QAtomicInt m_terminated;
+    QScopedPointer<QServiceLocator> m_serviceLocator;
 };
 
 } // namespace Qt3D

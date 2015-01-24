@@ -41,6 +41,7 @@
 
 #include "qabstractaspect.h"
 #include "qentity.h"
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <private/qabstractaspect_p.h>
 #include <Qt3DCore/qaspectjobmanager.h>
 #include <private/qchangearbiter_p.h>
@@ -59,6 +60,7 @@ namespace Qt3D {
 QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
+    , m_aspectManager(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
 {
@@ -173,6 +175,12 @@ void QAbstractAspect::registerAspect(QEntity *rootObject)
 
     d->m_root = rootObject;
     setRootEntity(rootObject);
+}
+
+QServiceLocator *QAbstractAspect::services() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_aspectManager->serviceLocator();
 }
 
 QAbstractAspectJobManager *QAbstractAspect::jobManager() const

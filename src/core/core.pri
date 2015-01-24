@@ -16,6 +16,8 @@ include (./transforms/transforms.pri)
 include (./resources/resources.pri)
 # IO
 include (./io/io.pri)
+# Services
+include (./services/services.pri)
 
 HEADERS += \
     $$PWD/qt3dcore_global.h \

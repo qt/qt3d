@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,43 +39,81 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_P_H
-#define QT3D_QABSTRACTASPECT_P_H
+#ifndef QT3D_QSERVICELOCATOR_H
+#define QT3D_QSERVICELOCATOR_H
 
-#include <private/qobject_p.h>
-#include <private/qbackendnode_p.h>
-#include <private/qt3dcore_global_p.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QEntity;
-class QAspectManager;
-class QAbstractAspectJobManager;
-class QChangeArbiter;
+class QAbstractServiceProviderPrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT QAbstractServiceProvider
 {
 public:
-    QAbstractAspectPrivate(QAbstractAspect *qq);
+    virtual ~QAbstractServiceProvider();
 
-    Q_DECLARE_PUBLIC(QAbstractAspect)
+    int type() const;
+    QString description() const;
 
-    QEntity *m_root;
-    QAspectManager *m_aspectManager;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_arbiter;
-    QAbstractAspect::AspectType m_aspectType;
-    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+protected:
+    QAbstractServiceProvider(int type, const QString &description);
+    QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd);
+    QScopedPointer<QAbstractServiceProviderPrivate> d_ptr;
 
-    static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
+private:
+    Q_DISABLE_COPY(QAbstractServiceProvider)
+    Q_DECLARE_PRIVATE(QAbstractServiceProvider)
 };
 
-} // Qt3D
+class QOpenGLInformationService;
+class QSystemInformationService;
+class QServiceLocatorPrivate;
+
+class QT3DCORESHARED_EXPORT QServiceLocator
+{
+public:
+    QServiceLocator();
+    ~QServiceLocator();
+
+    enum ServiceType {
+        SystemInformation,
+        OpenGLInformation,
+#if !defined(Q_QDOC)
+        DefaultServiceCount, // Add additional default services before here
+#endif
+        UserService = 256
+    };
+
+    void registerServiceProvider(int serviceType, QAbstractServiceProvider *provider);
+    void unregisterServiceProvider(int serviceType);
+
+    int serviceCount() const;
+
+    template<class T>
+    T *service(int serviceType)
+    {
+        QAbstractServiceProvider *service = _q_getServiceHelper(serviceType);
+        return static_cast<T *>(service);
+    }
+
+    // Convenience accessors for Qt3D provided services
+    QSystemInformationService *systemInformation();
+    QOpenGLInformationService *openGLInformation();
+
+private:
+    Q_DISABLE_COPY(QServiceLocator)
+    Q_DECLARE_PRIVATE(QServiceLocator)
+    QScopedPointer<QServiceLocatorPrivate> d_ptr;
+
+    QAbstractServiceProvider *_q_getServiceHelper(int type);
+};
+
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTASPECT_P_H
+#endif // QT3D_QSERVICELOCATOR_H

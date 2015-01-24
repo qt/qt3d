@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,43 +39,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_P_H
-#define QT3D_QABSTRACTASPECT_P_H
+#ifndef QT3D_QOPENGLINFORMATIONSERVICE_H
+#define QT3D_QOPENGLINFORMATIONSERVICE_H
 
-#include <private/qobject_p.h>
-#include <private/qbackendnode_p.h>
-#include <private/qt3dcore_global_p.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qservicelocator.h>
+#include <QtGui/qsurfaceformat.h>
+#include <QtCore/qstring.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QEntity;
-class QAspectManager;
-class QAbstractAspectJobManager;
-class QChangeArbiter;
+class QOpenGLInformationServicePrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
+class QT3DCORESHARED_EXPORT QOpenGLInformationService : public QAbstractServiceProvider
 {
 public:
-    QAbstractAspectPrivate(QAbstractAspect *qq);
+    virtual QSurfaceFormat format() const = 0;
 
-    Q_DECLARE_PUBLIC(QAbstractAspect)
-
-    QEntity *m_root;
-    QAspectManager *m_aspectManager;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_arbiter;
-    QAbstractAspect::AspectType m_aspectType;
-    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
-
-    static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
+protected:
+    QOpenGLInformationService(const QString &description = QString());
+    QOpenGLInformationService(QOpenGLInformationServicePrivate &dd);
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTASPECT_P_H
+#endif // QT3D_QOPENGLINFORMATIONSERVICE_H

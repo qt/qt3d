@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,43 +39,48 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_P_H
-#define QT3D_QABSTRACTASPECT_P_H
-
-#include <private/qobject_p.h>
-#include <private/qbackendnode_p.h>
-#include <private/qt3dcore_global_p.h>
-#include <Qt3DCore/qabstractaspect.h>
+#include "qopenglinformationservice.h"
+#include "qopenglinformationservice_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspect;
-class QEntity;
-class QAspectManager;
-class QAbstractAspectJobManager;
-class QChangeArbiter;
+/*!
+    \class Qt3D::QOpenGLInformationService
+    \inmodule Qt3DCore
+    \brief Interface for a Qt3D OpenGL information service
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
+    This is an interface class that should be subclassesd by providers of the
+    OpenGL information service. The service can be used to query various properties
+    of the underlying OpenGL implementation without having to worry about
+    having a valid OpenGL context on the current thread.
+*/
+
+/*!
+    Creates an instance of QOpenGLInformationService. This constructor is protected
+    so only subclasses can instantiate a QOpenGLInformationService object.
+*/
+QOpenGLInformationService::QOpenGLInformationService(const QString &description)
+    : QAbstractServiceProvider(QServiceLocator::OpenGLInformation, description)
 {
-public:
-    QAbstractAspectPrivate(QAbstractAspect *qq);
+}
 
-    Q_DECLARE_PUBLIC(QAbstractAspect)
+/*!
+    \internal
+*/
+QOpenGLInformationService::QOpenGLInformationService(QOpenGLInformationServicePrivate &dd)
+    : QAbstractServiceProvider(dd)
+{
+}
 
-    QEntity *m_root;
-    QAspectManager *m_aspectManager;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_arbiter;
-    QAbstractAspect::AspectType m_aspectType;
-    QHash<QByteArray, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+/*!
+    \fn QSurfaceFormat Qt3D::QOpenGLInformationService::format() const
 
-    static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
-};
+    Subclasses should override this function to return the QSurfaceFormat of the
+    OpenGL context in use.
+*/
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTASPECT_P_H

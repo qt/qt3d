@@ -59,6 +59,7 @@ class QEntity;
 class QAbstractAspectPrivate;
 class QAbstractAspectJobManager;
 class QBackendNodeFunctor;
+class QServiceLocator;
 
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
@@ -87,6 +88,7 @@ public:
 
     void registerAspect(QEntity *rootObject);
 
+    QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
 protected:
