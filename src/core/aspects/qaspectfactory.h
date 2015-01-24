@@ -103,7 +103,8 @@ QT_END_NAMESPACE
     namespace { \
     void qt3d_ ## AspectType ## _registerFunction() \
     { \
-        QT_PREPEND_NAMESPACE(Qt3D::qt3d_QAspectFactoryPrivate_addDefaultFactory)(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
+        using namespace QT_PREPEND_NAMESPACE(Qt3D); \
+        qt3d_QAspectFactoryPrivate_addDefaultFactory(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
     } \
     \
     Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
