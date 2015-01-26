@@ -1,5 +1,3 @@
-#version 120
-
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
 

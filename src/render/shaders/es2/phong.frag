@@ -1,8 +1,8 @@
-#version 120
+precision highp float;
 
 // TODO: Replace with a uniform block
-uniform vec4 lightPosition = vec4(1.0, 1.0, 0.0, 1.0);
-uniform vec3 lightIntensity = vec3(1.0, 0.0, 1.0);
+uniform vec4 lightPosition; // = vec4(1.0, 1.0, 0.0, 1.0);
+uniform vec3 lightIntensity; // = vec3(1.0, 0.0, 1.0);
 
 // TODO: Replace with a struct
 uniform vec3 ka;            // Ambient reflectivity

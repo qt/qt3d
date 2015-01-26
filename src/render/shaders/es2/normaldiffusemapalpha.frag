@@ -1,4 +1,4 @@
-#version 120
+precision highp float;
 
 varying vec3 lightDir;
 varying vec3 viewDir;
@@ -8,8 +8,8 @@ uniform sampler2D diffuseTexture;
 uniform sampler2D normalTexture;
 
 // TODO: Replace with a uniform block
-uniform vec4 lightPosition = vec4(0.0, 0.0, 0.0, 1.0);
-uniform vec3 lightIntensity = vec3(1.0, 1.0, 1.0);
+uniform vec4 lightPosition; // = vec4(0.0, 0.0, 0.0, 1.0);
+uniform vec3 lightIntensity; // = vec3(1.0, 1.0, 1.0);
 
 // TODO: Replace with a struct
 uniform vec3 ka;            // Ambient reflectivity
