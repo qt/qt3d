@@ -170,10 +170,9 @@ void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
     }
 
     case ComponentRemoved: {
-        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-        QComponent *component = qobject_cast<QComponent *>(nodePtr.data());
+        QNodeId nodeId = propertyChange->value().value<QNodeId>();
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
-        removeComponent(component);
+        removeComponent(nodeId);
         break;
     }
 
@@ -256,20 +255,20 @@ void RenderEntity::addComponent(QComponent *component)
         m_shaderDataComponents.append(component->id());
 }
 
-void RenderEntity::removeComponent(QComponent *component)
+void RenderEntity::removeComponent(const QNodeId &nodeId)
 {
-    if (qobject_cast<QTransform *>(component) != Q_NULLPTR)
+    if (m_transformComponent == nodeId)
         m_transformComponent = QNodeId();
-    else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
+    else if (m_meshComponent == nodeId)
         m_meshComponent = QNodeId();
-    else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
+    else if (m_cameraComponent == nodeId)
         m_cameraComponent = QNodeId();
-    else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
-        m_layerComponents.removeAll(component->id());
-    else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
+    else if (m_layerComponents.contains(nodeId))
+        m_layerComponents.removeAll(nodeId);
+    else if (m_materialComponent == nodeId)
         m_materialComponent = QNodeId();
-    else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
-        m_shaderDataComponents.removeAll(component->id());
+    else if (m_shaderDataComponents.contains(nodeId))
+        m_shaderDataComponents.removeAll(nodeId);
 }
 
 template<>

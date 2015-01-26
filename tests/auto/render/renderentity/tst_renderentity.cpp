@@ -118,8 +118,8 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("component"));
-        removeChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        removeChange->setValue(QVariant::fromValue(component->id()));
         entity.sceneChangeEvent(removeChange);
 
         // THEN
@@ -173,8 +173,8 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("component"));
-        removeChange->setValue(QVariant::fromValue(QNodePtr(components.first(), noopDeleter)));
+        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        removeChange->setValue(QVariant::fromValue(components.first()->id()));
         entity.sceneChangeEvent(removeChange);
 
         // THEN

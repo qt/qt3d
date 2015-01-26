@@ -119,6 +119,9 @@ void QEntity::addComponent(QComponent *comp)
     }
 
     if (d->m_changeArbiter != Q_NULLPTR) {
+        // Sending a full fledged component in the notification as we'll need
+        // to know which type of component it was and its properties to create
+        // the backend object
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
         propertyChange->setPropertyName(QByteArrayLiteral("component"));
         propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
@@ -136,9 +139,12 @@ void QEntity::removeComponent(QComponent *comp)
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->removeEntity(this);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
+        // Sending just the component id as it is the only part needed to
+        // cleanup the backend object. This way we avoid a clone which might
+        // fail in the case of large scenes.
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
-        propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
-        propertyChange->setPropertyName(QByteArrayLiteral("component"));
+        propertyChange->setValue(QVariant::fromValue(comp->id()));
+        propertyChange->setPropertyName(QByteArrayLiteral("componentId"));
         d->notifyObservers(propertyChange);
     }
 

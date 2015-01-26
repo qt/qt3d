@@ -96,7 +96,7 @@ public:
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
 
     void addComponent(QComponent *component);
-    void removeComponent(QComponent *component);
+    void removeComponent(const QNodeId &nodeId);
 
     template<class Backend, uint INDEXBITS>
     QHandle<Backend, INDEXBITS> componentHandle() const
