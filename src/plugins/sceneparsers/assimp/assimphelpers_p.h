@@ -69,7 +69,7 @@ public :
     void Flush() Q_DECL_OVERRIDE;
 
 private:
-    QIODevice *m_device;
+    QIODevice *const m_device;
 };
 
 //CUSTOM FILE IMPORTER TO HANDLE QT RESOURCES WITHIN ASSIMP
@@ -84,7 +84,7 @@ public :
     void Close(Assimp::IOStream *pFile) Q_DECL_OVERRIDE;
 
 private:
-    QMap<QString, QIODevice::OpenMode> m_openModeMaps;
+    QMap<QByteArray, QIODevice::OpenMode> m_openModeMaps;
 };
 
 } // AssimpHelper namespace

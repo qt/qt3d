@@ -41,11 +41,11 @@
 
 #include "assimphelpers_p.h"
 
+#include <QFileDevice>
 #include <QFileInfo>
 #include <QUrl>
 #include <QDir>
 #include <QDebug>
-#include <QMap>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +67,7 @@ AssimpIOStream::AssimpIOStream(QIODevice *device) :
     Assimp::IOStream(),
     m_device(device)
 {
+    Q_ASSERT(m_device != Q_NULLPTR);
 }
 
 /*!
@@ -75,10 +76,7 @@ AssimpIOStream::AssimpIOStream(QIODevice *device) :
 AssimpIOStream::~AssimpIOStream()
 {
     // Owns m_device
-    if (m_device && m_device->isOpen()) {
-        m_device->close();
-        delete m_device;
-    }
+    delete m_device;
 }
 
 /*!
@@ -147,6 +145,8 @@ size_t AssimpIOStream::FileSize() const
 void AssimpIOStream::Flush()
 {
     // QIODevice has no flush method
+    if (QFileDevice *file = qobject_cast<QFileDevice *>(m_device))
+        file->flush();
 }
 
 /*!
@@ -165,16 +165,16 @@ void AssimpIOStream::Flush()
 AssimpIOSystem::AssimpIOSystem() :
     Assimp::IOSystem()
 {
-    m_openModeMaps[QStringLiteral("r")] = QIODevice::ReadOnly;
-    m_openModeMaps[QStringLiteral("r+")] = QIODevice::ReadWrite;
-    m_openModeMaps[QStringLiteral("w")] = QIODevice::WriteOnly|QIODevice::Truncate;
-    m_openModeMaps[QStringLiteral("w+")] = QIODevice::ReadWrite|QIODevice::Truncate;
-    m_openModeMaps[QStringLiteral("a")] = QIODevice::WriteOnly|QIODevice::Append;
-    m_openModeMaps[QStringLiteral("a+")] = QIODevice::ReadWrite|QIODevice::Append;
-    m_openModeMaps[QStringLiteral("wb")] = QIODevice::WriteOnly;
-    m_openModeMaps[QStringLiteral("wt")] = QIODevice::WriteOnly;
-    m_openModeMaps[QStringLiteral("rb")] = QIODevice::ReadOnly;
-    m_openModeMaps[QStringLiteral("rt")] = QIODevice::ReadOnly;
+    m_openModeMaps[QByteArrayLiteral("r")] = QIODevice::ReadOnly;
+    m_openModeMaps[QByteArrayLiteral("r+")] = QIODevice::ReadWrite;
+    m_openModeMaps[QByteArrayLiteral("w")] = QIODevice::WriteOnly | QIODevice::Truncate;
+    m_openModeMaps[QByteArrayLiteral("w+")] = QIODevice::ReadWrite | QIODevice::Truncate;
+    m_openModeMaps[QByteArrayLiteral("a")] = QIODevice::WriteOnly | QIODevice::Append;
+    m_openModeMaps[QByteArrayLiteral("a+")] = QIODevice::ReadWrite | QIODevice::Append;
+    m_openModeMaps[QByteArrayLiteral("wb")] = QIODevice::WriteOnly;
+    m_openModeMaps[QByteArrayLiteral("wt")] = QIODevice::WriteOnly | QIODevice::Text;
+    m_openModeMaps[QByteArrayLiteral("rb")] = QIODevice::ReadOnly;
+    m_openModeMaps[QByteArrayLiteral("rt")] = QIODevice::ReadOnly | QIODevice::Text;
 }
 
 /*!
@@ -206,16 +206,16 @@ char AssimpIOSystem::getOsSeparator() const
  */
 Assimp::IOStream *AssimpIOSystem::Open(const char *pFile, const char *pMode)
 {
-    QIODevice::OpenMode openMode = QIODevice::NotOpen;
-    QString cleanedMode = QString::fromUtf8(pMode).trimmed();
-    if (m_openModeMaps.contains(cleanedMode))
-        openMode = m_openModeMaps[cleanedMode];
+    const QString fileName(QString::fromUtf8(pFile));
+    const QByteArray cleanedMode(QByteArray(pMode).trimmed());
 
-    QFile *file = new QFile(QString::fromUtf8(pFile));
+    const QIODevice::OpenMode openMode = m_openModeMaps.value(cleanedMode, QIODevice::NotOpen);
+
+    QScopedPointer<QFile> file(new QFile(fileName));
     if (file->open(openMode))
-        return new AssimpIOStream(file);
-    delete file;
-    return NULL;
+        return new AssimpIOStream(file.take());
+
+    return Q_NULLPTR;
 }
 
 /*!
