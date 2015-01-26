@@ -1,35 +1,34 @@
-precision highp float;
+#define FP highp
 
-// TODO: Replace with a uniform block
-uniform vec4 lightPosition; // = vec4(1.0, 1.0, 0.0, 1.0);
-uniform vec3 lightIntensity; // = vec3(1.0, 0.0, 1.0);
+uniform FP vec4 lightPosition;
+uniform FP vec3 lightIntensity;
 
 // TODO: Replace with a struct
-uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
-uniform float shininess;    // Specular shininess factor
+uniform FP vec3 ka;            // Ambient reflectivity
+uniform FP vec3 kd;            // Diffuse reflectivity
+uniform FP vec3 ks;            // Specular reflectivity
+uniform FP float shininess;    // Specular shininess factor
 
-varying vec3 position;
-varying vec3 normal;
+varying FP vec3 position;
+varying FP vec3 normal;
 
-vec3 adsModel( const vec3 pos, const vec3 n )
+FP vec3 adsModel( const FP vec3 pos, const FP vec3 n )
 {
     // Calculate the vector from the light to the fragment
-    vec3 s = normalize( vec3( lightPosition ) - pos );
+    FP vec3 s = normalize( vec3( lightPosition ) - pos );
 
     // Calculate the vector from the fragment to the eye position
     // (origin since this is in "eye" or "camera" space)
-    vec3 v = normalize( -pos );
+    FP vec3 v = normalize( -pos );
 
     // Reflect the light beam using the normal at this fragment
-    vec3 r = reflect( -s, n );
+    FP vec3 r = reflect( -s, n );
 
     // Calculate the diffuse component
-    float diffuse = max( dot( s, n ), 0.0 );
+    FP float diffuse = max( dot( s, n ), 0.0 );
 
     // Calculate the specular component
-    float specular = 0.0;
+    FP float specular = 0.0;
     if ( dot( s, n ) > 0.0 )
         specular = pow( max( dot( r, v ), 0.0 ), shininess );
 

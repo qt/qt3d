@@ -55,7 +55,7 @@ Material {
         Parameter { name: "ks";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
         Parameter { name: "shininess"; value: root.shininess },
         Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
-        Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 0.0, 1.0) }
+        Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
     ]
 
     ShaderProgram {
