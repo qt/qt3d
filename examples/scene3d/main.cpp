@@ -47,10 +47,6 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     QQuickView view;
-    QSurfaceFormat f = view.format();
-    f.setVersion(4, 5);
-    f.setProfile(QSurfaceFormat::CoreProfile);
-    view.setFormat(f);
 
     view.resize(500, 500);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
