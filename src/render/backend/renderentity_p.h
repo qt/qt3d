@@ -66,7 +66,7 @@ namespace Render {
 
 class Renderer;
 
-class RenderEntity : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderEntity : public QBackendNode
 {
 public:
     RenderEntity();
@@ -192,16 +192,16 @@ template<>
 RenderTransform *RenderEntity::renderComponent<RenderTransform>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderTransform>() const;
+Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderTransform>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
+Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
+Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderMesh>() const;
+Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderMesh>() const;
 
 template<>
 QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const;
@@ -210,7 +210,7 @@ template<>
 QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+Q_AUTOTEST_EXPORT QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
 
 template<>
 QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const;
@@ -219,7 +219,7 @@ template<>
 QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() const;
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
+Q_AUTOTEST_EXPORT QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
 
 class RenderEntityFunctor : public QBackendNodeFunctor
 {
