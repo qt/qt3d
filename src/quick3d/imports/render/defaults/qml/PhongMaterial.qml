@@ -50,10 +50,12 @@ Material {
     property real shininess: 150.0
 
     parameters: [
-        Parameter { name: "ambient";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
-        Parameter { name: "diffuse";   value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
-        Parameter { name: "specular";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
-        Parameter { name: "shininess"; value: root.shininess }
+        Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
+        Parameter { name: "kd";   value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
+        Parameter { name: "ks";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
+        Parameter { name: "shininess"; value: root.shininess },
+        Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
+        Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 0.0, 1.0) }
     ]
 
     ShaderProgram {
@@ -68,10 +70,6 @@ Material {
         fragmentShaderCode: loadSource("qrc:/shaders/es2/phong.frag")
     }
 
-    ParameterMapping { id: ambientMapping; parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform }
-    ParameterMapping { id: diffuseMapping; parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform }
-    ParameterMapping { id: specularMapping; parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
-
     effect: Effect {
         techniques: [
             // GL 3 Technique
@@ -83,7 +81,6 @@ Material {
                     minorVersion: 1
                 }
                 renderPasses: RenderPass {
-                    bindings: [ambientMapping, diffuseMapping, specularMapping]
                     shaderProgram: gl3PhongShader
                 }
             },
@@ -97,7 +94,6 @@ Material {
                     minorVersion: 0
                 }
                 renderPasses: RenderPass {
-                    bindings: [ambientMapping, diffuseMapping, specularMapping]
                     shaderProgram: gl2es2PhongShader
                 }
             },
@@ -111,7 +107,6 @@ Material {
                     minorVersion: 0
                 }
                 renderPasses: RenderPass {
-                    bindings: [ambientMapping, diffuseMapping, specularMapping]
                     shaderProgram: gl2es2PhongShader
                 }
             }
