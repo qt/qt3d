@@ -90,7 +90,7 @@ QUniformPack::~QUniformPack()
 
 void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
 {
-    m_uniforms[glslName] = val;
+    m_uniforms.insert(glslName, val);
 }
 
 void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)

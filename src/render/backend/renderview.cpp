@@ -318,6 +318,43 @@ void RenderView::sort()
     // Compares the bitsetKey of the RenderCommands
     // Key[Depth | StateCost | Shader]
     std::sort(m_commands.begin(), m_commands.end(), compareCommands);
+
+    // Minimize uniform changes
+    int i = 0;
+    while (i < m_commands.size()) {
+        int j = i;
+
+        // Advance while commands share the same shader
+        while (i < m_commands.size() && m_commands[j]->m_shaderDna == m_commands[i]->m_shaderDna)
+            ++i;
+
+        if (i - j > 0) { // Several commands have the same shader, so we minimize uniform changes
+            QHash<QString, const QUniformValue *> cachedUniforms = m_commands[j++]->m_uniforms.uniforms();
+
+            while (j < i) {
+                QHash<QString, const QUniformValue *> &uniforms = m_commands[j]->m_uniforms.uniforms();
+                QHash<QString, const QUniformValue *>::iterator it = uniforms.begin();
+
+                while (it != uniforms.end()) {
+                    bool found = false;
+                    if (cachedUniforms.contains(it.key())) {
+                        const QUniformValue *refValue = cachedUniforms[it.key()];
+                        if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
+                            cachedUniforms.insert(it.key(), it.value());
+                            it = uniforms.erase(it);
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        cachedUniforms.insert(it.key(), it.value());
+                        ++it;
+                    }
+                }
+                ++j;
+            }
+        }
+        ++i;
+    }
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
@@ -676,7 +713,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                                 setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader,shaderData, it->name);
                                 it = parameters.erase(it);
                             } else {
-                            // Else param unused by current shader
+                                // Else param unused by current shader
                                 ++it;
                             }
                         }

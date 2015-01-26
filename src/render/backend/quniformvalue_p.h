@@ -79,6 +79,11 @@ public:
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
 
+    virtual bool isTexture() const
+    {
+        return false;
+    }
+
     virtual void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
 
 protected:
@@ -94,6 +99,11 @@ public :
     {
     }
 
+    bool isTexture() const Q_DECL_FINAL
+    {
+        return true;
+    }
+
     void setTextureId(const QNodeId &id)
     {
         m_textureId = id;
@@ -103,7 +113,10 @@ public :
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
-        Q_UNUSED(other);
+        if (other.isTexture()) {
+            const TextureUniform *otherTex = static_cast<const TextureUniform *>(&other);
+            return otherTex->textureId() == m_textureId;
+        }
         return false;
     }
 
