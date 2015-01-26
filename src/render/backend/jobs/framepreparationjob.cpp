@@ -82,7 +82,6 @@ void FramePreparationJob::parseNodeTree(RenderEntity *node)
                 node->localBoundingVolume()->setCenter(box.center());
                 const QVector3D &radii = box.radii();
                 node->localBoundingVolume()->setRadius(qMax(radii.x(), qMax(radii.y(), radii.z())));
-                qDebug() << node->localBoundingVolume()->center() << node->localBoundingVolume()->radius();
             }
         }
     }
