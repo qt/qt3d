@@ -182,7 +182,11 @@ void QGraphicsContext::endDrawing()
 void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
-    QSize renderTargetSize = (m_activeFBO != 0) ? m_renderTargetsSize.value(m_activeFBO) : m_surface->size();
+    // For external FBOs we may not have an m_renderTargets entry.
+    // Use the surface size in this case.
+    QSize renderTargetSize = m_renderTargetsSize.contains(m_activeFBO)
+        ? m_renderTargetsSize[m_activeFBO] : m_surface->size();
+
     // Qt3D 0------------------> 1  OpenGL  1^
     //      |                                |
     //      |                                |
