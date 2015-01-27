@@ -56,6 +56,11 @@ TexImageData::TexImageData(int level, int layer) :
 {
 }
 
+void TexImageData::setCubeFace(QOpenGLTexture::CubeMapFace face)
+{
+    m_cubeFace = face;
+}
+
 void TexImageData::setImage(const QImage &image)
 {
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
