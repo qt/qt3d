@@ -31,4 +31,5 @@ OTHER_FILES += \
     assets/textures/pattern_09/* \
     assets/chest/* \
     assets/houseplants/* \
-    assets/metalbarrel/*
+    assets/metalbarrel/* \
+    assets/cubemaps/*

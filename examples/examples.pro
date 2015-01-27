@@ -27,7 +27,8 @@ SUBDIRS += \
     materials-cpp \
     dynamicscene-cpp \
     scene3d \
-    enabled-qml
+    enabled-qml \
+    skybox
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

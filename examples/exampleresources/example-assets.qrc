@@ -85,5 +85,17 @@
         <file>assets/textures/pattern_09/specular.webp</file>
         <file>assets/textures/pattern_09/normal.webp</file>
         <file>assets/textures/pattern_09/diffuse.webp</file>
+        <file>assets/cubemaps/miramar/miramar_negx.webp</file>
+        <file>assets/cubemaps/miramar/miramar_negy.webp</file>
+        <file>assets/cubemaps/miramar/miramar_negz.webp</file>
+        <file>assets/cubemaps/miramar/miramar_posx.webp</file>
+        <file>assets/cubemaps/miramar/miramar_posy.webp</file>
+        <file>assets/cubemaps/miramar/miramar_posz.webp</file>
+        <file>assets/cubemaps/night/night_negx.webp</file>
+        <file>assets/cubemaps/night/night_negy.webp</file>
+        <file>assets/cubemaps/night/night_negz.webp</file>
+        <file>assets/cubemaps/night/night_posx.webp</file>
+        <file>assets/cubemaps/night/night_posy.webp</file>
+        <file>assets/cubemaps/night/night_posz.webp</file>
     </qresource>
 </RCC>
