@@ -186,7 +186,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::Render::Quick::Quick3DTexture2D, Qt3D::Render::Quick::Quick3DTexture2DExtension>(uri, 2, 0, "Texture2D");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture2DArray>(uri, 2, 0, "Texture2DArray");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture3D>(uri, 2, 0, "Texture3D");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DTextureCubeMap>(uri, 2, 0, "TextureCubeMap");
+    qmlRegisterExtendedType<Qt3D::Render::Quick::Quick3DTextureCubeMap, Qt3D::Render::Quick::Quick3DTextureCubeMapExtension>(uri, 2, 0, "TextureCubeMap");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTextureCubeMapArray>(uri, 2, 0, "TextureCubeMapArray");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture2DMultisample>(uri, 2, 0, "Texture2DMultisample");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture2DMultisampleArray>(uri, 2, 0, "Texture2DMultisampleArray");
