@@ -126,8 +126,8 @@ void Quick3DTexture2DExtension::setSource(QUrl arg)
             QImage img;
             if (img.load(source)) {
                 parentTexture()->setFormat(img.hasAlphaChannel() ?
-                                                       QTexture::RGBA8_UNorm :
-                                                       QTexture::RGB8_UNorm);
+                                               QTexture::RGBA8_UNorm :
+                                               QTexture::RGB8_UNorm);
                 parentTexture()->setFromQImage(img);
             }
             else {
@@ -138,6 +138,155 @@ void Quick3DTexture2DExtension::setSource(QUrl arg)
             qWarning() << "implement loading from remote URLs";
         }
         emit sourceChanged();
+    }
+}
+
+Quick3DTextureCubeMapExtension::Quick3DTextureCubeMapExtension(QObject *parent)
+    : QObject(parent)
+{
+}
+
+void Quick3DTextureCubeMapExtension::setSource(const QUrl &source)
+{
+    if (source != m_source) {
+        m_source = source;
+        emit sourceChanged();
+        QUrl tmp(m_source);
+        // Default to png extension for now
+        tmp.setPath(m_source.path() + QStringLiteral("_posx.png"));
+        setPositiveX(tmp);
+        tmp.setPath(m_source.path() + QStringLiteral("_posy.png"));
+        setPositiveY(tmp);
+        tmp.setPath(m_source.path() + QStringLiteral("_posz.png"));
+        setPositiveZ(tmp);
+        tmp.setPath(m_source.path() + QStringLiteral("_negx.png"));
+        setNegativeX(tmp);
+        tmp.setPath(m_source.path() + QStringLiteral("_negy.png"));
+        setNegativeY(tmp);
+        tmp.setPath(m_source.path() + QStringLiteral("_negz.png"));
+        setNegativeZ(tmp);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setPositiveX(const QUrl &positiveX)
+{
+    if (positiveX != m_positiveX) {
+        m_positiveX = positiveX;
+        emit positiveXChanged();
+        loadFace(positiveX, QTexture::CubeMapPositiveX);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setPositiveY(const QUrl &positiveY)
+{
+    if (positiveY != m_positiveY) {
+        m_positiveY = positiveY;
+        emit positiveYChanged();
+        loadFace(positiveY, QTexture::CubeMapPositiveY);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setPositiveZ(const QUrl &positiveZ)
+{
+    if (positiveZ != m_positiveZ) {
+        m_positiveZ = positiveZ;
+        emit positiveZChanged();
+        loadFace(positiveZ, QTexture::CubeMapPositiveZ);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setNegativeX(const QUrl &negativeX)
+{
+    if (negativeX != m_negativeX) {
+        m_negativeX = negativeX;
+        emit negativeXChanged();
+        loadFace(negativeX, QTexture::CubeMapNegativeX);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setNegativeY(const QUrl &negativeY)
+{
+    if (negativeY != m_negativeY) {
+        m_negativeY = negativeY;
+        emit negativeYChanged();
+        loadFace(negativeY, QTexture::CubeMapNegativeY);
+    }
+}
+
+void Quick3DTextureCubeMapExtension::setNegativeZ(const QUrl &negativeZ)
+{
+    if (negativeZ != m_negativeZ) {
+        m_negativeZ = negativeZ;
+        emit negativeZChanged();
+        loadFace(negativeZ, QTexture::CubeMapNegativeZ);
+    }
+}
+
+QUrl Quick3DTextureCubeMapExtension::source() const
+{
+    return m_source;
+}
+
+QUrl Quick3DTextureCubeMapExtension::positiveX() const
+{
+    return m_positiveX;
+}
+
+QUrl Quick3DTextureCubeMapExtension::positiveY() const
+{
+    return m_positiveY;
+}
+
+QUrl Quick3DTextureCubeMapExtension::positiveZ() const
+{
+    return m_positiveZ;
+}
+
+QUrl Quick3DTextureCubeMapExtension::negativeX() const
+{
+    return m_negativeX;
+}
+
+QUrl Quick3DTextureCubeMapExtension::negativeY() const
+{
+    return m_negativeY;
+}
+
+QUrl Quick3DTextureCubeMapExtension::negativeZ() const
+{
+    return m_negativeZ;
+}
+
+void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QTexture::CubeMapFace face)
+{
+    if (faceUrl.isLocalFile() || faceUrl.scheme() == QStringLiteral("qrc")) {
+        QString source = faceUrl.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+        QImage img;
+        parentTexture()->setStatus(QTexture::Loading);
+        if (img.load(source)) {
+            TexImageDataPtr dataPtr(new TexImageData(0, 0));
+
+            dataPtr->setCubeFace(static_cast<QOpenGLTexture::CubeMapFace>(face));
+            if (parentTexture()->height() != img.height())
+                parentTexture()->setHeight(img.height());
+            if (parentTexture()->width() != img.width())
+                parentTexture()->setWidth(img.width());
+            QTexture::TextureFormat format = img.hasAlphaChannel() ?
+                        QTexture::RGBA8_UNorm :
+                        QTexture::RGB8_UNorm;
+            if (format != parentTexture()->format())
+                parentTexture()->setFormat(format);
+            dataPtr->setImage(img);
+            parentTexture()->addImageData(dataPtr);
+            parentTexture()->setStatus(QTexture::Loaded);
+        }
+        else {
+            qWarning() << "Failed to load image : " << source;
+            parentTexture()->setStatus(QTexture::Error);
+        }
+    } else {
+        parentTexture()->setStatus(QTexture::Error);
+        qWarning() << "implement loading from remote URLs";
     }
 }
 

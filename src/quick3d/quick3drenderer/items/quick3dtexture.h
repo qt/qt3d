@@ -96,6 +96,8 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMap : public QTexture
     Q_OBJECT
 public:
     explicit Quick3DTextureCubeMap(QNode *parent = 0);
+
+    friend class Quick3DTextureCubeMapExtension;
 };
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapArray : public QTexture
@@ -149,6 +151,58 @@ Q_SIGNALS:
 private:
     QUrl m_source;
     inline Qt3D::QTexture *parentTexture() const { return qobject_cast<Qt3D::QTexture *>(parent()); }
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapExtension : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged())
+    Q_PROPERTY(QUrl positiveX READ positiveX WRITE setPositiveX NOTIFY positiveXChanged())
+    Q_PROPERTY(QUrl positiveY READ positiveY WRITE setPositiveY NOTIFY positiveYChanged())
+    Q_PROPERTY(QUrl positiveZ READ positiveZ WRITE setPositiveZ NOTIFY positiveZChanged())
+    Q_PROPERTY(QUrl negativeX READ negativeX WRITE setNegativeX NOTIFY negativeXChanged())
+    Q_PROPERTY(QUrl negativeY READ negativeY WRITE setNegativeY NOTIFY negativeYChanged())
+    Q_PROPERTY(QUrl negativeZ READ negativeZ WRITE setNegativeZ NOTIFY negativeZChanged())
+
+public:
+    explicit Quick3DTextureCubeMapExtension(QObject *parent = 0);
+
+    void setSource(const QUrl &source);
+    void setPositiveX(const QUrl &positiveX);
+    void setPositiveY(const QUrl &positiveY);
+    void setPositiveZ(const QUrl &positiveZ);
+    void setNegativeX(const QUrl &negativeX);
+    void setNegativeY(const QUrl &negativeY);
+    void setNegativeZ(const QUrl &negativeZ);
+
+    QUrl source() const;
+    QUrl positiveX() const;
+    QUrl positiveY() const;
+    QUrl positiveZ() const;
+    QUrl negativeX() const;
+    QUrl negativeY() const;
+    QUrl negativeZ() const;
+
+Q_SIGNALS:
+    void positiveXChanged();
+    void positiveYChanged();
+    void positiveZChanged();
+    void negativeXChanged();
+    void negativeYChanged();
+    void negativeZChanged();
+    void sourceChanged();
+
+private:
+    QUrl m_positiveX;
+    QUrl m_positiveY;
+    QUrl m_positiveZ;
+    QUrl m_negativeX;
+    QUrl m_negativeY;
+    QUrl m_negativeZ;
+    QUrl m_source;
+
+    inline Quick3DTextureCubeMap *parentTexture() { return qobject_cast<Quick3DTextureCubeMap *>(parent()); }
+    void loadFace(const QUrl &faceUrl, QTexture::CubeMapFace face);
 };
 
 } // Quick
