@@ -46,6 +46,7 @@
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DRenderer/qtexture.h>
 
+#include <QQmlListProperty>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -72,6 +73,25 @@ Q_SIGNALS:
 private:
     QUrl m_source;
     inline Qt3D::QAbstractTextureProvider *parentTexture() const { return qobject_cast<Qt3D::QAbstractTextureProvider *>(parent()); }
+};
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureExtension : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3D::QAbstractTextureImage> textureImages READ textureImages)
+    Q_CLASSINFO("DefaultProperty", "textureImages")
+
+public:
+    explicit Quick3DTextureExtension(QObject *parent = 0);
+
+    QQmlListProperty<QAbstractTextureImage> textureImages();
+    inline QAbstractTextureProvider *parentTexture() const { return qobject_cast<QAbstractTextureProvider *>(parent()); }
+
+private:
+    static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);
+    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index);
+    static int textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
+    static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
 };
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapExtension : public QObject

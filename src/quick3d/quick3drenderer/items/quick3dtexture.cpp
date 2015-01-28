@@ -237,6 +237,51 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractText
     }
 }
 
+Quick3DTextureExtension::Quick3DTextureExtension(QObject *parent)
+    : QObject(parent)
+{
+}
+
+QQmlListProperty<QAbstractTextureImage> Quick3DTextureExtension::textureImages()
+{
+    return QQmlListProperty<QAbstractTextureImage>(this, 0,
+                                                   &Quick3DTextureExtension::appendTextureImage,
+                                                   &Quick3DTextureExtension::textureImageCount,
+                                                   &Quick3DTextureExtension::textureImageAt,
+                                                   &Quick3DTextureExtension::clearTextureImageList);
+}
+
+void Quick3DTextureExtension::appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage)
+{
+    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+    if (self)
+        self->parentTexture()->addTextureImage(textureImage);
+}
+
+QAbstractTextureImage *Quick3DTextureExtension::textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index)
+{
+    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+    if (self)
+        return self->parentTexture()->textureImages().at(index);
+    return Q_NULLPTR;
+}
+
+int Quick3DTextureExtension::textureImageCount(QQmlListProperty<QAbstractTextureImage> *list)
+{
+    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+    if (self)
+        return self->parentTexture()->textureImages().count();
+    return 0;
+}
+
+void Quick3DTextureExtension::clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list)
+{
+    Quick3DTextureExtension *self = qobject_cast<Quick3DTextureExtension *>(list->object);
+    if (self)
+        Q_FOREACH (QAbstractTextureImage *img, self->parentTexture()->textureImages())
+            self->parentTexture()->removeTextureImage(img);
+}
+
 } // Quick
 
 } // Render
