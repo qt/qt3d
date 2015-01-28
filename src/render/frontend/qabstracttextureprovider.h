@@ -52,6 +52,7 @@ namespace Qt3D {
 
 class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
+class QAbstractTextureImage;
 
 class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
 {
@@ -266,17 +267,15 @@ public:
 
     Status status() const;
 
-    /**
-     * @brief setFromQImage - set size and image data based upon a QImage
-     * Can optionally generate mip-map levels automatically too. Target
-     *  must be Texture2D, Texture2DArray or TextureRectangle.
-     * @param img - valid QImage. If Texture2D is set, should be power-of-2
-     * dimensions.
-     */
+    // Those 3 methods should be removed
+    // kept to keep things working a little longer;
     bool setFromQImage(QImage img, int layer = 0);
-
     void addImageData(TexImageDataPtr imgData);
     QList<TexImageDataPtr> imageData() const;
+
+    void addTextureImage(QAbstractTextureImage *textureImage);
+    void removeTextureImage(QAbstractTextureImage *textureImage);
+    QList<QAbstractTextureImage *> textureImages() const;
 
     void setGenerateMipMaps(bool gen);
     bool generateMipMaps() const;

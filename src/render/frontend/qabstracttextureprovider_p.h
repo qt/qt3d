@@ -72,6 +72,7 @@ public :
     float m_maximumAnisotropy;
     QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
+    QList<QAbstractTextureImage *> m_textureImages;
 };
 
 } // QT3D

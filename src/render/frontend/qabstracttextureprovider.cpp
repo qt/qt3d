@@ -42,6 +42,7 @@
 #include "qabstracttextureprovider.h"
 #include "qabstracttextureprovider_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -296,6 +297,55 @@ QList<TexImageDataPtr> QAbstractTextureProvider::imageData() const
 {
     Q_D(const QAbstractTextureProvider);
     return d->m_data;
+}
+
+/*!
+    Adds a new Qt3D::QAbstractTextureImage \a texture image to the texture provider.
+ */
+void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureImage)
+{
+    Q_D(QAbstractTextureProvider);
+    if (!d->m_textureImages.contains(textureImage)) {
+        d->m_textureImages.append(textureImage);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!textureImage->parent())
+            textureImage->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            change->setPropertyName(QByteArrayLiteral("textureImage"));
+            change->setValue(QVariant::fromValue(textureImage->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+/*!
+    Removes a Qt3D::QAbstractTextureImage \a texture image form the texture provider.
+ */
+void QAbstractTextureProvider::removeTextureImage(QAbstractTextureImage *textureImage)
+{
+    Q_D(QAbstractTextureProvider);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        change->setPropertyName(QByteArrayLiteral("textureImage"));
+        change->setValue(QVariant::fromValue(textureImage->id()));
+        d->notifyObservers(change);
+    }
+    d->m_textureImages.removeOne(textureImage);
+}
+
+/*!
+\return the list of QAbstractTextureImage * contained in the texture provider.
+ */
+QList<QAbstractTextureImage *> QAbstractTextureProvider::textureImages() const
+{
+    Q_D(const QAbstractTextureProvider);
+    return d->m_textureImages;
 }
 
 /*!
