@@ -142,6 +142,11 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     m_aspectEngine->initialize();
 }
 
+Scene3DItem::~Scene3DItem()
+{
+    m_renderAspect->renderShutdown();
+}
+
 QStringList Scene3DItem::aspects() const
 {
     return m_aspects;

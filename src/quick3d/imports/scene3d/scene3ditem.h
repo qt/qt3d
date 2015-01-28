@@ -61,6 +61,7 @@ class Scene3DItem : public QQuickFramebufferObject
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
+    ~Scene3DItem();
 
     QStringList aspects() const;
     Qt3D::QEntity *entity() const;
