@@ -70,7 +70,10 @@ HEADERS += \
     $$PWD/qcolormask.h \
     $$PWD/qabstracttextureprovider.h \
     $$PWD/qabstracttextureprovider_p.h \
-    $$PWD/qwrapmode.h
+    $$PWD/qwrapmode.h \
+    $$PWD/qabstracttextureimage.h \
+    $$PWD/qabstracttextureimage_p.h \
+    $$PWD/qtextureimage.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -79,7 +82,6 @@ SOURCES += \
     $$PWD/qshaderprogram.cpp \
     $$PWD/qtechnique.cpp \
     $$PWD/qitemmodelbuffer.cpp \
-    $$PWD/qtexture.cpp \
     $$PWD/sphere.cpp \
     $$PWD/qabstractsceneloader.cpp \
     $$PWD/qeffect.cpp \
@@ -117,4 +119,6 @@ SOURCES += \
     $$PWD/qpolygonoffset.cpp \
     $$PWD/qcolormask.cpp \
     $$PWD/qabstracttextureprovider.cpp \
-    $$PWD/qwrapmode.cpp
+    $$PWD/qwrapmode.cpp \
+    $$PWD/qabstracttextureimage.cpp \
+    $$PWD/qtextureimage.cpp

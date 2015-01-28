@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,144 +39,12 @@
 **
 ****************************************************************************/
 
-#include "qtexture.h"
-
-#include <texturedata.h>
-
-#include <QImage>
-#include <QDebug>
-#include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qtextureimage.h"
+#include "qabstracttextureimage_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QAbstractTextureImagePrivate : public QNodePrivate
-{
-public:
-    QAbstractTextureImagePrivate(QAbstractTextureImage *qq)
-        : QNodePrivate(qq)
-        , m_mipmapLevel(0)
-        , m_layer(0)
-        , m_face(QAbstractTextureProvider::CubeMapPositiveX)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QAbstractTextureImage)
-
-    int m_mipmapLevel;
-    int m_layer;
-    QAbstractTextureProvider::CubeMapFace m_face;
-    QUrl m_source;
-};
-
-/*!
-    \class Qt3D::QAbstractTextureImage
-    \since 5.5
-    \brief Encapsulates the necessary information to create an OpenGL texture image.
-
-    Qt3D::QAbstractTextureImage should be used as the mean of providing image data to a
-    Qt3D::QAbstractTextureProvider. It contains the necessary informations: mipmap
-    level, layer, cube face load at the proper place data into an OpenGL texture.
-
-    The actual data is provided through a QTextureDataFunctor that will be
-    executed by Aspect jobs in the backend. Qt3D::QAbstractTextureImage should be
-    subclassed to provide a functor and eventual additional properties needed by
-    the functor to load actual data.
- */
-
-/*!
-    Constructs a new Qt3D::QAbstractTextureImage instance with \a parent as parent.
- */
-QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
-    : QNode(*new QAbstractTextureImagePrivate(this), parent)
-{
-}
-
-QAbstractTextureImage::~QAbstractTextureImage()
-{
-}
-
-/*!
-    \return the mipmal level of the texture image.
- */
-int QAbstractTextureImage::mipmapLevel() const
-{
-    Q_D(const QAbstractTextureImage);
-    return d->m_mipmapLevel;
-}
-
-/*!
-    \return the layer of the texture image.
- */
-int QAbstractTextureImage::layer() const
-{
-    Q_D(const QAbstractTextureImage);
-    return d->m_layer;
-}
-
-/*!
-    \return the cube map face of the texture image.
- */
-QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
-{
-    Q_D(const QAbstractTextureImage);
-    return d->m_face;
-}
-
-/*!
-    Sets the mipmap level of the texture image to \a level.
- */
-void QAbstractTextureImage::setMipmapLevel(int level)
-{
-    Q_D(QAbstractTextureImage);
-    if (level != d->m_mipmapLevel) {
-        d->m_mipmapLevel = level;
-        emit mipmapLevelChanged();
-    }
-}
-
-/*!
-    Sets the layer of the texture image to \a layer.
-    \note: has a meaning only for Target2DArray, TargetCubeMapArray and Target3D
-    Qt3D::QAbstractTextureProvider.
- */
-void QAbstractTextureImage::setLayer(int layer)
-{
-    Q_D(QAbstractTextureImage);
-    if (layer != d->m_layer) {
-        d->m_layer = layer;
-        emit layerChanged();
-    }
-}
-
-/*!
-    Sets the cube map face of the texture image to \a face.
-    \note: has a meaning only for TargetCubeMap and TargetCubeMapArray
-    Qt3D::QAbstractTextureProvider.
- */
-void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace face)
-{
-    Q_D(QAbstractTextureImage);
-    if (face != d->m_face) {
-        d->m_face = face;
-        emit cubeMapFaceChanged();
-    }
-}
-
-void QAbstractTextureImage::copy(const QNode *ref)
-{
-    const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
-    d_func()->m_face = imageRef->cubeMapFace();
-    d_func()->m_layer = imageRef->layer();
-    d_func()->m_mipmapLevel = imageRef->mipmapLevel();
-}
-
-QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent)
-    : QNode(dd, parent)
-{
-}
 
 class QTextureImagePrivate: public QAbstractTextureImagePrivate
 {
@@ -273,6 +141,7 @@ void QTextureImage::copy(const QNode *ref)
     d_func()->m_source = img->source();
 }
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+

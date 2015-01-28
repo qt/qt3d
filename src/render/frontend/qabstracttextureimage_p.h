@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,13 +39,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTURE_H
-#define QT3D_QTEXTURE_H
+#ifndef QT3D_QABSTRACTTEXTUREIMAGE_P_H
+#define QT3D_QABSTRACTTEXTUREIMAGE_P_H
 
-#include <QOpenGLTexture>
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/qwrapmode.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRenderer/private/qt3drenderer_global_p.h>
 #include <Qt3DRenderer/qabstracttextureprovider.h>
-#include <Qt3DRenderer/qtextureimage.h>
 
-#endif // QT3D_QTEXTURE_H
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QAbstractTextureImage;
+
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public QNodePrivate
+{
+public:
+    QAbstractTextureImagePrivate(QAbstractTextureImage *qq)
+        : QNodePrivate(qq)
+        , m_mipmapLevel(0)
+        , m_layer(0)
+        , m_face(QAbstractTextureProvider::CubeMapPositiveX)
+    {
+    }
+
+    Q_DECLARE_PUBLIC(QAbstractTextureImage)
+
+    int m_mipmapLevel;
+    int m_layer;
+    QAbstractTextureProvider::CubeMapFace m_face;
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTTEXTUREIMAGE_P_H
+

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,13 +39,68 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTURE_H
-#define QT3D_QTEXTURE_H
+#ifndef QT3D_QABSTRACTTEXTUREIMAGE_H
+#define QT3D_QABSTRACTTEXTUREIMAGE_H
 
-#include <QOpenGLTexture>
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/qwrapmode.h>
 #include <Qt3DRenderer/qabstracttextureprovider.h>
-#include <Qt3DRenderer/qtextureimage.h>
 
-#endif // QT3D_QTEXTURE_H
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+// TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
+// We might also get rid of the layer, face, mipmap level from
+// TexImageDataPtr and store that in the functor directly
+// or use the QTextureImage instead
+class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor
+{
+public:
+    virtual ~QTextureDataFunctor() {}
+    virtual TexImageDataPtr operator()() = 0;
+    virtual bool operator ==(const QTextureDataFunctor &other) const = 0;
+};
+
+typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
+
+class QAbstractTextureImagePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public QNode
+{
+    Q_OBJECT
+    Q_PROPERTY(int mipmapLevel READ mipmapLevel WRITE setMipmapLevel NOTIFY mipmapLevelChanged)
+    Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
+    Q_PROPERTY(Qt3D::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
+public:
+    explicit QAbstractTextureImage(QNode *parent = 0);
+    virtual ~QAbstractTextureImage();
+
+    int mipmapLevel() const;
+    int layer() const;
+    QAbstractTextureProvider::CubeMapFace cubeMapFace() const;
+
+    void setMipmapLevel(int level);
+    void setLayer(int layer);
+    void setCubeMapFace(QAbstractTextureProvider::CubeMapFace face);
+
+    virtual QTextureDataFunctorPtr dataFunctor() const = 0;
+
+Q_SIGNALS:
+    void mipmapLevelChanged();
+    void layerChanged();
+    void cubeMapFaceChanged();
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractTextureImage)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QTextureDataFunctorPtr)
+
+#endif // QT3D_QABSTRACTTEXTUREIMAGE_H

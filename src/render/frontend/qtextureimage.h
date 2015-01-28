@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,13 +39,47 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTURE_H
-#define QT3D_QTEXTURE_H
+#ifndef QT3D_QTEXTUREIMAGE_H
+#define QT3D_QTEXTUREIMAGE_H
 
-#include <QOpenGLTexture>
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/qwrapmode.h>
-#include <Qt3DRenderer/qabstracttextureprovider.h>
-#include <Qt3DRenderer/qtextureimage.h>
+#include <QUrl>
+#include <Qt3DRenderer/qabstracttextureimage.h>
 
-#endif // QT3D_QTEXTURE_H
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QTextureImagePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
+{
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+
+public:
+    explicit QTextureImage(QNode *parent = 0);
+    ~QTextureImage();
+
+    QUrl source() const;
+    void setSource(const QUrl &source);
+
+    QTextureDataFunctorPtr dataFunctor() const Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void sourceChanged();
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTextureImage)
+    QT3D_CLONEABLE(QTextureImage)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QTextureImage*)
+
+#endif // QT3D_QTEXTUREIMAGE_H
