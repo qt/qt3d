@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexture;
+class QAbstractTextureProvider;
 
 namespace Render {
 
@@ -61,9 +61,9 @@ class RenderTextureProvider
 public:
     RenderTextureProvider();
 
-    Render::RenderTexturePtr get(QTexture* t);
+    Render::RenderTexturePtr get(QAbstractTextureProvider* t);
 private:
-    QHash<QTexture*, Render::RenderTexturePtr> m_dict;
+    QHash<QAbstractTextureProvider*, Render::RenderTexturePtr> m_dict;
 };
 
 } // namespace Render

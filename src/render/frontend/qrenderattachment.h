@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexture;
+class QAbstractTextureProvider;
 class QRenderAttachmentPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
     Q_ENUMS(RenderAttachmentType)
     Q_ENUMS(CubeMapFace)
     Q_PROPERTY(RenderAttachmentType type READ type WRITE setType NOTIFY typeChanged)
-    Q_PROPERTY(Qt3D::QTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
+    Q_PROPERTY(Qt3D::QAbstractTextureProvider *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
@@ -101,8 +101,8 @@ public:
     void setType(RenderAttachmentType type);
     RenderAttachmentType type() const;
 
-    void setTexture(QTexture *texture);
-    QTexture *texture() const;
+    void setTexture(QAbstractTextureProvider *texture);
+    QAbstractTextureProvider *texture() const;
 
     void setMipLevel(int level);
     int mipLevel() const;

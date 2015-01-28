@@ -60,7 +60,7 @@ namespace Qt3D {
 QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq)
     : QMaterialPrivate(qq)
     , m_diffuseMapEffect(new QEffect())
-    , m_diffuseTexture(new QTexture(QTexture::Target2D))
+    , m_diffuseTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
@@ -77,8 +77,8 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq)
     , m_diffuseMapGL3Shader(new QShaderProgram())
     , m_diffuseMapGL2ES2Shader(new QShaderProgram())
  {
-    m_diffuseTexture->setMagnificationFilter(QTexture::Linear);
-    m_diffuseTexture->setMinificationFilter(QTexture::LinearMipMapLinear);
+    m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
+    m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_diffuseTexture->setGenerateMipMaps(true);
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
@@ -209,10 +209,10 @@ float QDiffuseMapMaterial::shininess() const
     the wrap mode is repeat, the maximum anisotropy is set to 16.0
     and mipmapping is enabled.
  */
-QTexture *QDiffuseMapMaterial::diffuse() const
+QAbstractTextureProvider *QDiffuseMapMaterial::diffuse() const
 {
     Q_D(const QDiffuseMapMaterial);
-    return d->m_diffuseParameter->value().value<QTexture *>();
+    return d->m_diffuseParameter->value().value<QAbstractTextureProvider *>();
 }
 
 /*!
@@ -259,7 +259,7 @@ void QDiffuseMapMaterial::setShininess(float shininess)
     \fn Qt3D::QDiffuseMapMaterial::setDiffuse(QTexture *diffuseMap)
     Sets the current diffuse map to \a diffuseMap.
  */
-void QDiffuseMapMaterial::setDiffuse(QTexture *diffuseMap)
+void QDiffuseMapMaterial::setDiffuse(QAbstractTextureProvider *diffuseMap)
 {
     Q_D(QDiffuseMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuseMap));

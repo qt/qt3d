@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QDiffuseMapMaterialPrivate;
-class QTexture;
+class QAbstractTextureProvider;
 
 class QT3DRENDERERSHARED_EXPORT QDiffuseMapMaterial : public QMaterial
 {
@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QDiffuseMapMaterial : public QMaterial
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
     Q_PROPERTY(QColor specular READ specular WRITE setSpecular NOTIFY specularChanged)
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
-    Q_PROPERTY(QTexture *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(QAbstractTextureProvider *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
 public:
@@ -68,13 +68,13 @@ public:
     QColor ambient() const;
     QColor specular() const;
     float shininess() const;
-    QTexture *diffuse() const;
+    QAbstractTextureProvider *diffuse() const;
     float textureScale() const;
 
     void setAmbient(const QColor &color);
     void setSpecular(const QColor &specular);
     void setShininess(float shininess);
-    void setDiffuse(QTexture *diffuse);
+    void setDiffuse(QAbstractTextureProvider *diffuse);
     void setTextureScale(float textureScale);
 
 Q_SIGNALS:

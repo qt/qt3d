@@ -54,7 +54,7 @@ class QOpenGLTexture;
 
 namespace Qt3D {
 
-class QTexture;
+class QAbstractTextureProvider;
 
 namespace Render {
 
@@ -88,16 +88,16 @@ private:
     int m_height;
     int m_depth;
     bool m_generateMipMaps;
-    QTexture::Target m_target;
-    QTexture::TextureFormat m_format;
-    QTexture::Filter m_magnificationFilter;
-    QTexture::Filter m_minificationFilter;
+    QAbstractTextureProvider::Target m_target;
+    QAbstractTextureProvider::TextureFormat m_format;
+    QAbstractTextureProvider::Filter m_magnificationFilter;
+    QAbstractTextureProvider::Filter m_minificationFilter;
     QTextureWrapMode::WrapMode m_wrapModeX;
     QTextureWrapMode::WrapMode m_wrapModeY;
     QTextureWrapMode::WrapMode m_wrapModeZ;
     float m_maximumAnisotropy;
-    QTexture::ComparisonFunction m_comparisonFunction;
-    QTexture::ComparisonMode m_comparisonMode;
+    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
+    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 
     QList<TexImageDataPtr> m_imageData;
     bool m_isDirty;

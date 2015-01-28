@@ -52,7 +52,7 @@ RenderTextureProvider::RenderTextureProvider()
 {
 }
 
-RenderTexturePtr RenderTextureProvider::get(QTexture *t)
+RenderTexturePtr RenderTextureProvider::get(QAbstractTextureProvider *t)
 {
     if (m_dict.contains(t))
         return m_dict.value(t);

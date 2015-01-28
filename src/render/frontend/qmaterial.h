@@ -51,11 +51,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexture;
+class QAbstractTextureProvider;
 class QParameter;
 class QMaterialPrivate;
 class QEffect;
-typedef QMap<QString, QTexture*> TextureDict;
+typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
 class QT3DRENDERERSHARED_EXPORT QMaterial : public QComponent
 {
@@ -74,7 +74,7 @@ public:
 
     TextureDict textureValues() const;
 
-    void setTextureParameter(QString name, QTexture* tex);
+    void setTextureParameter(QString name, QAbstractTextureProvider* tex);
 
 Q_SIGNALS:
     void effectChanged();

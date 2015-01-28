@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QParameterPrivate;
-class QTexture;
+class QAbstractTextureProvider;
 
 class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
 {
@@ -62,7 +62,7 @@ class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
 public:
     explicit QParameter(QNode *parent = 0);
     QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
-    QParameter(const QString &name, QTexture *texture, QNode *parent = 0);
+    QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent = 0);
 
     void setName(const QString &name);
     QString name() const;

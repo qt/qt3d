@@ -111,22 +111,22 @@ int main(int argc, char* argv[])
     // Providing image loaders for textures would make sense
     if (img.load(QStringLiteral(":/assets/textures/pattern_09/diffuse.webp"))) {
         normalDiffuseSpecularMapMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                                   Qt3D::QTexture::RGBA8_UNorm :
-                                                                   Qt3D::QTexture::RGB8_UNorm);
+                                                                   Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                                   Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         normalDiffuseSpecularMapMaterial->diffuse()->setFromQImage(img);
     }
 
     if (img.load(QStringLiteral(":/assets/textures/pattern_09/specular.webp"))) {
         normalDiffuseSpecularMapMaterial->specular()->setFormat(img.hasAlphaChannel() ?
-                                                                    Qt3D::QTexture::RGBA8_UNorm :
-                                                                    Qt3D::QTexture::RGB8_UNorm);
+                                                                    Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                                    Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         normalDiffuseSpecularMapMaterial->specular()->setFromQImage(img);
     }
 
     if (img.load(QStringLiteral(":/assets/textures/pattern_09/normal.webp"))) {
         normalDiffuseSpecularMapMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                                  Qt3D::QTexture::RGBA8_UNorm :
-                                                                  Qt3D::QTexture::RGB8_UNorm);
+                                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         normalDiffuseSpecularMapMaterial->normal()->setFromQImage(img);
     }
     planeEntity->addComponent(normalDiffuseSpecularMapMaterial);
@@ -141,8 +141,8 @@ int main(int argc, char* argv[])
 
     if (img.load(QStringLiteral(":/assets/chest/diffuse.webp"))) {
         diffuseMapMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                     Qt3D::QTexture::RGBA8_UNorm :
-                                                     Qt3D::QTexture::RGB8_UNorm);
+                                                     Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                     Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         diffuseMapMaterial->diffuse()->setFromQImage(img);
     }
     chest->addComponent(diffuseMapMaterial);

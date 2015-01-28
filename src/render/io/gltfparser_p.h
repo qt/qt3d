@@ -66,7 +66,7 @@ class QShaderProgram;
 class QEffect;
 class QCamera;
 class QCameraLens;
-class QTexture;
+class QAbstractTextureProvider;
 
 class GLTFParser : public AbstractSceneParser
 {
@@ -146,7 +146,7 @@ private:
     // up our techniques
     QMap<QString, QEffect*> m_effectProxies;
 
-    QMap<QString, QTexture*> m_textures;
+    QMap<QString, QAbstractTextureProvider*> m_textures;
     QMap<QString, QImage> m_images;
 
     QFile* resolveLocalData(QString path);

@@ -61,8 +61,8 @@ namespace Qt3D {
 QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate(QNormalDiffuseMapMaterial *qq)
     : QMaterialPrivate(qq)
     , m_normalDiffuseEffect(new QEffect())
-    , m_diffuseTexture(new QTexture(QTexture::Target2D))
-    , m_normalTexture(new QTexture(QTexture::Target2D))
+    , m_diffuseTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
+    , m_normalTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.1f, 0.1f, 0.1f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_normalParameter(new QParameter(QStringLiteral("normalTexture"), m_normalTexture))
@@ -80,14 +80,14 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate(QNormalDiffus
     , m_normalDiffuseGL3Shader(new QShaderProgram())
     , m_normalDiffuseGL2ES2Shader(new QShaderProgram())
 {
-    m_diffuseTexture->setMagnificationFilter(QTexture::Linear);
-    m_diffuseTexture->setMinificationFilter(QTexture::LinearMipMapLinear);
+    m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
+    m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_diffuseTexture->setGenerateMipMaps(true);
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
 
-    m_normalTexture->setMagnificationFilter(QTexture::Linear);
-    m_normalTexture->setMinificationFilter(QTexture::Linear);
+    m_normalTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
+    m_normalTexture->setMinificationFilter(QAbstractTextureProvider::Linear);
     m_normalTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_normalTexture->setMaximumAnisotropy(16.0f);
 }
@@ -221,10 +221,10 @@ QColor QNormalDiffuseMapMaterial::specular() const
     the wrap mode is repeat, the maximum anisotropy is set to 16.0
     and mipmapping is enabled.
  */
-QTexture *QNormalDiffuseMapMaterial::diffuse() const
+QAbstractTextureProvider *QNormalDiffuseMapMaterial::diffuse() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
-    return d->m_diffuseParameter->value().value<QTexture *>();
+    return d->m_diffuseParameter->value().value<QAbstractTextureProvider *>();
 }
 
 /*!
@@ -234,10 +234,10 @@ QTexture *QNormalDiffuseMapMaterial::diffuse() const
     and magnification filters, the wrap mode is repeat and maximum anisotropy
     is set to 16.0.
  */
-QTexture *QNormalDiffuseMapMaterial::normal() const
+QAbstractTextureProvider *QNormalDiffuseMapMaterial::normal() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
-    return d->m_normalParameter->value().value<QTexture *>();
+    return d->m_normalParameter->value().value<QAbstractTextureProvider *>();
 }
 
 /*!
@@ -284,7 +284,7 @@ void QNormalDiffuseMapMaterial::setSpecular(const QColor &specular)
     \fn Qt3D::QNormalDiffuseMapMaterial::setDiffuse(QTexture *diffuse)
     Sets the current diffuse map to \a diffuse.
  */
-void QNormalDiffuseMapMaterial::setDiffuse(QTexture *diffuse)
+void QNormalDiffuseMapMaterial::setDiffuse(QAbstractTextureProvider *diffuse)
 {
     Q_D(QNormalDiffuseMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuse));
@@ -294,7 +294,7 @@ void QNormalDiffuseMapMaterial::setDiffuse(QTexture *diffuse)
     \fn Qt3D::QNormalDiffuseMapMaterial::setNormal(QTexture *normal)
     Sets the current normal map to \a normal.
  */
-void QNormalDiffuseMapMaterial::setNormal(QTexture *normal)
+void QNormalDiffuseMapMaterial::setNormal(QAbstractTextureProvider *normal)
 {
     Q_D(QNormalDiffuseMapMaterial);
     d->m_normalParameter->setValue(QVariant::fromValue(normal));

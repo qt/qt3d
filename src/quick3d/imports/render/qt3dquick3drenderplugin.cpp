@@ -180,7 +180,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Textures
     qmlRegisterType<Qt3D::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));
-    qmlRegisterUncreatableType<Qt3D::QTexture>(uri, 2, 0, "Texture", QStringLiteral("Texture should be created from one of the subclasses"));
+    qmlRegisterUncreatableType<Qt3D::QAbstractTextureProvider>(uri, 2, 0, "Texture", QStringLiteral("Texture should be created from one of the subclasses"));
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture1D>(uri, 2, 0, "Texture1D");
     qmlRegisterType<Qt3D::Render::Quick::Quick3DTexture1DArray>(uri, 2, 0, "Texture1DArray");
     qmlRegisterExtendedType<Qt3D::Render::Quick::Quick3DTexture2D, Qt3D::Render::Quick::Quick3DTexture2DExtension>(uri, 2, 0, "Texture2D");

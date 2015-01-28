@@ -88,9 +88,9 @@ private:
     DiffuseColor m_diffuseColor;
     SpecularColor m_specularColor;
     Qt3D::QNormalDiffuseSpecularMapMaterial *m_material;
-    Qt3D::QTexture *m_diffuseTexture;
-    Qt3D::QTexture *m_normalTexture;
-    Qt3D::QTexture *m_specularTexture;
+    Qt3D::QAbstractTextureProvider *m_diffuseTexture;
+    Qt3D::QAbstractTextureProvider *m_normalTexture;
+    Qt3D::QAbstractTextureProvider *m_specularTexture;
 
     void setNormalTextureSource();
     void setDiffuseTextureSource();

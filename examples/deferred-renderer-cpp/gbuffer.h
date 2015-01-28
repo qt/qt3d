@@ -59,13 +59,13 @@ public:
         AttachmentsCount
     };
 
-    Qt3D::QTexture *colorTexture() const;
-    Qt3D::QTexture *positionTexture() const;
-    Qt3D::QTexture *normalTexture() const;
-    Qt3D::QTexture *depthTexture() const;
+    Qt3D::QAbstractTextureProvider *colorTexture() const;
+    Qt3D::QAbstractTextureProvider *positionTexture() const;
+    Qt3D::QAbstractTextureProvider *normalTexture() const;
+    Qt3D::QAbstractTextureProvider *depthTexture() const;
 
 private:
-    Qt3D::QTexture *m_textures[AttachmentsCount];
+    Qt3D::QAbstractTextureProvider *m_textures[AttachmentsCount];
     Qt3D::QRenderAttachment *m_attachments[AttachmentsCount];
 };
 

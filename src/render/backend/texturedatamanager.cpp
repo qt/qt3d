@@ -47,7 +47,7 @@ namespace Qt3D {
 
 namespace Render {
 
-void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::QTexture *texture)
+void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::QAbstractTextureProvider *texture)
 {
     if (!contains(texture->id()) && !m_texturesPending.contains(texture))
         m_texturesPending.append(texture);

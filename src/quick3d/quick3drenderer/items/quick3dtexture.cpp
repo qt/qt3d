@@ -51,57 +51,57 @@ namespace Render {
 namespace Quick {
 
 Quick3DTexture1D::Quick3DTexture1D(QNode *parent)
-    : QTexture(Target1D, parent)
+    : QAbstractTextureProvider(Target1D, parent)
 {
 }
 
 Quick3DTexture1DArray::Quick3DTexture1DArray(QNode *parent)
-    : QTexture(Target1DArray, parent)
+    : QAbstractTextureProvider(Target1DArray, parent)
 {
 }
 
 Quick3DTexture2D::Quick3DTexture2D(QNode *parent)
-    : QTexture(Target2D, parent)
+    : QAbstractTextureProvider(Target2D, parent)
 {
 }
 
 Quick3DTexture2DArray::Quick3DTexture2DArray(QNode *parent)
-    : QTexture(Target2DArray, parent)
+    : QAbstractTextureProvider(Target2DArray, parent)
 {
 }
 
 Quick3DTexture3D::Quick3DTexture3D(QNode *parent)
-    : QTexture(Target3D, parent)
+    : QAbstractTextureProvider(Target3D, parent)
 {
 }
 
 Quick3DTextureCubeMap::Quick3DTextureCubeMap(QNode *parent)
-    : QTexture(TargetCubeMap, parent)
+    : QAbstractTextureProvider(TargetCubeMap, parent)
 {
 }
 
 Quick3DTextureCubeMapArray::Quick3DTextureCubeMapArray(QNode *parent)
-    : QTexture(TargetCubeMapArray, parent)
+    : QAbstractTextureProvider(TargetCubeMapArray, parent)
 {
 }
 
 Quick3DTexture2DMultisample::Quick3DTexture2DMultisample(QNode *parent)
-    : QTexture(Target2DMultisample, parent)
+    : QAbstractTextureProvider(Target2DMultisample, parent)
 {
 }
 
 Quick3DTexture2DMultisampleArray::Quick3DTexture2DMultisampleArray(QNode *parent)
-    : QTexture(Target2DMultisampleArray, parent)
+    : QAbstractTextureProvider(Target2DMultisampleArray, parent)
 {
 }
 
 Quick3DTextureRectangle::Quick3DTextureRectangle(QNode *parent)
-    : QTexture(TargetRectangle, parent)
+    : QAbstractTextureProvider(TargetRectangle, parent)
 {
 }
 
 Quick3DTextureBuffer::Quick3DTextureBuffer(QNode *parent)
-    : QTexture(TargetBuffer, parent)
+    : QAbstractTextureProvider(TargetBuffer, parent)
 {
 }
 
@@ -126,8 +126,8 @@ void Quick3DTexture2DExtension::setSource(QUrl arg)
             QImage img;
             if (img.load(source)) {
                 parentTexture()->setFormat(img.hasAlphaChannel() ?
-                                               QTexture::RGBA8_UNorm :
-                                               QTexture::RGB8_UNorm);
+                                               QAbstractTextureProvider::RGBA8_UNorm :
+                                               QAbstractTextureProvider::RGB8_UNorm);
                 parentTexture()->setFromQImage(img);
             }
             else {
@@ -173,7 +173,7 @@ void Quick3DTextureCubeMapExtension::setPositiveX(const QUrl &positiveX)
     if (positiveX != m_positiveX) {
         m_positiveX = positiveX;
         emit positiveXChanged();
-        loadFace(positiveX, QTexture::CubeMapPositiveX);
+        loadFace(positiveX, QAbstractTextureProvider::CubeMapPositiveX);
     }
 }
 
@@ -182,7 +182,7 @@ void Quick3DTextureCubeMapExtension::setPositiveY(const QUrl &positiveY)
     if (positiveY != m_positiveY) {
         m_positiveY = positiveY;
         emit positiveYChanged();
-        loadFace(positiveY, QTexture::CubeMapPositiveY);
+        loadFace(positiveY, QAbstractTextureProvider::CubeMapPositiveY);
     }
 }
 
@@ -191,7 +191,7 @@ void Quick3DTextureCubeMapExtension::setPositiveZ(const QUrl &positiveZ)
     if (positiveZ != m_positiveZ) {
         m_positiveZ = positiveZ;
         emit positiveZChanged();
-        loadFace(positiveZ, QTexture::CubeMapPositiveZ);
+        loadFace(positiveZ, QAbstractTextureProvider::CubeMapPositiveZ);
     }
 }
 
@@ -200,7 +200,7 @@ void Quick3DTextureCubeMapExtension::setNegativeX(const QUrl &negativeX)
     if (negativeX != m_negativeX) {
         m_negativeX = negativeX;
         emit negativeXChanged();
-        loadFace(negativeX, QTexture::CubeMapNegativeX);
+        loadFace(negativeX, QAbstractTextureProvider::CubeMapNegativeX);
     }
 }
 
@@ -209,7 +209,7 @@ void Quick3DTextureCubeMapExtension::setNegativeY(const QUrl &negativeY)
     if (negativeY != m_negativeY) {
         m_negativeY = negativeY;
         emit negativeYChanged();
-        loadFace(negativeY, QTexture::CubeMapNegativeY);
+        loadFace(negativeY, QAbstractTextureProvider::CubeMapNegativeY);
     }
 }
 
@@ -218,7 +218,7 @@ void Quick3DTextureCubeMapExtension::setNegativeZ(const QUrl &negativeZ)
     if (negativeZ != m_negativeZ) {
         m_negativeZ = negativeZ;
         emit negativeZChanged();
-        loadFace(negativeZ, QTexture::CubeMapNegativeZ);
+        loadFace(negativeZ, QAbstractTextureProvider::CubeMapNegativeZ);
     }
 }
 
@@ -257,12 +257,12 @@ QUrl Quick3DTextureCubeMapExtension::negativeZ() const
     return m_negativeZ;
 }
 
-void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QTexture::CubeMapFace face)
+void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractTextureProvider::CubeMapFace face)
 {
     if (faceUrl.isLocalFile() || faceUrl.scheme() == QStringLiteral("qrc")) {
         QString source = faceUrl.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
         QImage img;
-        parentTexture()->setStatus(QTexture::Loading);
+        parentTexture()->setStatus(QAbstractTextureProvider::Loading);
         if (img.load(source)) {
             TexImageDataPtr dataPtr(new TexImageData(0, 0));
 
@@ -271,21 +271,21 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QTexture::Cub
                 parentTexture()->setHeight(img.height());
             if (parentTexture()->width() != img.width())
                 parentTexture()->setWidth(img.width());
-            QTexture::TextureFormat format = img.hasAlphaChannel() ?
-                        QTexture::RGBA8_UNorm :
-                        QTexture::RGB8_UNorm;
+            QAbstractTextureProvider::TextureFormat format = img.hasAlphaChannel() ?
+                        QAbstractTextureProvider::RGBA8_UNorm :
+                        QAbstractTextureProvider::RGB8_UNorm;
             if (format != parentTexture()->format())
                 parentTexture()->setFormat(format);
             dataPtr->setImage(img);
             parentTexture()->addImageData(dataPtr);
-            parentTexture()->setStatus(QTexture::Loaded);
+            parentTexture()->setStatus(QAbstractTextureProvider::Loaded);
         }
         else {
             qWarning() << "Failed to load image : " << source;
-            parentTexture()->setStatus(QTexture::Error);
+            parentTexture()->setStatus(QAbstractTextureProvider::Error);
         }
     } else {
-        parentTexture()->setStatus(QTexture::Error);
+        parentTexture()->setStatus(QAbstractTextureProvider::Error);
         qWarning() << "implement loading from remote URLs";
     }
 }

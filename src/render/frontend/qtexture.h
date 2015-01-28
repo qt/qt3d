@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexturePrivate;
+class QAbstractTextureProviderPrivate;
 class QTextureWrapModePrivate;
 
 class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
@@ -91,7 +91,7 @@ private:
     Q_DECLARE_PRIVATE(QTextureWrapMode)
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture : public QNode
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
 {
     Q_OBJECT
     Q_ENUMS(Target)
@@ -286,14 +286,14 @@ public:
         CompareNone         = 0x0000    // GL_NONE
     };
 
-    explicit QTexture(Target target, QNode *parent = 0);
-    explicit QTexture(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
+    explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
+    explicit QAbstractTextureProvider(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
                       bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
                       float maximumAnisotropy = 1.0f,
                       ComparisonFunction comparisonFunction = CompareLessEqual,
                       ComparisonMode comparisonMode = CompareNone,
                       QNode *parent = 0);
-    ~QTexture();
+    ~QAbstractTextureProvider();
 
 
     Target target() const;
@@ -361,23 +361,23 @@ Q_SIGNALS:
     void comparisonModeChanged();
 
 protected:
-    explicit QTexture(QNode *parent = 0);
-    QTexture(QTexturePrivate &dd, QNode *parent = 0);
+    explicit QAbstractTextureProvider(QNode *parent = 0);
+    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:
-    Q_DECLARE_PRIVATE(QTexture)
-    QT3D_CLONEABLE(QTexture)
+    Q_DECLARE_PRIVATE(QAbstractTextureProvider)
+    QT3D_CLONEABLE(QAbstractTextureProvider)
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTexture*)
+Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider*)
 Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
-Q_DECLARE_METATYPE(Qt3D::QTexture::ComparisonFunction)
-Q_DECLARE_METATYPE(Qt3D::QTexture::ComparisonMode)
+Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonFunction)
+Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonMode)
 
 #endif // QT3D_QTEXTURE_H

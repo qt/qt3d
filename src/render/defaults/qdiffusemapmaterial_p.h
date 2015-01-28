@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QEffect;
-class QTexture;
+class QAbstractTextureProvider;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
@@ -65,7 +65,7 @@ class QDiffuseMapMaterialPrivate : public QMaterialPrivate
     void init();
 
     QEffect *m_diffuseMapEffect;
-    QTexture *m_diffuseTexture;
+    QAbstractTextureProvider *m_diffuseTexture;
     QParameter *m_ambientParameter;
     QParameter *m_diffuseParameter;
     QParameter *m_specularParameter;

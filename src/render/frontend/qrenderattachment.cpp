@@ -62,7 +62,7 @@ void QRenderAttachment::copy(const QNode *ref)
     QNode::copy(ref);
     const QRenderAttachment *rA = static_cast<const QRenderAttachment*>(ref);
     d_func()->m_type = rA->d_func()->m_type;
-    setTexture(qobject_cast<QTexture *>(QNode::clone(rA->d_func()->m_texture)));
+    setTexture(qobject_cast<QAbstractTextureProvider *>(QNode::clone(rA->d_func()->m_texture)));
 }
 
 QRenderAttachment::QRenderAttachment(QNode *parent)
@@ -90,7 +90,7 @@ QRenderAttachment::RenderAttachmentType QRenderAttachment::type() const
     return d->m_type;
 }
 
-void QRenderAttachment::setTexture(QTexture *texture)
+void QRenderAttachment::setTexture(QAbstractTextureProvider *texture)
 {
     Q_D(QRenderAttachment);
     if (texture != d->m_texture) {
@@ -103,7 +103,7 @@ void QRenderAttachment::setTexture(QTexture *texture)
     }
 }
 
-QTexture *QRenderAttachment::texture() const
+QAbstractTextureProvider *QRenderAttachment::texture() const
 {
     Q_D(const QRenderAttachment);
     return d->m_texture;

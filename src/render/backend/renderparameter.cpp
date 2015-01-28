@@ -105,7 +105,7 @@ QVariant RenderParameter::toBackendValue(const QVariant &value)
 
     if (node == Q_NULLPTR) {
         return value;
-    } else if (qobject_cast<QTexture*>(node)) {
+    } else if (qobject_cast<QAbstractTextureProvider*>(node)) {
         return QVariant::fromValue(m_textureManager->getOrCreateResource(node->id()));
     } else if (qobject_cast<QShaderData*>(node)) {
         return QVariant::fromValue(m_shaderDataManager->getOrCreateResource(node->id()));

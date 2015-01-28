@@ -64,13 +64,13 @@ class TextureDataManager : public QResourceManager<TexImageData,
 public:
     TextureDataManager() {}
 
-    void addTextureData(QTexture *texture);
+    void addTextureData(QAbstractTextureProvider *texture);
 
-    QList<QTexture *> texturesPending() const { return m_texturesPending; }
+    QList<QAbstractTextureProvider *> texturesPending() const { return m_texturesPending; }
     void clearTexturesPending() { m_texturesPending.clear(); }
 
 private:
-    QList<QTexture *> m_texturesPending;
+    QList<QAbstractTextureProvider *> m_texturesPending;
 };
 
 } // Render

@@ -56,42 +56,42 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1D : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture1D(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1DArray : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1DArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture1DArray(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2D : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture2D(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DArray : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture2DArray(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture3D : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture3D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture3D(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMap : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMap : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -100,35 +100,35 @@ public:
     friend class Quick3DTextureCubeMapExtension;
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapArray : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTextureCubeMapArray(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisample : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisample : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture2DMultisample(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisampleArray : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisampleArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTexture2DMultisampleArray(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureRectangle : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureRectangle : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
     explicit Quick3DTextureRectangle(QNode *parent = 0);
 };
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureBuffer : public QTexture
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureBuffer : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -150,7 +150,7 @@ Q_SIGNALS:
 
 private:
     QUrl m_source;
-    inline Qt3D::QTexture *parentTexture() const { return qobject_cast<Qt3D::QTexture *>(parent()); }
+    inline Qt3D::QAbstractTextureProvider *parentTexture() const { return qobject_cast<Qt3D::QAbstractTextureProvider *>(parent()); }
 };
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapExtension : public QObject
@@ -202,7 +202,7 @@ private:
     QUrl m_source;
 
     inline Quick3DTextureCubeMap *parentTexture() { return qobject_cast<Quick3DTextureCubeMap *>(parent()); }
-    void loadFace(const QUrl &faceUrl, QTexture::CubeMapFace face);
+    void loadFace(const QUrl &faceUrl, QAbstractTextureProvider::CubeMapFace face);
 };
 
 } // Quick

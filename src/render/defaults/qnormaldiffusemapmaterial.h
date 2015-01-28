@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexture;
+class QAbstractTextureProvider;
 class QNormalDiffuseMapMaterialPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapMaterial : public QMaterial
@@ -57,8 +57,8 @@ class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapMaterial : public QMaterial
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
     Q_PROPERTY(QColor specular READ specular WRITE setSpecular NOTIFY specularChanged)
-    Q_PROPERTY(QTexture *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
-    Q_PROPERTY(QTexture *normal READ normal WRITE setNormal NOTIFY normalChanged)
+    Q_PROPERTY(QAbstractTextureProvider *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(QAbstractTextureProvider *normal READ normal WRITE setNormal NOTIFY normalChanged)
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
@@ -68,15 +68,15 @@ public:
 
     QColor ambient() const;
     QColor specular() const;
-    QTexture *diffuse() const;
-    QTexture *normal() const;
+    QAbstractTextureProvider *diffuse() const;
+    QAbstractTextureProvider *normal() const;
     float shininess() const;
     float textureScale() const;
 
     void setAmbient(const QColor &ambient);
     void setSpecular(const QColor &specular);
-    void setDiffuse(QTexture *diffuse);
-    void setNormal(QTexture *normal);
+    void setDiffuse(QAbstractTextureProvider *diffuse);
+    void setNormal(QAbstractTextureProvider *normal);
     void setShininess(float shininess);
     void setTextureScale(float textureScale);
 

@@ -140,8 +140,8 @@ void Barrel::setNormalTextureSource()
     QImage img;
     if (img.load(QStringLiteral(":/assets/metalbarrel/normal_") + bumpsName[m_bumps] + QStringLiteral(".webp"))) {
         m_normalTexture->setFormat(img.hasAlphaChannel() ?
-                                       Qt3D::QTexture::RGBA8_UNorm :
-                                       Qt3D::QTexture::RGB8_UNorm);
+                                       Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                       Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_normalTexture->setFromQImage(img);
     }
 }
@@ -151,8 +151,8 @@ void Barrel::setDiffuseTextureSource()
     QImage img;
     if (img.load(QStringLiteral(":/assets/metalbarrel/diffus_") + diffuseColorsName[m_diffuseColor] + QStringLiteral(".webp"))) {
         m_diffuseTexture->setFormat(img.hasAlphaChannel() ?
-                                       Qt3D::QTexture::RGBA8_UNorm :
-                                       Qt3D::QTexture::RGB8_UNorm);
+                                       Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                       Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_diffuseTexture->setFromQImage(img);
     }
 }
@@ -162,8 +162,8 @@ void Barrel::setSpecularTextureSource()
     QImage img;
     if (img.load(QStringLiteral(":/assets/metalbarrel/specular") + specularColorsName[m_specularColor] + QStringLiteral(".webp"))) {
         m_specularTexture->setFormat(img.hasAlphaChannel() ?
-                                       Qt3D::QTexture::RGBA8_UNorm :
-                                       Qt3D::QTexture::RGB8_UNorm);
+                                       Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                       Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_specularTexture->setFromQImage(img);
     }
 }

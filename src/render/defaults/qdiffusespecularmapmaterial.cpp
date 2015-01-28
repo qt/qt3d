@@ -61,8 +61,8 @@ namespace Qt3D {
 QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate(QDiffuseSpecularMapMaterial *qq)
     : QMaterialPrivate(qq)
     , m_diffuseSpecularMapEffect(new QEffect())
-    , m_diffuseTexture(new QTexture(QTexture::Target2D))
-    , m_specularTexture(new QTexture(QTexture::Target2D))
+    , m_diffuseTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
+    , m_specularTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_specularParameter(new QParameter(QStringLiteral("specularTexture"), m_specularTexture))
@@ -79,14 +79,14 @@ QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate(QDiffuseS
     , m_diffuseSpecularMapGL3Shader(new QShaderProgram())
     , m_diffuseSpecularMapGL2ES2Shader(new QShaderProgram())
 {
-    m_diffuseTexture->setMagnificationFilter(QTexture::Linear);
-    m_diffuseTexture->setMinificationFilter(QTexture::LinearMipMapLinear);
+    m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
+    m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_diffuseTexture->setGenerateMipMaps(true);
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
 
-    m_specularTexture->setMagnificationFilter(QTexture::Linear);
-    m_specularTexture->setMinificationFilter(QTexture::LinearMipMapLinear);
+    m_specularTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
+    m_specularTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
     m_specularTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_specularTexture->setGenerateMipMaps(true);
     m_specularTexture->setMaximumAnisotropy(16.0f);
@@ -196,10 +196,10 @@ QColor QDiffuseSpecularMapMaterial::ambient() const
     the wrap mode is repeat, the maximum anisotropy is set to 16.0
     and mipmapping is enabled.
  */
-QTexture *QDiffuseSpecularMapMaterial::diffuse() const
+QAbstractTextureProvider *QDiffuseSpecularMapMaterial::diffuse() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);
-    return d->m_diffuseParameter->value().value<QTexture *>();
+    return d->m_diffuseParameter->value().value<QAbstractTextureProvider *>();
 }
 
 /*!
@@ -210,10 +210,10 @@ QTexture *QDiffuseSpecularMapMaterial::diffuse() const
     the wrap mode is repeat, the maximum anisotropy is set to 16.0
     and mipmapping is enabled.
  */
-QTexture *QDiffuseSpecularMapMaterial::specular() const
+QAbstractTextureProvider *QDiffuseSpecularMapMaterial::specular() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);
-    return d->m_specularParameter->value().value<QTexture *>();
+    return d->m_specularParameter->value().value<QAbstractTextureProvider *>();
 }
 
 /*!
@@ -250,7 +250,7 @@ void QDiffuseSpecularMapMaterial::setAmbient(const QColor &ambient)
     \fn Qt3D::QDiffuseSpecularMapMaterial::setDiffuse(QTexture *diffuse)
     Sets the current diffuse map to \a diffuse.
  */
-void QDiffuseSpecularMapMaterial::setDiffuse(QTexture *diffuse)
+void QDiffuseSpecularMapMaterial::setDiffuse(QAbstractTextureProvider *diffuse)
 {
     Q_D(QDiffuseSpecularMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuse));
@@ -260,7 +260,7 @@ void QDiffuseSpecularMapMaterial::setDiffuse(QTexture *diffuse)
     \fn Qt3D::QDiffuseSpecularMapMaterial::setSpecular(QTexture *specular)
     Sets the current specular map to \a specular.
  */
-void QDiffuseSpecularMapMaterial::setSpecular(QTexture *specular)
+void QDiffuseSpecularMapMaterial::setSpecular(QAbstractTextureProvider *specular)
 {
     Q_D(QDiffuseSpecularMapMaterial);
     d->m_specularParameter->setValue(QVariant::fromValue(specular));

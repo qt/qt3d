@@ -81,26 +81,26 @@ HousePlant::HousePlant(Qt3D::QNode *parent)
 
     if (img.load(QStringLiteral(":/assets/houseplants/cover.webp"))) {
         m_coverMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QTexture::RGBA8_UNorm :
-                                                  Qt3D::QTexture::RGB8_UNorm);
+                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_coverMaterial->diffuse()->setFromQImage(img);
     }
     if (img.load(QStringLiteral(":/assets/houseplants/cover_normal.webp"))) {
         m_coverMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QTexture::RGBA8_UNorm :
-                                                  Qt3D::QTexture::RGB8_UNorm);
+                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_coverMaterial->normal()->setFromQImage(img);
     }
     if (img.load(QStringLiteral(":/assets/houseplants/pot.webp"))) {
         m_potMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                 Qt3D::QTexture::RGBA8_UNorm :
-                                                 Qt3D::QTexture::RGB8_UNorm);
+                                                 Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                 Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_potMaterial->diffuse()->setFromQImage(img);
     }
     if (img.load(QStringLiteral(":/assets/houseplants/pot_normal.webp"))) {
         m_potMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                 Qt3D::QTexture::RGBA8_UNorm :
-                                                 Qt3D::QTexture::RGB8_UNorm);
+                                                 Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                 Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_potMaterial->normal()->setFromQImage(img);
     }
 
@@ -195,14 +195,14 @@ void HousePlant::updatePlantType()
     QImage img;
     if (img.load(QStringLiteral(":/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral(".webp"))) {
         m_plantMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QTexture::RGBA8_UNorm :
-                                                  Qt3D::QTexture::RGB8_UNorm);
+                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_plantMaterial->diffuse()->setFromQImage(img);
     }
     if (img.load(QStringLiteral(":/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral("_normal.webp"))) {
         m_plantMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QTexture::RGBA8_UNorm :
-                                                  Qt3D::QTexture::RGB8_UNorm);
+                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
+                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
         m_plantMaterial->normal()->setFromQImage(img);
     }
 }

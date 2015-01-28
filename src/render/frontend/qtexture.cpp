@@ -52,47 +52,47 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QTexturePrivate : public QNodePrivate
+class QAbstractTextureProviderPrivate : public QNodePrivate
 {
 public :
-    QTexturePrivate(QTexture *qq)
+    QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq)
         : QNodePrivate(qq)
-        , m_target(QTexture::Target2D)
-        , m_format(QTexture::RGBA8U)
+        , m_target(QAbstractTextureProvider::Target2D)
+        , m_format(QAbstractTextureProvider::RGBA8U)
         , m_width(1)
         , m_height(1)
         , m_depth(1)
         , m_autoMipMap(false)
-        , m_minFilter(QTexture::Nearest)
-        , m_magFilter(QTexture::Nearest)
-        , m_status(QTexture::Loading)
+        , m_minFilter(QAbstractTextureProvider::Nearest)
+        , m_magFilter(QAbstractTextureProvider::Nearest)
+        , m_status(QAbstractTextureProvider::Loading)
         , m_maximumAnisotropy(1.0f)
-        , m_comparisonFunction(QTexture::CompareLessEqual)
-        , m_comparisonMode(QTexture::CompareNone)
+        , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
+        , m_comparisonMode(QAbstractTextureProvider::CompareNone)
     {}
 
-    Q_DECLARE_PUBLIC(QTexture)
+    Q_DECLARE_PUBLIC(QAbstractTextureProvider)
 
-    QTexture::Target m_target;
-    QTexture::TextureFormat m_format;
+    QAbstractTextureProvider::Target m_target;
+    QAbstractTextureProvider::TextureFormat m_format;
     int m_width, m_height, m_depth;
     bool m_autoMipMap;
 
     QList<TexImageDataPtr> m_data;
 
-    QTexture::Filter m_minFilter, m_magFilter;
+    QAbstractTextureProvider::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction
     QTextureWrapMode m_wrapMode;
-    QTexture::Status m_status;
+    QAbstractTextureProvider::Status m_status;
     float m_maximumAnisotropy;
-    QTexture::ComparisonFunction m_comparisonFunction;
-    QTexture::ComparisonMode m_comparisonMode;
+    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
+    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 };
 
-void QTexture::copy(const QNode *ref)
+void QAbstractTextureProvider::copy(const QNode *ref)
 {
     QNode::copy(ref);
-    const QTexture *t = static_cast<const QTexture*>(ref);
+    const QAbstractTextureProvider *t = static_cast<const QAbstractTextureProvider*>(ref);
     d_func()->m_target = t->d_func()->m_target;
     d_func()->m_width = t->d_func()->m_width;
     d_func()->m_height = t->d_func()->m_height;
@@ -110,25 +110,39 @@ void QTexture::copy(const QNode *ref)
     // TO DO: Copy TexImageDataPtr
 }
 
-QTexture::QTexture(QNode *parent)
-    : QNode(*new QTexturePrivate(this), parent)
+/*!
+    \class Qt3D::QAbstractTextureProvider
+    \since 5.5
+    \brief Qt3D::QAbstractTextureProvider is a base class to be used to provide textures.
+
+    Qt3D::QAbstractTextureProvider shouldn't be used directly but rather
+    through one of its subclasses. Each subclass implements a given texture
+    target (2D, 2DArray, 3D, CubeMap ...) Each subclass provides a set of
+    functors for each layer, cube map face and mipmap level. In turn the
+    backend uses those functor to properly fill a corresponding OpenGL texture
+    with data.
+ */
+
+
+QAbstractTextureProvider::QAbstractTextureProvider(QNode *parent)
+    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
 {
 }
 
-QTexture::QTexture(Target target, QNode *parent)
-    : QNode(*new QTexturePrivate(this), parent)
+QAbstractTextureProvider::QAbstractTextureProvider(Target target, QNode *parent)
+    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
 {
     d_func()->m_target = target;
 }
 
-QTexture::QTexture(QTexture::Target target, QTexture::TextureFormat format,
+QAbstractTextureProvider::QAbstractTextureProvider(QAbstractTextureProvider::Target target, QAbstractTextureProvider::TextureFormat format,
                    int width, int height, int depth, bool mipMaps,
-                   QTexture::Filter magnificationFilter, QTexture::Filter minificationFilter,
+                   QAbstractTextureProvider::Filter magnificationFilter, QAbstractTextureProvider::Filter minificationFilter,
                    float maximumAnisotropy,
-                   QTexture::ComparisonFunction comparisonFunction,
-                   QTexture::ComparisonMode comparisonMode,
+                   QAbstractTextureProvider::ComparisonFunction comparisonFunction,
+                   QAbstractTextureProvider::ComparisonMode comparisonMode,
                    QNode *parent)
-    : QNode(*new QTexturePrivate(this), parent)
+    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
 {
     d_func()->m_target = target;
     d_func()->m_format = format;
@@ -143,106 +157,143 @@ QTexture::QTexture(QTexture::Target target, QTexture::TextureFormat format,
     d_func()->m_comparisonMode = comparisonMode;
 }
 
-QTexture::QTexture(QTexturePrivate &dd, QNode *parent)
+QAbstractTextureProvider::QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
-QTexture::~QTexture()
+QAbstractTextureProvider::~QAbstractTextureProvider()
 {
 }
 
-void QTexture::setSize(int w, int h, int d)
+/*!
+    Sets the size of the texture provider to width \a, height \a h and depth \a d.
+ */
+void QAbstractTextureProvider::setSize(int w, int h, int d)
 {
    setWidth(w);
    setHeight(h);
    setDepth(d);
 }
 
-void QTexture::setWidth(int width)
+/*!
+    Sets the width of the texture provider to \a width.
+ */
+void QAbstractTextureProvider::setWidth(int width)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_width != width) {
         d->m_width = width;
         emit widthChanged();
     }
 }
 
-void QTexture::setHeight(int height)
+/*!
+    Sets the height of the texture provider to \a height.
+ */
+void QAbstractTextureProvider::setHeight(int height)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_height != height) {
         d->m_height = height;
         emit heightChanged();
     }
 }
 
-void QTexture::setDepth(int depth)
+/*!
+    Sets the depth of the texture provider to \a depth.
+ */
+void QAbstractTextureProvider::setDepth(int depth)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_depth != depth) {
         d->m_depth = depth;
         emit depthChanged();
     }
 }
 
-int QTexture::width() const
+/*!
+    \returns the width of the texture provider.
+ */
+int QAbstractTextureProvider::width() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_width;
 }
 
-int QTexture::height() const
+/*!
+    \returns the height of the texture provider.
+ */
+int QAbstractTextureProvider::height() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_height;
 }
 
-int QTexture::depth() const
+/*!
+    \returns the depth of the texture provider.
+ */
+int QAbstractTextureProvider::depth() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_depth;
 }
 
-void QTexture::setFormat(TextureFormat format)
+/*!
+    Sets the format of the texture provider to \a format.
+ */
+void QAbstractTextureProvider::setFormat(TextureFormat format)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_format != format) {
         d->m_format = format;
         emit formatChanged();
     }
 }
 
-QTexture::TextureFormat QTexture::format() const
+/*!
+    \returns the format of the texture provider.
+ */
+QAbstractTextureProvider::TextureFormat QAbstractTextureProvider::format() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_format;
 }
 
-void QTexture::setStatus(Status status)
+/*!
+    Sets the current status of the texture provider to \a status.
+ */
+void QAbstractTextureProvider::setStatus(Status status)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (status != d->m_status) {
         d->m_status = status;
         emit statusChanged();
     }
 }
 
-QTexture::Status QTexture::status() const
+/*!
+    \returns the current status of the texture provider.
+ */
+QAbstractTextureProvider::Status QAbstractTextureProvider::status() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_status;
 }
 
-QTexture::Target QTexture::target() const
+/*!
+    \returns the target format of the texture provider.
+    \note: The target format can only be set once.
+ */
+QAbstractTextureProvider::Target QAbstractTextureProvider::target() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_target;
 }
 
-bool QTexture::setFromQImage(QImage img, int layer)
+bool QAbstractTextureProvider::setFromQImage(QImage img, int layer)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     setSize(img.width(), img.height());
 
     if ((d->m_target != Target2D) &&
@@ -260,66 +311,87 @@ bool QTexture::setFromQImage(QImage img, int layer)
     return true;
 }
 
-void QTexture::addImageData(TexImageDataPtr imgData)
+void QAbstractTextureProvider::addImageData(TexImageDataPtr imgData)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     d->m_data.append(imgData);
 }
 
-QList<TexImageDataPtr> QTexture::imageData() const
+QList<TexImageDataPtr> QAbstractTextureProvider::imageData() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_data;
 }
 
-void QTexture::setGenerateMipMaps(bool gen)
+/*!
+    Sets whether the texture provider should auto generate mipmaps.
+ */
+void QAbstractTextureProvider::setGenerateMipMaps(bool gen)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
         emit generateMipMapsChanged();
     }
 }
 
-bool QTexture::generateMipMaps() const
+/*!
+    \returns whether texture provider auto generates mipmaps.
+ */
+bool QAbstractTextureProvider::generateMipMaps() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_autoMipMap;
 }
 
-void QTexture::setMinificationFilter(Filter f)
+/*!
+    Sets the minification filter of the texture provider to \a f.
+ */
+void QAbstractTextureProvider::setMinificationFilter(Filter f)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
         emit minificationFilterChanged();
     }
 }
 
-void QTexture::setMagnificationFilter(Filter f)
+/*!
+    Sets the magnification filter of the texture provider to \a f.
+ */
+void QAbstractTextureProvider::setMagnificationFilter(Filter f)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
         emit magnificationFilterChanged();
     }
 }
 
-QTexture::Filter QTexture::minificationFilter() const
+/*!
+    \returns the minification filter of the texture provider.
+ */
+QAbstractTextureProvider::Filter QAbstractTextureProvider::minificationFilter() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_minFilter;
 }
 
-QTexture::Filter QTexture::magnificationFilter() const
+/*!
+    \returns the magnification filter of the texture provider.
+ */
+QAbstractTextureProvider::Filter QAbstractTextureProvider::magnificationFilter() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_magFilter;
 }
 
-void QTexture::setWrapMode(const QTextureWrapMode &wrapMode)
+/*!
+    Sets the wrap mode of the texture provider to \a wrapMode.
+ */
+void QAbstractTextureProvider::setWrapMode(const QTextureWrapMode &wrapMode)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_wrapMode.x() != wrapMode.x()) {
         d->m_wrapMode.setX(wrapMode.x());
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, this));
@@ -343,54 +415,75 @@ void QTexture::setWrapMode(const QTextureWrapMode &wrapMode)
     }
 }
 
-QTextureWrapMode *QTexture::wrapMode()
+/*!
+    \returns the wrap mode of the texture provider.
+ */
+QTextureWrapMode *QAbstractTextureProvider::wrapMode()
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     return &d->m_wrapMode;
 }
 
-void QTexture::setMaximumAnisotropy(float anisotropy)
+/*!
+    Sets the maximum anisotropy of the texture provider to \a anisotropy.
+ */
+void QAbstractTextureProvider::setMaximumAnisotropy(float anisotropy)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (!qFuzzyCompare(d->m_maximumAnisotropy, anisotropy)) {
         d->m_maximumAnisotropy = anisotropy;
         emit maximumAnisotropyChanged();
     }
 }
 
-float QTexture::maximumAnisotropy() const
+/*!
+    \returns the maximum anisotropy of the texture provider.
+ */
+float QAbstractTextureProvider::maximumAnisotropy() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_maximumAnisotropy;
 }
 
-void QTexture::setComparisonFunction(QTexture::ComparisonFunction function)
+/*!
+    Sets the comparison function of the texture provider to \a function.
+ */
+void QAbstractTextureProvider::setComparisonFunction(QAbstractTextureProvider::ComparisonFunction function)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_comparisonFunction != function) {
         d->m_comparisonFunction = function;
         emit comparisonFunctionChanged();
     }
 }
 
-QTexture::ComparisonFunction QTexture::comparisonFunction() const
+/*!
+    \returns the comparison function of the texture provider.
+ */
+QAbstractTextureProvider::ComparisonFunction QAbstractTextureProvider::comparisonFunction() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_comparisonFunction;
 }
 
-void QTexture::setComparisonMode(QTexture::ComparisonMode mode)
+/*!
+    Sets the comparison mode of the texture provider to \a mode.
+ */
+void QAbstractTextureProvider::setComparisonMode(QAbstractTextureProvider::ComparisonMode mode)
 {
-    Q_D(QTexture);
+    Q_D(QAbstractTextureProvider);
     if (d->m_comparisonMode != mode) {
         d->m_comparisonMode = mode;
         emit comparisonModeChanged();
     }
 }
 
-QTexture::ComparisonMode QTexture::comparisonMode() const
+/*!
+   \returns the comparison mode of the texture provider.
+ */
+QAbstractTextureProvider::ComparisonMode QAbstractTextureProvider::comparisonMode() const
 {
-    Q_D(const QTexture);
+    Q_D(const QAbstractTextureProvider);
     return d->m_comparisonMode;
 }
 
@@ -413,6 +506,14 @@ public:
     QTextureWrapMode::WrapMode m_z;
 };
 
+/*!
+    \class Qt3D::QTextureWrapMode
+    \since 5.5
+
+    \brief Qt3D::QTextureWrapMode defines the wrap mode a
+    Qt3D::QAbstractTextureProvider should apply to a texture.
+ */
+
 QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
     : QObject(*new QTextureWrapModePrivate(this), parent)
 {
@@ -421,6 +522,10 @@ QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
     d_func()->m_z = wrapMode;
 }
 
+/*!
+    Contrusts a new Qt3D::QTextureWrapMode instance with the wrap mode to apply to
+    each dimension \a x, \a y \a z of the texture and \a parent as parent.
+ */
 QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *parent)
     : QObject(*new QTextureWrapModePrivate(this), parent)
 {
@@ -429,6 +534,9 @@ QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *p
     d_func()->m_z = z;
 }
 
+/*!
+    Sets the wrap mode of the x dimension to \a x.
+ */
 void QTextureWrapMode::setX(WrapMode x)
 {
     Q_D(QTextureWrapMode);
@@ -438,12 +546,18 @@ void QTextureWrapMode::setX(WrapMode x)
     }
 }
 
+/*!
+    \returns the wrap mode of the x dimension.
+ */
 QTextureWrapMode::WrapMode QTextureWrapMode::x() const
 {
     Q_D(const QTextureWrapMode);
     return d->m_x;
 }
 
+/*!
+    Sets the wrap mode of the y dimension to \a y.
+ */
 void QTextureWrapMode::setY(WrapMode y)
 {
     Q_D(QTextureWrapMode);
@@ -453,12 +567,18 @@ void QTextureWrapMode::setY(WrapMode y)
     }
 }
 
+/*!
+    \returns the wrap mode of the y dimension.
+ */
 QTextureWrapMode::WrapMode QTextureWrapMode::y() const
 {
     Q_D(const QTextureWrapMode);
     return d->m_y;
 }
 
+/*!
+    Sets the wrap mode of the z dimension to \a z.
+ */
 void QTextureWrapMode::setZ(WrapMode z)
 {
     Q_D(QTextureWrapMode);
@@ -468,6 +588,9 @@ void QTextureWrapMode::setZ(WrapMode z)
     }
 }
 
+/*!
+    \returns the wrap mode of the y dimension.
+ */
 QTextureWrapMode::WrapMode QTextureWrapMode::z() const
 {
     Q_D(const QTextureWrapMode);

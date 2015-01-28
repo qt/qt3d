@@ -63,16 +63,16 @@ RenderTexture::RenderTexture()
     , m_height(1)
     , m_depth(1)
     , m_generateMipMaps(false)
-    , m_target(QTexture::Target2D)
-    , m_format(QTexture::RGBA8U)
-    , m_magnificationFilter(QTexture::Nearest)
-    , m_minificationFilter(QTexture::Nearest)
+    , m_target(QAbstractTextureProvider::Target2D)
+    , m_format(QAbstractTextureProvider::RGBA8U)
+    , m_magnificationFilter(QAbstractTextureProvider::Nearest)
+    , m_minificationFilter(QAbstractTextureProvider::Nearest)
     , m_wrapModeX(QTextureWrapMode::ClampToEdge)
     , m_wrapModeY(QTextureWrapMode::ClampToEdge)
     , m_wrapModeZ(QTextureWrapMode::ClampToEdge)
     , m_maximumAnisotropy(1.0f)
-    , m_comparisonFunction(QTexture::CompareLessEqual)
-    , m_comparisonMode(QTexture::CompareNone)
+    , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
+    , m_comparisonMode(QAbstractTextureProvider::CompareNone)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_lock(new QMutex())
@@ -94,7 +94,7 @@ void RenderTexture::cleanup()
 
 void RenderTexture::updateFromPeer(QNode *peer)
 {
-    QTexture *texture = static_cast<QTexture *>(peer);
+    QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
 
     QMutexLocker lock(m_lock);
     if (texture != Q_NULLPTR) {
@@ -233,13 +233,13 @@ void RenderTexture::setToGLTexture(TexImageDataPtr imgData)
 void RenderTexture::updateWrapAndFilters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
-    if (m_target != QTexture::Target1D &&
-            m_target != QTexture::Target1DArray &&
-            m_target != QTexture::TargetBuffer)
+    if (m_target != QAbstractTextureProvider::Target1D &&
+            m_target != QAbstractTextureProvider::Target1DArray &&
+            m_target != QAbstractTextureProvider::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeY));
-    if (m_target == QTexture::Target3D ||
-            m_target == QTexture::TargetCubeMap ||
-            m_target == QTexture::TargetCubeMapArray)
+    if (m_target == QAbstractTextureProvider::Target3D ||
+            m_target == QAbstractTextureProvider::TargetCubeMap ||
+            m_target == QAbstractTextureProvider::TargetCubeMapArray)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
@@ -290,12 +290,12 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             m_generateMipMaps = propertyChange->value().toBool();
             m_isDirty = (oldMipMaps != m_generateMipMaps);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
-            QTexture::Filter oldMinFilter = m_minificationFilter;
-            m_minificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
+            QAbstractTextureProvider::Filter oldMinFilter = m_minificationFilter;
+            m_minificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldMinFilter != m_minificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
-            QTexture::Filter oldMagFilter = m_magnificationFilter;
-            m_magnificationFilter = static_cast<QTexture::Filter>(propertyChange->value().toInt());
+            QAbstractTextureProvider::Filter oldMagFilter = m_magnificationFilter;
+            m_magnificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated = (oldMagFilter != m_magnificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
             QTextureWrapMode::WrapMode oldWrapModeX = m_wrapModeX;
@@ -310,24 +310,24 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
              m_filtersAndWrapUpdated = (oldWrapModeZ != m_wrapModeZ);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
-            QTexture::TextureFormat oldFormat = m_format;
-            m_format = static_cast<QTexture::TextureFormat>(propertyChange->value().toInt());
+            QAbstractTextureProvider::TextureFormat oldFormat = m_format;
+            m_format = static_cast<QAbstractTextureProvider::TextureFormat>(propertyChange->value().toInt());
             m_isDirty = (oldFormat != m_format);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
-            QTexture::Target oldTarget = m_target;
-            m_target = static_cast<QTexture::Target>(propertyChange->value().toInt());
+            QAbstractTextureProvider::Target oldTarget = m_target;
+            m_target = static_cast<QAbstractTextureProvider::Target>(propertyChange->value().toInt());
             m_isDirty = (oldTarget != m_target);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
             float oldMaximumAnisotropy = m_maximumAnisotropy;
             m_maximumAnisotropy = propertyChange->value().toFloat();
             m_filtersAndWrapUpdated = !qFuzzyCompare(oldMaximumAnisotropy, m_maximumAnisotropy);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
-            QTexture::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
-            m_comparisonFunction = propertyChange->value().value<QTexture::ComparisonFunction>();
+            QAbstractTextureProvider::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
+            m_comparisonFunction = propertyChange->value().value<QAbstractTextureProvider::ComparisonFunction>();
             m_filtersAndWrapUpdated = (oldComparisonFunction != m_comparisonFunction);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
-            QTexture::ComparisonMode oldComparisonMode = m_comparisonMode;
-            m_comparisonMode = propertyChange->value().value<QTexture::ComparisonMode>();
+            QAbstractTextureProvider::ComparisonMode oldComparisonMode = m_comparisonMode;
+            m_comparisonMode = propertyChange->value().value<QAbstractTextureProvider::ComparisonMode>();
             m_filtersAndWrapUpdated = (oldComparisonMode != m_comparisonMode);
         }
     }

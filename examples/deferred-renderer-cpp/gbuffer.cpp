@@ -44,11 +44,11 @@
 GBuffer::GBuffer(Qt3D::QNode *parent)
     : Qt3D::QRenderTarget(parent)
 {
-    const Qt3D::QTexture::TextureFormat formats[AttachmentsCount] = {
-        Qt3D::QTexture::RGBA32F,
-        Qt3D::QTexture::RGB32F,
-        Qt3D::QTexture::RGB16F,
-        Qt3D::QTexture::D32F
+    const Qt3D::QAbstractTextureProvider::TextureFormat formats[AttachmentsCount] = {
+        Qt3D::QAbstractTextureProvider::RGBA32F,
+        Qt3D::QAbstractTextureProvider::RGB32F,
+        Qt3D::QAbstractTextureProvider::RGB16F,
+        Qt3D::QAbstractTextureProvider::D32F
     };
 
     const Qt3D::QRenderAttachment::RenderAttachmentType attachmentTypes[AttachmentsCount] = {
@@ -68,14 +68,14 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     for (int i = 0; i < AttachmentsCount; i++) {
         Qt3D::QRenderAttachment *attachment = new Qt3D::QRenderAttachment(this);
 
-        m_textures[i] = new Qt3D::QTexture(Qt3D::QTexture::Target2D);
+        m_textures[i] = new Qt3D::QAbstractTextureProvider(Qt3D::QAbstractTextureProvider::Target2D);
         m_textures[i]->setFormat(formats[i]);
         m_textures[i]->setWidth(1024);
         m_textures[i]->setHeight(1024);
         m_textures[i]->setGenerateMipMaps(false);
         m_textures[i]->setWrapMode(Qt3D::QTextureWrapMode(Qt3D::QTextureWrapMode::ClampToEdge));
-        m_textures[i]->setMinificationFilter(Qt3D::QTexture::Linear);
-        m_textures[i]->setMagnificationFilter(Qt3D::QTexture::Linear);
+        m_textures[i]->setMinificationFilter(Qt3D::QAbstractTextureProvider::Linear);
+        m_textures[i]->setMagnificationFilter(Qt3D::QAbstractTextureProvider::Linear);
 
         attachment->setTexture(m_textures[i]);
         attachment->setType(attachmentTypes[i]);
@@ -85,22 +85,22 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     }
 }
 
-Qt3D::QTexture *GBuffer::colorTexture() const
+Qt3D::QAbstractTextureProvider *GBuffer::colorTexture() const
 {
     return m_textures[Color];
 }
 
-Qt3D::QTexture *GBuffer::positionTexture() const
+Qt3D::QAbstractTextureProvider *GBuffer::positionTexture() const
 {
     return m_textures[Position];
 }
 
-Qt3D::QTexture *GBuffer::normalTexture() const
+Qt3D::QAbstractTextureProvider *GBuffer::normalTexture() const
 {
     return m_textures[Normal];
 }
 
-Qt3D::QTexture *GBuffer::depthTexture() const
+Qt3D::QAbstractTextureProvider *GBuffer::depthTexture() const
 {
     return m_textures[Depth];
 }
