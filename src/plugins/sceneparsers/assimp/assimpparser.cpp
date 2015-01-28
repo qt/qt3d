@@ -593,7 +593,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
-    QAbstractTextureProvider *texture = new QAbstractTextureProvider(QAbstractTextureProvider::Target2D);
+    QAbstractTextureProvider *texture = new QTexture2D();
     TexImageDataPtr textureData(new TexImageData(0, 0));
 
     bool isCompressed = assimpTexture->mHeight == 0;
@@ -773,7 +773,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
             // Load texture if not already loaded
             bool textureLoaded = true;
             if (!m_scene->m_materialTextures.contains(fullPath)) {
-                QAbstractTextureProvider *tex = new QAbstractTextureProvider(QAbstractTextureProvider::Target2D);
+                QAbstractTextureProvider *tex = new QTexture2D();
                 QImage textureImage;
                 if (!textureImage.load(fullPath) || !textureImage.isNull()) {
                     tex->setFromQImage(textureImage);

@@ -68,7 +68,7 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     for (int i = 0; i < AttachmentsCount; i++) {
         Qt3D::QRenderAttachment *attachment = new Qt3D::QRenderAttachment(this);
 
-        m_textures[i] = new Qt3D::QAbstractTextureProvider(Qt3D::QAbstractTextureProvider::Target2D);
+        m_textures[i] = new Qt3D::QTexture2D();
         m_textures[i]->setFormat(formats[i]);
         m_textures[i]->setWidth(1024);
         m_textures[i]->setHeight(1024);

@@ -249,8 +249,6 @@ public:
         CompareNone         = 0x0000    // GL_NONE
     };
 
-    // Those will be made protected to only allow creation of a QAbstractTextureProvider through subclasses
-    explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
     ~QAbstractTextureProvider();
 
 
@@ -318,6 +316,7 @@ Q_SIGNALS:
 
 protected:
     explicit QAbstractTextureProvider(QNode *parent = 0);
+    explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
     QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);

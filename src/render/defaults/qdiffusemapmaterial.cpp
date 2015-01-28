@@ -60,7 +60,7 @@ namespace Qt3D {
 QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq)
     : QMaterialPrivate(qq)
     , m_diffuseMapEffect(new QEffect())
-    , m_diffuseTexture(new QAbstractTextureProvider(QAbstractTextureProvider::Target2D))
+    , m_diffuseTexture(new QTexture2D())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))

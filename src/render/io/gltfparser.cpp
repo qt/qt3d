@@ -792,38 +792,40 @@ void GLTFParser::processJSONImage( QString id, QJsonObject jsonObj)
 
 void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 {
-    int target = jsonObj.value(KEY_TARGET).toInt();
-    QAbstractTextureProvider* tex = new QAbstractTextureProvider(static_cast<QAbstractTextureProvider::Target>(target));
+    Q_UNUSED(id)
+    Q_UNUSED(jsonObj)
+//    int target = jsonObj.value(KEY_TARGET).toInt();
+//    QAbstractTextureProvider* tex = new QAbstractTextureProvider(static_cast<QAbstractTextureProvider::Target>(target));
 
 
-    // TODO: Choose suitable internal format - may vary on OpenGL context type
-    //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
-    //int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
+//    // TODO: Choose suitable internal format - may vary on OpenGL context type
+//    //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt();
+//    //int internalFormat = jsonObj.value(KEY_INTERNAL_FORMAT).toInt();
 
-    tex->setFormat(QAbstractTextureProvider::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
+//    tex->setFormat(QAbstractTextureProvider::RGBA8_UNorm /* static_cast<QOpenGLTexture::TextureFormat>(internalFormat)*/);
 
-    QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
-    QString source = jsonObj.value(KEY_SOURCE).toString();
-    if (!m_images.contains(source)) {
-        qCWarning(Render::Io) << "texture" << id << "references missing image" << source;
-        return;
-    }
+//    QString samplerId = jsonObj.value(KEY_SAMPLER).toString();
+//    QString source = jsonObj.value(KEY_SOURCE).toString();
+//    if (!m_images.contains(source)) {
+//        qCWarning(Render::Io) << "texture" << id << "references missing image" << source;
+//        return;
+//    }
 
-    tex->setFromQImage(m_images[source]);
+//    tex->setFromQImage(m_images[source]);
 
-    QJsonObject samplersDict(m_json.object().value(KEY_SAMPLERS).toObject());
-    if (!samplersDict.contains(samplerId)) {
-        qCWarning(Render::Io) << "texture" << id << "references unknown sampler" << samplerId;
-        return;
-    }
+//    QJsonObject samplersDict(m_json.object().value(KEY_SAMPLERS).toObject());
+//    if (!samplersDict.contains(samplerId)) {
+//        qCWarning(Render::Io) << "texture" << id << "references unknown sampler" << samplerId;
+//        return;
+//    }
 
-    QJsonObject sampler = samplersDict.value(samplerId).toObject();
+//    QJsonObject sampler = samplersDict.value(samplerId).toObject();
 
-    tex->setWrapMode(QTextureWrapMode(static_cast<QTextureWrapMode::WrapMode>(sampler.value(KEY_WRAP_S).toInt())));
-    tex->setMinificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
-    tex->setMagnificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
+//    tex->setWrapMode(QTextureWrapMode(static_cast<QTextureWrapMode::WrapMode>(sampler.value(KEY_WRAP_S).toInt())));
+//    tex->setMinificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
+//    tex->setMagnificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
 
-    m_textures[id] = tex;
+//    m_textures[id] = tex;
 }
 
 void GLTFParser::processJSONTechnique( QString id, QJsonObject jsonObj )
