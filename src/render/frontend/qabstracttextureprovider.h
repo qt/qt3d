@@ -251,12 +251,6 @@ public:
 
     // Those will be made protected to only allow creation of a QAbstractTextureProvider through subclasses
     explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
-    explicit QAbstractTextureProvider(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
-                                      bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
-                                      float maximumAnisotropy = 1.0f,
-                                      ComparisonFunction comparisonFunction = CompareLessEqual,
-                                      ComparisonMode comparisonMode = CompareNone,
-                                      QNode *parent = 0);
     ~QAbstractTextureProvider();
 
 

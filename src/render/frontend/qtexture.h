@@ -45,7 +45,7 @@
 #include <QOpenGLTexture>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/qwrapmode.h>
-#include <Qt3DRenderer/qabstracttextureprovider.h>
+#include <Qt3DRenderer/qtextureproviders.h>
 #include <Qt3DRenderer/qtextureimage.h>
 
 #endif // QT3D_QTEXTURE_H

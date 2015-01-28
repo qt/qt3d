@@ -111,28 +111,6 @@ QAbstractTextureProvider::QAbstractTextureProvider(Target target, QNode *parent)
     d_func()->m_target = target;
 }
 
-QAbstractTextureProvider::QAbstractTextureProvider(QAbstractTextureProvider::Target target, QAbstractTextureProvider::TextureFormat format,
-                   int width, int height, int depth, bool mipMaps,
-                   QAbstractTextureProvider::Filter magnificationFilter, QAbstractTextureProvider::Filter minificationFilter,
-                   float maximumAnisotropy,
-                   QAbstractTextureProvider::ComparisonFunction comparisonFunction,
-                   QAbstractTextureProvider::ComparisonMode comparisonMode,
-                   QNode *parent)
-    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
-{
-    d_func()->m_target = target;
-    d_func()->m_format = format;
-    d_func()->m_width = width;
-    d_func()->m_height = height;
-    d_func()->m_depth = depth;
-    d_func()->m_autoMipMap = mipMaps;
-    d_func()->m_magFilter = magnificationFilter;
-    d_func()->m_minFilter = minificationFilter;
-    d_func()->m_maximumAnisotropy = maximumAnisotropy;
-    d_func()->m_comparisonFunction = comparisonFunction;
-    d_func()->m_comparisonMode = comparisonMode;
-}
-
 QAbstractTextureProvider::QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

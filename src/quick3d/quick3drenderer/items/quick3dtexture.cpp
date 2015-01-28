@@ -50,61 +50,6 @@ namespace Render {
 
 namespace Quick {
 
-Quick3DTexture1D::Quick3DTexture1D(QNode *parent)
-    : QAbstractTextureProvider(Target1D, parent)
-{
-}
-
-Quick3DTexture1DArray::Quick3DTexture1DArray(QNode *parent)
-    : QAbstractTextureProvider(Target1DArray, parent)
-{
-}
-
-Quick3DTexture2D::Quick3DTexture2D(QNode *parent)
-    : QAbstractTextureProvider(Target2D, parent)
-{
-}
-
-Quick3DTexture2DArray::Quick3DTexture2DArray(QNode *parent)
-    : QAbstractTextureProvider(Target2DArray, parent)
-{
-}
-
-Quick3DTexture3D::Quick3DTexture3D(QNode *parent)
-    : QAbstractTextureProvider(Target3D, parent)
-{
-}
-
-Quick3DTextureCubeMap::Quick3DTextureCubeMap(QNode *parent)
-    : QAbstractTextureProvider(TargetCubeMap, parent)
-{
-}
-
-Quick3DTextureCubeMapArray::Quick3DTextureCubeMapArray(QNode *parent)
-    : QAbstractTextureProvider(TargetCubeMapArray, parent)
-{
-}
-
-Quick3DTexture2DMultisample::Quick3DTexture2DMultisample(QNode *parent)
-    : QAbstractTextureProvider(Target2DMultisample, parent)
-{
-}
-
-Quick3DTexture2DMultisampleArray::Quick3DTexture2DMultisampleArray(QNode *parent)
-    : QAbstractTextureProvider(Target2DMultisampleArray, parent)
-{
-}
-
-Quick3DTextureRectangle::Quick3DTextureRectangle(QNode *parent)
-    : QAbstractTextureProvider(TargetRectangle, parent)
-{
-}
-
-Quick3DTextureBuffer::Quick3DTextureBuffer(QNode *parent)
-    : QAbstractTextureProvider(TargetBuffer, parent)
-{
-}
-
 // TO DO: This needs to be reworked to handle more than just 2D images
 Quick3DTexture2DExtension::Quick3DTexture2DExtension(QObject *parent)
     : QObject(parent)
@@ -262,7 +207,9 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractText
     if (faceUrl.isLocalFile() || faceUrl.scheme() == QStringLiteral("qrc")) {
         QString source = faceUrl.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
         QImage img;
-        parentTexture()->setStatus(QAbstractTextureProvider::Loading);
+        // Status will be set by backend
+
+//        parentTexture()->setStatus(QAbstractTextureProvider::Loading);
         if (img.load(source)) {
             TexImageDataPtr dataPtr(new TexImageData(0, 0));
 
@@ -278,14 +225,14 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractText
                 parentTexture()->setFormat(format);
             dataPtr->setImage(img);
             parentTexture()->addImageData(dataPtr);
-            parentTexture()->setStatus(QAbstractTextureProvider::Loaded);
+//            parentTexture()->setStatus(QAbstractTextureProvider::Loaded);
         }
         else {
             qWarning() << "Failed to load image : " << source;
-            parentTexture()->setStatus(QAbstractTextureProvider::Error);
+//            parentTexture()->setStatus(QAbstractTextureProvider::Error);
         }
     } else {
-        parentTexture()->setStatus(QAbstractTextureProvider::Error);
+//        parentTexture()->setStatus(QAbstractTextureProvider::Error);
         qWarning() << "implement loading from remote URLs";
     }
 }

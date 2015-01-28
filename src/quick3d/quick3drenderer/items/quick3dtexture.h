@@ -56,85 +56,6 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1D : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture1D(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture1DArray : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture1DArray(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2D : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture2D(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DArray : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture2DArray(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture3D : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture3D(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMap : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTextureCubeMap(QNode *parent = 0);
-
-    friend class Quick3DTextureCubeMapExtension;
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureCubeMapArray : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTextureCubeMapArray(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisample : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture2DMultisample(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DMultisampleArray : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTexture2DMultisampleArray(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureRectangle : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTextureRectangle(QNode *parent = 0);
-};
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureBuffer : public QAbstractTextureProvider
-{
-    Q_OBJECT
-public:
-    explicit Quick3DTextureBuffer(QNode *parent = 0);
-};
-
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DExtension : public QObject
 {
     Q_OBJECT
@@ -201,7 +122,7 @@ private:
     QUrl m_negativeZ;
     QUrl m_source;
 
-    inline Quick3DTextureCubeMap *parentTexture() { return qobject_cast<Quick3DTextureCubeMap *>(parent()); }
+    inline QTextureCubeMap *parentTexture() { return qobject_cast<QTextureCubeMap *>(parent()); }
     void loadFace(const QUrl &faceUrl, QAbstractTextureProvider::CubeMapFace face);
 };
 
