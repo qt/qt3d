@@ -121,6 +121,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type, QRend
     , m_surface(Q_NULLPTR)
     , m_time(0)
     , m_initialized(false)
+    , m_shuttingDown(false)
 {
     initResources();
     m_aspectType = QAbstractAspect::AspectRenderer;
@@ -227,6 +228,13 @@ void QRenderAspect::renderSynchronous()
     d->m_renderer->doRender(1);
 }
 
+void QRenderAspect::renderShutdown()
+{
+    Q_D(QRenderAspect);
+    d->m_shuttingDown = true;
+    d->m_renderer->doRender(); // Consume the remaining frames
+}
+
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     Q_D(QRenderAspect);
@@ -236,7 +244,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != Q_NULLPTR) {
+    if (d->m_renderer != Q_NULLPTR && !d->m_shuttingDown) {
         d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));

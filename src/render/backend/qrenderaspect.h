@@ -71,6 +71,7 @@ public:
 
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
+    void renderShutdown();
 
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
