@@ -43,7 +43,7 @@
 #define GBUFFER_H
 
 #include <Qt3DRenderer/QRenderTarget>
-#include <Qt3DRenderer/QTexture>
+#include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/QRenderAttachment>
 
 class GBuffer : public Qt3D::QRenderTarget

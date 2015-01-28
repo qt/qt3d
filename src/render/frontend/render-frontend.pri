@@ -67,7 +67,10 @@ HEADERS += \
     $$PWD/qshaderdata.h \
     $$PWD/qshaderdata_p.h \
     $$PWD/qpolygonoffset.h \
-    $$PWD/qcolormask.h
+    $$PWD/qcolormask.h \
+    $$PWD/qabstracttextureprovider.h \
+    $$PWD/qabstracttextureprovider_p.h \
+    $$PWD/qwrapmode.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -112,4 +115,6 @@ SOURCES += \
     $$PWD/qparametermapping.cpp \
     $$PWD/qshaderdata.cpp \
     $$PWD/qpolygonoffset.cpp \
-    $$PWD/qcolormask.cpp
+    $$PWD/qcolormask.cpp \
+    $$PWD/qabstracttextureprovider.cpp \
+    $$PWD/qwrapmode.cpp

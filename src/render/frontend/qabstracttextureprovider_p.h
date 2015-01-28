@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,63 +39,44 @@
 **
 ****************************************************************************/
 
-#ifndef BARREL_H
-#define BARREL_H
+#ifndef QT3D_QABSTRACTTEXTUREPROVIDER_P_H
+#define QT3D_QABSTRACTTEXTUREPROVIDER_P_H
 
-#include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
-#include <Qt3DRenderer/qtexture.h>
-#include "renderableentity.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRenderer/qabstracttextureprovider.h>
+#include <Qt3DRenderer/qwrapmode.h>
 
-class Barrel : public RenderableEntity
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QAbstractTextureProviderPrivate : public QNodePrivate
 {
-public:
-    Barrel(Qt3D::QNode *parent = 0);
-    ~Barrel();
+public :
+    QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq);
 
-    enum DiffuseColor {
-        Red = 0,
-        Blue,
-        Green,
-        RustDiffuse,
-        StainlessSteelDiffuse
-    };
+    Q_DECLARE_PUBLIC(QAbstractTextureProvider)
 
-    enum SpecularColor {
-        RustSpecular = 0,
-        StainlessSteelSpecular,
-        None
-    };
+    QAbstractTextureProvider::Target m_target;
+    QAbstractTextureProvider::TextureFormat m_format;
+    int m_width, m_height, m_depth;
+    bool m_autoMipMap;
 
-    enum Bumps {
-        NoBumps = 0,
-        SoftBumps,
-        MiddleBumps,
-        HardBumps
-    };
+    QList<TexImageDataPtr> m_data;
 
-    void setDiffuse(DiffuseColor diffuse);
-    void setSpecular(SpecularColor specular);
-    void setBumps(Bumps bumps);
-    void setShininess(float shininess);
-
-    DiffuseColor diffuse() const;
-    SpecularColor specular() const;
-    Bumps bumps() const;
-    float shininess() const;
-
-private:
-    Bumps m_bumps;
-    DiffuseColor m_diffuseColor;
-    SpecularColor m_specularColor;
-    Qt3D::QNormalDiffuseSpecularMapMaterial *m_material;
-    Qt3D::QAbstractTextureProvider *m_diffuseTexture;
-    Qt3D::QAbstractTextureProvider *m_normalTexture;
-    Qt3D::QAbstractTextureProvider *m_specularTexture;
-
-    void setNormalTextureSource();
-    void setDiffuseTextureSource();
-    void setSpecularTextureSource();
-
+    QAbstractTextureProvider::Filter m_minFilter, m_magFilter;
+    // FIXME, store per direction
+    QTextureWrapMode m_wrapMode;
+    QAbstractTextureProvider::Status m_status;
+    float m_maximumAnisotropy;
+    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
+    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 };
 
-#endif // BARREL_H
+} // QT3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QABSTRACTTEXTUREPROVIDER_P_H
+

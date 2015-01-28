@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,63 +39,59 @@
 **
 ****************************************************************************/
 
-#ifndef BARREL_H
-#define BARREL_H
+#ifndef QT3D_QWRAPMODE_H
+#define QT3D_QWRAPMODE_H
 
-#include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
-#include <Qt3DRenderer/qtexture.h>
-#include "renderableentity.h"
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QObject>
 
-class Barrel : public RenderableEntity
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QTextureWrapModePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
 {
+    Q_OBJECT
+    Q_ENUMS(WrapMode)
+    Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(WrapMode y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(WrapMode z READ z WRITE setZ NOTIFY zChanged)
+
 public:
-    Barrel(Qt3D::QNode *parent = 0);
-    ~Barrel();
-
-    enum DiffuseColor {
-        Red = 0,
-        Blue,
-        Green,
-        RustDiffuse,
-        StainlessSteelDiffuse
+    enum WrapMode {
+        Repeat         = 0x2901, // GL_REPEAT
+        MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
+        ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
+        ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
 
-    enum SpecularColor {
-        RustSpecular = 0,
-        StainlessSteelSpecular,
-        None
-    };
+    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
+    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);
 
-    enum Bumps {
-        NoBumps = 0,
-        SoftBumps,
-        MiddleBumps,
-        HardBumps
-    };
+    void setX(WrapMode x);
+    WrapMode x() const;
 
-    void setDiffuse(DiffuseColor diffuse);
-    void setSpecular(SpecularColor specular);
-    void setBumps(Bumps bumps);
-    void setShininess(float shininess);
+    void setY(WrapMode y);
+    WrapMode y() const;
 
-    DiffuseColor diffuse() const;
-    SpecularColor specular() const;
-    Bumps bumps() const;
-    float shininess() const;
+    void setZ(WrapMode z);
+    WrapMode z() const;
+
+Q_SIGNALS:
+    void xChanged();
+    void yChanged();
+    void zChanged();
 
 private:
-    Bumps m_bumps;
-    DiffuseColor m_diffuseColor;
-    SpecularColor m_specularColor;
-    Qt3D::QNormalDiffuseSpecularMapMaterial *m_material;
-    Qt3D::QAbstractTextureProvider *m_diffuseTexture;
-    Qt3D::QAbstractTextureProvider *m_normalTexture;
-    Qt3D::QAbstractTextureProvider *m_specularTexture;
-
-    void setNormalTextureSource();
-    void setDiffuseTextureSource();
-    void setSpecularTextureSource();
-
+    Q_DECLARE_PRIVATE(QTextureWrapMode)
 };
 
-#endif // BARREL_H
+} // Qt3D
+
+QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
+
+#endif // QT3D_QWRAPMODE_H

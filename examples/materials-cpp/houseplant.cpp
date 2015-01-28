@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #include "houseplant.h"
-#include <Qt3DRenderer/QTexture>
+#include <Qt3DRenderer/qtexture.h>
 
 const char *potNames[] = {
     "cross",
