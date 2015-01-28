@@ -56,14 +56,14 @@ namespace Qt3D {
     \inmodule Qt3DCore
     \since 5.5
 
-    \brief Act as a messages router between observables and observers.
+    \brief Acts as a message router between observables and observers.
 
     Observables can be of two types: QNode observables and QObservableInterfaces.
     QNode notifications are sent from the frontend QNode and delivered to the backend observers.
     QObservableInterface notifications are sent from backend nodes to backend observers and/or to the
     registered QPostman, which in turn delivers the notifications to the target frontend QNode.
 
-    QNode observables are registered automatically. However QObservableInterface object have to be registered manually
+    QNode observables are registered automatically. However, QObservableInterface object have to be registered manually
     by providing the QNodeId of the corresponding frontend QNode.
 
     Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode NodeUuid.

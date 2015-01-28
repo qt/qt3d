@@ -90,7 +90,7 @@
     \inmodule Qt3DCore
     \since 5.5
 
-    \brief Provided locking access to a resource through the use of a QReadWriteLock.
+    \brief Provides locking access to a resource through the use of a QReadWriteLock.
 
     This policy should be used in a QResourceManager when multiple threads may access the manager for
     read and write operations at the same time.

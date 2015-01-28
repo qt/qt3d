@@ -42,5 +42,20 @@
 
     \section1 Getting Started
 
+    To use Qt3D classes, add this directive into the C++ files:
 
+    \code
+       #include <Qt3DRenderer>
+    \endcode
+
+    To link against the corresponding C++ libraries, add the following to your qmake project file:
+
+    \code
+       QT += 3drenderer
+    \endcode
+
+    \section1 Reference
+    \list
+    \li \l {Qt3D Render C++ Classes}
+    \endlist
 */

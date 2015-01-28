@@ -70,7 +70,7 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 /*!
     \class Qt3D::QAbstractAspect
     \inmodule Qt3DCore
-    \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior
+    \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
 QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
     : QObject(*new QAbstractAspectPrivate(this), parent)

@@ -36,7 +36,7 @@
 
 /*!
     \module Qt3DRender
-    \title Qt3D Render
+    \title Qt3D Render C++ Classes
     \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
 
     \ingroup modules

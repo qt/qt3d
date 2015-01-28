@@ -127,7 +127,7 @@
     If you wish to pass a C++ array to a function and that function is expensive to call,
     then you may wish to use the data() method so that you only need to call your
     expensive function once. If your function is cheap and you have a large circular
-    buffer (so that linearizing it is expensive) then you may wish to use dataOne() and
+    buffer (so that linearizing it is expensive), then you may wish to use dataOne() and
     dataTwo() and call your function twice.
 
     Here is a simple example that shows the semantics of how QCircularBuffer operates:
@@ -153,10 +153,10 @@
     remove() functions can be slow (\l{linear time}) for large circular buffers,
     because they require moving many items in the circular buffer by one or more positions
     in memory. The implementation does however take care to minimize the number of
-    items that need to be moved. In the extreme worst case for insert() and remove()
+    items that need to be moved. In the extreme worst case for insert() and remove(),
     half of the items will be moved in memory. QCircularBuffer also takes care
     to move items around using the best method available for the type being stored.
-    If your type is movable then it is best to tell Qt about this by using the
+    If your type is movable, then it is best to tell Qt about this by using the
     Q_DECLARE_TYPEINFO() macro. In such cases memory moves are performed using
     memmove() rather than calling the copy constructor for each item. If you want
     a container class that always provides fast insertion/removal in the middle,
@@ -184,18 +184,16 @@
     support \c operator==().  These requirements are documented on a
     per-function basis.
 
-    Like the other container classes, QCircularBuffer provides \l{Java-style
-    iterators} (QCircularBufferIterator and QMutableCircularBufferIterator) and
-    \l{STL-style iterators} (Qt3D::QCircularBuffer::const_iterator and
-    Qt3D::QCircularBuffer::iterator). In practice, these are rarely used, because
-    you can use indexes into the QCircularBuffer.
+    QCircularBuffer provides \l{STL-Style Iterators} (\l {Qt3D::QCircularBuffer::}{const_iterator)
+    and \l {Qt3D::QCircularBuffer::}{iterator}). In practice, these are rarely used,
+    because you can use indexes into the QCircularBuffer.
 
-    QCircularBuffer does \e not support inserting, prepending, appending or replacing
-    with references to its own values. Doing so will cause your application to
-    abort with an error message.
+    QCircularBuffer does \e not support inserting, prepending, appending, or
+    replacing with references to its own values. Doing so will cause your
+    application to abort with an error message.
 
     \sa Qt3D::QCircularBuffer::iterator, Qt3D::QCircularBuffer::const_iterator,
-    QCircularBufferIterator, QMutableCircularBufferIterator, QVector, QList, QLinkedList
+    QVector, QList, QLinkedList
 */
 
 /*! \fn Qt3D::QCircularBuffer::QCircularBuffer()
@@ -258,7 +256,7 @@
 
 /*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::begin()
 
-    Returns an \l{STL-style iterator} pointing to the first item in
+    Returns an \l{STL-Style iterators}{STL-style iterator} pointing to the first item in
     the circular buffer.
 
     \sa constBegin(), end()
@@ -271,7 +269,7 @@
 
 /*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::constBegin() const
 
-    Returns a const \l{STL-style iterator} pointing to the first item in
+    Returns a const \l{STL-Style Iterators}{STL-style iterator} pointing to the first item in
     the circular buffer.
 
     \sa begin(), constEnd()
@@ -279,7 +277,7 @@
 
 /*! \fn Qt3D::QCircularBuffer::iterator Qt3D::QCircularBuffer::end()
 
-    Returns an \l{STL-style iterator} pointing to the imaginary item
+    Returns an \l {STL-Style Iterators} {STL-style iterator} pointing to the imaginary item
     after the last item in the circular buffer.
 
     \sa begin(), constEnd()
@@ -292,7 +290,7 @@
 
 /*! \fn Qt3D::QCircularBuffer::const_iterator Qt3D::QCircularBuffer::constEnd() const
 
-    Returns a const \l{STL-style iterator} pointing to the imaginary item
+    Returns a const \l{STL-Style Iterators} {STL-style iterator} pointing to the imaginary item
     after the last item in the circular buffer.
 
     \sa constBegin(), end()
@@ -1189,11 +1187,11 @@
     \inmodule Qt3DCore
     \brief The Qt3D::QCircularBuffer::iterator class provides an STL-style non-const iterator for QCircularBuffer.
 
-    QCircularBuffer provides both \l{STL-style iterators} and \l{Java-style
-    iterators}.
+    QCircularBuffer provides both \l{STL-Style Iterators} and \l{Java-Style
+    Iterators}.
 
     \sa Qt3D::QCircularBuffer::begin(), Qt3D::QCircularBuffer::end(),
-    Qt3D::QCircularBuffer::const_iterator, QMutableCircularBufferIterator
+    Qt3D::QCircularBuffer::const_iterator
 */
 
 /*! \typedef Qt3D::QCircularBuffer::iterator::iterator_category
@@ -1393,11 +1391,11 @@
     \inmodule Qt3DCore
     \brief The Qt3D::QCircularBuffer::const_iterator class provides an STL-style const iterator for QCircularBuffer.
 
-    QCircularBuffer provides both \l{STL-style iterators} and \l{Java-style
-    iterators}.
+    QCircularBuffer provides both \l{STL-Style Iterators} and \l{Java-Style
+    Iterators}.
 
     \sa Qt3D::QCircularBuffer::constBegin(), Qt3D::QCircularBuffer::constEnd(),
-    Qt3D::QCircularBuffer::iterator, QCircularBufferIterator
+    Qt3D::QCircularBuffer::iterator
 */
 
 /*! \typedef Qt3D::QCircularBuffer::const_iterator::iterator_category

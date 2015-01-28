@@ -37,7 +37,7 @@
 /*!
     \class Qt3D::QFrameAllocator
     \inmodule Qt3DCore
-    \brief Provides a pool of memory chuncks to be used to allocate objects on a per frame basis.
+    \brief Provides a pool of memory chunks to be used to allocate objects on a per frame basis.
 
     The memory can be recycled by following frames by calling clear which won't deallocate any memory.
 */
@@ -193,7 +193,7 @@ void QFixedFrameAllocator::release()
     m_lastFreedChunck = Q_NULLPTR;
 }
 
-// Allows to reuse chuncks without having to reinitialize and reallocate them
+// Allows to reuse chunks without having to reinitialize and reallocate them
 void QFixedFrameAllocator::clear()
 {
     for (int i = m_chunks.size() - 1; i >= 0; i--)
