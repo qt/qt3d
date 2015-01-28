@@ -46,50 +46,14 @@
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QAbstractTextureProviderPrivate;
-class QTextureWrapModePrivate;
-
-class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
-{
-    Q_OBJECT
-    Q_ENUMS(WrapMode)
-    Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
-    Q_PROPERTY(WrapMode y READ y WRITE setY NOTIFY yChanged)
-    Q_PROPERTY(WrapMode z READ z WRITE setZ NOTIFY zChanged)
-
-public:
-    enum WrapMode {
-        Repeat         = 0x2901, // GL_REPEAT
-        MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
-        ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
-        ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
-    };
-
-    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
-    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);
-
-    void setX(WrapMode x);
-    WrapMode x() const;
-
-    void setY(WrapMode y);
-    WrapMode y() const;
-
-    void setZ(WrapMode z);
-    WrapMode z() const;
-
-Q_SIGNALS:
-    void xChanged();
-    void yChanged();
-    void zChanged();
-
-private:
-    Q_DECLARE_PRIVATE(QTextureWrapMode)
-};
+class QTextureWrapMode;
 
 class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
 {
@@ -286,13 +250,14 @@ public:
         CompareNone         = 0x0000    // GL_NONE
     };
 
+    // Those will be made protected to only allow creation of a QAbstractTextureProvider through subclasses
     explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
     explicit QAbstractTextureProvider(Target target, TextureFormat format, int width, int height = 1, int depth = 1,
-                      bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
-                      float maximumAnisotropy = 1.0f,
-                      ComparisonFunction comparisonFunction = CompareLessEqual,
-                      ComparisonMode comparisonMode = CompareNone,
-                      QNode *parent = 0);
+                                      bool mipMaps = false, Filter magnificationFilter = Nearest, Filter minificationFilter = Nearest,
+                                      float maximumAnisotropy = 1.0f,
+                                      ComparisonFunction comparisonFunction = CompareLessEqual,
+                                      ComparisonMode comparisonMode = CompareNone,
+                                      QNode *parent = 0);
     ~QAbstractTextureProvider();
 
 
@@ -371,13 +336,131 @@ private:
     QT3D_CLONEABLE(QAbstractTextureProvider)
 };
 
+class QTextureWrapModePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
+{
+    Q_OBJECT
+    Q_ENUMS(WrapMode)
+    Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
+    Q_PROPERTY(WrapMode y READ y WRITE setY NOTIFY yChanged)
+    Q_PROPERTY(WrapMode z READ z WRITE setZ NOTIFY zChanged)
+
+public:
+    enum WrapMode {
+        Repeat         = 0x2901, // GL_REPEAT
+        MirroredRepeat = 0x8370, // GL_MIRRORED_REPEAT
+        ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
+        ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
+    };
+
+    explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
+    explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);
+
+    void setX(WrapMode x);
+    WrapMode x() const;
+
+    void setY(WrapMode y);
+    WrapMode y() const;
+
+    void setZ(WrapMode z);
+    WrapMode z() const;
+
+Q_SIGNALS:
+    void xChanged();
+    void yChanged();
+    void zChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QTextureWrapMode)
+};
+
+
+// TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
+// We might also get rid of the layer, face, mipmap level from
+// TexImageDataPtr and store that in the functor directly
+// or use the QTextureImage instead
+class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor
+{
+public:
+    virtual ~QTextureDataFunctor() {}
+    virtual TexImageDataPtr operator()() = 0;
+    virtual bool operator ==(const QTextureDataFunctor &other) const = 0;
+};
+
+typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
+
+class QAbstractTextureImagePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public QNode
+{
+    Q_OBJECT
+    Q_PROPERTY(int mipmapLevel READ mipmapLevel WRITE setMipmapLevel NOTIFY mipmapLevelChanged)
+    Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
+    Q_PROPERTY(Qt3D::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
+public:
+    explicit QAbstractTextureImage(QNode *parent = 0);
+    virtual ~QAbstractTextureImage();
+
+    int mipmapLevel() const;
+    int layer() const;
+    QAbstractTextureProvider::CubeMapFace cubeMapFace() const;
+
+    void setMipmapLevel(int level);
+    void setLayer(int layer);
+    void setCubeMapFace(QAbstractTextureProvider::CubeMapFace face);
+
+    virtual QTextureDataFunctorPtr dataFunctor() const = 0;
+
+Q_SIGNALS:
+    void mipmapLevelChanged();
+    void layerChanged();
+    void cubeMapFaceChanged();
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractTextureImage)
+};
+
+class QTextureImagePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
+{
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+
+public:
+    explicit QTextureImage(QNode *parent = 0);
+    ~QTextureImage();
+
+    QUrl source() const;
+    void setSource(const QUrl &source);
+
+    QTextureDataFunctorPtr dataFunctor() const Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void sourceChanged();
+
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QTextureImage)
+    QT3D_CLONEABLE(QTextureImage)
+};
+
 } // namespace Qt3D
 
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider*)
 Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
+Q_DECLARE_METATYPE(Qt3D::QTextureImage*)
 Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonFunction)
 Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonMode)
+Q_DECLARE_METATYPE(Qt3D::QTextureDataFunctorPtr)
 
 #endif // QT3D_QTEXTURE_H
