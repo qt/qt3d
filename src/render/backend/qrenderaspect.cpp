@@ -91,6 +91,7 @@
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
 #include <Qt3DRenderer/private/framecleanupjob_p.h>
+#include <Qt3DRenderer/private/rendertextureimage_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -214,6 +215,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
+    registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTextureImage, Render::TextureImageManager>(d->m_renderer->textureImageManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
