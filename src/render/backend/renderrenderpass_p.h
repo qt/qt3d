@@ -62,20 +62,23 @@ namespace Render {
 
 class RenderPassManager;
 
-class RenderRenderPass : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderRenderPass : public QBackendNode
 {
 public:
     RenderRenderPass();
     ~RenderRenderPass();
+
     void cleanup();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     QNodeId shaderProgram() const;
     QList<QParameterMapping *> bindings() const;
     QList<QNodeId> annotations() const;
     QList<QRenderState *> renderStates() const;
 
+private:
     void appendAnnotation(const QNodeId &criterionId);
     void removeAnnotation(const QNodeId &criterionId);
 
@@ -85,7 +88,6 @@ public:
     void appendRenderState(QRenderState *renderState);
     void removeRenderState(const QNodeId &renderStateId);
 
-private:
     QNodeId m_shaderUuid;
     QHash<QNodeId, QParameterMapping *> m_bindings;
     QHash<QNodeId, QRenderState *> m_renderStates;
