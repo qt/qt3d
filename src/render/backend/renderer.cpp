@@ -155,20 +155,24 @@ Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
         m_renderThread->waitForStart();
     }
 
-    buildDefaultTechnique();
-    buildDefaultMaterial();
     loadSceneParsers();
 }
 
 void Renderer::buildDefaultTechnique()
 {
+    Q_ASSERT(m_graphicsContext);
+    Q_ASSERT(m_graphicsContext->openGLContext());
+
     // TODO: Either use public API only or just go direct to the private backend API here
     m_defaultTechnique = new QTechnique;
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     QShaderProgram* defaultShader = new QShaderProgram;
-    defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.vert"))));
-    defaultShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/diffuse.frag"))));
+    const bool isES = m_graphicsContext->openGLContext()->isOpenGLES();
+    const QString vertexFileName = isES ? QStringLiteral("qrc:/shaders/es2/diffuse.vert") : QStringLiteral("qrc:/shaders/diffuse.vert");
+    const QString fragmentFileName = isES ? QStringLiteral("qrc:/shaders/es2/diffuse.frag") : QStringLiteral("qrc:/shaders/diffuse.frag");
+    defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(vertexFileName)));
+    defaultShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(fragmentFileName)));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
 
     QRenderPass* basicPass = new QRenderPass;
@@ -424,6 +428,9 @@ void Renderer::setSceneGraphRoot(RenderEntity *sgRoot)
         qCWarning(Backend) << "Failed to build render scene";
     m_renderSceneRoot->dump();
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
+
+    buildDefaultTechnique();
+    buildDefaultMaterial();
 
     // If that weren't for those lines, the renderer might not event need
     // to know about the renderer aspect
