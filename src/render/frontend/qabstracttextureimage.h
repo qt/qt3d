@@ -82,6 +82,7 @@ public:
     void setLayer(int layer);
     void setCubeMapFace(QAbstractTextureProvider::CubeMapFace face);
 
+    void update();
     virtual QTextureDataFunctorPtr dataFunctor() const = 0;
 
 Q_SIGNALS:

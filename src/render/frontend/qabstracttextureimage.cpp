@@ -41,6 +41,7 @@
 
 #include "qabstracttextureimage.h"
 #include "qabstracttextureimage_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -137,6 +138,20 @@ void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace
     if (face != d->m_face) {
         d->m_face = face;
         emit cubeMapFaceChanged();
+    }
+}
+
+/*!
+    Triggers an update of the data functor that is sent to the backend
+ */
+void QAbstractTextureImage::update()
+{
+    Q_D(QAbstractTextureImage);
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+        change->setPropertyName(QByteArrayLiteral("dataFunctor"));
+        change->setValue(QVariant::fromValue(dataFunctor()));
+        d->notifyObservers(change);
     }
 }
 

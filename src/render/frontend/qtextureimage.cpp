@@ -115,6 +115,7 @@ QUrl QTextureImage::source() const
 
 /*!
     Sets the source url of the texture image to \a source.
+    \note: this triggers a call to update()
  */
 void QTextureImage::setSource(const QUrl &source)
 {
@@ -122,6 +123,7 @@ void QTextureImage::setSource(const QUrl &source)
     if (source != d->m_source) {
         d->m_source = source;
         emit sourceChanged();
+        update();
     }
 }
 
