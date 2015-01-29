@@ -50,7 +50,8 @@ HEADERS += \
     $$PWD/renderparameter_p.h \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/rendershaderdata_p.h \
-    $$PWD/renderparametermapping_p.h
+    $$PWD/renderparametermapping_p.h \
+    $$PWD/rendertextureimage_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -91,4 +92,5 @@ SOURCES += \
     $$PWD/renderparameter.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/rendershaderdata.cpp \
-    $$PWD/renderparametermapping.cpp
+    $$PWD/renderparametermapping.cpp \
+    $$PWD/rendertextureimage.cpp
