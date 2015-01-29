@@ -4,5 +4,6 @@ contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
         renderentity \
         renderqueues \
+        renderrenderpass \
         qgraphicsutils
 }
