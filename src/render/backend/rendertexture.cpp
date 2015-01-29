@@ -82,14 +82,31 @@ RenderTexture::RenderTexture()
 
 RenderTexture::~RenderTexture()
 {
-    cleanup();
+    if (m_lock != Q_NULLPTR)
+        delete m_lock;
+    m_lock = Q_NULLPTR;
 }
 
 void RenderTexture::cleanup()
 {
-    if (m_lock != Q_NULLPTR)
-        delete m_lock;
-    m_lock = Q_NULLPTR;
+    m_gl = Q_NULLPTR;
+    m_width = 1;
+    m_height = 1;
+    m_depth = 1;
+    m_generateMipMaps = false;
+    m_target = QAbstractTextureProvider::Target2D;
+    m_format = QAbstractTextureProvider::RGBA8U;
+    m_magnificationFilter = QAbstractTextureProvider::Nearest;
+    m_minificationFilter = QAbstractTextureProvider::Nearest;
+    m_wrapModeX = QTextureWrapMode::ClampToEdge;
+    m_wrapModeY = QTextureWrapMode::ClampToEdge;
+    m_wrapModeZ = QTextureWrapMode::ClampToEdge;
+    m_maximumAnisotropy = 1.0f;
+    m_comparisonFunction = QAbstractTextureProvider::CompareLessEqual;
+    m_comparisonMode = QAbstractTextureProvider::CompareNone;
+    m_isDirty = false;
+    m_filtersAndWrapUpdated = false;
+    m_textureImages.clear();
 }
 
 void RenderTexture::updateFromPeer(QNode *peer)
@@ -113,9 +130,15 @@ void RenderTexture::updateFromPeer(QNode *peer)
         m_maximumAnisotropy = texture->maximumAnisotropy();
         m_comparisonFunction = texture->comparisonFunction();
         m_comparisonMode = texture->comparisonMode();
-        // See where it is best to handle source and loading
+
+        // TO DO: Remove TexImageDataPtr list
         Q_FOREACH (TexImageDataPtr imgData, texture->imageData())
             m_imageData.append(imgData);
+
+        // TO DO: Maybe switch to Handles directly, that will require to modify the
+        // backend functor on the other hand.
+        Q_FOREACH (QAbstractTextureImage *textureImage, texture->textureImages())
+            m_textureImages.append(textureImage->id());
     }
 }
 
@@ -266,13 +289,12 @@ bool RenderTexture::isTextureReset() const
 void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
 {
     // The QOpenGLTexture has to be manipulated from the RenderThread only
-    if (e->type() == NodeUpdated) {
-
-        // We lock here so that we're sure the texture cannot be rebuilt while we are
-        // modifying one of its properties
-        QMutexLocker lock(m_lock);
-
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    QMutexLocker lock(m_lock);
+    // We lock here so that we're sure the texture cannot be rebuilt while we are
+    // modifying one of its properties
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    switch (e->type()) {
+    case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("width")) {
             int oldWidth = m_width;
             m_width = propertyChange->value().toInt();
@@ -308,7 +330,7 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
             QTextureWrapMode::WrapMode oldWrapModeZ = m_wrapModeZ;
             m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
-             m_filtersAndWrapUpdated = (oldWrapModeZ != m_wrapModeZ);
+            m_filtersAndWrapUpdated = (oldWrapModeZ != m_wrapModeZ);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
             QAbstractTextureProvider::TextureFormat oldFormat = m_format;
             m_format = static_cast<QAbstractTextureProvider::TextureFormat>(propertyChange->value().toInt());
@@ -330,6 +352,24 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             m_comparisonMode = propertyChange->value().value<QAbstractTextureProvider::ComparisonMode>();
             m_filtersAndWrapUpdated = (oldComparisonMode != m_comparisonMode);
         }
+    }
+        break;
+
+    case NodeAdded: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage"))
+            m_textureImages.append(propertyChange->value().value<QNodeId>());
+    }
+        break;
+
+    case NodeRemoved: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("textureImage"))
+            m_textureImages.removeOne(propertyChange->value().value<QNodeId>());
+    }
+        break;
+
+    default:
+        break;
+
     }
 }
 

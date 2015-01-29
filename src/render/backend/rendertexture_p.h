@@ -47,6 +47,7 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,6 +101,7 @@ private:
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 
     QList<TexImageDataPtr> m_imageData;
+    QList<QNodeId> m_textureImages;
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
     QMutex *m_lock;
