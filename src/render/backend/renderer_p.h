@@ -125,6 +125,7 @@ class SortCriterionManager;
 class ParameterManager;
 class ShaderDataManager;
 class UBOManager;
+class TextureImageManager;
 
 class Renderer
 {
@@ -178,6 +179,7 @@ public:
     inline ParameterManager *parameterManager() const { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const { return m_shaderDataManager; }
     inline UBOManager *uboManager() const { return m_uboManager; }
+    inline TextureImageManager *textureImageManager() const { return m_textureImageManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -260,6 +262,7 @@ private:
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
     UBOManager *m_uboManager;
+    TextureImageManager *m_textureImageManager;
 
     QTimer *m_frameTimer;
 
