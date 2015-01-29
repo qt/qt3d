@@ -60,6 +60,9 @@ class QAbstractTextureProvider;
 namespace Render {
 
 class TextureManager;
+class TextureImageManager;
+
+typedef uint TextureDNA;
 
 class RenderTexture : public QBackendNode
 {
@@ -77,6 +80,10 @@ public:
     bool isTextureReset() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    TextureDNA dna() const;
+
+    void setTextureManager(TextureManager *manager);
+    void setTextureImageManager(TextureImageManager *manager);
 
 private:
     QOpenGLTexture *m_gl;
@@ -101,10 +108,30 @@ private:
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 
     QList<TexImageDataPtr> m_imageData;
-    QList<QNodeId> m_textureImages;
+    QList<HTextureImage> m_textureImages;
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
     QMutex *m_lock;
+    TextureDNA m_textureDNA;
+    TextureManager *m_textureManager;
+    TextureImageManager *m_textureImageManager;
+
+    void updateDNA();
+};
+
+class RenderTextureFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderTextureFunctor(TextureManager *textureManager,
+                                  TextureImageManager *textureImageManager);
+
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    QBackendNode *get(QNode *frontend) const Q_DECL_FINAL;
+    void destroy(QNode *frontend) const Q_DECL_FINAL;
+
+private:
+    TextureManager *m_textureManager;
+    TextureImageManager *m_textureImageManager;
 };
 
 } // namespace Render

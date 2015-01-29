@@ -50,6 +50,7 @@
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +77,9 @@ RenderTexture::RenderTexture()
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_lock(new QMutex())
+    , m_textureDNA(0)
+    , m_textureManager(Q_NULLPTR)
+    , m_textureImageManager(Q_NULLPTR)
 {
     // We need backend -> frontend notifications to update the status of the texture
 }
@@ -107,6 +111,9 @@ void RenderTexture::cleanup()
     m_isDirty = false;
     m_filtersAndWrapUpdated = false;
     m_textureImages.clear();
+    m_imageData.clear();
+    m_textureManager = Q_NULLPTR;
+    m_textureImageManager = Q_NULLPTR;
 }
 
 void RenderTexture::updateFromPeer(QNode *peer)
@@ -131,14 +138,13 @@ void RenderTexture::updateFromPeer(QNode *peer)
         m_comparisonFunction = texture->comparisonFunction();
         m_comparisonMode = texture->comparisonMode();
 
-        // TO DO: Remove TexImageDataPtr list
+        // TO DO: This list should be filled by executing the functor of
+        // each TextureImage instead of reading those from the frontend directly
         Q_FOREACH (TexImageDataPtr imgData, texture->imageData())
             m_imageData.append(imgData);
 
-        // TO DO: Maybe switch to Handles directly, that will require to modify the
-        // backend functor on the other hand.
         Q_FOREACH (QAbstractTextureImage *textureImage, texture->textureImages())
-            m_textureImages.append(textureImage->id());
+            m_textureImages.append(m_textureImageManager->getOrAcquireHandle(textureImage->id()));
     }
 }
 
@@ -357,13 +363,13 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("textureImage"))
-            m_textureImages.append(propertyChange->value().value<QNodeId>());
+            m_textureImages.append(m_textureImageManager->getOrAcquireHandle(propertyChange->value().value<QNodeId>()));
     }
         break;
 
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("textureImage"))
-            m_textureImages.removeOne(propertyChange->value().value<QNodeId>());
+            m_textureImages.removeOne(m_textureImageManager->getOrAcquireHandle(propertyChange->value().value<QNodeId>()));
     }
         break;
 
@@ -371,6 +377,48 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
         break;
 
     }
+}
+
+TextureDNA RenderTexture::dna() const
+{
+    return m_textureDNA;
+}
+
+void RenderTexture::setTextureManager(TextureManager *manager)
+{
+    m_textureManager = manager;
+}
+
+void RenderTexture::setTextureImageManager(TextureImageManager *manager)
+{
+    m_textureImageManager = manager;
+}
+
+RenderTextureFunctor::RenderTextureFunctor(TextureManager *textureManager,
+                                           TextureImageManager *textureImageManager)
+    : m_textureManager(textureManager)
+    , m_textureImageManager(textureImageManager)
+{
+}
+
+QBackendNode *RenderTextureFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+{
+    RenderTexture *backend = m_textureManager->getOrCreateResource(frontend->id());
+    backend->setFactory(factory);
+    backend->setTextureManager(m_textureManager);
+    backend->setTextureImageManager(m_textureImageManager);
+    backend->setPeer(frontend);
+    return backend;
+}
+
+QBackendNode *RenderTextureFunctor::get(QNode *frontend) const
+{
+    return m_textureManager->lookupResource(frontend->id());
+}
+
+void RenderTextureFunctor::destroy(QNode *frontend) const
+{
+    m_textureManager->releaseResource(frontend->id());
 }
 
 } // namespace Render
