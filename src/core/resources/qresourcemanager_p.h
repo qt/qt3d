@@ -60,6 +60,7 @@ struct NonLockingPolicy
     {
         Locker(NonLockingPolicy*) {}
         void unlock() {}
+        void relock() {}
     };
 };
 
@@ -80,6 +81,11 @@ public :
         void unlock()
         {
             m_locker.unlock();
+        }
+
+        void relock()
+        {
+            m_locker.relock();
         }
 
     private:
