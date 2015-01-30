@@ -46,9 +46,9 @@ Material {
     id: root
 
     property color ambient:  Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
-    property alias diffuse: diffuseTexture.source
+    property alias diffuse: diffuseTextureImage.source
     property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
-    property alias normal: normalTexture.source
+    property alias normal: normalTextureImage.source
     property real shininess: 150.0
     property real textureScale: 1.0
 
@@ -66,6 +66,7 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
+                TextureImage { id: diffuseTextureImage; }
             }
         },
         Parameter {
@@ -79,6 +80,7 @@ Material {
                     y: WrapMode.Repeat
                 }
                 maximumAnisotropy: 16.0
+                TextureImage { id: normalTextureImage; }
             }
         },
         Parameter { name: "ks"; value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },

@@ -183,13 +183,15 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractTextureProvider>(uri, 2, 0, "Texture", QStringLiteral("Texture should be created from one of the subclasses"));
     qmlRegisterExtendedType<Qt3D::QTexture1D, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture1D");
     qmlRegisterExtendedType<Qt3D::QTexture1DArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture1DArray");
-    qmlRegisterExtendedType<Qt3D::QTexture2D, Qt3D::Render::Quick::Quick3DTexture2DExtension>(uri, 2, 0, "Texture2D");
+    qmlRegisterExtendedType<Qt3D::QTexture2D, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2D");
     qmlRegisterExtendedType<Qt3D::QTexture2DArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2DArray");
     qmlRegisterExtendedType<Qt3D::QTexture3D, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture3D");
     qmlRegisterExtendedType<Qt3D::QTextureCubeMap, Qt3D::Render::Quick::Quick3DTextureCubeMapExtension>(uri, 2, 0, "TextureCubeMap");
     qmlRegisterExtendedType<Qt3D::QTextureCubeMapArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "TextureCubeMapArray");
     qmlRegisterExtendedType<Qt3D::QTexture2DMultisample, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2DMultisample");
     qmlRegisterExtendedType<Qt3D::QTexture2DMultisampleArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2DMultisampleArray");
+    qmlRegisterUncreatableType<Qt3D::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
+    qmlRegisterType<Qt3D::QTextureImage>(uri, 2, 0, "TextureImage");
 
     // Meshes
     qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));

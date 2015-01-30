@@ -46,8 +46,8 @@ Material {
     id: root
 
     property color ambient:  Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
-    property alias diffuse: diffuseTexture.source
-    property alias specular: specularTexture.source
+    property alias diffuse: diffuseTextureImage.source
+    property alias specular: specularTextureImage.source
     property real shininess: 150.0
     property real textureScale: 1.0
 
@@ -65,6 +65,7 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
+                TextureImage { id: diffuseTextureImage; }
             }
         },
         Parameter { name: "specularTexture";
@@ -78,6 +79,7 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
+                TextureImage { id: specularTextureImage; }
             }
         },
         Parameter { name: "shininess"; value: root.shininess },
