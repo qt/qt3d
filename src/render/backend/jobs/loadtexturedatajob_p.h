@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,47 +39,42 @@
 **
 ****************************************************************************/
 
-#include "meshdatamanager_p.h"
+#ifndef QT3D_RENDER_LOADTEXTUREDATAJOB_H
+#define QT3D_RENDER_LOADTEXTUREDATAJOB_H
+
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRenderer/qtextureimage.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
 namespace Render {
 
-// Called by aspect thread when RenderMesh receive a new functor in syncChanges
-void MeshDataManager::addMeshData(QAbstractMeshFunctorPtr functor, const QNodeId &meshUuid)
+class Renderer;
+
+class LoadTextureDataJob : public QAspectJob
 {
-    m_meshesPending[meshUuid] = functor;
-}
+public:
+    LoadTextureDataJob(const QNodeId &textureId);
+    ~LoadTextureDataJob();
+    inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
-// Called by single thread in QRenderAspect
-// Needs to be protected as we ways call it while addMeshData is called
-QHash<QNodeId, QAbstractMeshFunctorPtr> MeshDataManager::meshesPending()
-{
-    QHash<QNodeId, QAbstractMeshFunctorPtr> meshFunctors = m_meshesPending;
-    m_meshesPending.clear();
-    return meshFunctors;
-}
+protected:
+    void run() Q_DECL_FINAL;
 
-HMeshData MeshDataManager::meshDataFromFunctor(QAbstractMeshFunctorPtr functor) const
-{
-    QHash<QAbstractMeshFunctorPtr, HMeshData>::const_iterator it = m_meshFunctors.begin();
-    const QHash<QAbstractMeshFunctorPtr, HMeshData>::const_iterator end = m_meshFunctors.end();
+private:
+    QNodeId m_textureId;
+    Renderer *m_renderer;
+};
 
-    while (it != end) {
-        if (*it.key() == *functor)
-            return it.value();
-        ++it;
-    }
-    return HMeshData();
-}
+typedef QSharedPointer<LoadTextureDataJob> LoadTextureDataJobPtr;
 
-void MeshDataManager::addMeshDataForFunctor(HMeshData meshDataHandle, QAbstractMeshFunctorPtr functor)
-{
-    m_meshFunctors.insert(functor, meshDataHandle);
-}
+} // Render
 
-} // namespace Render
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_LOADTEXTUREDATAJOB_H

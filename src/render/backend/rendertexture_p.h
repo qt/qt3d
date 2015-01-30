@@ -61,6 +61,7 @@ namespace Render {
 
 class TextureManager;
 class TextureImageManager;
+class TextureDataManager;
 
 typedef uint TextureDNA;
 
@@ -84,17 +85,31 @@ public:
 
     void setTextureManager(TextureManager *manager);
     void setTextureImageManager(TextureImageManager *manager);
+    void setTextureDataManager(TextureDataManager *manager);
+
+    void updateAndLoadTextureImage();
+    void addTextureImageData(HTextureImage handle);
+    void removeTextureImageData(HTextureImage handle);
+
+    void requestTextureDataUpdate();
+    void addToPendingTextureJobs();
+    void setSize(int width, int height, int depth);
+    void setFormat(QAbstractTextureProvider::TextureFormat format);
+
+    inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
+    inline QAbstractTextureProvider::TextureFormat format() const { return m_format; }
 
 private:
     QOpenGLTexture *m_gl;
 
     QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(TexImageDataPtr imgData);
+    void setToGLTexture(RenderTextureImage *rImg, TexImageData *imgData);
     void updateWrapAndFilters();
 
     int m_width;
     int m_height;
     int m_depth;
+    int m_layers;
     bool m_generateMipMaps;
     QAbstractTextureProvider::Target m_target;
     QAbstractTextureProvider::TextureFormat m_format;
@@ -107,14 +122,18 @@ private:
     QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 
-    QList<TexImageDataPtr> m_imageData;
-    QList<HTextureImage> m_textureImages;
+    QVector<HTextureImage> m_textureImages;
+
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
+    bool m_dataUploadRequired;
+    bool m_formatWasSpecified;
+
     QMutex *m_lock;
     TextureDNA m_textureDNA;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
+    TextureDataManager *m_textureDataManager;
 
     void updateDNA();
 };
@@ -123,7 +142,8 @@ class RenderTextureFunctor : public QBackendNodeFunctor
 {
 public:
     explicit RenderTextureFunctor(TextureManager *textureManager,
-                                  TextureImageManager *textureImageManager);
+                                  TextureImageManager *textureImageManager,
+                                  TextureDataManager *textureDataManager);
 
     QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
     QBackendNode *get(QNode *frontend) const Q_DECL_FINAL;
@@ -132,6 +152,7 @@ public:
 private:
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
+    TextureDataManager *m_textureDataManager;
 };
 
 } // namespace Render

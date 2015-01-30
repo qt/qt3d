@@ -60,6 +60,9 @@ namespace Qt3D {
     executed by Aspect jobs in the backend. Qt3D::QAbstractTextureImage should be
     subclassed to provide a functor and eventual additional properties needed by
     the functor to load actual data.
+
+    \note: QAbstractTextureImage should never be shared. Expect crashes, undefined
+    behavior at best if this rule is not respected.
  */
 
 /*!

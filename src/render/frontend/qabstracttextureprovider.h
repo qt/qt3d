@@ -76,6 +76,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
     Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
+    Q_PROPERTY(int maximumLayers READ maximumLayers WRITE setMaximumLayers NOTIFY maximumLayersChanged)
 
 public:
 
@@ -101,6 +102,7 @@ public:
 
     enum TextureFormat {
         NoFormat               = 0,         // GL_NONE
+        Automatic              = 1,         // The Qt3D engine automatically determines the best format
 
         // Unsigned normalized formats
         R8_UNorm               = 0x8229,    // GL_R8
@@ -301,6 +303,9 @@ public:
     int height() const;
     int depth() const;
 
+    void setMaximumLayers(int maximumLayers);
+    int maximumLayers() const;
+
 Q_SIGNALS:
     void formatChanged();
     void statusChanged();
@@ -313,6 +318,7 @@ Q_SIGNALS:
     void maximumAnisotropyChanged();
     void comparisonFunctionChanged();
     void comparisonModeChanged();
+    void maximumLayersChanged();
 
 protected:
     explicit QAbstractTextureProvider(QNode *parent = 0);

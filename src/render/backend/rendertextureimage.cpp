@@ -41,6 +41,8 @@
 
 #include "rendertextureimage_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRenderer/private/texturedatamanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +55,10 @@ RenderTextureImage::RenderTextureImage()
     , m_layer(0)
     , m_mipmapLevel(0)
     , m_face(QAbstractTextureProvider::CubeMapPositiveX)
-    , m_isDirty(true)
+    , m_dirty(true)
+    , m_textureManager(Q_NULLPTR)
+    , m_textureImageManager(Q_NULLPTR)
+    , m_textureDataManager(Q_NULLPTR)
 {
 }
 
@@ -61,9 +66,13 @@ void RenderTextureImage::cleanup()
 {
     m_layer = 0;
     m_mipmapLevel = 0;
-    m_isDirty = true;
+    m_dirty = true;
     m_face = QAbstractTextureProvider::CubeMapPositiveX;
     m_functor.reset();
+    m_textureManager = Q_NULLPTR;
+    m_textureImageManager = Q_NULLPTR;
+    m_textureDataManager = Q_NULLPTR;
+    m_referencedTextures.clear();
 }
 
 void RenderTextureImage::updateFromPeer(QNode *peer)
@@ -73,6 +82,18 @@ void RenderTextureImage::updateFromPeer(QNode *peer)
     m_mipmapLevel = textureImage->mipmapLevel();
     m_face = textureImage->cubeMapFace();
     m_functor = textureImage->dataFunctor();
+    // Notify the RenderTexture that we are one of its TextureImage
+    if (!peer->parentNode()) {
+        qWarning() << "Not QAbstractTextureProvider parent found";
+    } else {
+        m_textureProviderId = peer->parentNode()->id();
+        m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
+        RenderTexture *txt = m_textureManager->data(m_textureProvider);
+        // Notify the RenderTexture that it has a new RenderTextureImage and needs an update
+        txt->addTextureImageData(m_textureImageManager->lookupHandle(peerUuid()));
+        if (txt != Q_NULLPTR)
+            txt->addToPendingTextureJobs();
+    }
 }
 
 void RenderTextureImage::sceneChangeEvent(const QSceneChangePtr &e)
@@ -82,18 +103,79 @@ void RenderTextureImage::sceneChangeEvent(const QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
-            m_isDirty = true;
+            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmapLevel")) {
             m_mipmapLevel = propertyChange->value().toInt();
-            m_isDirty = true;
+            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("cubeMapFace")) {
             m_face = static_cast<QAbstractTextureProvider::CubeMapFace>(propertyChange->value().toInt());
-            m_isDirty = true;
+            m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataFunctor")) {
             m_functor = propertyChange->value().value<QTextureDataFunctorPtr>();
-            m_isDirty = true;
+            m_dirty = true;
         }
     }
+    if (m_dirty) {// Notify the RenderTexture that we were updated and request it to schedule an update job
+        RenderTexture *txt = m_textureManager->data(m_textureProvider);
+        if (txt != Q_NULLPTR)
+            txt->addToPendingTextureJobs();
+    }
+}
+
+void RenderTextureImage::setTextureManager(TextureManager *manager)
+{
+    m_textureManager = manager;
+}
+
+void RenderTextureImage::setTextureImageManager(TextureImageManager *manager)
+{
+    m_textureImageManager = manager;
+}
+
+void RenderTextureImage::setTextureDataManager(TextureDataManager *manager)
+{
+    m_textureDataManager = manager;
+}
+
+void RenderTextureImage::unsetDirty()
+{
+    m_dirty = false;
+}
+
+// Called by LoadDataTextureJob when the texture data has been successfully load
+void RenderTextureImage::setTextureDataHandle(HTextureData handle)
+{
+    m_textureDataHandle = handle;
+}
+
+RenderTextureImageFunctor::RenderTextureImageFunctor(TextureManager *textureManager,
+                                                     TextureImageManager *textureImageManager,
+                                                     TextureDataManager *textureDataManager)
+    : m_textureManager(textureManager)
+    , m_textureImageManager(textureImageManager)
+    , m_textureDataManager(textureDataManager)
+{
+}
+
+QBackendNode *RenderTextureImageFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+{
+    RenderTextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
+    backend->setFactory(factory);
+    backend->setTextureManager(m_textureManager);
+    backend->setTextureImageManager(m_textureImageManager);
+    backend->setTextureDataManager(m_textureDataManager);
+    backend->setPeer(frontend);
+    return backend;
+}
+
+QBackendNode *RenderTextureImageFunctor::get(QNode *frontend) const
+{
+    return m_textureImageManager->lookupResource(frontend->id());
+}
+
+void RenderTextureImageFunctor::destroy(QNode *frontend) const
+{
+    m_textureImageManager->releaseResource(frontend->id());
 }
 
 } // Render

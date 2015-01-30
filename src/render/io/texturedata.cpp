@@ -48,25 +48,25 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-TexImageData::TexImageData(int level, int layer) :
-    m_layer(layer),
-    m_mipMapLevel(level),
-    m_cubeFace(QOpenGLTexture::CubeMapPositiveX),
-    m_isCompressed(false)
+TexImageData::TexImageData()
+    : m_width(-1)
+    , m_height(-1)
+    , m_depth(-1)
+    , m_isCompressed(false)
+    , m_format(QOpenGLTexture::RGBA8_UNorm)
 {
-}
-
-void TexImageData::setCubeFace(QOpenGLTexture::CubeMapFace face)
-{
-    m_cubeFace = face;
 }
 
 void TexImageData::setImage(const QImage &image)
 {
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
-
+    m_width = image.width();
+    m_height = image.height();
+    m_depth = 1;
     QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
     setData(imageBytes, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
+    m_format = image.hasAlphaChannel() ? QOpenGLTexture::RGBA8_UNorm :
+                                         QOpenGLTexture::RGB8_UNorm;
 }
 
 void TexImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt, QOpenGLTexture::PixelType ptype)

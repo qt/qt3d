@@ -211,9 +211,9 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractText
 
 //        parentTexture()->setStatus(QAbstractTextureProvider::Loading);
         if (img.load(source)) {
-            TexImageDataPtr dataPtr(new TexImageData(0, 0));
+            TexImageDataPtr dataPtr(new TexImageData());
 
-            dataPtr->setCubeFace(static_cast<QOpenGLTexture::CubeMapFace>(face));
+//            dataPtr->setCubeFace(static_cast<QOpenGLTexture::CubeMapFace>(face));
             if (parentTexture()->height() != img.height())
                 parentTexture()->setHeight(img.height());
             if (parentTexture()->width() != img.width())
@@ -224,7 +224,7 @@ void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractText
             if (format != parentTexture()->format())
                 parentTexture()->setFormat(format);
             dataPtr->setImage(img);
-            parentTexture()->addImageData(dataPtr);
+//            parentTexture()->addImageData(dataPtr);
 //            parentTexture()->setStatus(QAbstractTextureProvider::Loaded);
         }
         else {

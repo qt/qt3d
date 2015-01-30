@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/renderviewjobutils_p.h \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
-    $$PWD/framepreparationjob_p.h
+    $$PWD/framepreparationjob_p.h \
+    $$PWD/loadtexturedatajob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -18,4 +19,5 @@ SOURCES += \
     $$PWD/renderviewjobutils.cpp \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
-    $$PWD/framepreparationjob.cpp
+    $$PWD/framepreparationjob.cpp \
+    $$PWD/loadtexturedatajob.cpp

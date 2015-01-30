@@ -62,7 +62,7 @@ namespace Render {
 class MeshDataManager : public QResourceManager<QMeshData,
                                                  QNodeId,
                                                  16,
-                                                 Qt3D::ListAllocatingPolicy,
+                                                 Qt3D::ArrayAllocatingPolicy,
                                                  Qt3D::ObjectLevelLockingPolicy>
 {
 public:

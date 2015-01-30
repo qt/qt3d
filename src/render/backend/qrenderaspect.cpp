@@ -44,6 +44,7 @@
 
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
+#include <Qt3DRenderer/private/texturedatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
 
@@ -88,6 +89,7 @@
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/loadmeshdatajob_p.h>
+#include <Qt3DRenderer/private/loadtexturedatajob_p.h>
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
 #include <Qt3DRenderer/private/framecleanupjob_p.h>
@@ -191,7 +193,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QTransform>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
     registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderMaterial, Render::MaterialManager>(d->m_renderer->materialManager())));
     registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTechnique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
-    registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::RenderTextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager())));
+    registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::RenderTextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShader, Render::ShaderManager>(d->m_renderer->shaderManager())));
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderEffect, Render::EffectManager>(d->m_renderer->effectManager())));
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
@@ -215,7 +217,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
-    registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTextureImage, Render::TextureImageManager>(d->m_renderer->textureImageManager())));
+    registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
@@ -259,6 +261,12 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(loadMeshJob);
         }
 
+        QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
+        Q_FOREACH (const QNodeId &textureId, texturesPending) {
+            Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
+            loadTextureJob->setRenderer(d->m_renderer);
+            jobs.append(loadTextureJob);
+        }
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)

@@ -594,7 +594,7 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
     QAbstractTextureProvider *texture = new QTexture2D();
-    TexImageDataPtr textureData(new TexImageData(0, 0));
+    TexImageDataPtr textureData(new TexImageData());
 
     bool isCompressed = assimpTexture->mHeight == 0;
     uint textureSize = assimpTexture->mWidth *

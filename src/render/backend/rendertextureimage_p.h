@@ -46,12 +46,17 @@
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRenderer/qabstracttextureprovider.h>
 #include <Qt3DRenderer/qabstracttextureimage.h>
+#include <Qt3DRenderer/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 namespace Render {
+
+class TextureManager;
+class TextureImageManager;
+class TextureDataManager;
 
 class RenderTextureImage : public QBackendNode
 {
@@ -64,14 +69,53 @@ public:
     int m_layer;
     int m_mipmapLevel;
     QAbstractTextureProvider::CubeMapFace m_face;
-    bool m_isDirty;
+    bool m_dirty;
 
-    inline bool isDirty() const { return m_isDirty; }
+    inline int layer() const { return m_layer; }
+    inline int mipmapLevel() const { return m_mipmapLevel; }
+    inline QAbstractTextureProvider::CubeMapFace face() const { return m_face; }
+
+    void setTextureManager(TextureManager *manager);
+    void setTextureImageManager(TextureImageManager *manager);
+    void setTextureDataManager(TextureDataManager *manager);
+    void unsetDirty();
+
+    inline bool isDirty() const { return m_dirty; }
     inline QTextureDataFunctorPtr textureDataFunctor() const { return m_functor; }
+
+    void setTextureDataHandle(HTextureData handle);
+
+    inline HTextureData textureDataHandle() const { return m_textureDataHandle; }
+    inline QTextureDataFunctorPtr dataFunctor() const { return m_functor; }
 
 private:
     QTextureDataFunctorPtr m_functor;
+    HTextureData m_textureDataHandle;
+    TextureManager *m_textureManager;
+    TextureImageManager *m_textureImageManager;
+    TextureDataManager *m_textureDataManager;
+    QList<QNodeId> m_referencedTextures;
+    HTexture m_textureProvider;
+    QNodeId m_textureProviderId;
 };
+
+class RenderTextureImageFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderTextureImageFunctor(TextureManager *textureManager,
+                                  TextureImageManager *textureImageManager,
+                                  TextureDataManager *textureDataManager);
+
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    QBackendNode *get(QNode *frontend) const Q_DECL_FINAL;
+    void destroy(QNode *frontend) const Q_DECL_FINAL;
+
+private:
+    TextureManager *m_textureManager;
+    TextureImageManager *m_textureImageManager;
+    TextureDataManager *m_textureDataManager;
+};
+
 
 } // Render
 

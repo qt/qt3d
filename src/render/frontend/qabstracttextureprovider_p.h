@@ -73,6 +73,7 @@ public :
     QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
+    int m_maximumLayers;
 };
 
 } // QT3D

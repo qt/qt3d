@@ -58,19 +58,20 @@ namespace Render {
 class TextureDataManager : public QResourceManager<TexImageData,
                                                    QNodeId,
                                                    16,
-                                                   Qt3D::ListAllocatingPolicy,
+                                                   Qt3D::ArrayAllocatingPolicy,
                                                    Qt3D::ObjectLevelLockingPolicy>
 {
 public:
     TextureDataManager() {}
+    void addToPendingTextures(const QNodeId &textureId);
 
-    void addTextureData(QAbstractTextureProvider *texture);
-
-    QList<QAbstractTextureProvider *> texturesPending() const { return m_texturesPending; }
-    void clearTexturesPending() { m_texturesPending.clear(); }
+    QVector<QNodeId> texturesPending();
+    HTextureData textureDataFromFunctor(QTextureDataFunctorPtr functor) const;
+    void addTextureDataForFunctor(HTextureData textureDataHandle, QTextureDataFunctorPtr functor);
 
 private:
-    QList<QAbstractTextureProvider *> m_texturesPending;
+    QVector<QNodeId> m_texturesPending;
+    QHash<QTextureDataFunctorPtr, HTextureData> m_textureDataFunctors;
 };
 
 } // Render

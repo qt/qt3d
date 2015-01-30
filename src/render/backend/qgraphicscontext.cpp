@@ -373,6 +373,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
     if (m_activeTextures[onUnit] != tex) {
         QOpenGLTexture* glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
+        m_activeTextures[onUnit] = tex;
     }
 
     int err = m_gl->functions()->glGetError();

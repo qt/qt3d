@@ -51,7 +51,7 @@ namespace Qt3D {
 QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq)
     : QNodePrivate(qq)
     , m_target(QAbstractTextureProvider::Target2D)
-    , m_format(QAbstractTextureProvider::RGBA8U)
+    , m_format(QAbstractTextureProvider::Automatic)
     , m_width(1)
     , m_height(1)
     , m_depth(1)
@@ -62,6 +62,7 @@ QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate(QAbstractTextur
     , m_maximumAnisotropy(1.0f)
     , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
     , m_comparisonMode(QAbstractTextureProvider::CompareNone)
+    , m_maximumLayers(1)
 {
 }
 
@@ -83,7 +84,7 @@ void QAbstractTextureProvider::copy(const QNode *ref)
     d_func()->m_maximumAnisotropy = t->d_func()->m_maximumAnisotropy;
     d_func()->m_comparisonFunction = t->d_func()->m_comparisonFunction;
     d_func()->m_comparisonMode = t->d_func()->m_comparisonMode;
-    // TO DO: Copy TexImageDataPtr
+    d_func()->m_maximumLayers = t->d_func()->m_maximumLayers;
 }
 
 /*!
@@ -194,6 +195,32 @@ int QAbstractTextureProvider::depth() const
 }
 
 /*!
+    Sets the maximum layers count to \a maximumLayers, by defaults, the maximum
+    layer count is 1.
+
+    \note this has a meaning only for texture providers that
+    have 3D or array target formats.
+ */
+void QAbstractTextureProvider::setMaximumLayers(int maximumLayers)
+{
+    Q_D(QAbstractTextureProvider);
+    if (d->m_maximumLayers != maximumLayers) {
+        d->m_maximumLayers = maximumLayers;
+        emit maximumLayersChanged();
+    }
+}
+
+/*!
+    \return return the maximum layers count of the texture provider.
+    \note this has a meaning only for texture providers that have 3D or array target formats.
+ */
+int QAbstractTextureProvider::maximumLayers() const
+{
+    Q_D(const QAbstractTextureProvider);
+    return d->m_maximumLayers;
+}
+
+/*!
     Sets the format of the texture provider to \a format.
  */
 void QAbstractTextureProvider::setFormat(TextureFormat format)
@@ -258,7 +285,7 @@ bool QAbstractTextureProvider::setFromQImage(QImage img, int layer)
         return false;
     }
 
-    TexImageDataPtr dataPtr(new TexImageData(0, layer));
+    TexImageDataPtr dataPtr(new TexImageData());
     dataPtr->setImage(img);
     addImageData(dataPtr);
     setStatus(Loaded);
@@ -279,6 +306,7 @@ QList<TexImageDataPtr> QAbstractTextureProvider::imageData() const
 
 /*!
     Adds a new Qt3D::QAbstractTextureImage \a texture image to the texture provider.
+    \note: Qt3D::QAbstractTextureImage should never be shared by several Qt3D::QAbstractTextureProvider
  */
 void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureImage)
 {
@@ -286,6 +314,9 @@ void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureIma
     if (!d->m_textureImages.contains(textureImage)) {
         d->m_textureImages.append(textureImage);
 
+
+        if (textureImage->parent() && textureImage->parent() != this)
+            qWarning() << "A QAbstractTextureImage was shared, expect a crash, undefined behavior at best";
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation

@@ -47,10 +47,34 @@ namespace Qt3D {
 
 namespace Render {
 
-void Qt3D::Render::TextureDataManager::addTextureData(Qt3D::QAbstractTextureProvider *texture)
+
+void TextureDataManager::addToPendingTextures(const QNodeId &textureId)
 {
-    if (!contains(texture->id()) && !m_texturesPending.contains(texture))
-        m_texturesPending.append(texture);
+    m_texturesPending.append(textureId);
+}
+
+QVector<QNodeId> TextureDataManager::texturesPending()
+{
+    QVector<QNodeId> textureIds = m_texturesPending;
+    m_texturesPending.clear();
+    return textureIds;
+}
+
+HTextureData TextureDataManager::textureDataFromFunctor(QTextureDataFunctorPtr functor) const
+{
+    QHash<QTextureDataFunctorPtr, HTextureData>::const_iterator it = m_textureDataFunctors.begin();
+    const QHash<QTextureDataFunctorPtr, HTextureData>::const_iterator end = m_textureDataFunctors.end();
+    while (it != end) {
+        if (*it.key() == *functor)
+            return it.value();
+        ++it;
+    }
+    return HTextureData();
+}
+
+void TextureDataManager::addTextureDataForFunctor(HTextureData textureDataHandle, QTextureDataFunctorPtr functor)
+{
+    m_textureDataFunctors.insert(functor, textureDataHandle);
 }
 
 } // Render

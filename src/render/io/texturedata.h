@@ -54,21 +54,17 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT TexImageData
 {
 public:
-    TexImageData(int level, int layer);
+    TexImageData();
 
-    QOpenGLTexture::CubeMapFace cubeFace() const
-    { return m_cubeFace; }
-
-    void setCubeFace(QOpenGLTexture::CubeMapFace face);
-
-    int layer() const
-    { return m_layer; }
-
-    int mipMapLevel() const
-    { return m_mipMapLevel; }
+    ~TexImageData() {}
 
     bool isCompressed() const
     { return m_isCompressed; }
+
+    inline int width() const { return m_width; }
+    inline int height() const { return m_height; }
+    inline int depth() const { return m_depth; }
+    inline QOpenGLTexture::TextureFormat format() const { return m_format; }
 
     void setImage(const QImage &);
 
@@ -87,13 +83,13 @@ public:
     { return m_pixelType; }
 
 private:
-    int m_layer, m_mipMapLevel;
-    QOpenGLTexture::CubeMapFace m_cubeFace;
+    int m_width, m_height, m_depth;
     QOpenGLTexture::PixelFormat m_pixelFormat;
     QOpenGLTexture::PixelType m_pixelType;
 
     bool m_isCompressed;
     QByteArray m_data;
+    QOpenGLTexture::TextureFormat m_format;
 };
 
 typedef QSharedPointer<TexImageData> TexImageDataPtr;

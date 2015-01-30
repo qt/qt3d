@@ -69,7 +69,20 @@ public:
     // Will be executed from within a QAspectJob
     TexImageDataPtr operator ()() Q_DECL_FINAL
     {
-        return TexImageDataPtr();
+        TexImageDataPtr dataPtr;
+        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
+            QString source = m_url.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+            QImage img;
+            if (img.load(source)) {
+                dataPtr.reset(new TexImageData());
+                dataPtr->setImage(img);
+            } else {
+                qWarning() << "Failed to load image : " << source;
+            }
+        } else {
+            qWarning() << "implement loading from remote URLs";
+        }
+        return dataPtr;
     }
 
     bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
