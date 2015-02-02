@@ -701,7 +701,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                             RenderShaderData *shaderData = Q_NULLPTR;
                             if ((shaderData = v.value<RenderShaderData *>()) != Q_NULLPTR) {
                                 // Try to check if we have a struct or array matching a QShaderData parameter
-                                setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader,shaderData, it->name);
+                                setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, shaderData, it->name);
                                 it = parameters.erase(it);
                             } else {
                                 // Else param unused by current shader
