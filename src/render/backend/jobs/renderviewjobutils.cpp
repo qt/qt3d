@@ -41,20 +41,7 @@
 
 #include "renderviewjobutils_p.h"
 
-#include <Qt3DRenderer/qalphacoverage.h>
-#include <Qt3DRenderer/qalphatest.h>
-#include <Qt3DRenderer/qblendequation.h>
-#include <Qt3DRenderer/qblendstate.h>
-#include <Qt3DRenderer/qcolormask.h>
-#include <Qt3DRenderer/qcullface.h>
-#include <Qt3DRenderer/qdepthmask.h>
-#include <Qt3DRenderer/qdepthtest.h>
-#include <Qt3DRenderer/qdithering.h>
-#include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qpolygonoffset.h>
-#include <Qt3DRenderer/qscissortest.h>
-#include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DRenderer/qshaderdata.h>
 
@@ -70,9 +57,6 @@
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
-
-// TODO: Rename this include to something more descriptive
-#include <Qt3DRenderer/private/blendstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -353,83 +337,8 @@ RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *all
 
     RenderStateSet *stateSet = allocator->allocate<RenderStateSet>();
 
-    // TODO: Don't use QObject subclasses as backend storage
-    Q_FOREACH (QRenderState *renderState, pass->renderStates()) {
-        switch (renderState->type()) {
-            case QRenderState::AlphaTest: {
-                QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
-                stateSet->addState(AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp()));
-                break;
-            }
-            case QRenderState::BlendEquation: {
-                QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
-                stateSet->addState(BlendEquation::getOrCreate(blendEquation->mode()));
-                break;
-            }
-            case QRenderState::BlendState: {
-                QBlendState *blendState = static_cast<QBlendState *>(renderState);
-                // TO DO : Handle Alpha here as weel
-                stateSet->addState(BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB()));
-                break;
-            }
-            case QRenderState::CullFace: {
-                QCullFace *cullFace = static_cast<QCullFace *>(renderState);
-                stateSet->addState(CullFace::getOrCreate(cullFace->mode()));
-                break;
-            }
-            case QRenderState::DepthMask: {
-                QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
-                stateSet->addState(DepthMask::getOrCreate(depthMask->mask()));
-                break;
-            }
-            case QRenderState::DepthTest: {
-                QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
-                stateSet->addState(DepthTest::getOrCreate(depthTest->func()));
-                break;
-            }
-            case QRenderState::Dithering: {
-                stateSet->addState(Dithering::getOrCreate());
-                break;
-            }
-            case QRenderState::FrontFace: {
-                QFrontFace *frontFace = static_cast<QFrontFace *>(renderState);
-                stateSet->addState(FrontFace::getOrCreate(frontFace->direction()));
-                break;
-            }
-            case QRenderState::ScissorTest: {
-                QScissorTest *scissorTest = static_cast<QScissorTest *>(renderState);
-                stateSet->addState(ScissorTest::getOrCreate(scissorTest->left(),
-                                                            scissorTest->bottom(),
-                                                            scissorTest->width(),
-                                                            scissorTest->height()));
-                break;
-            }
-            case QRenderState::StencilTest: {
-                QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
-                stateSet->addState(StencilTest::getOrCreate(stencilTest->mask(),
-                                                            stencilTest->func(),
-                                                            stencilTest->faceMode()));
-                break;
-            }
-            case QRenderState::AlphaCoverage: {
-                stateSet->addState(AlphaCoverage::getOrCreate());
-                break;
-            }
-            case QRenderState::PolygonOffset: {
-                QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
-                stateSet->addState(PolygonOffset::getOrCreate(polygonOffset->factor(),
-                                                              polygonOffset->units()));
-                break;
-            }
-            case QRenderState::ColorMask: {
-                QColorMask *colorMask = static_cast<QColorMask *>(renderState);
-                stateSet->addState(ColorMask::getOrCreate(colorMask->isRed(),
-                                                          colorMask->isGreen(),
-                                                          colorMask->isBlue(),
-                                                          colorMask->isAlpha()));
-                break;
-            }
-        }
+    Q_FOREACH (RenderState *renderState, pass->renderStates()) {
+        stateSet->addState(renderState);
     }
 
     return stateSet;

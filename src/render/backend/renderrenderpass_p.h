@@ -62,6 +62,7 @@ class QRenderState;
 namespace Render {
 
 class RenderPassManager;
+class RenderState;
 
 class Q_AUTOTEST_EXPORT RenderRenderPass : public QBackendNode
 {
@@ -77,7 +78,7 @@ public:
     QNodeId shaderProgram() const;
     QList<RenderParameterMapping> bindings() const;
     QList<QNodeId> annotations() const;
-    QList<QRenderState *> renderStates() const;
+    QList<RenderState *> renderStates() const;
 
 private:
     void appendAnnotation(const QNodeId &criterionId);
@@ -86,12 +87,12 @@ private:
     void appendBinding(const RenderParameterMapping &binding);
     void removeBinding(const QNodeId &bindingId);
 
-    void appendRenderState(QRenderState *renderState);
+    void appendRenderState(const QNodeId &id, RenderState *renderState);
     void removeRenderState(const QNodeId &renderStateId);
 
     QNodeId m_shaderUuid;
     QHash<QNodeId, RenderParameterMapping> m_bindings;
-    QHash<QNodeId, QRenderState *> m_renderStates;
+    QHash<QNodeId, RenderState *> m_renderStates;
     QList<QNodeId> m_annotationList;
 };
 
