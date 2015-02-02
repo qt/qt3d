@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2014 Digia Plc and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,65 +39,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERRENDERPASS_H
-#define QT3D_RENDER_RENDERRENDERPASS_H
-
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/private/renderparametermapping_p.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include "renderparametermapping_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderPass;
-class QAbstractShader;
-class QParameterMapping;
-class QAnnotation;
-class QRenderState;
-
 namespace Render {
 
-class RenderPassManager;
-
-class Q_AUTOTEST_EXPORT RenderRenderPass : public QBackendNode
+RenderParameterMapping::RenderParameterMapping()
+    : m_bindingType(QParameterMapping::Uniform)
 {
-public:
-    RenderRenderPass();
-    ~RenderRenderPass();
+}
 
-    void cleanup();
+RenderParameterMapping::RenderParameterMapping(QParameterMapping *mapping)
+    : m_id(mapping ? mapping->id() : QNodeId())
+    , m_parameterName(mapping ? mapping->parameterName() : QString())
+    , m_shaderVariableName(mapping ? mapping->shaderVariableName() : QString())
+    , m_bindingType(mapping ? mapping->bindingType() : QParameterMapping::Uniform)
+{
+}
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+bool RenderParameterMapping::isValid() const
+{
+    return !m_id.isNull();
+}
 
-    QNodeId shaderProgram() const;
-    QList<RenderParameterMapping> bindings() const;
-    QList<QNodeId> annotations() const;
-    QList<QRenderState *> renderStates() const;
+QNodeId RenderParameterMapping::id() const
+{
+    return m_id;
+}
 
-private:
-    void appendAnnotation(const QNodeId &criterionId);
-    void removeAnnotation(const QNodeId &criterionId);
+QString RenderParameterMapping::parameterName() const
+{
+    return m_parameterName;
+}
 
-    void appendBinding(const RenderParameterMapping &binding);
-    void removeBinding(const QNodeId &bindingId);
+QString RenderParameterMapping::shaderVariableName() const
+{
+    return m_shaderVariableName;
+}
 
-    void appendRenderState(QRenderState *renderState);
-    void removeRenderState(const QNodeId &renderStateId);
-
-    QNodeId m_shaderUuid;
-    QHash<QNodeId, RenderParameterMapping> m_bindings;
-    QHash<QNodeId, QRenderState *> m_renderStates;
-    QList<QNodeId> m_annotationList;
-};
+QParameterMapping::Binding RenderParameterMapping::bindingType() const
+{
+    return m_bindingType;
+}
 
 } // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_RENDER_RENDERRENDERPASS_H

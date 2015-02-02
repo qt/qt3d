@@ -668,25 +668,25 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 }
 
                 // Set uniforms and attributes explicitly binded
-                Q_FOREACH (QParameterMapping *binding, rPass->bindings()) {
-                    ParameterInfoList::iterator it = findParamInfo(&parameters, binding->parameterName());
+                Q_FOREACH (const RenderParameterMapping &binding, rPass->bindings()) {
+                    ParameterInfoList::iterator it = findParamInfo(&parameters, binding.parameterName());
                     if (it == parameters.end()) {
-                        if (binding->bindingType() == QParameterMapping::Attribute
-                                && attributeNames.contains(binding->shaderVariableName())) {
-                            command->m_parameterAttributeToShaderNames.insert(binding->parameterName(), binding->shaderVariableName());
-                        } else if (binding->bindingType() == QParameterMapping::StandardUniform
-                                   && uniformNames.contains(binding->shaderVariableName())
-                                   && ms_standardUniformSetters.contains(binding->parameterName())) {
-                            command->m_uniforms.setUniform(binding->shaderVariableName(),
-                                                           (this->*ms_standardUniformSetters[binding->parameterName()])(worldTransform));
-                        } else if (binding->bindingType() == QParameterMapping::FragmentOutput
-                                   && fragOutputs.contains(binding->parameterName())) {
-                            fragOutputs.insert(binding->shaderVariableName(), fragOutputs.take(binding->parameterName()));
+                        if (binding.bindingType() == QParameterMapping::Attribute
+                                && attributeNames.contains(binding.shaderVariableName())) {
+                            command->m_parameterAttributeToShaderNames.insert(binding.parameterName(), binding.shaderVariableName());
+                        } else if (binding.bindingType() == QParameterMapping::StandardUniform
+                                   && uniformNames.contains(binding.shaderVariableName())
+                                   && ms_standardUniformSetters.contains(binding.parameterName())) {
+                            command->m_uniforms.setUniform(binding.shaderVariableName(),
+                                                           (this->*ms_standardUniformSetters[binding.parameterName()])(worldTransform));
+                        } else if (binding.bindingType() == QParameterMapping::FragmentOutput
+                                   && fragOutputs.contains(binding.parameterName())) {
+                            fragOutputs.insert(binding.shaderVariableName(), fragOutputs.take(binding.parameterName()));
                         } else {
-                            qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding->parameterName();
+                            qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding.parameterName();
                         }
                     } else {
-                        setUniformValue(command->m_uniforms, binding->shaderVariableName(), it->value);
+                        setUniformValue(command->m_uniforms, binding.shaderVariableName(), it->value);
                         parameters.erase(it);
                     }
                 }

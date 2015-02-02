@@ -158,7 +158,10 @@ private slots:
         QCOMPARE(backend.annotations().first(), frontend.annotations().first()->id());
 
         QCOMPARE(backend.bindings().size(), 1);
-        QCOMPARE(backend.bindings().first(), frontend.bindings().first());
+        QCOMPARE(backend.bindings().first().id(), frontend.bindings().first()->id());
+        QCOMPARE(backend.bindings().first().bindingType(), frontend.bindings().first()->bindingType());
+        QCOMPARE(backend.bindings().first().parameterName(), frontend.bindings().first()->parameterName());
+        QCOMPARE(backend.bindings().first().shaderVariableName(), frontend.bindings().first()->shaderVariableName());
 
         QCOMPARE(backend.renderStates().size(), 1);
         QCOMPARE(backend.renderStates().first(), state);
@@ -235,7 +238,10 @@ private slots:
 
         // THEN
         QCOMPARE(backend.bindings().size(), 1);
-        QCOMPARE(backend.bindings().first(), binding.data());
+        QCOMPARE(backend.bindings().first().id(), binding->id());
+        QCOMPARE(backend.bindings().first().bindingType(), binding->bindingType());
+        QCOMPARE(backend.bindings().first().parameterName(), binding->parameterName());
+        QCOMPARE(backend.bindings().first().shaderVariableName(), binding->shaderVariableName());
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
