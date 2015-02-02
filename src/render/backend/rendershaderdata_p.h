@@ -125,4 +125,6 @@ private:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::Render::RenderShaderData*)
+
 #endif // QT3D_RENDER_RENDERSHADERDATA_P_H

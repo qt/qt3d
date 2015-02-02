@@ -110,4 +110,6 @@ private:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::Render::RenderTexture*)
+
 #endif // QT3D_RENDER_RENDERTEXTURE_H
