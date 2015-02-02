@@ -17,8 +17,8 @@ uniform mat4 mvp;
 uniform float texCoordScale;
 
 // TODO: Replace with a uniform block
-uniform vec4 lightPosition = vec4(0.0, 0.0, 0.0, 1.0);
-uniform vec3 lightIntensity = vec3(1.0, 1.0, 1.0);
+uniform vec4 lightPosition;
+uniform vec3 lightIntensity;
 
 void main()
 {

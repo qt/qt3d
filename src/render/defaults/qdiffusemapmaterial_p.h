@@ -70,6 +70,8 @@ class QDiffuseMapMaterialPrivate : public QMaterialPrivate
     QParameter *m_diffuseParameter;
     QParameter *m_specularParameter;
     QParameter *m_shininessParameter;
+    QParameter *m_lightPositionParameter;
+    QParameter *m_lightIntensityParameter;
     QParameter *m_textureScaleParameter;
     QTechnique *m_diffuseMapGL3Technique;
     QTechnique *m_diffuseMapGL2Technique;

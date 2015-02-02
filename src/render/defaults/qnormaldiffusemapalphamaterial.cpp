@@ -53,6 +53,8 @@
 #include <Qt3DRenderer/qdepthtest.h>
 
 #include <QUrl>
+#include <QVector3D>
+#include <QVector4D>
 
 QT_BEGIN_NAMESPACE
 
@@ -115,6 +117,8 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_normalParameter);
     m_normalDiffuseEffect->addParameter(m_specularParameter);
     m_normalDiffuseEffect->addParameter(m_shininessParameter);
+    m_normalDiffuseEffect->addParameter(m_lightPositionParameter);
+    m_normalDiffuseEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
     static_cast<QMaterial *>(q_ptr)->setEffect(m_normalDiffuseEffect);

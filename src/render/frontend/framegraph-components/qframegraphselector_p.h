@@ -40,7 +40,7 @@
 ****************************************************************************/
 
 #ifndef QT3D_QFRAMEGRAPHSELECTOR_P_H
-#define QT3D_QFRANEGRAPHSELECTOR_P_H
+#define QT3D_QFRAMEGRAPHSELECTOR_P_H
 
 #include <Qt3DRenderer/private/qframegraphnode_p.h>
 

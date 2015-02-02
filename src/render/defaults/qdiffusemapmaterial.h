@@ -39,7 +39,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QDIFFUSEGMAPMATERIAL_H
+#ifndef QT3D_RENDER_QDIFFUSEMAPMATERIAL_H
 #define QT3D_RENDER_QDIFFUSEMAPMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
