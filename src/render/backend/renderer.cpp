@@ -328,6 +328,7 @@ void Renderer::initialize(QOpenGLContext *context)
 
     QOpenGLContext* ctx = context ? context : new QOpenGLContext;
     if (!context) {
+        qCDebug(Backend) << "Creating OpenGL context with format" << sf;
         ctx->setFormat(sf);
         if (!ctx->create())
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";

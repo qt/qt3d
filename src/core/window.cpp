@@ -44,6 +44,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QGuiApplication>
+#include <QOpenGLContext>
 
 #include "qnode.h"
 #include "qcamera.h"
@@ -64,10 +65,12 @@ Window::Window(QScreen *screen)
     resize(1024, 768);
 
     QSurfaceFormat format;
-    format.setVersion(4, 3);
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(4, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
     format.setDepthBufferSize( 24 );
     format.setSamples( 4 );
-    format.setProfile(QSurfaceFormat::CoreProfile);
     setFormat(format);
     create();
 }
