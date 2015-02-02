@@ -72,7 +72,7 @@ enum StateMask
 
 typedef quint64 StateMaskSet;
 
-class RenderState
+class Q_AUTOTEST_EXPORT RenderState
 {
 public:
     virtual ~RenderState() {}

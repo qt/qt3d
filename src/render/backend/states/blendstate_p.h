@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace Render {
 
-class BlendState : public GenericState2<BlendState, GLenum, GLenum>
+class Q_AUTOTEST_EXPORT BlendState : public GenericState2<BlendState, GLenum, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -64,7 +64,7 @@ private:
     BlendState(GLenum src, GLenum dst);
 };
 
-class BlendEquation : public GenericState1<BlendEquation, GLenum>
+class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendEquation, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -79,7 +79,7 @@ private:
 };
 
 
-class AlphaFunc : public GenericState2<AlphaFunc, GLenum, GLclampf>
+class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState2<AlphaFunc, GLenum, GLclampf>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -92,7 +92,7 @@ private:
     AlphaFunc(GLenum func, GLclampf value);
 };
 
-class DepthTest : public GenericState1<DepthTest, GLenum>
+class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTest, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -106,7 +106,7 @@ private:
     DepthTest(GLenum func);
 };
 
-class DepthMask : public GenericState1<DepthMask, GLboolean>
+class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthMask, GLboolean>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -120,7 +120,7 @@ private:
     DepthMask(GLboolean func);
 };
 
-class CullFace : public GenericState1<CullFace, GLenum>
+class Q_AUTOTEST_EXPORT CullFace : public GenericState1<CullFace, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -134,7 +134,7 @@ private:
     CullFace(GLenum func);
 };
 
-class FrontFace : public GenericState1<FrontFace, GLenum>
+class Q_AUTOTEST_EXPORT FrontFace : public GenericState1<FrontFace, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -147,7 +147,7 @@ private:
     FrontFace(GLenum func);
 };
 
-class Dithering : public Qt3D::Render::RenderState
+class Q_AUTOTEST_EXPORT Dithering : public Qt3D::Render::RenderState
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -161,7 +161,7 @@ private:
     Dithering();
 };
 
-class ScissorTest : public GenericState4<ScissorTest, int, int, int, int>
+class Q_AUTOTEST_EXPORT ScissorTest : public GenericState4<ScissorTest, int, int, int, int>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -174,7 +174,7 @@ private:
     ScissorTest(int left, int bottom, int width, int height);
 };
 
-class StencilTest : public GenericState3<StencilTest, uint, GLenum, GLenum>
+class Q_AUTOTEST_EXPORT StencilTest : public GenericState3<StencilTest, uint, GLenum, GLenum>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -186,7 +186,7 @@ private:
     StencilTest(uint mask, GLenum func, GLenum faceMode);
 };
 
-class AlphaCoverage : public Qt3D::Render::RenderState
+class Q_AUTOTEST_EXPORT AlphaCoverage : public Qt3D::Render::RenderState
 {
 public:
     void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -201,7 +201,7 @@ private:
     AlphaCoverage();
 };
 
-class PolygonOffset : public GenericState2<PolygonOffset, GLfloat, GLfloat>
+class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffset, GLfloat, GLfloat>
 {
 public:
     void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -214,7 +214,7 @@ private:
     PolygonOffset(GLfloat factor, GLfloat units);
 };
 
-class ColorMask : public GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>
+class Q_AUTOTEST_EXPORT ColorMask : public GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>
 {
 public:
     void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
