@@ -70,6 +70,8 @@ public:
     void setTextureManager(TextureManager *textureManager);
 
 private:
+    QVariant toBackendValue(const QVariant &value);
+
     ShaderDataManager *m_shaderDataManager;
     TextureManager *m_textureManager;
 

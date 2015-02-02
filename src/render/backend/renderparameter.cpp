@@ -42,6 +42,8 @@
 #include "renderparameter_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qshaderdata.h>
 
 #include <Qt3DRenderer/private/managers_p.h>
 
@@ -62,7 +64,7 @@ void RenderParameter::updateFromPeer(QNode *mat)
 {
     QParameter *param = static_cast<QParameter *>(mat);
     m_name = param->name();
-    m_value = param->value();
+    m_value = toBackendValue(param->value());
 }
 
 void RenderParameter::sceneChangeEvent(const QSceneChangePtr &e)
@@ -73,7 +75,7 @@ void RenderParameter::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("name"))
             m_name = propertyChange->value().toString();
         else if (propertyChange->propertyName() == QByteArrayLiteral("value"))
-            m_value = propertyChange->value();
+            m_value = toBackendValue(propertyChange->value());
     }
 }
 
@@ -95,6 +97,22 @@ void RenderParameter::setShaderDataManager(ShaderDataManager *shaderDataManager)
 void RenderParameter::setTextureManager(TextureManager *textureManager)
 {
     m_textureManager = textureManager;
+}
+
+QVariant RenderParameter::toBackendValue(const QVariant &value)
+{
+    QNode *node = value.value<QNode *>();
+
+    if (node == Q_NULLPTR) {
+        return value;
+    } else if (qobject_cast<QTexture*>(node)) {
+        return QVariant::fromValue(m_textureManager->getOrCreateResource(node->id()));
+    } else if (qobject_cast<QShaderData*>(node)) {
+        return QVariant::fromValue(m_shaderDataManager->getOrCreateResource(node->id()));
+    } else {
+        qFatal("Texture and ShaderData are the only types of Node allowed as parameters");
+        return QVariant();
+    }
 }
 
 RenderParameterFunctor::RenderParameterFunctor(ParameterManager *parameterManager, ShaderDataManager *shaderDataManager, TextureManager *textureManager)

@@ -66,7 +66,6 @@ namespace Qt3D {
 
 class QRenderPass;
 class QFrameAllocator;
-class QShaderData;
 
 namespace Render {
 
@@ -269,7 +268,7 @@ private:
                                                     bool updatedPropertiesOnlyue);
     void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
                                                RenderShader *shader,
-                                               QShaderData *shaderData,
+                                               RenderShaderData *shaderData,
                                                const QString &structName);
     void buildSortingKey(RenderCommand *command);
 };
