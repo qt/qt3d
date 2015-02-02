@@ -689,25 +689,28 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             command->m_uniforms = m_defaultUniformPack;
         }
 
-        command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-        if (command->m_vao.isNull()) {
-            // Either VAO has not been created for QMeshData and RenderPass
-            // Or there is no RenderPass
-            // Tries to use vao for Mesh source and Default Technique
-            qCDebug(Backend) << Q_FUNC_INFO << "VAO Handle is null";
-            qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
-            // Check if HShader exists. If it doesn't that means there is no RenderPass
-            // Otherwise use a default renderpass name
+        QOpenGLVertexArrayObject *vao = Q_NULLPTR;
+        if (m_graphicsContext->supportsVAO()) {
             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-            // Check if VAO pointer for the QMeshData / RenderShader exists
             if (command->m_vao.isNull()) {
-                qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-                *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+                // Either VAO has not been created for QMeshData and RenderPass
+                // Or there is no RenderPass
+                // Tries to use vao for Mesh source and Default Technique
+                qCDebug(Backend) << Q_FUNC_INFO << "VAO Handle is null";
+                qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
+                // Check if HShader exists. If it doesn't that means there is no RenderPass
+                // Otherwise use a default renderpass name
+                command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+                // Check if VAO pointer for the QMeshData / RenderShader exists
+                if (command->m_vao.isNull()) {
+                    qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
+                    command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+                    *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+                }
             }
+            vao = *(m_vaoManager->data(command->m_vao));
+            Q_ASSERT(vao);
         }
-        QOpenGLVertexArrayObject *vao = *(m_vaoManager->data(command->m_vao));
-        Q_ASSERT(vao);
 
         // The VAO should be created only once for a QMeshData and a ShaderProgram
         // Manager should have a VAO Manager that are indexed by QMeshData and Shader
@@ -725,11 +728,12 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Uniform and Attributes info from the shader
         // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
         // Before the shader was loader
-        if (!command->m_parameterAttributeToShaderNames.isEmpty() && !vao->isCreated()) {
-            vao->create();
-            vao->bind();
-
-            qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
+        if (!command->m_parameterAttributeToShaderNames.isEmpty() && (!vao || !vao->isCreated())) {
+            if (vao) {
+                vao->create();
+                vao->bind();
+                qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
+            }
 
             // TO DO : Do that in a better / nicer way
             Q_FOREACH (QString nm, meshData->attributeNames()) {
@@ -741,7 +745,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             }
             if (drawIndexed)
                 m_graphicsContext->specifyIndices(meshData->indexAttribute().staticCast<Attribute>());
-            vao->release();
+
+            if (vao)
+                vao->release();
         }
 
         //// Update program uniforms
@@ -757,30 +763,31 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        if (vao->isCreated()) {
+        if (vao && vao->isCreated())
             vao->bind();
-            GLint primType = meshData->primitiveType();
-            GLint primCount = meshData->primitiveCount();
-            GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-            if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
-                m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
+        GLint primType = meshData->primitiveType();
+        GLint primCount = meshData->primitiveCount();
+        GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-            if (drawIndexed) {
-                m_graphicsContext->drawElements(primType,
-                                                primCount,
-                                                indexType,
-                                                reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
-            } else {
-                m_graphicsContext->drawArrays(primType, 0, primCount);
-            }
+        if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
+            m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
 
-            int err = m_graphicsContext->openGLContext()->functions()->glGetError();
-            if (err)
-                qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-
-            vao->release();
+        if (drawIndexed) {
+            m_graphicsContext->drawElements(primType,
+                                            primCount,
+                                            indexType,
+                                            reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
+        } else {
+            m_graphicsContext->drawArrays(primType, 0, primCount);
         }
+
+        int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+        if (err)
+            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+
+        if (vao && vao->isCreated())
+            vao->release();
     }
 }
 

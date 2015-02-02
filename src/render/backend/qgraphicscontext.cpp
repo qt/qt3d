@@ -98,6 +98,7 @@ QGraphicsContext::QGraphicsContext()
     , m_renderer(Q_NULLPTR)
     , m_contextInfo(new QOpenGLFilter())
     , m_uboTempArray(QByteArray(1024, 0))
+    , m_supportsVAO(true)
 {
     static_contexts[m_id] = this;
 }
@@ -123,6 +124,16 @@ void QGraphicsContext::initialize()
     m_pinnedTextureUnits = QBitArray(numTexUnits);
     m_activeTextures.resize(numTexUnits);
     m_textureScopes.resize(numTexUnits);
+
+    if (m_gl->format().majorVersion() >= 3) {
+        m_supportsVAO = true;
+    } else {
+        QSet<QByteArray> extensions = m_gl->extensions();
+        m_supportsVAO = extensions.contains(QByteArrayLiteral("GL_OES_vertex_array_object"))
+            || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
+            || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
+    }
+    qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
 bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)

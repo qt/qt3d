@@ -187,6 +187,8 @@ public:
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
 
+    bool supportsVAO() const { return m_supportsVAO; }
+
 private:
     void initialize();
 
@@ -230,6 +232,8 @@ private:
     QOpenGLFilter *m_contextInfo;
 
     QByteArray m_uboTempArray;
+
+    bool m_supportsVAO;
 };
 
 } // Render
