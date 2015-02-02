@@ -51,6 +51,10 @@ namespace Qt3D {
 
 namespace Render {
 
+class ParameterManager;
+class ShaderDataManager;
+class TextureManager;
+
 class RenderParameter : public QBackendNode
 {
 public:
@@ -62,9 +66,31 @@ public:
     QString name() const;
     QVariant value() const;
 
+    void setShaderDataManager(ShaderDataManager *shaderDataManager);
+    void setTextureManager(TextureManager *textureManager);
+
 private:
+    ShaderDataManager *m_shaderDataManager;
+    TextureManager *m_textureManager;
+
     QString m_name;
     QVariant m_value;
+};
+
+class RenderParameterFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderParameterFunctor(ParameterManager *parameterManager,
+                                    ShaderDataManager *shaderDataManager,
+                                    TextureManager *textureManager);
+    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
+    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+
+private:
+    ParameterManager *m_parameterManager;
+    ShaderDataManager *m_shaderDataManager;
+    TextureManager *m_textureManager;
 };
 
 } // Render

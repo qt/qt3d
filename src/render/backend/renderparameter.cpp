@@ -43,6 +43,8 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qparameter.h>
 
+#include <Qt3DRenderer/private/managers_p.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -51,6 +53,8 @@ namespace Render {
 
 RenderParameter::RenderParameter()
     : QBackendNode()
+    , m_shaderDataManager(Q_NULLPTR)
+    , m_textureManager(Q_NULLPTR)
 {
 }
 
@@ -81,6 +85,43 @@ QString RenderParameter::name() const
 QVariant RenderParameter::value() const
 {
     return m_value;
+}
+
+void RenderParameter::setShaderDataManager(ShaderDataManager *shaderDataManager)
+{
+    m_shaderDataManager = shaderDataManager;
+}
+
+void RenderParameter::setTextureManager(TextureManager *textureManager)
+{
+    m_textureManager = textureManager;
+}
+
+RenderParameterFunctor::RenderParameterFunctor(ParameterManager *parameterManager, ShaderDataManager *shaderDataManager, TextureManager *textureManager)
+    : m_parameterManager(parameterManager)
+    , m_shaderDataManager(shaderDataManager)
+    , m_textureManager(textureManager)
+{
+}
+
+QBackendNode *RenderParameterFunctor::create(QNode *frontend) const
+{
+    HParameter parameterNodeHandle = m_parameterManager->getOrAcquireHandle(frontend->id());
+    RenderParameter *parameter = m_parameterManager->data(parameterNodeHandle);
+    parameter->setShaderDataManager(m_shaderDataManager);
+    parameter->setTextureManager(m_textureManager);
+    parameter->setPeer(frontend);
+    return parameter;
+}
+
+QBackendNode *RenderParameterFunctor::get(QNode *frontend) const
+{
+    return m_parameterManager->lookupResource(frontend->id());
+}
+
+void RenderParameterFunctor::destroy(QNode *frontend) const
+{
+    m_parameterManager->releaseResource(frontend->id());
 }
 
 } // Render
