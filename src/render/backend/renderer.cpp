@@ -562,7 +562,8 @@ void Renderer::submitRenderViews(int maxFrameCount)
     timer.start();
 
     // We might not want to render on the default FBO
-    const GLuint defaultFboId = m_graphicsContext->boundFrameBufferObject();
+    bool defaultFboIdValid = false;
+    GLuint defaultFboId = 0;
 
     while (m_renderQueues->queuedFrames() > 0)
     {
@@ -590,6 +591,11 @@ void Renderer::submitRenderViews(int maxFrameCount)
         // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
         if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor()))
             break;
+
+        if (!defaultFboIdValid) {
+            defaultFboIdValid = true;
+            defaultFboId = m_graphicsContext->boundFrameBufferObject();
+        }
 
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
