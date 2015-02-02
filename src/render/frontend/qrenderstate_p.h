@@ -54,8 +54,10 @@ class QRenderStatePrivate : public QNodePrivate
 {
 public:
 
-    QRenderStatePrivate(QRenderState *qq);
+    QRenderStatePrivate(QRenderState *qq, QRenderState::Type type);
     Q_DECLARE_PUBLIC(QRenderState)
+
+    const QRenderState::Type m_type;
 };
 
 }

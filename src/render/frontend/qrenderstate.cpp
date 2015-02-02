@@ -47,9 +47,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderStatePrivate::QRenderStatePrivate(QRenderState *qq)
-    : QNodePrivate(qq)
+QRenderStatePrivate::QRenderStatePrivate(QRenderState *qq, QRenderState::Type type)
+    : QNodePrivate(qq),
+      m_type(type)
 {
+}
+
+QRenderState::Type QRenderState::type() const
+{
+    Q_D(const QRenderState);
+    return d->m_type;
 }
 
 QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)

@@ -53,7 +53,7 @@ class QBlendStatePrivate : public QRenderStatePrivate
 {
 public:
     QBlendStatePrivate(QBlendState *qq)
-        : QRenderStatePrivate(qq)
+        : QRenderStatePrivate(qq, QRenderState::BlendState)
         , m_srcRGB(QBlendState::Zero)
         , m_srcAlpha(QBlendState::Zero)
         , m_dstRGB(QBlendState::Zero)

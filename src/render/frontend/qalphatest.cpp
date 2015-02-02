@@ -53,7 +53,7 @@ class QAlphaTestPrivate : public QRenderStatePrivate
 {
 public:
     QAlphaTestPrivate(QAlphaTest *qq)
-        : QRenderStatePrivate(qq)
+        : QRenderStatePrivate(qq, QRenderState::AlphaTest)
         , m_func(QAlphaTest::Never)
         , m_clamp(0.0f)
     {

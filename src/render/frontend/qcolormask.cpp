@@ -50,7 +50,7 @@ class QColorMaskPrivate : public QRenderStatePrivate
 {
 public:
     QColorMaskPrivate(QColorMask *qq)
-        : QRenderStatePrivate(qq)
+        : QRenderStatePrivate(qq, QRenderState::ColorMask)
         , m_red(true)
         , m_green(true)
         , m_blue(true)

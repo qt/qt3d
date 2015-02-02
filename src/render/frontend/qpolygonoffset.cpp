@@ -50,7 +50,7 @@ class QPolygonOffsetPrivate : public QRenderStatePrivate
 {
 public:
     QPolygonOffsetPrivate(QPolygonOffset *qq)
-        : QRenderStatePrivate(qq)
+        : QRenderStatePrivate(qq, QRenderState::PolygonOffset)
         , m_factor(0)
         , m_units(0)
     {
