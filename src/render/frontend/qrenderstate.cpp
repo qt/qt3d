@@ -52,11 +52,6 @@ QRenderStatePrivate::QRenderStatePrivate(QRenderState *qq)
 {
 }
 
-QRenderState::QRenderState(QNode *parent)
-    : QNode(*new QRenderStatePrivate(this), parent)
-{
-}
-
 QRenderState::QRenderState(QRenderStatePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

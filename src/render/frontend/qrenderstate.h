@@ -56,7 +56,6 @@ class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
 {
     Q_OBJECT
 public:
-    explicit QRenderState(QNode *parent = 0);
 
 protected:
     QRenderState(QRenderStatePrivate &dd, QNode *parent = 0);
