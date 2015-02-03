@@ -65,7 +65,7 @@ namespace Qt3D {
 /*!
  * \class AssimpParser
  * \namespace Qt3D
- * \since 5.3
+ * \since 5.5
  *
  * \brief Provides a generic way of loading various 3D assets
  * format into a Qt3D scene.
@@ -202,6 +202,33 @@ private:
         bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
     private:
         QMeshDataPtr m_meshData;
+    };
+};
+
+class AssimpRawTextureImage : public QAbstractTextureImage
+{
+    Q_OBJECT
+public:
+    explicit AssimpRawTextureImage(QNode *parent = 0);
+
+    QTextureDataFunctorPtr dataFunctor() const Q_DECL_FINAL;
+
+    void setData(const QByteArray &data);
+
+private:
+    QByteArray m_data;
+    QT3D_CLONEABLE(AssimpRawTextureImage)
+
+    class AssimpRawTextureImageFunctor : public QTextureDataFunctor
+    {
+    public:
+        explicit AssimpRawTextureImageFunctor(const QByteArray &data);
+
+        TexImageDataPtr operator()() Q_DECL_FINAL;
+        bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL;
+
+    private:
+        QByteArray m_data;
     };
 };
 
@@ -594,7 +621,7 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
 {
     aiTexture *assimpTexture = m_scene->m_aiScene->mTextures[textureIndex];
     QAbstractTextureProvider *texture = new QTexture2D();
-    TexImageDataPtr textureData(new TexImageData());
+    AssimpRawTextureImage *imageData = new AssimpRawTextureImage();
 
     bool isCompressed = assimpTexture->mHeight == 0;
     uint textureSize = assimpTexture->mWidth *
@@ -609,10 +636,8 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
         textureContent[idx + 2] = texel.b;
         textureContent[idx + 3] = texel.a;
     }
-    textureData->setData(QByteArray(textureContent, textureSize * 4),
-                         QOpenGLTexture::RGBA,
-                         QOpenGLTexture::UInt8);
-    texture->addImageData(textureData);
+    imageData->setData(QByteArray(textureContent, textureSize * 4));
+    texture->addTextureImage(imageData);
     m_scene->m_embeddedTextures[textureIndex] = texture;
 }
 
@@ -771,24 +796,16 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
             QString fullPath = m_sceneDir.absoluteFilePath(QString::fromUtf8(path.data));
             // Load texture if not already loaded
-            bool textureLoaded = true;
             if (!m_scene->m_materialTextures.contains(fullPath)) {
                 QAbstractTextureProvider *tex = new QTexture2D();
-                QImage textureImage;
-                if (!textureImage.load(fullPath) || !textureImage.isNull()) {
-                    tex->setFromQImage(textureImage);
-                    m_scene->m_materialTextures.insert(fullPath, tex);
-                    qCWarning(AssimpParserLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
-                }
-                else {
-                    qCWarning(AssimpParserLog) << Q_FUNC_INFO << " Invalid Texture " << fullPath;
-                    textureLoaded = false;
-                }
+                QTextureImage *texImage = new QTextureImage();
+                texImage->setSource(fullPath);
+                tex->addTextureImage(texImage);
+                m_scene->m_materialTextures.insert(fullPath, tex);
+                qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
             }
-            if (textureLoaded) {
-                material->addParameter(new QParameter(m_scene->m_textureToParameterName[textureType[i]],
-                                       m_scene->m_materialTextures[fullPath]));
-            }
+            material->addParameter(new QParameter(m_scene->m_textureToParameterName[textureType[i]],
+                                   m_scene->m_materialTextures[fullPath]));
         }
     }
 }
@@ -850,6 +867,43 @@ QMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
 bool AssimpMesh::AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
 {
     return false;
+}
+
+AssimpRawTextureImage::AssimpRawTextureImage(QNode *parent)
+    : QAbstractTextureImage(parent)
+{
+}
+
+QTextureDataFunctorPtr AssimpRawTextureImage::dataFunctor() const
+{
+    return QTextureDataFunctorPtr(new AssimpRawTextureImageFunctor(m_data));
+}
+
+void AssimpRawTextureImage::setData(const QByteArray &data)
+{
+    if (data != m_data) {
+        m_data = data;
+        update();
+    }
+}
+
+AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFunctor(const QByteArray &data)
+    : QTextureDataFunctor()
+    , m_data(data)
+{
+}
+
+TexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
+{
+    TexImageDataPtr dataPtr;
+    dataPtr->setData(m_data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
+    return dataPtr;
+}
+
+bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTextureDataFunctor &other) const
+{
+    const AssimpRawTextureImageFunctor *otherFunctor = dynamic_cast<const AssimpRawTextureImageFunctor *>(&other);
+    return (otherFunctor != Q_NULLPTR && otherFunctor->m_data == m_data);
 }
 
 AssimpParser::SceneImporter::SceneImporter()
