@@ -37,6 +37,7 @@ HEADERS += \
     $$PWD/qbackendscenepropertychange_p.h \
     $$PWD/qobservableinterface_p.h \
     $$PWD/qobserverinterface_p.h \
+    $$PWD/qlockableobserverinterface_p.h \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qt3dcore_global_p.h
 
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/corelogging.cpp \
     $$PWD/qobservableinterface.cpp \
     $$PWD/qobserverinterface.cpp \
+    $$PWD/qlockableobserverinterface.cpp \
     $$PWD/qscenechange.cpp \
     $$PWD/qscenepropertychange.cpp \
     $$PWD/qsceneobserverinterface.cpp \

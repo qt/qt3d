@@ -203,7 +203,7 @@ void QNodePrivate::propertyChanged(int propertyIndex)
 }
 
 // Called in the main thread by QScene -> following QEvent::childAdded / addChild
-void QNodePrivate::setArbiter(QChangeArbiter *arbiter)
+void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
     if (m_changeArbiter && m_changeArbiter != arbiter)
         unregisterNotifiedProperties();

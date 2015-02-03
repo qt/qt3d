@@ -43,7 +43,7 @@
 #include <QHash>
 #include <QReadLocker>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -68,7 +68,7 @@ public:
     QMultiHash<QNodeId, QNodeId> m_componentToEntities;
     QMultiHash<QNodeId, QObservableInterface *> m_observablesLookupTable;
     QHash<QObservableInterface *, QNodeId> m_observableToUuid;
-    QChangeArbiter *m_arbiter;
+    QLockableObserverInterface *m_arbiter;
     QHash<QNodeId, QNode *> m_clonesLookupTable;
     mutable QReadWriteLock m_lock;
 };
@@ -163,7 +163,7 @@ QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
     return d->m_observableToUuid.value(observable);
 }
 
-void QScene::setArbiter(QChangeArbiter *arbiter)
+void QScene::setArbiter(QLockableObserverInterface *arbiter)
 {
     Q_D(QScene);
     d->m_arbiter = arbiter;

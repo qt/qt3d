@@ -52,7 +52,7 @@
 #include <QMutex>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +67,7 @@ class QSceneInterface;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter
         : public QObject
-        , public QObserverInterface
+        , public QLockableObserverInterface
 {
     Q_OBJECT
 public:
@@ -87,8 +87,8 @@ public:
     void registerSceneObserver(QSceneObserverInterface *observer);
     void unregisterSceneObserver(QSceneObserverInterface *observer);
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;                 // QObserverInterface impl
-    void sceneChangeEventWithLock(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;         // QLockableObserverInterface impl
+    void sceneChangeEventWithLock(const QSceneChangePtr &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
 
     Q_INVOKABLE void setPostman(Qt3D::QObserverInterface *postman);
     Q_INVOKABLE void setScene(Qt3D::QSceneInterface *scene);

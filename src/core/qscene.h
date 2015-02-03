@@ -72,7 +72,7 @@ public:
     QNode *lookupNode(const QNodeId &id) const Q_DECL_OVERRIDE;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
 
-    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
+    void setArbiter(Qt3D::QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
 
     // Component -> Entities
     QList<QNodeId> entitiesForComponent(const QNodeId &id) const Q_DECL_OVERRIDE;

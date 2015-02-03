@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -39,30 +39,16 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QOBSERVABLEINTERFACE_P_H
-#define QT3D_QOBSERVABLEINTERFACE_P_H
-
-#include <Qt3DCore/qscenechange.h>
+#include "qlockableobserverinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QLockableObserverInterface;
-
-class QT3DCORESHARED_EXPORT QObservableInterface
+QLockableObserverInterface::~QLockableObserverInterface()
 {
-public:
-    virtual ~QObservableInterface();
-
-    virtual void setArbiter(QLockableObserverInterface *arbiter) = 0;
-
-protected:
-    virtual void notifyObservers(const QSceneChangePtr &e) = 0;
-};
+}
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QOBSERVABLEINTERFACE_P_H

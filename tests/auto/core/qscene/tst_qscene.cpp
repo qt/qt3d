@@ -45,8 +45,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
-#include <Qt3DCore/private/qobserverinterface_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <private/qnode_p.h>
 
 class tst_QScene : public QObject
@@ -67,10 +66,17 @@ private slots:
     void removeEntityForComponent();
 };
 
+class tst_LockableObserver : public Qt3D::QLockableObserverInterface
+{
+public:
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_OVERRIDE {}
+    void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &) Q_DECL_OVERRIDE {}
+};
+
 class tst_Observable : public Qt3D::QObservableInterface
 {
 public:
-    void setArbiter(Qt3D::QChangeArbiter *observer)
+    void setArbiter(Qt3D::QLockableObserverInterface *observer)
     {
         m_arbiter = observer;
     }
@@ -79,7 +85,7 @@ protected:
     void notifyObservers(const Qt3D::QSceneChangePtr &) {}
 
 private:
-    Qt3D::QChangeArbiter *m_arbiter;
+    Qt3D::QLockableObserverInterface *m_arbiter;
 };
 
 class tst_Node : public Qt3D::QNode
@@ -111,7 +117,7 @@ void tst_QScene::addObservable()
         observables.append(new tst_Observable());
 
     Qt3D::QScene *scene = new Qt3D::QScene;
-    scene->setArbiter(new Qt3D::QChangeArbiter());
+    scene->setArbiter(new tst_LockableObserver);
 
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i), node1->id());
@@ -143,7 +149,7 @@ void tst_QScene::addNodeObservable()
         nodes.append(new tst_Node());
 
     Qt3D::QScene *scene = new Qt3D::QScene;
-    scene->setArbiter(new Qt3D::QChangeArbiter());
+    scene->setArbiter(new tst_LockableObserver);
 
     for (int i = 0; i < 10; i++)
         scene->addObservable(nodes.at(i));
@@ -165,7 +171,7 @@ void tst_QScene::removeObservable()
         observables.append(new tst_Observable());
 
     Qt3D::QScene *scene = new Qt3D::QScene;
-    scene->setArbiter(new Qt3D::QChangeArbiter());
+    scene->setArbiter(new tst_LockableObserver);
 
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i), node1->id());
@@ -206,7 +212,7 @@ void tst_QScene::removeNodeObservable()
         observables.append(new tst_Observable());
 
     Qt3D::QScene *scene = new Qt3D::QScene;
-    scene->setArbiter(new Qt3D::QChangeArbiter());
+    scene->setArbiter(new tst_LockableObserver);
 
     scene->addObservable(node1);
     scene->addObservable(node2);

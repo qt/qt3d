@@ -47,7 +47,7 @@
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
 public:
     QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
 
-    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
+    void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -71,7 +71,7 @@ public:
     QBackendNode *q_ptr;
     QBackendNode::Mode m_mode;
 
-    QChangeArbiter *m_arbiter;
+    QLockableObserverInterface *m_arbiter;
     QNodeId m_peerUuid;
 };
 

@@ -42,7 +42,6 @@
 #include "qbackendnode.h"
 #include "qbackendnode_p.h"
 #include "qaspectengine.h"
-#include "qchangearbiter_p.h"
 #include "qnode.h"
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +56,7 @@ QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mo
 }
 
 // Called by backend thread (renderer or other) while we are locked to sync changes
-void QBackendNodePrivate::setArbiter(QChangeArbiter *arbiter)
+void QBackendNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
     Q_ASSERT(m_mode == QBackendNode::ReadWrite);
     m_arbiter = arbiter;

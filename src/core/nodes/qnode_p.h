@@ -64,7 +64,7 @@ public:
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;
 
-    void setArbiter(QChangeArbiter *arbiter) Q_DECL_OVERRIDE;
+    void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
 
     void notifyPropertyChange(const char *name, const QVariant &value);
     virtual void notifyObservers(const QSceneChangePtr &change);
@@ -75,7 +75,7 @@ public:
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
-    QChangeArbiter *m_changeArbiter;
+    QLockableObserverInterface *m_changeArbiter;
     QSceneInterface *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;

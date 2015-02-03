@@ -54,7 +54,7 @@ namespace Qt3D {
 
 class QNode;
 class QObservableInterface;
-class QChangeArbiter;
+class QLockableObserverInterface;
 
 typedef QList<QObservableInterface *> QObservableList;
 
@@ -69,7 +69,7 @@ public:
     virtual QObservableList lookupObservables(const QNodeId &id) const = 0;
     virtual QNode *lookupNode(const QNodeId &id) const = 0;
     virtual QNodeId nodeIdFromObservable(QObservableInterface *observable) const = 0;
-    virtual void setArbiter(QChangeArbiter *arbiter) = 0;
+    virtual void setArbiter(QLockableObserverInterface *arbiter) = 0;
 
     virtual QList<QNodeId> entitiesForComponent(const QNodeId &componentUuid) const = 0;
     virtual void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid) = 0;
