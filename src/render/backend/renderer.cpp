@@ -718,7 +718,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Uniform and Attributes info from the shader
         // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
         // Before the shader was loader
+        bool specified = false;
         if (!command->m_parameterAttributeToShaderNames.isEmpty() && (!vao || !vao->isCreated())) {
+            specified = true;
             if (vao) {
                 vao->create();
                 vao->bind();
@@ -753,31 +755,33 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        if (vao && vao->isCreated())
-            vao->bind();
+        if (specified || (vao && vao->isCreated())) {
+            if (vao && vao->isCreated())
+                vao->bind();
 
-        GLint primType = meshData->primitiveType();
-        GLint primCount = meshData->primitiveCount();
-        GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
+            GLint primType = meshData->primitiveType();
+            GLint primCount = meshData->primitiveCount();
+            GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
 
-        if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
-            m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
+            if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
+                m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
 
-        if (drawIndexed) {
-            m_graphicsContext->drawElements(primType,
-                                            primCount,
-                                            indexType,
-                                            reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
-        } else {
-            m_graphicsContext->drawArrays(primType, 0, primCount);
+            if (drawIndexed) {
+                m_graphicsContext->drawElements(primType,
+                                                primCount,
+                                                indexType,
+                                                reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
+            } else {
+                m_graphicsContext->drawArrays(primType, 0, primCount);
+            }
+
+            int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+            if (err)
+                qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+
+            if (vao && vao->isCreated())
+                vao->release();
         }
-
-        int err = m_graphicsContext->openGLContext()->functions()->glGetError();
-        if (err)
-            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-
-        if (vao && vao->isCreated())
-            vao->release();
     }
 }
 
