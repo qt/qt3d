@@ -91,6 +91,9 @@ private:
     Qt3D::QAbstractTextureProvider *m_diffuseTexture;
     Qt3D::QAbstractTextureProvider *m_normalTexture;
     Qt3D::QAbstractTextureProvider *m_specularTexture;
+    Qt3D::QTextureImage *m_diffuseTextureImage;
+    Qt3D::QTextureImage *m_normalTextureImage;
+    Qt3D::QTextureImage *m_specularTextureImage;
 
     void setNormalTextureSource();
     void setDiffuseTextureSource();

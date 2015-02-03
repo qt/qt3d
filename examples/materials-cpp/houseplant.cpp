@@ -66,6 +66,13 @@ HousePlant::HousePlant(Qt3D::QNode *parent)
     , m_potMaterial(new Qt3D::QNormalDiffuseMapMaterial())
     , m_plantMaterial(new Qt3D::QNormalDiffuseMapAlphaMaterial())
     , m_coverMaterial(new Qt3D::QNormalDiffuseMapMaterial())
+    , m_potImage(new Qt3D::QTextureImage())
+
+    , m_potNormalImage(new Qt3D::QTextureImage())
+    , m_plantImage(new Qt3D::QTextureImage())
+    , m_plantNormalImage(new Qt3D::QTextureImage())
+    , m_coverImage(new Qt3D::QTextureImage())
+    , m_coverNormalImage(new Qt3D::QTextureImage())
     , m_plantType(Bamboo)
     , m_potShape(Cross)
 {
@@ -74,35 +81,20 @@ HousePlant::HousePlant(Qt3D::QNode *parent)
     m_plant->addComponent(m_plantMaterial);
     m_cover->addComponent(m_coverMaterial);
 
+    m_potMaterial->diffuse()->addTextureImage(m_potImage);
+    m_potMaterial->normal()->addTextureImage(m_potNormalImage);
+    m_plantMaterial->diffuse()->addTextureImage(m_plantImage);
+    m_plantMaterial->normal()->addTextureImage(m_plantNormalImage);
+    m_coverMaterial->diffuse()->addTextureImage(m_coverImage);
+    m_coverMaterial->normal()->addTextureImage(m_coverNormalImage);
+
     updatePlantType();
     updatePotShape();
 
-    QImage img;
-
-    if (img.load(QStringLiteral(":/assets/houseplants/cover.webp"))) {
-        m_coverMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_coverMaterial->diffuse()->setFromQImage(img);
-    }
-    if (img.load(QStringLiteral(":/assets/houseplants/cover_normal.webp"))) {
-        m_coverMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_coverMaterial->normal()->setFromQImage(img);
-    }
-    if (img.load(QStringLiteral(":/assets/houseplants/pot.webp"))) {
-        m_potMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                 Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                 Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_potMaterial->diffuse()->setFromQImage(img);
-    }
-    if (img.load(QStringLiteral(":/assets/houseplants/pot_normal.webp"))) {
-        m_potMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                 Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                 Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_potMaterial->normal()->setFromQImage(img);
-    }
+    m_coverImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/cover.webp")));
+    m_coverNormalImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/cover_normal.webp")));
+    m_potImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/pot.webp")));
+    m_potNormalImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/pot_normal.webp")));
 
     m_potMaterial->setShininess(10.0f);
     m_potMaterial->setSpecular(QColor::fromRgbF(0.75f, 0.75f, 0.75f, 1.0f));
@@ -192,18 +184,8 @@ void HousePlant::updatePotShape()
 void HousePlant::updatePlantType()
 {
     m_plant->mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/") + potNames[m_potShape] + QStringLiteral("-") + plantNames[m_plantType] + QStringLiteral(".obj")));
-    QImage img;
-    if (img.load(QStringLiteral(":/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral(".webp"))) {
-        m_plantMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_plantMaterial->diffuse()->setFromQImage(img);
-    }
-    if (img.load(QStringLiteral(":/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral("_normal.webp"))) {
-        m_plantMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        m_plantMaterial->normal()->setFromQImage(img);
-    }
+
+    m_plantImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral(".webp")));
+    m_plantNormalImage->setSource(QUrl(QStringLiteral("qrc:/assets/houseplants/") + plantNames[m_plantType] + QStringLiteral("_normal.webp")));
 }
 

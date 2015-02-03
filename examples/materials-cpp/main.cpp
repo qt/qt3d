@@ -53,6 +53,7 @@
 #include <Qt3DRenderer/QDiffuseMapMaterial>
 #include <Qt3DRenderer/QForwardRenderer>
 #include <Qt3DRenderer/QFrameGraph>
+#include <Qt3DRenderer/QTextureImage>
 
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"
@@ -107,28 +108,18 @@ int main(int argc, char* argv[])
     normalDiffuseSpecularMapMaterial->setShininess(80.0f);
     normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
 
-    QImage img;
-    // Providing image loaders for textures would make sense
-    if (img.load(QStringLiteral(":/assets/textures/pattern_09/diffuse.webp"))) {
-        normalDiffuseSpecularMapMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                                   Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                                   Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        normalDiffuseSpecularMapMaterial->diffuse()->setFromQImage(img);
-    }
+    Qt3D::QTextureImage *diffuseImage = new Qt3D::QTextureImage();
+    diffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/diffuse.webp")));
+    normalDiffuseSpecularMapMaterial->diffuse()->addTextureImage(diffuseImage);
 
-    if (img.load(QStringLiteral(":/assets/textures/pattern_09/specular.webp"))) {
-        normalDiffuseSpecularMapMaterial->specular()->setFormat(img.hasAlphaChannel() ?
-                                                                    Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                                    Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        normalDiffuseSpecularMapMaterial->specular()->setFromQImage(img);
-    }
+    Qt3D::QTextureImage *specularImage = new Qt3D::QTextureImage();
+    specularImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/specular.webp")));
+    normalDiffuseSpecularMapMaterial->specular()->addTextureImage(specularImage);
 
-    if (img.load(QStringLiteral(":/assets/textures/pattern_09/normal.webp"))) {
-        normalDiffuseSpecularMapMaterial->normal()->setFormat(img.hasAlphaChannel() ?
-                                                                  Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                                  Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        normalDiffuseSpecularMapMaterial->normal()->setFromQImage(img);
-    }
+    Qt3D::QTextureImage *normalImage = new Qt3D::QTextureImage();
+    normalImage->setSource(QUrl((QStringLiteral("qrc:/assets/textures/pattern_09/normal.webp"))));
+    normalDiffuseSpecularMapMaterial->normal()->addTextureImage(normalImage);
+
     planeEntity->addComponent(normalDiffuseSpecularMapMaterial);
 
     // Chest
@@ -139,12 +130,10 @@ int main(int argc, char* argv[])
     diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
     diffuseMapMaterial->setShininess(2.0f);
 
-    if (img.load(QStringLiteral(":/assets/chest/diffuse.webp"))) {
-        diffuseMapMaterial->diffuse()->setFormat(img.hasAlphaChannel() ?
-                                                     Qt3D::QAbstractTextureProvider::RGBA8_UNorm :
-                                                     Qt3D::QAbstractTextureProvider::RGB8_UNorm);
-        diffuseMapMaterial->diffuse()->setFromQImage(img);
-    }
+    Qt3D::QTextureImage *chestDiffuseImage = new Qt3D::QTextureImage();
+    chestDiffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/chest/diffuse.webp")));
+    diffuseMapMaterial->diffuse()->addTextureImage(chestDiffuseImage);
+
     chest->addComponent(diffuseMapMaterial);
 
 
