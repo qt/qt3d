@@ -120,6 +120,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
         if (backend->mode() == QBackendNode::ReadWrite)
             d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+        return backend;
     }
     return Q_NULLPTR;
 }
