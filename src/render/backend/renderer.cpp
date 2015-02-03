@@ -694,20 +694,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (m_graphicsContext->supportsVAO()) {
             command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
             if (command->m_vao.isNull()) {
-                // Either VAO has not been created for QMeshData and RenderPass
-                // Or there is no RenderPass
-                // Tries to use vao for Mesh source and Default Technique
-                qCDebug(Backend) << Q_FUNC_INFO << "VAO Handle is null";
-                qCDebug(Backend) << Q_FUNC_INFO << "HShader " << command->m_shader;
-                // Check if HShader exists. If it doesn't that means there is no RenderPass
-                // Otherwise use a default renderpass name
-                command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-                // Check if VAO pointer for the QMeshData / RenderShader exists
-                if (command->m_vao.isNull()) {
-                    qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-                    command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
-                    *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
-                }
+                qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
+                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+                *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
             }
             vao = *(m_vaoManager->data(command->m_vao));
             Q_ASSERT(vao);
