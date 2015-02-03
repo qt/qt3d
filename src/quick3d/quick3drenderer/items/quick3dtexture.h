@@ -57,24 +57,6 @@ namespace Render {
 
 namespace Quick {
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTexture2DExtension : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-public:
-    explicit Quick3DTexture2DExtension(QObject *parent = 0);
-
-    QUrl source() const;
-    void setSource(QUrl arg);
-
-Q_SIGNALS:
-    void sourceChanged();
-
-private:
-    QUrl m_source;
-    inline Qt3D::QAbstractTextureProvider *parentTexture() const { return qobject_cast<Qt3D::QAbstractTextureProvider *>(parent()); }
-};
-
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureExtension : public QObject
 {
     Q_OBJECT

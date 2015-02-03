@@ -50,42 +50,6 @@ namespace Render {
 
 namespace Quick {
 
-// TO DO: This needs to be reworked to handle more than just 2D images
-Quick3DTexture2DExtension::Quick3DTexture2DExtension(QObject *parent)
-    : QObject(parent)
-{
-}
-
-QUrl Quick3DTexture2DExtension::source() const
-{
-    return m_source;
-}
-
-void Quick3DTexture2DExtension::setSource(QUrl arg)
-{
-    if (m_source != arg) {
-        m_source = arg;
-        // There is maybe a better way to check for resources files
-        if (m_source.isLocalFile() || m_source.scheme() == QStringLiteral("qrc")) {
-            QString source = m_source.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
-            QImage img;
-            if (img.load(source)) {
-                parentTexture()->setFormat(img.hasAlphaChannel() ?
-                                               QAbstractTextureProvider::RGBA8_UNorm :
-                                               QAbstractTextureProvider::RGB8_UNorm);
-                parentTexture()->setFromQImage(img);
-            }
-            else {
-                qWarning() << "Failed to load image : " << source;
-            }
-
-        } else {
-            qWarning() << "implement loading from remote URLs";
-        }
-        emit sourceChanged();
-    }
-}
-
 Quick3DTextureCubeMapExtension::Quick3DTextureCubeMapExtension(QObject *parent)
     : QObject(parent)
 {
@@ -202,6 +166,7 @@ QUrl Quick3DTextureCubeMapExtension::negativeZ() const
     return m_negativeZ;
 }
 
+// TO DO: To be modified to work with the Texture API refactoring
 void Quick3DTextureCubeMapExtension::loadFace(const QUrl &faceUrl, QAbstractTextureProvider::CubeMapFace face)
 {
     if (faceUrl.isLocalFile() || faceUrl.scheme() == QStringLiteral("qrc")) {
