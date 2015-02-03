@@ -272,38 +272,6 @@ QAbstractTextureProvider::Target QAbstractTextureProvider::target() const
     return d->m_target;
 }
 
-bool QAbstractTextureProvider::setFromQImage(QImage img, int layer)
-{
-    Q_D(QAbstractTextureProvider);
-    setSize(img.width(), img.height());
-
-    if ((d->m_target != Target2D) &&
-        (d->m_target != Target2DArray) &&
-        (d->m_target == TargetRectangle)) {
-        qWarning() << Q_FUNC_INFO << "invalid texture target";
-        setStatus(Error);
-        return false;
-    }
-
-    TexImageDataPtr dataPtr(new TexImageData());
-    dataPtr->setImage(img);
-    addImageData(dataPtr);
-    setStatus(Loaded);
-    return true;
-}
-
-void QAbstractTextureProvider::addImageData(TexImageDataPtr imgData)
-{
-    Q_D(QAbstractTextureProvider);
-    d->m_data.append(imgData);
-}
-
-QList<TexImageDataPtr> QAbstractTextureProvider::imageData() const
-{
-    Q_D(const QAbstractTextureProvider);
-    return d->m_data;
-}
-
 /*!
     Adds a new Qt3D::QAbstractTextureImage \a texture image to the texture provider.
     \note: Qt3D::QAbstractTextureImage should never be shared by several Qt3D::QAbstractTextureProvider

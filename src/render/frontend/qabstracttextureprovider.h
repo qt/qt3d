@@ -261,12 +261,6 @@ public:
 
     Status status() const;
 
-    // Those 3 methods should be removed
-    // kept to keep things working a little longer;
-    bool setFromQImage(QImage img, int layer = 0);
-    void addImageData(TexImageDataPtr imgData);
-    QList<TexImageDataPtr> imageData() const;
-
     void addTextureImage(QAbstractTextureImage *textureImage);
     void removeTextureImage(QAbstractTextureImage *textureImage);
     QList<QAbstractTextureImage *> textureImages() const;
