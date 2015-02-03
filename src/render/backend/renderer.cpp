@@ -617,7 +617,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
             frameElapsed = timer.elapsed();
         }
 
-        m_graphicsContext->endDrawing();
+        m_graphicsContext->endDrawing(defaultFboId == 0);
 
         // Let the Aspect Thread get a look in if it needs to change the surface
         locker.unlock();

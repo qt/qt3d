@@ -97,7 +97,7 @@ public:
 
     bool beginDrawing(QSurface *surface, const QColor &clearColor);
     void clearBackBuffer(QClearBuffer::BufferType buffers);
-    void endDrawing();
+    void endDrawing(bool swapBuffers);
 
     void setViewport(const QRectF &viewport);
     QRectF viewport() const { return m_viewport; }
