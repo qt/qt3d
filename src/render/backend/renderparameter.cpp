@@ -106,41 +106,13 @@ QVariant RenderParameter::toBackendValue(const QVariant &value)
     if (node == Q_NULLPTR) {
         return value;
     } else if (qobject_cast<QAbstractTextureProvider*>(node)) {
-        return QVariant::fromValue(m_textureManager->getOrCreateResource(node->id()));
+        return QVariant::fromValue(static_cast<RenderTexture*>(createBackendNode(node)));
     } else if (qobject_cast<QShaderData*>(node)) {
-        return QVariant::fromValue(m_shaderDataManager->getOrCreateResource(node->id()));
+        return QVariant::fromValue(static_cast<RenderShaderData*>(createBackendNode(node)));
     } else {
         qFatal("Texture and ShaderData are the only types of Node allowed as parameters");
         return QVariant();
     }
-}
-
-RenderParameterFunctor::RenderParameterFunctor(ParameterManager *parameterManager, ShaderDataManager *shaderDataManager, TextureManager *textureManager)
-    : m_parameterManager(parameterManager)
-    , m_shaderDataManager(shaderDataManager)
-    , m_textureManager(textureManager)
-{
-}
-
-QBackendNode *RenderParameterFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
-{
-    HParameter parameterNodeHandle = m_parameterManager->getOrAcquireHandle(frontend->id());
-    RenderParameter *parameter = m_parameterManager->data(parameterNodeHandle);
-    parameter->setFactory(factory);
-    parameter->setShaderDataManager(m_shaderDataManager);
-    parameter->setTextureManager(m_textureManager);
-    parameter->setPeer(frontend);
-    return parameter;
-}
-
-QBackendNode *RenderParameterFunctor::get(QNode *frontend) const
-{
-    return m_parameterManager->lookupResource(frontend->id());
-}
-
-void RenderParameterFunctor::destroy(QNode *frontend) const
-{
-    m_parameterManager->releaseResource(frontend->id());
 }
 
 } // Render
