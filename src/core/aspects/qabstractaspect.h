@@ -46,6 +46,7 @@
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qaspectjobproviderinterface.h>
+#include <Qt3DCore/qbackendnodefactory.h>
 #include <Qt3DCore/qsceneobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
@@ -67,6 +68,7 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
         : public QObject
         , public QAspectJobProviderInterface
         , public QSceneObserverInterface
+        , public QBackendNodeFactory
 {
     Q_OBJECT
 
@@ -94,7 +96,7 @@ public:
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
-    QBackendNode *createBackendNode(QNode *frontend) const;
+    QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
     QBackendNode *getBackendNode(QNode *frontend) const;
     void clearBackendNode(QNode *frontend) const;
 
