@@ -212,14 +212,36 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 // RenderThread
 QOpenGLTexture *RenderTexture::buildGLTexture()
 {
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    if (!ctx) {
+        qWarning() << Q_FUNC_INFO << "requires an OpenGL context";
+        return Q_NULLPTR;
+    }
+
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
     if (m_format == QAbstractTextureProvider::Automatic)
         qWarning() << Q_FUNC_INFO << "something went wrong, format shouldn't be automatic at this point";
 
-    glTex->setFormat(m_format == QAbstractTextureProvider::Automatic ?
+    // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
+    QAbstractTextureProvider::TextureFormat format = m_format;
+    if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
+        switch (m_format) {
+        case QOpenGLTexture::RGBA8_UNorm:
+            format = QAbstractTextureProvider::RGBAFormat;
+            break;
+        case QOpenGLTexture::RGB8_UNorm:
+            format = QAbstractTextureProvider::RGBFormat;
+            break;
+        default:
+            qWarning() << Q_FUNC_INFO << "could not find a matching OpenGL ES 2.0 unsized texture format";
+            break;
+        }
+    }
+
+    glTex->setFormat(format == QAbstractTextureProvider::Automatic ?
                          QOpenGLTexture::NoFormat :
-                         static_cast<QOpenGLTexture::TextureFormat>(m_format));
+                         static_cast<QOpenGLTexture::TextureFormat>(format));
     glTex->setSize(m_width, m_height, m_depth);
     // Set layers count if texture array
     if (m_target == QAbstractTextureProvider::Target1DArray ||
@@ -240,11 +262,9 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
     // an Invalid Enum error
-    if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
-        int err = ctx->functions()->glGetError();
-        if (err)
-            qWarning() << Q_FUNC_INFO << err;
-    }
+    int err = ctx->functions()->glGetError();
+    if (err)
+        qWarning() << Q_FUNC_INFO << err;
 
     return glTex;
 }
