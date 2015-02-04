@@ -60,9 +60,10 @@ public:
     {
     }
 
-    QBackendNode *create(QNode *frontend) const Q_DECL_FINAL
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL
     {
         Backend *backend = m_manager->getOrCreateResource(frontend->id());
+        backend->setFactory(factory);
         backend->setPeer(frontend);
         return backend;
     }

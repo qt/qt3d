@@ -108,7 +108,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         QBackendNode *backend = functor->get(frontend);
         if (backend != Q_NULLPTR)
             return backend;
-        backend = functor->create(frontend);
+        backend = functor->create(frontend, this);
         // backend could be null if the user decides that his functor should only
         // perform some action when encountering a given type of item but doesn't need to
         // return a QBackendNode pointer.

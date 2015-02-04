@@ -147,9 +147,10 @@ RenderMeshCreatorFunctor::RenderMeshCreatorFunctor(MeshManager *meshManager, Mes
 {
 }
 
-QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend) const
+QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
 {
     RenderMesh *mesh = m_meshManager->getOrCreateResource(frontend->id());
+    mesh->setFactory(factory);
     mesh->setMeshDataManager(m_meshDataManager);
     mesh->setPeer(frontend);
     return mesh;

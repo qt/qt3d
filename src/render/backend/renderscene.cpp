@@ -108,9 +108,10 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 {
 }
 
-QBackendNode *RenderSceneFunctor::create(QNode *frontend) const
+QBackendNode *RenderSceneFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
 {
     RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->id());
+    scene->setFactory(factory);
     scene->setSceneManager(m_sceneManager);
     scene->setPeer(frontend);
     return scene;

@@ -103,9 +103,10 @@ KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
 {
 }
 
-QBackendNode *KeyboardControllerFunctor::create(QNode *frontend) const
+QBackendNode *KeyboardControllerFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
 {
     KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
+    controller->setFactory(factory);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
     m_handler->appendKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));

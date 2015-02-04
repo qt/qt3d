@@ -50,6 +50,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QBackendNodeFactory;
 class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
@@ -58,7 +59,7 @@ class QT3DCORESHARED_EXPORT QBackendNodeFunctor
 {
 public:
     virtual ~QBackendNodeFunctor() {}
-    virtual QBackendNode *create(QNode *frontend) const = 0;
+    virtual QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const = 0;
     virtual QBackendNode *get(QNode *frontend) const = 0;
     virtual void destroy(QNode *frontend) const = 0;
 };
@@ -76,6 +77,8 @@ public:
     explicit QBackendNode(Mode mode = ReadOnly);
     virtual ~QBackendNode();
 
+    void setFactory(const QBackendNodeFactory *factory);
+
     void setPeer(QNode *peer);
     QNodeId peerUuid() const;
 
@@ -83,6 +86,7 @@ public:
     virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
+    QBackendNode *createBackendNode(QNode *frontend) const;
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
 

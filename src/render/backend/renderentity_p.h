@@ -225,7 +225,7 @@ class RenderEntityFunctor : public QBackendNodeFunctor
 {
 public:
     explicit RenderEntityFunctor(Renderer *renderer);
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
     void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
 

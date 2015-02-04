@@ -41,6 +41,7 @@
 
 #include "qbackendnode.h"
 #include "qbackendnode_p.h"
+#include "qbackendnodefactory.h"
 #include "qaspectengine.h"
 #include "qnode.h"
 
@@ -51,6 +52,7 @@ namespace Qt3D {
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode)
     : q_ptr(qq)
     , m_mode(mode)
+    , m_factory(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
 {
 }
@@ -91,6 +93,12 @@ QBackendNode::~QBackendNode()
     delete d_ptr;
 }
 
+void QBackendNode::setFactory(const QBackendNodeFactory *factory)
+{
+    Q_D(QBackendNode);
+    d->m_factory = factory;
+}
+
 void QBackendNode::setPeer(QNode *peer)
 {
     Q_D(QBackendNode);
@@ -111,6 +119,13 @@ QBackendNode::Mode QBackendNode::mode() const
 {
     Q_D(const QBackendNode);
     return d->m_mode;
+}
+
+QBackendNode *QBackendNode::createBackendNode(QNode *frontend) const
+{
+    Q_D(const QBackendNode);
+    Q_ASSERT(d->m_factory);
+    return d->m_factory->createBackendNode(frontend);
 }
 
 QBackendNode::QBackendNode(QBackendNodePrivate &dd)

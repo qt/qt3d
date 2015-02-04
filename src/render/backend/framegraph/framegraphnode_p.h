@@ -116,9 +116,9 @@ public:
     {
     }
 
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
     {
-        return createBackendFrameGraphNode(frontend);
+        return createBackendFrameGraphNode(frontend, factory);
     }
 
     QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE
@@ -135,7 +135,7 @@ public:
     }
 
 protected:
-    Backend *createBackendFrameGraphNode(QNode *n) const
+    Backend *createBackendFrameGraphNode(QNode *n, const QBackendNodeFactory *factory) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
@@ -144,6 +144,7 @@ protected:
                 handle = m_manager->getOrAcquireHandle(n->id());
                 Backend *backend = new Backend();
                 *m_manager->data(handle) = backend;
+                backend->setFactory(factory);
                 backend->setFrameGraphManager(m_manager);
                 backend->setHandle(handle);
                 backend->setPeer(f);
@@ -164,7 +165,7 @@ class FrameGraphComponentFunctor : public QBackendNodeFunctor
 {
 public:
     explicit FrameGraphComponentFunctor(Renderer *renderer);
-    QBackendNode *create(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
     void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
 

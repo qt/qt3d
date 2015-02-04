@@ -379,10 +379,11 @@ RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
 {
 }
 
-QBackendNode *RenderEntityFunctor::create(QNode *frontend) const
+QBackendNode *RenderEntityFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
 {
     HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->id());
     RenderEntity *entity = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    entity->setFactory(factory);
     entity->setRenderer(m_renderer);
     entity->setHandle(renderNodeHandle);
     entity->setPeer(frontend);

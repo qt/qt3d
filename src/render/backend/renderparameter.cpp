@@ -122,10 +122,11 @@ RenderParameterFunctor::RenderParameterFunctor(ParameterManager *parameterManage
 {
 }
 
-QBackendNode *RenderParameterFunctor::create(QNode *frontend) const
+QBackendNode *RenderParameterFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
 {
     HParameter parameterNodeHandle = m_parameterManager->getOrAcquireHandle(frontend->id());
     RenderParameter *parameter = m_parameterManager->data(parameterNodeHandle);
+    parameter->setFactory(factory);
     parameter->setShaderDataManager(m_shaderDataManager);
     parameter->setTextureManager(m_textureManager);
     parameter->setPeer(frontend);
