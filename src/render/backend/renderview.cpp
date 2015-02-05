@@ -581,9 +581,7 @@ void RenderView::buildSortingKey(RenderCommand *command)
     // Build a bitset key depending on the SortingCriterion
     int sortCount = m_data->m_sortingCriteria.count();
 
-    // Default sorting
-    if (sortCount == 0)
-        command->m_sortingType.sorts[0] = command->m_changeCost; // State change cost
+    // If sortCount == 0, no sorting is applied
 
     // Handle at most 4 filters at once
     for (int i = 0; i < sortCount && i < 4; i++) {
