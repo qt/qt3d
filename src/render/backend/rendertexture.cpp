@@ -39,15 +39,15 @@
 **
 ****************************************************************************/
 
+#include <QtCore/qhash.h>
 #include "rendertexture_p.h"
 
 #include <QDebug>
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
-#include <qtexture.h>
-#include <texturedata.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/texturedata.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
@@ -174,12 +174,19 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
     }
 
     if (m_gl != Q_NULLPTR) {
+
+        bool refreshDNA = m_filtersAndWrapUpdated || m_dataUploadRequired;
+
         if (m_filtersAndWrapUpdated) {
             updateWrapAndFilters();
             m_filtersAndWrapUpdated = false;
         }
         if (m_dataUploadRequired)
             updateAndLoadTextureImage();
+
+        if (refreshDNA)
+            updateDNA();
+
         return m_gl;
     }
 
@@ -197,6 +204,9 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 
     // Upload textures data the first time
     updateAndLoadTextureImage();
+
+    // Update DNA
+    updateDNA();
 
     // Ideally we might want to abstract that and use the QGraphicsContext as a wrapper
     // around that.
@@ -322,6 +332,27 @@ void RenderTexture::updateWrapAndFilters()
     if (m_gl->hasFeature(QOpenGLTexture::TextureComparisonOperators)) {
         m_gl->setComparisonFunction(static_cast<QOpenGLTexture::ComparisonFunction>(m_comparisonFunction));
         m_gl->setComparisonMode(static_cast<QOpenGLTexture::ComparisonMode>(m_comparisonMode));
+    }
+}
+
+void RenderTexture::updateDNA()
+{
+    int key = m_width + m_height + m_depth + m_layers +
+                         (m_generateMipMaps ? 1 : 0) +
+                         static_cast<int>(m_target) +
+                         static_cast<int>(m_format) +
+                         static_cast<int>(m_magnificationFilter) +
+                         static_cast<int>(m_minificationFilter) +
+                         static_cast<int>(m_wrapModeX) +
+                         static_cast<int>(m_wrapModeY) +
+                         static_cast<int>(m_wrapModeZ) +
+                         static_cast<int>(m_comparisonFunction) +
+                         static_cast<int>(m_comparisonMode);
+    m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
+    Q_FOREACH (HTextureImage imgHandle, m_textureImages) {
+        RenderTextureImage *img = m_textureImageManager->data(imgHandle);
+        if (img)
+            m_textureDNA += img->dna();
     }
 }
 

@@ -58,6 +58,8 @@ class TextureManager;
 class TextureImageManager;
 class TextureDataManager;
 
+typedef uint TextureImageDNA;
+
 class RenderTextureImage : public QBackendNode
 {
 public:
@@ -70,6 +72,7 @@ public:
     int m_mipmapLevel;
     QAbstractTextureProvider::CubeMapFace m_face;
     bool m_dirty;
+    inline TextureImageDNA dna() const { return m_dna; }
 
     inline int layer() const { return m_layer; }
     inline int mipmapLevel() const { return m_mipmapLevel; }
@@ -89,6 +92,8 @@ public:
     inline QTextureDataFunctorPtr dataFunctor() const { return m_functor; }
 
 private:
+    void updateDNA();
+
     QTextureDataFunctorPtr m_functor;
     HTextureData m_textureDataHandle;
     TextureManager *m_textureManager;
@@ -97,6 +102,7 @@ private:
     QList<QNodeId> m_referencedTextures;
     HTexture m_textureProvider;
     QNodeId m_textureProviderId;
+    TextureImageDNA m_dna;
 };
 
 class RenderTextureImageFunctor : public QBackendNodeFunctor

@@ -59,6 +59,7 @@ RenderTextureImage::RenderTextureImage()
     , m_textureManager(Q_NULLPTR)
     , m_textureImageManager(Q_NULLPTR)
     , m_textureDataManager(Q_NULLPTR)
+    , m_dna(0)
 {
 }
 
@@ -73,6 +74,7 @@ void RenderTextureImage::cleanup()
     m_textureImageManager = Q_NULLPTR;
     m_textureDataManager = Q_NULLPTR;
     m_referencedTextures.clear();
+    m_dna = 0;
 }
 
 void RenderTextureImage::updateFromPeer(QNode *peer)
@@ -146,6 +148,12 @@ void RenderTextureImage::unsetDirty()
 void RenderTextureImage::setTextureDataHandle(HTextureData handle)
 {
     m_textureDataHandle = handle;
+    updateDNA();
+}
+
+void RenderTextureImage::updateDNA()
+{
+    m_dna = ::qHash(m_layer + m_mipmapLevel + static_cast<int>(m_face) + m_textureDataHandle);
 }
 
 RenderTextureImageFunctor::RenderTextureImageFunctor(TextureManager *textureManager,
