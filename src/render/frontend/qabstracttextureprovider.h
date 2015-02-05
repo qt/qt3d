@@ -63,6 +63,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
     Q_ENUMS(Status)
     Q_ENUMS(ComparisonFunction)
     Q_ENUMS(ComparisonMode)
+    Q_ENUMS(CubeMapFace)
     Q_PROPERTY(Target target READ target CONSTANT)
     Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
