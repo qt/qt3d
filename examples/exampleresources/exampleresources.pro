@@ -32,4 +32,5 @@ OTHER_FILES += \
     assets/chest/* \
     assets/houseplants/* \
     assets/metalbarrel/* \
-    assets/cubemaps/*
+    assets/cubemaps/miramar/* \
+    assets/cubemaps/night/*

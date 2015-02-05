@@ -45,6 +45,8 @@ import Qt3D.Render 2.0
 Entity {
 
     property alias cameraPosition: cameraTranslate.translation;
+    property string sourceDirectory: "qrc:/assets/cubemaps/miramar/miramar";
+    property string extension: ".webp"
 
     property TextureCubeMap skyboxTexture: TextureCubeMap {
         generateMipMaps: false
@@ -55,7 +57,12 @@ Entity {
             y: WrapMode.ClampToEdge
             z: WrapMode.ClampToEdge
         }
-        source: "qrc:/assets/cubemaps/miramar/miramar"
+        TextureImage { cubeMapFace: Texture.CubeMapPositiveX; source: sourceDirectory + "_posx" + extension }
+        TextureImage { cubeMapFace: Texture.CubeMapPositiveY; source: sourceDirectory + "_posy" + extension }
+        TextureImage { cubeMapFace: Texture.CubeMapPositiveZ; source: sourceDirectory + "_posz" + extension }
+        TextureImage { cubeMapFace: Texture.CubeMapNegativeX; source: sourceDirectory + "_negx" + extension }
+        TextureImage { cubeMapFace: Texture.CubeMapNegativeY; source: sourceDirectory + "_negy" + extension }
+        TextureImage { cubeMapFace: Texture.CubeMapNegativeZ; source: sourceDirectory + "_negz" + extension }
     }
 
     ShaderProgram {
@@ -68,11 +75,13 @@ Entity {
         out vec3 texCoord0;
 
         uniform mat4 mvp;
+        uniform mat4 inverseProjectionMatrix;
+        uniform mat4 inverseModelView;
 
         void main()
         {
-            texCoord0 = vertexPosition;
-            gl_Position = mvp * vec4(vertexPosition, 1.0);
+            texCoord0 = vertexPosition.xyz;
+            gl_Position = vec4(mvp * vec4(vertexPosition, 1.0)).xyww;
         }
         "
         fragmentShaderCode: "
@@ -98,7 +107,6 @@ Entity {
 
     Transform {
         id: transform
-        Scale { id: scaleTransform; scale: 1000.0 }
         Translate { id: cameraTranslate; }
     }
 
