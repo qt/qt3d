@@ -55,7 +55,6 @@ Entity {
         wrapMode {
             x: WrapMode.ClampToEdge
             y: WrapMode.ClampToEdge
-            z: WrapMode.ClampToEdge
         }
         TextureImage { cubeMapFace: Texture.CubeMapPositiveX; source: sourceDirectory + "_posx" + extension }
         TextureImage { cubeMapFace: Texture.CubeMapPositiveY; source: sourceDirectory + "_posy" + extension }

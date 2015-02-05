@@ -116,6 +116,7 @@ QTextureWrapMode::WrapMode QTextureWrapMode::x() const
 
 /*!
     Sets the wrap mode of the y dimension to \a y.
+    \note this is not available on 1D textures.
  */
 void QTextureWrapMode::setY(WrapMode y)
 {
@@ -137,6 +138,7 @@ QTextureWrapMode::WrapMode QTextureWrapMode::y() const
 
 /*!
     Sets the wrap mode of the z dimension to \a z.
+    \note this is only available on 3D textures.
  */
 void QTextureWrapMode::setZ(WrapMode z)
 {
