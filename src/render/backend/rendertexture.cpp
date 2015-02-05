@@ -321,9 +321,7 @@ void RenderTexture::updateWrapAndFilters()
             m_target != QAbstractTextureProvider::Target1DArray &&
             m_target != QAbstractTextureProvider::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeY));
-    if (m_target == QAbstractTextureProvider::Target3D ||
-            m_target == QAbstractTextureProvider::TargetCubeMap ||
-            m_target == QAbstractTextureProvider::TargetCubeMapArray)
+    if (m_target == QAbstractTextureProvider::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
