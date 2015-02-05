@@ -214,13 +214,13 @@ private:
     QHash<GLuint, QSize> m_renderTargetsSize;
 
     // active textures, indexed by texture unit
-    QVector<RenderTexture *> m_activeTextures;
+    QVector<uint> m_activeTextures;
     QBitArray m_pinnedTextureUnits;
     QVector<TextureScope> m_textureScopes;
 
     // recency score for all render-textures we've seen. Higher scores
     // mean more recently used.
-    QHash<RenderTexture *, int> m_textureScores;
+    QHash<uint, int> m_textureScores;
 
     RenderMaterial* m_material;
     QRectF m_viewport;

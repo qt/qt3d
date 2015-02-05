@@ -335,7 +335,7 @@ void RenderView::sort()
 
                 while (it != uniforms.end()) {
                     bool found = false;
-                    if (cachedUniforms.contains(it.key())) {
+                    if (cachedUniforms.contains(it.key()) && !it.value()->isTexture()) {
                         const QUniformValue *refValue = cachedUniforms[it.key()];
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
                             cachedUniforms.insert(it.key(), it.value());

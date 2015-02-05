@@ -130,8 +130,8 @@ void QGraphicsContext::initialize()
     } else {
         QSet<QByteArray> extensions = m_gl->extensions();
         m_supportsVAO = extensions.contains(QByteArrayLiteral("GL_OES_vertex_array_object"))
-            || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
-            || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
+                || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
+                || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
     }
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
@@ -361,19 +361,21 @@ void QGraphicsContext::executeCommand(const RenderCommand *)
 
 int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, int onUnit)
 {
-    if (onUnit == -1) {
-        onUnit = assignUnitForTexture(tex);
+    // Returns the texture unit to use for the texture
+    // This always return a valid unit, unless there are more textures than
+    // texture unit available for the current material
+    onUnit = assignUnitForTexture(tex);
 
-        // check we didn't overflow the available units
-        if (onUnit == -1)
-            return onUnit;
-    }
+    // check we didn't overflow the available units
+    if (onUnit == -1)
+        return -1;
 
-    // actually re-bind if required
-    if (m_activeTextures[onUnit] != tex) {
-        QOpenGLTexture* glTex = tex->getOrCreateGLTexture();
+    // actually re-bind if required, the tex->dna on the unit not being the same
+    // Note: tex->dna() could be 0 if the texture has not been created yet
+    if (m_activeTextures[onUnit] != tex->dna() || tex->dna() == 0) {
+        QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
-        m_activeTextures[onUnit] = tex;
+        m_activeTextures[onUnit] = tex->dna();
     }
 
     int err = m_gl->functions()->glGetError();
@@ -381,9 +383,9 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
         qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
                            << tex->textureId() << "on unit" << onUnit;
 
-    m_textureScores[tex] = 200;
+    m_textureScores.insert(m_activeTextures[onUnit], 200);
     m_pinnedTextureUnits[onUnit] = true;
-    m_textureScopes[onUnit] = scope;
+    m_textureScopes.insert(onUnit, scope);
 
     return onUnit;
 }
@@ -396,6 +398,7 @@ void QGraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 
         if (m_textureScopes[u] == ts) {
             m_pinnedTextureUnits[u] = false;
+            m_textureScores.insert(m_activeTextures[u], m_textureScores.value(m_activeTextures[u], 1) - 1);
         }
     } // of units iteration
 }
@@ -444,7 +447,7 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
 void QGraphicsContext::deactivateTexture(RenderTexture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex) {
+        if (m_activeTextures[u] == tex->dna()) {
             Q_ASSERT(m_pinnedTextureUnits[u]);
             m_pinnedTextureUnits[u] = false;
             return;
@@ -608,18 +611,26 @@ GLuint QGraphicsContext::boundFrameBufferObject()
     return m_glHelper->boundFrameBufferObject();
 }
 
+/*!
+    \internal
+    \returns a texture unit for a texture, -1 if all texture units are assigned.
+    Tries to use the texture unit with the texture that hasn't been used for the longest time
+    if the texture happens not to be already pinned on a texture unit.
+ */
 GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
 {
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
 
     for (int u=0; u<m_activeTextures.size(); ++u) {
-        if (m_activeTextures[u] == tex) {
+        if (m_activeTextures[u] == tex->dna())
             return u;
-        }
 
+        // No texture is currently active on the texture unit
+        // we save the texture unit with the texture that has been on there
+        // the longest time while not being used
         if (!m_pinnedTextureUnits[u]) {
-            int score = m_textureScores[tex];
+            int score = m_textureScores.value(m_activeTextures[u], 0);
             if (score < lowestScore) {
                 lowestScore = score;
                 lowestScoredUnit = u;
@@ -627,22 +638,24 @@ GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
         }
     } // of units iteration
 
-    if (lowestScoredUnit == -1) {
-        qCWarning(Backend) << Q_FUNC_INFO << "NO free texture units!";
-        return GL_INVALID_VALUE;
-    }
+    if (lowestScoredUnit == -1)
+        qCWarning(Backend) << Q_FUNC_INFO << "No free texture units!";
 
     return lowestScoredUnit;
 }
 
 void QGraphicsContext::decayTextureScores()
 {
-    // FIXME - very inefficient use of QHash here, both for
-    // traversal coherency and subsequent modification.
-    Q_FOREACH (RenderTexture* t, m_textureScores.keys()) {
-        if ((m_textureScores[t]--) <= 0) {
-            qCDebug(Backend) << "removing inactive texture" << t;
-            m_textureScores.remove((t));
+    QHash<uint, int>::iterator it = m_textureScores.begin();
+    const QHash<uint, int>::iterator end = m_textureScores.end();
+
+    while (it != end) {
+        it.value()--;
+        if (it.value() <= 0) {
+            qCDebug(Backend) << "removing inactive texture" << it.key();
+            it = m_textureScores.erase(it);
+        } else {
+            ++it;
         }
     }
 }
@@ -664,8 +677,10 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
-    deactivateTexturesWithScope(TextureScopeMaterial);
 
+    // Set the pinned texture of the previous material texture
+    // to pinable so that we should easily find an available texture unit
+    deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
     QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
     for (int i = 0; i < uniforms.textures().size(); ++i) {
