@@ -141,9 +141,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     This material uses an effect with a single render pass approach and performs per fragment lighting.
     Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
-
 /*!
-    \fn Qt3D::QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial()
     Constructs a new Qt3D::QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial(QNode *parent)

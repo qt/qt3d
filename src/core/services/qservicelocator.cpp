@@ -127,7 +127,7 @@ QServiceLocator::~QServiceLocator()
     existing provider for this service. The service provider does not take ownership
     of the provider.
 
-    \sa unregisterService(), serviceCount(), service()
+    \sa unregisterServiceProvider(), serviceCount(), service()
 */
 void QServiceLocator::registerServiceProvider(int serviceType, QAbstractServiceProvider *provider)
 {
@@ -139,6 +139,8 @@ void QServiceLocator::registerServiceProvider(int serviceType, QAbstractServiceP
 
 /*!
     Unregisters any existing provider for the \a serviceType.
+
+    \sa registerServiceProvider()
  */
 void QServiceLocator::unregisterServiceProvider(int serviceType)
 {
@@ -164,7 +166,8 @@ int QServiceLocator::serviceCount() const
     has been explicitly registered, this returns a null pointer for non-Qt3D provided
     default services and a null pointer for non-default services.
 
-    \sa registerService()
+    \sa registerServiceProvider()
+
 */
 
 /*!

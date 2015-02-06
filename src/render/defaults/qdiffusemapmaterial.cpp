@@ -146,10 +146,8 @@ void QDiffuseMapMaterialPrivate::init()
 */
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::QDiffuseMapMaterial()
     Constructs a new Qt3D::QDiffuseMapMaterial instance with parent object \a parent.
  */
-
 QDiffuseMapMaterial::QDiffuseMapMaterial(QNode *parent)
     : QMaterial(*new QDiffuseMapMaterialPrivate(this), parent)
 {
@@ -167,9 +165,11 @@ QDiffuseMapMaterial::~QDiffuseMapMaterial()
 }
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::ambient() const
-    \return the current QColor ambient value.
+    \property Qt3D::QDiffuseMapMaterial::ambient
+
+    Holds the current QColor ambient value.
  */
+
 QColor QDiffuseMapMaterial::ambient() const
 {
     Q_D(const QDiffuseMapMaterial);
@@ -177,8 +177,9 @@ QColor QDiffuseMapMaterial::ambient() const
 }
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::specular() const
-    \return the current QColor specular value.
+    \property QDiffuseMapMaterial::specular
+
+    Holds the current QColor specular value.
  */
 QColor QDiffuseMapMaterial::specular() const
 {
@@ -187,8 +188,9 @@ QColor QDiffuseMapMaterial::specular() const
 }
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::shininess() const
-    \return the current shininess as a float value.
+    \property QDiffuseMapMaterial::shininess
+
+    Holds the current shininess as a float value.
  */
 float QDiffuseMapMaterial::shininess() const
 {
@@ -197,9 +199,11 @@ float QDiffuseMapMaterial::shininess() const
 }
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::diffuse() const
-    \return the current QTexture used as the diffuse map.
-    \b {Note:} By default the diffuse texture has a linear
+    \property QAbstractTextureProvider *QDiffuseMapMaterial::diffuse
+
+    Holds the current QTexture used as the diffuse map.
+
+    \note By default, the diffuse texture has a linear
     magnification filter, a linear mipmap linear minification filter,
     the wrap mode is repeat, the maximum anisotropy is set to 16.0
     and mipmapping is enabled.
@@ -211,8 +215,9 @@ QAbstractTextureProvider *QDiffuseMapMaterial::diffuse() const
 }
 
 /*!
-    \fn Qt3D::QDiffuseMapMaterial::textureScale() const
-    \return the current texture scale.
+    \property QDiffuseMapMaterial::textureScale
+
+    Holds the current texture scale.
  */
 float QDiffuseMapMaterial::textureScale() const
 {
@@ -220,50 +225,30 @@ float QDiffuseMapMaterial::textureScale() const
     return d->m_textureScaleParameter->value().toFloat();
 }
 
-/*!
-    \fn Qt3D::QDiffuseMapMaterial::setAmbient(const QColor &ambient)
-    Sets the current ambient color to \a ambient.
- */
 void QDiffuseMapMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(const QDiffuseMapMaterial);
     d->m_ambientParameter->setValue(ambient);
 }
 
-/*!
-    \fn Qt3D::QDiffuseMapMaterial::setSpecular(const QColor &specular)
-    Sets the current specular color to \a specular.
- */
 void QDiffuseMapMaterial::setSpecular(const QColor &specular)
 {
     Q_D(QDiffuseMapMaterial);
     d->m_specularParameter->setValue(specular);
 }
 
-/*!
-    \fn Qt3D::QDiffuseMapMaterial::setShininess(float shininess)
-    Sets the current shininess value to \a shininess.
- */
 void QDiffuseMapMaterial::setShininess(float shininess)
 {
     Q_D(QDiffuseMapMaterial);
     d->m_shininessParameter->setValue(shininess);
 }
 
-/*!
-    \fn Qt3D::QDiffuseMapMaterial::setDiffuse(QTexture *diffuseMap)
-    Sets the current diffuse map to \a diffuseMap.
- */
 void QDiffuseMapMaterial::setDiffuse(QAbstractTextureProvider *diffuseMap)
 {
     Q_D(QDiffuseMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuseMap));
 }
 
-/*!
-    \fn Qt3D::QDiffuseMapMaterial::setTextureScale(float textureScale)
-    Sets the current texture scale to \a textureScale.
- */
 void QDiffuseMapMaterial::setTextureScale(float textureScale)
 {
     Q_D(QDiffuseMapMaterial);

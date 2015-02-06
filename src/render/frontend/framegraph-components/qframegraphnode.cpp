@@ -38,7 +38,7 @@
 #include "qframegraphnode_p.h"
 
 /*!
- * \class FrameGraphNode
+ * \class Qt3D::QFrameGraphNode
  *
  * \brief Base class of all FrameGraph configuration nodes.
  *
@@ -46,7 +46,6 @@
  * but rather through one of its subclasses.
  *
  * \since 5.3
- * \namespace Qt3D
  */
 
 QT_BEGIN_NAMESPACE

@@ -53,7 +53,7 @@ QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate(QFrameGraphSelector *qq)
     the FrameGraph at runtime
 
      The selection is made by executing Qt3D::QFrameGraphSelectorFunctor that will
-     return a vector containing the indices of the FrameGraph subtree to be used
+     return a vector containing the indices of the \l {QFrameGraph}{FrameGraph} subtree to be used
      for the current frame.
  */
 
@@ -79,7 +79,7 @@ QFrameGraphSelectorFunctorPtr QFrameGraphSelector::selectionFunctor() const
 }
 
 /*!
-     Sets the functor \a functor to be used for selecting FrameGrapg subtrees at
+     Sets the functor \a functor to be used for selecting \l {QFrameGraph}{FrameGraph} subtrees at
      runtime.
  */
 void QFrameGraphSelector::setSelectionFunctor(QFrameGraphSelectorFunctorPtr functor)

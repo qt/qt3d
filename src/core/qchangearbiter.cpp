@@ -58,7 +58,7 @@ namespace Qt3D {
 
     \brief Act as a messages router between observables and observers.
 
-    Observables can be of two types: QNode observables and QObservableInterfaces.
+    Observables can be of two types: QNode observables and \l {QObservableInterface}s.
     QNode notifications are sent from the frontend QNode and delivered to the backend observers.
     QObservableInterface notifications are sent from backend nodes to backend observers and/or to the
     registered QPostman, which in turn delivers the notifications to the target frontend QNode.

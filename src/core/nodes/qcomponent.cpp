@@ -100,7 +100,7 @@ QComponent::~QComponent()
 }
 
 /*!
-    \return whether the QComponent is shareable across entities or not.
+    Returns whether the QComponent is shareable across entities or not.
  */
 bool QComponent::shareable() const
 {
@@ -109,7 +109,7 @@ bool QComponent::shareable() const
 }
 
 /*!
-    \returns whether the QComponent is enabled or not.
+    Returns whether the QComponent is enabled or not.
  */
 bool QComponent::isEnabled() const
 {
@@ -155,7 +155,7 @@ void QComponent::copy(const QNode *ref)
 }
 
 /*!
- * \return a QVector containing all the entities that reference this component.
+ * Returns a QVector containing all the entities that reference this component.
  */
 QVector<QEntity *> QComponent::entities() const
 {

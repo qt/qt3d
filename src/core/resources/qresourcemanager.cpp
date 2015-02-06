@@ -51,7 +51,7 @@
     Internally, memory can be reorganized for best performance while being transparent to the user.
 
     The memory allocation scheme and locking policies can be customized by providing template
-    parameters. The defaults are ArrayAllocationPolicy and NonLockingPolicy respectively.
+    parameters. The defaults are ArrayAllocatingPolicy and NonLockingPolicy respectively.
 */
 
 /*!

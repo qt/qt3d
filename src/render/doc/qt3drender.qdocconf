@@ -26,7 +26,7 @@ qhp.Qt3DRender.subprojects.classes.sortPages  = true
 
 tagfile                 = ../../../doc/qt3drender/qt3drender.tags
 
-depends                 += qtcore qtqml qtquick qt3dcore qtdoc
+depends                 += qtcore qtqml qtquick qt3dcore qtdoc qtgui
 
 headerdirs += ..
 sourcedirs += ..
@@ -35,6 +35,8 @@ exampledirs += src/snippets
 #excludedirs +=
 
 imagedirs   += images
+
+Cpp.ignoretokens += QT3DRENDERERSHARED_EXPORT
 
 navigation.landingpage = "Qt3D Render"
 navigation.cppclassespage = "Qt3D Render C++ Classes"

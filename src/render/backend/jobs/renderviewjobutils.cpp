@@ -60,8 +60,8 @@ namespace Render {
 
 /*!
     \internal
-    Walks up the framegraph tree from \p fgLeaf and builds up as much state
-    as possible and populates \p rv. For cases where we can't get the specific state
+    Walks up the framegraph tree from \a fgLeaf and builds up as much state
+    as possible and populates \a rv. For cases where we can't get the specific state
     (e.g. because it depends upon more than just the framegraph) we store the data from
     the framegraph that will be needed to later when the rest of the data becomes available
 */

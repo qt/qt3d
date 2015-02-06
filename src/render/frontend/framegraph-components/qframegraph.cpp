@@ -59,8 +59,8 @@ void QFrameGraph::copy(const QNode *ref)
 }
 
 /*!
- * \class FrameGraph
- *
+ * \class Qt3D::QFrameGraph
+ * \inmodule Qt3DRender
  * \brief Component that has an activeFrameGraph property that should
  * reference the root FrameGraphItem of a frame graph tree. The Entity
  * that contains a FrameGraph property defines the rendering method to
@@ -69,7 +69,6 @@ void QFrameGraph::copy(const QNode *ref)
  * Note that only a single FrameGraph can be active at any moment.
  *
  * \since 5.3
- * \namespace Qt3D
  */
 
 QFrameGraph::QFrameGraph(QNode *parent)
