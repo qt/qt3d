@@ -144,11 +144,8 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
             return false;
     }
 
-    bool ok = m_gl->makeCurrent(m_surface);
-    if (!ok) {
-        qCWarning(Backend) << Q_FUNC_INFO << "make current failed";
+    if (!makeCurrent(m_surface))
         return false;
-    }
 
     GLint err = m_gl->functions()->glGetError();
     if (err != 0) {
@@ -234,8 +231,25 @@ void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
     releaseOpenGL();
     m_gl = ctx;
 
-    m_gl->makeCurrent(surface);
-    resolveHighestOpenGLFunctions();
+    if (makeCurrent(surface)) {
+        resolveHighestOpenGLFunctions();
+        m_gl->doneCurrent();
+    }
+}
+
+bool QGraphicsContext::makeCurrent(QSurface *surface)
+{
+    Q_ASSERT(m_gl);
+    if (!m_gl->makeCurrent(surface)) {
+        qCWarning(Backend) << Q_FUNC_INFO << "makeCurrent failed";
+        return false;
+    }
+    return true;
+}
+
+void QGraphicsContext::doneCurrent()
+{
+    Q_ASSERT(m_gl);
     m_gl->doneCurrent();
 }
 

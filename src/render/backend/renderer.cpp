@@ -331,7 +331,7 @@ void Renderer::initialize(QOpenGLContext *context)
     }
     m_graphicsContext->setOpenGLContext(ctx, m_surface);
 
-    if (enableDebugLogging) {
+    if (enableDebugLogging && ctx->makeCurrent(m_surface)) {
         bool supported = ctx->hasExtension("GL_KHR_debug");
         if (supported) {
             qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
@@ -350,6 +350,7 @@ void Renderer::initialize(QOpenGLContext *context)
         } else {
             qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
         }
+        ctx->doneCurrent();
     }
 
     // Awake setScenegraphRoot in case it was waiting

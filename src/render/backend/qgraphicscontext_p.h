@@ -104,6 +104,8 @@ public:
     void releaseOpenGL();
     void setOpenGLContext(QOpenGLContext* ctx, QSurface *surface);
     QOpenGLContext *openGLContext() { return m_gl; }
+    bool makeCurrent(QSurface *surface);
+    void doneCurrent();
 
     void activateShader(RenderShader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna) const
