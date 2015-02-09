@@ -61,6 +61,7 @@
 #include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
 
 #include <QSurface>
+#include <QWindow>
 #include <QOpenGLTexture>
 
 QT_BEGIN_NAMESPACE
@@ -137,6 +138,11 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
     Q_ASSERT(m_gl);
 
     m_surface = surface;
+
+    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
+        if (!static_cast<QWindow *>(m_surface)->isExposed())
+            return false;
+    }
 
     bool ok = m_gl->makeCurrent(m_surface);
     if (!ok) {
