@@ -97,6 +97,34 @@ Entity {
         "
     }
 
+    ShaderProgram {
+        id: gl2es2SkyboxShader
+
+        vertexShaderCode: "
+        attribute vec3 vertexPosition;
+        varying vec3 texCoord0;
+
+        uniform mat4 mvp;
+        uniform mat4 inverseProjectionMatrix;
+        uniform mat4 inverseModelView;
+
+        void main()
+        {
+            texCoord0 = vertexPosition.xyz;
+            gl_Position = vec4(mvp * vec4(vertexPosition, 1.0)).xyww;
+        }
+        "
+        fragmentShaderCode: "
+        varying highp vec3 texCoord0;
+        uniform samplerCube skyboxTexture;
+
+        void main()
+        {
+            gl_FragColor = textureCube(skyboxTexture, texCoord0);
+        }
+        "
+    }
+
     CuboidMesh {
         id: cuboidMesh
         yzMeshResolution: Qt.size(2, 2)
@@ -130,6 +158,36 @@ Entity {
                         shaderProgram: gl3SkyboxShader
                         renderStates: [
                             // cull front faces
+                            CullFace { mode: CullFace.Front },
+                            DepthTest { func: DepthTest.LessOrEqual }
+                        ]
+                    }
+                },
+                Technique {
+                    openGLFilter {
+                        api: OpenGLFilter.Desktop
+                        profile: OpenGLFilter.None
+                        majorVersion: 2
+                        minorVersion: 0
+                    }
+                    renderPasses: RenderPass {
+                        shaderProgram: gl2es2SkyboxShader
+                        renderStates: [
+                            CullFace { mode: CullFace.Front },
+                            DepthTest { func: DepthTest.LessOrEqual }
+                        ]
+                    }
+                },
+                Technique {
+                    openGLFilter {
+                        api: OpenGLFilter.ES
+                        profile: OpenGLFilter.None
+                        majorVersion: 2
+                        minorVersion: 0
+                    }
+                    renderPasses: RenderPass {
+                        shaderProgram: gl2es2SkyboxShader
+                        renderStates: [
                             CullFace { mode: CullFace.Front },
                             DepthTest { func: DepthTest.LessOrEqual }
                         ]
