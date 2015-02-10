@@ -234,8 +234,6 @@ AssimpParser::AssimpParser() : AbstractSceneParser(),
     m_sceneParsed(false),
     m_scene(Q_NULLPTR)
 {
-    Assimp::DefaultLogger::create("AssimpLog.txt", Assimp::Logger::VERBOSE);
-    Assimp::DefaultLogger::kill();
 }
 
 /*!
