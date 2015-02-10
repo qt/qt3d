@@ -45,6 +45,12 @@
 
 QT_BEGIN_NAMESPACE
 
+#if 0
+// Create a forwarding header
+#pragma qt_class(QTexture)
+#pragma qt_sync_stop_processing
+#endif
+
 QT_END_NAMESPACE
 
 #endif // QT3D_QTEXTURE_H
