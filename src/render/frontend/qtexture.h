@@ -43,4 +43,8 @@
 #include <Qt3DRenderer/qtextureproviders.h>
 #include <Qt3DRenderer/qtextureimage.h>
 
+QT_BEGIN_NAMESPACE
+
+QT_END_NAMESPACE
+
 #endif // QT3D_QTEXTURE_H
