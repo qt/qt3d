@@ -36,7 +36,8 @@ SUBDIRS += \
     transparency-qml \
     transparency-qml-scene3d \
     scene3d-loader \
-    clip-planes-qml
+    clip-planes-qml \
+    mouseinput-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

@@ -14,7 +14,12 @@ HEADERS += \
     $$PWD/keyboardeventfilter_p.h \
     $$PWD/assignkeyboardfocusjob_p.h \
     $$PWD/keyeventdispatcherjob_p.h \
-    $$PWD/q3dkeyevent.h
+    $$PWD/q3dkeyevent.h \
+    $$PWD/qmousecontroller.h \
+    $$PWD/qmouseinput.h \
+    $$PWD/qmouseinput_p.h \
+    $$PWD/qmousecontroller_p.h \
+    $$PWD/q3dmouseevent.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -27,6 +32,9 @@ SOURCES += \
     $$PWD/keyboardeventfilter.cpp \
     $$PWD/assignkeyboardfocusjob.cpp \
     $$PWD/keyeventdispatcherjob.cpp \
-    $$PWD/q3dkeyevent.cpp
+    $$PWD/q3dkeyevent.cpp \
+    $$PWD/qmouseinput.cpp \
+    $$PWD/qmousecontroller.cpp \
+    $$PWD/q3dmouseevent.cpp
 
 INCLUDEPATH += $$PWD
