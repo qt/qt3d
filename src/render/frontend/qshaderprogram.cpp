@@ -37,6 +37,7 @@
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
 #include <QUrl>
@@ -221,9 +222,7 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    // Expect a file for now
-    // Resources file are a bit tricky to handle, there may be a nicer way to do that.
-    QString filePath = sourceUrl.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+    QString filePath = QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
 
     QFile f(filePath);
     if (!f.exists())

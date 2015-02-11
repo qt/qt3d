@@ -36,6 +36,7 @@
 
 #include "qtextureimage.h"
 #include "qabstracttextureimage_p.h"
+#include <Qt3DCore/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,7 +67,7 @@ public:
     {
         TexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
-            QString source = m_url.toString().replace(QStringLiteral("qrc"), QStringLiteral(""));
+            QString source = QUrlHelper::urlToLocalFileOrQrc(m_url);
             QImage img;
             if (img.load(source)) {
                 dataPtr.reset(new TexImageData());

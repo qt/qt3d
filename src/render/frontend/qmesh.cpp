@@ -43,6 +43,7 @@
 #include <Qt3DRenderer/private/objloader_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -125,8 +126,7 @@ QMeshDataPtr MeshFunctor::operator()()
 
 
     // TO DO: Handle file download if remote url
-    // If the file contained :/ directly, is it mapped to "" when toString is called
-    QString filePath = m_sourcePath.toString().replace(QStringLiteral("qrc:/"), QStringLiteral(":/"));
+    QString filePath = QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
     if (loader.load(filePath))
         return QMeshDataPtr(loader.mesh());
 
