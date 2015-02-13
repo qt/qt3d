@@ -124,18 +124,6 @@ static const struct {
     { "ForwardRenderer", 2, 0 }
 };
 
-QVariantList QJSValueToVariantListConverter(const QJSValue &jsValue)
-{
-    QVariantList values;
-    QJSValueIterator it(jsValue);
-    while (it.hasNext()) {
-        it.next();
-        if (it.hasNext()) // The last element in an Array is the count, which we don't want
-            values << it.value().toVariant();
-    }
-    return values;
-}
-
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
 {
     QList<Qt3D::QShaderData *> arrayValues = array->values();
@@ -151,8 +139,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Init resources for defaults QML files
     initResources();
 
-    // Converters from QJSValue
-    QMetaType::registerConverter<QJSValue, QVariantList>(QJSValueToVariantListConverter);
+    // Converters
     QMetaType::registerConverter<Qt3D::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
     // @uri Qt3D.Render
