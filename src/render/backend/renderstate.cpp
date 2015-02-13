@@ -76,7 +76,7 @@ int RenderStateSet::changeCost(RenderStateSet *previousState)
     StateMaskSet stateToReset = previousState->stateMask() & invOurState;
 
     std::bitset<64> bs(stateToReset);
-    cost += bs.count();
+    cost += int(bs.count());
 
 // now, find out how many states we're changing
     Q_FOREACH (RenderState* ds, m_states) {

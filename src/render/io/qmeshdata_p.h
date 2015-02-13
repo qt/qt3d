@@ -53,7 +53,7 @@ class QAbstractBuffer;
 
 typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
 
-class QT3DCORESHARED_EXPORT QMeshDataPrivate
+class QMeshDataPrivate
 {
 public:
     QMeshDataPrivate(QMeshData *qq);
