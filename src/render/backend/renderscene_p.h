@@ -39,6 +39,7 @@
 
 #include <QtGlobal>
 #include <Qt3DCore/qbackendnode.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,13 +60,13 @@ public:
 
     // QObserverInterface interface
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QString source() const;
+    QUrl source() const;
     void setSceneSubtree(QEntity *subTree);
     void setSceneManager(SceneManager *manager);
 
 private:
     SceneManager *m_sceneManager;
-    QString m_source;
+    QUrl m_source;
 };
 
 class RenderSceneFunctor : public QBackendNodeFunctor

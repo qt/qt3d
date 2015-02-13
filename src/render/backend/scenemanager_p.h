@@ -59,14 +59,14 @@ class SceneManager : public QResourceManager<RenderScene,
 public:
     SceneManager();
 
-    void addSceneData(const QString &source, const QNodeId &sceneUuid);
+    void addSceneData(const QUrl &source, const QNodeId &sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
-    void addLoadedSceneTree(const QString &source, QEntity *tree);
-    QEntity *sceneTreeFromSource(const QString &source);
+    void addLoadedSceneTree(const QUrl &source, QEntity *tree);
+    QEntity *sceneTreeFromSource(const QUrl &source);
 
 private:
-    QHash<QString, QEntity *> m_loadedSceneTrees;
+    QHash<QUrl, QEntity *> m_loadedSceneTrees;
     QVector<LoadSceneJobPtr> m_pendingJobs;
 };
 

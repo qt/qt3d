@@ -50,7 +50,7 @@ SceneManager::SceneManager() : QResourceManager<RenderScene,
 {
 }
 
-void SceneManager::addSceneData(const QString &source, const QNodeId &sceneUuid)
+void SceneManager::addSceneData(const QUrl &source, const QNodeId &sceneUuid)
 {
     m_pendingJobs.append(LoadSceneJobPtr(new LoadSceneJob(source, sceneUuid)));
 }
@@ -62,13 +62,13 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
     return copy;
 }
 
-void SceneManager::addLoadedSceneTree(const QString &source, QEntity *tree)
+void SceneManager::addLoadedSceneTree(const QUrl &source, QEntity *tree)
 {
     SceneManager::Locker lock(this);
     m_loadedSceneTrees.insert(source, tree);
 }
 
-QEntity *SceneManager::sceneTreeFromSource(const QString &source)
+QEntity *SceneManager::sceneTreeFromSource(const QUrl &source)
 {
     SceneManager::Locker lock(this);
     return m_loadedSceneTrees.value(source);

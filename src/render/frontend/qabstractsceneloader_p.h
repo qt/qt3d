@@ -57,7 +57,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractSceneLoader)
 
-    QString m_source;
+    QUrl m_source;
     QAbstractSceneLoader::Status m_status;
 };
 

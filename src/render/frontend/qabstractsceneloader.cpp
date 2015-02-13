@@ -70,18 +70,18 @@ void QAbstractSceneLoader::copy(const QNode *ref)
     d_func()->m_source = s->d_func()->m_source;
 }
 
-QString QAbstractSceneLoader::source() const
+QUrl QAbstractSceneLoader::source() const
 {
     Q_D(const QAbstractSceneLoader);
     return d->m_source;
 }
 
-void QAbstractSceneLoader::setSource(QString arg)
+void QAbstractSceneLoader::setSource(const QUrl &arg)
 {
     Q_D(QAbstractSceneLoader);
     if (d->m_source != arg) {
         d->m_source = arg;
-        emit sourceChanged(arg);
+        emit sourceChanged();
     }
 }
 

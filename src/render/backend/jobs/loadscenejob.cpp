@@ -46,7 +46,7 @@ namespace Qt3D {
 
 namespace Render {
 
-LoadSceneJob::LoadSceneJob(const QString &source, const QNodeId &m_sceneComponent)
+LoadSceneJob::LoadSceneJob(const QUrl &source, const QNodeId &m_sceneComponent)
     : QAspectJob()
     , m_renderer(Q_NULLPTR)
     , m_source(source)
@@ -59,8 +59,8 @@ void LoadSceneJob::run()
     QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
         Q_FOREACH (AbstractSceneParser *parser, m_renderer->sceneParsers()) {
-            if (parser->isPathExtensionSupported(m_source)) {
-                parser->setFilePath(m_source);
+            if (parser->isExtensionSupported(m_source)) {
+                parser->setSource(m_source);
                 sceneTree = parser->scene();
                 m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
             }

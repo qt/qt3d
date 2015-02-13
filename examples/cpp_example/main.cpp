@@ -123,7 +123,7 @@ int main(int ac, char **av)
     sceneTransform->addTransform(sceneTranslateTransform);
     sceneEntity->addComponent(sceneTransform);
 //    scene->setSource(":/assets/gltf/wine/wine.json");
-    scene->setSource(":/assets/test_scene.dae");
+    scene->setSource(QUrl("qrc:/assets/test_scene.dae"));
     sceneEntity->addComponent(scene);
 
     // Camera

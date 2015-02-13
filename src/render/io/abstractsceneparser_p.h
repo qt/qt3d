@@ -40,6 +40,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QLoggingCategory>
+#include <QUrl>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -69,8 +70,8 @@ public:
     AbstractSceneParser();
     virtual ~AbstractSceneParser();
 
-    virtual void    setFilePath(const QString &path) = 0;
-    virtual bool    isPathExtensionSupported(const QString &path) = 0;
+    virtual void    setSource(const QUrl &source) = 0;
+    virtual bool    isExtensionSupported(const QUrl &source) = 0;
     virtual QEntity *scene(QString id = QString()) = 0;
     virtual QEntity *node(QString id) = 0;
 

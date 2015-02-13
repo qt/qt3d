@@ -40,6 +40,7 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
 {
     Q_OBJECT
     Q_ENUMS(Status)
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
     explicit QAbstractSceneLoader(QNode *parent = 0);
@@ -64,8 +65,8 @@ public:
         Error
     };
 
-    QString source() const;
-    void setSource(QString arg);
+    QUrl source() const;
+    void setSource(const QUrl &arg);
 
     Status status() const;
     void setStatus(Status status);
@@ -73,7 +74,7 @@ public:
     virtual void sceneChangeEvent(const QSceneChangePtr &change) = 0;
 
 Q_SIGNALS:
-    void sourceChanged(QString arg);
+    void sourceChanged();
     void statusChanged();
 
 protected:

@@ -40,6 +40,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QSharedPointer>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +53,7 @@ class Renderer;
 class LoadSceneJob : public Qt3D::QAspectJob
 {
 public:
-    explicit LoadSceneJob(const QString &source, const QNodeId &sceneComponent);
+    explicit LoadSceneJob(const QUrl &source, const QNodeId &sceneComponent);
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
 protected:
@@ -60,7 +61,7 @@ protected:
 
 private:
     Renderer *m_renderer;
-    QString m_source;
+    QUrl m_source;
     QNodeId m_sceneComponent;
 };
 

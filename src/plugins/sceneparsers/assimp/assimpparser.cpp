@@ -52,6 +52,7 @@
 #include <QColor>
 #include <qmath.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -273,8 +274,9 @@ QMatrix4x4 AssimpParser::aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix)
  * Sets the \a path used by the parser to load the asset file.
  * If the file is valid, this will trigger the parsing of the file.
  */
-void AssimpParser::setFilePath(const QString& path)
+void AssimpParser::setSource(const QUrl &source)
 {
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
@@ -288,8 +290,9 @@ void AssimpParser::setFilePath(const QString& path)
  * Returns true if the extension of \a path is supported by
  * the assimp parser.
  */
-bool AssimpParser::isPathExtensionSupported(const QString &path)
+bool AssimpParser::isExtensionSupported(const QUrl &source)
 {
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
 }
 

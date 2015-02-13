@@ -50,6 +50,7 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
+#include <Qt3DCore/private/qurlhelper_p.h>
 #include <qtexture.h>
 #include <qparameter.h>
 
@@ -285,8 +286,9 @@ bool GLTFParser::setJSON( QJsonDocument json )
  * Sets the \a path used by the parser to load the scene file.
  * If the file is valid, parsing is automatically triggered.
  */
-void GLTFParser::setFilePath(const QString &path)
+void GLTFParser::setSource(const QUrl &source)
 {
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo finfo(path);
     if (!finfo.exists()) {
         qWarning() << "missing file:" << path;
@@ -307,8 +309,9 @@ void GLTFParser::setFilePath(const QString &path)
  * Returns true if the extension of \a path is supported by the
  * GLTF parser.
  */
-bool GLTFParser::isPathExtensionSupported(const QString &path)
+bool GLTFParser::isExtensionSupported(const QUrl &source)
 {
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);
 }
 

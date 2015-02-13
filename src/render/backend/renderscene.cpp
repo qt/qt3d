@@ -66,12 +66,12 @@ void RenderScene::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
-        m_source = propertyChange->value().toString();
+        m_source = propertyChange->value().toUrl();
         m_sceneManager->addSceneData(m_source, peerUuid());
     }
 }
 
-QString RenderScene::source() const
+QUrl RenderScene::source() const
 {
     return m_source;
 }

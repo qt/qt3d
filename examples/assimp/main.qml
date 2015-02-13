@@ -81,7 +81,7 @@ Entity
             SceneLoader
             {
                 id: scene
-                source: ":/assets/test_scene.dae"
+                source: "assets/test_scene.dae"
             }]
     }
 }

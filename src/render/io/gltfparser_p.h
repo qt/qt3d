@@ -75,8 +75,8 @@ public:
     bool setJSON( QJsonDocument json );
 
     // SceneParserInterface interface
-    void setFilePath(const QString &path) Q_DECL_OVERRIDE;
-    bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
+    void setSource(const QUrl &source) Q_DECL_OVERRIDE;
+    bool isExtensionSupported(const QUrl &source) Q_DECL_OVERRIDE;
 
     /**
      * @brief instantiate Create Nodes based on glTf JSON document

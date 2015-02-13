@@ -78,8 +78,8 @@ public:
     static bool isAssimpPath(const QString& path);
 
     // SceneParserInterface interface
-    void setFilePath(const QString& path) Q_DECL_OVERRIDE;
-    bool isPathExtensionSupported(const QString &path) Q_DECL_OVERRIDE;
+    void setSource(const QUrl& source) Q_DECL_OVERRIDE;
+    bool isExtensionSupported(const QUrl &source) Q_DECL_OVERRIDE;
     QEntity *scene(QString id = QString()) Q_DECL_OVERRIDE;
     QEntity *node(QString id) Q_DECL_OVERRIDE;
 
