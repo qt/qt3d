@@ -86,7 +86,7 @@ Effect {
                         const int lightCount = 5;
                         uniform PointLightBlock {
                              PointLight lights[lightCount];
-                        } pointLights;
+                        };
 
                         void main()
                         {
@@ -97,8 +97,8 @@ Effect {
 
                             vec4 lightColor;
                             for (int i = 0; i < lightCount; i++) {
-                                vec3 s = normalize(pointLights.lights[i].position - pos);
-                                lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
+                                vec3 s = normalize(lights[i].position - pos);
+                                lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
                             fragColor = col * lightColor;
@@ -153,7 +153,7 @@ Effect {
                         uniform struct
                         {
                             PointLight lights[lightCount];
-                        } pointLights;
+                        };
 
                         void main()
                         {
@@ -164,8 +164,8 @@ Effect {
 
                             vec4 lightColor;
                             for (int i = 0; i < lightCount; i++) {
-                                vec3 s = normalize(pointLights.lights[i].position - pos);
-                                lightColor += pointLights.lights[i].color * (pointLights.lights[i].intensity * max(dot(s, norm), 0.0));
+                                vec3 s = lights[i].position - pos);
+                                lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
                             gl_FragColor = col * lightColor;
