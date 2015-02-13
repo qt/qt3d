@@ -23,9 +23,9 @@ uniform PointLightBlock {
 void main()
 {
     vec2 texCoord = gl_FragCoord.xy / winSize;
-    vec4 col = texture2D(color, texCoord);
-    vec3 pos = texture2D(position, texCoord).xyz;
-    vec3 norm = texture2D(normal, texCoord).xyz;
+    vec4 col = texture(color, texCoord);
+    vec3 pos = texture(position, texCoord).xyz;
+    vec3 norm = texture(normal, texCoord).xyz;
 
     vec4 lightColor;
     for (int i = 0; i < 3; i++) {

@@ -187,7 +187,7 @@ Material {
 
                             void main()
                             {
-                                fragColor = texture2D(tex, texCoord);
+                                fragColor = texture(tex, texCoord);
                             }
                             "
                         }

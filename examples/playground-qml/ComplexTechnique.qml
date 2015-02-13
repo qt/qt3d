@@ -103,7 +103,7 @@ Technique {
                         color += pointLights[i].color * (pointLights[i].intensity * max(dot(s, normal), 0.0));
                     }
                     color /= float(lightCount);
-                    fragColor = texture2D(texture, texCoord) * color;
+                    fragColor = texture(texture, texCoord) * color;
                 }"
             }
         },
@@ -132,7 +132,7 @@ Technique {
 
                 void main()
                 {
-                    fragColor = texture2D(tex, texCoord);
+                    fragColor = texture(tex, texCoord);
                 }
                 "
             }
@@ -219,7 +219,7 @@ Technique {
 
                 void main()
                 {
-                    fragColor = texture2D(gBuffer, texCoord);
+                    fragColor = texture(gBuffer, texCoord);
                 }
                 "
             }
