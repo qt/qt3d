@@ -80,7 +80,7 @@ void ExampleScene::buildScene()
         const float angle = M_PI * 2.0f * float(i) / count;
         entity->setAngle(angle);
         entity->setRadius(radius);
-        entity->setDiffuseColor(QColor(fabs(cosf(angle)) * 255, 204, 75));
+        entity->setDiffuseColor(QColor(qFabs(qCos(angle)) * 255, 204, 75));
         m_entities.append(entity);
     }
 }

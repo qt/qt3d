@@ -111,12 +111,12 @@ int main(int ac, char **av)
 
         const float angle = M_PI * 2.0f * i * det * 10.;
 
-        material->setDiffuse(QColor(fabs(cosf(angle)) * 255, 204, 75));
+        material->setDiffuse(QColor(qFabs(qCos(angle)) * 255, 204, 75));
         material->setAmbient(Qt::gray);
         material->setSpecular(Qt::white);
         material->setShininess(150.0f);
 
-        translation->setTranslation(QVector3D(radius * cos(angle), 200.* i * det, radius * sin(angle)));
+        translation->setTranslation(QVector3D(radius * qCos(angle), 200.* i * det, radius * qSin(angle)));
         rotateX->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
         rotateZ->setAxis(QVector3D(0.0f, 0.0f, 1.0f));
         rotateX->setAngleDeg(30.0f * i);

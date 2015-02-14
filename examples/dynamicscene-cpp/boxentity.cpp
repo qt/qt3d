@@ -101,8 +101,8 @@ float BoxEntity::radius() const
 
 void BoxEntity::updateTransformation()
 {
-    m_translate->setTranslation(QVector3D(cosf(m_angle) * m_radius,
+    m_translate->setTranslation(QVector3D(qCos(m_angle) * m_radius,
                                           1.0f,
-                                          sinf(m_angle) * m_radius));
+                                          qSin(m_angle) * m_radius));
 }
 
