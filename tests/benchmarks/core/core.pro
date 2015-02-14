@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = \
+!wince*: SUBDIRS += \
     qcircularbuffer \
     qresourcesmanager \
     qframeallocator
