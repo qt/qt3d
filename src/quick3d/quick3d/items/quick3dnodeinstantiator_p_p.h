@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2013 Research In Motion.
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,31 +35,49 @@
 **
 ****************************************************************************/
 
-#include <Qt3DCore/window.h>
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DQuick/QQmlAspectEngine>
+#ifndef QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
+#define QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
 
-#include <QGuiApplication>
-#include <QtQml>
+#include <private/qnode_p.h>
+#include <private/qqmlchangeset_p.h>
+#include <private/qqmlobjectmodel_p.h>
 
-#include <iostream>
+QT_BEGIN_NAMESPACE
 
-int main(int argc, char* argv[])
+class QQmlComponent;
+
+namespace Qt3D {
+namespace Quick {
+
+class Quick3DNodeInstantiatorPrivate : public QNodePrivate
 {
-    QGuiApplication app(argc, argv);
-    Qt3D::Window view;
-    Qt3D::Quick::QQmlAspectEngine engine;
+    Q_DECLARE_PUBLIC(Quick3DNodeInstantiator)
 
-    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
-    engine.aspectEngine()->initialize();
-    engine.setSource(QUrl("qrc:/main.qml"));
-    view.show();
+public:
+    Quick3DNodeInstantiatorPrivate(QNode *qq);
+    ~Quick3DNodeInstantiatorPrivate();
 
-    return app.exec();
-}
+    void clear();
+    void regenerate();
+    void makeModel();
+    void _q_createdItem(int, QObject *);
+    void _q_modelUpdated(const QQmlChangeSet &, bool);
+
+    bool m_componentComplete:1;
+    bool m_effectiveReset:1;
+    bool m_active:1;
+    bool m_async:1;
+    bool m_ownModel:1;
+    QVariant m_model;
+    QQmlInstanceModel *m_instanceModel;
+    QQmlComponent *m_delegate;
+    QVector<QPointer<QObject> > m_objects;
+};
+
+} // namespace Quick
+} // namespace Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
+

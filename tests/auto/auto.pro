@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS = core \
-         render
+SUBDIRS = \
+    core \
+    render \
+    quick3d

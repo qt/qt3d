@@ -6,7 +6,11 @@ SOURCES += \
     main.cpp
 
 OTHER_FILES += \
-    main.qml
+    main.qml \
+    MyEntity.qml
 
 RESOURCES += \
     bigmodel-qml.qrc
+
+DISTFILES += \
+    MyEntity.qml

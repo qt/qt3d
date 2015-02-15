@@ -47,6 +47,7 @@
 #include <Qt3DQuick/quick3dentityloader.h>
 #include <Qt3DQuick/quick3dtransform.h>
 #include <Qt3DQuick/quick3dconfiguration.h>
+#include <private/quick3dnodeinstantiator_p.h>
 #include <private/qt3dquick_global_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,6 +62,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
     qmlRegisterExtendedType<Qt3D::QEntity, Qt3D::Quick::Quick3DEntity>(uri, 2, 0, "Entity");
     qmlRegisterType<Qt3D::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
+    qmlRegisterType<Qt3D::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
     qmlRegisterExtendedType<Qt3D::QTransform, Qt3D::Quick::Quick3DTransform>(uri, 2, 0, "Transform");
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that

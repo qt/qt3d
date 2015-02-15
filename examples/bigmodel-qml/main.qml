@@ -41,40 +41,40 @@ import QtQuick 2.2 as QQ2
 Entity {
     id: sceneRoot
 
+    Configuration { controlledCamera: mainCamera }
+
+    components: [
+        FrameGraph { activeFrameGraph: ForwardRenderer { camera: mainCamera } }
+    ]
+
     Camera {
-        id: camera
-        lens : CameraLens {
-            projectionType: CameraLens.PerspectiveProjection
-            fieldOfView: 45
-            aspectRatio: 16/9
-            nearPlane : 0.1
-            farPlane : 1000.0
-        }
-
-        transform : Transform {
-            LookAt {
-                position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-            }
-        }
+        id: mainCamera
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 22.5
+        aspectRatio: 16 / 9
+        nearPlane:   0.01
+        farPlane:    1000.0
+        position:   Qt.vector3d( 0.0, 25.0, 40.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+        upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    NodeInstantiator {
+        id: collection
+        property int count: 64
+        property real spacing: 5
+        property int cols: 8
+        property int _rows: count / cols
 
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
+        model: count
+        delegate: MyEntity {
+            id: myEntity
+            property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
+            property real _hue: (index % collection.cols) / collection.cols
+
+            x: collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1))
+            z: collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows)
+            diffuse: Qt.hsla( _hue, 0.5, _lightness, 1.0 )
         }
-    }
-
-    components: [external_forward_renderer]
-
-    Instantiator {
-        model: _meshFileNames
-        delegate: SceneLoader { source: modelData; }
     }
 }
