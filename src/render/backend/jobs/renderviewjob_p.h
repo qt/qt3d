@@ -40,6 +40,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qframeallocator.h>
 #include <QThreadStorage>
+#include <QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,11 +55,13 @@ class RenderViewJob : public QAspectJob
 {
 public:
     RenderViewJob()
-        : m_fgLeaf(0)
+        : m_renderer(0)
+        , m_fgLeaf(0)
         , m_index(0)
     {}
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
 
     inline void setFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     {
@@ -79,6 +82,7 @@ protected:
 
 private:
     Renderer *m_renderer;
+    QSize m_surfaceSize;
     FrameGraphNode *m_fgLeaf;
     int m_index;
     // Indicates which frame out of the maximum number of preprocessing frames

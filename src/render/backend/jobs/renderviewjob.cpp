@@ -60,6 +60,7 @@ void RenderViewJob::run()
     // RenderView should allocate heap resources using only the currentFrameAllocator
     renderView->setAllocator(currentFrameAllocator);
     renderView->setRenderer(m_renderer);
+    renderView->setSurfaceSize(m_surfaceSize);
     renderView->setFrameIndex(m_frameIndex);
 
     // Populate the renderview's configuration from the framegraph

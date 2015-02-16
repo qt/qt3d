@@ -189,7 +189,6 @@ public:
     inline int cachedFramesCount() const { return m_cachedFramesCount; }
 
     void setSurface(QSurface *s);
-    QSurface *surface() const;
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     void submitRenderViews(int maxFrameCount = -1);

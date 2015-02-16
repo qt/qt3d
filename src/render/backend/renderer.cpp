@@ -477,11 +477,6 @@ void Renderer::setSurface(QSurface* surface)
     m_waitForWindowToBeSetCondition.wakeOne();
 }
 
-QSurface *Renderer::surface() const
-{
-    return m_surface;
-}
-
 void Renderer::render()
 {
     // Traversing the framegraph tree from root to lead node
@@ -644,12 +639,12 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
 
     QVector<QAspectJobPtr> renderBinJobs;
 
-    // We do not create jobs if the graphicContext hasn't been set.
-    // That way we will go in submitRenderView which will create the OpenGLContext in the
-    // correct thread so that later on Jobs can query for OpenGL Versions, Extensions ...
-    FrameGraphVisitor visitor;
-    visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
-    m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+    // Do not create any more jobs when the platform surface is gone.
+    if (m_surface) {
+        FrameGraphVisitor visitor;
+        visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
+        m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+    }
 
     return renderBinJobs;
 }
@@ -659,6 +654,7 @@ QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrde
 {
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
+    job->setSurfaceSize(m_surface->size());
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
     job->setFrameIndex(m_currentPreprocessingFrameIndex);

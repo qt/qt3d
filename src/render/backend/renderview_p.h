@@ -91,6 +91,7 @@ public:
     void sort();
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline Renderer *renderer() const { return m_renderer; }
 
     inline void setAllocator(QFrameAllocator *allocator)
@@ -189,6 +190,7 @@ private:
     void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
 
     Renderer *m_renderer;
+    QSize m_surfaceSize;
     QFrameAllocator *m_allocator;
 
     // Helps making the size of RenderView smaller

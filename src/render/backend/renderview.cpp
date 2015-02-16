@@ -223,8 +223,7 @@ QUniformValue *RenderView::viewportMatrix(const QMatrix4x4 &model) const
     // TODO: Can we avoid having to pass the model matrix in to these functions?
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
-    QSize surfaceSize = m_renderer->surface()->size();
-    viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
+    viewportMatrix.viewport(resolveViewport(*m_viewport, m_surfaceSize));
     return QUniformValue::fromVariant(QVariant::fromValue(viewportMatrix), m_allocator);
 
 }
@@ -233,8 +232,7 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
-    QSize surfaceSize = m_renderer->surface()->size();
-    viewportMatrix.viewport(resolveViewport(*m_viewport, surfaceSize));
+    viewportMatrix.viewport(resolveViewport(*m_viewport, m_surfaceSize));
     QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
     return QUniformValue::fromVariant(QVariant::fromValue(inverseViewportMatrix), m_allocator);
 
