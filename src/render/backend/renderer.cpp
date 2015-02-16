@@ -164,9 +164,20 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->setObjectName(QStringLiteral("default-technique"));
 
     QShaderProgram* defaultShader = new QShaderProgram;
-    const bool isES = m_graphicsContext->openGLContext()->isOpenGLES();
-    const QString vertexFileName = isES ? QStringLiteral("qrc:/shaders/es2/diffuse.vert") : QStringLiteral("qrc:/shaders/diffuse.vert");
-    const QString fragmentFileName = isES ? QStringLiteral("qrc:/shaders/es2/diffuse.frag") : QStringLiteral("qrc:/shaders/diffuse.frag");
+    QString vertexFileName;
+    QString fragmentFileName;
+    if (m_graphicsContext->openGLContext()->isOpenGLES()) {
+        vertexFileName = QStringLiteral("qrc:/shaders/es2/diffuse.vert");
+        fragmentFileName = QStringLiteral("qrc:/shaders/es2/diffuse.frag");
+    } else {
+        if (m_graphicsContext->openGLContext()->format().profile() == QSurfaceFormat::CoreProfile) {
+            vertexFileName = QStringLiteral("qrc:/shaders/diffuse.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/diffuse.frag");
+        } else {
+            vertexFileName = QStringLiteral("qrc:/shaders/es2/diffuse.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/es2/diffuse.frag");
+        }
+    }
     defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(vertexFileName)));
     defaultShader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(fragmentFileName)));
     defaultShader->setObjectName(QStringLiteral("DefaultShader"));
