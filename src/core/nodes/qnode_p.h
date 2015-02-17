@@ -62,7 +62,7 @@ public:
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
 
     void notifyPropertyChange(const char *name, const QVariant &value);
-    virtual void notifyObservers(const QSceneChangePtr &change);
+    void notifyObservers(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
     void insertTree(QNode *treeRoot, int depth = 0);
 

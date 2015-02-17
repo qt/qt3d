@@ -60,7 +60,7 @@ public:
 
     QVariant criterionValue() const;
     QString criterionName() const;
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool operator ==(const RenderAnnotation &other);
     bool operator !=(const RenderAnnotation &other);
 

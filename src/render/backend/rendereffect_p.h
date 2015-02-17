@@ -60,7 +60,7 @@ public:
     void cleanup();
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void appendRenderTechnique(const QNodeId &t);
 
     QList<QNodeId> techniques() const;

@@ -118,7 +118,7 @@ public :
     // Called by the QGraphicContext prior applying
     void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
 
-    void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
+    void apply(QGraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
 
 private:
     QNodeId m_textureId;

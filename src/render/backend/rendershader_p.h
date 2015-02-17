@@ -65,7 +65,7 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
