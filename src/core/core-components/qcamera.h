@@ -134,7 +134,7 @@ public:
     void setTop(float top);
     float top() const;
 
-    QMatrix4x4 projectionMatrix();
+    QMatrix4x4 projectionMatrix() const;
 
     void setPosition(const QVector3D &position);
     QVector3D position() const;

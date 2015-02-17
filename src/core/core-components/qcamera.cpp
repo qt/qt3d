@@ -351,7 +351,7 @@ float QCamera::top() const
     return d->m_lens->top();
 }
 
-QMatrix4x4 QCamera::projectionMatrix()
+QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
     return d->m_lens->projectionMatrix();
