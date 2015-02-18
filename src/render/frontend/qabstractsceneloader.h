@@ -71,8 +71,6 @@ public:
     Status status() const;
     void setStatus(Status status);
 
-    virtual void sceneChangeEvent(const QSceneChangePtr &change) = 0;
-
 Q_SIGNALS:
     void sourceChanged();
     void statusChanged();
