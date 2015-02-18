@@ -105,6 +105,44 @@ Effect {
                     // no special render state set => use the default set of states
                 }
             ]
+        },
+        Technique {
+            openGLFilter {
+                api: OpenGLFilter.ES
+                majorVersion: 3
+                minorVersion: 0
+            }
+
+            renderPasses: [
+                RenderPass {
+                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/es3/shadowmap.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es3/shadowmap.frag")
+                    }
+
+                    renderStates: [
+                        PolygonOffset { factor: 4; units: 4 },
+                        DepthTest { func: DepthTest.Less }
+                    ]
+                },
+
+                RenderPass {
+                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
+
+                    bindings: [
+                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
+                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform }
+                    ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/es3/ads.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es3/ads.frag")
+                    }
+                }
+            ]
         }
     ]
 }

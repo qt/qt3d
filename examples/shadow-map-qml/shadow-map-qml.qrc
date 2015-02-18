@@ -14,6 +14,10 @@
         <file>shaders/ads.vert</file>
         <file>shaders/shadowmap.frag</file>
         <file>shaders/shadowmap.vert</file>
+        <file>shaders/es3/ads.frag</file>
+        <file>shaders/es3/ads.vert</file>
+        <file>shaders/es3/shadowmap.frag</file>
+        <file>shaders/es3/shadowmap.vert</file>
     </qresource>
 </RCC>
 
