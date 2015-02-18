@@ -248,10 +248,8 @@ void QGraphicsHelperGL3::disableAlphaCoverage()
 
 GLuint QGraphicsHelperGL3::createFrameBufferObject()
 {
-    qDebug() << Q_FUNC_INFO;
     GLuint id;
     m_funcs->glGenFramebuffers(1, &id);
-    qDebug() << Q_FUNC_INFO << id;
     return id;
 }
 
