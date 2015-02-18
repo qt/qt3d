@@ -36,6 +36,7 @@
 
 #include "qopenglfilter.h"
 #include "private/qobject_p.h"
+#include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,8 +48,8 @@ public:
 
     QOpenGLFilterPrivate(QOpenGLFilter *qq)
         : QObjectPrivate()
-        , m_api(QOpenGLFilter::Desktop)
-        , m_profile(QOpenGLFilter::Compatibility)
+        , m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QOpenGLFilter::Desktop : QOpenGLFilter::ES)
+        , m_profile(QOpenGLFilter::None) // matches all (no profile, core, compat)
         , m_minor(0)
         , m_major(0)
     {
