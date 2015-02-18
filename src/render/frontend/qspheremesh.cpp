@@ -46,7 +46,7 @@
 #include "qmeshdata.h"
 #include <private/qabstractmesh_p.h>
 
-#include <cmath>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -191,16 +191,16 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
     for ( int lat = 0; lat < rings + 1; ++lat )
     {
         const float phi = M_PI_2 - static_cast<float>( lat ) * dPhi;
-        const float cosPhi = cosf( phi );
-        const float sinPhi = sinf( phi );
+        const float cosPhi = qCos( phi );
+        const float sinPhi = qSin( phi );
         const float v = 1.0f - static_cast<float>( lat ) * dv;
 
         // Iterate over longitudes (slices)
         for ( int lon = 0; lon < slices + 1; ++lon )
         {
             const float theta = static_cast<float>( lon ) * dTheta;
-            const float cosTheta = cosf( theta );
-            const float sinTheta = sinf( theta );
+            const float cosTheta = qCos( theta );
+            const float sinTheta = qSin( theta );
             const float u = static_cast<float>( lon ) * du;
 
             *fptr++ = radius * cosTheta * cosPhi;
