@@ -7,14 +7,6 @@ src_render.subdir = $$PWD/render
 src_render.target = sub-render
 src_render.depends = src_core
 
-src_bulletphysics.subdir = $$PWD/bulletphysics
-src_bulletphysics.target = sub-bulletphysics
-src_bulletphysics.depends = src_core
-
-src_openal.subdir = $$PWD/openal
-src_openal.target = sub-openal
-src_openal.depends = src_core
-
 src_input.subdir = $$PWD/input
 src_input.target = sub-input
 src_input.depends = src_render
@@ -42,10 +34,6 @@ src_quick3d_imports_scene3d.file = $$PWD/quick3d/imports/scene3d/importsscene3d.
 src_quick3d_imports_scene3d.target = sub-quick3d-imports-scene3d
 src_quick3d_imports_scene3d.depends = src_quick3d_render src_input
 
-src_quick3d_imports_bulletphysics.file = $$PWD/quick3d/imports/bulletphysics/importsbulletphysics.pro
-src_quick3d_imports_bulletphysics.target = sub-quick3d-imports-bulletphysics
-src_quick3d_imports_bulletphysics.depends = src_bulletphysics
-
 src_quick3d_imports_input.file = $$PWD/quick3d/imports/input/importsinputs.pro
 src_quick3d_imports_input.target = sub-quick3d-imports-input
 src_quick3d_imports_input.depends = src_input
@@ -59,7 +47,6 @@ SUBDIRS += \
     src_core \
     src_render \
     src_input \
-    src_openal \
     src_quick3d_core \
     src_quick3d_core_imports \
     src_quick3d_render \
@@ -67,11 +54,5 @@ SUBDIRS += \
     src_quick3d_imports_scene3d \
     src_quick3d_imports_input \
     src_plugins_sceneparsers
-
-config_bullet {
-    SUBDIRS += \
-        src_bulletphysics \
-        src_quick3d_imports_bulletphysics
-}
 
 

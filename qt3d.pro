@@ -1,7 +1,6 @@
 #requires(qtHaveModule(opengl))
 
 load(configure)
-qtCompileTest(bullet)
 qtCompileTest(assimp)
 load(qt_parts)
 

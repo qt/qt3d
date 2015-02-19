@@ -34,10 +34,6 @@ SUBDIRS += \
 #SUBDIRS += qt3d
 #qtHaveModule(qml): SUBDIRS += quick3d
 
-qtHaveModule(3dbulletphysics) {
-    SUBDIRS += rollerball
-}
-
 # Make all other subdirs depend on exampleresources
 for(subdir, SUBDIRS) {
     !equals(subdir, exampleresources) {
