@@ -43,8 +43,8 @@
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFramebufferObjectFormat>
-
 #include <QSurface>
+#include <QQuickWindow>
 
 #include <QSGSimpleTextureNode>
 
@@ -103,6 +103,14 @@ public:
         Q_UNUSED(saver)
 
         m_renderAspect->renderSynchronous();
+
+        // We may have called doneCurrent() so restore the context.
+        saver.context()->makeCurrent(saver.surface());
+
+        // Reset the state used by the Qt Quick scenegraph to avoid any
+        // interference when rendering the rest of the UI.
+        m_item->window()->resetOpenGLState();
+
         update();
     }
 
