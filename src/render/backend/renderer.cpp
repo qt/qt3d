@@ -593,8 +593,11 @@ void Renderer::submitRenderViews(int maxFrameCount)
             continue;
 
         // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor()))
+        if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor())) {
+            qDeleteAll(renderViews);
+            m_renderQueues->popFrameQueue();
             break;
+        }
 
         if (!defaultFboIdValid) {
             defaultFboIdValid = true;
