@@ -42,6 +42,10 @@
 #include "job.h"
 #include "weaverjob_p.h"
 #include "qaspectjobmanager_p.h"
+#ifdef THREAD_POOLER
+#include "task_p.h"
+#include "dependencyhandler_p.h"
+#endif
 
 #include <QAtomicInt>
 #include <QDebug>
@@ -104,16 +108,31 @@ QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAbstractAspectJobManager(*new QAspectJobManagerPrivate(this), parent)
 {
     Q_D(QAspectJobManager);
+#ifndef THREAD_POOLER
     d->m_weaver = new ThreadWeaver::Queue(this);
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
+#else
+    d->m_threadPooler = new QThreadPooler(this);
+    d->m_threadPooler->setMaxThreadCount(QThread::idealThreadCount());
+
+    d->m_dependencyHandler = new DependencyHandler();
+    d->m_threadPooler->setDependencyHandler(d->m_dependencyHandler);
+#endif
 }
 
 QAspectJobManager::QAspectJobManager(QAspectJobManagerPrivate &dd, QObject *parent)
     : QAbstractAspectJobManager(dd, parent)
 {
     Q_D(QAspectJobManager);
+#ifndef THREAD_POOLER
     d->m_weaver = new ThreadWeaver::Queue(this);
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
+#else
+    d->m_threadPooler = new QThreadPooler(this);
+    d->m_threadPooler->setMaxThreadCount(QThread::idealThreadCount());
+
+    d->m_dependencyHandler = new DependencyHandler();
+#endif
 }
 
 void QAspectJobManager::initialize()
@@ -123,6 +142,8 @@ void QAspectJobManager::initialize()
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
     Q_D(QAspectJobManager);
+
+#ifndef THREAD_POOLER
     // Convert QJobs to ThreadWeaver::Jobs
     QHash<QAspectJob *, QSharedPointer<WeaverJob> > jobsMap;
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
@@ -150,17 +171,55 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
         d->m_weaver->enqueue(weaverJob);
     }
+#else
+    // Convert QJobs to Tasks
+    QHash<QAspectJob *, QSharedPointer<AspectTask>> tasksMap;
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+        QSharedPointer<AspectTask> task = QSharedPointer<AspectTask>::create();
+        task->m_job = job;
+        tasksMap.insert(job.data(), task);
+    }
+
+    // Resolve dependencies
+    QVector<Dependency> dependencyList;
+
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+        const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
+
+        Q_FOREACH (const QWeakPointer<QAspectJob> &dep, deps) {
+            QSharedPointer<AspectTask> taskDependee = tasksMap.value(dep.data());
+
+            if (taskDependee) {
+                QSharedPointer<AspectTask> taskDepender = tasksMap.value(job.data());
+                dependencyList.append(Dependency(taskDepender, taskDependee));
+                taskDependee->setDependencyHandler(d->m_dependencyHandler);
+            }
+        }
+    }
+    d->m_dependencyHandler->addDependencies(qMove(dependencyList));
+
+    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+        QSharedPointer<AspectTask> task = tasksMap.value(job.data());
+        d->m_threadPooler->enqueueTask(task);
+    }
+#endif
 }
 
 void QAspectJobManager::waitForAllJobs()
 {
     Q_D(QAspectJobManager);
+#ifndef THREAD_POOLER
     d->m_weaver->finish();
+#else
+    d->m_threadPooler->flush();
+#endif
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
     Q_D(QAspectJobManager);
+
+#ifndef THREAD_POOLER
     const int threadCount = d->m_weaver->maximumNumberOfThreads();
     QAtomicInt atomicCount(threadCount);
 
@@ -170,6 +229,17 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
     }
 
     d->m_weaver->finish();
+#else
+    const int threadCount = d->m_threadPooler->maxThreadCount();
+    QAtomicInt atomicCount(threadCount);
+
+    for (int i = 0; i < threadCount; ++i) {
+        QSharedPointer<SynchronizedTask> syncTask(new SynchronizedTask(func, arg, &atomicCount));
+        d->m_threadPooler->enqueueTask(syncTask);
+    }
+
+    d->m_threadPooler->flush();
+#endif
 }
 
 } // namespace Qt3D

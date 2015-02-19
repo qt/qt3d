@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,47 +34,65 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#ifndef QT3D_DEPENDENCYHANDLER_P_H
+#define QT3D_DEPENDENCYHANDLER_P_H
 
-#include <private/qabstractaspectjobmanager_p.h>
+#include "task_p.h"
 
-#ifdef THREAD_POOLER
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
-#endif
-
-namespace ThreadWeaver {
-class Queue;
-}
+#include <QtCore/QMutex>
+#include <QtCore/QVector>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
-
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+struct Dependency
 {
-public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    Dependency() {}
+    Dependency(QSharedPointer<TaskInterface> depender, QSharedPointer<TaskInterface> dependee)
+        : depender(qMove(depender)),
+          dependee(qMove(dependee)) {}
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
-
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-
-#ifdef THREAD_POOLER
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
-#endif
+    QSharedPointer<TaskInterface> depender;
+    QSharedPointer<TaskInterface> dependee;
 };
 
-} // Qt3D
+} // namespace Qt3D
+
+template <>
+class QTypeInfo<Qt3D::Dependency> : public QTypeInfoMerger<Qt3D::Dependency, QSharedPointer<Qt3D::TaskInterface> > {};
+
+namespace Qt3D {
+
+inline bool operator==(const Dependency &left, const Dependency &right)
+{
+    return left.depender == right.depender && left.dependee == right.dependee;
+}
+
+inline bool operator!=(const Dependency &left, const Dependency &right)
+{
+    return !operator==(left, right);
+}
+
+class DependencyHandler
+{
+public:
+    DependencyHandler();
+
+    void addDependencies(QVector<Dependency> dependencies);
+    bool hasDependency(const QSharedPointer<TaskInterface> &depender);
+    void freeDependencies(const QSharedPointer<TaskInterface> &dependee);
+
+private:
+    Q_DISABLE_COPY(DependencyHandler)
+
+    QVector<Dependency> m_dependencyMap;
+    mutable QMutex m_mutex;
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+#endif // QT3D_DEPENDENCYHANDLER_P_H
+
