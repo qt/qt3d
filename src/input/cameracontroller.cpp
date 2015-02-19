@@ -161,6 +161,9 @@ void CameraController::update(double dt)
 
 bool CameraController::keyPressEvent( QKeyEvent* e )
 {
+    m_translateFast = e->modifiers().testFlag(Qt::AltModifier);
+    m_viewCenterFixed = e->modifiers().testFlag(Qt::ShiftModifier);
+
     switch ( e->key() )
     {
         case Qt::Key_Right:
@@ -185,14 +188,6 @@ bool CameraController::keyPressEvent( QKeyEvent* e )
 
         case Qt::Key_PageDown:
             m_vy = -m_linearSpeed;
-            break;
-
-        case Qt::Key_Shift:
-            m_viewCenterFixed = true;
-            break;
-
-        case Qt::Key_Alt:
-            m_translateFast = true;
             break;
 
         case Qt::Key_A:
@@ -224,14 +219,6 @@ bool CameraController::keyReleaseEvent( QKeyEvent* e )
         case Qt::Key_PageDown:
             m_vy = 0.0;
             break;
-
-        case Qt::Key_Shift:
-            m_viewCenterFixed = false;
-            break;
-
-        case Qt::Key_Alt:
-           m_translateFast = false;
-           break;
 
         default:
             return false;
