@@ -165,7 +165,7 @@ Entity {
                     }
                 },
                 SceneLoader {
-                    source: ":/assets/test_scene.dae"
+                    source: "qrc:/assets/test_scene.dae"
                 }]
         }
 
