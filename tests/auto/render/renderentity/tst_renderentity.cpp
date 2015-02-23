@@ -104,7 +104,7 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, node));
-        addChange->setPropertyName(QByteArrayLiteral("component"));
+        addChange->setPropertyName("component");
         addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
         entity.sceneChangeEvent(addChange);
 
@@ -113,7 +113,7 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(component->id()));
         entity.sceneChangeEvent(removeChange);
 
@@ -155,7 +155,7 @@ private slots:
         // WHEN
         Q_FOREACH (QComponent *component, components) {
             QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, node));
-            addChange->setPropertyName(QByteArrayLiteral("component"));
+            addChange->setPropertyName("component");
             addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
             entity.sceneChangeEvent(addChange);
         }
@@ -168,7 +168,7 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(components.first()->id()));
         entity.sceneChangeEvent(removeChange);
 

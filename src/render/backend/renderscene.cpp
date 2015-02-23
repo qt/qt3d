@@ -79,14 +79,14 @@ QUrl RenderScene::source() const
 void RenderScene::setSceneSubtree(QEntity *subTree)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
-    e->setPropertyName(QByteArrayLiteral("scene"));
+    e->setPropertyName("scene");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(subTree));
     e->setTargetNode(peerUuid());
     notifyObservers(e);
     QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, this));
-    e2->setPropertyName(QByteArrayLiteral("status"));
+    e2->setPropertyName("status");
     e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
     e2->setTargetNode(peerUuid());
     notifyObservers(e2);

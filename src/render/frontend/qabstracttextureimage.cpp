@@ -147,7 +147,7 @@ void QAbstractTextureImage::update()
     Q_D(QAbstractTextureImage);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-        change->setPropertyName(QByteArrayLiteral("dataFunctor"));
+        change->setPropertyName("dataFunctor");
         change->setValue(QVariant::fromValue(dataFunctor()));
         d->notifyObservers(change);
     }

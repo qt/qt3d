@@ -118,7 +118,7 @@ void QEntity::addComponent(QComponent *comp)
         // to know which type of component it was and its properties to create
         // the backend object
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentAdded, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("component"));
+        propertyChange->setPropertyName("component");
         propertyChange->setValue(QVariant::fromValue(QNodePtr(QNode::clone(comp), &QNodePrivate::nodePtrDeleter)));
         d->notifyObservers(propertyChange);
     }
@@ -139,7 +139,7 @@ void QEntity::removeComponent(QComponent *comp)
         // fail in the case of large scenes.
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(ComponentRemoved, this));
         propertyChange->setValue(QVariant::fromValue(comp->id()));
-        propertyChange->setPropertyName(QByteArrayLiteral("componentId"));
+        propertyChange->setPropertyName("componentId");
         d->notifyObservers(propertyChange);
     }
 

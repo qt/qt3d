@@ -83,7 +83,7 @@ void QAbstractMesh::update()
     Q_D(QAbstractMesh);
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
-            change->setPropertyName(QByteArrayLiteral("meshFunctor"));
+            change->setPropertyName("meshFunctor");
             change->setValue(QVariant::fromValue(meshFunctor()));
             d->notifyObservers(change);
             // TO DO see if we can clear the d->m_dirty on request.

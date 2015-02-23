@@ -102,7 +102,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 
         if (d->m_shader != Q_NULLPTR && d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
-            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setPropertyName("shaderProgram");
             e->setValue(QVariant::fromValue(d->m_shader->id()));
             d->notifyObservers(e);
         }
@@ -119,7 +119,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
-            e->setPropertyName(QByteArrayLiteral("shaderProgram"));
+            e->setPropertyName("shaderProgram");
             e->setValue(QVariant::fromValue(shaderProgram->id()));
             d->notifyObservers(e);
         }
@@ -147,7 +147,7 @@ void QRenderPass::addAnnotation(QAnnotation *annotation)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("annotation"));
+            change->setPropertyName("annotation");
             change->setValue(QVariant::fromValue(annotation->id()));
             d->notifyObservers(change);
         }
@@ -159,7 +159,7 @@ void QRenderPass::removeAnnotation(QAnnotation *annotation)
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("annotation"));
+        change->setPropertyName("annotation");
         change->setValue(QVariant::fromValue(annotation->id()));
         d->notifyObservers(change);
     }
@@ -183,7 +183,7 @@ void QRenderPass::addBinding(QParameterMapping *binding)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("binding"));
+            change->setPropertyName("binding");
             change->setValue(QVariant::fromValue(QNode::clone(binding)));
             d->notifyObservers(change);
         }
@@ -195,7 +195,7 @@ void QRenderPass::removeBinding(QParameterMapping *binding)
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("binding"));
+        change->setPropertyName("binding");
         change->setValue(QVariant::fromValue(binding->id()));
         d->notifyObservers(change);
     }
@@ -220,7 +220,7 @@ void QRenderPass::addRenderState(QRenderState *state)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("renderState"));
+            change->setPropertyName("renderState");
             change->setValue(QVariant::fromValue(QNode::clone(state)));
             d->notifyObservers(change);
         }
@@ -232,7 +232,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("renderState"));
+        change->setPropertyName("renderState");
         change->setValue(QVariant::fromValue(state->id()));
         d->notifyObservers(change);
     }

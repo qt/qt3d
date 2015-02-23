@@ -84,7 +84,7 @@ void QNodePrivate::addChild(QNode *childNode)
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QNode);
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, q));
-        e->setPropertyName(QByteArrayLiteral("node"));
+        e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         QNode *parentClone = QNode::clone(q_func());
         QNode *childClone = Q_NULLPTR;
@@ -111,7 +111,7 @@ void QNodePrivate::removeChild(QNode *childNode)
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QNode);
         QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
-        e->setPropertyName(QByteArrayLiteral("node"));
+        e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         //        QNode *parentClone = QNode::clone(childNode->parentNode());
         //        QNode *childClone = Q_NULLPTR;

@@ -216,7 +216,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
         addChange->setValue(QVariant::fromValue(shader->id()));
-        addChange->setPropertyName(QByteArrayLiteral("shaderProgram"));
+        addChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -225,7 +225,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
         removeChange->setValue(QVariant::fromValue(shader->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("shaderProgram"));
+        removeChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -243,7 +243,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
         addChange->setValue(QVariant::fromValue(annotation->id()));
-        addChange->setPropertyName(QByteArrayLiteral("annotation"));
+        addChange->setPropertyName("annotation");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -253,7 +253,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
         removeChange->setValue(QVariant::fromValue(annotation->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("annotation"));
+        removeChange->setPropertyName("annotation");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -271,7 +271,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
         addChange->setValue(QVariant::fromValue(binding.data()));
-        addChange->setPropertyName(QByteArrayLiteral("binding"));
+        addChange->setPropertyName("binding");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -284,7 +284,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
         removeChange->setValue(QVariant::fromValue(binding->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("binding"));
+        removeChange->setPropertyName("binding");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -311,7 +311,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
         addChange->setValue(QVariant::fromValue(frontendState));
-        addChange->setPropertyName(QByteArrayLiteral("renderState"));
+        addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -321,7 +321,7 @@ private slots:
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
         removeChange->setValue(QVariant::fromValue(frontendState->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("renderState"));
+        removeChange->setPropertyName("renderState");
         backend.sceneChangeEvent(removeChange);
 
         // THEN

@@ -46,7 +46,7 @@ RotatingTrefoilKnot::RotatingTrefoilKnot(Qt3D::QNode *parent)
     m_thetaAnimation->setEndValue(360.0f);
     m_thetaAnimation->setLoopCount(-1);
     m_thetaAnimation->setTargetObject(xaxisRotateTransform());
-    m_thetaAnimation->setPropertyName(QByteArrayLiteral("angle"));
+    m_thetaAnimation->setPropertyName("angle");
     m_thetaAnimation->start();
 
     m_phiAnimation->setDuration(2000);
@@ -54,7 +54,7 @@ RotatingTrefoilKnot::RotatingTrefoilKnot(Qt3D::QNode *parent)
     m_phiAnimation->setEndValue(360.0f);
     m_phiAnimation->setLoopCount(-1);
     m_phiAnimation->setTargetObject(yaxisRotateTransform());
-    m_phiAnimation->setPropertyName(QByteArrayLiteral("angle"));
+    m_phiAnimation->setPropertyName("angle");
     m_phiAnimation->start();
 }
 

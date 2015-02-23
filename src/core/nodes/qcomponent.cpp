@@ -60,7 +60,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QComponent);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, q));
-        e->setPropertyName(QByteArrayLiteral("entity"));
+        e->setPropertyName("entity");
         e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);
     }
@@ -72,7 +72,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QComponent);
         QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, q));
-        e->setPropertyName(QByteArrayLiteral("entity"));
+        e->setPropertyName("entity");
         e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);
     }
