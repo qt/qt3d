@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,47 +34,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#version 300 es
 
-#include <private/qabstractaspectjobmanager_p.h>
+precision highp float;
 
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
+uniform mat4 viewMatrix;
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+uniform vec3 lightPosition;
+uniform vec3 lightIntensity;
 
-QT_BEGIN_NAMESPACE
+uniform vec3 ka;            // Ambient reflectivity
+uniform vec3 kd;            // Diffuse reflectivity
+uniform vec3 ks;            // Specular reflectivity
+uniform float shininess;    // Specular shininess factor
 
-namespace Qt3D {
+uniform sampler2DShadow shadowMapTexture;
 
-class QAspectJobManager;
+in vec4 positionInLightSpace;
 
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+in vec3 position;
+in vec3 normal;
+
+out vec4 fragColor;
+
+vec3 dsModel(const in vec3 pos, const in vec3 n)
 {
-public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    // Calculate the vector from the light to the fragment
+    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - pos);
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+    // Calculate the vector from the fragment to the eye position
+    // (origin since this is in "eye" or "camera" space)
+    vec3 v = normalize(-pos);
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+    // Reflect the light beam using the normal at this fragment
+    vec3 r = reflect(-s, n);
 
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
-};
+    // Calculate the diffuse component
+    float diffuse = max(dot(s, n), 0.0);
 
-} // Qt3D
+    // Calculate the specular component
+    float specular = 0.0;
+    if (dot(s, n) > 0.0)
+        specular = pow(max(dot(r, v), 0.0), shininess);
 
-QT_END_NAMESPACE
+    // Combine the diffuse and specular contributions (ambient is taken into account by the caller)
+    return lightIntensity * (kd * diffuse + ks * specular);
+}
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+void main()
+{
+    float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
+
+    vec3 ambient = lightIntensity * ka;
+
+    vec3 result = ambient;
+    if (shadowMapSample > 0.0)
+        result += dsModel(position, normalize(normal));
+
+    fragColor = vec4(result, 1.0);
+}

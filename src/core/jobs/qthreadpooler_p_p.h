@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,47 +34,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#ifndef QT3D_QTHREADPOOLER_P_H
+#define QT3D_QTHREADPOOLER_P_H
 
-#include <private/qabstractaspectjobmanager_p.h>
-
-#include "qthreadpooler_p.h"
+#include "jobrunner_p.h"
 #include "dependencyhandler_p.h"
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+#include <QtCore/QtGlobal>
+#include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
+class QThreadPooler;
 
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+class QThreadPoolerPrivate : public QObjectPrivate
 {
 public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    QThreadPoolerPrivate(QThreadPooler *qq);
+    ~QThreadPoolerPrivate();
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+    bool isQueueEmpty();
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+    void incRunningThreads();
+    void decRunningThreads();
 
-    QThreadPooler *m_threadPooler;
+    inline void setDependencyHandler(DependencyHandler *handler)
+    {
+        m_dependencyHandler = handler;
+    }
+
+    void createRunners(int threadCount);
+    void shutdown();
+
+    int maxThreadCount() const;
+    void setMaxThreadCount(int threadCount);
+
+    Q_DECLARE_PUBLIC(QThreadPooler)
+
+private:
+    QList<JobRunner *> m_workers;
+    QVector<QSharedPointer<TaskInterface> > m_taskQueue;
+
+    QWaitCondition m_jobAvailable;
+    QWaitCondition m_jobFinished;
+    QMutex *m_mutex;
+    int m_runningThreads;
+    int m_maxThreadCount;
     DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
 };
 
-} // Qt3D
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+#endif // QT3D_QTHREADPOOLER_P_H
+

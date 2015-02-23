@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,47 +34,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#ifndef QT3D_JOBRUNNER_P_H
+#define QT3D_JOBRUNNER_P_H
 
-#include <private/qabstractaspectjobmanager_p.h>
+#include "qaspectjobmanager.h"
+#include "task_p.h"
 
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
-
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+#include <QtCore/QThread>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QAtomicInt>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
+class QThreadPooler;
 
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+class JobRunner : public QThread
 {
+    Q_OBJECT
+
 public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    explicit JobRunner(QThreadPooler *parent = 0);
+    ~JobRunner();
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+    void run() Q_DECL_OVERRIDE;
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+    inline void setWaitConditions(QWaitCondition *jobAvailable)
+    {
+        m_jobAvailable = jobAvailable;
+    }
+    inline void setMutex(QMutex *mutex) { m_mutex = mutex; }
 
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
+private:
+    void suspend();
+
+private:
+    QAtomicInt m_abort;
+    QThreadPooler *m_pooler;
+
+    QWaitCondition *m_jobAvailable;
+    QMutex *m_mutex; // For waiting next available job
+
+private Q_SLOTS:
+    void shutDown();
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+#endif // QT3D_JOBRUNNER_P_H
+

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,47 +34,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#version 300 es
 
-#include <private/qabstractaspectjobmanager_p.h>
+in vec3 vertexPosition;
+in vec3 vertexNormal;
 
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
+out vec4 positionInLightSpace;
+out vec3 position;
+out vec3 normal;
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+uniform mat4 lightViewProjection;
+uniform mat4 modelMatrix;
+uniform mat4 modelView;
+uniform mat3 modelViewNormal;
+uniform mat4 mvp;
 
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-class QAspectJobManager;
-
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+void main()
 {
-public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    // positionInLightSpace = lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
+    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+    normal = normalize(modelViewNormal * vertexNormal);
+    position = vec3(modelView * vec4(vertexPosition, 1.0));
 
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
-};
-
-} // Qt3D
-
-QT_END_NAMESPACE
-
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
+}

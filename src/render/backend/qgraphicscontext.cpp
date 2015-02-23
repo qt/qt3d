@@ -161,6 +161,8 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
     if (m_activeShader)
         m_activeShader = NULL;
 
+    m_activeTextures.fill(0);
+
     return true;
 }
 

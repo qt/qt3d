@@ -89,6 +89,7 @@ public:
 
 private:
     QOpenGLFunctions *m_funcs;
+    bool m_isES3;
 };
 
 } // Render

@@ -67,7 +67,7 @@ Entity {
 
     AnimatedDiffuseMaterial {
         id: animatedMaterial
-        texture: Texture2D { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" }
+        texture: Texture2D { TextureImage { source : "assets/gltf/wine/Wood_Cherry_Original_.jpg" } }
     }
 
     // Scene elements
@@ -76,7 +76,7 @@ Entity {
         id : sceneEntity
         components : SceneLoader {
             id: scene
-            source: ":/assets/test_scene.dae"
+            source: "qrc:/assets/test_scene.dae"
             objectName: "dae_scene"
         }
     }

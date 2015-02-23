@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,47 +34,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#ifndef QT3D_QTHREADPOOLER_H
+#define QT3D_QTHREADPOOLER_H
 
-#include <private/qabstractaspectjobmanager_p.h>
-
-#include "qthreadpooler_p.h"
+#include "task_p.h"
 #include "dependencyhandler_p.h"
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+#include <QtCore/QObject>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
+class QThreadPoolerPrivate;
 
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+class QThreadPooler : public QObject
 {
+    Q_OBJECT
+
 public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    explicit QThreadPooler(QObject *parent = 0);
+    ~QThreadPooler();
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+    int maxThreadCount() const;
+    void setMaxThreadCount(int threadCount);
+    QSharedPointer<TaskInterface> nextTask();
+    void enqueueTask(const QSharedPointer<TaskInterface> &task);
+    void flush();
+    void startRunning();
+    void stopRunning();
+    void setDependencyHandler(DependencyHandler *handler);
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+signals:
+    void shuttingDown();
 
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
+private:
+    void manageThreads();
+    bool hasDependencies(const QSharedPointer<TaskInterface> &task);
+    bool isIdling();
+
+private:
+    Q_DECLARE_PRIVATE(QThreadPooler)
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+#endif // QT3D_QTHREADPOOLER_H

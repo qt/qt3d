@@ -38,12 +38,13 @@
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DInput/QInputAspect>
 
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFramebufferObjectFormat>
-
 #include <QSurface>
+#include <QQuickWindow>
 
 #include <QSGSimpleTextureNode>
 
@@ -102,6 +103,14 @@ public:
         Q_UNUSED(saver)
 
         m_renderAspect->renderSynchronous();
+
+        // We may have called doneCurrent() so restore the context.
+        saver.context()->makeCurrent(saver.surface());
+
+        // Reset the state used by the Qt Quick scenegraph to avoid any
+        // interference when rendering the rest of the UI.
+        m_item->window()->resetOpenGLState();
+
         update();
     }
 
@@ -164,6 +173,10 @@ void Scene3DItem::setAspects(const QStringList &aspects)
     Q_FOREACH (const QString &aspect, m_aspects) {
         if (aspect == QStringLiteral("render")) // This one is hardwired anyway
             continue;
+        if (aspect == QStringLiteral("input"))  {
+            m_aspectEngine->registerAspect(new Qt3D::QInputAspect);
+            continue;
+        }
 
         m_aspectEngine->registerAspect(aspect);
     }

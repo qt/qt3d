@@ -41,6 +41,23 @@
 
 QT_BEGIN_NAMESPACE
 
+// ES 3.0+
+#ifndef GL_SAMPLER_3D
+#define GL_SAMPLER_3D                     0x8B5F
+#endif
+#ifndef GL_SAMPLER_2D_SHADOW
+#define GL_SAMPLER_2D_SHADOW              0x8B62
+#endif
+#ifndef GL_SAMPLER_CUBE_SHADOW
+#define GL_SAMPLER_CUBE_SHADOW            0x8DC5
+#endif
+#ifndef GL_SAMPLER_2D_ARRAY
+#define GL_SAMPLER_2D_ARRAY               0x8DC1
+#endif
+#ifndef GL_SAMPLER_2D_ARRAY_SHADOW
+#define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
+#endif
+
 namespace Qt3D {
 namespace Render {
 
@@ -59,6 +76,7 @@ void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
     Q_ASSERT(context);
     m_funcs = context->functions();
     Q_ASSERT(m_funcs);
+    m_isES3 = context->format().majorVersion() >= 3;
 }
 
 void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
@@ -366,6 +384,21 @@ void QGraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &des
         m_funcs->glUniform1i(description.m_location, v.toInt());
         break;
     }
+
+        // ES 3.0+
+    case GL_SAMPLER_3D:
+    case GL_SAMPLER_2D_SHADOW:
+    case GL_SAMPLER_CUBE_SHADOW:
+    case GL_SAMPLER_2D_ARRAY:
+    case GL_SAMPLER_2D_ARRAY_SHADOW:
+        if (m_isES3) {
+            Q_ASSERT(description.m_size == 1);
+            m_funcs->glUniform1i(description.m_location, v.toInt());
+        } else {
+            qWarning() << Q_FUNC_INFO << "ES 3.0 uniform type" << description.m_type << "for"
+                       << description.m_name << "is not supported in ES 2.0";
+        }
+        break;
 
     default:
         qWarning() << Q_FUNC_INFO << "unsupported uniform type:" << description.m_type << "for " << description.m_name;

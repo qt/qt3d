@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,47 +34,59 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
-
-#include <private/qabstractaspectjobmanager_p.h>
-
+#include "jobrunner_p.h"
 #include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
+#include <QtCore/QThread>
+#include <QtCore/QMutexLocker>
+#include <QtCore/QAtomicInt>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
-
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+JobRunner::JobRunner(QThreadPooler *parent)
+    : QThread(parent),
+      m_abort(0),
+      m_pooler(parent),
+      m_jobAvailable(Q_NULLPTR),
+      m_mutex(Q_NULLPTR)
 {
-public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    QObject::connect(parent, SIGNAL(shuttingDown()), this, SLOT(shutDown()));
+}
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
+JobRunner::~JobRunner()
+{
+    shutDown();
+}
 
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
+void JobRunner::run()
+{
+    Q_ASSERT(m_jobAvailable != Q_NULLPTR);
 
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
-};
+    while (!m_abort.load()) {
+        if (const QSharedPointer<TaskInterface> task = m_pooler->nextTask()) {
+            m_pooler->startRunning();
+            task->run(task, this);
+            m_pooler->stopRunning();
+        } else {
+            suspend();
+        }
+    }
+}
 
-} // Qt3D
+void JobRunner::suspend()
+{
+    const QMutexLocker locker(m_mutex);
+
+    m_jobAvailable->wait(m_mutex);
+}
+
+void JobRunner::shutDown()
+{
+    m_abort.store(1);
+}
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QASPECTJOBMANAGER_P_H

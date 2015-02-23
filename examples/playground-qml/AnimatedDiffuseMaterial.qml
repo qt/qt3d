@@ -160,40 +160,10 @@ Material {
                             fragmentShaderCode: loadSource("qrc:/shaders/diffuse.frag")
                         }
                     },
-                    // TEXTURE PASS
-                    RenderPass {
-                        annotations: Annotation {name : "Name"; value : "Texture" }
-                        bindings: ParameterMapping {parameterName: "texture"; shaderVariableName: "tex"; bindingType: ParameterMapping.Uniform}
-                        shaderProgram: ShaderProgram {
-                            vertexShaderCode : "
-                            #version 140
-                            in vec4 vertexPosition;
-                            in vec2 vertexTexCoord;
-                            out vec2 texCoord;
-
-                            uniform mat4 mvp;
-
-                            void main()
-                            {
-                                texCoord = vertexTexCoord;
-                                gl_Position = mvp * vertexPosition;
-                            }"
-
-                            fragmentShaderCode: "
-                            #version 140
-                            in vec2 texCoord;
-                            out vec4 fragColor;
-                            uniform sampler2D tex;
-
-                            void main()
-                            {
-                                fragColor = texture(tex, texCoord);
-                            }
-                            "
-                        }
-                    },
+                    // TEXTURE PASS + UBO
                     RenderPass {
                         annotations : [Annotation {name : "Name"; value : "Texture" }]
+                        bindings: ParameterMapping {parameterName: "texture"; shaderVariableName: "tex"; bindingType: ParameterMapping.Uniform}
                         renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
                             BlendEquation {mode: BlendEquation.FuncAdd},
                             CullFace { mode : CullFace.Back },
@@ -204,9 +174,11 @@ Material {
                             #version 140
                             in vec4 vertexPosition;
                             in vec3 vertexNormal;
+                            in vec2 vertexTexCoord;
 
                             out vec3 worldPosition;
                             out vec3 normal;
+                            out vec2 texCoord;
 
                             uniform mat4 modelViewProjection;
                             uniform mat4 modelView;
@@ -214,6 +186,7 @@ Material {
 
                             void main()
                             {
+                                texCoord = vertexTexCoord;
                                 worldPosition = vec3(modelView * vertexPosition);
                                 normal = normalize(modelViewNormal * vertexNormal);
                                 gl_Position = modelViewProjection * vertexPosition;
@@ -224,6 +197,7 @@ Material {
                             #version 140
                             in vec3 worldPosition;
                             in vec3 normal;
+                            in vec2 texCoord;
                             out vec4 fragColor;
 
                             struct subStruct
@@ -254,6 +228,7 @@ Material {
                                 innerStruct u[4];
                             } lightSource;
 
+                            uniform sampler2D tex;
 
                             void main()
                             {
@@ -281,9 +256,9 @@ Material {
                                     fragColor = vec4(lightSource.intensity, 1.0) * (
                                                     lightSource.colorAmbient * lightSource.s.innerV +
                                                     lightSource.colorDiffuse * diffuse +
-                                                    lightSource.colorSpecular * specular);
+                                                    lightSource.colorSpecular * specular) * 0.2 + texture(tex, texCoord);
                                 else
-                                    fragColor = vec4(1.0, 1.0, 1.0, 1.0) * tmp;
+                                    fragColor = vec4(1.0, 1.0, 1.0, 1.0);
                             }"
                         }
                     }

@@ -45,7 +45,7 @@
 #include "qmeshdata.h"
 #include <Qt3DRenderer/private/qabstractmesh_p.h>
 
-#include <cmath>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -212,8 +212,8 @@ void createSides(float *&verticesPtr, quint16 *&indicesPtr,
 
         for (int slice = 0; slice <= slices; slice++) {
             const float theta = static_cast<float>(slice) * dTheta;
-            const float ct = cos(theta);
-            const float st = sin(theta);
+            const float ct = qCos(theta);
+            const float st = qSin(theta);
 
             *verticesPtr++ = radius * ct;
             *verticesPtr++ = y;
@@ -264,8 +264,8 @@ void createDisc(float *&verticesPtr, quint16 *&indicesPtr,
 
     for (int slice = 0; slice <= slices; slice++) {
         const float theta = static_cast<float>(slice) * dTheta;
-        const float ct = cos(theta);
-        const float st = sin(theta);
+        const float ct = qCos(theta);
+        const float st = qSin(theta);
 
         *verticesPtr++ = radius * ct;
         *verticesPtr++ = yPosition;

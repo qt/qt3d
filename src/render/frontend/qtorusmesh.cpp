@@ -45,7 +45,7 @@
 #include "qmeshdata.h"
 #include <Qt3DRenderer/private/qabstractmesh_p.h>
 
-#include <cmath>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -182,14 +182,14 @@ QMeshDataPtr createTorusMesh(double radius, double minorRadius,
     for ( int ring = 0; ring <= rings; ring++ )
     {
         float u = ring * ringFactor;
-        float cu = cos( u );
-        float su = sin( u );
+        float cu = qCos( u );
+        float su = qSin( u );
 
         for ( int side = 0; side < sides; side++ )
         {
             float v = side * sideFactor;
-            float cv = cos( v );
-            float sv = sin( v );
+            float cv = qCos( v );
+            float sv = qSin( v );
             float r = ( radius + minorRadius * cv );
 
             *fptr++ = r * cu;

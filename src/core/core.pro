@@ -6,6 +6,11 @@ load(qt_module)
 
 DEFINES += QT3DCORE_LIBRARY
 
+# TODO: Make tasking API configurable
+#use_thread_weaver {
+#    DEFINES += THREAD_WEAVER
+#}
+
 QMAKE_DOCS = $$PWD/doc/qt3dcore.qdocconf
 
 gcov {
@@ -17,7 +22,6 @@ gcov {
 # otherwise mingw headers do not declare common functions like ::strcasecmp
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
-include(../3rdparty/threadweaver/src/threadweaver.pri)
 include(core.pri)
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

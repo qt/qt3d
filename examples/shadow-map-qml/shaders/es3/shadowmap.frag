@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,47 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#version 300 es
 
-#include <private/qabstractaspectjobmanager_p.h>
+precision highp float;
 
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
-
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-class QAspectJobManager;
-
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+void main()
 {
-public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
-
-    Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
-
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
-
-    QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
-};
-
-} // Qt3D
-
-QT_END_NAMESPACE
-
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+}
