@@ -5,5 +5,6 @@ contains(QT_CONFIG, private_tests) {
         renderentity \
         renderqueues \
         renderrenderpass \
-        qgraphicsutils
+        qgraphicsutils \
+        rendershader
 }

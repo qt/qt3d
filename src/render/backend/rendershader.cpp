@@ -54,18 +54,30 @@ RenderShader::RenderShader()
     : QBackendNode()
     , m_program(Q_NULLPTR)
     , m_isLoaded(false)
+    , m_dna(0)
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
 
 RenderShader::~RenderShader()
 {
-    cleanup();
+    // TO DO: ShaderProgram is leaked as of now
+    // Fix that taking care that they may be shared given a same dna
 }
 
 void RenderShader::cleanup()
 {
     m_isLoaded = false;
+    m_dna = 0;
+    // TO DO: ShaderProgram is leaked as of now
+    // Fix that taking care that they may be shared given a same dna
+    m_program = Q_NULLPTR;
+    m_uniformsNames.clear();
+    m_attributesNames.clear();
+    m_uniformBlockNames.clear();
+    m_uniforms.clear();
+    m_attributes.clear();
+    m_uniformBlocks.clear();
 }
 
 void RenderShader::updateFromPeer(QNode *peer)
@@ -98,6 +110,11 @@ QVector<QString> RenderShader::attributesNames() const
 QVector<QString> RenderShader::uniformBlockNames() const
 {
     return m_uniformBlockNames;
+}
+
+QVector<QByteArray> RenderShader::shaderCode() const
+{
+    return m_shaderCode;
 }
 
 void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)

@@ -57,7 +57,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class RenderShader : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderShader : public QBackendNode
 {
 public:
     RenderShader();
@@ -72,6 +72,7 @@ public:
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
     QVector<QString> uniformBlockNames() const;
+    QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
