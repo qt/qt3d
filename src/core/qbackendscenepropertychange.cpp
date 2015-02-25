@@ -52,8 +52,8 @@ QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
 {
 }
 
-QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, QBackendNode *subject, QSceneChange::Priority priority)
-    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, subject->d_func(), priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, const QNodeId &subjectId, QSceneChange::Priority priority)
+    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, Observable, subjectId, priority)
 {
 }
 
@@ -61,6 +61,7 @@ QBackendScenePropertyChange::~QBackendScenePropertyChange()
 {
 }
 
+// TO DO get rid off setTargetNode, use the subject instead ??
 void QBackendScenePropertyChange::setTargetNode(const QNodeId &id)
 {
     Q_D(QBackendScenePropertyChange);
@@ -78,8 +79,8 @@ QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyCh
 {
 }
 
-QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, QBackendNode *subject, QSceneChange::Priority priority)
-    : QScenePropertyChange(dd, type, subject->d_func(), priority)
+QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, const QNodeId &subjectId, QSceneChange::Priority priority)
+    : QScenePropertyChange(dd, type, Observable, subjectId, priority)
 {
 }
 

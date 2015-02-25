@@ -117,7 +117,7 @@ void QParameter::setValue(const QVariant &dv)
         if (txt != Q_NULLPTR && !txt->parent())
            txt->setParent(this);
 
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName(d->m_name.toUtf8().data());
         if (txt != Q_NULLPTR)
             change->setValue(QVariant::fromValue(QNode::clone(txt)));

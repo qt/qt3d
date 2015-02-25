@@ -82,8 +82,7 @@ void QNodePrivate::addChild(QNode *childNode)
 
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QNode);
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, q));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, QSceneChange::Node, m_id));
         e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         QNode *parentClone = QNode::clone(q_func());
@@ -109,8 +108,7 @@ void QNodePrivate::removeChild(QNode *childNode)
 
     // Notify only if child isn't a clone
     if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QNode);
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
         e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         //        QNode *parentClone = QNode::clone(childNode->parentNode());
@@ -229,8 +227,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    Q_Q(QNode);
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, q));
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);

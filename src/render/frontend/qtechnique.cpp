@@ -86,7 +86,7 @@ void QTechnique::openGLFilterChanged()
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("openGLFilter");
         QOpenGLFilter *clone = new QOpenGLFilter();
         clone->copy(d->m_openGLFilter);
@@ -109,7 +109,7 @@ void QTechnique::addAnnotation(QAnnotation *criterion)
             criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("annotation");
             change->setValue(QVariant::fromValue(criterion->id()));
             d->notifyObservers(change);
@@ -121,7 +121,7 @@ void QTechnique::removeAnnotation(QAnnotation *criterion)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("annotation");
         change->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(change);
@@ -149,7 +149,7 @@ void QTechnique::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("parameter");
             change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
@@ -162,7 +162,7 @@ void QTechnique::removeParameter(QParameter *parameter)
     Q_D(QTechnique);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("parameter");
         change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
@@ -189,7 +189,7 @@ void QTechnique::addPass(QRenderPass *pass)
             pass->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             e->setPropertyName("pass");
             e->setValue(QVariant::fromValue(pass->id()));
             d->notifyObservers(e);
@@ -206,7 +206,7 @@ void QTechnique::removePass(QRenderPass *pass)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         e->setPropertyName("pass");
         e->setValue(QVariant::fromValue(pass->id()));
         d->notifyObservers(e);

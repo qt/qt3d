@@ -59,7 +59,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, q));
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, q->id()));
         e->setPropertyName("entity");
         e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);
@@ -71,7 +71,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
         Q_Q(QComponent);
-        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, q));
+        QScenePropertyChangePtr e(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, q->id()));
         e->setPropertyName("entity");
         e->setValue(QVariant::fromValue(entity->id()));
         notifyObservers(e);

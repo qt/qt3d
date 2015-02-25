@@ -71,42 +71,42 @@ public:
 
     void sendNodeAddedNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeAdded, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeAdded, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("NodeAdded");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendNodeRemovedNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeRemoved, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeRemoved, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("NodeRemoved");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendNodeUpdatedNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("NodeUpdated");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendComponentAddedNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentAdded, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentAdded, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("ComponentAdded");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendComponentRemovedNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentRemoved, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::ComponentRemoved, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("ComponentRemoved");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
 
     void sendAllChangesNotification()
     {
-        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::AllChanges, this));
+        Qt3D::QScenePropertyChangePtr e(new Qt3D::QScenePropertyChange(Qt3D::AllChanges, Qt3D::QSceneChange::Node, id()));
         e->setPropertyName("AllChanges");
         Qt3D::QNodePrivate::get(this)->notifyObservers(e);
     }
@@ -186,8 +186,8 @@ public:
         QVERIFY(!e.isNull());
         m_lastChanges << e;
         // Save reply to be sent to the frontend
-        m_reply.reset(new Qt3D::QBackendScenePropertyChange(Qt3D::NodeUpdated, this));
-        m_reply->setTargetNode(e->subject().m_node->id());
+        m_reply.reset(new Qt3D::QBackendScenePropertyChange(Qt3D::NodeUpdated, e->subjectId()));
+        m_reply->setTargetNode(e->subjectId());
         m_reply->setPropertyName("Reply");
     }
 

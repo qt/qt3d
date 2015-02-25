@@ -73,7 +73,7 @@ void QRenderPassFilter::addInclude(QAnnotation *annotation)
             annotation->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("include");
             propertyChange->setValue(QVariant::fromValue(annotation));
             d->notifyObservers(propertyChange);
@@ -85,7 +85,7 @@ void QRenderPassFilter::removeInclude(QAnnotation *annotation)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("include");
         propertyChange->setValue(QVariant::fromValue(annotation));
         d->notifyObservers(propertyChange);

@@ -83,7 +83,7 @@ void KeyboardInput::setFocus(bool focus)
 {
     if (focus != m_focus) {
         m_focus = focus;
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
         e->setTargetNode(peerUuid());
         e->setPropertyName("focus");
         e->setValue(m_focus);
@@ -93,7 +93,7 @@ void KeyboardInput::setFocus(bool focus)
 
 void KeyboardInput::keyEvent(const Q3DKeyEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
     e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));

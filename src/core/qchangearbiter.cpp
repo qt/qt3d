@@ -124,8 +124,7 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         switch (change->observableType()) {
 
         case QSceneChange::Observable: {
-            QObservableInterface *subject = change->subject().m_observable;
-            QNodeId nodeId = m_scene->nodeIdFromObservable(subject);
+            const QNodeId nodeId = change->subjectId();
             if (m_nodeObservations.contains(nodeId)) {
                 QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -139,9 +138,9 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         }
 
         case QSceneChange::Node: {
-            QNode *subject = change->subject().m_node;
-            if (m_nodeObservations.contains(subject->id())) {
-                QObserverList &observers = m_nodeObservations[subject->id()];
+            const QNodeId nodeId = change->subjectId();
+            if (m_nodeObservations.contains(nodeId)) {
+                QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);

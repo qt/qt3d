@@ -88,7 +88,7 @@ void QTechniqueFilter::addRequirement(QAnnotation *criterion)
         criterion->setParent(this);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
         propertyChange->setPropertyName("require");
         propertyChange->setValue(QVariant::fromValue(criterion));
         d->notifyObservers(propertyChange);
@@ -99,7 +99,7 @@ void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("require");
         propertyChange->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(propertyChange);
