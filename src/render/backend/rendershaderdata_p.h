@@ -107,8 +107,8 @@ public:
     explicit RenderShaderDataFunctor(ShaderDataManager *manager);
 
     QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    QBackendNode *get(QNode *frontend) const Q_DECL_FINAL;
-    void destroy(QNode *frontend) const Q_DECL_FINAL;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const QNodeId &id) const Q_DECL_FINAL;
 
 private:
     ShaderDataManager *m_manager;

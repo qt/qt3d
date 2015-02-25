@@ -157,14 +157,14 @@ QBackendNode *KeyboardInputFunctor::create(QNode *frontend, const QBackendNodeFa
     return input;
 }
 
-QBackendNode *KeyboardInputFunctor::get(QNode *frontend) const
+QBackendNode *KeyboardInputFunctor::get(const QNodeId &id) const
 {
-    return m_handler->keyboardInputManager()->lookupResource(frontend->id());
+    return m_handler->keyboardInputManager()->lookupResource(id);
 }
 
-void KeyboardInputFunctor::destroy(QNode *frontend) const
+void KeyboardInputFunctor::destroy(const QNodeId &id) const
 {
-    m_handler->keyboardInputManager()->releaseResource(frontend->id());
+    m_handler->keyboardInputManager()->releaseResource(id);
 }
 
 } // Input

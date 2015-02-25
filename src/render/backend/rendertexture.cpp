@@ -554,14 +554,14 @@ QBackendNode *RenderTextureFunctor::create(QNode *frontend, const QBackendNodeFa
     return backend;
 }
 
-QBackendNode *RenderTextureFunctor::get(QNode *frontend) const
+QBackendNode *RenderTextureFunctor::get(const QNodeId &id) const
 {
-    return m_textureManager->lookupResource(frontend->id());
+    return m_textureManager->lookupResource(id);
 }
 
-void RenderTextureFunctor::destroy(QNode *frontend) const
+void RenderTextureFunctor::destroy(const QNodeId &id) const
 {
-    m_textureManager->releaseResource(frontend->id());
+    m_textureManager->releaseResource(id);
 }
 
 } // namespace Render

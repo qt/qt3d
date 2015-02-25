@@ -151,14 +151,14 @@ QBackendNode *RenderMeshCreatorFunctor::create(QNode *frontend, const QBackendNo
     return mesh;
 }
 
-QBackendNode *RenderMeshCreatorFunctor::get(QNode *frontend) const
+QBackendNode *RenderMeshCreatorFunctor::get(const QNodeId &id) const
 {
-    return m_meshManager->lookupResource(frontend->id());
+    return m_meshManager->lookupResource(id);
 }
 
-void RenderMeshCreatorFunctor::destroy(QNode *frontend) const
+void RenderMeshCreatorFunctor::destroy(const QNodeId &id) const
 {
-    m_meshManager->releaseResource(frontend->id());
+    m_meshManager->releaseResource(id);
 }
 
 } // Render

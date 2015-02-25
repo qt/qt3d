@@ -112,14 +112,14 @@ QBackendNode *RenderSceneFunctor::create(QNode *frontend, const QBackendNodeFact
     return scene;
 }
 
-QBackendNode *RenderSceneFunctor::get(QNode *frontend) const
+QBackendNode *RenderSceneFunctor::get(const QNodeId &id) const
 {
-    return m_sceneManager->lookupResource(frontend->id());
+    return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(QNode *frontend) const
+void RenderSceneFunctor::destroy(const QNodeId &id) const
 {
-    m_sceneManager->releaseResource(frontend->id());
+    m_sceneManager->releaseResource(id);
 }
 
 } // Render
