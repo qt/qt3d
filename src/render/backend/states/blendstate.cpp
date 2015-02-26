@@ -78,7 +78,7 @@ BlendState *BlendState::getOrCreate(GLenum src, GLenum dst)
 }
 
 BlendState::BlendState(GLenum src, GLenum dst) :
-    GenericState2(src, dst)
+    GenericState2<BlendState, GLenum, GLenum>(src, dst)
 {
 }
 
@@ -93,7 +93,7 @@ BlendEquation *BlendEquation::getOrCreate(GLenum func)
 }
 
 BlendEquation::BlendEquation(GLenum func) :
-    GenericState1(func)
+    GenericState1<BlendEquation, GLenum>(func)
 {
 }
 
@@ -110,7 +110,7 @@ AlphaFunc *AlphaFunc::getOrCreate(GLenum func, GLclampf value)
 }
 
 AlphaFunc::AlphaFunc(GLenum func, GLclampf value) :
-    GenericState2(func, value)
+    GenericState2<AlphaFunc, GLenum, GLclampf>(func, value)
 {
 }
 
@@ -126,7 +126,7 @@ DepthTest *DepthTest::getOrCreate(GLenum func)
 }
 
 DepthTest::DepthTest(GLenum func) :
-    GenericState1(func)
+    GenericState1<DepthTest, GLenum>(func)
 {
 }
 
@@ -141,7 +141,7 @@ CullFace *CullFace::getOrCreate(GLenum func)
 }
 
 CullFace::CullFace(GLenum func) :
-    GenericState1(func)
+    GenericState1<CullFace, GLenum>(func)
 {
 }
 
@@ -156,7 +156,7 @@ FrontFace *FrontFace::getOrCreate(GLenum func)
 }
 
 FrontFace::FrontFace(GLenum func) :
-    GenericState1(func)
+    GenericState1<FrontFace, GLenum>(func)
 {
 }
 
@@ -171,7 +171,7 @@ DepthMask *DepthMask::getOrCreate(GLboolean flag)
 }
 
 DepthMask::DepthMask(GLboolean flag) :
-    GenericState1(flag)
+    GenericState1<DepthMask, GLboolean>(flag)
 {
 }
 
@@ -191,7 +191,7 @@ Dithering *Dithering::getOrCreate()
 }
 
 ScissorTest::ScissorTest(int left, int bottom, int width, int height)
-    : GenericState4(left, bottom, width, height)
+    : GenericState4<ScissorTest, int, int, int, int>(left, bottom, width, height)
 {
 }
 
@@ -212,7 +212,7 @@ StencilTest *StencilTest::getOrCreate(uint mask, GLenum func, GLenum faceMode)
 }
 
 StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
-    : GenericState3(mask, func, faceMode)
+    : GenericState3<StencilTest, uint, GLenum, GLenum>(mask, func, faceMode)
 {
 }
 
@@ -249,7 +249,7 @@ PolygonOffset *PolygonOffset::getOrCreate(GLfloat factor, GLfloat units)
 }
 
 PolygonOffset::PolygonOffset(GLfloat factor, GLfloat units)
-    : GenericState2(factor, units)
+    : GenericState2<PolygonOffset, GLfloat, GLfloat>(factor, units)
 {
 }
 
@@ -259,7 +259,7 @@ void ColorMask::apply(QGraphicsContext *gc) const
 }
 
 ColorMask::ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
-    : GenericState4(red, green, blue, alpha)
+    : GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>(red, green, blue, alpha)
 {
 }
 
