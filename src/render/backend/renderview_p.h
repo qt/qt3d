@@ -186,13 +186,6 @@ public:
 
     void addSortCriteria(const QList<QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
-private:
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
-
-    Renderer *m_renderer;
-    QSize m_surfaceSize;
-    QFrameAllocator *m_allocator;
-
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
     // But that aren't used later by the Renderer
@@ -212,7 +205,16 @@ private:
         QList<QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
-    } *m_data;
+    };
+
+private:
+    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
+
+    Renderer *m_renderer;
+    QSize m_surfaceSize;
+    QFrameAllocator *m_allocator;
+
+    InnerData *m_data;
 
     mutable QColor *m_clearColor;
     mutable QRectF *m_viewport;

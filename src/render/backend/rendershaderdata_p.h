@@ -53,7 +53,7 @@ class QGraphicsContext;
 class UniformBuffer;
 class ShaderDataManager;
 
-class RenderShaderData : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderShaderData : public QBackendNode
 {
 public:
     RenderShaderData();
