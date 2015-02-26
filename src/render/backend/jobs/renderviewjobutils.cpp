@@ -52,6 +52,9 @@
 #include <Qt3DRenderer/private/sortmethod_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
+#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRenderer/private/rendershaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -337,6 +340,71 @@ RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *all
     }
 
     return stateSet;
+}
+
+namespace {
+
+const QString blockArray = QStringLiteral("[%1]");
+const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
+
+}
+
+UniformBlockValueBuilder::UniformBlockValueBuilder()
+    : shaderDataManager(Q_NULLPTR)
+{
+}
+
+UniformBlockValueBuilder::~UniformBlockValueBuilder()
+{
+}
+
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QString &blockName, const QString &qmlPropertyName, const QVariant &value)
+{
+    // In the end, values are either scalar or a scalar array
+    // Composed elements (structs, structs array) are simplified into simple scalars
+    if (value.userType() == QMetaType::QVariantList) { // Array
+        QVariantList list = value.value<QVariantList>();
+        if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
+            for (int i = 0; i < list.size(); ++i) {
+                if (list.at(i).userType() == qNodeIdTypeId) {
+                    RenderShaderData *subShaderData = shaderDataManager->lookupResource(list.at(i).value<QNodeId>());
+                    if (subShaderData)
+                        buildActiveUniformNameValueMapStructHelper(subShaderData,
+                                                                   blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i),
+                                                                   QStringLiteral(""));
+                }
+            }
+        } else { // Array of scalar/vec  qmlPropertyName[0]
+            QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
+            if (uniforms.contains(varName))
+                activeUniformNamesToValue.insert(varName, value);
+        }
+    } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
+        RenderShaderData *rSubShaderData = shaderDataManager->lookupResource(value.value<QNodeId>());
+        if (rSubShaderData)
+            buildActiveUniformNameValueMapStructHelper(rSubShaderData,
+                                                       blockName,
+                                                       qmlPropertyName);
+    } else { // Scalar / Vec
+        QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
+        if (uniforms.contains(varName))
+            activeUniformNamesToValue.insert(varName, value);
+    }
+}
+
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
+{
+    const QHash<QString, QVariant> &properties = updatedPropertiesOnly ? rShaderData->updatedProperties() : rShaderData->properties();
+    QHash<QString, QVariant>::const_iterator it = properties.begin();
+    const QHash<QString, QVariant>::const_iterator end = properties.end();
+
+    while (it != end) {
+        QString prefix = qmlPropertyName.isEmpty() ? QStringLiteral("") : QStringLiteral(".");
+        buildActiveUniformNameValueMapHelper(blockName + prefix + qmlPropertyName,
+                                             it.key(),
+                                             it.value());
+        ++it;
+    }
 }
 
 } // namespace Render

@@ -90,7 +90,7 @@ public:
     // TODO: Add a way to specify a sort predicate for the RenderCommands
     void sort();
 
-    inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    void setRenderer(Renderer *renderer);
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline Renderer *renderer() const { return m_renderer; }
 
@@ -211,6 +211,7 @@ private:
         QStringList m_layers;
         QList<QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
+        UniformBlockValueBuilder m_uniformBlockBuilder;
     } *m_data;
 
     mutable QColor *m_clearColor;
@@ -219,7 +220,6 @@ private:
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
     int m_frameIndex;
-    QHash<QString, QVariant> m_activeUniformNamesToValue;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
@@ -253,16 +253,6 @@ private:
                               RenderShader *shader,
                               const ShaderUniformBlock &block,
                               const QVariant &value);
-    void buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
-                                        const QString &blockName,
-                                        const QString &qmlPropertyName,
-                                        const QVariant &value,
-                                        bool updatedPropertiesOnly);
-    void buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms,
-                                                    RenderShaderData *rShaderData,
-                                                    const QString &blockName,
-                                                    const QString &qmlPropertyName,
-                                                    bool updatedPropertiesOnlyue);
     void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
                                                RenderShader *shader,
                                                RenderShaderData *shaderData,
