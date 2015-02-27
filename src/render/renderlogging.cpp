@@ -50,6 +50,7 @@ Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Render.Framegraph")
 Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Render.RenderNodes")
 Q_LOGGING_CATEGORY(Rendering, "Qt3D.Render.Rendering")
 Q_LOGGING_CATEGORY(Memory, "Qt3D.Render.Memory")
+Q_LOGGING_CATEGORY(Shaders, "Qt3D.Render.Shaders")
 
 } // Render
 
