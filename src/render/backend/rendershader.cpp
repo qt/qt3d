@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include "rendershader_p.h"
+#include "renderlogging_p.h"
 
-#include <QDebug>
 #include <QFile>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
@@ -297,8 +297,10 @@ void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDesc
 
     for (int i = 0; i < uniformsDescription.size(); i++) {
         m_uniformsNames[i] = uniformsDescription[i].m_name;
-        if (uniformsDescription[i].m_blockIndex == -1) // Uniform is in default block
+        if (uniformsDescription[i].m_blockIndex == -1) { // Uniform is in default block
+            qCDebug(Shaders) << "Active Uniform in Default Block " << uniformsDescription[i].m_name;
             activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
+        }
     }
     m_blockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
 }
@@ -307,8 +309,10 @@ void RenderShader::initializeAttributes(const QVector<ShaderAttribute> &attribut
 {
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
-    for (int i = 0; i < attributesDescription.size(); i++)
+    for (int i = 0; i < attributesDescription.size(); i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
+        qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
+    }
 }
 
 void RenderShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription)
@@ -317,6 +321,7 @@ void RenderShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &un
     m_uniformBlockNames.resize(uniformBlockDescription.size());
     for (int i = 0; i < uniformBlockDescription.size(); ++i) {
         m_uniformBlockNames[i] = uniformBlockDescription[i].m_name;
+        qCDebug(Shaders) << "Initializing Uniform Block " << m_uniformBlockNames[i];
 
         // Find all active uniforms for the shader block
         QVector<ShaderUniform>::const_iterator uniformsIt = m_uniforms.begin();
@@ -328,8 +333,13 @@ void RenderShader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &un
         QHash<QString, ShaderUniform> activeUniformsInBlock;
 
         while (uniformsIt != uniformsEnd && uniformNamesIt != uniformNamesEnd) {
-            if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index)
-                activeUniformsInBlock.insert(*uniformNamesIt, *uniformsIt);
+            if (uniformsIt->m_blockIndex == uniformBlockDescription[i].m_index) {
+                QString uniformName = *uniformNamesIt;
+                if (!m_uniformBlockNames[i].isEmpty() && !uniformName.startsWith(m_uniformBlockNames[i]))
+                    uniformName = m_uniformBlockNames[i] + QStringLiteral(".") + *uniformNamesIt;
+                activeUniformsInBlock.insert(uniformName, *uniformsIt);
+                qCDebug(Shaders) << "Active Uniform Block " << uniformName << " in block " << m_uniformBlockNames[i];
+            }
             ++uniformsIt;
             ++uniformNamesIt;
         }

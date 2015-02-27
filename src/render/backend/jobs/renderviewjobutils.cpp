@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "renderviewjobutils_p.h"
+#include "renderlogging_p.h"
 
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/sphere.h>
@@ -376,8 +377,10 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
             }
         } else { // Array of scalar/vec  qmlPropertyName[0]
             QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
-            if (uniforms.contains(varName))
+            if (uniforms.contains(varName)) {
+                qCDebug(Shaders) << "UBO array member " << varName << " set for update";
                 activeUniformNamesToValue.insert(varName, value);
+            }
         }
     } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
         RenderShaderData *rSubShaderData = shaderDataManager->lookupResource(value.value<QNodeId>());
@@ -387,8 +390,10 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
                                                        qmlPropertyName);
     } else { // Scalar / Vec
         QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
-        if (uniforms.contains(varName))
+        if (uniforms.contains(varName)) {
+            qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
             activeUniformNamesToValue.insert(varName, value);
+        }
     }
 }
 
