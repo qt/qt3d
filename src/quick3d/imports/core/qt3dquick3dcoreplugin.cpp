@@ -56,7 +56,7 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
     Qt3D::Quick::Quick3D_initializeProviders();
 
-    qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component", QStringLiteral(""));
+    qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component3D", QStringLiteral(""));
     qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
 
     qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
