@@ -423,9 +423,9 @@ QEntity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_MATRIX) )
     {
-        QMatrix4x4 m;
-        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
+        QMatrix4x4 m(Qt::Uninitialized);
 
+        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
         for (int i=0; i<16; ++i) {
             double v = matrixValues.at( i ).toDouble();
             m(i % 4, i >> 2) = v;
@@ -992,7 +992,7 @@ QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
 //    case QParameter::FloatMat4: {
 //        QJsonArray a = val.toArray();
 
-//        QMatrix4x4 m;
+//        QMatrix4x4 m(Qt::Uninitialized);
 //        for (int i=0; i<16; ++i) {
 //            m(i % 4, i / 4) = a[i].toDouble();
 //        }
