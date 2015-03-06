@@ -120,6 +120,7 @@ static const struct {
     { "NormalDiffuseMapAlphaMaterial", 2, 0 },
     { "NormalDiffuseMapMaterial", 2, 0 },
     { "NormalDiffuseSpecularMapMaterial", 2, 0 },
+    { "PerVertexColorMaterial", 2, 0 },
     // FrameGraphs
     { "ForwardRenderer", 2, 0 }
 };

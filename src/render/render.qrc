@@ -39,5 +39,11 @@
         <file>shaders/es2/diffusespecularmap.frag</file>
         <file>shaders/gl3/diffusespecularmap.vert</file>
         <file>shaders/gl3/diffusespecularmap.frag</file>
+        <file>shaders/pervertexcolor.frag</file>
+        <file>shaders/pervertexcolor.vert</file>
+        <file>shaders/gl3/pervertexcolor.frag</file>
+        <file>shaders/gl3/pervertexcolor.vert</file>
+        <file>shaders/es2/pervertexcolor.frag</file>
+        <file>shaders/es2/pervertexcolor.vert</file>
     </qresource>
 </RCC>
