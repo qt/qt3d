@@ -40,7 +40,7 @@ import Qt3D.Render 2.0
 Entity {
 
     property alias cameraPosition: cameraTranslate.translation;
-    property string sourceDirectory: "qrc:/assets/cubemaps/miramar/miramar";
+    property string sourceDirectory: "";
     property string extension: ".webp"
 
     property TextureCubeMap skyboxTexture: TextureCubeMap {
@@ -61,63 +61,14 @@ Entity {
 
     ShaderProgram {
         id: gl3SkyboxShader
-
-        vertexShaderCode: "
-        #version 140
-
-        in vec3 vertexPosition;
-        out vec3 texCoord0;
-
-        uniform mat4 mvp;
-        uniform mat4 inverseProjectionMatrix;
-        uniform mat4 inverseModelView;
-
-        void main()
-        {
-            texCoord0 = vertexPosition.xyz;
-            gl_Position = vec4(mvp * vec4(vertexPosition, 1.0)).xyww;
-        }
-        "
-        fragmentShaderCode: "
-        #version 140
-
-        in vec3 texCoord0;
-        out vec4 fragColor;
-        uniform samplerCube skyboxTexture;
-
-        void main()
-        {
-            fragColor = texture(skyboxTexture, texCoord0);
-        }
-        "
+        vertexShaderCode: loadSource("qrc:/shaders/gl3/skybox.vert")
+        fragmentShaderCode: loadSource("qrc:/shaders/gl3/skybox.frag")
     }
 
     ShaderProgram {
         id: gl2es2SkyboxShader
-
-        vertexShaderCode: "
-        attribute vec3 vertexPosition;
-        varying vec3 texCoord0;
-
-        uniform mat4 mvp;
-        uniform mat4 inverseProjectionMatrix;
-        uniform mat4 inverseModelView;
-
-        void main()
-        {
-            texCoord0 = vertexPosition.xyz;
-            gl_Position = vec4(mvp * vec4(vertexPosition, 1.0)).xyww;
-        }
-        "
-        fragmentShaderCode: "
-        varying highp vec3 texCoord0;
-        uniform samplerCube skyboxTexture;
-
-        void main()
-        {
-            gl_FragColor = textureCube(skyboxTexture, texCoord0);
-        }
-        "
+        vertexShaderCode: loadSource("qrc:/shaders/es2/skybox.vert")
+        fragmentShaderCode: loadSource("qrc:/shaders/es2/skybox.frag")
     }
 
     CuboidMesh {
@@ -129,15 +80,12 @@ Entity {
 
     Transform {
         id: transform
-        Translate { id: cameraTranslate; }
+        Translate { id: cameraTranslate }
     }
 
     Material {
         id: skyboxMaterial
-
-        parameters: [
-            Parameter { name: "skyboxTexture"; value: skyboxTexture}
-        ]
+        parameters: Parameter { name: "skyboxTexture"; value: skyboxTexture}
 
         effect: Effect {
             techniques: [

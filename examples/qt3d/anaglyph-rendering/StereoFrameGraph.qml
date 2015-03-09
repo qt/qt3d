@@ -37,44 +37,40 @@
 import Qt3D 2.0
 import Qt3D.Render 2.0
 
-Entity {
-   id: root
+Viewport {
 
-   components: FrameGraph {
-       ForwardRenderer {
-           camera: basicCamera
-           clearColor: "black"
-       }
-   }
+    property alias leftCamera: leftCameraSelector.camera
+    property alias rightCamera: rightCameraSelector.camera
 
-   Camera {
-       id: basicCamera
-       projectionType: CameraLens.PerspectiveProjection
-       fieldOfView: 60
-       aspectRatio: 16/9
-       nearPlane:   0.01
-       farPlane:    1000.0
-       viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-       upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-       position: Qt.vector3d( 0.0, 0.0, -40.0 )
-   }
+    // ColorMask is reset by default
+    // By default reset to the default if not specified
+    ClearBuffer {
+        buffers: ClearBuffer.ColorDepthBuffer
+        NoDraw {} // We just want to clear the buffers
+    }
 
-   // So that the camera is rendered always at the same position as the camera
-   SkyboxEntity {
-       cameraPosition: basicCamera.position
-       sourceDirectory: "qrc:/assets/cubemaps/miramar/miramar"
-       extension: ".webp"
-   }
+    // Draw with left eye
+    CameraSelector {
+        id: leftCameraSelector
+        StateSet {
+            renderStates: [
+                ColorMask { red: true; green: false; blue: false; alpha: false },
+                DepthTest { func: DepthTest.Less }
+            ]
+        }
+    }
 
-   Configuration  {
-       controlledCamera: basicCamera
-   }
-
-   Entity {
-       components: [
-           SphereMesh { radius: 5 },
-           PhongMaterial { diffuse: "dodgerblue" }
-       ]
-   }
+    // Draw with right eye
+    ClearBuffer {
+        buffers: ClearBuffer.DepthBuffer
+        CameraSelector {
+            id: rightCameraSelector
+            StateSet {
+                renderStates: [
+                    ColorMask { red: false; green: true; blue: true; alpha: false },
+                    DepthTest { func: DepthTest.Less }
+                ]
+            }
+        }
+    }
 }
-

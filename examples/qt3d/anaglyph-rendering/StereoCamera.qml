@@ -38,43 +38,65 @@ import Qt3D 2.0
 import Qt3D.Render 2.0
 
 Entity {
-   id: root
+    id: root
+    property real convergence: 2000.0
+    property real eyeSeparation: 35.0
+    property real aspectRatio: _window.width / _window.height
+    property real fieldOfView: 60.0
+    property real nearPlane: 10.0
+    property real farPlane: 10000.0
 
-   components: FrameGraph {
-       ForwardRenderer {
-           camera: basicCamera
-           clearColor: "black"
-       }
-   }
+    property alias viewCenter: eyeLookAt.viewCenter
+    property alias position: eyeLookAt.position
 
-   Camera {
-       id: basicCamera
-       projectionType: CameraLens.PerspectiveProjection
-       fieldOfView: 60
-       aspectRatio: 16/9
-       nearPlane:   0.01
-       farPlane:    1000.0
-       viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-       upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-       position: Qt.vector3d( 0.0, 0.0, -40.0 )
-   }
+    readonly property real _fov2: Math.tan(fieldOfView * Math.PI / 180 * 0.5)
+    readonly property real top: nearPlane * _fov2
+    readonly property real a: aspectRatio * _fov2 * convergence
 
-   // So that the camera is rendered always at the same position as the camera
-   SkyboxEntity {
-       cameraPosition: basicCamera.position
-       sourceDirectory: "qrc:/assets/cubemaps/miramar/miramar"
-       extension: ".webp"
-   }
+    CameraLens {
+        id: leftEyeLens
+        projectionType: CameraLens.FrustumProjection
+        nearPlane : root.nearPlane
+        farPlane : root.farPlane
+        left: -(a - eyeSeparation * 0.5) * nearPlane / convergence
+        right: (a + eyeSeparation * 0.5) * nearPlane / convergence
+        top: root.top
+        bottom: -root.top
+    }
 
-   Configuration  {
-       controlledCamera: basicCamera
-   }
+    CameraLens {
+        id: rightEyeLens
+        projectionType: CameraLens.FrustumProjection
+        nearPlane : root.nearPlane
+        farPlane : root.farPlane
+        left: -(a + eyeSeparation * 0.5) * nearPlane / convergence
+        right: (a - eyeSeparation * 0.5) * nearPlane / convergence
+        top: root.top
+        bottom: -root.top
+    }
 
-   Entity {
-       components: [
-           SphereMesh { radius: 5 },
-           PhongMaterial { diffuse: "dodgerblue" }
-       ]
-   }
+    Transform {
+        id: eyeTransform
+        LookAt {
+            id: eyeLookAt
+            upVector: Qt.vector3d(0.0, 1.0, 0.0)
+            viewCenter: root.viewCenter
+            position: root.position
+        }
+    }
+
+    property Entity leftCamera: Entity {
+        components: [
+            leftEyeLens,
+            eyeTransform
+        ]
+    }
+
+    property Entity rightCamera: Entity {
+        id: rightCameraEntity
+        components: [
+            rightEyeLens,
+            eyeTransform
+        ]
+    }
 }
-

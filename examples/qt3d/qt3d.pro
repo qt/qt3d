@@ -29,7 +29,8 @@ SUBDIRS += \
     scene3d \
     enabled-qml \
     skybox \
-    controls
+    controls \
+    anaglyph-rendering
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

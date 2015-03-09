@@ -34,47 +34,35 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Render 2.0
+#include <exampleresources.h>
 
-Entity {
-   id: root
+#include <Qt3DCore/window.h>
+#include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DQuick/QQmlAspectEngine>
 
-   components: FrameGraph {
-       ForwardRenderer {
-           camera: basicCamera
-           clearColor: "black"
-       }
-   }
+#include <QGuiApplication>
+#include <QtQml>
 
-   Camera {
-       id: basicCamera
-       projectionType: CameraLens.PerspectiveProjection
-       fieldOfView: 60
-       aspectRatio: 16/9
-       nearPlane:   0.01
-       farPlane:    1000.0
-       viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-       upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-       position: Qt.vector3d( 0.0, 0.0, -40.0 )
-   }
+int main(int argc, char* argv[])
+{
+    QGuiApplication app(argc, argv);
 
-   // So that the camera is rendered always at the same position as the camera
-   SkyboxEntity {
-       cameraPosition: basicCamera.position
-       sourceDirectory: "qrc:/assets/cubemaps/miramar/miramar"
-       extension: ".webp"
-   }
+    initializeAssetResources("../exampleresources/example-assets.qrb");
 
-   Configuration  {
-       controlledCamera: basicCamera
-   }
+    Qt3D::Window view;
+    Qt3D::Quick::QQmlAspectEngine engine;
 
-   Entity {
-       components: [
-           SphereMesh { radius: 5 },
-           PhongMaterial { diffuse: "dodgerblue" }
-       ]
-   }
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
+    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    engine.setSource(QUrl("qrc:/main.qml"));
+    view.show();
+
+    return app.exec();
 }
-
