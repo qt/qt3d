@@ -84,6 +84,7 @@ public:
 
     QHash<QString, ShaderUniform> activeUniformsForBlock(int blockIndex) const;
     ShaderUniformBlock uniformBlock(int blockIndex);
+    ShaderUniformBlock uniformBlock(const QString &blockName);
 
 private:
     QOpenGLShaderProgram *m_program;

@@ -616,8 +616,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                         if (uniformNames.contains(it->name)) { // Parameter is a regular uniform
                             setUniformValue(command->m_uniforms, it->name, it->value);
                             it = parameters.erase(it);
-                        } else if (int idx = uniformBlockNames.indexOf(it->name) != -1) { // Parameter is a uniform block
-                            setUniformBlockValue(command->m_uniforms, shader, shader->uniformBlocks().at(idx), it->value);
+                        } else if (uniformBlockNames.indexOf(it->name) != -1) { // Parameter is a uniform block
+                            const ShaderUniformBlock &block = shader->uniformBlock(it->name);
+                            setUniformBlockValue(command->m_uniforms, shader, block, it->value);
                             it = parameters.erase(it);
                         } else {
                             const QVariant &v = it->value;
