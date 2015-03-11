@@ -78,6 +78,7 @@ public:
     enum ServiceType {
         SystemInformation,
         OpenGLInformation,
+        CollisionService,
         FrameAdvanceService,
 #if !defined(Q_QDOC)
         DefaultServiceCount, // Add additional default services before here

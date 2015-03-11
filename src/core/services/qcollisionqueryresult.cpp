@@ -34,76 +34,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_NULLSERVICES_P_H
-#define QT3D_NULLSERVICES_P_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qray3d.h>
-#include "qopenglinformationservice.h"
-#include "qsysteminformationservice.h"
-#include "qabstractcollisionqueryservice.h"
+#include "qcollisionqueryresult.h"
+#include "qcollisionqueryresult_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class NullSystemInformationService : public QSystemInformationService
+QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(QCollisionQueryResult *qq)
+    : q_ptr(qq)
 {
-public:
-    NullSystemInformationService()
-        : QSystemInformationService(QStringLiteral("Null System Information Service"))
-    {}
-    ~NullSystemInformationService() {}
+}
 
-    QStringList aspectNames() const Q_DECL_FINAL { return QStringList(); }
-    int threadPoolThreadCount() const Q_DECL_FINAL { return 0; }
-};
-
-
-class NullOpenGLInformationService : public QOpenGLInformationService
+void QCollisionQueryResultPrivate::addEntityHit(const QNodeId &entity)
 {
-public:
-    NullOpenGLInformationService()
-        : QOpenGLInformationService(QStringLiteral("Null OpenGL Information Service"))
-    {}
-    ~NullOpenGLInformationService() {}
+    m_entitiesHit.append(entity);
+}
 
-    QSurfaceFormat format() const Q_DECL_FINAL { return QSurfaceFormat(); }
-};
-
-class NullCollisionQueryService : public QAbstractCollisionQueryService
+void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)
 {
-public:
-    NullCollisionQueryService()
-        : QAbstractCollisionQueryService(QStringLiteral("Null Collision Query Service"))
-    {}
-    ~NullCollisionQueryService() {}
+    m_handle = handle;
+}
 
-    QQueryHandle query(const QRay3D &ray, QueryMode mode) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(ray);
-        Q_UNUSED(mode);
+QCollisionQueryResult::QCollisionQueryResult()
+    : d_ptr(new QCollisionQueryResultPrivate(this))
+{
+}
 
-        return 0;
-    }
+QVector<QNodeId> QCollisionQueryResult::entitiesHit() const
+{
+    Q_D(const QCollisionQueryResult);
+    return d->m_entitiesHit;
+}
 
-    QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(handle);
+QQueryHandle QCollisionQueryResult::handle() const
+{
+    Q_D(const QCollisionQueryResult);
+    return d->m_handle;
+}
 
-        QCollisionQueryResult result;
-        return result;
-    }
-
-    QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE
-    {
-        return QVector<QCollisionQueryResult>();
-    }
-};
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_NULLSERVICES_P_H
-
