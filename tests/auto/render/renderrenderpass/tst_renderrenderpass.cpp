@@ -297,8 +297,7 @@ private slots:
     {
         // GIVEN
         QFETCH(QRenderState*, frontendState);
-        QScopedPointer<QRenderState> frontendStatePtr(frontendState);
-        Q_UNUSED(frontendStatePtr);
+        QNodePtr frontendStatePtr(frontendState);
 
         RenderRenderPass backend;
 
@@ -306,7 +305,7 @@ private slots:
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
-        addChange->setValue(QVariant::fromValue(frontendState));
+        addChange->setValue(QVariant::fromValue(frontendStatePtr));
         addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
 

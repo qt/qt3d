@@ -226,7 +226,7 @@ void QRenderPass::addRenderState(QRenderState *state)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("renderState");
-            change->setValue(QVariant::fromValue(QNode::clone(state)));
+            change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
             d->notifyObservers(change);
         }
     }

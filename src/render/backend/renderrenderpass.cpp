@@ -181,7 +181,8 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
             appendBinding(RenderParameterMapping(propertyChange->value().value<QParameterMapping *>()));
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            QRenderState *renderState = propertyChange->value().value<QRenderState *>();
+            QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+            QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
             appendRenderState(renderState->id(), getOrCreateBackendState(renderState));
         }
         break;
