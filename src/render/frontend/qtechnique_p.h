@@ -61,6 +61,9 @@ public:
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
     QOpenGLFilter m_openGLFilter;
+
+private:
+    void _q_openGLFilterChanged();
 };
 
 } // Qt3D

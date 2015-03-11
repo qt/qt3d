@@ -62,7 +62,7 @@ QTechnique::QTechnique(QNode *parent)
     : QNode(*new QTechniquePrivate(this), parent)
 {
     Q_D(QTechnique);
-    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
+    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));
 }
 
 /*! \internal */
@@ -70,7 +70,7 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QTechnique);
-    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
+    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));
 }
 
 void QTechnique::copy(const QNode *ref)
@@ -87,16 +87,15 @@ void QTechnique::copy(const QNode *ref)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
-void QTechnique::openGLFilterChanged()
+void QTechniquePrivate::_q_openGLFilterChanged()
 {
-    Q_D(QTechnique);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+    if (m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
         change->setPropertyName("openGLFilter");
         QOpenGLFilter *clone = new QOpenGLFilter();
-        clone->copy(d->m_openGLFilter);
+        clone->copy(m_openGLFilter);
         change->setValue(QVariant::fromValue(clone));
-        d->notifyObservers(change);
+        notifyObservers(change);
     }
 }
 
@@ -243,3 +242,5 @@ QOpenGLFilter *QTechnique::openGLFilter()
 } // of namespace Qt3D
 
 QT_END_NAMESPACE
+
+#include "moc_qtechnique.cpp"
