@@ -61,7 +61,7 @@ class RenderTechnique;
 class RenderView;
 class Renderer;
 class ShaderDataManager;
-class ShaderUniform;
+struct ShaderUniform;
 class RenderShaderData;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,

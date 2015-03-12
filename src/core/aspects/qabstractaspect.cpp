@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 static QByteArray className(const QMetaObject &obj)
 {
     // note: class names are stored in static meta objects, thus the usage of fromRawData here is fine
-    return QByteArray::fromRawData(obj.className(), strlen(obj.className()));
+    return QByteArray::fromRawData(obj.className(), int(strlen(obj.className())));
 }
 
 namespace Qt3D {

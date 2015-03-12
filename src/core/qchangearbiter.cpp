@@ -105,7 +105,7 @@ void QChangeArbiter::initialize(QAbstractAspectJobManager *jobManager)
 
 void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
 {
-    for (int i = 0, n = changeQueue->size(); i < n; i++) {
+    for (int i = 0, n = int(changeQueue->size()); i < n; i++) {
         QSceneChangePtr& change = (*changeQueue)[i];
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them

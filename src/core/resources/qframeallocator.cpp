@@ -273,7 +273,7 @@ void* QFrameAllocator::allocateRawMemory(size_t size)
 {
     Q_D(QFrameAllocator);
     Q_ASSERT(size <= d->m_maxObjectSize);
-    uint allocatorIndex = d->allocatorIndexFromSize(size);
+    uint allocatorIndex = d->allocatorIndexFromSize(uint(size));
     return d->allocateAtChunk(allocatorIndex);
 }
 
@@ -281,7 +281,7 @@ void QFrameAllocator::deallocateRawMemory(void* ptr, size_t size)
 {
     Q_D(QFrameAllocator);
     Q_ASSERT(size <= d->m_maxObjectSize);
-    uint allocatorIndex = d->allocatorIndexFromSize(size);
+    uint allocatorIndex = d->allocatorIndexFromSize(uint(size));
     d->deallocateAtChunck(ptr, allocatorIndex);
 }
 
