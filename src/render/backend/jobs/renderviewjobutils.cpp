@@ -92,10 +92,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         if (lens && lens->isEnabled()) {
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());
+                            rv->setEyePosition(camNode->worldBoundingVolume()->center());
                         }
-
-                        // TODO: We can extract camera pos from the modelview matrix
-                        rv->setEyePosition(camNode->worldBoundingVolume()->center());
                     }
                     break;
                 }
