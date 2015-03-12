@@ -38,9 +38,7 @@
 #define QT3D_CAMERA_H
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qlookattransform.h>
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector3D>
@@ -49,9 +47,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCameraPrivate;
+class QLookAtTransform;
 class QTransform;
 
+class QCameraPrivate;
 class QT3DCORESHARED_EXPORT QCamera : public QEntity
 {
     Q_OBJECT
@@ -70,8 +69,6 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
     Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter NOTIFY viewCenterChanged)
-    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
-    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
 
 public:
     explicit QCamera(QNode *parent = 0);
@@ -145,10 +142,6 @@ public:
     void setViewCenter(const QVector3D &viewCenter);
     QVector3D viewCenter() const;
 
-    QVector3D viewVector() const;
-
-    QMatrix4x4 matrix() const;
-
 Q_SIGNALS:
     void projectionTypeChanged();
     void nearPlaneChanged();
@@ -163,8 +156,6 @@ Q_SIGNALS:
     void positionChanged();
     void upVectorChanged();
     void viewCenterChanged();
-    void viewVectorChanged();
-    void matrixChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)

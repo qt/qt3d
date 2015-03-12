@@ -37,9 +37,6 @@
 #ifndef QT3D_CAMERA_P_H
 #define QT3D_CAMERA_P_H
 
-#include <QMatrix4x4>
-#include <QVector3D>
-
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
