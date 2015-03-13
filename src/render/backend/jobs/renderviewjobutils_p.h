@@ -63,6 +63,7 @@ class Renderer;
 class ShaderDataManager;
 struct ShaderUniform;
 class RenderShaderData;
+class RenderState;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -103,7 +104,7 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
 Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
                                                             const QString &name);
 
-Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(RenderRenderPass *pass,
+Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states,
                                                       QFrameAllocator *allocator);
 
 

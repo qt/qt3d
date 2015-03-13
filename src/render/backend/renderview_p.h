@@ -126,6 +126,9 @@ public:
     inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
     inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
 
+    inline RenderStateSet *stateSet() const { return m_stateSet; }
+    void setStateSet(RenderStateSet *stateSet) { m_stateSet = stateSet; }
+
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
     // and passed along with the RenderView to the functions that populate the renderview
@@ -221,6 +224,7 @@ private:
     HTarget m_renderTarget;
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
+    RenderStateSet *m_stateSet;
     int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the

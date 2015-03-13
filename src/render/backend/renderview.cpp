@@ -250,7 +250,7 @@ RenderView::RenderView()
     , m_clearColor(Q_NULLPTR)
     , m_viewport(Q_NULLPTR)
     , m_clearBuffer(QClearBuffer::None)
-    , m_commands()
+    , m_stateSet(Q_NULLPTR)
 {
 }
 
@@ -282,6 +282,9 @@ RenderView::~RenderView()
     m_allocator->deallocate<QColor>(m_clearColor);
     // Deallocate m_data
     m_allocator->deallocate<InnerData>(m_data);
+    // Deallocate m_stateSet
+    if (m_stateSet)
+        m_allocator->deallocate<RenderStateSet>(m_stateSet);
 }
 
 // We need to overload the delete operator so that when the Renderer deletes the list of RenderViews, each RenderView
@@ -394,7 +397,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     command->m_instancesCount = 0;
 
                     // TODO: Build the state set for a render pass only once per-pass. Not once per rendercommand and pass.
-                    command->m_stateSet = buildRenderStateSet(pass, m_allocator);
+                    command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
                     if (command->m_stateSet != Q_NULLPTR)
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));

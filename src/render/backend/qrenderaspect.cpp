@@ -61,6 +61,7 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRenderer/qstateset.h>
 #include <Qt3DCore/qcameralens.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -89,6 +90,7 @@
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
 #include <Qt3DRenderer/private/framecleanupjob_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
+#include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -218,6 +220,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
+    registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

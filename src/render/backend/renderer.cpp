@@ -188,6 +188,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(DepthTest::getOrCreate(GL_LESS));
     m_defaultRenderStateSet->addState(CullFace::getOrCreate(GL_BACK));
+    m_defaultRenderStateSet->addState(ColorMask::getOrCreate(true, true, true, true));
     //basicPass->setStateSet(m_defaultRenderStateSet);
 
     m_defaultTechnique->addPass(basicPass);
@@ -606,8 +607,16 @@ void Renderer::submitRenderViews(int maxFrameCount)
             defaultFboId = m_graphicsContext->boundFrameBufferObject();
         }
 
+        // Reset state to the default state
+        m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
+            // Initialize QGraphicsContext for drawing
+            // If the RenderView has a RenderStateSet defined
+            if (renderViews[i]->stateSet())
+                m_graphicsContext->setCurrentStateSet(renderViews[i]->stateSet());
+
             // Set RenderTarget ...
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
@@ -617,7 +626,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
             // Set the Viewport
             m_graphicsContext->setViewport(renderViews[i]->viewport());
 
-            // Initialize QGraphicsContext for drawing
+            // TO DO only if the renderView doesn't contain a NoDraw
             executeCommands(renderViews.at(i)->commands());
 
             frameElapsed = timer.elapsed() - frameElapsed;
@@ -758,8 +767,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Set state
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
-        else
-            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved

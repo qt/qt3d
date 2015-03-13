@@ -56,6 +56,7 @@
 #include <Qt3DRenderer/private/shadervariables_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/statesetnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -163,6 +164,13 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Has no meaning here. SubtreeSelector was used
                 // in a prior step to build the list of RenderViewJobs
                 break;
+
+            case FrameGraphNode::StateSet: {
+                const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
+                // Create global RenderStateSet for renderView
+                rv->setStateSet(buildRenderStateSet(rStateSet->renderStates(), rv->allocator()));
+                break;
+            }
 
             default:
                 // Should never get here
@@ -327,14 +335,14 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
         addParametersForIds(infoList, manager, effect->parameters());
 }
 
-RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *allocator)
+RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states, QFrameAllocator *allocator)
 {
-    if (!pass || pass->renderStates().isEmpty())
+    if (states.isEmpty())
         return Q_NULLPTR;
 
     RenderStateSet *stateSet = allocator->allocate<RenderStateSet>();
 
-    Q_FOREACH (RenderState *renderState, pass->renderStates()) {
+    Q_FOREACH (RenderState *renderState, states) {
         stateSet->addState(renderState);
     }
 
