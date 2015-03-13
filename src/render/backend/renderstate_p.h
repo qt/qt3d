@@ -44,6 +44,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+
+class QRenderState;
+
 namespace Render {
 
 class QGraphicsContext;
@@ -76,6 +79,7 @@ public:
 
     virtual StateMaskSet mask() const = 0;
 
+    static RenderState *getOrCreateBackendState(QRenderState *renderState);
 protected:
 };
 
@@ -114,6 +118,7 @@ private:
 
     RenderStateSet* m_cachedPrevious;
     QList<RenderState*> m_cachedDeltaStates;
+
 };
 
 } // Render

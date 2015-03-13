@@ -45,6 +45,20 @@
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/blendstate_p.h>
 
+#include <Qt3DRenderer/qalphacoverage.h>
+#include <Qt3DRenderer/qalphatest.h>
+#include <Qt3DRenderer/qblendequation.h>
+#include <Qt3DRenderer/qblendstate.h>
+#include <Qt3DRenderer/qcolormask.h>
+#include <Qt3DRenderer/qcullface.h>
+#include <Qt3DRenderer/qdepthmask.h>
+#include <Qt3DRenderer/qdepthtest.h>
+#include <Qt3DRenderer/qdithering.h>
+#include <Qt3DRenderer/qfrontface.h>
+#include <Qt3DRenderer/qpolygonoffset.h>
+#include <Qt3DRenderer/qscissortest.h>
+#include <Qt3DRenderer/qstenciltest.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -195,6 +209,75 @@ bool RenderStateSet::contains(RenderState *ds) const
         return false;
 
     return m_states.contains(ds);
+}
+
+RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
+{
+    switch (renderState->type()) {
+    case QRenderState::AlphaTest: {
+        QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
+        return AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp());
+    }
+    case QRenderState::BlendEquation: {
+        QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
+        return BlendEquation::getOrCreate(blendEquation->mode());
+    }
+    case QRenderState::BlendState: {
+        QBlendState *blendState = static_cast<QBlendState *>(renderState);
+        // TO DO : Handle Alpha here as weel
+        return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB());
+    }
+    case QRenderState::CullFace: {
+        QCullFace *cullFace = static_cast<QCullFace *>(renderState);
+        return CullFace::getOrCreate(cullFace->mode());
+    }
+    case QRenderState::DepthMask: {
+        QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
+        return DepthMask::getOrCreate(depthMask->mask());
+    }
+    case QRenderState::DepthTest: {
+        QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
+        return DepthTest::getOrCreate(depthTest->func());
+    }
+    case QRenderState::Dithering: {
+        return Dithering::getOrCreate();
+    }
+    case QRenderState::FrontFace: {
+        QFrontFace *frontFace = static_cast<QFrontFace *>(renderState);
+        return FrontFace::getOrCreate(frontFace->direction());
+    }
+    case QRenderState::ScissorTest: {
+        QScissorTest *scissorTest = static_cast<QScissorTest *>(renderState);
+        return ScissorTest::getOrCreate(scissorTest->left(),
+                                        scissorTest->bottom(),
+                                        scissorTest->width(),
+                                        scissorTest->height());
+    }
+    case QRenderState::StencilTest: {
+        QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
+        return StencilTest::getOrCreate(stencilTest->mask(),
+                                        stencilTest->func(),
+                                        stencilTest->faceMode());
+    }
+    case QRenderState::AlphaCoverage: {
+        return AlphaCoverage::getOrCreate();
+    }
+    case QRenderState::PolygonOffset: {
+        QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
+        return PolygonOffset::getOrCreate(polygonOffset->factor(),
+                                          polygonOffset->units());
+    }
+    case QRenderState::ColorMask: {
+        QColorMask *colorMask = static_cast<QColorMask *>(renderState);
+        return ColorMask::getOrCreate(colorMask->isRed(),
+                                      colorMask->isGreen(),
+                                      colorMask->isBlue(),
+                                      colorMask->isAlpha());
+    }
+    default:
+        qFatal("Should not happen");
+        return Q_NULLPTR;
+    }
 }
 
 } // Render
