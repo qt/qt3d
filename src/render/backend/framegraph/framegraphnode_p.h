@@ -67,7 +67,8 @@ public:
         Viewport,
         ClearBuffer,
         SortMethod,
-        SubtreeSelector
+        SubtreeSelector,
+        StateSet
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
