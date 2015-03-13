@@ -123,6 +123,7 @@ static const struct {
     { "NormalDiffuseMapMaterial", 2, 0 },
     { "NormalDiffuseSpecularMapMaterial", 2, 0 },
     { "PerVertexColorMaterial", 2, 0 },
+    { "GoochMaterial", 2, 0 },
     // FrameGraphs
     { "ForwardRenderer", 2, 0 },
     // Entities

@@ -34,12 +34,24 @@
 **
 ****************************************************************************/
 
-/*!
-    \externalpage http://en.wikipedia.org/wiki/Z-buffering
-    \title early z-fill pass
-*/
+import Qt3D 2.0
+import Qt3D.Renderer 2.0
 
-/*!
-    \externalpage http://www.cs.northwestern.edu/~ago820/SIG98/abstract.html
-    \title original Gooch paper
-*/
+Entity {
+    id: root
+    property alias x: translation.dx
+    property alias y: translation.dy
+    property alias z: translation.dz
+    property alias scale: scaleTransform.scale
+    property alias material: gooch
+    property alias source: mesh.source
+
+    components: [
+        Transform {
+            Translate { id: translation }
+            Scale{ id: scaleTransform }
+        },
+        Mesh { id: mesh },
+        GoochMaterial { id: gooch }
+    ]
+}

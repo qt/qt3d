@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,12 +34,51 @@
 **
 ****************************************************************************/
 
-/*!
-    \externalpage http://en.wikipedia.org/wiki/Z-buffering
-    \title early z-fill pass
-*/
+#ifndef QT3D_RENDER_QGOOCHMATERIAL_P_H
+#define QT3D_RENDER_QGOOCHMATERIAL_P_H
 
-/*!
-    \externalpage http://www.cs.northwestern.edu/~ago820/SIG98/abstract.html
-    \title original Gooch paper
-*/
+#include <Qt3DRenderer/private/qmaterial_p.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QEffect;
+class QRenderPass;
+class QShaderProgram;
+class QTechnique;
+
+class QGoochMaterialPrivate : public QMaterialPrivate
+{
+public:
+    QGoochMaterialPrivate();
+    void init();
+
+    QEffect *m_effect;
+    QParameter *m_diffuseParameter;
+    QParameter *m_specularParameter;
+    QParameter *m_coolParameter;
+    QParameter *m_warmParameter;
+    QParameter *m_alphaParameter;
+    QParameter *m_betaParameter;
+    QParameter *m_shininessParameter;
+    QParameter *m_lightPositionParameter;
+    QParameter *m_lightIntensityParameter;
+    QTechnique *m_gl3Technique;
+    QTechnique *m_gl2Technique;
+    QTechnique *m_es2Technique;
+    QRenderPass *m_gl3RenderPass;
+    QRenderPass *m_gl2RenderPass;
+    QRenderPass *m_es2RenderPass;
+    QShaderProgram *m_gl3Shader;
+    QShaderProgram *m_gl2ES2Shader;
+
+    Q_DECLARE_PUBLIC(QGoochMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QGOOCHMATERIAL_P_H
+

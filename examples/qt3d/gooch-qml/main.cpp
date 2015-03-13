@@ -34,12 +34,31 @@
 **
 ****************************************************************************/
 
-/*!
-    \externalpage http://en.wikipedia.org/wiki/Z-buffering
-    \title early z-fill pass
-*/
+#include <window.h>
+#include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DQuick/QQmlAspectEngine>
 
-/*!
-    \externalpage http://www.cs.northwestern.edu/~ago820/SIG98/abstract.html
-    \title original Gooch paper
-*/
+#include <QGuiApplication>
+#include <QtQml>
+
+int main(int argc, char* argv[])
+{
+    QGuiApplication app(argc, argv);
+
+    Window view;
+    Qt3D::Quick::QQmlAspectEngine engine;
+
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+
+    // Expose the window as a context property so we can set the aspect ratio
+    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
+    engine.setSource(QUrl("qrc:/main.qml"));
+    view.show();
+
+    return app.exec();
+}

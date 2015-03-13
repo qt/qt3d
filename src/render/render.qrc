@@ -49,5 +49,9 @@
         <file>shaders/es2/skybox.vert</file>
         <file>shaders/gl3/skybox.frag</file>
         <file>shaders/gl3/skybox.vert</file>
+        <file>shaders/gl3/gooch.vert</file>
+        <file>shaders/gl3/gooch.frag</file>
+        <file>shaders/es2/gooch.frag</file>
+        <file>shaders/es2/gooch.vert</file>
     </qresource>
 </RCC>

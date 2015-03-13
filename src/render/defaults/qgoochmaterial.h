@@ -34,12 +34,66 @@
 **
 ****************************************************************************/
 
-/*!
-    \externalpage http://en.wikipedia.org/wiki/Z-buffering
-    \title early z-fill pass
-*/
+#ifndef QT3D_RENDER_QGOOCHMATERIAL_H
+#define QT3D_RENDER_QGOOCHMATERIAL_H
 
-/*!
-    \externalpage http://www.cs.northwestern.edu/~ago820/SIG98/abstract.html
-    \title original Gooch paper
-*/
+#include <Qt3DRenderer/qmaterial.h>
+#include <QColor>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QGoochMaterialPrivate;
+
+class QGoochMaterial : public QMaterial
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(QColor specular READ specular WRITE setSpecular NOTIFY specularChanged)
+    Q_PROPERTY(QColor cool READ cool WRITE setCool NOTIFY coolChanged)
+    Q_PROPERTY(QColor warm READ warm WRITE setWarm NOTIFY warmChanged)
+    Q_PROPERTY(float alpha READ alpha WRITE setAlpha NOTIFY alphaChanged)
+    Q_PROPERTY(float beta READ beta WRITE setBeta NOTIFY betaChanged)
+    Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
+
+public:
+    explicit QGoochMaterial(QNode *parent = 0);
+    QColor diffuse() const;
+    QColor specular() const;
+    QColor cool() const;
+    QColor warm() const;
+    float alpha() const;
+    float beta() const;
+    float shininess() const;
+
+public Q_SLOTS:
+    void setDiffuse(const QColor &diffuse);
+    void setSpecular(const QColor &specular);
+    void setCool(const QColor &cool);
+    void setWarm(const QColor &warm);
+    void setAlpha(float alpha);
+    void setBeta(float beta);
+    void setShininess(float shininess);
+
+Q_SIGNALS:
+    void diffuseChanged();
+    void specularChanged();
+    void coolChanged();
+    void warmChanged();
+    void alphaChanged();
+    void betaChanged();
+    void shininessChanged();
+
+protected:
+    QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QGoochMaterial)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_QGOOCHMATERIAL_H
