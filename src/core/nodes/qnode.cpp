@@ -70,7 +70,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
 void QNodePrivate::addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode == q_ptr)
+    if (childNode == q_func())
         return ;
 
     // Set the scene
@@ -103,7 +103,7 @@ void QNodePrivate::addChild(QNode *childNode)
 void QNodePrivate::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode->parent() != q_ptr)
+    if (childNode->parent() != q_func())
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
     // Notify only if child isn't a clone
@@ -138,7 +138,7 @@ void QNodePrivate::removeChild(QNode *childNode)
 
 void QNodePrivate::removeAllChildren()
 {
-    Q_FOREACH (QObject *child, q_ptr->children()) {
+    Q_FOREACH (QObject *child, q_func()->children()) {
         QNode *childNode = qobject_cast<QNode *>(child);
         if (childNode != Q_NULLPTR)
             removeChild(childNode);
@@ -267,7 +267,7 @@ void QNodePrivate::insertTree(QNode *treeRoot, int depth)
     }
 
     if (depth == 0)
-        treeRoot->setParent(q_ptr);
+        treeRoot->setParent(q_func());
 }
 
 QNodePrivate *QNodePrivate::get(QNode *q)

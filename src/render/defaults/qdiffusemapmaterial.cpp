@@ -121,7 +121,7 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapEffect->addParameter(m_lightIntensityParameter);
     m_diffuseMapEffect->addParameter(m_textureScaleParameter);
 
-    static_cast<QMaterial *>(q_ptr)->setEffect(m_diffuseMapEffect);
+    q_func()->setEffect(m_diffuseMapEffect);
 }
 
 /*!

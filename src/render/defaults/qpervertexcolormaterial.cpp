@@ -144,7 +144,7 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexEffect->addParameter(m_lightPositionParameter);
     m_vertexEffect->addParameter(m_lightIntensityParameter);
 
-    static_cast<QMaterial *>(q_ptr)->setEffect(m_vertexEffect);
+    q_func()->setEffect(m_vertexEffect);
 }
 
 } // Qt3D

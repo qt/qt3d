@@ -106,10 +106,10 @@ QAspectEngine *QQmlAspectEngine::aspectEngine() const
 
 void QQmlAspectEnginePrivate::_q_continueExecute()
 {
-    QObject::disconnect(m_component, SIGNAL(statusChanged(QQmlComponent::Status)),
-               q_ptr, SLOT(_q_continueExecute()));
+    Q_Q(QQmlAspectEngine);
 
-    QQmlAspectEngine *q = static_cast<QQmlAspectEngine *>(q_ptr);
+    QObject::disconnect(m_component, SIGNAL(statusChanged(QQmlComponent::Status)),
+                        q, SLOT(_q_continueExecute()));
 
     if (m_component->isError()) {
         QList<QQmlError> errorList = m_component->errors();

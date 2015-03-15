@@ -69,6 +69,8 @@ public:
 
     void _q_componentStatusChanged(QQmlComponent::Status status);
 
+    static inline Quick3DEntityLoaderPrivate *get(Quick3DEntityLoader *q) { return q->d_func(); }
+
     QUrl m_source;
     Quick3DEntityLoaderIncubator *m_incubator;
     QQmlContext *m_context;

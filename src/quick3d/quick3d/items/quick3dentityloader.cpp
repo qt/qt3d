@@ -52,7 +52,7 @@ namespace Quick {
 class Quick3DEntityLoaderIncubator : public QQmlIncubator
 {
 public:
-    Quick3DEntityLoaderIncubator(Quick3DEntityLoaderPrivate *loader)
+    Quick3DEntityLoaderIncubator(Quick3DEntityLoader *loader)
         : QQmlIncubator(Asynchronous),
           m_loader(loader)
     {
@@ -61,17 +61,18 @@ public:
 protected:
     void setInitialState(QObject *object) Q_DECL_OVERRIDE
     {
-        Q_ASSERT(m_loader->m_entity == Q_NULLPTR);
-        m_loader->m_entity = qobject_cast<QEntity*>(object);
-        Q_ASSERT(m_loader->m_entity != Q_NULLPTR);
-        m_loader->m_entity->setParent(m_loader->q_ptr);
+        Quick3DEntityLoaderPrivate *priv = Quick3DEntityLoaderPrivate::get(m_loader);
 
-        Quick3DEntityLoader *loader = static_cast<Quick3DEntityLoader*>(m_loader->q_ptr);
-        emit loader->entityChanged();
+        Q_ASSERT(priv->m_entity == Q_NULLPTR);
+        priv->m_entity = qobject_cast<QEntity *>(object);
+        Q_ASSERT(priv->m_entity != Q_NULLPTR);
+        priv->m_entity->setParent(m_loader);
+
+        emit m_loader->entityChanged();
     }
 
 private:
-    Quick3DEntityLoaderPrivate *m_loader;
+    Quick3DEntityLoader *m_loader;
 };
 
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
@@ -196,7 +197,7 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
     m_context = new QQmlContext(qmlContext(q));
     m_context->setContextObject(q);
 
-    m_incubator = new Quick3DEntityLoaderIncubator(this);
+    m_incubator = new Quick3DEntityLoaderIncubator(q);
     m_component->create(*m_incubator, m_context);
 }
 
