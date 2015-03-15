@@ -38,6 +38,7 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
 #include <private/qabstractmesh_p.h>
@@ -661,27 +662,22 @@ void AssimpParser::loadCamera(uint cameraIndex)
 
     QEntity  *camera = new QEntity();
     QCameraLens *lens = new QCameraLens();
-    aiMatrix4x4 cm;
 
-    assimpCamera->GetCameraMatrix(cm);
     lens->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
     lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
                                    qMax(assimpCamera->mAspect, 1.0f),
                                    assimpCamera->mClipPlaneNear,
                                    assimpCamera->mClipPlaneFar);
     camera->addComponent(lens);
-    // View Matrix defines camera position & up vector relative to the associated
-    // node in the scene. This is computed in AssimpParser::node
-    //    camera->lookAt()->setViewMatrix();
+
     QTransform *transform = new QTransform();
-    QMatrix4x4 viewMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(cm);
-    // CHECK THAT THIS WORKS
-    qCDebug(AssimpParserLog) << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";
-    viewMatrix.lookAt(QVector3D(0, 0, 0),
-                      QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
-                      QVector3D(0, 0, 0));
-    transform->addTransform(new QMatrixTransform(viewMatrix));
+    QLookAtTransform *lookAt = new QLookAtTransform();
+    lookAt->setPosition(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z));
+    lookAt->setViewCenter(QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z));
+    lookAt->setUpVector(QVector3D(assimpCamera->mUp.x, assimpCamera->mUp.y, assimpCamera->mUp.z));
+    transform->addTransform(lookAt);
     camera->addComponent(transform);
+
     m_scene->m_cameras[cameraNode] = camera;
 }
 
