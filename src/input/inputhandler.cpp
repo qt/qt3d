@@ -49,6 +49,7 @@ namespace Input {
 InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
+    , m_mouseControllerManager(new MouseControllerManager())
     , m_eventSource(Q_NULLPTR)
     , m_keyboardEventFilter(new KeyboardEventFilter())
 {
@@ -99,6 +100,16 @@ void InputHandler::appendKeyboardController(HKeyboardController controller)
 void InputHandler::removeKeyboardController(HKeyboardController controller)
 {
     m_activeKeyboardControllers.removeAll(controller);
+}
+
+void InputHandler::appendMouseController(HMouseController controller)
+{
+    m_activeMouseControllers.append(controller);
+}
+
+void InputHandler::removeMouseController(HMouseController controller)
+{
+    m_activeMouseControllers.removeAll(controller);
 }
 
 // Return a vector of jobs to be performed for keyboard events

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,15 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_INPUTMANAGERS_P_H
-#define QT3D_INPUT_INPUTMANAGERS_P_H
+#ifndef QT3D_INPUT_MOUSECONTROLLER_H
+#define QT3D_INPUT_MOUSECONTROLLER_H
 
-#include <QtGlobal>
-#include <Qt3DInput/private/handle_types_p.h>
-#include <Qt3DInput/private/keyboardcontroller_p.h>
-#include <Qt3DInput/private/keyboardinput_p.h>
-#include <Qt3DInput/private/mousecontroller_p.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,34 +45,39 @@ namespace Qt3D {
 
 namespace Input {
 
-class KeyboardInputManager : public QResourceManager<
-        KeyboardInput,
-        QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy>
+class InputHandler;
+
+class MouseController : public QBackendNode
 {
 public:
-    KeyboardInputManager() {}
+    MouseController();
+    ~MouseController();
+
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void setInputHandler(InputHandler *handler);
+
+    void addMouseInput(const QNodeId &input);
+    void removeMouseInput(const QNodeId &input);
+
+protected:
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    QVector<QNodeId> m_mouseInputs;
+    InputHandler *m_inputHandler;
 };
 
-class KeyboardControllerManager : public QResourceManager<
-        KeyboardController,
-        QNodeId,
-        8,
-        Qt3D::ArrayAllocatingPolicy>
+class MouseControllerFunctor : public QBackendNodeFunctor
 {
 public:
-    KeyboardControllerManager() {}
-};
+    explicit MouseControllerFunctor(InputHandler *handler);
 
-class MouseControllerManager : public QResourceManager<
-        MouseController,
-        QNodeId,
-        8,
-        Qt3D::ArrayAllocatingPolicy>
-{
-public:
-    MouseControllerManager() {}
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+
+private:
+    InputHandler *m_handler;
 };
 
 } // Input
@@ -86,4 +86,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_INPUTMANAGERS_P_H
+#endif // MOUSECONTROLLER_H

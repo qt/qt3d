@@ -47,9 +47,11 @@ namespace Input {
 
 class KeyboardController;
 class KeyboardInput;
+class MouseController;
 
 typedef QHandle<KeyboardController, 8> HKeyboardController;
 typedef QHandle<KeyboardInput, 16> HKeyboardInput;
+typedef QHandle<MouseController, 8> HMouseController;
 
 } // Input
 

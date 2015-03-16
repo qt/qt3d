@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_INPUTHANDLER_P_H
-#define QT3D_INPUT_INPUTHANDLER_P_H
+#include "mousecontroller_p.h"
+#include "inputmanagers_p.h"
+#include "inputhandler_p.h"
+#include "qmousecontroller.h"
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/private/handle_types_p.h>
-#include <Qt3DCore/qaspectjob.h>
-#include <QKeyEvent>
-#include <QMutex>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,51 +49,69 @@ namespace Qt3D {
 
 namespace Input {
 
-class KeyboardInputManager;
-class KeyboardControllerManager;
-class KeyboardEventFilter;
-class MouseControllerManager;
-
-class InputHandler
+MouseController::MouseController()
+    : QBackendNode()
 {
-public:
-    InputHandler();
+}
 
-    void setEventSource(QObject *object);
-    inline QObject *eventSource() const { return m_eventSource; }
+MouseController::~MouseController()
+{
+}
 
-    inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
-    inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
-    inline MouseControllerManager *mouseControllerManager() const { return m_mouseControllerManager; }
+void MouseController::updateFromPeer(QNode *peer)
+{
+    Q_UNUSED(peer);
+}
 
-    void appendKeyEvent(const QKeyEvent &event);
-    QList<QKeyEvent> pendingKeyEvents();
-    void clearPendingKeyEvents();
+void MouseController::setInputHandler(InputHandler *handler)
+{
+    m_inputHandler = handler;
+}
 
-    void appendKeyboardController(HKeyboardController controller);
-    void removeKeyboardController(HKeyboardController controller);
+void MouseController::addMouseInput(const QNodeId &input)
+{
+    if (!m_mouseInputs.contains(input))
+        m_mouseInputs.append(input);
+}
 
-    void appendMouseController(HMouseController controller);
-    void removeMouseController(HMouseController controller);
+void MouseController::removeMouseInput(const QNodeId &input)
+{
+    m_mouseInputs.removeOne(input);
+}
 
-    QVector<QAspectJobPtr> keyboardJobs();
+void MouseController::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    Q_UNUSED(e);
+}
 
-private:
-    KeyboardControllerManager *m_keyboardControllerManager;
-    KeyboardInputManager *m_keyboardInputManager;
-    MouseControllerManager *m_mouseControllerManager;
-    QVector<HKeyboardController> m_activeKeyboardControllers;
-    QVector<HMouseController> m_activeMouseControllers;
-    QObject *m_eventSource;
-    KeyboardEventFilter *m_keyboardEventFilter;
-    QList<QKeyEvent> m_pendingEvents;
-    mutable QMutex m_mutex;
-};
+MouseControllerFunctor::MouseControllerFunctor(InputHandler *handler)
+    : m_handler(handler)
+{
+}
+
+QBackendNode *MouseControllerFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+{
+    MouseController *controller = m_handler->mouseControllerManager()->getOrCreateResource(frontend->id());
+    controller->setFactory(factory);
+    controller->setInputHandler(m_handler);
+    controller->setPeer(frontend);
+    m_handler->appendMouseController(m_handler->mouseControllerManager()->lookupHandle(frontend->id()));
+    return controller;
+}
+
+QBackendNode *MouseControllerFunctor::get(const QNodeId &id) const
+{
+    return m_handler->mouseControllerManager()->lookupResource(id);
+}
+
+void MouseControllerFunctor::destroy(const QNodeId &id) const
+{
+    m_handler->removeMouseController(m_handler->mouseControllerManager()->lookupHandle(id));
+    m_handler->mouseControllerManager()->releaseResource(id);
+}
 
 } // Input
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_INPUT_INPUTHANDLER_P_H
