@@ -30,9 +30,8 @@ depends                 += qtcore qtqml qtquick qt3dcore qtdoc
 
 headerdirs += ..
 sourcedirs += ..
-exampledirs += src/snippets
-
-#excludedirs +=
+exampledirs += ../../../examples/qt3d \
+               src/snippets
 
 imagedirs   += images
 
