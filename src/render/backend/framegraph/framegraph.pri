@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/sortmethod_p.h \
     $$PWD/sortcriterion_p.h \
     $$PWD/framegraphsubtreeselector_p.h \
-    $$PWD/statesetnode_p.h
+    $$PWD/statesetnode_p.h \
+    $$PWD/nodraw_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     $$PWD/sortmethod.cpp \
     $$PWD/sortcriterion.cpp \
     $$PWD/framegraphsubtreeselector.cpp \
-    $$PWD/statesetnode.cpp
+    $$PWD/statesetnode.cpp \
+    $$PWD/nodraw.cpp
 
 INCLUDEPATH += $$PWD

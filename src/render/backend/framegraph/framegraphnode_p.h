@@ -68,7 +68,8 @@ public:
         ClearBuffer,
         SortMethod,
         SubtreeSelector,
-        StateSet
+        StateSet,
+        NoDraw
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
