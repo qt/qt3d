@@ -24,7 +24,8 @@ HEADERS += \
         $$PWD/qframegraphselector.h \
         $$PWD/qframegraphselector_p.h \
         $$PWD/qstateset.h \
-        $$PWD/qstateset_p.h
+        $$PWD/qstateset_p.h \
+        $$PWD/qnodraw.h
 
 SOURCES += \
         $$PWD/qframegraph.cpp \
@@ -39,6 +40,7 @@ SOURCES += \
         $$PWD/qsortcriterion.cpp \
         $$PWD/qframegraphnode.cpp \
         $$PWD/qframegraphselector.cpp \
-        $$PWD/qstateset.cpp
+        $$PWD/qstateset.cpp \
+        $$PWD/qnodraw.cpp
 
 INCLUDEPATH += $$PWD
