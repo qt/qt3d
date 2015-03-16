@@ -80,6 +80,6 @@ void AbstractSceneParser::logInfo(const QString &info)
     qCDebug(Render::Io) << info;
 }
 
-} // Qt3D namespace
+} // namespace Qt3D
 
 QT_END_NAMESPACE

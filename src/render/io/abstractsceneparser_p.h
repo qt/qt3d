@@ -59,7 +59,6 @@ class QT3DRENDERERSHARED_EXPORT AbstractSceneParser : public QObject
     Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
 
 public:
-
     enum ParserStatus {
         Empty,
         Loading,
@@ -70,20 +69,19 @@ public:
     AbstractSceneParser();
     virtual ~AbstractSceneParser();
 
-    virtual void    setSource(const QUrl &source) = 0;
-    virtual bool    isExtensionSupported(const QUrl &source) = 0;
-    virtual QEntity *scene(QString id = QString()) = 0;
-    virtual QEntity *node(QString id) = 0;
+    virtual void setSource(const QUrl &source) = 0;
+    virtual bool isExtensionSupported(const QUrl &source) const = 0;
+    virtual QEntity *scene(const QString &id = QString()) = 0;
+    virtual QEntity *node(const QString &id) = 0;
 
     ParserStatus parserStatus() const;
-    QStringList  errors() const;
+    QStringList errors() const;
 
 Q_SIGNALS:
-    void    parserStatusChanged();
-    void    errorsChanged();
+    void parserStatusChanged();
+    void errorsChanged();
 
 protected:
-
     void setParserStatus(ParserStatus parserStatus);
     void logError(const QString &error);
     void logInfo(const QString &info);
@@ -93,7 +91,7 @@ private:
     QStringList m_errors;
 };
 
-}
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

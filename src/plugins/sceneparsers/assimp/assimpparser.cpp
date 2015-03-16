@@ -249,12 +249,12 @@ AssimpParser::~AssimpParser()
  *  Return true if the provided \a path has a suffix supported
  *  by the Assimp Assets importer.
  */
-bool AssimpParser::isAssimpPath(const QString& path)
+bool AssimpParser::isAssimpPath(const QString &path)
 {
     QFileInfo fileInfo(path);
 
     if (!fileInfo.exists() ||
-            !AssimpParser::assimpSupportedFormats().contains(fileInfo.suffix().toLower()))
+            !AssimpParser::assimpSupportedFormatsList.contains(fileInfo.suffix().toLower()))
         return false;
     return true;
 }
@@ -290,7 +290,7 @@ void AssimpParser::setSource(const QUrl &source)
  * Returns true if the extension of \a path is supported by
  * the assimp parser.
  */
-bool AssimpParser::isExtensionSupported(const QUrl &source)
+bool AssimpParser::isExtensionSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
@@ -303,7 +303,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source)
  *
  * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
  */
-QEntity *AssimpParser::scene(QString id)
+QEntity *AssimpParser::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -328,7 +328,7 @@ QEntity *AssimpParser::scene(QString id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns Q_NULLPTR if no node can be found.
  */
-QEntity *AssimpParser::node(QString id)
+QEntity *AssimpParser::node(const QString &id)
 {
     if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
@@ -914,7 +914,7 @@ AssimpParser::SceneImporter::~SceneImporter()
     delete m_importer;
 }
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
