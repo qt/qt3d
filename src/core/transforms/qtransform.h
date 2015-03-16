@@ -57,6 +57,7 @@ public:
     explicit QTransform(QNode *parent = 0);
     QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
     QTransform(QAbstractTransform *transform, QNode *parent = 0);
+    ~QTransform();
 
     QList<QAbstractTransform *> transforms() const;
     void addTransform(QAbstractTransform *xform);
@@ -66,6 +67,7 @@ public:
 
 Q_SIGNALS:
     void matrixChanged();
+    void transformsChanged();
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
@@ -74,6 +76,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
+    Q_PRIVATE_SLOT(d_func(), void _q_transformDestroyed(QObject *obj))
     Q_PRIVATE_SLOT(d_func(), void _q_update())
 };
 

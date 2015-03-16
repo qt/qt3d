@@ -51,6 +51,7 @@ class QTransformPrivate : public QComponentPrivate
 public:
     QTransformPrivate(QTransform *qq);
 
+    void _q_transformDestroyed(QObject *obj);
     void _q_update();
     QMatrix4x4 applyTransforms() const;
 

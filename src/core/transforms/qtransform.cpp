@@ -50,6 +50,15 @@ QTransformPrivate::QTransformPrivate(QTransform *qq)
 {
 }
 
+void QTransformPrivate::_q_transformDestroyed(QObject *obj)
+{
+    QAbstractTransform *transform = static_cast<QAbstractTransform *>(obj);
+    if (m_transforms.removeOne(transform)) {
+        emit q_func()->transformsChanged();
+        _q_update();
+    }
+}
+
 void QTransformPrivate::_q_update()
 {
     if (!m_transformsDirty)
@@ -59,13 +68,10 @@ void QTransformPrivate::_q_update()
 
 QMatrix4x4 QTransformPrivate::applyTransforms() const
 {
-    if (!m_transforms.isEmpty()) {
-        QMatrix4x4 matrix;
-        Q_FOREACH (const QAbstractTransform *t, m_transforms)
-            matrix = t->transformMatrix() * matrix;
-        return matrix;
-    }
-    return QMatrix4x4();
+    QMatrix4x4 matrix;
+    Q_FOREACH (const QAbstractTransform *t, m_transforms)
+        matrix = t->transformMatrix() * matrix;
+    return matrix;
 }
 
 
@@ -92,6 +98,13 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
+QTransform::~QTransform()
+{
+    Q_D(QTransform);
+    // boost destruction by avoiding _q_update()-s
+    d->m_transforms.clear();
+}
+
 void QTransform::copy(const QNode *ref)
 {
     QComponent::copy(ref);
@@ -110,16 +123,23 @@ QList<QAbstractTransform *> QTransform::transforms() const
 void QTransform::addTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
+    if (transform == Q_NULLPTR || d->m_transforms.contains(transform))
+        return;
     d->m_transforms.append(transform);
     QObject::connect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
+    QObject::connect(transform, SIGNAL(destroyed(QObject*)), this, SLOT(_q_transformDestroyed(QObject*)));
+    emit transformsChanged();
     d->_q_update();
 }
 
 void QTransform::removeTransform(QAbstractTransform *transform)
 {
     Q_D(QTransform);
-    d->m_transforms.removeOne(transform);
+    if (!d->m_transforms.removeOne(transform))
+        return;
     QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
+    QObject::disconnect(transform, SIGNAL(destroyed(QObject*)), this, SLOT(_q_transformDestroyed(QObject*)));
+    emit transformsChanged();
     d->_q_update();
 }
 

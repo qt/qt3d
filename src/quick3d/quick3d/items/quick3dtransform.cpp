@@ -46,6 +46,8 @@ namespace Quick {
 Quick3DTransform::Quick3DTransform(QObject *parent)
     : QObject(parent)
 {
+    Q_ASSERT(qobject_cast<Qt3D::QTransform *>(parent) != Q_NULLPTR);
+    QObject::connect(parent, SIGNAL(transformsChanged()), this, SIGNAL(transformsChanged()));
 }
 
 QQmlListProperty<QAbstractTransform> Quick3DTransform::transformList()
