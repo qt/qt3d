@@ -95,9 +95,6 @@ void QFrameGraphSelector::setSelectionFunctor(QFrameGraphSelectorFunctorPtr func
 void QFrameGraphSelector::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
-    const QFrameGraphSelector *other = static_cast<const QFrameGraphSelector*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 } // Qt3D

@@ -56,8 +56,6 @@ void QLayerFilter::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QLayerFilter *layer = static_cast<const QLayerFilter*>(ref);
     d_func()->m_layers = layer->d_func()->m_layers;
-    Q_FOREACH (QFrameGraphNode *fgChild, layer->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 QLayerFilter::QLayerFilter(QNode *parent)

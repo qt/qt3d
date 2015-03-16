@@ -67,8 +67,6 @@ void QCameraSelector::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QCameraSelector *other = static_cast<const QCameraSelector*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 
     if (other->d_func()->m_camera)
         setCamera(qobject_cast<QEntity *>(QNode::clone(other->d_func()->m_camera)));

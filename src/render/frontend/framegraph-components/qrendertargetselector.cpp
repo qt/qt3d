@@ -59,8 +59,6 @@ void QRenderTargetSelector::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
 
     const QRenderTargetSelector *other = static_cast<const QRenderTargetSelector*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 
     if (other->d_func()->m_target)
         setTarget(qobject_cast<QRenderTarget *>(QNode::clone(other->d_func()->m_target)));

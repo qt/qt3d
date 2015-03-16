@@ -57,8 +57,7 @@ void QTechniqueFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
+
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
         addRequirement(qobject_cast<QAnnotation *>(QNode::clone(crit)));
 }

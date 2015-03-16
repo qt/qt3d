@@ -57,9 +57,6 @@ void QClearBuffer::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QClearBuffer *b = static_cast<const QClearBuffer*>(ref);
     d_func()->m_buffersType = b->d_func()->m_buffersType;
-
-    Q_FOREACH (QFrameGraphNode *fgChild, b->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 QClearBuffer::QClearBuffer(QNode *parent)

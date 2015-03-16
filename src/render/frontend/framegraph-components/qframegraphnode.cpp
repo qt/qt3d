@@ -65,6 +65,10 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
 void QFrameGraphNode::copy(const QNode *ref)
 {
     QNode::copy(ref);
+    const QFrameGraphNode *refNode = static_cast<const QFrameGraphNode *>(ref);
+    Q_FOREACH (QFrameGraphNode *fgChild, refNode->d_func()->m_fgChildren)
+        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
+
 }
 
 QFrameGraphNode::QFrameGraphNode(QNode *parent)

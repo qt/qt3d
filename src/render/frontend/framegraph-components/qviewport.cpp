@@ -57,8 +57,6 @@ void QViewport::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QViewport *viewport = static_cast<const QViewport*>(ref);
     d_func()->m_rect = viewport->d_func()->m_rect;
-    Q_FOREACH (QFrameGraphNode *fgChild, viewport->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 QViewport::QViewport(QNode *parent)
