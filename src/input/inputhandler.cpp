@@ -50,6 +50,7 @@ InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
     , m_mouseControllerManager(new MouseControllerManager())
+    , m_mouseInputManager(new MouseInputManager())
     , m_eventSource(Q_NULLPTR)
     , m_keyboardEventFilter(new KeyboardEventFilter())
 {

@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/qmouseinput_p.h \
     $$PWD/qmousecontroller_p.h \
     $$PWD/q3dmouseevent.h \
-    $$PWD/mousecontroller_p.h
+    $$PWD/mousecontroller_p.h \
+    $$PWD/mouseinput_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
     $$PWD/qmouseinput.cpp \
     $$PWD/qmousecontroller.cpp \
     $$PWD/q3dmouseevent.cpp \
-    $$PWD/mousecontroller.cpp
+    $$PWD/mousecontroller.cpp \
+    $$PWD/mouseinput.cpp
 
 INCLUDEPATH += $$PWD
