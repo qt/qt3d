@@ -172,6 +172,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
+            case FrameGraphNode::NoDraw: {
+                rv->setNoDraw(true);
+                break;
+            }
+
             default:
                 // Should never get here
                 qCWarning(Backend) << "Unhandled FrameGraphNode type";

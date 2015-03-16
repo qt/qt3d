@@ -129,6 +129,9 @@ public:
     inline RenderStateSet *stateSet() const { return m_stateSet; }
     void setStateSet(RenderStateSet *stateSet) { m_stateSet = stateSet; }
 
+    inline bool noDraw() const { return m_noDraw; }
+    void setNoDraw(bool noDraw) { m_noDraw = noDraw; }
+
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
     // and passed along with the RenderView to the functions that populate the renderview
@@ -225,6 +228,7 @@ private:
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;
+    bool m_noDraw;
     int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the

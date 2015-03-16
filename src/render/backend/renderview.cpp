@@ -251,6 +251,7 @@ RenderView::RenderView()
     , m_viewport(Q_NULLPTR)
     , m_clearBuffer(QClearBuffer::None)
     , m_stateSet(Q_NULLPTR)
+    , m_noDraw(false)
 {
 }
 
