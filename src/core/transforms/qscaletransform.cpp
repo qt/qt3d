@@ -42,25 +42,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
-QScaleTransformPrivate::QScaleTransformPrivate(QScaleTransform *qq)
-    : QAbstractTransformPrivate(qq)
+QScaleTransformPrivate::QScaleTransformPrivate()
+    : QAbstractTransformPrivate()
     , m_scale3D(1.0f, 1.0f, 1.0f)
 {
 }
 
-void QScaleTransform::copy(const QNode *ref)
-{
-    QAbstractTransform::copy(ref);
-    const QScaleTransform *transform = static_cast<const QScaleTransform*>(ref);
-    d_func()->m_scale3D = transform->d_func()->m_scale3D;
-}
 
-QScaleTransform::QScaleTransform(QNode *parent) :
-    QAbstractTransform(*new QScaleTransformPrivate(this), parent)
+QScaleTransform::QScaleTransform(QObject *parent)
+    : QAbstractTransform(*new QScaleTransformPrivate, parent)
 {
 }
 
-QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QNode *parent)
+QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {
 }

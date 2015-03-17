@@ -41,29 +41,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QLookAtTransformPrivate::QLookAtTransformPrivate(QLookAtTransform *qq)
-    : QAbstractTransformPrivate(qq)
+QLookAtTransformPrivate::QLookAtTransformPrivate()
+    : QAbstractTransformPrivate()
     , m_matrixDirty(true)
 {
 }
 
-QLookAtTransform::QLookAtTransform(QNode *parent)
-    : QAbstractTransform(*new QLookAtTransformPrivate(this), parent)
+
+QLookAtTransform::QLookAtTransform(QObject *parent)
+    : QAbstractTransform(*new QLookAtTransformPrivate, parent)
 {
 }
 
-void QLookAtTransform::copy(const QNode *ref)
-{
-    QAbstractTransform::copy(ref);
-    const QLookAtTransform *transform = static_cast<const QLookAtTransform*>(ref);
-    d_func()->m_matrix = transform->d_func()->m_matrix;
-    d_func()->m_position = transform->d_func()->m_position;
-    d_func()->m_upVector = transform->d_func()->m_upVector;
-    d_func()->m_viewCenter = transform->d_func()->m_viewCenter;
-    d_func()->m_viewVector = transform->d_func()->m_viewVector;
-}
-
-QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent)
+QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {
 }

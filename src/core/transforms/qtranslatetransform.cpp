@@ -42,25 +42,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
-QTranslateTransformPrivate::QTranslateTransformPrivate(QTranslateTransform *qq)
-    : QAbstractTransformPrivate(qq)
+QTranslateTransformPrivate::QTranslateTransformPrivate()
+    : QAbstractTransformPrivate()
 {
 }
 
-QTranslateTransform::QTranslateTransform(QNode *parent)
-    : QAbstractTransform(*new QTranslateTransformPrivate(this), parent)
+
+QTranslateTransform::QTranslateTransform(QObject *parent)
+    : QAbstractTransform(*new QTranslateTransformPrivate, parent)
 {
 }
 
-void QTranslateTransform::copy(const QNode *ref)
-{
-    QAbstractTransform::copy(ref);
-    const QTranslateTransform *transform = static_cast<const QTranslateTransform*>(ref);
-    d_func()->m_translation = transform->d_func()->m_translation;
-}
-
-
-QTranslateTransform::QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent)
+QTranslateTransform::QTranslateTransform(QTranslateTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {
 }

@@ -37,7 +37,7 @@
 #ifndef QT3D_QABSTRACT_TRANSFORM_H
 #define QT3D_QABSTRACT_TRANSFORM_H
 
-#include <Qt3DCore/qnode.h>
+#include <QtCore/qobject.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 #include <QMatrix4x4>
@@ -47,25 +47,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QAbstractTransformPrivate;
-
-class QT3DCORESHARED_EXPORT QAbstractTransform : public QNode
+class QT3DCORESHARED_EXPORT QAbstractTransform : public QObject
 {
     Q_OBJECT
 
     Q_PROPERTY(QMatrix4x4 transformMatrix READ transformMatrix NOTIFY transformMatrixChanged)
 public:
-    explicit QAbstractTransform(QNode *parent = 0);
-    virtual ~QAbstractTransform();
+    explicit QAbstractTransform(QObject *parent = Q_NULLPTR);
 
     virtual QMatrix4x4 transformMatrix() const = 0;
 Q_SIGNALS:
     void transformMatrixChanged();
 
 protected:
-    QAbstractTransform(QAbstractTransformPrivate &dd, QNode *parent = 0);
+    QAbstractTransform(QAbstractTransformPrivate &dd, QObject *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTransform)
+    Q_DISABLE_COPY(QAbstractTransform)
 };
 
 } // namespace Qt3D

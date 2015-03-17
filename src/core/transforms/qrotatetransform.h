@@ -38,7 +38,6 @@
 #define QT3D_QROTATETRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QVector3D>
 
@@ -56,7 +55,7 @@ class QT3DCORESHARED_EXPORT QRotateTransform : public QAbstractTransform
     Q_PROPERTY(QVector3D axis READ axis WRITE setAxis NOTIFY axisChanged)
 
 public:
-    explicit QRotateTransform(QNode *parent = 0);
+    explicit QRotateTransform(QObject *parent = Q_NULLPTR);
 
     float angleDeg() const;
     float angleRad() const;
@@ -73,12 +72,11 @@ Q_SIGNALS:
     void angleChanged();
 
 protected:
-    QRotateTransform(QRotateTransformPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QRotateTransform(QRotateTransformPrivate &dd, QObject *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QRotateTransform)
-    QT3D_CLONEABLE(QRotateTransform)
+    Q_DISABLE_COPY(QRotateTransform)
 };
 
 } // namespace Qt3D

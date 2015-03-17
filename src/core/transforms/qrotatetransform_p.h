@@ -48,7 +48,7 @@ class QRotateTransform;
 class QRotateTransformPrivate : public QAbstractTransformPrivate
 {
 public:
-    QRotateTransformPrivate(QRotateTransform *qq);
+    QRotateTransformPrivate();
 
     QMatrix4x4 m_matrix;
 

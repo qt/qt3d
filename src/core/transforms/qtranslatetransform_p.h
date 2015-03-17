@@ -47,7 +47,7 @@ class QTranslateTransform;
 class QTranslateTransformPrivate : public QAbstractTransformPrivate
 {
 public:
-    QTranslateTransformPrivate(QTranslateTransform *qq);
+    QTranslateTransformPrivate();
     Q_DECLARE_PUBLIC(QTranslateTransform)
 
     QVector3D m_translation;

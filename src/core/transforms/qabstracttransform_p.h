@@ -37,20 +37,17 @@
 #ifndef QT3D_QABSTRACTTRANSFORM_P_H
 #define QT3D_QABSTRACTTRANSFORM_P_H
 
-#include <private/qnode_p.h>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <private/qobject_p.h>
 #include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractTransform;
-
-class QT3DCORESHARED_EXPORT QAbstractTransformPrivate : public QNodePrivate
+class QAbstractTransformPrivate : public QObjectPrivate
 {
 public:
-    QAbstractTransformPrivate(QAbstractTransform *qq);
+    QAbstractTransformPrivate();
     Q_DECLARE_PUBLIC(QAbstractTransform)
 };
 

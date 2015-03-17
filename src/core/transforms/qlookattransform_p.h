@@ -43,10 +43,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+class QLookAtTransform;
 class QLookAtTransformPrivate : public QAbstractTransformPrivate
 {
 public :
-    QLookAtTransformPrivate(QLookAtTransform *qq);
+    QLookAtTransformPrivate();
 
     Q_DECLARE_PUBLIC(QLookAtTransform)
 
