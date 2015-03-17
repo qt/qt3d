@@ -37,7 +37,7 @@
 /*!
     \page qt3drender-index.html
     \title Qt3D Render
-
+    \ingroup qt3d-modules
     \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
 
     \section1 Getting Started
