@@ -57,9 +57,9 @@ typedef QSharedPointer<QNode> QNodePtr;
 
 #define QT3D_CLONEABLE(Class)                \
     QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone = new Class;            \
-        clone->copy(this);                   \
-        return clone;                        \
+        Class *clone_ = new Class;            \
+        clone_->copy(this);                   \
+        return clone_;                        \
     }
 
 class QT3DCORESHARED_EXPORT QNode : public QObject

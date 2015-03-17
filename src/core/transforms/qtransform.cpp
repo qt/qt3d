@@ -39,29 +39,35 @@
 #include "qabstracttransform_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
-#include <qmatrixtransform.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 QTransformPrivate::QTransformPrivate(QTransform *qq)
-    : QComponentPrivate(qq)
-    , m_transformsDirty(false)
-    , m_transforms()
-    , m_matrix()
-    , m_sceneMatrix()
+    : QComponentPrivate(qq),
+      m_transformsDirty(false)
 {
 }
 
-void QTransform::copy(const QNode *ref)
+void QTransformPrivate::_q_update()
 {
-    QComponent::copy(ref);
-    const QTransform *transform = static_cast<const QTransform*>(ref);
-    d_func()->m_matrix = transform->d_func()->m_matrix;
-    Q_FOREACH (QAbstractTransform *t, transform->d_func()->m_transforms)
-        addTransform(qobject_cast<QAbstractTransform *>(QNode::clone(t)));
+    if (!m_transformsDirty)
+        m_transformsDirty = true;
+    emit q_func()->matrixChanged();
 }
+
+QMatrix4x4 QTransformPrivate::applyTransforms() const
+{
+    if (!m_transforms.isEmpty()) {
+        QMatrix4x4 matrix;
+        Q_FOREACH (const QAbstractTransform *t, m_transforms)
+            matrix = t->transformMatrix() * matrix;
+        return matrix;
+    }
+    return QMatrix4x4();
+}
+
 
 QTransform::QTransform(QNode *parent)
     : Qt3D::QComponent(*new QTransformPrivate(this), parent)
@@ -86,51 +92,19 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 {
 }
 
-void QTransformPrivate::_q_update()
+void QTransform::copy(const QNode *ref)
 {
-    if (!m_transformsDirty)
-        m_transformsDirty = true;
-    emit static_cast<QTransform *>(q_ptr)->matrixChanged();
-}
-
-QMatrix4x4 QTransformPrivate::applyTransforms() const
-{
-    QMatrix4x4 m;
-    Q_FOREACH (const QAbstractTransform *t, m_transforms)
-        m = t->transformMatrix() * m;
-    return m;
-}
-
-QMatrix4x4 QTransform::matrix() const
-{
-    Q_D(const QTransform);
-    if (d->m_transformsDirty) {
-        d->m_matrix = d->applyTransforms();
-        d->m_transformsDirty = false;
-    }
-    return d->m_matrix;
-}
-
-/*!
-    The center of rotation for the entity. Defaults to the local origin.
-*/
-QVector3D QTransform::rotationCenter() const
-{
-    return QVector3D();
+    QComponent::copy(ref);
+    const QTransform *transform = static_cast<const QTransform *>(ref);
+    d_func()->m_matrix = transform->d_func()->m_matrix;
+    Q_FOREACH (QAbstractTransform *t, transform->d_func()->m_transforms)
+        addTransform(qobject_cast<QAbstractTransform *>(QNode::clone(t)));
 }
 
 QList<QAbstractTransform *> QTransform::transforms() const
 {
     Q_D(const QTransform);
     return d->m_transforms;
-}
-
-/*!
- *   The center of rotation for the entity. Defaults to the local origin.
- */
-void QTransform::setRotationCenter(const QVector3D &rc)
-{
-    Q_UNUSED(rc);
 }
 
 void QTransform::addTransform(QAbstractTransform *transform)
@@ -149,10 +123,14 @@ void QTransform::removeTransform(QAbstractTransform *transform)
     d->_q_update();
 }
 
-QList<QAbstractTransform *> QTransform::transformList() const
+QMatrix4x4 QTransform::matrix() const
 {
     Q_D(const QTransform);
-    return d->m_transforms;
+    if (d->m_transformsDirty) {
+        d->m_matrix = d->applyTransforms();
+        d->m_transformsDirty = false;
+    }
+    return d->m_matrix;
 }
 
 } // namespace Qt3D

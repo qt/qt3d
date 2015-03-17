@@ -57,7 +57,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class RenderShader : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderShader : public QBackendNode
 {
 public:
     RenderShader();
@@ -65,13 +65,14 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer);
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
     QVector<QString> uniformBlockNames() const;
+    QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
@@ -83,6 +84,7 @@ public:
 
     QHash<QString, ShaderUniform> activeUniformsForBlock(int blockIndex) const;
     ShaderUniformBlock uniformBlock(int blockIndex);
+    ShaderUniformBlock uniformBlock(const QString &blockName);
 
 private:
     QOpenGLShaderProgram *m_program;

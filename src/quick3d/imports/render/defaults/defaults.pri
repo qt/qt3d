@@ -12,3 +12,4 @@ QML_FILES = \
     $$PWD/qml/NormalDiffuseMapAlphaMaterial.qml \
     $$PWD/qml/NormalDiffuseSpecularMapMaterial.qml \
     $$PWD/qml/ForwardRenderer.qml \
+    $$PWD/qml/PerVertexColorMaterial.qml \

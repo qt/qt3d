@@ -44,6 +44,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QSceneChange;
+class QNodeId;
 
 class QSceneChangePrivate
 {
@@ -55,7 +56,7 @@ public :
 
     QSceneChange *q_ptr;
 
-    QSceneChange::SubjectUnion m_subject;
+    QNodeId m_subjectId;
     QSceneChange::ObservableType m_subjectType;
     ChangeFlag m_type;
     QSceneChange::Priority m_priority;

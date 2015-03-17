@@ -196,6 +196,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
             if (taskDependee) {
                 QSharedPointer<AspectTask> taskDepender = tasksMap.value(job.data());
                 dependencyList.append(Dependency(taskDepender, taskDependee));
+                taskDepender->setDependencyHandler(d->m_dependencyHandler);
                 taskDependee->setDependencyHandler(d->m_dependencyHandler);
             }
         }

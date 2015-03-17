@@ -298,14 +298,14 @@ QBackendNode *RenderShaderDataFunctor::create(QNode *frontend, const QBackendNod
     return backend;
 }
 
-QBackendNode *RenderShaderDataFunctor::get(QNode *frontend) const
+QBackendNode *RenderShaderDataFunctor::get(const QNodeId &id) const
 {
-    return m_manager->lookupResource(frontend->id());
+    return m_manager->lookupResource(id);
 }
 
-void RenderShaderDataFunctor::destroy(QNode *frontend) const
+void RenderShaderDataFunctor::destroy(const QNodeId &id) const
 {
-    m_manager->releaseResource(frontend->id());
+    m_manager->releaseResource(id);
 }
 
 } // Render

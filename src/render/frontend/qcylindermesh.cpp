@@ -56,7 +56,7 @@ class CylinderMeshFunctor : public QAbstractMeshFunctor
 public:
     CylinderMeshFunctor(int rings, int slices, float radius, float length);
     QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
-    bool operator ==(const QAbstractMeshFunctor &other) const;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
 
 private:
     int m_rings;

@@ -53,6 +53,19 @@ QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfaceP
 {
 }
 
+/*!
+ * \class Qt3D::QShaderData
+ *
+ * \brief Provides a way of specifying values of a Uniform Block or a shader
+ * structure.
+ *
+ * \note When subclassing and adding properties to Qt3D::QShaderData please not
+ * that if you need to nest inner Qt3D::QShaderData, the data type of the
+ * property should be Qt3D::QShaderData* and not whatever you named your subclass.
+ *
+ * \since 5.5
+ */
+
 QShaderData::QShaderData(QNode *parent)
     : QComponent(*new QShaderDataPrivate(this), parent)
 {

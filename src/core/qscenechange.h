@@ -39,6 +39,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QSharedPointer>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,27 +77,20 @@ public:
         Node
     };
 
-    union SubjectUnion {
-        QObservableInterface *m_observable;
-        QNode *m_node;
-    };
-
-    QSceneChange(ChangeFlag type, QObservableInterface *observable, Priority priority = Standard);
-    QSceneChange(ChangeFlag type, QNode *node, Priority priority = Standard);
+    QSceneChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
     virtual ~QSceneChange();
 
     ChangeFlag type() const;
     qint64 timestamp() const;
     QSceneChange::Priority priority() const;
     QSceneChange::ObservableType observableType() const;
-    QSceneChange::SubjectUnion subject() const;
+    QNodeId subjectId() const;
 
 protected:
     Q_DECLARE_PRIVATE(QSceneChange)
     QSceneChangePrivate *d_ptr;
     QSceneChange(QSceneChangePrivate &dd);
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QObservableInterface *observable, Priority priority = Standard);
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QNode *node, Priority priority = Standard);
+    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
 
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events

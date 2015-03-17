@@ -116,17 +116,17 @@ public:
         return createBackendFrameGraphNode(frontend, factory);
     }
 
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE
     {
-        FrameGraphNode **node = m_manager->lookupResource(frontend->id());
+        FrameGraphNode **node = m_manager->lookupResource(id);
         if (node != Q_NULLPTR)
             return *node;
         return Q_NULLPTR;
     }
 
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE
     {
-        m_manager->releaseResource(frontend->id());
+        m_manager->releaseResource(id);
     }
 
 protected:
@@ -161,8 +161,8 @@ class FrameGraphComponentFunctor : public QBackendNodeFunctor
 public:
     explicit FrameGraphComponentFunctor(Renderer *renderer);
     QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;

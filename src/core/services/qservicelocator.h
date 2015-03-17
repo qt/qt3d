@@ -91,8 +91,8 @@ public:
     template<class T>
     T *service(int serviceType)
     {
-        QAbstractServiceProvider *service = _q_getServiceHelper(serviceType);
-        return static_cast<T *>(service);
+        QAbstractServiceProvider *service_ = _q_getServiceHelper(serviceType);
+        return static_cast<T *>(service_);
     }
 
     // Convenience accessors for Qt3D provided services

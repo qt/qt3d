@@ -108,15 +108,15 @@ QBackendNode *KeyboardControllerFunctor::create(QNode *frontend, const QBackendN
     return controller;
 }
 
-QBackendNode *KeyboardControllerFunctor::get(QNode *frontend) const
+QBackendNode *KeyboardControllerFunctor::get(const QNodeId &id) const
 {
-    return m_handler->keyboardControllerManager()->lookupResource(frontend->id());
+    return m_handler->keyboardControllerManager()->lookupResource(id);
 }
 
-void KeyboardControllerFunctor::destroy(QNode *frontend) const
+void KeyboardControllerFunctor::destroy(const QNodeId &id) const
 {
-    m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));
-    m_handler->keyboardControllerManager()->releaseResource(frontend->id());
+    m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(id));
+    m_handler->keyboardControllerManager()->releaseResource(id);
 }
 
 } // Inputs

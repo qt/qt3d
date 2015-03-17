@@ -67,7 +67,7 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const QSceneChangePtr &e);
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QList<QNodeId> parameters() const;
 
     void appendRenderPass(const QNodeId &renderPassId);

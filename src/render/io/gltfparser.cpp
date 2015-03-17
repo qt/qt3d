@@ -309,13 +309,13 @@ void GLTFParser::setSource(const QUrl &source)
  * Returns true if the extension of \a path is supported by the
  * GLTF parser.
  */
-bool GLTFParser::isExtensionSupported(const QUrl &source)
+bool GLTFParser::isExtensionSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);
 }
 
-QMeshDataPtr GLTFParser::mesh(QString id)
+QMeshDataPtr GLTFParser::mesh(const QString &id)
 {
     parse();
     if (m_meshDict.contains(id))
@@ -336,7 +336,7 @@ QEntity* GLTFParser::defaultScene()
     return scene(m_defaultScene);
 }
 
-QEntity* GLTFParser::scene(QString id)
+QEntity* GLTFParser::scene(const QString &id)
 {
     parse();
 
@@ -359,7 +359,7 @@ QEntity* GLTFParser::scene(QString id)
     return sceneEntity;
 }
 
-QEntity* GLTFParser::node(QString id)
+QEntity* GLTFParser::node(const QString &id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
@@ -423,9 +423,9 @@ QEntity* GLTFParser::node(QString id)
 
     if ( jsonObj.contains(KEY_MATRIX) )
     {
-        QMatrix4x4 m;
-        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
+        QMatrix4x4 m(Qt::Uninitialized);
 
+        QJsonArray matrixValues = jsonObj.value(KEY_MATRIX).toArray();
         for (int i=0; i<16; ++i) {
             double v = matrixValues.at( i ).toDouble();
             m(i % 4, i >> 2) = v;
@@ -460,7 +460,7 @@ QEntity* GLTFParser::node(QString id)
 #undef far
 #endif
 
-QCameraLens* GLTFParser::camera(QString id)
+QCameraLens* GLTFParser::camera(const QString &id)
 {
     parse();
     QJsonObject cams = m_json.object().value(KEY_CAMERAS).toObject();
@@ -496,7 +496,7 @@ QCameraLens* GLTFParser::camera(QString id)
     }
 }
 
-QMaterial* GLTFParser::material(QString id)
+QMaterial* GLTFParser::material(const QString &id)
 {
     parse();
 
@@ -992,7 +992,7 @@ QVariant GLTFParser::parameterValueFromJSON(QParameter* p, QJsonValue val)
 //    case QParameter::FloatMat4: {
 //        QJsonArray a = val.toArray();
 
-//        QMatrix4x4 m;
+//        QMatrix4x4 m(Qt::Uninitialized);
 //        for (int i=0; i<16; ++i) {
 //            m(i % 4, i / 4) = a[i].toDouble();
 //        }
@@ -1048,7 +1048,7 @@ bool GLTFParserMesh::GLTFParserMeshFunctor::operator ==(const QAbstractMeshFunct
     return false;
 }
 
-} // of namespace Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

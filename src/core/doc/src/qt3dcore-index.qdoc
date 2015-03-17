@@ -35,12 +35,30 @@
 ****************************************************************************/
 
 /*!
-    \page qt3dcore-index.html
-    \title Qt3D Core
-
-    \brief The Qt3D Core module contains functionality to support near-realtime simulation systems.
+    \title  Qt3D Core
+    \page   qt3dcore-index.html
+    \brief  The Qt3D Core module contains functionality to support near-realtime simulation systems.
+    \ingroup qt3d-modules
 
     \section1 Getting Started
 
+    To use Qt3D classes, add this directive into the C++ files:
+
+    \code
+       #include <Qt3DCore>
+    \endcode
+
+    To link against the corresponding C++ libraries, add the following to your qmake project file:
+
+    \code
+       QT += 3dcore
+    \endcode
+
+    \section1 Reference
+
+    \list
+       \li \l {Qt3D Core C++ Classes}
+       \li \l {Qt3D Examples}
+    \endlist
 
 */

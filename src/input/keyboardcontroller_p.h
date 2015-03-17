@@ -84,8 +84,8 @@ public:
     explicit KeyboardControllerFunctor(InputHandler *handler);
 
     QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(QNode *frontend) const Q_DECL_OVERRIDE;
-    void destroy(QNode *frontend) const Q_DECL_OVERRIDE;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;

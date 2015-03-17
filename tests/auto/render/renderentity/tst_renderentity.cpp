@@ -96,15 +96,14 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidMethod method = reinterpret_cast<UuidMethod>(functionPtr);
 
-        QNode *node = Q_NULLPTR;
         RenderEntity entity;
 
         // THEN
         QVERIFY(method(&entity).isNull());
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, node));
-        addChange->setPropertyName(QByteArrayLiteral("component"));
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
+        addChange->setPropertyName("component");
         addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
         entity.sceneChangeEvent(addChange);
 
@@ -112,8 +111,8 @@ private slots:
         QCOMPARE(method(&entity), component->id());
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, component->id()));
+        removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(component->id()));
         entity.sceneChangeEvent(removeChange);
 
@@ -146,7 +145,6 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidListMethod method = reinterpret_cast<UuidListMethod>(functionPtr);
 
-        QNode *node = Q_NULLPTR;
         RenderEntity entity;
 
         // THEN
@@ -154,8 +152,8 @@ private slots:
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
-            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, node));
-            addChange->setPropertyName(QByteArrayLiteral("component"));
+            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
+            addChange->setPropertyName("component");
             addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
             entity.sceneChangeEvent(addChange);
         }
@@ -167,8 +165,8 @@ private slots:
         }
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, node));
-        removeChange->setPropertyName(QByteArrayLiteral("componentId"));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, components.first()->id()));
+        removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(components.first()->id()));
         entity.sceneChangeEvent(removeChange);
 

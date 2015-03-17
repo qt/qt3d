@@ -83,9 +83,9 @@ void KeyboardInput::setFocus(bool focus)
 {
     if (focus != m_focus) {
         m_focus = focus;
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
         e->setTargetNode(peerUuid());
-        e->setPropertyName(QByteArrayLiteral("focus"));
+        e->setPropertyName("focus");
         e->setValue(m_focus);
         notifyObservers(e);
     }
@@ -93,9 +93,9 @@ void KeyboardInput::setFocus(bool focus)
 
 void KeyboardInput::keyEvent(const Q3DKeyEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
-    e->setPropertyName(QByteArrayLiteral("event"));
+    e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
@@ -157,14 +157,14 @@ QBackendNode *KeyboardInputFunctor::create(QNode *frontend, const QBackendNodeFa
     return input;
 }
 
-QBackendNode *KeyboardInputFunctor::get(QNode *frontend) const
+QBackendNode *KeyboardInputFunctor::get(const QNodeId &id) const
 {
-    return m_handler->keyboardInputManager()->lookupResource(frontend->id());
+    return m_handler->keyboardInputManager()->lookupResource(id);
 }
 
-void KeyboardInputFunctor::destroy(QNode *frontend) const
+void KeyboardInputFunctor::destroy(const QNodeId &id) const
 {
-    m_handler->keyboardInputManager()->releaseResource(frontend->id());
+    m_handler->keyboardInputManager()->releaseResource(id);
 }
 
 } // Input

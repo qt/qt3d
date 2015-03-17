@@ -37,10 +37,41 @@
 /*!
     \page qt3drender-index.html
     \title Qt3D Render
-
+    \ingroup qt3d-modules
     \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
 
     \section1 Getting Started
 
+    To use Qt3D classes, add this directive into the C++ files:
 
+    \code
+       #include <Qt3DRenderer>
+    \endcode
+
+    To link against the corresponding C++ libraries, add the following to your qmake project file:
+
+    \code
+       QT += 3drenderer
+    \endcode
+
+    \section1 Reference
+    \list
+    \li \l {Qt3D Render C++ Classes}
+    \li \l {Qt3D Examples}
+    \endlist
+*/
+
+/*!
+    \page qt3d-examples.html
+    \ingroup all-examples
+    \title Qt3D Examples
+    \brief Examples that demostrate 2D and 3D rendering using Qt3D.
+
+    The following examples demonstrate 2D and 3D rendering using Qt3D.
+
+    \section1 QML Examples
+    \annotatedlist qt3d-examples-qml
+
+    \section1 C++ Examples
+    \annotatedlist qt3d-examples-cpp
 */

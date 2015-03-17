@@ -71,10 +71,10 @@ public:
     inline bool isAutoRepeat() const { return m_event.isAutoRepeat(); }
     inline int count() const { return m_event.count(); }
     inline quint32 nativeScanCode() const { return m_event.nativeScanCode(); }
-    inline bool isAccepted() { return m_event.isAccepted(); }
+    inline bool isAccepted() const { return m_event.isAccepted(); }
     inline void setAccepted(bool accepted) { m_event.setAccepted(accepted); }
     inline QEvent::Type type() const { return m_event.type(); }
-    Q_INVOKABLE bool matches(QKeySequence::StandardKey key) const { return m_event.matches(key); }
+    Q_INVOKABLE bool matches(QKeySequence::StandardKey key_) const { return m_event.matches(key_); }
 
 private:
     QKeyEvent m_event;

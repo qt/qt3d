@@ -210,22 +210,21 @@ private slots:
         // GIVEN
         QScopedPointer<QShaderProgram> shader(new QShaderProgram);
 
-        QNode *node = Q_NULLPTR;
         RenderRenderPass backend;
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
         addChange->setValue(QVariant::fromValue(shader->id()));
-        addChange->setPropertyName(QByteArrayLiteral("shaderProgram"));
+        addChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(addChange);
 
         // THEN
         QCOMPARE(backend.shaderProgram(), shader->id());
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, shader->id()));
         removeChange->setValue(QVariant::fromValue(shader->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("shaderProgram"));
+        removeChange->setPropertyName("shaderProgram");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -237,13 +236,12 @@ private slots:
         // GIVEN
         QScopedPointer<QAnnotation> annotation(new QAnnotation);
 
-        QNode *node = Q_NULLPTR;
         RenderRenderPass backend;
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
         addChange->setValue(QVariant::fromValue(annotation->id()));
-        addChange->setPropertyName(QByteArrayLiteral("annotation"));
+        addChange->setPropertyName("annotation");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -251,9 +249,9 @@ private slots:
         QCOMPARE(backend.annotations().first(), annotation->id());
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
         removeChange->setValue(QVariant::fromValue(annotation->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("annotation"));
+        removeChange->setPropertyName("annotation");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -265,13 +263,12 @@ private slots:
         // GIVEN
         QScopedPointer<QParameterMapping> binding(new QParameterMapping);
 
-        QNode *node = Q_NULLPTR;
         RenderRenderPass backend;
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, binding->id()));
         addChange->setValue(QVariant::fromValue(binding.data()));
-        addChange->setPropertyName(QByteArrayLiteral("binding"));
+        addChange->setPropertyName("binding");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -282,9 +279,9 @@ private slots:
         QCOMPARE(backend.bindings().first().shaderVariableName(), binding->shaderVariableName());
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, binding->id()));
         removeChange->setValue(QVariant::fromValue(binding->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("binding"));
+        removeChange->setPropertyName("binding");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
@@ -303,15 +300,14 @@ private slots:
         QScopedPointer<QRenderState> frontendStatePtr(frontendState);
         Q_UNUSED(frontendStatePtr);
 
-        QNode *node = Q_NULLPTR;
         RenderRenderPass backend;
 
         QFETCH(RenderState*, backendState);
 
         // WHEN
-        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, node));
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
         addChange->setValue(QVariant::fromValue(frontendState));
-        addChange->setPropertyName(QByteArrayLiteral("renderState"));
+        addChange->setPropertyName("renderState");
         backend.sceneChangeEvent(addChange);
 
         // THEN
@@ -319,9 +315,9 @@ private slots:
         QCOMPARE(backend.renderStates().first(), backendState);
 
         // WHEN
-        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, node));
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));
         removeChange->setValue(QVariant::fromValue(frontendState->id()));
-        removeChange->setPropertyName(QByteArrayLiteral("renderState"));
+        removeChange->setPropertyName("renderState");
         backend.sceneChangeEvent(removeChange);
 
         // THEN

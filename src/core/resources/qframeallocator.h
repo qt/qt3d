@@ -44,6 +44,7 @@
 #endif
 
 #include <QDebug>
+#include <QScopedPointer>
 #include <QVector>
 #include <Qt3DCore/qt3dcore_global.h>
 
@@ -86,7 +87,7 @@ public:
 
 private:
     Q_DECLARE_PRIVATE(QFrameAllocator)
-    QFrameAllocatorPrivate *d_ptr;
+    const QScopedPointer<QFrameAllocatorPrivate> d_ptr;
 };
 
 } // Qt3D

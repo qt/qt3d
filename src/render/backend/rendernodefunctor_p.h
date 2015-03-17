@@ -63,14 +63,14 @@ public:
         return backend;
     }
 
-    QBackendNode *get(QNode *frontend) const Q_DECL_FINAL
+    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL
     {
-        return m_manager->lookupResource(frontend->id());
+        return m_manager->lookupResource(id);
     }
 
-    void destroy(QNode *frontend) const Q_DECL_FINAL
+    void destroy(const QNodeId &id) const Q_DECL_FINAL
     {
-        m_manager->releaseResource(frontend->id());
+        m_manager->releaseResource(id);
     }
 
 private:

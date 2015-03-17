@@ -241,7 +241,7 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
         offset += sizeof(float) * 4;
     }
 
-    int faces = (slices * 2) * (rings - 1); // two tris per slice, for all middle rings
+    int faces = (slices * 2) * (rings - 2); // two tris per slice, for all middle rings
     faces += 2 * slices; // tri per slice for both top and bottom
 
     QByteArray indexBytes;

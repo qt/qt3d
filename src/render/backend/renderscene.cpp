@@ -78,15 +78,15 @@ QUrl RenderScene::source() const
 
 void RenderScene::setSceneSubtree(QEntity *subTree)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, this));
-    e->setPropertyName(QByteArrayLiteral("scene"));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    e->setPropertyName("scene");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(subTree));
     e->setTargetNode(peerUuid());
     notifyObservers(e);
-    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, this));
-    e2->setPropertyName(QByteArrayLiteral("status"));
+    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    e2->setPropertyName("status");
     e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
     e2->setTargetNode(peerUuid());
     notifyObservers(e2);
@@ -112,14 +112,14 @@ QBackendNode *RenderSceneFunctor::create(QNode *frontend, const QBackendNodeFact
     return scene;
 }
 
-QBackendNode *RenderSceneFunctor::get(QNode *frontend) const
+QBackendNode *RenderSceneFunctor::get(const QNodeId &id) const
 {
-    return m_sceneManager->lookupResource(frontend->id());
+    return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(QNode *frontend) const
+void RenderSceneFunctor::destroy(const QNodeId &id) const
 {
-    m_sceneManager->releaseResource(frontend->id());
+    m_sceneManager->releaseResource(id);
 }
 
 } // Render

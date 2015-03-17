@@ -182,7 +182,7 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint prog
     QVector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORM_BLOCKS, &nbrActiveUniformsBlocks);
-    blocks.resize(nbrActiveUniformsBlocks);
+    blocks.reserve(nbrActiveUniformsBlocks);
     for (GLint i = 0; i < nbrActiveUniformsBlocks; i++) {
         QByteArray uniformBlockName(256, '\0');
         ShaderUniformBlock uniformBlock;

@@ -176,6 +176,9 @@ QSharedPointer<TaskInterface> QThreadPooler::nextTask()
         const QSharedPointer<TaskInterface> &candidate = d->m_taskQueue.at(i);
         if (!hasDependencies(candidate)) {
             task = candidate;
+            // Increment running thread counter before removing item from queue
+            // so that isIdle test keeps up
+            d->incRunningThreads();
             d->m_taskQueue.removeAt(i);
 
             break;

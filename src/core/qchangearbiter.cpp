@@ -56,14 +56,14 @@ namespace Qt3D {
     \inmodule Qt3DCore
     \since 5.5
 
-    \brief Act as a messages router between observables and observers.
+    \brief Acts as a message router between observables and observers.
 
     Observables can be of two types: QNode observables and \l {QObservableInterface}s.
     QNode notifications are sent from the frontend QNode and delivered to the backend observers.
     QObservableInterface notifications are sent from backend nodes to backend observers and/or to the
     registered QPostman, which in turn delivers the notifications to the target frontend QNode.
 
-    QNode observables are registered automatically. However QObservableInterface object have to be registered manually
+    QNode observables are registered automatically. However, QObservableInterface object have to be registered manually
     by providing the QNodeId of the corresponding frontend QNode.
 
     Observers can be registered to receive messages from a QObservableInterface/QNode observable by providing a QNode NodeUuid.
@@ -105,7 +105,7 @@ void QChangeArbiter::initialize(QAbstractAspectJobManager *jobManager)
 
 void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
 {
-    for (int i = 0, n = changeQueue->size(); i < n; i++) {
+    for (int i = 0, n = int(changeQueue->size()); i < n; i++) {
         QSceneChangePtr& change = (*changeQueue)[i];
         // Lookup which observers care about the subject this change came from
         // and distribute the change to them
@@ -124,8 +124,7 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         switch (change->observableType()) {
 
         case QSceneChange::Observable: {
-            QObservableInterface *subject = change->subject().m_observable;
-            QNodeId nodeId = m_scene->nodeIdFromObservable(subject);
+            const QNodeId nodeId = change->subjectId();
             if (m_nodeObservations.contains(nodeId)) {
                 QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
@@ -139,9 +138,9 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
         }
 
         case QSceneChange::Node: {
-            QNode *subject = change->subject().m_node;
-            if (m_nodeObservations.contains(subject->id())) {
-                QObserverList &observers = m_nodeObservations[subject->id()];
+            const QNodeId nodeId = change->subjectId();
+            if (m_nodeObservations.contains(nodeId)) {
+                QObserverList &observers = m_nodeObservations[nodeId];
                 Q_FOREACH (const QObserverPair&observer, observers) {
                     if ((change->type() & observer.first))
                         observer.second->sceneChangeEvent(change);

@@ -36,9 +36,6 @@
 
 #include "qcamera.h"
 #include "qcamera_p.h"
-#include "qcameralens.h"
-#include <qtransform.h>
-#include <qlookattransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,9 +64,7 @@ QCamera::QCamera(QNode *parent) :
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(viewVectorChanged()), this, SIGNAL(viewVectorChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
     d_func()->m_transform->addTransform(d_func()->m_lookAt);
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -90,9 +85,7 @@ QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(viewVectorChanged()), this, SIGNAL(viewVectorChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
     d_func()->m_transform->addTransform(d_func()->m_lookAt);
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -118,32 +111,32 @@ QLookAtTransform *QCamera::lookAt() const
 
 void QCamera::translate( const QVector3D& vLocal, CameraTranslationOption option )
 {
-    Q_D(QCamera);
+    QVector3D viewVector = viewCenter() - position(); // From "camera" position to view center
 
     // Calculate the amount to move by in world coordinates
     QVector3D vWorld;
     if ( !qFuzzyIsNull( vLocal.x() ) )
     {
         // Calculate the vector for the local x axis
-        QVector3D x = QVector3D::crossProduct(d->m_lookAt->viewVector(), d->m_lookAt->upVector()).normalized();
+        QVector3D x = QVector3D::crossProduct(viewVector, upVector()).normalized();
         vWorld += vLocal.x() * x;
     }
 
     if ( !qFuzzyIsNull( vLocal.y() ) )
-        vWorld += vLocal.y() * d->m_lookAt->upVector();
+        vWorld += vLocal.y() * upVector();
 
     if ( !qFuzzyIsNull( vLocal.z() ) )
-        vWorld += vLocal.z() * d->m_lookAt->viewVector().normalized();
+        vWorld += vLocal.z() * viewVector.normalized();
 
     // Update the camera position using the calculated world vector
-    d->m_lookAt->setPosition(d->m_lookAt->position() + vWorld);
+    setPosition(position() + vWorld);
 
     // May be also update the view center coordinates
     if ( option == TranslateViewCenter )
-        d->m_lookAt->setViewCenter(d->m_lookAt->viewCenter() + vWorld);
+        setViewCenter(viewCenter() + vWorld);
 
     // Refresh the camera -> view center vector
-    d->m_lookAt->setViewVector(d->m_lookAt->viewCenter() - d->m_lookAt->position());
+    viewVector = viewCenter() - position();
 
     // Calculate a new up vector. We do this by:
     // 1) Calculate a new local x-direction vector from the cross product of the new
@@ -151,43 +144,36 @@ void QCamera::translate( const QVector3D& vLocal, CameraTranslationOption option
     // 2) The local x vector is the normal to the plane in which the new up vector
     //    must lay. So we can take the cross product of this normal and the new
     //    x vector. The new normal vector forms the last part of the orthonormal basis
-    QVector3D x = QVector3D::crossProduct( d->m_lookAt->viewVector(), d->m_lookAt->upVector() ).normalized();
-    d->m_lookAt->setUpVector(QVector3D::crossProduct( x, d->m_lookAt->viewVector() ).normalized());
+    QVector3D x = QVector3D::crossProduct(viewVector, upVector()).normalized();
+    setUpVector(QVector3D::crossProduct(x, viewVector).normalized());
 }
 
 void QCamera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
 {
-    Q_D(QCamera);
-
     // Update the camera position using the calculated world vector
-    d->m_lookAt->setPosition(d->m_lookAt->position() + vWorld);
+    setPosition(position() + vWorld);
 
     // May be also update the view center coordinates
     if ( option == TranslateViewCenter )
-        d->m_lookAt->setViewCenter(d->m_lookAt->viewCenter() + vWorld);
-
-    // Refresh the camera -> view center vector
-    d->m_lookAt->setViewVector(d->m_lookAt->viewCenter() - d->m_lookAt->position());
+        setViewCenter(viewCenter() + vWorld);
 }
 
 QQuaternion QCamera::tiltRotation(float angle) const
 {
-    Q_D(const QCamera);
-    QVector3D xBasis = QVector3D::crossProduct( d->m_lookAt->upVector(),
-                                                d->m_lookAt->viewVector().normalized() ).normalized();
+    QVector3D viewVector = viewCenter() - position();
+    QVector3D xBasis = QVector3D::crossProduct(upVector(), viewVector.normalized()).normalized();
     return QQuaternion::fromAxisAndAngle( xBasis, -angle );
 }
 
 QQuaternion QCamera::panRotation(float angle) const
 {
-    Q_D(const QCamera);
-    return QQuaternion::fromAxisAndAngle( d->m_lookAt->upVector(), angle );
+    return QQuaternion::fromAxisAndAngle(upVector(), angle);
 }
 
 QQuaternion QCamera::rollRotation(float angle) const
 {
-    Q_D(const QCamera);
-    return QQuaternion::fromAxisAndAngle( d->m_lookAt->viewVector(), -angle );
+    QVector3D viewVector = viewCenter() - position();
+    return QQuaternion::fromAxisAndAngle(viewVector, -angle);
 }
 
 void QCamera::tilt( const float& angle )
@@ -228,19 +214,19 @@ void QCamera::rollAboutViewCenter( const float& angle )
 
 void QCamera::rotate( const QQuaternion& q )
 {
-    Q_D(QCamera);
-    d->m_lookAt->setUpVector(q.rotatedVector(d->m_lookAt->upVector()));
-    QVector3D cameraToCenter = q.rotatedVector(d->m_lookAt->viewVector());
-    d->m_lookAt->setViewCenter(d->m_lookAt->position() + cameraToCenter);
+    setUpVector(q * upVector());
+    QVector3D viewVector = viewCenter() - position();
+    QVector3D cameraToCenter = q * viewVector;
+    setViewCenter(position() + cameraToCenter);
 }
 
 void QCamera::rotateAboutViewCenter( const QQuaternion& q )
 {
-    Q_D(QCamera);
-    d->m_lookAt->setUpVector(q.rotatedVector(d->m_lookAt->upVector()));
-    QVector3D cameraToCenter = q.rotatedVector(d->m_lookAt->viewVector());
-    d->m_lookAt->setPosition(d->m_lookAt->viewCenter() - cameraToCenter);
-    d->m_lookAt->setViewCenter(d->m_lookAt->position() + cameraToCenter);
+    setUpVector(q * upVector());
+    QVector3D viewVector = viewCenter() - position();
+    QVector3D cameraToCenter = q * viewVector;
+    setPosition(viewCenter() - cameraToCenter);
+    setViewCenter(position() + cameraToCenter);
 }
 
 void QCamera::setProjectionType(QCameraLens::ProjectionType type)
@@ -351,7 +337,7 @@ float QCamera::top() const
     return d->m_lens->top();
 }
 
-QMatrix4x4 QCamera::projectionMatrix()
+QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
     return d->m_lens->projectionMatrix();
@@ -392,18 +378,6 @@ QVector3D QCamera::viewCenter() const
 {
     Q_D(const QCamera);
     return d->m_lookAt->viewCenter();
-}
-
-QVector3D QCamera::viewVector() const
-{
-    Q_D(const QCamera);
-    return d->m_lookAt->viewVector();
-}
-
-QMatrix4x4 QCamera::matrix() const
-{
-    Q_D(const QCamera);
-    return d->m_transform->matrix();
 }
 
 } // Qt3D

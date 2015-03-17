@@ -246,7 +246,7 @@ void QPhongMaterialPrivate::init()
     m_phongEffect->addParameter(m_lightPositionParameter);
     m_phongEffect->addParameter(m_lightIntensityParameter);
 
-    static_cast<QMaterial *>(q_ptr)->setEffect(m_phongEffect);
+    q_func()->setEffect(m_phongEffect);
 }
 
 } // Qt3D

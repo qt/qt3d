@@ -37,7 +37,6 @@
 #ifndef QT3D_QTRANSFORM_P_H
 #define QT3D_QTRANSFORM_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -45,27 +44,23 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QTransform;
-
 class QTransformPrivate : public QComponentPrivate
 {
+    Q_DECLARE_PUBLIC(QTransform)
+
 public:
     QTransformPrivate(QTransform *qq);
 
-    Q_DECLARE_PUBLIC(QTransform)
+    void _q_update();
+    QMatrix4x4 applyTransforms() const;
 
     mutable bool m_transformsDirty;
     QList<QAbstractTransform*> m_transforms;
 
     mutable QMatrix4x4 m_matrix;
-    QMatrix4x4 m_sceneMatrix;
-
-    QMatrix4x4 applyTransforms() const;
-
-private:
-    void _q_update();
 };
 
-}
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

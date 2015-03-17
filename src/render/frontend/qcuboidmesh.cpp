@@ -42,6 +42,8 @@
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
+#include <limits>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -443,7 +445,7 @@ QMeshDataPtr createCuboidMesh(float xExtent,
     const int xzIndices = 2 * 3 * (xzResolution.width() - 1) * (xzResolution.height() - 1);
     const int xyIndices = 2 * 3 * (xyResolution.width() - 1) * (xyResolution.height() - 1);
     const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
-    Q_ASSERT(indexCount < std::numeric_limits<quint16>::max());
+    Q_ASSERT(indexCount < (std::numeric_limits<quint16>::max)());
     QByteArray indexBytes;
     indexBytes.resize(indexCount * sizeof(quint16));
     quint16* indices = reinterpret_cast<quint16*>(indexBytes.data());

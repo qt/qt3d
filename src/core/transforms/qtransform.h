@@ -38,17 +38,16 @@
 #define QT3D_QTRANSFORM_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QAtomicInt>
-#include <QMatrix4x4>
+
+#include <QtGui/qmatrix4x4.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
 class QAbstractTransform;
-class QTransformPrivate;
 
+class QTransformPrivate;
 class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
@@ -59,22 +58,17 @@ public:
     QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
     QTransform(QAbstractTransform *transform, QNode *parent = 0);
 
-    QMatrix4x4 matrix() const;
-
-    QVector3D rotationCenter() const;
-    void setRotationCenter(const QVector3D &rc);
-
-    QList<QAbstractTransform*> transforms() const;
-
+    QList<QAbstractTransform *> transforms() const;
     void addTransform(QAbstractTransform *xform);
     void removeTransform(QAbstractTransform *xform);
+
+    QMatrix4x4 matrix() const;
 
 Q_SIGNALS:
     void matrixChanged();
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
-    QList<QAbstractTransform *> transformList() const;
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:

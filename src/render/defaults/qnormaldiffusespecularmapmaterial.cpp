@@ -136,7 +136,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     m_normalDiffuseSpecularEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseSpecularEffect->addParameter(m_textureScaleParameter);
 
-    static_cast<QMaterial *>(q_ptr)->setEffect(m_normalDiffuseSpecularEffect);
+    q_func()->setEffect(m_normalDiffuseSpecularEffect);
 }
 
 /*!

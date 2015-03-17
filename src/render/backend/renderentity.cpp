@@ -385,14 +385,14 @@ QBackendNode *RenderEntityFunctor::create(QNode *frontend, const QBackendNodeFac
     return entity;
 }
 
-QBackendNode *RenderEntityFunctor::get(QNode *frontend) const
+QBackendNode *RenderEntityFunctor::get(const QNodeId &id) const
 {
-    return m_renderer->renderNodesManager()->lookupResource(frontend->id());
+    return m_renderer->renderNodesManager()->lookupResource(id);
 }
 
-void RenderEntityFunctor::destroy(QNode *frontend) const
+void RenderEntityFunctor::destroy(const QNodeId &id) const
 {
-    m_renderer->renderNodesManager()->releaseResource(frontend->id());
+    m_renderer->renderNodesManager()->releaseResource(id);
 }
 
 } // namespace Render

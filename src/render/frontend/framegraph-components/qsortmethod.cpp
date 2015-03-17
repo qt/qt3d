@@ -77,8 +77,8 @@ void QSortMethod::addCriterion(QSortCriterion *criterion)
             criterion->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, this));
-            propertyChange->setPropertyName(QByteArrayLiteral("sortCriterion"));
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            propertyChange->setPropertyName("sortCriterion");
             propertyChange->setValue(QVariant::fromValue(criterion));
             d->notifyObservers(propertyChange);
         }
@@ -89,8 +89,8 @@ void QSortMethod::removeCriterion(QSortCriterion *criterion)
 {
     Q_D(QSortMethod);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, this));
-        propertyChange->setPropertyName(QByteArrayLiteral("sortCriterion"));
+        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        propertyChange->setPropertyName("sortCriterion");
         propertyChange->setValue(QVariant::fromValue(criterion));
         d->notifyObservers(propertyChange);
     }

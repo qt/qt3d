@@ -60,6 +60,9 @@ class RenderStateSet;
 class RenderTechnique;
 class RenderView;
 class Renderer;
+class ShaderDataManager;
+struct ShaderUniform;
+class RenderShaderData;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -102,6 +105,25 @@ Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *i
 
 Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(RenderRenderPass *pass,
                                                       QFrameAllocator *allocator);
+
+
+struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
+{
+    UniformBlockValueBuilder();
+    ~UniformBlockValueBuilder();
+
+    void buildActiveUniformNameValueMapHelper(const QString &blockName,
+                                        const QString &qmlPropertyName,
+                                        const QVariant &value);
+    void buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData,
+                                                    const QString &blockName,
+                                                    const QString &qmlPropertyName = QString());
+
+    bool updatedPropertiesOnly;
+    QHash<QString, ShaderUniform> uniforms;
+    QHash<QString, QVariant> activeUniformNamesToValue;
+    ShaderDataManager *shaderDataManager;
+};
 
 } // namespace Render
 } // namespace Qt3D

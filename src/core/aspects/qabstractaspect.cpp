@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 static QByteArray className(const QMetaObject &obj)
 {
     // note: class names are stored in static meta objects, thus the usage of fromRawData here is fine
-    return QByteArray::fromRawData(obj.className(), strlen(obj.className()));
+    return QByteArray::fromRawData(obj.className(), int(strlen(obj.className())));
 }
 
 namespace Qt3D {
@@ -70,7 +70,7 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 /*!
     \class Qt3D::QAbstractAspect
     \inmodule Qt3DCore
-    \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior
+    \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
 QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
     : QObject(*new QAbstractAspectPrivate(this), parent)
@@ -100,7 +100,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
-        QBackendNode *backend = functor->get(frontend);
+        QBackendNode *backend = functor->get(frontend->id());
         if (backend != Q_NULLPTR)
             return backend;
         backend = functor->create(frontend, this);
@@ -131,7 +131,7 @@ QBackendNode *QAbstractAspect::getBackendNode(QNode *frontend) const
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull())
-        return functor->get(frontend);
+        return functor->get(frontend->id());
     return Q_NULLPTR;
 }
 
@@ -146,13 +146,13 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
-        QBackendNode *backend = functor->get(frontend);
+        QBackendNode *backend = functor->get(frontend->id());
         if (backend != Q_NULLPTR) {
             QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
             d->m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
             if (backend->mode() == QBackendNode::ReadWrite)
                 d->m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
-            functor->destroy(frontend);
+            functor->destroy(frontend->id());
         }
     }
 }

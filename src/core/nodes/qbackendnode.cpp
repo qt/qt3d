@@ -70,7 +70,7 @@ void QBackendNodePrivate::notifyObservers(const QSceneChangePtr &e)
 
 void QBackendNodePrivate::sceneChangeEvent(const QSceneChangePtr &e)
 {
-    q_ptr->sceneChangeEvent(e);
+    q_func()->sceneChangeEvent(e);
 }
 
 QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)

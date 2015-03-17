@@ -67,26 +67,15 @@ QSceneChangePrivate::~QSceneChangePrivate()
 {
 }
 
-QSceneChange::QSceneChange(ChangeFlag type, QObservableInterface *observable, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
     : d_ptr(new QSceneChangePrivate(this))
 {
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
-    d->m_subject.m_observable = observable;
-    d->m_subjectType = Observable;
-}
-
-QSceneChange::QSceneChange(ChangeFlag type, QNode *node, QSceneChange::Priority priority)
-    : d_ptr(new QSceneChangePrivate(this))
-{
-    Q_D(QSceneChange);
-    d->m_type = type;
-    d->m_priority = priority;
-    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
-    d->m_subject.m_node = node;
-    d->m_subjectType = Node;
+    d->m_subjectId = subjectId;
+    d->m_subjectType = observableType;
 }
 
 QSceneChange::~QSceneChange()
@@ -99,26 +88,15 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd)
 {
 }
 
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QObservableInterface *observable, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
-    d->m_subject.m_observable = observable;
-    d->m_subjectType = Observable;
-}
-
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, QNode *node, QSceneChange::Priority priority)
-    : d_ptr(&dd)
-{
-    Q_D(QSceneChange);
-    d->m_type = type;
-    d->m_priority = priority;
-    d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
-    d->m_subject.m_node = node;
-    d->m_subjectType = Node;
+    d->m_subjectId = subjectId;
+    d->m_subjectType = observableType;
 }
 
 ChangeFlag QSceneChange::type() const
@@ -145,10 +123,10 @@ QSceneChange::ObservableType QSceneChange::observableType() const
     return d->m_subjectType;
 }
 
-QSceneChange::SubjectUnion QSceneChange::subject() const
+QNodeId QSceneChange::subjectId() const
 {
     Q_D(const QSceneChange);
-    return d->m_subject;
+    return d->m_subjectId;
 }
 
 } // Qt3D

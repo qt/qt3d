@@ -84,8 +84,8 @@ void QEffect::addParameter(QParameter *parameter)
             parameter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, this));
-            change->setPropertyName(QByteArrayLiteral("parameter"));
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            change->setPropertyName("parameter");
             change->setValue(QVariant::fromValue(parameter->id()));
             d->notifyObservers(change);
         }
@@ -97,8 +97,8 @@ void QEffect::removeParameter(QParameter *parameter)
     Q_D(QEffect);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, this));
-        change->setPropertyName(QByteArrayLiteral("parameter"));
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        change->setPropertyName("parameter");
         change->setValue(QVariant::fromValue(parameter->id()));
         d->notifyObservers(change);
     }
@@ -131,8 +131,8 @@ void QEffect::addTechnique(QTechnique *t)
             t->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, this));
-            e->setPropertyName(QByteArrayLiteral("technique"));
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            e->setPropertyName("technique");
             e->setValue(QVariant::fromValue(t->id()));
             d->notifyObservers(e);
         }
@@ -148,8 +148,8 @@ void QEffect::removeTechnique(QTechnique *t)
 {
     Q_D(QEffect);
     if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, this));
-        e->setPropertyName(QByteArrayLiteral("technique"));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        e->setPropertyName("technique");
         e->setValue(QVariant::fromValue(t->id()));
         d->notifyObservers(e);
     }

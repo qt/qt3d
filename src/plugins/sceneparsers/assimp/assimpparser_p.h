@@ -71,25 +71,19 @@ class AssimpParser : public AbstractSceneParser
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt3DRenderer.AssimParser")
+
 public:
     AssimpParser();
     ~AssimpParser();
 
-    static bool isAssimpPath(const QString& path);
-
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
-    bool isExtensionSupported(const QUrl &source) Q_DECL_OVERRIDE;
-    QEntity *scene(QString id = QString()) Q_DECL_OVERRIDE;
-    QEntity *node(QString id) Q_DECL_OVERRIDE;
+    bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
+    QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
+    QEntity *node(const QString &id) Q_DECL_OVERRIDE;
 
-    QEntity *defaultScene();
-    QMeshDataPtr mesh(QString id);
-    QMaterial *material(QString id);
-    QCamera *camera(QString id);
-
-private :
-
+private:
+    static bool isAssimpPath(const QString &path);
     static QStringList assimpSupportedFormats();
     static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
@@ -138,11 +132,9 @@ private :
     bool     m_sceneParsed;
     AssimpParser::SceneImporter *m_scene;
     static QStringList assimpSupportedFormatsList;
-
-
 };
 
-}
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

@@ -171,14 +171,14 @@ QBackendNode *RenderTextureImageFunctor::create(QNode *frontend, const QBackendN
     return backend;
 }
 
-QBackendNode *RenderTextureImageFunctor::get(QNode *frontend) const
+QBackendNode *RenderTextureImageFunctor::get(const QNodeId &id) const
 {
-    return m_textureImageManager->lookupResource(frontend->id());
+    return m_textureImageManager->lookupResource(id);
 }
 
-void RenderTextureImageFunctor::destroy(QNode *frontend) const
+void RenderTextureImageFunctor::destroy(const QNodeId &id) const
 {
-    m_textureImageManager->releaseResource(frontend->id());
+    m_textureImageManager->releaseResource(id);
 }
 
 } // Render

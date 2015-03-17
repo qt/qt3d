@@ -38,6 +38,7 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
 #include <private/qabstractmesh_p.h>
@@ -249,12 +250,12 @@ AssimpParser::~AssimpParser()
  *  Return true if the provided \a path has a suffix supported
  *  by the Assimp Assets importer.
  */
-bool AssimpParser::isAssimpPath(const QString& path)
+bool AssimpParser::isAssimpPath(const QString &path)
 {
     QFileInfo fileInfo(path);
 
     if (!fileInfo.exists() ||
-            !AssimpParser::assimpSupportedFormats().contains(fileInfo.suffix().toLower()))
+            !AssimpParser::assimpSupportedFormatsList.contains(fileInfo.suffix().toLower()))
         return false;
     return true;
 }
@@ -290,7 +291,7 @@ void AssimpParser::setSource(const QUrl &source)
  * Returns true if the extension of \a path is supported by
  * the assimp parser.
  */
-bool AssimpParser::isExtensionSupported(const QUrl &source)
+bool AssimpParser::isExtensionSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
@@ -303,7 +304,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source)
  *
  * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
  */
-QEntity *AssimpParser::scene(QString id)
+QEntity *AssimpParser::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -328,7 +329,7 @@ QEntity *AssimpParser::scene(QString id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns Q_NULLPTR if no node can be found.
  */
-QEntity *AssimpParser::node(QString id)
+QEntity *AssimpParser::node(const QString &id)
 {
     if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
@@ -661,27 +662,22 @@ void AssimpParser::loadCamera(uint cameraIndex)
 
     QEntity  *camera = new QEntity();
     QCameraLens *lens = new QCameraLens();
-    aiMatrix4x4 cm;
 
-    assimpCamera->GetCameraMatrix(cm);
     lens->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
     lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
                                    qMax(assimpCamera->mAspect, 1.0f),
                                    assimpCamera->mClipPlaneNear,
                                    assimpCamera->mClipPlaneFar);
     camera->addComponent(lens);
-    // View Matrix defines camera position & up vector relative to the associated
-    // node in the scene. This is computed in AssimpParser::node
-    //    camera->lookAt()->setViewMatrix();
+
     QTransform *transform = new QTransform();
-    QMatrix4x4 viewMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(cm);
-    // CHECK THAT THIS WORKS
-    qCDebug(AssimpParserLog) << Q_FUNC_INFO << "IF CAMERA NOT BEHAVING CORRECTLY LOOK HERE";
-    viewMatrix.lookAt(QVector3D(0, 0, 0),
-                      QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
-                      QVector3D(0, 0, 0));
-    transform->addTransform(new QMatrixTransform(viewMatrix));
+    QLookAtTransform *lookAt = new QLookAtTransform();
+    lookAt->setPosition(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z));
+    lookAt->setViewCenter(QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z));
+    lookAt->setUpVector(QVector3D(assimpCamera->mUp.x, assimpCamera->mUp.y, assimpCamera->mUp.z));
+    transform->addTransform(lookAt);
     camera->addComponent(transform);
+
     m_scene->m_cameras[cameraNode] = camera;
 }
 
@@ -914,7 +910,7 @@ AssimpParser::SceneImporter::~SceneImporter()
     delete m_importer;
 }
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

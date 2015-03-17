@@ -70,28 +70,28 @@ class GLTFParser : public AbstractSceneParser
 public:
     GLTFParser();
 
-    static bool isGLTFPath(const QString &path);
     void setBasePath(const QString& path);
     bool setJSON( QJsonDocument json );
 
     // SceneParserInterface interface
     void setSource(const QUrl &source) Q_DECL_OVERRIDE;
-    bool isExtensionSupported(const QUrl &source) Q_DECL_OVERRIDE;
+    bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
 
     /**
      * @brief instantiate Create Nodes based on glTf JSON document
      * @return A new scene-graph fragment based on the provided glTf
      */
-    QEntity *node(QString id) Q_DECL_OVERRIDE;
-    QEntity *scene(QString id) Q_DECL_OVERRIDE;
-
-
-    QEntity *defaultScene();
-    QMeshDataPtr mesh(QString id);
-    QMaterial *material(QString id);
-    QCameraLens *camera(QString id);
+    QEntity *node(const QString &id) Q_DECL_OVERRIDE;
+    QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
 
 private:
+    static bool isGLTFPath(const QString &path);
+
+    QEntity *defaultScene();
+    QMeshDataPtr mesh(const QString &id);
+    QMaterial *material(const QString &id);
+    QCameraLens *camera(const QString &id);
+
     void parse();
 
     void processJSONMesh( QString id, QJsonObject jsonObj );
@@ -158,7 +158,7 @@ private:
     //Render::RenderState *buildState(const QByteArray& nm, QJsonValue obj);
 };
 
-}
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

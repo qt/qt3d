@@ -116,7 +116,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
-    static_cast<QMaterial *>(q_ptr)->setEffect(m_normalDiffuseEffect);
+    q_func()->setEffect(m_normalDiffuseEffect);
 }
 
 

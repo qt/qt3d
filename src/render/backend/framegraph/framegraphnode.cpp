@@ -149,15 +149,15 @@ QBackendNode *FrameGraphComponentFunctor::create(QNode *frontend, const QBackend
     return Q_NULLPTR;
 }
 
-QBackendNode *FrameGraphComponentFunctor::get(QNode *frontend) const
+QBackendNode *FrameGraphComponentFunctor::get(const QNodeId &id) const
 {
-    Q_UNUSED(frontend);
+    Q_UNUSED(id);
     return Q_NULLPTR;
 }
 
-void FrameGraphComponentFunctor::destroy(QNode *frontend) const
+void FrameGraphComponentFunctor::destroy(const QNodeId &id) const
 {
-    Q_UNUSED(frontend);
+    Q_UNUSED(id);
 }
 
 } // namespace Render

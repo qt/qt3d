@@ -36,7 +36,7 @@
 
 /*!
     \module Qt3DCore
-    \title Qt3D Core
+    \title Qt3D Core C++ Classes
     \brief The Qt3D Core module contains functionality to support near-realtime simulation systems.
 
     \ingroup modules

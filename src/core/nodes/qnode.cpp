@@ -70,7 +70,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
 void QNodePrivate::addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode == q_ptr)
+    if (childNode == q_func())
         return ;
 
     // Set the scene
@@ -82,9 +82,8 @@ void QNodePrivate::addChild(QNode *childNode)
 
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QNode);
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, q));
-        e->setPropertyName(QByteArrayLiteral("node"));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, QSceneChange::Node, m_id));
+        e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         QNode *parentClone = QNode::clone(q_func());
         QNode *childClone = Q_NULLPTR;
@@ -104,14 +103,13 @@ void QNodePrivate::addChild(QNode *childNode)
 void QNodePrivate::removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode->parent() != q_ptr)
+    if (childNode->parent() != q_func())
         qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
     // Notify only if child isn't a clone
     if (m_changeArbiter != Q_NULLPTR) {
-        Q_Q(QNode);
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, q));
-        e->setPropertyName(QByteArrayLiteral("node"));
+        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
+        e->setPropertyName("node");
         // We need to clone the parent of the childNode we send
         //        QNode *parentClone = QNode::clone(childNode->parentNode());
         //        QNode *childClone = Q_NULLPTR;
@@ -140,7 +138,7 @@ void QNodePrivate::removeChild(QNode *childNode)
 
 void QNodePrivate::removeAllChildren()
 {
-    Q_FOREACH (QObject *child, q_ptr->children()) {
+    Q_FOREACH (QObject *child, q_func()->children()) {
         QNode *childNode = qobject_cast<QNode *>(child);
         if (childNode != Q_NULLPTR)
             removeChild(childNode);
@@ -229,8 +227,7 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     if (m_blockNotifications)
         return;
 
-    Q_Q(QNode);
-    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, q));
+    QScenePropertyChangePtr e(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
     e->setPropertyName(name);
     e->setValue(value);
     notifyObservers(e);
@@ -270,7 +267,7 @@ void QNodePrivate::insertTree(QNode *treeRoot, int depth)
     }
 
     if (depth == 0)
-        treeRoot->setParent(q_ptr);
+        treeRoot->setParent(q_func());
 }
 
 QNodePrivate *QNodePrivate::get(QNode *q)

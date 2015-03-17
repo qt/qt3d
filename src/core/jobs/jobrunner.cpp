@@ -66,7 +66,6 @@ void JobRunner::run()
 
     while (!m_abort.load()) {
         if (const QSharedPointer<TaskInterface> task = m_pooler->nextTask()) {
-            m_pooler->startRunning();
             task->run(task, this);
             m_pooler->stopRunning();
         } else {

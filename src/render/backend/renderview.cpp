@@ -95,9 +95,6 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     return false;
 }
 
-const QString blockArray = QStringLiteral("[%1]");
-const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
-
 } // anonymouse namespace
 
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
@@ -348,6 +345,12 @@ void RenderView::sort()
     }
 }
 
+void RenderView::setRenderer(Renderer *renderer)
+{
+    m_renderer = renderer;
+    m_data->m_uniformBlockBuilder.shaderDataManager = m_renderer->shaderDataManager();
+}
+
 // Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(RenderEntity *node)
 {
@@ -425,70 +428,6 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     }
 }
 
-// Builds a QHash<QString, QString> -> QmlPropertyName / ActiveUniformName
-void RenderView::buildActiveUniformNameValueMap(const QHash<QString, ShaderUniform> &uniforms,
-                                                const QString &blockName,
-                                                const QString &qmlPropertyName,
-                                                const QVariant &value,
-                                                bool updatedPropertiesOnly)
-{
-    // In the end, values are either scalar or a scalar array
-    // Composed elements (structs, structs array) are simplified into simple scalars
-    if (value.userType() == QMetaType::QVariantList) { // Array
-        QVariantList list = value.value<QVariantList>();
-        if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
-            for (int i = 0; i < list.size(); ++i) {
-                if (list.at(i).userType() == qNodeIdTypeId) {
-                    RenderShaderData *subShaderData = m_renderer->shaderDataManager()->lookupResource(list.at(i).value<QNodeId>());
-                    if (subShaderData)
-                        buildActiveUniformNameValueMapStructHelper(uniforms,
-                                                                   subShaderData,
-                                                                   blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i),
-                                                                   QStringLiteral(""),
-                                                                   updatedPropertiesOnly);
-                }
-            }
-        } else { // Array of scalar/vec  qmlPropertyName[0]
-            QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
-            if (uniforms.contains(varName))
-                m_activeUniformNamesToValue.insert(varName, value);
-        }
-    } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
-        RenderShaderData *rSubShaderData = m_renderer->shaderDataManager()->lookupResource(value.value<QNodeId>());
-        if (rSubShaderData)
-            buildActiveUniformNameValueMapStructHelper(uniforms,
-                                                       rSubShaderData,
-                                                       blockName,
-                                                       qmlPropertyName,
-                                                       updatedPropertiesOnly);
-    } else { // Scalar / Vec
-        QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
-        if (uniforms.contains(varName))
-            m_activeUniformNamesToValue.insert(varName, value);
-    }
-}
-
-void RenderView::buildActiveUniformNameValueMapStructHelper(const QHash<QString, ShaderUniform> &uniforms,
-                                                            RenderShaderData *rShaderData,
-                                                            const QString &blockName,
-                                                            const QString &qmlPropertyName,
-                                                            bool updatedPropertiesOnly)
-{
-    const QHash<QString, QVariant> &properties = updatedPropertiesOnly ? rShaderData->updatedProperties() : rShaderData->properties();
-    QHash<QString, QVariant>::const_iterator it = properties.begin();
-    const QHash<QString, QVariant>::const_iterator end = properties.end();
-
-    while (it != end) {
-        QString prefix = qmlPropertyName.isEmpty() ? QStringLiteral("") : QStringLiteral(".");
-        buildActiveUniformNameValueMap(uniforms,
-                                       blockName + prefix + qmlPropertyName,
-                                       it.key(),
-                                       it.value(),
-                                       updatedPropertiesOnly);
-        ++it;
-    }
-}
-
 void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
     RenderShaderData *shaderData = Q_NULLPTR;
@@ -521,21 +460,17 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
         // for all the updated properties (all the properties if the UBO was just created)
         if (shaderData->needsUpdate(*m_data->m_viewMatrix) || uboNeedsUpdate) {
             // Clear previous values remaining in the hash
-            m_activeUniformNamesToValue.clear();
+            m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
+            // Update only update properties if uboNeedsUpdate is true, otherwise update the whole block
+            m_data->m_uniformBlockBuilder.updatedPropertiesOnly = uboNeedsUpdate;
             // Retrieve names and description of each active uniforms in the uniform block
-            const QHash<QString, ShaderUniform> &activeProperties = shader->activeUniformsForBlock(block.m_index);
-
-            // We want a copy here in case another RenderViewJobs modifies the updatedProperties of the RenderShaderData
-            const QHash<QString, QVariant> properties = uboNeedsUpdate ? shaderData->properties() : shaderData->updatedProperties();
-            QHash<QString, QVariant>::const_iterator it = properties.begin();
-            const QHash<QString, QVariant>::const_iterator end = properties.end();
-
-            for (; it != end; ++it)
-                buildActiveUniformNameValueMap(activeProperties, block.m_name, it.key(), it.value(), !uboNeedsUpdate);
-
+            m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForBlock(block.m_index);
+            // Builds the name-value map for the block
+            m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, block.m_name);
             if (!uboNeedsUpdate)
                 shaderData->addToClearUpdateList();
-            uniformBlockUBO.m_updatedProperties = m_activeUniformNamesToValue;
+            // copy the name-value map into the BlockToUBO
+            uniformBlockUBO.m_updatedProperties = m_data->m_uniformBlockBuilder.activeUniformNamesToValue;
             uboNeedsUpdate = true;
         }
 
@@ -546,22 +481,19 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
 
 void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, RenderShader *shader, RenderShaderData *shaderData, const QString &structName)
 {
-    m_activeUniformNamesToValue.clear();
+    m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
     // updates transformed properties;
     shaderData->needsUpdate(*m_data->m_viewMatrix);
+    // Force to update the whole block
+    m_data->m_uniformBlockBuilder.updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
-    const QHash<QString, ShaderUniform> &activeUniformsInDefaultBlock = shader->activeUniformsForBlock(-1);
-
-    const QHash<QString, QVariant> &properties = shaderData->properties();
-    QHash<QString, QVariant>::const_iterator pIt = properties.begin();
-    const QHash<QString, QVariant>::const_iterator pEnd = properties.end();
-
-    for (; pIt != pEnd; ++pIt)
-        buildActiveUniformNameValueMap(activeUniformsInDefaultBlock, structName, pIt.key(), pIt.value(), false);
-
-    QHash<QString, QVariant>::const_iterator activeValuesIt = m_activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_activeUniformNamesToValue.end();
+    m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForBlock(-1);
+    // Build name-value map for the block
+    m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
+    // Set uniform values for each entrie of the block name-value map
+    QHash<QString, QVariant>::const_iterator activeValuesIt = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.begin();
+    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.end();
 
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());
@@ -684,8 +616,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                         if (uniformNames.contains(it->name)) { // Parameter is a regular uniform
                             setUniformValue(command->m_uniforms, it->name, it->value);
                             it = parameters.erase(it);
-                        } else if (int idx = uniformBlockNames.indexOf(it->name) != -1) { // Parameter is a uniform block
-                            setUniformBlockValue(command->m_uniforms, shader, shader->uniformBlocks().at(idx), it->value);
+                        } else if (uniformBlockNames.indexOf(it->name) != -1) { // Parameter is a uniform block
+                            const ShaderUniformBlock &block = shader->uniformBlock(it->name);
+                            setUniformBlockValue(command->m_uniforms, shader, block, it->value);
                             it = parameters.erase(it);
                         } else {
                             const QVariant &v = it->value;

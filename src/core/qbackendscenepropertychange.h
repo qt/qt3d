@@ -50,7 +50,7 @@ class QBackendNode;
 class QT3DCORESHARED_EXPORT QBackendScenePropertyChange : public QScenePropertyChange
 {
 public:
-    QBackendScenePropertyChange(ChangeFlag type, QBackendNode *subject,
+    QBackendScenePropertyChange(ChangeFlag type, const QNodeId &subjectId,
                                 Priority priority = Standard);
     virtual ~QBackendScenePropertyChange();
 
@@ -60,8 +60,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QBackendScenePropertyChange)
     QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd);
-    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type,
-                                QBackendNode *subject, Priority priority = Standard);
+    QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, const QNodeId &subjectId, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangePtr;
