@@ -203,6 +203,10 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
             return;
     } else {
         renderTargetSize = m_surface->size();
+        if (m_surface->surfaceClass() == QSurface::Window) {
+            int dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
+            renderTargetSize *= dpr;
+        }
     }
 
     // Qt3D 0------------------> 1  OpenGL  1^
