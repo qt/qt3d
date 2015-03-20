@@ -209,8 +209,16 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
         registerNotifiedProperties();
 }
 
-void QNode::sceneChangeEvent(const QSceneChangePtr &)
+/*!
+    Called when one or more backend aspects sends a notification \a change to the
+    current Qt3D::QNode instance.
+
+    \note This method should be reimplemented in your subclasses to properly
+    handle the \a change.
+*/
+void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 {
+    Q_UNUSED(change);
     qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
 }
 
@@ -287,6 +295,35 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
     p->deleteLater();
 }
 
+
+/*!
+    \class Qt3D::QNode
+    \inherits QObject
+
+    \inmodule Qt3DCore
+    \since 5.5
+
+    \brief Qt3D::QNode is the base class of all Qt3D node classes used to build a
+    Qt3D scene.
+
+    The owernship of Qt3D::QNode is determined by the QObject parent/child
+    relationship between nodes. By itself a Qt3D::QNode has no visual appearance
+    and no particular meaning, it is there as a way of building a node based tree
+    structure.
+
+    Each Qt3D::QNode instance has a unique id that allows it to be recognizable
+    from other instances.
+
+    When properties are defined on a Qt3D::QNode subclass, their NOTIFY signal
+    will automatically generate notifications that the Qt3D backend aspects will
+    receive.
+
+    \sa Qt3D::QEntity, Qt3D::QComponent
+*/
+
+/*!
+     Creates a new Qt3D::QNode instance with parent \a parent.
+*/
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate(this), parent)
 {
@@ -301,6 +338,13 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 {
 }
 
+/*!
+    Copies all the attributes from \a ref to the current Qt3D::QNode instance.
+
+    \note When subclassing Qt3D::QNode you should reimplement this method and
+    always call the copy method on the base class. This will ensure that when cloned,
+    the Qt3D::QNode is properly initialized.
+*/
 void QNode::copy(const QNode *ref)
 {
     if (ref)
@@ -311,12 +355,18 @@ QNode::~QNode()
 {
 }
 
+/*!
+    Returns the id that uniquely identifies the Qt3D::QNode instance.
+*/
 const QNodeId QNode::id() const
 {
     Q_D(const QNode);
     return d->m_id;
 }
 
+/*!
+    Returns the immediate Qt3D::QNode parent, null if the node has no parent.
+*/
 QNode *QNode::parentNode() const
 {
     return qobject_cast<QNode*>(parent());
@@ -324,7 +374,6 @@ QNode *QNode::parentNode() const
 
 /*!
     Returns \c true if aspect notifications are blocked; otherwise returns \c false.
-
     Notifications are not blocked by default.
 
     \sa blockNotifications()
@@ -354,6 +403,11 @@ bool QNode::blockNotifications(bool block)
     return previous;
 }
 
+/*!
+    Returns a clone of \a node. All the children of \a node are cloned as well.
+
+    \note This is the only way to create two nodes with the same id.
+*/
 QNode *QNode::clone(QNode *node)
 {
     static int clearLock = 0;
@@ -414,6 +468,9 @@ bool QNode::event(QEvent *e)
     return QObject::event(e);
 }
 
+/*!
+    Returns a pointer to the Qt3D::QNode instance's scene.
+*/
 QSceneInterface *QNode::scene() const
 {
     Q_D(const QNode);
