@@ -85,10 +85,30 @@ void QComponentPrivate::removeEntity(QEntity *entity)
 }
 
 /*!
+    \class Qt3D::QComponent
+    \inmodule Qt3DCore
+    \inherits Qt3D::QNode
+    \since 5.5
+
+    \brief The base class of scene nodes that can be aggregated by Qt3D::QEntity
+    instances as a component.
+
+    A Qt3D::QComponent provides a vertical slice of behavior that can be assigned to and
+    sometimes shared across Qt3D::QEntity instances.
+
+    Qt3D::QComponent subclasses are often aggregated in groups that impart useful
+    behavior to the aggregating entity. For example, to have an Entity that gets
+    drawn by the Qt3D renderer aspect, an entity would most likely aggregate
+    Qt3D::QTransform, Qt3D::QMesh, and Qt3D::QMaterial components.
+
+    \sa Qt3D::QEntity
+*/
+
+/*!
     Constructs a new QComponent instance with \a parent as the parent.
     \note a QComponent should never be instanced directly,
     instance one of the subclasses instead.
- */
+*/
 QComponent::QComponent(QNode *parent)
     : QNode(*new QComponentPrivate(this), parent)
 {
@@ -105,7 +125,7 @@ QComponent::~QComponent()
 
 /*!
     \return whether the QComponent is shareable across entities or not.
- */
+*/
 bool QComponent::shareable() const
 {
     Q_D(const QComponent);
@@ -114,7 +134,7 @@ bool QComponent::shareable() const
 
 /*!
     \returns whether the QComponent is enabled or not.
- */
+*/
 bool QComponent::isEnabled() const
 {
     Q_D(const QComponent);
@@ -128,7 +148,7 @@ bool QComponent::isEnabled() const
     \note the interpretation of what enabled means is aspect-dependent. Even if
     enabled is set to false, some aspects may still consider the component in
     some manner. This is documented on a class by class basis.
- */
+*/
 void QComponent::setEnabled(bool enabled)
 {
     Q_D(QComponent);
@@ -140,7 +160,7 @@ void QComponent::setEnabled(bool enabled)
 
 /*!
     The QComponent can be shared across several entities if \a shareable is true.
- */
+*/
 void QComponent::setShareable(bool shareable)
 {
     Q_D(QComponent);
@@ -159,8 +179,8 @@ void QComponent::copy(const QNode *ref)
 }
 
 /*!
- * \return a QVector containing all the entities that reference this component.
- */
+    \return a QVector containing all the entities that reference this component.
+*/
 QVector<QEntity *> QComponent::entities() const
 {
     Q_D(const QComponent);
