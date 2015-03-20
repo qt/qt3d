@@ -55,11 +55,34 @@ namespace Qt3D {
     \class Qt3D::QEntityPrivate
     \internal
 */
+
 QEntityPrivate::QEntityPrivate(QEntity *qq)
     : QNodePrivate(qq)
     , m_enabled(true)
 {}
 
+/*!
+    \class Qt3D::QEntity
+    \inmodule Qt3DCore
+    \inherits Qt3D::QNode
+    \since 5.5
+
+    \brief Qt3D::QEntity is a Qt3D::QNode subclass that can aggregate several
+    Qt3D::QComponent instances that will specify its behavior.
+
+    By itself a Qt3D::QEntity is an empty shell. The behavior of a Qt3D::QEntity
+    object is defined by the Qt3D::QComponent objects it references. Each Qt3D
+    backend aspect will be able to interpret and process an Entity by
+    recognizing which components it is made up of. One aspect may decide to only
+    process entities composed of a single Qt3D::QTransform component whilst
+    another may focus on Qt3D::QMouseInput.
+
+    \sa Qt3D::QComponent, Qt3D::QTransform
+/
+
+/*!
+    Constructs a new Qt3D::QEntity instance with \a parent as parent.
+*/
 QEntity::QEntity(QNode *parent)
     : QNode(*new QEntityPrivate(this), parent)
 {
@@ -81,6 +104,10 @@ QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
 {
 }
 
+/*!
+    Copies all the properties and components of the Qt3D::QEntity \a ref to the
+    current instance.
+*/
 void QEntity::copy(const QNode *ref)
 {
     QNode::copy(ref);
@@ -94,12 +121,21 @@ void QEntity::copy(const QNode *ref)
     }
 }
 
+/*!
+    Returns the list of Qt3D::QComponent instances the entity is referencing.
+*/
 QList<QComponent *> QEntity::components() const
 {
     Q_D(const QEntity);
     return d->m_components;
 }
 
+/*!
+    Adds a new reference to the component \a comp.
+
+    \note If the Qt3D::QComponent has no parent, the Qt3D::QEntity will set
+    itself as its parent thereby taking ownership of the component.
+*/
 void QEntity::addComponent(QComponent *comp)
 {
     Q_D(QEntity);
@@ -130,6 +166,9 @@ void QEntity::addComponent(QComponent *comp)
     static_cast<QComponentPrivate *>(QComponentPrivate::get(comp))->addEntity(this);
 }
 
+/*!
+    Removes the reference to \a comp.
+*/
 void QEntity::removeComponent(QComponent *comp)
 {
     Q_CHECK_PTR(comp);
@@ -154,6 +193,9 @@ void QEntity::removeComponent(QComponent *comp)
     d->m_components.removeOne(comp);
 }
 
+/*!
+    Remove all references to the components.
+*/
 void QEntity::removeAllComponents()
 {
     Q_D(const QEntity);
@@ -161,6 +203,12 @@ void QEntity::removeAllComponents()
         removeComponent(comp);
 }
 
+/*!
+    Returns the parent Qt3D::QEntity instance of this entity. If the
+    immediate parent isn't a Qt3D::QEntity, this function traverses up the
+    scene hierarchy until a parent Qt3D::QEntity is found. If no
+    Qt3D::QEntity parent can be found, returns null.
+*/
 QEntity *QEntity::parentEntity() const
 {
     QNode *parentNode = QNode::parentNode();
