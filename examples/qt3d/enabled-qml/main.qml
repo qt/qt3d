@@ -127,49 +127,50 @@ Entity {
 
             Translate {
                 id: translate
-
-                QQ2.SequentialAnimation {
-                    running: true
-                    loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dx"
-                        from: 0; to: 5;
-                        duration: 550
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dy"
-                        from: 0; to: 5;
-                        duration: 650
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dz"
-                        from: 0; to: 5;
-                        duration: 350
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dx"
-                        from: 5; to: 0;
-                        duration: 550
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dy"
-                        from: 5; to: 0;
-                        duration: 350
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                    QQ2.NumberAnimation {
-                        target: translate; property: "dz"
-                        from: 5; to: 0;
-                        duration: 650
-                        easing.type: QQ2.Easing.InOutQuad
-                    }
-                }
             }
         }
+
+        QQ2.SequentialAnimation {
+            running: true
+            loops: QQ2.Animation.Infinite
+            QQ2.NumberAnimation {
+                target: translate; property: "dx"
+                from: 0; to: 5;
+                duration: 550
+                easing.type: QQ2.Easing.InOutQuad
+            }
+            QQ2.NumberAnimation {
+                target: translate; property: "dy"
+                from: 0; to: 5;
+                duration: 650
+                easing.type: QQ2.Easing.InOutQuad
+            }
+            QQ2.NumberAnimation {
+                target: translate; property: "dz"
+                from: 0; to: 5;
+                duration: 350
+                easing.type: QQ2.Easing.InOutQuad
+            }
+            QQ2.NumberAnimation {
+                target: translate; property: "dx"
+                from: 5; to: 0;
+                duration: 550
+                easing.type: QQ2.Easing.InOutQuad
+            }
+            QQ2.NumberAnimation {
+                target: translate; property: "dy"
+                from: 5; to: 0;
+                duration: 350
+                easing.type: QQ2.Easing.InOutQuad
+            }
+            QQ2.NumberAnimation {
+                target: translate; property: "dz"
+                from: 5; to: 0;
+                duration: 650
+                easing.type: QQ2.Easing.InOutQuad
+            }
+        }
+
         components: [sphereMesh, material, layer, transform]
     }
 
