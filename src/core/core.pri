@@ -40,7 +40,6 @@ HEADERS += \
     $$PWD/qlockableobserverinterface_p.h \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qbackendnodefactory.h \
-    $$PWD/qray3d.h \
     $$PWD/qt3dcore_global_p.h
 
 SOURCES += \
@@ -58,5 +57,4 @@ SOURCES += \
     $$PWD/qpostman.cpp \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
-    $$PWD/qbackendnodefactory.cpp \
-    $$PWD/qray3d.cpp
+    $$PWD/qbackendnodefactory.cpp
