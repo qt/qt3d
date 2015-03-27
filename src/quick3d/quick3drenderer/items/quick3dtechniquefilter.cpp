@@ -52,10 +52,19 @@ Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
 QQmlListProperty<Qt3D::QAnnotation> Quick3DTechniqueFilter::requireList()
 {
     return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                       &Quick3DTechniqueFilter::appendRequire,
-                                       &Quick3DTechniqueFilter::requiresCount,
-                                       &Quick3DTechniqueFilter::requireAt,
-                                       &Quick3DTechniqueFilter::clearRequires);
+                                               &Quick3DTechniqueFilter::appendRequire,
+                                               &Quick3DTechniqueFilter::requiresCount,
+                                               &Quick3DTechniqueFilter::requireAt,
+                                               &Quick3DTechniqueFilter::clearRequires);
+}
+
+QQmlListProperty<QParameter> Quick3DTechniqueFilter::parameterList()
+{
+    return QQmlListProperty<Qt3D::QParameter>(this, 0,
+                                             &Quick3DTechniqueFilter::appendParameter,
+                                             &Quick3DTechniqueFilter::parametersCount,
+                                             &Quick3DTechniqueFilter::parameterAt,
+                                             &Quick3DTechniqueFilter::clearParameterList);
 }
 
 void Quick3DTechniqueFilter::appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion)
@@ -90,6 +99,31 @@ void Quick3DTechniqueFilter::clearRequires(QQmlListProperty<QAnnotation> *list)
         Q_FOREACH (QAnnotation *criterion, filter->parentTechniqueFilter()->criteria())
             filter->parentTechniqueFilter()->removeRequirement(criterion);
     }
+}
+
+void Quick3DTechniqueFilter::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
+{
+    Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
+    techniqueFilter->parentTechniqueFilter()->addParameter(param);
+}
+
+QParameter *Quick3DTechniqueFilter::parameterAt(QQmlListProperty<QParameter> *list, int index)
+{
+    Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
+    return techniqueFilter->parentTechniqueFilter()->parameters().at(index);
+}
+
+int Quick3DTechniqueFilter::parametersCount(QQmlListProperty<QParameter> *list)
+{
+    Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
+    return techniqueFilter->parentTechniqueFilter()->parameters().count();
+}
+
+void Quick3DTechniqueFilter::clearParameterList(QQmlListProperty<QParameter> *list)
+{
+    Quick3DTechniqueFilter *techniqueFilter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
+    Q_FOREACH (QParameter *p, techniqueFilter->parentTechniqueFilter()->parameters())
+        techniqueFilter->parentTechniqueFilter()->removeParameter(p);
 }
 
 } // Quick

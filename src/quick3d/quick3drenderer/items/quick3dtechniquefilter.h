@@ -55,10 +55,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
+
     QQmlListProperty<Qt3D::QAnnotation> requireList();
+    QQmlListProperty<Qt3D::QParameter> parameterList();
 
     inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::QTechniqueFilter*>(parent()); }
 
@@ -68,6 +71,10 @@ private:
     static int requiresCount(QQmlListProperty<QAnnotation> *list);
     static void clearRequires(QQmlListProperty<QAnnotation> *list);
 
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // Quick
