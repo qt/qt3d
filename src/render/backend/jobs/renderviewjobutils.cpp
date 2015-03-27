@@ -303,7 +303,7 @@ ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QStri
     return it;
 }
 
-static void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
+void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                 const QList<QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
@@ -330,22 +330,9 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
     //
     // That way a user can override defaults in Effect's and Techniques on a
     // object manner and a Technique can override global defaults from the Effect.
-    if (material)
-        addParametersForIds(infoList, manager, material->parameters());
-
-    if (technique)
-        addParametersForIds(infoList, manager, technique->parameters());
-
-    if (effect)
-        addParametersForIds(infoList, manager, effect->parameters());
-}
-
-void parametersFromRenderPass(ParameterInfoList *infoList,
-                              ParameterManager *manager,
-                              RenderRenderPass *pass)
-{
-    if (pass)
-        addParametersForIds(infoList, manager, pass->parameters());
+    parametersFromParametersProvider(infoList, manager, material);
+    parametersFromParametersProvider(infoList, manager, technique);
+    parametersFromParametersProvider(infoList, manager, effect);
 }
 
 RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states, QFrameAllocator *allocator)

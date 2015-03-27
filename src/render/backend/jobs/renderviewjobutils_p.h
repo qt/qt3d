@@ -38,7 +38,7 @@
 #define QT3D_RENDERVIEWJOBUTILS_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
+#include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
 
@@ -104,6 +104,18 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
 Q_AUTOTEST_EXPORT void parametersFromRenderPass(ParameterInfoList *infoList,
                                                 ParameterManager *manager,
                                                 RenderRenderPass *pass);
+
+Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
+                                           const QList<QNodeId> &parameterIds);
+
+template<class T>
+void parametersFromParametersProvider(ParameterInfoList *infoList,
+                                      ParameterManager *manager,
+                                      T *pass)
+{
+    if (pass)
+        addParametersForIds(infoList, manager, pass->parameters());
+}
 
 Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
                                                             const QString &name);

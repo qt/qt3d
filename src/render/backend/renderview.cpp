@@ -376,6 +376,24 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
+                ParameterInfoList parameters;
+                // Order set:
+                // 1 Pass Filter
+                // 2 Technique Filter
+                // 3 Material
+                // 4 Effect
+                // 5 Technique
+                // 6 RenderPass
+
+                // Add Parameters define in techniqueFilter and passFilter
+                // passFilter have priority over techniqueFilter
+                if (m_data->m_passFilter)
+                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                                                     m_data->m_passFilter);
+                if (m_data->m_techniqueFilter)
+                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                                                     m_data->m_techniqueFilter);
+
                 RenderRenderPassList passes;
                 if (technique) {
                     passes = findRenderPassesForTechnique(m_renderer, this, technique);
@@ -386,8 +404,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
                 }
 
-                // Get the parameters for our selected rendering setup
-                ParameterInfoList parameters;
+                // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
                 parametersFromMaterialEffectTechnique(&parameters, m_renderer->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
@@ -395,7 +412,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
                     // Add the RenderRenderPass Parameters
                     ParameterInfoList globalParameter = parameters;
-                    parametersFromRenderPass(&globalParameter, m_renderer->parameterManager(), pass);
+                    parametersFromParametersProvider(&globalParameter, m_renderer->parameterManager(), pass);
 
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
