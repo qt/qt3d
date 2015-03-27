@@ -38,6 +38,7 @@
 #include "qannotation.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,9 +54,12 @@ void RenderPassFilter::updateFromPeer(QNode *peer)
 {
     QRenderPassFilter *filter = static_cast<QRenderPassFilter *>(peer);
     m_filters.clear();
+    m_parameterPack.clear();
     setEnabled(filter->isEnabled());
     Q_FOREACH (QAnnotation *criterion, filter->includes())
         appendFilter(criterion);
+    Q_FOREACH (QParameter *p, filter->parameters())
+        m_parameterPack.appendParameter(p->id());
 }
 
 QList<QNodeId> RenderPassFilter::filters() const
@@ -74,6 +78,11 @@ void RenderPassFilter::removeFilter(const QNodeId &criterionId)
     m_filters.removeOne(criterionId);
 }
 
+QList<QNodeId> RenderPassFilter::parameters() const
+{
+    return m_parameterPack.parameters();
+}
+
 void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -88,11 +97,15 @@ void RenderPassFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("include"))
             appendFilter(propertyChange->value().value<QAnnotation *>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
     }
         break;
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("include"))
             removeFilter(propertyChange->value().value<QNodeId>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
     }
         break;
     default:
