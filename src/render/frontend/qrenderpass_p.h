@@ -71,6 +71,7 @@ public:
     QList<QAnnotation *> m_annotationList;
     QList<QParameterMapping *> m_bindings;
     QList<QRenderState *> m_renderStates;
+    QList<QParameter *> m_parameters;
     QShaderProgram *m_shader;
 };
 

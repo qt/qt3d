@@ -40,6 +40,7 @@
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/renderparametermapping_p.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -74,6 +75,7 @@ public:
     QList<RenderParameterMapping> bindings() const;
     QList<QNodeId> annotations() const;
     QList<RenderState *> renderStates() const;
+    QList<QNodeId> parameters() const;
 
 private:
     void appendAnnotation(const QNodeId &criterionId);
@@ -89,6 +91,7 @@ private:
     QHash<QNodeId, RenderParameterMapping> m_bindings;
     QHash<QNodeId, RenderState *> m_renderStates;
     QList<QNodeId> m_annotationList;
+    ParameterPack m_parameterPack;
 };
 
 } // Render

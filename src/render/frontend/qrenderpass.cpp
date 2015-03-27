@@ -250,6 +250,48 @@ QList<QRenderState *> QRenderPass::renderStates() const
     return d->m_renderStates;
 }
 
+void QRenderPass::addParameter(QParameter *parameter)
+{
+    Q_D(QRenderPass);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, the child parameters get destroyed as well
+        if (!parameter->parent())
+            parameter->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            change->setPropertyName("parameter");
+            change->setValue(QVariant::fromValue(parameter->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QRenderPass::removeParameter(QParameter *parameter)
+{
+    Q_D(QRenderPass);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        change->setPropertyName("parameter");
+        change->setValue(QVariant::fromValue(parameter->id()));
+        d->notifyObservers(change);
+    }
+    d->m_parameters.removeOne(parameter);
+}
+
+
+QList<QParameter *> QRenderPass::parameters() const
+{
+    Q_D(const QRenderPass);
+    return d->m_parameters;
+}
+
 } // namespace Qt3D
 
 QT_END_NAMESPACE

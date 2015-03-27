@@ -43,6 +43,7 @@
 #include <Qt3DRenderer/QParameterMapping>
 #include <Qt3DRenderer/QRenderPass>
 #include <Qt3DRenderer/QShaderProgram>
+#include <Qt3DRenderer/QParameter>
 
 #include <Qt3DRenderer/QAlphaCoverage>
 #include <Qt3DRenderer/QAlphaTest>
@@ -83,6 +84,7 @@ private slots:
         QVERIFY(backend.annotations().isEmpty());
         QVERIFY(backend.bindings().isEmpty());
         QVERIFY(backend.renderStates().isEmpty());
+        QVERIFY(backend.parameters().isEmpty());
     }
 
     void shouldHavePropertiesMirroringItsPeer_data()
@@ -178,6 +180,8 @@ private slots:
 
         frontend.addBinding(new QParameterMapping(&frontend));
 
+        frontend.addParameter(new QParameter(&frontend));
+
         QFETCH(QRenderState*, frontendState);
         frontendState->setParent(&frontend);
         frontend.addRenderState(frontendState);
@@ -200,6 +204,9 @@ private slots:
         QCOMPARE(backend.bindings().first().bindingType(), frontend.bindings().first()->bindingType());
         QCOMPARE(backend.bindings().first().parameterName(), frontend.bindings().first()->parameterName());
         QCOMPARE(backend.bindings().first().shaderVariableName(), frontend.bindings().first()->shaderVariableName());
+
+        QCOMPARE(backend.parameters().size(), 1);
+        QCOMPARE(backend.parameters().first(), frontend.parameters().first()->id());
 
         QCOMPARE(backend.renderStates().size(), 1);
         QCOMPARE(backend.renderStates().first(), backendState);
@@ -286,6 +293,33 @@ private slots:
 
         // THEN
         QVERIFY(backend.bindings().isEmpty());
+    }
+
+    void shouldHandleParametersPropertyChangeEvents()
+    {
+        // GIVEN
+        QScopedPointer<QParameter> parameter(new QParameter);
+
+        RenderRenderPass backend;
+
+        // WHEN
+        QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
+        addChange->setValue(QVariant::fromValue(parameter->id()));
+        addChange->setPropertyName("parameter");
+        backend.sceneChangeEvent(addChange);
+
+        // THEN
+        QCOMPARE(backend.parameters().size(), 1);
+        QCOMPARE(backend.parameters().first(), parameter->id());
+
+        // WHEN
+        QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
+        removeChange->setValue(QVariant::fromValue(parameter->id()));
+        removeChange->setPropertyName("parameter");
+        backend.sceneChangeEvent(removeChange);
+
+        // THEN
+        QVERIFY(backend.parameters().isEmpty());
     }
 
     void shouldHandlePropertyChangeEvents_data()

@@ -86,6 +86,10 @@ public:
     void removeRenderState(QRenderState *state);
     QList<QRenderState *> renderStates() const;
 
+    void addParameter(QParameter *p);
+    void removeParameter(QParameter *p);
+    QList<QParameter *> parameters() const;
+
 Q_SIGNALS:
     void shaderProgramChanged();
 

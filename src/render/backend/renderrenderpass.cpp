@@ -40,6 +40,7 @@
 #include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qrenderpass.h>
+#include <Qt3DRenderer/qparameter.h>
 
 // TODO: Rename this include to something more descriptive
 #include <Qt3DRenderer/private/blendstate_p.h>
@@ -71,6 +72,8 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
 {
     QRenderPass *pass = static_cast<QRenderPass *>(peer);
 
+    m_parameterPack.clear();
+
     if (pass->shaderProgram() != Q_NULLPTR)
         m_shaderUuid = pass->shaderProgram()->id();
     // The RenderPass clones frontend bindings in case the frontend ever removes them
@@ -81,6 +84,8 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
         appendAnnotation(c->id());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
         appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+    Q_FOREACH (QParameter *p, pass->parameters())
+        m_parameterPack.appendParameter(p->id());
 }
 
 void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
@@ -91,17 +96,16 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
             appendAnnotation(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().value<QNodeId>();
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             appendBinding(RenderParameterMapping(propertyChange->value().value<QParameterMapping *>()));
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
             QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
             appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -109,15 +113,14 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
             removeAnnotation(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = QNodeId();
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             removeBinding(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             removeRenderState(propertyChange->value().value<QNodeId>());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -145,6 +148,11 @@ QList<QNodeId> RenderRenderPass::annotations() const
 QList<RenderState *> RenderRenderPass::renderStates() const
 {
     return m_renderStates.values();
+}
+
+QList<QNodeId> RenderRenderPass::parameters() const
+{
+    return m_parameterPack.parameters();
 }
 
 void RenderRenderPass::appendAnnotation(const QNodeId &annotationId)
