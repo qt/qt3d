@@ -39,6 +39,7 @@
 #include "qtechniquefilter.h"
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,9 +55,17 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
 {
     QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
     m_filters.clear();
+    m_parameterPack.clear();
     Q_FOREACH (QAnnotation *criterion, filter->criteria())
         appendFilter(criterion);
+    Q_FOREACH (QParameter *p, filter->parameters())
+        m_parameterPack.appendParameter(p->id());
     setEnabled(filter->isEnabled());
+}
+
+QList<QNodeId> TechniqueFilter::parameters() const
+{
+    return m_parameterPack.parameters();
 }
 
 QList<QNodeId> TechniqueFilter::filters() const
@@ -89,11 +98,15 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             appendFilter(propertyChange->value().value<QAnnotation *>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
     }
         break;
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
             removeFilter(propertyChange->value().value<QNodeId>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
     }
         break;
     default:

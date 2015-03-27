@@ -38,6 +38,7 @@
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
 #include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -109,6 +110,47 @@ void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
         d->notifyObservers(propertyChange);
     }
     d->m_requireList.removeOne(criterion);
+}
+
+void QTechniqueFilter::addParameter(QParameter *parameter)
+{
+    Q_D(QTechniqueFilter);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, the child parameters get destroyed as well
+        if (!parameter->parent())
+            parameter->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            change->setPropertyName("parameter");
+            change->setValue(QVariant::fromValue(parameter->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QTechniqueFilter::removeParameter(QParameter *parameter)
+{
+    Q_D(QTechniqueFilter);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        change->setPropertyName("parameter");
+        change->setValue(QVariant::fromValue(parameter->id()));
+        d->notifyObservers(change);
+    }
+    d->m_parameters.removeOne(parameter);
+}
+
+QList<QParameter *> QTechniqueFilter::parameters() const
+{
+    Q_D(const QTechniqueFilter);
+    return d->m_parameters;
 }
 
 } // Qt3D

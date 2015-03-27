@@ -46,6 +46,7 @@ namespace Qt3D {
 
 class QTechniqueFilterPrivate;
 class QAnnotation;
+class QParameter;
 
 class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
@@ -56,6 +57,10 @@ public:
     QList<QAnnotation *> criteria() const;
     void addRequirement(QAnnotation *criterion);
     void removeRequirement(QAnnotation *criterion);
+
+    void addParameter(QParameter *p);
+    void removeParameter(QParameter *p);
+    QList<QParameter *> parameters() const;
 
 protected:
     QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);

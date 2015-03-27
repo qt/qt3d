@@ -38,6 +38,7 @@
 #define QT3D_RENDER_TECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
 
 #include <QList>
 #include <QString>
@@ -62,6 +63,8 @@ public:
     TechniqueFilter();
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
+    QList<QNodeId> parameters() const;
+
     QList<QNodeId> filters() const;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -70,6 +73,7 @@ private:
     void removeFilter(const QNodeId &criterionId);
 
     QList<QNodeId> m_filters;
+    ParameterPack m_parameterPack;
 };
 
 } // Render
