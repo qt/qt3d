@@ -56,12 +56,15 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
     Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> annotations READ annotationList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapping> bindings READ bindingList)
     Q_PROPERTY(QQmlListProperty<Qt3D::QRenderState> renderStates READ renderStateList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::QAnnotation> annotationList();
     QQmlListProperty<Qt3D::QParameterMapping> bindingList();
     QQmlListProperty<Qt3D::QRenderState> renderStateList();
+    QQmlListProperty<Qt3D::QParameter> parameterList();
+
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
@@ -79,6 +82,11 @@ private:
     static QRenderState *renderStateAt(QQmlListProperty<Qt3D::QRenderState> *list, int index);
     static int renderStateCount(QQmlListProperty<Qt3D::QRenderState> *list);
     static void clearRenderStates(QQmlListProperty<Qt3D::QRenderState> *list);
+
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // Quick
