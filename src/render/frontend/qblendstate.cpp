@@ -47,8 +47,8 @@ namespace Qt3D {
 class QBlendStatePrivate : public QRenderStatePrivate
 {
 public:
-    QBlendStatePrivate(QBlendState *qq)
-        : QRenderStatePrivate(qq, QRenderState::BlendState)
+    QBlendStatePrivate(QBlendState *qq, QRenderState::Type type = QRenderState::BlendState)
+        : QRenderStatePrivate(qq, type)
         , m_srcRGB(QBlendState::Zero)
         , m_srcAlpha(QBlendState::Zero)
         , m_dstRGB(QBlendState::Zero)
@@ -77,6 +77,11 @@ void QBlendState::copy(const QNode *ref)
     d_func()->m_srcAlpha = refState->d_func()->m_srcAlpha;
     d_func()->m_dstAlpha = refState->d_func()->m_dstAlpha;
     d_func()->m_dstRGB = refState->d_func()->m_dstRGB;
+}
+
+QBlendState::QBlendState(QRenderState::Type type, QNode *parent)
+    : QRenderState(*new QBlendStatePrivate(this, type), parent)
+{
 }
 
 QBlendState::Blending QBlendState::srcRGB() const
@@ -137,6 +142,11 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
         d->m_dstAlpha = dstAlpha;
         emit dstAlphaChanged();
     }
+}
+
+QBlendStateSeparate::QBlendStateSeparate(QNode *parent)
+    : QBlendState(QRenderState::BlendStateSeparate, parent)
+{
 }
 
 } // Qt3D

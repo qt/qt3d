@@ -52,11 +52,24 @@ class Q_AUTOTEST_EXPORT BlendState : public GenericState2<BlendState, GLenum, GL
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
-    virtual StateMaskSet mask() const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return BlendStateMask; }
 
     static BlendState *getOrCreate(GLenum src, GLenum dst);
 private:
     BlendState(GLenum src, GLenum dst);
+};
+
+class Q_AUTOTEST_EXPORT BlendStateSeparate : public GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>
+{
+public:
+    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return BlendStateMask; }
+
+    static BlendStateSeparate *getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+private:
+    BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
 };
 
 class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendEquation, GLenum>

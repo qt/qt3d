@@ -57,6 +57,7 @@ public:
         AlphaTest,
         BlendEquation,
         BlendState,
+        BlendStateSeparate,
         ColorMask,
         CullFace,
         DepthMask,

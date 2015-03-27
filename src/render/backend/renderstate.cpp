@@ -224,8 +224,11 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
     }
     case QRenderState::BlendState: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
-        // TO DO : Handle Alpha here as weel
         return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB());
+    }
+    case QRenderState::BlendStateSeparate: {
+        QBlendState *blendState = static_cast<QBlendState *>(renderState);
+        return BlendStateSeparate::getOrCreate(blendState->srcRGB(), blendState->dstRGB(), blendState->srcAlpha(), blendState->dstAlpha());
     }
     case QRenderState::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);

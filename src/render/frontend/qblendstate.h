@@ -102,10 +102,18 @@ Q_SIGNALS:
 
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QBlendState(QRenderState::Type type, QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QBlendState)
     QT3D_CLONEABLE(QBlendState)
+};
+
+class QT3DRENDERERSHARED_EXPORT QBlendStateSeparate : public QBlendState
+{
+    Q_OBJECT
+public:
+    explicit QBlendStateSeparate(QNode *parent = 0);
 };
 
 } // Qt3D

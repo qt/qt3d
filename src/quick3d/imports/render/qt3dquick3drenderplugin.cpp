@@ -220,6 +220,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // RenderStates
     qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
     qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
+    qmlRegisterType<Qt3D::QBlendStateSeparate>(uri, 2, 0, "BlendStateSeparate");
     qmlRegisterType<Qt3D::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3D::QAlphaTest>(uri, 2, 0, "AlphaTest");
     qmlRegisterType<Qt3D::QDepthTest>(uri, 2, 0, "DepthTest");
