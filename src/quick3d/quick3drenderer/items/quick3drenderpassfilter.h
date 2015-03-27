@@ -54,10 +54,13 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> includes READ includeList)
+    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
     QQmlListProperty<Qt3D::QAnnotation> includeList();
+    QQmlListProperty<Qt3D::QParameter> parameterList();
 
     inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
 
@@ -66,6 +69,11 @@ private:
     static QAnnotation *includeAt(QQmlListProperty<QAnnotation> *list, int index);
     static int includesCount(QQmlListProperty<QAnnotation> *list);
     static void clearIncludes(QQmlListProperty<QAnnotation> *list);
+
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // Quick
