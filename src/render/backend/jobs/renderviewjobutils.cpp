@@ -340,6 +340,14 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
         addParametersForIds(infoList, manager, effect->parameters());
 }
 
+void parametersFromRenderPass(ParameterInfoList *infoList,
+                              ParameterManager *manager,
+                              RenderRenderPass *pass)
+{
+    if (pass)
+        addParametersForIds(infoList, manager, pass->parameters());
+}
+
 RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states, QFrameAllocator *allocator)
 {
     if (states.isEmpty())

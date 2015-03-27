@@ -80,8 +80,8 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *re
 struct ParameterInfo
 {
     ParameterInfo(const QString &name = QString(), const QVariant &value = QVariant())
-      : name(name)
-      , value(value)
+        : name(name)
+        , value(value)
     {}
 
     QString name;
@@ -101,6 +101,10 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              RenderEffect *effect,
                                                              RenderTechnique *technique);
 
+Q_AUTOTEST_EXPORT void parametersFromRenderPass(ParameterInfoList *infoList,
+                                                ParameterManager *manager,
+                                                RenderRenderPass *pass);
+
 Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
                                                             const QString &name);
 
@@ -114,8 +118,8 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     ~UniformBlockValueBuilder();
 
     void buildActiveUniformNameValueMapHelper(const QString &blockName,
-                                        const QString &qmlPropertyName,
-                                        const QVariant &value);
+                                              const QString &qmlPropertyName,
+                                              const QVariant &value);
     void buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());
