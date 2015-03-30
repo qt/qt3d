@@ -328,13 +328,14 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     }
     m_activeFBO = fboId;
     m_glHelper->bindFrameBufferObject(m_activeFBO);
+    // Set active drawBuffers
+    activateDrawBuffers(attachments);
 }
 
 void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
     // Set FBO attachments
-    int drawBuffers[QRenderAttachment::ColorAttachment15 + 1];
-    int i = 0;
+
     QSize fboSize;
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
         RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
@@ -346,23 +347,41 @@ void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attac
                 else
                     fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.width(), glTex->width()));
                 m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-                if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-                    drawBuffers[i++] = attachment.m_type;
             }
         }
     }
+    m_renderTargetsSize.insert(fboId, fboSize);
+}
+
+void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
+{
+    int activeDrawBuffers[QRenderAttachment::ColorAttachment15 + 1];
+    int i = 0;
+
+    const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers = attachments.drawBuffers();
+
+    // If drawBuffers is empty, use all the attachments as draw buffers
+    if (drawBuffers.isEmpty()) {
+        Q_FOREACH (const Attachment &attachment, attachments.attachments())
+            if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+                activeDrawBuffers[i++] = attachment.m_type;
+    } else {
+        Q_FOREACH (const QRenderAttachment::RenderAttachmentType drawBuffer, drawBuffers)
+            if (drawBuffer <= QRenderAttachment::ColorAttachment15)
+                activeDrawBuffers[i++] = drawBuffer;
+    }
+
     if (m_glHelper->checkFrameBufferComplete()) {
         if (i > 1) {// We need MRT
             if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT)) {
                 // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(i, drawBuffers);
+                m_glHelper->drawBuffers(i, activeDrawBuffers);
             }
             qDebug() << "FBO Complete";
         }
     } else {
         qWarning() << "FBO incomplete";
     }
-    m_renderTargetsSize.insert(fboId, fboSize);
 }
 
 

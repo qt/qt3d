@@ -185,6 +185,7 @@ public:
     int frameIndex() const { return m_frameIndex; }
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
+    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
     const AttachmentPack &attachmentPack() const;
 
     void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }

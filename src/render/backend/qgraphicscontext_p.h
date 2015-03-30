@@ -197,6 +197,7 @@ private:
     void resolveHighestOpenGLFunctions();
 
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
+    void activateDrawBuffers(const AttachmentPack &attachments);
 
     bool m_initialized;
     const unsigned int m_id;
