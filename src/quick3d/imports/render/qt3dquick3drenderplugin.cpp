@@ -103,6 +103,7 @@
 #include <Qt3DQuickRenderer/quick3dshaderdata.h>
 #include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 #include <Qt3DQuickRenderer/quick3dstateset.h>
+#include <Qt3DQuickRenderer/quick3drendertargetselector.h>
 
 static void initResources()
 {
@@ -202,7 +203,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
     qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphNode, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
     qmlRegisterExtendedType<Qt3D::QStateSet, Qt3D::Render::Quick::Quick3DStateSet>(uri, 2, 0, "StateSet");

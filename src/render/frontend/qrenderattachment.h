@@ -132,4 +132,6 @@ private:
 
 QT_END_NAMESPACE
 
+Q_DECLARE_METATYPE(Qt3D::QRenderAttachment::RenderAttachmentType)
+
 #endif // QT3D_QRENDERATTACHMENT_H

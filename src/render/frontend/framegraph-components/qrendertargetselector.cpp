@@ -88,7 +88,41 @@ QRenderTarget *QRenderTargetSelector::target() const
     return d->m_target;
 }
 
-/*! \internal */
+/*!
+ * \internal
+ * Sets the draw buffers \a buffers to be used. The draw buffers should be
+ * matching the Qt3D::QRenderAttachment::RenderAttachmentType
+ * defined in the attachments of the Qt3D::QRenderTarget associated to the
+ * Qt3D::QRenderTargetSelector instance.
+ *
+ * \note At render time, if no draw buffer has been specified, the renderer will
+ * default to using all the attachments' draw buffers.
+ *
+ */
+void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers)
+{
+    Q_D(QRenderTargetSelector);
+    if (buffers != d->m_drawBuffers) {
+        d->m_drawBuffers = buffers;
+
+        if (d->m_changeArbiter) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+            change->setPropertyName("drawBuffers");
+            change->setValue(QVariant::fromValue(d->m_drawBuffers));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+/*!
+ * Returns the list of draw buffers for the current Qt3D::QRenderTargetSelector instance.
+ */
+QList<QRenderAttachment::RenderAttachmentType> QRenderTargetSelector::drawBuffers() const
+{
+    Q_D(const QRenderTargetSelector);
+    return d->m_drawBuffers;
+}
+
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

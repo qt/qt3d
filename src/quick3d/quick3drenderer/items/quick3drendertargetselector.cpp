@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,30 +34,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERTARGETSELECTOR_P_H
-#define QT3D_QRENDERTARGETSELECTOR_P_H
-
-#include <private/qframegraphnode_p.h>
+#include "quick3drendertargetselector.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderTargetSelector;
-class QRenderTarget;
+namespace Render {
 
-class QRenderTargetSelectorPrivate : public QFrameGraphNodePrivate
+namespace Quick {
+
+Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(QObject *parent)
+    : QObject(parent)
 {
-public:
-    QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
+}
 
-    Q_DECLARE_PUBLIC(QRenderTargetSelector)
-    QRenderTarget *m_target;
-    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
-};
+Quick3DRenderTargetSelector::~Quick3DRenderTargetSelector()
+{
+}
+
+QVariantList Quick3DRenderTargetSelector::drawBuffers() const
+{
+    // Converts RenderAttachmentType to int
+    QVariantList l;
+    Q_FOREACH (const QRenderAttachment::RenderAttachmentType &b, parentRenderTargetSelector()->drawBuffers())
+        l.append(static_cast<int>(b));
+    return l;
+}
+
+void Quick3DRenderTargetSelector::setDrawBuffers(const QVariantList &buffers)
+{
+    if (buffers != drawBuffers()) {
+
+        // Converts int to RenderAttachmentType
+        QList<QRenderAttachment::RenderAttachmentType> drawBuffersList;
+        Q_FOREACH (const QVariant &buf, buffers)
+            drawBuffersList.append(static_cast<QRenderAttachment::RenderAttachmentType>(buf.toInt()));
+
+        parentRenderTargetSelector()->setDrawBuffers(drawBuffersList);
+        emit drawBuffersChanged();
+    }
+}
+
+} // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QRENDERTARGETSELECTOR_P_H

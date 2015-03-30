@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,30 +34,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERTARGETSELECTOR_P_H
-#define QT3D_QRENDERTARGETSELECTOR_P_H
+#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
+#define QT3D_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_H
 
-#include <private/qframegraphnode_p.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRenderer/qrendertargetselector.h>
+#include <QQmlListProperty>
+#include <QVariantList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderTargetSelector;
-class QRenderTarget;
+namespace Render {
 
-class QRenderTargetSelectorPrivate : public QFrameGraphNodePrivate
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderTargetSelector : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QVariantList drawBuffers READ drawBuffers WRITE setDrawBuffers NOTIFY drawBuffersChanged)
 public:
-    QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
+    explicit Quick3DRenderTargetSelector(QObject *parent = 0);
+    ~Quick3DRenderTargetSelector();
 
-    Q_DECLARE_PUBLIC(QRenderTargetSelector)
-    QRenderTarget *m_target;
-    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
+    inline QRenderTargetSelector *parentRenderTargetSelector() const { return qobject_cast<QRenderTargetSelector *>(parent()); }
+
+    QVariantList drawBuffers() const;
+    void setDrawBuffers(const QVariantList &drawBuffers);
+
+Q_SIGNALS:
+    void drawBuffersChanged();
 };
+
+} // Quick
+
+} // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERTARGETSELECTOR_P_H
+#endif // QUICK3DRENDERTARGETSELECTOR_H
