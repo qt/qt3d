@@ -45,6 +45,7 @@
 QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
+class QMutex;
 
 namespace Qt3D {
 
@@ -108,6 +109,7 @@ private:
 
     bool m_isLoaded;
     ProgramDNA m_dna;
+    QMutex *m_mutex;
 
     void updateDNA();
 

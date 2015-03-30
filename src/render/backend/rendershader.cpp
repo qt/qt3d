@@ -40,6 +40,7 @@
 #include <QFile>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
+#include <QMutexLocker>
 #include <qshaderprogram.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
@@ -55,6 +56,7 @@ RenderShader::RenderShader()
     , m_program(Q_NULLPTR)
     , m_isLoaded(false)
     , m_dna(0)
+    , m_mutex(new QMutex())
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -63,6 +65,7 @@ RenderShader::~RenderShader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
+    delete m_mutex;
 }
 
 void RenderShader::cleanup()
@@ -226,7 +229,11 @@ void RenderShader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pac
 
 void RenderShader::setFragOutputs(const QHash<QString, int> &fragOutputs)
 {
-    m_fragOutputs = fragOutputs;
+    {
+        QMutexLocker lock(m_mutex);
+        m_fragOutputs = fragOutputs;
+    }
+    updateDNA();
 }
 
 static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
@@ -292,12 +299,22 @@ QOpenGLShaderProgram* RenderShader::createDefaultProgram()
 
 void RenderShader::updateDNA()
 {
-    m_dna = qHash(m_shaderCode[QShaderProgram::Vertex]
-                + m_shaderCode[QShaderProgram::TessellationControl]
-                + m_shaderCode[QShaderProgram::TessellationEvaluation]
-                + m_shaderCode[QShaderProgram::Geometry]
-                + m_shaderCode[QShaderProgram::Fragment]
-                + m_shaderCode[QShaderProgram::Compute]);
+    uint codeHash = qHash(m_shaderCode[QShaderProgram::Vertex]
+            + m_shaderCode[QShaderProgram::TessellationControl]
+            + m_shaderCode[QShaderProgram::TessellationEvaluation]
+            + m_shaderCode[QShaderProgram::Geometry]
+            + m_shaderCode[QShaderProgram::Fragment]
+            + m_shaderCode[QShaderProgram::Compute]);
+
+    QMutexLocker locker(m_mutex);
+    uint attachmentHash = 0;
+    QHash<QString, int>::const_iterator it = m_fragOutputs.begin();
+    QHash<QString, int>::const_iterator end = m_fragOutputs.end();
+    while (it != end) {
+        attachmentHash += ::qHash(it.value()) + ::qHash(it.key());
+        ++it;
+    }
+    m_dna = codeHash + attachmentHash;
 }
 
 void RenderShader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescription)
