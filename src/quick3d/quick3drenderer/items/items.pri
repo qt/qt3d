@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/shaderpropertyparser_p.h \
     $$PWD/quick3dtexture.h \
     $$PWD/quick3drenderpass.h \
-    $$PWD/quick3dframegraphitem.h \
     $$PWD/quick3dsortmethod.h \
     $$PWD/quick3dparameter_p.h \
     $$PWD/quick3dparameter.h \
@@ -31,7 +30,6 @@ SOURCES += \
     $$PWD/shaderpropertyparser.cpp \
     $$PWD/quick3dtexture.cpp \
     $$PWD/quick3drenderpass.cpp \
-    $$PWD/quick3dframegraphitem.cpp \
     $$PWD/quick3dsortmethod.cpp \
     $$PWD/quick3dparameter.cpp \
     $$PWD/quick3dshaderdata.cpp \

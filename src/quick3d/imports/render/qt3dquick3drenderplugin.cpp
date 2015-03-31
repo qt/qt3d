@@ -97,7 +97,6 @@
 #include <Qt3DQuickRenderer/quick3dtexture.h>
 #include <Qt3DQuickRenderer/private/shaderpropertyparser_p.h>
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
-#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DQuickRenderer/quick3dsortmethod.h>
 #include <Qt3DQuickRenderer/quick3dparameter.h>
 #include <Qt3DQuickRenderer/quick3dshaderdata.h>
@@ -205,7 +204,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
     qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
-    qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphNode, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
+    qmlRegisterUncreatableType<Qt3D::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
     qmlRegisterExtendedType<Qt3D::QStateSet, Qt3D::Render::Quick::Quick3DStateSet>(uri, 2, 0, "StateSet");
     qmlRegisterType<Qt3D::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");

@@ -62,48 +62,28 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
 {
 }
 
-void QFrameGraphNode::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QFrameGraphNode *refNode = static_cast<const QFrameGraphNode *>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, refNode->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
-
-}
-
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
     : QNode(*new QFrameGraphNodePrivate(this), parent)
 {
+}
+
+QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
+{
+    QFrameGraphNode *parentFGNode = Q_NULLPTR;
+    QNode *parentN = parentNode();
+
+    while (parentN) {
+        if ((parentFGNode = qobject_cast<QFrameGraphNode *>(parentN)) != Q_NULLPTR)
+            break;
+        parentN = parentN->parentNode();
+    }
+    return parentFGNode;
 }
 
 /*! \internal */
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
-}
-
-void QFrameGraphNode::appendFrameGraphNode(QFrameGraphNode *item)
-{
-    Q_D(QFrameGraphNode);
-    if (!d->m_fgChildren.contains(item)) {
-        if (!item->parent())
-            item->setParent(this);
-        d->m_fgChildren.append(item);
-    }
-}
-
-void QFrameGraphNode::removeFrameGraphNode(QFrameGraphNode *item)
-{
-    Q_D(QFrameGraphNode);
-    if (!d->m_fgChildren.contains(item)) {
-        d->m_fgChildren.removeOne(item);
-    }
-}
-
-QList<QFrameGraphNode *> QFrameGraphNode::frameGraphChildren() const
-{
-    Q_D(const QFrameGraphNode);
-    return d->m_fgChildren;
 }
 
 /*!
