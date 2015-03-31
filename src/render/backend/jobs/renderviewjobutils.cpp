@@ -344,9 +344,6 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
 
 RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states, QFrameAllocator *allocator)
 {
-    if (states.isEmpty())
-        return Q_NULLPTR;
-
     RenderStateSet *stateSet = allocator->allocate<RenderStateSet>();
 
     Q_FOREACH (RenderState *renderState, states) {

@@ -57,7 +57,10 @@ QStateSetPrivate::QStateSetPrivate(QStateSet *qq)
  * branch.
  *
  * States set on a Qt3D::QStateSet are set globally, contrary to the per
- * Material states that can be set on a Qt3D::QRenderPass.
+ * Material states that can be set on a Qt3D::QRenderPass. By default an empty
+ * Qt3D::QStateSet will result in all render states being disabled when
+ * executed. Adding a Qt3D::QRenderState state explicitly enables that render
+ * state at runtime.
  *
  * \since 5.5
  *
@@ -89,6 +92,9 @@ void QStateSet::copy(const QNode *ref)
 
 /*!
  * Adds a new Qt3D::QRenderState \a state to the Qt3D::QStateSet instance.
+ *
+ * \note Not setting any Qt3D::QRenderState state on a Qt3D::QStateSet instance
+ * implies all the render states will be disabled at render time.
  */
 void QStateSet::addRenderState(QRenderState *state)
 {

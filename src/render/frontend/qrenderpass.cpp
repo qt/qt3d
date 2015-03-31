@@ -213,6 +213,14 @@ QList<QParameterMapping *> QRenderPass::bindings() const
     return d->m_bindings;
 }
 
+/*!
+ * Adds a Qt3D::QRenderState \a state to the rendering pass. That implies that
+ * when the pass is executed at render time, the globally set render state will
+ * be modifed by the states defined locally by the Qt3D::QRenderPass.
+ *
+ * \note not defining any Qt3D::QRenderState in a pass will result in the pass using
+ * the globally set render state for a given FrameGraph branch execution path.
+ */
 void QRenderPass::addRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
@@ -232,6 +240,9 @@ void QRenderPass::addRenderState(QRenderState *state)
     }
 }
 
+/*!
+ * Removes \a state from the Qt3D::QRenderPass local render state.
+ */
 void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
@@ -244,6 +255,10 @@ void QRenderPass::removeRenderState(QRenderState *state)
     d->m_renderStates.removeOne(state);
 }
 
+/*!
+ * Returns the list of Qt3D::QRenderState state objects making up the render
+ * state of the Qt3D::QRenderPass.
+ */
 QList<QRenderState *> QRenderPass::renderStates() const
 {
     Q_D(const QRenderPass);
