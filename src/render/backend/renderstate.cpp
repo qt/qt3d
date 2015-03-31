@@ -115,9 +115,13 @@ void RenderStateSet::apply(QGraphicsContext *gc)
     StateMaskSet invOurState = ~stateMask();
     // generate a mask for each set bit in previous, where we do not have
     // the corresponding bit set.
+
     StateMaskSet stateToReset = 0;
-    if (previousStates)
+    if (previousStates) {
         stateToReset = previousStates->stateMask() & invOurState;
+        qCDebug(RenderStates) << "previous states " << QString::number(previousStates->stateMask(), 2);
+    }
+    qCDebug(RenderStates) << " current states " << QString::number(stateMask(), 2)  << "inverse " << QString::number(invOurState, 2) << " -> states to change:  " << QString::number(stateToReset, 2);
 
     resetMasked(stateToReset, gc);
 
