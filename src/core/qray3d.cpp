@@ -311,12 +311,13 @@ float QRay3D::distance(const QVector3D &point) const
 
 QDebug operator<<(QDebug dbg, const QRay3D &ray)
 {
+    QDebugStateSaver saver(dbg);
     dbg.nospace() << "QRay3D(origin("
         << ray.origin().x() << ", " << ray.origin().y() << ", "
         << ray.origin().z() << ") - direction("
         << ray.direction().x() << ", " << ray.direction().y() << ", "
         << ray.direction().z() << "))";
-    return dbg.space();
+    return dbg;
 }
 
 #endif

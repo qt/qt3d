@@ -84,8 +84,9 @@ void QAxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 
 QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c)
 {
-    dbg.nospace() << "AABB ( min:" << c.minPoint() << ", max:" << c.maxPoint() << ")";
-    return dbg.space();
+    QDebugStateSaver saver(dbg);
+    dbg.nospace() << "AABB ( min:" << c.minPoint() << ", max:" << c.maxPoint() << ')';
+    return dbg;
 }
 
 } //namespace Qt3D
