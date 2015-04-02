@@ -58,7 +58,6 @@ typedef QSharedPointer<PropertyReaderInterface> PropertyReaderInterfacePtr;
 class QT3DRENDERERSHARED_EXPORT QShaderData : public QComponent
 {
     Q_OBJECT
-    Q_ENUMS(TransformType)
 public:
     explicit QShaderData(QNode *parent = 0);
 
@@ -66,6 +65,7 @@ public:
         ModelToEye = 0,
         ModelToWorld
     };
+    Q_ENUM(TransformType)
 
     PropertyReaderInterfacePtr propertyReader() const;
 

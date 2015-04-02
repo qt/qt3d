@@ -49,7 +49,6 @@ class QSortCriterionPrivate;
 class QT3DRENDERERSHARED_EXPORT QSortCriterion : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(SortType)
     Q_PROPERTY(Qt3D::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
 public:
     explicit QSortCriterion(QNode *parent = 0);
@@ -59,6 +58,7 @@ public:
         BackToFront = (1 << 1),
         Material = (1 << 2)
     };
+    Q_ENUM(SortType)
 
     SortType sort() const;
     void setSort(SortType &sort);

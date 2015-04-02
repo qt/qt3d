@@ -50,8 +50,6 @@ class QRenderAttachmentPrivate;
 class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(RenderAttachmentType)
-    Q_ENUMS(CubeMapFace)
     Q_PROPERTY(RenderAttachmentType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(Qt3D::QAbstractTextureProvider *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
@@ -81,6 +79,7 @@ public:
         StencilAttachment,
         DepthStencilAttachment
     };
+    Q_ENUM(RenderAttachmentType)
 
     enum CubeMapFace {
         CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
@@ -90,6 +89,7 @@ public:
         CubeMapPositiveZ = 0x8519,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
         CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
+    Q_ENUM(CubeMapFace)
 
     explicit QRenderAttachment(QNode *parent = 0);
 
