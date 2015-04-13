@@ -42,6 +42,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QSortCriterionPrivate
+    \internal
+*/
 QSortCriterionPrivate::QSortCriterionPrivate(QSortCriterion *qq)
     : QNodePrivate(qq)
     , m_sort(QSortCriterion::StateChangeCost)
@@ -76,6 +80,7 @@ void QSortCriterion::setSort(QSortCriterion::SortType &sort)
     }
 }
 
+/*! \internal */
 QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

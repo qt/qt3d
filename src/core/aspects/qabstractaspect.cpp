@@ -52,6 +52,10 @@ static QByteArray className(const QMetaObject &obj)
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractAspectPrivate
+    \internal
+*/
 QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
@@ -79,6 +83,7 @@ QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
     d->m_aspectType = aspectType;
 }
 
+/*! \internal */
 QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

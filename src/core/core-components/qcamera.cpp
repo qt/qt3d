@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QCameraPrivate
+    \internal
+*/
 QCameraPrivate::QCameraPrivate(QCamera *qq)
     : QEntityPrivate(qq)
     , m_lens(new QCameraLens())
@@ -70,6 +74,7 @@ QCamera::QCamera(QNode *parent) :
     addComponent(d_func()->m_transform);
 }
 
+/*! \internal */
 QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     : QEntity(dd, parent)
 {

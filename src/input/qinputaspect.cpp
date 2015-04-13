@@ -50,6 +50,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QInputAspectPrivate
+    \internal
+*/
 QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
     : QAbstractAspectPrivate(qq)
     , m_inputHandler(new Input::InputHandler())

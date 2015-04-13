@@ -43,6 +43,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderTargetPrivate
+    \internal
+*/
 QRenderTargetPrivate::QRenderTargetPrivate(QRenderTarget *qq)
     : QComponentPrivate(qq)
 {
@@ -61,6 +65,7 @@ QRenderTarget::QRenderTarget(QNode *parent)
 {
 }
 
+/*! \internal */
 QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

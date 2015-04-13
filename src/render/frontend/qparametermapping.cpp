@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QParameterMappingPrivate
+    \internal
+*/
 QParameterMappingPrivate::QParameterMappingPrivate(QParameterMapping *qq)
     : QNodePrivate(qq)
     , m_bindingType(QParameterMapping::Uniform)
@@ -61,6 +65,7 @@ QParameterMapping::QParameterMapping(QNode *parent)
 {
 }
 
+/*! \internal */
 QParameterMapping::QParameterMapping(QParameterMappingPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

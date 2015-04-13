@@ -42,6 +42,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
+    \class Qt3D::QAbstractServiceProviderPrivate
+    \internal
+*/
+
+/*!
+    \class Qt3D::QSystemInformationServicePrivate
+    \internal
+*/
+
+/*!
     \class Qt3D::QSystemInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D system information service
@@ -51,8 +61,9 @@ namespace Qt3D {
 */
 
 /*!
-    Creates an instance of QSystemInformationService. This constructor is protected
-    so only subclasses can instantiate a QSystemInformationService object.
+    Creates an instance of QSystemInformationService, with a \a description for
+    the new service. This constructor is protected so only subclasses can
+    instantiate a QSystemInformationService object.
 */
 QSystemInformationService::QSystemInformationService(const QString &description)
     : QAbstractServiceProvider(*new QSystemInformationServicePrivate(description))

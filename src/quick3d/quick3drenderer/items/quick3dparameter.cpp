@@ -75,6 +75,7 @@ Quick3DParameter::Quick3DParameter(QNode *parent)
 {
 }
 
+/*! \internal */
 Quick3DParameter::Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent)
     : QParameter(dd, parent)
 {

@@ -43,6 +43,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QBackendScenePropertyChange
+*/
+
+/*!
+    \class Qt3D::QBackendScenePropertyChangePrivate
+    \internal
+*/
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate(QBackendScenePropertyChange *qq)
     : QScenePropertyChangePrivate(qq)
 {
@@ -74,11 +82,13 @@ QNodeId QBackendScenePropertyChange::targetNode() const
     return d->m_targetUuid;
 }
 
+/*! \internal */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
     : QScenePropertyChange(dd)
 {
 }
 
+/*! \internal */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd, ChangeFlag type, const QNodeId &subjectId, QSceneChange::Priority priority)
     : QScenePropertyChange(dd, type, Observable, subjectId, priority)
 {

@@ -44,10 +44,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderPassFilterPrivate
+    \internal
+*/
+
 QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphNode(*new QRenderPassFilterPrivate(this), parent)
 {}
 
+/*! \internal */
 QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

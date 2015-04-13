@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QTechniqueFilterPrivate
+    \internal
+*/
 QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
     : QFrameGraphNodePrivate(qq)
 {
@@ -64,6 +68,7 @@ QTechniqueFilter::QTechniqueFilter(QNode *parent)
 {
 }
 
+/*! \internal */
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

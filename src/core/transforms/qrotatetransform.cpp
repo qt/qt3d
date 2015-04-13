@@ -48,6 +48,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRotateTransformPrivate
+    \internal
+*/
 QRotateTransformPrivate::QRotateTransformPrivate()
     : QAbstractTransformPrivate()
     , m_angleDeg(0)
@@ -69,6 +73,7 @@ QRotateTransform::QRotateTransform(QObject *parent)
 {
 }
 
+/*! \internal */
 QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {

@@ -47,6 +47,10 @@ namespace Qt3D {
 
 namespace Quick {
 
+/*!
+    \class Qt3D::QQmlAspectEnginePrivate
+    \internal
+*/
 QQmlAspectEnginePrivate::QQmlAspectEnginePrivate(QQmlAspectEngine *qq)
     : QObjectPrivate()
     , q_ptr(qq)

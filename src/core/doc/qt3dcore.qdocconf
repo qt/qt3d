@@ -28,13 +28,20 @@ tagfile                 = ../../../doc/qt3dcore/qt3dcore.tags
 
 depends                 += qtcore qtqml qtquick qtdoc qt3drender
 
-headerdirs += ..
-sourcedirs += ..
+headerdirs += .. \
+              ../../plugins
+sourcedirs += .. \
+              ../../plugins
 exampledirs += src/snippets
 
 #excludedirs +=
 
 imagedirs   += images
+
+Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
+                        QT3DCORESHARED_EXPORT
+
+Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
 navigation.landingpage = "Qt3D Core"
 navigation.cppclassespage = "Qt3D Core C++ Classes"

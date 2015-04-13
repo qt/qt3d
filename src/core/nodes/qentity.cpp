@@ -51,6 +51,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QEntityPrivate
+    \internal
+*/
 QEntityPrivate::QEntityPrivate(QEntity *qq)
     : QNodePrivate(qq)
     , m_enabled(true)
@@ -71,6 +75,7 @@ QEntity::~QEntity()
         removeAllComponents();
 }
 
+/*! \internal */
 QEntity::QEntity(QEntityPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

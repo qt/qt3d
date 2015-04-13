@@ -112,6 +112,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderAspectPrivate
+    \internal
+*/
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type, QRenderAspect *qq)
     : QAbstractAspectPrivate(qq)
     , m_renderer(new Render::Renderer(type))
@@ -174,6 +178,7 @@ QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
     registerBackendTypes();
 }
 
+/*! \internal */
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
 
     : QAbstractAspect(dd, parent)

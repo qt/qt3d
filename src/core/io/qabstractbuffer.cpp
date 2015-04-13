@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractBufferPrivate
+    \internal
+*/
 QAbstractBufferPrivate::QAbstractBufferPrivate(QAbstractBuffer *qq)
     : q_ptr(qq)
 {
@@ -55,6 +59,7 @@ QAbstractBuffer::~QAbstractBuffer()
 {
 }
 
+/*! \internal */
 QAbstractBuffer::QAbstractBuffer(QAbstractBufferPrivate &dd)
     : d_ptr(&dd)
 {

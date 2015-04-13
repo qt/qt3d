@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QFrameGraphPrivate
+    \internal
+*/
 QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
     : QComponentPrivate(qq)
     , m_activeFrameGraph(Q_NULLPTR)
@@ -59,7 +63,7 @@ void QFrameGraph::copy(const QNode *ref)
 }
 
 /*!
- * \class FrameGraph
+ * \class Qt3D::FrameGraph
  *
  * \brief Component that has an activeFrameGraph property that should
  * reference the root FrameGraphItem of a frame graph tree. The Entity
@@ -69,7 +73,6 @@ void QFrameGraph::copy(const QNode *ref)
  * Note that only a single FrameGraph can be active at any moment.
  *
  * \since 5.3
- * \namespace Qt3D
  */
 
 QFrameGraph::QFrameGraph(QNode *parent)
@@ -77,13 +80,16 @@ QFrameGraph::QFrameGraph(QNode *parent)
 {
 }
 
+/*! \internal */
 QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
 /*!
- * Returns the current activeFrameGraph root node.
+ *  \property Qt3D::QFrameGraph::activeFrameGraph
+ *
+ * Holds the current activeFrameGraph root node.
  */
 QFrameGraphNode *QFrameGraph::activeFrameGraph() const
 {
@@ -91,9 +97,6 @@ QFrameGraphNode *QFrameGraph::activeFrameGraph() const
     return d->m_activeFrameGraph;
 }
 
-/*!
- * Sets the root node \a activeFrameGraph of the FrameGraph.
- */
 void QFrameGraph::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
 {
     Q_D(QFrameGraph);

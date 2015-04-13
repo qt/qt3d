@@ -45,6 +45,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
+/*!
+    \class Qt3D::QParameterPrivate
+    \internal
+*/
 QParameterPrivate::QParameterPrivate(QParameter *qq)
     : QNodePrivate(qq)
 {
@@ -63,6 +67,7 @@ void QParameter::copy(const QNode *ref)
     d_func()->m_value = param->d_func()->m_value;
 }
 
+/*! \internal */
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

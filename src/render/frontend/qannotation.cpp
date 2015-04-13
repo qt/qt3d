@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
+/*!
+    \class Qt3D::QAnnotationPrivate
+    \internal
+*/
 QAnnotationPrivate::QAnnotationPrivate(QAnnotation *qq)
     : QNodePrivate(qq)
 {

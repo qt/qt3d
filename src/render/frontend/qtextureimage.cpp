@@ -114,7 +114,7 @@ QTextureImage::~QTextureImage()
 }
 
 /*!
-    \return the source url from which data will be loaded of the texture image.
+    Returns the source url from which data for the texture image will be loaded.
  */
 QUrl QTextureImage::source() const
 {
@@ -124,7 +124,7 @@ QUrl QTextureImage::source() const
 
 /*!
     Sets the source url of the texture image to \a source.
-    \note: this triggers a call to update()
+    \note This triggers a call to update()
  */
 void QTextureImage::setSource(const QUrl &source)
 {
@@ -137,7 +137,7 @@ void QTextureImage::setSource(const QUrl &source)
 }
 
 /*!
-    \returns the a Qt3D::QTextureDataFunctorPtr functor to be used by the
+    Returns the Qt3D::QTextureDataFunctorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
 QTextureDataFunctorPtr QTextureImage::dataFunctor() const

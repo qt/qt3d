@@ -61,6 +61,10 @@ namespace Qt3D {
  * \endcode
  */
 
+/*!
+    \class Qt3D::QDirectionalLightPrivate
+    \internal
+*/
 QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
     : QAbstractLightPrivate(qq)
 {
@@ -80,6 +84,7 @@ QDirectionalLight::QDirectionalLight(QNode *parent)
 {
 }
 
+/*! \internal */
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

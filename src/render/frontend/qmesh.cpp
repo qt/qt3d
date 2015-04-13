@@ -61,6 +61,10 @@ private:
 };
 
 
+/*!
+    \class Qt3D::QMeshPrivate
+    \internal
+*/
 QMeshPrivate::QMeshPrivate(QMesh *qq)
     : QAbstractMeshPrivate(qq)
 {}
@@ -77,6 +81,7 @@ QMesh::QMesh(QNode *parent)
 {
 }
 
+/*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {

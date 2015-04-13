@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderTargetSelectorPrivate
+    \internal
+*/
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate(QRenderTargetSelector *qq)
     : QFrameGraphNodePrivate(qq)
     , m_target(Q_NULLPTR)
@@ -86,6 +90,7 @@ QRenderTarget *QRenderTargetSelector::target() const
     return d->m_target;
 }
 
+/*! \internal */
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

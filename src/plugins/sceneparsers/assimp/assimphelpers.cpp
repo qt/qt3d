@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 namespace AssimpHelper {
 /*!
- *  \class AssimpIOStream
+ *  \class Qt3D::AssimpHelper::AssimpIOStream
  *
  *  \internal
  *

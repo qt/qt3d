@@ -48,6 +48,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderPassPrivate
+    \internal
+*/
 QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
     : QNodePrivate(qq)
     , m_shader(Q_NULLPTR)
@@ -73,6 +77,7 @@ QRenderPass::QRenderPass(QNode *parent)
 {
 }
 
+/*! \internal */
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

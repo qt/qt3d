@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QLookAtTransformPrivate
+    \internal
+*/
 QLookAtTransformPrivate::QLookAtTransformPrivate()
     : QAbstractTransformPrivate()
     , m_matrixDirty(true)
@@ -53,6 +57,7 @@ QLookAtTransform::QLookAtTransform(QObject *parent)
 {
 }
 
+/*! \internal */
 QLookAtTransform::QLookAtTransform(QLookAtTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {

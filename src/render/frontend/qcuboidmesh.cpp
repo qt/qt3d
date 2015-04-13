@@ -48,6 +48,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QCuboidMeshPrivate
+    \internal
+*/
 QCuboidMeshPrivate::QCuboidMeshPrivate(QCuboidMesh *qq)
     : QAbstractMeshPrivate(qq)
     , m_xExtent(1.0)
@@ -77,6 +81,7 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     update();
 }
 
+/*! \internal */
 QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {

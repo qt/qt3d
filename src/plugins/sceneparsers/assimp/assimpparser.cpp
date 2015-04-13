@@ -60,16 +60,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
- * \class AssimpParser
- * \namespace Qt3D
- * \since 5.5
- *
- * \brief Provides a generic way of loading various 3D assets
- * format into a Qt3D scene.
- *
- * It should be noted that Assimp aiString is explicitly defined to be UTF-8.
- *
- * \sa GLTFParser
+    \class Qt3D::AssimpParser
+    \since 5.5
+
+    \brief Provides a generic way of loading various 3D assets
+    format into a Qt3D scene.
+
+    It should be noted that Assimp aiString is explicitly defined to be UTF-8.
+
+    \sa GLTFParser
 */
 
 Q_LOGGING_CATEGORY(AssimpParserLog, "Qt3D.AssimpParser")
@@ -230,7 +229,7 @@ private:
 };
 
 /*!
- *  Initialized a new instance of AssimpParser.
+ *  Constructor. Initializes a new instance of AssimpParser.
  */
 AssimpParser::AssimpParser() : AbstractSceneParser(),
     m_sceneParsed(false),
@@ -239,7 +238,7 @@ AssimpParser::AssimpParser() : AbstractSceneParser(),
 }
 
 /*!
- * Cleans the parser properly before destruction.
+ * Destructor. Cleans the parser properly before destroying it.
  */
 AssimpParser::~AssimpParser()
 {
@@ -247,7 +246,7 @@ AssimpParser::~AssimpParser()
 }
 
 /*!
- *  Return true if the provided \a path has a suffix supported
+ *  Returns \c true if the provided \a path has a suffix supported
  *  by the Assimp Assets importer.
  */
 bool AssimpParser::isAssimpPath(const QString &path)
@@ -272,8 +271,8 @@ QMatrix4x4 AssimpParser::aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix)
 }
 
 /*!
- * Sets the \a path used by the parser to load the asset file.
- * If the file is valid, this will trigger the parsing of the file.
+ * Sets the \a source used by the parser to load the asset file.
+ * If the file is valid, this will trigger parsing of the file.
  */
 void AssimpParser::setSource(const QUrl &source)
 {
@@ -288,7 +287,7 @@ void AssimpParser::setSource(const QUrl &source)
 }
 
 /*!
- * Returns true if the extension of \a path is supported by
+ * Returns \c true if the extension of \a source is supported by
  * the assimp parser.
  */
 bool AssimpParser::isExtensionSupported(const QUrl &source) const
@@ -302,7 +301,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source) const
  * node specified by \a id. If \a id is empty, the scene is assumed to be
  * the root node of the scene.
  *
- * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
+ * Returns \c Q_NULLPTR if \a id was specified but no node matching it was found.
  */
 QEntity *AssimpParser::scene(const QString &id)
 {
@@ -327,7 +326,7 @@ QEntity *AssimpParser::scene(const QString &id)
 
 /*!
  *  Returns a Node from the scene identified by \a id.
- *  Returns Q_NULLPTR if no node can be found.
+ *  Returns \c Q_NULLPTR if the node was not found.
  */
 QEntity *AssimpParser::node(const QString &id)
 {
@@ -384,7 +383,7 @@ QEntity *AssimpParser::node(aiNode *node)
 
 /*!
  * Reads the scene file pointed by \a path and launches the parsing of
- * the scene using Assimp after having cleaned up previously saved values
+ * the scene using Assimp, after having cleaned up previously saved values
  * from eventual previous parsings.
  */
 void AssimpParser::readSceneFile(const QString &path)
@@ -413,7 +412,7 @@ void AssimpParser::readSceneFile(const QString &path)
 }
 
 /*!
- * Cleans the various dictionnaries holding the scenes infos.
+ * Cleans the various dictionaries holding the scene's information.
  */
 void AssimpParser::cleanup()
 {
@@ -423,7 +422,7 @@ void AssimpParser::cleanup()
 }
 
 /*!
- * Parses the the aiScene provided py Assimp and convert Assimp
+ * Parses the aiScene provided py Assimp and converts Assimp
  * values to Qt3D values.
  */
 void AssimpParser::parse()
@@ -448,8 +447,9 @@ void AssimpParser::parse()
 }
 
 /*!
- * Converts the provided Assimp aiMaterial \a material to a Qt3D material.
- * \sa Material and adds its to a dictionary of materials.
+ * Converts the provided Assimp aiMaterial identified by \a materialIndex to a
+ * Qt3D material and adds it to a dictionary of materials.
+ * \sa Material
  */
 void AssimpParser::loadMaterial(uint materialIndex)
 {
@@ -471,7 +471,8 @@ void AssimpParser::loadMaterial(uint materialIndex)
 
 /*!
  * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QMeshData
- * \sa QMeshData and adds it to a dictionary of meshes.
+ * and adds it to a dictionary of meshes.
+ * \sa QMeshData
  */
 void AssimpParser::loadMesh(uint meshIndex)
 {
@@ -611,7 +612,7 @@ void AssimpParser::loadMesh(uint meshIndex)
 
 /*!
  * Converts the provided Assimp aiTexture at \a textureIndex to a Texture and
- * adds it ot a dictionary of textures.
+ * adds it to a dictionary of textures.
  * \sa Texture
  */
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
@@ -702,7 +703,7 @@ void AssimpParser::copyMaterialName(QMaterial *material, aiMaterial *assimpMater
 }
 
 /*!
- *  Fills \a material color properties with \a assimpMaterial color properties;
+ *  Fills \a material color properties with \a assimpMaterial color properties.
  */
 void AssimpParser::copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
@@ -722,7 +723,7 @@ void AssimpParser::copyMaterialColorProperties(QMaterial *material, aiMaterial *
 }
 
 /*!
- * Retrieves a\a material bool property;
+ * Retrieves a \a material bool property.
  */
 void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
@@ -803,7 +804,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
 }
 
 /*!
- * Retrieves a\a material float property.
+ * Retrieves a \a material float property.
  */
 void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {

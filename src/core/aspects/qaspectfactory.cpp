@@ -54,6 +54,10 @@ QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QS
     defaultFactories->insert(name, factory);
 }
 
+/*!
+    \class Qt3D::QAspectFactoryPrivate
+    \internal
+*/
 QAspectFactoryPrivate::QAspectFactoryPrivate()
     : m_factories(*defaultFactories)
 {

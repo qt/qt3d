@@ -55,6 +55,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAspectEnginePrivate
+    \internal
+*/
 QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
     : QObjectPrivate()
     , m_postman(new QPostman())
@@ -81,6 +85,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
+/*! \internal */
 QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

@@ -35,5 +35,10 @@ exampledirs += ../../../examples/qt3d \
 
 imagedirs   += images
 
+Cpp.ignoretokens     += QT3DRENDERERSHARED_EXPORT \
+                        QT3DRENDERERSHARED_PRIVATE_EXPORT
+
+Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
+
 navigation.landingpage = "Qt3D Render"
 navigation.cppclassespage = "Qt3D Render C++ Classes"

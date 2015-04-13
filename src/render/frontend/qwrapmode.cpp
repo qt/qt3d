@@ -64,8 +64,8 @@ public:
     \class Qt3D::QTextureWrapMode
     \since 5.5
 
-    \brief Qt3D::QTextureWrapMode defines the wrap mode a
-    Qt3D::QAbstractTextureProvider should apply to a texture.
+    \brief Defines the wrap mode a Qt3D::QAbstractTextureProvider
+    should apply to a texture.
  */
 
 QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)

@@ -45,6 +45,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QEffectPrivate
+    \internal
+*/
 QEffectPrivate::QEffectPrivate(QEffect *qq)
     : QNodePrivate(qq)
 {}
@@ -65,6 +69,7 @@ void QEffect::copy(const QNode* ref)
         addTechnique(qobject_cast<QTechnique *>(QNode::clone(t)));
 }
 
+/*! \internal */
 QEffect::QEffect(QEffectPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -140,7 +145,7 @@ void QEffect::addTechnique(QTechnique *t)
 }
 
 /*!
- * Removes a technique \t from the effect. This posts a ComponentRemoved
+ * Removes a technique \a t from the effect. This posts a ComponentRemoved
  * QScenePropertyChange notification to the QChangeArbiter, the value is
  * the removed technique's id and the property name is "technique".
  */

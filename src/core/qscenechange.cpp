@@ -58,6 +58,10 @@ namespace Qt3D {
     \value AllChanges Allows an observer to monitor for any of the above changes.
 */
 
+/*!
+    \class Qt3D::QSceneChangePrivate
+    \internal
+*/
 QSceneChangePrivate::QSceneChangePrivate(QSceneChange *qq)
     : q_ptr(qq)
 {
@@ -83,11 +87,13 @@ QSceneChange::~QSceneChange()
     delete d_ptr;
 }
 
+/*! \internal */
 QSceneChange::QSceneChange(QSceneChangePrivate &dd)
     : d_ptr(&dd)
 {
 }
 
+/*! \internal */
 QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {

@@ -49,6 +49,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QFrameAllocatorPrivate
+    \internal
+*/
 QFrameAllocatorPrivate::QFrameAllocatorPrivate(QFrameAllocator *qq)
     : q_ptr(qq)
 {

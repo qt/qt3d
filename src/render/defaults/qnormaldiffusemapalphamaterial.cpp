@@ -56,6 +56,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
+/*!
+    \class Qt3D::QNormalDiffuseMapAlphaMaterialPrivate
+    \internal
+*/
 QNormalDiffuseMapAlphaMaterialPrivate::QNormalDiffuseMapAlphaMaterialPrivate(QNormalDiffuseMapAlphaMaterial *qq)
     : QNormalDiffuseMapMaterialPrivate(qq)
     , m_alphaCoverage(new QAlphaCoverage())
@@ -143,7 +147,6 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
 */
 
 /*!
-    \fn Qt3D::QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial()
     Constructs a new Qt3D::QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial(QNode *parent)
@@ -151,6 +154,9 @@ QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial(QNode *parent)
 {
 }
 
+/*!
+    Destroys the QNormalDiffuseMapAlphaMaterial instance.
+*/
 QNormalDiffuseMapAlphaMaterial::~QNormalDiffuseMapAlphaMaterial()
 {
 }

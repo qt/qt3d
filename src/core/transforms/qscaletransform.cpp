@@ -42,6 +42,10 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D
 {
 
+/*!
+    \class Qt3D::QScaleTransformPrivate
+    \internal
+*/
 QScaleTransformPrivate::QScaleTransformPrivate()
     : QAbstractTransformPrivate()
     , m_scale3D(1.0f, 1.0f, 1.0f)
@@ -54,6 +58,7 @@ QScaleTransform::QScaleTransform(QObject *parent)
 {
 }
 
+/*! \internal */
 QScaleTransform::QScaleTransform(QScaleTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {

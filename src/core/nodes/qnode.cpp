@@ -54,6 +54,10 @@ namespace Qt3D {
 
 QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode *>();
 
+/*!
+    \class Qt3D::QNodePrivate
+    \internal
+*/
 QNodePrivate::QNodePrivate(QNode *qq)
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
@@ -291,6 +295,7 @@ QNode::QNode(QNode *parent)
     // to add ourselve with the parent
 }
 
+/*! \internal */
 QNode::QNode(QNodePrivate &dd, QNode *parent)
     : QObject(dd, parent)
 {

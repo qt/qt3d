@@ -38,7 +38,7 @@
 #include "qframegraphnode_p.h"
 
 /*!
- * \class FrameGraphNode
+ * \class Qt3D::FrameGraphNode
  *
  * \brief Base class of all FrameGraph configuration nodes.
  *
@@ -46,13 +46,16 @@
  * but rather through one of its subclasses.
  *
  * \since 5.3
- * \namespace Qt3D
  */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QFrameGraphNodePrivate
+    \internal
+*/
 QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
     : QNodePrivate(qq)
     , m_enabled(true)
@@ -69,6 +72,7 @@ QFrameGraphNode::QFrameGraphNode(QNode *parent)
 {
 }
 
+/*! \internal */
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -97,6 +101,12 @@ QList<QFrameGraphNode *> QFrameGraphNode::frameGraphChildren() const
     Q_D(const QFrameGraphNode);
     return d->m_fgChildren;
 }
+
+/*!
+    \property Qt3D::QFrameGraphNode::enabled
+
+    Holds whether the frame graph node is enabled or disabled.
+*/
 
 bool QFrameGraphNode::isEnabled() const
 {

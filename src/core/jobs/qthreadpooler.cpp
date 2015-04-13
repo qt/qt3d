@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QThreadPoolerPrivate
+    \internal
+*/
 QThreadPoolerPrivate::QThreadPoolerPrivate(QThreadPooler *qq)
     : QObjectPrivate(),
       m_mutex(new QMutex(QMutex::NonRecursive)),

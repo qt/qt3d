@@ -46,6 +46,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QForwardRendererPrivate
+    \internal
+*/
 QForwardRendererPrivate::QForwardRendererPrivate(QForwardRenderer *qq)
     : QTechniqueFilterPrivate(qq)
     , m_viewport(new QViewport())
@@ -91,7 +95,6 @@ void QForwardRendererPrivate::init()
 */
 
 /*!
-    \fn Qt3D::QForwardRenderer::QForwardRenderer(QNode *parent)
     Constructs a new Qt3D::QForwardRenderer instance with parent object \a parent.
  */
 QForwardRenderer::QForwardRenderer(QNode *parent)
@@ -104,35 +107,25 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     d->init();
 }
 
+/*!
+    Destroys the QForwardRenderer instance.
+*/
 QForwardRenderer::~QForwardRenderer()
 {
 }
 
-/*!
-    \fn Qt3D::QForwardRenderer::setViewportRect(const QRectF &viewportRect)
-    Sets the current viewport rect to \a viewportRect.
- */
 void QForwardRenderer::setViewportRect(const QRectF &viewportRect)
 {
     Q_D(QForwardRenderer);
     d->m_viewport->setRect(viewportRect);
 }
 
-/*!
-    \fn Qt3D::QForwardRenderer::setClearColor(const QColor &clearColor)
-    Sets the clearColor to \a clearColor.
- */
 void QForwardRenderer::setClearColor(const QColor &clearColor)
 {
     Q_D(QForwardRenderer);
     d->m_viewport->setClearColor(clearColor);
 }
 
-/*!
-    \fn Qt3D::QForwardRenderer::setCamera(QEntity *camera)
-    Sets the camera which should be used to render the scene to \a camera.
-    \b {Note:} A camera is a QEntity having a QCameraLens has one of its components
- */
 void QForwardRenderer::setCamera(QEntity *camera)
 {
     Q_D(QForwardRenderer);
@@ -140,8 +133,9 @@ void QForwardRenderer::setCamera(QEntity *camera)
 }
 
 /*!
-    \fn Qt3D::QForwardRenderer::viewportRect() const
-    \return the current viewport rect.
+    \property Qt3D::QForwardRenderer::viewportRect
+
+    Holds the current viewport rect.
  */
 QRectF QForwardRenderer::viewportRect() const
 {
@@ -150,8 +144,8 @@ QRectF QForwardRenderer::viewportRect() const
 }
 
 /*!
-    \fn Qt3D::QForwardRenderer::clearColor() const
-    \return the current clearColor.
+    \property Qt3D::QForwardRenderer::clearColor
+    Holds the current clearColor.
  */
 QColor QForwardRenderer::clearColor() const
 {
@@ -160,8 +154,10 @@ QColor QForwardRenderer::clearColor() const
 }
 
 /*!
-    \fn Qt3D::QForwardRenderer::camera() const
-    \return the current QEntity camera used to render the scene.
+    \property Qt3D::QForwardRenderer::camera
+    Holds the current QEntity camera used to render the scene.
+
+    \note A camera is a QEntity that has a QCameraLens as one of its components.
  */
 QEntity *QForwardRenderer::camera() const
 {

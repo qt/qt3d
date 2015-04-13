@@ -59,6 +59,10 @@ namespace Qt3D {
  * \endcode
  */
 
+/*!
+    \class Qt3D::QPointLightPrivate
+    \internal
+*/
 QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
     : QAbstractLightPrivate(qq)
 {
@@ -69,6 +73,7 @@ QPointLight::QPointLight(QNode *parent)
 {
 }
 
+/*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

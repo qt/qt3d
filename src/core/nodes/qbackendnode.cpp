@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QBackendNodePrivate
+    \internal
+*/
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode)
     : q_ptr(qq)
     , m_mode(mode)
@@ -123,6 +127,7 @@ QBackendNode *QBackendNode::createBackendNode(QNode *frontend) const
     return d->m_factory->createBackendNode(frontend);
 }
 
+/*! \internal */
 QBackendNode::QBackendNode(QBackendNodePrivate &dd)
     : d_ptr(&dd)
 {

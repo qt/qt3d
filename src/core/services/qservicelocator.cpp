@@ -43,11 +43,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractServiceProvider
+*/
+
 QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)
     : d_ptr(new QAbstractServiceProviderPrivate(type, description))
 {
 }
 
+/*! \internal */
 QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
     : d_ptr(&dd)
 {
@@ -127,7 +132,7 @@ QServiceLocator::~QServiceLocator()
     existing provider for this service. The service provider does not take ownership
     of the provider.
 
-    \sa unregisterService(), serviceCount(), service()
+    \sa unregisterServiceProvider(), serviceCount(), service()
 */
 void QServiceLocator::registerServiceProvider(int serviceType, QAbstractServiceProvider *provider)
 {

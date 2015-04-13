@@ -43,8 +43,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
- * \class QMaterial
- * \namespace Qt3D
+ * \class Qt3D::QMaterial
  *
  * \inherits Component
  *
@@ -53,16 +52,21 @@
  *
  * QAbstractMaterial provide a way to specify the rendering of an Entity.
  * Any aspect can define its own subclass of QAbstractMaterial so that a
- * Material can be used to describe a visual element, the way sound should
- * reflect on an element, the temperature of a surface and so on.
+ * Material can be used to describe a visual element; for example, the way
+ * sound should reflect off an element, the temperature of a surface,
+ * and so on.
  *
- * \sa QEffect, QMesh, QComponent
+ * \sa QEffect, QMesh, {Qt3D::}{QComponent}
  */
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QMaterialPrivate
+    \internal
+*/
 QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
     : QComponentPrivate(qq)
     , m_effect(Q_NULLPTR)
@@ -85,6 +89,7 @@ QMaterial::QMaterial(QNode *parent)
 {
 }
 
+/*! \internal */
 QMaterial::QMaterial(QMaterialPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

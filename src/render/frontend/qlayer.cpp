@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QLayerPrivate
+    \internal
+*/
 QLayerPrivate::QLayerPrivate(QLayer *qq)
     : QComponentPrivate(qq)
 {
@@ -58,6 +62,7 @@ QLayer::QLayer(QNode *parent)
 {
 }
 
+/*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

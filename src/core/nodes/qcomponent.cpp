@@ -45,6 +45,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QComponentPrivate
+    \internal
+*/
 QComponentPrivate::QComponentPrivate(QComponent *qq)
     : QNodePrivate(qq)
     , m_shareable(true)
@@ -163,6 +167,7 @@ QVector<QEntity *> QComponent::entities() const
     return d->m_entities;
 }
 
+/*! \internal */
 QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

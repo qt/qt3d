@@ -42,6 +42,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QRenderAttachmentPrivate
+    \internal
+*/
 QRenderAttachmentPrivate::QRenderAttachmentPrivate(QRenderAttachment *qq)
     : QNodePrivate(qq)
     , m_texture(Q_NULLPTR)
@@ -65,6 +69,7 @@ QRenderAttachment::QRenderAttachment(QNode *parent)
 {
 }
 
+/*! \internal */
 QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

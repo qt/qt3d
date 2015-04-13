@@ -42,11 +42,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractAttributePrivate
+    \internal
+*/
 QAbstractAttributePrivate::QAbstractAttributePrivate(QAbstractAttribute *qq)
     : q_ptr(qq)
 {
 }
 
+/*! \internal */
 QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBufferPtr buf, int type, uint count, uint offset, uint stride)
     : d_ptr(&dd)
 {

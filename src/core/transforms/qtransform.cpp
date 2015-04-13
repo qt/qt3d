@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QTransformPrivate
+    \internal
+*/
 QTransformPrivate::QTransformPrivate(QTransform *qq)
     : QComponentPrivate(qq),
       m_transformsDirty(false)
@@ -93,6 +97,7 @@ QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
     addTransform(transform);
 }
 
+/*! \internal */
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

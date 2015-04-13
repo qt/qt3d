@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QMatrixTransformPrivate
+    \internal
+*/
 QMatrixTransformPrivate::QMatrixTransformPrivate()
     : QAbstractTransformPrivate()
 {

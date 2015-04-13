@@ -42,6 +42,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QLayerFilterPrivate
+    \internal
+*/
 QLayerFilterPrivate::QLayerFilterPrivate(QLayerFilter *qq)
     : QFrameGraphNodePrivate(qq)
 {
@@ -61,6 +65,7 @@ QLayerFilter::QLayerFilter(QNode *parent)
 {
 }
 
+/*! \internal */
 QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

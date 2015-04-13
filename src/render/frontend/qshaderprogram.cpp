@@ -46,6 +46,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QShaderProgramPrivate
+    \internal
+*/
 QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
     : QNodePrivate(qq)
 {
@@ -69,6 +73,7 @@ QShaderProgram::QShaderProgram(QNode *parent)
 {
 }
 
+/*! \internal */
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

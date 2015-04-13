@@ -41,12 +41,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QShaderDataPrivate
+    \internal
+*/
 QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq)
     : QComponentPrivate(qq)
     , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))
 {
 }
 
+/*!
+    \class Qt3D::QShaderDataPrivate
+    \internal
+*/
 QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfacePtr reader)
     : QComponentPrivate(qq)
     , m_propertyReader(reader)
@@ -59,9 +67,9 @@ QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfaceP
  * \brief Provides a way of specifying values of a Uniform Block or a shader
  * structure.
  *
- * \note When subclassing and adding properties to Qt3D::QShaderData please not
- * that if you need to nest inner Qt3D::QShaderData, the data type of the
- * property should be Qt3D::QShaderData* and not whatever you named your subclass.
+ * \note When subclassing and adding properties to Qt3D::QShaderData, please note
+ * that if you need to nest an inner Qt3D::QShaderData, the data type of the
+ * property should be Qt3D::QShaderData* instead of the name of your subclass.
  *
  * \since 5.5
  */
@@ -77,6 +85,7 @@ PropertyReaderInterfacePtr QShaderData::propertyReader() const
     return d->m_propertyReader;
 }
 
+/*! \internal */
 QShaderData::QShaderData(QShaderDataPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

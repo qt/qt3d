@@ -42,9 +42,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QScenePropertyChange
+*/
+
 QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(128, sizeof(QScenePropertyChange), sizeof(QScenePropertyChangePrivate) * 2);
 QMutex QScenePropertyChangePrivate::m_mutex;
 
+/*!
+    \class Qt3D::QScenePropertyChangePrivate
+    \internal
+*/
 QScenePropertyChangePrivate::QScenePropertyChangePrivate(QScenePropertyChange *qq)
     : QSceneChangePrivate(qq)
 {
@@ -72,11 +80,13 @@ QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType obser
 {
 }
 
+/*! \internal */
 QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd)
     : QSceneChange(dd)
 {
 }
 
+/*! \internal */
 QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
     : QSceneChange(dd, type, observableType, subjectId, priority)
 {

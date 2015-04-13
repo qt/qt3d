@@ -39,8 +39,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
- * \class QAbstractMesh
- * \namespace Qt3D
+ * \class Qt3D::QAbstractMesh
  *
  * \brief Provides an abstract class that should be the base of all Mesh
  * primitives in a scene
@@ -55,6 +54,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractMeshPrivate
+    \internal
+*/
 QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
     : QComponentPrivate(qq)
 {
@@ -73,6 +76,7 @@ QAbstractMesh::QAbstractMesh(QNode *parent)
 {
 }
 
+/*! \internal */
 QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

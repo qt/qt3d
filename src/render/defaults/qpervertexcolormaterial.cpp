@@ -51,6 +51,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QPerVertexColorMaterialPrivate
+    \internal
+*/
 QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate(QPerVertexColorMaterial *qq)
     : QMaterialPrivate(qq)
     , m_vertexEffect(new QEffect())

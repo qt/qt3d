@@ -45,6 +45,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QTechniquePrivate
+    \internal
+*/
 QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
     : QNodePrivate(qq)
 {
@@ -61,6 +65,7 @@ QTechnique::QTechnique(QNode *parent)
     QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(openGLFilterChanged()));
 }
 
+/*! \internal */
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -200,7 +205,7 @@ void QTechnique::addPass(QRenderPass *pass)
 /*!
  * Removes a \a pass from the technique. This posts a ComponentRemoved
  * QScenePropertyChange notification to the QChangeArbiter with the value
- * being the \a pass' id and the property name being "pass".
+ * being the id of \a pass and the property name being "pass".
  */
 void QTechnique::removePass(QRenderPass *pass)
 {

@@ -42,6 +42,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
+    \class Qt3D::QOpenGLInformationServicePrivate
+    \internal
+*/
+
+/*!
     \class Qt3D::QOpenGLInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D OpenGL information service
@@ -53,8 +58,9 @@ namespace Qt3D {
 */
 
 /*!
-    Creates an instance of QOpenGLInformationService. This constructor is protected
-    so only subclasses can instantiate a QOpenGLInformationService object.
+    Creates an instance of QOpenGLInformationService, with a \a description for
+    the new service. This constructor is protected so only subclasses can
+    instantiate a QOpenGLInformationService object.
 */
 QOpenGLInformationService::QOpenGLInformationService(const QString &description)
     : QAbstractServiceProvider(QServiceLocator::OpenGLInformation, description)

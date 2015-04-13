@@ -44,6 +44,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QMeshDataPrivate
+    \internal
+*/
 QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
     : q_ptr(qq)
     , m_verticesPerPatch(0)
@@ -61,6 +65,7 @@ QMeshData::~QMeshData()
 {
 }
 
+/*! \internal */
 QMeshData::QMeshData(QMeshDataPrivate &dd)
     : d_ptr(&dd)
 {

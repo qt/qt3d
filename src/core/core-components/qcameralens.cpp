@@ -41,6 +41,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QCameraLensPrivate
+    \internal
+*/
 QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
     : QComponentPrivate(qq)
     , m_projectionType(QCameraLens::OrthogonalProjection)
@@ -79,6 +83,7 @@ void QCameraLens::copy(const QNode *ref)
     d_func()->m_projectionMatrix = lens->d_func()->m_projectionMatrix;
 }
 
+/*! \internal */
 QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

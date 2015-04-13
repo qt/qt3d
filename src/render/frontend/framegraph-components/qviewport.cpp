@@ -43,6 +43,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QViewportPrivate
+    \internal
+*/
 QViewportPrivate::QViewportPrivate(QViewport *qq) :
     QFrameGraphNodePrivate(qq)
 {
@@ -62,6 +66,7 @@ QViewport::QViewport(QNode *parent)
 {
 }
 
+/*! \internal */
 QViewport::QViewport(QViewportPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

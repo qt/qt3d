@@ -41,17 +41,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractTransformPrivate
+    \internal
+*/
 QAbstractTransformPrivate::QAbstractTransformPrivate()
     : QObjectPrivate()
 {
 }
-
 
 QAbstractTransform::QAbstractTransform(QObject *parent)
     : QObject(*new QAbstractTransformPrivate, parent)
 {
 }
 
+/*! \internal */
 QAbstractTransform::QAbstractTransform(QAbstractTransformPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

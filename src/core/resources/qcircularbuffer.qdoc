@@ -184,7 +184,7 @@
     support \c operator==().  These requirements are documented on a
     per-function basis.
 
-    QCircularBuffer provides \l{STL-Style Iterators} (\l {Qt3D::QCircularBuffer::}{const_iterator)
+    QCircularBuffer provides \l{STL-Style Iterators} (\l {Qt3D::QCircularBuffer::}{const_iterator})
     and \l {Qt3D::QCircularBuffer::}{iterator}). In practice, these are rarely used,
     because you can use indexes into the QCircularBuffer.
 

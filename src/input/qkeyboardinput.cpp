@@ -43,6 +43,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QKeyboardInputPrivate
+    \internal
+*/
 QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
     : QComponentPrivate(qq)
     , m_controller(Q_NULLPTR)
@@ -59,6 +63,7 @@ QKeyboardInput::QKeyboardInput(QNode *parent)
 {
 }
 
+/*! \internal */
 QKeyboardInput::QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

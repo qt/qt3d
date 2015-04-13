@@ -42,6 +42,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QClearBufferPrivate
+    \internal
+*/
 QClearBufferPrivate::QClearBufferPrivate(QClearBuffer *qq)
     : QFrameGraphNodePrivate(qq)
     , m_buffersType(QClearBuffer::None)
@@ -63,6 +67,7 @@ QClearBuffer::QClearBuffer(QNode *parent)
 {
 }
 
+/*! \internal */
 QClearBuffer::QClearBuffer(QClearBufferPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
