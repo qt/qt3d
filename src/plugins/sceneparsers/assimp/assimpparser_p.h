@@ -85,7 +85,6 @@ public:
 private:
     static bool isAssimpPath(const QString &path);
     static QStringList assimpSupportedFormats();
-    static QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix);
 
     QEntity *node(aiNode *node);
 
