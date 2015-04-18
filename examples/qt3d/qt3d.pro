@@ -35,7 +35,7 @@ SUBDIRS += \
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
-#qtHaveModule(qml): SUBDIRS += quick3d
+qtHaveModule(widgets): SUBDIRS += assimp-cpp
 
 # Make all other subdirs depend on exampleresources
 for(subdir, SUBDIRS) {
