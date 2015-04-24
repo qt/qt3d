@@ -50,7 +50,9 @@
 #include <QAtomicInt>
 #include <QDebug>
 #include <QThread>
-
+#include <QCoreApplication>
+#include <QtCore/QFuture>
+#include <QtCore/QFutureWatcher>
 
 QT_BEGIN_NAMESPACE
 
@@ -112,6 +114,11 @@ QAspectJobManagerPrivate::QAspectJobManagerPrivate(QAspectJobManager *qq)
 {
 }
 
+QAspectJobManagerPrivate::~QAspectJobManagerPrivate()
+{
+    delete m_dependencyHandler;
+}
+
 QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAbstractAspectJobManager(*new QAspectJobManagerPrivate(this), parent)
 {
@@ -121,8 +128,6 @@ QAspectJobManager::QAspectJobManager(QObject *parent)
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 #else
     d->m_threadPooler = new QThreadPooler(this);
-    d->m_threadPooler->setMaxThreadCount(QThread::idealThreadCount());
-
     d->m_dependencyHandler = new DependencyHandler();
     d->m_threadPooler->setDependencyHandler(d->m_dependencyHandler);
 #endif
@@ -138,9 +143,8 @@ QAspectJobManager::QAspectJobManager(QAspectJobManagerPrivate &dd, QObject *pare
     d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 #else
     d->m_threadPooler = new QThreadPooler(this);
-    d->m_threadPooler->setMaxThreadCount(QThread::idealThreadCount());
-
     d->m_dependencyHandler = new DependencyHandler();
+    d->m_threadPooler->setDependencyHandler(d->m_dependencyHandler);
 #endif
 }
 
@@ -182,24 +186,27 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     }
 #else
     // Convert QJobs to Tasks
-    QHash<QAspectJob *, QSharedPointer<AspectTask>> tasksMap;
+    QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
+    QVector<RunnableInterface *> taskList;
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
-        QSharedPointer<AspectTask> task = QSharedPointer<AspectTask>::create();
+        AspectTaskRunnable *task = new AspectTaskRunnable();
         task->m_job = job;
         tasksMap.insert(job.data(), task);
+
+        taskList << task;
     }
 
     // Resolve dependencies
     QVector<Dependency> dependencyList;
 
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
+    Q_FOREACH (const QSharedPointer<QAspectJob> &job, jobQueue) {
         const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
 
         Q_FOREACH (const QWeakPointer<QAspectJob> &dep, deps) {
-            QSharedPointer<AspectTask> taskDependee = tasksMap.value(dep.data());
+            AspectTaskRunnable *taskDependee = tasksMap.value(dep.data());
 
             if (taskDependee) {
-                QSharedPointer<AspectTask> taskDepender = tasksMap.value(job.data());
+                AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
                 dependencyList.append(Dependency(taskDepender, taskDependee));
                 taskDepender->setDependencyHandler(d->m_dependencyHandler);
                 taskDependee->setDependencyHandler(d->m_dependencyHandler);
@@ -208,10 +215,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     }
     d->m_dependencyHandler->addDependencies(qMove(dependencyList));
 
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
-        QSharedPointer<AspectTask> task = tasksMap.value(job.data());
-        d->m_threadPooler->enqueueTask(task);
-    }
+    d->m_threadPooler->mapDependables(taskList);
 #endif
 }
 
@@ -221,7 +225,9 @@ void QAspectJobManager::waitForAllJobs()
 #ifdef THREAD_WEAVER
     d->m_weaver->finish();
 #else
-    d->m_threadPooler->flush();
+    QFutureWatcher<void> futureWatcher;
+    futureWatcher.setFuture(d->m_threadPooler->future());
+    futureWatcher.waitForFinished();
 #endif
 }
 
@@ -240,15 +246,19 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 
     d->m_weaver->finish();
 #else
-    const int threadCount = d->m_threadPooler->maxThreadCount();
+    const int threadCount = QThread::idealThreadCount();
     QAtomicInt atomicCount(threadCount);
 
+    QVector<RunnableInterface *> taskList;
     for (int i = 0; i < threadCount; ++i) {
-        QSharedPointer<SynchronizedTask> syncTask(new SynchronizedTask(func, arg, &atomicCount));
-        d->m_threadPooler->enqueueTask(syncTask);
+        SyncTaskRunnable *syncTask = new SyncTaskRunnable(func, arg, &atomicCount);
+        taskList << syncTask;
     }
 
-    d->m_threadPooler->flush();
+    QFuture<void> future = d->m_threadPooler->mapDependables(taskList);
+    QFutureWatcher<void> futureWatcher;
+    futureWatcher.setFuture(future);
+    futureWatcher.waitForFinished();
 #endif
 }
 

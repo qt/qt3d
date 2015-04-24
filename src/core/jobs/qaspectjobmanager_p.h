@@ -58,6 +58,7 @@ class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
 {
 public:
     QAspectJobManagerPrivate(QAspectJobManager *qq);
+    ~QAspectJobManagerPrivate();
 
     Q_DECLARE_PUBLIC(QAspectJobManager)
     QAspectJobManager *q_ptr;
@@ -69,8 +70,6 @@ public:
 
     QThreadPooler *m_threadPooler;
     DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
 };
 
 } // Qt3D

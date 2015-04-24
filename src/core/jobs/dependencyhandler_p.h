@@ -49,18 +49,18 @@ namespace Qt3D {
 struct Dependency
 {
     Dependency() {}
-    Dependency(QSharedPointer<TaskInterface> depender, QSharedPointer<TaskInterface> dependee)
+    Dependency(RunnableInterface *depender, RunnableInterface *dependee)
         : depender(qMove(depender)),
           dependee(qMove(dependee)) {}
 
-    QSharedPointer<TaskInterface> depender;
-    QSharedPointer<TaskInterface> dependee;
+    RunnableInterface *depender;
+    RunnableInterface *dependee;
 };
 
 } // namespace Qt3D
 
 template <>
-class QTypeInfo<Qt3D::Dependency> : public QTypeInfoMerger<Qt3D::Dependency, QSharedPointer<Qt3D::TaskInterface> > {};
+class QTypeInfo<Qt3D::Dependency> : public QTypeInfoMerger<Qt3D::Dependency, Qt3D::RunnableInterface *> {};
 
 namespace Qt3D {
 
@@ -80,14 +80,15 @@ public:
     DependencyHandler();
 
     void addDependencies(QVector<Dependency> dependencies);
-    bool hasDependency(const QSharedPointer<TaskInterface> &depender);
-    void freeDependencies(const QSharedPointer<TaskInterface> &dependee);
+    bool hasDependency(const RunnableInterface *depender);
+    QVector<RunnableInterface *> freeDependencies(const RunnableInterface *dependee);
+    void setMutex(QMutex *mutex) { m_mutex = mutex; }
 
 private:
     Q_DISABLE_COPY(DependencyHandler)
 
     QVector<Dependency> m_dependencyMap;
-    mutable QMutex m_mutex;
+    QMutex *m_mutex;
 };
 
 } // namespace Qt3D

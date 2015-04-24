@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include "task_p.h"
-#include "jobrunner_p.h"
 #include "dependencyhandler_p.h"
+#include "qthreadpooler_p.h"
 
 #include <QMutexLocker>
 
@@ -46,75 +46,61 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-
-TaskInterface::~TaskInterface()
+RunnableInterface::~RunnableInterface()
 {
 }
 
 // Aspect task
 
-AspectTask::AspectTask()
+AspectTaskRunnable::AspectTaskRunnable()
     : m_dependencyHandler(0)
 {
 }
 
-AspectTask::~AspectTask()
+AspectTaskRunnable::~AspectTaskRunnable()
 {
 }
 
-void AspectTask::run(QSharedPointer<TaskInterface> self, JobRunner *jr)
+void AspectTaskRunnable::run()
 {
-    Q_UNUSED(self);
-    Q_UNUSED(jr);
     if (m_job)
         m_job->run();
 
-    // Cleanup stuff
-    // For now at least dependecies.
+    QVector<RunnableInterface *> freedTasks;
     if (m_dependencyHandler)
-        m_dependencyHandler->freeDependencies(self);
+        freedTasks = m_dependencyHandler->freeDependencies(this);
+
+    if (m_pooler)
+        m_pooler->taskFinished(freedTasks);
 }
 
-void AspectTask::run()
-{
-}
-
-void AspectTask::setDependencyHandler(DependencyHandler *handler)
+void AspectTaskRunnable::setDependencyHandler(DependencyHandler *handler)
 {
     m_dependencyHandler = handler;
 }
 
-DependencyHandler *AspectTask::dependencyHandler()
+DependencyHandler *AspectTaskRunnable::dependencyHandler()
 {
     return m_dependencyHandler;
 }
 
 // Synchronized task
 
-SynchronizedTask::SynchronizedTask(QAbstractAspectJobManager::JobFunction func,
+SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
                                    void *arg, QAtomicInt *atomicCount)
     : m_func(func),
       m_arg(arg),
-      m_atomicCount(atomicCount)
+      m_atomicCount(atomicCount),
+      m_pooler(Q_NULLPTR)
 {
 }
 
-SynchronizedTask::~SynchronizedTask()
+SyncTaskRunnable::~SyncTaskRunnable()
 {
 }
 
-void SynchronizedTask::run()
+void SyncTaskRunnable::run()
 {
-    m_func(m_arg);
-}
-
-void SynchronizedTask::run(QSharedPointer<TaskInterface> self, JobRunner *jr)
-{
-    Q_UNUSED(self);
-    Q_UNUSED(jr);
-    Q_ASSERT(m_func);
-    Q_ASSERT(jr);
-
     // Call the function
     m_func(m_arg);
 
@@ -123,19 +109,21 @@ void SynchronizedTask::run(QSharedPointer<TaskInterface> self, JobRunner *jr)
 
     // Wait for the other worker threads to be done
     while (m_atomicCount->load() > 0)
-        jr->yieldCurrentThread();
+        QThread::currentThread()->yieldCurrentThread();
+
+    if (m_pooler)
+        m_pooler->taskFinished(QVector<RunnableInterface *>());
 }
 
-void SynchronizedTask::setDependencyHandler(DependencyHandler *handler)
+void SyncTaskRunnable::setDependencyHandler(DependencyHandler *handler)
 {
     Q_UNUSED(handler);
 }
 
-DependencyHandler *SynchronizedTask::dependencyHandler()
+DependencyHandler *SyncTaskRunnable::dependencyHandler()
 {
     return Q_NULLPTR;
 }
-
 
 } // namespace Qt3D {
 
