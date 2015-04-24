@@ -78,7 +78,7 @@ QEntityPrivate::QEntityPrivate(QEntity *qq)
     another may focus on Qt3D::QMouseInput.
 
     \sa Qt3D::QComponent, Qt3D::QTransform
-/
+*/
 
 /*!
     Constructs a new Qt3D::QEntity instance with \a parent as parent.
