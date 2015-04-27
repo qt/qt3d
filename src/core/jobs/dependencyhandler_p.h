@@ -81,7 +81,7 @@ public:
 
     void addDependencies(QVector<Dependency> dependencies);
     bool hasDependency(const RunnableInterface *depender);
-    QVector<RunnableInterface *> freeDependencies(const RunnableInterface *dependee);
+    QVector<RunnableInterface *> freeDependencies(const RunnableInterface *task);
     void setMutex(QMutex *mutex) { m_mutex = mutex; }
 
 private:

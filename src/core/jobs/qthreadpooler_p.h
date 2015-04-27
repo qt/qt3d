@@ -58,7 +58,7 @@ public:
     ~QThreadPooler();
 
     QFuture<void> mapDependables(QVector<RunnableInterface *> &taskQueue);
-    void taskFinished(QVector<RunnableInterface *> tasks);
+    void taskFinished(RunnableInterface *task);
     QFuture<void> future();
 
     void setDependencyHandler(DependencyHandler *handler);

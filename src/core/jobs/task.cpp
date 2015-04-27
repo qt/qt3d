@@ -53,7 +53,8 @@ RunnableInterface::~RunnableInterface()
 // Aspect task
 
 AspectTaskRunnable::AspectTaskRunnable()
-    : m_dependencyHandler(0)
+    : m_dependencyHandler(0),
+      m_reserved(false)
 {
 }
 
@@ -66,12 +67,8 @@ void AspectTaskRunnable::run()
     if (m_job)
         m_job->run();
 
-    QVector<RunnableInterface *> freedTasks;
-    if (m_dependencyHandler)
-        freedTasks = m_dependencyHandler->freeDependencies(this);
-
     if (m_pooler)
-        m_pooler->taskFinished(freedTasks);
+        m_pooler->taskFinished(this);
 }
 
 void AspectTaskRunnable::setDependencyHandler(DependencyHandler *handler)
@@ -91,7 +88,8 @@ SyncTaskRunnable::SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func,
     : m_func(func),
       m_arg(arg),
       m_atomicCount(atomicCount),
-      m_pooler(Q_NULLPTR)
+      m_pooler(Q_NULLPTR),
+      m_reserved(false)
 {
 }
 
@@ -112,7 +110,7 @@ void SyncTaskRunnable::run()
         QThread::currentThread()->yieldCurrentThread();
 
     if (m_pooler)
-        m_pooler->taskFinished(QVector<RunnableInterface *>());
+        m_pooler->taskFinished(this);
 }
 
 void SyncTaskRunnable::setDependencyHandler(DependencyHandler *handler)

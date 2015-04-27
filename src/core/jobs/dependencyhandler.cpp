@@ -69,10 +69,22 @@ namespace {
         bool operator()(const Dependency &candidate) const
         {
             if (dependee == candidate.dependee) {
-                freedList->append(candidate.depender);
+                if (!candidate.depender->reserved())
+                    freedList->append(candidate.depender);
                 return true;
             }
             return false;
+        }
+    };
+
+    struct DependerEquals : std::unary_function<Dependency, bool>
+    {
+        const RunnableInterface *depender;
+        explicit DependerEquals(const RunnableInterface *depender)
+            : depender(qMove(depender)) {}
+        bool operator()(const Dependency &candidate) const
+        {
+            return depender == candidate.depender;
         }
     };
 
@@ -118,14 +130,19 @@ bool DependencyHandler::hasDependency(const RunnableInterface *depender)
  * Removes all the entries on the m_dependencyMap that have given task as a dependee,
  * i.e. entries where the dependency is on the given task.
  */
-QVector<RunnableInterface *> DependencyHandler::freeDependencies(const RunnableInterface *dependee)
+QVector<RunnableInterface *> DependencyHandler::freeDependencies(const RunnableInterface *task)
 {
-    const QMutexLocker locker(m_mutex);
+    // The caller has to set the mutex, which is QThreadPooler::taskFinished
+
+    m_dependencyMap.erase(std::remove_if(m_dependencyMap.begin(),
+                                         m_dependencyMap.end(),
+                                         DependerEquals(task)),
+                          m_dependencyMap.end());
 
     QVector<RunnableInterface *> freedList;
     m_dependencyMap.erase(std::remove_if(m_dependencyMap.begin(),
                                          m_dependencyMap.end(),
-                                         DependeeEquals(dependee, &freedList)),
+                                         DependeeEquals(task, &freedList)),
                           m_dependencyMap.end());
 
     return freedList;

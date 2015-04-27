@@ -73,21 +73,25 @@ void QThreadPooler::enqueueTasks(QVector<RunnableInterface *> &tasks)
 
     for (QVector<RunnableInterface *>::iterator it = tasks.begin();
          it != tasks.end(); it++) {
-        if (!m_dependencyHandler->hasDependency((*it))) {
+        if (!m_dependencyHandler->hasDependency((*it)) && !(*it)->reserved()) {
+            (*it)->setReserved(true);
             (*it)->setPooler(this);
             QThreadPool::globalInstance()->start((*it));
         }
     }
 }
 
-void QThreadPooler::taskFinished(QVector<RunnableInterface *> tasks)
+void QThreadPooler::taskFinished(RunnableInterface *task)
 {
     const QMutexLocker locker(m_mutex);
 
     release();
 
-    if (tasks.size())
-        enqueueTasks(tasks);
+    QVector<RunnableInterface *> freedTasks;
+    if (task->dependencyHandler())
+        freedTasks = m_dependencyHandler->freeDependencies(task);
+    if (freedTasks.size())
+        enqueueTasks(freedTasks);
 
     if (currentCount() == 0) {
         if (m_futureInterface) {

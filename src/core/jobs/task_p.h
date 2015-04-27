@@ -66,6 +66,9 @@ public:
     virtual int id() = 0;
     virtual void setId(int id) = 0;
 
+    virtual void setReserved(bool reserved) = 0;
+    virtual bool reserved() = 0;
+
     virtual void setPooler(QThreadPooler *pooler) = 0;
 };
 
@@ -82,6 +85,9 @@ public:
 
     void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
 
+    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
+    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+
     int id() Q_DECL_OVERRIDE { return m_id; }
     void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
 
@@ -91,6 +97,7 @@ public:
 private:
     DependencyHandler *m_dependencyHandler;
     QThreadPooler *m_pooler;
+    bool m_reserved;
 
     int m_id; // For testing purposes for now
 };
@@ -109,6 +116,9 @@ public:
 
     void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
 
+    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
+    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+
     int id() Q_DECL_OVERRIDE { return m_id; }
     void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
 
@@ -118,6 +128,7 @@ private:
     QAtomicInt *m_atomicCount;
 
     QThreadPooler *m_pooler;
+    bool m_reserved;
 
     int m_id;
 };
