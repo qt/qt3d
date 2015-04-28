@@ -43,11 +43,22 @@ namespace Qt3D {
 
 namespace Quick {
 
+/*!
+    \qmltype Entity
+    \inherits Node
+    \inqmlmodule Qt3D
+    \since 5.5
+*/
+
 Quick3DEntity::Quick3DEntity(QObject *parent)
     : QObject(parent)
 {
 }
 
+/*!
+    \qmlproperty list<Component3D> Qt3D::Entity::components
+    \readonly
+*/
 QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
     return QQmlListProperty<Qt3D::QComponent>(this, 0,

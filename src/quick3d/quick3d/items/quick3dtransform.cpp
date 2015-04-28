@@ -43,6 +43,11 @@ namespace Qt3D {
 
 namespace Quick {
 
+/*!
+    \qmltype Transform
+    \inqmlmodule Qt3D
+    \since 5.5
+*/
 Quick3DTransform::Quick3DTransform(QObject *parent)
     : QObject(parent)
 {
@@ -50,6 +55,15 @@ Quick3DTransform::Quick3DTransform(QObject *parent)
     QObject::connect(parent, SIGNAL(transformsChanged()), this, SIGNAL(transformsChanged()));
 }
 
+/*!
+    \qmlproperty matrix4x4 Qt3D::Transform::matrix
+    \readonly
+*/
+
+/*!
+    \qmlproperty list<QAbstractTransform> Qt3D::Transform::transforms
+    \default
+*/
 QQmlListProperty<QAbstractTransform> Quick3DTransform::transformList()
 {
     return QQmlListProperty<QAbstractTransform>(this, 0,

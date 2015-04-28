@@ -274,4 +274,58 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
 
 } // Qt3D
 
+/*!
+    \qmltype CameraLens
+    \instantiates Qt3D::QCameraLens
+    \inqmlmodule Qt3D
+    \inherits Component3D
+    \since 5.5
+*/
+
+/*!
+    \qmlproperty enumeration Qt3D::CameraLens::projectionType
+
+    Holds the type of the camera projection (orthogonal or perspective).
+
+    \value CameraLens.OrthogonalProjection Orthogonal projection
+    \value CameraLens.PerspectiveProjection Perspective projection
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::nearPlane
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::farPlane
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::fieldOfView
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::aspectRatio
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::left
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::right
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::bottom
+*/
+
+/*!
+    \qmlproperty float Qt3D::CameraLens::top
+*/
+
+/*!
+    \qmlproperty matrix4x4 Qt3D::CameraLens::projectionMatrix
+    \readonly
+*/
+
 QT_END_NAMESPACE

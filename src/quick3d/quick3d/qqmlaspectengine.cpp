@@ -48,7 +48,7 @@ namespace Qt3D {
 namespace Quick {
 
 /*!
-    \class Qt3D::QQmlAspectEnginePrivate
+    \class Qt3D::Quick::QQmlAspectEnginePrivate
     \internal
 */
 QQmlAspectEnginePrivate::QQmlAspectEnginePrivate(QQmlAspectEngine *qq)

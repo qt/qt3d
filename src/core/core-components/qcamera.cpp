@@ -53,6 +53,14 @@ QCameraPrivate::QCameraPrivate(QCamera *qq)
 {
 }
 
+/*!
+    \qmltype Camera
+    \instantiates Qt3D::QCamera
+    \inherits Entity
+    \inqmlmodule Qt3D
+    \since 5.5
+*/
+
 QCamera::QCamera(QNode *parent) :
     QEntity(*new QCameraPrivate(this), parent)
 {
@@ -240,6 +248,15 @@ void QCamera::setProjectionType(QCameraLens::ProjectionType type)
     d->m_lens->setProjectionType(type);
 }
 
+/*!
+    \qmlproperty enumeration Qt3D::Camera::projectionType
+
+    Holds the type of the camera projection (orthogonal or perspective).
+
+    \value CameraLens.OrthogonalProjection Orthogonal projection
+    \value CameraLens.PerspectiveProjection Perspective projection
+*/
+
 QCameraLens::ProjectionType QCamera::projectionType() const
 {
     Q_D(const QCamera);
@@ -251,6 +268,10 @@ void QCamera::setNearPlane(float nearPlane)
     Q_D(QCamera);
     d->m_lens->setNearPlane(nearPlane);
 }
+
+/*!
+    \qmlproperty float Qt3D::Camera::nearPlane
+*/
 
 float QCamera::nearPlane() const
 {
@@ -264,6 +285,10 @@ void QCamera::setFarPlane(float farPlane)
     d->m_lens->setFarPlane(farPlane);
 }
 
+/*!
+    \qmlproperty float Qt3D::Camera::farPlane
+*/
+
 float QCamera::farPlane() const
 {
     Q_D(const QCamera);
@@ -275,6 +300,10 @@ void QCamera::setFieldOfView(float fieldOfView)
     Q_D(QCamera);
     d->m_lens->setFieldOfView(fieldOfView);
 }
+
+/*!
+    \qmlproperty float Qt3D::Camera::fieldOfView
+*/
 
 float QCamera::fieldOfView() const
 {
@@ -288,6 +317,10 @@ void QCamera::setAspectRatio(float aspectRatio)
     d->m_lens->setAspectRatio(aspectRatio);
 }
 
+/*!
+    \qmlproperty float Qt3D::Camera::aspectRatio
+*/
+
 float QCamera::aspectRatio() const
 {
     Q_D(const QCamera);
@@ -299,6 +332,10 @@ void QCamera::setLeft(float left)
     Q_D(QCamera);
     d->m_lens->setLeft(left);
 }
+
+/*!
+    \qmlproperty float Qt3D::Camera::left
+*/
 
 float QCamera::left() const
 {
@@ -312,6 +349,10 @@ void QCamera::setRight(float right)
     d->m_lens->setRight(right);
 }
 
+/*!
+    \qmlproperty float Qt3D::Camera::right
+*/
+
 float QCamera::right() const
 {
     Q_D(const QCamera);
@@ -323,6 +364,10 @@ void QCamera::setBottom(float bottom)
     Q_D(QCamera);
     d->m_lens->setBottom(bottom);
 }
+
+/*!
+    \qmlproperty float Qt3D::Camera::bottom
+*/
 
 float QCamera::bottom() const
 {
@@ -336,11 +381,20 @@ void QCamera::setTop(float top)
     d->m_lens->setTop(top);
 }
 
+/*!
+    \qmlproperty float Qt3D::Camera::top
+*/
+
 float QCamera::top() const
 {
     Q_D(const QCamera);
     return d->m_lens->top();
 }
+
+/*!
+    \qmlproperty matrix4x4 Qt3D::Camera::projectionMatrix
+    \readonly
+*/
 
 QMatrix4x4 QCamera::projectionMatrix() const
 {
@@ -353,6 +407,10 @@ void QCamera::setPosition(const QVector3D &position)
     Q_D(QCamera);
     d->m_lookAt->setPosition(position);
 }
+
+/*!
+    \qmlproperty vector3d Qt3D::Camera::position
+*/
 
 QVector3D QCamera::position() const
 {
@@ -367,6 +425,10 @@ void QCamera::setUpVector(const QVector3D &upVector)
     d->m_lookAt->setUpVector(upVector);
 }
 
+/*!
+    \qmlproperty vector3d Qt3D::Camera::upVector
+*/
+
 QVector3D QCamera::upVector() const
 {
     Q_D(const QCamera);
@@ -378,6 +440,10 @@ void QCamera::setViewCenter(const QVector3D &viewCenter)
     Q_D(QCamera);
     d->m_lookAt->setViewCenter(viewCenter);
 }
+
+/*!
+    \qmlproperty vector3d Qt3D::Camera::viewCenter
+*/
 
 QVector3D QCamera::viewCenter() const
 {

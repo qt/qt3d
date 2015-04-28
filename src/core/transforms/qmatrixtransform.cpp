@@ -91,4 +91,15 @@ QMatrix4x4 QMatrixTransform::transformMatrix() const
 
 } // namespace Qt3D
 
+/*!
+    \qmltype MatrixTransform
+    \inqmlmodule Qt3D
+    \since 5.5
+    \instantiates Qt3D::QMatrixTransform
+*/
+
+/*!
+    \qmlproperty matrix4x4 Qt3D::MatrixTransform::matrix
+*/
+
 QT_END_NAMESPACE

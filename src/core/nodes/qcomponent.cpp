@@ -195,4 +195,20 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 
 } // namespace Qt3D
 
+/*!
+    \qmltype Component3D
+    \instantiates Qt3D::QComponent
+    \inqmlmodule Qt3D
+    \inherits Node
+    \since 5.5
+*/
+
+/*!
+    \qmlproperty bool Qt3D::Component3D::shareable
+*/
+
+/*!
+    \qmlproperty bool Qt3D::Component3D::enabled
+*/
+
 QT_END_NAMESPACE

@@ -43,10 +43,24 @@ namespace Qt3D {
 
 namespace Quick {
 
+/*!
+    \qmltype Node
+    \inqmlmodule Qt3D
+    \since 5.5
+
+    \brief A base QML type that other types inherit. It cannot be directly
+    created.
+*/
+
 Quick3DNode::Quick3DNode(QObject *parent)
     : QObject(parent)
 {
 }
+
+/*!
+    \qmlproperty list<QtQml::QtObject> Qt3D::Node::data
+    \default
+*/
 
 QQmlListProperty<QObject> Quick3DNode::data()
 {
@@ -56,6 +70,11 @@ QQmlListProperty<QObject> Quick3DNode::data()
                                      Quick3DNode::dataAt,
                                      Quick3DNode::clearData);
 }
+
+/*!
+    \qmlproperty list<Node> Qt3D::Node::childNodes
+    \readonly
+*/
 
 QQmlListProperty<QNode> Quick3DNode::childNodes()
 {
