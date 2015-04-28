@@ -45,5 +45,9 @@
         <file>shaders/gl3/pervertexcolor.vert</file>
         <file>shaders/es2/pervertexcolor.frag</file>
         <file>shaders/es2/pervertexcolor.vert</file>
+        <file>shaders/es2/skybox.frag</file>
+        <file>shaders/es2/skybox.vert</file>
+        <file>shaders/gl3/skybox.frag</file>
+        <file>shaders/gl3/skybox.vert</file>
     </qresource>
 </RCC>

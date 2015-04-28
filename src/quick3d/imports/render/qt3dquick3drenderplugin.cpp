@@ -124,7 +124,9 @@ static const struct {
     { "NormalDiffuseSpecularMapMaterial", 2, 0 },
     { "PerVertexColorMaterial", 2, 0 },
     // FrameGraphs
-    { "ForwardRenderer", 2, 0 }
+    { "ForwardRenderer", 2, 0 },
+    // Entities
+    { "SkyboxEntity", 2, 0 }
 };
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
