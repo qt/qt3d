@@ -102,7 +102,7 @@ public:
     void apply(QGraphicsContext* gc);
 
     StateMaskSet stateMask() const;
-
+    void merge(RenderStateSet *other);
     void resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext* gc);
 private:
     /**

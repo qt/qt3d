@@ -523,6 +523,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 {
     //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
     m_renderQueues->queueRenderView(renderView, submitOrder);
+
     if (m_renderQueues->isFrameQueueComplete()) {
         // We can increment the currentProcessingFrameIndex here
         // That index will then be used by RenderViewJobs to know which QFrameAllocator to use
@@ -765,6 +766,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         //// Draw Calls
         // Set state
+        RenderStateSet *globalState = m_graphicsContext->currentStateSet();
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
 
@@ -790,6 +792,10 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             } else {
                 m_graphicsContext->drawArrays(primType, 0, primCount);
             }
+
+            // Reset state if overridden by pass state
+            if (command->m_stateSet != Q_NULLPTR)
+                m_graphicsContext->setCurrentStateSet(globalState);
 
             int err = m_graphicsContext->openGLContext()->functions()->glGetError();
             if (err)

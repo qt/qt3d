@@ -418,19 +418,22 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
                     command->m_meshData = mesh->meshDataHandle();
                     command->m_instancesCount = 0;
-
-                    // TODO: Build the state set for a render pass only once per-pass. Not once per rendercommand and pass.
                     command->m_stateSet = Q_NULLPTR;
                     command->m_changeCost = 0;
                     // For RenderPass based states we use the globally set RenderState
                     // if no renderstates are defined as part of the pass. That means:
                     // RenderPass { renderStates: [] } will use the states defined by
                     // StateSet in the FrameGraph
-                    if (!pass->renderStates().isEmpty()) {
+                    if (!pass->renderStates().isEmpty())
                         command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
+                    if (command->m_stateSet != Q_NULLPTR) {
+                        // Merge per pass stateset with global stateset
+                        // so that the local stateset only overrides
+                        if (m_stateSet != Q_NULLPTR)
+                            command->m_stateSet->merge(m_stateSet);
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     }
-                    setShaderAndUniforms(command, pass, globalParameter, *(node->worldTransform()));
+                    setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
                     buildSortingKey(command);
                     m_commands.append(command);
                 }

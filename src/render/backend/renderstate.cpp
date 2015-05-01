@@ -151,6 +151,11 @@ StateMaskSet RenderStateSet::stateMask() const
     return m_stateMask;
 }
 
+void RenderStateSet::merge(RenderStateSet *other)
+{
+    m_stateMask |= other->stateMask();
+}
+
 void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext *gc)
 {
     // TO DO -> Call gcHelper methods instead of raw GL
