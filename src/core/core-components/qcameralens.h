@@ -71,7 +71,8 @@ public:
 
     enum ProjectionType {
         OrthogonalProjection,
-        PerspectiveProjection
+        PerspectiveProjection,
+        FrustumProjection
     };
 
     void setProjectionType(ProjectionType projectionType);
@@ -106,6 +107,10 @@ public:
     void setOrthographicProjection(float left, float right,
                                    float bottom, float top,
                                    float nearPlane, float farPlane);
+
+    void setFrustumProjection(float left, float right,
+                              float bottom, float top,
+                              float nearPlane, float farPlane);
 
     void setPerspectiveProjection(float fieldOfView, float aspect,
                                   float nearPlane, float farPlane);
