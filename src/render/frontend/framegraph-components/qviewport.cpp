@@ -47,8 +47,9 @@ namespace Qt3D {
     \class Qt3D::QViewportPrivate
     \internal
 */
-QViewportPrivate::QViewportPrivate(QViewport *qq) :
-    QFrameGraphNodePrivate(qq)
+QViewportPrivate::QViewportPrivate(QViewport *qq)
+    : QFrameGraphNodePrivate(qq)
+    , m_rect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
 {
 }
 
