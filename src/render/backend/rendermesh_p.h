@@ -62,7 +62,7 @@ class RenderEntity;
 class RenderMaterial;
 class RenderTechnique;
 
-class RenderMesh : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderMesh : public QBackendNode
 {
 public:
     RenderMesh();

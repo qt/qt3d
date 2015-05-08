@@ -9,5 +9,6 @@ contains(QT_CONFIG, private_tests) {
         rendershader \
         renderviewutils \
         renderviews \
-        rendermaterial
+        rendermaterial \
+        rendermesh
 }
