@@ -30,7 +30,8 @@ SUBDIRS += \
     enabled-qml \
     skybox \
     controls \
-    anaglyph-rendering
+    anaglyph-rendering \
+    simple-shaders-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
