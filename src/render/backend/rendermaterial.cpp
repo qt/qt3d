@@ -55,6 +55,7 @@ namespace Render {
 RenderMaterial::RenderMaterial()
     : QBackendNode()
     , m_textureProvider(Q_NULLPTR)
+    , m_enabled(true)
 {
 }
 

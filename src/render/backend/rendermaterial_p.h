@@ -59,7 +59,7 @@ class RenderTechnique;
 class RenderEffect;
 class MaterialManager;
 
-class RenderMaterial : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderMaterial : public QBackendNode
 {
 public:
     RenderMaterial();
