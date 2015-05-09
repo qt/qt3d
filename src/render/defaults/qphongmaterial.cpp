@@ -167,7 +167,7 @@ float QPhongMaterial::shininess() const
 void QPhongMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(QPhongMaterial);
-    d->m_shininessParameter->setValue(ambient);
+    d->m_ambientParameter->setValue(ambient);
 }
 
 void QPhongMaterial::setDiffuse(const QColor &diffuse)
