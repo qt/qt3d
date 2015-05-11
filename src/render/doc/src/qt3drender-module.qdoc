@@ -47,3 +47,17 @@
 
     Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
 */
+
+/*!
+   \qmlmodule Qt3D.Render 2.0
+   \title Qt3D Render QML Types
+   \ingroup qmlmodules
+
+   \brief Provides Qt3D QML types for rendering.
+
+   To import and use the module's QML types, use the following statement:
+
+   \badcode
+   import Qt3D.Render 2.0
+   \endcode
+*/

@@ -51,6 +51,25 @@ QLayerFilterPrivate::QLayerFilterPrivate()
 {
 }
 
+/*!
+    \class QLayerFilter
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief The QLayerFilter class provides ...
+*/
+
+/*!
+    \qmltype LayerFilter
+    \instantiates Qt3D::QLayerFilter
+    \inherits FrameGraphNode
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For ...
+*/
+
+/*! \fn void Qt3D::QLayerFilter::copy(const QNode *ref)
+  Copies the \a ref instance into this one.
+ */
 void QLayerFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
@@ -58,6 +77,10 @@ void QLayerFilter::copy(const QNode *ref)
     d_func()->m_layers = layer->d_func()->m_layers;
 }
 
+
+/*! \fn Qt3D::QLayerFilter::QLayerFilter(QNode *parent)
+  Constructs a new QLayerFilter with the specified \a parent.
+ */
 QLayerFilter::QLayerFilter(QNode *parent)
     : QFrameGraphNode(*new QLayerFilterPrivate, parent)
 {
@@ -68,6 +91,16 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
 }
+
+/*!
+  \property Qt3D::QLayerFilter::layers
+
+ */
+
+/*!
+  \qmlproperty stringlist Qt3D.Render::LayerFilter::layers
+
+*/
 
 void QLayerFilter::setLayers(const QStringList &layers)
 {

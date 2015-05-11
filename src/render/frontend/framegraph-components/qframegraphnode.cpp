@@ -37,17 +37,6 @@
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
 
-/*!
- * \class Qt3D::FrameGraphNode
- *
- * \brief Base class of all FrameGraph configuration nodes.
- *
- * This is an abstract class so it cannot be instanced directly
- * but rather through one of its subclasses.
- *
- * \since 5.3
- */
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -62,11 +51,38 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 {
 }
 
+/*!
+  \class QFrameGraphNode
+  \inmodule Qt3DRender
+  \since 5.5
+
+  \brief Base class of all FrameGraph configuration nodes.
+
+  This is an abstract class so it cannot be instanced directly
+  but rather through one of its subclasses.
+
+ */
+
+/*!
+    \qmltype FrameGraphNode
+    \inqmlmodule Qt3D.Render
+    \instantiates QFrameGraphNode
+    \inherits Node
+    \since 5.5
+    \qmlabstract
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
     : QNode(*new QFrameGraphNodePrivate, parent)
 {
 }
 
+/*!
+  Returns a pointer to the parent.
+ */
 QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
 {
     QFrameGraphNode *parentFGNode = Q_NULLPTR;
@@ -85,6 +101,12 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
+
+/*!
+    \qmlproperty bool Qt3D.Render::FrameGraphNode::enabled
+
+    Holds whether the frame graph node is enabled or disabled.
+*/
 
 /*!
     \property Qt3D::QFrameGraphNode::enabled

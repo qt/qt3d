@@ -63,11 +63,33 @@ public:
     QString m_vendor;
 };
 
+/*!
+    \class QOpenGLFilter
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief The QOpenGLFilter class provides ...
+*/
+
+/*!
+    \qmltype OpenGLFilter
+    \instantiates Qt3D::QOpenGLFilter
+    \inherits QtObject
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For OpenGL ...
+*/
+
+/*! \fn Qt3D::QOpenGLFilter::QOpenGLFilter(QObject *parent)
+  Constructs a new QOpenGLFilter with the specified \a parent.
+ */
 QOpenGLFilter::QOpenGLFilter(QObject *parent)
     : QObject(*new QOpenGLFilterPrivate, parent)
 {
 }
 
+/*! \fn void Qt3D::QOpenGLFilter::copy(const QOpenGLFilter &ref)
+  Copies the \a ref instance into this one.
+ */
 void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 {
     Q_D(QOpenGLFilter);
@@ -79,11 +101,54 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
     d->m_vendor = ref.vendor();
 }
 
+/*!
+  \enum Qt3D::QOpenGLFilter::Api
+
+  \value ES QSurfaceFormat::OpenGLES
+  \value Desktop QSurfaceFormat::OpenGL
+
+*/
+
+/*!
+  \enum Qt3D::QOpenGLFilter::Profile
+
+  \value None QSurfaceFormat::NoProfile
+  \value Core QSurfaceFormat::CoreProfile
+  \value Compatibility QSurfaceFormat::CompatibilityProfile
+
+*/
+
+/*!
+  \property Qt3D::QOpenGLFilter::api
+
+*/
+
+/*!
+  \qmlproperty enumeration Qt3D.Render::OpenGLFilter::api
+
+
+  \value ES QSurfaceFormat::OpenGLES
+  \value Desktop QSurfaceFormat::OpenGL
+*/
+
 QOpenGLFilter::Api QOpenGLFilter::api() const
 {
     Q_D(const QOpenGLFilter);
     return d->m_api;
 }
+
+/*!
+  \property Qt3D::QOpenGLFilter::profile
+
+*/
+
+/*!
+  \qmlproperty enumeration Qt3D.Render::OpenGLFilter::profile
+
+  \value None QSurfaceFormat::NoProfile
+  \value Core QSurfaceFormat::CoreProfile
+  \value Compatibility QSurfaceFormat::CompatibilityProfile
+*/
 
 QOpenGLFilter::Profile QOpenGLFilter::profile() const
 {
@@ -91,11 +156,31 @@ QOpenGLFilter::Profile QOpenGLFilter::profile() const
     return d->m_profile;
 }
 
+/*!
+  \property Qt3D::QOpenGLFilter::minorVersion
+
+ */
+
+/*!
+  \qmlproperty int Qt3D.Render::OpenGLFilter::minorVersion
+
+*/
+
 int QOpenGLFilter::minorVersion() const
 {
     Q_D(const QOpenGLFilter);
     return d->m_minor;
 }
+
+/*!
+  \property Qt3D::QOpenGLFilter::majorVersion
+
+ */
+
+/*!
+  \qmlproperty int Qt3D.Render::OpenGLFilter::majorVersion
+
+*/
 
 int QOpenGLFilter::majorVersion() const
 {
@@ -103,11 +188,31 @@ int QOpenGLFilter::majorVersion() const
     return d->m_major;
 }
 
+/*!
+  \property Qt3D::QOpenGLFilter::extensions
+
+ */
+
+/*!
+  \qmlproperty stringlist Qt3D.Render::OpenGLFilter::extensions
+
+*/
+
 QStringList QOpenGLFilter::extensions() const
 {
     Q_D(const QOpenGLFilter);
     return d->m_extensions;
 }
+
+/*!
+  \property Qt3D::QOpenGLFilter::vendor
+
+ */
+
+/*!
+  \qmlproperty string Qt3D.Render::OpenGLFilter::vendor
+
+*/
 
 QString QOpenGLFilter::vendor() const
 {
@@ -175,6 +280,10 @@ void QOpenGLFilter::setVendor(const QString &vendor)
     }
 }
 
+/*! \fn bool Qt3D::operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+  \relates Qt3D::QOpenGLFilter
+  Returns true if \a reference and \a sample are equivalent.
+ */
 bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
 {
     if (sample.api() == reference.api()
@@ -193,11 +302,18 @@ bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
     return false;
 }
 
+/*! \fn bool Qt3D::operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+  \relates Qt3D::QOpenGLFilter
+  Returns true if \a reference and \a sample are different.
+ */
 bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
 {
     return !(reference == sample);
 }
 
+/*! \fn void Qt3D::QOpenGLFilter::openGLFilterChanged()
+  This signal is emitted when the value of any property is changed.
+*/
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -92,7 +92,8 @@ private:
 };
 
 /*!
-    \class Qt3D::QTextureImage
+    \class QTextureImage
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture
     image from an image source.
@@ -102,6 +103,16 @@ private:
  */
 
 /*!
+    \qmltype TextureImage
+    \instantiates Qt3D::QTextureImage
+    \inherits AbstractTextureImage
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief Encapsulates the necessary information to create an OpenGL texture
+    image from an image source.
+*/
+
+/*!
     Constructs a new Qt3D::QTextureImage instance with \a parent as parent.
  */
 QTextureImage::QTextureImage(QNode *parent)
@@ -109,6 +120,9 @@ QTextureImage::QTextureImage(QNode *parent)
 {
 }
 
+/*!
+  The destructor.
+ */
 QTextureImage::~QTextureImage()
 {
 }
@@ -121,6 +135,20 @@ QUrl QTextureImage::source() const
     Q_D(const QTextureImage);
     return d->m_source;
 }
+
+/*!
+  \property Qt3D::QTextureImage::source
+
+  This property holdsthe source url from which data for the texture
+  image will be loaded.
+*/
+
+/*!
+  \qmlproperty url Qt3D.Render::TextureImage::source
+
+  This property holdsthe source url from which data for the texture
+  image will be loaded.
+*/
 
 /*!
     Sets the source url of the texture image to \a source.
@@ -145,6 +173,9 @@ QTextureDataFunctorPtr QTextureImage::dataFunctor() const
     return QTextureDataFunctorPtr(new QImageTextureDataFunctor(source()));
 }
 
+/*!
+  Copies \ref into this texture image.
+ */
 void QTextureImage::copy(const QNode *ref)
 {
     QAbstractTextureImage::copy(ref);

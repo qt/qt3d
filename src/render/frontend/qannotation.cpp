@@ -53,6 +53,25 @@ QAnnotationPrivate::QAnnotationPrivate()
 {
 }
 
+/*!
+    \class QAnnotation
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief The QAnnotation class provides ...
+*/
+
+/*!
+    \qmltype Annotation
+    \instantiates Qt3D::QAnnotation
+    \inherits Node
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For annotating ...
+*/
+
+/*!
+  Copies the annotation in \a ref into this annotation.
+ */
 void QAnnotation::copy(const QNode *ref)
 {
     QNode::copy(ref);
@@ -61,6 +80,9 @@ void QAnnotation::copy(const QNode *ref)
     d_func()->m_value = criterion->d_func()->m_value;
 }
 
+/*!
+  The constructor creats a new annotation under \a parent.
+ */
 QAnnotation::QAnnotation(QNode *parent)
     : QNode(*new QAnnotationPrivate, parent)
 {
@@ -84,11 +106,29 @@ void QAnnotation::setName(const QString &name)
     }
 }
 
+/*!
+  \property QAnnotation::value
+
+*/
+
+/*!
+  \qmlproperty variant Qt3D.Render::Annotation::value
+*/
+
 QVariant QAnnotation::value() const
 {
     Q_D(const QAnnotation);
     return d->m_value;
 }
+
+/*!
+  \property QAnnotation::name
+
+ */
+
+/*!
+  \qmlproperty string Qt3D.Render::Annotation::name
+ */
 
 QString QAnnotation::name() const
 {

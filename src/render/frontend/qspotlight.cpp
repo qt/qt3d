@@ -43,24 +43,23 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
-/*!
- *
- * Expected Shader struct
- *
- * \code
- *
- * struct SpotLight
- * {
- *  vec3 position;
- *  vec3 direction;
- *  vec4 color;
- *  float intensity;
- *  float cutOffAngle;
- * };
- *
- * uniform SpotLight spotLights[10];
- *
- * \endcode
+/*
+  Expected Shader struct
+
+  \code
+
+  struct SpotLight
+  {
+   vec3 position;
+   vec3 direction;
+   vec4 color;
+   float intensity;
+   float cutOffAngle;
+  };
+
+  uniform SpotLight spotLights[10];
+
+  \endcode
  */
 
 /*!
@@ -73,6 +72,26 @@ QSpotLightPrivate::QSpotLightPrivate()
 {
 }
 
+/*!
+  \class QSpotLight
+  \inmodule Qt3DRender
+  \since 5.5
+
+ */
+
+/*!
+    \qmltype SpotLight
+    \instantiates Qt3D::QSpotLight
+    \inherits AbstractLight
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For OpenGL ...
+*/
+
+/*! \fn void Qt3D::QSpotLight::copy(const QNode *ref)
+  Copies the \a ref instance into this one.
+ */
+
 void QSpotLight::copy(const QNode *ref)
 {
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
@@ -83,6 +102,11 @@ void QSpotLight::copy(const QNode *ref)
     QAbstractLight::copy(ref);
 }
 
+
+/*!
+  \fn Qt3D::QSpotLight::QSpotLight(QNode *parent)
+  Constructs a new QSpotLight with the specified \a parent.
+ */
 QSpotLight::QSpotLight(QNode *parent)
     : QAbstractLight(*new QSpotLightPrivate, parent)
 {
@@ -94,12 +118,32 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 {
 }
 
-QVector3D QSpotLight::direction() const
+/*!
+  \qmlproperty vector3d Qt3D.Render::SpotLight::direction
+
+*/
+
+/*!
+  \property Qt3D::QSpotLight::direction
+
+ */
+
+    QVector3D QSpotLight::direction() const
 {
     Q_D(const QSpotLight);
     return d->m_direction;
 }
 
+
+/*!
+  \qmlproperty float Qt3D.Render::SpotLight::cutOffAngle
+
+*/
+
+/*!
+  \property Qt3D::QSpotLight::cutOffAngle
+
+ */
 float QSpotLight::cutOffAngle() const
 {
     Q_D(const QSpotLight);
