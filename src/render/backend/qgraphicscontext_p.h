@@ -90,7 +90,7 @@ public:
 
     int id() const; // unique, small integer ID of this context
 
-    bool beginDrawing(QSurface *surface, const QColor &clearColor);
+    bool beginDrawing(QSurface *surface, const QColor &color);
     void clearBackBuffer(QClearBuffer::BufferType buffers);
     void endDrawing(bool swapBuffers);
 
@@ -178,6 +178,7 @@ public:
     void    enableAlphaCoverage();
     void    disableAlphaCoverage();
     GLuint  boundFrameBufferObject();
+    void    clearColor(const QColor &color);
 
     // Helper methods
     static GLint elementType(GLint type);

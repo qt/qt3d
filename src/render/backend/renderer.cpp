@@ -596,8 +596,9 @@ void Renderer::submitRenderViews(int maxFrameCount)
         if (renderViewsCount <= 0)
             continue;
 
+        QColor previousClearColor = renderViews.first()->clearColor();
         // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor())) {
+        if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
             qDeleteAll(renderViews);
             m_renderQueues->popFrameQueue();
             break;
@@ -622,6 +623,13 @@ void Renderer::submitRenderViews(int maxFrameCount)
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
                                                     renderViews[i]->attachmentPack(), defaultFboId);
+
+            // Set clear color if different
+            if (previousClearColor != renderViews[i]->clearColor()) {
+                previousClearColor = renderViews[i]->clearColor();
+                m_graphicsContext->clearColor(previousClearColor);
+            }
+
             // Clear BackBuffer
             m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
             // Set the Viewport

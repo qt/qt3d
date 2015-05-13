@@ -132,7 +132,7 @@ void QGraphicsContext::initialize()
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
-bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
+bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
 {
     Q_ASSERT(surface);
     Q_ASSERT(m_gl);
@@ -156,7 +156,7 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
         initialize();
     }
 
-    m_gl->functions()->glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+    clearColor(color);
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -649,6 +649,11 @@ void QGraphicsContext::disableAlphaCoverage()
 GLuint QGraphicsContext::boundFrameBufferObject()
 {
     return m_glHelper->boundFrameBufferObject();
+}
+
+void QGraphicsContext::clearColor(const QColor &color)
+{
+    m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
 /*!
