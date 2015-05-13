@@ -40,16 +40,12 @@
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 
-#include <exampleresources.h>
-
 #include <QGuiApplication>
 #include <QtQml>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
-    initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
