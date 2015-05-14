@@ -69,6 +69,7 @@ public :
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
     int m_maximumLayers;
+    bool m_unique;
 };
 
 } // QT3D

@@ -62,6 +62,7 @@ QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate(QAbstractTextur
     , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
     , m_comparisonMode(QAbstractTextureProvider::CompareNone)
     , m_maximumLayers(1)
+    , m_unique(false)
 {
 }
 
@@ -126,9 +127,9 @@ QAbstractTextureProvider::~QAbstractTextureProvider()
  */
 void QAbstractTextureProvider::setSize(int w, int h, int d)
 {
-   setWidth(w);
-   setHeight(h);
-   setDepth(d);
+    setWidth(w);
+    setHeight(h);
+    setDepth(d);
 }
 
 /*!
@@ -209,10 +210,49 @@ void QAbstractTextureProvider::setMaximumLayers(int maximumLayers)
     }
 }
 
+/*!
+    Returns the maximum number of layers for the texture provider.
+
+    \note this has a meaning only for texture providers that have 3D or
+     array target formats.
+ */
 int QAbstractTextureProvider::maximumLayers() const
 {
     Q_D(const QAbstractTextureProvider);
     return d->m_maximumLayers;
+}
+
+/*!
+    \property Qt3D::QAbstractTextureProvider::unique
+
+    Sets whether this texture provider should be unique by reading \a unique.
+    By default this is false.
+
+    By default the renderer based on the attributes of texture providers is
+    able to compare them and detect duplicates (same size, format and image
+    sources) and smartly avoid unnecessary computations. In some cases however
+    (texture providers used as Qt3D::RenderTarget attachments) you don't want
+    the renderer to perform these comparison, in which case you can set is
+    unique to true.
+ */
+void QAbstractTextureProvider::setUnique(bool unique)
+{
+    Q_D(QAbstractTextureProvider);
+    if (d->m_unique != unique) {
+        d->m_unique = unique;
+        emit uniqueChanged();
+    }
+}
+
+/*!
+    Returns whether the texture should be shared with other textures in the
+    renderer or not. Defaults to false as this allow in most cases the renderer
+    to be faster.
+ */
+bool QAbstractTextureProvider::isUnique() const
+{
+    Q_D(const QAbstractTextureProvider);
+    return d->m_unique;
 }
 
 /*!
@@ -229,6 +269,9 @@ void QAbstractTextureProvider::setFormat(TextureFormat format)
     }
 }
 
+/*!
+    Return the texture provider's format.
+ */
 QAbstractTextureProvider::TextureFormat QAbstractTextureProvider::format() const
 {
     Q_D(const QAbstractTextureProvider);

@@ -66,6 +66,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int maximumLayers READ maximumLayers WRITE setMaximumLayers NOTIFY maximumLayersChanged)
+    Q_PROPERTY(bool unique READ isUnique WRITE setUnique NOTIFY uniqueChanged)
 
 public:
 
@@ -296,6 +297,9 @@ public:
     void setMaximumLayers(int maximumLayers);
     int maximumLayers() const;
 
+    void setUnique(bool unique);
+    bool isUnique() const;
+
 Q_SIGNALS:
     void formatChanged();
     void statusChanged();
@@ -309,6 +313,7 @@ Q_SIGNALS:
     void comparisonFunctionChanged();
     void comparisonModeChanged();
     void maximumLayersChanged();
+    void uniqueChanged();
 
 protected:
     explicit QAbstractTextureProvider(QNode *parent = 0);
