@@ -377,7 +377,6 @@ void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
                 // Set up MRT, glDrawBuffers...
                 m_glHelper->drawBuffers(i, activeDrawBuffers);
             }
-            qDebug() << "FBO Complete";
         }
     } else {
         qWarning() << "FBO incomplete";
