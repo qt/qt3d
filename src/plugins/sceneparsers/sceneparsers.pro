@@ -1,5 +1,2 @@
 TEMPLATE = subdirs
-
-config_assimp {
-    SUBDIRS += assimp
-}
+config_assimp|win32:!wince*|osx: SUBDIRS += assimp
