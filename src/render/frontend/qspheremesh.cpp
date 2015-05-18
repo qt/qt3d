@@ -68,8 +68,8 @@ private:
 
 class QSphereMeshPrivate : public QAbstractMeshPrivate
 {
-    QSphereMeshPrivate(QSphereMesh *qq)
-        : QAbstractMeshPrivate(qq)
+    QSphereMeshPrivate()
+        : QAbstractMeshPrivate()
         , m_generateTangents(false)
         , m_rings(16)
         , m_slices(16)
@@ -84,7 +84,7 @@ class QSphereMeshPrivate : public QAbstractMeshPrivate
 };
 
 QSphereMesh::QSphereMesh(QNode *parent)
-    : QAbstractMesh(*new QSphereMeshPrivate(this), parent)
+    : QAbstractMesh(*new QSphereMeshPrivate, parent)
 {
     update();
 }

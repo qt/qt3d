@@ -69,7 +69,7 @@ namespace Qt3D {
     Constructs a new Qt3D::QAbstractTextureImage instance with \a parent as parent.
  */
 QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
-    : QNode(*new QAbstractTextureImagePrivate(this), parent)
+    : QNode(*new QAbstractTextureImagePrivate, parent)
 {
 }
 

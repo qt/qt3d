@@ -54,8 +54,8 @@ namespace Qt3D
     \class Qt3D::QAbstractLightPrivate
     \internal
 */
-QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
-        : QShaderDataPrivate(qq)
+QAbstractLightPrivate::QAbstractLightPrivate()
+        : QShaderDataPrivate()
         , m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
 {}
@@ -78,7 +78,7 @@ void QAbstractLight::copy(const QNode *ref)
  * Constructs a new QAbstractLight with the given \a parent.
  */
 QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
-    QShaderData(*new QAbstractLightPrivate(this), parent)
+    QShaderData(*new QAbstractLightPrivate, parent)
 {
 }
 

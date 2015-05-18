@@ -81,7 +81,7 @@ private:
     \since 5.5
 */
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
-    : QEntity(*new Quick3DEntityLoaderPrivate(this), parent)
+    : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
 }
 
@@ -130,8 +130,8 @@ void Quick3DEntityLoader::copy(const QNode *ref)
     \class Qt3D::Quick::Quick3DEntityLoaderPrivate
     \internal
 */
-Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate(Quick3DEntityLoader *qq)
-    : QEntityPrivate(qq),
+Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
+    : QEntityPrivate(),
       m_incubator(Q_NULLPTR),
       m_context(Q_NULLPTR),
       m_component(Q_NULLPTR),

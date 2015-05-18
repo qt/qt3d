@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QTransformPrivate
     \internal
 */
-QTransformPrivate::QTransformPrivate(QTransform *qq)
-    : QComponentPrivate(qq),
+QTransformPrivate::QTransformPrivate()
+    : QComponentPrivate(),
       m_transformsDirty(false)
 {
 }
@@ -80,19 +80,19 @@ QMatrix4x4 QTransformPrivate::applyTransforms() const
 
 
 QTransform::QTransform(QNode *parent)
-    : Qt3D::QComponent(*new QTransformPrivate(this), parent)
+    : QComponent(*new QTransformPrivate, parent)
 {
 }
 
 QTransform::QTransform(QList<QAbstractTransform *> transforms, QNode *parent)
-    : Qt3D::QComponent(*new QTransformPrivate(this), parent)
+    : QComponent(*new QTransformPrivate, parent)
 {
     Q_FOREACH (QAbstractTransform *t, transforms)
         addTransform(t);
 }
 
 QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
-    : Qt3D::QComponent(*new QTransformPrivate(this), parent)
+    : QComponent(*new QTransformPrivate, parent)
 {
     addTransform(transform);
 }

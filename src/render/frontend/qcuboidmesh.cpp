@@ -52,8 +52,8 @@ namespace Qt3D {
     \class Qt3D::QCuboidMeshPrivate
     \internal
 */
-QCuboidMeshPrivate::QCuboidMeshPrivate(QCuboidMesh *qq)
-    : QAbstractMeshPrivate(qq)
+QCuboidMeshPrivate::QCuboidMeshPrivate()
+    : QAbstractMeshPrivate()
     , m_xExtent(1.0)
     , m_yExtent(1.0)
     , m_zExtent(1.0)
@@ -76,7 +76,7 @@ void QCuboidMesh::copy(const QNode *ref)
 }
 
 QCuboidMesh::QCuboidMesh(QNode *parent)
-    : QAbstractMesh(*new QCuboidMeshPrivate(this), parent)
+    : QAbstractMesh(*new QCuboidMeshPrivate, parent)
 {
     update();
 }

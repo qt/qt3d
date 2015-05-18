@@ -49,8 +49,8 @@ namespace Qt3D {
     \class Qt3D::QParameterPrivate
     \internal
 */
-QParameterPrivate::QParameterPrivate(QParameter *qq)
-    : QNodePrivate(qq)
+QParameterPrivate::QParameterPrivate()
+    : QNodePrivate()
 {
 }
 
@@ -74,12 +74,12 @@ QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
 }
 
 QParameter::QParameter(QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
 }
 
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);
     d->m_name = name;
@@ -87,7 +87,7 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
 }
 
 QParameter::QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);
     d->m_name = name;

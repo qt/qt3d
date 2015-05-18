@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QFrameGraphPrivate
     \internal
 */
-QFrameGraphPrivate::QFrameGraphPrivate(QFrameGraph *qq)
-    : QComponentPrivate(qq)
+QFrameGraphPrivate::QFrameGraphPrivate()
+    : QComponentPrivate()
     , m_activeFrameGraph(Q_NULLPTR)
 {
 
@@ -76,7 +76,7 @@ void QFrameGraph::copy(const QNode *ref)
  */
 
 QFrameGraph::QFrameGraph(QNode *parent)
-    : QComponent(*new QFrameGraphPrivate(this), parent)
+    : QComponent(*new QFrameGraphPrivate, parent)
 {
 }
 

@@ -47,8 +47,8 @@ namespace Qt3D {
     \class Qt3D::QAbstractTextureProviderPrivate
     \internal
 */
-QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq)
-    : QNodePrivate(qq)
+QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate()
+    : QNodePrivate()
     , m_target(QAbstractTextureProvider::Target2D)
     , m_format(QAbstractTextureProvider::Automatic)
     , m_width(1)
@@ -102,12 +102,12 @@ void QAbstractTextureProvider::copy(const QNode *ref)
 
 
 QAbstractTextureProvider::QAbstractTextureProvider(QNode *parent)
-    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
+    : QNode(*new QAbstractTextureProviderPrivate, parent)
 {
 }
 
 QAbstractTextureProvider::QAbstractTextureProvider(Target target, QNode *parent)
-    : QNode(*new QAbstractTextureProviderPrivate(this), parent)
+    : QNode(*new QAbstractTextureProviderPrivate, parent)
 {
     d_func()->m_target = target;
 }

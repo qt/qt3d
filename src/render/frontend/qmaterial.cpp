@@ -67,8 +67,8 @@ namespace Qt3D {
     \class Qt3D::QMaterialPrivate
     \internal
 */
-QMaterialPrivate::QMaterialPrivate(QMaterial *qq)
-    : QComponentPrivate(qq)
+QMaterialPrivate::QMaterialPrivate()
+    : QComponentPrivate()
     , m_effect(Q_NULLPTR)
 {
 }
@@ -85,7 +85,7 @@ void QMaterial::copy(const QNode *ref)
 }
 
 QMaterial::QMaterial(QNode *parent)
-    : QComponent(*new QMaterialPrivate(this), parent)
+    : QComponent(*new QMaterialPrivate, parent)
 {
 }
 

@@ -47,8 +47,8 @@ namespace Qt3D {
     \class Qt3D::QKeyboardInputPrivate
     \internal
 */
-QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
-    : QComponentPrivate(qq)
+QKeyboardInputPrivate::QKeyboardInputPrivate()
+    : QComponentPrivate()
     , m_controller(Q_NULLPTR)
     , m_focus(false)
 {
@@ -59,7 +59,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate(QKeyboardInput *qq)
     Constructs a new QKeyboardInput instance with parent \a parent.
  */
 QKeyboardInput::QKeyboardInput(QNode *parent)
-    : QComponent(*new QKeyboardInputPrivate(this), parent)
+    : QComponent(*new QKeyboardInputPrivate, parent)
 {
 }
 

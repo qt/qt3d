@@ -54,8 +54,8 @@ namespace Quick {
     \class Qt3D::Quick::Quick3DNodeInstantiatorPrivate
     \internal
 */
-Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate(QNode *qq)
-    : QNodePrivate(qq)
+Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
+    : QNodePrivate()
     , m_componentComplete(true)
     , m_effectiveReset(false)
     , m_active(true)
@@ -212,7 +212,7 @@ void Quick3DNodeInstantiatorPrivate::makeModel()
 
 */
 Quick3DNodeInstantiator::Quick3DNodeInstantiator(QNode *parent)
-    : QNode(*(new Quick3DNodeInstantiatorPrivate(this)), parent)
+    : QNode(*new Quick3DNodeInstantiatorPrivate, parent)
 {
 }
 

@@ -51,7 +51,7 @@ namespace Qt3D {
 */
 
 QRenderPassFilter::QRenderPassFilter(QNode *parent)
-    : QFrameGraphNode(*new QRenderPassFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QRenderPassFilterPrivate, parent)
 {}
 
 /*! \internal */

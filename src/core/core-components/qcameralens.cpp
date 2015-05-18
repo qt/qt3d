@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QCameraLensPrivate
     \internal
 */
-QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
-    : QComponentPrivate(qq)
+QCameraLensPrivate::QCameraLensPrivate()
+    : QComponentPrivate()
     , m_projectionType(QCameraLens::OrthogonalProjection)
     , m_nearPlane(0.1f)
     , m_farPlane(1024.0f)
@@ -60,7 +60,7 @@ QCameraLensPrivate::QCameraLensPrivate(QCameraLens *qq)
 }
 
 QCameraLens::QCameraLens(QNode *parent)
-    : QComponent(*new QCameraLensPrivate(this), parent)
+    : QComponent(*new QCameraLensPrivate, parent)
 {
     Q_D(QCameraLens);
     d->updateProjectionMatrix();

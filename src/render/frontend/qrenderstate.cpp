@@ -46,8 +46,8 @@ namespace Qt3D {
     \class Qt3D::QRenderStatePrivate
     \internal
 */
-QRenderStatePrivate::QRenderStatePrivate(QRenderState *qq, QRenderState::Type type)
-    : QNodePrivate(qq),
+QRenderStatePrivate::QRenderStatePrivate(QRenderState::Type type)
+    : QNodePrivate(),
       m_type(type)
 {
 }

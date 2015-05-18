@@ -57,8 +57,8 @@ namespace Qt3D {
     \class Qt3D::QNormalDiffuseMapMaterialPrivate
     \internal
 */
-QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate(QNormalDiffuseMapMaterial *qq)
-    : QMaterialPrivate(qq)
+QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
+    : QMaterialPrivate()
     , m_normalDiffuseEffect(new QEffect())
     , m_diffuseTexture(new QTexture2D())
     , m_normalTexture(new QTexture2D())
@@ -162,7 +162,7 @@ void QNormalDiffuseMapMaterialPrivate::init()
     Constructs a new Qt3D::QNormalDiffuseMapMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNode *parent)
-    : QMaterial(*new QNormalDiffuseMapMaterialPrivate(this), parent)
+    : QMaterial(*new QNormalDiffuseMapMaterialPrivate, parent)
 {
     Q_D(QNormalDiffuseMapMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));

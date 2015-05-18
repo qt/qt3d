@@ -45,8 +45,8 @@ namespace Qt3D {
 class QTextureImagePrivate: public QAbstractTextureImagePrivate
 {
 public:
-    QTextureImagePrivate(QTextureImage *qq)
-        : QAbstractTextureImagePrivate(qq)
+    QTextureImagePrivate()
+        : QAbstractTextureImagePrivate()
     {
     }
 
@@ -105,7 +105,7 @@ private:
     Constructs a new Qt3D::QTextureImage instance with \a parent as parent.
  */
 QTextureImage::QTextureImage(QNode *parent)
-    : QAbstractTextureImage(*new QTextureImagePrivate(this), parent)
+    : QAbstractTextureImage(*new QTextureImagePrivate, parent)
 {
 }
 

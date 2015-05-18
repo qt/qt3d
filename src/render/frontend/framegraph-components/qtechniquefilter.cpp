@@ -49,8 +49,8 @@ namespace Qt3D {
     \class Qt3D::QTechniqueFilterPrivate
     \internal
 */
-QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
-    : QFrameGraphNodePrivate(qq)
+QTechniqueFilterPrivate::QTechniqueFilterPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -64,7 +64,7 @@ void QTechniqueFilter::copy(const QNode *ref)
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
-    : QFrameGraphNode(*new QTechniqueFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QTechniqueFilterPrivate, parent)
 {
 }
 

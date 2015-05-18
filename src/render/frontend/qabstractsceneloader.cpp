@@ -51,8 +51,8 @@ namespace Render {
     \class Qt3D::Render::QAbstractSceneLoaderPrivate
     \internal
 */
-QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate(QAbstractSceneLoader *qq)
-    : QComponentPrivate(qq)
+QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate()
+    : QComponentPrivate()
     , m_status(QAbstractSceneLoader::Loading)
 {
     m_shareable = false;
@@ -65,7 +65,7 @@ QAbstractSceneLoader::QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNod
 }
 
 QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
-    : QComponent(*new QAbstractSceneLoaderPrivate(this), parent)
+    : QComponent(*new QAbstractSceneLoaderPrivate, parent)
 {
 }
 

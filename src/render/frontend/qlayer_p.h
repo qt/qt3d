@@ -48,7 +48,7 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT QLayerPrivate : QComponentPrivate
 {
 public:
-    QLayerPrivate(QLayer *qq);
+    QLayerPrivate();
 
     Q_DECLARE_PUBLIC(QLayer)
     QStringList m_names;

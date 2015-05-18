@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QCameraPrivate
     \internal
 */
-QCameraPrivate::QCameraPrivate(QCamera *qq)
-    : QEntityPrivate(qq)
+QCameraPrivate::QCameraPrivate()
+    : QEntityPrivate()
     , m_lens(new QCameraLens())
     , m_transform(new QTransform())
     , m_lookAt(new QLookAtTransform())
@@ -62,7 +62,7 @@ QCameraPrivate::QCameraPrivate(QCamera *qq)
 */
 
 QCamera::QCamera(QNode *parent) :
-    QEntity(*new QCameraPrivate(this), parent)
+    QEntity(*new QCameraPrivate, parent)
 {
     QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionMatrixChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));

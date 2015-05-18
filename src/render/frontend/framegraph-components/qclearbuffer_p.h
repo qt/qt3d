@@ -47,7 +47,7 @@ namespace Qt3D {
 class QClearBufferPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QClearBufferPrivate(QClearBuffer *qq);
+    QClearBufferPrivate();
 
     Q_DECLARE_PUBLIC(QClearBuffer)
     QClearBuffer::BufferType m_buffersType;

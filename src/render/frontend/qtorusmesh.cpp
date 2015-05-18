@@ -67,8 +67,8 @@ private:
 
 class QTorusMeshPrivate : public QAbstractMeshPrivate
 {
-    QTorusMeshPrivate(QTorusMesh *qq)
-        : QAbstractMeshPrivate(qq)
+    QTorusMeshPrivate()
+        : QAbstractMeshPrivate()
         , m_rings(16)
         , m_slices(16)
         , m_radius(1.0)
@@ -94,7 +94,7 @@ void QTorusMesh::copy(const QNode *ref)
 
 
 QTorusMesh::QTorusMesh(QNode *parent)
-    : QAbstractMesh(*new QTorusMeshPrivate(this), parent)
+    : QAbstractMesh(*new QTorusMeshPrivate, parent)
 {
     update();
 }

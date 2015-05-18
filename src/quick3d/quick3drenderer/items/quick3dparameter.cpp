@@ -54,8 +54,8 @@ const int qjsValueTypeId = qMetaTypeId<QJSValue>();
 
 }
 
-Quick3DParameterPrivate::Quick3DParameterPrivate(Quick3DParameter *qq)
-    : QParameterPrivate(qq)
+Quick3DParameterPrivate::Quick3DParameterPrivate()
+    : QParameterPrivate()
 {
 }
 
@@ -71,7 +71,7 @@ void Quick3DParameterPrivate::setValue(const QVariant &value)
 }
 
 Quick3DParameter::Quick3DParameter(QNode *parent)
-    : QParameter(*new Quick3DParameterPrivate(this), parent)
+    : QParameter(*new Quick3DParameterPrivate, parent)
 {
 }
 

@@ -48,8 +48,8 @@ class QRenderPassFilter;
 class QRenderPassFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QRenderPassFilterPrivate(QRenderPassFilter *qq)
-        : QFrameGraphNodePrivate(qq)
+    QRenderPassFilterPrivate()
+        : QFrameGraphNodePrivate()
     {}
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)

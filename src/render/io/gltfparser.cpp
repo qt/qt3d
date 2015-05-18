@@ -235,11 +235,9 @@ private:
 class GLTFParserMeshPrivate : public QAbstractMeshPrivate
 {
 public:
-
-    GLTFParserMeshPrivate(GLTFParserMesh *qq)
-        : QAbstractMeshPrivate(qq)
-    {
-    }
+    GLTFParserMeshPrivate()
+        : QAbstractMeshPrivate()
+    {}
 
     Q_DECLARE_PUBLIC(GLTFParserMesh)
     QMeshDataPtr m_meshData;
@@ -1014,7 +1012,7 @@ void GLTFParserMesh::copy(const QNode *ref)
 }
 
 GLTFParserMesh::GLTFParserMesh(QNode *parent)
-    : QAbstractMesh(*new GLTFParserMeshPrivate(this), parent)
+    : QAbstractMesh(*new GLTFParserMeshPrivate, parent)
 {
 }
 

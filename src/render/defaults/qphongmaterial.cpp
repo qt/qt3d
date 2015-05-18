@@ -55,8 +55,8 @@ namespace Qt3D {
     \class Qt3D::QPhongMaterialPrivate
     \internal
 */
-QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
-    : QMaterialPrivate(qq)
+QPhongMaterialPrivate::QPhongMaterialPrivate()
+    : QMaterialPrivate()
     , m_phongEffect(new QEffect())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
@@ -101,7 +101,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
     Constructs a new QPhongMaterial instance with parent object \a parent.
 */
 QPhongMaterial::QPhongMaterial(QNode *parent)
-    : QMaterial(*new QPhongMaterialPrivate(this), parent)
+    : QMaterial(*new QPhongMaterialPrivate, parent)
 {
     Q_D(QPhongMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));

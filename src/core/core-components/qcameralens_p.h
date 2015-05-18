@@ -51,7 +51,7 @@ namespace Qt3D {
 class QT3DCORESHARED_EXPORT QCameraLensPrivate : public QComponentPrivate
 {
 public:
-    QCameraLensPrivate(QCameraLens *qq);
+    QCameraLensPrivate();
 
     inline void updateProjectionMatrix()
     {

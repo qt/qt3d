@@ -44,8 +44,8 @@ namespace Qt3D {
 class QColorMaskPrivate : public QRenderStatePrivate
 {
 public:
-    QColorMaskPrivate(QColorMask *qq)
-        : QRenderStatePrivate(qq, QRenderState::ColorMask)
+    QColorMaskPrivate()
+        : QRenderStatePrivate(QRenderState::ColorMask)
         , m_red(true)
         , m_green(true)
         , m_blue(true)
@@ -77,7 +77,7 @@ public:
     Constructs a new Qt3D::QColorMask instance with \a parent as parent.
  */
 QColorMask::QColorMask(QNode *parent)
-    : QRenderState(*new QColorMaskPrivate(this), parent)
+    : QRenderState(*new QColorMaskPrivate, parent)
 {
 }
 

@@ -49,12 +49,13 @@ namespace Qt3D {
     \class Qt3D::QEffectPrivate
     \internal
 */
-QEffectPrivate::QEffectPrivate(QEffect *qq)
-    : QNodePrivate(qq)
-{}
+QEffectPrivate::QEffectPrivate()
+    : QNodePrivate()
+{
+}
 
 QEffect::QEffect(QNode *parent)
-    : QNode(*new QEffectPrivate(this), parent)
+    : QNode(*new QEffectPrivate, parent)
 {
 }
 

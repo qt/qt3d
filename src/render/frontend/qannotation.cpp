@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QAnnotationPrivate
     \internal
 */
-QAnnotationPrivate::QAnnotationPrivate(QAnnotation *qq)
-    : QNodePrivate(qq)
+QAnnotationPrivate::QAnnotationPrivate()
+    : QNodePrivate()
 {
 }
 
@@ -62,7 +62,7 @@ void QAnnotation::copy(const QNode *ref)
 }
 
 QAnnotation::QAnnotation(QNode *parent)
-    : QNode(*new QAnnotationPrivate(this), parent)
+    : QNode(*new QAnnotationPrivate, parent)
 {
 }
 

@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QLayerPrivate
     \internal
 */
-QLayerPrivate::QLayerPrivate(QLayer *qq)
-    : QComponentPrivate(qq)
+QLayerPrivate::QLayerPrivate()
+    : QComponentPrivate()
 {
 }
 
@@ -58,7 +58,7 @@ void QLayer::copy(const QNode *ref)
 }
 
 QLayer::QLayer(QNode *parent)
-    : QComponent(*new QLayerPrivate(this), parent)
+    : QComponent(*new QLayerPrivate, parent)
 {
 }
 

@@ -46,8 +46,8 @@ namespace Qt3D {
     \class Qt3D::QSortCriterionPrivate
     \internal
 */
-QSortCriterionPrivate::QSortCriterionPrivate(QSortCriterion *qq)
-    : QNodePrivate(qq)
+QSortCriterionPrivate::QSortCriterionPrivate()
+    : QNodePrivate()
     , m_sort(QSortCriterion::StateChangeCost)
 {
 }
@@ -60,7 +60,7 @@ void QSortCriterion::copy(const QNode *ref)
 }
 
 QSortCriterion::QSortCriterion(QNode *parent)
-    : QNode(*new QSortCriterionPrivate(this), parent)
+    : QNode(*new QSortCriterionPrivate, parent)
 {
 }
 

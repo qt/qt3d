@@ -55,9 +55,8 @@ namespace Qt3D {
     \class Qt3D::QEntityPrivate
     \internal
 */
-
-QEntityPrivate::QEntityPrivate(QEntity *qq)
-    : QNodePrivate(qq)
+QEntityPrivate::QEntityPrivate()
+    : QNodePrivate()
     , m_enabled(true)
 {}
 
@@ -84,7 +83,7 @@ QEntityPrivate::QEntityPrivate(QEntity *qq)
     Constructs a new Qt3D::QEntity instance with \a parent as parent.
 */
 QEntity::QEntity(QNode *parent)
-    : QNode(*new QEntityPrivate(this), parent)
+    : QNode(*new QEntityPrivate, parent)
 {
 }
 

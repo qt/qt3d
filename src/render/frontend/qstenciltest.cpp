@@ -48,8 +48,8 @@ namespace Qt3D {
 class QStencilTestPrivate : public QRenderStatePrivate
 {
 public:
-    QStencilTestPrivate(QStencilTest *qq)
-        : QRenderStatePrivate(qq, QRenderState::StencilTest)
+    QStencilTestPrivate()
+        : QRenderStatePrivate(QRenderState::StencilTest)
         , m_mask(0)
         , m_func(QStencilTest::Never)
         , m_faceMode(QStencilTest::FrontAndBack)
@@ -63,7 +63,7 @@ public:
 };
 
 QStencilTest::QStencilTest(QNode *parent)
-    : QRenderState(*new QStencilTestPrivate(this), parent)
+    : QRenderState(*new QStencilTestPrivate, parent)
 {
 }
 

@@ -58,7 +58,7 @@ QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode
     \class Qt3D::QNodePrivate
     \internal
 */
-QNodePrivate::QNodePrivate(QNode *qq)
+QNodePrivate::QNodePrivate()
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
@@ -67,7 +67,6 @@ QNodePrivate::QNodePrivate(QNode *qq)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
-    Q_UNUSED(qq) // ###
 }
 
 // Called by QEvent::childAdded (main thread)

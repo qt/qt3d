@@ -48,7 +48,7 @@ namespace Qt3D {
 class QT3DCORESHARED_EXPORT QEntityPrivate : public QNodePrivate
 {
 public :
-    QEntityPrivate(QEntity *qq);
+    QEntityPrivate();
 
     Q_DECLARE_PUBLIC(QEntity)
 

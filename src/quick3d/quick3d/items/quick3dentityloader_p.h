@@ -59,7 +59,7 @@ class Quick3DEntityLoaderIncubator;
 class Quick3DEntityLoaderPrivate : public QEntityPrivate
 {
 public:
-    Quick3DEntityLoaderPrivate(Quick3DEntityLoader *qq);
+    Quick3DEntityLoaderPrivate();
 
     Q_DECLARE_PUBLIC(Quick3DEntityLoader)
 

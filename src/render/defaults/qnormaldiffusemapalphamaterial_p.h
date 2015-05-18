@@ -51,7 +51,7 @@ class QDepthTest;
 class QNormalDiffuseMapAlphaMaterialPrivate: public QNormalDiffuseMapMaterialPrivate
 {
 public:
-    QNormalDiffuseMapAlphaMaterialPrivate(QNormalDiffuseMapAlphaMaterial *qq);
+    QNormalDiffuseMapAlphaMaterialPrivate();
 
     void init() Q_DECL_OVERRIDE;
 

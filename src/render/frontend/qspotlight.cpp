@@ -67,8 +67,8 @@ namespace Qt3D {
     \class Qt3D::QSpotLightPrivate
     \internal
 */
-QSpotLightPrivate::QSpotLightPrivate(QSpotLight *qq)
-    : QAbstractLightPrivate(qq)
+QSpotLightPrivate::QSpotLightPrivate()
+    : QAbstractLightPrivate()
     , m_cutOffAngle(45.0f)
 {
 }
@@ -84,7 +84,7 @@ void QSpotLight::copy(const QNode *ref)
 }
 
 QSpotLight::QSpotLight(QNode *parent)
-    : QAbstractLight(*new QSpotLightPrivate(this), parent)
+    : QAbstractLight(*new QSpotLightPrivate, parent)
 {
 }
 

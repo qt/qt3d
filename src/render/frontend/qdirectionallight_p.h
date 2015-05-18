@@ -48,7 +48,7 @@ class QDirectionalLight;
 class QT3DRENDERERSHARED_EXPORT QDirectionalLightPrivate : QAbstractLightPrivate
 {
 public:
-    QDirectionalLightPrivate(QDirectionalLight *qq);
+    QDirectionalLightPrivate();
 
     Q_DECLARE_PUBLIC(QDirectionalLight)
     QVector3D m_direction;

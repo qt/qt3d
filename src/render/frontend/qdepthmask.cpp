@@ -47,8 +47,8 @@ namespace Qt3D {
 class QDepthMaskPrivate : public QRenderStatePrivate
 {
 public:
-    QDepthMaskPrivate(QDepthMask *qq)
-        : QRenderStatePrivate(qq, QRenderState::DepthMask)
+    QDepthMaskPrivate()
+        : QRenderStatePrivate(QRenderState::DepthMask)
         , m_mask(false)
     {
     }
@@ -58,7 +58,7 @@ public:
 };
 
 QDepthMask::QDepthMask(QNode *parent)
-    : QRenderState(*new QDepthMaskPrivate(this), parent)
+    : QRenderState(*new QDepthMaskPrivate, parent)
 {
 }
 

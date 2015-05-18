@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QFrameGraphSelectorPrivate
     \internal
 */
-QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate(QFrameGraphSelector *qq)
-    : QFrameGraphNodePrivate(qq)
+QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -65,7 +65,7 @@ QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate(QFrameGraphSelector *qq)
     Constructs a new Qt3D::QFrameGraphSelector instance using \a parent as parent.
  */
 QFrameGraphSelector::QFrameGraphSelector(QNode *parent)
-    : QFrameGraphNode(*new QFrameGraphSelectorPrivate(this), parent)
+    : QFrameGraphNode(*new QFrameGraphSelectorPrivate, parent)
 {
 }
 

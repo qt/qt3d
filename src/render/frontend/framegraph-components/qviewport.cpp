@@ -47,8 +47,8 @@ namespace Qt3D {
     \class Qt3D::QViewportPrivate
     \internal
 */
-QViewportPrivate::QViewportPrivate(QViewport *qq)
-    : QFrameGraphNodePrivate(qq)
+QViewportPrivate::QViewportPrivate()
+    : QFrameGraphNodePrivate()
     , m_rect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))
 {
 }
@@ -61,7 +61,7 @@ void QViewport::copy(const QNode *ref)
 }
 
 QViewport::QViewport(QNode *parent)
-    : QFrameGraphNode(*new QViewportPrivate(this), parent)
+    : QFrameGraphNode(*new QViewportPrivate, parent)
 {
 }
 

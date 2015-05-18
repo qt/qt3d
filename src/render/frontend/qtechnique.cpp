@@ -49,8 +49,8 @@ namespace Qt3D {
     \class Qt3D::QTechniquePrivate
     \internal
 */
-QTechniquePrivate::QTechniquePrivate(QTechnique *qq)
-    : QNodePrivate(qq)
+QTechniquePrivate::QTechniquePrivate()
+    : QNodePrivate()
 {
 }
 
@@ -59,7 +59,7 @@ QTechniquePrivate::~QTechniquePrivate()
 }
 
 QTechnique::QTechnique(QNode *parent)
-    : QNode(*new QTechniquePrivate(this), parent)
+    : QNode(*new QTechniquePrivate, parent)
 {
     Q_D(QTechnique);
     QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));

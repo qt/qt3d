@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QSortMethodPrivate
     \internal
 */
-QSortMethodPrivate::QSortMethodPrivate(QSortMethod *qq)
-    : QFrameGraphNodePrivate(qq)
+QSortMethodPrivate::QSortMethodPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -62,7 +62,7 @@ void QSortMethod::copy(const QNode *ref)
 }
 
 QSortMethod::QSortMethod(QNode *parent)
-    : QFrameGraphNode(*new QSortMethodPrivate(this), parent)
+    : QFrameGraphNode(*new QSortMethodPrivate, parent)
 {
 }
 

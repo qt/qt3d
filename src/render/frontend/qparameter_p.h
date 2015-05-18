@@ -49,7 +49,7 @@ class QParameter;
 class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public QNodePrivate
 {
 public:
-    QParameterPrivate(QParameter *qq);
+    QParameterPrivate();
 
     Q_DECLARE_PUBLIC(QParameter)
 

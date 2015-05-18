@@ -47,8 +47,8 @@ namespace Qt3D {
 class QFrontFacePrivate : public QRenderStatePrivate
 {
 public:
-    QFrontFacePrivate(QFrontFace *qq)
-        : QRenderStatePrivate(qq, QRenderState::FrontFace)
+    QFrontFacePrivate()
+        : QRenderStatePrivate(QRenderState::FrontFace)
         , m_direction(QFrontFace::ClockWise)
     {
     }
@@ -58,7 +58,7 @@ public:
 };
 
 QFrontFace::QFrontFace(QNode *parent)
-    : QRenderState(*new QFrontFacePrivate(this), parent)
+    : QRenderState(*new QFrontFacePrivate, parent)
 {
 }
 

@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QShaderDataPrivate
     \internal
 */
-QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq)
-    : QComponentPrivate(qq)
+QShaderDataPrivate::QShaderDataPrivate()
+    : QComponentPrivate()
     , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))
 {
 }
@@ -55,8 +55,8 @@ QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq)
     \class Qt3D::QShaderDataPrivate
     \internal
 */
-QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfacePtr reader)
-    : QComponentPrivate(qq)
+QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
+    : QComponentPrivate()
     , m_propertyReader(reader)
 {
 }
@@ -75,7 +75,7 @@ QShaderDataPrivate::QShaderDataPrivate(QShaderData *qq, PropertyReaderInterfaceP
  */
 
 QShaderData::QShaderData(QNode *parent)
-    : QComponent(*new QShaderDataPrivate(this), parent)
+    : QComponent(*new QShaderDataPrivate, parent)
 {
 }
 

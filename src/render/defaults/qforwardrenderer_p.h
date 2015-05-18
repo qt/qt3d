@@ -51,7 +51,7 @@ class QCameraSelector;
 class QForwardRendererPrivate: public QTechniqueFilterPrivate
 {
 public:
-    QForwardRendererPrivate(QForwardRenderer *qq);
+    QForwardRendererPrivate();
 
     QViewport *m_viewport;
     QCameraSelector *m_cameraSelector;

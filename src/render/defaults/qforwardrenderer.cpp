@@ -50,8 +50,8 @@ namespace Qt3D {
     \class Qt3D::QForwardRendererPrivate
     \internal
 */
-QForwardRendererPrivate::QForwardRendererPrivate(QForwardRenderer *qq)
-    : QTechniqueFilterPrivate(qq)
+QForwardRendererPrivate::QForwardRendererPrivate()
+    : QTechniqueFilterPrivate()
     , m_viewport(new QViewport())
     , m_cameraSelector(new QCameraSelector())
     , m_clearBuffer(new QClearBuffer())
@@ -98,7 +98,7 @@ void QForwardRendererPrivate::init()
     Constructs a new Qt3D::QForwardRenderer instance with parent object \a parent.
  */
 QForwardRenderer::QForwardRenderer(QNode *parent)
-    : QTechniqueFilter(*new QForwardRendererPrivate(this), parent)
+    : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
     Q_D(QForwardRenderer);
     QObject::connect(d->m_viewport, SIGNAL(clearColorChanged()), this, SIGNAL(clearColorChanged()));

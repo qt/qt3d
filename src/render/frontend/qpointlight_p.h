@@ -48,7 +48,7 @@ class QPointLight;
 class QT3DRENDERERSHARED_EXPORT QPointLightPrivate : public QAbstractLightPrivate
 {
 public:
-    QPointLightPrivate(QPointLight *qq);
+    QPointLightPrivate();
 
     Q_DECLARE_PUBLIC(QPointLight)
 };

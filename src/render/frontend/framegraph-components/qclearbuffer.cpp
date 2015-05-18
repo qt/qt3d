@@ -46,8 +46,8 @@ namespace Qt3D {
     \class Qt3D::QClearBufferPrivate
     \internal
 */
-QClearBufferPrivate::QClearBufferPrivate(QClearBuffer *qq)
-    : QFrameGraphNodePrivate(qq)
+QClearBufferPrivate::QClearBufferPrivate()
+    : QFrameGraphNodePrivate()
     , m_buffersType(QClearBuffer::None)
 {
 }
@@ -60,7 +60,7 @@ void QClearBuffer::copy(const QNode *ref)
 }
 
 QClearBuffer::QClearBuffer(QNode *parent)
-    : QFrameGraphNode(*new QClearBufferPrivate(this), parent)
+    : QFrameGraphNode(*new QClearBufferPrivate, parent)
 {
 }
 

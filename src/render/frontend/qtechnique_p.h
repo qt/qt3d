@@ -53,7 +53,7 @@ class QRenderPass;
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QNodePrivate
 {
 public:
-    QTechniquePrivate(QTechnique *dd);
+    QTechniquePrivate();
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)

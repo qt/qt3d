@@ -48,7 +48,7 @@ class QViewport;
 class QViewportPrivate : public QFrameGraphNodePrivate
 {
 public :
-    QViewportPrivate(QViewport *qq);
+    QViewportPrivate();
 
     Q_DECLARE_PUBLIC(QViewport)
     QRectF m_rect;

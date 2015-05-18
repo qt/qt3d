@@ -51,7 +51,7 @@ class QMesh;
 class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QAbstractMeshPrivate
 {
 public:
-    QMeshPrivate(QMesh *qq);
+    QMeshPrivate();
 
     Q_DECLARE_PUBLIC(QMesh)
 

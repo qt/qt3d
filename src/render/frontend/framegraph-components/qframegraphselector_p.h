@@ -50,7 +50,7 @@ typedef QSharedPointer<QFrameGraphSelectorFunctor> QFrameGraphSelectorFunctorPtr
 class QFrameGraphSelectorPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QFrameGraphSelectorPrivate(QFrameGraphSelector *qq);
+    QFrameGraphSelectorPrivate();
 
     QFrameGraphSelectorFunctorPtr m_selectionFunctor;
 

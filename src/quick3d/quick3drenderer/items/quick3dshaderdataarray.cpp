@@ -48,15 +48,15 @@ namespace Quick {
 class Quick3DShaderDataArrayPrivate : public QNodePrivate
 {
 public:
-    Quick3DShaderDataArrayPrivate(Quick3DShaderDataArray *qq)
-        : QNodePrivate(qq)
+    Quick3DShaderDataArrayPrivate()
+        : QNodePrivate()
     {}
 
     QList<QShaderData *> m_values;
 };
 
 Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
-    : QNode(*new Quick3DShaderDataArrayPrivate(this), parent)
+    : QNode(*new Quick3DShaderDataArrayPrivate, parent)
 {
 }
 

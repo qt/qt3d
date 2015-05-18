@@ -44,8 +44,8 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QStateSetPrivate::QStateSetPrivate(QStateSet *qq)
-    : QFrameGraphNodePrivate(qq)
+QStateSetPrivate::QStateSetPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -68,7 +68,7 @@ QStateSetPrivate::QStateSetPrivate(QStateSet *qq)
  */
 
 QStateSet::QStateSet(QNode *parent)
-    : QFrameGraphNode(*new QStateSetPrivate(this), parent)
+    : QFrameGraphNode(*new QStateSetPrivate, parent)
 {
 }
 

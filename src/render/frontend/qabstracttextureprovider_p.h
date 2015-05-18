@@ -49,7 +49,7 @@ namespace Qt3D {
 class QAbstractTextureProviderPrivate : public QNodePrivate
 {
 public :
-    QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq);
+    QAbstractTextureProviderPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractTextureProvider)
 

@@ -94,7 +94,7 @@ public:
 };
 
 Quick3DShaderData::Quick3DShaderData(QNode *parent)
-    : QShaderData(*new QShaderDataPrivate(this, PropertyReaderInterfacePtr(new Quick3DShaderDataPropertyReader()))
+    : QShaderData(*new QShaderDataPrivate(PropertyReaderInterfacePtr(new Quick3DShaderDataPropertyReader()))
                   , parent)
 {
 }

@@ -68,8 +68,8 @@ private:
 
 class QCylinderMeshPrivate : public QAbstractMeshPrivate
 {
-    QCylinderMeshPrivate(QCylinderMesh *qq)
-        : QAbstractMeshPrivate(qq)
+    QCylinderMeshPrivate()
+        : QAbstractMeshPrivate()
         , m_rings(16)
         , m_slices(16)
         , m_radius(1.0)
@@ -94,7 +94,7 @@ void QCylinderMesh::copy(const QNode *ref)
 }
 
 QCylinderMesh::QCylinderMesh(QNode *parent)
-    : QAbstractMesh(*new QCylinderMeshPrivate(this), parent)
+    : QAbstractMesh(*new QCylinderMeshPrivate, parent)
 {
     update();
 }

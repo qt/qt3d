@@ -65,9 +65,10 @@ private:
     \class Qt3D::QMeshPrivate
     \internal
 */
-QMeshPrivate::QMeshPrivate(QMesh *qq)
-    : QAbstractMeshPrivate(qq)
-{}
+QMeshPrivate::QMeshPrivate()
+    : QAbstractMeshPrivate()
+{
+}
 
 void QMesh::copy(const QNode *ref)
 {
@@ -77,7 +78,7 @@ void QMesh::copy(const QNode *ref)
 }
 
 QMesh::QMesh(QNode *parent)
-    : QAbstractMesh(*new QMeshPrivate(this), parent)
+    : QAbstractMesh(*new QMeshPrivate, parent)
 {
 }
 

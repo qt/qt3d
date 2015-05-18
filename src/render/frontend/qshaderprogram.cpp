@@ -50,8 +50,8 @@ namespace Qt3D {
     \class Qt3D::QShaderProgramPrivate
     \internal
 */
-QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
-    : QNodePrivate(qq)
+QShaderProgramPrivate::QShaderProgramPrivate()
+    : QNodePrivate()
 {
 }
 
@@ -69,7 +69,7 @@ void QShaderProgram::copy(const QNode *ref)
 }
 
 QShaderProgram::QShaderProgram(QNode *parent)
-    : QNode(*new QShaderProgramPrivate(this), parent)
+    : QNode(*new QShaderProgramPrivate, parent)
 {
 }
 

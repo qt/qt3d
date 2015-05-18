@@ -53,7 +53,7 @@ class QAbstractMesh;
 class QT3DRENDERERSHARED_EXPORT QAbstractMeshPrivate : public QComponentPrivate
 {
 public:
-    QAbstractMeshPrivate(QAbstractMesh *qq);
+    QAbstractMeshPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractMesh)
 

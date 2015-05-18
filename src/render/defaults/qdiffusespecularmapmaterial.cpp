@@ -57,8 +57,8 @@ namespace Qt3D {
     \class Qt3D::QDiffuseSpecularMapMaterialPrivate
     \internal
 */
-QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate(QDiffuseSpecularMapMaterial *qq)
-    : QMaterialPrivate(qq)
+QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate()
+    : QMaterialPrivate()
     , m_diffuseSpecularMapEffect(new QEffect())
     , m_diffuseTexture(new QTexture2D())
     , m_specularTexture(new QTexture2D())
@@ -161,7 +161,7 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     Constructs a new Qt3D::QDiffuseSpecularMapMaterial instance with parent object \a parent.
 */
 QDiffuseSpecularMapMaterial::QDiffuseSpecularMapMaterial(QNode *parent)
-    : QMaterial(*new QDiffuseSpecularMapMaterialPrivate(this), parent)
+    : QMaterial(*new QDiffuseSpecularMapMaterialPrivate, parent)
 {
     Q_D(QDiffuseSpecularMapMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));

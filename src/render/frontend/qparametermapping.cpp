@@ -45,8 +45,8 @@ namespace Qt3D {
     \class Qt3D::QParameterMappingPrivate
     \internal
 */
-QParameterMappingPrivate::QParameterMappingPrivate(QParameterMapping *qq)
-    : QNodePrivate(qq)
+QParameterMappingPrivate::QParameterMappingPrivate()
+    : QNodePrivate()
     , m_bindingType(QParameterMapping::Uniform)
 {
 }
@@ -61,7 +61,7 @@ void QParameterMapping::copy(const QNode *ref)
 }
 
 QParameterMapping::QParameterMapping(QNode *parent)
-    : QNode(*new QParameterMappingPrivate(this), parent)
+    : QNode(*new QParameterMappingPrivate, parent)
 {
 }
 
@@ -72,7 +72,7 @@ QParameterMapping::QParameterMapping(QParameterMappingPrivate &dd, QNode *parent
 }
 
 QParameterMapping::QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, QNode *parent)
-    : QNode(*new QParameterMappingPrivate(this), parent)
+    : QNode(*new QParameterMappingPrivate, parent)
 {
     Q_D(QParameterMapping);
     d->m_parameterName = parameterName;

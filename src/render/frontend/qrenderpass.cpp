@@ -52,8 +52,8 @@ namespace Qt3D {
     \class Qt3D::QRenderPassPrivate
     \internal
 */
-QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
-    : QNodePrivate(qq)
+QRenderPassPrivate::QRenderPassPrivate()
+    : QNodePrivate()
     , m_shader(Q_NULLPTR)
 {
 }
@@ -73,7 +73,7 @@ void QRenderPass::copy(const QNode *ref)
 }
 
 QRenderPass::QRenderPass(QNode *parent)
-    : QNode(*new QRenderPassPrivate(this), parent)
+    : QNode(*new QRenderPassPrivate, parent)
 {
 }
 

@@ -47,7 +47,7 @@ namespace Qt3D {
 class QSortCriterionPrivate : public QNodePrivate
 {
 public:
-    QSortCriterionPrivate(QSortCriterion *qq);
+    QSortCriterionPrivate();
 
     Q_DECLARE_PUBLIC(QSortCriterion)
     QSortCriterion::SortType m_sort;

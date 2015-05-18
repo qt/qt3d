@@ -60,7 +60,7 @@ class RenderStateSet;
 class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QNodePrivate
 {
 public:
-    QRenderPassPrivate(QRenderPass *qq);
+    QRenderPassPrivate();
 
     Q_DECLARE_PUBLIC(QRenderPass)
     ParameterList m_attributes;

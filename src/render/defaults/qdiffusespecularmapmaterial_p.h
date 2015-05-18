@@ -56,7 +56,7 @@ class QDiffuseSpecularMapMaterial;
 class QDiffuseSpecularMapMaterialPrivate : public QMaterialPrivate
 {
 public:
-    QDiffuseSpecularMapMaterialPrivate(QDiffuseSpecularMapMaterial *qq);
+    QDiffuseSpecularMapMaterialPrivate();
 
     void init();
 

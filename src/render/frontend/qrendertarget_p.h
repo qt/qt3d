@@ -49,7 +49,7 @@ class QRenderTarget;
 class QRenderTargetPrivate : public QComponentPrivate
 {
 public:
-    QRenderTargetPrivate(QRenderTarget *qq);
+    QRenderTargetPrivate();
 
     Q_DECLARE_PUBLIC(QRenderTarget)
     QList<QRenderAttachment *> m_attachments;

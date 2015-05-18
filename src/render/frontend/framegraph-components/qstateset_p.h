@@ -49,7 +49,7 @@ class QRenderState;
 class QStateSetPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QStateSetPrivate(QStateSet *qq);
+    QStateSetPrivate();
 
     Q_DECLARE_PUBLIC(QStateSet)
     QList<QRenderState *> m_renderStates;

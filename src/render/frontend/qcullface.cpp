@@ -47,8 +47,8 @@ namespace Qt3D {
 class QCullFacePrivate : public QRenderStatePrivate
 {
 public:
-    QCullFacePrivate(QCullFace *qq)
-        : QRenderStatePrivate(qq, QRenderState::CullFace)
+    QCullFacePrivate()
+        : QRenderStatePrivate(QRenderState::CullFace)
         , m_mode(QCullFace::Back)
     {
     }
@@ -58,7 +58,7 @@ public:
 };
 
 QCullFace::QCullFace(QNode *parent)
-    : QRenderState(*new QCullFacePrivate(this), parent)
+    : QRenderState(*new QCullFacePrivate, parent)
 {
 }
 

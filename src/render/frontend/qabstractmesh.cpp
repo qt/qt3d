@@ -58,8 +58,8 @@ namespace Qt3D {
     \class Qt3D::QAbstractMeshPrivate
     \internal
 */
-QAbstractMeshPrivate::QAbstractMeshPrivate(QAbstractMesh *qq)
-    : QComponentPrivate(qq)
+QAbstractMeshPrivate::QAbstractMeshPrivate()
+    : QComponentPrivate()
 {
 }
 
@@ -72,7 +72,7 @@ void QAbstractMesh::copy(const QNode *ref)
 
 
 QAbstractMesh::QAbstractMesh(QNode *parent)
-    : QComponent(*new QAbstractMeshPrivate(this), parent)
+    : QComponent(*new QAbstractMeshPrivate, parent)
 {
 }
 

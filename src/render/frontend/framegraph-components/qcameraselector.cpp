@@ -58,8 +58,8 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
     \class Qt3D::QCameraSelectorPrivate
     \internal
 */
-QCameraSelectorPrivate::QCameraSelectorPrivate(Qt3D::QCameraSelector *qq)
-    : QFrameGraphNodePrivate(qq)
+QCameraSelectorPrivate::QCameraSelectorPrivate()
+    : QFrameGraphNodePrivate()
     , m_camera(Q_NULLPTR)
 {}
 
@@ -73,7 +73,7 @@ void QCameraSelector::copy(const QNode *ref)
 }
 
 QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
-    :   QFrameGraphNode(*new QCameraSelectorPrivate(this), parent)
+    :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {}
 
 void QCameraSelector::setCamera(QEntity *camera)

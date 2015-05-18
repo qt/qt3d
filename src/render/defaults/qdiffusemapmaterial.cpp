@@ -56,8 +56,8 @@ namespace Qt3D {
     \class Qt3D::QDiffuseMapMaterialPrivate
     \internal
 */
-QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq)
-    : QMaterialPrivate(qq)
+QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
+    : QMaterialPrivate()
     , m_diffuseMapEffect(new QEffect())
     , m_diffuseTexture(new QTexture2D())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
@@ -154,7 +154,7 @@ void QDiffuseMapMaterialPrivate::init()
  */
 
 QDiffuseMapMaterial::QDiffuseMapMaterial(QNode *parent)
-    : QMaterial(*new QDiffuseMapMaterialPrivate(this), parent)
+    : QMaterial(*new QDiffuseMapMaterialPrivate, parent)
 {
     Q_D(QDiffuseMapMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));

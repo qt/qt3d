@@ -47,8 +47,8 @@ namespace Qt3D {
     \class Qt3D::QRenderTargetPrivate
     \internal
 */
-QRenderTargetPrivate::QRenderTargetPrivate(QRenderTarget *qq)
-    : QComponentPrivate(qq)
+QRenderTargetPrivate::QRenderTargetPrivate()
+    : QComponentPrivate()
 {
 }
 
@@ -61,7 +61,7 @@ void QRenderTarget::copy(const QNode *ref)
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)
-    : QComponent(*new QRenderTargetPrivate(this), parent)
+    : QComponent(*new QRenderTargetPrivate, parent)
 {
 }
 

@@ -56,14 +56,14 @@ namespace Qt3D {
     \class Qt3D::QFrameGraphNodePrivate
     \internal
 */
-QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
-    : QNodePrivate(qq)
+QFrameGraphNodePrivate::QFrameGraphNodePrivate()
+    : QNodePrivate()
     , m_enabled(true)
 {
 }
 
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
-    : QNode(*new QFrameGraphNodePrivate(this), parent)
+    : QNode(*new QFrameGraphNodePrivate, parent)
 {
 }
 

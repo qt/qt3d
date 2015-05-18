@@ -52,8 +52,8 @@ namespace Qt3D {
     \class Qt3D::QPlaneMeshPrivate
     \internal
 */
-QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
-    : QAbstractMeshPrivate(qq)
+QPlaneMeshPrivate::QPlaneMeshPrivate()
+    : QAbstractMeshPrivate()
     , m_width(1.0f)
     , m_height(1.0f)
     , m_meshResolution(2, 2)
@@ -61,7 +61,7 @@ QPlaneMeshPrivate::QPlaneMeshPrivate(QPlaneMesh *qq)
 }
 
 QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QAbstractMesh(*new QPlaneMeshPrivate(this), parent)
+    : QAbstractMesh(*new QPlaneMeshPrivate, parent)
 {
     update();
 }

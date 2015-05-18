@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QRenderTargetSelectorPrivate
     \internal
 */
-QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate(QRenderTargetSelector *qq)
-    : QFrameGraphNodePrivate(qq)
+QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
+    : QFrameGraphNodePrivate()
     , m_target(Q_NULLPTR)
 {
 }
@@ -65,7 +65,7 @@ void QRenderTargetSelector::copy(const QNode *ref)
 }
 
 QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
-    : QFrameGraphNode(*new QRenderTargetSelectorPrivate(this), parent)
+    : QFrameGraphNode(*new QRenderTargetSelectorPrivate, parent)
 {
 }
 

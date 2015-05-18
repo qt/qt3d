@@ -60,8 +60,8 @@ namespace Qt3D {
  * \class Qt3D::QSkyboxEntityPrivate
  * \internal
  */
-QSkyboxEntityPrivate::QSkyboxEntityPrivate(QSkyboxEntity *skyboxEntity)
-    : QEntityPrivate(skyboxEntity)
+QSkyboxEntityPrivate::QSkyboxEntityPrivate()
+    : QEntityPrivate()
     , m_effect(new QEffect())
     , m_material(new QMaterial())
     , m_skyboxTexture(new QTextureCubeMap())
@@ -205,7 +205,7 @@ void QSkyboxEntityPrivate::reloadTexture()
  * Constructs a new Qt3D::QSkyboxEntity object with \a parent as parent.
  */
 QSkyboxEntity::QSkyboxEntity(QNode *parent)
-    : QEntity(*new QSkyboxEntityPrivate(this), parent)
+    : QEntity(*new QSkyboxEntityPrivate, parent)
 {
     d_func()->init();
 }

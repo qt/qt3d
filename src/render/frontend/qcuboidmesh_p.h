@@ -50,7 +50,7 @@ class QCuboidMesh;
 class QCuboidMeshPrivate : QAbstractMeshPrivate
 {
 public:
-    QCuboidMeshPrivate(QCuboidMesh *qq);
+    QCuboidMeshPrivate();
 
     Q_DECLARE_PUBLIC(QCuboidMesh)
 

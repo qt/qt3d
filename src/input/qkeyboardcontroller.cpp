@@ -48,13 +48,13 @@ namespace Qt3D {
     \class Qt3D::QKeyboardControllerPrivate
     \internal
 */
-QKeyboardControllerPrivate::QKeyboardControllerPrivate(QKeyboardController *qq)
-    : QNodePrivate(qq)
+QKeyboardControllerPrivate::QKeyboardControllerPrivate()
+    : QNodePrivate()
 {
 }
 
 QKeyboardController::QKeyboardController(QNode *parent)
-    : QNode(*new QKeyboardControllerPrivate(this), parent)
+    : QNode(*new QKeyboardControllerPrivate, parent)
 {
 }
 

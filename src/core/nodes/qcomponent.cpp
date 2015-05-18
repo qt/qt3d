@@ -49,8 +49,8 @@ namespace Qt3D {
     \class Qt3D::QComponentPrivate
     \internal
 */
-QComponentPrivate::QComponentPrivate(QComponent *qq)
-    : QNodePrivate(qq)
+QComponentPrivate::QComponentPrivate()
+    : QNodePrivate()
     , m_shareable(true)
     , m_enabled(true)
 {
@@ -110,7 +110,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     instance one of the subclasses instead.
 */
 QComponent::QComponent(QNode *parent)
-    : QNode(*new QComponentPrivate(this), parent)
+    : QNode(*new QComponentPrivate, parent)
 {
 }
 

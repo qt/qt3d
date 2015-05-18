@@ -59,7 +59,7 @@ class QEffect;
 
 class QSkyboxEntityPrivate : public QEntityPrivate
 {
-    QSkyboxEntityPrivate(QSkyboxEntity *skyboxEntity);
+    QSkyboxEntityPrivate();
 
     void init();
     void reloadTexture();
