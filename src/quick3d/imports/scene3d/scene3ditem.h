@@ -37,7 +37,7 @@
 #ifndef SCENE3DITEM_H
 #define SCENE3DITEM_H
 
-#include <QQuickFramebufferObject>
+#include <QQuickItem>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,9 @@ namespace Qt3D
     class QRenderAspect;
 }
 
-class Scene3DItem : public QQuickFramebufferObject
+class Scene3DRenderer;
+
+class Scene3DItem : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
@@ -73,7 +75,6 @@ private Q_SLOTS:
     void applyRootEntityChange();
 
 private:
-    Renderer *createRenderer() const Q_DECL_OVERRIDE;
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
     QStringList m_aspects;
@@ -81,6 +82,7 @@ private:
 
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
+    Scene3DRenderer *m_renderer;
 };
 
 QT_END_NAMESPACE
