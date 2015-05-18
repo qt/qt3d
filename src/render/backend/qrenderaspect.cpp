@@ -120,8 +120,8 @@ namespace Qt3D {
     \class Qt3D::QRenderAspectPrivate
     \internal
 */
-QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type, QRenderAspect *qq)
-    : QAbstractAspectPrivate(qq)
+QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
+    : QAbstractAspectPrivate()
     , m_renderer(new Render::Renderer(type))
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_surface(Q_NULLPTR)
@@ -168,7 +168,7 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(Threaded, this), parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(Threaded), parent)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
@@ -177,7 +177,7 @@ QRenderAspect::QRenderAspect(QObject *parent)
 }
 
 QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(type, this), parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(type), parent)
 {
     registerBackendTypes();
 }

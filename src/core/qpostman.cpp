@@ -49,11 +49,10 @@ namespace Qt3D {
 class QPostmanPrivate : public QObjectPrivate
 {
 public:
-    QPostmanPrivate(QPostman *qq)
+    QPostmanPrivate()
         : QObjectPrivate()
         , m_scene(Q_NULLPTR)
     {
-        q_ptr = qq;
     }
 
     Q_DECLARE_PUBLIC(QPostman)
@@ -61,7 +60,7 @@ public:
 };
 
 QPostman::QPostman(QObject *parent)
-    : QObject(*new QPostmanPrivate(this), parent)
+    : QObject(*new QPostmanPrivate, parent)
 {
     qRegisterMetaType<QSceneChangePtr >("QSceneChangePtr");
 }

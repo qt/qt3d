@@ -54,7 +54,7 @@ class QAspectEngine;
 class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
 {
 public:
-    QNodePrivate(QNode *qq);
+    QNodePrivate(QNode *qq = Q_NULLPTR);
 
     void setScene(QSceneInterface *scene);
     QSceneInterface *scene() const;

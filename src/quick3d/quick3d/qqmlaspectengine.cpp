@@ -51,9 +51,8 @@ namespace Quick {
     \class Qt3D::Quick::QQmlAspectEnginePrivate
     \internal
 */
-QQmlAspectEnginePrivate::QQmlAspectEnginePrivate(QQmlAspectEngine *qq)
+QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
     : QObjectPrivate()
-    , q_ptr(qq)
     , m_qmlEngine(new QQmlEngine())
     , m_aspectEngine(new QAspectEngine())
     , m_component(Q_NULLPTR)
@@ -61,7 +60,7 @@ QQmlAspectEnginePrivate::QQmlAspectEnginePrivate(QQmlAspectEngine *qq)
 }
 
 QQmlAspectEngine::QQmlAspectEngine(QObject *parent)
-    : QObject(*new QQmlAspectEnginePrivate(this), parent)
+    : QObject(*new QQmlAspectEnginePrivate, parent)
 {
 }
 

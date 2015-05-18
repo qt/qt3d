@@ -44,9 +44,8 @@ namespace Qt3D {
 class QTextureWrapModePrivate : public QObjectPrivate
 {
 public:
-    QTextureWrapModePrivate(QTextureWrapMode *qq)
+    QTextureWrapModePrivate()
         : QObjectPrivate()
-        , q_ptr(qq)
         , m_x(QTextureWrapMode::ClampToEdge)
         , m_y(QTextureWrapMode::ClampToEdge)
         , m_z(QTextureWrapMode::ClampToEdge)
@@ -54,7 +53,6 @@ public:
     }
 
     Q_DECLARE_PUBLIC(QTextureWrapMode)
-    QTextureWrapMode *q_ptr;
     QTextureWrapMode::WrapMode m_x;
     QTextureWrapMode::WrapMode m_y;
     QTextureWrapMode::WrapMode m_z;
@@ -69,7 +67,7 @@ public:
  */
 
 QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
-    : QObject(*new QTextureWrapModePrivate(this), parent)
+    : QObject(*new QTextureWrapModePrivate, parent)
 {
     d_func()->m_x = wrapMode;
     d_func()->m_y = wrapMode;
@@ -81,7 +79,7 @@ QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
     each dimension \a x, \a y \a z of the texture and \a parent as parent.
  */
 QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *parent)
-    : QObject(*new QTextureWrapModePrivate(this), parent)
+    : QObject(*new QTextureWrapModePrivate, parent)
 {
     d_func()->m_x = x;
     d_func()->m_y = y;

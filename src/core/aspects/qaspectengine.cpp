@@ -59,12 +59,11 @@ namespace Qt3D {
     \class Qt3D::QAspectEnginePrivate
     \internal
 */
-QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
+QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_postman(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
 {
-    q_ptr = qq;
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QObserverInterface *>();
     qRegisterMetaType<Qt3D::QEntity *>();
@@ -72,7 +71,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
-    : QObject(*new QAspectEnginePrivate(this), parent)
+    : QObject(*new QAspectEnginePrivate, parent)
 {
     // Don't show any debug output from Qt3D. If you need to enable additional logging
     // for debugging use a rules file as explained in the QLoggingCategory documentation.

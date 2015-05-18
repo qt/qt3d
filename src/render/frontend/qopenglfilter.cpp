@@ -45,15 +45,13 @@ namespace Qt3D {
 class QOpenGLFilterPrivate : public QObjectPrivate
 {
 public:
-
-    QOpenGLFilterPrivate(QOpenGLFilter *qq)
+    QOpenGLFilterPrivate()
         : QObjectPrivate()
         , m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QOpenGLFilter::Desktop : QOpenGLFilter::ES)
         , m_profile(QOpenGLFilter::None) // matches all (no profile, core, compat)
         , m_minor(0)
         , m_major(0)
     {
-        q_ptr = qq;
     }
 
     Q_DECLARE_PUBLIC(QOpenGLFilter)
@@ -66,7 +64,7 @@ public:
 };
 
 QOpenGLFilter::QOpenGLFilter(QObject *parent)
-    : QObject(*new QOpenGLFilterPrivate(this), parent)
+    : QObject(*new QOpenGLFilterPrivate, parent)
 {
 }
 

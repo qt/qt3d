@@ -67,7 +67,7 @@ QNodePrivate::QNodePrivate(QNode *qq)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
-    q_ptr = qq;
+    Q_UNUSED(qq) // ###
 }
 
 // Called by QEvent::childAdded (main thread)
@@ -325,7 +325,7 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
      Creates a new Qt3D::QNode instance with parent \a parent.
 */
 QNode::QNode(QNode *parent)
-    : QObject(*new QNodePrivate(this), parent)
+    : QObject(*new QNodePrivate, parent)
 {
     // We rely on QEvent::childAdded to be triggered on the parent
     // So we don't actually need to invoke a method or anything

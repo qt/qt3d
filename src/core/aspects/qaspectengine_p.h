@@ -55,7 +55,7 @@ class QSceneInterface;
 class QAspectEnginePrivate : public QObjectPrivate
 {
 public:
-    QAspectEnginePrivate(QAspectEngine *qq);
+    QAspectEnginePrivate();
 
     Q_DECLARE_PUBLIC(QAspectEngine)
 

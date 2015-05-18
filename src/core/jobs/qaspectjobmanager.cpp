@@ -105,9 +105,8 @@ void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
     \class Qt3D::QAspectJobManagerPrivate
     \internal
 */
-QAspectJobManagerPrivate::QAspectJobManagerPrivate(QAspectJobManager *qq)
+QAspectJobManagerPrivate::QAspectJobManagerPrivate()
     : QAbstractAspectJobManagerPrivate()
-    , q_ptr(qq)
 #ifdef THREAD_WEAVER
     , m_weaver(Q_NULLPTR)
 #endif
@@ -120,7 +119,7 @@ QAspectJobManagerPrivate::~QAspectJobManagerPrivate()
 }
 
 QAspectJobManager::QAspectJobManager(QObject *parent)
-    : QAbstractAspectJobManager(*new QAspectJobManagerPrivate(this), parent)
+    : QAbstractAspectJobManager(*new QAspectJobManagerPrivate, parent)
 {
     Q_D(QAspectJobManager);
 #ifdef THREAD_WEAVER
