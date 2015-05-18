@@ -125,6 +125,14 @@ QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOEXCEPT
                       matrix.d1, matrix.d2, matrix.d3, matrix.d4);
 }
 
+/*!
+ * Returns a QString from \a str;
+ */
+static inline QString aiStringToQString(const aiString &str)
+{
+    return QString::fromUtf8(str.data, int(str.length));
+}
+
 QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial) Q_DECL_NOEXCEPT
 {
     aiString path; // unused but necessary
@@ -138,9 +146,9 @@ QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial) Q_DEC
     return new QPhongMaterial();
 }
 
-QString texturePath(aiString path)
+QString texturePath(const aiString &path)
 {
-    QString p = QString::fromUtf8(path.data);
+    QString p = aiStringToQString(path);
     if (p.startsWith('/'))
         p.remove(0, 1);
     return p;
@@ -402,6 +410,7 @@ QEntity *AssimpParser::node(aiNode *node)
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
     QEntity *entityNode = new QEntity();
+    entityNode->setObjectName(aiStringToQString(node->mName));
 
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
@@ -539,9 +548,6 @@ void AssimpParser::loadMesh(uint meshIndex)
     // Primitive are always triangles with the current Assimp's configuration
     QMeshDataPtr meshData(new QMeshData(QMeshData::Triangles));
 
-    // Mesh Name
-    QString meshName = QString::fromUtf8(mesh->mName.data);
-
     // Vertices and Normals always present with the current Assimp's configuration
     aiVector3D *vertices = mesh->mVertices;
     aiVector3D *normals = mesh->mNormals;
@@ -662,10 +668,12 @@ void AssimpParser::loadMesh(uint meshIndex)
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 
     AssimpMesh *storedMesh = new AssimpMesh();
+    storedMesh->setObjectName(aiStringToQString(mesh->mName));
     storedMesh->setData(meshData);
     m_scene->m_meshes[meshIndex] = storedMesh;
 
-    qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
+    qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
+                             << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }
 
 /*!
@@ -722,7 +730,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     QEntity  *camera = new QEntity();
     QCameraLens *lens = new QCameraLens();
 
-    lens->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
+    lens->setObjectName(aiStringToQString(assimpCamera->mName));
     lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
                                    qMax(assimpCamera->mAspect, 1.0f),
                                    assimpCamera->mClipPlaneNear,
@@ -755,7 +763,7 @@ void AssimpParser::copyMaterialName(QMaterial *material, aiMaterial *assimpMater
     if (assimpMaterial->Get(AI_MATKEY_NAME, name) == aiReturn_SUCCESS) {
         // May not be necessary
         // Kept for debug purposes at the moment
-        material->setObjectName(QString::fromUtf8(name.data));
+        material->setObjectName(aiStringToQString(name));
         qCDebug(AssimpParserLog) << Q_FUNC_INFO << "Assimp Material " << material->objectName();
     }
 }
