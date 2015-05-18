@@ -46,8 +46,7 @@ namespace Qt3D {
     \class Qt3D::QAbstractAttributePrivate
     \internal
 */
-QAbstractAttributePrivate::QAbstractAttributePrivate(QAbstractAttribute *qq)
-    : q_ptr(qq)
+QAbstractAttributePrivate::QAbstractAttributePrivate()
 {
 }
 
@@ -65,7 +64,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractB
 }
 
 QAbstractAttribute::QAbstractAttribute(QAbstractBufferPtr buf, int type, uint count, uint offset, uint stride)
-    : d_ptr(new QAbstractAttributePrivate(this))
+    : d_ptr(new QAbstractAttributePrivate)
 {
     Q_D(QAbstractAttribute);
     d->m_buffer = buf;

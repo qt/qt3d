@@ -53,8 +53,8 @@ QMutex QScenePropertyChangePrivate::m_mutex;
     \class Qt3D::QScenePropertyChangePrivate
     \internal
 */
-QScenePropertyChangePrivate::QScenePropertyChangePrivate(QScenePropertyChange *qq)
-    : QSceneChangePrivate(qq)
+QScenePropertyChangePrivate::QScenePropertyChangePrivate()
+    : QSceneChangePrivate()
 {
 }
 
@@ -76,7 +76,7 @@ void QScenePropertyChangePrivate::operator delete(void *ptr, size_t size)
 }
 
 QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
-    : QSceneChange(*new QScenePropertyChangePrivate(this), type, observableType, subjectId, priority)
+    : QSceneChange(*new QScenePropertyChangePrivate, type, observableType, subjectId, priority)
 {
 }
 

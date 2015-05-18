@@ -45,13 +45,12 @@ namespace Qt3D {
     \class Qt3D::QAspectJobPrivate
     \internal
 */
-QAspectJobPrivate::QAspectJobPrivate(QAspectJob *qq)
-    : q_ptr(qq)
+QAspectJobPrivate::QAspectJobPrivate()
 {
 }
 
 QAspectJob::QAspectJob()
-    : d_ptr(new QAspectJobPrivate(this))
+    : d_ptr(new QAspectJobPrivate)
 {
 }
 

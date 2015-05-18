@@ -49,9 +49,7 @@ class Attribute;
 class QT3DRENDERERSHARED_EXPORT AttributePrivate : public QAbstractAttributePrivate
 {
 public:
-    AttributePrivate(Attribute *qq);
-
-    Q_DECLARE_PUBLIC(Attribute)
+    AttributePrivate();
 };
 
 } // Qt3D

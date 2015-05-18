@@ -53,13 +53,12 @@ namespace Qt3D {
     \class Qt3D::QFrameAllocatorPrivate
     \internal
 */
-QFrameAllocatorPrivate::QFrameAllocatorPrivate(QFrameAllocator *qq)
-    : q_ptr(qq)
+QFrameAllocatorPrivate::QFrameAllocatorPrivate()
 {
 }
 
 QFrameAllocator::QFrameAllocator(uint maxObjectSize, uint alignment, uint pageSize)
-    : d_ptr(new QFrameAllocatorPrivate(this))
+    : d_ptr(new QFrameAllocatorPrivate)
 {
     Q_ASSERT(alignment && pageSize && pageSize < UCHAR_MAX);
     Q_D(QFrameAllocator);

@@ -49,7 +49,7 @@ class QBackendScenePropertyChange;
 class QBackendScenePropertyChangePrivate : public QScenePropertyChangePrivate
 {
 public:
-    QBackendScenePropertyChangePrivate(QBackendScenePropertyChange *qq);
+    QBackendScenePropertyChangePrivate();
     virtual ~QBackendScenePropertyChangePrivate();
 
     Q_DECLARE_PUBLIC(QBackendScenePropertyChange)

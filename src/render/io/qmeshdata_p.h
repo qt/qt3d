@@ -47,7 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QMeshData;
 class QAbstractAttribute;
 class QAbstractBuffer;
 
@@ -56,10 +55,7 @@ typedef QSharedPointer<QAbstractAttribute> QAbstractAttributePtr;
 class QMeshDataPrivate
 {
 public:
-    QMeshDataPrivate(QMeshData *qq);
-
-    Q_DECLARE_PUBLIC(QMeshData)
-    QMeshData *q_ptr;
+    QMeshDataPrivate();
 
     QStringList m_attributesNames;
     QVector<QAbstractAttributePtr> m_attributes;

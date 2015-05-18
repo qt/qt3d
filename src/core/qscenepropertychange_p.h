@@ -51,7 +51,7 @@ class QFrameAllocator;
 class QScenePropertyChangePrivate : public QSceneChangePrivate
 {
 public:
-    QScenePropertyChangePrivate(QScenePropertyChange *qq);
+    QScenePropertyChangePrivate();
     virtual ~QScenePropertyChangePrivate();
 
     static void *operator new(size_t size);

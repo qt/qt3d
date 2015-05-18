@@ -62,8 +62,8 @@ namespace Qt3D {
     \class Qt3D::QSceneChangePrivate
     \internal
 */
-QSceneChangePrivate::QSceneChangePrivate(QSceneChange *qq)
-    : q_ptr(qq)
+QSceneChangePrivate::QSceneChangePrivate()
+    : q_ptr(Q_NULLPTR)
 {
 }
 
@@ -72,8 +72,9 @@ QSceneChangePrivate::~QSceneChangePrivate()
 }
 
 QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
-    : d_ptr(new QSceneChangePrivate(this))
+    : d_ptr(new QSceneChangePrivate)
 {
+    d_ptr->q_ptr = this;
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;
@@ -91,12 +92,14 @@ QSceneChange::~QSceneChange()
 QSceneChange::QSceneChange(QSceneChangePrivate &dd)
     : d_ptr(&dd)
 {
+    d_ptr->q_ptr = this;
 }
 
 /*! \internal */
 QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {
+    d_ptr->q_ptr = this;
     Q_D(QSceneChange);
     d->m_type = type;
     d->m_priority = priority;

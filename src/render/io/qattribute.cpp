@@ -50,13 +50,13 @@ namespace Qt3D {
     class Qt3D::AttributePrivate
     \internal
 */
-AttributePrivate::AttributePrivate(Attribute *qq)
-    : QAbstractAttributePrivate(qq)
+AttributePrivate::AttributePrivate()
+    : QAbstractAttributePrivate()
 {
 }
 
 Attribute::Attribute(QAbstractBufferPtr buf, int type, int count, int offset, int stride)
-    : QAbstractAttribute(*new AttributePrivate(this), buf, type, count, offset, stride)
+    : QAbstractAttribute(*new AttributePrivate, buf, type, count, offset, stride)
 {
 }
 

@@ -46,13 +46,13 @@ namespace Qt3D {
     \class Qt3D::BufferPrivate
     \internal
 */
-BufferPrivate::BufferPrivate(Buffer *qq)
-    : QAbstractBufferPrivate(qq)
+BufferPrivate::BufferPrivate()
+    : QAbstractBufferPrivate()
 {
 }
 
 Buffer::Buffer(QOpenGLBuffer::Type ty)
-    : QAbstractBuffer(*new BufferPrivate(this))
+    : QAbstractBuffer(*new BufferPrivate)
 {
     Q_D(Buffer);
     d->m_type = ty;

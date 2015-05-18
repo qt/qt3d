@@ -48,8 +48,8 @@ namespace Qt3D {
     \class Qt3D::QBackendNodePrivate
     \internal
 */
-QBackendNodePrivate::QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode)
-    : q_ptr(qq)
+QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)
+    : q_ptr(Q_NULLPTR)
     , m_mode(mode)
     , m_factory(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
@@ -83,8 +83,9 @@ QBackendNodePrivate *QBackendNodePrivate::get(QBackendNode *n)
 }
 
 QBackendNode::QBackendNode(QBackendNode::Mode mode)
-    : d_ptr(new QBackendNodePrivate(this, mode))
+    : d_ptr(new QBackendNodePrivate(mode))
 {
+    d_ptr->q_ptr = this;
 }
 
 QBackendNode::~QBackendNode()
@@ -131,6 +132,7 @@ QBackendNode *QBackendNode::createBackendNode(QNode *frontend) const
 QBackendNode::QBackendNode(QBackendNodePrivate &dd)
     : d_ptr(&dd)
 {
+    d_ptr->q_ptr = this;
 }
 
 void QBackendNode::notifyObservers(const QSceneChangePtr &e)

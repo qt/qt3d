@@ -91,7 +91,7 @@ private:
 class QFrameAllocatorPrivate
 {
 public:
-    QFrameAllocatorPrivate(QFrameAllocator *qq);
+    QFrameAllocatorPrivate();
 
     inline void *allocateAtChunk(uint allocatorIndex)
     {
@@ -107,9 +107,6 @@ public:
     {
         return (targetSize + m_alignment - 1) / m_alignment - 1;
     }
-
-    Q_DECLARE_PUBLIC(QFrameAllocator)
-    QFrameAllocator *q_ptr;
 
     uint m_maxObjectSize;
     uint m_alignment;

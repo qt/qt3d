@@ -51,8 +51,8 @@ namespace Qt3D {
     \class Qt3D::QBackendScenePropertyChangePrivate
     \internal
 */
-QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate(QBackendScenePropertyChange *qq)
-    : QScenePropertyChangePrivate(qq)
+QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()
+    : QScenePropertyChangePrivate()
 {
 }
 
@@ -61,7 +61,7 @@ QBackendScenePropertyChangePrivate::~QBackendScenePropertyChangePrivate()
 }
 
 QBackendScenePropertyChange::QBackendScenePropertyChange(ChangeFlag type, const QNodeId &subjectId, QSceneChange::Priority priority)
-    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate(this), type, Observable, subjectId, priority)
+    : QScenePropertyChange(*new QBackendScenePropertyChangePrivate, type, Observable, subjectId, priority)
 {
 }
 

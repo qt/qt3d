@@ -43,7 +43,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAttribute;
 class QAbstractBuffer;
 
 typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
@@ -51,10 +50,8 @@ typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
 class QT3DCORESHARED_EXPORT QAbstractAttributePrivate
 {
 public:
-    QAbstractAttributePrivate(QAbstractAttribute *qq);
+    QAbstractAttributePrivate();
 
-    Q_DECLARE_PUBLIC(QAbstractAttribute)
-    QAbstractAttribute *q_ptr;
     int m_type;
     uint m_count;
     uint m_stride;

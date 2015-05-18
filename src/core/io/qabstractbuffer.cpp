@@ -45,13 +45,12 @@ namespace Qt3D {
     \class Qt3D::QAbstractBufferPrivate
     \internal
 */
-QAbstractBufferPrivate::QAbstractBufferPrivate(QAbstractBuffer *qq)
-    : q_ptr(qq)
+QAbstractBufferPrivate::QAbstractBufferPrivate()
 {
 }
 
 QAbstractBuffer::QAbstractBuffer()
-    : d_ptr(new QAbstractBufferPrivate(this))
+    : d_ptr(new QAbstractBufferPrivate)
 {
 }
 

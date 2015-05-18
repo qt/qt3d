@@ -48,15 +48,14 @@ namespace Qt3D {
     \class Qt3D::QMeshDataPrivate
     \internal
 */
-QMeshDataPrivate::QMeshDataPrivate(QMeshData *qq)
-    : q_ptr(qq)
-    , m_verticesPerPatch(0)
+QMeshDataPrivate::QMeshDataPrivate()
+    : m_verticesPerPatch(0)
     , m_primitiveType(0)
 {
 }
 
 QMeshData::QMeshData(PrimitiveType primitiveType)
-    : d_ptr(new QMeshDataPrivate(this))
+    : d_ptr(new QMeshDataPrivate)
 {
     setPrimitiveType(primitiveType);
 }
