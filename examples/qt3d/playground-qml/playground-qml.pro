@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dquick qml quick 3dinput
 
-include("../exampleresources/exampleresources.pri")
-
 HEADERS += \
 
 SOURCES += \
@@ -25,4 +23,5 @@ OTHER_FILES += \
     AnimatedDiffuseMaterial.qml
 
 RESOURCES += \
-    playground-qml.qrc
+    playground-qml.qrc \
+    ../exampleresources/gltf.qrc \

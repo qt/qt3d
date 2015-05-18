@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
 
-include("../exampleresources/exampleresources.pri")
-
 HEADERS += \
 
 SOURCES += \
@@ -13,4 +11,5 @@ OTHER_FILES += \
     main.qml
 
 RESOURCES += \
-    multiviewport.qrc
+    multiviewport.qrc \
+    ../exampleresources/test_scene.qrc

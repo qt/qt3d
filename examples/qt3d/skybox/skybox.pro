@@ -2,10 +2,9 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
 
-include("../exampleresources/exampleresources.pri")
-
 RESOURCES += \
-    skybox.qrc
+    skybox.qrc \
+    ../exampleresources/cubemaps.qrc
 
 SOURCES += \
     main.cpp

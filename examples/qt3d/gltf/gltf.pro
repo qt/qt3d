@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
 
-include("../exampleresources/exampleresources.pri")
-
 HEADERS += \
 
 SOURCES += \
@@ -13,4 +11,6 @@ OTHER_FILES += \
     main.qml
 
 RESOURCES += \
-    gltf.qrc
+    gltf_example.qrc \
+    ../exampleresources/gltf.qrc \
+    ../exampleresources/obj.qrc

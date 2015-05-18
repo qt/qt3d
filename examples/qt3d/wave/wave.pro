@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dquick 3dinput qml quick
 
-include("../exampleresources/exampleresources.pri")
-
 HEADERS += \
 
 SOURCES += \

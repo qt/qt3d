@@ -39,8 +39,6 @@
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 
-#include <exampleresources.h>
-
 #include <QGuiApplication>
 
 int main(int ac, char **av)
@@ -49,7 +47,6 @@ int main(int ac, char **av)
     Qt3D::Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
 
-    initializeAssetResources("../exampleresources/example-assets.qrb");
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect);
     engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
     QVariantMap data;

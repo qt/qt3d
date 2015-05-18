@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    exampleresources \
     playground-qml \
     simple-qml \
     simple-cpp \
@@ -36,11 +35,3 @@ SUBDIRS += \
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
 qtHaveModule(widgets): SUBDIRS += assimp-cpp
-
-# Make all other subdirs depend on exampleresources
-for(subdir, SUBDIRS) {
-    !equals(subdir, exampleresources) {
-        $${subdir}.depends += exampleresources
-    }
-}
-

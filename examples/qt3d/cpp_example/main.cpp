@@ -36,8 +36,6 @@
 
 #include <QGuiApplication>
 
-#include <exampleresources.h>
-
 #include <Qt3DCore/window.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
@@ -72,8 +70,6 @@
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
-
-    initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Window view;
     Qt3D::QAspectEngine engine;

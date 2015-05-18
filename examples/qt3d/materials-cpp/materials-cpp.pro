@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dinput
 
-include("../exampleresources/exampleresources.pri")
-
 HEADERS += \
     planeentity.h \
     renderableentity.h \
@@ -20,3 +18,10 @@ SOURCES += \
     barrel.cpp \
     rotatingtrefoilknot.cpp \
     houseplant.cpp
+
+RESOURCES += \
+    ../exampleresources/chest.qrc \
+    ../exampleresources/houseplants.qrc \
+    ../exampleresources/metalbarrel.qrc \
+    ../exampleresources/obj.qrc \
+    ../exampleresources/textures.qrc

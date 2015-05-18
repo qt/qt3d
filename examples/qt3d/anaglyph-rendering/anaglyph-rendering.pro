@@ -9,10 +9,10 @@ OTHER_FILES += *.qml
 SOURCES += \
     main.cpp
 
-include("../exampleresources/exampleresources.pri")
-
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    ../exampleresources/cubemaps.qrc \
+    ../exampleresources/obj.qrc
 
 DISTFILES += \
     StereoFrameGraph.qml

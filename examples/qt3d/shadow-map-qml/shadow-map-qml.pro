@@ -2,8 +2,6 @@ TEMPLATE = app
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
 
-include("../exampleresources/exampleresources.pri")
-
 SOURCES += \
     main.cpp
 
@@ -18,4 +16,5 @@ OTHER_FILES += \
     GroundPlane.qml
 
 RESOURCES += \
-    shadow-map-qml.qrc
+    shadow-map-qml.qrc \
+    ../exampleresources/obj.qrc
