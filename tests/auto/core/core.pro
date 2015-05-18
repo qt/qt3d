@@ -19,5 +19,6 @@ SUBDIRS = \
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
     qframeallocator \
-    cloning
+    cloning \
+    threadpooler
 }
