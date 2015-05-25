@@ -40,37 +40,26 @@ import Qt3D.Render 2.0
 Entity
 {
     components: FrameGraph {
-        activeFrameGraph: Viewport {
-            rect: Qt.rect(0, 0, 1, 1)
-            ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
-                CameraSelector {
-                    camera: Entity {
-                        id : camera
-                        components : [
-                            Transform {
-                                LookAt {
-                                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                                    viewCenter: Qt.vector3d( 0.0, 0.0, 10.0 )
-                                }
-                                Rotate {
-                                    angle : -30
-                                    axis : Qt.vector3d(0, 1, 0)
-                                }
-                            },
-                            CameraLens {
-                                projectionType: CameraLens.PerspectiveProjection
-                                fieldOfView: 60
-                                aspectRatio: 16/9
-                                nearPlane : 0.01
-                                farPlane : 1000.0
-                            }
-                        ]
-                    }
-                }
-            }
+        activeFrameGraph: ForwardRenderer {
+            clearColor: Qt.rgba(0, 0.5, 1, 1)
+            camera: camera
         }
+    }
+
+    Camera {
+        id: camera
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 16/9
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 0.0, 0.0, -40.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+    }
+
+    Configuration  {
+        controlledCamera: camera
     }
 
     Entity {
@@ -80,8 +69,19 @@ Entity
             },
             SceneLoader
             {
-                id: scene
                 source: "qrc:/assets/test_scene.dae"
+            }]
+    }
+
+    Entity {
+        components : [
+            Transform {
+                Scale { scale: 0.2 }
+                Translate { dy: -15 }
+            },
+            SceneLoader
+            {
+                source: "qrc:/assets/chest/Chest.obj"
             }]
     }
 }
