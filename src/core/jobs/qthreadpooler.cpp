@@ -119,6 +119,8 @@ QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQu
 
 QFuture<void> QThreadPooler::future()
 {
+    const QMutexLocker locker(m_mutex);
+
     if (!m_futureInterface)
         return QFuture<void>();
     else
@@ -127,6 +129,8 @@ QFuture<void> QThreadPooler::future()
 
 void QThreadPooler::acquire(int add)
 {
+    // The caller have to set the mutex
+
     forever {
         int localCount = m_taskCount.load();
         if (m_taskCount.testAndSetOrdered(localCount, localCount + add))
@@ -136,6 +140,8 @@ void QThreadPooler::acquire(int add)
 
 void QThreadPooler::release()
 {
+    // The caller have to set the mutex
+
     forever {
         int localCount = m_taskCount.load();
 
@@ -149,6 +155,8 @@ void QThreadPooler::release()
 
 int QThreadPooler::currentCount()
 {
+    // The caller have to set the mutex
+
     return m_taskCount.load();
 }
 
