@@ -58,6 +58,10 @@ QThreadPooler::QThreadPooler(QObject *parent)
 
 QThreadPooler::~QThreadPooler()
 {
+    // Wait till all tasks are finished before deleting mutex
+    QMutexLocker locker(m_mutex);
+    locker.unlock();
+
     delete m_mutex;
 }
 
