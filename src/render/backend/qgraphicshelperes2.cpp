@@ -159,6 +159,7 @@ QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuin
     QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
+    attributes.reserve(nbrActiveAttributes);
     for (GLint i = 0; i < nbrActiveAttributes; i++) {
         ShaderAttribute attribute;
         QByteArray attributeName(256, '\0');
