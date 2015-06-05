@@ -136,7 +136,7 @@ QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint pr
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
-    uniforms.resize(nbrActiveUniforms);
+    uniforms.reserve(nbrActiveUniforms);
     for (GLint i = 0; i < nbrActiveUniforms; i++) {
         ShaderUniform uniform;
         QByteArray uniformName(256, '\0');
