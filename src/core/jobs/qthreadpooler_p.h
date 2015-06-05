@@ -41,14 +41,13 @@
 #include "dependencyhandler_p.h"
 
 #include <QtCore/QObject>
-#include <QtCore/QWaitCondition>
 #include <QtCore/QSharedPointer>
+#include <QtCore/QFutureInterface>
+#include <QtCore/QFuture>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QThreadPoolerPrivate;
 
 class QThreadPooler : public QObject
 {
@@ -58,25 +57,23 @@ public:
     explicit QThreadPooler(QObject *parent = 0);
     ~QThreadPooler();
 
-    int maxThreadCount() const;
-    void setMaxThreadCount(int threadCount);
-    QSharedPointer<TaskInterface> nextTask();
-    void enqueueTask(const QSharedPointer<TaskInterface> &task);
-    void flush();
-    void startRunning();
-    void stopRunning();
+    QFuture<void> mapDependables(QVector<RunnableInterface *> &taskQueue);
+    void taskFinished(RunnableInterface *task);
+    QFuture<void> future();
+
     void setDependencyHandler(DependencyHandler *handler);
 
-signals:
-    void shuttingDown();
+private:
+    void enqueueTasks(QVector<RunnableInterface *> &tasks);
+    void acquire(int add);
+    void release();
+    int currentCount();
 
 private:
-    void manageThreads();
-    bool hasDependencies(const QSharedPointer<TaskInterface> &task);
-    bool isIdling();
-
-private:
-    Q_DECLARE_PRIVATE(QThreadPooler)
+    QFutureInterface<void> *m_futureInterface;
+    QMutex *m_mutex;
+    DependencyHandler *m_dependencyHandler;
+    QAtomicInt m_taskCount;
 };
 
 } // namespace Qt3D

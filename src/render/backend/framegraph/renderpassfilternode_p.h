@@ -38,6 +38,7 @@
 #define QT3D_RENDER_RENDERPASSFILTER_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DRenderer/private/parameterpack_p.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -60,12 +61,14 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     QList<QNodeId> filters() const;
+    QList<QNodeId> parameters() const;
     void appendFilter(QAnnotation *criterion);
     void removeFilter(const QNodeId &criterionId);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QList<QNodeId> m_filters;
+    ParameterPack m_parameterPack;
 };
 
 } // namespace Render

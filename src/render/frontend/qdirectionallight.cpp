@@ -61,8 +61,12 @@ namespace Qt3D {
  * \endcode
  */
 
-QDirectionalLightPrivate::QDirectionalLightPrivate(QDirectionalLight *qq)
-    : QAbstractLightPrivate(qq)
+/*!
+    \class Qt3D::QDirectionalLightPrivate
+    \internal
+*/
+QDirectionalLightPrivate::QDirectionalLightPrivate()
+    : QAbstractLightPrivate()
 {
 }
 
@@ -76,10 +80,11 @@ void QDirectionalLight::copy(const QNode *ref)
 }
 
 QDirectionalLight::QDirectionalLight(QNode *parent)
-    : QAbstractLight(*new QDirectionalLightPrivate(this), parent)
+    : QAbstractLight(*new QDirectionalLightPrivate, parent)
 {
 }
 
+/*! \internal */
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

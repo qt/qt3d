@@ -49,7 +49,7 @@ class QSortCriterion;
 class QSortMethodPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QSortMethodPrivate(QSortMethod *qq);
+    QSortMethodPrivate();
     Q_DECLARE_PUBLIC(QSortMethod)
     QList<QSortCriterion *> m_criteria;
 };

@@ -55,9 +55,11 @@ public:
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QNodeId renderTargetUuid() const;
+    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
 
 private:
     QNodeId m_renderTargetUuid;
+    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
 } // Render

@@ -41,8 +41,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate(QFrameGraphSelector *qq)
-    : QFrameGraphNodePrivate(qq)
+/*!
+    \class Qt3D::QFrameGraphSelectorPrivate
+    \internal
+*/
+QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -61,7 +65,7 @@ QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate(QFrameGraphSelector *qq)
     Constructs a new Qt3D::QFrameGraphSelector instance using \a parent as parent.
  */
 QFrameGraphSelector::QFrameGraphSelector(QNode *parent)
-    : QFrameGraphNode(*new QFrameGraphSelectorPrivate(this), parent)
+    : QFrameGraphNode(*new QFrameGraphSelectorPrivate, parent)
 {
 }
 
@@ -91,9 +95,6 @@ void QFrameGraphSelector::setSelectionFunctor(QFrameGraphSelectorFunctorPtr func
 void QFrameGraphSelector::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
-    const QFrameGraphSelector *other = static_cast<const QFrameGraphSelector*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 } // Qt3D

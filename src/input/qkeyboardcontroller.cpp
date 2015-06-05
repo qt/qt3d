@@ -44,13 +44,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QKeyboardControllerPrivate::QKeyboardControllerPrivate(QKeyboardController *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QKeyboardControllerPrivate
+    \internal
+*/
+QKeyboardControllerPrivate::QKeyboardControllerPrivate()
+    : QNodePrivate()
 {
 }
 
 QKeyboardController::QKeyboardController(QNode *parent)
-    : QNode(*new QKeyboardControllerPrivate(this), parent)
+    : QNode(*new QKeyboardControllerPrivate, parent)
 {
 }
 
@@ -60,6 +64,7 @@ QKeyboardInput *QKeyboardController::activeInput() const
     return d->m_activeInput;
 }
 
+/*! \internal */
 QKeyboardController::QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

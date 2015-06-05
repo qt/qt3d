@@ -38,9 +38,6 @@
 #define QT3D_QMATRIXTRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
-
-#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,8 +50,8 @@ class QT3DCORESHARED_EXPORT QMatrixTransform : public Qt3D::QAbstractTransform
     Q_OBJECT
     Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)
 public:
-    explicit QMatrixTransform(QNode *parent = 0);
-    QMatrixTransform(const QMatrix4x4& m, QNode *parent = 0);
+    explicit QMatrixTransform(QObject *parent = Q_NULLPTR);
+    QMatrixTransform(const QMatrix4x4 &m, QObject *parent = Q_NULLPTR);
 
     QMatrix4x4 matrix() const;
     void setMatrix(const QMatrix4x4 &matrix);
@@ -65,12 +62,11 @@ Q_SIGNALS:
     void matrixChanged();
 
 protected:
-    QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QMatrixTransform(QMatrixTransformPrivate &dd, QObject *parent = Q_NULLPTR);
 
 private:
-    QT3D_CLONEABLE(QMatrixTransform)
     Q_DECLARE_PRIVATE(QMatrixTransform)
+    Q_DISABLE_COPY(QMatrixTransform)
 };
 
 } // namespace Qt3D

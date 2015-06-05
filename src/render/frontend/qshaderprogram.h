@@ -55,7 +55,6 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
     Q_PROPERTY(QByteArray geometryShaderCode READ geometryShaderCode WRITE setGeometryShaderCode NOTIFY geometryShaderCodeChanged)
     Q_PROPERTY(QByteArray fragmentShaderCode READ fragmentShaderCode WRITE setFragmentShaderCode NOTIFY fragmentShaderCodeChanged)
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
-    Q_ENUMS(ShaderType)
 
 public:
     explicit QShaderProgram(QNode *parent = 0);
@@ -68,6 +67,7 @@ public:
         Geometry,
         Compute
     };
+    Q_ENUM(ShaderType)
 
     // Source code in-line
     void setVertexShaderCode(const QByteArray &vertexShaderCode);

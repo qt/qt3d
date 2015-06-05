@@ -54,7 +54,7 @@ class Quick3DNodeInstantiatorPrivate : public QNodePrivate
     Q_DECLARE_PUBLIC(Quick3DNodeInstantiator)
 
 public:
-    Quick3DNodeInstantiatorPrivate(QNode *qq);
+    Quick3DNodeInstantiatorPrivate();
     ~Quick3DNodeInstantiatorPrivate();
 
     void clear();

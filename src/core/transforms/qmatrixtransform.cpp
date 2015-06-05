@@ -41,33 +41,31 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QMatrixTransformPrivate::QMatrixTransformPrivate(QMatrixTransform *qq)
-    : QAbstractTransformPrivate(qq)
+/*!
+    \class Qt3D::QMatrixTransformPrivate
+    \internal
+*/
+QMatrixTransformPrivate::QMatrixTransformPrivate()
+    : QAbstractTransformPrivate()
 {
 }
 
-QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QNode *parent)
-    : QAbstractTransform(dd, parent)
+
+QMatrixTransform::QMatrixTransform(QObject *parent)
+    : QAbstractTransform(*new QMatrixTransformPrivate, parent)
 {
 }
 
-void QMatrixTransform::copy(const QNode *ref)
-{
-    QAbstractTransform::copy(ref);
-    const QMatrixTransform *matrix = static_cast<const QMatrixTransform*>(ref);
-    d_func()->m_matrix = matrix->d_func()->m_matrix;
-}
-
-QMatrixTransform::QMatrixTransform(QNode *parent)
-    : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
-{
-}
-
-QMatrixTransform::QMatrixTransform(const QMatrix4x4& m, QNode *parent)
-    : QAbstractTransform(*new QMatrixTransformPrivate(this), parent)
+QMatrixTransform::QMatrixTransform(const QMatrix4x4 &m, QObject *parent)
+    : QAbstractTransform(*new QMatrixTransformPrivate, parent)
 {
     Q_D(QMatrixTransform);
     d->m_matrix = m;
+}
+
+QMatrixTransform::QMatrixTransform(QMatrixTransformPrivate &dd, QObject *parent)
+    : QAbstractTransform(dd, parent)
+{
 }
 
 QMatrix4x4 QMatrixTransform::matrix() const
@@ -92,5 +90,16 @@ QMatrix4x4 QMatrixTransform::transformMatrix() const
 }
 
 } // namespace Qt3D
+
+/*!
+    \qmltype MatrixTransform
+    \inqmlmodule Qt3D
+    \since 5.5
+    \instantiates Qt3D::QMatrixTransform
+*/
+
+/*!
+    \qmlproperty matrix4x4 Qt3D::MatrixTransform::matrix
+*/
 
 QT_END_NAMESPACE

@@ -50,8 +50,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
-    : QAbstractAspectPrivate(qq)
+/*!
+    \class Qt3D::QInputAspectPrivate
+    \internal
+*/
+QInputAspectPrivate::QInputAspectPrivate()
+    : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
     , m_cameraController(new Input::CameraController())
 {
@@ -59,7 +63,7 @@ QInputAspectPrivate::QInputAspectPrivate(QInputAspect *qq)
 }
 
 QInputAspect::QInputAspect(QObject *parent)
-    : QAbstractAspect(*new QInputAspectPrivate(this), parent)
+    : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
     registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler)));
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler)));

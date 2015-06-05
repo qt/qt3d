@@ -43,13 +43,9 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 
-#include <exampleresources.h>
-
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
-    initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Window view;
     Qt3D::Quick::QQmlAspectEngine engine;

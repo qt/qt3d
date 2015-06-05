@@ -48,6 +48,7 @@ namespace Qt3D {
 
 class QRenderPassFilterPrivate;
 class QAnnotation;
+class QParameter;
 
 class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
 {
@@ -59,6 +60,10 @@ public:
     QList<QAnnotation *> includes() const;
     void addInclude(QAnnotation *criterion);
     void removeInclude(QAnnotation *criterion);
+
+    void addParameter(QParameter *p);
+    void removeParameter(QParameter *p);
+    QList<QParameter *> parameters() const;
 
 protected:
     QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);

@@ -48,7 +48,6 @@ class QClearBufferPrivate;
 class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_ENUMS(BufferType)
     Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
 public:
     explicit QClearBuffer(QNode *parent = 0);
@@ -63,6 +62,7 @@ public:
         ColorDepthStencilBuffer = ColorBuffer | DepthStencilBuffer,
         AllBuffers = 0xFFFFFFFF
     };
+    Q_ENUM(BufferType)
 
     void setBuffers(BufferType buffers);
     BufferType buffers() const;

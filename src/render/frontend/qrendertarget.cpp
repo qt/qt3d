@@ -43,8 +43,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderTargetPrivate::QRenderTargetPrivate(QRenderTarget *qq)
-    : QComponentPrivate(qq)
+/*!
+    \class Qt3D::QRenderTargetPrivate
+    \internal
+*/
+QRenderTargetPrivate::QRenderTargetPrivate()
+    : QComponentPrivate()
 {
 }
 
@@ -57,10 +61,11 @@ void QRenderTarget::copy(const QNode *ref)
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)
-    : QComponent(*new QRenderTargetPrivate(this), parent)
+    : QComponent(*new QRenderTargetPrivate, parent)
 {
 }
 
+/*! \internal */
 QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {

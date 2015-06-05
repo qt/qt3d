@@ -41,34 +41,58 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-/*!
- *
- * Expected Shader struct
- *
- * \code
- *
- * struct PointLight
- * {
- *  vec3 position;
- *  vec4 color;
- *  float intensity;
- * };
- *
- * uniform PointLight pointLights[10];
- *
- * \endcode
+/*
+  Expected Shader struct
+
+  \code
+
+  struct PointLight
+  {
+   vec3 position;
+   vec4 color;
+   float intensity;
+  };
+
+  uniform PointLight pointLights[10];
+
+  \endcode
  */
 
-QPointLightPrivate::QPointLightPrivate(QPointLight *qq)
-    : QAbstractLightPrivate(qq)
+/*!
+    \class Qt3D::QPointLightPrivate
+    \internal
+*/
+QPointLightPrivate::QPointLightPrivate()
+    : QAbstractLightPrivate()
 {
 }
 
+/*!
+  \class QPointLight
+  \inmodule Qt3DRender
+  \since 5.5
+
+ */
+
+/*!
+    \qmltype PointLight
+    \instantiates Qt3D::QPointLight
+    \inherits AbstractLight
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For OpenGL ...
+*/
+
+/*!
+  \fn Qt3D::QPointLight::QPointLight(QNode *parent)
+  Constructs a new QPointLight with the specified \a parent.
+ */
 QPointLight::QPointLight(QNode *parent)
-    : QAbstractLight(*new QPointLightPrivate(this), parent)
+    : QAbstractLight(*new QPointLightPrivate, parent)
 {
 }
 
+/*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
     : QAbstractLight(dd, parent)
 {

@@ -67,8 +67,9 @@ void RenderViewJob::run()
     setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);
 
     // Build RenderCommand should perform the culling as we have no way to determine
-    // if a child has a mesh in the view frustrum while its parent isn't contained in it.
-    renderView->buildRenderCommands(m_renderer->renderSceneRoot());
+    // if a child has a mesh in the view frustum while its parent isn't contained in it.
+    if (!renderView->noDraw())
+        renderView->buildRenderCommands(m_renderer->renderSceneRoot());
 
     // Sorts RenderCommand
     renderView->sort();

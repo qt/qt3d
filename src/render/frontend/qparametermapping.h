@@ -49,7 +49,6 @@ class QParameterMappingPrivate;
 class QT3DRENDERERSHARED_EXPORT QParameterMapping : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(Binding)
     Q_PROPERTY(QString parameterName READ parameterName WRITE setParameterName NOTIFY parameterNameChanged)
     Q_PROPERTY(QString shaderVariableName READ shaderVariableName WRITE setShaderVariableName NOTIFY shaderVariableNameChanged)
     Q_PROPERTY(Binding bindingType READ bindingType WRITE setBindingType NOTIFY bindingTypeChanged)
@@ -61,6 +60,7 @@ public:
         StandardUniform,
         FragmentOutput
     };
+    Q_ENUM(Binding)
 
     explicit QParameterMapping(QNode *parent = 0);
     QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, QNode *parent = 0);

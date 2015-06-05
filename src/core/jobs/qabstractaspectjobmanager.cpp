@@ -41,11 +41,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractAspectJobManagerPrivate
+    \internal
+*/
 QAbstractAspectJobManager::QAbstractAspectJobManager(QObject *parent)
     : QObject(*new QAbstractAspectJobManagerPrivate, parent)
 {
 }
 
+/*! \internal */
 QAbstractAspectJobManager::QAbstractAspectJobManager(QAbstractAspectJobManagerPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

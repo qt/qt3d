@@ -43,11 +43,14 @@
 #include <Qt3DCore/qcameralens.h>
 #include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qmesh.h>
 #include <Qt3DRenderer/qmaterial.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRenderer/qdiffusemapmaterial.h>
+#include <Qt3DRenderer/qdiffusespecularmapmaterial.h>
 #include <Qt3DRenderer/qphongmaterial.h>
 #include <QFileInfo>
 #include <QColor>
@@ -60,16 +63,15 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
- * \class AssimpParser
- * \namespace Qt3D
- * \since 5.5
- *
- * \brief Provides a generic way of loading various 3D assets
- * format into a Qt3D scene.
- *
- * It should be noted that Assimp aiString is explicitly defined to be UTF-8.
- *
- * \sa GLTFParser
+    \class Qt3D::AssimpParser
+    \since 5.5
+
+    \brief Provides a generic way of loading various 3D assets
+    format into a Qt3D scene.
+
+    It should be noted that Assimp aiString is explicitly defined to be UTF-8.
+
+    \sa GLTFParser
 */
 
 Q_LOGGING_CATEGORY(AssimpParserLog, "Qt3D.AssimpParser")
@@ -112,7 +114,80 @@ const QString TANGENT_ATTRIBUTE_NAME = QMeshData::defaultTangentAttributeName();
 const QString TEXTCOORD_ATTRIBUTE_NAME = QMeshData::defaultTextureCoordinateAttributeName();
 const QString COLOR_ATTRIBUTE_NAME = QMeshData::defaultColorAttributeName();
 
+/*!
+ * Returns a QMatrix4x4 from \a matrix;
+ */
+QMatrix4x4 aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix) Q_DECL_NOEXCEPT
+{
+    return QMatrix4x4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
+                      matrix.b1, matrix.b2, matrix.b3, matrix.b4,
+                      matrix.c1, matrix.c2, matrix.c3, matrix.c4,
+                      matrix.d1, matrix.d2, matrix.d3, matrix.d4);
 }
+
+/*!
+ * Returns a QString from \a str;
+ */
+static inline QString aiStringToQString(const aiString &str)
+{
+    return QString::fromUtf8(str.data, int(str.length));
+}
+
+QMaterial *createBestApproachingMaterial(const aiMaterial *assimpMaterial) Q_DECL_NOEXCEPT
+{
+    aiString path; // unused but necessary
+    const bool hasDiffuseTexture = (assimpMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS);
+    const bool hasSpecularTexture = (assimpMaterial->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS);
+
+    if (hasDiffuseTexture && hasSpecularTexture)
+        return new QDiffuseSpecularMapMaterial();
+    if (hasDiffuseTexture)
+        return new QDiffuseMapMaterial();
+    return new QPhongMaterial();
+}
+
+QString texturePath(const aiString &path)
+{
+    QString p = aiStringToQString(path);
+    if (p.startsWith('/'))
+        p.remove(0, 1);
+    return p;
+}
+
+/*!
+ * Returns the Qt3D::QParameter with named \a name if contained by the material
+ * \a material. If the material doesn't contain the named parameter, a new
+ * Qt3D::QParameter is created and inserted into the material.
+ */
+QParameter *findNamedParameter(const QString &name, QMaterial *material)
+{
+    // Does the material contain the parameter ?
+    foreach (QParameter *p , material->parameters())
+        if (p->name() == name)
+            return p;
+
+    // Does the material's effect contain the parameter ?
+    if (material->effect()) {
+        const QEffect *e = material->effect();
+        foreach (QParameter *p, e->parameters())
+            if (p->name() == name)
+                return p;
+    }
+
+    // Create and add parameter to material
+    QParameter *p = new QParameter(material);
+    p->setName(name);
+    material->addParameter(p);
+    return p;
+}
+
+void setParameterValue(const QString &name, QMaterial *material, const QVariant &value)
+{
+    QParameter *p = findNamedParameter(name, material);
+    p->setValue(value);
+}
+
+} // anonymous
 
 QStringList AssimpParser::assimpSupportedFormatsList = AssimpParser::assimpSupportedFormats();
 
@@ -230,7 +305,7 @@ private:
 };
 
 /*!
- *  Initialized a new instance of AssimpParser.
+ *  Constructor. Initializes a new instance of AssimpParser.
  */
 AssimpParser::AssimpParser() : AbstractSceneParser(),
     m_sceneParsed(false),
@@ -239,7 +314,7 @@ AssimpParser::AssimpParser() : AbstractSceneParser(),
 }
 
 /*!
- * Cleans the parser properly before destruction.
+ * Destructor. Cleans the parser properly before destroying it.
  */
 AssimpParser::~AssimpParser()
 {
@@ -247,7 +322,7 @@ AssimpParser::~AssimpParser()
 }
 
 /*!
- *  Return true if the provided \a path has a suffix supported
+ *  Returns \c true if the provided \a path has a suffix supported
  *  by the Assimp Assets importer.
  */
 bool AssimpParser::isAssimpPath(const QString &path)
@@ -261,19 +336,8 @@ bool AssimpParser::isAssimpPath(const QString &path)
 }
 
 /*!
- * Returns a QMatrix4x4 from \a matrix;
- */
-QMatrix4x4 AssimpParser::aiMatrix4x4ToQMatrix4x4(const aiMatrix4x4 &matrix)
-{
-    return QMatrix4x4(matrix.a1, matrix.a2, matrix.a3, matrix.a4,
-                      matrix.b1, matrix.b2, matrix.b3, matrix.b4,
-                      matrix.c1, matrix.c2, matrix.c3, matrix.c4,
-                      matrix.d1, matrix.d2, matrix.d3, matrix.d4);
-}
-
-/*!
- * Sets the \a path used by the parser to load the asset file.
- * If the file is valid, this will trigger the parsing of the file.
+ * Sets the \a source used by the parser to load the asset file.
+ * If the file is valid, this will trigger parsing of the file.
  */
 void AssimpParser::setSource(const QUrl &source)
 {
@@ -288,7 +352,7 @@ void AssimpParser::setSource(const QUrl &source)
 }
 
 /*!
- * Returns true if the extension of \a path is supported by
+ * Returns \c true if the extension of \a source is supported by
  * the assimp parser.
  */
 bool AssimpParser::isExtensionSupported(const QUrl &source) const
@@ -302,7 +366,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source) const
  * node specified by \a id. If \a id is empty, the scene is assumed to be
  * the root node of the scene.
  *
- * Returns Q_NULLPTR if \a id was specified but not node matching it can be found.
+ * Returns \c Q_NULLPTR if \a id was specified but no node matching it was found.
  */
 QEntity *AssimpParser::scene(const QString &id)
 {
@@ -327,7 +391,7 @@ QEntity *AssimpParser::scene(const QString &id)
 
 /*!
  *  Returns a Node from the scene identified by \a id.
- *  Returns Q_NULLPTR if no node can be found.
+ *  Returns \c Q_NULLPTR if the node was not found.
  */
 QEntity *AssimpParser::node(const QString &id)
 {
@@ -346,14 +410,16 @@ QEntity *AssimpParser::node(aiNode *node)
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
     QEntity *entityNode = new QEntity();
+    entityNode->setObjectName(aiStringToQString(node->mName));
 
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
         AssimpMesh * mesh = m_scene->m_meshes[meshIdx];
         // mesh material
-        if (m_scene->m_materials.contains(meshIdx))
-            entityNode->addComponent(m_scene->m_materials[meshIdx]);
+        uint materialIndex = m_scene->m_aiScene->mMeshes[meshIdx]->mMaterialIndex;
+        if (m_scene->m_materials.contains(materialIndex))
+            entityNode->addComponent(m_scene->m_materials[materialIndex]);
         // mesh
         entityNode->addComponent(mesh);
     }
@@ -369,7 +435,7 @@ QEntity *AssimpParser::node(aiNode *node)
     }
 
     // Add Transformations
-    QMatrix4x4 qTransformMatrix = AssimpParser::aiMatrix4x4ToQMatrix4x4(node->mTransformation);
+    const QMatrix4x4 qTransformMatrix = aiMatrix4x4ToQMatrix4x4(node->mTransformation);
     QTransform *transform = new QTransform(new QMatrixTransform(qTransformMatrix));
     entityNode->addComponent(transform);
 
@@ -384,7 +450,7 @@ QEntity *AssimpParser::node(aiNode *node)
 
 /*!
  * Reads the scene file pointed by \a path and launches the parsing of
- * the scene using Assimp after having cleaned up previously saved values
+ * the scene using Assimp, after having cleaned up previously saved values
  * from eventual previous parsings.
  */
 void AssimpParser::readSceneFile(const QString &path)
@@ -404,7 +470,8 @@ void AssimpParser::readSceneFile(const QString &path)
                                                        aiProcess_SortByPType|
                                                        aiProcess_Triangulate|
                                                        aiProcess_JoinIdenticalVertices|
-                                                       aiProcess_GenSmoothNormals);
+                                                       aiProcess_GenSmoothNormals|
+                                                       aiProcess_FlipUVs);
     if (m_scene->m_aiScene == Q_NULLPTR) {
         qCWarning(AssimpParserLog) << "Assimp scene import failed";
         return ;
@@ -413,7 +480,7 @@ void AssimpParser::readSceneFile(const QString &path)
 }
 
 /*!
- * Cleans the various dictionnaries holding the scenes infos.
+ * Cleans the various dictionaries holding the scene's information.
  */
 void AssimpParser::cleanup()
 {
@@ -423,7 +490,7 @@ void AssimpParser::cleanup()
 }
 
 /*!
- * Parses the the aiScene provided py Assimp and convert Assimp
+ * Parses the aiScene provided py Assimp and converts Assimp
  * values to Qt3D values.
  */
 void AssimpParser::parse()
@@ -448,13 +515,15 @@ void AssimpParser::parse()
 }
 
 /*!
- * Converts the provided Assimp aiMaterial \a material to a Qt3D material.
- * \sa Material and adds its to a dictionary of materials.
+ * Converts the provided Assimp aiMaterial identified by \a materialIndex to a
+ * Qt3D material and adds it to a dictionary of materials.
+ * \sa Material
  */
 void AssimpParser::loadMaterial(uint materialIndex)
 {
-    QMaterial *material = new QPhongMaterial();
+    // Generates default material based on what the assimp material contains
     aiMaterial *assimpMaterial = m_scene->m_aiScene->mMaterials[materialIndex];
+    QMaterial *material = createBestApproachingMaterial(assimpMaterial);
     // Material Name
     copyMaterialName(material, assimpMaterial);
     copyMaterialColorProperties(material, assimpMaterial);
@@ -464,14 +533,13 @@ void AssimpParser::loadMaterial(uint materialIndex)
     // Add textures to materials dict
     copyMaterialTextures(material, assimpMaterial);
 
-    // TO DO : Set Material Effect and Technique
-
-    m_scene->m_materials[materialIndex] = material;
+    m_scene->m_materials.insert(materialIndex, material);
 }
 
 /*!
  * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QMeshData
- * \sa QMeshData and adds it to a dictionary of meshes.
+ * and adds it to a dictionary of meshes.
+ * \sa QMeshData
  */
 void AssimpParser::loadMesh(uint meshIndex)
 {
@@ -479,9 +547,6 @@ void AssimpParser::loadMesh(uint meshIndex)
 
     // Primitive are always triangles with the current Assimp's configuration
     QMeshDataPtr meshData(new QMeshData(QMeshData::Triangles));
-
-    // Mesh Name
-    QString meshName = QString::fromUtf8(mesh->mName.data);
 
     // Vertices and Normals always present with the current Assimp's configuration
     aiVector3D *vertices = mesh->mVertices;
@@ -603,15 +668,17 @@ void AssimpParser::loadMesh(uint meshIndex)
     meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
 
     AssimpMesh *storedMesh = new AssimpMesh();
+    storedMesh->setObjectName(aiStringToQString(mesh->mName));
     storedMesh->setData(meshData);
     m_scene->m_meshes[meshIndex] = storedMesh;
 
-    qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << meshName << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
+    qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
+                             << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
 }
 
 /*!
  * Converts the provided Assimp aiTexture at \a textureIndex to a Texture and
- * adds it ot a dictionary of textures.
+ * adds it to a dictionary of textures.
  * \sa Texture
  */
 void AssimpParser::loadEmbeddedTexture(uint textureIndex)
@@ -663,7 +730,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
     QEntity  *camera = new QEntity();
     QCameraLens *lens = new QCameraLens();
 
-    lens->setObjectName(QString::fromUtf8(assimpCamera->mName.data));
+    lens->setObjectName(aiStringToQString(assimpCamera->mName));
     lens->setPerspectiveProjection(qRadiansToDegrees(assimpCamera->mHorizontalFOV),
                                    qMax(assimpCamera->mAspect, 1.0f),
                                    assimpCamera->mClipPlaneNear,
@@ -696,41 +763,41 @@ void AssimpParser::copyMaterialName(QMaterial *material, aiMaterial *assimpMater
     if (assimpMaterial->Get(AI_MATKEY_NAME, name) == aiReturn_SUCCESS) {
         // May not be necessary
         // Kept for debug purposes at the moment
-        material->setObjectName(QString::fromUtf8(name.data));
+        material->setObjectName(aiStringToQString(name));
         qCDebug(AssimpParserLog) << Q_FUNC_INFO << "Assimp Material " << material->objectName();
     }
 }
 
 /*!
- *  Fills \a material color properties with \a assimpMaterial color properties;
+ *  Fills \a material color properties with \a assimpMaterial color properties.
  */
 void AssimpParser::copyMaterialColorProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     aiColor3D color;
     if (assimpMaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_DIFFUSE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_DIFFUSE_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_SPECULAR_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_SPECULAR_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_AMBIENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_AMBIENT_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_EMISSIVE, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_EMISSIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_EMISSIVE_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_TRANSPARENT, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_TRANSPARENT_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_TRANSPARENT_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
     if (assimpMaterial->Get(AI_MATKEY_COLOR_REFLECTIVE, color) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_REFLECTIVE_COLOR, QColor::fromRgbF(color.r, color.g, color.b)));
+        setParameterValue(ASSIMP_MATERIAL_REFLECTIVE_COLOR, material, QColor::fromRgbF(color.r, color.g, color.b));
 }
 
 /*!
- * Retrieves a\a material bool property;
+ * Retrieves a \a material bool property.
  */
 void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     int value;
     if (assimpMaterial->Get(AI_MATKEY_TWOSIDED, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_IS_TWOSIDED, (value == 0) ? false : true));
+        setParameterValue(ASSIMP_MATERIAL_IS_TWOSIDED, material, (value == 0) ? false : true);
     if (assimpMaterial->Get(AI_MATKEY_ENABLE_WIREFRAME, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_IS_WIREFRAME, (value == 0) ? false : true));
+        setParameterValue(ASSIMP_MATERIAL_IS_WIREFRAME, material, (value == 0) ? false : true);
 }
 
 void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
@@ -766,8 +833,7 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
                                                 aiTextureType_OPACITY,
                                                 aiTextureType_REFLECTION,
                                                 aiTextureType_SHININESS,
-                                                aiTextureType_SPECULAR,
-                                                /*aiTextureType_UNKNOWN*/};
+                                                aiTextureType_SPECULAR};
 
     if (m_scene->m_textureToParameterName.isEmpty()) {
         m_scene->m_textureToParameterName.insert(aiTextureType_AMBIENT, ASSIMP_MATERIAL_AMBIENT_TEXTURE);
@@ -786,38 +852,38 @@ void AssimpParser::copyMaterialTextures(QMaterial *material, aiMaterial *assimpM
     for (unsigned int i = 0; i < sizeof(textureType)/sizeof(textureType[0]); i++) {
         aiString path;
         if (assimpMaterial->GetTexture(textureType[i], 0, &path) == AI_SUCCESS) {
-            QString fullPath = m_sceneDir.absoluteFilePath(QString::fromUtf8(path.data));
+            QString fullPath = m_sceneDir.absoluteFilePath(texturePath(path));
             // Load texture if not already loaded
             if (!m_scene->m_materialTextures.contains(fullPath)) {
                 QAbstractTextureProvider *tex = new QTexture2D();
                 QTextureImage *texImage = new QTextureImage();
-                texImage->setSource(fullPath);
+                texImage->setSource(QUrl::fromLocalFile(fullPath));
                 tex->addTextureImage(texImage);
                 m_scene->m_materialTextures.insert(fullPath, tex);
                 qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Loaded Texture " << fullPath;
             }
-            material->addParameter(new QParameter(m_scene->m_textureToParameterName[textureType[i]],
-                                   m_scene->m_materialTextures[fullPath]));
+            setParameterValue(m_scene->m_textureToParameterName[textureType[i]],
+                    material, QVariant::fromValue(m_scene->m_materialTextures[fullPath]));
         }
     }
 }
 
 /*!
- * Retrieves a\a material float property.
+ * Retrieves a \a material float property.
  */
 void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *assimpMaterial)
 {
     float value = 0;
     if (assimpMaterial->Get(AI_MATKEY_OPACITY, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_OPACITY, value));
+        setParameterValue(ASSIMP_MATERIAL_OPACITY, material, value);
     if (assimpMaterial->Get(AI_MATKEY_SHININESS, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_SHININESS, value));
+        setParameterValue(ASSIMP_MATERIAL_SHININESS, material, value);
     if (assimpMaterial->Get(AI_MATKEY_SHININESS_STRENGTH, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_SHININESS_STRENGTH, value));
+        setParameterValue(ASSIMP_MATERIAL_SHININESS_STRENGTH, material, value);
     if (assimpMaterial->Get(AI_MATKEY_REFRACTI, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_REFRACTI, value));
+        setParameterValue(ASSIMP_MATERIAL_REFRACTI, material, value);
     if (assimpMaterial->Get(AI_MATKEY_REFLECTIVITY, value) == aiReturn_SUCCESS)
-        material->addParameter(new QParameter(ASSIMP_MATERIAL_REFLECTIVITY, value));
+        setParameterValue(ASSIMP_MATERIAL_REFLECTIVITY, material, value);
 }
 
 AssimpMesh::AssimpMesh(QNode *parent)

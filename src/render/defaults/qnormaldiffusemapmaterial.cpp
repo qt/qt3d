@@ -53,8 +53,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate(QNormalDiffuseMapMaterial *qq)
-    : QMaterialPrivate(qq)
+/*!
+    \class Qt3D::QNormalDiffuseMapMaterialPrivate
+    \internal
+*/
+QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
+    : QMaterialPrivate()
     , m_normalDiffuseEffect(new QEffect())
     , m_diffuseTexture(new QTexture2D())
     , m_normalTexture(new QTexture2D())
@@ -158,7 +162,7 @@ void QNormalDiffuseMapMaterialPrivate::init()
     Constructs a new Qt3D::QNormalDiffuseMapMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNode *parent)
-    : QMaterial(*new QNormalDiffuseMapMaterialPrivate(this), parent)
+    : QMaterial(*new QNormalDiffuseMapMaterialPrivate, parent)
 {
     Q_D(QNormalDiffuseMapMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
@@ -170,6 +174,7 @@ QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNode *parent)
     d->init();
 }
 
+/*! \internal */
 QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNormalDiffuseMapMaterialPrivate &dd, QNode *parent)
     : QMaterial(dd, parent)
 {
@@ -183,15 +188,18 @@ QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNormalDiffuseMapMaterialPr
     d->init();
 }
 
+/*!
+    Destroys the QNormalDiffuseMapMaterial instance.
+*/
 QNormalDiffuseMapMaterial::~QNormalDiffuseMapMaterial()
 {
 }
 
 /*!
-    \property QNormalDiffuseMapMaterial::ambient
+    \property Qt3D::QNormalDiffuseMapMaterial::ambient
 
-    Holds the current QColor ambient value.
- */
+    Holds the current ambient color.
+*/
 QColor QNormalDiffuseMapMaterial::ambient() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
@@ -199,10 +207,10 @@ QColor QNormalDiffuseMapMaterial::ambient() const
 }
 
 /*!
-    \property QNormalDiffuseMapMaterial::specular
+    \property Qt3D::QNormalDiffuseMapMaterial::specular
 
-    Holds the current QColor specular value.
- */
+    Holds the current specular color.
+*/
 QColor QNormalDiffuseMapMaterial::specular() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
@@ -210,15 +218,19 @@ QColor QNormalDiffuseMapMaterial::specular() const
 }
 
 /*!
-    \property *QNormalDiffuseMapMaterial::diffuse
+    \property Qt3D::QNormalDiffuseMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
-    \note By default the diffuse texture has a linear
-    magnification filter, a linear mipmap linear minification filter,
-    the wrap mode is repeat, the maximum anisotropy is set to 16.0
-    and mipmapping is enabled.
- */
+    By default, the diffuse texture has these properties:
+
+    \list
+        \li Linear minification and magnification filters
+        \li Linear mipmap with mipmapping enabled
+        \li Repeat wrap modeM
+        \li Maximum anisotropy of 16.0
+    \endlist
+*/
 QAbstractTextureProvider *QNormalDiffuseMapMaterial::diffuse() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
@@ -226,14 +238,18 @@ QAbstractTextureProvider *QNormalDiffuseMapMaterial::diffuse() const
 }
 
 /*!
-    \property *QNormalDiffuseMapMaterial::normal
+    \property Qt3D::QNormalDiffuseMapMaterial::normal
 
     Holds the current normal map texture.
 
-    \note By default the normal texture has linear minification
-    and magnification filters, the wrap mode is repeat and maximum anisotropy
-    is set to 16.0.
- */
+    By default, the normal texture has the following properties:
+
+    \list
+        \li Linear minification and magnification filters
+        \li Repeat wrap mode
+        \li Maximum anisotropy of 16.0
+    \endlist
+*/
 QAbstractTextureProvider *QNormalDiffuseMapMaterial::normal() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
@@ -241,10 +257,10 @@ QAbstractTextureProvider *QNormalDiffuseMapMaterial::normal() const
 }
 
 /*!
-    \property QNormalDiffuseMapMaterial::shininess
+    \property Qt3D::QNormalDiffuseMapMaterial::shininess
 
     Holds the current shininess as a float value.
- */
+*/
 float QNormalDiffuseMapMaterial::shininess() const
 {
     Q_D(const QNormalDiffuseMapMaterial);
@@ -252,10 +268,10 @@ float QNormalDiffuseMapMaterial::shininess() const
 }
 
 /*!
-    \property QNormalDiffuseMapMaterial::textureScale
+    \property Qt3D::QNormalDiffuseMapMaterial::textureScale
 
-    Holds the current texture scale.
- */
+    Holds the current texture scale as a float value.
+*/
 float QNormalDiffuseMapMaterial::textureScale() const
 {
     Q_D(const QNormalDiffuseMapMaterial);

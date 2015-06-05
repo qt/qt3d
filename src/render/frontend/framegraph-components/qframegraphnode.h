@@ -54,16 +54,13 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public QNode
 public:
     explicit QFrameGraphNode(QNode *parent = 0);
 
-    void appendFrameGraphNode(QFrameGraphNode *item);
-    void removeFrameGraphNode(QFrameGraphNode *item);
-    QList<QFrameGraphNode *> frameGraphChildren() const;
+    QFrameGraphNode *parentFrameGraphNode() const;
 
     bool isEnabled() const;
     void setEnabled(bool enabled);
 
 protected:
     QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void enabledChanged();

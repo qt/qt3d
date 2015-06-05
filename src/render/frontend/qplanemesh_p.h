@@ -49,7 +49,7 @@ class QPlaneMesh;
 class QPlaneMeshPrivate : public QAbstractMeshPrivate
 {
 public:
-    QPlaneMeshPrivate(QPlaneMesh *qq);
+    QPlaneMeshPrivate();
 
     Q_DECLARE_PUBLIC(QPlaneMesh)
 

@@ -49,7 +49,6 @@ class QAlphaTestPrivate;
 class QT3DRENDERERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(AlphaFunc)
     Q_PROPERTY(AlphaFunc func READ func WRITE setFunc NOTIFY funcChanged)
     Q_PROPERTY(float clamp READ clamp WRITE setClamp NOTIFY clampChanged)
 public:
@@ -64,6 +63,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
+    Q_ENUM(AlphaFunc)
 
     explicit QAlphaTest(QNode *parent = 0);
 

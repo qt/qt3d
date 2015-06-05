@@ -47,7 +47,7 @@ class QScaleTransform;
 class QScaleTransformPrivate : public QAbstractTransformPrivate
 {
 public:
-    QScaleTransformPrivate(QScaleTransform *qq);
+    QScaleTransformPrivate();
 
     Q_DECLARE_PUBLIC(QScaleTransform)
     QVector3D m_scale3D;

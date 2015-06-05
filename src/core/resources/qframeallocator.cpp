@@ -49,13 +49,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QFrameAllocatorPrivate::QFrameAllocatorPrivate(QFrameAllocator *qq)
-    : q_ptr(qq)
+/*!
+    \class Qt3D::QFrameAllocatorPrivate
+    \internal
+*/
+QFrameAllocatorPrivate::QFrameAllocatorPrivate()
 {
 }
 
 QFrameAllocator::QFrameAllocator(uint maxObjectSize, uint alignment, uint pageSize)
-    : d_ptr(new QFrameAllocatorPrivate(this))
+    : d_ptr(new QFrameAllocatorPrivate)
 {
     Q_ASSERT(alignment && pageSize && pageSize < UCHAR_MAX);
     Q_D(QFrameAllocator);

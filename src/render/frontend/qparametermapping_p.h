@@ -47,7 +47,7 @@ namespace Qt3D {
 class QParameterMappingPrivate : public QNodePrivate
 {
 public:
-    QParameterMappingPrivate(QParameterMapping *qq);
+    QParameterMappingPrivate();
 
     Q_DECLARE_PUBLIC(QParameterMapping)
 

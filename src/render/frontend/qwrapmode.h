@@ -49,7 +49,6 @@ class QTextureWrapModePrivate;
 class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
 {
     Q_OBJECT
-    Q_ENUMS(WrapMode)
     Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
     Q_PROPERTY(WrapMode y READ y WRITE setY NOTIFY yChanged)
     Q_PROPERTY(WrapMode z READ z WRITE setZ NOTIFY zChanged)
@@ -61,6 +60,7 @@ public:
         ClampToEdge    = 0x812F, // GL_CLAMP_TO_EDGE
         ClampToBorder  = 0x812D  // GL_CLAMP_TO_BORDER
     };
+    Q_ENUM(WrapMode)
 
     explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
     explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);

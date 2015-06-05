@@ -40,16 +40,24 @@
     \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
 
     \ingroup modules
-    \qtvariable qt3drender
+    \qtvariable 3drender
 
     The Qt3D Render module provides an aspect, components, and other supporting types necessary
     to implement 2D and 3D rendering as part of the Qt3D framework.
+
+    Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
 */
 
 /*!
-    \namespace Qt3D
-    \inmodule Qt3DRender
+   \qmlmodule Qt3D.Render 2.0
+   \title Qt3D Render QML Types
+   \ingroup qmlmodules
 
-    The Qt3D namespace contains user-visible classes and types that provide the ability to render
-    using the Qt3D framework.
+   \brief Provides Qt3D QML types for rendering.
+
+   To import and use the module's QML types, use the following statement:
+
+   \badcode
+   import Qt3D.Render 2.0
+   \endcode
 */

@@ -40,6 +40,7 @@
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRenderer/qrenderattachment.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,6 +59,9 @@ public:
     void setTarget(QRenderTarget *target);
     QRenderTarget *target() const;
 
+    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers);
+    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+
 Q_SIGNALS:
     void targetChanged();
 
@@ -73,5 +77,7 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(QList<Qt3D::QRenderAttachment::RenderAttachmentType>)
 
 #endif // QT3D_QRENDERTARGETSELECTOR_H

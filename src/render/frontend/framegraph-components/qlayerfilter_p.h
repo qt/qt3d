@@ -49,7 +49,7 @@ class QLayerFilter;
 class QT3DRENDERERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
-    explicit QLayerFilterPrivate(QLayerFilter *qq);
+    QLayerFilterPrivate();
 
     Q_DECLARE_PUBLIC(QLayerFilter)
     QStringList m_layers;

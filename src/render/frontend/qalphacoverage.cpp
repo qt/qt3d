@@ -45,15 +45,15 @@ namespace Qt3D {
 class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
 public :
-    QAlphaCoveragePrivate(QAlphaCoverage *qq)
-        : QRenderStatePrivate(qq, QRenderState::AlphaCoverage)
+    QAlphaCoveragePrivate()
+        : QRenderStatePrivate(QRenderState::AlphaCoverage)
     {}
 
     Q_DECLARE_PUBLIC(QAlphaCoverage)
 };
 
 QAlphaCoverage::QAlphaCoverage(QNode *parent)
-    : QRenderState(*new QAlphaCoveragePrivate(this), parent)
+    : QRenderState(*new QAlphaCoveragePrivate, parent)
 {
 }
 

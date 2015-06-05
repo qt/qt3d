@@ -188,6 +188,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultRenderStateSet = new RenderStateSet;
     m_defaultRenderStateSet->addState(DepthTest::getOrCreate(GL_LESS));
     m_defaultRenderStateSet->addState(CullFace::getOrCreate(GL_BACK));
+    m_defaultRenderStateSet->addState(ColorMask::getOrCreate(true, true, true, true));
     //basicPass->setStateSet(m_defaultRenderStateSet);
 
     m_defaultTechnique->addPass(basicPass);
@@ -522,6 +523,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
 {
     //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
     m_renderQueues->queueRenderView(renderView, submitOrder);
+
     if (m_renderQueues->isFrameQueueComplete()) {
         // We can increment the currentProcessingFrameIndex here
         // That index will then be used by RenderViewJobs to know which QFrameAllocator to use
@@ -594,8 +596,9 @@ void Renderer::submitRenderViews(int maxFrameCount)
         if (renderViewsCount <= 0)
             continue;
 
+        QColor previousClearColor = renderViews.first()->clearColor();
         // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(m_surface, renderViews.first()->clearColor())) {
+        if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
             qDeleteAll(renderViews);
             m_renderQueues->popFrameQueue();
             break;
@@ -606,18 +609,33 @@ void Renderer::submitRenderViews(int maxFrameCount)
             defaultFboId = m_graphicsContext->boundFrameBufferObject();
         }
 
+        // Reset state to the default state
+        m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+
         qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
         for (int i = 0; i < renderViewsCount; i++) {
+            // Initialize QGraphicsContext for drawing
+            // If the RenderView has a RenderStateSet defined
+            if (renderViews[i]->stateSet())
+                m_graphicsContext->setCurrentStateSet(renderViews[i]->stateSet());
+
             // Set RenderTarget ...
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
                                                     renderViews[i]->attachmentPack(), defaultFboId);
+
+            // Set clear color if different
+            if (previousClearColor != renderViews[i]->clearColor()) {
+                previousClearColor = renderViews[i]->clearColor();
+                m_graphicsContext->clearColor(previousClearColor);
+            }
+
             // Clear BackBuffer
             m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
             // Set the Viewport
             m_graphicsContext->setViewport(renderViews[i]->viewport());
 
-            // Initialize QGraphicsContext for drawing
+            // TO DO only if the renderView doesn't contain a NoDraw
             executeCommands(renderViews.at(i)->commands());
 
             frameElapsed = timer.elapsed() - frameElapsed;
@@ -756,10 +774,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         //// Draw Calls
         // Set state
+        RenderStateSet *globalState = m_graphicsContext->currentStateSet();
         if (command->m_stateSet != Q_NULLPTR)
             m_graphicsContext->setCurrentStateSet(command->m_stateSet);
-        else
-            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
@@ -783,6 +800,10 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             } else {
                 m_graphicsContext->drawArrays(primType, 0, primCount);
             }
+
+            // Reset state if overridden by pass state
+            if (command->m_stateSet != Q_NULLPTR)
+                m_graphicsContext->setCurrentStateSet(globalState);
 
             int err = m_graphicsContext->openGLContext()->functions()->glGetError();
             if (err)

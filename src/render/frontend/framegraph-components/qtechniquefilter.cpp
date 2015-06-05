@@ -38,14 +38,19 @@
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
 #include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRenderer/qparameter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QTechniqueFilterPrivate::QTechniqueFilterPrivate(QTechniqueFilter *qq)
-    : QFrameGraphNodePrivate(qq)
+/*!
+    \class Qt3D::QTechniqueFilterPrivate
+    \internal
+*/
+QTechniqueFilterPrivate::QTechniqueFilterPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -53,17 +58,17 @@ void QTechniqueFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
+
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
         addRequirement(qobject_cast<QAnnotation *>(QNode::clone(crit)));
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
-    : QFrameGraphNode(*new QTechniqueFilterPrivate(this), parent)
+    : QFrameGraphNode(*new QTechniqueFilterPrivate, parent)
 {
 }
 
+/*! \internal */
 QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
@@ -105,6 +110,47 @@ void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
         d->notifyObservers(propertyChange);
     }
     d->m_requireList.removeOne(criterion);
+}
+
+void QTechniqueFilter::addParameter(QParameter *parameter)
+{
+    Q_D(QTechniqueFilter);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, the child parameters get destroyed as well
+        if (!parameter->parent())
+            parameter->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            change->setPropertyName("parameter");
+            change->setValue(QVariant::fromValue(parameter->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QTechniqueFilter::removeParameter(QParameter *parameter)
+{
+    Q_D(QTechniqueFilter);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        change->setPropertyName("parameter");
+        change->setValue(QVariant::fromValue(parameter->id()));
+        d->notifyObservers(change);
+    }
+    d->m_parameters.removeOne(parameter);
+}
+
+QList<QParameter *> QTechniqueFilter::parameters() const
+{
+    Q_D(const QTechniqueFilter);
+    return d->m_parameters;
 }
 
 } // Qt3D

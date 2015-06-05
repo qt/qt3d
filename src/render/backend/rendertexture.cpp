@@ -74,6 +74,7 @@ RenderTexture::RenderTexture()
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
+    , m_unique(false)
     , m_lock(new QMutex())
     , m_textureDNA(0)
     , m_textureManager(Q_NULLPTR)
@@ -111,6 +112,7 @@ void RenderTexture::cleanup()
     m_isDirty = false;
     m_filtersAndWrapUpdated = false;
     m_dataUploadRequired = false;
+    m_unique = false;
     m_textureDNA = 0;
     m_textureImages.clear();
     m_textureManager = Q_NULLPTR;
@@ -141,6 +143,7 @@ void RenderTexture::updateFromPeer(QNode *peer)
         m_comparisonFunction = texture->comparisonFunction();
         m_comparisonMode = texture->comparisonMode();
         m_layers = texture->maximumLayers();
+        m_unique = texture->isUnique();
     }
 }
 
@@ -347,6 +350,8 @@ void RenderTexture::updateDNA()
         if (img)
             m_textureDNA += img->dna();
     }
+    if (m_unique) // Ensures uniqueness by adding unique QNode id to the dna
+        m_textureDNA += qHash(peerUuid());
 }
 
 // RenderThread
@@ -403,7 +408,7 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("depth")) {
             setSize(m_width, m_height, propertyChange->value().toInt());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmaps")) {
-            bool oldMipMaps = m_generateMipMaps;
+            const bool oldMipMaps = m_generateMipMaps;
             m_generateMipMaps = propertyChange->value().toBool();
             m_isDirty |= (oldMipMaps != m_generateMipMaps);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
@@ -445,9 +450,14 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             m_comparisonMode = propertyChange->value().value<QAbstractTextureProvider::ComparisonMode>();
             m_filtersAndWrapUpdated |= (oldComparisonMode != m_comparisonMode);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
-            int oldLayers = m_layers;
+            const int oldLayers = m_layers;
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("unique")) {
+            const bool oldUnique = m_unique;
+            m_unique = propertyChange->value().toBool();
+            // Will force a DNA update
+            m_filtersAndWrapUpdated |= (oldUnique != m_unique);
         }
     }
         break;

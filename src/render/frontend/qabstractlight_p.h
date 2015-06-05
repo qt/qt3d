@@ -49,7 +49,7 @@ class QAbstractLight;
 class QT3DRENDERERSHARED_EXPORT QAbstractLightPrivate : public QShaderDataPrivate
 {
 public:
-    QAbstractLightPrivate(QAbstractLight *qq);
+    QAbstractLightPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractLight)
     QColor m_color;

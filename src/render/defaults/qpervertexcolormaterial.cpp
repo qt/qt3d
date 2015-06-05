@@ -51,8 +51,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate(QPerVertexColorMaterial *qq)
-    : QMaterialPrivate(qq)
+/*!
+    \class Qt3D::QPerVertexColorMaterialPrivate
+    \internal
+*/
+QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
+    : QMaterialPrivate()
     , m_vertexEffect(new QEffect())
     , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(1.0f, 1.0f, 0.0f, 1.0f)))
     , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
@@ -91,7 +95,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate(QPerVertexColorMa
     Constructs a new QPerVertexColorMaterial instance with parent object \a parent.
 */
 QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
-    : QMaterial(*new QPerVertexColorMaterialPrivate(this), parent)
+    : QMaterial(*new QPerVertexColorMaterialPrivate, parent)
 {
     Q_D(QPerVertexColorMaterial);
     d->init();

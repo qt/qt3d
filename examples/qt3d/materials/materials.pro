@@ -1,8 +1,8 @@
-TEMPLATE = app
+!include( ../examples.pri ) {
+    error( "Couldn't find the examples.pri file!" )
+}
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
-
-include("../exampleresources/exampleresources.pri")
 
 HEADERS += \
 
@@ -15,4 +15,9 @@ OTHER_FILES += \
     HousePlant.qml
 
 RESOURCES += \
-    materials.qrc
+    materials.qrc \
+    ../exampleresources/chest.qrc \
+    ../exampleresources/houseplants.qrc \
+    ../exampleresources/metalbarrel.qrc \
+    ../exampleresources/obj.qrc \
+    ../exampleresources/textures.qrc

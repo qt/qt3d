@@ -57,10 +57,10 @@ class QAspectJobManager;
 class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
 {
 public:
-    QAspectJobManagerPrivate(QAspectJobManager *qq);
+    QAspectJobManagerPrivate();
+    ~QAspectJobManagerPrivate();
 
     Q_DECLARE_PUBLIC(QAspectJobManager)
-    QAspectJobManager *q_ptr;
 
 #ifdef THREAD_WEAVER
     // Owned by QAspectJobManager via QObject parent-child
@@ -69,8 +69,6 @@ public:
 
     QThreadPooler *m_threadPooler;
     DependencyHandler *m_dependencyHandler;
-    QMutex *m_syncMutex;
-    QWaitCondition m_syncFinished;
 };
 
 } // Qt3D

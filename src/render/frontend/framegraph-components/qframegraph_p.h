@@ -50,7 +50,7 @@ class QFrameGraphNode;
 class QFrameGraphPrivate : public QComponentPrivate
 {
 public:
-    QFrameGraphPrivate(QFrameGraph *qq);
+    QFrameGraphPrivate();
 
     Q_DECLARE_PUBLIC(QFrameGraph)
 

@@ -1,8 +1,8 @@
-TEMPLATE = app
+!include( ../examples.pri ) {
+    error( "Couldn't find the examples.pri file!" )
+}
 
 QT += 3dcore 3drenderer 3dquick qml quick 3dinput
-
-include("../exampleresources/exampleresources.pri")
 
 HEADERS += \
 
@@ -25,4 +25,5 @@ OTHER_FILES += \
     AnimatedDiffuseMaterial.qml
 
 RESOURCES += \
-    playground-qml.qrc
+    playground-qml.qrc \
+    ../exampleresources/gltf.qrc \

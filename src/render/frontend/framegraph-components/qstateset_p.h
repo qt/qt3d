@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,58 +34,30 @@
 **
 ****************************************************************************/
 
-#include "jobrunner_p.h"
-#include "qthreadpooler_p.h"
+#ifndef QT3D_QSTATESET_P_H
+#define QT3D_QSTATESET_P_H
 
-#include <QtCore/QThread>
-#include <QtCore/QMutexLocker>
-#include <QtCore/QAtomicInt>
+#include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-JobRunner::JobRunner(QThreadPooler *parent)
-    : QThread(parent),
-      m_abort(0),
-      m_pooler(parent),
-      m_jobAvailable(Q_NULLPTR),
-      m_mutex(Q_NULLPTR)
+class QStateSet;
+class QRenderState;
+
+class QStateSetPrivate : public QFrameGraphNodePrivate
 {
-    QObject::connect(parent, SIGNAL(shuttingDown()), this, SLOT(shutDown()));
-}
+public:
+    QStateSetPrivate();
 
-JobRunner::~JobRunner()
-{
-    shutDown();
-}
+    Q_DECLARE_PUBLIC(QStateSet)
+    QList<QRenderState *> m_renderStates;
+};
 
-void JobRunner::run()
-{
-    Q_ASSERT(m_jobAvailable != Q_NULLPTR);
-
-    while (!m_abort.load()) {
-        if (const QSharedPointer<TaskInterface> task = m_pooler->nextTask()) {
-            task->run(task, this);
-            m_pooler->stopRunning();
-        } else {
-            suspend();
-        }
-    }
-}
-
-void JobRunner::suspend()
-{
-    const QMutexLocker locker(m_mutex);
-
-    m_jobAvailable->wait(m_mutex);
-}
-
-void JobRunner::shutDown()
-{
-    m_abort.store(1);
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSTATESET_P_H
+

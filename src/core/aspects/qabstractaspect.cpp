@@ -52,14 +52,17 @@ static QByteArray className(const QMetaObject &obj)
 
 namespace Qt3D {
 
-QAbstractAspectPrivate::QAbstractAspectPrivate(QAbstractAspect *qq)
+/*!
+    \class Qt3D::QAbstractAspectPrivate
+    \internal
+*/
+QAbstractAspectPrivate::QAbstractAspectPrivate()
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
     , m_aspectManager(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
 {
-    q_ptr = qq;
 }
 
 QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
@@ -73,12 +76,13 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
     \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
 QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
-    : QObject(*new QAbstractAspectPrivate(this), parent)
+    : QObject(*new QAbstractAspectPrivate, parent)
 {
     Q_D(QAbstractAspect);
     d->m_aspectType = aspectType;
 }
 
+/*! \internal */
 QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {

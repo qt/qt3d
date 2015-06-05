@@ -53,8 +53,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate(QDiffuseSpecularMapMaterial *qq)
-    : QMaterialPrivate(qq)
+/*!
+    \class Qt3D::QDiffuseSpecularMapMaterialPrivate
+    \internal
+*/
+QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate()
+    : QMaterialPrivate()
     , m_diffuseSpecularMapEffect(new QEffect())
     , m_diffuseTexture(new QTexture2D())
     , m_specularTexture(new QTexture2D())
@@ -154,10 +158,10 @@ void QDiffuseSpecularMapMaterialPrivate::init()
 */
 
 /*!
- Constructs a new Qt3D::QDiffuseSpecularMapMaterial instance with parent object \a parent.
+    Constructs a new Qt3D::QDiffuseSpecularMapMaterial instance with parent object \a parent.
 */
 QDiffuseSpecularMapMaterial::QDiffuseSpecularMapMaterial(QNode *parent)
-    : QMaterial(*new QDiffuseSpecularMapMaterialPrivate(this), parent)
+    : QMaterial(*new QDiffuseSpecularMapMaterialPrivate, parent)
 {
     Q_D(QDiffuseSpecularMapMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
@@ -168,6 +172,9 @@ QDiffuseSpecularMapMaterial::QDiffuseSpecularMapMaterial(QNode *parent)
     d->init();
 }
 
+/*!
+    Destroys the QDiffuseSpecularMapMaterial instance.
+*/
 QDiffuseSpecularMapMaterial::~QDiffuseSpecularMapMaterial()
 {
 }
@@ -175,7 +182,7 @@ QDiffuseSpecularMapMaterial::~QDiffuseSpecularMapMaterial()
 /*!
     \property Qt3D::QDiffuseSpecularMapMaterial::ambient
 
-    Holds the current QColor ambient value.
+    Holds the current ambient color.
 */
 QColor QDiffuseSpecularMapMaterial::ambient() const
 {
@@ -184,15 +191,19 @@ QColor QDiffuseSpecularMapMaterial::ambient() const
 }
 
 /*!
-    \property *QDiffuseSpecularMapMaterial::diffuse
+    \property Qt3D::QDiffuseSpecularMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
-    \note By default the diffuse texture has a linear
-    magnification filter, a linear mipmap linear minification filter,
-    the wrap mode is repeat, the maximum anisotropy is set to 16.0
-    and mipmapping is enabled.
- */
+    By default, the diffuse texture has the following properties:
+
+    \list
+        \li Linear minification and magnification filters
+        \li Linear mipmap with mipmapping enabled
+        \li Repeat wrap mode
+        \li Maximum anisotropy of 16.0
+    \endlist
+*/
 QAbstractTextureProvider *QDiffuseSpecularMapMaterial::diffuse() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);
@@ -204,11 +215,15 @@ QAbstractTextureProvider *QDiffuseSpecularMapMaterial::diffuse() const
 
     Holds the current specular map texture.
 
-    \note By default the specular texture has a linear
-    magnification filter, a linear mipmap linear minification filter,
-    the wrap mode is repeat, the maximum anisotropy is set to 16.0
-    and mipmapping is enabled.
- */
+    By default, the specular texture has the following properties:
+
+    \list
+        \li Linear minification and magnification filters
+        \li Linear mipmap with mipmapping enabled
+        \li Repeat wrap mode
+        \li Maximum anisotropy of 16.0
+    \endlist
+*/
 QAbstractTextureProvider *QDiffuseSpecularMapMaterial::specular() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);
@@ -219,8 +234,7 @@ QAbstractTextureProvider *QDiffuseSpecularMapMaterial::specular() const
     \property Qt3D::QDiffuseSpecularMapMaterial::shininess
 
     Holds the current shininess as a float value.
-
- */
+*/
 float QDiffuseSpecularMapMaterial::shininess() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);
@@ -230,8 +244,8 @@ float QDiffuseSpecularMapMaterial::shininess() const
 /*!
     \property Qt3D::QDiffuseSpecularMapMaterial::textureScale
 
-    Holds the current texture scale.
- */
+    Holds the current texture scale as a float value.
+*/
 float QDiffuseSpecularMapMaterial::textureScale() const
 {
     Q_D(const QDiffuseSpecularMapMaterial);

@@ -42,8 +42,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QClearBufferPrivate::QClearBufferPrivate(QClearBuffer *qq)
-    : QFrameGraphNodePrivate(qq)
+/*!
+    \class Qt3D::QClearBufferPrivate
+    \internal
+*/
+QClearBufferPrivate::QClearBufferPrivate()
+    : QFrameGraphNodePrivate()
     , m_buffersType(QClearBuffer::None)
 {
 }
@@ -53,16 +57,14 @@ void QClearBuffer::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QClearBuffer *b = static_cast<const QClearBuffer*>(ref);
     d_func()->m_buffersType = b->d_func()->m_buffersType;
-
-    Q_FOREACH (QFrameGraphNode *fgChild, b->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 }
 
 QClearBuffer::QClearBuffer(QNode *parent)
-    : QFrameGraphNode(*new QClearBufferPrivate(this), parent)
+    : QFrameGraphNode(*new QClearBufferPrivate, parent)
 {
 }
 
+/*! \internal */
 QClearBuffer::QClearBuffer(QClearBufferPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

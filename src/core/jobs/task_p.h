@@ -42,7 +42,8 @@
 #include <QtCore/QtGlobal>
 #include <QtCore/QThread>
 #include <QtCore/QSharedPointer>
-#include <QtCore/QWaitCondition>
+
+#include <QtCore/QRunnable>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,13 +51,13 @@ namespace Qt3D {
 
 class JobRunner;
 class DependencyHandler;
+class QThreadPooler;
 
-class TaskInterface
+class RunnableInterface : public QRunnable
 {
 public:
-    virtual ~TaskInterface();
+    virtual ~RunnableInterface();
 
-    virtual void run(QSharedPointer<TaskInterface> self, JobRunner *jr) = 0;
     virtual void run() = 0;
 
     virtual void setDependencyHandler(DependencyHandler *) = 0;
@@ -64,53 +65,70 @@ public:
 
     virtual int id() = 0;
     virtual void setId(int id) = 0;
+
+    virtual void setReserved(bool reserved) = 0;
+    virtual bool reserved() = 0;
+
+    virtual void setPooler(QThreadPooler *pooler) = 0;
 };
 
-class AspectTask : public TaskInterface
+class AspectTaskRunnable : public RunnableInterface
 {
 public:
-    AspectTask();
-    ~AspectTask();
+    AspectTaskRunnable();
+    ~AspectTaskRunnable();
 
-    int id() Q_DECL_OVERRIDE { return m_id; }
-    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
+    void run();
 
     void setDependencyHandler(DependencyHandler *handler) Q_DECL_OVERRIDE;
     DependencyHandler *dependencyHandler() Q_DECL_OVERRIDE;
+
+    void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
+
+    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
+    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+
+    int id() Q_DECL_OVERRIDE { return m_id; }
+    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
 
 public:
     QSharedPointer<QAspectJob> m_job;
 
-protected:
-    void run(QSharedPointer<TaskInterface> self, JobRunner *jr) Q_DECL_OVERRIDE;
-    void run() Q_DECL_OVERRIDE;
-
 private:
     DependencyHandler *m_dependencyHandler;
+    QThreadPooler *m_pooler;
+    bool m_reserved;
+
     int m_id; // For testing purposes for now
 };
 
-class SynchronizedTask : public TaskInterface
+class SyncTaskRunnable : public RunnableInterface
 {
 public:
-    explicit SynchronizedTask(QAbstractAspectJobManager::JobFunction func, void *arg,
+    explicit SyncTaskRunnable(QAbstractAspectJobManager::JobFunction func, void *arg,
                               QAtomicInt *atomicCount);
-    ~SynchronizedTask();
+    ~SyncTaskRunnable();
 
-    int id() Q_DECL_OVERRIDE { return m_id; }
-    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
+    void run();
 
     void setDependencyHandler(DependencyHandler *handler) Q_DECL_OVERRIDE;
     DependencyHandler *dependencyHandler() Q_DECL_OVERRIDE;
 
-protected:
-    void run(QSharedPointer<TaskInterface> self, JobRunner *jr) Q_DECL_OVERRIDE;
-    void run() Q_DECL_OVERRIDE;
+    void setPooler(QThreadPooler *pooler) Q_DECL_OVERRIDE { m_pooler = pooler; }
+
+    void setReserved(bool reserved) Q_DECL_OVERRIDE { m_reserved = reserved; }
+    bool reserved() Q_DECL_OVERRIDE { return m_reserved; }
+
+    int id() Q_DECL_OVERRIDE { return m_id; }
+    void setId(int id) Q_DECL_OVERRIDE { m_id = id; }
 
 private:
     QAbstractAspectJobManager::JobFunction m_func;
     void *m_arg;
     QAtomicInt *m_atomicCount;
+
+    QThreadPooler *m_pooler;
+    bool m_reserved;
 
     int m_id;
 };

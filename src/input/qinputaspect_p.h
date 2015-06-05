@@ -55,7 +55,7 @@ class InputHandler;
 class QInputAspectPrivate : public QAbstractAspectPrivate
 {
 public:
-    QInputAspectPrivate(QInputAspect *qq);
+    QInputAspectPrivate();
 
     Q_DECLARE_PUBLIC(QInputAspect)
     Input::InputHandler *m_inputHandler;

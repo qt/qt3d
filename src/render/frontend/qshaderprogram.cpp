@@ -46,8 +46,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QShaderProgramPrivate::QShaderProgramPrivate(QShaderProgram *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QShaderProgramPrivate
+    \internal
+*/
+QShaderProgramPrivate::QShaderProgramPrivate()
+    : QNodePrivate()
 {
 }
 
@@ -65,10 +69,11 @@ void QShaderProgram::copy(const QNode *ref)
 }
 
 QShaderProgram::QShaderProgram(QNode *parent)
-    : QNode(*new QShaderProgramPrivate(this), parent)
+    : QNode(*new QShaderProgramPrivate, parent)
 {
 }
 
+/*! \internal */
 QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

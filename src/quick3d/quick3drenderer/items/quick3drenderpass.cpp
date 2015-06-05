@@ -78,6 +78,15 @@ QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
                                               &Quick3DRenderPass::clearRenderStates);
 }
 
+QQmlListProperty<QParameter> Quick3DRenderPass::parameterList()
+{
+    return QQmlListProperty<Qt3D::QParameter>(this, 0,
+                                             &Quick3DRenderPass::appendParameter,
+                                             &Quick3DRenderPass::parametersCount,
+                                             &Quick3DRenderPass::parameterAt,
+                                             &Quick3DRenderPass::clearParameterList);
+}
+
 void Quick3DRenderPass::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
@@ -152,6 +161,32 @@ void Quick3DRenderPass::clearRenderStates(QQmlListProperty<QRenderState> *list)
     Q_FOREACH (QRenderState *s, rPass->parentRenderPass()->renderStates())
         rPass->parentRenderPass()->removeRenderState(s);
 }
+
+void Quick3DRenderPass::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    rPass->parentRenderPass()->addParameter(param);
+}
+
+QParameter *Quick3DRenderPass::parameterAt(QQmlListProperty<QParameter> *list, int index)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    return rPass->parentRenderPass()->parameters().at(index);
+}
+
+int Quick3DRenderPass::parametersCount(QQmlListProperty<QParameter> *list)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    return rPass->parentRenderPass()->parameters().count();
+}
+
+void Quick3DRenderPass::clearParameterList(QQmlListProperty<QParameter> *list)
+{
+    Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
+    Q_FOREACH (QParameter *p, rPass->parentRenderPass()->parameters())
+        rPass->parentRenderPass()->removeParameter(p);
+}
+
 
 } // Quick
 

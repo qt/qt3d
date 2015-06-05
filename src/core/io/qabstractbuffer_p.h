@@ -44,15 +44,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractBuffer;
-
 class QT3DCORESHARED_EXPORT QAbstractBufferPrivate
 {
 public:
-    QAbstractBufferPrivate(QAbstractBuffer *qq);
+    QAbstractBufferPrivate();
 
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
-    QAbstractBuffer *q_ptr;
     QByteArray m_data;
 };
 

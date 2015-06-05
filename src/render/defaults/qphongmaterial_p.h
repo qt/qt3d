@@ -55,7 +55,7 @@ class QPhongMaterial;
 class QPhongMaterialPrivate : public QMaterialPrivate
 {
 public:
-    QPhongMaterialPrivate(QPhongMaterial *qq);
+    QPhongMaterialPrivate();
 
     void init();
 

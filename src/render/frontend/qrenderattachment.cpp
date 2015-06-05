@@ -42,8 +42,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderAttachmentPrivate::QRenderAttachmentPrivate(QRenderAttachment *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QRenderAttachmentPrivate
+    \internal
+*/
+QRenderAttachmentPrivate::QRenderAttachmentPrivate()
+    : QNodePrivate()
     , m_texture(Q_NULLPTR)
     , m_type(QRenderAttachment::ColorAttachment0)
     , m_mipLevel(0)
@@ -61,10 +65,11 @@ void QRenderAttachment::copy(const QNode *ref)
 }
 
 QRenderAttachment::QRenderAttachment(QNode *parent)
-    : QNode(*new QRenderAttachmentPrivate(this), parent)
+    : QNode(*new QRenderAttachmentPrivate, parent)
 {
 }
 
+/*! \internal */
 QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

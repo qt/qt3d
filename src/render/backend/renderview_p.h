@@ -126,6 +126,12 @@ public:
     inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
     inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
 
+    inline RenderStateSet *stateSet() const { return m_stateSet; }
+    void setStateSet(RenderStateSet *stateSet) { m_stateSet = stateSet; }
+
+    inline bool noDraw() const { return m_noDraw; }
+    void setNoDraw(bool noDraw) { m_noDraw = noDraw; }
+
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
     // and passed along with the RenderView to the functions that populate the renderview
@@ -179,6 +185,7 @@ public:
     int frameIndex() const { return m_frameIndex; }
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
+    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
     const AttachmentPack &attachmentPack() const;
 
     void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
@@ -221,6 +228,8 @@ private:
     HTarget m_renderTarget;
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
+    RenderStateSet *m_stateSet;
+    bool m_noDraw;
     int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the

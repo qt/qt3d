@@ -51,7 +51,7 @@ class QTechnique;
 class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QNodePrivate
 {
 public :
-    QEffectPrivate(QEffect *qq);
+    QEffectPrivate();
 
     Q_DECLARE_PUBLIC(QEffect)
     QList<QParameter *> m_parameters;

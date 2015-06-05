@@ -75,17 +75,29 @@ private:
     Quick3DEntityLoader *m_loader;
 };
 
+/*!
+    \qmltype EntityLoader
+    \inqmlmodule Qt3D
+    \since 5.5
+*/
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
-    : QEntity(*new Quick3DEntityLoaderPrivate(this), parent)
+    : QEntity(*new Quick3DEntityLoaderPrivate, parent)
 {
 }
 
+/*!
+    \qmlproperty QtQml::QtObject Qt3D::EntityLoader::entity
+    \readonly
+*/
 QObject *Quick3DEntityLoader::entity() const
 {
     Q_D(const Quick3DEntityLoader);
     return d->m_entity;
 }
 
+/*!
+    \qmlproperty url Qt3D::EntityLoader::source
+*/
 QUrl Quick3DEntityLoader::source() const
 {
     Q_D(const Quick3DEntityLoader);
@@ -114,8 +126,12 @@ void Quick3DEntityLoader::copy(const QNode *ref)
     d_func()->m_entity->setParent(this);
 }
 
-Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate(Quick3DEntityLoader *qq)
-    : QEntityPrivate(qq),
+/*!
+    \class Qt3D::Quick::Quick3DEntityLoaderPrivate
+    \internal
+*/
+Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
+    : QEntityPrivate(),
       m_incubator(Q_NULLPTR),
       m_context(Q_NULLPTR),
       m_component(Q_NULLPTR),

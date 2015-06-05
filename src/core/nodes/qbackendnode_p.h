@@ -56,7 +56,7 @@ class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
         , public QObservableInterface
 {
 public:
-    QBackendNodePrivate(QBackendNode *qq, QBackendNode::Mode mode);
+    QBackendNodePrivate(QBackendNode::Mode mode);
 
     void setFactory(const QBackendNodeFactory *factory);
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;

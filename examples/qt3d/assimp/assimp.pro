@@ -1,4 +1,6 @@
-TEMPLATE = app
+!include( ../examples.pri ) {
+    error( "Couldn't find the examples.pri file!" )
+}
 
 SOURCE += main.cpp
 
@@ -9,7 +11,6 @@ OTHER_FILES += main.qml
 SOURCES += \
     main.cpp
 
-include("../exampleresources/exampleresources.pri")
-
 RESOURCES += \
-    assimp.qrc
+    assimp.qrc \
+    ../exampleresources/test_scene.qrc

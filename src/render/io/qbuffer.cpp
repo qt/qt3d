@@ -42,20 +42,24 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-BufferPrivate::BufferPrivate(Buffer *qq)
-    : QAbstractBufferPrivate(qq)
+/*!
+    \class Qt3D::BufferPrivate
+    \internal
+*/
+BufferPrivate::BufferPrivate()
+    : QAbstractBufferPrivate()
 {
 }
 
 Buffer::Buffer(QOpenGLBuffer::Type ty)
-    : QAbstractBuffer(*new BufferPrivate(this))
+    : QAbstractBuffer(*new BufferPrivate)
 {
     Q_D(Buffer);
     d->m_type = ty;
     d->m_usage = QOpenGLBuffer::StaticDraw;
 }
 
-
+/*! \internal */
 Buffer::Buffer(BufferPrivate &dd, QOpenGLBuffer::Type ty)
     : QAbstractBuffer(dd)
 {

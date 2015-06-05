@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,55 +34,30 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_JOBRUNNER_P_H
-#define QT3D_JOBRUNNER_P_H
+#include <Qt3DCore/window.h>
+#include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DQuick/QQmlAspectEngine>
 
-#include "qaspectjobmanager.h"
-#include "task_p.h"
+#include <QGuiApplication>
 
-#include <QtCore/QThread>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QAtomicInt>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-class QThreadPooler;
-
-class JobRunner : public QThread
+int main(int argc, char* argv[])
 {
-    Q_OBJECT
+    QGuiApplication app(argc, argv);
 
-public:
-    explicit JobRunner(QThreadPooler *parent = 0);
-    ~JobRunner();
+    Qt3D::Window view;
+    Qt3D::Quick::QQmlAspectEngine engine;
 
-    void run() Q_DECL_OVERRIDE;
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
+    engine.aspectEngine()->initialize();
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.setSource(QUrl("qrc:/main.qml"));
 
-    inline void setWaitConditions(QWaitCondition *jobAvailable)
-    {
-        m_jobAvailable = jobAvailable;
-    }
-    inline void setMutex(QMutex *mutex) { m_mutex = mutex; }
+    view.show();
 
-private:
-    void suspend();
-
-private:
-    QAtomicInt m_abort;
-    QThreadPooler *m_pooler;
-
-    QWaitCondition *m_jobAvailable;
-    QMutex *m_mutex; // For waiting next available job
-
-private Q_SLOTS:
-    void shutDown();
-};
-
-} // namespace Qt3D
-
-QT_END_NAMESPACE
-
-#endif // QT3D_JOBRUNNER_P_H
-
+    return app.exec();
+}

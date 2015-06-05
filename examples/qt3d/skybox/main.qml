@@ -60,8 +60,10 @@ Entity {
    }
 
    // So that the camera is rendered always at the same position as the camera
-   Skybox {
+   SkyboxEntity {
        cameraPosition: basicCamera.position
+       baseName: "qrc:/assets/cubemaps/miramar/miramar"
+       extension: ".webp"
    }
 
    Configuration  {

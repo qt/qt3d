@@ -50,9 +50,8 @@ class Buffer;
 class QT3DRENDERERSHARED_EXPORT BufferPrivate : public QAbstractBufferPrivate
 {
 public:
-    BufferPrivate(Buffer *qq);
+    BufferPrivate();
 
-    Q_DECLARE_PUBLIC(Buffer)
     QOpenGLBuffer::Type m_type;
     QOpenGLBuffer::UsagePattern m_usage;
 };

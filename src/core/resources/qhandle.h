@@ -104,12 +104,13 @@ private:
 template <typename T, uint INDEXBITS>
 QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
 {
+    QDebugStateSaver saver(dbg);
     QString binNumber = QString::number(h.handle(), 2).rightJustified(32, QChar::fromLatin1('0'));
     dbg.nospace() << "index = " << h.index()
                   << " magic/counter = " << h.counter()
                   << " m_handle = " << h.handle()
                   << " = " << binNumber;
-    return dbg.space();
+    return dbg;
 }
 
 } // Qt3D

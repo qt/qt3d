@@ -46,7 +46,7 @@ namespace Qt3D {
 class QT3DRENDERERSHARED_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
 {
 public:
-    QSpotLightPrivate(QSpotLight *qq);
+    QSpotLightPrivate();
 
     Q_DECLARE_PUBLIC(QSpotLight)
     float m_cutOffAngle;

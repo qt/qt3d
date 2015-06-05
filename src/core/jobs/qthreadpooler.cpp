@@ -35,227 +35,133 @@
 ****************************************************************************/
 
 #include "qthreadpooler_p.h"
-#include "qthreadpooler_p_p.h"
-#include "jobrunner_p.h"
 #include "dependencyhandler_p.h"
+
+#include <QtCore/QThreadPool>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QThreadPoolerPrivate::QThreadPoolerPrivate(QThreadPooler *qq)
-    : QObjectPrivate(),
-      m_mutex(new QMutex(QMutex::NonRecursive)),
-      m_runningThreads(0)
-{
-    q_ptr = qq;
-}
-
-QThreadPoolerPrivate::~QThreadPoolerPrivate()
-{
-    Q_FOREACH (QSharedPointer<TaskInterface> task, m_taskQueue)
-        task->setDependencyHandler(Q_NULLPTR);
-    delete m_dependencyHandler;
-
-    delete m_mutex;
-}
-
-void QThreadPoolerPrivate::shutdown()
-{
-    m_jobFinished.wakeAll();
-
-    // When shutting down a signal is send for jobrunners to exit run() loop
-    // on next round. Sometimes the jobrunner is busy doing still the clean up
-    // tasks and isn't waiting the release of WaitCondition. Repeat the waking
-    // process max tryOuts.
-    const int tryOuts = 2;
-
-    Q_FOREACH (JobRunner *jr, m_workers) {
-        if (!jr->isFinished()) {
-            for (int i = 0; i < tryOuts; i++) {
-                m_jobAvailable.wakeAll();
-                if (jr->wait(100))
-                    break;
-            }
-        }
-    }
-}
-
-
-bool QThreadPoolerPrivate::isQueueEmpty()
-{
-    return m_taskQueue.isEmpty();
-}
-
-void QThreadPoolerPrivate::incRunningThreads()
-{
-    m_runningThreads += 1;
-}
-
-void QThreadPoolerPrivate::decRunningThreads()
-{
-    m_runningThreads -= 1;
-
-    // Sanity check
-    if (m_runningThreads < 0)
-        m_runningThreads = 0;
-}
-
-void QThreadPoolerPrivate::createRunners(int threadCount)
-{
-    Q_Q(QThreadPooler);
-
-    for (int i = 0; i < threadCount; i++) {
-        JobRunner *jr = new JobRunner(q);
-
-        jr->setMutex(m_mutex);
-        jr->setWaitConditions(&(m_jobAvailable));
-        jr->start();
-
-        m_workers.append(jr);
-    }
-}
-
-int QThreadPoolerPrivate::maxThreadCount() const
-{
-    return m_maxThreadCount;
-}
-
-void QThreadPoolerPrivate::setMaxThreadCount(int threadCount)
-{
-
-    m_maxThreadCount = threadCount;
-    createRunners(m_maxThreadCount);
-}
-
-/////////////////////////////////////////////////
-
+/*!
+    \class Qt3D::QThreadPoolerPrivate
+    \internal
+*/
 QThreadPooler::QThreadPooler(QObject *parent)
-    : QObject(*new QThreadPoolerPrivate(this), parent)
+    : QObject(parent),
+      m_futureInterface(Q_NULLPTR),
+      m_mutex(new QMutex(QMutex::NonRecursive)),
+      m_taskCount(0)
 {
 }
 
 QThreadPooler::~QThreadPooler()
 {
-    Q_D(QThreadPooler);
+    // Wait till all tasks are finished before deleting mutex
+    QMutexLocker locker(m_mutex);
+    locker.unlock();
 
-    emit shuttingDown();
-    d->m_jobAvailable.wakeAll();
-
-    d->shutdown();
-}
-
-int QThreadPooler::maxThreadCount() const
-{
-    Q_D(const QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    return d->maxThreadCount();
-}
-
-void QThreadPooler::setMaxThreadCount(int threadCount)
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    d->setMaxThreadCount(threadCount);
-}
-
-QSharedPointer<TaskInterface> QThreadPooler::nextTask()
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    QSharedPointer<TaskInterface> task;
-    int queueSize = d->m_taskQueue.size();
-    for (int i = 0; i < queueSize; i++) {
-        const QSharedPointer<TaskInterface> &candidate = d->m_taskQueue.at(i);
-        if (!hasDependencies(candidate)) {
-            task = candidate;
-            // Increment running thread counter before removing item from queue
-            // so that isIdle test keeps up
-            d->incRunningThreads();
-            d->m_taskQueue.removeAt(i);
-
-            break;
-        }
-    }
-
-    return task;
-}
-
-bool QThreadPooler::hasDependencies(const QSharedPointer<TaskInterface> &task)
-{
-    DependencyHandler *handler = task->dependencyHandler();
-    if (handler)
-        return handler->hasDependency(task);
-
-    return false;
-}
-
-void QThreadPooler::enqueueTask(const QSharedPointer<TaskInterface> &task)
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    d->m_taskQueue.append(task);
-    d->m_jobAvailable.wakeAll();
-}
-
-void QThreadPooler::flush()
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-#ifdef QT_NO_DEBUG
-    const int waitTime = 50;
-#else
-    const int waitTime = 500;
-#endif
-
-    while (!isIdling()) {
-        if (d->m_jobFinished.wait(d->m_mutex, waitTime) == false)
-            d->m_jobAvailable.wakeAll();
-    }
-}
-
-bool QThreadPooler::isIdling()
-{
-    Q_D(QThreadPooler);
-
-    return d->isQueueEmpty() && d->m_runningThreads == 0;
-}
-
-void QThreadPooler::startRunning()
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    d->incRunningThreads();
-}
-
-void QThreadPooler::stopRunning()
-{
-    Q_D(QThreadPooler);
-
-    const QMutexLocker locker(d->m_mutex);
-
-    d->decRunningThreads();
-    d->m_jobFinished.wakeAll();
+    delete m_mutex;
 }
 
 void QThreadPooler::setDependencyHandler(DependencyHandler *handler)
 {
-    Q_D(QThreadPooler);
+    m_dependencyHandler = handler;
+    m_dependencyHandler->setMutex(m_mutex);
+}
 
-    d->setDependencyHandler(handler);
+void QThreadPooler::enqueueTasks(QVector<RunnableInterface *> &tasks)
+{
+    // The caller have to set the mutex
+
+    for (QVector<RunnableInterface *>::iterator it = tasks.begin();
+         it != tasks.end(); it++) {
+        if (!m_dependencyHandler->hasDependency((*it)) && !(*it)->reserved()) {
+            (*it)->setReserved(true);
+            (*it)->setPooler(this);
+            QThreadPool::globalInstance()->start((*it));
+        }
+    }
+}
+
+void QThreadPooler::taskFinished(RunnableInterface *task)
+{
+    const QMutexLocker locker(m_mutex);
+
+    release();
+
+    QVector<RunnableInterface *> freedTasks;
+    if (task->dependencyHandler())
+        freedTasks = m_dependencyHandler->freeDependencies(task);
+    if (freedTasks.size())
+        enqueueTasks(freedTasks);
+
+    if (currentCount() == 0) {
+        if (m_futureInterface) {
+            m_futureInterface->reportFinished();
+            delete m_futureInterface;
+        }
+        m_futureInterface = Q_NULLPTR;
+    }
+}
+
+QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQueue)
+{
+    const QMutexLocker locker(m_mutex);
+
+    if (!m_futureInterface)
+        m_futureInterface = new QFutureInterface<void>();
+    if (taskQueue.size())
+        m_futureInterface->reportStarted();
+
+    acquire(taskQueue.size());
+    enqueueTasks(taskQueue);
+
+    return QFuture<void>(m_futureInterface);
+}
+
+QFuture<void> QThreadPooler::future()
+{
+    const QMutexLocker locker(m_mutex);
+
+    if (!m_futureInterface)
+        return QFuture<void>();
+    else
+        return QFuture<void>(m_futureInterface);
+}
+
+void QThreadPooler::acquire(int add)
+{
+    // The caller have to set the mutex
+
+    forever {
+        int localCount = m_taskCount.load();
+        if (m_taskCount.testAndSetOrdered(localCount, localCount + add))
+            return;
+    }
+}
+
+void QThreadPooler::release()
+{
+    // The caller have to set the mutex
+
+    forever {
+        int localCount = m_taskCount.load();
+
+        // Task counter going below zero means coding errors somewhere.
+        Q_ASSERT(localCount > 0);
+
+        if (m_taskCount.testAndSetOrdered(localCount, localCount - 1))
+            return;
+    }
+}
+
+int QThreadPooler::currentCount()
+{
+    // The caller have to set the mutex
+
+    return m_taskCount.load();
 }
 
 } // namespace Qt3D

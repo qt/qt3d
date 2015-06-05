@@ -258,10 +258,9 @@ public:
         return QMatrix4x4();
     }
 
-    static QMatrix4x4 matrix4x4FromObject(QQmlV4Handle object, QV8Engine *e, bool *ok)
+    static QMatrix4x4 matrix4x4FromObject(QQmlV4Handle object, QV4::ExecutionEngine *v4, bool *ok)
     {
         if (ok) *ok = false;
-        QV4::ExecutionEngine *v4 = QV8Engine::getV4(e);
         QV4::Scope scope(v4);
         QV4::ScopedArrayObject array(scope, object);
         if (!array)
@@ -613,9 +612,8 @@ public:
         return false;
     }
 
-    bool variantFromJsObject(int type, QQmlV4Handle object, QV8Engine *e, QVariant *v)
+    bool variantFromJsObject(int type, QQmlV4Handle object, QV4::ExecutionEngine *v4, QVariant *v) Q_DECL_OVERRIDE
     {
-        QV4::ExecutionEngine *v4 = QV8Engine::getV4(e);
         QV4::Scope scope(v4);
 #ifndef QT_NO_DEBUG
         QV4::ScopedObject obj(scope, object);
@@ -624,7 +622,7 @@ public:
         bool ok = false;
         switch (type) {
         case QMetaType::QMatrix4x4:
-            *v = QVariant::fromValue(matrix4x4FromObject(object, e, &ok));
+            *v = QVariant::fromValue(matrix4x4FromObject(object, v4, &ok));
         default: break;
         }
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,60 +34,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTHREADPOOLER_P_H
-#define QT3D_QTHREADPOOLER_P_H
-
-#include "jobrunner_p.h"
-#include "dependencyhandler_p.h"
-
-#include <QtCore/QtGlobal>
-#include <private/qobject_p.h>
+#include "qnodraw.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QThreadPooler;
+/*!
+ * \class Qt3D::QNoDraw::QNoDraw
+ *
+ * \brief When a Qt3D::QNoDraw node is present in a FrameGraph branch, this
+ * prevents the renderer from rendering any primitive.
+ *
+ * Qt3D::QNoDraw should be used when the FrameGraph needs to set up some render
+ * states or clear some buffers without requiring any mesh to be drawn. It has
+ * the same effect as having a Qt3D::QRenderPassFilter that matches none of
+ * available Qt3D::QRenderPass instances of the scene without the overhead cost
+ * of actually performing the filtering.
+ *
+ * \since 5.5
+ */
 
-class QThreadPoolerPrivate : public QObjectPrivate
+QNoDraw::QNoDraw(QNode *parent)
+    : QFrameGraphNode(parent)
 {
-public:
-    QThreadPoolerPrivate(QThreadPooler *qq);
-    ~QThreadPoolerPrivate();
-
-    bool isQueueEmpty();
-
-    void incRunningThreads();
-    void decRunningThreads();
-
-    inline void setDependencyHandler(DependencyHandler *handler)
-    {
-        m_dependencyHandler = handler;
-    }
-
-    void createRunners(int threadCount);
-    void shutdown();
-
-    int maxThreadCount() const;
-    void setMaxThreadCount(int threadCount);
-
-    Q_DECLARE_PUBLIC(QThreadPooler)
-
-private:
-    QList<JobRunner *> m_workers;
-    QVector<QSharedPointer<TaskInterface> > m_taskQueue;
-
-    QWaitCondition m_jobAvailable;
-    QWaitCondition m_jobFinished;
-    QMutex *m_mutex;
-    int m_runningThreads;
-    int m_maxThreadCount;
-    DependencyHandler *m_dependencyHandler;
-};
-
 }
 
+QNoDraw::~QNoDraw()
+{
+}
+
+} // Qt3D
+
 QT_END_NAMESPACE
-
-#endif // QT3D_QTHREADPOOLER_P_H
-

@@ -43,11 +43,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::QAbstractServiceProvider
+*/
+
 QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)
     : d_ptr(new QAbstractServiceProviderPrivate(type, description))
 {
 }
 
+/*! \internal */
 QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
     : d_ptr(&dd)
 {

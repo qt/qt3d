@@ -52,7 +52,7 @@ class Quick3DParameter;
 class Quick3DParameterPrivate : public QParameterPrivate
 {
 public:
-    Quick3DParameterPrivate(Quick3DParameter *qq);
+    Quick3DParameterPrivate();
 
     Q_DECLARE_PUBLIC(Quick3DParameter)
 

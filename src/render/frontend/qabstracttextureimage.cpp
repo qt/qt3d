@@ -43,16 +43,32 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
-    \class Qt3D::QAbstractTextureImage
+    \class Qt3D::QAbstractTextureImagePrivate
+    \internal
+*/
+
+/*!
+    \qmltype AbstractTextureImage
+    \instantiates Qt3D::QAbstractTextureImage
+    \inherits Node
+    \inqmlmodule Qt3D.Render
+    \qmlabstract
+    \since 5.5
+    \brief Encapsulates the necessary information to create an OpenGL texture image.
+*/
+
+/*!
+    \class QAbstractTextureImage
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
-    Qt3D::QAbstractTextureImage should be used as the mean of providing image data to a
-    Qt3D::QAbstractTextureProvider. It contains the necessary informations: mipmap
+    QAbstractTextureImage should be used as the means of providing image data to a
+    QAbstractTextureProvider. It contains the necessary information: mipmap
     level, layer, cube face load at the proper place data into an OpenGL texture.
 
     The actual data is provided through a QTextureDataFunctor that will be
-    executed by Aspect jobs in the backend. Qt3D::QAbstractTextureImage should be
+    executed by Aspect jobs in the backend. QAbstractTextureImage should be
     subclassed to provide a functor and eventual additional properties needed by
     the functor to load actual data.
 
@@ -64,16 +80,28 @@ namespace Qt3D {
     Constructs a new Qt3D::QAbstractTextureImage instance with \a parent as parent.
  */
 QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
-    : QNode(*new QAbstractTextureImagePrivate(this), parent)
-{
-}
-
-QAbstractTextureImage::~QAbstractTextureImage()
+    : QNode(*new QAbstractTextureImagePrivate, parent)
 {
 }
 
 /*!
-    \return the mipmal level of the texture image.
+  The destructor.
+ */
+QAbstractTextureImage::~QAbstractTextureImage()
+{
+}
+
+
+/*!
+    \qmlproperty int Qt3D.render::AbstractTextureImage::mipmapLevel
+
+    Holds the mipmap level of the texture image.
+ */
+
+/*!
+    \property Qt3D::QAbstractTextureImage::mipmapLevel
+
+    Holds the mipmap level of the texture image.
  */
 int QAbstractTextureImage::mipmapLevel() const
 {
@@ -82,7 +110,15 @@ int QAbstractTextureImage::mipmapLevel() const
 }
 
 /*!
-    \return the layer of the texture image.
+    \qmlproperty int Qt3D.Render::AbstractTextureImage::layer
+
+    Holds the layer of the texture image.
+ */
+
+/*!
+    \property Qt3D::QAbstractTextureImage::layer
+
+    Holds the layer of the texture image.
  */
 int QAbstractTextureImage::layer() const
 {
@@ -91,7 +127,30 @@ int QAbstractTextureImage::layer() const
 }
 
 /*!
-    \return the cube map face of the texture image.
+    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::cubeMapFace
+
+    Holds the cube map face of the texture image.
+
+    \value CubeMapPositiveX 0x8515   GL_TEXTURE_CUBE_MAP_POSITIVE_X
+    \value CubeMapNegativeX 0x8516   GL_TEXTURE_CUBE_MAP_NEGATIVE_X
+    \value CubeMapPositiveY 0x8517   GL_TEXTURE_CUBE_MAP_POSITIVE_Y
+    \value CubeMapNegativeY 0x8518   GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+    \value CubeMapPositiveZ 0x8519   GL_TEXTURE_CUBE_MAP_POSITIVE_Z
+    \value CubeMapNegativeZ 0x851A   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+
+    \note The cube map face has a meaning only for
+    \l {QAbstractTextureProvider::}{TargetCubeMap} and
+    \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
+ */
+
+/*!
+    \property Qt3D::QAbstractTextureImage::cubeMapFace
+
+    Holds the cube map face of the texture image.
+
+    \note The cube map face has a meaning only for
+    \l {QAbstractTextureProvider::}{TargetCubeMap} and
+    \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
  */
 QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
 {
@@ -99,9 +158,6 @@ QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
     return d->m_face;
 }
 
-/*!
-    Sets the mipmap level of the texture image to \a level.
- */
 void QAbstractTextureImage::setMipmapLevel(int level)
 {
     Q_D(QAbstractTextureImage);
@@ -111,11 +167,6 @@ void QAbstractTextureImage::setMipmapLevel(int level)
     }
 }
 
-/*!
-    Sets the layer of the texture image to \a layer.
-    \note: has a meaning only for Target2DArray, TargetCubeMapArray and Target3D
-    Qt3D::QAbstractTextureProvider.
- */
 void QAbstractTextureImage::setLayer(int layer)
 {
     Q_D(QAbstractTextureImage);
@@ -125,11 +176,6 @@ void QAbstractTextureImage::setLayer(int layer)
     }
 }
 
-/*!
-    Sets the cube map face of the texture image to \a face.
-    \note: has a meaning only for TargetCubeMap and TargetCubeMapArray
-    Qt3D::QAbstractTextureProvider.
- */
 void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace face)
 {
     Q_D(QAbstractTextureImage);
@@ -140,7 +186,7 @@ void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace
 }
 
 /*!
-    Triggers an update of the data functor that is sent to the backend
+    Triggers an update of the data functor that is sent to the backend.
  */
 void QAbstractTextureImage::update()
 {
@@ -153,6 +199,9 @@ void QAbstractTextureImage::update()
     }
 }
 
+/*!
+  Copies \a ref into this object.
+ */
 void QAbstractTextureImage::copy(const QNode *ref)
 {
     const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
@@ -161,6 +210,7 @@ void QAbstractTextureImage::copy(const QNode *ref)
     d_func()->m_mipmapLevel = imageRef->mipmapLevel();
 }
 
+/*! \internal */
 QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

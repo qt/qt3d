@@ -42,8 +42,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QSortCriterionPrivate::QSortCriterionPrivate(QSortCriterion *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QSortCriterionPrivate
+    \internal
+*/
+QSortCriterionPrivate::QSortCriterionPrivate()
+    : QNodePrivate()
     , m_sort(QSortCriterion::StateChangeCost)
 {
 }
@@ -56,7 +60,7 @@ void QSortCriterion::copy(const QNode *ref)
 }
 
 QSortCriterion::QSortCriterion(QNode *parent)
-    : QNode(*new QSortCriterionPrivate(this), parent)
+    : QNode(*new QSortCriterionPrivate, parent)
 {
 }
 
@@ -76,6 +80,7 @@ void QSortCriterion::setSort(QSortCriterion::SortType &sort)
     }
 }
 
+/*! \internal */
 QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {

@@ -49,7 +49,7 @@ namespace Qt3D {
 class QAbstractTextureProviderPrivate : public QNodePrivate
 {
 public :
-    QAbstractTextureProviderPrivate(QAbstractTextureProvider *qq);
+    QAbstractTextureProviderPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractTextureProvider)
 
@@ -69,6 +69,7 @@ public :
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
     int m_maximumLayers;
+    bool m_unique;
 };
 
 } // QT3D

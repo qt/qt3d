@@ -50,6 +50,11 @@ namespace Qt3D {
 
 namespace Quick {
 
+/*!
+    \qmltype Configuration
+    \inqmlmodule Qt3D
+    \since 5.5
+*/
 Quick3DConfiguration::Quick3DConfiguration(QObject *parent)
     : QObject(parent)
     , m_camera(Q_NULLPTR)
@@ -65,6 +70,9 @@ void Quick3DConfiguration::setControlledCamera(QCamera *camera)
     }
 }
 
+/*!
+    \qmlproperty Camera Qt3D::Configuration::controlledCamera
+*/
 QCamera *Quick3DConfiguration::controlledCamera() const
 {
     return m_camera;

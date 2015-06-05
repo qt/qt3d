@@ -56,6 +56,16 @@ QVector<Attachment> AttachmentPack::attachments() const
     return m_attachments;
 }
 
+QList<QRenderAttachment::RenderAttachmentType> AttachmentPack::drawBuffers() const
+{
+    return m_drawBuffers;
+}
+
+void AttachmentPack::setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers)
+{
+    m_drawBuffers = drawBuffers;
+}
+
 Attachment::Attachment()
     : m_mipLevel(0)
     , m_layer(0)

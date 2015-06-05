@@ -12,7 +12,7 @@ uniform vec3 kd;            // Diffuse reflectivity
 uniform vec3 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 
-uniform sampler2DShadow shadowMapTexture;
+uniform highp sampler2DShadow shadowMapTexture;
 
 in vec4 positionInLightSpace;
 

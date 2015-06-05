@@ -61,6 +61,8 @@
 #include <Qt3DRenderer/qtexture.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRenderer/qstateset.h>
+#include <Qt3DRenderer/qnodraw.h>
 #include <Qt3DCore/qcameralens.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
@@ -89,6 +91,8 @@
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
 #include <Qt3DRenderer/private/framecleanupjob_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
+#include <Qt3DRenderer/private/statesetnode_p.h>
+#include <Qt3DRenderer/private/nodraw_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -112,8 +116,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type, QRenderAspect *qq)
-    : QAbstractAspectPrivate(qq)
+/*!
+    \class Qt3D::QRenderAspectPrivate
+    \internal
+*/
+QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
+    : QAbstractAspectPrivate()
     , m_renderer(new Render::Renderer(type))
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter(m_renderer))
     , m_surface(Q_NULLPTR)
@@ -160,7 +168,7 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(Threaded, this), parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(Threaded), parent)
 {
     // Won't return until the private RenderThread in Renderer has been created
     // The Renderer is set to wait the surface with a wait condition
@@ -169,11 +177,12 @@ QRenderAspect::QRenderAspect(QObject *parent)
 }
 
 QRenderAspect::QRenderAspect(QRenderAspect::RenderType type, QObject *parent)
-    : QAbstractAspect(*new QRenderAspectPrivate(type, this), parent)
+    : QAbstractAspect(*new QRenderAspectPrivate(type), parent)
 {
     registerBackendTypes();
 }
 
+/*! \internal */
 QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
 
     : QAbstractAspect(dd, parent)
@@ -213,6 +222,8 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
+    registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

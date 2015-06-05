@@ -57,7 +57,7 @@ class Renderer;
 
 class QRenderAspectPrivate : public QAbstractAspectPrivate
 {
-    QRenderAspectPrivate(QRenderAspect::RenderType type, QRenderAspect *qq);
+    QRenderAspectPrivate(QRenderAspect::RenderType type);
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 

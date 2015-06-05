@@ -138,13 +138,13 @@ Entity {
             property Transform transform : Transform {
                 Translate{ dx: -10; dy: 0; dz : 5
                     id: sphere1Translate
-                    QQ2.SequentialAnimation {
-                        loops: QQ2.Animation.Infinite
-                        running: false
-                        QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: 6; duration: 2000 }
-                        QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: -10; duration: 2000 }
-                    }
                 }
+            }
+            QQ2.SequentialAnimation {
+                loops: QQ2.Animation.Infinite
+                running: false
+                QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: 6; duration: 2000 }
+                QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: -10; duration: 2000 }
             }
 
             property PointLight light : PointLight {
@@ -201,13 +201,13 @@ Entity {
 
             property Transform transform : Transform {
                 Translate{ id: light3Translate; dx: 2; dy: 2; dz : 7
-                    QQ2.SequentialAnimation {
-                        loops: QQ2.Animation.Infinite
-                        running: true
-                        QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
-                        QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
-                    }
                 }
+            }
+            QQ2.SequentialAnimation {
+                loops: QQ2.Animation.Infinite
+                running: true
+                QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
+                QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
             }
 
             components: [

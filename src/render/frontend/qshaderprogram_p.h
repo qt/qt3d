@@ -48,7 +48,7 @@ class QShaderProgram;
 class QShaderProgramPrivate : public QNodePrivate
 {
 public:
-    QShaderProgramPrivate(QShaderProgram *qq);
+    QShaderProgramPrivate();
 
     Q_DECLARE_PUBLIC(QShaderProgram)
     QString m_vertexSourceFile;

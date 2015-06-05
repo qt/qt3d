@@ -37,65 +37,82 @@
 #include "qframegraphnode.h"
 #include "qframegraphnode_p.h"
 
-/*!
- * \class Qt3D::QFrameGraphNode
- *
- * \brief Base class of all FrameGraph configuration nodes.
- *
- * This is an abstract class so it cannot be instanced directly
- * but rather through one of its subclasses.
- *
- * \since 5.3
- */
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QFrameGraphNodePrivate::QFrameGraphNodePrivate(QFrameGraphNode *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QFrameGraphNodePrivate
+    \internal
+*/
+QFrameGraphNodePrivate::QFrameGraphNodePrivate()
+    : QNodePrivate()
     , m_enabled(true)
 {
 }
 
-void QFrameGraphNode::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-}
+/*!
+  \class QFrameGraphNode
+  \inmodule Qt3DRender
+  \since 5.5
 
+  \brief Base class of all FrameGraph configuration nodes.
+
+  This is an abstract class so it cannot be instanced directly
+  but rather through one of its subclasses.
+
+ */
+
+/*!
+    \qmltype FrameGraphNode
+    \inqmlmodule Qt3D.Render
+    \instantiates QFrameGraphNode
+    \inherits Node
+    \since 5.5
+    \qmlabstract
+*/
+
+/*!
+  The constructor creates an instance with the specified \a parent.
+ */
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
-    : QNode(*new QFrameGraphNodePrivate(this), parent)
+    : QNode(*new QFrameGraphNodePrivate, parent)
 {
 }
 
+/*!
+  Returns a pointer to the parent.
+ */
+QFrameGraphNode *QFrameGraphNode::parentFrameGraphNode() const
+{
+    QFrameGraphNode *parentFGNode = Q_NULLPTR;
+    QNode *parentN = parentNode();
+
+    while (parentN) {
+        if ((parentFGNode = qobject_cast<QFrameGraphNode *>(parentN)) != Q_NULLPTR)
+            break;
+        parentN = parentN->parentNode();
+    }
+    return parentFGNode;
+}
+
+/*! \internal */
 QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
-void QFrameGraphNode::appendFrameGraphNode(QFrameGraphNode *item)
-{
-    Q_D(QFrameGraphNode);
-    if (!d->m_fgChildren.contains(item)) {
-        if (!item->parent())
-            item->setParent(this);
-        d->m_fgChildren.append(item);
-    }
-}
+/*!
+    \qmlproperty bool Qt3D.Render::FrameGraphNode::enabled
 
-void QFrameGraphNode::removeFrameGraphNode(QFrameGraphNode *item)
-{
-    Q_D(QFrameGraphNode);
-    if (!d->m_fgChildren.contains(item)) {
-        d->m_fgChildren.removeOne(item);
-    }
-}
+    Holds whether the frame graph node is enabled or disabled.
+*/
 
-QList<QFrameGraphNode *> QFrameGraphNode::frameGraphChildren() const
-{
-    Q_D(const QFrameGraphNode);
-    return d->m_fgChildren;
-}
+/*!
+    \property Qt3D::QFrameGraphNode::enabled
+
+    Holds whether the frame graph node is enabled or disabled.
+*/
 
 bool QFrameGraphNode::isEnabled() const
 {

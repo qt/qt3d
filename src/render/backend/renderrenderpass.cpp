@@ -40,23 +40,11 @@
 #include <Qt3DRenderer/qparametermapping.h>
 #include <Qt3DRenderer/qrenderstate.h>
 #include <Qt3DRenderer/qrenderpass.h>
-
-#include <Qt3DRenderer/qalphacoverage.h>
-#include <Qt3DRenderer/qalphatest.h>
-#include <Qt3DRenderer/qblendequation.h>
-#include <Qt3DRenderer/qblendstate.h>
-#include <Qt3DRenderer/qcolormask.h>
-#include <Qt3DRenderer/qcullface.h>
-#include <Qt3DRenderer/qdepthmask.h>
-#include <Qt3DRenderer/qdepthtest.h>
-#include <Qt3DRenderer/qdithering.h>
-#include <Qt3DRenderer/qfrontface.h>
-#include <Qt3DRenderer/qpolygonoffset.h>
-#include <Qt3DRenderer/qscissortest.h>
-#include <Qt3DRenderer/qstenciltest.h>
+#include <Qt3DRenderer/qparameter.h>
 
 // TODO: Rename this include to something more descriptive
 #include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DRenderer/private/renderstate_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -65,75 +53,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 namespace Render {
-
-RenderState *getOrCreateBackendState(QRenderState *renderState)
-{
-    switch (renderState->type()) {
-        case QRenderState::AlphaTest: {
-            QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
-            return AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp());
-        }
-        case QRenderState::BlendEquation: {
-            QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
-            return BlendEquation::getOrCreate(blendEquation->mode());
-        }
-        case QRenderState::BlendState: {
-            QBlendState *blendState = static_cast<QBlendState *>(renderState);
-            // TO DO : Handle Alpha here as weel
-            return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB());
-        }
-        case QRenderState::CullFace: {
-            QCullFace *cullFace = static_cast<QCullFace *>(renderState);
-            return CullFace::getOrCreate(cullFace->mode());
-        }
-        case QRenderState::DepthMask: {
-            QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
-            return DepthMask::getOrCreate(depthMask->mask());
-        }
-        case QRenderState::DepthTest: {
-            QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
-            return DepthTest::getOrCreate(depthTest->func());
-        }
-        case QRenderState::Dithering: {
-            return Dithering::getOrCreate();
-        }
-        case QRenderState::FrontFace: {
-            QFrontFace *frontFace = static_cast<QFrontFace *>(renderState);
-            return FrontFace::getOrCreate(frontFace->direction());
-        }
-        case QRenderState::ScissorTest: {
-            QScissorTest *scissorTest = static_cast<QScissorTest *>(renderState);
-            return ScissorTest::getOrCreate(scissorTest->left(),
-                                            scissorTest->bottom(),
-                                            scissorTest->width(),
-                                            scissorTest->height());
-        }
-        case QRenderState::StencilTest: {
-            QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
-            return StencilTest::getOrCreate(stencilTest->mask(),
-                                            stencilTest->func(),
-                                            stencilTest->faceMode());
-        }
-        case QRenderState::AlphaCoverage: {
-            return AlphaCoverage::getOrCreate();
-        }
-        case QRenderState::PolygonOffset: {
-            QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
-            return PolygonOffset::getOrCreate(polygonOffset->factor(),
-                                              polygonOffset->units());
-        }
-        case QRenderState::ColorMask: {
-            QColorMask *colorMask = static_cast<QColorMask *>(renderState);
-            return ColorMask::getOrCreate(colorMask->isRed(),
-                                          colorMask->isGreen(),
-                                          colorMask->isBlue(),
-                                          colorMask->isAlpha());
-        }
-        default:
-            qFatal("Should not happen");
-            return Q_NULLPTR;
-    }
-}
 
 RenderRenderPass::RenderRenderPass()
     : QBackendNode()
@@ -153,6 +72,8 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
 {
     QRenderPass *pass = static_cast<QRenderPass *>(peer);
 
+    m_parameterPack.clear();
+
     if (pass->shaderProgram() != Q_NULLPTR)
         m_shaderUuid = pass->shaderProgram()->id();
     // The RenderPass clones frontend bindings in case the frontend ever removes them
@@ -162,7 +83,9 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
     Q_FOREACH (QAnnotation *c, pass->annotations())
         appendAnnotation(c->id());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
-        appendRenderState(renderState->id(), getOrCreateBackendState(renderState));
+        appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+    Q_FOREACH (QParameter *p, pass->parameters())
+        m_parameterPack.appendParameter(p->id());
 }
 
 void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
@@ -173,16 +96,16 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
             appendAnnotation(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().value<QNodeId>();
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             appendBinding(RenderParameterMapping(propertyChange->value().value<QParameterMapping *>()));
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
-            QRenderState *renderState = propertyChange->value().value<QRenderState *>();
-            appendRenderState(renderState->id(), getOrCreateBackendState(renderState));
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+            QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+            QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
+            appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -190,15 +113,14 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeRemoved: {
         if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
             removeAnnotation(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = QNodeId();
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
             removeBinding(propertyChange->value().value<QNodeId>());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             removeRenderState(propertyChange->value().value<QNodeId>());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
+            m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -226,6 +148,11 @@ QList<QNodeId> RenderRenderPass::annotations() const
 QList<RenderState *> RenderRenderPass::renderStates() const
 {
     return m_renderStates.values();
+}
+
+QList<QNodeId> RenderRenderPass::parameters() const
+{
+    return m_parameterPack.parameters();
 }
 
 void RenderRenderPass::appendAnnotation(const QNodeId &annotationId)

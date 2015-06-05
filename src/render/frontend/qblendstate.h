@@ -49,7 +49,6 @@ class QBlendStatePrivate;
 class QT3DRENDERERSHARED_EXPORT QBlendState : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(Blending)
     Q_PROPERTY(Blending srcRGB READ srcRGB WRITE setSrcRGB NOTIFY srcRGBChanged)
     Q_PROPERTY(Blending srcAlpha READ srcAlpha WRITE setSrcAlpha NOTIFY srcAlphaChanged)
     Q_PROPERTY(Blending dstRGB READ dstRGB WRITE setDstRGB NOTIFY dstRGBChanged)
@@ -79,6 +78,7 @@ public:
         OneMinusSrc1Alpha,
         OneMinusSrc1Color0
     };
+    Q_ENUM(Blending)
 
     explicit QBlendState(QNode *parent = 0);
 
@@ -102,10 +102,18 @@ Q_SIGNALS:
 
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QBlendState(QRenderState::Type type, QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QBlendState)
     QT3D_CLONEABLE(QBlendState)
+};
+
+class QT3DRENDERERSHARED_EXPORT QBlendStateSeparate : public QBlendState
+{
+    Q_OBJECT
+public:
+    explicit QBlendStateSeparate(QNode *parent = 0);
 };
 
 } // Qt3D

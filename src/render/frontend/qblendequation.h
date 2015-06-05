@@ -49,7 +49,6 @@ class QBlendEquationPrivate;
 class QT3DRENDERERSHARED_EXPORT QBlendEquation : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(BlendMode)
     Q_PROPERTY(BlendMode mode READ mode WRITE setMode NOTIFY modeChanged)
 public:
 
@@ -61,6 +60,7 @@ public:
         Min = 0x8007,
         Max = 0x8008
     };
+    Q_ENUM(BlendMode)
 
     explicit QBlendEquation(QNode *parent = 0);
 

@@ -44,13 +44,22 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+/*!
+    \class Qt3D::CameraSelector
+*/
+
+/*! \internal */
 QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
 }
 
-QCameraSelectorPrivate::QCameraSelectorPrivate(Qt3D::QCameraSelector *qq)
-    : QFrameGraphNodePrivate(qq)
+/*!
+    \class Qt3D::QCameraSelectorPrivate
+    \internal
+*/
+QCameraSelectorPrivate::QCameraSelectorPrivate()
+    : QFrameGraphNodePrivate()
     , m_camera(Q_NULLPTR)
 {}
 
@@ -58,15 +67,13 @@ void QCameraSelector::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QCameraSelector *other = static_cast<const QCameraSelector*>(ref);
-    Q_FOREACH (QFrameGraphNode *fgChild, other->d_func()->m_fgChildren)
-        appendFrameGraphNode(qobject_cast<QFrameGraphNode *>(QNode::clone(fgChild)));
 
     if (other->d_func()->m_camera)
         setCamera(qobject_cast<QEntity *>(QNode::clone(other->d_func()->m_camera)));
 }
 
 QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
-    :   QFrameGraphNode(*new QCameraSelectorPrivate(this), parent)
+    :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {}
 
 void QCameraSelector::setCamera(QEntity *camera)

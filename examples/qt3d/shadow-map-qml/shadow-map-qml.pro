@@ -1,8 +1,8 @@
-TEMPLATE = app
+!include( ../examples.pri ) {
+    error( "Couldn't find the examples.pri file!" )
+}
 
 QT += 3dcore 3drenderer 3dinput 3dquick qml quick
-
-include("../exampleresources/exampleresources.pri")
 
 SOURCES += \
     main.cpp
@@ -18,4 +18,5 @@ OTHER_FILES += \
     GroundPlane.qml
 
 RESOURCES += \
-    shadow-map-qml.qrc
+    shadow-map-qml.qrc \
+    ../exampleresources/obj.qrc

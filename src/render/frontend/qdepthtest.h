@@ -49,7 +49,6 @@ class QDepthTestPrivate;
 class QT3DRENDERERSHARED_EXPORT QDepthTest : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(DepthFunc)
     Q_PROPERTY(DepthFunc func READ func WRITE setFunc NOTIFY funcChanged)
 public:
 
@@ -63,6 +62,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
+    Q_ENUM(DepthFunc)
 
     explicit QDepthTest(QNode *parent = 0);
 

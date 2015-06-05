@@ -123,6 +123,7 @@ private:
     bool m_filtersAndWrapUpdated;
     bool m_dataUploadRequired;
     bool m_formatWasSpecified;
+    bool m_unique;
 
     QMutex *m_lock;
     TextureDNA m_textureDNA;

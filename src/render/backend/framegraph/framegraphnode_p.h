@@ -67,7 +67,9 @@ public:
         Viewport,
         ClearBuffer,
         SortMethod,
-        SubtreeSelector
+        SubtreeSelector,
+        StateSet,
+        NoDraw
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
@@ -143,8 +145,9 @@ protected:
                 backend->setFrameGraphManager(m_manager);
                 backend->setHandle(handle);
                 backend->setPeer(f);
-                if (qobject_cast<QFrameGraphNode *>(n->parentNode()))
-                    backend->setParentHandle(m_manager->lookupHandle(n->parentNode()->id()));
+                QFrameGraphNode *parentFGNode = static_cast<QFrameGraphNode *>(n)->parentFrameGraphNode();
+                if (parentFGNode)
+                    backend->setParentHandle(m_manager->lookupHandle(parentFGNode->id()));
                 return backend;
             }
             return static_cast<Backend *>(*m_manager->data(handle));

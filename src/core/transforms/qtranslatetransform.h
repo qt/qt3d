@@ -38,7 +38,6 @@
 #define QT3D_QTRANSLATETRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QVector3D>
 
@@ -58,7 +57,7 @@ class QT3DCORESHARED_EXPORT QTranslateTransform : public QAbstractTransform
     Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translateChanged)
 
 public:
-    explicit QTranslateTransform(QNode *parent = 0);
+    explicit QTranslateTransform(QObject *parent = Q_NULLPTR);
 
     float dx() const;
     float dy() const;
@@ -79,12 +78,11 @@ Q_SIGNALS:
     void translateChanged();
 
 protected:
-    QTranslateTransform(QTranslateTransformPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QTranslateTransform(QTranslateTransformPrivate &dd, QObject *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QTranslateTransform)
-    QT3D_CLONEABLE(QTranslateTransform)
+    Q_DISABLE_COPY(QTranslateTransform)
 };
 
 } // namespace Qt3D

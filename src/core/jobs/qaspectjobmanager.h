@@ -39,6 +39,7 @@
 
 #include <Qt3DCore/qabstractaspectjobmanager.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 #include <Qt3DCore/qaspectjob.h>
 
@@ -50,7 +51,7 @@ namespace Qt3D {
 
 class QAspectJobManagerPrivate;
 
-class QAspectJobManager : public QAbstractAspectJobManager
+class QT3DCORE_PRIVATE_EXPORT QAspectJobManager : public QAbstractAspectJobManager
 {
     Q_OBJECT
 public:

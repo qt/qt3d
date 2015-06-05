@@ -250,7 +250,8 @@ RenderView::RenderView()
     , m_clearColor(Q_NULLPTR)
     , m_viewport(Q_NULLPTR)
     , m_clearBuffer(QClearBuffer::None)
-    , m_commands()
+    , m_stateSet(Q_NULLPTR)
+    , m_noDraw(false)
 {
 }
 
@@ -282,6 +283,9 @@ RenderView::~RenderView()
     m_allocator->deallocate<QColor>(m_clearColor);
     // Deallocate m_data
     m_allocator->deallocate<InnerData>(m_data);
+    // Deallocate m_stateSet
+    if (m_stateSet)
+        m_allocator->deallocate<RenderStateSet>(m_stateSet);
 }
 
 // We need to overload the delete operator so that when the Renderer deletes the list of RenderViews, each RenderView
@@ -372,6 +376,24 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
+                ParameterInfoList parameters;
+                // Order set:
+                // 1 Pass Filter
+                // 2 Technique Filter
+                // 3 Material
+                // 4 Effect
+                // 5 Technique
+                // 6 RenderPass
+
+                // Add Parameters define in techniqueFilter and passFilter
+                // passFilter have priority over techniqueFilter
+                if (m_data->m_passFilter)
+                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                                                     m_data->m_passFilter);
+                if (m_data->m_techniqueFilter)
+                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                                                     m_data->m_techniqueFilter);
+
                 RenderRenderPassList passes;
                 if (technique) {
                     passes = findRenderPassesForTechnique(m_renderer, this, technique);
@@ -382,21 +404,35 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                     passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
                 }
 
-                // Get the parameters for our selected rendering setup
-                ParameterInfoList parameters;
+                // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
                 parametersFromMaterialEffectTechnique(&parameters, m_renderer->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderRenderPass *pass, passes) {
+
+                    // Add the RenderRenderPass Parameters
+                    ParameterInfoList globalParameter = parameters;
+                    parametersFromParametersProvider(&globalParameter, m_renderer->parameterManager(), pass);
+
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
                     command->m_meshData = mesh->meshDataHandle();
                     command->m_instancesCount = 0;
-
-                    // TODO: Build the state set for a render pass only once per-pass. Not once per rendercommand and pass.
-                    command->m_stateSet = buildRenderStateSet(pass, m_allocator);
-                    if (command->m_stateSet != Q_NULLPTR)
+                    command->m_stateSet = Q_NULLPTR;
+                    command->m_changeCost = 0;
+                    // For RenderPass based states we use the globally set RenderState
+                    // if no renderstates are defined as part of the pass. That means:
+                    // RenderPass { renderStates: [] } will use the states defined by
+                    // StateSet in the FrameGraph
+                    if (!pass->renderStates().isEmpty())
+                        command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
+                    if (command->m_stateSet != Q_NULLPTR) {
+                        // Merge per pass stateset with global stateset
+                        // so that the local stateset only overrides
+                        if (m_stateSet != Q_NULLPTR)
+                            command->m_stateSet->merge(m_stateSet);
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
+                    }
                     setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
                     buildSortingKey(command);
                     m_commands.append(command);

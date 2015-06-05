@@ -96,3 +96,11 @@ export to cause the installation rules to place all the files into a sandboxed
 install tree, ready for packaging:
 
     INSTALL_ROOT=tmp make install
+
+
+Examples
+========
+
+Some examples require assimp library to parse the content. Go to http://assimp.sourceforge.net/
+and build and install the assimp library. Then configure Qt3D to include assimp and
+run qmake && make.

@@ -106,17 +106,18 @@ Entity {
         Rotate {
             id: sphereRotation
             axis: Qt.vector3d(0, 1, 0)
-            QQ2.NumberAnimation {
-                target: sphereRotation
-                property: "angle"
-                duration: 10000
-                from: 0
-                to: 360
-
-                loops: QQ2.Animation.Infinite
-                running: true
-            }
         }
+    }
+
+    QQ2.NumberAnimation {
+        target: sphereRotation
+        property: "angle"
+        duration: 10000
+        from: 0
+        to: 360
+
+        loops: QQ2.Animation.Infinite
+        running: true
     }
 
     Entity {

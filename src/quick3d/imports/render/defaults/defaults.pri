@@ -13,3 +13,4 @@ QML_FILES = \
     $$PWD/qml/NormalDiffuseSpecularMapMaterial.qml \
     $$PWD/qml/ForwardRenderer.qml \
     $$PWD/qml/PerVertexColorMaterial.qml \
+    $$PWD/qml/SkyboxEntity.qml \

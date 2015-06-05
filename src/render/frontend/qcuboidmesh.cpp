@@ -48,8 +48,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QCuboidMeshPrivate::QCuboidMeshPrivate(QCuboidMesh *qq)
-    : QAbstractMeshPrivate(qq)
+/*!
+    \class Qt3D::QCuboidMeshPrivate
+    \internal
+*/
+QCuboidMeshPrivate::QCuboidMeshPrivate()
+    : QAbstractMeshPrivate()
     , m_xExtent(1.0)
     , m_yExtent(1.0)
     , m_zExtent(1.0)
@@ -72,11 +76,12 @@ void QCuboidMesh::copy(const QNode *ref)
 }
 
 QCuboidMesh::QCuboidMesh(QNode *parent)
-    : QAbstractMesh(*new QCuboidMeshPrivate(this), parent)
+    : QAbstractMesh(*new QCuboidMeshPrivate, parent)
 {
     update();
 }
 
+/*! \internal */
 QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)
 {

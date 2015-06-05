@@ -56,7 +56,7 @@ class QNormalDiffuseMapMaterial;
 class QNormalDiffuseMapMaterialPrivate: public QMaterialPrivate
 {
 public:
-    QNormalDiffuseMapMaterialPrivate(QNormalDiffuseMapMaterial *qq);
+    QNormalDiffuseMapMaterialPrivate();
 
     virtual void init();
 

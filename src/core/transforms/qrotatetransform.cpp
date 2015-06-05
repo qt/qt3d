@@ -48,8 +48,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRotateTransformPrivate::QRotateTransformPrivate(QRotateTransform *qq)
-    : QAbstractTransformPrivate(qq)
+/*!
+    \class Qt3D::QRotateTransformPrivate
+    \internal
+*/
+QRotateTransformPrivate::QRotateTransformPrivate()
+    : QAbstractTransformPrivate()
     , m_angleDeg(0)
     , m_axis(0.0f, 1.0f, 0.0f)
 {
@@ -63,20 +67,14 @@ void QRotateTransformPrivate::updateMatrix()
     m_matrix = m;
 }
 
-void QRotateTransform::copy(const QNode *ref)
-{
-    QAbstractTransform::copy(ref);
-    const QRotateTransform *transform = static_cast<const QRotateTransform*>(ref);
-    d_func()->m_axis = transform->d_func()->m_axis;
-    d_func()->m_angleDeg = transform->d_func()->m_angleDeg;
-}
 
-QRotateTransform::QRotateTransform(QNode *parent)
-    : QAbstractTransform(*new QRotateTransformPrivate(this), parent)
+QRotateTransform::QRotateTransform(QObject *parent)
+    : QAbstractTransform(*new QRotateTransformPrivate, parent)
 {
 }
 
-QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QNode *parent)
+/*! \internal */
+QRotateTransform::QRotateTransform(QRotateTransformPrivate &dd, QObject *parent)
     : QAbstractTransform(dd, parent)
 {
 }

@@ -51,7 +51,7 @@ namespace Qt3D {
 class QT3DCORESHARED_EXPORT QCameraLensPrivate : public QComponentPrivate
 {
 public:
-    QCameraLensPrivate(QCameraLens *qq);
+    QCameraLensPrivate();
 
     inline void updateProjectionMatrix()
     {
@@ -61,6 +61,9 @@ public:
             break;
         case QCameraLens::PerspectiveProjection:
             updatePerpectiveProjection();
+            break;
+        case QCameraLens::FrustumProjection:
+            updateFrustumProjection();
             break;
         }
     }
@@ -96,6 +99,14 @@ private:
         Q_Q(QCameraLens);
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
+        Q_EMIT q->projectionMatrixChanged();
+    }
+
+    inline void updateFrustumProjection()
+    {
+        Q_Q(QCameraLens);
+        m_projectionMatrix.setToIdentity();
+        m_projectionMatrix.frustum(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
         Q_EMIT q->projectionMatrixChanged();
     }
 };

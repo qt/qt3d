@@ -54,7 +54,6 @@ Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 class QT3DRENDERERSHARED_EXPORT AbstractSceneParser : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(ParserStatus)
     Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
     Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
 
@@ -65,6 +64,7 @@ public:
         Loaded,
         Error
     };
+    Q_ENUM(ParserStatus)
 
     AbstractSceneParser();
     virtual ~AbstractSceneParser();

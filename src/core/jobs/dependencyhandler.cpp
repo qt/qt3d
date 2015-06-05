@@ -47,13 +47,13 @@ namespace {
     struct ByDepender {
         typedef bool result_type;
 
-        bool operator()(const QSharedPointer<TaskInterface> &lhs, const QSharedPointer<TaskInterface> &rhs) const Q_DECL_NOTHROW
-        { return Op<QSharedPointer<TaskInterface> >()(lhs, rhs); }
+        bool operator()(const RunnableInterface *lhs, const RunnableInterface *rhs) const Q_DECL_NOTHROW
+        { return Op<const RunnableInterface *>()(lhs, rhs); }
 
-        bool operator()(const QSharedPointer<TaskInterface> &lhs, const Dependency &rhs) const Q_DECL_NOTHROW
+        bool operator()(const RunnableInterface *lhs, const Dependency &rhs) const Q_DECL_NOTHROW
         { return operator()(lhs, rhs.depender); }
 
-        bool operator()(const Dependency &lhs, const QSharedPointer<TaskInterface> &rhs) const Q_DECL_NOTHROW
+        bool operator()(const Dependency &lhs, const RunnableInterface *rhs) const Q_DECL_NOTHROW
         { return operator()(lhs.depender, rhs); }
 
         bool operator()(const Dependency &lhs, const Dependency &rhs) const Q_DECL_NOTHROW
@@ -62,12 +62,29 @@ namespace {
 
     struct DependeeEquals : std::unary_function<Dependency, bool>
     {
-        QSharedPointer<TaskInterface> dependee;
-        explicit DependeeEquals(QSharedPointer<TaskInterface> dependee)
-            : dependee(qMove(dependee)) {}
+        const RunnableInterface *dependee;
+        QVector<RunnableInterface *> *freedList;
+        explicit DependeeEquals(const RunnableInterface *dependee, QVector<RunnableInterface *> *freedList)
+            : dependee(qMove(dependee)), freedList(qMove(freedList)) {}
         bool operator()(const Dependency &candidate) const
         {
-            return dependee == candidate.dependee;
+            if (dependee == candidate.dependee) {
+                if (!candidate.depender->reserved())
+                    freedList->append(candidate.depender);
+                return true;
+            }
+            return false;
+        }
+    };
+
+    struct DependerEquals : std::unary_function<Dependency, bool>
+    {
+        const RunnableInterface *depender;
+        explicit DependerEquals(const RunnableInterface *depender)
+            : depender(qMove(depender)) {}
+        bool operator()(const Dependency &candidate) const
+        {
+            return depender == candidate.depender;
         }
     };
 
@@ -91,7 +108,7 @@ void DependencyHandler::addDependencies(QVector<Dependency> dependencies)
 {
     std::sort(dependencies.begin(), dependencies.end(), ByDependerThenDependee());
 
-    const QMutexLocker locker(&m_mutex);
+    const QMutexLocker locker(m_mutex);
 
     QVector<Dependency> newDependencyMap;
     newDependencyMap.reserve(dependencies.size() + m_dependencyMap.size());
@@ -101,9 +118,9 @@ void DependencyHandler::addDependencies(QVector<Dependency> dependencies)
     m_dependencyMap.swap(newDependencyMap); // commit
 }
 
-bool DependencyHandler::hasDependency(const QSharedPointer<TaskInterface> &depender)
+bool DependencyHandler::hasDependency(const RunnableInterface *depender)
 {
-    const QMutexLocker locker(&m_mutex);
+    // The caller has to set the mutex, which is QThreadPooler::enqueueTasks
 
     return std::binary_search(m_dependencyMap.begin(), m_dependencyMap.end(),
                               depender, ByDepender<std::less>());
@@ -113,13 +130,22 @@ bool DependencyHandler::hasDependency(const QSharedPointer<TaskInterface> &depen
  * Removes all the entries on the m_dependencyMap that have given task as a dependee,
  * i.e. entries where the dependency is on the given task.
  */
-void DependencyHandler::freeDependencies(const QSharedPointer<TaskInterface> &dependee)
+QVector<RunnableInterface *> DependencyHandler::freeDependencies(const RunnableInterface *task)
 {
-    const QMutexLocker locker(&m_mutex);
+    // The caller has to set the mutex, which is QThreadPooler::taskFinished
 
-    m_dependencyMap.erase(std::remove_if(m_dependencyMap.begin(), m_dependencyMap.end(),
-                                         DependeeEquals(dependee)),
+    m_dependencyMap.erase(std::remove_if(m_dependencyMap.begin(),
+                                         m_dependencyMap.end(),
+                                         DependerEquals(task)),
                           m_dependencyMap.end());
+
+    QVector<RunnableInterface *> freedList;
+    m_dependencyMap.erase(std::remove_if(m_dependencyMap.begin(),
+                                         m_dependencyMap.end(),
+                                         DependeeEquals(task, &freedList)),
+                          m_dependencyMap.end());
+
+    return freedList;
 }
 
 } // namespace Qt3D

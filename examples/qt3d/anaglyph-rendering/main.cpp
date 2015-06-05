@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,15 +34,31 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_EXAMPLERESOURCES_H
-#define QT3D_EXAMPLERESOURCES_H
+#include <Qt3DCore/window.h>
+#include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DQuick/QQmlAspectEngine>
 
-#include <QResource>
+#include <QGuiApplication>
+#include <QtQml>
 
-#define QT3D_XSTRINGIFY(s) QT3D_STRINGIFY(s)
-#define QT3D_STRINGIFY(s) #s
+int main(int argc, char* argv[])
+{
+    QGuiApplication app(argc, argv);
 
-bool initializeAssetResources( const QString& fileName );
+    Qt3D::Window view;
+    Qt3D::Quick::QQmlAspectEngine engine;
 
-#endif // QT3D_EXAMPLERESOURCES_H
+    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    engine.aspectEngine()->setData(data);
+    engine.aspectEngine()->initialize();
+    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    engine.setSource(QUrl("qrc:/main.qml"));
+    view.show();
 
+    return app.exec();
+}

@@ -48,7 +48,7 @@ class QMatrixTransform;
 class QMatrixTransformPrivate : public QAbstractTransformPrivate
 {
 public:
-    QMatrixTransformPrivate(QMatrixTransform *qq);
+    QMatrixTransformPrivate();
 
     Q_DECLARE_PUBLIC(QMatrixTransform)
     QMatrix4x4 m_matrix;

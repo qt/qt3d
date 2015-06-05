@@ -49,8 +49,8 @@ class QDepthTest;
 class QDepthTestPrivate : public QRenderStatePrivate
 {
 public :
-    QDepthTestPrivate(QDepthTest *qq)
-        : QRenderStatePrivate(qq, QRenderState::DepthTest)
+    QDepthTestPrivate()
+        : QRenderStatePrivate(QRenderState::DepthTest)
         , m_func(QDepthTest::Never)
     {
     }
@@ -67,7 +67,7 @@ void QDepthTest::copy(const QNode *ref)
 }
 
 QDepthTest::QDepthTest(QNode *parent)
-    : QRenderState(*new QDepthTestPrivate(this), parent)
+    : QRenderState(*new QDepthTestPrivate, parent)
 {
 }
 

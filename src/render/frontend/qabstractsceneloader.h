@@ -53,7 +53,6 @@ class QAbstractSceneLoaderPrivate;
 class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
 {
     Q_OBJECT
-    Q_ENUMS(Status)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
@@ -64,6 +63,7 @@ public:
         Loaded,
         Error
     };
+    Q_ENUM(Status)
 
     QUrl source() const;
     void setSource(const QUrl &arg);

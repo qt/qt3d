@@ -56,6 +56,7 @@
 #include <Qt3DRenderer/private/shadervariables_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/statesetnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -111,7 +112,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::RenderTarget: {
                 // Can be set once and we take render target nearest to the leaf node
-                QNodeId renderTargetUid = static_cast<const RenderTargetSelector *>(node)->renderTargetUuid();
+                const RenderTargetSelector *targetSelector = static_cast<const RenderTargetSelector *>(node);
+                QNodeId renderTargetUid = targetSelector->renderTargetUuid();
                 HTarget renderTargetHandle = renderer->renderTargetManager()->lookupHandle(renderTargetUid);
                 if (rv->renderTargetHandle().isNull()) {
                     rv->setRenderTargetHandle(renderTargetHandle);
@@ -119,11 +121,17 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     RenderTarget *renderTarget = renderer->renderTargetManager()->data(renderTargetHandle);
                     if (renderTarget) {
                         // Add renderTarget Handle and build renderCommand AttachmentPack
+
+                        // Copy draw buffers list
+                        rv->setDrawBuffers(targetSelector->drawBuffers());
+
+                        // Copy attachments
                         Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
                             RenderAttachment *attachment = renderer->attachmentManager()->lookupResource(attachmentId);
                             if (attachment)
                                 rv->addRenderAttachment(attachment->attachment());
                         }
+
                     }
                 }
                 break;
@@ -163,6 +171,18 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Has no meaning here. SubtreeSelector was used
                 // in a prior step to build the list of RenderViewJobs
                 break;
+
+            case FrameGraphNode::StateSet: {
+                const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
+                // Create global RenderStateSet for renderView
+                rv->setStateSet(buildRenderStateSet(rStateSet->renderStates(), rv->allocator()));
+                break;
+            }
+
+            case FrameGraphNode::NoDraw: {
+                rv->setNoDraw(true);
+                break;
+            }
 
             default:
                 // Should never get here
@@ -290,7 +310,7 @@ ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QStri
     return it;
 }
 
-static void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
+void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                 const QList<QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
@@ -317,24 +337,16 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
     //
     // That way a user can override defaults in Effect's and Techniques on a
     // object manner and a Technique can override global defaults from the Effect.
-    if (material)
-        addParametersForIds(infoList, manager, material->parameters());
-
-    if (technique)
-        addParametersForIds(infoList, manager, technique->parameters());
-
-    if (effect)
-        addParametersForIds(infoList, manager, effect->parameters());
+    parametersFromParametersProvider(infoList, manager, material);
+    parametersFromParametersProvider(infoList, manager, technique);
+    parametersFromParametersProvider(infoList, manager, effect);
 }
 
-RenderStateSet *buildRenderStateSet(RenderRenderPass *pass, QFrameAllocator *allocator)
+RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states, QFrameAllocator *allocator)
 {
-    if (!pass || pass->renderStates().isEmpty())
-        return Q_NULLPTR;
-
     RenderStateSet *stateSet = allocator->allocate<RenderStateSet>();
 
-    Q_FOREACH (RenderState *renderState, pass->renderStates()) {
+    Q_FOREACH (RenderState *renderState, states) {
         stateSet->addState(renderState);
     }
 

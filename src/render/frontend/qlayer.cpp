@@ -41,11 +41,35 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QLayerPrivate::QLayerPrivate(QLayer *qq)
-    : QComponentPrivate(qq)
+/*!
+    \class Qt3D::QLayerPrivate
+    \internal
+*/
+QLayerPrivate::QLayerPrivate()
+    : QComponentPrivate()
 {
 }
 
+/*!
+    \class QLayer
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief The QLayer class provides ...
+*/
+
+/*!
+    \qmltype Layer
+    \instantiates Qt3D::QLayer
+    \inherits Component3D
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief For ...
+*/
+
+
+/*! \fn void Qt3D::QLayer::copy(const QNode *ref)
+  Copies the \a ref instance into this one.
+ */
 void QLayer::copy(const QNode *ref)
 {
     QComponent::copy(ref);
@@ -53,15 +77,30 @@ void QLayer::copy(const QNode *ref)
     d_func()->m_names = layer->d_func()->m_names;
 }
 
+/*! \fn Qt3D::QLayer::QLayer(QObject *parent)
+  Constructs a new QLayer with the specified \a parent.
+ */
+
 QLayer::QLayer(QNode *parent)
-    : QComponent(*new QLayerPrivate(this), parent)
+    : QComponent(*new QLayerPrivate, parent)
 {
 }
 
+/*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
+
+/*!
+  \property Qt3D::QLayer::names
+
+ */
+
+/*!
+  \qmlproperty stringlist Qt3D.Render::Layer::names
+
+*/
 
 QStringList QLayer::names() const
 {

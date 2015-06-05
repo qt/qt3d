@@ -51,8 +51,6 @@ class QOpenGLFilterPrivate;
 class QT3DRENDERERSHARED_EXPORT QOpenGLFilter : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(Api)
-    Q_ENUMS(Profile)
     Q_PROPERTY(Qt3D::QOpenGLFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
     Q_PROPERTY(Qt3D::QOpenGLFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
     Q_PROPERTY(int minorVersion READ minorVersion WRITE setMinorVersion NOTIFY minorVersionChanged)
@@ -67,6 +65,7 @@ public:
         ES = QSurfaceFormat::OpenGLES,
         Desktop = QSurfaceFormat::OpenGL
     };
+    Q_ENUM(Api)
 
     enum Profile
     {
@@ -74,6 +73,7 @@ public:
         Core = QSurfaceFormat::CoreProfile,
         Compatibility = QSurfaceFormat::CompatibilityProfile
     };
+    Q_ENUM(Profile)
 
     explicit QOpenGLFilter(QObject *parent = 0);
 

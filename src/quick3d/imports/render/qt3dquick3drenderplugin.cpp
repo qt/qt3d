@@ -85,6 +85,7 @@
 #include <Qt3DRenderer/qpolygonoffset.h>
 #include <Qt3DRenderer/qcolormask.h>
 #include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRenderer/qnodraw.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -96,11 +97,12 @@
 #include <Qt3DQuickRenderer/quick3dtexture.h>
 #include <Qt3DQuickRenderer/private/shaderpropertyparser_p.h>
 #include <Qt3DQuickRenderer/quick3drenderpass.h>
-#include <Qt3DQuickRenderer/quick3dframegraphitem.h>
 #include <Qt3DQuickRenderer/quick3dsortmethod.h>
 #include <Qt3DQuickRenderer/quick3dparameter.h>
 #include <Qt3DQuickRenderer/quick3dshaderdata.h>
 #include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
+#include <Qt3DQuickRenderer/quick3dstateset.h>
+#include <Qt3DQuickRenderer/quick3drendertargetselector.h>
 
 static void initResources()
 {
@@ -122,7 +124,9 @@ static const struct {
     { "NormalDiffuseSpecularMapMaterial", 2, 0 },
     { "PerVertexColorMaterial", 2, 0 },
     // FrameGraphs
-    { "ForwardRenderer", 2, 0 }
+    { "ForwardRenderer", 2, 0 },
+    // Entities
+    { "SkyboxEntity", 2, 0 }
 };
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
@@ -173,6 +177,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QTextureCubeMapArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "TextureCubeMapArray");
     qmlRegisterExtendedType<Qt3D::QTexture2DMultisample, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2DMultisample");
     qmlRegisterExtendedType<Qt3D::QTexture2DMultisampleArray, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "Texture2DMultisampleArray");
+    qmlRegisterExtendedType<Qt3D::QTextureRectangle, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "TextureRectangle");
+    qmlRegisterExtendedType<Qt3D::QTextureBuffer, Qt3D::Render::Quick::Quick3DTextureExtension>(uri, 2, 0, "TextureBuffer");
     qmlRegisterUncreatableType<Qt3D::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3D::QTextureImage>(uri, 2, 0, "TextureImage");
 
@@ -200,9 +206,11 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>(uri, 2, 0, "RenderPassFilter");
     qmlRegisterExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>(uri, 2, 0, "TechniqueFilter");
     qmlRegisterExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>(uri, 2, 0, "Viewport");
-    qmlRegisterType<Qt3D::QRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>(uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
-    qmlRegisterExtendedUncreatableType<Qt3D::QFrameGraphNode, Qt3D::Render::Quick::Quick3DFrameGraphItem>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
+    qmlRegisterUncreatableType<Qt3D::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
+    qmlRegisterExtendedType<Qt3D::QStateSet, Qt3D::Render::Quick::Quick3DStateSet>(uri, 2, 0, "StateSet");
+    qmlRegisterType<Qt3D::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
 
     // RenderTarget
@@ -216,6 +224,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // RenderStates
     qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
     qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
+    qmlRegisterType<Qt3D::QBlendStateSeparate>(uri, 2, 0, "BlendStateSeparate");
     qmlRegisterType<Qt3D::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3D::QAlphaTest>(uri, 2, 0, "AlphaTest");
     qmlRegisterType<Qt3D::QDepthTest>(uri, 2, 0, "DepthTest");

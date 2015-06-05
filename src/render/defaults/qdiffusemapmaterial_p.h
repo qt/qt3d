@@ -55,7 +55,7 @@ class QDiffuseMapMaterial;
 
 class QDiffuseMapMaterialPrivate : public QMaterialPrivate
 {
-    QDiffuseMapMaterialPrivate(QDiffuseMapMaterial *qq);
+    QDiffuseMapMaterialPrivate();
 
     void init();
 

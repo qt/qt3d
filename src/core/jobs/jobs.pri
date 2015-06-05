@@ -3,7 +3,6 @@ SOURCES += \
     $$PWD/qaspectjob.cpp \
     $$PWD/qaspectjobmanager.cpp \
     $$PWD/qabstractaspectjobmanager.cpp \
-    $$PWD/jobrunner.cpp \
     $$PWD/qthreadpooler.cpp \
     $$PWD/task.cpp \
     $$PWD/dependencyhandler.cpp
@@ -26,9 +25,7 @@ HEADERS += \
     $$PWD/qaspectjobmanager_p.h \
     $$PWD/qabstractaspectjobmanager_p.h \
     $$PWD/dependencyhandler_p.h \
-    $$PWD/jobrunner_p.h \
     $$PWD/task_p.h \
-    $$PWD/qthreadpooler_p_p.h \
     $$PWD/qthreadpooler_p.h
 
 INCLUDEPATH += $$PWD

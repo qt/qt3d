@@ -42,11 +42,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAbstractAttributePrivate::QAbstractAttributePrivate(QAbstractAttribute *qq)
-    : q_ptr(qq)
+/*!
+    \class Qt3D::QAbstractAttributePrivate
+    \internal
+*/
+QAbstractAttributePrivate::QAbstractAttributePrivate()
 {
 }
 
+/*! \internal */
 QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBufferPtr buf, int type, uint count, uint offset, uint stride)
     : d_ptr(&dd)
 {
@@ -60,7 +64,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractB
 }
 
 QAbstractAttribute::QAbstractAttribute(QAbstractBufferPtr buf, int type, uint count, uint offset, uint stride)
-    : d_ptr(new QAbstractAttributePrivate(this))
+    : d_ptr(new QAbstractAttributePrivate)
 {
     Q_D(QAbstractAttribute);
     d->m_buffer = buf;

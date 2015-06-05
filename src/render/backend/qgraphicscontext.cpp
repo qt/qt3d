@@ -132,7 +132,7 @@ void QGraphicsContext::initialize()
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
-bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
+bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
 {
     Q_ASSERT(surface);
     Q_ASSERT(m_gl);
@@ -156,7 +156,7 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &clearColor)
         initialize();
     }
 
-    m_gl->functions()->glClearColor(clearColor.redF(), clearColor.greenF(), clearColor.blueF(), clearColor.alphaF());
+    clearColor(color);
 
     if (m_activeShader)
         m_activeShader = NULL;
@@ -203,6 +203,10 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
             return;
     } else {
         renderTargetSize = m_surface->size();
+        if (m_surface->surfaceClass() == QSurface::Window) {
+            int dpr = static_cast<QWindow *>(m_surface)->devicePixelRatio();
+            renderTargetSize *= dpr;
+        }
     }
 
     // Qt3D 0------------------> 1  OpenGL  1^
@@ -324,13 +328,14 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     }
     m_activeFBO = fboId;
     m_glHelper->bindFrameBufferObject(m_activeFBO);
+    // Set active drawBuffers
+    activateDrawBuffers(attachments);
 }
 
 void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
     // Set FBO attachments
-    int drawBuffers[QRenderAttachment::ColorAttachment15 + 1];
-    int i = 0;
+
     QSize fboSize;
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
         RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
@@ -342,23 +347,40 @@ void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attac
                 else
                     fboSize = QSize(qMin(fboSize.width(), glTex->width()), qMin(fboSize.width(), glTex->width()));
                 m_glHelper->bindFrameBufferAttachment(glTex, attachment);
-                if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-                    drawBuffers[i++] = attachment.m_type;
             }
         }
     }
+    m_renderTargetsSize.insert(fboId, fboSize);
+}
+
+void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
+{
+    int activeDrawBuffers[QRenderAttachment::ColorAttachment15 + 1];
+    int i = 0;
+
+    const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers = attachments.drawBuffers();
+
+    // If drawBuffers is empty, use all the attachments as draw buffers
+    if (drawBuffers.isEmpty()) {
+        Q_FOREACH (const Attachment &attachment, attachments.attachments())
+            if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
+                activeDrawBuffers[i++] = attachment.m_type;
+    } else {
+        Q_FOREACH (const QRenderAttachment::RenderAttachmentType drawBuffer, drawBuffers)
+            if (drawBuffer <= QRenderAttachment::ColorAttachment15)
+                activeDrawBuffers[i++] = drawBuffer;
+    }
+
     if (m_glHelper->checkFrameBufferComplete()) {
         if (i > 1) {// We need MRT
             if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT)) {
                 // Set up MRT, glDrawBuffers...
-                m_glHelper->drawBuffers(i, drawBuffers);
+                m_glHelper->drawBuffers(i, activeDrawBuffers);
             }
-            qDebug() << "FBO Complete";
         }
     } else {
         qWarning() << "FBO incomplete";
     }
-    m_renderTargetsSize.insert(fboId, fboSize);
 }
 
 
@@ -628,9 +650,14 @@ GLuint QGraphicsContext::boundFrameBufferObject()
     return m_glHelper->boundFrameBufferObject();
 }
 
+void QGraphicsContext::clearColor(const QColor &color)
+{
+    m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
+}
+
 /*!
     \internal
-    \returns a texture unit for a texture, -1 if all texture units are assigned.
+    Returns a texture unit for a texture, -1 if all texture units are assigned.
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */

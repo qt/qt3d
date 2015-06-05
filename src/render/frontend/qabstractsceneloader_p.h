@@ -53,7 +53,7 @@ namespace Render {
 class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public QComponentPrivate
 {
 public:
-    QAbstractSceneLoaderPrivate(QAbstractSceneLoader *qq);
+    QAbstractSceneLoaderPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractSceneLoader)
 

@@ -41,16 +41,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAspectJobPrivate::QAspectJobPrivate(QAspectJob *qq)
-    : q_ptr(qq)
+/*!
+    \class Qt3D::QAspectJobPrivate
+    \internal
+*/
+QAspectJobPrivate::QAspectJobPrivate()
 {
 }
 
 QAspectJob::QAspectJob()
-    : d_ptr(new QAspectJobPrivate(this))
+    : d_ptr(new QAspectJobPrivate)
 {
 }
 
+/*! \internal */
 QAspectJob::QAspectJob(QAspectJobPrivate &dd)
     : d_ptr(&dd)
 {

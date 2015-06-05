@@ -47,7 +47,7 @@ namespace Qt3D {
 class QAnnotationPrivate : public QNodePrivate
 {
 public:
-    QAnnotationPrivate(QAnnotation *qq);
+    QAnnotationPrivate();
 
     Q_DECLARE_PUBLIC(QAnnotation)
     QString m_name;

@@ -44,8 +44,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QSortMethodPrivate::QSortMethodPrivate(QSortMethod *qq)
-    : QFrameGraphNodePrivate(qq)
+/*!
+    \class Qt3D::QSortMethodPrivate
+    \internal
+*/
+QSortMethodPrivate::QSortMethodPrivate()
+    : QFrameGraphNodePrivate()
 {
 }
 
@@ -58,10 +62,11 @@ void QSortMethod::copy(const QNode *ref)
 }
 
 QSortMethod::QSortMethod(QNode *parent)
-    : QFrameGraphNode(*new QSortMethodPrivate(this), parent)
+    : QFrameGraphNode(*new QSortMethodPrivate, parent)
 {
 }
 
+/*! \internal */
 QSortMethod::QSortMethod(QSortMethodPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {

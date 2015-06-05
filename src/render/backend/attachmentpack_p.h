@@ -64,9 +64,13 @@ public:
 
     void addAttachment(const Attachment &attachment);
     QVector<Attachment> attachments() const;
+    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+
+    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers);
 
 private:
     QVector<Attachment> m_attachments;
+    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
 } // Render

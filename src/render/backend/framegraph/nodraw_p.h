@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,12 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
-#define QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
+#include <Qt3DRenderer/private/framegraphnode_p.h>
 
-#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
-#include <Qt3DRenderer/qframegraphnode.h>
-#include <QQmlListProperty>
+#ifndef QT3D_RENDER_NODRAW_H
+#define QT3D_RENDER_NODRAW_H
 
 QT_BEGIN_NAMESPACE
 
@@ -47,28 +45,17 @@ namespace Qt3D {
 
 namespace Render {
 
-namespace Quick {
-
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DFrameGraphItem : public QObject
+class NoDraw : public FrameGraphNode
 {
-    Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QFrameGraphNode> frameGraphChildren READ frameGraphChildrenList)
-    Q_CLASSINFO("DefaultProperty", "frameGraphChildren")
-
 public:
-    explicit Quick3DFrameGraphItem(QObject *parent = 0);
+    NoDraw();
+    ~NoDraw();
 
-    inline QFrameGraphNode *parentFrameGraphItem() const { return qobject_cast<QFrameGraphNode *>(parent()); }
-    QQmlListProperty<QFrameGraphNode> frameGraphChildrenList();
+    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
 
-private:
-    static void apprendFrameGraphItem(QQmlListProperty<QFrameGraphNode> *list, QFrameGraphNode *item);
-    static QFrameGraphNode *frameGraphItemAt(QQmlListProperty<QFrameGraphNode> *list, int index);
-    static int frameGraphItemsCount(QQmlListProperty<QFrameGraphNode> *list);
-    static void clearFrameGraphItemList(QQmlListProperty<QFrameGraphNode> *list);
+protected:
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 };
-
-} // Quick
 
 } // Render
 
@@ -76,4 +63,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DFRAMEGRAPHITEM_H
+#endif // QT3D_RENDER_NODRAW_H

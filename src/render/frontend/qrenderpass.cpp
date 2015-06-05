@@ -48,8 +48,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QRenderPassPrivate::QRenderPassPrivate(QRenderPass *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QRenderPassPrivate
+    \internal
+*/
+QRenderPassPrivate::QRenderPassPrivate()
+    : QNodePrivate()
     , m_shader(Q_NULLPTR)
 {
 }
@@ -69,10 +73,11 @@ void QRenderPass::copy(const QNode *ref)
 }
 
 QRenderPass::QRenderPass(QNode *parent)
-    : QNode(*new QRenderPassPrivate(this), parent)
+    : QNode(*new QRenderPassPrivate, parent)
 {
 }
 
+/*! \internal */
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -208,6 +213,14 @@ QList<QParameterMapping *> QRenderPass::bindings() const
     return d->m_bindings;
 }
 
+/*!
+ * Adds a Qt3D::QRenderState \a state to the rendering pass. That implies that
+ * when the pass is executed at render time, the globally set render state will
+ * be modifed by the states defined locally by the Qt3D::QRenderPass.
+ *
+ * \note not defining any Qt3D::QRenderState in a pass will result in the pass using
+ * the globally set render state for a given FrameGraph branch execution path.
+ */
 void QRenderPass::addRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
@@ -221,12 +234,15 @@ void QRenderPass::addRenderState(QRenderState *state)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             change->setPropertyName("renderState");
-            change->setValue(QVariant::fromValue(QNode::clone(state)));
+            change->setValue(QVariant::fromValue(QNodePtr(QNode::clone(state))));
             d->notifyObservers(change);
         }
     }
 }
 
+/*!
+ * Removes \a state from the Qt3D::QRenderPass local render state.
+ */
 void QRenderPass::removeRenderState(QRenderState *state)
 {
     Q_D(QRenderPass);
@@ -239,10 +255,56 @@ void QRenderPass::removeRenderState(QRenderState *state)
     d->m_renderStates.removeOne(state);
 }
 
+/*!
+ * Returns the list of Qt3D::QRenderState state objects making up the render
+ * state of the Qt3D::QRenderPass.
+ */
 QList<QRenderState *> QRenderPass::renderStates() const
 {
     Q_D(const QRenderPass);
     return d->m_renderStates;
+}
+
+void QRenderPass::addParameter(QParameter *parameter)
+{
+    Q_D(QRenderPass);
+    if (!d->m_parameters.contains(parameter)) {
+        d->m_parameters.append(parameter);
+
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, the child parameters get destroyed as well
+        if (!parameter->parent())
+            parameter->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            change->setPropertyName("parameter");
+            change->setValue(QVariant::fromValue(parameter->id()));
+            d->notifyObservers(change);
+        }
+    }
+}
+
+void QRenderPass::removeParameter(QParameter *parameter)
+{
+    Q_D(QRenderPass);
+
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
+        change->setPropertyName("parameter");
+        change->setValue(QVariant::fromValue(parameter->id()));
+        d->notifyObservers(change);
+    }
+    d->m_parameters.removeOne(parameter);
+}
+
+
+QList<QParameter *> QRenderPass::parameters() const
+{
+    Q_D(const QRenderPass);
+    return d->m_parameters;
 }
 
 } // namespace Qt3D

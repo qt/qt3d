@@ -49,8 +49,6 @@ class QStencilTestPrivate;
 class QT3DRENDERERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(StencilFaceMode)
-    Q_ENUMS(StencilFunc)
     Q_PROPERTY(uint mask READ mask WRITE setMask NOTIFY maskChanged)
     Q_PROPERTY(StencilFaceMode faceMode READ faceMode WRITE setFaceMode NOTIFY faceModeChanged)
     Q_PROPERTY(StencilFunc func READ func WRITE setFunc NOTIFY funcChanged)
@@ -62,6 +60,7 @@ public:
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
+    Q_ENUM(StencilFaceMode)
 
     enum StencilFunc
     {
@@ -74,6 +73,7 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
+    Q_ENUM(StencilFunc)
 
     explicit QStencilTest(QNode *parent = 0);
 

@@ -55,7 +55,7 @@ class QPerVertexColorMaterial;
 class QPerVertexColorMaterialPrivate : public QMaterialPrivate
 {
 public:
-    QPerVertexColorMaterialPrivate(QPerVertexColorMaterial *qq);
+    QPerVertexColorMaterialPrivate();
 
     void init();
 

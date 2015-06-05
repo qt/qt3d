@@ -48,8 +48,7 @@ namespace Qt3D {
 class QRenderStatePrivate : public QNodePrivate
 {
 public:
-
-    QRenderStatePrivate(QRenderState *qq, QRenderState::Type type);
+    QRenderStatePrivate(QRenderState::Type type);
     Q_DECLARE_PUBLIC(QRenderState)
 
     const QRenderState::Type m_type;

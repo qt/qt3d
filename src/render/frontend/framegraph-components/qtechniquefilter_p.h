@@ -48,10 +48,11 @@ class QTechniqueFilter;
 class QTechniqueFilterPrivate : public QFrameGraphNodePrivate
 {
 public :
-    QTechniqueFilterPrivate(QTechniqueFilter *qq);
+    QTechniqueFilterPrivate();
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
     QList<QAnnotation *> m_requireList;
+    QList<QParameter *> m_parameters;
 };
 
 } // Qt3D

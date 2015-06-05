@@ -47,8 +47,8 @@ namespace Qt3D {
 class QAlphaTestPrivate : public QRenderStatePrivate
 {
 public:
-    QAlphaTestPrivate(QAlphaTest *qq)
-        : QRenderStatePrivate(qq, QRenderState::AlphaTest)
+    QAlphaTestPrivate()
+        : QRenderStatePrivate(QRenderState::AlphaTest)
         , m_func(QAlphaTest::Never)
         , m_clamp(0.0f)
     {
@@ -60,7 +60,7 @@ public:
 };
 
 QAlphaTest::QAlphaTest(QNode *parent)
-    : QRenderState(*new QAlphaTestPrivate(this), parent)
+    : QRenderState(*new QAlphaTestPrivate, parent)
 {
 }
 

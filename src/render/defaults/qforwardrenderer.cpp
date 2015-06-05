@@ -46,8 +46,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QForwardRendererPrivate::QForwardRendererPrivate(QForwardRenderer *qq)
-    : QTechniqueFilterPrivate(qq)
+/*!
+    \class Qt3D::QForwardRendererPrivate
+    \internal
+*/
+QForwardRendererPrivate::QForwardRendererPrivate()
+    : QTechniqueFilterPrivate()
     , m_viewport(new QViewport())
     , m_cameraSelector(new QCameraSelector())
     , m_clearBuffer(new QClearBuffer())
@@ -91,11 +95,10 @@ void QForwardRendererPrivate::init()
 */
 
 /*!
-    \fn Qt3D::QForwardRenderer::QForwardRenderer(QNode *parent)
     Constructs a new Qt3D::QForwardRenderer instance with parent object \a parent.
  */
 QForwardRenderer::QForwardRenderer(QNode *parent)
-    : QTechniqueFilter(*new QForwardRendererPrivate(this), parent)
+    : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
     Q_D(QForwardRenderer);
     QObject::connect(d->m_viewport, SIGNAL(clearColorChanged()), this, SIGNAL(clearColorChanged()));
@@ -104,6 +107,9 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     d->init();
 }
 
+/*!
+    Destroys the QForwardRenderer instance.
+*/
 QForwardRenderer::~QForwardRenderer()
 {
 }
@@ -124,7 +130,7 @@ void QForwardRenderer::setClearColor(const QColor &clearColor)
     Sets the camera which should be used to render the scene to \a camera.
 
     \note A camera is a QEntity having a QCameraLens as one of its components.
- */
+*/
 void QForwardRenderer::setCamera(QEntity *camera)
 {
     Q_D(QForwardRenderer);
@@ -146,7 +152,7 @@ QRectF QForwardRenderer::viewportRect() const
     \property Qt3D::QForwardRenderer::clearColor
 
     Holds the current clearColor.
- */
+*/
 QColor QForwardRenderer::clearColor() const
 {
     Q_D(const QForwardRenderer);
@@ -157,7 +163,9 @@ QColor QForwardRenderer::clearColor() const
     \property Qt3D::QForwardRenderer::camera
 
     Holds the current QEntity camera used to render the scene.
- */
+
+    \note A camera is a QEntity that has a QCameraLens as one of its components.
+*/
 QEntity *QForwardRenderer::camera() const
 {
     Q_D(const QForwardRenderer);

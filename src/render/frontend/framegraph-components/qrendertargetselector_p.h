@@ -49,10 +49,11 @@ class QRenderTarget;
 class QRenderTargetSelectorPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QRenderTargetSelectorPrivate(QRenderTargetSelector *qq);
+    QRenderTargetSelectorPrivate();
 
     Q_DECLARE_PUBLIC(QRenderTargetSelector)
     QRenderTarget *m_target;
+    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
 } // Qt3D

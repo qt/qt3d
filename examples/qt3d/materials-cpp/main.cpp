@@ -53,13 +53,11 @@
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"
 #include "barrel.h"
-#include "exampleresources.h"
 #include "houseplant.h"
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    initializeAssetResources("../exampleresources/example-assets.qrb");
 
     Qt3D::Window view;
     Qt3D::QAspectEngine engine;

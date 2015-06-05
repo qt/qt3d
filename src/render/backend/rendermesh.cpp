@@ -57,6 +57,7 @@ namespace Render {
 
 /*!
  * \class RenderMesh
+ * \internal
  *
  * Monitor a frontend Mesh for source changes. If the source is changed,
  * the QMeshData returned is either a valid QMeshData corresponding to the source
@@ -70,6 +71,7 @@ RenderMesh::RenderMesh()
     : QBackendNode()
     , m_meshDirty(true)
     , m_meshDataManager(Q_NULLPTR)
+    , m_enabled(true)
 {
 }
 
@@ -109,6 +111,7 @@ void RenderMesh::sceneChangeEvent(const QSceneChangePtr &e)
 
 QMeshData *RenderMesh::meshData() const
 {
+    Q_ASSERT(m_meshDataManager);
     return m_meshDataManager->data(m_meshDataHandle);
 }
 

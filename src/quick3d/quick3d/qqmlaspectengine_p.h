@@ -51,10 +51,10 @@ namespace Quick {
 class QQmlAspectEnginePrivate : public QObjectPrivate
 {
 public:
-    QQmlAspectEnginePrivate(QQmlAspectEngine *qq);
+    QQmlAspectEnginePrivate();
 
     Q_DECLARE_PUBLIC(QQmlAspectEngine)
-    QQmlAspectEngine *q_ptr;
+
     QScopedPointer<QQmlEngine> m_qmlEngine;
     QScopedPointer<QAspectEngine> m_aspectEngine;
     QQmlComponent *m_component;

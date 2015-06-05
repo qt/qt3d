@@ -49,7 +49,6 @@ class QFrontFacePrivate;
 class QT3DRENDERERSHARED_EXPORT QFrontFace : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(FaceDir)
     Q_PROPERTY(FaceDir direction READ direction WRITE setDirection NOTIFY directionChanged)
 public:
 
@@ -58,6 +57,7 @@ public:
         ClockWise = 0x0900,
         CounterClockWise = 0x0901
     };
+    Q_ENUM(FaceDir)
 
     explicit QFrontFace(QNode *parent = 0);
 

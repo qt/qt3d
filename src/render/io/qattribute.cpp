@@ -46,16 +46,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-AttributePrivate::AttributePrivate(Attribute *qq)
-    : QAbstractAttributePrivate(qq)
+/*!
+    class Qt3D::AttributePrivate
+    \internal
+*/
+AttributePrivate::AttributePrivate()
+    : QAbstractAttributePrivate()
 {
 }
 
 Attribute::Attribute(QAbstractBufferPtr buf, int type, int count, int offset, int stride)
-    : QAbstractAttribute(*new AttributePrivate(this), buf, type, count, offset, stride)
+    : QAbstractAttribute(*new AttributePrivate, buf, type, count, offset, stride)
 {
 }
 
+/*! \internal */
 Attribute::Attribute(AttributePrivate &dd, QAbstractBufferPtr buf, int type, int count, int offset, int stride)
     : QAbstractAttribute(dd, buf, type, count, offset, stride)
 {

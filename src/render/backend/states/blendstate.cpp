@@ -66,11 +66,6 @@ void BlendState::apply(QGraphicsContext* gc) const
     gc->openGLContext()->functions()->glBlendFunc( m_1, m_2 );
 }
 
-StateMaskSet BlendState::mask() const
-{
-    return BlendStateMask;
-}
-
 BlendState *BlendState::getOrCreate(GLenum src, GLenum dst)
 {
     BlendState bs(src, dst);
@@ -266,6 +261,22 @@ ColorMask::ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean a
 ColorMask *ColorMask::getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
 {
     return getOrCreateImpl(ColorMask(red, green, blue, alpha));
+}
+
+void BlendStateSeparate::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glEnable(GL_BLEND);
+    gc->openGLContext()->functions()->glBlendFuncSeparate(m_1, m_2, m_3, m_4);
+}
+
+BlendStateSeparate *BlendStateSeparate::getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+{
+    return getOrCreateImpl(BlendStateSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha));
+}
+
+BlendStateSeparate::BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
+    : GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>(srcRGB, dstRGB, srcAlpha, dstAlpha)
+{
 }
 
 } // Render

@@ -50,13 +50,14 @@ class QRenderStatePrivate;
 class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(Type)
+
 public:
     enum Type {
         AlphaCoverage,
         AlphaTest,
         BlendEquation,
         BlendState,
+        BlendStateSeparate,
         ColorMask,
         CullFace,
         DepthMask,
@@ -67,6 +68,7 @@ public:
         ScissorTest,
         StencilTest
     };
+    Q_ENUM(Type)
 
     Type type() const;
 

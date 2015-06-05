@@ -48,13 +48,14 @@ class QRenderPassFilter;
 class QRenderPassFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QRenderPassFilterPrivate(QRenderPassFilter *qq)
-        : QFrameGraphNodePrivate(qq)
+    QRenderPassFilterPrivate()
+        : QFrameGraphNodePrivate()
     {}
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;
     QList<QAnnotation *> m_includeList;
+    QList<QParameter *> m_parameters;
 };
 
 } // Qt3D

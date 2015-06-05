@@ -49,7 +49,7 @@ class QAbstractTextureProvider;
 class QRenderAttachmentPrivate : public QNodePrivate
 {
 public:
-    QRenderAttachmentPrivate(QRenderAttachment *qq);
+    QRenderAttachmentPrivate();
 
     Q_DECLARE_PUBLIC(QRenderAttachment)
 

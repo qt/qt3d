@@ -55,7 +55,7 @@ class QChangeArbiter;
 class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
 {
 public:
-    QAbstractAspectPrivate(QAbstractAspect *qq);
+    QAbstractAspectPrivate();
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 

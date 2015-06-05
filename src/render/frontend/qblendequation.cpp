@@ -47,8 +47,8 @@ namespace Qt3D {
 class QBlendEquationPrivate : public QRenderStatePrivate
 {
 public:
-    QBlendEquationPrivate(QBlendEquation *qq)
-        : QRenderStatePrivate(qq, QRenderState::BlendEquation)
+    QBlendEquationPrivate()
+        : QRenderStatePrivate(QRenderState::BlendEquation)
     {
     }
 
@@ -64,7 +64,7 @@ void QBlendEquation::copy(const QNode *ref)
 }
 
 QBlendEquation::QBlendEquation(QNode *parent)
-    : QRenderState(*new QBlendEquationPrivate(this), parent)
+    : QRenderState(*new QBlendEquationPrivate, parent)
 {
 }
 

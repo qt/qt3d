@@ -50,8 +50,12 @@ namespace Qt3D
  */
 
 
-QAbstractLightPrivate::QAbstractLightPrivate(QAbstractLight *qq)
-        : QShaderDataPrivate(qq)
+/*!
+    \class Qt3D::QAbstractLightPrivate
+    \internal
+*/
+QAbstractLightPrivate::QAbstractLightPrivate()
+        : QShaderDataPrivate()
         , m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
 {}
@@ -67,14 +71,18 @@ void QAbstractLight::copy(const QNode *ref)
 }
 
 /*!
+    \class Qt3D::QAbstractLight
+*/
+
+/*!
  * Constructs a new QAbstractLight with the given \a parent.
  */
 QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
-    QShaderData(*new QAbstractLightPrivate(this), parent)
+    QShaderData(*new QAbstractLightPrivate, parent)
 {
 }
 
-
+/*! \internal */
 QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
     : QShaderData(dd, parent)
 {
@@ -82,7 +90,9 @@ QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
 
 
 /*!
- * Returns the current QAbstractLight color.
+ *  \property Qt3D::QAbstractLight::color
+ *
+ * Holds the current QAbstractLight color.
  */
 QColor QAbstractLight::color() const
 {
@@ -90,11 +100,6 @@ QColor QAbstractLight::color() const
     return d->m_color;
 }
 
-/*!
- * Sets the current QAbstractLight \a color;
- *
- * \sa void QAbstractLight::colorChanged();
- */
 void QAbstractLight::setColor(const QColor &color)
 {
     Q_D(QAbstractLight);
@@ -104,6 +109,11 @@ void QAbstractLight::setColor(const QColor &color)
     }
 }
 
+/*!
+    \property Qt3D::QAbstractLight::intensity
+
+    Holds the current QAbstractLight intensity.
+*/
 float QAbstractLight::intensity() const
 {
     Q_D(const QAbstractLight);
@@ -119,6 +129,11 @@ void QAbstractLight::setIntensity(float intensity)
     }
 }
 
+/*!
+    \property Qt3D::QAbstractLight::position
+
+    Holds the current QAbstractLight position.
+*/
 void QAbstractLight::setPosition(const QVector3D &position)
 {
     Q_D(QAbstractLight);

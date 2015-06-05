@@ -49,7 +49,7 @@ class QCameraSelector;
 class QCameraSelectorPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QCameraSelectorPrivate(QCameraSelector *qq);
+    QCameraSelectorPrivate();
 
     Q_DECLARE_PUBLIC(QCameraSelector)
     QEntity *m_camera;

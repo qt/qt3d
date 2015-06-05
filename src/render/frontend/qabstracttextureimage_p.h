@@ -50,8 +50,8 @@ class QAbstractTextureImage;
 class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public QNodePrivate
 {
 public:
-    QAbstractTextureImagePrivate(QAbstractTextureImage *qq)
-        : QNodePrivate(qq)
+    QAbstractTextureImagePrivate()
+        : QNodePrivate()
         , m_mipmapLevel(0)
         , m_layer(0)
         , m_face(QAbstractTextureProvider::CubeMapPositiveX)

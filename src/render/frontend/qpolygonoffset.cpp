@@ -44,8 +44,8 @@ namespace Qt3D {
 class QPolygonOffsetPrivate : public QRenderStatePrivate
 {
 public:
-    QPolygonOffsetPrivate(QPolygonOffset *qq)
-        : QRenderStatePrivate(qq, QRenderState::PolygonOffset)
+    QPolygonOffsetPrivate()
+        : QRenderStatePrivate(QRenderState::PolygonOffset)
         , m_factor(0)
         , m_units(0)
     {
@@ -58,7 +58,7 @@ public:
 };
 
 QPolygonOffset::QPolygonOffset(QNode *parent)
-    : QRenderState(*new QPolygonOffsetPrivate(this), parent)
+    : QRenderState(*new QPolygonOffsetPrivate, parent)
 {
 }
 

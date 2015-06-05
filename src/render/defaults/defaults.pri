@@ -16,7 +16,9 @@ HEADERS += \
     $$PWD/qforwardrenderer.h \
     $$PWD/qforwardrenderer_p.h \
     $$PWD/qpervertexcolormaterial.h \
-    $$PWD/qpervertexcolormaterial_p.h
+    $$PWD/qpervertexcolormaterial_p.h \
+    $$PWD/qskyboxentity.h \
+    $$PWD/qskyboxentity_p.h
 
 SOURCES += \
     $$PWD/qphongmaterial.cpp \
@@ -26,4 +28,5 @@ SOURCES += \
     $$PWD/qnormaldiffusemapalphamaterial.cpp \
     $$PWD/qdiffusespecularmapmaterial.cpp \
     $$PWD/qforwardrenderer.cpp \
-    $$PWD/qpervertexcolormaterial.cpp
+    $$PWD/qpervertexcolormaterial.cpp \
+    $$PWD/qskyboxentity.cpp

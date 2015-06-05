@@ -13,10 +13,12 @@ SUBDIRS = \
     qaspectfactory \
     qchangearbiter \
     qscene \
-    qservicelocator
+    qservicelocator \
+    qray3d
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
     qframeallocator \
-    cloning
+    cloning \
+    threadpooler
 }

@@ -49,7 +49,7 @@ namespace Qt3D {
 class QT3DCORESHARED_EXPORT QCameraPrivate : public QEntityPrivate
 {
 public:
-    QCameraPrivate(QCamera *qq);
+    QCameraPrivate();
 
     Q_DECLARE_PUBLIC(QCamera)
 

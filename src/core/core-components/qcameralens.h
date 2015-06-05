@@ -53,8 +53,6 @@ class QCameraLensPrivate;
 class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
 {
     Q_OBJECT
-
-    Q_ENUMS( ProjectionType )
     Q_PROPERTY(ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
     Q_PROPERTY(float nearPlane READ nearPlane WRITE setNearPlane NOTIFY nearPlaneChanged)
     Q_PROPERTY(float farPlane READ farPlane WRITE setFarPlane NOTIFY farPlaneChanged)
@@ -71,8 +69,10 @@ public:
 
     enum ProjectionType {
         OrthogonalProjection,
-        PerspectiveProjection
+        PerspectiveProjection,
+        FrustumProjection
     };
+    Q_ENUM(ProjectionType)
 
     void setProjectionType(ProjectionType projectionType);
     ProjectionType projectionType() const;
@@ -106,6 +106,10 @@ public:
     void setOrthographicProjection(float left, float right,
                                    float bottom, float top,
                                    float nearPlane, float farPlane);
+
+    void setFrustumProjection(float left, float right,
+                              float bottom, float top,
+                              float nearPlane, float farPlane);
 
     void setPerspectiveProjection(float fieldOfView, float aspect,
                                   float nearPlane, float farPlane);

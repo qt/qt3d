@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    exampleresources \
     playground-qml \
     simple-qml \
     simple-cpp \
@@ -28,16 +27,11 @@ SUBDIRS += \
     dynamicscene-cpp \
     scene3d \
     enabled-qml \
-    skybox
+    skybox \
+    controls \
+    anaglyph-rendering \
+    simple-shaders-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
-#qtHaveModule(qml): SUBDIRS += quick3d
-
-# Make all other subdirs depend on exampleresources
-for(subdir, SUBDIRS) {
-    !equals(subdir, exampleresources) {
-        $${subdir}.depends += exampleresources
-    }
-}
-
+qtHaveModule(widgets): SUBDIRS += assimp-cpp

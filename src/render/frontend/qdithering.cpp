@@ -47,15 +47,15 @@ namespace Qt3D {
 class QDitheringPrivate : public QRenderStatePrivate
 {
 public:
-    QDitheringPrivate(QDithering *qq)
-        : QRenderStatePrivate(qq, QRenderState::Dithering)
+    QDitheringPrivate()
+        : QRenderStatePrivate(QRenderState::Dithering)
     {}
 
     Q_DECLARE_PUBLIC(QDithering)
 };
 
 QDithering::QDithering(QNode *parent)
-    : QRenderState(*new QDitheringPrivate(this), parent)
+    : QRenderState(*new QDitheringPrivate, parent)
 {
 }
 

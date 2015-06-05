@@ -49,11 +49,9 @@ class QAspectJob;
 class QAspectJobPrivate
 {
 public:
-    QAspectJobPrivate(QAspectJob *qq);
+    QAspectJobPrivate();
 
-    Q_DECLARE_PUBLIC(QAspectJob)
     QVector<QWeakPointer<QAspectJob> > m_dependencies;
-    QAspectJob *q_ptr;
 };
 
 } // Qt3D

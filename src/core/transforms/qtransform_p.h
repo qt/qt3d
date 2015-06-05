@@ -49,8 +49,9 @@ class QTransformPrivate : public QComponentPrivate
     Q_DECLARE_PUBLIC(QTransform)
 
 public:
-    QTransformPrivate(QTransform *qq);
+    QTransformPrivate();
 
+    void _q_transformDestroyed(QObject *obj);
     void _q_update();
     QMatrix4x4 applyTransforms() const;
 

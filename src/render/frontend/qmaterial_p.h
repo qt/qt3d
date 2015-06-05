@@ -50,7 +50,7 @@ class QEffect;
 class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QComponentPrivate
 {
 public:
-    QMaterialPrivate(QMaterial *qq);
+    QMaterialPrivate();
 
     Q_DECLARE_PUBLIC(QMaterial)
     QList<QParameter *> m_parameters;

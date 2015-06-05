@@ -51,8 +51,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
-    : QMaterialPrivate(qq)
+/*!
+    \class Qt3D::QPhongMaterialPrivate
+    \internal
+*/
+QPhongMaterialPrivate::QPhongMaterialPrivate()
+    : QMaterialPrivate()
     , m_phongEffect(new QEffect())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
@@ -97,7 +101,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate(QPhongMaterial *qq)
     Constructs a new QPhongMaterial instance with parent object \a parent.
 */
 QPhongMaterial::QPhongMaterial(QNode *parent)
-    : QMaterial(*new QPhongMaterialPrivate(this), parent)
+    : QMaterial(*new QPhongMaterialPrivate, parent)
 {
     Q_D(QPhongMaterial);
     QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
@@ -110,16 +114,16 @@ QPhongMaterial::QPhongMaterial(QNode *parent)
 /*!
    \fn Qt3D::QPhongMaterial::~QPhongMaterial()
 
-   Destroys the QPhongMaterial
+   Destroys the QPhongMaterial.
 */
 QPhongMaterial::~QPhongMaterial()
 {
 }
 
 /*!
-    \fn QColor Qt3D::QPhongMaterial::ambient() const
+    \property Qt3D::QPhongMaterial::ambient
 
-    Returns the ambient color.
+    Holds the ambient color.
 */
 QColor QPhongMaterial::ambient() const
 {
@@ -128,9 +132,9 @@ QColor QPhongMaterial::ambient() const
 }
 
 /*!
-    \fn QColor Qt3D::QPhongMaterial::diffuse() const
+    \property Qt3D::QPhongMaterial::diffuse
 
-    Returns the diffuse color.
+    Holds the diffuse color.
 */
 QColor QPhongMaterial::diffuse() const
 {
@@ -139,9 +143,9 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \fn QColor Qt3D::QPhongMaterial::specular() const
+    \property QColor Qt3D::QPhongMaterial::specular
 
-    Returns the specular color.
+    Holds the specular color.
 */
 QColor QPhongMaterial::specular() const
 {
@@ -150,9 +154,9 @@ QColor QPhongMaterial::specular() const
 }
 
 /*!
-    \fn Qt3D::QPhongMaterial::shininess() const
+    \property Qt3D::QPhongMaterial::shininess
 
-    Returns the shininess exponent.
+    Holds the shininess exponent.
 */
 float QPhongMaterial::shininess() const
 {
@@ -160,44 +164,24 @@ float QPhongMaterial::shininess() const
     return d->m_shininessParameter->value().toFloat();
 }
 
-/*!
-    \fn Qt3D::QPhongMaterial::setAmbient(const QColor &ambient)
-
-    Sets the current ambient color to \a ambient.
-*/
 void QPhongMaterial::setAmbient(const QColor &ambient)
 {
     Q_D(QPhongMaterial);
-    d->m_shininessParameter->setValue(ambient);
+    d->m_ambientParameter->setValue(ambient);
 }
 
-/*!
-    \fn Qt3D::QPhongMaterial::setDiffuse(const QColor &diffuse)
-
-    Sets the current diffuse color to \a diffuse.
-*/
 void QPhongMaterial::setDiffuse(const QColor &diffuse)
 {
     Q_D(QPhongMaterial);
     d->m_diffuseParameter->setValue(diffuse);
 }
 
-/*!
-    \fn Qt3D::QPhongMaterial::setSpecular(const QColor &specular)
-
-    Sets the current specular color to \a specular.
-*/
 void QPhongMaterial::setSpecular(const QColor &specular)
 {
     Q_D(QPhongMaterial);
     d->m_specularParameter->setValue(specular);
 }
 
-/*!
-    \fn Qt3D::QPhongMaterial::setShininess(float shininess)
-
-    Sets the current shininess exponent to \a shininess.
-*/
 void QPhongMaterial::setShininess(float shininess)
 {
     Q_D(QPhongMaterial);

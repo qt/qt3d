@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,16 +34,41 @@
 **
 ****************************************************************************/
 
-#include "exampleresources.h"
+#ifndef QT3D_QSTATESET_H
+#define QT3D_QSTATESET_H
 
-#include <QDebug>
+#include <Qt3DRenderer/qframegraphnode.h>
 
-bool initializeAssetResources( const QString& fileName )
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QStateSetPrivate;
+class QRenderState;
+
+class QT3DRENDERERSHARED_EXPORT QStateSet : public QFrameGraphNode
 {
-    QString assetPath = QStringLiteral( QT3D_XSTRINGIFY( ASSETS ) ) + fileName;
-    qDebug() << "assetPath =" << assetPath;
-    bool b = QResource::registerResource( assetPath );
-    if ( !b )
-        qDebug() << "Failed to load assets";
-    return b;
-}
+    Q_OBJECT
+
+public:
+    explicit QStateSet(QNode *parent = 0);
+    ~QStateSet();
+
+    void addRenderState(QRenderState *state);
+    void removeRenderState(QRenderState *state);
+    QList<QRenderState *> renderStates() const;
+
+protected:
+    QStateSet(QStateSetPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QStateSet)
+    QT3D_CLONEABLE(QStateSet)
+};
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3D_QSTATESET_H

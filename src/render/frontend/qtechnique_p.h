@@ -53,7 +53,7 @@ class QRenderPass;
 class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QNodePrivate
 {
 public:
-    QTechniquePrivate(QTechnique *dd);
+    QTechniquePrivate();
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)
@@ -61,6 +61,9 @@ public:
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
     QOpenGLFilter m_openGLFilter;
+
+private:
+    void _q_openGLFilterChanged();
 };
 
 } // Qt3D

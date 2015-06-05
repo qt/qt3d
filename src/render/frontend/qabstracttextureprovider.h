@@ -52,13 +52,6 @@ class QAbstractTextureImage;
 class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
 {
     Q_OBJECT
-    Q_ENUMS(Target)
-    Q_ENUMS(TextureFormat)
-    Q_ENUMS(Filter)
-    Q_ENUMS(Status)
-    Q_ENUMS(ComparisonFunction)
-    Q_ENUMS(ComparisonMode)
-    Q_ENUMS(CubeMapFace)
     Q_PROPERTY(Target target READ target CONSTANT)
     Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
@@ -73,6 +66,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int maximumLayers READ maximumLayers WRITE setMaximumLayers NOTIFY maximumLayersChanged)
+    Q_PROPERTY(bool unique READ isUnique WRITE setUnique NOTIFY uniqueChanged)
 
 public:
 
@@ -81,6 +75,7 @@ public:
         Loaded,
         Error
     };
+    Q_ENUM(Status)
 
     enum Target {
         Target1D                   = 0x0DE0,    // GL_TEXTURE_1D
@@ -95,6 +90,7 @@ public:
         TargetRectangle            = 0x84F5,    // GL_TEXTURE_RECTANGLE
         TargetBuffer               = 0x8C2A     // GL_TEXTURE_BUFFER
     };
+    Q_ENUM(Target)
 
     enum TextureFormat {
         NoFormat               = 0,         // GL_NONE
@@ -212,6 +208,7 @@ public:
         LuminanceFormat        = 0x1909,    // GL_LUMINANCE
         LuminanceAlphaFormat   = 0x190A
     };
+    Q_ENUM(TextureFormat)
 
     enum Filter {
         Nearest                 = 0x2600,   // GL_NEAREST
@@ -221,6 +218,7 @@ public:
         LinearMipMapNearest     = 0x2701,   // GL_LINEAR_MIPMAP_NEAREST
         LinearMipMapLinear      = 0x2703    // GL_LINEAR_MIPMAP_LINEAR
     };
+    Q_ENUM(Filter)
 
     enum CubeMapFace {
         CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
@@ -230,6 +228,7 @@ public:
         CubeMapPositiveZ = 0x8519,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
         CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
+    Q_ENUM(CubeMapFace)
 
     enum ComparisonFunction {
         CompareLessEqual    = 0x0203,   // GL_LEQUAL
@@ -241,11 +240,13 @@ public:
         CompareAlways       = 0x0207,   // GL_ALWAYS
         CompareNever        = 0x0200    // GL_NEVER
     };
+    Q_ENUM(ComparisonFunction)
 
     enum ComparisonMode {
         CompareRefToTexture = 0x884E,   // GL_COMPARE_REF_TO_TEXTURE
         CompareNone         = 0x0000    // GL_NONE
     };
+    Q_ENUM(ComparisonMode)
 
     ~QAbstractTextureProvider();
 
@@ -296,6 +297,9 @@ public:
     void setMaximumLayers(int maximumLayers);
     int maximumLayers() const;
 
+    void setUnique(bool unique);
+    bool isUnique() const;
+
 Q_SIGNALS:
     void formatChanged();
     void statusChanged();
@@ -309,6 +313,7 @@ Q_SIGNALS:
     void comparisonFunctionChanged();
     void comparisonModeChanged();
     void maximumLayersChanged();
+    void uniqueChanged();
 
 protected:
     explicit QAbstractTextureProvider(QNode *parent = 0);
@@ -327,7 +332,5 @@ private:
 QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider*)
-Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonFunction)
-Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider::ComparisonMode)
 
 #endif // QT3D_QABSTRACTTEXTUREPROVIDER_H

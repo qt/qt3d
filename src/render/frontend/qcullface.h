@@ -50,7 +50,6 @@ class QCullFacePrivate;
 class QT3DRENDERERSHARED_EXPORT QCullFace : public QRenderState
 {
     Q_OBJECT
-    Q_ENUMS(CullingMode)
     Q_PROPERTY(CullingMode mode READ mode WRITE setMode NOTIFY modeChanged)
 
 public:
@@ -61,6 +60,7 @@ public:
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
+    Q_ENUM(CullingMode)
 
     explicit QCullFace(QNode *parent = 0);
 

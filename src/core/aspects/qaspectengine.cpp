@@ -55,13 +55,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
+/*!
+    \class Qt3D::QAspectEnginePrivate
+    \internal
+*/
+QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
-    , m_postman(new QPostman())
-    , m_scene(new QScene(qq))
+    , m_postman(Q_NULLPTR)
+    , m_scene(Q_NULLPTR)
 {
-    q_ptr = qq;
-    m_postman->setScene(m_scene);
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QObserverInterface *>();
     qRegisterMetaType<Qt3D::QEntity *>();
@@ -69,7 +71,7 @@ QAspectEnginePrivate::QAspectEnginePrivate(QAspectEngine *qq)
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
-    : QObject(*new QAspectEnginePrivate(this), parent)
+    : QObject(*new QAspectEnginePrivate, parent)
 {
     // Don't show any debug output from Qt3D. If you need to enable additional logging
     // for debugging use a rules file as explained in the QLoggingCategory documentation.
@@ -77,21 +79,32 @@ QAspectEngine::QAspectEngine(QObject *parent)
 
     qCDebug(Aspects) << Q_FUNC_INFO;
     Q_D(QAspectEngine);
+    d->m_scene = new QScene(this);
+    d->m_postman = new QPostman(this);
+    d->m_postman->setScene(d->m_scene);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
+/*! \internal */
 QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
     Q_D(QAspectEngine);
+    d->m_scene = new QScene(this);
+    d->m_postman = new QPostman(this);
+    d->m_postman->setScene(d->m_scene);
     d->m_aspectThread = new QAspectThread(this);
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
 QAspectEngine::~QAspectEngine()
 {
+    Q_D(QAspectEngine);
     shutdown();
+    delete d->m_aspectThread;
+    delete d->m_postman;
+    delete d->m_scene;
 }
 
 void QAspectEngine::initNodeTree(QNode *node) const

@@ -38,7 +38,6 @@
 #define QT3D_QLOOKATTRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
-#include <Qt3DCore/qt3dcore_global.h>
 
 #include <QVector3D>
 
@@ -57,7 +56,7 @@ class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
     Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
 
 public:
-    explicit QLookAtTransform(QNode *parent = 0);
+    explicit QLookAtTransform(QObject *parent = Q_NULLPTR);
 
     QMatrix4x4 transformMatrix() const Q_DECL_OVERRIDE;
 
@@ -80,12 +79,11 @@ Q_SIGNALS:
     void viewVectorChanged();
 
 protected:
-    QLookAtTransform(QLookAtTransformPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QLookAtTransform(QLookAtTransformPrivate &dd, QObject *parent = Q_NULLPTR);
 
 private:
-    QT3D_CLONEABLE(QLookAtTransform)
     Q_DECLARE_PRIVATE(QLookAtTransform)
+    Q_DISABLE_COPY(QLookAtTransform)
 };
 
 } // namespace Qt3D

@@ -49,7 +49,7 @@ class QKeyboardInput;
 class QKeyboardControllerPrivate : public QNodePrivate
 {
 public:
-    QKeyboardControllerPrivate(QKeyboardController *qq);
+    QKeyboardControllerPrivate();
 
     Q_DECLARE_PUBLIC(QKeyboardController)
     QKeyboardInput *m_activeInput;

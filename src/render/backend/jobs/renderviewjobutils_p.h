@@ -38,7 +38,7 @@
 #define QT3D_RENDERVIEWJOBUTILS_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-
+#include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>
 
@@ -63,6 +63,7 @@ class Renderer;
 class ShaderDataManager;
 struct ShaderUniform;
 class RenderShaderData;
+class RenderState;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -79,8 +80,8 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *re
 struct ParameterInfo
 {
     ParameterInfo(const QString &name = QString(), const QVariant &value = QVariant())
-      : name(name)
-      , value(value)
+        : name(name)
+        , value(value)
     {}
 
     QString name;
@@ -100,10 +101,26 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              RenderEffect *effect,
                                                              RenderTechnique *technique);
 
+Q_AUTOTEST_EXPORT void parametersFromRenderPass(ParameterInfoList *infoList,
+                                                ParameterManager *manager,
+                                                RenderRenderPass *pass);
+
+Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
+                                           const QList<QNodeId> &parameterIds);
+
+template<class T>
+void parametersFromParametersProvider(ParameterInfoList *infoList,
+                                      ParameterManager *manager,
+                                      T *pass)
+{
+    if (pass)
+        addParametersForIds(infoList, manager, pass->parameters());
+}
+
 Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
                                                             const QString &name);
 
-Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(RenderRenderPass *pass,
+Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states,
                                                       QFrameAllocator *allocator);
 
 
@@ -113,8 +130,8 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     ~UniformBlockValueBuilder();
 
     void buildActiveUniformNameValueMapHelper(const QString &blockName,
-                                        const QString &qmlPropertyName,
-                                        const QVariant &value);
+                                              const QString &qmlPropertyName,
+                                              const QVariant &value);
     void buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());

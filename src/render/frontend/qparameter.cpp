@@ -45,8 +45,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 
-QParameterPrivate::QParameterPrivate(QParameter *qq)
-    : QNodePrivate(qq)
+/*!
+    \class Qt3D::QParameterPrivate
+    \internal
+*/
+QParameterPrivate::QParameterPrivate()
+    : QNodePrivate()
 {
 }
 
@@ -63,18 +67,19 @@ void QParameter::copy(const QNode *ref)
     d_func()->m_value = param->d_func()->m_value;
 }
 
+/*! \internal */
 QParameter::QParameter(QParameterPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
 QParameter::QParameter(QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
 }
 
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);
     d->m_name = name;
@@ -82,7 +87,7 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
 }
 
 QParameter::QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent)
-    : QNode(*new QParameterPrivate(this), parent)
+    : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);
     d->m_name = name;

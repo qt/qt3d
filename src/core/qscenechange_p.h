@@ -49,7 +49,7 @@ class QNodeId;
 class QSceneChangePrivate
 {
 public :
-    QSceneChangePrivate(QSceneChange *qq);
+    QSceneChangePrivate();
     virtual ~QSceneChangePrivate();
 
     Q_DECLARE_PUBLIC(QSceneChange)
