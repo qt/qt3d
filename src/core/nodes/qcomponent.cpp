@@ -133,7 +133,7 @@ bool QComponent::shareable() const
 }
 
 /*!
-    \returns whether the QComponent is enabled or not.
+    Returns whether the QComponent is enabled or not.
 */
 bool QComponent::isEnabled() const
 {

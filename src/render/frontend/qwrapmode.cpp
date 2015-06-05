@@ -99,7 +99,7 @@ void QTextureWrapMode::setX(WrapMode x)
 }
 
 /*!
-    \returns the wrap mode of the x dimension.
+    Returns the wrap mode of the x dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::x() const
 {
@@ -121,7 +121,7 @@ void QTextureWrapMode::setY(WrapMode y)
 }
 
 /*!
-    \returns the wrap mode of the y dimension.
+    Returns the wrap mode of the y dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::y() const
 {
@@ -143,7 +143,7 @@ void QTextureWrapMode::setZ(WrapMode z)
 }
 
 /*!
-    \returns the wrap mode of the y dimension.
+    Returns the wrap mode of the y dimension.
  */
 QTextureWrapMode::WrapMode QTextureWrapMode::z() const
 {

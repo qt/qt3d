@@ -657,7 +657,7 @@ void QGraphicsContext::clearColor(const QColor &color)
 
 /*!
     \internal
-    \returns a texture unit for a texture, -1 if all texture units are assigned.
+    Returns a texture unit for a texture, -1 if all texture units are assigned.
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */
