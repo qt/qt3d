@@ -57,7 +57,7 @@ QGraphicsHelperGL3::QGraphicsHelperGL3()
 void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
-    Q_UNUSED(context)
+    Q_UNUSED(context);
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
@@ -206,8 +206,8 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(divisor)
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void QGraphicsHelperGL3::blendEquation(GLenum mode)

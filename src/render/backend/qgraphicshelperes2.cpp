@@ -181,7 +181,7 @@ QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuin
 
 QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint programId)
 {
-    Q_UNUSED(programId)
+    Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
     qWarning() << "UBO are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
     return blocks;
@@ -189,8 +189,8 @@ QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(divisor)
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void QGraphicsHelperES2::blendEquation(GLenum mode)
@@ -420,9 +420,9 @@ void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int>
 
 void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
-    Q_UNUSED(programId)
-    Q_UNUSED(uniformBlockIndex)
-    Q_UNUSED(uniformBlockBinding)
+    Q_UNUSED(programId);
+    Q_UNUSED(uniformBlockIndex);
+    Q_UNUSED(uniformBlockBinding);
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
@@ -436,9 +436,9 @@ void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buff
 
 void QGraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
-    Q_UNUSED(v)
-    Q_UNUSED(description)
-    Q_UNUSED(buffer)
+    Q_UNUSED(v);
+    Q_UNUSED(description);
+    Q_UNUSED(buffer);
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 

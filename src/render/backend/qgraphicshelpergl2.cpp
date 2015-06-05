@@ -57,7 +57,7 @@ QGraphicsHelperGL2::QGraphicsHelperGL2()
 void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
-    Q_UNUSED(context)
+    Q_UNUSED(context);
     m_funcs = static_cast<QOpenGLFunctions_2_0*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
@@ -174,7 +174,7 @@ QVector<ShaderAttribute> QGraphicsHelperGL2::programAttributesAndLocations(GLuin
 
 QVector<ShaderUniformBlock> QGraphicsHelperGL2::programUniformBlocks(GLuint programId)
 {
-    Q_UNUSED(programId)
+    Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
     return blocks;
@@ -183,8 +183,8 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL2::programUniformBlocks(GLuint prog
 void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
                                              GLuint divisor)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(divisor)
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void QGraphicsHelperGL2::blendEquation(GLenum mode)
@@ -423,9 +423,9 @@ GLuint QGraphicsHelperGL2::boundFrameBufferObject()
 
 void QGraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
-    Q_UNUSED(programId)
-    Q_UNUSED(uniformBlockIndex)
-    Q_UNUSED(uniformBlockBinding)
+    Q_UNUSED(programId);
+    Q_UNUSED(uniformBlockIndex);
+    Q_UNUSED(uniformBlockBinding);
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 
@@ -439,9 +439,9 @@ void QGraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buff
 
 void QGraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
-    Q_UNUSED(v)
-    Q_UNUSED(description)
-    Q_UNUSED(buffer)
+    Q_UNUSED(v);
+    Q_UNUSED(description);
+    Q_UNUSED(buffer);
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 

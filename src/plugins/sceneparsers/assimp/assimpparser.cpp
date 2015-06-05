@@ -751,7 +751,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
 // OPTIONAL
 void AssimpParser::loadAnimation(uint animationIndex)
 {
-    Q_UNUSED(animationIndex)
+    Q_UNUSED(animationIndex);
 }
 
 /*!
@@ -802,8 +802,8 @@ void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *a
 
 void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
 {
-    Q_UNUSED(material)
-    Q_UNUSED(assimpMaterial)
+    Q_UNUSED(material);
+    Q_UNUSED(assimpMaterial);
     // TODO
     // Match each shading function with a default shader
 
@@ -813,8 +813,8 @@ void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *ass
 
 void AssimpParser::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial)
 {
-    Q_UNUSED(material)
-    Q_UNUSED(assimpMaterial)
+    Q_UNUSED(material);
+    Q_UNUSED(assimpMaterial);
     // TO DO
 }
 
