@@ -38,9 +38,9 @@
 #define QT3D_QASPECTTHREAD_H
 
 #include <QThread>
-#include <QMutex>
-#include <QWaitCondition>
 #include <Qt3DCore/qt3dcore_global.h>
+
+#include <QtCore/QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,8 +63,7 @@ protected:
 
 private:
     QAspectManager *m_aspectManager;
-    QMutex m_mutex;
-    QWaitCondition m_waitCondition;
+    QSemaphore m_semaphore;
 };
 
 } // namespace Qt3D

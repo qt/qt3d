@@ -46,8 +46,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QAspectThread::QAspectThread(QObject *parent)
-    : QThread(parent)
-    , m_aspectManager(0)
+    : QThread(parent),
+      m_aspectManager(Q_NULLPTR),
+      m_semaphore(0)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 }
@@ -55,9 +56,8 @@ QAspectThread::QAspectThread(QObject *parent)
 void QAspectThread::waitForStart(Priority priority)
 {
     qCDebug(Aspects) << "Starting QAspectThread and going to sleep until it is ready for us...";
-    m_mutex.lock();
     start(priority);
-    m_waitCondition.wait(&m_mutex);
+    m_semaphore.acquire();
     qCDebug(Aspects) << "QAspectThead is now ready & calling thread is now awake again";
 }
 
@@ -65,8 +65,6 @@ void QAspectThread::run()
 {
     qCDebug(Aspects) << "Entering void QAspectThread::run()";
 
-    // Lock mutex and create worker objects
-    QMutexLocker locker(&m_mutex);
     m_aspectManager = new QAspectManager;
 
     // Load and initialize the aspects and any other core services
@@ -75,8 +73,7 @@ void QAspectThread::run()
     m_aspectManager->initialize();
 
     // Wake up the calling thread now that our worker objects are ready for action
-    m_waitCondition.wakeOne();
-    m_mutex.unlock();
+    m_semaphore.release();
 
     // Enter the main loop
     m_aspectManager->exec();
