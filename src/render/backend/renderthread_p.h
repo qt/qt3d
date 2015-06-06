@@ -39,8 +39,7 @@
 
 #include <QThread>
 
-#include <QMutex>
-#include <QWaitCondition>
+#include <QtCore/QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,9 +63,8 @@ protected:
     void run();
 
 private:
-    QMutex m_mutex;
-    QWaitCondition m_waitCondition;
     Renderer* m_renderer;
+    QSemaphore m_semaphore;
 };
 
 } // Render

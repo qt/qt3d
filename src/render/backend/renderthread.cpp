@@ -50,8 +50,9 @@ namespace Qt3D {
 namespace Render {
 
 RenderThread::RenderThread(Renderer *renderer)
-    : QThread()
-    , m_renderer(renderer)
+    : QThread(),
+      m_renderer(renderer),
+      m_semaphore(0)
 {
 }
 
@@ -59,19 +60,16 @@ RenderThread::RenderThread(Renderer *renderer)
 void RenderThread::waitForStart( Priority priority )
 {
     qCDebug(Render::Backend) << "Starting Render thread and then going to sleep until it is ready for us...";
-    QMutexLocker lock(&m_mutex);
     start( priority );
-    m_waitCondition.wait( &m_mutex );
+    m_semaphore.acquire();
     qCDebug(Render::Backend) << "Render thread is now ready & calling thread is now awake again";
 }
 
 // RenderThread context
 void RenderThread::run()
 {
-    m_mutex.lock();
-
-    // We lock the renderer's mutex here before unlocking the render thread mutex
-    // and returning control to the calling thread (the Aspect Thread). This is
+    // We lock the renderer's mutex here before returning control to the calling
+    // thread (the Aspect Thread). This is
     // to ensure that the Renderer's initialize() waitCondition is reached before
     // other threads try to wake it up. This is guaranteed by having the
     // Renderer::setSurface() function try to lock the renderer's mutex too.
@@ -81,8 +79,7 @@ void RenderThread::run()
 
     // Now we have ensured we will reach the wait condition as described above,
     // return control to the aspect thread that created us.
-    m_waitCondition.wakeOne();
-    m_mutex.unlock();
+    m_semaphore.release();
 
     // This call to Renderer::initialize() waits for a surface to be set on the
     // renderer in the context of the Aspect Thread
