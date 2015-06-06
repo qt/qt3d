@@ -108,10 +108,7 @@ public:
     void doneCurrent();
 
     void activateShader(RenderShader* shader);
-    QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna) const
-    {
-        return m_shaderHash.value(dna, Q_NULLPTR);
-    }
+    QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
 
     void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
 
@@ -207,7 +204,7 @@ private:
     QGraphicsHelperInterface *m_glHelper;
 
     RenderShader *m_activeShader;
-    QHash<ProgramDNA, QOpenGLShaderProgram *> m_shaderHash;
+    QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
     QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
     QHash<QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;

@@ -270,16 +270,21 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     }
 
     // If RenderShader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
-    if (!m_shaderHash.contains(shader->dna()) || !shader->isLoaded()) {
+    if (!m_renderShaderHash.contains(shader->dna())) {
         QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
         Q_ASSERT(prog);
-        m_shaderHash.insert(shader->dna(), prog);
-        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_shaderHash.count();
+        m_renderShaderHash.insert(shader->dna(), shader);
+        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_renderShaderHash.count();
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         if (m_glHelper->supportsFeature(QGraphicsHelperInterface::UniformBufferObject))
             shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
         m_activeShader = Q_NULLPTR;
+    } else if (!shader->isLoaded()) {
+        // Shader program is already in the m_shaderHash but we still need to
+        // ensure that the RenderShader has full knowledge of attributes, uniforms,
+        // and uniform blocks.
+        shader->initialize(*m_renderShaderHash.value(shader->dna()));
     }
 
     if (m_activeShader != Q_NULLPTR && m_activeShader->dna() == shader->dna()) {
@@ -287,11 +292,24 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         // no op
     } else {
         m_activeShader = shader;
-        QOpenGLShaderProgram* prog = m_shaderHash[shader->dna()];
+        QOpenGLShaderProgram* prog = m_renderShaderHash[shader->dna()]->getOrCreateProgram(this);
         prog->bind();
         // ensure material uniforms are re-applied
         m_material = Q_NULLPTR;
     }
+}
+
+/*!
+ * \internal
+ * Returns the QOpenGLShaderProgram matching the ProgramDNA \a dna. If no match
+ * is found, Q_NULLPTR is returned.
+ */
+QOpenGLShaderProgram *QGraphicsContext::containsProgram(const ProgramDNA &dna)
+{
+    RenderShader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
+    if (renderShader)
+        return renderShader->getOrCreateProgram(this);
+    return Q_NULLPTR;
 }
 
 void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
@@ -707,7 +725,7 @@ void QGraphicsContext::decayTextureScores()
 QOpenGLShaderProgram* QGraphicsContext::activeShader()
 {
     Q_ASSERT(m_activeShader);
-    return m_shaderHash[m_activeShader->dna()];
+    return m_activeShader->getOrCreateProgram(this);
 }
 
 void QGraphicsContext::setRenderer(Renderer *renderer)
@@ -750,7 +768,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
             UniformBuffer *ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
                                                                                                  m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
-            bindUniformBlock(m_shaderHash.value(m_activeShader->dna())->programId(), block.m_index, i);
+            bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
             // bind the UBO to the binding point i
             // Specs specify that there are at least 14 binding points
 

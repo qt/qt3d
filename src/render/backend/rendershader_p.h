@@ -117,6 +117,9 @@ private:
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
     void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
+
+    void initialize(const RenderShader &other);
+
     QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
     friend class QGraphicsContext;
 };
