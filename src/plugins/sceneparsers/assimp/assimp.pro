@@ -7,9 +7,7 @@ load(qt_plugin)
 
 include(assimp.pri)
 
-LIBS += -lassimp
-
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += assimp
+    PKGCONFIG_PRIVATE += assimp
 }
