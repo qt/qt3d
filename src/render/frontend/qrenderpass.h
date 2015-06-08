@@ -106,6 +106,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QRenderPass *)
-
 #endif // QT3D_QRENDERPASS_H

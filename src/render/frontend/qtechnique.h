@@ -88,6 +88,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTechnique *)
-
 #endif // QT3D_QTECHNIQUE_H

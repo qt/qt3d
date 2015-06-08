@@ -85,6 +85,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Render::Quick::Quick3DShaderDataArray*)
-
 #endif // QT3D_RENDER_QUICK_QUICK3DSHADERDATAARRAY_H

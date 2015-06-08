@@ -331,6 +331,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QAbstractTextureProvider*)
-
 #endif // QT3D_QABSTRACTTEXTUREPROVIDER_H
