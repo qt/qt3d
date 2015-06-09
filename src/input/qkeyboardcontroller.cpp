@@ -58,6 +58,11 @@ QKeyboardController::QKeyboardController(QNode *parent)
 {
 }
 
+QKeyboardController::~QKeyboardController()
+{
+    QNode::cleanup();
+}
+
 QKeyboardInput *QKeyboardController::activeInput() const
 {
     Q_D(const QKeyboardController);

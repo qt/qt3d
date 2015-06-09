@@ -70,10 +70,12 @@ public:
     };
     Q_ENUM(Type)
 
+    ~QRenderState();
+
     Type type() const;
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, QNode *parent = 0);
+    QRenderState(QRenderStatePrivate &dd, QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QRenderState)

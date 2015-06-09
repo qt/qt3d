@@ -66,6 +66,11 @@ QCameraLens::QCameraLens(QNode *parent)
     d->updateProjectionMatrix();
 }
 
+QCameraLens::~QCameraLens()
+{
+    QNode::cleanup();
+}
+
 void QCameraLens::copy(const QNode *ref)
 {
     QComponent::copy(ref);

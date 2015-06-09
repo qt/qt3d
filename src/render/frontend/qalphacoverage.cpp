@@ -57,6 +57,11 @@ QAlphaCoverage::QAlphaCoverage(QNode *parent)
 {
 }
 
+QAlphaCoverage::~QAlphaCoverage()
+{
+    QNode::cleanup();
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

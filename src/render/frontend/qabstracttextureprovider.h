@@ -250,7 +250,6 @@ public:
 
     ~QAbstractTextureProvider();
 
-
     Target target() const;
 
     void setFormat(TextureFormat format);

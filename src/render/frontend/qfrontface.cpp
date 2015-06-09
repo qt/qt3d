@@ -62,6 +62,11 @@ QFrontFace::QFrontFace(QNode *parent)
 {
 }
 
+QFrontFace::~QFrontFace()
+{
+    QNode::cleanup();
+}
+
 void QFrontFace::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

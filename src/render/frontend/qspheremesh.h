@@ -46,7 +46,7 @@ namespace Qt3D {
 
 class QSphereMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSphereMesh : public Qt3D::QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QSphereMesh : public QAbstractMesh
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QSphereMesh : public Qt3D::QAbstractMesh
 
 public:
     explicit QSphereMesh(QNode *parent = 0);
+    ~QSphereMesh();
 
     void setRings(int rings);
     void setSlices(int slices);

@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
 
 public:
     explicit QParameter(QNode *parent = 0);
+    ~QParameter();
     QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
     QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent = 0);
 

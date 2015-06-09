@@ -149,14 +149,18 @@ void Quick3DNode::childAppended(int, QObject *obj)
     if (obj->parent() == parentNode)
         obj->setParent(0);
     // Set after otherwise addChild might not work
-    obj->setParent(parentNode);
+    if (QNode *n = qobject_cast<QNode *>(obj))
+        n->setParent(parentNode);
+    else
+        obj->setParent(parentNode);
 }
 
 void Quick3DNode::childRemoved(int, QObject *obj)
 {
-    QNode *node = qobject_cast<Qt3D::QNode *>(obj);
-    if (node)
-        node->setParent(Q_NULLPTR);
+    if (QNode *n = qobject_cast<QNode *>(obj))
+        n->setParent(Q_NODE_NULLPTR);
+    else
+        obj->setParent(Q_NULLPTR);
 }
 
 } // Quick

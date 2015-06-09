@@ -52,6 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QSortCriterion : public QNode
     Q_PROPERTY(Qt3D::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
 public:
     explicit QSortCriterion(QNode *parent = 0);
+    ~QSortCriterion();
 
     enum SortType {
         StateChangeCost = (1 << 0),

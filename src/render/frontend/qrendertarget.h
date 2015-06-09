@@ -52,6 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderTarget : public QComponent
     Q_OBJECT
 public:
     explicit QRenderTarget(QNode *parent = 0);
+    ~QRenderTarget();
 
     void addAttachment(QRenderAttachment *attachment);
     void removeAttachment(QRenderAttachment *attachment);

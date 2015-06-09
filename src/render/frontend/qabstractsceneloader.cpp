@@ -69,6 +69,11 @@ QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
 {
 }
 
+QAbstractSceneLoader::~QAbstractSceneLoader()
+{
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractSceneLoader subclass didn't call QNode::cleanup in its destructor");
+}
+
 void QAbstractSceneLoader::copy(const QNode *ref)
 {
     const QAbstractSceneLoader *s = static_cast<const QAbstractSceneLoader*>(ref);

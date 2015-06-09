@@ -66,6 +66,7 @@ public:
     void removeAllComponents();
 
     QEntity *parentEntity() const;
+    QNodeId parentEntityId() const;
 
 protected:
     QEntity(QEntityPrivate &dd, QNode *parent = 0);

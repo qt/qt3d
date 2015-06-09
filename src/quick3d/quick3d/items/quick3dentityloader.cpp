@@ -85,6 +85,11 @@ Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)
 {
 }
 
+Quick3DEntityLoader::~Quick3DEntityLoader()
+{
+    QNode::cleanup();
+}
+
 /*!
     \qmlproperty QtQml::QtObject Qt3D::EntityLoader::entity
     \readonly
@@ -148,7 +153,7 @@ void Quick3DEntityLoaderPrivate::clear()
     }
 
     if (m_entity) {
-        m_entity->setParent(Q_NULLPTR);
+        m_entity->setParent(Q_NODE_NULLPTR);
         delete m_entity;
         m_entity = Q_NULLPTR;
     }

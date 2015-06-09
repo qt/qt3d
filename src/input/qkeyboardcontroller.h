@@ -54,6 +54,7 @@ class QT3DINPUTSHARED_EXPORT QKeyboardController : public QNode
 
 public:
     explicit QKeyboardController(QNode *parent = 0);
+    ~QKeyboardController();
 
     QKeyboardInput *activeInput() const;
 

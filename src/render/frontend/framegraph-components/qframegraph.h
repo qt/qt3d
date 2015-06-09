@@ -47,7 +47,7 @@ namespace Qt3D {
 class QFrameGraphPrivate;
 class QFrameGraphNode;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QFrameGraph : public QComponent
 {
     Q_OBJECT
     // Note : The full namespace has to be used to define the property
@@ -57,6 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::QComponent
 
 public:
     explicit QFrameGraph(QNode *parent = 0);
+    ~QFrameGraph();
 
     QFrameGraphNode *activeFrameGraph() const;
     void setActiveFrameGraph(QFrameGraphNode *activeFrameGraph);

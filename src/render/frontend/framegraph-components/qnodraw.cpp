@@ -62,6 +62,7 @@ QNoDraw::QNoDraw(QNode *parent)
 
 QNoDraw::~QNoDraw()
 {
+    QNode::cleanup();
 }
 
 } // Qt3D

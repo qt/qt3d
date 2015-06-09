@@ -54,6 +54,11 @@ QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphNode(*new QRenderPassFilterPrivate, parent)
 {}
 
+QRenderPassFilter::~QRenderPassFilter()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

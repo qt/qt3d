@@ -65,6 +65,9 @@ public:
     QSceneInterface *m_scene;
     QSharedPointer<QEntity> m_root;
     QList<QAbstractAspect*> m_aspects;
+
+    void initNode(QNode *node);
+    void initEntity(QEntity *entity);
 };
 
 } // Qt3D

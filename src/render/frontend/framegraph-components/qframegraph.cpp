@@ -98,6 +98,11 @@ QFrameGraph::QFrameGraph(QNode *parent)
 {
 }
 
+QFrameGraph::~QFrameGraph()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

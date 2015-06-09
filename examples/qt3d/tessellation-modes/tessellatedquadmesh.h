@@ -44,6 +44,7 @@ class TessellatedQuadMesh : public Qt3D::QAbstractMesh
     Q_OBJECT
 public:
     explicit TessellatedQuadMesh(Qt3D::QNode *parent = 0);
+    ~TessellatedQuadMesh();
 
     Qt3D::QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
 

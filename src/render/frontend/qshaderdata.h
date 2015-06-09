@@ -60,6 +60,7 @@ class QT3DRENDERERSHARED_EXPORT QShaderData : public QComponent
     Q_OBJECT
 public:
     explicit QShaderData(QNode *parent = 0);
+    ~QShaderData();
 
     enum TransformType {
         ModelToEye = 0,

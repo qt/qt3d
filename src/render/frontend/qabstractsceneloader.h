@@ -57,6 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
     explicit QAbstractSceneLoader(QNode *parent = 0);
+    ~QAbstractSceneLoader();
 
     enum Status {
         Loading = 0,

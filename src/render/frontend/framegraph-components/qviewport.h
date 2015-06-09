@@ -55,6 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphNode
 
 public:
     explicit QViewport(QNode *parent = 0);
+    ~QViewport();
 
     QRectF rect() const;
     void setRect(const QRectF& rect);

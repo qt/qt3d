@@ -65,6 +65,7 @@ public:
     Q_ENUM(DepthFunc)
 
     explicit QDepthTest(QNode *parent = 0);
+    ~QDepthTest();
 
     DepthFunc func() const;
     void setFunc(DepthFunc func);

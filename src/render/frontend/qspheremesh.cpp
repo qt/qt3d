@@ -89,6 +89,11 @@ QSphereMesh::QSphereMesh(QNode *parent)
     update();
 }
 
+QSphereMesh::~QSphereMesh()
+{
+    QNode::cleanup();
+}
+
 void QSphereMesh::copy(const QNode *ref)
 {
     QAbstractMesh::copy(ref);

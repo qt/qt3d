@@ -59,6 +59,7 @@ class QT3DRENDERERSHARED_EXPORT QMaterial : public QComponent
 
 public:
     explicit QMaterial(QNode *parent = 0);
+    ~QMaterial();
 
     void setEffect(QEffect *effect);
     QEffect *effect() const;

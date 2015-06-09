@@ -62,6 +62,7 @@ class QT3DQUICKSHARED_EXPORT Quick3DEntityLoader : public QEntity
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
     explicit Quick3DEntityLoader(QNode *parent = 0);
+    ~Quick3DEntityLoader();
 
     QObject *entity() const;
 

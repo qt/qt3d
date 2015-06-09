@@ -120,6 +120,9 @@ QAbstractTextureProvider::QAbstractTextureProvider(QAbstractTextureProviderPriva
 
 QAbstractTextureProvider::~QAbstractTextureProvider()
 {
+    // The subclasses of QAbstractTextureProvider are only there to set the type on a QTextureProvider
+    // QNode::cleanup needs to be handled here and not in the subclasses.
+    QNode::cleanup();
 }
 
 /*!

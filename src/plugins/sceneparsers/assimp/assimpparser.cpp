@@ -257,6 +257,7 @@ class AssimpMesh : public QAbstractMesh
     Q_OBJECT
 public :
     explicit AssimpMesh(QNode *parent = 0);
+    ~AssimpMesh();
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
@@ -889,6 +890,11 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
 AssimpMesh::AssimpMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
+}
+
+AssimpMesh::~AssimpMesh()
+{
+    QNode::cleanup();
 }
 
 void AssimpMesh::copy(const QNode *ref)

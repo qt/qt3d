@@ -63,6 +63,7 @@ public:
     Q_ENUM(BlendMode)
 
     explicit QBlendEquation(QNode *parent = 0);
+    ~QBlendEquation();
 
     BlendMode mode() const;
     void setMode(BlendMode mode);

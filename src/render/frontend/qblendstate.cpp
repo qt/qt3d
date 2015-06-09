@@ -88,6 +88,11 @@ QBlendState::QBlendState(QNode *parent)
 {
 }
 
+QBlendState::~QBlendState()
+{
+    QNode::cleanup();
+}
+
 /*! \fn void QBlendState::copy(const QNode *ref)
   \internal
   Copies \a ref into this object.

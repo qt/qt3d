@@ -60,6 +60,7 @@ public:
     Q_ENUM(FaceDir)
 
     explicit QFrontFace(QNode *parent = 0);
+    ~QFrontFace();
 
     FaceDir direction() const;
     void setDirection(FaceDir direction);

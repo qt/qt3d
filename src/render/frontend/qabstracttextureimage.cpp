@@ -89,6 +89,7 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
  */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
 }
 
 

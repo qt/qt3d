@@ -64,6 +64,7 @@ public:
 
     explicit QParameterMapping(QNode *parent = 0);
     QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, QNode *parent = 0);
+    ~QParameterMapping();
 
     void setParameterName(const QString &name);
     void setShaderVariableName(const QString &name);

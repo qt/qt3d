@@ -69,6 +69,11 @@ QRenderTargetSelector::QRenderTargetSelector(QNode *parent)
 {
 }
 
+QRenderTargetSelector::~QRenderTargetSelector()
+{
+    QNode::cleanup();
+}
+
 void QRenderTargetSelector::setTarget(QRenderTarget *target)
 {
     Q_D(QRenderTargetSelector);

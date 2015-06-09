@@ -61,6 +61,7 @@ class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
 
 public:
     explicit QMesh(QNode *parent = 0);
+    ~QMesh();
 
     void setSource(const QUrl &source);
     QUrl source() const;

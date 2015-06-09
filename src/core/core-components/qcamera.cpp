@@ -82,6 +82,11 @@ QCamera::QCamera(QNode *parent) :
     addComponent(d_func()->m_transform);
 }
 
+QCamera::~QCamera()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     : QEntity(dd, parent)

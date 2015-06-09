@@ -48,6 +48,7 @@ class QT3DRENDERERSHARED_EXPORT QSceneLoader : public Render::QAbstractSceneLoad
     Q_OBJECT
 public:
     explicit QSceneLoader(QNode *parent = 0);
+    ~QSceneLoader();
     void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 protected:

@@ -63,6 +63,7 @@ public:
     Q_ENUM(CullingMode)
 
     explicit QCullFace(QNode *parent = 0);
+    ~QCullFace();
 
     CullingMode mode() const;
     void setMode(CullingMode mode);

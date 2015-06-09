@@ -125,6 +125,7 @@ QTextureImage::QTextureImage(QNode *parent)
  */
 QTextureImage::~QTextureImage()
 {
+    QNode::cleanup();
 }
 
 /*!

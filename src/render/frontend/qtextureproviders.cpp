@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
-    \class QT3D::QTexture1D
+    \class Qt3D::QTexture1D
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1D target format.
  */
@@ -59,7 +59,7 @@ QTexture1D::~QTexture1D()
 }
 
 /*!
-    \class QT3D::QTexture1DArray
+    \class Qt3D::QTexture1DArray
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1DArray target format.
  */
@@ -77,7 +77,7 @@ QTexture1DArray::~QTexture1DArray()
 }
 
 /*!
-    \class QT3D::QTexture2D
+    \class Qt3D::QTexture2D
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2D target format.
  */
@@ -95,7 +95,7 @@ QTexture2D::~QTexture2D()
 }
 
 /*!
-    \class QT3D::QTexture2DArray
+    \class Qt3D::QTexture2DArray
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DArray target format.
  */
@@ -114,7 +114,7 @@ QTexture2DArray::~QTexture2DArray()
 
 
 /*!
-    \class QT3D::QTexture3D
+    \class Qt3D::QTexture3D
     \since 5.5
     \brief A QAbstractTextureProvider with a Target3D target format.
  */
@@ -132,7 +132,7 @@ QTexture3D::~QTexture3D()
 }
 
 /*!
-    \class QT3D::QTextureCubeMap
+    \class Qt3D::QTextureCubeMap
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMap target format.
  */
@@ -150,7 +150,7 @@ QTextureCubeMap::~QTextureCubeMap()
 }
 
 /*!
-    \class QT3D::QTextureCubeMapArray
+    \class Qt3D::QTextureCubeMapArray
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMapArray target format.
  */
@@ -165,10 +165,11 @@ QTextureCubeMapArray::QTextureCubeMapArray(QNode *parent)
 
 QTextureCubeMapArray::~QTextureCubeMapArray()
 {
+    QNode::cleanup();
 }
 
 /*!
-    \class QT3D::QTexture2DMultisample
+    \class Qt3D::QTexture2DMultisample
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisample target format.
  */
@@ -186,7 +187,7 @@ QTexture2DMultisample::~QTexture2DMultisample()
 }
 
 /*!
-    \class QT3D::QTexture2DMultisampleArray
+    \class Qt3D::QTexture2DMultisampleArray
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisampleArray target format.
  */
@@ -204,7 +205,7 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
 }
 
 /*!
-    \class QT3D::QTextureRectangle
+    \class Qt3D::QTextureRectangle
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetRectangle target format.
  */
@@ -222,7 +223,7 @@ QTextureRectangle::~QTextureRectangle()
 }
 
 /*!
-    \class QT3D::QTextureBuffer
+    \class Qt3D::QTextureBuffer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetBuffer target format.
  */

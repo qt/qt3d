@@ -50,6 +50,7 @@
 #include <private/qnode_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
+#include "qnodevisitor.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,26 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     qRegisterMetaType<Qt3D::QObserverInterface *>();
     qRegisterMetaType<Qt3D::QEntity *>();
     qRegisterMetaType<Qt3D::QSceneInterface *>();
+}
+
+/*!
+    Used to init the scene tree when the Qt3D aspect is first started. Basically
+    sets the scene/change arbiter on the items and store the entity - component
+    pairs in the scene
+ */
+void QAspectEnginePrivate::initNode(QNode *node)
+{
+    QNodePrivate::get(node)->setScene(m_scene);
+    m_scene->addObservable(node);
+}
+
+void QAspectEnginePrivate::initEntity(QEntity *entity)
+{
+    Q_FOREACH (QComponent *comp, entity->components()) {
+        if (!comp->shareable() && !m_scene->entitiesForComponent(comp->id()).isEmpty())
+            qWarning() << "Trying to assign a non shareable component to more than one Entity";
+        m_scene->addEntityForComponent(comp->id(), entity->id());
+    }
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
@@ -107,24 +128,10 @@ QAspectEngine::~QAspectEngine()
     delete d->m_scene;
 }
 
-void QAspectEngine::initNodeTree(QNode *node) const
+void QAspectEngine::initNodeTree(QNode *node)
 {
-    Q_D(const QAspectEngine);
-    node->d_func()->setScene(d->m_scene);
-    d->m_scene->addObservable(node);
-    QEntity *entity = qobject_cast<QEntity *>(node);
-    if (entity != Q_NULLPTR)
-        Q_FOREACH (QComponent *comp, entity->components()) {
-            if (!comp->shareable() && !d->m_scene->entitiesForComponent(comp->id()).isEmpty())
-                qWarning() << "Trying to assign a non shareable component to more than one Entity";
-            d->m_scene->addEntityForComponent(comp->id(), entity->id());
-        }
-
-    Q_FOREACH (QObject *c, node->children()) {
-        QNode *childNode = qobject_cast<QNode *>(c);
-        if (childNode != Q_NULLPTR)
-            initNodeTree(childNode);
-    }
+    QNodeVisitor visitor;
+    visitor.traverse(node, d_func(), &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
 }
 
 void QAspectEngine::initialize()
@@ -218,7 +225,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
 
     // The aspect engine takes ownership of the scene root. We also set the
     // parent of the scene root to be the engine
-    d->m_root->setParent(this);
+    static_cast<QObject *>(d->m_root.data())->setParent(this);
 
     // Prepare the frontend tree for use by giving each node a pointer to the
     // scene object and adding each node to the scene

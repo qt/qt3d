@@ -80,6 +80,11 @@ QFrameGraphNode::QFrameGraphNode(QNode *parent)
 {
 }
 
+QFrameGraphNode::~QFrameGraphNode()
+{
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QFrameGraphNode subclass didn't call QNode::cleanup in its destructor");
+}
+
 /*!
   Returns a pointer to the parent.
  */

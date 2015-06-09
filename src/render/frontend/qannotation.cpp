@@ -88,6 +88,11 @@ QAnnotation::QAnnotation(QNode *parent)
 {
 }
 
+QAnnotation::~QAnnotation()
+{
+    QNode::cleanup();
+}
+
 void QAnnotation::setValue(const QVariant &value)
 {
     Q_D(QAnnotation);

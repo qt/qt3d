@@ -65,6 +65,11 @@ QTechnique::QTechnique(QNode *parent)
     QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));
 }
 
+QTechnique::~QTechnique()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)

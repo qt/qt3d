@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QCylinderMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public Qt3D::QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QAbstractMesh
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public Qt3D::QAbstractMesh
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
     explicit QCylinderMesh(QNode *parent = 0);
+    ~QCylinderMesh();
 
     void setRings(int rings);
     void setSlices(int slices);

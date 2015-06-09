@@ -66,6 +66,11 @@ QSortMethod::QSortMethod(QNode *parent)
 {
 }
 
+QSortMethod::~QSortMethod()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QSortMethod::QSortMethod(QSortMethodPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)

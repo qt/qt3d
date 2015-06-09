@@ -76,6 +76,11 @@ QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
     :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {}
 
+QCameraSelector::~QCameraSelector()
+{
+    QNode::cleanup();
+}
+
 void QCameraSelector::setCamera(QEntity *camera)
 {
     Q_D(QCameraSelector);

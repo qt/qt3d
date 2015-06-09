@@ -67,6 +67,11 @@ QStencilTest::QStencilTest(QNode *parent)
 {
 }
 
+QStencilTest::~QStencilTest()
+{
+    QNode::cleanup();
+}
+
 void QStencilTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

@@ -54,6 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QAnnotation : public QNode
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
     explicit QAnnotation(QNode *parent = 0);
+    ~QAnnotation();
 
     void setValue(const QVariant &value);
     void setName(const QString &customType);

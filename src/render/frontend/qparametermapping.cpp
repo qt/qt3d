@@ -115,6 +115,11 @@ QParameterMapping::QParameterMapping(const QString &parameterName, const QString
     d->m_bindingType = bindingType;
 }
 
+QParameterMapping::~QParameterMapping()
+{
+    QNode::cleanup();
+}
+
 /*!
   \property Qt3D::QParameterMapping::parameterName
 

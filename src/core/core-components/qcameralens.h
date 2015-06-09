@@ -66,6 +66,7 @@ class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
 
 public:
     explicit QCameraLens(QNode *parent = 0);
+    ~QCameraLens();
 
     enum ProjectionType {
         OrthogonalProjection,

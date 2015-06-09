@@ -65,7 +65,8 @@ class QT3DRENDERERSHARED_EXPORT QAbstractMesh : public QComponent
     Q_OBJECT
 
 public:
-    QAbstractMesh(QNode *parent = 0);
+    explicit QAbstractMesh(QNode *parent = 0);
+    ~QAbstractMesh();
 
     void update();
 

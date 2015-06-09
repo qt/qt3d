@@ -99,7 +99,7 @@ void QInputAspect::sceneNodeAdded(QSceneChangePtr &e)
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
-    visitor.traverse(n, this, &QInputAspect::visitNode, &QInputAspect::visitNode);
+    visitor.traverse(n, this, &QInputAspect::visitNode);
 }
 
 void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
@@ -113,7 +113,7 @@ void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
 void QInputAspect::setRootEntity(QEntity *rootObject)
 {
     QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QInputAspect::visitNode, &QInputAspect::visitNode);
+    visitor.traverse(rootObject, this, &QInputAspect::visitNode);
 }
 
 void QInputAspect::onInitialize(const QVariantMap &data)

@@ -62,6 +62,11 @@ QDepthMask::QDepthMask(QNode *parent)
 {
 }
 
+QDepthMask::~QDepthMask()
+{
+    QNode::cleanup();
+}
+
 void QDepthMask::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

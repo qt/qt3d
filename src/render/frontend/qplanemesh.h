@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QPlaneMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QAbstractMesh
 {
     Q_OBJECT
 
@@ -57,6 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public Qt3D::QAbstractMesh
 
 public:
     explicit QPlaneMesh(QNode *parent = 0);
+    ~QPlaneMesh();
 
     void setWidth(float width);
     float width() const;

@@ -76,6 +76,7 @@ public:
     Q_ENUM(StencilFunc)
 
     explicit QStencilTest(QNode *parent = 0);
+    ~QStencilTest();
 
     uint mask() const;
     void setMask(uint mask);

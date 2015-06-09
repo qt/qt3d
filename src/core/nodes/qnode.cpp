@@ -47,6 +47,7 @@
 #include <QMetaProperty>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/qnodevisitor.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,24 +65,29 @@ QNodePrivate::QNodePrivate()
     , m_scene(Q_NULLPTR)
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
+    , m_wasCleanedUp(false)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
 }
 
-// Called by QEvent::childAdded (main thread)
-void QNodePrivate::addChild(QNode *childNode)
+// Called by QNodePrivate::ctor or setParent  (main thread)
+void QNodePrivate::_q_addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     if (childNode == q_func())
         return ;
 
-    // Set the scene
-    childNode->d_func()->setScene(m_scene);
+    // If the scene is null it means that the current node is part of a subtree
+    // that has been pre-prepared. Therefore the node shouldn't be added by
+    // itself but only when the root of the said subtree is inserted into an
+    // existing node whose m_scene member is valid
+    if (m_scene == Q_NULLPTR)
+        return;
 
-    // addObservable set the QChangeArbiter
-    if (m_scene != Q_NULLPTR)
-        m_scene->addObservable(childNode);
+    QNodeVisitor visitor;
+    // Recursively set scene and change arbiter for the node subtree
+    visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
 
     // We notify only if we have a QChangeArbiter
     if (m_changeArbiter != Q_NULLPTR) {
@@ -100,10 +106,13 @@ void QNodePrivate::addChild(QNode *childNode)
         e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
         notifyObservers(e);
     }
+
+    // Handle Entity - Components
+    visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
 }
 
-// Called by QEvent::childRemoved (main thread)
-void QNodePrivate::removeChild(QNode *childNode)
+// Called by setParent or cleanup (main thread) (could be other thread if created on the backend in a job)
+void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
     if (childNode->parent() != q_func())
@@ -134,18 +143,9 @@ void QNodePrivate::removeChild(QNode *childNode)
         notifyObservers(e);
     }
 
-    if (m_scene != Q_NULLPTR)
-        m_scene->removeObservable(childNode);
-    childNode->d_func()->setScene(Q_NULLPTR);
-}
-
-void QNodePrivate::removeAllChildren()
-{
-    Q_FOREACH (QObject *child, q_func()->children()) {
-        QNode *childNode = qobject_cast<QNode *>(child);
-        if (childNode != Q_NULLPTR)
-            removeChild(childNode);
-    }
+    // Recursively unset the scene on all children
+    QNodeVisitor visitor;
+    visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
 }
 
 void QNodePrivate::registerNotifiedProperties()
@@ -198,6 +198,64 @@ void QNodePrivate::propertyChanged(int propertyIndex)
     }
 }
 
+/*!
+    \internal
+    Recursively sets and adds the nodes in the subtree of base node \a root to the scene.
+    Also takes care of connecting Components and Entities together in the scene.
+ */
+void QNodePrivate::setSceneHelper(QNode *root)
+{
+    // Sets the scene
+    root->d_func()->setScene(m_scene);
+    // addObservable sets the QChangeArbiter
+    m_scene->addObservable(root);
+
+    // We also need to handle QEntity <-> QComponent relationships
+    if (QComponent *c = qobject_cast<QComponent *>(root)) {
+        const QVector<QEntity *> entities = c->entities();
+        Q_FOREACH (QEntity *entity, entities) {
+            if (!c->shareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
+                qWarning() << "Trying to assign a non shareable component to more than one Entity";
+            m_scene->addEntityForComponent(c->id(), entity->id());
+        }
+    }
+}
+
+/*!
+    \internal
+
+    Recursively unsets and remove nodes in the subtree of base node \a root from
+    the scene. Also takes care of removing Components and Entities connections.
+ */
+void QNodePrivate::unsetSceneHelper(QNode *root)
+{
+    // We also need to handle QEntity <-> QComponent relationships removal
+    if (QComponent *c = qobject_cast<QComponent *>(root)) {
+        const QVector<QEntity *> entities = c->entities();
+        Q_FOREACH (QEntity *entity, entities) {
+            m_scene->removeEntityForComponent(c->id(), entity->id());
+        }
+    }
+
+    if (m_scene != Q_NULLPTR)
+        m_scene->removeObservable(root);
+    root->d_func()->setScene(Q_NULLPTR);
+}
+
+/*!
+    \internal
+ */
+void QNodePrivate::addEntityComponentToScene(QNode *root)
+{
+    if (QEntity *e = qobject_cast<QEntity *>(root)) {
+        Q_FOREACH (QComponent *c, e->components())
+            m_scene->addEntityForComponent(c->id(), e->id());
+    }
+}
+
+/*!
+    \internal
+ */
 // Called in the main thread by QScene -> following QEvent::childAdded / addChild
 void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
@@ -221,17 +279,26 @@ void QNode::sceneChangeEvent(const QSceneChangePtr &change)
     qWarning() << Q_FUNC_INFO << "sceneChangeEvent should have been subclassed";
 }
 
+/*!
+    \internal
+ */
 void QNodePrivate::setScene(QSceneInterface *scene)
 {
     if (m_scene != scene)
         m_scene = scene;
 }
 
+/*!
+    \internal
+ */
 QSceneInterface *QNodePrivate::scene() const
 {
     return m_scene;
 }
 
+/*!
+    \internal
+ */
 void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
 {
     // Bail out early if we can to avoid operator new
@@ -244,6 +311,9 @@ void QNodePrivate::notifyPropertyChange(const char *name, const QVariant &value)
     notifyObservers(e);
 }
 
+/*!
+    \internal
+ */
 // Called by the main thread
 void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
 {
@@ -264,6 +334,9 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
 // QNode *subtree;
 // QNodePrivate::get(root)->insertTree(subtree);
 
+/*!
+    \internal
+ */
 void QNodePrivate::insertTree(QNode *treeRoot, int depth)
 {
     if (m_scene != Q_NULLPTR) {
@@ -281,11 +354,17 @@ void QNodePrivate::insertTree(QNode *treeRoot, int depth)
         treeRoot->setParent(q_func());
 }
 
+/*!
+    \internal
+ */
 QNodePrivate *QNodePrivate::get(QNode *q)
 {
     return q->d_func();
 }
 
+/*!
+    \internal
+ */
 void QNodePrivate::nodePtrDeleter(QNode *q)
 {
     QObject *p = q->parent();
@@ -310,6 +389,9 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
     and no particular meaning, it is there as a way of building a node based tree
     structure.
 
+    The parent of a Qt3D::QNode instance can only be another Qt3D::QNode
+    instance.
+
     Each Qt3D::QNode instance has a unique id that allows it to be recognizable
     from other instances.
 
@@ -317,24 +399,46 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
     will automatically generate notifications that the Qt3D backend aspects will
     receive.
 
+    When subclassing Qt3D::QNode make sure to call QNode::cleanup() from your
+    subclass's destructor to ensure proper notification to backend aspects.
+    Faiure to do so will result in crashes when one of your Qt3D::QNode
+    subclass instance is eventually destroyed.
+
     \sa Qt3D::QEntity, Qt3D::QComponent
 */
 
 /*!
      Creates a new Qt3D::QNode instance with parent \a parent.
+
+     \note The backend aspects will be notified that a Qt3D::QNode instance is
+     part of the scene only if it has a parent; unless this is the root node of
+     the Qt3D scene.
+
+     \sa setParent(Qt3D::QNode *)
 */
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate, parent)
 {
-    // We rely on QEvent::childAdded to be triggered on the parent
-    // So we don't actually need to invoke a method or anything
-    // to add ourselve with the parent
+    qRegisterMetaType<QNode *>("QNode*");
+    // We need to add ourselves with the parent if it is valid
+    // This will notify the backend about the new child
+    if (parent) {
+        // This needs to be invoked  only after the QNode has been fully
+        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(QNode*, this));
+    }
 }
 
 /*! \internal */
 QNode::QNode(QNodePrivate &dd, QNode *parent)
     : QObject(dd, parent)
 {
+    qRegisterMetaType<QNode *>("QNode*");
+    // We need to add ourselves with the parent if it is valid
+    // This will notify the backend about the new child
+    if (parent) {
+        // This needs to be invoked  only after the QNode has been fully
+        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(QNode*, this));
+    }
 }
 
 /*!
@@ -352,6 +456,7 @@ void QNode::copy(const QNode *ref)
 
 QNode::~QNode()
 {
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QNode subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*!
@@ -403,6 +508,42 @@ bool QNode::blockNotifications(bool block)
 }
 
 /*!
+ * Sets the parent node of the current Qt3D::QNode instance to \a parent.
+ * Setting the parent will notify the backend aspects about current Qt3D::QNode
+ * instance's parent change.
+ *
+ * \note if \a parent happens to be null, this will actually notify that the
+ * current Qt3D::QNode instance was removed from the scene.
+ */
+void QNode::setParent(QNode *parent)
+{
+    if (parentNode())
+        QNodePrivate::get(parentNode())->_q_removeChild(this);
+    QObject::setParent(parent);
+    if (parentNode())
+        QNodePrivate::get(parentNode())->_q_addChild(this);
+    emit parentChanged();
+}
+
+/*!
+ * Returns a list filled with the Qt3D::QNode children of the current
+ * Qt3D::QNode instance.
+ */
+QNodeList QNode::childrenNodes() const
+{
+    QNodeList nodeChildrenList;
+    const QObjectList objectChildrenList = QObject::children();
+    nodeChildrenList.reserve(objectChildrenList.size());
+
+    Q_FOREACH (QObject *c, objectChildrenList) {
+        if (QNode *n = qobject_cast<QNode *>(c))
+            nodeChildrenList.push_back(n);
+    }
+
+    return nodeChildrenList;
+}
+
+/*!
     Returns a clone of \a node. All the children of \a node are cloned as well.
 
     \note This is the only way to create two nodes with the same id.
@@ -426,45 +567,17 @@ QNode *QNode::clone(QNode *node)
         QNode *childNode = qobject_cast<QNode *>(c);
         if (childNode != Q_NULLPTR) {
             QNode *cclone = QNode::clone(childNode);
+            // We use QObject::setParent instead of QNode::setParent to avoid the
+            // whole overhead generated by the latter as we are only dealing with clones
             if (cclone != Q_NULLPTR)
-                cclone->setParent(clonedNode);
+                static_cast<QObject *>(cclone)->setParent(clonedNode);
         }
     }
 
-    if (--clearLock == 0)
+    if (--clearLock == 0) // Cloning done
         QNodePrivate::m_clonesLookupTable.clear();
 
     return clonedNode;
-}
-
-bool QNode::event(QEvent *e)
-{
-    Q_D(QNode);
-
-    switch (e->type()) {
-
-    case QEvent::ChildAdded: {
-        QNode *childNode = qobject_cast<QNode *>(static_cast<QChildEvent *>(e)->child());
-        if (childNode != Q_NULLPTR) {
-            d->addChild(childNode);
-        }
-        break;
-    }
-
-    case QEvent::ChildRemoved: {
-        QNode *childNode = qobject_cast<QNode *>(static_cast<QChildEvent *>(e)->child());
-        if (childNode != Q_NULLPTR) {
-            d->removeChild(childNode);
-        }
-        break;
-    }
-
-    default:
-        break;
-
-    } // switch
-
-    return QObject::event(e);
 }
 
 /*!
@@ -474,6 +587,26 @@ QSceneInterface *QNode::scene() const
 {
     Q_D(const QNode);
     return d->m_scene;
+}
+
+/*!
+ * This methods can only be called once and takes care of notyfing the backend
+ * aspects that the current Qt3D::QNode instance is about to be destroyed.
+ *
+ * \note It must be called by the destructor of every class subclassing
+ * Qt3D::QNode that is clonable (using the QT3D_CLONEABLE macro).
+ */
+void QNode::cleanup()
+{
+    Q_D(QNode);
+    if (!d->m_wasCleanedUp) {
+        d->m_wasCleanedUp = true;
+        qCDebug(Nodes) << Q_FUNC_INFO << this;
+        if (parentNode())
+            QNodePrivate::get(parentNode())->_q_removeChild(this);
+        // Root element has no parent and therefore we cannot
+        // call parent->_q_removeChild();
+    }
 }
 
 } // namespace Qt3D

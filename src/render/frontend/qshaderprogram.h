@@ -58,6 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
 
 public:
     explicit QShaderProgram(QNode *parent = 0);
+    ~QShaderProgram();
 
     enum ShaderType {
         Vertex = 0,

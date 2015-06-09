@@ -63,6 +63,11 @@ QKeyboardInput::QKeyboardInput(QNode *parent)
 {
 }
 
+QKeyboardInput::~QKeyboardInput()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QKeyboardInput::QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

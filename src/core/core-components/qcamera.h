@@ -72,7 +72,7 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
 
 public:
     explicit QCamera(QNode *parent = 0);
-
+    ~QCamera();
 
     enum CameraTranslationOption {
         TranslateViewCenter,
