@@ -61,12 +61,12 @@ Entity {
 
     NodeInstantiator {
         id: collection
-        property int count: 64
+        property int _count: 0
         property real spacing: 5
         property int cols: 8
         property int _rows: count / cols
 
-        model: count
+        model: _count
         delegate: MyEntity {
             id: myEntity
             property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
@@ -75,6 +75,15 @@ Entity {
             x: collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1))
             z: collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows)
             diffuse: Qt.hsla( _hue, 0.5, _lightness, 1.0 )
+        }
+    }
+
+    QQ2.Timer {
+        interval: 1000
+        repeat: true
+        running: true
+        onTriggered: {
+            collection._count += 1
         }
     }
 }
