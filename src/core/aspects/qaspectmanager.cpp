@@ -39,8 +39,8 @@
 #include "qabstractaspect_p.h"
 #include "qchangearbiter_p.h"
 // TODO Make the kind of job manager configurable (e.g. ThreadWeaver vs Intel TBB)
-#include "qaspectjobmanager.h"
-#include "qabstractaspectjobmanager.h"
+#include "qaspectjobmanager_p.h"
+#include "qabstractaspectjobmanager_p.h"
 #include "qentity.h"
 
 #include <Qt3DCore/qservicelocator.h>

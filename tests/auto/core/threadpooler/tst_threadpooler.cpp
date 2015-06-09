@@ -43,8 +43,8 @@
 #include <QtGui/QMatrix4x4>
 #include <QtCore/QTimer>
 
-#include <Qt3DCore/qaspectjobmanager.h>
-#include <Qt3DCore/qabstractaspectjobmanager.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
+#include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qt3dcore_global.h>
 

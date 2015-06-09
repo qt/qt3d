@@ -37,23 +37,30 @@
 #ifndef QABSTRACTASPECTJOBMANAGER_P_H
 #define QABSTRACTASPECTJOBMANAGER_P_H
 
-#include <private/qobject_p.h>
+#include <QObject>
+
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractAspectJobManager;
-
-class QAbstractAspectJobManagerPrivate : public QObjectPrivate
+class QAbstractAspectJobManager : public QObject
 {
+    Q_OBJECT
 public:
-    QAbstractAspectJobManagerPrivate()
-        : QObjectPrivate()
-    {}
+    explicit QAbstractAspectJobManager(QObject *p = 0);
+
+    virtual void initialize() {}
+    virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;
+    virtual void waitForAllJobs() = 0;
+
+    // Callback signature for running SynchronizedJobs
+    typedef void (*JobFunction)(void *);
+    virtual void waitForPerThreadFunction(JobFunction func, void *arg) = 0;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
