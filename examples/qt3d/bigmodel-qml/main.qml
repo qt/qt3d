@@ -59,6 +59,11 @@ Entity {
         upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
     }
 
+    QQ2.ListModel {
+        id: entityModel
+        QQ2.ListElement { emptyRole: 0 }
+    }
+
     NodeInstantiator {
         id: collection
         property int _count: 0
@@ -66,12 +71,11 @@ Entity {
         property int cols: 8
         property int _rows: count / cols
 
-        model: _count
+        model: entityModel
         delegate: MyEntity {
             id: myEntity
             property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
             property real _hue: (index % collection.cols) / collection.cols
-
             x: collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1))
             z: collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows)
             diffuse: Qt.hsla( _hue, 0.5, _lightness, 1.0 )
@@ -83,7 +87,7 @@ Entity {
         repeat: true
         running: true
         onTriggered: {
-            collection._count += 1
+            entityModel.append({});
         }
     }
 }
