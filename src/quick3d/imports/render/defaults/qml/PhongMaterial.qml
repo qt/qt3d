@@ -44,14 +44,6 @@ Material {
     property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
     property real shininess: 150.0
 
-    parameters: [
-        Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
-        Parameter { name: "kd";   value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
-        Parameter { name: "ks";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
-        Parameter { name: "shininess"; value: root.shininess },
-        Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
-        Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
-    ]
 
     ShaderProgram {
         id: gl3PhongShader
@@ -66,6 +58,16 @@ Material {
     }
 
     effect: Effect {
+
+        parameters: [
+            Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
+            Parameter { name: "kd";   value: Qt.vector3d(root.diffuse.r, root.diffuse.g, root.diffuse.b) },
+            Parameter { name: "ks";  value: Qt.vector3d(root.specular.r, root.specular.g, root.specular.b) },
+            Parameter { name: "shininess"; value: root.shininess },
+            Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
+            Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
+        ]
+
         techniques: [
             // GL 3 Technique
             Technique {
