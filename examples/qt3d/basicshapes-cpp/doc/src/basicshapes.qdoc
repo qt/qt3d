@@ -26,7 +26,7 @@
 ****************************************************************************/
 
 /*!
-    \example torus-cpp
-    \title Qt3D: Torus C++ Example
+    \example basicshapes-cpp
+    \title Qt3D: Basic Shapes C++ Example
     \ingroup qt3d-examples-cpp
 */

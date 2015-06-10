@@ -34,12 +34,21 @@
 **
 ****************************************************************************/
 
+#include "scenemodifier.h"
+
 #include <QGuiApplication>
 
 #include <Qt3DCore/window.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QCommandLinkButton>
+#include <QtGui/QScreen>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -64,17 +73,33 @@
 
 int main(int argc, char **argv)
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    Qt3D::Window *view = new Qt3D::Window();
+    QWidget *container = QWidget::createWindowContainer(view);
 
-    Qt3D::Window view;
+    QSize screenSize = view->screen()->size();
+    container->setMinimumSize(QSize(screenSize.width() / 2, screenSize.height() / 1.5));
+    container->setMaximumSize(screenSize);
+    container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    container->setFocusPolicy(Qt::StrongFocus);
+
+    QWidget *widget = new QWidget;
+    QHBoxLayout *hLayout = new QHBoxLayout(widget);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setAlignment(Qt::AlignTop);
+    hLayout->addWidget(container, 1);
+    hLayout->addLayout(vLayout);
+
+    widget->setWindowTitle(QStringLiteral("Basic shapes"));
+
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
     Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(view));
     engine.setData(data);
 
     // Root entity
@@ -95,40 +120,68 @@ int main(int argc, char **argv)
     Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
 
     forwardRenderer->setCamera(cameraEntity);
-    forwardRenderer->setClearColor(Qt::black);
+    forwardRenderer->setClearColor(QColor(QRgb(0x4d4d4f)));
     frameGraph->setActiveFrameGraph(forwardRenderer);
-
-    // Torus shape data
-    Qt3D::QTorusMesh *torus = new Qt3D::QTorusMesh();
-    torus->setRadius(5);
-    torus->setMinorRadius(1);
-    torus->setRings(100);
-    torus->setSlices(20);
-
-    // TorusMesh Transform
-    Qt3D::QScaleTransform *torusScale = new Qt3D::QScaleTransform();
-    Qt3D::QRotateTransform *torusRotation = new Qt3D::QRotateTransform();
-    Qt3D::QTransform *torusTransforms = new Qt3D::QTransform();
-
-    torusScale->setScale3D(QVector3D(1.5f, 1.0f, 0.5f));
-    torusRotation->setAngleDeg(45.0f);
-    torusRotation->setAxis(QVector3D(1, 0, 0));
-
-    torusTransforms->addTransform(torusScale);
-    torusTransforms->addTransform(torusRotation);
-
-    // Torus
-    Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
-    torusEntity->addComponent(torus);
-    torusEntity->addComponent(torusTransforms);
 
     // Setting the FrameGraph
     rootEntity->addComponent(frameGraph);
 
+    // Scenemodifier
+    SceneModifier *modifier = new SceneModifier(rootEntity);
+
     // Set root object of the scene
     engine.setRootEntity(rootEntity);
+
+    // Create control widgets
+    QCommandLinkButton *info = new QCommandLinkButton();
+    info->setText(QStringLiteral("Qt3D ready-made meshes"));
+    info->setDescription(QStringLiteral("Qt3D provides several ready-made meshes, like torus, cylinder, cube and sphere."));
+    info->setIconSize(QSize(0,0));
+
+    QCheckBox *torusCB = new QCheckBox(widget);
+    torusCB->setChecked(true);
+    torusCB->setText(QStringLiteral("Torus"));
+
+    QCheckBox *cylinderCB = new QCheckBox(widget);
+    cylinderCB->setChecked(true);
+    cylinderCB->setText(QStringLiteral("Cylinder"));
+
+    QCheckBox *cuboidCB = new QCheckBox(widget);
+    cuboidCB->setChecked(true);
+    cuboidCB->setText(QStringLiteral("Cuboid"));
+
+    QCheckBox *sphereCB = new QCheckBox(widget);
+    sphereCB->setChecked(true);
+    sphereCB->setText(QStringLiteral("Sphere"));
+
+    vLayout->addWidget(info);
+    vLayout->addWidget(torusCB);
+    vLayout->addWidget(cylinderCB);
+    vLayout->addWidget(cuboidCB);
+    vLayout->addWidget(sphereCB);
+
+    QObject::connect(torusCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enableTorus);
+    QObject::connect(cylinderCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enableCylinder);
+    QObject::connect(cuboidCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enableCuboid);
+    QObject::connect(sphereCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enableSphere);
+
+    torusCB->setChecked(true);
+    cylinderCB->setChecked(true);
+    cuboidCB->setChecked(true);
+    sphereCB->setChecked(true);
+
     // Show window
-    view.show();
+    widget->show();
+    widget->resize(1280, 600);
+
+    // Update the aspect ratio
+    QSize widgetSize =  container->size();
+    float aspectRatio = float(widgetSize.width()) / float(widgetSize.height());
+    cameraEntity->lens()->setPerspectiveProjection(45.0f, aspectRatio, 0.1f, 1000.0f);
 
     return app.exec();
 }
