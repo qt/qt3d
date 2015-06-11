@@ -29,7 +29,8 @@ SUBDIRS += \
     skybox \
     controls \
     anaglyph-rendering \
-    simple-shaders-qml
+    simple-shaders-qml \
+    planets-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
