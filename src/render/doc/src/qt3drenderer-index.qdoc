@@ -35,29 +35,43 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DRender
-    \title Qt3D Render C++ Classes
-    \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
+    \page qt3drender-index.html
+    \title Qt3D Renderer
+    \ingroup qt3d-modules
+    \brief The Qt3D Renderer module contains functionality to support 2D and 3D rendering using Qt3D.
 
-    \ingroup modules
-    \qtvariable 3drender
+    \section1 Getting Started
 
-    The Qt3D Render module provides an aspect, components, and other supporting types necessary
-    to implement 2D and 3D rendering as part of the Qt3D framework.
+    To use Qt3D classes, add this directive into the C++ files:
 
-    Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
+    \code
+       #include <Qt3DRenderer>
+    \endcode
+
+    To link against the corresponding C++ libraries, add the following to your qmake project file:
+
+    \code
+       QT += 3drenderer
+    \endcode
+
+    \section1 Reference
+    \list
+    \li \l {Qt3D Renderer C++ Classes}
+    \li \l {Qt3D Examples}
+    \endlist
 */
 
 /*!
-   \qmlmodule Qt3D.Render 2.0
-   \title Qt3D Render QML Types
-   \ingroup qmlmodules
+    \page qt3d-examples.html
+    \ingroup all-examples
+    \title Qt3D Examples
+    \brief Examples that demostrate 2D and 3D rendering using Qt3D.
 
-   \brief Provides Qt3D QML types for rendering.
+    The following examples demonstrate 2D and 3D rendering using Qt3D.
 
-   To import and use the module's QML types, use the following statement:
+    \section1 QML Examples
+    \annotatedlist qt3d-examples-qml
 
-   \badcode
-   import Qt3D.Render 2.0
-   \endcode
+    \section1 C++ Examples
+    \annotatedlist qt3d-examples-cpp
 */
