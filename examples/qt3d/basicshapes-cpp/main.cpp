@@ -38,7 +38,7 @@
 
 #include <QGuiApplication>
 
-#include <Qt3DCore/window.h>
+#include <window.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
@@ -74,7 +74,7 @@
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Qt3D::Window *view = new Qt3D::Window();
+    Window *view = new Window();
     QWidget *container = QWidget::createWindowContainer(view);
 
     QSize screenSize = view->screen()->size();

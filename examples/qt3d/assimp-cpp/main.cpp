@@ -37,7 +37,7 @@
 #include <QFileDialog>
 #include <QApplication>
 
-#include <Qt3DCore/Window>
+#include <window.h>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
@@ -52,7 +52,7 @@ int main(int ac, char **av)
 {
     QApplication app(ac, av);
 
-    Qt3D::Window view;
+    Window view;
 
     Qt3D::QAspectEngine engine;
     Qt3D::QInputAspect *inputAspect = new Qt3D::QInputAspect();

@@ -35,10 +35,11 @@
 ****************************************************************************/
 
 #include <QGuiApplication>
+#include <window.h>
+
 #include <QPropertyAnimation>
 #include <QUrl>
 #include <QTimer>
-#include <Qt3DCore/Window>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QTransform>

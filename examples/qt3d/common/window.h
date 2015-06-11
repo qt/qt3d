@@ -34,59 +34,20 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef WINDOW_H
+#define WINDOW_H
 
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QGuiApplication>
-#include <QOpenGLContext>
+#include <QWindow>
 
-#include "qnode.h"
-#include "qcamera.h"
-#include "qentity.h"
-#include "qaspectengine.h"
-#include <Qt3DCore/private/corelogging_p.h>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-Window::Window(QScreen *screen)
-    : QWindow(screen)
-
+class Window : public QWindow
 {
-    setSurfaceType(QSurface::OpenGLSurface);
+    Q_OBJECT
+public:
+    explicit Window(QScreen *screen = 0);
+    ~Window();
 
-    resize(1024, 768);
+protected:
+    virtual void keyPressEvent(QKeyEvent *e);
+};
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize( 24 );
-    format.setSamples( 4 );
-    setFormat(format);
-    create();
-}
-
-Window::~Window()
-{
-}
-
-void Window::keyPressEvent( QKeyEvent* e )
-{
-    switch ( e->key() )
-    {
-        case Qt::Key_Escape:
-            QGuiApplication::quit();
-            break;
-
-        default:
-            QWindow::keyPressEvent( e );
-    }
-}
-
-} // namespace Qt3D
-
-QT_END_NAMESPACE
+#endif // QT3D_WINDOW_H

@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/Window>
+#include <window.h>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -67,7 +67,7 @@ int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3D::Window view;
+    Window view;
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
     Qt3D::QInputAspect *input = new Qt3D::QInputAspect;

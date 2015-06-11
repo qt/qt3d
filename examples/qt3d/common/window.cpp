@@ -34,29 +34,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WINDOW_H
-#define QT3D_WINDOW_H
+#include "window.h"
 
-#include <QWindow>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <QKeyEvent>
+#include <QGuiApplication>
+#include <QOpenGLContext>
 
-QT_BEGIN_NAMESPACE
+Window::Window(QScreen *screen)
+    : QWindow(screen)
 
-namespace Qt3D {
-
-class QT3DCORESHARED_EXPORT Window : public QWindow
 {
-    Q_OBJECT
-public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
+    setSurfaceType(QSurface::OpenGLSurface);
 
-protected:
-    virtual void keyPressEvent(QKeyEvent *e);
-};
+    resize(1024, 768);
 
-} // namespace Qt3D
+    QSurfaceFormat format;
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(4, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
+    format.setDepthBufferSize( 24 );
+    format.setSamples( 4 );
+    setFormat(format);
+    create();
+}
 
-QT_END_NAMESPACE
+Window::~Window()
+{
+}
 
-#endif // QT3D_WINDOW_H
+void Window::keyPressEvent( QKeyEvent* e )
+{
+    switch ( e->key() )
+    {
+        case Qt::Key_Escape:
+            QGuiApplication::quit();
+            break;
+
+        default:
+            QWindow::keyPressEvent( e );
+    }
+}
