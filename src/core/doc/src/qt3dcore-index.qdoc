@@ -85,4 +85,19 @@
         \li \l {Qt3D Render C++ Classes}
         \li \l {Qt3D Examples}
     \endlist
+
+    \section1 Qt3D Platform Support
+
+    In this Technology Preview Qt3D has the following support for platforms:
+
+    \list
+        \li Microsoft Windows (win32) - Supported
+        \li Linux X11 - Supported
+        \li OS X - Supported although there may be some retina scaling issues
+        \li Android - Supported
+        \li Embedded Linux - Supported
+        \li iOS - Not supported yet (coming in Qt 5.6)
+        \li WinRT - Not supported yet
+        \li Windows CE - Compiles but not tested
+    \endlist
 */
