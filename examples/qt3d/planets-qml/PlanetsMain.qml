@@ -50,6 +50,7 @@ Item {
         anchors.fill: parent
         color: "black"
 
+        //! [0]
         Scene3D {
             anchors.fill: parent
             anchors.margins: 10
@@ -58,6 +59,7 @@ Item {
 
             SolarSystem { id: solarsystem }
         }
+        //! [0]
 
         MouseArea {
             anchors.fill: parent
@@ -71,6 +73,7 @@ Item {
         }
     }
 
+    //! [1]
     onFocusedPlanetChanged: {
         solarsystem.setFreeCamera(false)
         if (focusedPlanet == 100) {
@@ -84,6 +87,7 @@ Item {
         solarsystem.changePlanetFocus(oldPlanet, focusedPlanet)
         oldPlanet = focusedPlanet
     }
+    //! [1]
 
     ListModel {
         id: planetModel
@@ -285,7 +289,9 @@ Item {
         value: 1
         minimumValue: 1
         maximumValue: 2
+        //! [2]
         onValueChanged: solarsystem.changeCameraDistance(value)
+        //! [2]
     }
     Text {
         y: distanceSlider.y + distanceSlider.height + width + 10
