@@ -10,7 +10,9 @@ SOURCES += \
 OTHER_FILES += \
     *.qml \
     planets.js \
-    shaders\*.*
+    shaders/*.* \
+    doc/src/*.* \
+    doc/images/*.*
 
 RESOURCES += \
     planets-qml.qrc \

@@ -156,6 +156,7 @@ Entity {
         light: light
     }
 
+    //! [2]
     QQ2.Component.onCompleted: {
         planetData = Planets.loadPlanetData()
         // Push in the correct order
@@ -181,7 +182,9 @@ Entity {
         changeSpeed(0.2)
         setLookAtOffset(Planets.SUN)
     }
+    //! [2]
 
+    //! [0]
     QQ2.NumberAnimation {
         id: lookAtOffsetAnimation
         target: sceneRoot
@@ -199,6 +202,7 @@ Entity {
         easing.type: Easing.InOutQuint
         duration: 2500
     }
+    //! [0]
 
     QQ2.Behavior on cameraNear {
         QQ2.PropertyAnimation {
@@ -408,6 +412,7 @@ Entity {
         cameraDistance = distance
     }
 
+    //! [3]
     function animate(focusedPlanet) {
         if (!ready || freeCamera)
             return
@@ -418,6 +423,7 @@ Entity {
 
         updateCamera(focusedPlanet)
     }
+    //! [3]
 
     function updateCamera(focusedPlanet) {
         // Get the appropriate near plane position for the camera and animate it with QML animations
@@ -602,6 +608,7 @@ Entity {
 
     // EARTH
 
+    //! [1]
     Planet {
         id: earth
         tilt: planetData[Planets.EARTH].tilt
@@ -639,6 +646,7 @@ Entity {
 
         components: [ earth, materialEarth, transformEarth ]
     }
+    //! [1]
 
     // EARTH CLOUDS
 
