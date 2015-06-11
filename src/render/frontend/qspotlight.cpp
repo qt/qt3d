@@ -83,7 +83,7 @@ QSpotLightPrivate::QSpotLightPrivate()
     \qmltype SpotLight
     \instantiates Qt3D::QSpotLight
     \inherits AbstractLight
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
@@ -119,7 +119,7 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty vector3d Qt3D.Render::SpotLight::direction
+  \qmlproperty vector3d Qt3D.Renderer::SpotLight::direction
 
 */
 
@@ -136,7 +136,7 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 
 
 /*!
-  \qmlproperty float Qt3D.Render::SpotLight::cutOffAngle
+  \qmlproperty float Qt3D.Renderer::SpotLight::cutOffAngle
 
 */
 

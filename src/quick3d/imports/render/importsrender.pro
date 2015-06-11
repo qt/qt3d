@@ -1,14 +1,14 @@
 CXX_MODULE = qml
-TARGET = quick3drenderplugin
-TARGETPATH = Qt3D/Render
+TARGET = quick3drendererplugin
+TARGETPATH = Qt3D/Renderer
 
 QT += core-private qml qml-private 3dcore 3drenderer 3dquick 3dquickrenderer-private
 
 HEADERS += \
-    qt3dquick3drenderplugin.h
+    qt3dquick3drendererplugin.h
 
 SOURCES += \
-    qt3dquick3drenderplugin.cpp
+    qt3dquick3drendererplugin.cpp
 
 OTHER_FILES += qmldir
 

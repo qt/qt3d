@@ -106,7 +106,7 @@ private:
     \qmltype TextureImage
     \instantiates Qt3D::QTextureImage
     \inherits AbstractTextureImage
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture
     image from an image source.
@@ -144,7 +144,7 @@ QUrl QTextureImage::source() const
 */
 
 /*!
-  \qmlproperty url Qt3D.Render::TextureImage::source
+  \qmlproperty url Qt3D.Renderer::TextureImage::source
 
   This property holdsthe source url from which data for the texture
   image will be loaded.

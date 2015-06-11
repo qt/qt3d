@@ -74,7 +74,7 @@ QFrameGraphPrivate::QFrameGraphPrivate()
     \qmltype FrameGraph
     \instantiates Qt3D::QFrameGraph
     \inherits Component3D
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
@@ -105,7 +105,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty Qt3D.Render::FrameGraphNode Qt3D.Render::FrameGraph::activeFrameGraph
+  \qmlproperty Qt3D.Renderer::FrameGraphNode Qt3D.Renderer::FrameGraph::activeFrameGraph
 
   Holds the current activeFrameGraph root node.
 */

@@ -65,7 +65,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
 /*!
     \qmltype FrameGraphNode
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \instantiates QFrameGraphNode
     \inherits Node
     \since 5.5
@@ -103,7 +103,7 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::FrameGraphNode::enabled
+    \qmlproperty bool Qt3D.Renderer::FrameGraphNode::enabled
 
     Holds whether the frame graph node is enabled or disabled.
 */

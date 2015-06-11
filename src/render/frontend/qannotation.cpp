@@ -64,7 +64,7 @@ QAnnotationPrivate::QAnnotationPrivate()
     \qmltype Annotation
     \instantiates Qt3D::QAnnotation
     \inherits Node
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For annotating ...
 */
@@ -112,7 +112,7 @@ void QAnnotation::setName(const QString &name)
 */
 
 /*!
-  \qmlproperty variant Qt3D.Render::Annotation::value
+  \qmlproperty variant Qt3D.Renderer::Annotation::value
 */
 
 QVariant QAnnotation::value() const
@@ -127,7 +127,7 @@ QVariant QAnnotation::value() const
  */
 
 /*!
-  \qmlproperty string Qt3D.Render::Annotation::name
+  \qmlproperty string Qt3D.Renderer::Annotation::name
  */
 
 QString QAnnotation::name() const

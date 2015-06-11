@@ -61,7 +61,7 @@ QParameterMappingPrivate::QParameterMappingPrivate()
     \qmltype ParameterMapping
     \instantiates Qt3D::QParameterMapping
     \inherits Node
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For ...
 */
@@ -121,7 +121,7 @@ QParameterMapping::QParameterMapping(const QString &parameterName, const QString
 */
 
 /*!
-  \qmlproperty string Qt3D.Render::ParameterMapping::parameterName
+  \qmlproperty string Qt3D.Renderer::ParameterMapping::parameterName
 
 */
 
@@ -140,7 +140,7 @@ void QParameterMapping::setParameterName(const QString &name)
 */
 
 /*!
-  \qmlproperty string Qt3D.Render::ParameterMapping::shaderVariableName
+  \qmlproperty string Qt3D.Renderer::ParameterMapping::shaderVariableName
 
 */
 
@@ -159,7 +159,7 @@ void QParameterMapping::setShaderVariableName(const QString &name)
 */
 
 /*!
-  \qmlproperty  BindingType Qt3D.Render::ParameterMapping::bindingType
+  \qmlproperty  BindingType Qt3D.Renderer::ParameterMapping::bindingType
 
   \value Uniform
   \value Attribute

@@ -61,7 +61,7 @@ QLayerPrivate::QLayerPrivate()
     \qmltype Layer
     \instantiates Qt3D::QLayer
     \inherits Component3D
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For ...
 */
@@ -98,7 +98,7 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Render::Layer::names
+  \qmlproperty stringlist Qt3D.Renderer::Layer::names
 
 */
 

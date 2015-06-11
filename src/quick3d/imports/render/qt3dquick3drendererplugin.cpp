@@ -36,7 +36,7 @@
 ****************************************************************************/
 
 #include <QtQml>
-#include "qt3dquick3drenderplugin.h"
+#include "qt3dquick3drendererplugin.h"
 #include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qsceneloader.h>
@@ -139,7 +139,7 @@ QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Q
     return values;
 }
 
-void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
+void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
 {
     // Init resources for defaults QML files
     initResources();
@@ -147,7 +147,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // Converters
     QMetaType::registerConverter<Qt3D::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
-    // @uri Qt3D.Render
+    // @uri Qt3D.Renderer
     qmlRegisterUncreatableType<Qt3D::Render::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");
     qmlRegisterExtendedType<Qt3D::QSceneLoader, Qt3D::Render::Quick::Quick3DScene>(uri, 2, 0, "SceneLoader");
 //    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());

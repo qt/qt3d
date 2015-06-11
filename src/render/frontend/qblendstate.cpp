@@ -75,7 +75,7 @@ public:
     \qmltype BlendState
     \instantiates Qt3D::QBlendState
     \inherits RenderState
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief Encapsulates blending information
 */
@@ -241,7 +241,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     \qmltype BlendStateSeparate
     \instantiates Qt3D::QBlendStateSeparate
     \inherits RenderState
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief Encapsulates blending information
 */
