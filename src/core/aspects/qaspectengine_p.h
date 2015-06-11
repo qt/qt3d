@@ -74,6 +74,4 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QWaitCondition *)
-
 #endif // QT3D_QASPECTENGINE_P_H
