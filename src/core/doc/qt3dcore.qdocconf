@@ -36,11 +36,13 @@ depends                 += qtcore qtqml qtquick qtdoc qt3drenderer
 
 headerdirs += .. \
               ../../plugins \
-              ../../quick3d/quick3d
+              ../../quick3d/quick3d \
+              ../../input
 
 sourcedirs += .. \
               ../../plugins \
-              ../../quick3d/quick3d
+              ../../quick3d/quick3d \
+              ../../input
 
 exampledirs += src/snippets
 
@@ -49,6 +51,7 @@ exampledirs += src/snippets
 imagedirs   += images
 
 Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
+                        QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
