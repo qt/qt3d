@@ -79,8 +79,9 @@
 
     \section1 Overview
 
-    The high level design and motivation for Qt3D is described in the
-    \l {Qt3D Overview}.
+    The high level design and motivation for Qt3D is described in the \l {Qt3D
+    Overview}. The Qt3D Renderer aspect offers support for data-driven
+    configuration as described in \l {Qt3D Renderer Framegraph}.
 
     \section1 Reference
     \list

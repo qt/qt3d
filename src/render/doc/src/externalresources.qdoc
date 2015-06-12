@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,54 +35,6 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DRenderer
-    \title Qt3D Renderer C++ Classes
-    \brief The Qt3D Renderer module contains functionality to support 2D and 3D rendering using Qt3D.
-
-    \ingroup modules
-    \ingroup qt3d-modules
-    \qtvariable 3drenderer
-
-    The Qt3D Renderer module provides an aspect, components, and other supporting types necessary
-    to implement 2D and 3D rendering as part of the Qt3D framework.
-
-    To use classes from this module, add this directive into the C++ files:
-
-    \code
-       #include <Qt3DRenderer>
-    \endcode
-
-    To link against the corresponding C++ library, add the following to your qmake project file:
-
-    \badcode
-       QT += 3drenderer
-    \endcode
-
-    Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
-
-    \section1 Overview
-
-    The Qt3D Renderer aspect offers support for data-driven configuration as described
-    in \l {Qt3D Renderer Framegraph}.
-
-    \section1 Reference
-    \list
-    \li \l {Qt3D Renderer C++ Classes}
-    \li \l {Qt3D Examples}
-    \endlist
-*/
-
-/*!
-   \qmlmodule Qt3D.Renderer 2.0
-   \title Qt3D Renderer QML Types
-   \ingroup qmlmodules
-   \ingroup qt3d-qmlmodules
-
-   \brief Provides Qt3D QML types for rendering.
-
-   To import and use the module's QML types, use the following statement:
-
-   \badcode
-   import Qt3D.Renderer 2.0
-   \endcode
+    \externalpage http://en.wikipedia.org/wiki/Z-buffering
+    \title early z-fill pass
 */

@@ -74,9 +74,10 @@
     \section1 Configurable Renderer
 
     To combine support for both C++ and QML APIs with having a fully
-    configurable renderer, the concept of a \e framegraph was introduced.
-    While a \e scenegraph is a data-driven description of \e what to render, a
-    framegraph is a data-driven description of \e how to render it.
+    configurable renderer, the concept of a \e framegraph was introduced. While
+    a \e scenegraph is a data-driven description of \e what to render, a \l
+    {Qt3D Renderer Framegraph}{framegraph} is a data-driven description of \e
+    how to render it.
 
     A framegraph enables developers to choose between a simple forward renderer,
     including a z-fill pass, or using a deferred renderer for example. It also
