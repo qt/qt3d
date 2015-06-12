@@ -36,18 +36,22 @@
 ****************************************************************************/
 
 /*!
-    \page qt3dcore-index.html
+    \page qt3d-index.html
     \title Qt3D Module
 
     \e Qt3D provides functionality for near-realtime simulation systems
     with support for 2D and 3D rendering in both Qt C++ and Qt Quick
     applications.
 
-    The functionality in Qt3D is divided into the following modules:
+    The functionality in Qt3D is divided into the following C++ modules:
 
     \annotatedlist qt3d-modules
 
-    Classes, types and functions are declared under the \l Qt3D namespace.
+    Classes, types and functions are declared under the \l [CPP] {Qt3D} namespace.
+
+    For Qt Quick applications, Qt3D provides the following QML modules:
+
+    \annotatedlist qt3d-qmlmodules
 
     \section1 Getting Started
 
@@ -80,9 +84,8 @@
 
     \section1 Reference
     \list
-        \li \l {Qt3D}{Qt3D namespace}
-        \li \l {Qt3D Core C++ Classes}
-        \li \l {Qt3D Render C++ Classes}
+        \li \l {Qt3D Overview}
+        \li \l [CPP] {Qt3D}{Qt3D Namespace}
         \li \l {Qt3D Examples}
     \endlist
 

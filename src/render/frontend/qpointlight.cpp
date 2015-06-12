@@ -69,7 +69,7 @@ QPointLightPrivate::QPointLightPrivate()
 
 /*!
   \class QPointLight
-  \inmodule Qt3DRender
+  \inmodule Qt3DRenderer
   \since 5.5
 
  */

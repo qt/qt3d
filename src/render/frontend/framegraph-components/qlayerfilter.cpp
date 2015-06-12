@@ -53,7 +53,7 @@ QLayerFilterPrivate::QLayerFilterPrivate()
 
 /*!
     \class QLayerFilter
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief The QLayerFilter class provides ...
 */

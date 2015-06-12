@@ -11,7 +11,7 @@ qhp.projects            = Qt3DCore
 qhp.Qt3DCore.file                = qt3dcore.qhp
 qhp.Qt3DCore.namespace           = org.qt-project.qt3dcore.$QT_VERSION_TAG
 qhp.Qt3DCore.virtualFolder       = qt3dcore
-qhp.Qt3DCore.indexTitle          = Qt3D Core
+qhp.Qt3DCore.indexTitle          = Qt3D Module
 qhp.Qt3DCore.indexRoot           =
 
 qhp.Qt3DCore.filterAttributes                   = qt3dcore $QT_VERSION qtrefdoc
@@ -56,6 +56,6 @@ Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
-navigation.landingpage = "Qt3D Core"
+navigation.landingpage = "Qt3D Module"
 navigation.cppclassespage = "Qt3D Core C++ Classes"
 navigation.qmltypespage = "Qt3D Core QML Types"

@@ -55,7 +55,7 @@ QAnnotationPrivate::QAnnotationPrivate()
 
 /*!
     \class QAnnotation
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief The QAnnotation class provides ...
 */

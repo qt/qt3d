@@ -79,7 +79,7 @@ void QForwardRendererPrivate::init()
 /*!
     \class Qt3D::QForwardRenderer
     \brief The Qt3D::QForwardRenderer provides a default FrameGraph implementation of a forward renderer.
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
 
     Forward rendering is how OpenGL is traditionally. It renders directly to the backbuffer

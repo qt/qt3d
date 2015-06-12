@@ -66,7 +66,7 @@ public:
 
 /*!
     \class Qt3D::QBlendState
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
  */
@@ -232,7 +232,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
 
 /*!
     \class QBlendStateSeparate
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
  */

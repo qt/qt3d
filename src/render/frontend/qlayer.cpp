@@ -52,7 +52,7 @@ QLayerPrivate::QLayerPrivate()
 
 /*!
     \class QLayer
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief The QLayer class provides ...
 */

@@ -40,6 +40,7 @@
     \brief The Qt3D Core module contains functionality to support near-realtime simulation systems.
 
     \ingroup modules
+    \ingroup qt3d-modules
     \qtvariable 3dcore
 
     The Qt3D Core module provides the foundations and core types used for near-realtime
@@ -49,6 +50,7 @@
 /*!
     \namespace Qt3D
     \inmodule Qt3DCore
+    \ingroup qt3d-namespaces
 
     \brief Contains classes and types that are the foundation of the Qt3D simulation
     framework, as well as classes that provide the ability to render using the Qt3D
@@ -59,6 +61,7 @@
    \qmlmodule Qt3D 2.0
    \title Qt3D Core QML Types
    \ingroup qmlmodules
+   \ingroup qt3d-qmlmodules
 
    \brief Provides core Qt3D QML types.
 
@@ -67,4 +70,6 @@
    \badcode
    import Qt3D 2.0
    \endcode
+
+   \section1 QML Types
 */

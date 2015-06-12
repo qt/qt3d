@@ -53,7 +53,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
 /*!
   \class QFrameGraphNode
-  \inmodule Qt3DRender
+  \inmodule Qt3DRenderer
   \since 5.5
 
   \brief Base class of all FrameGraph configuration nodes.

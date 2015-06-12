@@ -57,7 +57,7 @@ QFrameGraphPrivate::QFrameGraphPrivate()
 
 /*!
   \class FrameGraph
-  \inmodule Qt3DRender
+  \inmodule Qt3DRenderer
   \since 5.3
 
   \brief Defines the rendering method to be used by the renderer

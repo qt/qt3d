@@ -59,7 +59,7 @@ namespace Qt3D {
 
 /*!
     \class QAbstractTextureImage
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
