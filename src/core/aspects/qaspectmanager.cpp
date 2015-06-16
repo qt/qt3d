@@ -44,10 +44,12 @@
 #include "qentity.h"
 
 #include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/qtickclockservice.h>
 
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
+#include <Qt3DCore/qabstractframeadvanceservice.h>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
@@ -162,11 +164,7 @@ void QAspectManager::exec()
     // Gentlemen, start your engines
     QEventLoop eventLoop;
 
-    //    QElapsedTimer timer;
-    //    timer.start();
-    //    qint64 t(0);
-    QTickClock tickClock;
-    tickClock.start();
+    QAbstractFrameAdvanceService *frameAdvanceService = Q_NULLPTR;
 
     // Enter the main loop
     while (!m_terminated.load())
@@ -177,14 +175,18 @@ void QAspectManager::exec()
         // Only enter main render loop once the renderer and other aspects are initialized
         while (m_runMainLoop.load())
         {
-            // Update the clocks (just main clock for now).
-            // TODO: Add additional clocks
-            qint64 t = tickClock.waitForNextTick();
-            //        qDebug() << "t =" << t / 1000000;
-            //            const qint64 t1 = timer.nsecsElapsed();
-            //            const qint64 dt = t1 - t;
-            //            t = t1;
-            //            qDebug() << "dt =" << dt;
+            // Retrieve the timer service that may have been overridden by one of the
+            // aspects
+            if (!frameAdvanceService) {
+                // Aspects such as the renderer aspect may override the tickService (vsync)
+                // if no aspect did register a tick service, we create a default one
+                if ((frameAdvanceService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService)) == Q_NULLPTR) {
+                    m_serviceLocator->registerServiceProvider(QServiceLocator::FrameAdvanceService, new QTickClockService());
+                    frameAdvanceService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+                }
+            }
+
+            qint64 t = frameAdvanceService->waitForNextFrame();
 
             // For each Aspect
             // Ask them to launch set of jobs for the current frame

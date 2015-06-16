@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,68 +34,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTMANAGER_P_H
-#define QT3D_QASPECTMANAGER_P_H
-
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QList>
-#include <QScopedPointer>
-#include <QVariant>
+#include "qabstractframeadvanceservice.h"
+#include "qabstractframeadvanceservice_p.h"
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
-
 namespace Qt3D {
 
-class QNode;
-class QEntity;
-class QScheduler;
-class QChangeArbiter;
-class QAbstractAspect;
-class QAbstractAspectJobManager;
-class QSceneObserverInterface;
-class QServiceLocator;
+/*!
+    \class Qt3D::QAbstractFrameAdvanceServicePrivate
+    \internal
+*/
 
-class QT3DCORESHARED_EXPORT QAspectManager : public QObject
+/*!
+    \class Qt3D::QAbstractFrameAdvanceService
+    \inmodule Qt3DCore
+    \brief Interface for a Qt3D frame advance service
+
+    This is an interface class that should be subclassed by providers of the
+    frame advance service. When used with the Renderer aspect, the aspect needs to
+    be the one providing the ticks depending on the vertical refresh rate. When
+    used with no Renderer aspect, a default tick clock implementation can be
+    used.
+*/
+
+
+QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(const QString &description)
+    : QAbstractServiceProvider(QServiceLocator::FrameAdvanceService, description)
 {
-    Q_OBJECT
-public:
-    explicit QAspectManager(QObject *parent = 0);
-    ~QAspectManager();
 
-public Q_SLOTS:
-    void initialize();
-    void shutdown();
+}
 
-    void setRootEntity(Qt3D::QEntity *root);
-    void setData(const QVariantMap &data);
-    void registerAspect(Qt3D::QAbstractAspect *aspect);
-    QVariantMap data() const;
+QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(QAbstractFrameAdvanceServicePrivate &dd)
+    : QAbstractServiceProvider(dd)
+{
 
-    void exec();
-    void quit();
+}
 
-    const QList<QAbstractAspect *> &aspects() const;
-    QAbstractAspectJobManager *jobManager() const;
-    QChangeArbiter *changeArbiter() const;
-    QServiceLocator *serviceLocator() const;
+/*!
+    \fn qint64 Qt3D::QAbstractTickClockService::waitForNextTick()
 
-private:
-    QList<QAbstractAspect *> m_aspects;
-    QEntity *m_root;
-    QVariantMap m_data;
-    QScheduler *m_scheduler;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_changeArbiter;
-    QAtomicInt m_runMainLoop;
-    QAtomicInt m_terminated;
-    QScopedPointer<QServiceLocator> m_serviceLocator;
-};
+    Returns the current time, the call may be blocking if waiting for a tick.
+*/
 
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QASPECTMANAGER_P_H

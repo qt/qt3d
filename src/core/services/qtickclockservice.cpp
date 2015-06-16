@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,68 +34,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTMANAGER_P_H
-#define QT3D_QASPECTMANAGER_P_H
-
-#include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
-#include <QList>
-#include <QScopedPointer>
-#include <QVariant>
+#include "qtickclockservice.h"
+#include "qtickclock_p.h"
+#include "qabstractframeadvanceservice_p.h"
 
 QT_BEGIN_NAMESPACE
 
-class QSurface;
-
 namespace Qt3D {
+/*!
+    \class Qt3D::QTickClockServicePrivate
+    \internal
+*/
 
-class QNode;
-class QEntity;
-class QScheduler;
-class QChangeArbiter;
-class QAbstractAspect;
-class QAbstractAspectJobManager;
-class QSceneObserverInterface;
-class QServiceLocator;
-
-class QT3DCORESHARED_EXPORT QAspectManager : public QObject
+class QTickClockServicePrivate : public QAbstractFrameAdvanceServicePrivate
 {
-    Q_OBJECT
 public:
-    explicit QAspectManager(QObject *parent = 0);
-    ~QAspectManager();
+    QTickClockServicePrivate()
+        : QAbstractFrameAdvanceServicePrivate(QStringLiteral("Default Frame Advance Service implementation"))
+    {
+        m_clock.setTickFrequency(60);
+        m_clock.start();
+    }
 
-public Q_SLOTS:
-    void initialize();
-    void shutdown();
-
-    void setRootEntity(Qt3D::QEntity *root);
-    void setData(const QVariantMap &data);
-    void registerAspect(Qt3D::QAbstractAspect *aspect);
-    QVariantMap data() const;
-
-    void exec();
-    void quit();
-
-    const QList<QAbstractAspect *> &aspects() const;
-    QAbstractAspectJobManager *jobManager() const;
-    QChangeArbiter *changeArbiter() const;
-    QServiceLocator *serviceLocator() const;
-
-private:
-    QList<QAbstractAspect *> m_aspects;
-    QEntity *m_root;
-    QVariantMap m_data;
-    QScheduler *m_scheduler;
-    QAbstractAspectJobManager *m_jobManager;
-    QChangeArbiter *m_changeArbiter;
-    QAtomicInt m_runMainLoop;
-    QAtomicInt m_terminated;
-    QScopedPointer<QServiceLocator> m_serviceLocator;
+    QTickClock m_clock;
 };
 
-} // namespace Qt3D
+/*!
+    \class Qt3D::QTickClockService
+    \inmodule Qt3DCore
+    \brief Default Qt3D::QAbstractFrameAdvanceService implementation.
+
+    This default Qt3D::QAbstractFrameAdvanceService implementation has a frequency of 60 Hz.
+*/
+QTickClockService::QTickClockService()
+    : QAbstractFrameAdvanceService(*new QTickClockServicePrivate())
+{
+}
+
+QTickClockService::~QTickClockService()
+{
+}
+
+qint64 QTickClockService::waitForNextFrame()
+{
+    Q_D(QTickClockService);
+    return d->m_clock.waitForNextTick();
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QASPECTMANAGER_P_H

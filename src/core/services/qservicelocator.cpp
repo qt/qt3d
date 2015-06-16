@@ -205,7 +205,6 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
         return systemInformation();
     case OpenGLInformation:
         return openGLInformation();
-
     default:
         return d->m_services.value(type, Q_NULLPTR);
     }
