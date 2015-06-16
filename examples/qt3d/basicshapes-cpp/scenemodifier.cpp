@@ -41,14 +41,18 @@
 SceneModifier::SceneModifier(Qt3D::QEntity *rootEntity)
     : m_rootEntity(rootEntity)
 {
+
     // Torus shape data
+    //! [0]
     m_torus = new Qt3D::QTorusMesh();
     m_torus->setRadius(1.0f);
     m_torus->setMinorRadius(0.4f);
     m_torus->setRings(100);
     m_torus->setSlices(20);
+    //! [0]
 
     // TorusMesh Transform
+    //! [1]
     Qt3D::QScaleTransform *torusScale = new Qt3D::QScaleTransform();
     Qt3D::QTranslateTransform *torusTranslation = new Qt3D::QTranslateTransform();
     Qt3D::QRotateTransform *torusRotation = new Qt3D::QRotateTransform();
@@ -62,15 +66,20 @@ SceneModifier::SceneModifier(Qt3D::QEntity *rootEntity)
     torusTransforms->addTransform(torusRotation);
     torusTransforms->addTransform(torusTranslation);
     torusTransforms->addTransform(torusScale);
+    //! [1]
 
+    //! [2]
     Qt3D::QPhongMaterial *torusMaterial = new Qt3D::QPhongMaterial();
     torusMaterial->setDiffuse(QColor(QRgb(0xbeb32b)));
+    //! [2]
 
     // Torus
+    //! [3]
     m_torusEntity = new Qt3D::QEntity(m_rootEntity);
     m_torusEntity->addComponent(m_torus);
     m_torusEntity->addComponent(torusMaterial);
     m_torusEntity->addComponent(torusTransforms);
+    //! [3]
 
     // Cylinder shape data
     Qt3D::QCylinderMesh *cylinder = new Qt3D::QCylinderMesh();
@@ -157,10 +166,12 @@ SceneModifier::~SceneModifier()
 {
 }
 
+//! [4]
 void SceneModifier::enableTorus(bool enabled)
 {
     m_torusEntity->setParent(enabled ? m_rootEntity : Q_NULLPTR);
 }
+//! [4]
 
 void SceneModifier::enableCylinder(bool enabled)
 {

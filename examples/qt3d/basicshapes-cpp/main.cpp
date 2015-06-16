@@ -76,12 +76,9 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     Window *view = new Window();
     QWidget *container = QWidget::createWindowContainer(view);
-
     QSize screenSize = view->screen()->size();
-    container->setMinimumSize(QSize(screenSize.width() / 2, screenSize.height() / 1.5));
+    container->setMinimumSize(QSize(200, 100));
     container->setMaximumSize(screenSize);
-    container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    container->setFocusPolicy(Qt::StrongFocus);
 
     QWidget *widget = new QWidget;
     QHBoxLayout *hLayout = new QHBoxLayout(widget);
@@ -176,7 +173,7 @@ int main(int argc, char **argv)
 
     // Show window
     widget->show();
-    widget->resize(1280, 600);
+    widget->resize(1200, 800);
 
     // Update the aspect ratio
     QSize widgetSize =  container->size();
