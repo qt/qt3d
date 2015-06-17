@@ -30,7 +30,8 @@ SUBDIRS += \
     controls \
     anaglyph-rendering \
     simple-shaders-qml \
-    planets-qml
+    planets-qml \
+    plasma
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
