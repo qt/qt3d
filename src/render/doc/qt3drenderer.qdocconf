@@ -45,6 +45,9 @@ exampledirs += ../../../examples/qt3d \
 
 imagedirs   += images
 
+examples.fileextensions       += "*.fraq *.geom *.vert"
+examples.imageextensions      += "*.png"
+
 Cpp.ignoretokens     += QT3DRENDERERSHARED_EXPORT \
                         QT3DRENDERERSHARED_PRIVATE_EXPORT
 

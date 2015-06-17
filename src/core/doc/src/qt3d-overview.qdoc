@@ -60,9 +60,9 @@
     \list
         \li 2D and 3D rendering for C++ and Qt Quick applications
         \li Meshes
-        \li Materials
+        \li \l {Materials}
         \li Shadows
-        \li Shaders
+        \li \l {Shaders}
         \li Ambient occlusion
         \li High dynamic range
         \li Deferred rendering
@@ -70,6 +70,33 @@
         \li Instancing
         \li Uniform Buffer Objects
     \endlist
+
+    \section2 Materials
+
+    Qt3D has a robust and very flexible material system that allows multiple
+    levels of customization. It caters for different rendering approaches on
+    different platforms or OpenGL versions, enables multiple rendering passes
+    with different state sets, provides mechanisms for overriding of parameters
+    at different levels, and allows easy switching of shaders. All this from C++
+    or using QML property bindings.
+
+    The properties of a \l Material type can easily be mapped through to uniform
+    variables in a GLSL shader program that is itself specified in the
+    referenced effect property.
+
+    For examples of using materials, see the \l {Qt3D: Materials C++ Example}
+    and \l {Qt3D: Materials QML Example}.
+
+    \section2 Shaders
+
+    Qt3D supports all of the OpenGL programmable rendering pipeline stages:
+    vertex, tessellation control, tessellation evaluation, geometry, and
+    fragment shaders. Compute shaders are planned for a future release.
+
+    For examples of using shaders, see the Simple Shaders QML Example,
+    \l {Qt3D: Tessellation Modes QML Example},
+    \l {Qt3D: Shadow Map QML Example}, \l{Qt3D: Wireframe QML Example}, and
+    \l {Qt3D: Wave QML Example}.
 
     \section1 Configurable Renderer
 
