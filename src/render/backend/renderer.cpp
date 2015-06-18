@@ -74,6 +74,7 @@
 #include <Qt3DRenderer/private/scenemanager_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
+#include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -138,6 +139,7 @@ Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
     , m_textureImageManager(new TextureImageManager())
     , m_renderQueues(new RenderQueues(cachedFrames - 1))
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
+    , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
     , m_frameCount(0)
     , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
@@ -369,6 +371,8 @@ void Renderer::initialize(QOpenGLContext *context)
 
     // Awake setScenegraphRoot in case it was waiting
     m_waitForInitializationToBeCompleted.wakeOne();
+    // Allow the aspect manager to proceed
+    m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
 
 /*!
@@ -516,6 +520,11 @@ void Renderer::doRender(int maxFrameCount)
 {
     // Render using current device state and renderer configuration
     submitRenderViews(maxFrameCount);
+
+    // We allow the RenderTickClock service to proceed to the next frame
+    // In turn this will allow the aspect manager to request a new set of jobs
+    // to be performed for each aspect
+    m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
 
 // Called by threadWeaver RenderViewJobs
@@ -659,6 +668,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
     }
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed " << m_frameCount << " RenderQueues in " << timer.elapsed() << "ms";
     m_frameCount = 0;
+
 }
 
 // Waits to be told to create jobs for the next frame

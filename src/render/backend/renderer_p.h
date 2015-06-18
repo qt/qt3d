@@ -121,6 +121,7 @@ class ParameterManager;
 class ShaderDataManager;
 class UBOManager;
 class TextureImageManager;
+class VSyncFrameAdvanceService;
 
 class Renderer
 {
@@ -183,6 +184,7 @@ public:
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
     inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
+    inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
 
     QOpenGLFilter *contextInfo() const;
 
@@ -260,6 +262,7 @@ private:
 
     RenderQueues *m_renderQueues;
     QScopedPointer<RenderThread> m_renderThread;
+    QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();
