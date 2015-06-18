@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,7 +34,10 @@
 **
 ****************************************************************************/
 
-#include "renderlogging_p.h"
+#ifndef QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H
+#define QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H
+
+#include <Qt3DCore/qabstractframeadvanceservice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -42,20 +45,26 @@ namespace Qt3D {
 
 namespace Render {
 
-Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.Backend")
-Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.Frontend")
-Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.IO")
-Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.Jobs")
-Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.Framegraph")
-Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.RenderNodes")
-Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.Rendering")
-Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.Memory")
-Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.Shaders")
-Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RenderStates")
-Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.VsyncAdvanceService")
+class VSyncFrameAdvanceServicePrivate;
+
+class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public QAbstractFrameAdvanceService
+{
+public:
+    VSyncFrameAdvanceService();
+    ~VSyncFrameAdvanceService();
+
+    qint64 waitForNextFrame() Q_DECL_FINAL;
+
+    void proceedToNextFrame();
+
+private:
+    Q_DECLARE_PRIVATE(VSyncFrameAdvanceService)
+};
 
 } // Render
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H

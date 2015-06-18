@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,7 +34,11 @@
 **
 ****************************************************************************/
 
-#include "renderlogging_p.h"
+#include "vsyncframeadvanceservice_p.h"
+#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
+#include <QSemaphore>
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 
@@ -42,17 +46,49 @@ namespace Qt3D {
 
 namespace Render {
 
-Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.Backend")
-Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.Frontend")
-Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.IO")
-Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.Jobs")
-Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.Framegraph")
-Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.RenderNodes")
-Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.Rendering")
-Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.Memory")
-Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.Shaders")
-Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RenderStates")
-Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.VsyncAdvanceService")
+class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public QAbstractFrameAdvanceServicePrivate
+{
+public:
+    VSyncFrameAdvanceServicePrivate()
+        : QAbstractFrameAdvanceServicePrivate(QStringLiteral("Renderer Aspect Frame Advance Service - aligned with vsync"))
+        , m_semaphore(0)
+        , m_elapsedTimeSincePreviousFrame(0)
+    {
+        m_elapsed.start();
+    }
+
+    QSemaphore m_semaphore;
+    QElapsedTimer m_elapsed;
+    quint64 m_elapsedTimeSincePreviousFrame;
+};
+
+VSyncFrameAdvanceService::VSyncFrameAdvanceService()
+    : QAbstractFrameAdvanceService(*new VSyncFrameAdvanceServicePrivate())
+{
+}
+
+VSyncFrameAdvanceService::~VSyncFrameAdvanceService()
+{
+}
+
+// Aspect Thread
+qint64 VSyncFrameAdvanceService::waitForNextFrame()
+{
+    Q_D(VSyncFrameAdvanceService);
+    d->m_semaphore.acquire(1);
+
+    const quint64 currentTime = d->m_elapsed.nsecsElapsed();
+    qCDebug(VSyncAdvanceService) << "Elapsed nsecs since last call " << currentTime - d->m_elapsedTimeSincePreviousFrame;
+    d->m_elapsedTimeSincePreviousFrame = currentTime;
+    return currentTime;
+}
+
+// Render Thread
+void VSyncFrameAdvanceService::proceedToNextFrame()
+{
+    Q_D(VSyncFrameAdvanceService);
+    d->m_semaphore.release(1);
+}
 
 } // Render
 
