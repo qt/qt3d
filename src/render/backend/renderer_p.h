@@ -56,6 +56,7 @@
 #include <QWaitCondition>
 #include <QAtomicInt>
 #include <QScopedPointer>
+#include <QSemaphore>
 #include <QThreadStorage>
 
 QT_BEGIN_NAMESPACE
@@ -269,7 +270,7 @@ private:
     void loadSceneParsers();
 
     QMutex m_mutex;
-    QWaitCondition m_submitRenderViewsCondition;
+    QSemaphore m_submitRenderViewsSemaphore;
     QWaitCondition m_waitForWindowToBeSetCondition;
     QWaitCondition m_waitForInitializationToBeCompleted;
     uint m_frameCount;

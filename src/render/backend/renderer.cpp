@@ -250,7 +250,7 @@ Renderer::~Renderer()
     // We check for termination immediately after being awoken.
     if (m_renderThread) {
         m_running.fetchAndStoreOrdered(0);
-        m_submitRenderViewsCondition.wakeOne();
+        m_submitRenderViewsSemaphore.release(1);
         m_renderThread->wait();
     }
 
@@ -543,7 +543,7 @@ void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder
         m_currentPreprocessingFrameIndex = (m_currentPreprocessingFrameIndex + 1) % (m_cachedFramesCount + 1);
         m_renderQueues->pushFrameQueue();
         qCDebug(Memory) << Q_FUNC_INFO << "Next frame index " << m_currentPreprocessingFrameIndex;
-        m_submitRenderViewsCondition.wakeOne();
+        m_submitRenderViewsSemaphore.release(1);
     }
 }
 
@@ -569,10 +569,10 @@ bool Renderer::canRender() const
 // Happens in RenderThread context when all RenderViewJobs are done
 void Renderer::submitRenderViews(int maxFrameCount)
 {
-    QMutexLocker locker(&m_mutex);
+    // If we are using a render thread, make sure that
+    // we've been told to render before rendering
     if (m_renderThread)
-        m_submitRenderViewsCondition.wait(locker.mutex());
-    locker.unlock();
+        m_submitRenderViewsSemaphore.acquire(1);
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
@@ -590,7 +590,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
 
         // Lock the mutex to protect access to m_surface and check if we are still set
         // to the running state and that we have a valid surface on which to draw
-        locker.relock();
+        QMutexLocker locker(&m_mutex);
         if (!canRender()) {
             QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
             qDeleteAll(renderViews);
