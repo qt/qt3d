@@ -21,7 +21,6 @@ include (./services/services.pri)
 
 HEADERS += \
     $$PWD/qt3dcore_global.h \
-    $$PWD/window.h \
     $$PWD/qtickclock_p.h \
     $$PWD/qscheduler_p.h \
     $$PWD/corelogging_p.h \
@@ -44,7 +43,6 @@ HEADERS += \
     $$PWD/qt3dcore_global_p.h
 
 SOURCES += \
-    $$PWD/window.cpp \
     $$PWD/qtickclock.cpp \
     $$PWD/qscheduler.cpp \
     $$PWD/qchangearbiter.cpp \

@@ -26,7 +26,16 @@
 ****************************************************************************/
 
 /*!
-    \example torus-cpp
-    \title Qt3D: Torus C++ Example
-    \ingroup qt3d-examples-cpp
+    \page qt3d-examples.html
+    \ingroup all-examples
+    \title Qt3D Examples
+    \brief Examples that demonstrate 2D and 3D rendering using Qt3D.
+
+    The following examples demonstrate 2D and 3D rendering using Qt3D.
+
+    \section1 QML Examples
+    \annotatedlist qt3d-examples-qml
+
+    \section1 C++ Examples
+    \annotatedlist qt3d-examples-cpp
 */

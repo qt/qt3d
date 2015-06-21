@@ -84,6 +84,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Q3DKeyEvent*)
-
 #endif // QT3D_Q3DKEYEVENT_H

@@ -34,30 +34,44 @@
 **
 ****************************************************************************/
 
-/*!
-    \module Qt3DRender
-    \title Qt3D Render C++ Classes
-    \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
+#include "window.h"
 
-    \ingroup modules
-    \qtvariable 3drender
+#include <QKeyEvent>
+#include <QGuiApplication>
+#include <QOpenGLContext>
 
-    The Qt3D Render module provides an aspect, components, and other supporting types necessary
-    to implement 2D and 3D rendering as part of the Qt3D framework.
+Window::Window(QScreen *screen)
+    : QWindow(screen)
 
-    Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
-*/
+{
+    setSurfaceType(QSurface::OpenGLSurface);
 
-/*!
-   \qmlmodule Qt3D.Render 2.0
-   \title Qt3D Render QML Types
-   \ingroup qmlmodules
+    resize(1024, 768);
 
-   \brief Provides Qt3D QML types for rendering.
+    QSurfaceFormat format;
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(4, 3);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
+    format.setDepthBufferSize( 24 );
+    format.setSamples( 4 );
+    setFormat(format);
+    create();
+}
 
-   To import and use the module's QML types, use the following statement:
+Window::~Window()
+{
+}
 
-   \badcode
-   import Qt3D.Render 2.0
-   \endcode
-*/
+void Window::keyPressEvent( QKeyEvent* e )
+{
+    switch ( e->key() )
+    {
+        case Qt::Key_Escape:
+            QGuiApplication::quit();
+            break;
+
+        default:
+            QWindow::keyPressEvent( e );
+    }
+}

@@ -42,9 +42,9 @@
 #include "weaverjob_p.h"
 #endif
 
-#include "qaspectjobmanager.h"
 #include "qaspectjobmanager_p.h"
 #include "task_p.h"
+#include "qthreadpooler_p.h"
 #include "dependencyhandler_p.h"
 
 #include <QAtomicInt>
@@ -102,49 +102,27 @@ void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 #endif
 
 /*!
-    \class Qt3D::QAspectJobManagerPrivate
+    \class Qt3D::QAspectJobManager
     \internal
 */
-QAspectJobManagerPrivate::QAspectJobManagerPrivate()
-    : QAbstractAspectJobManagerPrivate()
+QAspectJobManager::QAspectJobManager(QObject *parent)
+    : QAbstractAspectJobManager(parent)
 #ifdef THREAD_WEAVER
     , m_weaver(Q_NULLPTR)
 #endif
+    , m_threadPooler(new QThreadPooler(this))
+    , m_dependencyHandler(new DependencyHandler)
 {
-}
-
-QAspectJobManagerPrivate::~QAspectJobManagerPrivate()
-{
-    delete m_dependencyHandler;
-}
-
-QAspectJobManager::QAspectJobManager(QObject *parent)
-    : QAbstractAspectJobManager(*new QAspectJobManagerPrivate, parent)
-{
-    Q_D(QAspectJobManager);
 #ifdef THREAD_WEAVER
-    d->m_weaver = new ThreadWeaver::Queue(this);
-    d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
+    m_weaver = new ThreadWeaver::Queue(this);
+    m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
 #else
-    d->m_threadPooler = new QThreadPooler(this);
-    d->m_dependencyHandler = new DependencyHandler();
-    d->m_threadPooler->setDependencyHandler(d->m_dependencyHandler);
+    m_threadPooler->setDependencyHandler(m_dependencyHandler.data());
 #endif
 }
 
-/*! \internal */
-QAspectJobManager::QAspectJobManager(QAspectJobManagerPrivate &dd, QObject *parent)
-    : QAbstractAspectJobManager(dd, parent)
+QAspectJobManager::~QAspectJobManager()
 {
-    Q_D(QAspectJobManager);
-#ifdef THREAD_WEAVER
-    d->m_weaver = new ThreadWeaver::Queue(this);
-    d->m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
-#else
-    d->m_threadPooler = new QThreadPooler(this);
-    d->m_dependencyHandler = new DependencyHandler();
-    d->m_threadPooler->setDependencyHandler(d->m_dependencyHandler);
-#endif
 }
 
 void QAspectJobManager::initialize()
@@ -153,8 +131,6 @@ void QAspectJobManager::initialize()
 
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
-    Q_D(QAspectJobManager);
-
 #ifdef THREAD_WEAVER
     // Convert QJobs to ThreadWeaver::Jobs
     QHash<QAspectJob *, QSharedPointer<WeaverJob> > jobsMap;
@@ -181,7 +157,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
         QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
-        d->m_weaver->enqueue(weaverJob);
+        m_weaver->enqueue(weaverJob);
     }
 #else
     // Convert QJobs to Tasks
@@ -207,43 +183,40 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
             if (taskDependee) {
                 AspectTaskRunnable *taskDepender = tasksMap.value(job.data());
                 dependencyList.append(Dependency(taskDepender, taskDependee));
-                taskDepender->setDependencyHandler(d->m_dependencyHandler);
-                taskDependee->setDependencyHandler(d->m_dependencyHandler);
+                taskDepender->setDependencyHandler(m_dependencyHandler.data());
+                taskDependee->setDependencyHandler(m_dependencyHandler.data());
             }
         }
     }
-    d->m_dependencyHandler->addDependencies(qMove(dependencyList));
+    m_dependencyHandler->addDependencies(qMove(dependencyList));
 
-    d->m_threadPooler->mapDependables(taskList);
+    m_threadPooler->mapDependables(taskList);
 #endif
 }
 
 void QAspectJobManager::waitForAllJobs()
 {
-    Q_D(QAspectJobManager);
 #ifdef THREAD_WEAVER
-    d->m_weaver->finish();
+    m_weaver->finish();
 #else
     QFutureWatcher<void> futureWatcher;
-    futureWatcher.setFuture(d->m_threadPooler->future());
+    futureWatcher.setFuture(m_threadPooler->future());
     futureWatcher.waitForFinished();
 #endif
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
-    Q_D(QAspectJobManager);
-
 #ifdef THREAD_WEAVER
-    const int threadCount = d->m_weaver->maximumNumberOfThreads();
+    const int threadCount = m_weaver->maximumNumberOfThreads();
     QAtomicInt atomicCount(threadCount);
 
     for (int i = 0; i < threadCount; ++i) {
         SynchronizedJobPtr syncJob(new SynchronizedJob(func, arg, &atomicCount));
-        d->m_weaver->enqueue(syncJob);
+        m_weaver->enqueue(syncJob);
     }
 
-    d->m_weaver->finish();
+    m_weaver->finish();
 #else
     const int threadCount = QThread::idealThreadCount();
     QAtomicInt atomicCount(threadCount);
@@ -254,7 +227,7 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
         taskList << syncTask;
     }
 
-    QFuture<void> future = d->m_threadPooler->mapDependables(taskList);
+    QFuture<void> future = m_threadPooler->mapDependables(taskList);
     QFutureWatcher<void> futureWatcher;
     futureWatcher.setFuture(future);
     futureWatcher.waitForFinished();

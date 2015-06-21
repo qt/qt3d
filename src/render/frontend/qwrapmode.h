@@ -87,6 +87,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
-
 #endif // QT3D_QWRAPMODE_H

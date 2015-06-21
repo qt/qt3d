@@ -78,7 +78,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 /*!
     \class Qt3D::QPhongMaterial
     \brief The QPhongMaterial class provides a default implementation of the phong lighting effect.
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
 
     The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.

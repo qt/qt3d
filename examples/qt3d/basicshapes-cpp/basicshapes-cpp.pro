@@ -3,7 +3,12 @@
 }
 
 QT += 3dcore 3drenderer 3dinput
+QT += widgets
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    scenemodifier.cpp
+
+HEADERS += \
+    scenemodifier.h
 
 

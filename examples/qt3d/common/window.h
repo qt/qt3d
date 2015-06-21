@@ -34,40 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECTJOBMANAGER_H
-#define QT3D_QABSTRACTASPECTJOBMANAGER_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
-#include <QObject>
+#include <QWindow>
 
-#include <Qt3DCore/qaspectjob.h>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3D {
-
-class QAbstractAspectJobManagerPrivate;
-
-class QAbstractAspectJobManager : public QObject
+class Window : public QWindow
 {
     Q_OBJECT
 public:
-    explicit QAbstractAspectJobManager(QObject *p = 0);
-
-    virtual void initialize() {}
-    virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;
-    virtual void waitForAllJobs() = 0;
-
-    // Callback signature for running SynchronizedJobs
-    typedef void (*JobFunction)(void *);
-    virtual void waitForPerThreadFunction(JobFunction func, void *arg) = 0;
+    explicit Window(QScreen *screen = 0);
+    ~Window();
 
 protected:
-    QAbstractAspectJobManager(QAbstractAspectJobManagerPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QAbstractAspectJobManager)
+    virtual void keyPressEvent(QKeyEvent *e);
 };
 
-} // namespace Qt3D
-
-QT_END_NAMESPACE
-
-#endif // QT3D_QABSTRACTASPECTJOBMANAGER_H
+#endif // QT3D_WINDOW_H

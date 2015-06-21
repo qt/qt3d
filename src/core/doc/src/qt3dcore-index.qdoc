@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2015 The Qt Company Ltd.
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -35,31 +36,72 @@
 ****************************************************************************/
 
 /*!
-    \title  Qt3D Core
-    \page   qt3dcore-index.html
-    \brief  The Qt3D Core module contains functionality to support near-realtime simulation systems.
-    \ingroup qt3d-modules
+    \page qt3d-index.html
+    \title Qt3D Module
+
+    \e Qt3D provides functionality for near-realtime simulation systems
+    with support for 2D and 3D rendering in both Qt C++ and Qt Quick
+    applications.
+
+    The functionality in Qt3D is divided into the following C++ modules:
+
+    \annotatedlist qt3d-modules
+
+    Classes, types and functions are declared under the \l [CPP] {Qt3D} namespace.
+
+    For Qt Quick applications, Qt3D provides the following QML modules:
+
+    \annotatedlist qt3d-qmlmodules
 
     \section1 Getting Started
 
-    To use Qt3D classes, add this directive into the C++ files:
+    For a C++ application that performs 2D or 3D rendering and also handles user
+    input, add the following line to your \l qmake \c .pro file:
 
-    \code
-       #include <Qt3DCore>
+    \badcode
+    QT += 3dcore 3drenderer 3dinput
     \endcode
 
-    To link against the corresponding C++ libraries, add the following to your qmake project file:
+    To include the definitions of the modules' classes, use the following
+    directives:
 
-    \code
-       QT += 3dcore
+    \badcode
+    #include <Qt3DCore>
+    #include <Qt3DRenderer>
+    #include <Qt3DInput>
     \endcode
+
+    A Qt Quick application requires also additional dependencies:
+
+    \badcode
+    QT += 3dcore 3drenderer 3dinput qml quick 3dquick
+    \endcode
+
+    \section1 Overview
+
+    The high level design and motivation for Qt3D is described in the \l {Qt3D
+    Overview}. The Qt3D Renderer aspect offers support for data-driven
+    configuration as described in \l {Qt3D Renderer Framegraph}.
 
     \section1 Reference
-
     \list
-       \li \l {Qt3D Core C++ Classes}
-       \li \l {Qt3D Core QML Types}
-       \li \l {Qt3D Examples}
+        \li \l {Qt3D Overview}
+        \li \l [CPP] {Qt3D}{Qt3D Namespace}
+        \li \l {Qt3D Examples}
     \endlist
 
+    \section1 Qt3D Platform Support
+
+    In this Technology Preview Qt3D has the following support for platforms:
+
+    \list
+        \li Microsoft Windows (win32) - Supported
+        \li Linux X11 - Supported
+        \li OS X - Supported although there may be some retina scaling issues
+        \li Android - Supported
+        \li Embedded Linux - Supported
+        \li iOS - Not supported yet (coming in Qt 5.6)
+        \li WinRT - Not supported yet
+        \li Windows CE - Compiles but not tested
+    \endlist
 */

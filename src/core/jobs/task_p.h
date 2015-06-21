@@ -37,7 +37,7 @@
 #ifndef QT3D_TASK_P_H
 #define QT3D_TASK_P_H
 
-#include "qaspectjobmanager.h"
+#include "qaspectjobmanager_p.h"
 
 #include <QtCore/QtGlobal>
 #include <QtCore/QThread>

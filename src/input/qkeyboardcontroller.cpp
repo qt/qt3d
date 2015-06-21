@@ -53,6 +53,20 @@ QKeyboardControllerPrivate::QKeyboardControllerPrivate()
 {
 }
 
+/*!
+    \class Qt3D::QKeyboardController
+    \inmodule Qt3DInput
+    \since 5.5
+*/
+
+/*!
+    \qmltype KeyboardController
+    \inqmlmodule Qt3D.Input
+    \since 5.5
+    \instantiates Qt3D::QKeyboardController
+    \inherits Node
+*/
+
 QKeyboardController::QKeyboardController(QNode *parent)
     : QNode(*new QKeyboardControllerPrivate, parent)
 {
@@ -63,6 +77,10 @@ QKeyboardController::~QKeyboardController()
     QNode::cleanup();
 }
 
+/*!
+    \qmlproperty KeyboardInput Qt3D.Input::KeyboardController::activeInput
+    \readonly
+*/
 QKeyboardInput *QKeyboardController::activeInput() const
 {
     Q_D(const QKeyboardController);

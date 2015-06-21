@@ -51,7 +51,7 @@ namespace Qt3D {
     \qmltype AbstractTextureImage
     \instantiates Qt3D::QAbstractTextureImage
     \inherits Node
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \qmlabstract
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.
@@ -59,7 +59,7 @@ namespace Qt3D {
 
 /*!
     \class QAbstractTextureImage
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
@@ -111,7 +111,7 @@ int QAbstractTextureImage::mipmapLevel() const
 }
 
 /*!
-    \qmlproperty int Qt3D.Render::AbstractTextureImage::layer
+    \qmlproperty int Qt3D.Renderer::AbstractTextureImage::layer
 
     Holds the layer of the texture image.
  */
@@ -128,7 +128,7 @@ int QAbstractTextureImage::layer() const
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::cubeMapFace
+    \qmlproperty enumeration Qt3D.Renderer::AbstractTextureImage::cubeMapFace
 
     Holds the cube map face of the texture image.
 

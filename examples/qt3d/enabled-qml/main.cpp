@@ -36,8 +36,8 @@
 
 #include <QGuiApplication>
 
+#include <window.h>
 #include <Qt3DCore/QCamera>
-#include <Qt3DCore/Window>
 #include <Qt3DQuick/QQmlAspectEngine>
 
 #include <Qt3DRenderer/QRenderAspect>
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3D::Window view;
+    Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
     engine.aspectEngine()->initialize();

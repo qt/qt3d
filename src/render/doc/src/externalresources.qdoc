@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,21 +34,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICK3DRENDERPLUGIN_H
-#define QT3DQUICK3DRENDERPLUGIN_H
-
-#include <QtQml/QQmlExtensionPlugin>
-
-QT_BEGIN_NAMESPACE
-
-class Qt3DQuick3DRenderPlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
-public:
-    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
-};
-
-QT_END_NAMESPACE
-
-#endif // QT3DQUICK3DRENDERPLUGIN_H
+/*!
+    \externalpage http://en.wikipedia.org/wiki/Z-buffering
+    \title early z-fill pass
+*/

@@ -34,59 +34,45 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef SCENEMODIFIER_H
+#define SCENEMODIFIER_H
 
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QGuiApplication>
-#include <QOpenGLContext>
+#include <QtCore/QObject>
 
-#include "qnode.h"
-#include "qcamera.h"
-#include "qentity.h"
-#include "qaspectengine.h"
-#include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/qentity.h>
+#include <Qt3DCore/qscaletransform.h>
+#include <Qt3DCore/qrotatetransform.h>
+#include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/QTranslateTransform>
 
-QT_BEGIN_NAMESPACE
+#include <Qt3DRenderer/QTorusMesh>
+#include <Qt3DRenderer/QCylinderMesh>
+#include <Qt3DRenderer/QCuboidMesh>
+#include <Qt3DRenderer/QSphereMesh>
+#include <Qt3DRenderer/QPhongMaterial>
 
-namespace Qt3D {
-
-Window::Window(QScreen *screen)
-    : QWindow(screen)
-
+class SceneModifier : public QObject
 {
-    setSurfaceType(QSurface::OpenGLSurface);
+    Q_OBJECT
 
-    resize(1024, 768);
+public:
+    explicit SceneModifier(Qt3D::QEntity *rootEntity);
+    ~SceneModifier();
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize( 24 );
-    format.setSamples( 4 );
-    setFormat(format);
-    create();
-}
+public slots:
+    void enableTorus(bool enabled);
+    void enableCylinder(bool enabled);
+    void enableCuboid(bool enabled);
+    void enableSphere(bool enabled);
 
-Window::~Window()
-{
-}
+private:
+    Qt3D::QEntity *m_rootEntity;
+    Qt3D::QTorusMesh *m_torus;
+    Qt3D::QEntity *m_cylinderEntity;
+    Qt3D::QEntity *m_torusEntity;
+    Qt3D::QEntity *m_cuboidEntity;
+    Qt3D::QEntity *m_sphereEntity;
+};
 
-void Window::keyPressEvent( QKeyEvent* e )
-{
-    switch ( e->key() )
-    {
-        case Qt::Key_Escape:
-            QGuiApplication::quit();
-            break;
+#endif // SCENEMODIFIER_H
 
-        default:
-            QWindow::keyPressEvent( e );
-    }
-}
-
-} // namespace Qt3D
-
-QT_END_NAMESPACE

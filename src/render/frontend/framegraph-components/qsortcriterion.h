@@ -80,6 +80,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QSortCriterion *)
-
 #endif // QSORTCRITERION_H

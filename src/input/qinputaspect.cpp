@@ -62,6 +62,12 @@ QInputAspectPrivate::QInputAspectPrivate()
     m_aspectType = QAbstractAspect::AspectOther;
 }
 
+/*!
+    \class Qt3D::QInputAspect
+    \inmodule Qt3DInput
+    \since 5.5
+*/
+
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {

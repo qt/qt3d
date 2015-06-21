@@ -34,29 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WINDOW_H
-#define QT3D_WINDOW_H
+#ifndef QT3DQUICK3DRENDERPLUGIN_H
+#define QT3DQUICK3DRENDERPLUGIN_H
 
-#include <QWindow>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <QtQml/QQmlExtensionPlugin>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-class QT3DCORESHARED_EXPORT Window : public QWindow
+class Qt3DQuick3DRendererPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
 public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
-
-protected:
-    virtual void keyPressEvent(QKeyEvent *e);
+    void registerTypes(const char *uri) Q_DECL_OVERRIDE;
 };
-
-} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_WINDOW_H
+#endif // QT3DQUICK3DRENDERPLUGIN_H

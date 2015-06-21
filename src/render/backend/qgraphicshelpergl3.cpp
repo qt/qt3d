@@ -117,12 +117,17 @@ void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
 
 void QGraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
 {
+#if defined(QT_OPENGL_4)
     if (!m_tessFuncs) {
         qWarning() << "Tessellation not supported with OpenGL 3 without GL_ARB_tessellation_shader";
         return;
     }
 
     m_tessFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
+#else
+    Q_UNUSED(verticesPerPatch);
+    qWarning() << "Tessellation not supported";
+#endif
 }
 
 void QGraphicsHelperGL3::useProgram(GLuint programId)

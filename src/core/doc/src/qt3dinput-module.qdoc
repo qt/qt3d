@@ -26,50 +26,42 @@
 ****************************************************************************/
 
 /*!
-    \page qt3d-index.html
-    \title Qt3D Module
+    \module Qt3DInput
+    \title Qt3D Input C++ Classes
+    \brief The Qt3D Input module provides classes for handling user input in
+           applications using Qt3D.
 
-    \e Qt3D provides functionality for near-realtime simulation systems
-    with support for 2D and 3D rendering in both Qt C++ and Qt Quick
-    applications.
+    \ingroup modules
+    \ingroup qt3d-modules
+    \qtvariable 3dinput
 
-    The functionality in Qt3D is divided into the following modules:
+    To use classes from this module, add this directive into the C++ files:
 
-    \annotatedlist qt3d-modules
-
-    Classes, types and functions are declared under the \l Qt3D namespace.
-
-    \section1 Getting Started
-
-    For a C++ application that performs 2D or 3D rendering and also handles user
-    input, add the following line to your \l qmake \c .pro file:
-
-    \badcode
-    QT += 3dcore 3drenderer 3dinput
+    \code
+       #include <Qt3DInput>
     \endcode
 
-    To include the definitions of the modules' classes, use the following
-    directives:
+    To link against the corresponding C++ libraries, add the following to your qmake project file:
 
     \badcode
-    #include <Qt3DCore>
-    #include <Qt3DRenderer>
-    #include <Qt3DInput>
+       QT += 3dinput
     \endcode
-
-    A Qt Quick application requires also additional dependencies:
-
-    \badcode
-    QT += 3dcore 3drenderer 3dinput qml quick 3dquick
-    \endcode
-
-    \section1 Overview
-
-    \section1 Reference
-    \list
-        \li \l {Qt3D}{Qt3D namespace}
-        \li \l {Qt3D Core C++ Classes}
-        \li \l {Qt3D Render C++ Classes}
-        \li \l {Qt3D Examples}
-    \endlist
 */
+
+/*!
+   \qmlmodule Qt3D.Input 2.0
+   \title Qt3D Input QML Types
+   \ingroup qmlmodules
+   \ingroup qt3d-qmlmodules
+
+   \brief Provides QML types for Qt3D user input.
+
+   To import and use the module's QML types, use the following statement:
+
+   \badcode
+   import Qt3D.Input 2.0
+   \endcode
+
+   \section1 QML Types
+*/
+

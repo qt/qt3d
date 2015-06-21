@@ -35,43 +35,54 @@
 ****************************************************************************/
 
 /*!
-    \page qt3drender-index.html
-    \title Qt3D Render
+    \module Qt3DRenderer
+    \title Qt3D Renderer C++ Classes
+    \brief The Qt3D Renderer module contains functionality to support 2D and 3D rendering using Qt3D.
+
+    \ingroup modules
     \ingroup qt3d-modules
-    \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
+    \qtvariable 3drenderer
 
-    \section1 Getting Started
+    The Qt3D Renderer module provides an aspect, components, and other supporting types necessary
+    to implement 2D and 3D rendering as part of the Qt3D framework.
 
-    To use Qt3D classes, add this directive into the C++ files:
+    To use classes from this module, add this directive into the C++ files:
 
     \code
        #include <Qt3DRenderer>
     \endcode
 
-    To link against the corresponding C++ libraries, add the following to your qmake project file:
+    To link against the corresponding C++ library, add the following to your qmake project file:
 
-    \code
+    \badcode
        QT += 3drenderer
     \endcode
 
+    Classes, types, and functions are declared under the \l [Qt3DCore]{Qt3D} namespace.
+
+    \section1 Overview
+
+    The Qt3D Renderer aspect offers support for data-driven configuration as described
+    in \l {Qt3D Renderer Framegraph}.
+
     \section1 Reference
     \list
-    \li \l {Qt3D Render C++ Classes}
+    \li \l {Qt3D Renderer C++ Classes}
     \li \l {Qt3D Examples}
     \endlist
 */
 
 /*!
-    \page qt3d-examples.html
-    \ingroup all-examples
-    \title Qt3D Examples
-    \brief Examples that demostrate 2D and 3D rendering using Qt3D.
+   \qmlmodule Qt3D.Renderer 2.0
+   \title Qt3D Renderer QML Types
+   \ingroup qmlmodules
+   \ingroup qt3d-qmlmodules
 
-    The following examples demonstrate 2D and 3D rendering using Qt3D.
+   \brief Provides Qt3D QML types for rendering.
 
-    \section1 QML Examples
-    \annotatedlist qt3d-examples-qml
+   To import and use the module's QML types, use the following statement:
 
-    \section1 C++ Examples
-    \annotatedlist qt3d-examples-cpp
+   \badcode
+   import Qt3D.Renderer 2.0
+   \endcode
 */

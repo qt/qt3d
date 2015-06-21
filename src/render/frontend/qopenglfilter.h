@@ -113,6 +113,4 @@ bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QOpenGLFilter *)
-
 #endif // QT3D_QOPENGLFILTER_H
