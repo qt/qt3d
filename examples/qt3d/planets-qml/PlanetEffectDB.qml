@@ -36,7 +36,7 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import Qt3D.Render 2.0
+import Qt3D.Renderer 2.0
 
 Effect {
     id: root
@@ -60,13 +60,15 @@ Effect {
                 minorVersion: 2
             }
 
+            annotations: [ Annotation { name: "name"; value: "Desktop" } ]
+
             renderPasses: [
                 RenderPass {
                     annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/shadowmap.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/shadowmap.frag")
+                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/shadowmap.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/shadowmap.frag")
                     }
 
                     renderStates: [
@@ -92,8 +94,79 @@ Effect {
                     ]
 
                     shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/planetDB.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/planetDB.frag")
+                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetDB.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetDB.frag")
+                    }
+
+                    // no special render state set => use the default set of states
+                }
+            ]
+        },
+        Technique {
+            openGLFilter {
+                api: OpenGLFilter.Desktop
+                majorVersion: 2
+            }
+
+            annotations: [ Annotation { name: "name"; value: "ES2" } ]
+
+            renderPasses: [
+                RenderPass {
+                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
+
+                    bindings: [
+                        // Uniforms (those provided by the user)
+                        ParameterMapping {
+                            parameterName: "ambient";
+                            shaderVariableName: "ka";
+                            bindingType: ParameterMapping.Uniform
+                        },
+                        ParameterMapping {
+                            parameterName: "specular";
+                            shaderVariableName: "ks";
+                            bindingType: ParameterMapping.Uniform
+                        }
+                    ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDB.frag")
+                    }
+
+                    // no special render state set => use the default set of states
+                }
+            ]
+        },
+        Technique {
+            openGLFilter {
+                api: OpenGLFilter.ES
+                majorVersion: 2
+                minorVersion: 0
+            }
+
+            annotations: [ Annotation { name: "name"; value: "ES2" } ]
+
+            renderPasses: [
+                RenderPass {
+                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
+
+                    bindings: [
+                        // Uniforms (those provided by the user)
+                        ParameterMapping {
+                            parameterName: "ambient";
+                            shaderVariableName: "ka";
+                            bindingType: ParameterMapping.Uniform
+                        },
+                        ParameterMapping {
+                            parameterName: "specular";
+                            shaderVariableName: "ks";
+                            bindingType: ParameterMapping.Uniform
+                        }
+                    ]
+
+                    shaderProgram: ShaderProgram {
+                        vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDB.frag")
                     }
 
                     // no special render state set => use the default set of states

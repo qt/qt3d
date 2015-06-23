@@ -15,17 +15,23 @@
         <file>PlanetEffectDS.qml</file>
         <file>PlanetEffectDSB.qml</file>
         <file>PlanetMaterial.qml</file>
-        <file>ShadowMapFrameGraph.qml</file>
+        <file>PlanetFrameGraph.qml</file>
         <file>planets.js</file>
         <file>meshes/starfield.obj</file>
         <file>meshes/ring.obj</file>
-        <file>shaders/shadowmap.frag</file>
-        <file>shaders/shadowmap.vert</file>
-        <file>shaders/planetD.frag</file>
-        <file>shaders/planetD.vert</file>
-        <file>shaders/planetDB.frag</file>
-        <file>shaders/planetDB.vert</file>
-        <file>shaders/planetDS.frag</file>
-        <file>shaders/planetDSB.frag</file>
+        <file>shaders/gl3/shadowmap.frag</file>
+        <file>shaders/gl3/shadowmap.vert</file>
+        <file>shaders/gl3/planetD.frag</file>
+        <file>shaders/gl3/planetD.vert</file>
+        <file>shaders/gl3/planetDB.frag</file>
+        <file>shaders/gl3/planetDB.vert</file>
+        <file>shaders/gl3/planetDS.frag</file>
+        <file>shaders/gl3/planetDSB.frag</file>
+        <file>shaders/es2/planetD.frag</file>
+        <file>shaders/es2/planetD.vert</file>
+        <file>shaders/es2/planetDB.frag</file>
+        <file>shaders/es2/planetDB.vert</file>
+        <file>shaders/es2/planetDS.frag</file>
+        <file>shaders/es2/planetDSB.frag</file>
     </qresource>
 </RCC>

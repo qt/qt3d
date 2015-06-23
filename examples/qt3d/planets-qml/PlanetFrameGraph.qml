@@ -36,8 +36,7 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import Qt3D.Render 2.0
-import QtQuick 2.2 as QQ2
+import Qt3D.Renderer 2.0
 
 FrameGraph {
     id: root
@@ -50,39 +49,43 @@ FrameGraph {
         rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
         clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
-        RenderPassFilter {
-            includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+        TechniqueFilter {
+            requires: [ Annotation { name: "name"; value: "Desktop" } ]
 
-            RenderTargetSelector {
-                target: RenderTarget {
-                    attachments: [
-                        RenderAttachment {
-                            name: "depth"
-                            type: RenderAttachment.DepthAttachment
-                            texture: Texture2D {
-                                id: depthTexture
-                                width: mainview.width
-                                height: mainview.height
-                                format: Texture.DepthFormat
-                                generateMipMaps: false
-                                magnificationFilter: Texture.Linear
-                                minificationFilter: Texture.Linear
-                                wrapMode {
-                                    x: WrapMode.ClampToEdge
-                                    y: WrapMode.ClampToEdge
+            RenderPassFilter {
+                includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+
+                RenderTargetSelector {
+                    target: RenderTarget {
+                        attachments: [
+                            RenderAttachment {
+                                name: "depth"
+                                type: RenderAttachment.DepthAttachment
+                                texture: Texture2D {
+                                    id: depthTexture
+                                    width: mainview.width
+                                    height: mainview.height
+                                    format: Texture.D24
+                                    generateMipMaps: false
+                                    magnificationFilter: Texture.Nearest
+                                    minificationFilter: Texture.Nearest
+                                    wrapMode {
+                                        x: WrapMode.ClampToEdge
+                                        y: WrapMode.ClampToEdge
+                                    }
+                                    comparisonFunction: Texture.CompareLessEqual
+                                    comparisonMode: Texture.CompareRefToTexture
                                 }
-                                comparisonFunction: Texture.CompareLessEqual
-                                comparisonMode: Texture.CompareRefToTexture
                             }
+                        ]
+                    }
+
+                    ClearBuffer {
+                        buffers: ClearBuffer.DepthBuffer
+
+                        CameraSelector {
+                            id: lightCameraSelector
                         }
-                    ]
-                }
-
-                ClearBuffer {
-                    buffers: ClearBuffer.DepthBuffer
-
-                    CameraSelector {
-                        id: lightCameraSelector
                     }
                 }
             }

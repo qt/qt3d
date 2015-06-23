@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import Qt3D.Render 2.0
+import Qt3D.Renderer 2.0
 import QtQuick 2.0 as QQ2
 
 import "planets.js" as Planets
@@ -44,7 +44,6 @@ Entity {
     id: sceneRoot
 
     property bool ready: false
-    property bool freeCamera: false
 
     property real cameraNear: 0
     property real xLookAtOffset: 0
@@ -120,7 +119,7 @@ Entity {
     }
 
     components: [
-        ShadowMapFrameGraph {
+        PlanetFrameGraph {
             id: framegraph
             viewCamera: camera
             lightCamera: light.lightCamera
@@ -229,10 +228,6 @@ Entity {
                                                planets[planet].y,
                                                planets[planet].z)
         checkScaling(focusedPlanet)
-    }
-
-    function setFreeCamera(free) {
-        freeCamera = free
     }
 
     function setScale(value, focused) {
@@ -414,7 +409,7 @@ Entity {
 
     //! [3]
     function animate(focusedPlanet) {
-        if (!ready || freeCamera)
+        if (!ready)
             return
 
         advanceTime(focusedPlanet)
