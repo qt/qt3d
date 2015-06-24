@@ -43,6 +43,17 @@ int main(int argc, char **argv)
 
     QQuickView view;
 
+    QSurfaceFormat format;
+#ifndef QT_OPENGL_ES_2
+#ifdef Q_OS_OSX
+    format.setVersion(3, 2);
+#endif
+    format.setProfile(QSurfaceFormat::CoreProfile);
+#endif
+    format.setDepthBufferSize(24);
+    format.setSamples(4);
+    view.setFormat(format);
+
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/PlanetsMain.qml"));
     view.show();
