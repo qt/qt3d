@@ -13,10 +13,5 @@ load(qt_parts)
 
 #gcov: SUBDIRS -= sub_tools
 
-# We need opengl, minimum es2
-contains(QT_CONFIG, opengles1) {
-    error("Qt3D does not support OpenGL ES 1!")
-}
-
 OTHER_FILES += \
     sync.profile
