@@ -29,39 +29,43 @@
     \example basicshapes-cpp
     \title Qt3D: Basic Shapes C++ Example
     \ingroup qt3d-examples-cpp
-    \brief Shows four basic shapes that Qt3D offers.
-
-    The Basic Shapes examples shows four basic shapes that Qt3D offers, a torus,
-    a cylinder, a cube and a sphere. The example also shows how to embed a Qt3D scene
-    into a widget and connect with other widgets.
+    \brief Shows four basic shapes that Qt3D offers and sets up a mesh for each of them.
 
     \image basicshapes-cpp-example.jpg
 
-    As an example let's go through how to set up a torus mesh. First instantiate
-    the \c QTorusMesh, and then set the mesh specific parameters, that for torus are
-    radius, minor radius and how many rings and slices.
+    \e {Basic Shapes} shows four basic shapes that Qt3D offers: a torus, a cylinder,
+    a cube, and a sphere. The example also shows how to embed a Qt3D scene
+    into a widget and connect with other widgets.
+
+    \include examples-run.qdocinc
+
+    \section1 Setting Up a Torus Mesh
+
+    As an example, we go through how to set up a torus mesh. First, we instantiate
+    the \c QTorusMesh, and then we set the mesh specific parameters, which for torus are
+    radius, minor radius, and the number of rings and slices.
 
     \snippet basicshapes-cpp/scenemodifier.cpp 0
 
     The size and position of the torus can be adjusted with transform components.
-    We create scale, translation and rotation components and add them into the
+    We create scale, translation, and rotation components and add them into the
     \c QTransform component.
 
     \snippet basicshapes-cpp/scenemodifier.cpp 1
 
-    To change the diffuse color of the mesh we create a \c QPhongMaterial and set
+    To change the diffuse color of the mesh, we create a \c QPhongMaterial and set
     its diffuse color.
 
     \snippet basicshapes-cpp/scenemodifier.cpp 2
 
     The final step is to add the torus into an entity tree, and we do that by creating
-    a \c QEntity with parent entity and adding the previously created mesh, material
+    a \c QEntity with a parent entity and adding the previously created mesh, material,
     and transform components into it.
 
     \snippet basicshapes-cpp/scenemodifier.cpp 3
 
-    You can control the visibility of the entity by defining if it has parent
-    or not, i.e. whether it is part of entity tree or not.
+    We can control the visibility of the entity by defining whether it has a parent
+    or not. That is, whether it is part of an entity tree or not.
 
     \snippet basicshapes-cpp/scenemodifier.cpp 4
 
