@@ -241,6 +241,9 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
         case QOpenGLTexture::RGB8_UNorm:
             format = QAbstractTextureProvider::RGBFormat;
             break;
+        case QOpenGLTexture::DepthFormat:
+            format = QAbstractTextureProvider::DepthFormat;
+            break;
         default:
             qWarning() << Q_FUNC_INFO << "could not find a matching OpenGL ES 2.0 unsized texture format";
             break;
