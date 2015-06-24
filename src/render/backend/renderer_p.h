@@ -258,8 +258,6 @@ private:
     UBOManager *m_uboManager;
     TextureImageManager *m_textureImageManager;
 
-    QTimer *m_frameTimer;
-
     RenderQueues *m_renderQueues;
     QScopedPointer<RenderThread> m_renderThread;
 
