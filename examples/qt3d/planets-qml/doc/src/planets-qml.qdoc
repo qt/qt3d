@@ -40,11 +40,11 @@
     \ingroup qt3d-examples-qml
     \brief Demonstrates combining Qt 3D rendering and Qt Quick 2 elements.
 
-    The Planets example demonstrates how to implement an application that combines the use of
+    \image planets-qml-example.jpg
+
+    \e Planets demonstrates how to implement an application that combines the use of
     Qt 3D rendering with Qt Quick 2D elements. The example shows the eight planets of our Solar
     System with the Sun.
-
-    \image planets-qml-example.jpg
 
     Planet texture maps are Copyright (c) by James Hastings-Trew
     \l{http://planetpixelemporium.com/planets.html}{http://planetpixelemporium.com/planets.html}
@@ -54,6 +54,8 @@
     starts at 2000 Jan 0.0 UT. The planet positions are calculated based on the formulas found here:
     \l {http://www.stjarnhimlen.se/comp/ppcomp.html}{http://www.stjarnhimlen.se/comp/ppcomp.html}
     and \l {http://www.davidcolarusso.com/astro/}{http://www.davidcolarusso.com/astro/}.
+
+    \include examples-run.qdocinc
 
     \section1 Qt Quick 2D Implementation
 
@@ -99,7 +101,7 @@
     constructed with JavaScript in \l{planets-qml/planets.js}{planets.js} by calling
     \c{loadPlanetData()} as the component completes. Other initializations, such as inserting the
     planets into an array for easier handling, calculating the ring radii for Saturn and Uranus
-    rings, and setting the default scale, speed and camera offset, are done as well:
+    rings, and setting the default scale, speed, and camera offset, are done as well:
 
     \snippet planets-qml/SolarSystem.qml 2
 
