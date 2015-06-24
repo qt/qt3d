@@ -570,8 +570,8 @@ void Renderer::submitRenderViews(int maxFrameCount)
     timer.start();
 
     // We might not want to render on the default FBO
-    bool defaultFboIdValid = false;
-    GLuint defaultFboId = 0;
+    bool boundFboIdValid = false;
+    GLuint boundFboId = 0;
 
     while (m_renderQueues->queuedFrames() > 0)
     {
@@ -604,9 +604,9 @@ void Renderer::submitRenderViews(int maxFrameCount)
             break;
         }
 
-        if (!defaultFboIdValid) {
-            defaultFboIdValid = true;
-            defaultFboId = m_graphicsContext->boundFrameBufferObject();
+        if (!boundFboIdValid) {
+            boundFboIdValid = true;
+            boundFboId = m_graphicsContext->boundFrameBufferObject();
         }
 
         // Reset state to the default state
@@ -622,7 +622,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
             // Set RenderTarget ...
             // Activate RenderTarget
             m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
-                                                    renderViews[i]->attachmentPack(), defaultFboId);
+                                                    renderViews[i]->attachmentPack(), boundFboId);
 
             // Set clear color if different
             if (previousClearColor != renderViews[i]->clearColor()) {
@@ -643,7 +643,7 @@ void Renderer::submitRenderViews(int maxFrameCount)
             frameElapsed = timer.elapsed();
         }
 
-        m_graphicsContext->endDrawing(defaultFboId == 0);
+        m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
         // Let the Aspect Thread get a look in if it needs to change the surface
         locker.unlock();

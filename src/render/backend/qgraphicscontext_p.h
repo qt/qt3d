@@ -110,10 +110,11 @@ public:
     void activateShader(RenderShader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
 
+    GLuint activeFBO() const { return m_activeFBO; }
+    GLuint defaultFBO() const { return m_defaultFBO; }
     void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
 
-    RenderMaterial* activeMaterial() const
-    { return m_material; }
+    RenderMaterial* activeMaterial() const { return m_material; }
 
     void setActiveMaterial(RenderMaterial* rmat);
 
@@ -221,6 +222,7 @@ private:
     RenderMaterial* m_material;
     QRectF m_viewport;
     GLuint m_activeFBO;
+    GLuint m_defaultFBO;
 
     RenderStateSet* m_stateSet;
 

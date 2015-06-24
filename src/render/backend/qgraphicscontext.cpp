@@ -90,6 +90,8 @@ QGraphicsContext::QGraphicsContext()
     , m_glHelper(Q_NULLPTR)
     , m_activeShader(Q_NULLPTR)
     , m_material(Q_NULLPTR)
+    , m_activeFBO(0)
+    , m_defaultFBO(0)
     , m_stateSet(Q_NULLPTR)
     , m_renderer(Q_NULLPTR)
     , m_contextInfo(new QOpenGLFilter())
@@ -129,6 +131,8 @@ void QGraphicsContext::initialize()
                 || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
                 || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
     }
+
+    m_defaultFBO = m_gl->defaultFramebufferObject();
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
@@ -195,7 +199,7 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
     QSize renderTargetSize;
-    if (m_activeFBO != 0) {
+    if (m_activeFBO != m_defaultFBO) {
         // For external FBOs we may not have an m_renderTargets entry. Do not call glViewport in that case.
         if (m_renderTargetsSize.contains(m_activeFBO))
             renderTargetSize = m_renderTargetsSize[m_activeFBO];
@@ -318,8 +322,12 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->peerUuid())) {
-            // The FBO is created and its attachments are set once
-            if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
+            if (m_defaultFBO && fboId == m_defaultFBO) {
+                // this is the default fbo that some platforms create (iOS), we just register it
+                // Insert FBO into hash
+                m_renderTargets.insert(renderTarget->peerUuid(), fboId);
+            } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
+                // The FBO is created and its attachments are set once
                 // Insert FBO into hash
                 m_renderTargets.insert(renderTarget->peerUuid(), fboId);
                 // Bind FBO
