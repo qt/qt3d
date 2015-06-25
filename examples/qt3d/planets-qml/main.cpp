@@ -36,24 +36,22 @@
 
 #include <QGuiApplication>
 #include <QQuickView>
+#include <QOpenGLContext>
 
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
 
-    QQuickView view;
-
     QSurfaceFormat format;
-#ifndef QT_OPENGL_ES_2
-#ifdef Q_OS_OSX
-    format.setVersion(3, 2);
-#endif
-    format.setProfile(QSurfaceFormat::CoreProfile);
-#endif
+    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+        format.setVersion(3, 2);
+        format.setProfile(QSurfaceFormat::CoreProfile);
+    }
     format.setDepthBufferSize(24);
     format.setSamples(4);
-    view.setFormat(format);
 
+    QQuickView view;
+    view.setFormat(format);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/PlanetsMain.qml"));
     view.show();
