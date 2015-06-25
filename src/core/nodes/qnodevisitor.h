@@ -87,7 +87,8 @@ private:
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN)
     {
         m_path = QNodeList() << rootNode_;
-        visitNode(rootNode_, fN);
+        if (rootNode_)
+            visitNode(rootNode_, fN);
     }
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
@@ -98,7 +99,7 @@ private:
 
         if (rootEntity)
             visitEntity(rootEntity, fN, fE);
-        else
+        else if (rootNode_)
             visitNode(rootNode_, fN, fE);
     }
 
