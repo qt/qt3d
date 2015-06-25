@@ -237,7 +237,7 @@ void QRenderAspect::renderInitialize(QOpenGLContext *context)
 void QRenderAspect::renderSynchronous()
 {
     Q_D(QRenderAspect);
-    d->m_renderer->doRender(1);
+    d->m_renderer->doRender();
 }
 
 void QRenderAspect::renderShutdown()
@@ -257,19 +257,21 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
     // Create jobs to load in any meshes that are pending
     if (d->m_renderer != Q_NULLPTR && !d->m_shuttingDown) {
+
+        // Create the jobs to build the frame
         d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
         d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
 
-        QHash<QNodeId, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
+        const QHash<QNodeId, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
         Q_FOREACH (const QNodeId &meshId, meshSources.keys()) {
             Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
             loadMeshJob->setRenderer(d->m_renderer);
             jobs.append(loadMeshJob);
         }
 
-        QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
+        const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
             Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
             loadTextureJob->setRenderer(d->m_renderer);
@@ -278,7 +280,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
-        QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
+        const QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
         Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
             job->setRenderer(d->m_renderer);
             jobs.append(job);

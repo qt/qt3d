@@ -27,7 +27,7 @@ HEADERS += \
     $$PWD/qgraphicshelpergl2_p.h \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
-    $$PWD/renderqueues_p.h \
+    $$PWD/renderqueue_p.h \
     $$PWD/rendereffect_p.h \
     $$PWD/renderrenderpass_p.h \
     $$PWD/parameterpack_p.h \
@@ -75,7 +75,7 @@ SOURCES += \
     $$PWD/qgraphicshelpergl2.cpp \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
-    $$PWD/renderqueues.cpp \
+    $$PWD/renderqueue.cpp \
     $$PWD/rendereffect.cpp \
     $$PWD/renderrenderpass.cpp \
     $$PWD/parameterpack.cpp \

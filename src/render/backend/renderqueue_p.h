@@ -34,14 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERQUEUES_H
-#define QT3D_RENDER_RENDERQUEUES_H
+#ifndef QT3D_RENDER_RENDERQUEUE_H
+#define QT3D_RENDER_RENDERQUEUE_H
 
 #include <QVector>
-#include <QAtomicInt>
 #include <QtGlobal>
-#include <QMutex>
-#include <Qt3DCore/private/qboundedcircularbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,29 +48,23 @@ namespace Render {
 
 class RenderView;
 
-class Q_AUTOTEST_EXPORT RenderQueues
+class Q_AUTOTEST_EXPORT RenderQueue
 {
 public:
-    RenderQueues(int capacity = 5);
+    RenderQueue();
 
     void setTargetRenderViewCount(int targetRenderViewCount);
     int targetRenderViewCount() const { return m_targetRenderViewCount; }
     int currentRenderViewCount() const;
     bool isFrameQueueComplete() const;
-    int queuedFrames() const { return m_queues.size(); }
-    int framesCapacity() const { return m_queues.capacity(); }
 
-    void queueRenderView(RenderView *renderView, uint submissionOrderIndex);
-    void popFrameQueue();
+    bool queueRenderView(RenderView *renderView, uint submissionOrderIndex);
     QVector<RenderView *> nextFrameQueue();
-    void pushFrameQueue();
     void reset();
 
 private:
-    QMutex m_mutex;
     int m_targetRenderViewCount;
-    QAtomicInt m_currentRenderViewCount;
-    QBoundedCircularBuffer< QVector<RenderView*> > m_queues;
+    int m_currentRenderViewCount;
     QVector<RenderView *> m_currentWorkQueue;
 };
 
@@ -83,4 +74,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERQUEUES_H
+#endif // QT3D_RENDER_RENDERQUEUE_H

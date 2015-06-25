@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "renderqueues_p.h"
+#include "renderqueue_p.h"
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <QThread>
 
@@ -44,54 +44,54 @@ namespace Qt3D {
 
 namespace Render {
 
-RenderQueues::RenderQueues(int capacity) :
-    m_targetRenderViewCount(1),
-    m_queues(capacity),
-    m_currentWorkQueue(1)
+RenderQueue::RenderQueue()
+    : m_targetRenderViewCount(0)
+    , m_currentRenderViewCount(0)
+    , m_currentWorkQueue(1)
 {
-    m_currentRenderViewCount.fetchAndStoreOrdered(0);
 }
 
-int RenderQueues::currentRenderViewCount() const
+int RenderQueue::currentRenderViewCount() const
 {
-    return m_currentRenderViewCount.loadAcquire();
+    return m_currentRenderViewCount;
 }
 
 /*!
- * In case framegraph changed we have to be able to externally
- * reset the RenderQueues
+ * In case the framegraph changed or when the current number of render queue
+ * needs to be reset.
  */
-void RenderQueues::reset()
+void RenderQueue::reset()
 {
-    m_currentRenderViewCount.fetchAndStoreOrdered(0);
+    m_currentRenderViewCount = 0;
     Q_ASSERT(currentRenderViewCount() == 0);
-    QMutexLocker locker(&m_mutex);
-    m_queues.clear();
 }
 
 /*!
  * Queue up a RenderView for the frame being built.
- * Thread safe as long as we're sure that 2 threads won't use the same submissionOrderIndex.
+ * Thread safe as this is called from the renderer which is locked.
+ * Returns true if the renderView is complete
  */
-void RenderQueues::queueRenderView(RenderView *renderView, uint submissionOrderIndex)
+bool RenderQueue::queueRenderView(RenderView *renderView, uint submissionOrderIndex)
 {
     m_currentWorkQueue[submissionOrderIndex] = renderView;
-    m_currentRenderViewCount.ref();
+    ++m_currentRenderViewCount;
+    return isFrameQueueComplete();
 }
 
 /*!
  * Called by the Rendering Thread to retrieve the a frame queue to render.
- * A call to popFrameQueue is required after rendering of the frame.
+ * A call to reset is required after rendering of the frame. Otherwise under some
+ * conditions the current but then invalidated frame queue could be reused.
  */
-QVector<RenderView *> RenderQueues::nextFrameQueue()
+QVector<RenderView *> RenderQueue::nextFrameQueue()
 {
-    return m_queues.front();
+    return m_currentWorkQueue;
 }
 
 /*!
  * Sets the number \a targetRenderViewCount of RenderView objects that make up a frame.
  */
-void RenderQueues::setTargetRenderViewCount(int targetRenderViewCount)
+void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
 {
     m_targetRenderViewCount = targetRenderViewCount;
     m_currentWorkQueue.resize(targetRenderViewCount);
@@ -100,39 +100,11 @@ void RenderQueues::setTargetRenderViewCount(int targetRenderViewCount)
 /*!
  * Returns true if all the RenderView objects making up the current frame have been queued.
  * Returns false otherwise.
+ * \note a frameQueue or size 0 is considered incomplete.
  */
-bool RenderQueues::isFrameQueueComplete() const
+bool RenderQueue::isFrameQueueComplete() const
 {
-    return m_targetRenderViewCount == currentRenderViewCount();
-}
-
-/*!
- * Called by the Rendering Thread to pop the frame queue that has just been rendered
- * and allow the Jobs to restart if the bounded circular buffer had reached its limit.
- */
-void RenderQueues::popFrameQueue()
-{
-    m_queues.pop_front();
-}
-
-/*!
- * Called by RenderViewJobs to push the current frame queue when all jobs
- * are done.
- */
-void RenderQueues::pushFrameQueue()
-{
-    // Only one RenderViewJob should be able to switch to the next work queue
-    // It should cost less to have the mutex here and make a second check of timeToSubmit
-    // Than having the QMutexLocker in the Renderer enqueueRenderView for each timeToSubmit
-    QMutexLocker locker(&m_mutex);
-    if (isFrameQueueComplete()) {
-        m_currentRenderViewCount.fetchAndStoreOrdered(0);
-        Q_ASSERT(currentRenderViewCount() == 0);
-        locker.unlock();
-        m_queues.push_back(QVector<RenderView *>(m_currentWorkQueue));
-        for (int i = 0; i < m_currentWorkQueue.size(); i++)
-            m_currentWorkQueue[i] = 0;
-    }
+    return m_targetRenderViewCount && m_targetRenderViewCount == currentRenderViewCount();
 }
 
 } // Render

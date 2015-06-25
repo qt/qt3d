@@ -62,7 +62,7 @@
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderqueues_p.h>
+#include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
@@ -107,7 +107,7 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
-Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
+Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
@@ -137,15 +137,11 @@ Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
     , m_shaderDataManager(new ShaderDataManager())
     , m_uboManager(new UBOManager())
     , m_textureImageManager(new TextureImageManager())
-    , m_renderQueues(new RenderQueues(cachedFrames - 1))
+    , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
-    , m_frameCount(0)
-    , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
 {
-    m_currentPreprocessingFrameIndex = 0;
-
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
     if (m_renderThread) {
@@ -269,14 +265,14 @@ void Renderer::createAllocators()
 
 void Renderer::destroyAllocators()
 {
-    // Issue a set of jobs to create an allocator in TLS for each worker thread
+    // Issue a set of jobs to destroy the allocator in TLS for each worker thread
     Q_ASSERT(m_rendererAspect);
     QAbstractAspectJobManager *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
 }
 
-QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *Renderer::tlsAllocators()
+QThreadStorage<QFrameAllocator *> *Renderer::tlsAllocators()
 {
     return &m_tlsAllocators;
 }
@@ -295,13 +291,22 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // RenderCommand has a sizeof 128
         // QMatrix4x4 has a sizeof 68
         // May need to fine tune parameters passed to QFrameAllocator for best performances
-        // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
-        // While old frame 5 is being rendered
-        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        for (int i = 0; i <= theRenderer->cachedFramesCount(); i++)
-            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
-        theRenderer->tlsAllocators()->setLocalData(new QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
+        QFrameAllocator *allocator = new QFrameAllocator(128, 16, 128);
+        theRenderer->tlsAllocators()->setLocalData(allocator);
     }
+}
+
+
+/*!
+ * Returns the a FrameAllocator for the caller thread.
+ */
+QFrameAllocator *Renderer::currentFrameAllocator()
+{
+    // return the QFrameAllocator for the current thread
+    // It is never cleared as each renderview when it is destroyed
+    // takes care of releasing anything that may have been allocated
+    // using the allocator
+    return m_tlsAllocators.localData();
 }
 
 void Renderer::destroyThreadLocalAllocator(void *renderer)
@@ -309,11 +314,9 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
     Q_ASSERT(renderer);
     Renderer *theRenderer = static_cast<Renderer *>(renderer);
     if (theRenderer->tlsAllocators()->hasLocalData()) {
-        QPair<int, QFrameAllocatorQueue *> *frameAllocatorPair = theRenderer->tlsAllocators()->localData();
-        QFrameAllocatorQueue *allocatorQueue = frameAllocatorPair->second;
-        qDeleteAll(*allocatorQueue);
-        allocatorQueue->clear();
-        delete allocatorQueue;
+        QFrameAllocator *allocator = theRenderer->tlsAllocators()->localData();
+        allocator->clear();
+        delete allocator;
         theRenderer->tlsAllocators()->setLocalData(Q_NULLPTR);
     }
 }
@@ -361,7 +364,6 @@ void Renderer::initialize(QOpenGLContext *context)
 
                 Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
                     logOpenGLDebugMessage(msg);
-
             }
         } else {
             qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
@@ -391,24 +393,6 @@ void Renderer::shutdown()
 
     // Clean up the graphics context
     m_graphicsContext.reset(Q_NULLPTR);
-}
-
-/*!
- * Returns the a FrameAllocator for the frame identified by \a frameIndex in the context
- * of the caller thread. This also clears the FrameAllocator before usage.
- */
-QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
-{
-    // frameIndex between 0 and m_cachedFramesCount
-    // Check if index is the same as the current frame
-    // Otherwise we have to clear the QFrameAllocator at frameIndex
-    QPair<int, QFrameAllocatorQueue *> *data = m_tlsAllocators.localData();
-    if (data->first != frameIndex) {
-        qCDebug(Render::Memory) << Q_FUNC_INFO << "clearing " << frameIndex << " previous" << data->first;
-        data->first = frameIndex;
-        data->second->at(frameIndex)->clear();
-    }
-    return data->second->at(frameIndex);
 }
 
 void Renderer::setFrameGraphRoot(const QNodeId &frameGraphRootUuid)
@@ -516,10 +500,15 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender(int maxFrameCount)
+void Renderer::doRender()
 {
+
     // Render using current device state and renderer configuration
-    submitRenderViews(maxFrameCount);
+    submitRenderViews();
+
+    // Reset the m_renderQueue so that we won't try to render
+    // with a queue used by a previous frame with corrupted content
+    m_renderQueue->reset();
 
     // We allow the RenderTickClock service to proceed to the next frame
     // In turn this will allow the aspect manager to request a new set of jobs
@@ -527,22 +516,19 @@ void Renderer::doRender(int maxFrameCount)
     m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
 
-// Called by threadWeaver RenderViewJobs
+// Called by RenderViewJobs
 void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder)
 {
-    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
-    m_renderQueues->queueRenderView(renderView, submitOrder);
-
-    if (m_renderQueues->isFrameQueueComplete()) {
-        // We can increment the currentProcessingFrameIndex here
-        // That index will then be used by RenderViewJobs to know which QFrameAllocator to use
-        // Increasing the frameIndex at that point is safe because :
-        // - This method is called by the last RenderViewJobs in ThreadWeaver
-        // - A new call to generate new RenderViewJobs cannot happen before all RenderViewJobs have finished executing aka locking the AspectThread
-        // - The Renderer thread doesn't modify the currentPreprocessingFrameIndex value
-        m_currentPreprocessingFrameIndex = (m_currentPreprocessingFrameIndex + 1) % (m_cachedFramesCount + 1);
-        m_renderQueues->pushFrameQueue();
-        qCDebug(Memory) << Q_FUNC_INFO << "Next frame index " << m_currentPreprocessingFrameIndex;
+    QMutexLocker locker(&m_mutex); // Prevent out of order execution
+    // We cannot use a lock free primitive here because:
+    // - QVector is not thread safe
+    // - Even if the insert is made correctly, the isFrameComplete call
+    //   could be invalid since depending on the order of execution
+    //   the counter could be complete but the renderview not yet added to the
+    //   buffer depending on whichever order the cpu decides to process this
+    if (m_renderQueue->queueRenderView(renderView, submitOrder)) {
+        if (m_renderThread && m_running.load())
+            Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
     }
 }
@@ -567,108 +553,111 @@ bool Renderer::canRender() const
 }
 
 // Happens in RenderThread context when all RenderViewJobs are done
-void Renderer::submitRenderViews(int maxFrameCount)
+void Renderer::submitRenderViews()
 {
     // If we are using a render thread, make sure that
     // we've been told to render before rendering
-    if (m_renderThread)
+    if (m_renderThread) { // Prevent ouf of order execution
         m_submitRenderViewsSemaphore.acquire(1);
+
+        // When using Thread rendering, the semaphore should only
+        // be released when the frame queue is complete and there's
+        // something to render
+        Q_ASSERT(m_renderQueue->isFrameQueueComplete());
+    } else {
+
+        // When using synchronous rendering (QtQuick)
+        // We are not sure that the frame queue is actually complete
+        // Since a call to render may not be synched with the completions
+        // of the RenderViewJobs
+        // In such a case we return early, waiting for a next call with
+        // the frame queue complete at this point
+        QMutexLocker locker(&m_mutex);
+        if (!m_renderQueue->isFrameQueueComplete())
+            return ;
+    }
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
 
+    // Lock the mutex to protect access to m_surface and check if we are still set
+    // to the running state and that we have a valid surface on which to draw
+    QMutexLocker locker(&m_mutex);
+    const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+    if (!canRender()) {
+        qDeleteAll(renderViews);
+        return;
+    }
+
+    const int renderViewsCount = renderViews.size();
+    quint64 frameElapsed = queueElapsed;
+
+    // Early return if there's actually nothing to render
+    if (renderViewsCount <= 0)
+        return;
+
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
     GLuint boundFboId = 0;
+    QColor previousClearColor = renderViews.first()->clearColor();
 
-    while (m_renderQueues->queuedFrames() > 0)
-    {
-        if (maxFrameCount > 0 && m_frameCount >= uint(maxFrameCount)) {
-            break;
-        }
-
-        // Lock the mutex to protect access to m_surface and check if we are still set
-        // to the running state and that we have a valid surface on which to draw
-        QMutexLocker locker(&m_mutex);
-        if (!canRender()) {
-            QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
-            qDeleteAll(renderViews);
-            m_renderQueues->popFrameQueue();
-            return;
-        }
-
-        QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
-        int renderViewsCount = renderViews.size();
-        quint64 frameElapsed = queueElapsed;
-
-        if (renderViewsCount <= 0)
-            continue;
-
-        QColor previousClearColor = renderViews.first()->clearColor();
-        // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
-            qDeleteAll(renderViews);
-            m_renderQueues->popFrameQueue();
-            break;
-        }
-
-        if (!boundFboIdValid) {
-            boundFboIdValid = true;
-            boundFboId = m_graphicsContext->boundFrameBufferObject();
-        }
-
-        // Reset state to the default state
-        m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
-
-        qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
-        for (int i = 0; i < renderViewsCount; i++) {
-            // Initialize QGraphicsContext for drawing
-            // If the RenderView has a RenderStateSet defined
-            if (renderViews[i]->stateSet())
-                m_graphicsContext->setCurrentStateSet(renderViews[i]->stateSet());
-
-            // Set RenderTarget ...
-            // Activate RenderTarget
-            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
-                                                    renderViews[i]->attachmentPack(), boundFboId);
-
-            // Set clear color if different
-            if (previousClearColor != renderViews[i]->clearColor()) {
-                previousClearColor = renderViews[i]->clearColor();
-                m_graphicsContext->clearColor(previousClearColor);
-            }
-
-            // Clear BackBuffer
-            m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
-            // Set the Viewport
-            m_graphicsContext->setViewport(renderViews[i]->viewport());
-
-            // TO DO only if the renderView doesn't contain a NoDraw
-            executeCommands(renderViews.at(i)->commands());
-
-            frameElapsed = timer.elapsed() - frameElapsed;
-            qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
-            frameElapsed = timer.elapsed();
-        }
-
-        m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
-
-        // Let the Aspect Thread get a look in if it needs to change the surface
-        locker.unlock();
-
+    // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
+    if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
         qDeleteAll(renderViews);
-        m_renderQueues->popFrameQueue();
-        queueElapsed = timer.elapsed() - queueElapsed;
-        qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue " << m_frameCount + 1 << "in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
-        qCDebug(Rendering) << Q_FUNC_INFO << "Queued frames for rendering remaining " << m_renderQueues->queuedFrames();;
-        qCDebug(Rendering) << Q_FUNC_INFO << "Average FPS : " << 1000 / (queueElapsed * 1.0f);
-        queueElapsed = timer.elapsed();
-        m_frameCount++;
+        return;
     }
-    qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed " << m_frameCount << " RenderQueues in " << timer.elapsed() << "ms";
-    m_frameCount = 0;
 
+    if (!boundFboIdValid) {
+        boundFboIdValid = true;
+        boundFboId = m_graphicsContext->boundFrameBufferObject();
+    }
+
+    // Reset state to the default state
+    m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+
+    qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
+    for (int i = 0; i < renderViewsCount; ++i) {
+        // Initialize QGraphicsContext for drawing
+        // If the RenderView has a RenderStateSet defined
+        const RenderView *renderView = renderViews.at(i);
+
+        if (renderView->stateSet())
+            m_graphicsContext->setCurrentStateSet(renderView->stateSet());
+
+        // Set RenderTarget ...
+        // Activate RenderTarget
+        m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderView->renderTargetHandle()),
+                                                renderView->attachmentPack(), boundFboId);
+
+        // Set clear color if different
+        if (previousClearColor != renderView->clearColor()) {
+            previousClearColor = renderView->clearColor();
+            m_graphicsContext->clearColor(previousClearColor);
+        }
+
+        // Clear BackBuffer
+        m_graphicsContext->clearBackBuffer(renderView->clearBuffer());
+        // Set the Viewport
+        m_graphicsContext->setViewport(renderView->viewport());
+
+        // Execute the render commands
+        executeCommands(renderView->commands());
+
+        frameElapsed = timer.elapsed() - frameElapsed;
+        qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
+        frameElapsed = timer.elapsed();
+    }
+
+    m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
+
+    // Delete all the RenderViews which will clear the allocators
+    // that were used for their allocation
+    qDeleteAll(renderViews);
+
+    queueElapsed = timer.elapsed() - queueElapsed;
+    qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
+    qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
 }
 
 // Waits to be told to create jobs for the next frame
@@ -687,9 +676,10 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
     if (m_surface) {
         FrameGraphVisitor visitor;
         visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
-        m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
-    }
 
+        // Set target number of RenderViews
+        m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
+    }
     return renderBinJobs;
 }
 
@@ -701,7 +691,6 @@ QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrde
     job->setSurfaceSize(m_surface->size());
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
-    job->setFrameIndex(m_currentPreprocessingFrameIndex);
     return job;
 }
 
