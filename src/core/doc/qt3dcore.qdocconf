@@ -48,7 +48,8 @@ exampledirs += src/snippets
 
 #excludedirs +=
 
-imagedirs   += images
+imagedirs   += images \
+               ../../../examples/qt3d/shadow-map-qml/doc/images
 
 Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
                         QT3DINPUTSHARED_EXPORT \

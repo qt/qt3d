@@ -2,7 +2,7 @@
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += qml quick 3dinput
+QT += qml quick
 
 SOURCES += \
     main.cpp
@@ -10,7 +10,8 @@ SOURCES += \
 OTHER_FILES += \
     *.qml \
     planets.js \
-    shaders/*.* \
+    shaders/gl3/*.* \
+    shaders/es2/*.* \
     doc/src/*.* \
     doc/images/*.*
 
@@ -19,4 +20,7 @@ RESOURCES += \
     planets-qml-images.qrc
 
 DISTFILES += \
-    PlanetsMain.qml
+    PlanetsMain.qml \
+    android/AndroidManifest.xml
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android

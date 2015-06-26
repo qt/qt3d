@@ -53,19 +53,19 @@ Material {
 
     parameters: [
         Parameter {
-            name: "ambient";
+            name: "ambient"
             value: Qt.vector3d(root.ambientLight.r, root.ambientLight.g, root.ambientLight.b)
         },
         Parameter {
-            name: "diffuse";
+            name: "diffuse"
             value: Qt.vector3d(root.diffuseColor.r, root.diffuseColor.g, root.diffuseColor.b)
         },
         Parameter {
-            name: "specular";
+            name: "specular"
             value: Qt.vector3d(root.specularColor.r, root.specularColor.g, root.specularColor.b)
         },
         Parameter {
-            name: "shininess";
+            name: "shininess"
             value: root.shininess
         },
         Parameter {
@@ -80,10 +80,11 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
-                TextureImage { id: diffuseTextureImage; }
+                TextureImage { id: diffuseTextureImage }
             }
         },
-        Parameter { name: "specularTexture";
+        Parameter {
+            name: "specularTexture"
             value: Texture2D {
                 id: specularTexture
                 minificationFilter: Texture.LinearMipMapLinear
@@ -94,10 +95,11 @@ Material {
                 }
                 generateMipMaps: true
                 maximumAnisotropy: 16.0
-                TextureImage { id: specularTextureImage; }
+                TextureImage { id: specularTextureImage }
             }
         },
-        Parameter { name: "normalTexture";
+        Parameter {
+            name: "normalTexture"
             value: Texture2D {
                 id: normalTexture
                 minificationFilter: Texture.Linear
@@ -107,15 +109,15 @@ Material {
                     y: WrapMode.Repeat
                 }
                 maximumAnisotropy: 16.0
-                TextureImage { id: normalTextureImage; }
+                TextureImage { id: normalTextureImage }
             }
         },
         Parameter {
-            name: "texCoordScale";
+            name: "texCoordScale"
             value: textureScale
         },
         Parameter {
-            name: "opacity";
+            name: "opacity"
             value: opacity
         }
     ]

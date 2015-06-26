@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
@@ -34,27 +35,37 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#version 150 core
 
-int main(int argc, char **argv)
+in vec3 vertexPosition;
+in vec3 vertexNormal;
+in vec2 vertexTexCoord;
+
+out vec4 positionInLightSpace;
+out vec3 position;
+out vec3 normal;
+out vec2 texCoord;
+
+uniform mat4 lightViewProjection;
+uniform mat4 modelMatrix;
+uniform mat4 modelView;
+uniform mat3 modelViewNormal;
+uniform mat4 mvp;
+
+uniform float texCoordScale;
+
+void main()
 {
-    QGuiApplication app(argc, argv);
+    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
+    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
 
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
+    texCoord = vertexTexCoord * texCoordScale;
+    normal = normalize(modelViewNormal * vertexNormal);
+    position = vec3(modelView * vec4(vertexPosition, 1.0));
 
-    return app.exec();
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
 }

@@ -59,7 +59,8 @@ Rectangle {
             hoverEnabled: true
             onClicked: { planetSelector.focusedPlanet = focusPlanet }
             onEntered: PropertyAnimation { target: planetText; property: "opacity"; to: 1 }
-            onExited: PropertyAnimation { target: planetText;
+            onExited: PropertyAnimation {
+                target: planetText
                 property: "opacity"
                 to: {
                     if (planetText.text != "Solar System")

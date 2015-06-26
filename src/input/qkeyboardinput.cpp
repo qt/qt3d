@@ -172,7 +172,7 @@ void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
 
         QByteArray keySignal = keyToSignal(event->key());
         if (!keySignal.isEmpty()) {
-            keySignal += "(Q3DKeyEvent*)";
+            keySignal += "(Qt3D::Q3DKeyEvent*)";
             // TO DO: Finding if the signal is connected to anything before doing the invocation
             // could be an improvement
             // That's what QQ2 does but since it accesses QML private classes to do so, that may not be

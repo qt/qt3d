@@ -55,7 +55,6 @@ Item {
             anchors.fill: parent
             anchors.margins: 10
             focus: true
-            aspects: "input"
 
             SolarSystem { id: solarsystem }
         }
@@ -64,18 +63,13 @@ Item {
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton
-            onClicked: {
-                solarsystem.setFreeCamera(false)
+            onClicked:
                 focusedPlanet = 100
-            }
-            onDoubleClicked:
-                solarsystem.setFreeCamera(true)
         }
     }
 
     //! [1]
     onFocusedPlanetChanged: {
-        solarsystem.setFreeCamera(false)
         if (focusedPlanet == 100) {
             info.opacity = 0
             updatePlanetInfo()
