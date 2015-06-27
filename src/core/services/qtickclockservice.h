@@ -52,6 +52,8 @@ public:
     ~QTickClockService();
 
     qint64 waitForNextFrame() Q_DECL_FINAL;
+    void start() Q_DECL_FINAL;
+    void stop() Q_DECL_FINAL;
 
     Q_DECLARE_PRIVATE(QTickClockService)
 };

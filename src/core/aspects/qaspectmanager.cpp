@@ -172,7 +172,11 @@ void QAspectManager::exec()
 
         // Retrieve the frame advance service. Defaults to timer based if there is no renderer.
         QAbstractFrameAdvanceService *frameAdvanceService =
-            m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+                m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+
+        // Start the frameAdvanceService if we're about to enter the running loop
+        if (m_runMainLoop.load())
+            frameAdvanceService->start();
 
         // Only enter main render loop once the renderer and other aspects are initialized
         while (m_runMainLoop.load())

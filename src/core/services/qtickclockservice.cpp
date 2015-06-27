@@ -81,6 +81,19 @@ qint64 QTickClockService::waitForNextFrame()
     return d->m_clock.waitForNextTick();
 }
 
+/*!
+    Starts the inner tick clock used by the service.
+ */
+void QTickClockService::start()
+{
+    Q_D(QTickClockService);
+    d->m_clock.start();
+}
+
+void QTickClockService::stop()
+{
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

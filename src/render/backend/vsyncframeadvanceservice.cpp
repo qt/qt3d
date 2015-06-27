@@ -54,7 +54,6 @@ public:
         , m_semaphore(0)
         , m_elapsedTimeSincePreviousFrame(0)
     {
-        m_elapsed.start();
     }
 
     QSemaphore m_semaphore;
@@ -83,10 +82,30 @@ qint64 VSyncFrameAdvanceService::waitForNextFrame()
     return currentTime;
 }
 
+void VSyncFrameAdvanceService::start()
+{
+    Q_D(VSyncFrameAdvanceService);
+    d->m_elapsed.start();
+}
+
+/*!
+ \internal
+
+ Stops the VSyncFrameAdvanceService, releases the semaphore to allow the
+ renderer to cleanup without having to call waitForNextFrame.
+ */
+void VSyncFrameAdvanceService::stop()
+{
+    Q_D(VSyncFrameAdvanceService);
+    if (d->m_semaphore.available() == 0)
+        d->m_semaphore.release(1);
+}
+
 // Render Thread
 void VSyncFrameAdvanceService::proceedToNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
+    qCDebug(VSyncAdvanceService) << "Terminating VSyncFrameAdvanceService";
     d->m_semaphore.release(1);
 }
 
