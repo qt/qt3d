@@ -164,28 +164,19 @@ void QAspectManager::exec()
     // Gentlemen, start your engines
     QEventLoop eventLoop;
 
-    QAbstractFrameAdvanceService *frameAdvanceService = Q_NULLPTR;
-
     // Enter the main loop
     while (!m_terminated.load())
     {
         // Process any pending events, waiting for more to arrive if queue is empty
         eventLoop.processEvents(QEventLoop::WaitForMoreEvents, 16);
 
+        // Retrieve the frame advance service. Defaults to timer based if there is no renderer.
+        QAbstractFrameAdvanceService *frameAdvanceService =
+            m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+
         // Only enter main render loop once the renderer and other aspects are initialized
         while (m_runMainLoop.load())
         {
-            // Retrieve the timer service that may have been overridden by one of the
-            // aspects
-            if (!frameAdvanceService) {
-                // Aspects such as the renderer aspect may override the tickService (vsync)
-                // if no aspect did register a tick service, we create a default one
-                if ((frameAdvanceService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService)) == Q_NULLPTR) {
-                    m_serviceLocator->registerServiceProvider(QServiceLocator::FrameAdvanceService, new QTickClockService());
-                    frameAdvanceService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
-                }
-            }
-
             qint64 t = frameAdvanceService->waitForNextFrame();
 
             // For each Aspect
