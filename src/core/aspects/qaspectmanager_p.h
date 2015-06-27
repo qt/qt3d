@@ -42,6 +42,7 @@
 #include <QList>
 #include <QScopedPointer>
 #include <QVariant>
+#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -92,6 +93,7 @@ private:
     QAtomicInt m_runMainLoop;
     QAtomicInt m_terminated;
     QScopedPointer<QServiceLocator> m_serviceLocator;
+    QSemaphore m_waitForEndOfExecLoop;
 };
 
 } // namespace Qt3D

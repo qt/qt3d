@@ -99,13 +99,13 @@ void VSyncFrameAdvanceService::stop()
     Q_D(VSyncFrameAdvanceService);
     if (d->m_semaphore.available() == 0)
         d->m_semaphore.release(1);
+    qCDebug(VSyncAdvanceService) << "Terminating VSyncFrameAdvanceService";
 }
 
 // Render Thread
 void VSyncFrameAdvanceService::proceedToNextFrame()
 {
     Q_D(VSyncFrameAdvanceService);
-    qCDebug(VSyncAdvanceService) << "Terminating VSyncFrameAdvanceService";
     d->m_semaphore.release(1);
 }
 

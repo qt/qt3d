@@ -107,6 +107,27 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
+
+/*!
+    \internal
+
+    Renderer shutdown procedure:
+
+    Since the renderer relies on the surface and OpenGLContext to perform its cleanup,
+    it is shutdown when the surface is set to Q_NULLPTR
+
+    When the surface is set to Q_NULLPTR this will request the RenderThread to terminate
+    and will prevent createRenderBinJobs from returning a set of jobs as there is nothing
+    more to be rendered.
+
+    In turn, this will call shutdown which will make the OpenGL context current one last time
+    to allow cleanups requiring a call to QOpenGLContext::currentContext to execute properly.
+    At the end of that function, the QGraphicsContext is set to null.
+
+    At this point though, the QAspectThread is still running its event loop and will only stop
+    a short while after.
+ */
+
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
@@ -144,12 +165,17 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
-    if (m_renderThread) {
-        m_running.fetchAndStoreOrdered(1);
+    m_running.fetchAndStoreOrdered(1);
+    if (m_renderThread)
         m_renderThread->waitForStart();
-    }
 
     loadSceneParsers();
+}
+
+Renderer::~Renderer()
+{
+    // Clean up the TLS allocators
+    destroyAllocators();
 }
 
 void Renderer::buildDefaultTechnique()
@@ -239,21 +265,6 @@ void Renderer::buildDefaultMaterial()
 
 }
 
-Renderer::~Renderer()
-{
-    // Bail out of the main render loop. Ensure that even if the render thread
-    // is waiting on RenderViews to be populated that we wake up the wait condition.
-    // We check for termination immediately after being awoken.
-    if (m_renderThread) {
-        m_running.fetchAndStoreOrdered(0);
-        m_submitRenderViewsSemaphore.release(1);
-        m_renderThread->wait();
-    }
-
-    // Clean up the TLS allocators
-    destroyAllocators();
-}
-
 void Renderer::createAllocators()
 {
     // Issue a set of jobs to create an allocator in TLS for each worker thread
@@ -320,7 +331,8 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
     if (theRenderer->tlsAllocators()->hasLocalData()) {
         QFrameAllocator *allocator = theRenderer->tlsAllocators()->localData();
         allocator->clear();
-        delete allocator;
+        // Setting the local data to null actually deletes the allocatorQeue
+        // as the tls object takes ownership of pointers
         theRenderer->tlsAllocators()->setLocalData(Q_NULLPTR);
     }
 }
@@ -342,6 +354,7 @@ void Renderer::initialize(QOpenGLContext *context)
     QSurfaceFormat sf = m_surface->format();
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
+
 
     QOpenGLContext* ctx = context ? context : new QOpenGLContext;
     if (!context) {
@@ -389,14 +402,18 @@ void Renderer::initialize(QOpenGLContext *context)
 */
 void Renderer::shutdown()
 {
-    // Stop and destroy the OpenGL logger
-    if (m_debugLogger) {
-        m_debugLogger->stopLogging();
-        m_debugLogger.reset(Q_NULLPTR);
-    }
+    // TO DO: Check that this works with iOs and other cases
+    if (m_surface) {
+        m_graphicsContext->makeCurrent(m_surface);
+        // Stop and destroy the OpenGL logger
+        if (m_debugLogger) {
+            m_debugLogger->stopLogging();
+            m_debugLogger.reset(Q_NULLPTR);
+        }
 
-    // Clean up the graphics context
-    m_graphicsContext.reset(Q_NULLPTR);
+        // Clean up the graphics context
+        m_graphicsContext.reset(Q_NULLPTR);
+    }
 }
 
 void Renderer::setFrameGraphRoot(const QNodeId &frameGraphRootUuid)
@@ -474,13 +491,34 @@ void Renderer::setSurface(QSurface* surface)
     // of the Render Thread. On subsequent calls, just the surface will be
     // updated.
 
+    // setSurface(Q_NULLPTR) is also called when the window is destroyed,
+    // this is the opportunity to cleanup GL resources while we still have
+    // a valid QGraphicContext
+
     // TODO: Remove the need for a valid surface from the renderer initialization
     // We can use an offscreen surface to create and assess the OpenGL context.
     // This should allow us to get rid of the "swapBuffers called on a non-exposed
     // window" warning that we sometimes see.
     QMutexLocker locker(&m_mutex);
-    m_surface = surface;
-    m_waitForWindowToBeSetCondition.wakeOne();
+
+    // We are about to be destroyed
+    // cleanup GL now
+    if (surface == Q_NULLPTR) {
+        // Bail out of the main render loop. Ensure that even if the render thread
+        // is waiting on RenderViews to be populated that we wake up the wait condition.
+        // We check for termination immediately after being awaken.
+        m_running.fetchAndStoreOrdered(0);
+        if (m_renderThread) { // Pure Qt3D with RenderThread case
+            m_submitRenderViewsSemaphore.release(1);
+            m_renderThread->wait();
+            // This will call shutdown on the Renderer and cleanup GL context
+        }
+        // else we are dealing with the QtQuick2 / Scene3D case
+        m_surface = surface;
+    } else { // Setting a valid window on initialization
+        m_surface = surface;
+        m_waitForWindowToBeSetCondition.wakeOne();
+    }
 }
 
 void Renderer::render()
@@ -514,20 +552,23 @@ void Renderer::doRender()
     // with a queue used by a previous frame with corrupted content
     m_renderQueue->reset();
 
-    if (m_renderThread) {
-        // If we are rendering using the render thread, make sure
-        // that all the RenderViews, RenderCommands, UniformValues ...
-        // have been completely destroyed and are leak free
-        // Note: we cannot check for non render thread cases
-        // (scene3d) as we aren't sure a full frame was previously submitted
-        Q_FOREACH (QFrameAllocator *allocator, m_allocators)
-            Q_ASSERT(allocator->isEmpty());
-    }
+    if (m_running.load()) { // Are we still running ?
 
-    // We allow the RenderTickClock service to proceed to the next frame
-    // In turn this will allow the aspect manager to request a new set of jobs
-    // to be performed for each aspect
-    m_vsyncFrameAdvanceService->proceedToNextFrame();
+        if (m_renderThread) {
+            // If we are rendering using the render thread, make sure
+            // that all the RenderViews, RenderCommands, UniformValues ...
+            // have been completely destroyed and are leak free
+            // Note: we cannot check for non render thread cases
+            // (scene3d) as we aren't sure a full frame was previously submitted
+            Q_FOREACH (QFrameAllocator *allocator, m_allocators)
+                Q_ASSERT(allocator->isEmpty());
+        }
+
+        // We allow the RenderTickClock service to proceed to the next frame
+        // In turn this will allow the aspect manager to request a new set of jobs
+        // to be performed for each aspect
+        m_vsyncFrameAdvanceService->proceedToNextFrame();
+    }
 }
 
 // Called by RenderViewJobs
@@ -574,9 +615,15 @@ void Renderer::submitRenderViews()
     if (m_renderThread) { // Prevent ouf of order execution
         m_submitRenderViewsSemaphore.acquire(1);
 
+        // Early return if we have been unlocked because of
+        // shutdown
+        if (!m_running.load())
+            return;
+
         // When using Thread rendering, the semaphore should only
         // be released when the frame queue is complete and there's
         // something to render
+        // The case of shutdown should have been handled just before
         Q_ASSERT(m_renderQueue->isFrameQueueComplete());
     } else {
 

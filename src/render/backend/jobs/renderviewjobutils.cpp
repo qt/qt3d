@@ -212,7 +212,8 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
         if (!technique)
             continue;
 
-        if (*renderer->contextInfo() == *technique->openGLFilter()) {
+        // We need to be sure the renderer is still running <=> still has a QGraphicsContext
+        if (renderer->isRunning() && *renderer->contextInfo() == *technique->openGLFilter()) {
 
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
             const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();

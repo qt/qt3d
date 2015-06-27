@@ -197,8 +197,8 @@ public:
     void initialize(QOpenGLContext *context = Q_NULLPTR);
     void shutdown();
 
-
     QMutex* mutex() { return &m_mutex; }
+    bool isRunning() const { return m_running.load(); }
 
 private:
     bool canRender() const;
@@ -257,8 +257,6 @@ private:
     ShaderDataManager *m_shaderDataManager;
     UBOManager *m_uboManager;
     TextureImageManager *m_textureImageManager;
-
-    QTimer *m_frameTimer;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;

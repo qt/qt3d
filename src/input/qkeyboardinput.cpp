@@ -93,7 +93,9 @@ void QKeyboardInput::copy(const QNode *ref)
     QComponent::copy(ref);
     const QKeyboardInput *input = static_cast<const QKeyboardInput *>(ref);
 
-    if (input->d_func()->m_controller != Q_NULLPTR)
+    // TO DO: We may want to store the controller id and only send a clone when we are the parent
+    // of the controller
+    if (input->d_func()->m_controller != Q_NULLPTR && input->d_func()->m_controller->parent() == ref)
         setController(qobject_cast<QKeyboardController *>(QNode::clone(input->d_func()->m_controller)));
 }
 

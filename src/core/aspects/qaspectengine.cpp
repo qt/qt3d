@@ -153,13 +153,20 @@ void QAspectEngine::shutdown()
     Q_D(QAspectEngine);
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    // Cleanup the scene before quitting the backend
+    // Unset the root entity
     setRootEntity(Q_NULLPTR);
+
+    // Cleanup the scene before quitting the backend
     d->m_scene->setArbiter(Q_NULLPTR);
     QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "quit");
+
+    // Tell the aspect thread to exit
+    // This will return only after the aspectManager has
+    // exited its exec loop
+    d->m_aspectThread->aspectManager()->quit();
+
+    // Wait for thread to exit
     d->m_aspectThread->wait();
 }
 

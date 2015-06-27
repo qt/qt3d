@@ -233,7 +233,8 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
         const QVector<QEntity *> entities = c->entities();
         Q_FOREACH (QEntity *entity, entities) {
-            m_scene->removeEntityForComponent(c->id(), entity->id());
+            if (m_scene)
+                m_scene->removeEntityForComponent(c->id(), entity->id());
         }
     }
 

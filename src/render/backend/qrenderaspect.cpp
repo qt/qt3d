@@ -129,7 +129,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_surface(Q_NULLPTR)
     , m_time(0)
     , m_initialized(false)
-    , m_shuttingDown(false)
 {
     initResources();
     m_aspectType = QAbstractAspect::AspectRenderer;
@@ -240,11 +239,13 @@ void QRenderAspect::renderSynchronous()
     d->m_renderer->doRender();
 }
 
+/*!
+ * Only called when rendering with QtQuick 2 and a Scene3D item
+ */
 void QRenderAspect::renderShutdown()
 {
     Q_D(QRenderAspect);
-    d->m_shuttingDown = true;
-    d->m_renderer->doRender(); // Consume the remaining frames
+    d->m_renderer->shutdown();
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
@@ -256,7 +257,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != Q_NULLPTR && !d->m_shuttingDown) {
+    if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
 
         // Create the jobs to build the frame
         d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer, d->m_renderer->renderSceneRoot()));

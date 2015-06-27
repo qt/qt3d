@@ -103,7 +103,9 @@ public:
         , m_texture(Q_NULLPTR)
     {
         Q_CHECK_PTR(m_item);
-        QObject::connect(m_item->window(), SIGNAL(beforeRendering()), this, SLOT(render()));
+
+        QObject::connect(m_item->window(), SIGNAL(beforeRendering()), this, SLOT(render()), Qt::DirectConnection);
+        QObject::connect(m_item->window(), SIGNAL(sceneGraphInvalidated()), this, SLOT(shutdown()), Qt::DirectConnection);
         ContextSaver saver;
 
         QVariantMap data;
@@ -143,6 +145,7 @@ public:
 
 public Q_SLOTS:
     void render();
+    void shutdown();
 
 private:
     Scene3DItem *m_item;
@@ -275,6 +278,10 @@ public:
         setGeometry(&m_geometry);
     }
 
+    ~Scene3DSGNode()
+    {
+    }
+
     void setTexture(QSGTexture *texture) Q_DECL_NOEXCEPT
     {
         m_material.setTexture(texture);
@@ -335,7 +342,10 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 
 Scene3DItem::~Scene3DItem()
 {
-    m_renderAspect->renderShutdown();
+    // When the window is closed, it first destroys all of its children
+    // At this point, the window is still valid and we won't ever receive the
+    // sceneGraphInvalidated signal
+    // How can we cleanup then ?
 }
 
 QStringList Scene3DItem::aspects() const
@@ -396,9 +406,8 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         node = Q_NULLPTR;
     }
 
-    if (m_renderer.isNull()) {
+    if (m_renderer.isNull())
         m_renderer.reset(new Scene3DRenderer(this, m_aspectEngine, m_renderAspect));
-    }
 
     Scene3DSGNode *fboNode = new Scene3DSGNode();
     fboNode->setRect(boundingRect());
@@ -464,6 +473,16 @@ void Scene3DRenderer::render()
 
     // Request next frame
     m_item->window()->update();
+}
+
+// TO DO: Find a way to have this slot executed
+// in the QtQuick Render Thread. Right now this doesn't work
+// since when the window is closed, Scene3DItem and Scene3DRenderer are
+// deleted (they are children of the QQuickView) and then only the window's
+// sceneGraphInvalidated signal is emitted
+void Scene3DRenderer::shutdown()
+{
+    m_renderAspect->renderShutdown();
 }
 
 inline static bool isPowerOfTwo(int x)

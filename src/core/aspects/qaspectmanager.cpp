@@ -67,6 +67,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
+    , m_waitForEndOfExecLoop(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     m_runMainLoop.fetchAndStoreOrdered(0);
@@ -195,12 +196,27 @@ void QAspectManager::exec()
             eventLoop.processEvents();
         }
     }
+    qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";
+
+    m_waitForEndOfExecLoop.release(1);
 }
 
 void QAspectManager::quit()
 {
+    qCDebug(Aspects) << Q_FUNC_INFO;
+
     m_runMainLoop.fetchAndStoreOrdered(0);
     m_terminated.fetchAndStoreOrdered(1);
+
+    // Allow the Aspect thread to proceed in case it's locked by the
+    // FrameAdvanceService <=> it is still in the running loop
+    QAbstractFrameAdvanceService *advanceFrameService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+    if (advanceFrameService)
+        advanceFrameService->stop();
+
+    // We need to wait for the QAspectManager exec loop to terminate
+    m_waitForEndOfExecLoop.acquire(1);
+    qCDebug(Aspects) << Q_FUNC_INFO << "Exited event loop";
 }
 
 const QList<QAbstractAspect *> &QAspectManager::aspects() const
