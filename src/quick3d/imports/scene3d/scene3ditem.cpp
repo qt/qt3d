@@ -292,7 +292,8 @@ public:
         if (rect != m_rect) {
             m_rect = rect;
             // Map the item's bounding rect to normalized texture coordinates
-            QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_rect, QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+            const QRectF sourceRect(0.0f, 1.0f, 1.0f, -1.0f);
+            QSGGeometry::updateTexturedRectGeometry(&m_geometry, m_rect, sourceRect);
             markDirty(DirtyGeometry);
         }
     }
