@@ -88,6 +88,7 @@ QGraphicsContext::QGraphicsContext()
     , m_gl(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_glHelper(Q_NULLPTR)
+    , m_ownCurrent(true)
     , m_activeShader(Q_NULLPTR)
     , m_material(Q_NULLPTR)
     , m_activeFBO(0)
@@ -148,7 +149,8 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
             return false;
     }
 
-    if (!makeCurrent(m_surface))
+    m_ownCurrent = !(m_gl->surface() == m_surface);
+    if (m_ownCurrent && !makeCurrent(m_surface))
         return false;
 
     GLint err = m_gl->functions()->glGetError();
@@ -190,7 +192,8 @@ void QGraphicsContext::endDrawing(bool swapBuffers)
 {
     if (swapBuffers)
         m_gl->swapBuffers(m_surface);
-    m_gl->doneCurrent();
+    if (m_ownCurrent)
+        m_gl->doneCurrent();
     m_stateSet = Q_NULLPTR;
     decayTextureScores();
 }

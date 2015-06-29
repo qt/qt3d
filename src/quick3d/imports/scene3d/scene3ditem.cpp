@@ -446,7 +446,8 @@ void Scene3DRenderer::render()
     m_renderAspect->renderSynchronous();
 
     // We may have called doneCurrent() so restore the context.
-    saver.context()->makeCurrent(saver.surface());
+    if (saver.context()->surface() != saver.surface())
+        saver.context()->makeCurrent(saver.surface());
 
     // Blit multisampled FBO with non multisampled FBO with texture attachment
     QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());

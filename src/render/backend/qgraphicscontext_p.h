@@ -203,6 +203,7 @@ private:
     QOpenGLContext *m_gl;
     QSurface *m_surface;
     QGraphicsHelperInterface *m_glHelper;
+    bool m_ownCurrent;
 
     RenderShader *m_activeShader;
     QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
