@@ -117,9 +117,6 @@ public:
 
     ~Scene3DRenderer()
     {
-        delete m_multisampledFBO;
-        delete m_finalFBO;
-        delete m_texture;
     }
 
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size)
@@ -151,10 +148,11 @@ private:
     Scene3DItem *m_item;
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
-    QOpenGLFramebufferObject *m_multisampledFBO;
-    QOpenGLFramebufferObject *m_finalFBO;
-    QSGTexture *m_texture;
+    QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
+    QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
+    QScopedPointer<QSGTexture> m_texture;
     Scene3DSGNode *m_node;
+    QSize m_lastSize;
 };
 
 /*!
@@ -411,8 +409,8 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
 void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT
 {
     m_node = node;
-    if (m_texture)
-        node->setTexture(m_texture);
+    if (!m_texture.isNull())
+        node->setTexture(m_texture.data());
 }
 
 void Scene3DRenderer::render()
@@ -425,14 +423,22 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
-    if (!m_multisampledFBO)
-        m_multisampledFBO = createMultisampledFramebufferObject(m_item->boundingRect().size().toSize());
+    const QSize currentSize = m_item->boundingRect().size().toSize();
+    const bool forceRecreate = currentSize != m_lastSize;
 
-    if (!m_finalFBO) {
-        m_finalFBO = createFramebufferObject(m_item->boundingRect().size().toSize());
-        m_texture = m_item->window()->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size());
-        m_node->setTexture(m_texture);
+    // Rebuild FBO and textures if never created or a resize has occurred
+    if (m_multisampledFBO.isNull() || forceRecreate)
+        m_multisampledFBO.reset(createMultisampledFramebufferObject(m_item->boundingRect().size().toSize()));
+
+    if (m_finalFBO.isNull() || forceRecreate) {
+        m_finalFBO.reset(createFramebufferObject(m_item->boundingRect().size().toSize()));
+        m_texture.reset(m_item->window()->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size()));
+        m_node->setTexture(m_texture.data());
     }
+
+    // Store the current size as a comparison
+    // point for the next frame
+    m_lastSize = currentSize;
 
     // Bind FBO
     m_multisampledFBO->bind();
@@ -443,7 +449,7 @@ void Scene3DRenderer::render()
     saver.context()->makeCurrent(saver.surface());
 
     // Blit multisampled FBO with non multisampled FBO with texture attachment
-    QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO, m_multisampledFBO);
+    QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());
 
     // Restore QtQuick FBO
     m_multisampledFBO->bindDefault();
