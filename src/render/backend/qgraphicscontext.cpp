@@ -450,7 +450,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, in
 
     m_textureScores.insert(m_activeTextures[onUnit], 200);
     m_pinnedTextureUnits[onUnit] = true;
-    m_textureScopes.insert(onUnit, scope);
+    m_textureScopes[onUnit] = scope;
 
     return onUnit;
 }
