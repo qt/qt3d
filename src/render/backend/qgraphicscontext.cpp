@@ -90,6 +90,8 @@ QGraphicsContext::QGraphicsContext()
     , m_glHelper(Q_NULLPTR)
     , m_activeShader(Q_NULLPTR)
     , m_material(Q_NULLPTR)
+    , m_activeFBO(0)
+    , m_defaultFBO(0)
     , m_stateSet(Q_NULLPTR)
     , m_renderer(Q_NULLPTR)
     , m_contextInfo(new QOpenGLFilter())
@@ -129,6 +131,8 @@ void QGraphicsContext::initialize()
                 || extensions.contains(QByteArrayLiteral("GL_ARB_vertex_array_object"))
                 || extensions.contains(QByteArrayLiteral("GL_APPLE_vertex_array_object"));
     }
+
+    m_defaultFBO = m_gl->defaultFramebufferObject();
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
@@ -195,7 +199,7 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
     QSize renderTargetSize;
-    if (m_activeFBO != 0) {
+    if (m_activeFBO != m_defaultFBO) {
         // For external FBOs we may not have an m_renderTargets entry. Do not call glViewport in that case.
         if (m_renderTargetsSize.contains(m_activeFBO))
             renderTargetSize = m_renderTargetsSize[m_activeFBO];
@@ -270,16 +274,21 @@ void QGraphicsContext::activateShader(RenderShader *shader)
     }
 
     // If RenderShader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
-    if (!m_shaderHash.contains(shader->dna()) || !shader->isLoaded()) {
+    if (!m_renderShaderHash.contains(shader->dna())) {
         QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
         Q_ASSERT(prog);
-        m_shaderHash.insert(shader->dna(), prog);
-        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_shaderHash.count();
+        m_renderShaderHash.insert(shader->dna(), shader);
+        qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_renderShaderHash.count();
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         if (m_glHelper->supportsFeature(QGraphicsHelperInterface::UniformBufferObject))
             shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
         m_activeShader = Q_NULLPTR;
+    } else if (!shader->isLoaded()) {
+        // Shader program is already in the m_shaderHash but we still need to
+        // ensure that the RenderShader has full knowledge of attributes, uniforms,
+        // and uniform blocks.
+        shader->initialize(*m_renderShaderHash.value(shader->dna()));
     }
 
     if (m_activeShader != Q_NULLPTR && m_activeShader->dna() == shader->dna()) {
@@ -287,11 +296,24 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         // no op
     } else {
         m_activeShader = shader;
-        QOpenGLShaderProgram* prog = m_shaderHash[shader->dna()];
+        QOpenGLShaderProgram* prog = m_renderShaderHash[shader->dna()]->getOrCreateProgram(this);
         prog->bind();
         // ensure material uniforms are re-applied
         m_material = Q_NULLPTR;
     }
+}
+
+/*!
+ * \internal
+ * Returns the QOpenGLShaderProgram matching the ProgramDNA \a dna. If no match
+ * is found, Q_NULLPTR is returned.
+ */
+QOpenGLShaderProgram *QGraphicsContext::containsProgram(const ProgramDNA &dna)
+{
+    RenderShader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
+    if (renderShader)
+        return renderShader->getOrCreateProgram(this);
+    return Q_NULLPTR;
 }
 
 void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
@@ -300,8 +322,12 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
         if (!m_renderTargets.contains(renderTarget->peerUuid())) {
-            // The FBO is created and its attachments are set once
-            if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
+            if (m_defaultFBO && fboId == m_defaultFBO) {
+                // this is the default fbo that some platforms create (iOS), we just register it
+                // Insert FBO into hash
+                m_renderTargets.insert(renderTarget->peerUuid(), fboId);
+            } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
+                // The FBO is created and its attachments are set once
                 // Insert FBO into hash
                 m_renderTargets.insert(renderTarget->peerUuid(), fboId);
                 // Bind FBO
@@ -707,7 +733,7 @@ void QGraphicsContext::decayTextureScores()
 QOpenGLShaderProgram* QGraphicsContext::activeShader()
 {
     Q_ASSERT(m_activeShader);
-    return m_shaderHash[m_activeShader->dna()];
+    return m_activeShader->getOrCreateProgram(this);
 }
 
 void QGraphicsContext::setRenderer(Renderer *renderer)
@@ -750,7 +776,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
             UniformBuffer *ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
                                                                                                  m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
-            bindUniformBlock(m_shaderHash.value(m_activeShader->dna())->programId(), block.m_index, i);
+            bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
             // bind the UBO to the binding point i
             // Specs specify that there are at least 14 binding points
 

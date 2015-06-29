@@ -38,7 +38,7 @@
 #include "qentity.h"
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <private/qabstractaspect_p.h>
-#include <Qt3DCore/qaspectjobmanager.h>
+#include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/qsceneinterface.h>
 

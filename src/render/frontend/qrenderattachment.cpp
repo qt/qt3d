@@ -69,6 +69,11 @@ QRenderAttachment::QRenderAttachment(QNode *parent)
 {
 }
 
+QRenderAttachment::~QRenderAttachment()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent)
     : QNode(dd, parent)

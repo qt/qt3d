@@ -34,7 +34,6 @@
 **
 ****************************************************************************/
 
-#include "qabstractaspectjobmanager.h"
 #include "qabstractaspectjobmanager_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,17 +41,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 /*!
-    \class Qt3D::QAbstractAspectJobManagerPrivate
+    \class Qt3D::QAbstractAspectJobManager
     \internal
 */
 QAbstractAspectJobManager::QAbstractAspectJobManager(QObject *parent)
-    : QObject(*new QAbstractAspectJobManagerPrivate, parent)
-{
-}
-
-/*! \internal */
-QAbstractAspectJobManager::QAbstractAspectJobManager(QAbstractAspectJobManagerPrivate &dd, QObject *parent)
-    : QObject(dd, parent)
+    : QObject(parent)
 {
 }
 

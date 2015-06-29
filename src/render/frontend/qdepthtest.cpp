@@ -71,6 +71,11 @@ QDepthTest::QDepthTest(QNode *parent)
 {
 }
 
+QDepthTest::~QDepthTest()
+{
+    QNode::cleanup();
+}
+
 QDepthTest::DepthFunc QDepthTest::func() const
 {
     Q_D(const QDepthTest);

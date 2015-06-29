@@ -66,6 +66,11 @@ QPlaneMesh::QPlaneMesh(QNode *parent)
     update();
 }
 
+QPlaneMesh::~QPlaneMesh()
+{
+    QNode::cleanup();
+}
+
 void QPlaneMesh::copy(const QNode *ref)
 {
     QAbstractMesh::copy(ref);

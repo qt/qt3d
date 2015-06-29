@@ -38,8 +38,7 @@
 #ifndef QT3D_RENDER_RENDERSTATE_H
 #define QT3D_RENDER_RENDERSTATE_H
 
-#include <QList>
-#include <QSet>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,6 +86,7 @@ class RenderStateSet
 {
 public:
     RenderStateSet();
+    ~RenderStateSet();
 
     void addState(RenderState* ds);
 
@@ -112,12 +112,12 @@ private:
      */
     bool contains(RenderState* ds) const;
 
-    QSet<RenderState*> m_states;
+    QVector<RenderState*> m_states;
 
     StateMaskSet m_stateMask;
 
     RenderStateSet* m_cachedPrevious;
-    QList<RenderState*> m_cachedDeltaStates;
+    QVector<RenderState*> m_cachedDeltaStates;
 
 };
 

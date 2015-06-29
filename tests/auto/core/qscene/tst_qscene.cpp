@@ -88,6 +88,12 @@ class tst_Node : public Qt3D::QNode
 public:
     tst_Node() : Qt3D::QNode()
     {}
+
+    ~tst_Node()
+    {
+        QNode::cleanup();
+    }
+
 protected:
     QT3D_CLONEABLE(tst_Node)
 };
@@ -97,12 +103,19 @@ class tst_Component : public Qt3D::QComponent
 public:
     tst_Component() : Qt3D::QComponent()
     {}
+
+    ~tst_Component()
+    {
+        QNode::cleanup();
+    }
+
 protected:
     QT3D_CLONEABLE(tst_Component)
 };
 
 void tst_QScene::addObservable()
 {
+    // GIVEN
     Qt3D::QNode *node1 = new tst_Node();
     Qt3D::QNode *node2 = new tst_Node();
 
@@ -114,6 +127,7 @@ void tst_QScene::addObservable()
     Qt3D::QScene *scene = new Qt3D::QScene;
     scene->setArbiter(new tst_LockableObserver);
 
+    // WHEN
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i), node1->id());
 
@@ -123,6 +137,7 @@ void tst_QScene::addObservable()
     Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
     Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
+    // THEN
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
@@ -138,6 +153,7 @@ void tst_QScene::addObservable()
 
 void tst_QScene::addNodeObservable()
 {
+    // GIBEN
     QList<Qt3D::QNode *> nodes;
 
     for (int i = 0; i < 10; i++)
@@ -146,9 +162,11 @@ void tst_QScene::addNodeObservable()
     Qt3D::QScene *scene = new Qt3D::QScene;
     scene->setArbiter(new tst_LockableObserver);
 
+    // WHEN
     for (int i = 0; i < 10; i++)
         scene->addObservable(nodes.at(i));
 
+    // THEN
     Q_FOREACH (Qt3D::QNode *n, nodes) {
         QVERIFY(n == scene->lookupNode(n->id()));
         QVERIFY(scene->lookupObservables(n->id()).isEmpty());
@@ -157,6 +175,7 @@ void tst_QScene::addNodeObservable()
 
 void tst_QScene::removeObservable()
 {
+    // GIVEN
     Qt3D::QNode *node1 = new tst_Node();
     Qt3D::QNode *node2 = new tst_Node();
 
@@ -168,6 +187,7 @@ void tst_QScene::removeObservable()
     Qt3D::QScene *scene = new Qt3D::QScene;
     scene->setArbiter(new tst_LockableObserver);
 
+    // WHEN
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i), node1->id());
 
@@ -177,27 +197,36 @@ void tst_QScene::removeObservable()
     Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
     Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
+    // THEN
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
+    // WHEN
     scene->removeObservable(observables.at(0), node1->id());
+    // THEN
     QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
 
+    // WHEN
     scene->removeObservable(observables.at(0), node1->id());
+    // THEN
     QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
 
+    // WHEN
     scene->removeObservable(observables.at(6), node1->id());
+    // THEN
     QCOMPARE(scene->lookupObservables(node1->id()).count(), 4);
     QCOMPARE(scene->lookupObservables(node2->id()).count(), 5);
 
+    // WHEN
     scene->removeObservable(observables.at(0), node2->id());
+    // THEN
     QCOMPARE(scene->lookupObservables(node2->id()).count(), 5);
-
     QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeId());
 }
 
 void tst_QScene::removeNodeObservable()
 {
+    // GIVEN
     Qt3D::QNode *node1 = new tst_Node();
     Qt3D::QNode *node2 = new tst_Node();
 
@@ -209,6 +238,7 @@ void tst_QScene::removeNodeObservable()
     Qt3D::QScene *scene = new Qt3D::QScene;
     scene->setArbiter(new tst_LockableObserver);
 
+    // WHEN
     scene->addObservable(node1);
     scene->addObservable(node2);
 
@@ -218,14 +248,17 @@ void tst_QScene::removeNodeObservable()
     for (int i = 0; i < 5; i++)
         scene->addObservable(observables.at(i + 5), node2->id());
 
+    // THEN
     Qt3D::QObservableList obs1 = scene->lookupObservables(node1->id());
     Qt3D::QObservableList obs2 = scene->lookupObservables(node2->id());
 
     QCOMPARE(obs1.count(), 5);
     QCOMPARE(obs2.count(), obs1.count());
 
+    // WHEN
     scene->removeObservable(node1);
 
+    // THEN
     QVERIFY(scene->lookupNode(node1->id()) == Q_NULLPTR);
     QVERIFY(scene->lookupObservables(node1->id()).empty());
     QVERIFY(scene->nodeIdFromObservable(observables.at(0)) == Qt3D::QNodeId());
@@ -237,13 +270,20 @@ void tst_QScene::removeNodeObservable()
 
 void tst_QScene::addChildNode()
 {
+    // GIVEN
     Qt3D::QScene *scene = new Qt3D::QScene;
 
     QList<Qt3D::QNode *> nodes;
 
     Qt3D::QNode *root = new tst_Node();
     Qt3D::QNodePrivate::get(root)->setScene(scene);
+
+    // WHEN
     scene->addObservable(root);
+    // THEN
+    QVERIFY(scene->lookupNode(root->id()) == root);
+
+    // WHEN
     for (int i = 0; i < 10; i++) {
         Qt3D::QNode *child = new tst_Node();
         if (nodes.isEmpty())
@@ -252,10 +292,9 @@ void tst_QScene::addChildNode()
             child->setParent(nodes.last());
         nodes.append(child);
     }
-
-    QVERIFY(scene->lookupNode(root->id()) == root);
     QCoreApplication::processEvents();
 
+    // THEN
     Q_FOREACH (Qt3D::QNode *n, nodes) {
         QVERIFY(scene->lookupNode(n->id()) == n);
     }
@@ -263,6 +302,7 @@ void tst_QScene::addChildNode()
 
 void tst_QScene::removeChildNode()
 {
+    // GIVEN
     Qt3D::QScene *scene = new Qt3D::QScene;
 
     QList<Qt3D::QNode *> nodes;
@@ -270,6 +310,8 @@ void tst_QScene::removeChildNode()
     Qt3D::QNode *root = new tst_Node;
     Qt3D::QNodePrivate::get(root)->setScene(scene);
     scene->addObservable(root);
+
+    // WHEN
     for (int i = 0; i < 10; i++) {
         Qt3D::QNode *child = new tst_Node;
         if (nodes.isEmpty())
@@ -279,11 +321,12 @@ void tst_QScene::removeChildNode()
         nodes.append(child);
     }
 
+    // THEN
     while (!nodes.isEmpty()) {
         Qt3D::QNode *lst = nodes.takeLast();
         QVERIFY(scene->lookupNode(lst->id()) == lst);
         if (lst->parentNode() != Q_NULLPTR) {
-            lst->setParent(Q_NULLPTR);
+            lst->setParent(Q_NODE_NULLPTR);
             QCoreApplication::processEvents();
             QVERIFY(scene->lookupNode(lst->id()) == Q_NULLPTR);
         }
@@ -292,6 +335,7 @@ void tst_QScene::removeChildNode()
 
 void tst_QScene::addEntityForComponent()
 {
+    // GIVEN
     Qt3D::QScene *scene = new Qt3D::QScene;
 
     QList<Qt3D::QEntity *> entities;
@@ -307,6 +351,7 @@ void tst_QScene::addEntityForComponent()
         components << comp;
     }
 
+    // WHEN
     for (int i = 0; i < 10; i++) {
         Qt3D::QEntity *e = entities.at(i);
         for (int j = 0; j < 10; j++) {
@@ -314,6 +359,7 @@ void tst_QScene::addEntityForComponent()
         }
     }
 
+    // THEN
     for (int i = 0; i < 10; i++) {
         QList<Qt3D::QNodeId> ids = scene->entitiesForComponent(components.at(i)->id());
         QCOMPARE(ids.count(), 10);
@@ -322,6 +368,7 @@ void tst_QScene::addEntityForComponent()
 
 void tst_QScene::removeEntityForComponent()
 {
+    // GIVEN
     Qt3D::QScene *scene = new Qt3D::QScene;
 
     QList<Qt3D::QEntity *> entities;
@@ -337,6 +384,7 @@ void tst_QScene::removeEntityForComponent()
         components << comp;
     }
 
+    // WHEN
     for (int i = 0; i < 10; i++) {
         Qt3D::QEntity *e = entities.at(i);
         for (int j = 0; j < 10; j++) {
@@ -344,6 +392,7 @@ void tst_QScene::removeEntityForComponent()
         }
     }
 
+    // THEN
     for (int i = 0; i < 10; i++) {
         Qt3D::QEntity *e = entities.at(i);
         for (int j = 0; j < 10; j++) {

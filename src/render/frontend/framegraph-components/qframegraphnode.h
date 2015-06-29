@@ -53,6 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public QNode
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
     explicit QFrameGraphNode(QNode *parent = 0);
+    ~QFrameGraphNode();
 
     QFrameGraphNode *parentFrameGraphNode() const;
 

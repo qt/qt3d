@@ -81,6 +81,7 @@ public:
     Q_ENUM(Blending)
 
     explicit QBlendState(QNode *parent = 0);
+    ~QBlendState();
 
     Blending srcRGB() const;
     void setSrcRGB(Blending srcRGB);

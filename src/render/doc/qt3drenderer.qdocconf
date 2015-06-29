@@ -1,0 +1,58 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = Qt3DRenderer
+description             = Qt3D Renderer Reference Documentation
+version                 = $QT_VERSION
+
+examplesinstallpath     = qt3d
+
+qhp.projects            = Qt3DRenderer
+
+qhp.Qt3DRenderer.file                = qt3drenderer.qhp
+qhp.Qt3DRenderer.namespace           = org.qt-project.qt3drenderer.$QT_VERSION_TAG
+qhp.Qt3DRenderer.virtualFolder       = qt3drenderer
+qhp.Qt3DRenderer.indexTitle          = Qt3D Renderer C++ Classes
+qhp.Qt3DRenderer.indexRoot           =
+
+qhp.Qt3DRenderer.filterAttributes                   = qt3drenderer $QT_VERSION qtrefdoc
+qhp.Qt3DRenderer.customFilters.Qt.name              = Qt3DRenderer $QT_VERSION
+qhp.Qt3DRenderer.customFilters.Qt.filterAttributes  = qt3drenderer $QT_VERSION
+
+qhp.Qt3DRenderer.subprojects                    = classes qmltypes examples
+qhp.Qt3DRenderer.subprojects.classes.title      = C++ Classes
+qhp.Qt3DRenderer.subprojects.classes.indexTitle = Qt3D Renderer C++ Classes
+qhp.Qt3DRenderer.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3DRenderer.subprojects.classes.sortPages  = true
+
+qhp.Qt3DRenderer.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DRenderer.subprojects.qmltypes.indexTitle = Qt3D Renderer QML Types
+qhp.Qt3DRenderer.subprojects.qmltypes.selectors  = qmlclass
+qhp.Qt3DRenderer.subprojects.qmltypes.sortPages  = true
+
+qhp.Qt3DRenderer.subprojects.examples.title      = Examples
+qhp.Qt3DRenderer.subprojects.examples.indexTitle = Qt3D Examples
+qhp.Qt3DRenderer.subprojects.examples.selectors  = fake:example
+qhp.Qt3DRenderer.subprojects.examples.sortPages  = true
+
+tagfile                 = ../../../doc/qt3drenderer/qt3drenderer.tags
+
+depends                 += qtcore qtqml qtquick qt3dcore qtdoc
+
+headerdirs += ..
+sourcedirs += ..
+exampledirs += ../../../examples/qt3d \
+               src/snippets
+
+imagedirs   += images
+
+examples.fileextensions       += "*.fraq *.geom *.vert"
+examples.imageextensions      += "*.png"
+
+Cpp.ignoretokens     += QT3DRENDERERSHARED_EXPORT \
+                        QT3DRENDERERSHARED_PRIVATE_EXPORT
+
+Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
+
+navigation.landingpage = "Qt3D Module"
+navigation.cppclassespage = "Qt3D Renderer C++ Classes"
+navigation.qmltypespage = "Qt3D Renderer QML Types"

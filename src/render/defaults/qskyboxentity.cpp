@@ -212,6 +212,7 @@ QSkyboxEntity::QSkyboxEntity(QNode *parent)
 
 QSkyboxEntity::~QSkyboxEntity()
 {
+    QNode::cleanup();
 }
 
 /*!

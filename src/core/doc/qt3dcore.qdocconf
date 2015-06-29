@@ -11,7 +11,7 @@ qhp.projects            = Qt3DCore
 qhp.Qt3DCore.file                = qt3dcore.qhp
 qhp.Qt3DCore.namespace           = org.qt-project.qt3dcore.$QT_VERSION_TAG
 qhp.Qt3DCore.virtualFolder       = qt3dcore
-qhp.Qt3DCore.indexTitle          = Qt3D Core
+qhp.Qt3DCore.indexTitle          = Qt3D Module
 qhp.Qt3DCore.indexRoot           =
 
 qhp.Qt3DCore.filterAttributes                   = qt3dcore $QT_VERSION qtrefdoc
@@ -32,27 +32,31 @@ qhp.Qt3DCore.subprojects.qmltypes.sortPages  = true
 
 tagfile                 = ../../../doc/qt3dcore/qt3dcore.tags
 
-depends                 += qtcore qtqml qtquick qtdoc qt3drender
+depends                 += qtcore qtqml qtquick qtdoc qt3drenderer
 
 headerdirs += .. \
               ../../plugins \
-              ../../quick3d/quick3d
+              ../../quick3d/quick3d \
+              ../../input
 
 sourcedirs += .. \
               ../../plugins \
-              ../../quick3d/quick3d
+              ../../quick3d/quick3d \
+              ../../input
 
 exampledirs += src/snippets
 
 #excludedirs +=
 
-imagedirs   += images
+imagedirs   += images \
+               ../../../examples/qt3d/shadow-map-qml/doc/images
 
 Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
+                        QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 
-navigation.landingpage = "Qt3D Core"
+navigation.landingpage = "Qt3D Module"
 navigation.cppclassespage = "Qt3D Core C++ Classes"
 navigation.qmltypespage = "Qt3D Core QML Types"

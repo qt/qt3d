@@ -46,7 +46,7 @@ namespace Qt3D {
 
 class QTextureWrapModePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTextureWrapMode: public QObject
+class QT3DRENDERERSHARED_EXPORT QTextureWrapMode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)
@@ -86,7 +86,5 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QTextureWrapMode*)
 
 #endif // QT3D_QWRAPMODE_H

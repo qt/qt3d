@@ -54,6 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QEffect
     Q_OBJECT
 public:
     explicit QEffect(QNode *parent = 0);
+    ~QEffect();
 
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
@@ -75,7 +76,5 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QEffect*)
 
 #endif // QT3D_QEFFECT_H

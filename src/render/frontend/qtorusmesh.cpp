@@ -98,6 +98,12 @@ QTorusMesh::QTorusMesh(QNode *parent)
 {
     update();
 }
+
+QTorusMesh::~QTorusMesh()
+{
+    QNode::cleanup();
+}
+
 void QTorusMesh::setRings(int rings)
 {
     Q_D(QTorusMesh);

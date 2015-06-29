@@ -78,7 +78,7 @@ protected:
     QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
 
 private:
-    void initNodeTree(QNode *node) const;
+    void initNodeTree(QNode *node);
 };
 
 } // namespace Qt3D

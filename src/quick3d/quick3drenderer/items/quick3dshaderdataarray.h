@@ -62,6 +62,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderDataArray : public QNode
     Q_CLASSINFO("DefaultProperty", "values")
 public:
     explicit Quick3DShaderDataArray(QNode *parent = 0);
+    ~Quick3DShaderDataArray();
     QQmlListProperty<QShaderData> valuesList();
     QList<QShaderData *> values() const;
 

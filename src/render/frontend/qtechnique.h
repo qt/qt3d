@@ -59,6 +59,7 @@ class QT3DRENDERERSHARED_EXPORT QTechnique : public QNode
 
 public:
     explicit QTechnique(QNode *parent = 0);
+    ~QTechnique();
 
     void addAnnotation(QAnnotation *criterion);
     void removeAnnotation(QAnnotation *criterion);
@@ -87,7 +88,5 @@ private:
 }
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QTechnique *)
 
 #endif // QT3D_QTECHNIQUE_H

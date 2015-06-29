@@ -82,6 +82,11 @@ QMesh::QMesh(QNode *parent)
 {
 }
 
+QMesh::~QMesh()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)

@@ -36,7 +36,7 @@
 
 #include "qchangearbiter_p.h"
 #include "qcomponent.h"
-#include "qabstractaspectjobmanager.h"
+#include "qabstractaspectjobmanager_p.h"
 
 #include "qsceneobserverinterface.h"
 #include "qsceneinterface.h"

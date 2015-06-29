@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
 
 public:
     explicit QParameter(QNode *parent = 0);
+    ~QParameter();
     QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
     QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent = 0);
 
@@ -85,7 +86,5 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QParameter *)
 
 #endif // QT3D_PARAMETER_H

@@ -75,6 +75,4 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTextureImage*)
-
 #endif // QT3D_QTEXTUREIMAGE_H

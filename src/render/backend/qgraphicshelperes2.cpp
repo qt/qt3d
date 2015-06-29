@@ -140,15 +140,18 @@ QVector<ShaderUniform> QGraphicsHelperES2::programUniformsAndLocations(GLuint pr
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
-    uniforms.resize(nbrActiveUniforms);
+    uniforms.reserve(nbrActiveUniforms);
+    char uniformName[256];
     for (GLint i = 0; i < nbrActiveUniforms; i++) {
         ShaderUniform uniform;
-        QByteArray uniformName(256, '\0');
+        GLsizei uniformNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveUniform(programId, i, 256, NULL, &uniform.m_size, &uniform.m_type , uniformName.data());
-        uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
-        uniform.m_name = QString::fromUtf8(uniformName);
+        m_funcs->glGetActiveUniform(programId, i, sizeof(uniformName) - 1, &uniformNameLength,
+                                    &uniform.m_size, &uniform.m_type, uniformName);
+        uniformName[sizeof(uniformName) - 1] = '\0';
+        uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName);
+        uniform.m_name = QString::fromUtf8(uniformName, uniformNameLength);
         uniforms.append(uniform);
     }
     return uniforms;
@@ -160,14 +163,17 @@ QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuin
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
+    char attributeName[256];
     for (GLint i = 0; i < nbrActiveAttributes; i++) {
         ShaderAttribute attribute;
-        QByteArray attributeName(256, '\0');
+        GLsizei attributeNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveAttrib(programId, i, 256, NULL, &attribute.m_size, &attribute.m_type , attributeName.data());
-        attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName.constData());
-        attribute.m_name = QString::fromUtf8(attributeName);
+        m_funcs->glGetActiveAttrib(programId, i, sizeof(attributeName) - 1, &attributeNameLength,
+                                   &attribute.m_size, &attribute.m_type, attributeName);
+        attributeName[sizeof(attributeName) - 1] = '\0';
+        attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName);
+        attribute.m_name = QString::fromUtf8(attributeName, attributeNameLength);
         attributes.append(attribute);
     }
     return attributes;
@@ -175,7 +181,7 @@ QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuin
 
 QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint programId)
 {
-    Q_UNUSED(programId)
+    Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
     qWarning() << "UBO are not supported by OpenGL ES 2.0 (since OpenGL ES 3.0)";
     return blocks;
@@ -183,8 +189,8 @@ QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(divisor)
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void QGraphicsHelperES2::blendEquation(GLenum mode)
@@ -414,9 +420,9 @@ void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int>
 
 void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
-    Q_UNUSED(programId)
-    Q_UNUSED(uniformBlockIndex)
-    Q_UNUSED(uniformBlockBinding)
+    Q_UNUSED(programId);
+    Q_UNUSED(uniformBlockIndex);
+    Q_UNUSED(uniformBlockBinding);
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
@@ -430,9 +436,9 @@ void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buff
 
 void QGraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
-    Q_UNUSED(v)
-    Q_UNUSED(description)
-    Q_UNUSED(buffer)
+    Q_UNUSED(v);
+    Q_UNUSED(description);
+    Q_UNUSED(buffer);
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 

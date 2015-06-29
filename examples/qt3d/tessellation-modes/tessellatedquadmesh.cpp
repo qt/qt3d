@@ -45,6 +45,11 @@ TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
 {
 }
 
+TessellatedQuadMesh::~TessellatedQuadMesh()
+{
+    QNode::cleanup();
+}
+
 class TessellatedQuadMeshFunctor : public Qt3D::QAbstractMeshFunctor
 {
 public:

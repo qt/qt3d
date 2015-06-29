@@ -76,6 +76,11 @@ QAbstractMesh::QAbstractMesh(QNode *parent)
 {
 }
 
+QAbstractMesh::~QAbstractMesh()
+{
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractMesh subclass didn't call QNode::cleanup in its destructor");
+}
+
 /*! \internal */
 QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
     : QComponent(dd, parent)

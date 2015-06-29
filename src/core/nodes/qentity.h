@@ -66,6 +66,7 @@ public:
     void removeAllComponents();
 
     QEntity *parentEntity() const;
+    QNodeId parentEntityId() const;
 
 protected:
     QEntity(QEntityPrivate &dd, QNode *parent = 0);
@@ -79,7 +80,5 @@ private:
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QEntity *)
 
 #endif // QT3D_QENTITY_H

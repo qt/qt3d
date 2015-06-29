@@ -92,6 +92,7 @@ public:
     Q_ENUM(CubeMapFace)
 
     explicit QRenderAttachment(QNode *parent = 0);
+    ~QRenderAttachment();
 
     void setType(RenderAttachmentType type);
     RenderAttachmentType type() const;

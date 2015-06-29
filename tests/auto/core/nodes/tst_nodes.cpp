@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include <QtTest/QtTest>
+#include <QtTest/QTest>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>
@@ -55,14 +55,31 @@ private slots:
     void defaultNodeConstruction();
     void defaultComponentConstruction();
     void defaultEntityConstrution();
-    void appendChildNodesToNode();
-    void removingChildNodesFromNode();
+
+    void appendSingleChildNodeToNodeNoSceneExplicitParenting();
+    void appendSingleChildNodeToNodeNoSceneImplicitParenting();
+    void appendMultipleChildNodesToNodeNoScene();
+
+    void appendSingleChildNodeToNodeSceneExplicitParenting();
+    void appendSingleChildNodeToNodeSceneImplicitParenting();
+    void appendMultipleChildNodesToNodeScene();
+
+    void checkParentChangeToNull();
+    void checkParentChangeToOtherParent();
+
+    void removingSingleChildNodeFromNode();
+    void removingMultipleChildNodesFromNode();
+
     void appendingChildEntitiesToNode();
     void removingChildEntitiesFromNode();
-    void appendingComponentsToEntity();
-    void removingComponentsFromEntity();
+
+    void appendingComponentToEntity();
+    void appendingParentlessComponentToEntity();
+    void removingComponentFromEntity();
+
     void changeCustomProperty();
     void checkDestruction();
+    void verifyCopy();
 };
 
 class ObserverSpy : public Qt3D::QLockableObserverInterface
@@ -72,15 +89,24 @@ public:
     {
     public:
         ChangeRecord(const Qt3D::QSceneChangePtr &event, bool locked)
-            : QPair<Qt3D::QSceneChangePtr, bool>(event, locked) {}
+            : QPair<Qt3D::QSceneChangePtr, bool>(event, locked)
+        {}
+
         Qt3D::QSceneChangePtr change() const { return first; }
+
         bool wasLocked() const { return second; }
     };
 
     ObserverSpy(Qt3D::QNode *node)
         : Qt3D::QLockableObserverInterface()
+        , m_node(node)
     {
         Qt3D::QNodePrivate::get(node)->setArbiter(this);
+    }
+
+    ~ObserverSpy()
+    {
+        Qt3D::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
     }
 
     void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE
@@ -94,6 +120,7 @@ public:
     }
 
     QList<ChangeRecord> events;
+    Qt3D::QNode *m_node;
 };
 
 class MyQNode : public Qt3D::QNode
@@ -101,8 +128,16 @@ class MyQNode : public Qt3D::QNode
     Q_OBJECT
     Q_PROPERTY(QString customProperty READ customProperty WRITE setCustomProperty NOTIFY customPropertyChanged)
 public:
-    explicit MyQNode(Qt3D::QNode *parent = 0) : QNode(parent)
+    explicit MyQNode(Qt3D::QNode *parent = 0)
+        : QNode(parent)
+        , m_scene(Q_NULLPTR)
     {}
+
+    ~MyQNode()
+    {
+        QNode::cleanup();
+        delete m_scene;
+    }
 
     void setCustomProperty(const QString &s)
     {
@@ -118,6 +153,18 @@ public:
         return m_customProperty;
     }
 
+    void assignScene()
+    {
+        if (!m_scene)
+            m_scene = new Qt3D::QScene();
+        Qt3D::QNodePrivate::get(this)->setScene(m_scene);
+    }
+
+    void makeCopyOf(QNode *other)
+    {
+        QNode::copy(other);
+    }
+
 signals:
     void customPropertyChanged();
 
@@ -125,7 +172,7 @@ protected:
     QT3D_CLONEABLE(MyQNode)
 
     QString m_customProperty;
-
+    Qt3D::QScene *m_scene;
 };
 
 class MyQComponent : public Qt3D::QComponent
@@ -135,6 +182,11 @@ public:
     explicit MyQComponent(Qt3D::QNode *parent = 0) : QComponent(parent)
     {}
 
+    ~MyQComponent()
+    {
+        QNode::cleanup();
+    }
+
     // QNode interface
 protected:
     QT3D_CLONEABLE(MyQComponent)
@@ -143,334 +195,550 @@ protected:
 
 void tst_Nodes::defaultNodeConstruction()
 {
-    MyQNode *node = new MyQNode();
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
 
+    // THEN
     QVERIFY(node != Q_NULLPTR);
     QVERIFY(node->children().isEmpty());
-    MyQNode *node2 = new MyQNode(node);
-    QVERIFY(node2->parent() == node);
+
+    // GIVEN
+    MyQNode *node2 = new MyQNode(node.data());
+
+    // THEN
+    QVERIFY(node2->parent() == node.data());
     QVERIFY(!node->children().isEmpty());
     QVERIFY(node2->children().isEmpty());
-
-    delete node;
 }
 
 void tst_Nodes::defaultComponentConstruction()
 {
-    MyQComponent *comp = new MyQComponent();
-    MyQComponent *comp2 = new MyQComponent(comp);
+    // GIVEN
+    QScopedPointer<MyQComponent> comp(new MyQComponent());
+    MyQComponent *comp2 = new MyQComponent(comp.data());
 
+    // THEN
     QVERIFY(comp != Q_NULLPTR);
-    QCOMPARE(comp2->parent(), comp);
-
-    delete comp;
+    QCOMPARE(comp2->parent(), comp.data());
 }
 
 void tst_Nodes::defaultEntityConstrution()
 {
-    Qt3D::QEntity *entity = new Qt3D::QEntity();
-    Qt3D::QEntity *entity2 = new Qt3D::QEntity(entity);
+    // GIVEN
+    QScopedPointer<Qt3D::QEntity> entity(new Qt3D::QEntity());
+    Qt3D::QEntity *entity2 = new Qt3D::QEntity(entity.data());
 
+    // THEN
     QVERIFY(entity->components().isEmpty());
     QVERIFY(entity2->components().isEmpty());
-    QCOMPARE(entity2->parent(), entity);
-
-    delete entity;
+    QCOMPARE(entity2->parent(), entity.data());
 }
 
-void tst_Nodes::appendChildNodesToNode()
+void tst_Nodes::appendSingleChildNodeToNodeNoSceneExplicitParenting()
 {
-    MyQNode *node = new MyQNode();
-    ObserverSpy spy(node);
+    // Check nodes added when no scene is set
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
 
-    for (int i = 0; i < 10; i++) {
-        MyQNode *child = new MyQNode();
-        QVERIFY(child->parent() == Q_NULLPTR);
-        child->setParent(node);
-        QVERIFY(child->parent() == node);
-        QVERIFY(child->parentNode() == node);
-        QCOMPARE(spy.events.size(), 1);
-        QVERIFY(spy.events.first().wasLocked());
-        Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-        QCOMPARE(event->type(), Qt3D::NodeCreated);
-        QCOMPARE(event->propertyName(), "node");
-        Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
-        QCOMPARE(clone->id(), child->id());
-        QCOMPARE(clone->parentNode()->id(), node->id());
-    }
-    QVERIFY(node->children().count() == 10);
-    for (int i = 0; i < 10; i++) {
-        MyQNode *child = new MyQNode();
-        child->setParent(node);
-        QVERIFY(child->parent() == node);
-        QVERIFY(child->parentNode() == node);
-        QCOMPARE(spy.events.size(), 1);
-        QVERIFY(spy.events.first().wasLocked());
-        Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-        QCOMPARE(event->type(), Qt3D::NodeCreated);
-        QCOMPARE(event->propertyName(), "node");
-        Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
-        QCOMPARE(clone->id(), child->id());
-        QCOMPARE(clone->parentNode()->id(), node->id());
-    }
-    QVERIFY(node->children().count() == 20);
-    Qt3D::QNode *child = qobject_cast<Qt3D::QNode *>(node->children().first());
-    QScopedPointer<ObserverSpy> childSpy(new ObserverSpy(child));
-    Qt3D::QNode *parent = node;
-    for (int i = 0; i < 10; i++) {
-        QVERIFY(child->parent() == parent);
-        QVERIFY(child->parentNode() == parent);
-        (void) new MyQNode(child);
-        parent = child;
-        child = qobject_cast<Qt3D::QNode *>(child->children().first());
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    // WHEN
+    QScopedPointer<MyQNode> child(new MyQNode());
 
-        QVERIFY(childSpy->events.isEmpty());
-        childSpy.reset(new ObserverSpy(child));
-    }
-    QVERIFY(node->children().count() == 20);
-    child = qobject_cast<Qt3D::QNode *>(node->children().first());
-    parent = node;
-    for (int i = 0; i < 10; i++) {
-        QVERIFY(child->parent() == parent);
-        QVERIFY(child->parentNode() == parent);
-        QVERIFY(child->children().count() == 1);
-        parent = child;
-        child = qobject_cast<Qt3D::QNode *>(child->children().first());
-    }
-    QVERIFY(child->children().count() == 0);
-}
-
-void tst_Nodes::removingChildNodesFromNode()
-{
-    MyQNode *root = new MyQNode();
-    Qt3D::QNode *child = new MyQNode();
-
-    child->setParent(root);
-    QVERIFY(root->children().count() == 1);
-    child->setParent(Q_NULLPTR);
-    QVERIFY(root->children().count() == 0);
+    // THEN
     QVERIFY(child->parent() == Q_NULLPTR);
 
-    for (int i = 0; i < 10; i++) {
-        (void) new MyQNode(root);
-    }
-    QVERIFY(root->children().count() == 10);
-    Q_FOREACH (QObject *c, root->children())
-        c->setParent(Q_NULLPTR);
-    QVERIFY(root->children().count() == 0);
+    // WHEN
+    child->setParent(node.data());
 
-    Qt3D::QNode *firstChild = child;
+    // THEN
+    QVERIFY(child->parent() == node.data());
+    QVERIFY(child->parentNode() == node.data());
+    QCOMPARE(node->children().count(), 1);
+
+    // Events are only sent when a scene is set on the root node
+    QCOMPARE(spy.events.size(), 0);
+}
+
+void tst_Nodes::appendSingleChildNodeToNodeNoSceneImplicitParenting()
+{
+    // Check nodes added when no scene is set
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
+
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    // WHEN
+    QScopedPointer<MyQNode> child(new MyQNode(node.data()));
+
+    // THEN
+    QVERIFY(child->parent() == node.data());
+    QVERIFY(child->parentNode() == node.data());
+    QCOMPARE(node->children().count(), 1);
+
+    // Events are only sent when a scene is set on the root node
+    QCOMPARE(spy.events.size(), 0);
+}
+
+void tst_Nodes::appendMultipleChildNodesToNodeNoScene()
+{
+    // Check multiple nodes added with no scene set
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
+
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() == Q_NULLPTR);
+    // WHEN
     for (int i = 0; i < 10; i++) {
-        (void) new MyQNode(child);
-        child = qobject_cast<Qt3D::QNode *>(child->children().first());
+        // WHEN
+        Qt3D::QNode *child = Q_NULLPTR;
+        if (i % 2 == 0) {
+            child = new MyQNode(node.data());
+        } else {
+            child = new MyQNode();
+            child->setParent(node.data());
+        }
+        // THEN
+        QVERIFY(child->parent() == node.data());
     }
-    QVERIFY(root->children().count() == 0);
-    firstChild->setParent(root);
+
+    // THEN
+    QCOMPARE(node->children().count(), 10);
+
+    // Events are only sent when a scene is set on the root node
+    QCOMPARE(spy.events.size(), 0);
+}
+
+void tst_Nodes::appendSingleChildNodeToNodeSceneExplicitParenting()
+{
+    // Check nodes added when scene is set
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
+    // WHEN
+    node->assignScene();
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+
+    // WHEN
+    QScopedPointer<MyQNode> child(new MyQNode());
+
+    // THEN
+    QVERIFY(child->parent() == Q_NULLPTR);
+
+    // WHEN
+    child->setParent(node.data());
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(child->parent() == node.data());
+    QVERIFY(child->parentNode() == node.data());
+    QCOMPARE(spy.events.size(), 1);
+    QVERIFY(spy.events.first().wasLocked());
+    QCOMPARE(node->children().count(), 1);
+
+    Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeCreated);
+    QCOMPARE(event->propertyName(), "node");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QCOMPARE(clone->parentNode()->id(), node->id());
+}
+
+void tst_Nodes::appendSingleChildNodeToNodeSceneImplicitParenting()
+{
+    // Check nodes added when scene is set
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
+    // WHEN
+    node->assignScene();
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+
+    // WHEN
+    QScopedPointer<MyQNode> child(new MyQNode(node.data()));
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(child->parent() == node.data());
+    QVERIFY(child->parentNode() == node.data());
+    QVERIFY(Qt3D::QNodePrivate::get(child.data())->scene() != Q_NULLPTR);
+
+    QCOMPARE(spy.events.size(), 1);
+    QVERIFY(spy.events.first().wasLocked());
+    QCOMPARE(node->children().count(), 1);
+
+    Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeCreated);
+    QCOMPARE(event->propertyName(), "node");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QCOMPARE(clone->parentNode()->id(), node->id());
+}
+
+void tst_Nodes::appendMultipleChildNodesToNodeScene()
+{
+    // Check nodes added when scene is set
+
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    // WHEN
+    node->assignScene();
+    ObserverSpy spy(node.data());
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(node.data())->scene() != Q_NULLPTR);
+
+    // WHEN
+    for (int i = 0; i < 10; i++) {
+        // WHEN
+        Qt3D::QNode *child = Q_NULLPTR;
+        if (i % 2 == 0) {
+            child = new MyQNode(node.data());
+            QCoreApplication::processEvents();
+            QCOMPARE(spy.events.size(), i + 1);
+        } else {
+            child = new MyQNode();
+            child->setParent(node.data());
+        }
+        // THEN
+        QVERIFY(child->parent() == node.data());
+        QVERIFY(Qt3D::QNodePrivate::get(child)->scene() != Q_NULLPTR);
+    }
+    // THEN
+    QCOMPARE(node->children().count(), 10);
+
+    // THEN
+    QCOMPARE(spy.events.size(), 10);
+    Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
+
+        QVERIFY(r.wasLocked());
+        Qt3D::QScenePropertyChangePtr event = r.change().dynamicCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(event->type(), Qt3D::NodeCreated);
+        QCOMPARE(event->propertyName(), "node");
+        Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+
+        bool found = false;
+        Q_FOREACH (QObject *c, node->children()) {
+            if (clone->id() == qobject_cast<Qt3D::QNode *>(c)->id()) {
+                found = true;
+                QCOMPARE(clone->parentNode()->id(), node->id());
+                break;
+            }
+        }
+        QVERIFY(found);
+    }
+}
+
+void tst_Nodes::checkParentChangeToNull()
+{
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+    ObserverSpy spy(root.data());
+
+    // WHEN
+    root->assignScene();
+    QScopedPointer<Qt3D::QNode> child(new MyQNode(root.data()));
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(child->parent() == root.data());
+    QCOMPARE(spy.events.size(), 1);
+    QCOMPARE(root->children().size(), 1);
+
+    // WHEN
+    spy.events.clear();
+    child->setParent(Q_NODE_NULLPTR);
+
+    // THEN
+    QVERIFY(child->parent() == Q_NULLPTR);
+    QCOMPARE(root->children().size(), 0);
+    QCOMPARE(spy.events.size(), 1);
+
+    QVERIFY(spy.events.first().wasLocked());
+    Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeAboutToBeDeleted);
+    QCOMPARE(event->propertyName(), "node");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QVERIFY(!clone->parentNode());
+}
+
+void tst_Nodes::checkParentChangeToOtherParent()
+{
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+    root->assignScene();
+    ObserverSpy spy(root.data());
+    QScopedPointer<MyQNode> parent1(new MyQNode(root.data()));
+    QScopedPointer<MyQNode> parent2(new MyQNode(root.data()));
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(spy.events.size(), 2);
+
+    // WHEN
+    ObserverSpy spyParent1(parent1.data());
+    ObserverSpy spyParent2(parent2.data());
+    QScopedPointer<Qt3D::QNode> child(new MyQNode(parent1.data()));
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(child->parent() == parent1.data());
+    QCOMPARE(parent1->children().size(), 1);
+    QCOMPARE(parent2->children().size(), 0);
+    QVERIFY(Qt3D::QNodePrivate::get(child.data())->scene() != Q_NULLPTR);
+    QCOMPARE(spyParent1.events.size(), 1);
+
+    // WHEN
+    spyParent1.events.clear();
+    child->setParent(parent2.data());
+
+    // THEN
+    QVERIFY(child->parent() == parent2.data());
+    QCOMPARE(parent1->children().size(), 0);
+    QCOMPARE(parent2->children().size(), 1);
+    QCOMPARE(spyParent1.events.size(), 1);
+    QCOMPARE(spyParent2.events.size(), 1);
+
+    // CHECK event 1 is  a Node Deleted event
+    QVERIFY(spyParent1.events.first().wasLocked());
+    Qt3D::QScenePropertyChangePtr event = spyParent1.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeAboutToBeDeleted);
+    QCOMPARE(event->propertyName(), "node");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QVERIFY(!clone->parentNode());
+
+    // CHECK event 2 is a Node Added event
+    QVERIFY(spyParent2.events.last().wasLocked());
+    event = spyParent2.events.last().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeCreated);
+    QCOMPARE(event->propertyName(), "node");
+    clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QVERIFY(clone->parentNode());
+}
+
+
+void tst_Nodes::removingSingleChildNodeFromNode()
+{
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+    QScopedPointer<Qt3D::QNode> child(new MyQNode());
+
+    // WHEN
+    child->setParent(root.data());
+
+    // THEN
     QVERIFY(root->children().count() == 1);
+    QVERIFY(child->parentNode() == root.data());
 
-    Qt3D::QNode *parent = child->parentNode();
-    for (int i = 0; i < 10; i++) {
-        QVERIFY(parent->children().count() == 1);
-        QVERIFY(child->parentNode() == parent);
+    // WHEN
+    ObserverSpy spy(root.data());
+    child->setParent(Q_NODE_NULLPTR);
 
-        ObserverSpy spy(parent);
-        child->setParent(Q_NULLPTR);
+    // THEN
+    QVERIFY(child->parent() == Q_NULLPTR);
+    QVERIFY(root->children().count() == 0);
 
-        QVERIFY(child->parent() == Q_NULLPTR);
-        QVERIFY(parent->children().count() == 0);
+    QCOMPARE(spy.events.size(), 1);
+    QVERIFY(spy.events.first().wasLocked());
+    Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::NodeAboutToBeDeleted);
+    QCOMPARE(event->propertyName(), "node");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), child->id());
+    QVERIFY(!clone->parentNode());
+}
 
-        QCOMPARE(spy.events.size(), 1);
-        QVERIFY(spy.events.first().wasLocked());
-        Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+void tst_Nodes::removingMultipleChildNodesFromNode()
+{
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+
+    // WHEN
+    root->assignScene();
+    ObserverSpy spy(root.data());
+
+    // THEN
+    QVERIFY(Qt3D::QNodePrivate::get(root.data())->scene() != Q_NULLPTR);
+
+    // WHEN
+    for (int i = 0; i < 10; i++)
+        (void) new MyQNode(root.data());
+
+    QCoreApplication::processEvents();
+
+    // THEN
+    QCOMPARE(root->children().count(), 10);
+    QCOMPARE(spy.events.size(), 10);
+
+    // WHEN
+    spy.events.clear();
+    Q_FOREACH (QObject *c, root->children())
+        delete c;
+
+    // THEN
+    QVERIFY(root->children().count() == 0);
+    QCOMPARE(spy.events.size(), 10);
+    Q_FOREACH (const ObserverSpy::ChangeRecord &r, spy.events) {
+        QVERIFY(r.wasLocked());
+        Qt3D::QScenePropertyChangePtr event = r.change().dynamicCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(event->type(), Qt3D::NodeAboutToBeDeleted);
         QCOMPARE(event->propertyName(), "node");
         Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
-        QCOMPARE(clone->id(), child->id());
         QVERIFY(!clone->parentNode());
-
-        child = parent;
-        parent = parent->parentNode();
     }
-    QVERIFY(parent == root);
-    QVERIFY(parent->children().first() == firstChild);
-    QVERIFY(firstChild->children().isEmpty());
 }
 
 void tst_Nodes::appendingChildEntitiesToNode()
 {
-    MyQNode *root = new MyQNode();
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
 
-    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
+    // WHEN
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root.data());
 
+    // THEN
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
-    QVERIFY(childEntity->parentNode() == root);
+    QVERIFY(childEntity->parentNode() == root.data());
 }
 
 void tst_Nodes::removingChildEntitiesFromNode()
 {
-    MyQNode *root = new MyQNode();
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
 
-    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root);
+    // WHEN
+    Qt3D::QEntity *childEntity = new Qt3D::QEntity(root.data());
 
+    // THEN
     QVERIFY(root->children().first() == childEntity);
     QVERIFY(childEntity->parentEntity() == Q_NULLPTR);
-    QVERIFY(childEntity->parentNode() == root);
+    QVERIFY(childEntity->parentNode() == root.data());
 
-    childEntity->setParent(Q_NULLPTR);
+    // WHEN
+    childEntity->setParent(Q_NODE_NULLPTR);
 
+    // THEN
     QVERIFY(root->children().isEmpty());
     QVERIFY(childEntity->parentNode() == Q_NULLPTR);
     QVERIFY(childEntity->parent() == Q_NULLPTR);
 }
 
-void tst_Nodes::appendingComponentsToEntity()
+void tst_Nodes::appendingParentlessComponentToEntity()
 {
-    MyQNode *root = new MyQNode();
+    // GIVEN
+    QScopedPointer<Qt3D::QEntity> entity(new Qt3D::QEntity());
+    MyQComponent *comp = new MyQComponent();
 
-    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    // THEN
+    QVERIFY(entity->parentNode() == Q_NULLPTR);
+    QVERIFY(entity->children().count() == 0);
+    QVERIFY(entity->components().empty());
+    QVERIFY(comp->parentNode() == Q_NULLPTR);
 
-    MyQComponent *comp1 = new MyQComponent(root);
+    // WHEN
+    ObserverSpy spy(entity.data());
+    entity->addComponent(comp);
 
-    MyQComponent *comp2 = new MyQComponent(entity);
-    MyQComponent *comp3 = new MyQComponent();
+    // THEN
+    QVERIFY(entity->components().count() == 1);
+    QVERIFY(entity->components().first() == comp);
+    QVERIFY(comp->parentNode() == entity.data());
+    QCOMPARE(spy.events.size(), 1);
+    QVERIFY(spy.events.first().wasLocked());
 
-    QVERIFY(entity->parentNode() == root);
-    QVERIFY(root->children().count() == 2);
+    // Note: since QEntity has no scene in this test case, we only have the
+    // ComponentAdded event In theory we should also get the NodeCreated event
+    // when setting the parent but that doesn't happen since no scene is
+    // actually set on the entity and that QNodePrivate::_q_addChild will
+    // return early in such a case.
+
+    // Check that we received ComponentAdded
+    Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
+    QCOMPARE(event->type(), Qt3D::ComponentAdded);
+    QCOMPARE(event->propertyName(), "component");
+    Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
+    QCOMPARE(clone->id(), comp->id());
+    QVERIFY(!clone->parentNode());
+}
+
+void tst_Nodes::appendingComponentToEntity()
+{
+    // GIVEN
+    QScopedPointer<Qt3D::QEntity> entity(new Qt3D::QEntity());
+    MyQComponent *comp = new MyQComponent(entity.data());
+    QCoreApplication::processEvents();
+
+    // THEN
+    QVERIFY(entity->parentNode() == Q_NULLPTR);
     QVERIFY(entity->children().count() == 1);
     QVERIFY(entity->components().empty());
-    QVERIFY(comp3->parentNode() == Q_NULLPTR);
+    QVERIFY(comp->parentNode() == entity.data());
 
-    ObserverSpy spy(entity);
+    // WHEN
+    ObserverSpy spy(entity.data());
+    entity->addComponent(comp);
 
-    entity->addComponent(comp1);
+    // THEN
     QVERIFY(entity->components().count() == 1);
-    QVERIFY(entity->components().first() == comp1);
-    QVERIFY(comp1->parentNode() == root);
-    QVERIFY(comp2->parentNode() == entity);
-    QVERIFY(comp3->parentNode() == Q_NULLPTR);
+    QVERIFY(entity->components().first() == comp);
+    QVERIFY(comp->parentNode() == entity.data());
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
     Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
     QCOMPARE(event->type(), Qt3D::ComponentAdded);
     QCOMPARE(event->propertyName(), "component");
     Qt3D::QNodePtr clone = event->value().value<Qt3D::QNodePtr>();
-    QCOMPARE(clone->id(), comp1->id());
-    QVERIFY(!clone->parentNode());
-
-    entity->addComponent(comp2);
-    QVERIFY(entity->components().count() == 2);
-    QVERIFY(entity->components().first() == comp1);
-    QVERIFY(entity->components().last() == comp2);
-    QVERIFY(comp1->parentNode() == root);
-    QVERIFY(comp2->parentNode() == entity);
-    QVERIFY(comp3->parentNode() == Q_NULLPTR);
-    QCOMPARE(spy.events.size(), 1);
-    QVERIFY(spy.events.first().wasLocked());
-    event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-    QCOMPARE(event->type(), Qt3D::ComponentAdded);
-    QCOMPARE(event->propertyName(), "component");
-    clone = event->value().value<Qt3D::QNodePtr>();
-    QCOMPARE(clone->id(), comp2->id());
-    QVERIFY(!clone->parentNode());
-
-    entity->addComponent(comp3);
-    QVERIFY(entity->components().count() == 3);
-    QVERIFY(entity->components().first() == comp1);
-    QVERIFY(entity->components().last() == comp3);
-    QVERIFY(comp1->parentNode() == root);
-    QVERIFY(comp2->parentNode() == entity);
-    QVERIFY(comp3->parentNode() == entity);
-    QCOMPARE(entity->children().count(), 2);
-
-    QCOMPARE(spy.events.size(), 2);
-
-    QVERIFY(spy.events.first().wasLocked());
-    event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-    QCOMPARE(event->type(), Qt3D::NodeCreated);
-    QCOMPARE(event->propertyName(), "node");
-    clone = event->value().value<Qt3D::QNodePtr>();
-    QCOMPARE(clone->id(), comp3->id());
-    QCOMPARE(clone->parentNode()->id(), entity->id());
-
-    QVERIFY(spy.events.first().wasLocked());
-    event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-    QCOMPARE(event->type(), Qt3D::ComponentAdded);
-    QCOMPARE(event->propertyName(), "component");
-    clone = event->value().value<Qt3D::QNodePtr>();
-    QCOMPARE(clone->id(), comp3->id());
+    QCOMPARE(clone->id(), comp->id());
     QVERIFY(!clone->parentNode());
 }
 
-void tst_Nodes::removingComponentsFromEntity()
+void tst_Nodes::removingComponentFromEntity()
 {
-    MyQNode *root = new MyQNode();
-    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    // GIVEN
+    QScopedPointer<Qt3D::QEntity> entity(new Qt3D::QEntity());
+    MyQComponent *comp = new MyQComponent();
 
-    MyQComponent *comp1 = new MyQComponent(root);
-    MyQComponent *comp2 = new MyQComponent(entity);
-    MyQComponent *comp3 = new MyQComponent();
+    // WHEN
+    entity->addComponent(comp);
 
+    // THEN
+    QVERIFY(entity->components().count() == 1);
+    QCOMPARE(entity->children().count(), 1);
+    QVERIFY(comp->parent() == entity.data());
 
-    entity->addComponent(comp1);
-    entity->addComponent(comp2);
-    entity->addComponent(comp3);
-    QVERIFY(entity->components().count() == 3);
-    QCOMPARE(entity->children().count(), 2);
+    ObserverSpy spy(entity.data());
+    // WHEN
+    entity->removeComponent(comp);
 
-    ObserverSpy spy(entity);
-
-    entity->removeComponent(comp2);
-    QVERIFY(entity->components().count() == 2);
-    QVERIFY(comp2->parent() == entity);
-    QVERIFY(entity->children().count() == 2);
+    // THEN
+    QVERIFY(entity->components().count() == 0);
+    QVERIFY(comp->parent() == entity.data());
+    QVERIFY(entity->children().count() == 1);
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
     Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
     QCOMPARE(event->type(), Qt3D::ComponentRemoved);
     QCOMPARE(event->propertyName(), "componentId");
     Qt3D::QNodeId nodeId = event->value().value<Qt3D::QNodeId>();
-    QCOMPARE(nodeId, comp2->id());
-
-    entity->removeComponent(comp1);
-    QVERIFY(entity->components().count() == 1);
-    QVERIFY(comp1->parentNode() == root);
-    QCOMPARE(spy.events.size(), 1);
-    QVERIFY(spy.events.first().wasLocked());
-    event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-    QCOMPARE(event->type(), Qt3D::ComponentRemoved);
-    QCOMPARE(event->propertyName(), "componentId");
-    nodeId = event->value().value<Qt3D::QNodeId>();
-    QCOMPARE(nodeId, comp1->id());
-
-    entity->removeComponent(comp3);
-    QVERIFY(entity->components().count() == 0);
-    QVERIFY(comp3->parentNode() == entity);
-    QCOMPARE(spy.events.size(), 1);
-    QVERIFY(spy.events.first().wasLocked());
-    event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
-    QCOMPARE(event->type(), Qt3D::ComponentRemoved);
-    QCOMPARE(event->propertyName(), "componentId");
-    nodeId = event->value().value<Qt3D::QNodeId>();
-    QCOMPARE(nodeId, comp3->id());
-
-    entity->addComponent(comp1);
-    entity->addComponent(comp2);
-    entity->addComponent(comp3);
-    QVERIFY(entity->components().count() == 3);
-    QCOMPARE(entity->children().count(), 2);
-
-    Q_FOREACH (QObject *c, entity->children())
-        c->setParent(Q_NULLPTR);
-    QCOMPARE(entity->components().count(), 3);
-    QCOMPARE(entity->children().count(), 0);
+    QCOMPARE(nodeId, comp->id());
 }
 
 void tst_Nodes::changeCustomProperty()
 {
-    MyQNode *node = new MyQNode();
-    ObserverSpy spy(node);
+    // GIVEN
+    QScopedPointer<MyQNode> node(new MyQNode());
+    ObserverSpy spy(node.data());
+    // WHEN
     node->setCustomProperty(QStringLiteral("foo"));
+    // THEN
     QCOMPARE(spy.events.size(), 1);
     QVERIFY(spy.events.first().wasLocked());
     Qt3D::QScenePropertyChangePtr event = spy.events.takeFirst().change().dynamicCast<Qt3D::QScenePropertyChange>();
@@ -481,21 +749,54 @@ void tst_Nodes::changeCustomProperty()
 
 void tst_Nodes::checkDestruction()
 {
-    MyQNode *root = new MyQNode();
-    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+    Qt3D::QEntity *entity = new Qt3D::QEntity(root.data());
 
     MyQComponent *comp1 = new MyQComponent();
     MyQComponent *comp2 = new MyQComponent();
     MyQComponent *comp3 = new MyQComponent();
 
-
     entity->addComponent(comp1);
     entity->addComponent(comp2);
     entity->addComponent(comp3);
 
-    delete root;
+    // THEN
+    QVERIFY(!root->children().isEmpty());
+
+    // WHEN
+    delete entity;
+
+    // THEN
+    QVERIFY(root->children().isEmpty());
 }
 
-QTEST_GUILESS_MAIN(tst_Nodes)
+void tst_Nodes::verifyCopy()
+{
+    // GIVEN
+    QScopedPointer<MyQNode> root(new MyQNode());
+    MyQNode *other1 = new MyQNode();
+    MyQNode *other2 = new MyQNode();
+
+    // THEN
+    QVERIFY(root->id() != other1->id());
+    QVERIFY(root->id() != other2->id());
+    QVERIFY(other1->id() != other2->id());
+
+    // WHEN
+    other1->makeCopyOf(root.data());
+
+    // THEN
+    QVERIFY(root->id() == other1->id());
+    QVERIFY(root->id() != other2->id());
+
+    // WHEN
+    other2->makeCopyOf(other1);
+
+    // THEN
+    QVERIFY(root->id() == other1->id() && root->id() == other2->id());
+}
+
+QTEST_MAIN(tst_Nodes)
 
 #include "tst_nodes.moc"

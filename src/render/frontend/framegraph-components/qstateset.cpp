@@ -79,6 +79,7 @@ QStateSet::QStateSet(QStateSetPrivate &dd, QNode *parent)
 
 QStateSet::~QStateSet()
 {
+    QNode::cleanup();
 }
 
 void QStateSet::copy(const QNode *ref)

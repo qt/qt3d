@@ -41,7 +41,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 QNodeVisitor::QNodeVisitor()
-    : m_traverseDisabled(false)
 {
 }
 
@@ -62,11 +61,6 @@ QNode* QNodeVisitor::currentNode() const
 QNodeList QNodeVisitor::path() const
 {
     return m_path;
-}
-
-void QNodeVisitor::setTraverseDisabled(bool on)
-{
-    m_traverseDisabled = on;
 }
 
 } // namespace Qt3D

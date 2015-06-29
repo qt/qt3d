@@ -42,16 +42,17 @@ namespace Qt3D {
 
 namespace Render {
 
-Q_LOGGING_CATEGORY(Backend, "Qt3D.Render.Backend")
-Q_LOGGING_CATEGORY(Frontend, "Qt3D.Render.Frontend")
-Q_LOGGING_CATEGORY(Io, "Qt3D.Render.IO")
-Q_LOGGING_CATEGORY(Jobs, "Qt3D.Render.Jobs")
-Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Render.Framegraph")
-Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Render.RenderNodes")
-Q_LOGGING_CATEGORY(Rendering, "Qt3D.Render.Rendering")
-Q_LOGGING_CATEGORY(Memory, "Qt3D.Render.Memory")
-Q_LOGGING_CATEGORY(Shaders, "Qt3D.Render.Shaders")
-Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Render.RenderStates")
+Q_LOGGING_CATEGORY(Backend, "Qt3D.Renderer.Backend")
+Q_LOGGING_CATEGORY(Frontend, "Qt3D.Renderer.Frontend")
+Q_LOGGING_CATEGORY(Io, "Qt3D.Renderer.IO")
+Q_LOGGING_CATEGORY(Jobs, "Qt3D.Renderer.Jobs")
+Q_LOGGING_CATEGORY(Framegraph, "Qt3D.Renderer.Framegraph")
+Q_LOGGING_CATEGORY(RenderNodes, "Qt3D.Renderer.RenderNodes")
+Q_LOGGING_CATEGORY(Rendering, "Qt3D.Renderer.Rendering")
+Q_LOGGING_CATEGORY(Memory, "Qt3D.Renderer.Memory")
+Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.Shaders")
+Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RenderStates")
+Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.VsyncAdvanceService")
 
 } // Render
 

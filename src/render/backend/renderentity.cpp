@@ -131,7 +131,7 @@ void RenderEntity::setHandle(HEntity handle)
 void RenderEntity::updateFromPeer(QNode *peer)
 {
     QEntity *entity = static_cast<QEntity *>(peer);
-    QEntity *parentEntity = entity->parentEntity();
+    const QNodeId parentEntityId = entity->parentEntityId();
 
     m_objectName = peer->objectName();
     m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peerUuid());
@@ -147,8 +147,11 @@ void RenderEntity::updateFromPeer(QNode *peer)
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
 
-    if (parentEntity != Q_NULLPTR)
-        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntity->id()));
+    if (!parentEntityId.isNull()) {
+        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntityId));
+    } else {
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerUuid();
+    }
 }
 
 void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)

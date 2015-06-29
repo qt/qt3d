@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QTorusMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTorusMesh : public Qt3D::QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QTorusMesh : public QAbstractMesh
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QTorusMesh : public Qt3D::QAbstractMesh
     Q_PROPERTY(float minorRadius READ minorRadius WRITE setMinorRadius NOTIFY minorRadiusChanged)
 public:
     explicit QTorusMesh(QNode *parent = 0);
+    ~QTorusMesh();
 
     void setRings(int rings);
     void setSlices(int slices);

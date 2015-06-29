@@ -78,6 +78,11 @@ QParameter::QParameter(QNode *parent)
 {
 }
 
+QParameter::~QParameter()
+{
+    QNode::cleanup();
+}
+
 QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {

@@ -36,7 +36,7 @@
 
 #include <QGuiApplication>
 
-#include <Qt3DCore/window.h>
+#include <window.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
@@ -71,7 +71,7 @@ int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3D::Window view;
+    Window view;
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
     Qt3D::QInputAspect *input = new Qt3D::QInputAspect;

@@ -105,6 +105,7 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 
 QTransform::~QTransform()
 {
+    QNode::cleanup();
     Q_D(QTransform);
     // boost destruction by avoiding _q_update()-s
     d->m_transforms.clear();

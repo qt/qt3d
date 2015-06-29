@@ -56,6 +56,7 @@
 #include <QWaitCondition>
 #include <QAtomicInt>
 #include <QScopedPointer>
+#include <QSemaphore>
 #include <QThreadStorage>
 
 QT_BEGIN_NAMESPACE
@@ -121,6 +122,7 @@ class ParameterManager;
 class ShaderDataManager;
 class UBOManager;
 class TextureImageManager;
+class VSyncFrameAdvanceService;
 
 class Renderer
 {
@@ -183,6 +185,7 @@ public:
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
     inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
+    inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
 
     QOpenGLFilter *contextInfo() const;
 
@@ -258,17 +261,16 @@ private:
     UBOManager *m_uboManager;
     TextureImageManager *m_textureImageManager;
 
-    QTimer *m_frameTimer;
-
     RenderQueues *m_renderQueues;
     QScopedPointer<RenderThread> m_renderThread;
+    QScopedPointer<VSyncFrameAdvanceService> m_vsyncFrameAdvanceService;
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();
     void loadSceneParsers();
 
     QMutex m_mutex;
-    QWaitCondition m_submitRenderViewsCondition;
+    QSemaphore m_submitRenderViewsSemaphore;
     QWaitCondition m_waitForWindowToBeSetCondition;
     QWaitCondition m_waitForInitializationToBeCompleted;
     uint m_frameCount;

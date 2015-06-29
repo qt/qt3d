@@ -57,7 +57,7 @@ QGraphicsHelperGL3::QGraphicsHelperGL3()
 void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
-    Q_UNUSED(context)
+    Q_UNUSED(context);
     m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
@@ -117,12 +117,17 @@ void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
 
 void QGraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
 {
+#if defined(QT_OPENGL_4)
     if (!m_tessFuncs) {
         qWarning() << "Tessellation not supported with OpenGL 3 without GL_ARB_tessellation_shader";
         return;
     }
 
     m_tessFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
+#else
+    Q_UNUSED(verticesPerPatch);
+    qWarning() << "Tessellation not supported";
+#endif
 }
 
 void QGraphicsHelperGL3::useProgram(GLuint programId)
@@ -136,15 +141,18 @@ QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint pr
 
     GLint nbrActiveUniforms = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
-    uniforms.resize(nbrActiveUniforms);
+    uniforms.reserve(nbrActiveUniforms);
+    char uniformName[256];
     for (GLint i = 0; i < nbrActiveUniforms; i++) {
         ShaderUniform uniform;
-        QByteArray uniformName(256, '\0');
+        GLsizei uniformNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveUniform(programId, i, 256, NULL, &uniform.m_size, &uniform.m_type , uniformName.data());
-        uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName.constData());
-        uniform.m_name = QString::fromUtf8(uniformName);
+        m_funcs->glGetActiveUniform(programId, i, sizeof(uniformName) - 1, &uniformNameLength,
+                                    &uniform.m_size, &uniform.m_type, uniformName);
+        uniformName[sizeof(uniformName) - 1] = '\0';
+        uniform.m_location = m_funcs->glGetUniformLocation(programId, uniformName);
+        uniform.m_name = QString::fromUtf8(uniformName, uniformNameLength);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_BLOCK_INDEX, &uniform.m_blockIndex);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_OFFSET, &uniform.m_offset);
         m_funcs->glGetActiveUniformsiv(programId, 1, (GLuint*)&i, GL_UNIFORM_ARRAY_STRIDE, &uniform.m_arrayStride);
@@ -165,14 +173,17 @@ QVector<ShaderAttribute> QGraphicsHelperGL3::programAttributesAndLocations(GLuin
     GLint nbrActiveAttributes = 0;
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
+    char attributeName[256];
     for (GLint i = 0; i < nbrActiveAttributes; i++) {
         ShaderAttribute attribute;
-        QByteArray attributeName(256, '\0');
+        GLsizei attributeNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
         // Type is the GL Type
-        m_funcs->glGetActiveAttrib(programId, i, 256, NULL, &attribute.m_size, &attribute.m_type , attributeName.data());
-        attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName.constData());
-        attribute.m_name = QString::fromUtf8(attributeName);
+        m_funcs->glGetActiveAttrib(programId, i, sizeof(attributeName) - 1, &attributeNameLength,
+                                   &attribute.m_size, &attribute.m_type, attributeName);
+        attributeName[sizeof(attributeName) - 1] = '\0';
+        attribute.m_location = m_funcs->glGetAttribLocation(programId, attributeName);
+        attribute.m_name = QString::fromUtf8(attributeName, attributeNameLength);
         attributes.append(attribute);
     }
     return attributes;
@@ -200,8 +211,8 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index)
-    Q_UNUSED(divisor)
+    Q_UNUSED(index);
+    Q_UNUSED(divisor);
 }
 
 void QGraphicsHelperGL3::blendEquation(GLenum mode)

@@ -52,6 +52,7 @@ class QT3DRENDERERSHARED_EXPORT  QDepthMask : public QRenderState
     Q_PROPERTY (bool mask READ mask WRITE setMask NOTIFY maskChanged)
 public:
     explicit QDepthMask(QNode *parent = 0);
+    ~QDepthMask();
 
     bool mask() const;
     void setMask(bool mask);

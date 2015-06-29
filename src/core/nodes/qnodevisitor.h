@@ -52,6 +52,18 @@ public:
     QNodeVisitor();
     virtual ~QNodeVisitor();
 
+    template<typename NodeVisitorFunc>
+    void traverse(QNode *rootNode_, NodeVisitorFunc fN)
+    {
+        startTraversing(rootNode_, createFunctor(fN));
+    }
+
+    template<typename Obj, typename NodeVisitorFunc>
+    void traverse(QNode *rootNode_, Obj *instance, NodeVisitorFunc fN)
+    {
+        startTraversing(rootNode_, createFunctor(instance, fN));
+    }
+
     template<typename NodeVisitorFunc, typename EntityVisitorFunc>
     void traverse(QNode *rootNode_, NodeVisitorFunc fN, EntityVisitorFunc fE)
     {
@@ -67,11 +79,17 @@ public:
     QNode *rootNode() const;
     QNode *currentNode() const;
     QNodeList path() const;
-    void setTraverseDisabled(bool on);
 
 private:
     QNodeList m_path;
-    bool m_traverseDisabled;
+
+    template<typename NodeVisitorFunctor>
+    void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN)
+    {
+        m_path = QNodeList() << rootNode_;
+        if (rootNode_)
+            visitNode(rootNode_, fN);
+    }
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
@@ -81,8 +99,15 @@ private:
 
         if (rootEntity)
             visitEntity(rootEntity, fN, fE);
-        else
+        else if (rootNode_)
             visitNode(rootNode_, fN, fE);
+    }
+
+    template<typename NodeVisitorFunctor>
+    void visitNode(QNode *nd, NodeVisitorFunctor &fN)
+    {
+        fN(nd);
+        traverseChildren(fN);
     }
 
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
@@ -109,6 +134,16 @@ private:
         } // of children iteration
     }
 
+    template<typename NodeVisitorFunctor>
+    void traverseChildren(NodeVisitorFunctor &fN)
+    {
+        Q_FOREACH (QObject *n, currentNode()->children()) {
+            QNode *node = qobject_cast<QNode *>(n);
+            if (node != Q_NULLPTR)
+                outerVisitNode(node, fN);
+        } // of children iteration
+    }
+
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void outerVisitNode(QNode *n, NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
     {
@@ -116,10 +151,18 @@ private:
         QEntity* e = qobject_cast<QEntity *>(n);
         if (e) {
             visitEntity(e, fN, fE);
-            m_path.pop_back();
         } else {
             visitNode(n, fN, fE);
         }
+        m_path.pop_back();
+    }
+
+    template<typename NodeVisitorFunctor>
+    void outerVisitNode(QNode *n, NodeVisitorFunctor &fN)
+    {
+        m_path.append(n);
+        visitNode(n, fN);
+        m_path.pop_back();
     }
 
     template <typename NodeType>

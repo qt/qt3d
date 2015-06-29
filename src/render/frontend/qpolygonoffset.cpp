@@ -62,6 +62,11 @@ QPolygonOffset::QPolygonOffset(QNode *parent)
 {
 }
 
+QPolygonOffset::~QPolygonOffset()
+{
+    QNode::cleanup();
+}
+
 float QPolygonOffset::factor() const
 {
     Q_D(const QPolygonOffset);

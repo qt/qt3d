@@ -54,6 +54,7 @@ class QT3DINPUTSHARED_EXPORT QKeyboardController : public QNode
 
 public:
     explicit QKeyboardController(QNode *parent = 0);
+    ~QKeyboardController();
 
     QKeyboardInput *activeInput() const;
 
@@ -73,7 +74,5 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QKeyboardController *)
 
 #endif // QT3D_INPUT_QKEYBOARDCONTROLLER_H

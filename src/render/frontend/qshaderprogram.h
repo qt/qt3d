@@ -58,6 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
 
 public:
     explicit QShaderProgram(QNode *parent = 0);
+    ~QShaderProgram();
 
     enum ShaderType {
         Vertex = 0,
@@ -113,7 +114,5 @@ private:
 }
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QShaderProgram *)
 
 #endif // QT3D_QSHADERPROGRAM_H

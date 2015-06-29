@@ -9,7 +9,6 @@ SUBDIRS += \
     cpp_example \
     multiviewport \
     torus-qml \
-    torus-cpp \
     cylinder-qml \
     cylinder-cpp \
     bigmodel-qml \
@@ -30,8 +29,11 @@ SUBDIRS += \
     skybox \
     controls \
     anaglyph-rendering \
-    simple-shaders-qml
+    simple-shaders-qml \
+    planets-qml \
+    plasma
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
-qtHaveModule(widgets): SUBDIRS += assimp-cpp
+qtHaveModule(widgets): SUBDIRS += assimp-cpp \
+    basicshapes-cpp

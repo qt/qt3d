@@ -69,10 +69,11 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
     Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter NOTIFY viewCenterChanged)
+    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
 
 public:
     explicit QCamera(QNode *parent = 0);
-
+    ~QCamera();
 
     enum CameraTranslationOption {
         TranslateViewCenter,
@@ -142,6 +143,8 @@ public:
     void setViewCenter(const QVector3D &viewCenter);
     QVector3D viewCenter() const;
 
+    QMatrix4x4 matrix() const;
+
 Q_SIGNALS:
     void projectionTypeChanged();
     void nearPlaneChanged();
@@ -156,6 +159,7 @@ Q_SIGNALS:
     void positionChanged();
     void upVectorChanged();
     void viewCenterChanged();
+    void matrixChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)

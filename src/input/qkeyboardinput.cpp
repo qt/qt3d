@@ -56,11 +56,30 @@ QKeyboardInputPrivate::QKeyboardInputPrivate()
 }
 
 /*!
+    \class Qt3D::QKeyboardInput
+    \inmodule Qt3DInput
+    \since 5.5
+*/
+
+/*!
+    \qmltype KeyboardInput
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3D::QKeyboardInput
+    \inherits Component3D
+    \since 5.5
+*/
+
+/*!
     Constructs a new QKeyboardInput instance with parent \a parent.
  */
 QKeyboardInput::QKeyboardInput(QNode *parent)
     : QComponent(*new QKeyboardInputPrivate, parent)
 {
+}
+
+QKeyboardInput::~QKeyboardInput()
+{
+    QNode::cleanup();
 }
 
 /*! \internal */
@@ -153,7 +172,7 @@ void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
 
         QByteArray keySignal = keyToSignal(event->key());
         if (!keySignal.isEmpty()) {
-            keySignal += "(Q3DKeyEvent*)";
+            keySignal += "(Qt3D::Q3DKeyEvent*)";
             // TO DO: Finding if the signal is connected to anything before doing the invocation
             // could be an improvement
             // That's what QQ2 does but since it accesses QML private classes to do so, that may not be
@@ -165,6 +184,10 @@ void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
         emit released(event);
     }
 }
+
+/*!
+    \qmlproperty KeyboardController Qt3D.Input::KeyboardInput::controller
+*/
 
 /*!
     Sets the keyboard controller to \a controller. Without a valid controller,
@@ -193,6 +216,10 @@ QKeyboardController *QKeyboardInput::controller() const
 }
 
 /*!
+    \qmlproperty bool Qt3D.Input::KeyboardInput::focus
+*/
+
+/*!
     \returns the current focus.
  */
 bool QKeyboardInput::focus() const
@@ -212,6 +239,170 @@ void QKeyboardInput::setFocus(bool focus)
         emit focusChanged();
     }
 }
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit0Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit1Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit2Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit3Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit4Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit5Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit6Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit7Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit8Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::digit9Pressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::leftPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::rightPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::upPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::downPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::tabPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::backtabPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::asteriskPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::numberSignPressed(KeyEvent event)
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::KeyboardInput::backtabPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::escapePressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::returnPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::enterPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::deletePressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::spacePressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::backPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::cancelPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::selectPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::yesPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::noPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::context1Pressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::context2Pressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::context3Pressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::context4Pressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::callPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::hangupPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::flipPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::menuPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::volumeUpPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::volumeDownPressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::pressed(KeyEvent event)
+*/
+
+/*!
+    qmlsignal Qt3D.Input::KeyboardInput::released(KeyEvent event)
+*/
 
 } // Qt3D
 

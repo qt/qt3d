@@ -10,5 +10,6 @@ contains(QT_CONFIG, private_tests) {
         renderviewutils \
         renderviews \
         rendermaterial \
-        rendermesh
+        rendermesh \
+        vsyncframeadvanceservice
 }

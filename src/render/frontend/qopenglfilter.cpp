@@ -65,7 +65,7 @@ public:
 
 /*!
     \class QOpenGLFilter
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief The QOpenGLFilter class provides ...
 */
@@ -74,7 +74,7 @@ public:
     \qmltype OpenGLFilter
     \instantiates Qt3D::QOpenGLFilter
     \inherits QtObject
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
@@ -124,7 +124,7 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 */
 
 /*!
-  \qmlproperty enumeration Qt3D.Render::OpenGLFilter::api
+  \qmlproperty enumeration Qt3D.Renderer::OpenGLFilter::api
 
 
   \value ES QSurfaceFormat::OpenGLES
@@ -143,7 +143,7 @@ QOpenGLFilter::Api QOpenGLFilter::api() const
 */
 
 /*!
-  \qmlproperty enumeration Qt3D.Render::OpenGLFilter::profile
+  \qmlproperty enumeration Qt3D.Renderer::OpenGLFilter::profile
 
   \value None QSurfaceFormat::NoProfile
   \value Core QSurfaceFormat::CoreProfile
@@ -162,7 +162,7 @@ QOpenGLFilter::Profile QOpenGLFilter::profile() const
  */
 
 /*!
-  \qmlproperty int Qt3D.Render::OpenGLFilter::minorVersion
+  \qmlproperty int Qt3D.Renderer::OpenGLFilter::minorVersion
 
 */
 
@@ -178,7 +178,7 @@ int QOpenGLFilter::minorVersion() const
  */
 
 /*!
-  \qmlproperty int Qt3D.Render::OpenGLFilter::majorVersion
+  \qmlproperty int Qt3D.Renderer::OpenGLFilter::majorVersion
 
 */
 
@@ -194,7 +194,7 @@ int QOpenGLFilter::majorVersion() const
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Render::OpenGLFilter::extensions
+  \qmlproperty stringlist Qt3D.Renderer::OpenGLFilter::extensions
 
 */
 
@@ -210,7 +210,7 @@ QStringList QOpenGLFilter::extensions() const
  */
 
 /*!
-  \qmlproperty string Qt3D.Render::OpenGLFilter::vendor
+  \qmlproperty string Qt3D.Renderer::OpenGLFilter::vendor
 
 */
 

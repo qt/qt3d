@@ -52,7 +52,14 @@ SceneManager::SceneManager() : QResourceManager<RenderScene,
 
 void SceneManager::addSceneData(const QUrl &source, const QNodeId &sceneUuid)
 {
-    m_pendingJobs.append(LoadSceneJobPtr(new LoadSceneJob(source, sceneUuid)));
+    LoadSceneJobPtr newJob(new LoadSceneJob(source, sceneUuid));
+
+    // We cannot run two jobs that use the same scene loader plugin
+    // in two different threads at the same time
+    if (!m_pendingJobs.isEmpty())
+        newJob->addDependency(m_pendingJobs.last());
+
+    m_pendingJobs.append(newJob);
 }
 
 QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()

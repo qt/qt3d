@@ -59,6 +59,11 @@ QDithering::QDithering(QNode *parent)
 {
 }
 
+QDithering::~QDithering()
+{
+    QNode::cleanup();
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

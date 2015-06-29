@@ -68,6 +68,11 @@ QBlendEquation::QBlendEquation(QNode *parent)
 {
 }
 
+QBlendEquation::~QBlendEquation()
+{
+    QNode::cleanup();
+}
+
 QBlendEquation::BlendMode QBlendEquation::mode() const
 {
     Q_D(const QBlendEquation);

@@ -71,6 +71,7 @@ QFrameGraphSelector::QFrameGraphSelector(QNode *parent)
 
 QFrameGraphSelector::~QFrameGraphSelector()
 {
+    QNode::cleanup();
 }
 
 /*!

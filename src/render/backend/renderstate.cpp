@@ -68,13 +68,16 @@ RenderStateSet::RenderStateSet()
     : m_stateMask(0)
     , m_cachedPrevious(0)
 {
+}
 
+RenderStateSet::~RenderStateSet()
+{
 }
 
 void RenderStateSet::addState(RenderState *ds)
 {
     Q_ASSERT(ds);
-    m_states.insert(ds);
+    m_states.append(ds);
     m_stateMask |= ds->mask();
 }
 
@@ -85,14 +88,14 @@ int RenderStateSet::changeCost(RenderStateSet *previousState)
 
     int cost = 0;
 
-// first, find cost of any resets
+    // first, find cost of any resets
     StateMaskSet invOurState = ~stateMask();
     StateMaskSet stateToReset = previousState->stateMask() & invOurState;
 
     std::bitset<64> bs(stateToReset);
     cost += int(bs.count());
 
-// now, find out how many states we're changing
+    // now, find out how many states we're changing
     Q_FOREACH (RenderState* ds, m_states) {
         // if the other state contains matching, then doesn't
         // contribute to cost at all
@@ -112,7 +115,7 @@ void RenderStateSet::apply(QGraphicsContext *gc)
 {
     RenderStateSet* previousStates = gc->currentStateSet();
 
-    StateMaskSet invOurState = ~stateMask();
+    const StateMaskSet invOurState = ~stateMask();
     // generate a mask for each set bit in previous, where we do not have
     // the corresponding bit set.
 
@@ -135,7 +138,7 @@ void RenderStateSet::apply(QGraphicsContext *gc)
         m_cachedDeltaStates.clear();
         m_cachedPrevious = previousStates;
 
-        foreach (RenderState* ds, m_states) {
+        Q_FOREACH (RenderState* ds, m_states) {
             if (previousStates && previousStates->contains(ds)) {
                 continue;
             }

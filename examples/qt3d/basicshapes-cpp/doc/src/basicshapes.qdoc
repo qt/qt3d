@@ -1,0 +1,69 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the documentation of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example basicshapes-cpp
+    \title Qt3D: Basic Shapes C++ Example
+    \ingroup qt3d-examples-cpp
+    \brief Shows four basic shapes that Qt3D offers.
+
+    The Basic Shapes examples shows four basic shapes that Qt3D offers, a torus,
+    a cylinder, a cube and a sphere. The example also shows how to embed a Qt3D scene
+    into a widget and connect with other widgets.
+
+    \image basicshapes-cpp-example.jpg
+
+    As an example let's go through how to set up a torus mesh. First instantiate
+    the \c QTorusMesh, and then set the mesh specific parameters, that for torus are
+    radius, minor radius and how many rings and slices.
+
+    \snippet basicshapes-cpp/scenemodifier.cpp 0
+
+    The size and position of the torus can be adjusted with transform components.
+    We create scale, translation and rotation components and add them into the
+    \c QTransform component.
+
+    \snippet basicshapes-cpp/scenemodifier.cpp 1
+
+    To change the diffuse color of the mesh we create a \c QPhongMaterial and set
+    its diffuse color.
+
+    \snippet basicshapes-cpp/scenemodifier.cpp 2
+
+    The final step is to add the torus into an entity tree, and we do that by creating
+    a \c QEntity with parent entity and adding the previously created mesh, material
+    and transform components into it.
+
+    \snippet basicshapes-cpp/scenemodifier.cpp 3
+
+    You can control the visibility of the entity by defining if it has parent
+    or not, i.e. whether it is part of entity tree or not.
+
+    \snippet basicshapes-cpp/scenemodifier.cpp 4
+
+
+*/

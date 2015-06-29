@@ -45,7 +45,6 @@
 
 QT_BEGIN_NAMESPACE
 
-class QWaitCondition;
 class QSurface;
 
 namespace Qt3D {

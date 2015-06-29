@@ -57,7 +57,7 @@ QFrameGraphPrivate::QFrameGraphPrivate()
 
 /*!
   \class FrameGraph
-  \inmodule Qt3DRender
+  \inmodule Qt3DRenderer
   \since 5.3
 
   \brief Defines the rendering method to be used by the renderer
@@ -74,7 +74,7 @@ QFrameGraphPrivate::QFrameGraphPrivate()
     \qmltype FrameGraph
     \instantiates Qt3D::QFrameGraph
     \inherits Component3D
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
@@ -98,6 +98,11 @@ QFrameGraph::QFrameGraph(QNode *parent)
 {
 }
 
+QFrameGraph::~QFrameGraph()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
@@ -105,7 +110,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty Qt3D.Render::FrameGraphNode Qt3D.Render::FrameGraph::activeFrameGraph
+  \qmlproperty Qt3D.Renderer::FrameGraphNode Qt3D.Renderer::FrameGraph::activeFrameGraph
 
   Holds the current activeFrameGraph root node.
 */

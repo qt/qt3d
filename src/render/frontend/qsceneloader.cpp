@@ -51,6 +51,11 @@ QSceneLoader::QSceneLoader(QNode *parent)
 {
 }
 
+QSceneLoader::~QSceneLoader()
+{
+    QNode::cleanup();
+}
+
 // Called in main thread
 void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
 {

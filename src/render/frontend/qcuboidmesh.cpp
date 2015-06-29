@@ -81,6 +81,11 @@ QCuboidMesh::QCuboidMesh(QNode *parent)
     update();
 }
 
+QCuboidMesh::~QCuboidMesh()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QCuboidMesh::QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent)
     : QAbstractMesh(dd, parent)

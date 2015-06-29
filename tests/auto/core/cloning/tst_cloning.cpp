@@ -58,6 +58,11 @@ public:
     explicit MyQNode(Qt3D::QNode *parent = 0) : QNode(parent)
     {}
 
+    ~MyQNode()
+    {
+        QNode::cleanup();
+    }
+
     void setCustomProperty(const QString &s) { m_customProperty = s; }
     QString customProperty() const { return m_customProperty; }
 
@@ -85,17 +90,24 @@ public:
     explicit MyQComponent(Qt3D::QNode *parent = 0) : QComponent(parent)
     {}
 
+    ~MyQComponent()
+    {
+        QNode::cleanup();
+    }
+
     QT3D_CLONEABLE(MyQComponent)
 };
 
 void tst_Cloning::checkEntityCloning()
 {
+    // GIVEN
     Qt3D::QScene *scene = new Qt3D::QScene();
     MyQNode *root = new MyQNode();
     Qt3D::QNodePrivate::get(root)->setScene(scene);
 
     Qt3D::QEntity *entity = new Qt3D::QEntity(root);
 
+    // WHEN
     MyQComponent *comp1 = new MyQComponent();
     MyQComponent *comp2 = new MyQComponent();
     MyQComponent *comp3 = new MyQComponent();
@@ -107,14 +119,16 @@ void tst_Cloning::checkEntityCloning()
 
     root->setCustomProperty(QStringLiteral("Corvette"));
 
-    // VERIFY Initial state
+    // THEN
     QVERIFY(root->customProperty() == QStringLiteral("Corvette"));
     QCOMPARE(root->children().count(), 1);
     QCOMPARE(entity->children().count(), 4);
     QCOMPARE(entity->components().count(), 3);
 
+    //WHEN
     MyQNode *cloneRoot = qobject_cast<MyQNode *>(MyQNode::clone(root));
 
+    // THEN
     QCOMPARE(cloneRoot->children().count(), 1);
     QCOMPARE(cloneRoot->id(), root->id());
     QVERIFY(cloneRoot->customProperty() == root->customProperty());

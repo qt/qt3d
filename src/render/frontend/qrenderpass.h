@@ -65,6 +65,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderPass : public QNode
 
 public:
     explicit QRenderPass(QNode *parent = 0);
+    ~QRenderPass();
 
     QString glslNameForParameter(QString paramName) const;
 
@@ -105,7 +106,5 @@ private:
 }
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QRenderPass *)
 
 #endif // QT3D_QRENDERPASS_H

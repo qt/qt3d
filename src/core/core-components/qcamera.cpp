@@ -77,9 +77,15 @@ QCamera::QCamera(QNode *parent) :
     QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
     d_func()->m_transform->addTransform(d_func()->m_lookAt);
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
+}
+
+QCamera::~QCamera()
+{
+    QNode::cleanup();
 }
 
 /*! \internal */
@@ -99,6 +105,7 @@ QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
     QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
     d_func()->m_transform->addTransform(d_func()->m_lookAt);
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
@@ -449,6 +456,15 @@ QVector3D QCamera::viewCenter() const
 {
     Q_D(const QCamera);
     return d->m_lookAt->viewCenter();
+}
+
+/*!
+    \qmlproperty matrix4x4 Qt3D::Camera::matrix
+*/
+QMatrix4x4 QCamera::matrix() const
+{
+    Q_D(const QCamera);
+    return d->m_transform->matrix();
 }
 
 } // Qt3D

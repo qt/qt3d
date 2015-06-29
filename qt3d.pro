@@ -1,7 +1,8 @@
-#requires(qtHaveModule(opengl))
+requires(contains(QT_CONFIG, opengl))
 
 load(configure)
 qtCompileTest(assimp)
+
 load(qt_parts)
 
 #module_qt3d_tutorials.subdir = tutorials
@@ -12,11 +13,6 @@ load(qt_parts)
 #!package: SUBDIRS += module_qt3d_tutorials
 
 #gcov: SUBDIRS -= sub_tools
-
-# We need opengl, minimum es2
-contains(QT_CONFIG, opengles1) {
-    error("Qt3D does not support OpenGL ES 1!")
-}
 
 OTHER_FILES += \
     sync.profile

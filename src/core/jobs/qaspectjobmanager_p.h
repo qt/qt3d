@@ -38,9 +38,11 @@
 #define QT3D_QASPECTJOBMANAGER_P_H
 
 #include <private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
-#include "qthreadpooler_p.h"
-#include "dependencyhandler_p.h"
+#include <Qt3DCore/qaspectjob.h>
+
+#include <QVector>
 
 #ifdef THREAD_WEAVER
 namespace ThreadWeaver {
@@ -52,26 +54,35 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAspectJobManager;
+class QThreadPooler;
+class DependencyHandler;
 
-class QAspectJobManagerPrivate : public QAbstractAspectJobManagerPrivate
+class QT3DCORE_PRIVATE_EXPORT QAspectJobManager : public QAbstractAspectJobManager
 {
+    Q_OBJECT
 public:
-    QAspectJobManagerPrivate();
-    ~QAspectJobManagerPrivate();
+    explicit QAspectJobManager(QObject *parent = 0);
+    ~QAspectJobManager();
 
-    Q_DECLARE_PUBLIC(QAspectJobManager)
+    void initialize() Q_DECL_OVERRIDE;
 
+    void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) Q_DECL_OVERRIDE;
+
+    void waitForAllJobs() Q_DECL_OVERRIDE;
+
+    void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
+
+private:
 #ifdef THREAD_WEAVER
     // Owned by QAspectJobManager via QObject parent-child
     ThreadWeaver::Queue *m_weaver;
 #endif
 
     QThreadPooler *m_threadPooler;
-    DependencyHandler *m_dependencyHandler;
+    QScopedPointer<DependencyHandler> m_dependencyHandler;
 };
 
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 

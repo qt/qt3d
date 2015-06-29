@@ -56,6 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QScissorTest  : public QRenderState
 
 public:
     explicit QScissorTest(QNode *parent = 0);
+    ~QScissorTest();
 
     int left() const;
     void setLeft(int left);

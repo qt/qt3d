@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QCuboidMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public Qt3D::QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QAbstractMesh
 {
     Q_OBJECT
 
@@ -60,6 +60,7 @@ class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public Qt3D::QAbstractMesh
 
 public:
     explicit QCuboidMesh(QNode *parent = 0);
+    ~QCuboidMesh();
 
     void setXExtent(float xExtent);
     float xExtent() const;

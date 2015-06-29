@@ -77,6 +77,11 @@ QRenderPass::QRenderPass(QNode *parent)
 {
 }
 
+QRenderPass::~QRenderPass()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
     : QNode(dd, parent)

@@ -38,7 +38,7 @@
 
 #include "qabstractaspect.h"
 #include "qaspectmanager_p.h"
-#include "qabstractaspectjobmanager.h"
+#include "qabstractaspectjobmanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

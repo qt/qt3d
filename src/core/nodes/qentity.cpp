@@ -58,6 +58,7 @@ namespace Qt3D {
 QEntityPrivate::QEntityPrivate()
     : QNodePrivate()
     , m_enabled(true)
+    , m_parentEntityId()
 {}
 
 /*!
@@ -89,12 +90,13 @@ QEntity::QEntity(QNode *parent)
 
 QEntity::~QEntity()
 {
+    // remove all component aggregations
+    removeAllComponents();
+
+    QNode::cleanup();
     // If all children are removed
     // That includes the components that are parented by this entity
 
-    // We need to call removeAllComponent only for real Entities (not clone)
-    if (d_func()->m_changeArbiter)
-        removeAllComponents();
 }
 
 /*! \internal */
@@ -113,6 +115,7 @@ void QEntity::copy(const QNode *ref)
     const QEntity *entity = static_cast<const QEntity*>(ref);
     d_func()->m_enabled = entity->d_func()->m_enabled;
     d_func()->m_visible = entity->d_func()->m_visible;
+    d_func()->m_parentEntityId = entity->parentEntityId();
 
     Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
         QNode *ccclone = QNode::clone(c);
@@ -140,18 +143,16 @@ void QEntity::addComponent(QComponent *comp)
     Q_D(QEntity);
     Q_CHECK_PTR( comp );
     qCDebug(Nodes) << Q_FUNC_INFO << comp;
-    Q_ASSERT(d->m_components.count(comp) == 0);
+
+    // A Component can only be aggregated once
+    if (d->m_components.count(comp) != 0)
+        return ;
+
     d->m_components.append(comp);
     // We only set the Entity as the Component's parent when it has no parent
     // This will be the case mostly on C++ but rarely in QML
     if (!comp->parent())
         comp->setParent(this);
-
-    if (d->m_scene != Q_NULLPTR) {
-        if (!comp->shareable() && !d->m_scene->entitiesForComponent(comp->id()).isEmpty())
-            qWarning() << "Trying to assign a non shareable component to more than one Entity";
-        d->m_scene->addEntityForComponent(comp->id(), d->m_id);
-    }
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         // Sending a full fledged component in the notification as we'll need
@@ -186,9 +187,6 @@ void QEntity::removeComponent(QComponent *comp)
         d->notifyObservers(propertyChange);
     }
 
-    if (d->m_scene != Q_NULLPTR)
-        d->m_scene->removeEntityForComponent(comp->id(), d->m_id);
-
     d->m_components.removeOne(comp);
 }
 
@@ -210,6 +208,7 @@ void QEntity::removeAllComponents()
 */
 QEntity *QEntity::parentEntity() const
 {
+    Q_D(const QEntity);
     QNode *parentNode = QNode::parentNode();
     QEntity *parentEntity = qobject_cast<QEntity *>(parentNode);
 
@@ -217,7 +216,28 @@ QEntity *QEntity::parentEntity() const
         parentNode = parentNode->parentNode();
         parentEntity = qobject_cast<QEntity*>(parentNode);
     }
+    if (!parentEntity) {
+        if (!d->m_parentEntityId.isNull())
+            d->m_parentEntityId = QNodeId();
+    } else {
+        if (d->m_parentEntityId != parentEntity->id())
+            d->m_parentEntityId = parentEntity->id();
+    }
     return parentEntity;
+}
+
+/*!
+ Returns the Qt3D::QNodeId id of the parent Qt3D::QEntity instance of the
+ current Qt3D::QEntity object. The QNodeId isNull method will return true if
+ there is no Qt3D::QEntity parent of the current Qt3D::QEntity in the scene
+ hierarchy.
+ */
+QNodeId QEntity::parentEntityId() const
+{
+    Q_D(const QEntity);
+    if (d->m_parentEntityId.isNull())
+        parentEntity();
+    return d->m_parentEntityId;
 }
 
 } // namespace Qt3D

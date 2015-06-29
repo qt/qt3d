@@ -93,6 +93,7 @@
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
 #include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DRenderer/private/nodraw_p.h>
+#include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -101,6 +102,7 @@
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qaspectfactory.h>
+#include <Qt3DCore/qservicelocator.h>
 
 #include <QDebug>
 #include <QOffscreenSurface>
@@ -313,7 +315,7 @@ void QRenderAspect::sceneNodeAdded(QSceneChangePtr &e)
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
-    visitor.traverse(n, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
+    visitor.traverse(n, this, &QRenderAspect::visitNode);
 }
 
 void QRenderAspect::sceneNodeRemoved(QSceneChangePtr &e)
@@ -335,7 +337,7 @@ void QRenderAspect::setRootEntity(QEntity *rootObject)
     // setSceneGraphRoot is synchronized using the Renderer's mutex
     Q_D(QRenderAspect);
     QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QRenderAspect::visitNode, &QRenderAspect::visitNode);
+    visitor.traverse(rootObject, this, &QRenderAspect::visitNode);
     d->m_renderer->setSceneGraphRoot(d->m_renderer->renderNodesManager()->lookupResource(rootObject->id()));
 }
 
@@ -343,9 +345,14 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
 {
     // TODO: Remove the m_initialized variable and split out onInitialize()
     // and setting a resource (the QSurface) on the aspects.
-    // TODO: d-pointer this class too as it is public
     Q_D(QRenderAspect);
     if (!d->m_initialized) {
+
+        // Register the VSyncFrameAdvanceService to drive the aspect manager loop
+        // depending on the vsync
+        services()->registerServiceProvider(QServiceLocator::FrameAdvanceService,
+                                            d->m_renderer->vsyncFrameAdvanceService());
+
         d->m_renderer->setQRenderAspect(this);
         d->m_renderer->createAllocators();
         d->m_initialized = true;

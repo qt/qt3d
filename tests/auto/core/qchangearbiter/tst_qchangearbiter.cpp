@@ -528,7 +528,7 @@ void tst_QChangeArbiter::unregisterSceneObservers()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeCreated);
     }
 
-    child->setParent(Q_NULLPTR);
+    child->setParent(Q_NODE_NULLPTR);
     arbiter->syncChanges();
 
     Q_FOREACH (tst_SimpleObserver *o, observers) {

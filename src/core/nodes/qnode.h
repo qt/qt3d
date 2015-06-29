@@ -42,6 +42,8 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 
+#define Q_NODE_NULLPTR static_cast<Qt3D::QNode *>(Q_NULLPTR)
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -62,18 +64,27 @@ typedef QSharedPointer<QNode> QNodePtr;
         return clone_;                        \
     }
 
+
+// Each QNode subclass should call QNode::cleanup in it dtor
+// QNode::cleanup checks that a flags wasn't set to true,
+// sets it to true and sends a clone to the backend
+
 class QT3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3D::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
 public:
     explicit QNode(QNode *parent = 0);
-    ~QNode();
+    virtual ~QNode();
 
     const QNodeId id() const;
     QNode *parentNode() const;
 
     bool notificationsBlocked() const;
     bool blockNotifications(bool block);
+
+    virtual void setParent(QNode *parent);
+    QNodeList childrenNodes() const;
 
 protected:
     // Clone should only be made in the main thread
@@ -82,22 +93,31 @@ protected:
     QNode(QNodePrivate &dd, QNode *parent = 0);
     virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
-    bool event(QEvent *e) Q_DECL_OVERRIDE;
     QSceneInterface *scene() const;
+
+    void cleanup();
 
 private:
     Q_DECLARE_PRIVATE(QNode)
     virtual QNode *doClone() const = 0;
 
+    // We only want setParent(QNode *) to be callable
+    // when dealing with QNode objects
+    void setParent(QObject *) Q_DECL_EQ_DELETE;
+
+    Q_PRIVATE_SLOT(d_func(), void _q_addChild(QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_removeChild(QNode *))
+
     friend class QAspectEngine;
     friend class QPostman;
     friend class QScene;
+
+Q_SIGNALS:
+    void parentChanged();
 };
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::QNode *)
 
 #endif

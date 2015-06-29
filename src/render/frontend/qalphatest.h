@@ -66,6 +66,7 @@ public:
     Q_ENUM(AlphaFunc)
 
     explicit QAlphaTest(QNode *parent = 0);
+    ~QAlphaTest();
 
     AlphaFunc func() const;
     void setFunc(AlphaFunc func);

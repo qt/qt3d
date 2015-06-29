@@ -53,6 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QLayer : public QComponent
     Q_PROPERTY(QStringList names READ names WRITE setNames NOTIFY namesChanged)
 public:
     explicit QLayer(QNode *parent = 0);
+    ~QLayer();
 
     QStringList names() const;
     void setNames(const QStringList &names);

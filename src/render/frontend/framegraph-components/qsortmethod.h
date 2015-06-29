@@ -52,6 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QSortMethod : public QFrameGraphNode
 
 public:
     explicit QSortMethod(QNode *parent = 0);
+    ~QSortMethod();
 
     void addCriterion(QSortCriterion *criterion);
     void removeCriterion(QSortCriterion *criterion);

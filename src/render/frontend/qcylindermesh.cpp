@@ -99,6 +99,10 @@ QCylinderMesh::QCylinderMesh(QNode *parent)
     update();
 }
 
+QCylinderMesh::~QCylinderMesh()
+{
+    QNode::cleanup();
+}
 
 void QCylinderMesh::setRings(int rings)
 {

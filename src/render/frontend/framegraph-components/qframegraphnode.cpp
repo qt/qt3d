@@ -53,7 +53,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
 /*!
   \class QFrameGraphNode
-  \inmodule Qt3DRender
+  \inmodule Qt3DRenderer
   \since 5.5
 
   \brief Base class of all FrameGraph configuration nodes.
@@ -65,7 +65,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
 /*!
     \qmltype FrameGraphNode
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \instantiates QFrameGraphNode
     \inherits Node
     \since 5.5
@@ -78,6 +78,11 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 QFrameGraphNode::QFrameGraphNode(QNode *parent)
     : QNode(*new QFrameGraphNodePrivate, parent)
 {
+}
+
+QFrameGraphNode::~QFrameGraphNode()
+{
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QFrameGraphNode subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*!
@@ -103,7 +108,7 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::FrameGraphNode::enabled
+    \qmlproperty bool Qt3D.Renderer::FrameGraphNode::enabled
 
     Holds whether the frame graph node is enabled or disabled.
 */

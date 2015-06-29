@@ -257,6 +257,7 @@ class AssimpMesh : public QAbstractMesh
     Q_OBJECT
 public :
     explicit AssimpMesh(QNode *parent = 0);
+    ~AssimpMesh();
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
     QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
@@ -751,7 +752,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
 // OPTIONAL
 void AssimpParser::loadAnimation(uint animationIndex)
 {
-    Q_UNUSED(animationIndex)
+    Q_UNUSED(animationIndex);
 }
 
 /*!
@@ -802,8 +803,8 @@ void AssimpParser::copyMaterialBoolProperties(QMaterial *material, aiMaterial *a
 
 void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *assimpMaterial)
 {
-    Q_UNUSED(material)
-    Q_UNUSED(assimpMaterial)
+    Q_UNUSED(material);
+    Q_UNUSED(assimpMaterial);
     // TODO
     // Match each shading function with a default shader
 
@@ -813,8 +814,8 @@ void AssimpParser::copyMaterialShadingModel(QMaterial *material, aiMaterial *ass
 
 void AssimpParser::copyMaterialBlendingFunction(QMaterial *material, aiMaterial *assimpMaterial)
 {
-    Q_UNUSED(material)
-    Q_UNUSED(assimpMaterial)
+    Q_UNUSED(material);
+    Q_UNUSED(assimpMaterial);
     // TO DO
 }
 
@@ -889,6 +890,11 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
 AssimpMesh::AssimpMesh(QNode *parent)
     : QAbstractMesh(parent)
 {
+}
+
+AssimpMesh::~AssimpMesh()
+{
+    QNode::cleanup();
 }
 
 void AssimpMesh::copy(const QNode *ref)

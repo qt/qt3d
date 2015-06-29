@@ -13,4 +13,5 @@ SOURCES += \
 
 RESOURCES += \
     assimp.qrc \
-    ../exampleresources/test_scene.qrc
+    ../exampleresources/test_scene.qrc \
+    ../exampleresources/chest.qrc

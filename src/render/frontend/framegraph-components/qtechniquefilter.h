@@ -53,6 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
     Q_OBJECT
 public:
     explicit QTechniqueFilter(QNode *parent = 0);
+    ~QTechniqueFilter();
 
     QList<QAnnotation *> criteria() const;
     void addRequirement(QAnnotation *criterion);

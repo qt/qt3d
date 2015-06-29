@@ -788,8 +788,8 @@ void GLTFParser::processJSONImage( QString id, QJsonObject jsonObj)
 
 void GLTFParser::processJSONTexture( QString id, QJsonObject jsonObj)
 {
-    Q_UNUSED(id)
-    Q_UNUSED(jsonObj)
+    Q_UNUSED(id);
+    Q_UNUSED(jsonObj);
 //    int target = jsonObj.value(KEY_TARGET).toInt();
 //    QAbstractTextureProvider* tex = new QAbstractTextureProvider(static_cast<QAbstractTextureProvider::Target>(target));
 

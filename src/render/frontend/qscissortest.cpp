@@ -69,6 +69,11 @@ QScissorTest::QScissorTest(QNode *parent)
 {
 }
 
+QScissorTest::~QScissorTest()
+{
+    QNode::cleanup();
+}
+
 void QScissorTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);

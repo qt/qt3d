@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import Qt3D.Render 2.0
+import Qt3D.Renderer 2.0
 import QtQuick 2.2 as QQ2
 
 Entity {
@@ -59,22 +59,35 @@ Entity {
         upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
     }
 
+    QQ2.ListModel {
+        id: entityModel
+        QQ2.ListElement { emptyRole: 0 }
+    }
+
     NodeInstantiator {
         id: collection
-        property int count: 64
+        property int _count: 0
         property real spacing: 5
         property int cols: 8
         property int _rows: count / cols
 
-        model: count
+        model: entityModel
         delegate: MyEntity {
             id: myEntity
             property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
             property real _hue: (index % collection.cols) / collection.cols
-
             x: collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1))
             z: collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows)
             diffuse: Qt.hsla( _hue, 0.5, _lightness, 1.0 )
+        }
+    }
+
+    QQ2.Timer {
+        interval: 1000
+        repeat: true
+        running: true
+        onTriggered: {
+            entityModel.append({});
         }
     }
 }

@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 import Qt3D 2.0
-import Qt3D.Render 2.0
+import Qt3D.Renderer 2.0
 
 // For Qt.vector3d() and friends. For some reason this is provided by
 // QQuickValueTypeProvider in QtQuick rather than the default value

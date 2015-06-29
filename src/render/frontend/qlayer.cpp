@@ -52,7 +52,7 @@ QLayerPrivate::QLayerPrivate()
 
 /*!
     \class QLayer
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief The QLayer class provides ...
 */
@@ -61,7 +61,7 @@ QLayerPrivate::QLayerPrivate()
     \qmltype Layer
     \instantiates Qt3D::QLayer
     \inherits Component3D
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For ...
 */
@@ -86,6 +86,11 @@ QLayer::QLayer(QNode *parent)
 {
 }
 
+QLayer::~QLayer()
+{
+    QNode::cleanup();
+}
+
 /*! \internal */
 QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
@@ -98,7 +103,7 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Render::Layer::names
+  \qmlproperty stringlist Qt3D.Renderer::Layer::names
 
 */
 

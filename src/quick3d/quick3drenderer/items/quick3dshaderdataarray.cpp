@@ -60,6 +60,11 @@ Quick3DShaderDataArray::Quick3DShaderDataArray(QNode *parent)
 {
 }
 
+Quick3DShaderDataArray::~Quick3DShaderDataArray()
+{
+    QNode::cleanup();
+}
+
 QQmlListProperty<QShaderData> Quick3DShaderDataArray::valuesList()
 {
     return QQmlListProperty<QShaderData>(this, 0,

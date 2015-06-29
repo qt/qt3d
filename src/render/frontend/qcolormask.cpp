@@ -83,6 +83,7 @@ QColorMask::QColorMask(QNode *parent)
 
 QColorMask::~QColorMask()
 {
+    QNode::cleanup();
 }
 
 bool QColorMask::isRed() const

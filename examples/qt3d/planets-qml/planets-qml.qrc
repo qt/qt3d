@@ -1,0 +1,37 @@
+<RCC>
+    <qresource prefix="/">
+        <file>SolarSystem.qml</file>
+        <file>PlanetsMain.qml</file>
+        <file>PlanetButton.qml</file>
+        <file>InfoSheet.qml</file>
+        <file>StyledSlider.qml</file>
+        <file>FpsDisplay.qml</file>
+        <file>Planet.qml</file>
+        <file>Ring.qml</file>
+        <file>Light.qml</file>
+        <file>CloudEffectDS.qml</file>
+        <file>PlanetEffectD.qml</file>
+        <file>PlanetEffectDB.qml</file>
+        <file>PlanetEffectDSB.qml</file>
+        <file>PlanetMaterial.qml</file>
+        <file>PlanetShadowEffectD.qml</file>
+        <file>PlanetFrameGraph.qml</file>
+        <file>planets.js</file>
+        <file>meshes/starfield.obj</file>
+        <file>meshes/ring.obj</file>
+        <file>shaders/gl3/shadowmap.frag</file>
+        <file>shaders/gl3/shadowmap.vert</file>
+        <file>shaders/gl3/planetD.frag</file>
+        <file>shaders/gl3/planetD.vert</file>
+        <file>shaders/gl3/planetDB.frag</file>
+        <file>shaders/gl3/planetDB.vert</file>
+        <file>shaders/gl3/planetDS.frag</file>
+        <file>shaders/gl3/planetDSB.frag</file>
+        <file>shaders/es2/planetD.frag</file>
+        <file>shaders/es2/planetD.vert</file>
+        <file>shaders/es2/planetDB.frag</file>
+        <file>shaders/es2/planetDB.vert</file>
+        <file>shaders/es2/planetDS.frag</file>
+        <file>shaders/es2/planetDSB.frag</file>
+    </qresource>
+</RCC>

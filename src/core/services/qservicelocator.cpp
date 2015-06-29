@@ -37,6 +37,7 @@
 #include "qservicelocator.h"
 #include "qabstractserviceprovider_p.h"
 #include "nullservices_p.h"
+#include "qtickclockservice.h"
 #include <QHash>
 
 QT_BEGIN_NAMESPACE
@@ -86,6 +87,7 @@ public:
 
     NullSystemInformationService m_nullSystemInfo;
     NullOpenGLInformationService m_nullOpenGLInfo;
+    QTickClockService m_defaultFrameAdvanceService;
     int m_nonNullDefaultServices;
 };
 
@@ -198,6 +200,17 @@ QOpenGLInformationService *QServiceLocator::openGLInformation()
 }
 
 /*!
+    Returns a pointer to a provider for the frame advance service. If no provider
+    has been explicitly registered for this service type, then a pointer to a simple timer-based
+    service is returned.
+*/
+QAbstractFrameAdvanceService *QServiceLocator::frameAdvanceService()
+{
+    Q_D(QServiceLocator);
+    return static_cast<QAbstractFrameAdvanceService *>(d->m_services.value(FrameAdvanceService, &d->m_defaultFrameAdvanceService));
+}
+
+/*!
     \internal
 */
 QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
@@ -208,7 +221,8 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
         return systemInformation();
     case OpenGLInformation:
         return openGLInformation();
-
+    case FrameAdvanceService:
+        return frameAdvanceService();
     default:
         return d->m_services.value(type, Q_NULLPTR);
     }

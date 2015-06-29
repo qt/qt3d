@@ -66,7 +66,7 @@ public:
 
 /*!
     \class Qt3D::QBlendState
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
  */
@@ -75,7 +75,7 @@ public:
     \qmltype BlendState
     \instantiates Qt3D::QBlendState
     \inherits RenderState
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief Encapsulates blending information
 */
@@ -86,6 +86,11 @@ public:
 QBlendState::QBlendState(QNode *parent)
     : QRenderState(*new QBlendStatePrivate, parent)
 {
+}
+
+QBlendState::~QBlendState()
+{
+    QNode::cleanup();
 }
 
 /*! \fn void QBlendState::copy(const QNode *ref)
@@ -232,7 +237,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
 
 /*!
     \class QBlendStateSeparate
-    \inmodule Qt3DRender
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
  */
@@ -241,7 +246,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     \qmltype BlendStateSeparate
     \instantiates Qt3D::QBlendStateSeparate
     \inherits RenderState
-    \inqmlmodule Qt3D.Render
+    \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief Encapsulates blending information
 */
