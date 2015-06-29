@@ -44,6 +44,7 @@ Rectangle {
     property alias focusPlanet: planetImage.focusPlanet
     property Item planetSelector: parent.parent
     property int buttonSize: 70
+    property int fontSize: 16
 
     width: buttonSize
     height: buttonSize
@@ -76,7 +77,7 @@ Rectangle {
         id: planetText
         anchors.centerIn: parent
         font.family: "Helvetica"
-        font.pixelSize: 16
+        font.pixelSize: fontSize
         font.weight: Font.Light
         color: "white"
         opacity: {
