@@ -12,9 +12,9 @@
         <file>CloudEffectDS.qml</file>
         <file>PlanetEffectD.qml</file>
         <file>PlanetEffectDB.qml</file>
-        <file>PlanetEffectDS.qml</file>
         <file>PlanetEffectDSB.qml</file>
         <file>PlanetMaterial.qml</file>
+        <file>PlanetShadowEffectD.qml</file>
         <file>PlanetFrameGraph.qml</file>
         <file>planets.js</file>
         <file>meshes/starfield.obj</file>

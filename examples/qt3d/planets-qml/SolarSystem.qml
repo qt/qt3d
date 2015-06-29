@@ -100,6 +100,7 @@ Entity {
 
     Light {
         id: light
+        ratio: width / height
     }
 
     Camera {
@@ -107,8 +108,8 @@ Entity {
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
         aspectRatio: width / height
-        nearPlane : 2500000.0
-        farPlane : 20000000.0
+        nearPlane: 2500000.0
+        farPlane: 20000000.0
         position: defaultCameraPosition
         upVector: defaultUp
         viewCenter: Qt.vector3d( xLookAtOffset, yLookAtOffset, zLookAtOffset )
@@ -132,26 +133,23 @@ Entity {
     }
 
     PlanetEffectD {
+        id: effectD
+        light: light
+    }
+
+    PlanetShadowEffectD {
         id: shadowMapEffectD
         shadowTexture: framegraph.shadowTexture
         light: light
     }
 
-    PlanetEffectDS {
-        id: shadowMapEffectDS
-        shadowTexture: framegraph.shadowTexture
-        light: light
-    }
-
     PlanetEffectDB {
-        id: shadowMapEffectDB
-        shadowTexture: framegraph.shadowTexture
+        id: effectDB
         light: light
     }
 
     PlanetEffectDSB {
-        id: shadowMapEffectDSB
-        shadowTexture: framegraph.shadowTexture
+        id: effectDSB
         light: light
     }
 
@@ -425,6 +423,7 @@ Entity {
         var outerRadius = Planets.getOuterRadius(focusedPlanet)
         cameraNear = outerRadius
         camera.nearPlane = cameraNear
+        light.near = cameraNear
 
         // Calculate position
         var cameraPosition = getNewCameraPosition(focusedPlanet, outerRadius)
@@ -460,7 +459,7 @@ Entity {
         id: starfieldEntity
 
         property Material materialStarfield: PlanetMaterial {
-            effect: shadowMapEffectD
+            effect: effectD
             ambientLight: ambientStrengthStarfield
             specularColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
             diffuseMap: "qrc:/images/galaxy_starfield.png"
@@ -492,7 +491,7 @@ Entity {
         id: sunEntity
 
         property Material materialSun: PlanetMaterial {
-            effect: shadowMapEffectD
+            effect: effectD
             ambientLight: ambientStrengthSun
             specularColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
             diffuseMap: "qrc:/images/sunmap.jpg"
@@ -534,7 +533,7 @@ Entity {
         id: mercuryEntity
 
         property Material materialMercury: PlanetMaterial {
-            effect: shadowMapEffectDB
+            effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/mercurymap.jpg"
@@ -573,7 +572,7 @@ Entity {
         id: venusEntity
 
         property Material materialVenus: PlanetMaterial {
-            effect: shadowMapEffectDB
+            effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/venusmap.jpg"
@@ -613,7 +612,7 @@ Entity {
         id: earthEntity
 
         property Material materialEarth: PlanetMaterial {
-            effect: shadowMapEffectDSB
+            effect: effectDSB
             ambientLight: ambientStrengthPlanet
             diffuseMap: "qrc:/images/earthmap1k.jpg"
             specularMap: "qrc:/images/earthspec1k.jpg"
@@ -693,7 +692,7 @@ Entity {
         id: moonEntity
 
         property Material materialMoon: PlanetMaterial {
-            effect: shadowMapEffectDB
+            effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/moonmap1k.jpg"
@@ -732,7 +731,7 @@ Entity {
         id: marsEntity
 
         property Material materialMars: PlanetMaterial {
-            effect: shadowMapEffectDB
+            effect: effectDB
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/marsmap1k.jpg"
@@ -771,7 +770,7 @@ Entity {
         id: jupiterEntity
 
         property Material materialJupiter: PlanetMaterial {
-            effect: shadowMapEffectD
+            effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/jupitermap.jpg"
@@ -967,7 +966,7 @@ Entity {
         id: neptuneEntity
 
         property Material materialNeptune: PlanetMaterial {
-            effect: shadowMapEffectD
+            effect: effectD
             ambientLight: ambientStrengthPlanet
             specularColor: Qt.rgba(0.2, 0.2, 0.2, 1.0)
             diffuseMap: "qrc:/images/neptunemap.jpg"

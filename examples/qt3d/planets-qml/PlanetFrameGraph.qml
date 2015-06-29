@@ -52,6 +52,7 @@ FrameGraph {
         TechniqueFilter {
             requires: [ Annotation { name: "name"; value: "Desktop" } ]
 
+
             RenderPassFilter {
                 includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
 
@@ -67,8 +68,8 @@ FrameGraph {
                                     height: mainview.height
                                     format: Texture.D24
                                     generateMipMaps: false
-                                    magnificationFilter: Texture.Nearest
-                                    minificationFilter: Texture.Nearest
+                                    magnificationFilter: Texture.Linear
+                                    minificationFilter: Texture.Linear
                                     wrapMode {
                                         x: WrapMode.ClampToEdge
                                         y: WrapMode.ClampToEdge

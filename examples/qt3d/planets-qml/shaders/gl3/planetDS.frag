@@ -94,9 +94,7 @@ void main()
 
     float shadowMapSample = textureProj(shadowMapTexture, positionInLightSpace);
 
-    vec3 ambient = lightIntensity * ka * texture(diffuseTexture, flipYTexCoord).rgb;
-
-    vec3 result = ambient;
+    vec3 result = lightIntensity * ka * texture(diffuseTexture, flipYTexCoord).rgb;
     if (shadowMapSample > 0)
         result = dsModel(flipYTexCoord);
 

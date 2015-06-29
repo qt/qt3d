@@ -47,8 +47,7 @@ Effect {
     parameters: [
         Parameter { name: "lightViewProjection"; value: root.light.lightViewProjection },
         Parameter { name: "lightPosition";  value: root.light.lightPosition },
-        Parameter { name: "lightIntensity"; value: root.light.lightIntensity },
-        Parameter { name: "shadowMapTexture"; value: root.shadowTexture }
+        Parameter { name: "lightIntensity"; value: root.light.lightIntensity }
     ]
 
     techniques: [
@@ -63,19 +62,6 @@ Effect {
             annotations: [ Annotation { name: "name"; value: "Desktop" } ]
 
             renderPasses: [
-                RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
-
-                    shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource("qrc:/shaders/gl3/shadowmap.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/shadowmap.frag")
-                    }
-
-                    renderStates: [
-                        PolygonOffset { factor: 4; units: 4 },
-                        DepthTest { func: DepthTest.Less }
-                    ]
-                },
                 RenderPass {
                     annotations: [ Annotation { name : "pass"; value : "forward" } ]
 

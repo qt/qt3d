@@ -85,12 +85,17 @@ Effect {
                             parameterName: "ambient";
                             shaderVariableName: "ka";
                             bindingType: ParameterMapping.Uniform
+                        },
+                        ParameterMapping {
+                            parameterName: "specular";
+                            shaderVariableName: "ks";
+                            bindingType: ParameterMapping.Uniform
                         }
                     ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetDS.frag")
+                        fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetD.frag")
                     }
 
                     // no special render state set => use the default set of states
@@ -115,12 +120,17 @@ Effect {
                             parameterName: "ambient";
                             shaderVariableName: "ka";
                             bindingType: ParameterMapping.Uniform
+                        },
+                        ParameterMapping {
+                            parameterName: "specular";
+                            shaderVariableName: "ks";
+                            bindingType: ParameterMapping.Uniform
                         }
                     ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDS.frag")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetD.frag")
                     }
 
                     // no special render state set => use the default set of states
@@ -146,12 +156,17 @@ Effect {
                             parameterName: "ambient";
                             shaderVariableName: "ka";
                             bindingType: ParameterMapping.Uniform
+                        },
+                        ParameterMapping {
+                            parameterName: "specular";
+                            shaderVariableName: "ks";
+                            bindingType: ParameterMapping.Uniform
                         }
                     ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetD.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetDS.frag")
+                        fragmentShaderCode: loadSource("qrc:/shaders/es2/planetD.frag")
                     }
 
                     // no special render state set => use the default set of states
