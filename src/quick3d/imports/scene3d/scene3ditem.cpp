@@ -271,7 +271,6 @@ public:
     Scene3DSGNode()
         : QSGGeometryNode()
         , m_geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
-        , m_renderer(Q_NULLPTR)
     {
         setMaterial(&m_material);
         setOpaqueMaterial(&m_opaqueMaterial);
@@ -304,7 +303,6 @@ private:
     Scene3DSGMaterial m_material;
     Scene3DSGMaterial m_opaqueMaterial;
     QSGGeometry m_geometry;
-    Scene3DRenderer *m_renderer;
     QRectF m_rect;
 };
 
