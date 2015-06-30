@@ -82,7 +82,7 @@ private:
 
     Qt3D::QAspectEngine *m_aspectEngine;
     Qt3D::QRenderAspect *m_renderAspect;
-    Scene3DRenderer *m_renderer;
+    QScopedPointer<Scene3DRenderer> m_renderer;
 };
 
 QT_END_NAMESPACE

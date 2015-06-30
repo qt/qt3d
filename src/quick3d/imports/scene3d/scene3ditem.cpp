@@ -396,8 +396,8 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         node = Q_NULLPTR;
     }
 
-    if (!m_renderer) {
-        m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
+    if (m_renderer.isNull()) {
+        m_renderer.reset(new Scene3DRenderer(this, m_aspectEngine, m_renderAspect));
     }
 
     Scene3DSGNode *fboNode = new Scene3DSGNode();
