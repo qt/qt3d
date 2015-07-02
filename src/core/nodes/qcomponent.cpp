@@ -128,7 +128,7 @@ QComponent::~QComponent()
     Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QComponent subclass didn't call QNode::cleanup in its destructor");
 
     Q_FOREACH (QEntity *entity, entities()) {
-        QEntityPrivate *entityPimpl = dynamic_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
+        QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
         if (entityPimpl)
             entityPimpl->m_components.removeAll(this);
     }
