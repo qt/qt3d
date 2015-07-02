@@ -103,6 +103,9 @@ private slots:
     void deallocateSubclass();
     void clearQFrameAllocator();
     void isEmptyQFrameAllocator();
+    void subclassPointerClearing();
+    void allocateWithRawMemoryDeallocate();
+    void allocateDeallocateRawMemory();
 };
 
 void tst_QFrameAllocator::initQFrameChunk()
@@ -712,6 +715,59 @@ void tst_QFrameAllocator::isEmptyQFrameAllocator()
         // THEN
         QVERIFY(f.isEmpty());
     }
+}
+
+void tst_QFrameAllocator::subclassPointerClearing()
+{
+    // GIVEN
+    Qt3D::QFrameAllocator f(128, 32);
+    QVector<composed *> data;
+
+    // WHEN
+    for (int i = 0; i < 32; ++i) {
+        composed *c = (i % 2 == 0) ? f.allocate<composed>() : f.allocate<subclass>();
+        data.append(c);
+    }
+    // THEN
+    QVERIFY(!f.isEmpty());
+
+    // WHEN
+    for (int j = 0; j < 32; ++j) {
+        if ((j % 2 == 0))
+            f.deallocate<composed>(data.takeAt(0));
+        else
+            f.deallocate<subclass>(static_cast<subclass *>(data.takeAt(0)));
+    }
+
+    // THEN
+    QVERIFY(f.isEmpty());
+}
+
+void tst_QFrameAllocator::allocateWithRawMemoryDeallocate()
+{
+    // GIVEN
+    Qt3D::QFrameAllocator f(128, 32);
+    subclass *s = static_cast<subclass *>(f.allocateRawMemory(sizeof(subclass)));
+    new (s) subclass();
+
+    // WHEN
+    f.deallocate(s);
+
+    // THEN
+    QVERIFY(f.isEmpty());
+}
+
+void tst_QFrameAllocator::allocateDeallocateRawMemory()
+{
+    // GIVEN
+    Qt3D::QFrameAllocator f(128, 32);
+    subclass *s = f.allocate<subclass>();
+
+    // WHEN
+    f.deallocateRawMemory(s, sizeof(subclass));
+
+    // THEN
+    QVERIFY(f.isEmpty());
 }
 
 QTEST_APPLESS_MAIN(tst_QFrameAllocator)
