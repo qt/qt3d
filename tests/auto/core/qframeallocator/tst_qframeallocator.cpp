@@ -102,6 +102,7 @@ private slots:
     void allocateSubclass();
     void deallocateSubclass();
     void clearQFrameAllocator();
+    void isEmptyQFrameAllocator();
 };
 
 void tst_QFrameAllocator::initQFrameChunk()
@@ -673,6 +674,43 @@ void tst_QFrameAllocator::clearQFrameAllocator()
         }
         f.clear();
         QCOMPARE(chunkCount, f.totalChunkCount());
+    }
+}
+
+void tst_QFrameAllocator::isEmptyQFrameAllocator()
+{
+    // GIVEN
+    Qt3D::QFrameAllocator f(128, 32);
+
+
+    // WHEN
+    for (int i = 0; i < 256; ++i)
+        f.allocate<composed>();
+    // THEN
+    QVERIFY(!f.isEmpty());
+
+    // WHEN
+    f.clear();
+    // THEN
+    QVERIFY(f.isEmpty());
+
+    for (int i = 0; i < 256; ++i) {
+
+        // GIVEN
+        QVector<composed *> composeds;
+        for (int j = 0; j < 256; ++j) {
+            composed *c = f.allocate<composed>();
+            c ->t = i * j;
+            composeds << c;
+        }
+        // THEN
+        QVERIFY(!f.isEmpty());
+
+        // WHEN
+        for (int j = 0; j < 256; ++j)
+            f.deallocate(composeds.takeAt(0));
+        // THEN
+        QVERIFY(f.isEmpty());
     }
 }
 

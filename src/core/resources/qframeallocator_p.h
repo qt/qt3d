@@ -75,6 +75,7 @@ public:
     void trim();
     void release();
     void clear();
+    bool isEmpty() const;
 
     inline int chunkCount() const { return m_chunks.size(); }
     inline uchar pageSize() const { return m_nbrBlock; }
