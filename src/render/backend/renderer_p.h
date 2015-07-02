@@ -150,6 +150,7 @@ public:
     QVector<QAspectJobPtr> createRenderBinJobs();
     QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
+    void addAllocator(QFrameAllocator *allocator);
 
     inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }
     inline MeshManager *meshManager() const { return m_meshManager; }
@@ -280,6 +281,7 @@ private:
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QList<AbstractSceneParser *> m_sceneParsers;
+    QVector<QFrameAllocator *> m_allocators;
 };
 
 } // namespace Render

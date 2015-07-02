@@ -95,6 +95,15 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     return false;
 }
 
+void destroyUniformValue(const QUniformValue *value, QFrameAllocator *allocator)
+{
+    QUniformValue *v = const_cast<QUniformValue *>(value);
+    if (v->isTexture())
+        allocator->deallocate(static_cast<TextureUniform *>(v));
+    else
+        allocator->deallocate(v);
+}
+
 } // anonymouse namespace
 
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
@@ -265,8 +274,9 @@ RenderView::~RenderView()
         const QHash<QString, const QUniformValue* > uniforms = command->m_uniforms.uniforms();
         const QHash<QString, const QUniformValue* >::const_iterator end = uniforms.constEnd();
         QHash<QString, const QUniformValue* >::const_iterator it = uniforms.constBegin();
+
         for (; it != end; ++it)
-            m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(it.value()));
+            destroyUniformValue(it.value(), m_allocator);
 
         if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
@@ -324,7 +334,7 @@ void RenderView::sort()
             QHash<QString, const QUniformValue *> cachedUniforms = m_commands[j++]->m_uniforms.uniforms();
 
             while (j < i) {
-                QHash<QString, const QUniformValue *> &uniforms = m_commands[j]->m_uniforms.uniforms();
+                QHash<QString, const QUniformValue *> &uniforms = m_commands[j]->m_uniforms.m_uniforms;
                 QHash<QString, const QUniformValue *>::iterator it = uniforms.begin();
 
                 while (it != uniforms.end()) {
@@ -332,7 +342,7 @@ void RenderView::sort()
                     if (cachedUniforms.contains(it.key()) && !it.value()->isTexture()) {
                         const QUniformValue *refValue = cachedUniforms[it.key()];
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
-                            cachedUniforms.insert(it.key(), it.value());
+                            destroyUniformValue(it.value(), m_allocator);
                             it = uniforms.erase(it);
                             found = true;
                         }
@@ -454,6 +464,7 @@ const AttachmentPack &RenderView::attachmentPack() const
 void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
 {
     RenderTexture *tex = Q_NULLPTR;
+
     if ((tex = value.value<RenderTexture *>()) != Q_NULLPTR) {
         uniformPack.setTexture(name, tex->peerUuid());
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();

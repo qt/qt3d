@@ -293,6 +293,10 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // May need to fine tune parameters passed to QFrameAllocator for best performances
         QFrameAllocator *allocator = new QFrameAllocator(128, 16, 128);
         theRenderer->tlsAllocators()->setLocalData(allocator);
+
+        // Add the allocator to the renderer
+        // so that it can be accessed
+        theRenderer->addAllocator(allocator);
     }
 }
 
@@ -509,6 +513,16 @@ void Renderer::doRender()
     // Reset the m_renderQueue so that we won't try to render
     // with a queue used by a previous frame with corrupted content
     m_renderQueue->reset();
+
+    if (m_renderThread) {
+        // If we are rendering using the render thread, make sure
+        // that all the RenderViews, RenderCommands, UniformValues ...
+        // have been completely destroyed and are leak free
+        // Note: we cannot check for non render thread cases
+        // (scene3d) as we aren't sure a full frame was previously submitted
+        Q_FOREACH (QFrameAllocator *allocator, m_allocators)
+            Q_ASSERT(allocator->isEmpty());
+    }
 
     // We allow the RenderTickClock service to proceed to the next frame
     // In turn this will allow the aspect manager to request a new set of jobs
@@ -812,6 +826,12 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 vao->release();
         }
     }
+}
+
+void Renderer::addAllocator(QFrameAllocator *allocator)
+{
+    QMutexLocker lock(&m_mutex);
+    m_allocators.append(allocator);
 }
 
 QOpenGLFilter *Renderer::contextInfo() const

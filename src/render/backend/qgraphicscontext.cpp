@@ -755,7 +755,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     // to pinable so that we should easily find an available texture unit
     deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
-    QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
+    const QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
     for (int i = 0; i < uniforms.textures().size(); ++i) {
         const QUniformPack::NamedTexture &namedTex = uniforms.textures().at(i);
         RenderTexture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);

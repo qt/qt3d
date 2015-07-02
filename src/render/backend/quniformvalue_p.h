@@ -142,7 +142,6 @@ public:
     void setUniformBuffer(const BlockToUBO &blockToUBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
-    inline QHash<QString, const QUniformValue* > &uniforms() { return m_uniforms; }
 
     struct NamedTexture
     {
@@ -164,6 +163,8 @@ private:
 
     QVector<NamedTexture> m_textures;
     QVector<BlockToUBO> m_uniformBuffers;
+
+    friend class RenderView;
 };
 
 } // Render

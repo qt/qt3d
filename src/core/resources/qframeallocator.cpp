@@ -40,6 +40,10 @@
     \brief Provides a pool of memory chunks to be used to allocate objects on a per frame basis.
 
     The memory can be recycled by following frames by calling clear which won't deallocate any memory.
+
+    \note Be really careful when allocating polymorphic types. You must be
+    sure to call deallocate with the subclass type to properly release all
+    memory.
 */
 
 #include "qframeallocator.h"
