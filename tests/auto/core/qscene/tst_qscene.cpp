@@ -66,6 +66,7 @@ class tst_LockableObserver : public Qt3D::QLockableObserverInterface
 public:
     void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_OVERRIDE {}
     void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &) Q_DECL_OVERRIDE {}
+    void sceneChangeEventWithLock(const Qt3D::QSceneChangeList &) Q_DECL_OVERRIDE {}
 };
 
 class tst_Observable : public Qt3D::QObservableInterface

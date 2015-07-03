@@ -114,6 +114,13 @@ public:
         events << ChangeRecord(e, true);
     }
 
+    void sceneChangeEventWithLock(const Qt3D::QSceneChangeList &e) Q_DECL_OVERRIDE
+    {
+        for (uint i = 0, m = e.size(); i < m; ++i) {
+            events << ChangeRecord(e.at(i), false);
+        }
+    }
+
     void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE
     {
         events << ChangeRecord(e, false);

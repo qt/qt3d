@@ -43,11 +43,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+typedef std::vector<QSceneChangePtr> QSceneChangeList;
+
 class QT3DCORESHARED_EXPORT QLockableObserverInterface : public QObserverInterface
 {
 public:
     virtual ~QLockableObserverInterface();
     virtual void sceneChangeEventWithLock(const QSceneChangePtr &e) = 0;
+    virtual void sceneChangeEventWithLock(const QSceneChangeList &e) = 0;
 };
 
 } // namespace Qt3D
