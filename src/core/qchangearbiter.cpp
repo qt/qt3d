@@ -198,7 +198,7 @@ void QChangeArbiter::setScene(QScene *scene)
     m_scene = scene;
 }
 
-QObserverInterface *QChangeArbiter::postman() const
+QAbstractPostman *QChangeArbiter::postman() const
 {
     return m_postman;
 }
@@ -264,12 +264,13 @@ void QChangeArbiter::sceneChangeEventWithLock(const QSceneChangeList &e)
 {
     QMutexLocker locker(&m_mutex);
     QChangeQueue *localChangeQueue = m_tlsChangeQueue.localData();
+    qCDebug(ChangeArbiter) << Q_FUNC_INFO << "Handles " << e.size() << " changes at once";
     localChangeQueue->insert(localChangeQueue->end(), e.begin(), e.end());
 }
 
 // Either we have the postman or we could make the QChangeArbiter agnostic to the postman
 // but that would require adding it to every QObserverList in m_aspectObservations.
-void QChangeArbiter::setPostman(QObserverInterface *postman)
+void QChangeArbiter::setPostman(QAbstractPostman *postman)
 {
     if (m_postman != postman) {
         // Unregister old postman here if needed

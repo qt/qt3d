@@ -41,6 +41,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
 #include <QEvent>
 #include <QChildEvent>
 #include <QMetaObject>
@@ -262,7 +263,7 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
     if (m_changeArbiter && m_changeArbiter != arbiter)
         unregisterNotifiedProperties();
-    m_changeArbiter = arbiter;
+    m_changeArbiter = static_cast<QAbstractArbiter *>(arbiter);
     if (m_changeArbiter)
         registerNotifiedProperties();
 }
@@ -324,8 +325,11 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
     if (m_blockNotifications && change->type() == NodeUpdated)
         return;
 
-    if (m_changeArbiter != Q_NULLPTR)
-        m_changeArbiter->sceneChangeEventWithLock(change);
+    if (m_changeArbiter != Q_NULLPTR) {
+        QAbstractPostman *postman = m_changeArbiter->postman();
+        if (postman != Q_NULLPTR)
+            postman->notifyBackend(change);
+    }
 }
 
 // Inserts this tree into the main Scene tree.

@@ -39,6 +39,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -57,6 +58,7 @@ public:
 
     Q_DECLARE_PUBLIC(QPostman)
     QScene *m_scene;
+    std::vector<QSceneChangePtr> m_batch;
 };
 
 QPostman::QPostman(QObject *parent)
@@ -84,6 +86,23 @@ void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
     notifyFrontendNode.invoke(this, Q_ARG(QSceneChangePtr, e));
 }
 
+/*!
+ * This will start or append \a change to a batch of changes from frontend
+ * nodes. Once the batch is complete, when the event loop returns, the batch is
+ * sent to the QChangeArbiter to notify the backend aspects.
+ */
+void QPostman::notifyBackend(const QSceneChangePtr &change)
+{
+    // If batch in progress
+    // add change
+    // otherwise start batch
+    // by calling a queued slot
+    Q_D(QPostman);
+    if (d->m_batch.empty())
+        QMetaObject::invokeMethod(this, "submitChangeBatch", Qt::QueuedConnection);
+    d->m_batch.push_back(change);
+}
+
 void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
 {
     Q_D(QPostman);
@@ -92,6 +111,16 @@ void QPostman::notifyFrontendNode(const QSceneChangePtr &e)
         QNode *n = d->m_scene->lookupNode(change->targetNode());
         if (n != Q_NULLPTR)
             n->sceneChangeEvent(change);
+    }
+}
+
+void QPostman::submitChangeBatch()
+{
+    Q_D(QPostman);
+    QLockableObserverInterface *arbiter = Q_NULLPTR;
+    if (d->m_scene && (arbiter = d->m_scene->arbiter()) != Q_NULLPTR) {
+        arbiter->sceneChangeEventWithLock(d->m_batch);
+        d->m_batch.clear();
     }
 }
 

@@ -48,6 +48,7 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,12 +58,19 @@ class QNode;
 class QObservableInterface;
 class QAbstractAspectJobManager;
 class QSceneObserverInterface;
-class QPostman;
+class QAbstractPostman;
 class QScene;
 
-class QT3DCORESHARED_EXPORT QChangeArbiter
+
+class QT3DCORE_PRIVATE_EXPORT QAbstractArbiter : public QLockableObserverInterface
+{
+public:
+    virtual QAbstractPostman *postman() const = 0;
+};
+
+class QT3DCORE_PRIVATE_EXPORT QChangeArbiter Q_DECL_FINAL
         : public QObject
-        , public QLockableObserverInterface
+        , public QAbstractArbiter
 {
     Q_OBJECT
 public:
@@ -86,10 +94,10 @@ public:
     void sceneChangeEventWithLock(const QSceneChangePtr &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangeList &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
 
-    Q_INVOKABLE void setPostman(Qt3D::QObserverInterface *postman);
+    Q_INVOKABLE void setPostman(Qt3D::QAbstractPostman *postman);
     Q_INVOKABLE void setScene(Qt3D::QScene *scene);
 
-    QObserverInterface *postman() const;
+    QAbstractPostman *postman() const Q_DECL_FINAL;
     QScene *scene() const;
 
     static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
@@ -133,7 +141,7 @@ private:
     // be accessed from the aspect thread during the syncChanges() phase.
     QList<QChangeQueue *> m_changeQueues;
     QList<QChangeQueue *> m_lockingChangeQueues;
-    QObserverInterface *m_postman;
+    QAbstractPostman *m_postman;
     QScene *m_scene;
 };
 

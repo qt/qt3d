@@ -38,6 +38,7 @@
 #define QT3D_QPOSTMAN_P_H
 
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,16 +47,27 @@ namespace Qt3D {
 class QScene;
 class QPostmanPrivate;
 
-class QPostman
+class QT3DCORE_PRIVATE_EXPORT QAbstractPostman : public QObserverInterface
+{
+public:
+    virtual void setScene(QScene *sceneLookup) = 0;
+    virtual void notifyBackend(const QSceneChangePtr &change) = 0;
+};
+
+class QPostman Q_DECL_FINAL
         : public QObject
-        , public QObserverInterface
+        , public QAbstractPostman
 {
     Q_OBJECT
 public:
     explicit QPostman(QObject *parent = 0);
 
-    void setScene(QScene *sceneLookup);
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setScene(QScene *sceneLookup) Q_DECL_FINAL;
+    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;
+    void notifyBackend(const QSceneChangePtr &change) Q_DECL_FINAL;
+
+private Q_SLOTS:
+    void submitChangeBatch();
 
 private:
     Q_DECLARE_PRIVATE(QPostman)
@@ -66,5 +78,7 @@ private:
 } // Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::QAbstractPostman*)
 
 #endif // QT3D_QPOSTMAN_P_H

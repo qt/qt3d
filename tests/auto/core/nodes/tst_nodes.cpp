@@ -40,6 +40,7 @@
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <private/qpostman_p.h>
 
 #include <Qt3DCore/private/qlockableobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -82,7 +83,23 @@ private slots:
     void verifyCopy();
 };
 
-class ObserverSpy : public Qt3D::QLockableObserverInterface
+class ObserverSpy;
+class SimplePostman : public Qt3D::QAbstractPostman
+{
+public:
+    SimplePostman(ObserverSpy *spy)
+        : m_spy(spy)
+    {}
+
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_FINAL {};
+    void setScene(Qt3D::QScene *) Q_DECL_FINAL {};
+    void notifyBackend(const Qt3D::QSceneChangePtr &change) Q_DECL_FINAL;
+
+private:
+    ObserverSpy *m_spy;
+};
+
+class ObserverSpy : public Qt3D::QAbstractArbiter
 {
 public:
     class ChangeRecord : public QPair<Qt3D::QSceneChangePtr, bool>
@@ -98,8 +115,9 @@ public:
     };
 
     ObserverSpy(Qt3D::QNode *node)
-        : Qt3D::QLockableObserverInterface()
+        : Qt3D::QAbstractArbiter()
         , m_node(node)
+        , m_postman(new SimplePostman(this))
     {
         Qt3D::QNodePrivate::get(node)->setArbiter(this);
     }
@@ -126,9 +144,20 @@ public:
         events << ChangeRecord(e, false);
     }
 
+    Qt3D::QAbstractPostman *postman() const Q_DECL_FINAL
+    {
+        return m_postman.data();
+    }
+
     QList<ChangeRecord> events;
     Qt3D::QNode *m_node;
+    QScopedPointer<SimplePostman> m_postman;
 };
+
+void SimplePostman::notifyBackend(const Qt3D::QSceneChangePtr &change)
+{
+    m_spy->sceneChangeEventWithLock(change);
+}
 
 class MyQNode : public Qt3D::QNode
 {

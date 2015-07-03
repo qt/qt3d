@@ -70,6 +70,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     qRegisterMetaType<Qt3D::QObserverInterface *>();
     qRegisterMetaType<Qt3D::QEntity *>();
     qRegisterMetaType<Qt3D::QScene *>();
+    qRegisterMetaType<Qt3D::QAbstractPostman *>();
 }
 
 /*!
@@ -143,10 +144,10 @@ void QAspectEngine::initialize()
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
     QMetaObject::invokeMethod(arbiter,
                               "setPostman",
-                              Q_ARG(Qt3D::QObserverInterface *, d->m_postman));
+                              Q_ARG(Qt3D::QAbstractPostman*, d->m_postman));
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
-                              Q_ARG(Qt3D::QScene *, d->m_scene));
+                              Q_ARG(Qt3D::QScene*, d->m_scene));
 }
 
 void QAspectEngine::shutdown()

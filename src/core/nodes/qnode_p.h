@@ -70,7 +70,7 @@ public:
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
-    QLockableObserverInterface *m_changeArbiter;
+    QAbstractArbiter *m_changeArbiter;
     QScene *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;
