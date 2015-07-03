@@ -161,6 +161,12 @@ void QScene::setArbiter(QLockableObserverInterface *arbiter)
     d->m_arbiter = arbiter;
 }
 
+QLockableObserverInterface *QScene::arbiter() const
+{
+    Q_D(const QScene);
+    return d->m_arbiter;
+}
+
 QList<QNodeId> QScene::entitiesForComponent(const QNodeId &id) const
 {
     Q_D(const QScene);

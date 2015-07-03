@@ -69,6 +69,7 @@ public:
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
     void setArbiter(Qt3D::QLockableObserverInterface *arbiter);
+    Qt3D::QLockableObserverInterface *arbiter() const;
 
     // Component -> Entities
     QList<QNodeId> entitiesForComponent(const QNodeId &id) const;
