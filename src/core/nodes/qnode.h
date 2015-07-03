@@ -52,7 +52,6 @@ class QNode;
 class QNodePrivate;
 class QEntity;
 class QAspectEngine;
-class QSceneInterface;
 
 typedef QList<QNode *> QNodeList;
 typedef QSharedPointer<QNode> QNodePtr;
@@ -93,7 +92,6 @@ protected:
     QNode(QNodePrivate &dd, QNode *parent = 0);
     virtual void copy(const QNode *ref);
     virtual void sceneChangeEvent(const QSceneChangePtr &change);
-    QSceneInterface *scene() const;
 
     void cleanup();
 

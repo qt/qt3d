@@ -41,7 +41,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DCore/qscene.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qsceneobserverinterface.h>
@@ -254,7 +254,7 @@ public:
     tst_PostManObserver() : m_sceneInterface(Q_NULLPTR)
     {}
 
-    void setScene(Qt3D::QSceneInterface *scene)
+    void setScene(Qt3D::QScene *scene)
     {
         m_sceneInterface = scene;
     }
@@ -283,7 +283,7 @@ public:
     }
 
 private:
-    Qt3D::QSceneInterface *m_sceneInterface;
+    Qt3D::QScene *m_sceneInterface;
     QList<Qt3D::QSceneChangePtr> m_lastChanges;
 };
 

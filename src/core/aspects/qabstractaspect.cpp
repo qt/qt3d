@@ -40,7 +40,7 @@
 #include <private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 

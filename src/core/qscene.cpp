@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qscene.h"
+#include "qscene_p.h"
 #include <QHash>
 #include <QReadLocker>
 #include <Qt3DCore/qnode.h>

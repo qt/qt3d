@@ -38,7 +38,7 @@
 #include "qcomponent_p.h"
 #include "qentity.h"
 #include "qentity_p.h"
-#include "qsceneinterface.h"
+#include "qscene_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

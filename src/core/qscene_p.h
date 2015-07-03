@@ -34,12 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENE_H
-#define QT3D_QSCENE_H
+#ifndef QT3D_QSCENE_P_H
+#define QT3D_QSCENE_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qsceneinterface.h>
-
+#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/private/qobservableinterface_p.h>
 #include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -50,7 +49,9 @@ class QNode;
 class QScenePrivate;
 class QAspectEngine;
 
-class QT3DCORESHARED_EXPORT QScene : public QSceneInterface
+typedef QList<QObservableInterface *> QObservableList;
+
+class QT3DCORE_PRIVATE_EXPORT QScene
 {
 public:
     QScene(QAspectEngine *engine = Q_NULLPTR);
@@ -58,21 +59,21 @@ public:
 
     QAspectEngine *engine() const;
 
-    void addObservable(QObservableInterface *observable, const QNodeId &id) Q_DECL_OVERRIDE;
-    void addObservable(QNode *observable) Q_DECL_OVERRIDE;
-    void removeObservable(QObservableInterface *observable, const QNodeId &id) Q_DECL_OVERRIDE;
-    void removeObservable(QNode *observable) Q_DECL_OVERRIDE;
-    QObservableList lookupObservables(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void addObservable(QObservableInterface *observable, const QNodeId &id);
+    void addObservable(QNode *observable);
+    void removeObservable(QObservableInterface *observable, const QNodeId &id);
+    void removeObservable(QNode *observable);
+    QObservableList lookupObservables(const QNodeId &id) const;
 
-    QNode *lookupNode(const QNodeId &id) const Q_DECL_OVERRIDE;
-    QNodeId nodeIdFromObservable(QObservableInterface *observable) const Q_DECL_OVERRIDE;
+    QNode *lookupNode(const QNodeId &id) const;
+    QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
-    void setArbiter(Qt3D::QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
+    void setArbiter(Qt3D::QLockableObserverInterface *arbiter);
 
     // Component -> Entities
-    QList<QNodeId> entitiesForComponent(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid) Q_DECL_OVERRIDE;
-    void removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid) Q_DECL_OVERRIDE;
+    QList<QNodeId> entitiesForComponent(const QNodeId &id) const;
+    void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
+    void removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
 
 private:
     Q_DECLARE_PRIVATE(QScene)
@@ -83,4 +84,6 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENE_H
+Q_DECLARE_METATYPE(Qt3D::QScene*)
+
+#endif // QT3D_QSCENE_P_H

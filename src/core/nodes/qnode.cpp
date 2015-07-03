@@ -40,7 +40,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <QEvent>
 #include <QChildEvent>
 #include <QMetaObject>
@@ -283,7 +283,7 @@ void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 /*!
     \internal
  */
-void QNodePrivate::setScene(QSceneInterface *scene)
+void QNodePrivate::setScene(QScene *scene)
 {
     if (m_scene != scene)
         m_scene = scene;
@@ -292,7 +292,7 @@ void QNodePrivate::setScene(QSceneInterface *scene)
 /*!
     \internal
  */
-QSceneInterface *QNodePrivate::scene() const
+QScene *QNodePrivate::scene() const
 {
     return m_scene;
 }
@@ -579,15 +579,6 @@ QNode *QNode::clone(QNode *node)
         QNodePrivate::m_clonesLookupTable.clear();
 
     return clonedNode;
-}
-
-/*!
-    Returns a pointer to the Qt3D::QNode instance's scene.
-*/
-QSceneInterface *QNode::scene() const
-{
-    Q_D(const QNode);
-    return d->m_scene;
 }
 
 /*!

@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DCore/qscene.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcomponent.h>

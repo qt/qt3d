@@ -38,7 +38,7 @@
 #include <private/qobject_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DCore/qscene.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -56,7 +56,7 @@ public:
     }
 
     Q_DECLARE_PUBLIC(QPostman)
-    QSceneInterface *m_scene;
+    QScene *m_scene;
 };
 
 QPostman::QPostman(QObject *parent)
@@ -65,7 +65,7 @@ QPostman::QPostman(QObject *parent)
     qRegisterMetaType<QSceneChangePtr >("QSceneChangePtr");
 }
 
-void QPostman::setScene(QSceneInterface *scene)
+void QPostman::setScene(QScene *scene)
 {
     Q_D(QPostman);
     d->m_scene = scene;

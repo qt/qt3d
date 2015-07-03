@@ -45,9 +45,10 @@
 #include <Qt3DCore/private/corelogging_p.h>
 #include <QMetaObject>
 #include <private/qpostman_p.h>
-#include "qscene.h"
+#include <private/qscene_p.h>
 #include <private/qaspectengine_p.h>
 #include <private/qnode_p.h>
+#include <private/qscene_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
 #include "qnodevisitor.h"
@@ -68,7 +69,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     qRegisterMetaType<Qt3D::QAbstractAspect *>();
     qRegisterMetaType<Qt3D::QObserverInterface *>();
     qRegisterMetaType<Qt3D::QEntity *>();
-    qRegisterMetaType<Qt3D::QSceneInterface *>();
+    qRegisterMetaType<Qt3D::QScene *>();
 }
 
 /*!
@@ -145,7 +146,7 @@ void QAspectEngine::initialize()
                               Q_ARG(Qt3D::QObserverInterface *, d->m_postman));
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
-                              Q_ARG(Qt3D::QSceneInterface *, d->m_scene));
+                              Q_ARG(Qt3D::QScene *, d->m_scene));
 }
 
 void QAspectEngine::shutdown()

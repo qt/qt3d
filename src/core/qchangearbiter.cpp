@@ -39,7 +39,7 @@
 #include "qabstractaspectjobmanager_p.h"
 
 #include "qsceneobserverinterface.h"
-#include "qsceneinterface.h"
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <QMutexLocker>
 #include <QReadLocker>
@@ -193,7 +193,7 @@ void QChangeArbiter::syncChanges()
         distributeQueueChanges(changeQueue);
 }
 
-void QChangeArbiter::setScene(QSceneInterface *scene)
+void QChangeArbiter::setScene(QScene *scene)
 {
     m_scene = scene;
 }
@@ -203,7 +203,7 @@ QObserverInterface *QChangeArbiter::postman() const
     return m_postman;
 }
 
-QSceneInterface *QChangeArbiter::scene() const
+QScene *QChangeArbiter::scene() const
 {
     return m_scene;
 }

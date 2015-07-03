@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QSceneInterface;
+class QScene;
 class QPostmanPrivate;
 
 class QPostman
@@ -54,7 +54,7 @@ class QPostman
 public:
     explicit QPostman(QObject *parent = 0);
 
-    void setScene(QSceneInterface *sceneLookup);
+    void setScene(QScene *sceneLookup);
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:

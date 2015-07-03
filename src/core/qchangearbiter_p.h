@@ -58,7 +58,7 @@ class QObservableInterface;
 class QAbstractAspectJobManager;
 class QSceneObserverInterface;
 class QPostman;
-class QSceneInterface;
+class QScene;
 
 class QT3DCORESHARED_EXPORT QChangeArbiter
         : public QObject
@@ -87,10 +87,10 @@ public:
     void sceneChangeEventWithLock(const QSceneChangeList &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
 
     Q_INVOKABLE void setPostman(Qt3D::QObserverInterface *postman);
-    Q_INVOKABLE void setScene(Qt3D::QSceneInterface *scene);
+    Q_INVOKABLE void setScene(Qt3D::QScene *scene);
 
     QObserverInterface *postman() const;
-    QSceneInterface *scene() const;
+    QScene *scene() const;
 
     static void createUnmanagedThreadLocalChangeQueue(void *changeArbiter);
     static void destroyUnmanagedThreadLocalChangeQueue(void *changeArbiter);
@@ -134,7 +134,7 @@ private:
     QList<QChangeQueue *> m_changeQueues;
     QList<QChangeQueue *> m_lockingChangeQueues;
     QObserverInterface *m_postman;
-    QSceneInterface *m_scene;
+    QScene *m_scene;
 };
 
 } // namespace Qt3D
