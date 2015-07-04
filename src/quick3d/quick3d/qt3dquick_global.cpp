@@ -282,7 +282,7 @@ public:
         return QMatrix4x4(matVals);
     }
 
-    const QMetaObject *getMetaObjectForMetaType(int type)
+    const QMetaObject *getMetaObjectForMetaType(int type) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -313,7 +313,7 @@ public:
         return true;
     }
 
-    bool init(int type, void *data, size_t dataSize)
+    bool init(int type, void *data, size_t dataSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -352,7 +352,7 @@ public:
         return true;
     }
 
-    bool destroy(int type, void *data, size_t dataSize)
+    bool destroy(int type, void *data, size_t dataSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -392,7 +392,7 @@ public:
         return true;
     }
 
-    bool copy(int type, const void *src, void *dst, size_t dstSize)
+    bool copy(int type, const void *src, void *dst, size_t dstSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -423,7 +423,7 @@ public:
         return false;
     }
 
-    bool create(int type, int argc, const void *argv[], QVariant *v)
+    bool create(int type, int argc, const void *argv[], QVariant *v) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QVector2D:
@@ -484,7 +484,7 @@ public:
         return true;
     }
 
-    bool createFromString(int type, const QString &s, void *data, size_t dataSize)
+    bool createFromString(int type, const QString &s, void *data, size_t dataSize) Q_DECL_OVERRIDE
     {
         bool ok = false;
 
@@ -515,7 +515,7 @@ public:
         return false;
     }
 
-    bool createStringFrom(int type, const void *data, QString *s)
+    bool createStringFrom(int type, const void *data, QString *s) Q_DECL_OVERRIDE
     {
         if (type == QMetaType::QColor) {
             const QColor *color = reinterpret_cast<const QColor *>(data);
@@ -526,7 +526,7 @@ public:
         return false;
     }
 
-    bool variantFromString(const QString &s, QVariant *v)
+    bool variantFromString(const QString &s, QVariant *v) Q_DECL_OVERRIDE
     {
         QColor c(s);
         if (c.isValid()) {
@@ -569,7 +569,7 @@ public:
         return false;
     }
 
-    bool variantFromString(int type, const QString &s, QVariant *v)
+    bool variantFromString(int type, const QString &s, QVariant *v) Q_DECL_OVERRIDE
     {
         bool ok = false;
 
@@ -635,7 +635,7 @@ public:
         return (*(reinterpret_cast<const T *>(lhs)) == *(reinterpret_cast<const T *>(rhs)));
     }
 
-    bool equal(int type, const void *lhs, const void *rhs, size_t rhsSize)
+    bool equal(int type, const void *lhs, const void *rhs, size_t rhsSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -673,7 +673,7 @@ public:
         return true;
     }
 
-    bool store(int type, const void *src, void *dst, size_t dstSize)
+    bool store(int type, const void *src, void *dst, size_t dstSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
@@ -726,7 +726,7 @@ public:
         return true;
     }
 
-    bool read(int srcType, const void *src, size_t srcSize, int dstType, void *dst)
+    bool read(int srcType, const void *src, size_t srcSize, int dstType, void *dst) Q_DECL_OVERRIDE
     {
         switch (dstType) {
         case QMetaType::QColor:
@@ -774,7 +774,7 @@ public:
         return false;
     }
 
-    bool write(int type, const void *src, void *dst, size_t dstSize)
+    bool write(int type, const void *src, void *dst, size_t dstSize) Q_DECL_OVERRIDE
     {
         switch (type) {
         case QMetaType::QColor:
