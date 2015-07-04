@@ -279,7 +279,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
         QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
-        Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
+        Q_FOREACH (const Render::LoadSceneJobPtr &job, sceneJobs) {
             job->setRenderer(d->m_renderer);
             jobs.append(job);
         }

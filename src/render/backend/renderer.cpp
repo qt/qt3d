@@ -218,7 +218,7 @@ void Renderer::loadSceneParsers()
     QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath) + SCENE_PARSERS_PATH;
     QDir sceneParsersPluginDir(pluginsPath);
 
-    Q_FOREACH (QString plugin, sceneParsersPluginDir.entryList(QDir::Files)) {
+    Q_FOREACH (const QString &plugin, sceneParsersPluginDir.entryList(QDir::Files)) {
         QPluginLoader loader(sceneParsersPluginDir.absoluteFilePath(plugin));
         AbstractSceneParser *parser = qobject_cast<AbstractSceneParser *>(loader.instance());
         if (parser != Q_NULLPTR)
@@ -765,7 +765,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             }
 
             // TO DO : Do that in a better / nicer way
-            Q_FOREACH (QString nm, meshData->attributeNames()) {
+            Q_FOREACH (const QString &nm, meshData->attributeNames()) {
                 AttributePtr attr(meshData->attributeByName(nm).staticCast<Attribute>());
                 if (command->m_parameterAttributeToShaderNames.contains(nm))
                     m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
