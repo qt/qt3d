@@ -413,6 +413,7 @@ void Renderer::shutdown()
 
         // Clean up the graphics context
         m_graphicsContext.reset(Q_NULLPTR);
+        m_surface = Q_NULLPTR;
     }
 }
 
@@ -512,9 +513,13 @@ void Renderer::setSurface(QSurface* surface)
             m_submitRenderViewsSemaphore.release(1);
             m_renderThread->wait();
             // This will call shutdown on the Renderer and cleanup GL context
+            // and then set the surface to Q_NULLPTR
+            m_surface = surface;
         }
-        // else we are dealing with the QtQuick2 / Scene3D case
-        m_surface = surface;
+        // else we are dealing with the QtQuick2 / Scene3D in which case we
+        // don't set the surface to Q_NULLPTR just yet as a call to
+        // QRenderAspect::renderShutdown() -> Renderer::shutdown() should
+        // follow and will take care of this
     } else { // Setting a valid window on initialization
         m_surface = surface;
         m_waitForWindowToBeSetCondition.wakeOne();

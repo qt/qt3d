@@ -137,8 +137,9 @@ void QInputAspect::onInitialize(const QVariantMap &data)
 void QInputAspect::onCleanup()
 {
     Q_D(QInputAspect);
-    d->m_inputHandler->eventSource()->removeEventFilter(d->m_cameraController);
-    d->m_inputHandler->setEventSource(Q_NULLPTR);
+    // At this point it is too late to call removeEventFilter as the eventSource (Window)
+    // may already be destroyed
+    d->m_inputHandler = Q_NULLPTR;
 }
 
 void QInputAspect::visitNode(QNode *node)

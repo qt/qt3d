@@ -50,6 +50,7 @@
 #include <QSGMaterial>
 #include <QSGNode>
 #include <QOpenGLFunctions>
+#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -85,7 +86,23 @@ class Scene3DSGNode;
     \brief The Qt3D::Scene3DRenderer class takes care of rendering a Qt3D scene
     within a Framebuffer object to be used by the QtQuick 2 renderer.
 
-    The Qt3D::Scene3DRenderer class renders a Qt3D scene as provided by a Qt3D::Scene3DItem
+    The Qt3D::Scene3DRenderer class renders a Qt3D scene as provided by a Qt3D::Scene3DItem.
+    It owns the aspectEngine even though it doesn't instantiate it.
+
+    The shutdown procedure is a two steps process that goes as follow:
+
+    \li The window is closed
+
+    \li This triggers the sceneGraphInvalidatedSignal which the Scene3DRenderer
+    uses to perform the necessary cleanups in the QSGRenderThread (destroys
+    DebugLogger ...) with the shutdown slot.
+
+    \li The destroyed signal of the window is also connected to the
+    Scene3DRenderer. When triggered in the context of the main thread, the
+    cleanup slot is called. A semaphore is used to make sure that the shutdown
+    slots has completed. Then the Scene3DRenderer calls delete upon himself which
+    also deletes the aspect engine in its dtor, still in the main thread.
+
  */
 class Scene3DRenderer : public QObject
 {
@@ -101,11 +118,14 @@ public:
         , m_multisampledFBO(Q_NULLPTR)
         , m_finalFBO(Q_NULLPTR)
         , m_texture(Q_NULLPTR)
+        , m_destructionSemaphore(0)
     {
         Q_CHECK_PTR(m_item);
+        Q_CHECK_PTR(m_item->window());
 
         QObject::connect(m_item->window(), SIGNAL(beforeRendering()), this, SLOT(render()), Qt::DirectConnection);
-        QObject::connect(m_item->window(), SIGNAL(sceneGraphInvalidated()), this, SLOT(shutdown()), Qt::DirectConnection);
+        QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::shutdown, Qt::DirectConnection);
+        QObject::connect(m_item->window(), &QQuickWindow::destroyed, this, &Scene3DRenderer::cleanup, Qt::DirectConnection);
         ContextSaver saver;
 
         QVariantMap data;
@@ -117,8 +137,11 @@ public:
         scheduleRootEntityChange();
     }
 
+    // The Scene3DRender is delete by itself with the cleanup slot
     ~Scene3DRenderer()
     {
+        // Delete aspect engine
+        delete m_aspectEngine;
     }
 
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size)
@@ -145,16 +168,33 @@ public:
 
 public Q_SLOTS:
     void render();
-    void shutdown();
+
+    // Executed in the QtQuick render thread.
+    void shutdown()
+    {
+        m_renderAspect->renderShutdown();
+        // Allow the cleanup to proceed
+        m_destructionSemaphore.release(1);
+    }
+
+    // Executed in the main thread
+    void cleanup()
+    {
+        m_destructionSemaphore.acquire(1);
+
+        // Delete ourself
+        delete this;
+    }
 
 private:
-    Scene3DItem *m_item;
-    Qt3D::QAspectEngine *m_aspectEngine;
-    Qt3D::QRenderAspect *m_renderAspect;
+    Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
+    Qt3D::QAspectEngine *m_aspectEngine; // We are responsible for not leaking it
+    Qt3D::QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
     QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
     QScopedPointer<QSGTexture> m_texture;
-    Scene3DSGNode *m_node;
+    Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
+    QSemaphore m_destructionSemaphore;
     QSize m_lastSize;
 };
 
@@ -280,6 +320,8 @@ public:
 
     ~Scene3DSGNode()
     {
+        // The Scene3DSGNode is deleted by the QSGRenderThread when the SceneGraph
+        // is terminated.
     }
 
     void setTexture(QSGTexture *texture) Q_DECL_NOEXCEPT
@@ -328,7 +370,7 @@ private:
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent),
       m_entity(Q_NULLPTR),
-      m_aspectEngine(new Qt3D::QAspectEngine(this)),
+      m_aspectEngine(new Qt3D::QAspectEngine()),
       m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous)),
       m_renderer(Q_NULLPTR)
 {
@@ -342,10 +384,9 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
 
 Scene3DItem::~Scene3DItem()
 {
-    // When the window is closed, it first destroys all of its children
-    // At this point, the window is still valid and we won't ever receive the
-    // sceneGraphInvalidated signal
-    // How can we cleanup then ?
+    // When the window is closed, it first destroys all of its children. At
+    // this point, Scene3DItem is destroyed but the Renderer, AspectEngine and
+    // Scene3DSGNode still exist and will perform their cleanup on their own.
 }
 
 QStringList Scene3DItem::aspects() const
@@ -367,6 +408,7 @@ void Scene3DItem::setAspects(const QStringList &aspects)
 
     m_aspects = aspects;
 
+    // Aspects are owned by the aspect engine
     Q_FOREACH (const QString &aspect, m_aspects) {
         if (aspect == QStringLiteral("render")) // This one is hardwired anyway
             continue;
@@ -406,8 +448,8 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         node = Q_NULLPTR;
     }
 
-    if (m_renderer.isNull())
-        m_renderer.reset(new Scene3DRenderer(this, m_aspectEngine, m_renderAspect));
+    if (m_renderer == Q_NULLPTR)
+        m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
 
     Scene3DSGNode *fboNode = new Scene3DSGNode();
     fboNode->setRect(boundingRect());
@@ -473,16 +515,6 @@ void Scene3DRenderer::render()
 
     // Request next frame
     m_item->window()->update();
-}
-
-// TO DO: Find a way to have this slot executed
-// in the QtQuick Render Thread. Right now this doesn't work
-// since when the window is closed, Scene3DItem and Scene3DRenderer are
-// deleted (they are children of the QQuickView) and then only the window's
-// sceneGraphInvalidated signal is emitted
-void Scene3DRenderer::shutdown()
-{
-    m_renderAspect->renderShutdown();
 }
 
 inline static bool isPowerOfTwo(int x)
