@@ -71,8 +71,8 @@ QInputAspectPrivate::QInputAspectPrivate()
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
-    registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler)));
-    registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler)));
+    registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler.data())));
 }
 
 QCamera *QInputAspect::camera() const
@@ -130,7 +130,7 @@ void QInputAspect::onInitialize(const QVariantMap &data)
         object = v.value<QObject *>();
     Q_D(QInputAspect);
     if (object)
-        object->installEventFilter(d->m_cameraController);
+        object->installEventFilter(d->m_cameraController.data());
     d->m_inputHandler->setEventSource(object);
 }
 
@@ -139,7 +139,7 @@ void QInputAspect::onCleanup()
     Q_D(QInputAspect);
     // At this point it is too late to call removeEventFilter as the eventSource (Window)
     // may already be destroyed
-    d->m_inputHandler = Q_NULLPTR;
+    d->m_inputHandler.reset(Q_NULLPTR);
 }
 
 void QInputAspect::visitNode(QNode *node)
