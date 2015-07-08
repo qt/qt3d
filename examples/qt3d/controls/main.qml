@@ -46,8 +46,7 @@ Item {
 
     Scene3D {
         id: scene3D
-        width: Math.min(parent.width, parent.height) - 100
-        height: width
+        anchors.fill: parent
         anchors.verticalCenter: parent.verticalCenter
         focus: true
         aspects: "input"
@@ -59,8 +58,8 @@ Item {
 
     ColumnLayout {
         id: colorLayout
-        anchors.left: scene3D.right
-        anchors.leftMargin: 5
+        anchors.left: parent.horizontalCenter
+        anchors.leftMargin: parent.width * 0.25
         anchors.right: parent.right
         anchors.rightMargin: 15
         anchors.top: scene3D.top
@@ -110,10 +109,9 @@ Item {
 
     ColumnLayout {
         id: transformLayout
-        anchors.left: scene3D.right
-        anchors.leftMargin: 5
-        anchors.right: parent.right
-        anchors.rightMargin: 15
+
+        anchors.left: colorLayout.left
+        anchors.right: colorLayout.right
         anchors.top: colorLayout.bottom
         anchors.topMargin: 10
         spacing: 5
@@ -158,10 +156,9 @@ Item {
 
     ColumnLayout {
         id: cameraLayout
-        anchors.left: scene3D.right
-        anchors.leftMargin: 5
-        anchors.right: parent.right
-        anchors.rightMargin: 15
+
+        anchors.left: colorLayout.left
+        anchors.right: colorLayout.right
         anchors.top: transformLayout.bottom
         anchors.topMargin: 10
         spacing: 5
