@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSECONTROLLER_H
-#define QT3D_INPUT_MOUSECONTROLLER_H
-
-#include <Qt3DCore/qbackendnode.h>
+#include "mouseeventdispatcherjob_p.h"
+#include "inputhandler_p.h"
+#include "mouseinput_p.h"
+#include "inputmanagers_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -45,47 +45,32 @@ namespace Qt3D {
 
 namespace Input {
 
-class InputHandler;
-
-class MouseController : public QBackendNode
+MouseEventDispatcherJob::MouseEventDispatcherJob(const QNodeId &input, const QList<QMouseEvent> &events)
+    : QAspectJob()
+    , m_inputHandler(Q_NULLPTR)
+    , m_mouseInput(input)
+    , m_events(events)
 {
-public:
-    MouseController();
-    ~MouseController();
+}
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void setInputHandler(InputHandler *handler);
-
-    void addMouseInput(const QNodeId &input);
-    void removeMouseInput(const QNodeId &input);
-
-    QVector<QNodeId> mouseInputs() const;
-
-protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    QVector<QNodeId> m_mouseInputs;
-    InputHandler *m_inputHandler;
-};
-
-class MouseControllerFunctor : public QBackendNodeFunctor
+void MouseEventDispatcherJob::setInputHandler(InputHandler *handler)
 {
-public:
-    explicit MouseControllerFunctor(InputHandler *handler);
+    m_inputHandler = handler;
+}
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
-
-private:
-    InputHandler *m_handler;
-};
+void MouseEventDispatcherJob::run()
+{
+    MouseInput *input = m_inputHandler->mouseInputManager()->lookupResource(m_mouseInput);
+    if (input) {
+        Q_FOREACH (const QMouseEvent &e, m_events) {
+            // Send events to frontend
+            input->mouseEvent(Q3DMouseEventPtr(new Q3DMouseEvent(e)));
+        }
+    }
+}
 
 } // Input
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // MOUSECONTROLLER_H

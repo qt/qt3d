@@ -79,6 +79,11 @@ void MouseController::removeMouseInput(const QNodeId &input)
     m_mouseInputs.removeOne(input);
 }
 
+QVector<QNodeId> MouseController::mouseInputs() const
+{
+    return m_mouseInputs;
+}
+
 void MouseController::sceneChangeEvent(const QSceneChangePtr &e)
 {
     Q_UNUSED(e);

@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSECONTROLLER_H
-#define QT3D_INPUT_MOUSECONTROLLER_H
+#ifndef QT3D_INPUT_MOUSEEVENTFILTER_P_H
+#define QT3D_INPUT_MOUSEEVENTFILTER_P_H
 
-#include <Qt3DCore/qbackendnode.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,39 +47,19 @@ namespace Input {
 
 class InputHandler;
 
-class MouseController : public QBackendNode
+class MouseEventFilter : public QObject
 {
+    Q_OBJECT
 public:
-    MouseController();
-    ~MouseController();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    explicit MouseEventFilter(QObject *parent = 0);
     void setInputHandler(InputHandler *handler);
-
-    void addMouseInput(const QNodeId &input);
-    void removeMouseInput(const QNodeId &input);
-
-    QVector<QNodeId> mouseInputs() const;
+    inline InputHandler *inputHandler() const { return m_inputHandler; }
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
 
 private:
-    QVector<QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
-};
-
-class MouseControllerFunctor : public QBackendNodeFunctor
-{
-public:
-    explicit MouseControllerFunctor(InputHandler *handler);
-
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
-
-private:
-    InputHandler *m_handler;
 };
 
 } // Input
@@ -88,4 +68,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // MOUSECONTROLLER_H
+#endif // QT3D_INPUT_MOUSEEVENTFILTER_P_H

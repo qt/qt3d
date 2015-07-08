@@ -37,8 +37,10 @@
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include "keyboardeventfilter_p.h"
+#include "mouseeventfilter.h"
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
+#include "mouseeventdispatcherjob_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -53,20 +55,29 @@ InputHandler::InputHandler()
     , m_mouseInputManager(new MouseInputManager())
     , m_eventSource(Q_NULLPTR)
     , m_keyboardEventFilter(new KeyboardEventFilter())
+    , m_mouseEventFilter(new MouseEventFilter())
 {
     m_keyboardEventFilter->setInputHandler(this);
+    m_mouseEventFilter->setInputHandler(this);
 }
 
 // Called in MainThread
 void InputHandler::setEventSource(QObject *object)
 {
     if (object != m_eventSource) {
-        if (m_eventSource)
+        if (m_eventSource) {
             m_eventSource->removeEventFilter(m_keyboardEventFilter);
+            m_eventSource->removeEventFilter(m_mouseEventFilter);
+        }
+
         clearPendingKeyEvents();
+        clearPendingMouseEvents();
+
         m_eventSource = object;
-        if (m_eventSource)
+        if (m_eventSource) {
             m_eventSource->installEventFilter(m_keyboardEventFilter);
+            m_eventSource->installEventFilter(m_mouseEventFilter);
+        }
     }
 }
 
@@ -91,6 +102,26 @@ void InputHandler::clearPendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
     m_pendingEvents.clear();
+}
+
+void InputHandler::appendMouseEvent(const QMouseEvent &event)
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingMouseEvents.append(event);
+}
+
+QList<QMouseEvent> InputHandler::pendingMouseEvents()
+{
+    QMutexLocker lock(&m_mutex);
+    QList<QMouseEvent> pendingEvents = m_pendingMouseEvents;
+    m_pendingMouseEvents.clear();
+    return pendingEvents;
+}
+
+void InputHandler::clearPendingMouseEvents()
+{
+    QMutexLocker lock(&m_mutex);
+    m_pendingMouseEvents.clear();
 }
 
 void InputHandler::appendKeyboardController(HKeyboardController controller)
@@ -142,6 +173,27 @@ QVector<QAspectJobPtr> InputHandler::keyboardJobs()
             }
         }
     }
+    return jobs;
+}
+
+QVector<QAspectJobPtr> InputHandler::mouseJobs()
+{
+    QVector<QAspectJobPtr> jobs;
+    const QList<QMouseEvent> events = pendingMouseEvents();
+
+    Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
+        MouseController *controller = m_mouseControllerManager->data(cHandle);
+
+        // Event dispacthing job
+        if (!events.isEmpty()) {
+            Q_FOREACH (const QNodeId &input, controller->mouseInputs()) {
+                MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input, events);
+                job->setInputHandler(this);
+                jobs.append(QAspectJobPtr(job));
+            }
+        }
+    }
+
     return jobs;
 }
 

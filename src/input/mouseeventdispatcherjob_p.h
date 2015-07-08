@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,10 +34,12 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSECONTROLLER_H
-#define QT3D_INPUT_MOUSECONTROLLER_H
+#ifndef QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#define QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,45 +49,23 @@ namespace Input {
 
 class InputHandler;
 
-class MouseController : public QBackendNode
+class MouseEventDispatcherJob : public QAspectJob
 {
 public:
-    MouseController();
-    ~MouseController();
-
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    explicit MouseEventDispatcherJob(const QNodeId &input, const QList<QMouseEvent> &events);
     void setInputHandler(InputHandler *handler);
-
-    void addMouseInput(const QNodeId &input);
-    void removeMouseInput(const QNodeId &input);
-
-    QVector<QNodeId> mouseInputs() const;
-
-protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void run() Q_DECL_FINAL;
 
 private:
-    QVector<QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
-};
-
-class MouseControllerFunctor : public QBackendNodeFunctor
-{
-public:
-    explicit MouseControllerFunctor(InputHandler *handler);
-
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
-
-private:
-    InputHandler *m_handler;
+    const QNodeId m_mouseInput;
+    const QList<QMouseEvent> m_events;
 };
 
 } // Input
 
-} // Qt3D
+} // Mouse
 
 QT_END_NAMESPACE
 
-#endif // MOUSECONTROLLER_H
+#endif // QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H

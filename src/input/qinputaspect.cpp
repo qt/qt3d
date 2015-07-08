@@ -40,11 +40,15 @@
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
 #include "keyboardinput_p.h"
+#include "mousecontroller_p.h"
+#include "mouseinput_p.h"
 #include <Qt3DCore/qaspectfactory.h>
 #include <Qt3DCore/qnodevisitor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
+#include <Qt3DInput/qmousecontroller.h>
+#include <Qt3DInput/qmouseinput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +77,8 @@ QInputAspect::QInputAspect(QObject *parent)
 {
     registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QMouseController>(QBackendNodeFunctorPtr(new Input::MouseControllerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QMouseInput>(QBackendNodeFunctorPtr(new Input::MouseInputFunctor(d_func()->m_inputHandler.data())));
 }
 
 QCamera *QInputAspect::camera() const
@@ -94,7 +100,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     QVector<QAspectJobPtr> jobs;
 
     jobs.append(d->m_inputHandler->keyboardJobs());
-    // One job for Mouse events
+    jobs.append(d->m_inputHandler->mouseJobs());
 
     return jobs;
 }

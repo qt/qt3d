@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSECONTROLLER_H
-#define QT3D_INPUT_MOUSECONTROLLER_H
-
-#include <Qt3DCore/qbackendnode.h>
+#include "mouseeventfilter.h"
+#include "inputhandler_p.h"
+#include <QEvent>
+#include <QKeyEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,47 +45,38 @@ namespace Qt3D {
 
 namespace Input {
 
-class InputHandler;
+// The MouseEventFilter must be in the same thread as the view it will be monitoring
 
-class MouseController : public QBackendNode
+MouseEventFilter::MouseEventFilter(QObject *parent)
+    : QObject(parent)
 {
-public:
-    MouseController();
-    ~MouseController();
+}
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void setInputHandler(InputHandler *handler);
-
-    void addMouseInput(const QNodeId &input);
-    void removeMouseInput(const QNodeId &input);
-
-    QVector<QNodeId> mouseInputs() const;
-
-protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    QVector<QNodeId> m_mouseInputs;
-    InputHandler *m_inputHandler;
-};
-
-class MouseControllerFunctor : public QBackendNodeFunctor
+void MouseEventFilter::setInputHandler(InputHandler *handler)
 {
-public:
-    explicit MouseControllerFunctor(InputHandler *handler);
+    m_inputHandler = handler;
+}
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+// Triggered in the view thread (usually the main thread)
+bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
+{
+    switch (e->type()) {
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseMove:
+        // Store event to be processed later on in an InputAspect job
+        m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
+        break;
 
-private:
-    InputHandler *m_handler;
-};
+    default:
+        break;
+    }
+
+    return QObject::eventFilter(obj, e);
+}
 
 } // Input
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // MOUSECONTROLLER_H
