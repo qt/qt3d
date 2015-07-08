@@ -483,7 +483,7 @@ void Scene3DRenderer::render()
 
     if (m_finalFBO.isNull() || forceRecreate) {
         m_finalFBO.reset(createFramebufferObject(m_item->boundingRect().size().toSize()));
-        m_texture.reset(m_item->window()->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size()));
+        m_texture.reset(m_item->window()->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         m_node->setTexture(m_texture.data());
     }
 
