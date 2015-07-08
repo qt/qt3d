@@ -455,8 +455,10 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 */
 void QNode::copy(const QNode *ref)
 {
-    if (ref)
+    if (ref) {
         d_func()->m_id = ref->d_func()->m_id;
+        setObjectName(ref->objectName());
+    }
 }
 
 QNode::~QNode()
