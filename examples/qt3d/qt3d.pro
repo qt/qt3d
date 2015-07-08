@@ -32,7 +32,8 @@ SUBDIRS += \
     simple-shaders-qml \
     planets-qml \
     plasma \
-    gooch-qml
+    gooch-qml \
+    transparency-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
