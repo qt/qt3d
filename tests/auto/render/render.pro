@@ -20,5 +20,6 @@ contains(QT_CONFIG, private_tests) {
         renderbuffer \
         renderattribute \
         rendergeometry \
-        rendergeometryrenderer
+        rendergeometryrenderer \
+        raycasting
 }

@@ -21,7 +21,7 @@ HEADERS += \
     $$PWD/qabstractcollisionqueryservice_p.h \
     $$PWD/qcollisionqueryresult.h \
     $$PWD/qcollisionqueryresult_p.h \
-    $$PWD/qtickclockservice.h \
+    $$PWD/qtickclockservice_p.h \
     $$PWD/qabstractframeadvanceservice.h \
     $$PWD/qabstractframeadvanceservice_p.h
 
