@@ -38,6 +38,9 @@
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/q3dkeyevent.h>
+#include <Qt3DInput/qmousecontroller.h>
+#include <Qt3DInput/qmouseinput.h>
+#include <Qt3DInput/q3dmouseevent.h>
 #include "qt3dquick3dinputplugin.h"
 
 QT_BEGIN_NAMESPACE
@@ -47,6 +50,11 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::Q3DKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3D::QKeyboardController>(uri, 2, 0, "KeyboardController");
     qmlRegisterType<Qt3D::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
+
+    qmlRegisterUncreatableType<Qt3D::Q3DMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3D::Q3DWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterType<Qt3D::QMouseInput>(uri, 2, 0, "MouseInput");
+    qmlRegisterType<Qt3D::QMouseController>(uri, 2, 0, "MouseController");
 }
 
 QT_END_NAMESPACE
