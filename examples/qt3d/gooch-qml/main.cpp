@@ -37,6 +37,7 @@
 #include <window.h>
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
+#include <Qt3DInput/QInputAspect>
 
 #include <QGuiApplication>
 #include <QtQml>
@@ -49,6 +50,7 @@ int main(int argc, char* argv[])
     Qt3D::Quick::QQmlAspectEngine engine;
 
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
 
     // Expose the window as a context property so we can set the aspect ratio
     engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
