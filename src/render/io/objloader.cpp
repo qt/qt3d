@@ -320,7 +320,7 @@ void ObjLoader::updateIndices(const QVector<QVector3D> &positions,
 
         m_points[i] = positions[faceIndices.positionIndex];
         if (hasTexCoords)
-            m_texCoords[i] = texCoords[faceIndices.texCoordIndex];
+            m_texCoords[i] = std::numeric_limits<unsigned int>::max() != faceIndices.texCoordIndex ? texCoords[faceIndices.texCoordIndex] : QVector2D();
         if (hasNormals)
             m_normals[i] = normals[faceIndices.normalIndex];
     }
