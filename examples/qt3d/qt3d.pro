@@ -34,7 +34,8 @@ SUBDIRS += \
     plasma \
     gooch-qml \
     transparency-qml \
-    transparency-qml-scene3d
+    transparency-qml-scene3d \
+    scene3d-loader
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
