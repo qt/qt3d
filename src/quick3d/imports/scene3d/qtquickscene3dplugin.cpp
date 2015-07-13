@@ -36,13 +36,13 @@
 
 #include <QtQml>
 #include "qtquickscene3dplugin.h"
-#include "scene3ditem.h"
+#include "scene3ditem_p.h"
 
 QT_BEGIN_NAMESPACE
 
 void QtQuickScene3DPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Scene3DItem>(uri, 2, 0, "Scene3D");
+    qmlRegisterType<Qt3D::Scene3DItem>(uri, 2, 0, "Scene3D");
 }
 
 QT_END_NAMESPACE

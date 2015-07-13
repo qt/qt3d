@@ -414,6 +414,7 @@ void Renderer::shutdown()
         // Clean up the graphics context
         m_graphicsContext.reset(Q_NULLPTR);
         m_surface = Q_NULLPTR;
+        qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
     }
 }
 

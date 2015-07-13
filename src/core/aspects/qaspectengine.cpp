@@ -170,6 +170,12 @@ void QAspectEngine::shutdown()
 
     // Wait for thread to exit
     d->m_aspectThread->wait();
+
+    qCDebug(Aspects) << Q_FUNC_INFO << "deleting aspects";
+    // Deletes aspects in the same thread as the one they were created in
+    qDeleteAll(d->m_aspects);
+
+    qCDebug(Aspects) << Q_FUNC_INFO << "Shutdown complete";
 }
 
 void QAspectEngine::setData(const QVariantMap &data)

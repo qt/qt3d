@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,59 +34,60 @@
 **
 ****************************************************************************/
 
-#include "qaspectthread.h"
+#ifndef SCENE3DITEM_H
+#define SCENE3DITEM_H
 
-#include "qaspectmanager_p.h"
-
-#include <Qt3DCore/private/corelogging_p.h>
-#include <QMutexLocker>
+#include <QQuickItem>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-QAspectThread::QAspectThread(QObject *parent)
-    : QThread(parent),
-      m_aspectManager(Q_NULLPTR),
-      m_semaphore(0)
+namespace Qt3D
 {
-    qCDebug(Aspects) << Q_FUNC_INFO;
-}
+class QAspectEngine;
+class QEntity;
+class QRenderAspect;
 
-void QAspectThread::waitForStart(Priority priority)
+class Scene3DRenderer;
+class Scene3DCleaner;
+
+class Scene3DItem : public QQuickItem
 {
-    qCDebug(Aspects) << "Starting QAspectThread and going to sleep until it is ready for us...";
-    start(priority);
-    m_semaphore.acquire();
-    qCDebug(Aspects) << "QAspectThead is now ready & calling thread is now awake again";
-}
+    Q_OBJECT
+    Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
+    Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
+    Q_CLASSINFO("DefaultProperty", "entity")
+public:
+    explicit Scene3DItem(QQuickItem *parent = 0);
+    ~Scene3DItem();
 
-void QAspectThread::run()
-{
-    qCDebug(Aspects) << "Entering void QAspectThread::run()";
+    QStringList aspects() const;
+    Qt3D::QEntity *entity() const;
 
-    m_aspectManager = new QAspectManager;
+public Q_SLOTS:
+    void setAspects(const QStringList &aspects);
+    void setEntity(Qt3D::QEntity *entity);
 
-    // Load and initialize the aspects and any other core services
-    // Done before releasing condition to make sure that Qml Components
-    // Are exposed prior to Qml Engine source being set
-    m_aspectManager->initialize();
+Q_SIGNALS:
+    void aspectsChanged();
+    void entityChanged();
 
-    // Wake up the calling thread now that our worker objects are ready for action
-    m_semaphore.release();
+private Q_SLOTS:
+    void applyRootEntityChange();
 
-    // Enter the main loop
-    m_aspectManager->exec();
+private:
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
-    // Clean up
-    m_aspectManager->shutdown();
+    QStringList m_aspects;
+    Qt3D::QEntity *m_entity;
 
-    // Delete the aspect manager while we're still in the thread
-    delete m_aspectManager;
+    Qt3D::QAspectEngine *m_aspectEngine;
+    Qt3D::QRenderAspect *m_renderAspect;
+    Scene3DRenderer *m_renderer;
+    Scene3DCleaner *m_rendererCleaner;
+};
 
-    qCDebug(Aspects) << "Exiting void QAspectThread::run()";
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE
+
+#endif

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,59 +34,14 @@
 **
 ****************************************************************************/
 
-#include "qaspectthread.h"
-
-#include "qaspectmanager_p.h"
-
-#include <Qt3DCore/private/corelogging_p.h>
-#include <QMutexLocker>
+#include "scene3dlogging_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-QAspectThread::QAspectThread(QObject *parent)
-    : QThread(parent),
-      m_aspectManager(Q_NULLPTR),
-      m_semaphore(0)
-{
-    qCDebug(Aspects) << Q_FUNC_INFO;
-}
+Q_LOGGING_CATEGORY(Scene3D, "Qt3D.Scene3D")
 
-void QAspectThread::waitForStart(Priority priority)
-{
-    qCDebug(Aspects) << "Starting QAspectThread and going to sleep until it is ready for us...";
-    start(priority);
-    m_semaphore.acquire();
-    qCDebug(Aspects) << "QAspectThead is now ready & calling thread is now awake again";
-}
-
-void QAspectThread::run()
-{
-    qCDebug(Aspects) << "Entering void QAspectThread::run()";
-
-    m_aspectManager = new QAspectManager;
-
-    // Load and initialize the aspects and any other core services
-    // Done before releasing condition to make sure that Qml Components
-    // Are exposed prior to Qml Engine source being set
-    m_aspectManager->initialize();
-
-    // Wake up the calling thread now that our worker objects are ready for action
-    m_semaphore.release();
-
-    // Enter the main loop
-    m_aspectManager->exec();
-
-    // Clean up
-    m_aspectManager->shutdown();
-
-    // Delete the aspect manager while we're still in the thread
-    delete m_aspectManager;
-
-    qCDebug(Aspects) << "Exiting void QAspectThread::run()";
-}
-
-} // namespace Qt3D
+} // Qt3D
 
 QT_END_NAMESPACE

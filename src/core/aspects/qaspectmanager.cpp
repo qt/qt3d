@@ -98,7 +98,7 @@ void QAspectManager::shutdown()
         aspect->onCleanup();
         m_changeArbiter->unregisterSceneObserver(aspect);
     }
-    qDeleteAll(m_aspects);
+    // Aspects must be deleted in the Thread they were created in
 }
 
 void QAspectManager::setRootEntity(Qt3D::QEntity *root)

@@ -34,57 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef SCENE3DITEM_H
-#define SCENE3DITEM_H
+#ifndef QT3D_SCENE3DLOGGING_P_H
+#define QT3D_SCENE3DLOGGING_P_H
 
-#include <QQuickItem>
+#include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
-    class QAspectEngine;
-    class QEntity;
-    class QRenderAspect;
-}
+namespace Qt3D {
 
-class Scene3DRenderer;
+Q_DECLARE_LOGGING_CATEGORY(Scene3D)
 
-class Scene3DItem : public QQuickItem
-{
-    Q_OBJECT
-    Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
-    Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
-    Q_CLASSINFO("DefaultProperty", "entity")
-public:
-    explicit Scene3DItem(QQuickItem *parent = 0);
-    ~Scene3DItem();
-
-    QStringList aspects() const;
-    Qt3D::QEntity *entity() const;
-
-public Q_SLOTS:
-    void setAspects(const QStringList &aspects);
-    void setEntity(Qt3D::QEntity *entity);
-
-Q_SIGNALS:
-    void aspectsChanged();
-    void entityChanged();
-
-private Q_SLOTS:
-    void applyRootEntityChange();
-
-private:
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
-
-    QStringList m_aspects;
-    Qt3D::QEntity *m_entity;
-
-    Qt3D::QAspectEngine *m_aspectEngine;
-    Qt3D::QRenderAspect *m_renderAspect;
-    Scene3DRenderer *m_renderer;
-};
+} // Qt3D
 
 QT_END_NAMESPACE
 
-#endif
+#endif // QT3D_SCENE3DLOGGING_P_H

@@ -557,6 +557,9 @@ QNodeList QNode::childrenNodes() const
 */
 QNode *QNode::clone(QNode *node)
 {
+    if (node == Q_NULLPTR)
+        return Q_NULLPTR;
+
     static int clearLock = 0;
     clearLock++;
 

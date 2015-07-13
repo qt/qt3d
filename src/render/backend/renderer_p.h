@@ -47,7 +47,6 @@
 #include <QHash>
 #include <QMatrix4x4>
 #include <QObject>
-#include <QTimer>
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>

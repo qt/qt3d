@@ -34,7 +34,8 @@
 **
 ****************************************************************************/
 
-#include "scene3ditem.h"
+#include "scene3ditem_p.h"
+#include "scene3dlogging_p.h"
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DRenderer/QRenderAspect>
@@ -50,9 +51,11 @@
 #include <QSGMaterial>
 #include <QSGNode>
 #include <QOpenGLFunctions>
-#include <QSemaphore>
+#include <QThread>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
 
 class ContextSaver
 {
@@ -93,17 +96,52 @@ class Scene3DSGNode;
 
     \li The window is closed
 
-    \li This triggers the sceneGraphInvalidatedSignal which the Scene3DRenderer
+    \li This triggers the windowsChanged signal which the Scene3DRenderer
     uses to perform the necessary cleanups in the QSGRenderThread (destroys
-    DebugLogger ...) with the shutdown slot.
+    DebugLogger ...) with the shutdown slot (queued connection).
 
     \li The destroyed signal of the window is also connected to the
     Scene3DRenderer. When triggered in the context of the main thread, the
-    cleanup slot is called. A semaphore is used to make sure that the shutdown
-    slots has completed. Then the Scene3DRenderer calls delete upon himself which
-    also deletes the aspect engine in its dtor, still in the main thread.
+    cleanup slot is called.
 
+    There is an alternate shutdown procedure in case the QQuickItem is
+    destroyed with an active window which can happen in the case where the
+    Scene3D is used with a QtQuick Loader
+
+    In that case the shutdown procedure goes the same except that the destroyed
+    signal of the window is not called. Therefore the cleanup method is invoked
+    to properly destroy the aspect engine.
  */
+
+// Lives in the main thread
+// Used to delete the Qt3D aspect engine in the main thread
+class Scene3DCleaner : public QObject
+{
+    Q_OBJECT
+public:
+    Scene3DCleaner()
+        : QObject()
+        , m_renderer(Q_NULLPTR)
+    {}
+
+    ~Scene3DCleaner()
+    {
+        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+    }
+
+    void setRenderer(Scene3DRenderer *renderer)
+    {
+        m_renderer = renderer;
+    }
+
+public Q_SLOTS:
+    void cleanup();
+
+private:
+    Scene3DRenderer *m_renderer;
+};
+
+// Lives in the aspect thread (QSGRenderThread)
 class Scene3DRenderer : public QObject
 {
     Q_OBJECT
@@ -118,15 +156,14 @@ public:
         , m_multisampledFBO(Q_NULLPTR)
         , m_finalFBO(Q_NULLPTR)
         , m_texture(Q_NULLPTR)
-        , m_destructionSemaphore(0)
         , m_enableMultisampledFBO(true)
     {
         Q_CHECK_PTR(m_item);
         Q_CHECK_PTR(m_item->window());
 
-        QObject::connect(m_item->window(), SIGNAL(beforeRendering()), this, SLOT(render()), Qt::DirectConnection);
-        QObject::connect(m_item->window(), &QQuickWindow::sceneGraphInvalidated, this, &Scene3DRenderer::shutdown, Qt::DirectConnection);
-        QObject::connect(m_item->window(), &QQuickWindow::destroyed, this, &Scene3DRenderer::cleanup, Qt::DirectConnection);
+        QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
+        QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
+
         ContextSaver saver;
 
         QVariantMap data;
@@ -141,8 +178,7 @@ public:
     // The Scene3DRender is delete by itself with the cleanup slot
     ~Scene3DRenderer()
     {
-        // Delete aspect engine
-        delete m_aspectEngine;
+        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
     }
 
     QOpenGLFramebufferObject *createMultisampledFramebufferObject(const QSize &size)
@@ -167,37 +203,59 @@ public:
 
     void setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT;
 
+    void setCleanerHelper(Scene3DCleaner *cleaner)
+    {
+        m_cleaner = cleaner;
+        if (m_cleaner) {
+            // Window closed case
+            QObject::connect(m_item->window(), &QQuickWindow::destroyed, m_cleaner, &Scene3DCleaner::cleanup);
+            m_cleaner->setRenderer(this);
+        }
+    }
+
 public Q_SLOTS:
     void render();
 
     // Executed in the QtQuick render thread.
     void shutdown()
     {
+        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+
+        // Set to null so that subsequent calls to render
+        // would return early
+        m_item = Q_NULLPTR;
+
+        // Shutdown the Renderer Aspect while the OpenGL context
+        // is still valid
         m_renderAspect->renderShutdown();
-        // Allow the cleanup to proceed
-        m_destructionSemaphore.release(1);
     }
 
-    // Executed in the main thread
-    void cleanup()
+    // SGThread
+    void onWindowChangedQueued(QQuickWindow *w)
     {
-        m_destructionSemaphore.acquire(1);
-
-        // Delete ourself
-        delete this;
+        if (w == Q_NULLPTR) {
+            qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+            shutdown();
+            // Will only trigger something with the Loader case
+            // The window closed cases is handled by the window's destroyed
+            // signal
+            QMetaObject::invokeMethod(m_cleaner, "cleanup");
+        }
     }
 
 private:
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
-    Qt3D::QAspectEngine *m_aspectEngine; // We are responsible for not leaking it
+    Qt3D::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
     Qt3D::QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
     QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
     QScopedPointer<QSGTexture> m_texture;
     Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
-    QSemaphore m_destructionSemaphore;
+    Scene3DCleaner *m_cleaner;
     QSize m_lastSize;
     bool m_enableMultisampledFBO;
+
+    friend class Scene3DCleaner;
 };
 
 /*!
@@ -318,10 +376,12 @@ public:
         setMaterial(&m_material);
         setOpaqueMaterial(&m_opaqueMaterial);
         setGeometry(&m_geometry);
+        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
     }
 
     ~Scene3DSGNode()
     {
+        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
         // The Scene3DSGNode is deleted by the QSGRenderThread when the SceneGraph
         // is terminated.
     }
@@ -370,11 +430,12 @@ private:
  */
 
 Scene3DItem::Scene3DItem(QQuickItem *parent)
-    : QQuickItem(parent),
-      m_entity(Q_NULLPTR),
-      m_aspectEngine(new Qt3D::QAspectEngine()),
-      m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous)),
-      m_renderer(Q_NULLPTR)
+    : QQuickItem(parent)
+    , m_entity(Q_NULLPTR)
+    , m_aspectEngine(new Qt3D::QAspectEngine())
+    , m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
+    , m_renderer(Q_NULLPTR)
+    , m_rendererCleaner(new Scene3DCleaner())
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -450,8 +511,10 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         node = Q_NULLPTR;
     }
 
-    if (m_renderer == Q_NULLPTR)
+    if (m_renderer == Q_NULLPTR) {
         m_renderer = new Scene3DRenderer(this, m_aspectEngine, m_renderAspect);
+        m_renderer->setCleanerHelper(m_rendererCleaner);
+    }
 
     Scene3DSGNode *fboNode = new Scene3DSGNode();
     fboNode->setRect(boundingRect());
@@ -469,7 +532,9 @@ void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT
 void Scene3DRenderer::render()
 {
     if (!m_item || !m_item->window())
-        return ;
+        return;
+
+    QQuickWindow *window = m_item->window();
 
     if (m_aspectEngine->rootEntity() != m_item->entity())
         scheduleRootEntityChange();
@@ -491,7 +556,7 @@ void Scene3DRenderer::render()
 
     if (m_finalFBO.isNull() || forceRecreate) {
         m_finalFBO.reset(createFramebufferObject(m_item->boundingRect().size().toSize()));
-        m_texture.reset(m_item->window()->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
+        m_texture.reset(window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         m_node->setTexture(m_texture.data());
     }
 
@@ -533,13 +598,13 @@ void Scene3DRenderer::render()
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
-    m_item->window()->resetOpenGLState();
+    window->resetOpenGLState();
 
     // Mark material as dirty to request a new frame
     m_node->markDirty(QSGNode::DirtyMaterial);
 
     // Request next frame
-    m_item->window()->update();
+    window->update();
 }
 
 inline static bool isPowerOfTwo(int x)
@@ -579,6 +644,16 @@ void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial 
         program()->setUniformValue(m_opacityId, state.opacity());
 }
 
+void Scene3DCleaner::cleanup()
+{
+    Q_ASSERT(m_renderer);
+    delete m_renderer->m_aspectEngine;
+    m_renderer->m_aspectEngine = Q_NULLPTR;
+    m_renderer->deleteLater();
+    deleteLater();
+}
+
+} // Qt3D
 
 QT_END_NAMESPACE
 
