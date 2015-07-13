@@ -119,6 +119,7 @@ public:
         , m_finalFBO(Q_NULLPTR)
         , m_texture(Q_NULLPTR)
         , m_destructionSemaphore(0)
+        , m_enableMultisampledFBO(true)
     {
         Q_CHECK_PTR(m_item);
         Q_CHECK_PTR(m_item->window());
@@ -196,6 +197,7 @@ private:
     Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
     QSemaphore m_destructionSemaphore;
     QSize m_lastSize;
+    bool m_enableMultisampledFBO;
 };
 
 /*!
@@ -478,8 +480,14 @@ void Scene3DRenderer::render()
     const bool forceRecreate = currentSize != m_lastSize;
 
     // Rebuild FBO and textures if never created or a resize has occurred
-    if (m_multisampledFBO.isNull() || forceRecreate)
+    if ((m_multisampledFBO.isNull() || forceRecreate) && m_enableMultisampledFBO) {
         m_multisampledFBO.reset(createMultisampledFramebufferObject(m_item->boundingRect().size().toSize()));
+
+        if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
+            m_enableMultisampledFBO = false;
+            m_multisampledFBO.reset(Q_NULLPTR);
+        }
+    }
 
     if (m_finalFBO.isNull() || forceRecreate) {
         m_finalFBO.reset(createFramebufferObject(m_item->boundingRect().size().toSize()));
@@ -491,20 +499,37 @@ void Scene3DRenderer::render()
     // point for the next frame
     m_lastSize = currentSize;
 
-    // Bind FBO
-    m_multisampledFBO->bind();
-    // Render Qt3D Scene
-    m_renderAspect->renderSynchronous();
+    //Only try to use MSAA when available
+    if (m_enableMultisampledFBO) {
+        // Bind FBO
+        m_multisampledFBO->bind();
 
-    // We may have called doneCurrent() so restore the context.
-    if (saver.context()->surface() != saver.surface())
-        saver.context()->makeCurrent(saver.surface());
+        // Render Qt3D Scene
+        m_renderAspect->renderSynchronous();
 
-    // Blit multisampled FBO with non multisampled FBO with texture attachment
-    QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());
+        // We may have called doneCurrent() so restore the context.
+        if (saver.context()->surface() != saver.surface())
+            saver.context()->makeCurrent(saver.surface());
 
-    // Restore QtQuick FBO
-    m_multisampledFBO->bindDefault();
+        // Blit multisampled FBO with non multisampled FBO with texture attachment
+        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());
+
+        // Restore QtQuick FBO
+        m_multisampledFBO->bindDefault();
+    } else {
+        // Bind FBO
+        m_finalFBO->bind();
+
+        // Render Qt3D Scene
+        m_renderAspect->renderSynchronous();
+
+        // We may have called doneCurrent() so restore the context.
+        if (saver.context()->surface() != saver.surface())
+            saver.context()->makeCurrent(saver.surface());
+
+        // Restore QtQuick FBO
+        m_finalFBO->bindDefault();
+    }
 
     // Reset the state used by the Qt Quick scenegraph to avoid any
     // interference when rendering the rest of the UI.
