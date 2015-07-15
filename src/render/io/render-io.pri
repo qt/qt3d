@@ -1,7 +1,6 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/gltfparser_p.h \
     $$PWD/objloader_p.h \
     $$PWD/texturedata.h \
     $$PWD/abstractsceneparser_p.h \
@@ -16,7 +15,6 @@ HEADERS += \
     $$PWD/qgeometryfunctor.h
 
 SOURCES += \
-    $$PWD/gltfparser.cpp \
     $$PWD/objloader.cpp \
     $$PWD/texturedata.cpp \
     $$PWD/abstractsceneparser.cpp \

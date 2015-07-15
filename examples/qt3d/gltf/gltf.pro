@@ -10,9 +10,9 @@ SOURCES += \
     main.cpp
 
 OTHER_FILES += \
-    main.qml
+    main.qml \
+    Wine.qml
 
 RESOURCES += \
     gltf_example.qrc \
     ../exampleresources/gltf.qrc \
-    ../exampleresources/obj.qrc

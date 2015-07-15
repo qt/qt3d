@@ -38,15 +38,12 @@
 #ifndef GLTFPARSER_H
 #define GLTFPARSER_H
 
-#include <Qt3DRenderer/qmeshdata.h>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QMultiHash>
+
 #include <Qt3DRenderer/qattribute.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/qtechnique.h>
 #include <Qt3DRenderer/qbuffer.h>
-#include <QJsonDocument>
-#include <QMultiHash>
-#include <Qt3DRenderer/qabstractmesh.h>
-#include <QImage>
+#include <Qt3DRenderer/qmeshdata.h>
 
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 
@@ -62,60 +59,33 @@ class QEffect;
 class QCamera;
 class QCameraLens;
 class QAbstractTextureProvider;
+class QRenderState;
+class QTechnique;
+class QParameter;
+class QEntity;
+class QGeometryRenderer;
+
+Q_DECLARE_LOGGING_CATEGORY(GLTFParserLog)
 
 class GLTFParser : public AbstractSceneParser
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt3DRenderer.GLTFParser")
 
 public:
     GLTFParser();
+    ~GLTFParser();
 
     void setBasePath(const QString& path);
-    bool setJSON( QJsonDocument json );
+    bool setJSON( const QJsonDocument &json );
 
     // SceneParserInterface interface
-    void setSource(const QUrl &source) Q_DECL_OVERRIDE;
-    bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
-
-    /**
-     * @brief instantiate Create Nodes based on glTf JSON document
-     * @return A new scene-graph fragment based on the provided glTf
-     */
-    QEntity *node(const QString &id) Q_DECL_OVERRIDE;
-    QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
+    void setSource(const QUrl &source) Q_DECL_FINAL;
+    bool isExtensionSupported(const QUrl &source) const Q_DECL_FINAL;
+    QEntity *node(const QString &id) Q_DECL_FINAL;
+    QEntity *scene(const QString &id = QString()) Q_DECL_FINAL;
 
 private:
-    static bool isGLTFPath(const QString &path);
-
-    QEntity *defaultScene();
-    QMeshDataPtr mesh(const QString &id);
-    QMaterial *material(const QString &id);
-    QCameraLens *camera(const QString &id);
-
-    void parse();
-
-    void processJSONMesh( QString id, QJsonObject jsonObj );
-    void processJSONAccessor(QString id, const QJsonObject &json);
-    void processJSONBuffer(QString id, const QJsonObject &json);
-    void processJSONBufferView(QString id, const QJsonObject &json);
-
-    void processName( const QJsonObject& json, QObject* ins );
-
-    QJsonDocument m_json;
-    QString m_basePath;
-    bool m_parseDone;
-    QString m_defaultScene;
-
-    // multi-hash because our QMeshData corresponds to a single primitive
-    // in glTf.
-    QMultiHash<QString, QMeshDataPtr> m_meshDict;
-
-    // GLTF assigns materials at the mesh level, but we do them as siblings,
-    // so record the association here for when we instantiate meshes
-    QMap<QMeshData*, QString> m_meshMaterialDict;
-
-    QMap<QString, QAttribute *> m_attributeDict;
-
     class BufferData
     {
     public:
@@ -125,8 +95,82 @@ private:
 
         quint64 length;
         QString path;
+        QByteArray *data;
         // type if ever useful
     };
+
+    class ParameterData
+    {
+    public:
+        ParameterData();
+        ParameterData(QJsonObject json);
+
+        QString semantic;
+        int type;
+    };
+
+    class AccessorData
+    {
+    public:
+        AccessorData();
+        AccessorData(const QJsonObject& json);
+
+        QString bufferViewName;
+        QAttribute::DataType type;
+        uint dataSize;
+        int count;
+        int offset;
+        int stride;
+    };
+
+    static bool isGLTFPath(const QString &path);
+    static void renameFromJson(const QJsonObject& json, QObject * const object );
+    static QString standardUniformNamefromSemantic(const QString &semantic);
+    static QString standardAttributeNameFromSemantic(const QString &semantic);
+
+    QEntity *defaultScene();
+    QMaterial *material(const QString &id);
+    QCameraLens *camera(const QString &id) const;
+
+    void parse();
+    void cleanup();
+
+    void processJSONBuffer(const QString &id, const QJsonObject &json);
+    void processJSONBufferView(const QString &id, const QJsonObject &json);
+    void processJSONShader(const QString &id, const QJsonObject &jsonObject);
+    void processJSONProgram(const QString &id, const QJsonObject &jsonObject);
+    void processJSONTechnique(const QString &id, const QJsonObject &jsonObject);
+    void processJSONAccessor(const QString &id, const QJsonObject &json);
+    void processJSONMesh(const QString &id, const QJsonObject &json);
+    void processJSONImage(const QString &id, const QJsonObject &jsonObject);
+    void processJSONTexture(const QString &id, const QJsonObject &jsonObject);
+
+    void loadBufferData();
+    void unloadBufferData();
+
+    QFile* resolveLocalData(QString path) const;
+
+    QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
+    static QAbstractAttribute::DataType accessorTypeFromJSON(int componentType);
+    static uint accessorDataSizeFromJson(const QString &type);
+
+    static QRenderState *buildStateEnable(int state);
+    static QRenderState *buildState(const QString& functionName, const QJsonValue &value, int &type);
+
+    QJsonDocument m_json;
+    QString m_basePath;
+    bool m_parseDone;
+    QString m_defaultScene;
+
+    // multi-hash because our QMeshData corresponds to a single primitive
+    // in glTf.
+    QMultiHash<QString, QGeometryRenderer*> m_meshDict;
+
+    // GLTF assigns materials at the mesh level, but we do them as siblings,
+    // so record the association here for when we instantiate meshes
+    QMap<QGeometryRenderer*, QString> m_meshMaterialDict;
+
+    QMap<QString, AccessorData> m_accessorDict;
 
     QMap<QString, QMaterial*> m_materialCache;
 
@@ -137,25 +181,10 @@ private:
     QMap<QString, QShaderProgram*> m_programs;
 
     QMap<QString, QTechnique *> m_techniques;
-    // glTF doesn't deal in effects, but we need a trivial one to wrap
-    // up our techniques
-    QMap<QString, QEffect*> m_effectProxies;
+    QMap<QParameter*, ParameterData> m_parameterDataDict;
 
     QMap<QString, QAbstractTextureProvider*> m_textures;
-    QMap<QString, QImage> m_images;
-
-    QFile* resolveLocalData(QString path);
-
-    void processJSONShader(QString id, QJsonObject jsonObj);
-    void processJSONProgram(QString id, QJsonObject jsonObj);
-    void processJSONTechnique(QString id, QJsonObject jsonObj);
-
-    void processJSONImage(QString id, QJsonObject jsonObj);
-    void processJSONTexture(QString id, QJsonObject jsonObj);
-
-    QVariant parameterValueFromJSON(QParameter *p, QJsonValue val);
-
-    //Render::RenderState *buildState(const QByteArray& nm, QJsonValue obj);
+    QMap<QString, QString> m_imagePaths;
 };
 
 } // namespace Qt3D

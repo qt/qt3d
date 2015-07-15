@@ -1,6 +1,5 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -39,41 +38,40 @@ import Qt3D 2.0
 import Qt3D.Renderer 2.0
 
 Entity {
-    id: sceneRoot
+    id: root
 
-    Camera {
-        id: camera
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.1
-        farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 20.0, -120.0 )
-        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-    }
+    property alias x: wineTranslate.dx
+    property alias y: wineTranslate.dy
+    property alias z: wineTranslate.dz
+    property alias angleX: rotateX.angle
+    property alias angleY: rotateY.angle
+    property alias angleZ: rotateZ.angle
+    property alias scale: wineScale.scale
 
-    Configuration  {
-        controlledCamera: camera
-    }
-
-    FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
-            clearColor: "black"
+    components: [
+        Transform {
+            Rotate {
+                id: rotateX
+                axis: Qt.vector3d(1, 0, 0)
+            }
+            Rotate {
+                id: rotateY
+                axis: Qt.vector3d(0, 1, 0)
+            }
+            Rotate {
+                id: rotateZ
+                axis: Qt.vector3d(0, 0, 1)
+            }
+            Translate {
+                id: wineTranslate
+            }
+            Scale {
+                id: wineScale
+            }
+        },
+        SceneLoader
+        {
+            source: "qrc:/assets/gltf/wine/wine.gltf"
         }
-    }
-
-    components: [external_forward_renderer]
-
-    Wine {
-        id: wineRack
-        scale: 1
-        x: -60.0
-        y: -20.0
-        z: 0.0
-        angleX: 180
-    }
-
+    ]
 }
