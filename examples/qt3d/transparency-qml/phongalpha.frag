@@ -8,7 +8,7 @@ uniform FP vec3 ka;            // Ambient reflectivity
 uniform FP vec3 kd;            // Diffuse reflectivity
 uniform FP vec3 ks;            // Specular reflectivity
 uniform FP float shininess;    // Specular shininess factor
-uniform float alpha;
+uniform FP float alpha;
 
 varying FP vec3 position;
 varying FP vec3 normal;
