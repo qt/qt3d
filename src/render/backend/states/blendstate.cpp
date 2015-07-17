@@ -297,6 +297,22 @@ ClipPlane *ClipPlane::getOrCreate(int plane)
     return getOrCreateImpl(ClipPlane(plane));
 }
 
+void StencilOp::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, m_1, m_2, m_3);
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, m_4, m_5, m_6);
+}
+
+StencilOp *StencilOp::getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
+{
+    return getOrCreateImpl(StencilOp(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass));
+}
+
+StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
+    : GenericState6(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass)
+{
+}
+
 } // Render
 } // Qt3D
 

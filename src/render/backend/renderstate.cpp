@@ -60,6 +60,8 @@
 #include <Qt3DRenderer/qstenciltest.h>
 #include <Qt3DRenderer/qstenciltestseparate.h>
 #include <Qt3DRenderer/qclipplane.h>
+#include <Qt3DRenderer/qstencilop.h>
+#include <Qt3DRenderer/qstencilopseparate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -220,6 +222,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsCont
         for (GLint i = 0; i < max; ++i)
             gc->disableClipPlane(i);
     }
+
+    if (maskOfStatesToReset & StencilOpMask) {
+        funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    }
 }
 
 bool RenderStateSet::contains(RenderState *ds) const
@@ -304,6 +310,14 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
         return ClipPlane::getOrCreate(clipPlane->plane());
     }
+    case QRenderState::StencilOp: {
+        QStencilOp *stencilOp = static_cast<QStencilOp *>(renderState);
+        const QStencilOpSeparate *front = stencilOp->front();
+        const QStencilOpSeparate *back = stencilOp->back();
+        return StencilOp::getOrCreate(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),
+                                      back->stencilFail(), back->depthFail(), back->stencilDepthPass());
+    }
+
     default:
         Q_UNREACHABLE();
         qFatal("Should not happen");

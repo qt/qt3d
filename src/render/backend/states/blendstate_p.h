@@ -247,6 +247,21 @@ private:
     ClipPlane(int plane);
 };
 
+class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return StencilOpMask; }
+    static StencilOp *getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass,
+                                  GLenum bsfail, GLenum bdfail, GLenum bdspass);
+
+private:
+    StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass,
+              GLenum bsfail, GLenum bdfail, GLenum bdspass);
+};
+
 } // Render
 } // Qt3D
 
