@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,55 +34,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERSTATE_H
-#define QT3D_QRENDERSTATE_H
+#ifndef QT3D_QCLIPPLANE_H
+#define QT3D_QCLIPPLANE_H
 
-#include <Qt3DCore/QNode>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderStatePrivate;
+class QClipPlanePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
+class QT3DRENDERERSHARED_EXPORT QClipPlane : public QRenderState
 {
     Q_OBJECT
-
+    Q_PROPERTY(int plane READ plane WRITE setPlane NOTIFY planeChanged)
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendState,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        ClipPlane
-    };
-    Q_ENUM(Type)
+    explicit QClipPlane(QNode *parent = 0);
+    ~QClipPlane();
 
-    ~QRenderState();
-
-    Type type() const;
+    int plane() const;
+    void setPlane(int);
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, QNode *parent = Q_NULLPTR);
+    void copy(const QNode *ref) Q_DECL_FINAL;
+
+Q_SIGNALS:
+    void planeChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QRenderState)
+    Q_DECLARE_PRIVATE(QClipPlane)
+    QT3D_CLONEABLE(QClipPlane)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERSTATE_H
+#endif // QT3D_QCLIPPLANE_H

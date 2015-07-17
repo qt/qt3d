@@ -74,7 +74,8 @@ HEADERS += \
     $$PWD/qabstracttextureimage.h \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtextureimage.h \
-    $$PWD/qtextureproviders.h
+    $$PWD/qtextureproviders.h \
+    $$PWD/qclipplane.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -123,4 +124,5 @@ SOURCES += \
     $$PWD/qwrapmode.cpp \
     $$PWD/qabstracttextureimage.cpp \
     $$PWD/qtextureimage.cpp \
-    $$PWD/qtextureproviders.cpp
+    $$PWD/qtextureproviders.cpp \
+    $$PWD/qclipplane.cpp
