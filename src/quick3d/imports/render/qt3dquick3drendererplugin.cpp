@@ -87,6 +87,7 @@
 #include <Qt3DRenderer/qcolormask.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qnodraw.h>
+#include <Qt3DRenderer/qclipplane.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -240,6 +241,7 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
     qmlRegisterType<Qt3D::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
     qmlRegisterType<Qt3D::QColorMask>(uri, 2, 0, "ColorMask");
+    qmlRegisterType<Qt3D::QClipPlane>(uri, 2, 0, "ClipPlane");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
