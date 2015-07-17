@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,57 +34,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERSTATE_H
-#define QT3D_QRENDERSTATE_H
+#ifndef QT3D_QSTENCILMASK_H
+#define QT3D_QSTENCILMASK_H
 
-#include <Qt3DCore/QNode>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderStatePrivate;
+class QStencilMaskPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
+class QT3DRENDERERSHARED_EXPORT QStencilMask : public QRenderState
 {
     Q_OBJECT
-
+    Q_PROPERTY(uint frontMask READ frontMask WRITE setFrontMask NOTIFY frontMaskChanged)
+    Q_PROPERTY(uint backMask READ backMask WRITE setBackMask NOTIFY backMaskChanged)
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendState,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane
-    };
-    Q_ENUM(Type)
+    explicit QStencilMask(QNode *parent = 0);
+    ~QStencilMask();
 
-    ~QRenderState();
+    void setFrontMask(uint mask);
+    uint frontMask() const;
+    void setBackMask(uint mask);
+    uint backMask() const;
 
-    Type type() const;
+Q_SIGNALS:
+    void frontMaskChanged();
+    void backMaskChanged();
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, QNode *parent = Q_NULLPTR);
+    void copy(const QNode *ref) Q_DECL_FINAL;
 
 private:
-    Q_DECLARE_PRIVATE(QRenderState)
+    Q_DECLARE_PRIVATE(QStencilMask)
+    QT3D_CLONEABLE(QStencilMask)
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERSTATE_H
+#endif // QT3D_QSTENCILMASK_H

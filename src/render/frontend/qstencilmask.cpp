@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,57 +34,78 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERSTATE_H
-#define QT3D_QRENDERSTATE_H
-
-#include <Qt3DCore/QNode>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include "qstencilmask.h"
+#include <Qt3DRenderer/private/qrenderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QRenderStatePrivate;
-
-class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
+class QStencilMaskPrivate : public QRenderStatePrivate
 {
-    Q_OBJECT
-
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendState,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane
-    };
-    Q_ENUM(Type)
+    QStencilMaskPrivate()
+        : QRenderStatePrivate(QRenderState::StencilMask)
+        , m_frontMask(0)
+        , m_backMask(0)
+    {}
 
-    ~QRenderState();
-
-    Type type() const;
-
-protected:
-    QRenderState(QRenderStatePrivate &dd, QNode *parent = Q_NULLPTR);
-
-private:
-    Q_DECLARE_PRIVATE(QRenderState)
+    uint m_frontMask;
+    uint m_backMask;
 };
+
+/*!
+ * QStencilMask::QStencilMask
+ */
+
+QStencilMask::QStencilMask(QNode *parent)
+    : QRenderState(*new QStencilMaskPrivate(), parent)
+{
+}
+
+QStencilMask::~QStencilMask()
+{
+    QNode::cleanup();
+}
+
+void QStencilMask::setFrontMask(uint mask)
+{
+    Q_D(QStencilMask);
+    if (d->m_frontMask != mask) {
+        d->m_frontMask = mask;
+        Q_EMIT frontMaskChanged();
+    }
+}
+
+void QStencilMask::setBackMask(uint mask)
+{
+    Q_D(QStencilMask);
+    if (d->m_backMask != mask) {
+        d->m_backMask = mask;
+        Q_EMIT backMaskChanged();
+    }
+}
+
+uint QStencilMask::frontMask() const
+{
+    Q_D(const QStencilMask);
+    return d->m_frontMask;
+}
+
+uint QStencilMask::backMask() const
+{
+    Q_D(const QStencilMask);
+    return d->m_backMask;
+}
+
+void QStencilMask::copy(const QNode *ref)
+{
+    QRenderState::copy(ref);
+    const QStencilMask *otherRef = static_cast<const QStencilMask *>(ref);
+    d_func()->m_frontMask = otherRef->frontMask();
+    d_func()->m_backMask = otherRef->backMask();
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3D_QRENDERSTATE_H

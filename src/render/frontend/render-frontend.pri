@@ -78,7 +78,8 @@ HEADERS += \
     $$PWD/qclipplane.h \
     $$PWD/qstencilop.h \
     $$PWD/qstencilopseparate.h \
-    $$PWD/qstenciltestseparate.h
+    $$PWD/qstenciltestseparate.h \
+    $$PWD/qstencilmask.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -131,4 +132,5 @@ SOURCES += \
     $$PWD/qclipplane.cpp \
     $$PWD/qstencilop.cpp \
     $$PWD/qstencilopseparate.cpp \
-    $$PWD/qstenciltestseparate.cpp
+    $$PWD/qstenciltestseparate.cpp \
+    $$PWD/qstencilmask.cpp
