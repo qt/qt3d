@@ -58,6 +58,7 @@
 #include <Qt3DRenderer/QPolygonOffset>
 #include <Qt3DRenderer/QScissorTest>
 #include <Qt3DRenderer/QStencilTest>
+#include <Qt3DRenderer/QStencilTestSeparate>
 
 #include <Qt3DRenderer/private/blendstate_p.h>
 
@@ -164,9 +165,12 @@ private slots:
 
         QStencilTest *stencilTest = new QStencilTest;
         frontendState = stencilTest;
-        backendState = StencilTest::getOrCreate(stencilTest->mask(),
-                                                stencilTest->func(),
-                                                stencilTest->faceMode());
+        backendState = StencilTest::getOrCreate(stencilTest->front()->func(),
+                                                stencilTest->front()->ref(),
+                                                stencilTest->front()->mask(),
+                                                stencilTest->back()->func(),
+                                                stencilTest->back()->ref(),
+                                                stencilTest->back()->mask());
         QTest::newRow("stenciltest") << frontendState << backendState;
     }
 

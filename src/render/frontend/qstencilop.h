@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,67 +34,41 @@
 **
 ****************************************************************************/
 
-#include "qstenciltest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include "qstenciltestseparate.h"
+#ifndef QT3D_QSTENCILOP_H
+#define QT3D_QSTENCILOP_H
 
+#include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QStencilTestPrivate : public QRenderStatePrivate
+class QStencilOpPrivate;
+class QStencilOpSeparate;
+
+class QT3DRENDERERSHARED_EXPORT QStencilOp : public QRenderState
 {
+    Q_OBJECT
+    Q_PROPERTY(Qt3D::QStencilOpSeparate *front READ front CONSTANT)
+    Q_PROPERTY(Qt3D::QStencilOpSeparate *back READ back CONSTANT)
+
 public:
-    QStencilTestPrivate()
-        : QRenderStatePrivate(QRenderState::StencilTest)
-        , m_front(new QStencilTestSeparate(QStencilTestSeparate::Front))
-        , m_back(new QStencilTestSeparate(QStencilTestSeparate::Back))
-    {
-    }
+    explicit QStencilOp(QNode *parent = 0);
+    ~QStencilOp();
 
-    Q_DECLARE_PUBLIC(QStencilTest)
-    QStencilTestSeparate *m_front;
-    QStencilTestSeparate *m_back;
+    QStencilOpSeparate *front() const;
+    QStencilOpSeparate *back() const;
+
+protected:
+    void copy(const QNode *ref) Q_DECL_FINAL;
+
+private:
+    Q_DECLARE_PRIVATE(QStencilOp)
+    QT3D_CLONEABLE(QStencilOp)
 };
-
-QStencilTest::QStencilTest(QNode *parent)
-    : QRenderState(*new QStencilTestPrivate, parent)
-{
-}
-
-QStencilTest::~QStencilTest()
-{
-    QNode::cleanup();
-}
-
-QStencilTestSeparate *QStencilTest::front() const
-{
-    Q_D(const QStencilTest);
-    return d->m_front;
-}
-
-QStencilTestSeparate *QStencilTest::back() const
-{
-    Q_D(const QStencilTest);
-    return d->m_back;
-}
-
-void QStencilTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
-    d_func()->m_front->setMask(refState->d_func()->m_front->mask());
-    d_func()->m_front->setRef(refState->d_func()->m_front->ref());
-    d_func()->m_front->setFunc(refState->d_func()->m_front->func());
-    d_func()->m_back->setMask(refState->d_func()->m_back->mask());
-    d_func()->m_back->setRef(refState->d_func()->m_back->ref());
-    d_func()->m_back->setFunc(refState->d_func()->m_back->func());
-}
-
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSTENCILOP_H

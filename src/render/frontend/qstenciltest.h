@@ -45,52 +45,20 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QStencilTestPrivate;
+class QStencilTestSeparate;
 
 class QT3DRENDERERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(uint mask READ mask WRITE setMask NOTIFY maskChanged)
-    Q_PROPERTY(StencilFaceMode faceMode READ faceMode WRITE setFaceMode NOTIFY faceModeChanged)
-    Q_PROPERTY(StencilFunc func READ func WRITE setFunc NOTIFY funcChanged)
+    Q_PROPERTY(Qt3D::QStencilTestSeparate *front READ front CONSTANT)
+    Q_PROPERTY(Qt3D::QStencilTestSeparate *back READ back CONSTANT)
 public:
-
-    enum StencilFaceMode
-    {
-        Front = 0x0404,
-        Back = 0x0405,
-        FrontAndBack = 0x0408
-    };
-    Q_ENUM(StencilFaceMode)
-
-    enum StencilFunc
-    {
-        Never = 0x0200,
-        Always = 0x0207,
-        Less = 0x0201,
-        LessOrEqual = 0x0203,
-        Equal = 0x0202,
-        GreaterOrEqual = 0x0206,
-        Greater = 0x0204,
-        NotEqual = 0x0205
-    };
-    Q_ENUM(StencilFunc)
 
     explicit QStencilTest(QNode *parent = 0);
     ~QStencilTest();
 
-    uint mask() const;
-    void setMask(uint mask);
-
-    StencilFaceMode faceMode() const;
-    void setFaceMode(StencilFaceMode mode);
-
-    StencilFunc func() const;
-    void setFunc(StencilFunc func);
-
-Q_SIGNALS:
-    void maskChanged();
-    void faceModeChanged();
-    void funcChanged();
+    QStencilTestSeparate *front() const;
+    QStencilTestSeparate *back() const;
 
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;

@@ -67,6 +67,7 @@ public:
         PolygonOffset,
         ScissorTest,
         StencilTest,
+        StencilOp,
         ClipPlane
     };
     Q_ENUM(Type)

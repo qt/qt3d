@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,67 +34,77 @@
 **
 ****************************************************************************/
 
-#include "qstenciltest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include "qstenciltestseparate.h"
+#ifndef QT3D_QSTENCILOPSEPARATE_H
+#define QT3D_QSTENCILOPSEPARATE_H
 
+#include <QObject>
+#include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QStencilTestPrivate : public QRenderStatePrivate
+class QStencilOpPrivate;
+class QStencilOpSeparatePrivate;
+
+class QT3DRENDERERSHARED_EXPORT QStencilOpSeparate : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(StencilFaceMode faceMode READ faceMode NOTIFY faceModeChanged)
+    Q_PROPERTY(StencilOp stencilFail READ stencilFail WRITE setStencilFail NOTIFY stencilFailChanged)
+    Q_PROPERTY(StencilOp depthFail READ depthFail WRITE setDepthFail NOTIFY depthFailChanged)
+    Q_PROPERTY(StencilOp stencilDepthPass READ stencilDepthPass WRITE setStencilDepthPass NOTIFY stencilDepthPassChanged)
+
 public:
-    QStencilTestPrivate()
-        : QRenderStatePrivate(QRenderState::StencilTest)
-        , m_front(new QStencilTestSeparate(QStencilTestSeparate::Front))
-        , m_back(new QStencilTestSeparate(QStencilTestSeparate::Back))
+    enum StencilFaceMode
     {
-    }
+        Front = 0x0404,
+        Back = 0x0405,
+        FrontAndBack = 0x0408
+    };
+    Q_ENUM(StencilFaceMode)
 
-    Q_DECLARE_PUBLIC(QStencilTest)
-    QStencilTestSeparate *m_front;
-    QStencilTestSeparate *m_back;
+    enum StencilOp
+    {
+        Zero = 0,
+        Keep = 0x1E00,
+        Replace = 0x1E01,
+        Incr = 0x1E02,
+        Decr = 0x1E03,
+        IncrWrap = 0x8507,
+        DecrWrap = 0x8508,
+        Invert = 0x150A
+    };
+    Q_ENUM(StencilOp)
+
+    ~QStencilOpSeparate();
+
+    StencilFaceMode faceMode() const;
+
+    void setStencilFail(StencilOp op);
+    StencilOp stencilFail() const;
+
+    void setDepthFail(StencilOp op);
+    StencilOp depthFail() const;
+
+    void setStencilDepthPass(StencilOp op);
+    StencilOp stencilDepthPass() const;
+
+Q_SIGNALS:
+    void stencilFailChanged();
+    void depthFailChanged();
+    void stencilDepthPassChanged();
+    void faceModeChanged();
+
+private:
+    explicit QStencilOpSeparate(StencilFaceMode mode, QObject *parent = 0);
+    Q_DECLARE_PRIVATE(QStencilOpSeparate)
+
+    friend class QStencilOpPrivate;
 };
-
-QStencilTest::QStencilTest(QNode *parent)
-    : QRenderState(*new QStencilTestPrivate, parent)
-{
-}
-
-QStencilTest::~QStencilTest()
-{
-    QNode::cleanup();
-}
-
-QStencilTestSeparate *QStencilTest::front() const
-{
-    Q_D(const QStencilTest);
-    return d->m_front;
-}
-
-QStencilTestSeparate *QStencilTest::back() const
-{
-    Q_D(const QStencilTest);
-    return d->m_back;
-}
-
-void QStencilTest::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
-    d_func()->m_front->setMask(refState->d_func()->m_front->mask());
-    d_func()->m_front->setRef(refState->d_func()->m_front->ref());
-    d_func()->m_front->setFunc(refState->d_func()->m_front->func());
-    d_func()->m_back->setMask(refState->d_func()->m_back->mask());
-    d_func()->m_back->setRef(refState->d_func()->m_back->ref());
-    d_func()->m_back->setFunc(refState->d_func()->m_back->func());
-}
-
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QSTENCILOPSEPARATE_H

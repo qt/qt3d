@@ -75,7 +75,10 @@ HEADERS += \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtextureimage.h \
     $$PWD/qtextureproviders.h \
-    $$PWD/qclipplane.h
+    $$PWD/qclipplane.h \
+    $$PWD/qstencilop.h \
+    $$PWD/qstencilopseparate.h \
+    $$PWD/qstenciltestseparate.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -125,4 +128,7 @@ SOURCES += \
     $$PWD/qabstracttextureimage.cpp \
     $$PWD/qtextureimage.cpp \
     $$PWD/qtextureproviders.cpp \
-    $$PWD/qclipplane.cpp
+    $$PWD/qclipplane.cpp \
+    $$PWD/qstencilop.cpp \
+    $$PWD/qstencilopseparate.cpp \
+    $$PWD/qstenciltestseparate.cpp

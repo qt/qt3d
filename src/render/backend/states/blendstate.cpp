@@ -201,20 +201,23 @@ ScissorTest *ScissorTest::getOrCreate(int left, int bottom, int width, int heigh
     return getOrCreateImpl(ScissorTest(left, bottom, width, height));
 }
 
-StencilTest *StencilTest::getOrCreate(uint mask, GLenum func, GLenum faceMode)
+StencilTest *StencilTest::getOrCreate(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
 {
-    return getOrCreateImpl(StencilTest(mask, func, faceMode));
+    return getOrCreateImpl(StencilTest(frontFunc, frontRef, frontMask,
+                                       backFunc, backRef, backMask));
 }
 
-StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
-    : GenericState3<StencilTest, uint, GLenum, GLenum>(mask, func, faceMode)
+StencilTest::StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
+    : GenericState6<StencilTest, GLenum, int, uint, GLenum, int, uint>(frontFunc, frontRef, frontMask,
+                                                                       backFunc, backRef, backMask)
 {
 }
 
 void StencilTest::apply(QGraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
-    gc->openGLContext()->functions()->glStencilFunc(m_2, m_3, m_1);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, m_1, m_2, m_3);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, m_4, m_5, m_6);
 }
 
 AlphaCoverage::AlphaCoverage()

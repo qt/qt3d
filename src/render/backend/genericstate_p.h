@@ -122,6 +122,31 @@ protected:
     Z m_4;
 };
 
+template <typename Derived, typename T, typename S, typename U, typename V, typename W, typename Z>
+class GenericState6 : public RenderState
+{
+public:
+    bool isEqual(const Derived& i) const
+    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4) && (m_5 == i.m_5) && (m_6 == i.m_6); }
+
+protected:
+    GenericState6(T t, S s, U u, V v, W w, Z z)
+        : m_1(t)
+        , m_2(s)
+        , m_3(u)
+        , m_4(v)
+        , m_5(w)
+        , m_6(z)
+    {}
+
+    T m_1;
+    S m_2;
+    U m_3;
+    V m_4;
+    W m_5;
+    Z m_6;
+};
+
 } // Render
 } // Qt3D of namespace
 

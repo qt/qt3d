@@ -58,6 +58,7 @@
 #include <Qt3DRenderer/qpolygonoffset.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qstenciltest.h>
+#include <Qt3DRenderer/qstenciltestseparate.h>
 #include <Qt3DRenderer/qclipplane.h>
 
 QT_BEGIN_NAMESPACE
@@ -277,9 +278,12 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
     }
     case QRenderState::StencilTest: {
         QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
-        return StencilTest::getOrCreate(stencilTest->mask(),
-                                        stencilTest->func(),
-                                        stencilTest->faceMode());
+        return StencilTest::getOrCreate(stencilTest->front()->func(),
+                                        stencilTest->front()->ref(),
+                                        stencilTest->front()->mask(),
+                                        stencilTest->back()->func(),
+                                        stencilTest->back()->ref(),
+                                        stencilTest->back()->mask());
     }
     case QRenderState::AlphaCoverage: {
         return AlphaCoverage::getOrCreate();
