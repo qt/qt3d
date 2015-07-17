@@ -37,7 +37,6 @@
 #include "rendermaterial_p.h"
 #include "qgraphicscontext_p.h"
 #include "rendertechnique_p.h"
-#include "rendertextureprovider_p.h"
 #include "rendereffect_p.h"
 #include "qparameter.h"
 #include "qtechnique.h"
@@ -54,7 +53,6 @@ namespace Render {
 
 RenderMaterial::RenderMaterial()
     : QBackendNode()
-    , m_textureProvider(Q_NULLPTR)
     , m_enabled(true)
 {
 }

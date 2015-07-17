@@ -78,7 +78,6 @@ class AbstractSceneParser;
 
 namespace Render {
 
-class RenderTextureProvider;
 class RenderCameraLens;
 class QGraphicsContext;
 class FrameGraphNode;
@@ -230,7 +229,6 @@ private:
 
     QScopedPointer<QGraphicsContext> m_graphicsContext;
     QSurface *m_surface;
-    QScopedPointer<RenderTextureProvider> m_textureProvider;
     MeshDataManager *m_meshDataManager;
     MeshManager *m_meshManager;
     CameraManager *m_cameraManager;

@@ -52,6 +52,19 @@ TexImageData::TexImageData()
 {
 }
 
+TexImageData::~TexImageData()
+{
+}
+
+void TexImageData::cleanup()
+{
+    m_width = -1;
+    m_height = -1;
+    m_depth = -1;
+    m_isCompressed = false;
+    m_data.clear();
+}
+
 void TexImageData::setImage(const QImage &image)
 {
     m_width = image.width();

@@ -67,26 +67,34 @@ void LoadTextureDataJob::run()
             RenderTextureImage *texImg = m_renderer->textureImageManager()->data(texImgHandle);
             if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataFunctor().isNull()) {
                 QTextureDataFunctorPtr functor = texImg->dataFunctor();
-                TextureDataManager::Locker locker(m_renderer->textureDataManager());
-                HTextureData textureDataHandle = m_renderer->textureDataManager()->textureDataFromFunctor(functor);
-                locker.unlock();
-
+                HTextureData textureDataHandle;
                 TexImageData *data = Q_NULLPTR;
-                // Texture data handle isn't null == there's already a matching TextureData
-                if (!textureDataHandle.isNull()) {
-                    data = m_renderer->textureDataManager()->data(textureDataHandle);
-                } else {
-                    TexImageDataPtr dataPtr = functor->operator ()();
-                    if (dataPtr.isNull()) {
-                        qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
-                    } else {
-                        // Save the TexImageDataPtr with it's functor as a key
-                        textureDataHandle = m_renderer->textureDataManager()->acquire();
+
+                // scoped for locker
+                {
+                    QMutexLocker locker(m_renderer->textureDataManager()->mutex());
+                    // We don't want to take the chance of having two jobs uploading the same functor
+                    // because of sync issues
+                    textureDataHandle = m_renderer->textureDataManager()->textureDataFromFunctor(functor);
+
+                    // Texture data handle isn't null == there's already a matching TextureData
+                    if (!textureDataHandle.isNull()) {
                         data = m_renderer->textureDataManager()->data(textureDataHandle);
-                        locker.relock();
-                        *data = *(dataPtr.data());
-                        m_renderer->textureDataManager()->addTextureDataForFunctor(textureDataHandle, functor);
+                    } else {
+                        TexImageDataPtr dataPtr = functor->operator ()();
+                        if (dataPtr.isNull()) {
+                            qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
+                        } else {
+                            // Save the TexImageDataPtr with it's functor as a key
+                            textureDataHandle = m_renderer->textureDataManager()->acquire();
+                            data = m_renderer->textureDataManager()->data(textureDataHandle);
+                            *data = *(dataPtr.data());
+                            m_renderer->textureDataManager()->addTextureDataForFunctor(textureDataHandle, functor);
+                        }
                     }
+
+                    // Update HTextureImage Functor to release TextureData when needed
+                    m_renderer->textureDataManager()->assignFunctorToTextureImage(functor, texImgHandle);
                 }
 
                 // Set texture size of texture if the first layer / level / face has a valid size

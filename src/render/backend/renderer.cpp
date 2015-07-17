@@ -66,7 +66,6 @@
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
-#include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
@@ -132,7 +131,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_textureProvider(new RenderTextureProvider)
     , m_meshDataManager(new MeshDataManager())
     , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())

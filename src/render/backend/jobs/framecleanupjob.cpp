@@ -39,6 +39,7 @@
 #include <private/renderentity_p.h>
 #include <private/rendershaderdata_p.h>
 #include <private/managers_p.h>
+#include <private/texturedatamanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +65,10 @@ void FrameCleanupJob::run()
             shaderData->clearUpdate();
     }
     RenderShaderData::clearShaderDataList();
-    // TO DO: Add anything that should be clean after all RenderViewJobs have been executed
+
+    // Cleanup texture handles
+    TextureDataManager *textureDataManager = m_renderer->textureDataManager();
+    textureDataManager->cleanup();
 }
 
 } // Render

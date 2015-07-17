@@ -17,7 +17,6 @@ HEADERS += \
     $$PWD/rendercameralens_p.h \
     $$PWD/quniformvalue_p.h \
     $$PWD/rendertexture_p.h \
-    $$PWD/rendertextureprovider_p.h \
     $$PWD/meshdatamanager_p.h \
     $$PWD/states/blendstate_p.h \
     $$PWD/genericstate_p.h \
@@ -67,7 +66,6 @@ SOURCES += \
     $$PWD/rendercameralens.cpp \
     $$PWD/quniformvalue.cpp \
     $$PWD/rendertexture.cpp \
-    $$PWD/rendertextureprovider.cpp \
     $$PWD/meshdatamanager.cpp \
     $$PWD/states/blendstate.cpp \
     $$PWD/qgraphicshelpergl3.cpp \

@@ -44,8 +44,6 @@
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
-// for RenderTexturePtr
-#include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
