@@ -58,6 +58,7 @@
 #include <Qt3DRenderer/qpolygonoffset.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qstenciltest.h>
+#include <Qt3DRenderer/qclipplane.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -212,6 +213,12 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsCont
     if (maskOfStatesToReset & ColorStateMask) {
         funcs->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
+
+    if (maskOfStatesToReset & ClipPlaneMask) {
+        GLint max = gc->maxClipPlaneCount();
+        for (GLint i = 0; i < max; ++i)
+            gc->disableClipPlane(i);
+    }
 }
 
 bool RenderStateSet::contains(RenderState *ds) const
@@ -289,7 +296,12 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
                                       colorMask->isBlue(),
                                       colorMask->isAlpha());
     }
+    case QRenderState::ClipPlane: {
+        QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
+        return ClipPlane::getOrCreate(clipPlane->plane());
+    }
     default:
+        Q_UNREACHABLE();
         qFatal("Should not happen");
         return Q_NULLPTR;
     }

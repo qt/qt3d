@@ -279,6 +279,21 @@ BlendStateSeparate::BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcA
 {
 }
 
+void ClipPlane::apply(QGraphicsContext *gc) const
+{
+    gc->enableClipPlane(m_1);
+}
+
+ClipPlane::ClipPlane(int plane)
+    : GenericState1<ClipPlane, int>(plane)
+{
+}
+
+ClipPlane *ClipPlane::getOrCreate(int plane)
+{
+    return getOrCreateImpl(ClipPlane(plane));
+}
+
 } // Render
 } // Qt3D
 

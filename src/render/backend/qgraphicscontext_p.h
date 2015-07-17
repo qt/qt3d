@@ -177,6 +177,9 @@ public:
     void    disableAlphaCoverage();
     GLuint  boundFrameBufferObject();
     void    clearColor(const QColor &color);
+    void    enableClipPlane(int clipPlane);
+    void    disableClipPlane(int clipPlane);
+    GLint   maxClipPlaneCount();
 
     // Helper methods
     static GLint elementType(GLint type);

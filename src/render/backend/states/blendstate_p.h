@@ -234,6 +234,19 @@ private:
     ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
 };
 
+class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, int>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return ClipPlaneMask; }
+    static ClipPlane *getOrCreate(int plane);
+
+private:
+    ClipPlane(int plane);
+};
+
 } // Render
 } // Qt3D
 

@@ -93,6 +93,9 @@ public:
     virtual void    bindBufferBase(GLenum target, GLuint index, GLuint buffer) = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual uint    uniformByteSize(const ShaderUniform &description) = 0;
+    virtual void    enableClipPlane(int clipPlane) = 0;
+    virtual void    disableClipPlane(int clipPlane) = 0;
+    virtual GLint   maxClipPlaneCount() = 0;
 };
 
 

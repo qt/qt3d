@@ -504,6 +504,19 @@ uint QGraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
+void QGraphicsHelperES2::enableClipPlane(int)
+{
+}
+
+void QGraphicsHelperES2::disableClipPlane(int)
+{
+}
+
+GLint QGraphicsHelperES2::maxClipPlaneCount()
+{
+    return 0;
+}
+
 } // Render
 } //Qt3D
 

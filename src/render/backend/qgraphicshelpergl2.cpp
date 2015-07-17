@@ -507,6 +507,23 @@ uint QGraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
+void QGraphicsHelperGL2::enableClipPlane(int clipPlane)
+{
+    m_funcs->glEnable(GL_CLIP_DISTANCE0 + clipPlane);
+}
+
+void QGraphicsHelperGL2::disableClipPlane(int clipPlane)
+{
+    m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
+}
+
+GLint QGraphicsHelperGL2::maxClipPlaneCount()
+{
+    GLint max = 0;
+    m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
+    return max;
+}
+
 } // Render
 } // Qt3D
 

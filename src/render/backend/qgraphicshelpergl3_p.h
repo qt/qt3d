@@ -89,6 +89,9 @@ public:
     void bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
+    void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    GLint maxClipPlaneCount() Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;

@@ -684,6 +684,21 @@ void QGraphicsContext::clearColor(const QColor &color)
     m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
+void QGraphicsContext::enableClipPlane(int clipPlane)
+{
+    m_glHelper->enableClipPlane(clipPlane);
+}
+
+void QGraphicsContext::disableClipPlane(int clipPlane)
+{
+    m_glHelper->disableClipPlane(clipPlane);
+}
+
+GLint QGraphicsContext::maxClipPlaneCount()
+{
+    return m_glHelper->maxClipPlaneCount();
+}
+
 /*!
     \internal
     Returns a texture unit for a texture, -1 if all texture units are assigned.
