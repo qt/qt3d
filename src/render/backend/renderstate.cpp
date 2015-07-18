@@ -62,6 +62,7 @@
 #include <Qt3DRenderer/qclipplane.h>
 #include <Qt3DRenderer/qstencilop.h>
 #include <Qt3DRenderer/qstencilopseparate.h>
+#include <Qt3DRenderer/qstencilmask.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -316,6 +317,10 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
         const QStencilOpSeparate *back = stencilOp->back();
         return StencilOp::getOrCreate(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),
                                       back->stencilFail(), back->depthFail(), back->stencilDepthPass());
+    }
+    case QRenderState::StencilMask: {
+        QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);
+        return StencilMask::getOrCreate(stencilMask->frontMask(), stencilMask->backMask());
     }
 
     default:

@@ -262,6 +262,19 @@ private:
               GLenum bsfail, GLenum bdfail, GLenum bdspass);
 };
 
+class Q_AUTOTEST_EXPORT StencilMask : public GenericState2<StencilMask, uint, uint>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return StencilWriteStateMask; }
+    static StencilMask *getOrCreate(uint frontMask, uint backMask);
+
+private:
+    StencilMask(uint frontMask, uint backMask);
+};
+
 } // Render
 } // Qt3D
 

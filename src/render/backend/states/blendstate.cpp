@@ -313,6 +313,22 @@ StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail
 {
 }
 
+void StencilMask::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, m_1);
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, m_2);
+}
+
+StencilMask *StencilMask::getOrCreate(uint frontMask, uint backMask)
+{
+    return getOrCreateImpl(StencilMask(frontMask, backMask));
+}
+
+StencilMask::StencilMask(uint frontMask, uint backMask)
+    : GenericState2<StencilMask, uint, uint>(frontMask, backMask)
+{
+}
+
 } // Render
 } // Qt3D
 
