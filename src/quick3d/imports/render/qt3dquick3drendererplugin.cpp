@@ -88,6 +88,8 @@
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qnodraw.h>
 #include <Qt3DRenderer/qclipplane.h>
+#include <Qt3DRenderer/qstencilop.h>
+#include <Qt3DRenderer/qstencilopseparate.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -242,6 +244,8 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
     qmlRegisterType<Qt3D::QColorMask>(uri, 2, 0, "ColorMask");
     qmlRegisterType<Qt3D::QClipPlane>(uri, 2, 0, "ClipPlane");
+    qmlRegisterUncreatableType<Qt3D::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
+    qmlRegisterType<Qt3D::QStencilOp>(uri, 2, 0, "StencilOp");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
