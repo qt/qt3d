@@ -122,6 +122,7 @@ static const struct {
 } qmldir [] = {
     // Materials
     { "PhongMaterial", 2, 0 },
+    { "PhongAlphaMaterial", 2, 0 },
     { "DiffuseMapMaterial", 2, 0 },
     { "DiffuseSpecularMapMaterial", 2, 0 },
     { "NormalDiffuseMapAlphaMaterial", 2, 0 },

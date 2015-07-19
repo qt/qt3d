@@ -53,5 +53,9 @@
         <file>shaders/gl3/gooch.frag</file>
         <file>shaders/es2/gooch.frag</file>
         <file>shaders/es2/gooch.vert</file>
+        <file>shaders/gl3/phongalpha.frag</file>
+        <file>shaders/gl3/phongalpha.vert</file>
+        <file>shaders/es2/phongalpha.frag</file>
+        <file>shaders/es2/phongalpha.vert</file>
     </qresource>
 </RCC>
