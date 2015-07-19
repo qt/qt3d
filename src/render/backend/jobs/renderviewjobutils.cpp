@@ -174,8 +174,18 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::StateSet: {
                 const Render::StateSetNode *rStateSet = static_cast<const Render::StateSetNode *>(node);
-                // Create global RenderStateSet for renderView
-                rv->setStateSet(buildRenderStateSet(rStateSet->renderStates(), rv->allocator()));
+                // Create global RenderStateSet for renderView if no stateSet was set before
+                RenderStateSet *stateSet = rv->stateSet();
+                if (stateSet == Q_NULLPTR) {
+                    stateSet = rv->allocator()->allocate<RenderStateSet>();
+                    rv->setStateSet(stateSet);
+                }
+
+                // Add renderstates to stateset
+                const QList<RenderState *> &states = rStateSet->renderStates();
+                Q_FOREACH (RenderState *renderState, states)
+                    stateSet->addState(renderState);
+
                 break;
             }
 
