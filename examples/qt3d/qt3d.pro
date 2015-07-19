@@ -35,7 +35,8 @@ SUBDIRS += \
     gooch-qml \
     transparency-qml \
     transparency-qml-scene3d \
-    scene3d-loader
+    scene3d-loader \
+    clip-planes-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
