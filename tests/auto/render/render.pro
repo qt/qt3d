@@ -12,5 +12,6 @@ contains(QT_CONFIG, private_tests) {
         rendermaterial \
         rendermesh \
         vsyncframeadvanceservice \
-        meshfunctors
+        meshfunctors \
+        qmaterial
 }
