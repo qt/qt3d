@@ -39,7 +39,8 @@ HEADERS += \
     $$PWD/qbackendnodefactory.h \
     $$PWD/qray3d.h \
     $$PWD/qt3dcore_global_p.h \
-    $$PWD/qscene_p.h
+    $$PWD/qscene_p.h \
+    $$PWD/qabstractfunctor.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -56,4 +57,5 @@ SOURCES += \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
     $$PWD/qbackendnodefactory.cpp \
-    $$PWD/qray3d.cpp
+    $$PWD/qray3d.cpp \
+    $$PWD/qabstractfunctor.cpp

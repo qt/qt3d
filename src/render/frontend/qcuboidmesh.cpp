@@ -220,7 +220,7 @@ public:
 
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE
     {
-        const CuboidMeshFunctor *otherFunctor = dynamic_cast<const CuboidMeshFunctor *>(&other);
+        const CuboidMeshFunctor *otherFunctor = functor_cast<CuboidMeshFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
             return (otherFunctor->m_xExtent == m_xExtent &&
                     otherFunctor->m_yExtent == m_yExtent &&
@@ -230,6 +230,8 @@ public:
                     otherFunctor->m_xyFaceResolution == m_xyFaceResolution);
         return false;
     }
+
+    QT3D_FUNCTOR(CuboidMeshFunctor)
 
 private:
     // Dimensions

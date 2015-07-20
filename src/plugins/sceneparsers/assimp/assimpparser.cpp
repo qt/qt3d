@@ -267,15 +267,18 @@ private:
     QMeshDataPtr m_meshData;
     QT3D_CLONEABLE(AssimpMesh)
 
-    class AssimpMeshFunctor : public QAbstractMeshFunctor
-    {
-    public:
-        explicit AssimpMeshFunctor(QMeshDataPtr meshData);
-        QMeshDataPtr operator()() Q_DECL_OVERRIDE;
-        bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-    private:
-        QMeshDataPtr m_meshData;
-    };
+};
+
+class AssimpMeshFunctor : public QAbstractMeshFunctor
+{
+public:
+    explicit AssimpMeshFunctor(QMeshDataPtr meshData = QMeshDataPtr());
+    QMeshDataPtr operator()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
+    QT3D_FUNCTOR(AssimpMeshFunctor)
+
+private:
+    QMeshDataPtr m_meshData;
 };
 
 class AssimpRawTextureImage : public QAbstractTextureImage
@@ -300,6 +303,7 @@ private:
         TexImageDataPtr operator()() Q_DECL_FINAL;
         bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL;
 
+        QT3D_FUNCTOR(AssimpRawTextureImageFunctor)
     private:
         QByteArray m_data;
     };
@@ -917,18 +921,18 @@ QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new AssimpMeshFunctor(m_meshData));
 }
 
-AssimpMesh::AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
+AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {
 }
 
-QMeshDataPtr AssimpMesh::AssimpMeshFunctor::operator()()
+QMeshDataPtr AssimpMeshFunctor::operator()()
 {
     return m_meshData;
 }
 
-bool AssimpMesh::AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
+bool AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
 {
     return false;
 }
@@ -966,7 +970,7 @@ TexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()(
 
 bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTextureDataFunctor &other) const
 {
-    const AssimpRawTextureImageFunctor *otherFunctor = dynamic_cast<const AssimpRawTextureImageFunctor *>(&other);
+    const AssimpRawTextureImageFunctor *otherFunctor = functor_cast<AssimpRawTextureImageFunctor>(&other);
     return (otherFunctor != Q_NULLPTR && otherFunctor->m_data == m_data);
 }
 
@@ -985,5 +989,7 @@ AssimpParser::SceneImporter::~SceneImporter()
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::AssimpMeshFunctor)
 
 #include "assimpparser.moc"

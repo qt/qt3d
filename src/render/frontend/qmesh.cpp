@@ -55,6 +55,7 @@ public :
     MeshFunctor(const QUrl &sourcePath);
     QMeshDataPtr operator()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
+    QT3D_FUNCTOR(MeshFunctor)
 
 private:
     QUrl m_sourcePath;
@@ -147,7 +148,7 @@ QMeshDataPtr MeshFunctor::operator()()
 
 bool MeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
 {
-    const MeshFunctor *otherFunctor = dynamic_cast<const MeshFunctor *>(&other);
+    const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
     if (otherFunctor != Q_NULLPTR)
         return (otherFunctor->m_sourcePath == m_sourcePath);
     return false;

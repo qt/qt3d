@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,57 +34,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTMESH_H
-#define QT3D_QABSTRACTMESH_H
-
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qabstractfunctor.h>
-#include <QSharedPointer>
+#include "qabstractfunctor.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractMeshPrivate;
-class QMeshData;
-
-typedef QSharedPointer<QMeshData> QMeshDataPtr;
-
-class QT3DRENDERERSHARED_EXPORT QAbstractMeshFunctor : public QAbstractFunctor
+QAbstractFunctor::~QAbstractFunctor()
 {
-public:
-    virtual QMeshDataPtr operator()() = 0;
-    virtual bool operator ==(const QAbstractMeshFunctor &other) const = 0;
-    virtual ~QAbstractMeshFunctor() {}
-};
-
-typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
-
-class QT3DRENDERERSHARED_EXPORT QAbstractMesh : public QComponent
-{
-    Q_OBJECT
-
-public:
-    explicit QAbstractMesh(QNode *parent = 0);
-    ~QAbstractMesh();
-
-    void update();
-
-    virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
-
-protected:
-    QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractMesh)
-};
+}
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QAbstractMeshFunctorPtr)
-
-#endif // QABSTRACTMESH_H

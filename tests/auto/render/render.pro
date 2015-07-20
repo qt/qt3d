@@ -11,5 +11,6 @@ contains(QT_CONFIG, private_tests) {
         renderviews \
         rendermaterial \
         rendermesh \
-        vsyncframeadvanceservice
+        vsyncframeadvanceservice \
+        meshfunctors
 }

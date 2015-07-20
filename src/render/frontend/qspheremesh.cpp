@@ -58,6 +58,7 @@ public:
     SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents);
     QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
+    QT3D_FUNCTOR(SphereMeshFunctor)
 
 private:
     int m_rings;
@@ -322,7 +323,7 @@ QMeshDataPtr SphereMeshFunctor::operator ()()
 
 bool SphereMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
 {
-    const SphereMeshFunctor *otherFunctor = dynamic_cast<const SphereMeshFunctor *>(&other);
+    const SphereMeshFunctor *otherFunctor = functor_cast<SphereMeshFunctor>(&other);
     if (otherFunctor != Q_NULLPTR)
         return (otherFunctor->m_rings == m_rings &&
                 otherFunctor->m_slices == m_slices &&

@@ -155,7 +155,7 @@ public:
 
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE
     {
-        const PlaneMeshFunctor *otherFunctor = dynamic_cast<const PlaneMeshFunctor *>(&other);
+        const PlaneMeshFunctor *otherFunctor = functor_cast<PlaneMeshFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
             return (otherFunctor->m_width == m_width &&
                     otherFunctor->m_height == m_height &&
@@ -163,6 +163,7 @@ public:
         return false;
     }
 
+    QT3D_FUNCTOR(PlaneMeshFunctor)
 private:
     float m_width;
     float m_height;

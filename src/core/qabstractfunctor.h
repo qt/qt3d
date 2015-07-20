@@ -34,57 +34,59 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTMESH_H
-#define QT3D_QABSTRACTMESH_H
+#ifndef QT3D_QABSTRACTFUNCTOR_H
+#define QT3D_QABSTRACTFUNCTOR_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qabstractfunctor.h>
-#include <QSharedPointer>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QAbstractMeshPrivate;
-class QMeshData;
-
-typedef QSharedPointer<QMeshData> QMeshDataPtr;
-
-class QT3DRENDERERSHARED_EXPORT QAbstractMeshFunctor : public QAbstractFunctor
+// This will generate a unique id() function per type
+// <=> 1 unique function address per type
+template<class T>
+struct FunctorType
 {
-public:
-    virtual QMeshDataPtr operator()() = 0;
-    virtual bool operator ==(const QAbstractMeshFunctor &other) const = 0;
-    virtual ~QAbstractMeshFunctor() {}
+    static qintptr id()
+    {
+        // The MSVC linker can under some cases optimize all the template
+        // functions into a single function. The code below is there to ensure
+        // that the linker won't collapse all these distincts functions into one
+        static T *t = 0;
+        return reinterpret_cast<qintptr>(t);
+    }
 };
 
-typedef QSharedPointer<QAbstractMeshFunctor> QAbstractMeshFunctorPtr;
-
-class QT3DRENDERERSHARED_EXPORT QAbstractMesh : public QComponent
+template<class T>
+qintptr functorTypeId()
 {
-    Q_OBJECT
+    return reinterpret_cast<qintptr>(&FunctorType<T>::id);
+}
 
+#define QT3D_FUNCTOR(Class)                     \
+   qintptr id() const Q_DECL_OVERRIDE {         \
+        return Qt3D::functorTypeId<Class>();    \
+   }
+
+
+class QT3DCORESHARED_EXPORT QAbstractFunctor
+{
 public:
-    explicit QAbstractMesh(QNode *parent = 0);
-    ~QAbstractMesh();
+    virtual ~QAbstractFunctor();
+    virtual qintptr id() const = 0;
 
-    void update();
-
-    virtual QAbstractMeshFunctorPtr meshFunctor() const = 0;
-
-protected:
-    QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractMesh)
+    template<class T>
+    const T *functor_cast(const QAbstractFunctor *other) const
+    {
+        if (other->id() == functorTypeId<T>())
+            return static_cast<const T *>(other);
+        return Q_NULLPTR;
+    }
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QAbstractMeshFunctorPtr)
-
-#endif // QABSTRACTMESH_H
+#endif // QT3D_QABSTRACTFUNCTOR_H

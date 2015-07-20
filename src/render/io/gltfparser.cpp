@@ -41,7 +41,7 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
 #include <Qt3DCore/qentity.h>
-#include <qmesh.h>
+#include <qabstractmesh.h>
 #include <qmaterial.h>
 #include <qtechnique.h>
 #include <qshaderprogram.h>
@@ -203,29 +203,28 @@ const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 
 class GLTFParserMeshPrivate;
 
+class GLTFParserMeshFunctor : public QAbstractMeshFunctor
+{
+public:
+    explicit GLTFParserMeshFunctor(QMeshDataPtr meshData = QMeshDataPtr());
+    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
+    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
+    QT3D_FUNCTOR(GLTFParserMeshFunctor)
+private:
+    QMeshDataPtr m_meshData;
+};
+
 class GLTFParserMesh : public QAbstractMesh
 {
     Q_OBJECT
-private:
-    class GLTFParserMeshFunctor : public QAbstractMeshFunctor
-    {
-    public:
-        explicit GLTFParserMeshFunctor(QMeshDataPtr meshData);
-        QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
-        bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-
-    private:
-        QMeshDataPtr m_meshData;
-    };
-
 public:
     explicit GLTFParserMesh(QNode *parent = 0);
 
     void setData(QMeshDataPtr data);
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
+    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_FINAL;
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const QNode *ref) Q_DECL_FINAL;
 
 private:
     QT3D_CLONEABLE(GLTFParserMesh)
@@ -1030,18 +1029,18 @@ QAbstractMeshFunctorPtr GLTFParserMesh::meshFunctor() const
     return QAbstractMeshFunctorPtr(new GLTFParserMeshFunctor(d->m_meshData));
 }
 
-GLTFParserMesh::GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshData)
+GLTFParserMeshFunctor::GLTFParserMeshFunctor(QMeshDataPtr meshData)
     : QAbstractMeshFunctor()
     , m_meshData(meshData)
 {
 }
 
-QMeshDataPtr GLTFParserMesh::GLTFParserMeshFunctor::operator ()()
+QMeshDataPtr GLTFParserMeshFunctor::operator ()()
 {
     return m_meshData;
 }
 
-bool GLTFParserMesh::GLTFParserMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
+bool GLTFParserMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
 {
     return false;
 }
@@ -1049,5 +1048,7 @@ bool GLTFParserMesh::GLTFParserMeshFunctor::operator ==(const QAbstractMeshFunct
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::GLTFParserMeshFunctor)
 
 #include "gltfparser.moc"

@@ -83,11 +83,13 @@ public:
 
     bool operator ==(const Qt3D::QAbstractMeshFunctor &other) const
     {
-        const TessellatedQuadMeshFunctor *otherFunctor = dynamic_cast<const TessellatedQuadMeshFunctor *>(&other);
+        const TessellatedQuadMeshFunctor *otherFunctor = functor_cast<TessellatedQuadMeshFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
             return true;
         return false;
     }
+
+    QT3D_FUNCTOR(TessellatedQuadMeshFunctor)
 };
 
 Qt3D::QAbstractMeshFunctorPtr TessellatedQuadMesh::meshFunctor() const

@@ -39,13 +39,36 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
+  \class Qt3D::QAbstractMeshFunctor
+
+  \brief Encapsulates all the required data to build a mesh at any given time.
+
+  Each Qt3D::QAbstractMesh implementation needs to provide a Qt3D::QAbstractMeshFunctor.
+  The functor allows the creation of meshes at runtime by the renderer.
+
+  At runtime, mesh functors are compared so that several optimizations can take
+  place. When implementing the comparison operator you should use
+  Qt3D::QAbstractFunctor::functor_cast to check that other
+  Qt3D::QAbstractFunctor instances are of the same type as an alternative
+  to dynamic_cast.
+
+  \note Be sure to add the QT3D_FUNCTOR macro in the public declarations
+  of your Qt3D::QAbstractMeshFunctor subclass so that
+  Qt3D::QAbstractMeshFunctor::isType can function properly.
+
+  \sa Qt3D::QAbstractMesh
+
+  */
+
+/*!
  * \class Qt3D::QAbstractMesh
  *
  * \brief Provides an abstract class that should be the base of all Mesh
  * primitives in a scene
  *
- * QAbstractMesh subclasses should encapsulate vertices needed to render a Mesh.
- * These should match and be packed according to what the aspect they live in expects.
+ * QAbstractMesh subclasses should encapsulate vertices needed to render a
+ * Mesh. These should match and be packed according to what the aspect they
+ * live in expects.
  *
  * \sa QAbstractTechnique, Component
  */
@@ -90,15 +113,15 @@ QAbstractMesh::QAbstractMesh(QAbstractMeshPrivate &dd, QNode *parent)
 void QAbstractMesh::update()
 {
     Q_D(QAbstractMesh);
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-            change->setPropertyName("meshFunctor");
-            change->setValue(QVariant::fromValue(meshFunctor()));
-            d->notifyObservers(change);
-            // TO DO see if we can clear the d->m_dirty on request.
-            // This would allow to send a single notification for classes that have several property changes occur
-            // over a single given frame or maybe that's the job of the QChangeArbiter
-        }
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        change->setPropertyName("meshFunctor");
+        change->setValue(QVariant::fromValue(meshFunctor()));
+        d->notifyObservers(change);
+        // TO DO see if we can clear the d->m_dirty on request.
+        // This would allow to send a single notification for classes that have several property changes occur
+        // over a single given frame or maybe that's the job of the QChangeArbiter
+    }
 }
 
 } // Qt3D

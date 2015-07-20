@@ -57,7 +57,7 @@ public:
     TorusMeshFunctor(int rings, int slices, float radius, float minorRadius);
     QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
     bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-
+    QT3D_FUNCTOR(TorusMeshFunctor)
 private:
     int m_rings;
     int m_slices;
@@ -282,7 +282,7 @@ QMeshDataPtr TorusMeshFunctor::operator ()()
 
 bool TorusMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
 {
-    const TorusMeshFunctor *otherFunctor = dynamic_cast<const TorusMeshFunctor *>(&other);
+    const TorusMeshFunctor *otherFunctor = functor_cast<TorusMeshFunctor>(&other);
     if (otherFunctor != Q_NULLPTR)
         return (otherFunctor->m_radius == m_radius &&
                 otherFunctor->m_slices == m_slices &&
