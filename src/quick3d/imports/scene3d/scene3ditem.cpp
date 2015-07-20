@@ -245,7 +245,7 @@ protected:
                "varying highp vec2 qt_TexCoord;                         \n"
                "void main() {                                           \n"
                "   highp vec4 p = texture2D(source, qt_TexCoord);       \n"
-               "   gl_FragColor = vec4(p.rgb * p.a, qt_Opacity);  \n"
+               "   gl_FragColor = vec4(p.rgb * p.a, qt_Opacity * p.a);  \n"
                "}";
     }
 
