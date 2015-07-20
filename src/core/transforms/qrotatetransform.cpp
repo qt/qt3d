@@ -42,7 +42,7 @@
 #include "qrotatetransform.h"
 #include "qrotatetransform_p.h"
 
-#include <cmath>
+#include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +88,7 @@ float QRotateTransform::angleDeg() const
 float Qt3D::QRotateTransform::angleRad() const
 {
     Q_D(const QRotateTransform);
-    return (d->m_angleDeg / 180.0) * M_PI;
+    return qDegreesToRadians(d->m_angleDeg);
 }
 
 QVector3D QRotateTransform::axis() const
@@ -116,8 +116,7 @@ void QRotateTransform::setAngleDeg(float arg)
 
 void QRotateTransform::setAngleRad(float arg)
 {
-    float angleDeg = (arg * M_PI) / 180.0f;
-    setAngleDeg(angleDeg);
+    setAngleDeg(qRadiansToDegrees(arg));
 }
 
 void QRotateTransform::setAxis(const QVector3D& arg)
