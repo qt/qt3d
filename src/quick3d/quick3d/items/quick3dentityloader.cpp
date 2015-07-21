@@ -59,16 +59,30 @@ public:
     }
 
 protected:
-    void setInitialState(QObject *object) Q_DECL_OVERRIDE
+    void statusChanged(Status status) Q_DECL_FINAL
     {
         Quick3DEntityLoaderPrivate *priv = Quick3DEntityLoaderPrivate::get(m_loader);
 
-        Q_ASSERT(priv->m_entity == Q_NULLPTR);
-        priv->m_entity = qobject_cast<QEntity *>(object);
-        Q_ASSERT(priv->m_entity != Q_NULLPTR);
-        priv->m_entity->setParent(m_loader);
+        switch (status) {
+        case Status::Ready: {
+            Q_ASSERT(priv->m_entity == Q_NULLPTR);
+            priv->m_entity = qobject_cast<QEntity *>(object());
+            Q_ASSERT(priv->m_entity != Q_NULLPTR);
+            priv->m_entity->setParent(m_loader);
+            emit m_loader->entityChanged();
+            break;
+        }
 
-        emit m_loader->entityChanged();
+        case Status::Error: {
+            QQmlEnginePrivate::warning(qmlEngine(m_loader), errors());
+            priv->clear();
+            emit m_loader->entityChanged();
+            break;
+        }
+
+        default:
+            break;
+        }
     }
 
 private:
