@@ -36,12 +36,43 @@
 
 import Qt3D 2.0
 import Qt3D.Renderer 2.0
+import QtQuick 2.4 as QQ2
 
 Entity {
-    components: [ mesh, material ]
+    components: [ mesh, material, transform ]
 
     SphereMesh {
         id: mesh
         radius: 3
+    }
+
+    Transform {
+        id: transform
+
+        Scale {
+            id: _scale
+            scale: 3
+        }
+    }
+
+    QQ2.ColorAnimation {
+        target: material
+        property: "diffuse"
+        from: "yellow"
+        to: "orange"
+        duration: 1500
+        loops: QQ2.Animation.Infinite
+        running: true
+    }
+
+    QQ2.NumberAnimation {
+        target: _scale
+        property: "scale"
+        duration: 1500
+        loops: QQ2.Animation.Infinite
+        running: true
+        easing.type: QQ2.Easing.InOutQuad
+        from: 1
+        to: 1.5
     }
 }

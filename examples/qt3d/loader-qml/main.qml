@@ -66,9 +66,9 @@ Entity {
     ]
 
 
-    Material {
+    PhongMaterial {
         id: material
-        effect : Effect { }
+        diffuse: "yellow"
     }
 
     TorusMesh {
@@ -97,16 +97,17 @@ Entity {
         interval: 1000
         running: true
         repeat: true
+        property bool hasSphere: true
 
-        onTriggered: loader.hasSphere = !loader.hasSphere
+        onTriggered: {
+            loader.source = hasSphere ? "qrc:/SphereEntity.qml" : "qrc:/CuboidEntity.qml"
+            hasSphere = !hasSphere
+        }
     }
 
     EntityLoader {
         id: loader
-        property bool hasSphere: true
-
         components: [ revolutionTransform ]
-        source: hasSphere ? "qrc:/SphereEntity.qml" : "qrc:/CuboidEntity.qml"
     }
 
     Transform {
