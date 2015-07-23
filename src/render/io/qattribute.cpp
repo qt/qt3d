@@ -168,35 +168,39 @@ QVector<QVector2D> Attribute::asVector2D() const
 void Attribute::dump(int count)
 {
     Q_D(const Attribute);
-    char* rawBuffer = d->m_buffer->data().data();
+    const char* rawBuffer = d->m_buffer->data().constData();
     rawBuffer += d->m_offset;
 
-    float* fptr;
-    quint16* usptr;
+    const float* fptr;
+    const quint16* usptr;
 
     int stride = d->m_stride;
 
     for (int c=0; c<count; ++c) {
         switch (type()) {
         case GL_UNSIGNED_SHORT:
-            if (!stride) stride = sizeof(quint16);
-            usptr = reinterpret_cast<quint16*>(rawBuffer);
+            if (stride == 0)
+                stride = sizeof(quint16);
+            usptr = reinterpret_cast<const quint16*>(rawBuffer + stride * c);
             qCDebug(Render::Io) << c << ":u16:" << usptr[0];
             break;
         case GL_UNSIGNED_INT:
-            if (!stride) stride = sizeof(quint32);
-            qCDebug(Render::Io) << c << ":u32:" << reinterpret_cast<quint32*>(rawBuffer)[0];
+            if (stride == 0)
+                stride = sizeof(quint32);
+            qCDebug(Render::Io) << c << ":u32:" << reinterpret_cast<const quint32*>(rawBuffer + stride * c)[0];
             break;
         case GL_FLOAT_VEC2:
-            if (!stride) stride = sizeof(float) * 2;
-            fptr = reinterpret_cast<float*>(rawBuffer);
-            qCDebug(Render::Io) << c << ":vec2:"<< fptr[0] << fptr[0];
+            if (stride == 0)
+                stride = sizeof(float) * 2;
+            fptr = reinterpret_cast<const float*>(rawBuffer + stride * c);
+            qCDebug(Render::Io) << c << ":vec2:"<< fptr[0] << fptr[1];
             break;
 
         case GL_FLOAT_VEC3:
-            if (!stride) stride = sizeof(float) * 3;
-            fptr = reinterpret_cast<float*>(rawBuffer);
-            qCDebug(Render::Io) << c << ":vec3:" << fptr[0] << fptr[0] << fptr[2];
+            if (stride == 0)
+                stride = sizeof(float) * 3;
+            fptr = reinterpret_cast<const float*>(rawBuffer + stride * c);
+            qCDebug(Render::Io) << c << ":vec3:" << fptr[0] << fptr[1] << fptr[2];
             break;
 
         default: qCDebug(Render::Io) << Q_FUNC_INFO << "unspported type:" << QString::number(type(), 16);
