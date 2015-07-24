@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,56 +37,37 @@
 import Qt3D 2.0
 import Qt3D.Renderer 2.0
 import Qt3D.Input 2.0
+import QtQuick 2.3 as QQ2
 
 Entity {
     id: root
 
-    Camera {
-        id: camera
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.1
-        farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, 12.0 )
-        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-    }
+    property alias x: translate.dx
+    property alias y: translate.dy
+    property alias z: translate.dz
+    property alias color: material.diffuse
+    property alias input: input
 
-    Configuration  { controlledCamera: camera }
+    PhongMaterial { id: material }
 
-    components: FrameGraph {
-        activeFrameGraph: ForwardRenderer {
-            camera: camera
+    SphereMesh { id: sphereMesh }
+
+    Transform {
+        id: transform
+
+        Scale {
+            scale: root.input.focus ? 2 : 1
+
+            QQ2.Behavior on scale {
+                QQ2.NumberAnimation {
+                    duration: 250
+                }
+            }
         }
+        Translate { id: translate }
     }
 
-    KeyboardController {
-        id: keyboardController
-    }
+    KeyboardInput { id: input }
 
-    SphereEntity {
-        id: sphere1
-        x: -5
-        color: "red"
-        input.onTabPressed: sphere2.input.focus = true
-        input.focus: true
-        input.controller: keyboardController
-    }
-
-    SphereEntity {
-        id: sphere2
-        x: 0
-        color: "green"
-        input.onTabPressed: sphere3.input.focus = true
-        input.controller: keyboardController
-    }
-
-    SphereEntity {
-        id: sphere3
-        x: 5
-        color: "blue"
-        input.onTabPressed: sphere1.input.focus = true
-        input.controller: keyboardController
-    }
+    components: [material, sphereMesh, transform, input]
 }

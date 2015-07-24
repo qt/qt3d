@@ -11,4 +11,5 @@ RESOURCES += \
     keyboardinput-qml.qrc
 
 OTHER_FILES += \
-    main.qml
+    main.qml \
+    SphereEntity.qml
