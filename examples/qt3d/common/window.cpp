@@ -55,6 +55,7 @@ Window::Window(QScreen *screen)
     }
     format.setDepthBufferSize( 24 );
     format.setSamples( 4 );
+    format.setStencilBufferSize(8);
     setFormat(format);
     create();
 }
