@@ -687,8 +687,10 @@ void Renderer::submitRenderViews()
         // If the RenderView has a RenderStateSet defined
         const RenderView *renderView = renderViews.at(i);
 
-        if (renderView->stateSet())
-            m_graphicsContext->setCurrentStateSet(renderView->stateSet());
+        // Set RenderView render state
+        RenderStateSet *renderViewStateSet = renderView->stateSet();
+        if (renderViewStateSet)
+            m_graphicsContext->setCurrentStateSet(renderViewStateSet);
 
         // Set RenderTarget ...
         // Activate RenderTarget
@@ -709,10 +711,19 @@ void Renderer::submitRenderViews()
         // Execute the render commands
         executeCommands(renderView->commands());
 
+        // executeCommands takes care of restoring the stateset to the value
+        // of gc->currentContext() at the moment it was called (either
+        // renderViewStateSet or m_defaultRenderStateSet)
+
         frameElapsed = timer.elapsed() - frameElapsed;
         qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
         frameElapsed = timer.elapsed();
     }
+
+    // Reset state to the default state if the last stateset is not the
+    // defaultRenderStateSet
+    if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
+        m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
     m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
@@ -766,6 +777,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
+
+    // Save the RenderView base stateset
+    RenderStateSet *globalState = m_graphicsContext->currentStateSet();
 
     Q_FOREACH (RenderCommand *command, commands) {
 
@@ -838,10 +852,16 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         //// Draw Calls
         // Set state
-        RenderStateSet *globalState = m_graphicsContext->currentStateSet();
-        if (command->m_stateSet != Q_NULLPTR)
-            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+        RenderStateSet *localState = command->m_stateSet;
 
+        // Merge the RenderCommand state with the globalState of the RenderView
+        // Or restore the globalState if no stateSet for the RenderCommand
+        if (localState != Q_NULLPTR) {
+            command->m_stateSet->merge(globalState);
+            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+        } else {
+            m_graphicsContext->setCurrentStateSet(globalState);
+        }
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
@@ -865,10 +885,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 m_graphicsContext->drawArrays(primType, 0, primCount);
             }
 
-            // Reset state if overridden by pass state
-            if (command->m_stateSet != Q_NULLPTR)
-                m_graphicsContext->setCurrentStateSet(globalState);
-
             int err = m_graphicsContext->openGLContext()->functions()->glGetError();
             if (err)
                 qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
@@ -877,6 +893,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 vao->release();
         }
     }
+
+    // Reset to the state we were in before executing the render commands
+    m_graphicsContext->setCurrentStateSet(globalState);
 }
 
 void Renderer::addAllocator(QFrameAllocator *allocator)
