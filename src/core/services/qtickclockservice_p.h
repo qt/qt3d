@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTICKCLOCKSERVICE_H
-#define QT3D_QTICKCLOCKSERVICE_H
+#ifndef QT3D_QTICKCLOCKSERVICE_P_H
+#define QT3D_QTICKCLOCKSERVICE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include "qabstractframeadvanceservice.h"
 
@@ -62,4 +73,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTICKCLOCKSERVICE_H
+#endif // QT3D_QTICKCLOCKSERVICE_P_H

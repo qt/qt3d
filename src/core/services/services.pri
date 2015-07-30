@@ -14,7 +14,7 @@ HEADERS += \
     $$PWD/qabstractserviceprovider_p.h \
     $$PWD/qsysteminformationservice_p.h \
     $$PWD/qopenglinformationservice_p.h \
-    $$PWD/qtickclockservice.h \
+    $$PWD/qtickclockservice_p.h \
     $$PWD/qabstractframeadvanceservice.h \
     $$PWD/qabstractframeadvanceservice_p.h
 

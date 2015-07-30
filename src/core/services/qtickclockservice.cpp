@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qtickclockservice.h"
+#include "qtickclockservice_p.h"
 #include "qtickclock_p.h"
 #include "qabstractframeadvanceservice_p.h"
 

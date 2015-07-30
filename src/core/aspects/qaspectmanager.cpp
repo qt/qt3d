@@ -44,8 +44,8 @@
 #include "qentity.h"
 
 #include <Qt3DCore/qservicelocator.h>
-#include <Qt3DCore/qtickclockservice.h>
 
+#include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>

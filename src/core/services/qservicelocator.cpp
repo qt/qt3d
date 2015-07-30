@@ -37,7 +37,7 @@
 #include "qservicelocator.h"
 #include "qabstractserviceprovider_p.h"
 #include "nullservices_p.h"
-#include "qtickclockservice.h"
+#include "qtickclockservice_p.h"
 #include <QHash>
 
 QT_BEGIN_NAMESPACE
