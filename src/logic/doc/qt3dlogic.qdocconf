@@ -1,0 +1,62 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = Qt3DLogic
+description             = Qt3D Logic Reference Documentation
+version                 = $QT_VERSION
+
+examplesinstallpath     = qt3d
+
+qhp.projects            = Qt3DLogic
+
+qhp.Qt3DLogic.file                = qt3dlogic.qhp
+qhp.Qt3DLogic.namespace           = org.qt-project.qt3dlogic.$QT_VERSION_TAG
+qhp.Qt3DLogic.virtualFolder       = qt3dlogic
+qhp.Qt3DLogic.indexTitle          = Qt3D Module
+qhp.Qt3DLogic.indexRoot           =
+
+qhp.Qt3DLogic.filterAttributes                   = qt3dlogic $QT_VERSION qtrefdoc
+qhp.Qt3DLogic.customFilters.Qt.name              = Qt3DLogic $QT_VERSION
+qhp.Qt3DLogic.customFilters.Qt.filterAttributes  = qt3dlogic $QT_VERSION
+
+qhp.Qt3DLogic.subprojects                    = classes qmltypes
+
+qhp.Qt3DLogic.subprojects.classes.title      = C++ Classes
+qhp.Qt3DLogic.subprojects.classes.indexTitle = Qt3D Logic C++ Classes
+qhp.Qt3DLogic.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3DLogic.subprojects.classes.sortPages  = true
+
+qhp.Qt3DLogic.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DLogic.subprojects.qmltypes.indexTitle = Qt3D Logic QML Types
+qhp.Qt3DLogic.subprojects.qmltypes.selectors  = qmlclass
+qhp.Qt3DLogic.subprojects.qmltypes.sortPages  = true
+
+tagfile                 = ../../../doc/qt3dlogic/qt3dlogic.tags
+
+depends                 += qtcore qtqml qtquick qtdoc qt3drenderer
+
+headerdirs += .. \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input
+
+sourcedirs += .. \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input
+
+exampledirs += src/snippets
+
+#excludedirs +=
+
+imagedirs   += images \
+               ../../../examples/qt3d/shadow-map-qml/doc/images
+
+Cpp.ignoretokens     += QT3DLOGIC_PRIVATE_EXPORT \
+                        QT3DINPUTSHARED_EXPORT \
+                        QT3DLOGICSHARED_EXPORT
+
+Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
+
+navigation.landingpage = "Qt3D Module"
+navigation.cppclassespage = "Qt3D Logic C++ Classes"
+navigation.qmltypespage = "Qt3D Logic QML Types"

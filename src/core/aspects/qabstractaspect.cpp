@@ -100,7 +100,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-                functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
