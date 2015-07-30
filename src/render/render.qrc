@@ -57,5 +57,9 @@
         <file>shaders/gl3/phongalpha.vert</file>
         <file>shaders/es2/phongalpha.frag</file>
         <file>shaders/es2/phongalpha.vert</file>
+        <file>shaders/gl3/unlittexture.vert</file>
+        <file>shaders/gl3/unlittexture.frag</file>
+        <file>shaders/es2/unlittexture.frag</file>
+        <file>shaders/es2/unlittexture.vert</file>
     </qresource>
 </RCC>

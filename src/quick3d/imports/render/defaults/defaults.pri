@@ -15,4 +15,5 @@ QML_FILES = \
     $$PWD/qml/PerVertexColorMaterial.qml \
     $$PWD/qml/SkyboxEntity.qml \
     $$PWD/qml/GoochMaterial.qml \
-    $$PWD/qml/PhongAlphaMaterial.qml
+    $$PWD/qml/PhongAlphaMaterial.qml \
+    $$PWD/qml/TextureMaterial.qml
