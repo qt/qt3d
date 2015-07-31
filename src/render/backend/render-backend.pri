@@ -52,7 +52,8 @@ HEADERS += \
     $$PWD/renderparametermapping_p.h \
     $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
-    $$PWD/renderbuffer_p.h
+    $$PWD/renderbuffer_p.h \
+    $$PWD/renderattribute_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -95,4 +96,5 @@ SOURCES += \
     $$PWD/renderparametermapping.cpp \
     $$PWD/rendertextureimage.cpp \
     $$PWD/vsyncframeadvanceservice.cpp \
-    $$PWD/renderbuffer.cpp
+    $$PWD/renderbuffer.cpp \
+    $$PWD/renderattribute.cpp
