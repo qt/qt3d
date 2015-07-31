@@ -61,6 +61,7 @@
 #include <Qt3DRenderer/private/renderbuffer_p.h>
 #include <Qt3DRenderer/private/renderattribute_p.h>
 #include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -323,6 +324,15 @@ class GeometryManager : public QResourceManager<
 {
 };
 
+class GeometryRendererManager : public QResourceManager<
+        RenderGeometryRenderer,
+        QNodeId,
+        16,
+        Qt3D::ArrayAllocatingPolicy,
+        Qt3D::ObjectLevelLockingPolicy>
+{
+};
+
 } // Render
 
 Q_DECLARE_RESOURCE_INFO(Render::RenderAnnotation, Q_REQUIRES_CLEANUP);
@@ -341,6 +351,7 @@ Q_DECLARE_RESOURCE_INFO(Render::RenderTextureImage, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderBuffer, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderAttribute, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderGeometry, Q_REQUIRES_CLEANUP);
+Q_DECLARE_RESOURCE_INFO(Render::RenderGeometryRenderer, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
