@@ -14,5 +14,6 @@ contains(QT_CONFIG, private_tests) {
         vsyncframeadvanceservice \
         meshfunctors \
         qmaterial \
-        qattribute
+        qattribute \
+        qbuffer
 }
