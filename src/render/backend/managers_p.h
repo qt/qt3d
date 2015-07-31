@@ -58,6 +58,7 @@
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
+#include <Qt3DRenderer/private/renderbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -293,6 +294,15 @@ class TextureImageManager : public QResourceManager<
 {
 };
 
+class BufferManager : public QResourceManager<
+        RenderBuffer,
+        QNodeId,
+        16,
+        Qt3D::ArrayAllocatingPolicy,
+        Qt3D::ObjectLevelLockingPolicy>
+{
+};
+
 } // Render
 
 Q_DECLARE_RESOURCE_INFO(Render::RenderAnnotation, Q_REQUIRES_CLEANUP);
@@ -308,6 +318,7 @@ Q_DECLARE_RESOURCE_INFO(Render::RenderTechnique, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderTexture, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderTextureImage, Q_REQUIRES_CLEANUP);
+Q_DECLARE_RESOURCE_INFO(Render::RenderBuffer, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
