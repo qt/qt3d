@@ -15,5 +15,6 @@ contains(QT_CONFIG, private_tests) {
         meshfunctors \
         qmaterial \
         qattribute \
-        qbuffer
+        qbuffer \
+        qgeometry
 }
