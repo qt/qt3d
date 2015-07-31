@@ -54,7 +54,8 @@ HEADERS += \
     $$PWD/vsyncframeadvanceservice_p.h \
     $$PWD/renderbuffer_p.h \
     $$PWD/renderattribute_p.h \
-    $$PWD/rendergeometry_p.h
+    $$PWD/rendergeometry_p.h \
+    $$PWD/rendergeometryrenderer_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -99,4 +100,5 @@ SOURCES += \
     $$PWD/vsyncframeadvanceservice.cpp \
     $$PWD/renderbuffer.cpp \
     $$PWD/renderattribute.cpp \
-    $$PWD/rendergeometry.cpp
+    $$PWD/rendergeometry.cpp \
+    $$PWD/rendergeometryrenderer.cpp
