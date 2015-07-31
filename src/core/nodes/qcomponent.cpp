@@ -60,7 +60,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
 {
     m_entities.append(entity);
 
-    if (m_scene != Q_NULLPTR) {
+    if (m_scene != Q_NULLPTR && !m_scene->hasEntityForComponent(m_id, entity->id())) {
         if (!m_shareable && !m_scene->entitiesForComponent(m_id).isEmpty())
             qWarning() << "Trying to assign a non shareable component to more than one Entity";
         m_scene->addEntityForComponent(m_id, entity->id());

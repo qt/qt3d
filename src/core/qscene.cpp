@@ -188,6 +188,13 @@ void QScene::removeEntityForComponent(const QNodeId &componentUuid, const QNodeI
     d->m_componentToEntities.remove(componentUuid, entityUuid);
 }
 
+bool QScene::hasEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid)
+{
+    Q_D(QScene);
+    QReadLocker lock(&d->m_lock);
+    return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -59,6 +59,7 @@ private slots:
     void removeChildNode();
     void addEntityForComponent();
     void removeEntityForComponent();
+    void hasEntityForComponent();
 };
 
 class tst_LockableObserver : public Qt3D::QLockableObserverInterface
@@ -401,6 +402,37 @@ void tst_QScene::removeEntityForComponent()
             QCOMPARE(scene->entitiesForComponent(components.at(j)->id()).count(), 10 - (i + 1));
         }
     }
+}
+
+void tst_QScene::hasEntityForComponent()
+{
+    // GIVEN
+    Qt3D::QScene *scene = new Qt3D::QScene;
+
+    QList<Qt3D::QEntity *> entities;
+    QList<Qt3D::QComponent *> components;
+
+    for (int i = 0; i < 10; i++) {
+        Qt3D::QEntity *entity = new Qt3D::QEntity();
+        Qt3D::QComponent *comp = new tst_Component();
+
+        Qt3D::QNodePrivate::get(entity)->setScene(scene);
+        Qt3D::QNodePrivate::get(comp)->setScene(scene);
+        entities << entity;
+        components << comp;
+    }
+
+    // WHEN
+    for (int i = 0; i < 10; i++) {
+        Qt3D::QEntity *e = entities.at(i);
+        for (int j = 0; j < 10; j++) {
+            e->addComponent(components.at(j));
+        }
+    }
+
+    // THEN
+    for (int i = 0; i < 10; i++)
+        QVERIFY(scene->hasEntityForComponent(components.at(i)->id(), entities.at(i)->id()));
 }
 
 QTEST_MAIN(tst_QScene)

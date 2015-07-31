@@ -75,6 +75,7 @@ public:
     QList<QNodeId> entitiesForComponent(const QNodeId &id) const;
     void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
     void removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
+    bool hasEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
 
 private:
     Q_DECLARE_PRIVATE(QScene)

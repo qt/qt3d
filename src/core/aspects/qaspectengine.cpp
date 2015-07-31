@@ -87,9 +87,11 @@ void QAspectEnginePrivate::initNode(QNode *node)
 void QAspectEnginePrivate::initEntity(QEntity *entity)
 {
     Q_FOREACH (QComponent *comp, entity->components()) {
-        if (!comp->shareable() && !m_scene->entitiesForComponent(comp->id()).isEmpty())
-            qWarning() << "Trying to assign a non shareable component to more than one Entity";
-        m_scene->addEntityForComponent(comp->id(), entity->id());
+        if (!m_scene->hasEntityForComponent(comp->id(), entity->id())) {
+            if (!comp->shareable() && !m_scene->entitiesForComponent(comp->id()).isEmpty())
+                qWarning() << "Trying to assign a non shareable component to more than one Entity";
+            m_scene->addEntityForComponent(comp->id(), entity->id());
+        }
     }
 }
 
