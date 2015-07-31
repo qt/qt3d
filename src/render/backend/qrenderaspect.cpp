@@ -64,6 +64,10 @@
 #include <Qt3DRenderer/qstateset.h>
 #include <Qt3DRenderer/qnodraw.h>
 #include <Qt3DCore/qcameralens.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
@@ -94,6 +98,10 @@
 #include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DRenderer/private/nodraw_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
+#include <Qt3DRenderer/private/renderattribute_p.h>
+#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -225,6 +233,10 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderBuffer, Render::BufferManager>(d->m_renderer->bufferManager())));
+    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
+    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
+    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometryRenderer, Render::GeometryRendererManager>(d->m_renderer->geometryRendererManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
