@@ -37,7 +37,8 @@ SUBDIRS += \
     transparency-qml-scene3d \
     scene3d-loader \
     clip-planes-qml \
-    mouseinput-qml
+    mouseinput-qml \
+    custom-mesh-cpp
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
