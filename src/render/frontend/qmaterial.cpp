@@ -118,8 +118,9 @@ void QMaterial::setEffect(QEffect *effect)
         }
 
         d->m_effect = effect;
+        const bool blocked = blockNotifications(true);
         emit effectChanged();
-
+        blockNotifications(blocked);
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
