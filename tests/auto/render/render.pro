@@ -18,5 +18,6 @@ contains(QT_CONFIG, private_tests) {
         qbuffer \
         qgeometry \
         qgeometryrenderer \
-        renderbuffer
+        renderbuffer \
+        renderattribute
 }
