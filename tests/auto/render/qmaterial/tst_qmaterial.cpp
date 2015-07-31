@@ -327,6 +327,47 @@ private Q_SLOTS:
         compareEffects(material->effect(), clone->effect());
     }
 
+    void checkEffectUpdate()
+    {
+        // GIVEN
+        QScopedPointer<Qt3D::QMaterial> material(new Qt3D::QMaterial());
+        TestArbiter arbiter(material.data());
+
+        // WHEN
+        Qt3D::QEffect effect;
+        material->setEffect(&effect);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "effect");
+        QCOMPARE(change->value().value<Qt3D::QNodeId>(), effect.id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
+
+        arbiter.events.clear();
+
+        // GIVEN
+        QScopedPointer<TestMaterial> material2(new TestMaterial());
+        TestArbiter arbiter2(material2.data());
+
+        // WHEN
+        Qt3D::QEffect *oldEffect = material2->effect();
+        material2->setEffect(&effect);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter2.events.size(), 2);
+        change = arbiter2.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "effect");
+        QCOMPARE(change->value().value<Qt3D::QNodeId>(), oldEffect->id());
+        QCOMPARE(change->type(), Qt3D::NodeRemoved);
+
+        change = arbiter2.events.last().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "effect");
+        QCOMPARE(change->value().value<Qt3D::QNodeId>(), effect.id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
+    }
 
     void checkDynamicParametersAddedUpdates()
     {
@@ -344,6 +385,7 @@ private Q_SLOTS:
         Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
         QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
 
         arbiter.events.clear();
 
@@ -357,6 +399,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
         QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
 
         arbiter.events.clear();
 
@@ -370,6 +413,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
         QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
 
         arbiter.events.clear();
 
@@ -383,6 +427,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
         QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3D::NodeAdded);
 
         arbiter.events.clear();
     }
@@ -403,6 +448,7 @@ private Q_SLOTS:
         Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "vertexShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), vertexCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -416,6 +462,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "fragmentShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), fragmentCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -429,6 +476,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "geometryShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), geometryCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -442,6 +490,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "computeShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), computeCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -455,6 +504,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationControlShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselControlCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -468,6 +518,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationEvaluationShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselEvalCode);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
     }
