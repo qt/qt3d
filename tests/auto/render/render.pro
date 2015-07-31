@@ -16,5 +16,6 @@ contains(QT_CONFIG, private_tests) {
         qmaterial \
         qattribute \
         qbuffer \
-        qgeometry
+        qgeometry \
+        qgeometryrenderer
 }
