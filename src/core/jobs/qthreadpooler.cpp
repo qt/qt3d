@@ -164,6 +164,11 @@ int QThreadPooler::currentCount()
     return m_taskCount.load();
 }
 
+int QThreadPooler::maxThreadCount() const
+{
+    return QThreadPool::globalInstance()->maxThreadCount();
+}
+
 } // namespace Qt3D
 
 QT_END_NAMESPACE
