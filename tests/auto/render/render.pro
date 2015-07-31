@@ -20,5 +20,6 @@ contains(QT_CONFIG, private_tests) {
         qgeometryrenderer \
         renderbuffer \
         renderattribute \
-        rendergeometry
+        rendergeometry \
+        rendergeometryrenderer
 }
