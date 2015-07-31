@@ -73,6 +73,7 @@ class RenderShaderData;
 class RenderTextureImage;
 class RenderBuffer;
 class RenderAttribute;
+class RenderGeometry;
 
 typedef QHandle<RenderAttachment, 16> HAttachment;
 typedef QHandle<RenderCameraLens, 8> HCamera;
@@ -100,6 +101,7 @@ typedef QHandle<RenderShaderData, 16> HShaderData;
 typedef QHandle<RenderTextureImage, 16> HTextureImage;
 typedef QHandle<RenderBuffer, 16> HBuffer;
 typedef QHandle<RenderAttribute, 16> HAttribute;
+typedef QHandle<RenderGeometry, 16> HGeometry;
 
 } // Render
 
