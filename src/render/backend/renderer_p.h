@@ -119,6 +119,10 @@ class ShaderDataManager;
 class UBOManager;
 class TextureImageManager;
 class VSyncFrameAdvanceService;
+class BufferManager;
+class AttributeManager;
+class GeometryManager;
+class GeometryRendererManager;
 
 class Renderer
 {
@@ -175,6 +179,10 @@ public:
     inline ShaderDataManager *shaderDataManager() const { return m_shaderDataManager; }
     inline UBOManager *uboManager() const { return m_uboManager; }
     inline TextureImageManager *textureImageManager() const { return m_textureImageManager; }
+    inline BufferManager *bufferManager() const { return m_bufferManager; }
+    inline AttributeManager *attributeManager() const { return m_attributeManager; }
+    inline GeometryManager *geometryManager() const { return m_geometryManager; }
+    inline GeometryRendererManager *geometryRendererManager() const { return m_geometryRendererManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -254,6 +262,10 @@ private:
     ShaderDataManager *m_shaderDataManager;
     UBOManager *m_uboManager;
     TextureImageManager *m_textureImageManager;
+    BufferManager *m_bufferManager;
+    AttributeManager *m_attributeManager;
+    GeometryManager *m_geometryManager;
+    GeometryRendererManager *m_geometryRendererManager;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
