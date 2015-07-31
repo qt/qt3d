@@ -188,6 +188,12 @@ template<>
 RenderTransform *RenderEntity::renderComponent<RenderTransform>() const;
 
 template<>
+HGeometryRenderer RenderEntity::componentHandle<RenderGeometryRenderer>() const;
+
+template<>
+RenderGeometryRenderer *RenderEntity::renderComponent<RenderGeometryRenderer>() const;
+
+template<>
 Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderTransform>() const;
 
 template<>
@@ -216,6 +222,9 @@ QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() con
 
 template<>
 Q_AUTOTEST_EXPORT QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
+
+template<>
+QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const;
 
 class RenderEntityFunctor : public QBackendNodeFunctor
 {
