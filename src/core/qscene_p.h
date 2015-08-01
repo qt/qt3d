@@ -66,6 +66,7 @@ public:
     QObservableList lookupObservables(const QNodeId &id) const;
 
     QNode *lookupNode(const QNodeId &id) const;
+    QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
     void setArbiter(Qt3D::QLockableObserverInterface *arbiter);

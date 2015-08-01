@@ -148,6 +148,17 @@ QNode *QScene::lookupNode(const QNodeId &id) const
     return d->m_nodeLookupTable.value(id);
 }
 
+QVector<QNode *> QScene::lookupNodes(const QVector<QNodeId> &ids) const
+{
+    Q_D(const QScene);
+    QReadLocker lock(&d->m_lock);
+    QVector<QNode *> nodes(ids.size());
+    int index = 0;
+    Q_FOREACH (const QNodeId &id, ids)
+        nodes[index++] = d->m_nodeLookupTable.value(id);
+    return nodes;
+}
+
 QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
 {
     Q_D(const QScene);
