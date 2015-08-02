@@ -36,6 +36,7 @@
 
 #include "rendergeometryrenderer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ RenderGeometryRenderer::RenderGeometryRenderer()
     , m_primitiveRestart(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
+    , m_manager(Q_NULLPTR)
 {
 }
 
@@ -74,6 +76,11 @@ void RenderGeometryRenderer::cleanup()
     m_functor.reset();
 }
 
+void RenderGeometryRenderer::setManager(GeometryRendererManager *manager)
+{
+    m_manager = manager;
+}
+
 void RenderGeometryRenderer::updateFromPeer(QNode *peer)
 {
     QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
@@ -89,6 +96,7 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
             m_geometryId = geometryRenderer->geometry()->id();
         m_functor = geometryRenderer->geometryFunctor();
         m_dirty = true;
+        // Add to dirty list in the manager
     }
 }
 
@@ -148,11 +156,37 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
     default:
         break;
     }
+
+    // Add to dirty list in manager
 }
 
 void RenderGeometryRenderer::unsetDirty()
 {
     m_dirty = false;
+}
+
+RenderGeometryRendererFunctor::RenderGeometryRendererFunctor(GeometryRendererManager *manager)
+    : m_manager(manager)
+{
+}
+
+QBackendNode *RenderGeometryRendererFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+{
+    RenderGeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
+    geometryRenderer->setFactory(factory);
+    geometryRenderer->setManager(m_manager);
+    geometryRenderer->setPeer(frontend);
+    return geometryRenderer;
+}
+
+QBackendNode *RenderGeometryRendererFunctor::get(const QNodeId &id) const
+{
+    return m_manager->lookupResource(id);
+}
+
+void RenderGeometryRendererFunctor::destroy(const QNodeId &id) const
+{
+    return m_manager->releaseResource(id);
 }
 
 } // Render

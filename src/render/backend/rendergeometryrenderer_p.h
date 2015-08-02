@@ -47,6 +47,8 @@ namespace Qt3D {
 
 namespace Render {
 
+class GeometryRendererManager;
+
 class Q_AUTOTEST_EXPORT RenderGeometryRenderer : public QBackendNode
 {
 public:
@@ -54,6 +56,7 @@ public:
     ~RenderGeometryRenderer();
 
     void cleanup();
+    void setManager(GeometryRendererManager *manager);
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -80,6 +83,18 @@ private:
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
     QGeometryFunctorPtr m_functor;
+    GeometryRendererManager *m_manager;
+};
+
+class RenderGeometryRendererFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderGeometryRendererFunctor(GeometryRendererManager *manager);
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+private:
+    GeometryRendererManager *m_manager;
 };
 
 } // Render
