@@ -46,6 +46,7 @@
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
