@@ -42,6 +42,7 @@
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qcameraselector.h>

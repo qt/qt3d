@@ -56,7 +56,8 @@ HEADERS += \
     $$PWD/renderattribute_p.h \
     $$PWD/rendergeometry_p.h \
     $$PWD/rendergeometryrenderer_p.h \
-    $$PWD/buffermanager_p.h
+    $$PWD/buffermanager_p.h \
+    $$PWD/geometryrenderermanager_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -103,4 +104,5 @@ SOURCES += \
     $$PWD/renderattribute.cpp \
     $$PWD/rendergeometry.cpp \
     $$PWD/rendergeometryrenderer.cpp \
-    $$PWD/buffermanager.cpp
+    $$PWD/buffermanager.cpp \
+    $$PWD/geometryrenderermanager.cpp

@@ -76,6 +76,7 @@
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRenderer/private/buffermanager_p.h>
 #include <Qt3DRenderer/private/loadbufferjob_p.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
