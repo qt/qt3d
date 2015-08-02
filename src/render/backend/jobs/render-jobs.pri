@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/loadscenejob_p.h \
     $$PWD/framecleanupjob_p.h \
     $$PWD/framepreparationjob_p.h \
-    $$PWD/loadtexturedatajob_p.h
+    $$PWD/loadtexturedatajob_p.h \
+    $$PWD/loadbufferjob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -20,4 +21,5 @@ SOURCES += \
     $$PWD/loadscenejob.cpp \
     $$PWD/framecleanupjob.cpp \
     $$PWD/framepreparationjob.cpp \
-    $$PWD/loadtexturedatajob.cpp
+    $$PWD/loadtexturedatajob.cpp \
+    $$PWD/loadbufferjob.cpp
