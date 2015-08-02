@@ -93,6 +93,8 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
             m_geometryId = geometryRenderer->geometry()->id();
         m_dirty = true;
         // Add to dirty list in the manager
+        if (m_manager != Q_NULLPTR)
+            m_manager->addDirtyGeometryRenderer(peerUuid());
     }
 }
 
@@ -147,6 +149,8 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
     }
 
     // Add to dirty list in manager
+    if (m_dirty && m_manager != Q_NULLPTR)
+        m_manager->addDirtyGeometryRenderer(peerUuid());
 }
 
 void RenderGeometryRenderer::unsetDirty()

@@ -51,6 +51,19 @@ GeometryRendererManager::~GeometryRendererManager()
 {
 }
 
+void GeometryRendererManager::addDirtyGeometryRenderer(const QNodeId &geometryRendererId)
+{
+    if (!m_geometryRendererDirty.contains(geometryRendererId))
+        m_geometryRendererDirty.push_back(geometryRendererId);
+}
+
+QVector<QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
+{
+    QVector<QNodeId> vector(m_geometryRendererDirty);
+    m_geometryRendererDirty.clear();
+    return vector;
+}
+
 } // Render
 
 } // Qt3D
