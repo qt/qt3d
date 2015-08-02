@@ -284,6 +284,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(loadMeshJob);
         }
 
+
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
             Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
@@ -298,6 +299,9 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             job->setRenderer(d->m_renderer);
             jobs.append(job);
         }
+
+        const QVector<QAspectJobPtr> bufferJobs = d->m_renderer->createRenderBufferJobs();
+        jobs.append(bufferJobs);
 
         // Create jobs to update transforms and bounding volumes
         // We can only update bounding volumes once all world transforms are known

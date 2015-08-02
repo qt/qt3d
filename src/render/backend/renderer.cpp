@@ -75,6 +75,7 @@
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRenderer/private/loadbufferjob_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -762,6 +763,38 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
         m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
     }
     return renderBinJobs;
+}
+
+// Returns a vector of jobs to be performed for dirty buffers
+// 1 dirty buffer == 1 job, all job can be performed in parallel
+QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
+{
+    const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
+    QVector<QAspectJobPtr> dirtyBuffersJobs;
+    QVector<HBuffer> dirtyBuffers;
+    Q_FOREACH (const QNodeId &geomRendererId, dirtyGeometryRenderers) {
+        // Find the geometry, and find all unique dirty buffers for the attributes;
+        Render::RenderGeometryRenderer *geometryRenderer = m_geometryRendererManager->lookupResource(geomRendererId);
+        Q_ASSERT(geometryRenderer);
+        Render::RenderGeometry *geometry = m_geometryManager->lookupResource(geometryRenderer->geometryId());
+        if (geometry != Q_NULLPTR) {
+            Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
+                Render::RenderAttribute *attribute = m_attributeManager->lookupResource(attributeId);
+                if (attribute != Q_NULLPTR) {
+                    HBuffer bufferHandle = m_bufferManager->lookupHandle(attribute->bufferId());
+                    RenderBuffer *buffer = m_bufferManager->data(bufferHandle);
+                    if (buffer != Q_NULLPTR && !dirtyBuffers.contains(bufferHandle)) {
+                        // Create new buffer job
+                        LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
+                        job->setRenderer(this);
+                        dirtyBuffersJobs.push_back(job);
+                        dirtyBuffers.push_back(bufferHandle);
+                    }
+                }
+            }
+        }
+    }
+    return dirtyBuffersJobs;
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread

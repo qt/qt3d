@@ -150,6 +150,7 @@ public:
     void doRender();
 
     QVector<QAspectJobPtr> createRenderBinJobs();
+    QVector<QAspectJobPtr> createRenderBufferJobs();
     QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
     void addAllocator(QFrameAllocator *allocator);
