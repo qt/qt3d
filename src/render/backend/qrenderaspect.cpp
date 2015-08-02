@@ -236,7 +236,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderBuffer, Render::BufferManager>(d->m_renderer->bufferManager())));
     registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
     registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
-    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometryRenderer, Render::GeometryRendererManager>(d->m_renderer->geometryRendererManager())));
+    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderGeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
