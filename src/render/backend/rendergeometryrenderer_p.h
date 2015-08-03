@@ -61,6 +61,7 @@ public:
 
     inline QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }
+    inline int primitiveCount() const { return m_primitiveCount; }
     inline int baseVertex() const { return m_baseVertex; }
     inline int baseInstance() const { return m_baseInstance; }
     inline int restartIndex() const { return m_restartIndex; }
@@ -72,6 +73,7 @@ public:
 private:
     QNodeId m_geometryId;
     int m_instanceCount;
+    int m_primitiveCount;
     int m_baseVertex;
     int m_baseInstance;
     int m_restartIndex;

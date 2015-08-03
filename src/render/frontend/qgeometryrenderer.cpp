@@ -47,6 +47,7 @@ namespace Qt3D {
 QGeometryRendererPrivate::QGeometryRendererPrivate()
     : QComponentPrivate()
     , m_instanceCount(1)
+    , m_primitiveCount(0)
     , m_baseVertex(0)
     , m_baseInstance(0)
     , m_restartIndex(-1)
@@ -75,6 +76,12 @@ int QGeometryRenderer::instanceCount() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_instanceCount;
+}
+
+int QGeometryRenderer::primitiveCount() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_primitiveCount;
 }
 
 int QGeometryRenderer::baseVertex() const
@@ -121,6 +128,16 @@ void QGeometryRenderer::setInstanceCount(int instanceCount)
 
     d->m_instanceCount = instanceCount;
     emit instanceCountChanged();
+}
+
+void QGeometryRenderer::setPrimitiveCount(int primitiveCount)
+{
+    Q_D(QGeometryRenderer);
+    if (d->m_primitiveCount == primitiveCount)
+        return;
+
+    d->m_primitiveCount = primitiveCount;
+    emit primitiveCountChanged();
 }
 
 void QGeometryRenderer::setBaseVertex(int baseVertex)
@@ -207,6 +224,7 @@ void QGeometryRenderer::copy(const QNode *ref)
     QComponent::copy(ref);
     const QGeometryRenderer *other = static_cast<const QGeometryRenderer *>(ref);
     d_func()->m_instanceCount = other->d_func()->m_instanceCount;
+    d_func()->m_primitiveCount = other->d_func()->m_primitiveCount;
     d_func()->m_baseVertex = other->d_func()->m_baseVertex;
     d_func()->m_baseInstance = other->d_func()->m_baseInstance;
     d_func()->m_restartIndex = other->d_func()->m_restartIndex;

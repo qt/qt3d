@@ -51,6 +51,7 @@ public:
     Q_DECLARE_PUBLIC(QGeometryRenderer)
 
     int m_instanceCount;
+    int m_primitiveCount;
     int m_baseVertex;
     int m_baseInstance;
     int m_restartIndex;

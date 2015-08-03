@@ -149,6 +149,7 @@ private Q_SLOTS:
         geometry1->setRestartIndex(-1);
         geometry1->setPrimitiveRestart(false);
         geometry1->setPrimitiveType(Qt3D::QGeometryRenderer::Triangles);
+        geometry1->setPrimitiveCount(15);
         QTest::newRow("triangle") << geometry1;
 
         Qt3D::QGeometryRenderer *geometry2 = new Qt3D::QGeometryRenderer();
@@ -157,6 +158,7 @@ private Q_SLOTS:
         geometry2->setBaseVertex(58);
         geometry2->setBaseInstance(10);
         geometry2->setRestartIndex(65535);
+        geometry1->setPrimitiveCount(2056);
         geometry2->setPrimitiveRestart(true);
         geometry2->setPrimitiveType(Qt3D::QGeometryRenderer::Lines);
         QTest::newRow("lines with restart") << geometry2;
@@ -175,6 +177,7 @@ private Q_SLOTS:
 
         QCOMPARE(clone->id(), geometryRenderer->id());
         QCOMPARE(clone->instanceCount(), geometryRenderer->instanceCount());
+        QCOMPARE(clone->primitiveCount(), geometryRenderer->primitiveCount());
         QCOMPARE(clone->baseVertex(), geometryRenderer->baseVertex());
         QCOMPARE(clone->baseInstance(), geometryRenderer->baseInstance());
         QCOMPARE(clone->restartIndex(), geometryRenderer->restartIndex());
@@ -202,6 +205,19 @@ private Q_SLOTS:
         Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "instanceCount");
         QCOMPARE(change->value().value<int>(), 256);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        geometryRenderer->setPrimitiveCount(1340);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "primitiveCount");
+        QCOMPARE(change->value().value<int>(), 1340);
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();

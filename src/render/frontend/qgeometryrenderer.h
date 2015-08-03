@@ -51,6 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
+    Q_PROPERTY(int primitiveCount READ primitiveCount WRITE setPrimitiveCount NOTIFY primitiveCountChanged)
     Q_PROPERTY(int baseVertex READ baseVertex WRITE setBaseVertex NOTIFY baseVertexChanged)
     Q_PROPERTY(int baseInstance READ baseInstance WRITE setBaseInstance NOTIFY baseInstanceChanged)
     Q_PROPERTY(int restartIndex READ restartIndex WRITE setRestartIndex NOTIFY restartIndexChanged)
@@ -82,6 +83,7 @@ public:
     // also how to figure out which attribute(s?) hold the indices?
 
     int instanceCount() const;
+    int primitiveCount() const;
     int baseVertex() const;
     int baseInstance() const;
     int restartIndex() const;
@@ -90,6 +92,7 @@ public:
     PrimitiveType primitiveType() const;
 
     void setInstanceCount(int instanceCount);
+    void setPrimitiveCount(int primitiveCount);
     void setBaseVertex(int baseVertex);
     void setBaseInstance(int baseInstance);
     void setRestartIndex(int index);
@@ -99,6 +102,7 @@ public:
 
 Q_SIGNALS:
     void instanceCountChanged();
+    void primitiveCountChanged();
     void baseVertexChanged();
     void baseInstanceChanged();
     void restartIndexChanged();

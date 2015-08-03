@@ -52,6 +52,7 @@ private Q_SLOTS:
         Qt3D::QGeometry geometry;
 
         geometryRenderer.setInstanceCount(1584);
+        geometryRenderer.setPrimitiveCount(1609);
         geometryRenderer.setBaseVertex(750);
         geometryRenderer.setBaseInstance(883);
         geometryRenderer.setRestartIndex(65536);
@@ -66,6 +67,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.peerUuid(), geometryRenderer.id());
         QCOMPARE(renderGeometryRenderer.isDirty(), true);
         QCOMPARE(renderGeometryRenderer.instanceCount(), geometryRenderer.instanceCount());
+        QCOMPARE(renderGeometryRenderer.primitiveCount(), geometryRenderer.primitiveCount());
         QCOMPARE(renderGeometryRenderer.baseVertex(), geometryRenderer.baseVertex());
         QCOMPARE(renderGeometryRenderer.baseInstance(), geometryRenderer.baseInstance());
         QCOMPARE(renderGeometryRenderer.restartIndex(), geometryRenderer.restartIndex());
@@ -84,6 +86,7 @@ private Q_SLOTS:
         QVERIFY(renderGeometryRenderer.geometryId().isNull());
         QCOMPARE(renderGeometryRenderer.isDirty(), false);
         QCOMPARE(renderGeometryRenderer.instanceCount(), 0);
+        QCOMPARE(renderGeometryRenderer.primitiveCount(), 0);
         QCOMPARE(renderGeometryRenderer.baseVertex(), 0);
         QCOMPARE(renderGeometryRenderer.baseInstance(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
@@ -95,6 +98,7 @@ private Q_SLOTS:
         Qt3D::QGeometry geometry;
 
         geometryRenderer.setInstanceCount(454);
+        geometryRenderer.setPrimitiveCount(350);
         geometryRenderer.setBaseVertex(427);
         geometryRenderer.setBaseInstance(383);
         geometryRenderer.setRestartIndex(555);
@@ -111,6 +115,7 @@ private Q_SLOTS:
         QVERIFY(renderGeometryRenderer.geometryId().isNull());
         QCOMPARE(renderGeometryRenderer.isDirty(), false);
         QCOMPARE(renderGeometryRenderer.instanceCount(), 0);
+        QCOMPARE(renderGeometryRenderer.primitiveCount(), 0);
         QCOMPARE(renderGeometryRenderer.baseVertex(), 0);
         QCOMPARE(renderGeometryRenderer.baseInstance(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
@@ -133,6 +138,19 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderGeometryRenderer.instanceCount(), 2);
+        QVERIFY(renderGeometryRenderer.isDirty());
+
+        renderGeometryRenderer.unsetDirty();
+        QVERIFY(!renderGeometryRenderer.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange->setPropertyName("primitiveCount");
+        updateChange->setValue(56);
+        renderGeometryRenderer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderGeometryRenderer.primitiveCount(), 56);
         QVERIFY(renderGeometryRenderer.isDirty());
 
         renderGeometryRenderer.unsetDirty();

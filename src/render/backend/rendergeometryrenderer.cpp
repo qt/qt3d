@@ -47,6 +47,7 @@ namespace Render {
 RenderGeometryRenderer::RenderGeometryRenderer()
     : QBackendNode(ReadOnly)
     , m_instanceCount(0)
+    , m_primitiveCount(0)
     , m_baseVertex(0)
     , m_baseInstance(0)
     , m_restartIndex(-1)
@@ -59,12 +60,12 @@ RenderGeometryRenderer::RenderGeometryRenderer()
 
 RenderGeometryRenderer::~RenderGeometryRenderer()
 {
-
 }
 
 void RenderGeometryRenderer::cleanup()
 {
     m_instanceCount = 0;
+    m_primitiveCount = 0;
     m_baseVertex = 0;
     m_baseInstance = 0;
     m_restartIndex = -1;
@@ -84,6 +85,7 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
     QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
     if (geometryRenderer) {
         m_instanceCount = geometryRenderer->instanceCount();
+        m_primitiveCount = geometryRenderer->primitiveCount();
         m_baseVertex = geometryRenderer->baseVertex();
         m_baseInstance = geometryRenderer->baseInstance();
         m_restartIndex = geometryRenderer->restartIndex();
@@ -108,6 +110,9 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
     case NodeUpdated: {
         if (propertyName == QByteArrayLiteral("instanceCount")) {
             m_instanceCount = propertyChange->value().value<int>();
+            m_dirty = true;
+        } else if (propertyName == QByteArrayLiteral("primitiveCount")) {
+            m_primitiveCount = propertyChange->value().value<int>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("baseVertex")) {
             m_baseVertex = propertyChange->value().value<int>();
