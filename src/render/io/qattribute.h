@@ -66,6 +66,12 @@ public:
 
     QBuffer *buffer() const;
 
+    static QString defaultPositionAttributeName();
+    static QString defaultNormalAttributeName();
+    static QString defaultColorAttributeName();
+    static QString defaultTextureCoordinateAttributeName();
+    static QString defaultTangentAttributeName();
+
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 

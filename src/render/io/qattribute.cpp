@@ -290,6 +290,31 @@ QBuffer *QAttribute::buffer() const
     return static_cast<QBuffer *>(QAbstractAttribute::buffer());
 }
 
+QString QAttribute::defaultPositionAttributeName()
+{
+    return QStringLiteral("vertexPosition");
+}
+
+QString QAttribute::defaultNormalAttributeName()
+{
+    return QStringLiteral("vertexNormal");
+}
+
+QString QAttribute::defaultColorAttributeName()
+{
+    return QStringLiteral("vertexColor");
+}
+
+QString QAttribute::defaultTextureCoordinateAttributeName()
+{
+    return QStringLiteral("vertexTexCoord");
+}
+
+QString QAttribute::defaultTangentAttributeName()
+{
+    return QStringLiteral("vertexTangent");
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE
