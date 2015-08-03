@@ -73,14 +73,20 @@ void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
-                                               GLsizei instances)
+                                               GLsizei instances,
+                                               GLint baseVertex,
+                                               GLint baseInstance)
 {
+    if (baseInstance != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
+
     // glDrawElements OpenGL 3.1 or greater
-    m_funcs->glDrawElementsInstanced(primitiveType,
-                                     primitiveCount,
-                                     indexType,
-                                     indices,
-                                     instances);
+    m_funcs->glDrawElementsInstancedBaseVertex(primitiveType,
+                                               primitiveCount,
+                                               indexType,
+                                               indices,
+                                               instances,
+                                               baseVertex);
 }
 
 void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
@@ -98,12 +104,14 @@ void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
 void QGraphicsHelperGL3::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
-                                      void *indices)
+                                      void *indices,
+                                      GLint baseVertex)
 {
-    m_funcs->glDrawElements(primitiveType,
-                            primitiveCount,
-                            indexType,
-                            indices);
+    m_funcs->glDrawElementsBaseVertex(primitiveType,
+                                      primitiveCount,
+                                      indexType,
+                                      indices,
+                                      baseVertex);
 }
 
 void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
