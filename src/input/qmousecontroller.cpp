@@ -63,9 +63,20 @@ QMouseController::QMouseController(QNode *parent)
 {
 }
 
+/*!
+    \internal
+*/
 QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+}
+
+/*!
+   Destroys this QMouseController object.
+*/
+QMouseController::~QMouseController()
+{
+    QNode::cleanup();
 }
 
 void QMouseController::sceneChangeEvent(const QSceneChangePtr &change)

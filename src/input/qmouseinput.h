@@ -56,6 +56,7 @@ class QT3DINPUTSHARED_EXPORT QMouseInput : public QComponent
 
 public:
     explicit QMouseInput(QNode *parent = 0);
+    ~QMouseInput();
 
     void setController(QMouseController *controller);
     QMouseController *controller() const;

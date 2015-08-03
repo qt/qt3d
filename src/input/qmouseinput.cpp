@@ -74,9 +74,20 @@ QMouseInput::QMouseInput(QNode *parent)
 {
 }
 
+/*!
+    \internal
+*/
 QMouseInput::QMouseInput(QMouseInputPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
+}
+
+/*!
+   Destroys this QMouseInput object
+*/
+QMouseInput::~QMouseInput()
+{
+    QNode::cleanup();
 }
 
 /*!

@@ -56,6 +56,8 @@ public:
 
 protected:
     QMouseController(QMouseControllerPrivate &dd, QNode *parent = 0);
+    ~QMouseController();
+
     void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
