@@ -226,7 +226,7 @@ public:
 
 class VAOManager : public QResourceManager<
         QOpenGLVertexArrayObject *,
-        QPair<HMeshData, HShader>,
+        QPair<HGeometry, HShader>,
         16>
 {
 public:

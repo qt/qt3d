@@ -56,6 +56,7 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
@@ -370,11 +371,12 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 {
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
-        RenderMesh *mesh = Q_NULLPTR;
-        if (node->componentHandle<RenderMesh, 16>() != HMesh()
-                && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR
-                && mesh->isEnabled()) {
-            if (!mesh->meshDataHandle().isNull()) {
+        RenderGeometryRenderer *geometryRenderer = Q_NULLPTR;
+        if (node->componentHandle<RenderGeometryRenderer, 16>() != HGeometryRenderer()
+                && (geometryRenderer = node->renderComponent<RenderGeometryRenderer>()) != Q_NULLPTR) {
+
+            // There is a geometry renderer
+            if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
                 // TO DO: Perform culling here
                 // As shaders may be deforming, transforming the mesh
                 // We might want to make that optional or dependent on an explicit bounding box item
@@ -426,7 +428,9 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                    command->m_meshData = mesh->meshDataHandle();
+
+                    command->m_geometry = m_renderer->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+                    command->m_geometryRenderer = node->componentHandle<RenderGeometryRenderer, 16>();
                     command->m_instancesCount = 0;
                     command->m_stateSet = Q_NULLPTR;
                     command->m_changeCost = 0;

@@ -43,6 +43,8 @@
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>
+#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/renderattribute_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
@@ -70,6 +72,36 @@ namespace Qt3D {
 namespace Render {
 
 static QHash<unsigned int, QGraphicsContext*> static_contexts;
+
+namespace {
+
+QOpenGLBuffer createGLBufferFor(RenderBuffer *buffer)
+{
+    QOpenGLBuffer b(static_cast<QOpenGLBuffer::Type>(buffer->type()));
+    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
+    if (!b.create())
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
+
+    if (!b.bind())
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
+
+    b.allocate(buffer->data().constData(), buffer->data().size());
+    b.release();
+    return b;
+}
+
+void uploadDataToGLBuffer(RenderBuffer *buffer, QOpenGLBuffer &b)
+{
+    if (!b.bind())
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+    const int bufferSize = buffer->data().size();
+    b.allocate(NULL, bufferSize); // orphan the buffer
+    b.allocate(buffer->data().constData(), bufferSize);
+    b.release();
+    qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+}
+
+} // anonymous
 
 unsigned int nextFreeContextId()
 {
@@ -232,8 +264,8 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
 
 void QGraphicsContext::releaseOpenGL()
 {
-    // m_shaderHash.clear
-    m_bufferHash.clear();
+    m_renderShaderHash.clear();
+    m_renderBufferHash.clear();
 }
 
 void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
@@ -553,13 +585,17 @@ void QGraphicsContext::drawElementsInstanced(GLenum primitiveType,
                                              GLsizei primitiveCount,
                                              GLint indexType,
                                              void *indices,
-                                             GLsizei instances)
+                                             GLsizei instances,
+                                             GLint baseVertex,
+                                             GLint baseInstance)
 {
     m_glHelper->drawElementsInstanced(primitiveType,
                                       primitiveCount,
                                       indexType,
                                       indices,
-                                      instances);
+                                      instances,
+                                      baseVertex,
+                                      baseInstance);
 }
 
 /*!
@@ -582,12 +618,14 @@ void QGraphicsContext::drawArraysInstanced(GLenum primitiveType,
 void QGraphicsContext::drawElements(GLenum primitiveType,
                                     GLsizei primitiveCount,
                                     GLint indexType,
-                                    void *indices)
+                                    void *indices,
+                                    GLint baseVertex)
 {
     m_glHelper->drawElements(primitiveType,
                              primitiveCount,
                              indexType,
-                             indices);
+                             indices,
+                             baseVertex);
 }
 
 /*!
@@ -831,58 +869,60 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     m_activeShader->updateUniforms(this, uniforms);
 }
 
-void QGraphicsContext::specifyAttribute(QString nm, QAttribute *attr)
+void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer)
 {
-    if (attr == Q_NULLPTR)
+    if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
         return;
 
-    QOpenGLBuffer buf = glBufferFor(attr->buffer());
+    QOpenGLBuffer buf = glBufferForRenderBuffer(buffer);
     buf.bind();
 
     QOpenGLShaderProgram* prog = activeShader();
-    int location = prog->attributeLocation(nm);
+    int location = prog->attributeLocation(attribute->name());
     if (location < 0) {
-        qCWarning(Backend) << "failed to resolve location for attribute:" << nm;
+        qCWarning(Backend) << "failed to resolve location for attribute:" << attribute->name();
         return;
     }
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
-                             QGraphicsContext::elementType(attr->type()),
-                             attr->byteOffset(),
-                             QGraphicsContext::tupleSizeFromType(attr->type()),
-                             attr->byteStride());
+                             QGraphicsContext::elementType(attribute->type()),
+                             attribute->byteOffset(),
+                             QGraphicsContext::tupleSizeFromType(attribute->type()),
+                             attribute->byteStride());
 
-    if (attr->divisor() != 0) {
+    if (attribute->divisor() != 0) {
         // Done by the helper if it supports it
-        m_glHelper->vertexAttribDivisor(location, attr->divisor());
+        m_glHelper->vertexAttribDivisor(location, attribute->divisor());
     }
 
     buf.release();
 }
 
-void QGraphicsContext::specifyIndices(QAttribute *attr)
+void QGraphicsContext::specifyIndices(RenderBuffer *buffer)
 {
-    if (static_cast<QBuffer *>(attr->buffer())->type() != QBuffer::IndexBuffer) {
-        qCWarning(Backend) << Q_FUNC_INFO << "provided buffer is not correct type";
-        return;
-    }
+    Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
 
-    QOpenGLBuffer buf = glBufferFor(attr->buffer());
+    QOpenGLBuffer buf = glBufferForRenderBuffer(buffer);
     if (!buf.bind())
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bind within the current VAO
 }
 
-QOpenGLBuffer QGraphicsContext::glBufferFor(QBuffer *buf)
+void QGraphicsContext::updateBuffer(RenderBuffer *buffer)
 {
-    if (m_bufferHash.contains(buf))
-        return m_bufferHash.value(buf);
+    const QHash<RenderBuffer *, QOpenGLBuffer>::iterator it = m_renderBufferHash.find(buffer);
+    if (it != m_renderBufferHash.end())
+        uploadDataToGLBuffer(buffer, it.value());
+}
 
-    QOpenGLBuffer glbuf = buf->createGL();
-    m_bufferHash[buf] = glbuf;
-    buf->upload(glbuf);
+QOpenGLBuffer QGraphicsContext::glBufferForRenderBuffer(RenderBuffer *buf)
+{
+    if (m_renderBufferHash.contains(buf))
+        return m_renderBufferHash.value(buf);
 
+    QOpenGLBuffer glbuf = createGLBufferFor(buf);
+    m_renderBufferHash.insert(buf, glbuf);
     return glbuf;
 }
 
