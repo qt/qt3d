@@ -76,7 +76,7 @@ public:
 
         Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(Qt3D::QMeshData::Patches));
         mesh->addAttribute(Qt3D::QMeshData::defaultPositionAttributeName(),
-                           new Qt3D::QAttribute(vertexBuffer, GL_FLOAT_VEC3, nVerts));
+                           new Qt3D::QAttribute(vertexBuffer, Qt3D::QAttribute::Float, 3, nVerts));
         mesh->setVerticesPerPatch(4);
         return mesh;
     }

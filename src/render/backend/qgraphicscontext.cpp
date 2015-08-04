@@ -885,9 +885,9 @@ void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, Render
     }
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
-                             QGraphicsContext::elementType(attribute->type()),
+                             glDataTypeFromAttributeDataType(attribute->dataType()),
                              attribute->byteOffset(),
-                             QGraphicsContext::tupleSizeFromType(attribute->type()),
+                             attribute->dataSize(),
                              attribute->byteStride());
 
     if (attribute->divisor() != 0) {
@@ -1010,6 +1010,37 @@ GLuint QGraphicsContext::byteSizeFromType(GLint type)
     }
 
     return 0;
+}
+
+GLint QGraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dataType)
+{
+    switch (dataType) {
+    case QAttribute::DataType::Byte:
+        return GL_BYTE;
+    case QAttribute::DataType::UnsignedByte:
+        return GL_UNSIGNED_BYTE;
+    case QAttribute::DataType::Short:
+        return GL_SHORT;
+    case QAttribute::DataType::UnsignedShort:
+        return GL_UNSIGNED_SHORT;
+    case QAttribute::DataType::Int:
+        return GL_INT;
+    case QAttribute::UnsignedInt:
+        return GL_UNSIGNED_INT;
+    case QAttribute::HalfFloat:
+#ifdef GL_HALF_FLOAT
+        return GL_HALF_FLOAT;
+#endif
+#ifndef QT_OPENGL_ES_2 // Otherwise compile error as Qt defines GL_DOUBLE as GL_FLOAT when using ES2
+    case QAttribute::Double:
+        return GL_DOUBLE;
+#endif
+    case QAttribute::Float:
+        break;
+    default:
+        qWarning() << Q_FUNC_INFO << "unsupported dataType:" << dataType;
+    }
+    return GL_FLOAT;
 }
 
 } // Render

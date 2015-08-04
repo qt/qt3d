@@ -178,24 +178,24 @@ QMeshDataPtr assembleMesh(const QByteArray &verticesBytes, quint32 vertexSize, i
     verticesBuffer->setData(verticesBytes);
 
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       new QAttribute(verticesBuffer, GL_FLOAT_VEC3,
+                       new QAttribute(verticesBuffer, QAttribute::Float, 3,
                                                            verticesCount, 0, vertexSize));
     quint32 offset = sizeof(float) * 3;
 
     mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       new QAttribute(verticesBuffer, GL_FLOAT_VEC2,
+                       new QAttribute(verticesBuffer, QAttribute::Float, 2,
                                                            verticesCount, offset, vertexSize));
     offset += sizeof(float) * 2;
 
     mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       new QAttribute(verticesBuffer, GL_FLOAT_VEC3,
+                       new QAttribute(verticesBuffer, QAttribute::Float, 3,
                                                            verticesCount, offset, vertexSize));
     offset += sizeof(float) * 3;
 
     QBuffer *indicesBuffer(new QBuffer(QBuffer::IndexBuffer));
     indicesBuffer->setUsage(QBuffer::StaticDraw);
     indicesBuffer->setData(indicesBytes);
-    mesh->setIndexAttribute(new QAttribute(indicesBuffer, GL_UNSIGNED_SHORT, indicesCount, 0, 0));
+    mesh->setIndexAttribute(new QAttribute(indicesBuffer, QAttribute::UnsignedShort, 1, indicesCount, 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
 

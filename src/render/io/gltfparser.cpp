@@ -199,6 +199,59 @@ const QString KEY_INTERNAL_FORMAT = QStringLiteral("internalFormat");
 //    return QParameter::Undefined;
 //}
 
+QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+{
+    switch (dataType) {
+
+    case GL_UNSIGNED_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedShort;
+
+    case GL_UNSIGNED_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedByte;
+
+    case GL_UNSIGNED_INT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedInt;
+
+    case GL_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::Short;
+
+    case GL_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::Byte;
+
+    case GL_INT:
+        dataCount = 1;
+        return QAbstractAttribute::Int;
+
+    case GL_FLOAT:
+        dataCount = 1;
+        break;
+
+    case GL_FLOAT_VEC2:
+        dataCount = 2;
+        break;
+
+    case GL_FLOAT_VEC3:
+        dataCount = 3;
+        break;
+
+    case GL_FLOAT_VEC4:
+        dataCount = 4;
+        break;
+
+// TO DO: Handle doubles
+
+    default:
+        Q_UNREACHABLE();
+    }
+
+    return QAbstractAttribute::Float;
+}
+
 } // of anonymous namespace
 
 class GLTFParserMeshPrivate;
@@ -677,7 +730,10 @@ void GLTFParser::processJSONAccessor( QString id, const QJsonObject& json )
     if ( json.contains(KEY_BYTE_STRIDE))
         stride = json.value(KEY_BYTE_STRIDE).toInt();
 
-    QAttribute *attr( new QAttribute( buf, type, count, offset, stride ) );
+    uint dataSize = 0;
+    QAttribute::DataType dataType = typeFromGLType(type, dataSize);
+
+    QAttribute *attr( new QAttribute( buf, dataType, dataSize, count, offset, stride ) );
     m_attributeDict[id] = attr;
 }
 

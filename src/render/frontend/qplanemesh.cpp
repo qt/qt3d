@@ -235,19 +235,19 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
     quint32 offset = 0;
     mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       new QAttribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
+                       new QAttribute(buf, QAttribute::Float, 3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       new QAttribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride));
+                       new QAttribute(buf, QAttribute::Float, 2, nVerts, offset, stride));
     offset += 2 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       new QAttribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride));
+                       new QAttribute(buf, QAttribute::Float, 3, nVerts, offset, stride));
     offset += 3 * sizeof(float);
 
     mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
-                       new QAttribute(buf, GL_FLOAT_VEC4, nVerts, offset, stride));
+                       new QAttribute(buf, QAttribute::Float, 4, nVerts, offset, stride));
 
     // Create the index data. 2 triangles per rectangular face
     const int faces = 2 * (resolution.width() - 1) * (resolution.height() - 1);
@@ -281,7 +281,7 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
     indexBuffer->setData(indexBytes);
 
     // Specify index data on the mesh
-    mesh->setIndexAttribute(new QAttribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0));
+    mesh->setIndexAttribute(new QAttribute(indexBuffer, QAttribute::UnsignedShort, 1, indices, 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();

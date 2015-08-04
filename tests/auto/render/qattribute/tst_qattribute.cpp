@@ -148,19 +148,21 @@ private Q_SLOTS:
         customVertex->setByteOffset(305);
         customVertex->setDivisor(235);
         customVertex->setName("BB");
-        customVertex->setType(GL_FLOAT_VEC4);
+        customVertex->setDataType(Qt3D::QAttribute::Float);
+        customVertex->setDataSize(4);
         QTest::newRow("vertex") << customVertex;
 
         Qt3D::QAttribute *customIndex = new Qt3D::QAttribute();
         Qt3D::QBuffer *indexBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::IndexBuffer);
         customIndex->setBuffer(indexBuffer);
         customIndex->setAttributeType(Qt3D::QAbstractAttribute::IndexAttribute);
-        customVertex->setCount(383);
-        customVertex->setByteStride(350);
-        customVertex->setByteOffset(327);
-        customVertex->setDivisor(355);
-        customVertex->setName("SB");
-        customVertex->setType(GL_FLOAT_VEC3);
+        customIndex->setCount(383);
+        customIndex->setByteStride(350);
+        customIndex->setByteOffset(327);
+        customIndex->setDivisor(355);
+        customIndex->setName("SB");
+        customIndex->setDataType(Qt3D::QAttribute::Float);
+        customIndex->setDataSize(3);
         QTest::newRow("index") << customIndex;
     }
 
@@ -182,7 +184,8 @@ private Q_SLOTS:
         QCOMPARE(attribute->byteStride(), clone->byteStride());
         QCOMPARE(attribute->byteOffset(), clone->byteOffset());
         QCOMPARE(attribute->divisor(), clone->divisor());
-        QCOMPARE(attribute->type(), clone->type());
+        QCOMPARE(attribute->dataType(), clone->dataType());
+        QCOMPARE(attribute->dataSize(), clone->dataSize());
         QVERIFY(attribute->attributeType() == clone->attributeType());
 
         if (attribute->buffer() != Q_NULLPTR) {
@@ -199,14 +202,27 @@ private Q_SLOTS:
         TestArbiter arbiter(attribute.data());
 
         // WHEN
-        attribute->setType(GL_FLOAT_VEC2);
+        attribute->setDataType(Qt3D::QAttribute::Double);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "type");
-        QCOMPARE(change->value().value<int>(), GL_FLOAT_VEC2);
+        QCOMPARE(change->propertyName(), "dataType");
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QAttribute::Double));
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        attribute->setDataSize(4);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "dataSize");
+        QCOMPARE(change->value().value<uint>(), 4U);
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();

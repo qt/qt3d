@@ -107,6 +107,63 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
                   QString::number(type, 16);
 }
 
+namespace {
+
+QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+{
+    switch (dataType) {
+
+    case GL_UNSIGNED_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedShort;
+
+    case GL_UNSIGNED_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedByte;
+
+    case GL_UNSIGNED_INT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedInt;
+
+    case GL_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::Short;
+
+    case GL_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::Byte;
+
+    case GL_INT:
+        dataCount = 1;
+        return QAbstractAttribute::Int;
+
+    case GL_FLOAT:
+        dataCount = 1;
+        break;
+
+    case GL_FLOAT_VEC2:
+        dataCount = 2;
+        break;
+
+    case GL_FLOAT_VEC3:
+        dataCount = 3;
+        break;
+
+    case GL_FLOAT_VEC4:
+        dataCount = 4;
+        break;
+
+// TO DO: Handle doubles
+
+    default:
+        Q_UNREACHABLE();
+    }
+
+    return QAbstractAttribute::Float;
+}
+
+} // anonymous
+
 QItemModelBuffer::QItemModelBuffer()
     : m_buffer(Q_NULLPTR)
 {
@@ -173,8 +230,10 @@ QBuffer *QItemModelBuffer::buffer()
 
         for (int m=0; m<mappingCount; ++m) {
             const RoleMapping mapping(m_mappings.at(m));
-            QAttribute *attr(new QAttribute(m_buffer, mapping.type,
-                                            rowCount,
+            uint dataSize = 0;
+            QAttribute::DataType dataType = typeFromGLType(mapping.type, dataSize);
+            QAttribute *attr(new QAttribute(m_buffer, dataType,
+                                            dataSize, rowCount,
                                             offset, m_itemStride));
             m_attributes[mapping.attribute] = attr;
             offset += Render::QGraphicsContext::byteSizeFromType(mapping.type);

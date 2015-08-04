@@ -57,7 +57,8 @@ public:
 
     QAbstractBuffer *m_buffer;
     QString m_name;
-    int m_type;
+    QAbstractAttribute::DataType m_dataType;
+    uint m_dataSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;

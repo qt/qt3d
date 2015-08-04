@@ -46,7 +46,8 @@ namespace Render {
 
 RenderAttribute::RenderAttribute()
     : QBackendNode(ReadOnly)
-    , m_type(0)
+    , m_dataType(QAbstractAttribute::Float)
+    , m_dataSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
@@ -62,7 +63,8 @@ RenderAttribute::~RenderAttribute()
 
 void RenderAttribute::cleanup()
 {
-    m_type = 0;
+    m_dataType = QAbstractAttribute::Float;
+    m_dataSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
@@ -77,7 +79,8 @@ void RenderAttribute::updateFromPeer(QNode *peer)
 {
     QAttribute *attribute = static_cast<QAttribute *>(peer);
     if (attribute) {
-        m_type = attribute->type();
+        m_dataType = attribute->dataType();
+        m_dataSize = attribute->dataSize();
         m_count = attribute->count();
         m_byteOffset = attribute->byteOffset();
         m_byteStride = attribute->byteStride();
@@ -101,8 +104,11 @@ void RenderAttribute::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyName == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().value<QString>();
             m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("type")) {
-            m_type = propertyChange->value().value<int>();
+        } else if (propertyName == QByteArrayLiteral("dataType")) {
+            m_dataType = static_cast<QAbstractAttribute::DataType>(propertyChange->value().value<int>());
+            m_attributeDirty = true;
+        } else if (propertyName == QByteArrayLiteral("dataSize")) {
+            m_dataSize = propertyChange->value().value<uint>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("count")) {
             m_count = propertyChange->value().value<uint>();

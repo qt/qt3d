@@ -61,13 +61,13 @@ QAttribute::QAttribute(QNode *parent)
 {
 }
 
-QAttribute::QAttribute(QBuffer *buf, int type, int count, int offset, int stride)
-    : QAbstractAttribute(*new QAttributePrivate(), buf, QString(), type, count, offset, stride)
+QAttribute::QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset, int stride)
+    : QAbstractAttribute(*new QAttributePrivate(), buf, QString(), type, dataSize, count, offset, stride)
 {
 }
 
-QAttribute::QAttribute(QBuffer *buf, const QString &name, int type, int count, int offset, int stride)
-    : QAbstractAttribute(*new QAttributePrivate(), buf, name, type, count, offset, stride)
+QAttribute::QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset, int stride)
+    : QAbstractAttribute(*new QAttributePrivate(), buf, name, type, dataSize, count, offset, stride)
 {
 }
 
@@ -90,18 +90,13 @@ QVector<QVector4D> QAttribute::asVector4D() const
     const float* fptr;
     int stride;
 
-    switch (type()) {
-    case GL_FLOAT_VEC2:
-        stride = sizeof(float) * 2; break;
-
-    case GL_FLOAT_VEC3:
-        stride = sizeof(float) * 3; break;
-
-    case GL_FLOAT_VEC4:
-        stride = sizeof(float) * 4; break;
+    switch (dataType()) {
+    case QAttribute::Float:
+        stride = sizeof(float) * dataSize();
+        break;
 
     default:
-        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector3D";
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << dataType() << "x" << dataSize() << "to QVector3D";
         return QVector<QVector4D>();
     }
 
@@ -114,28 +109,8 @@ QVector<QVector4D> QAttribute::asVector4D() const
         QVector4D v;
         fptr = reinterpret_cast<const float*>(rawBuffer);
 
-        switch (type()) {
-        case GL_FLOAT_VEC2:
-            v.setX(fptr[0]);
-            v.setY(fptr[1]);
-            break;
-
-        case GL_FLOAT_VEC3:
-            v.setX(fptr[0]);
-            v.setY(fptr[1]);
-            v.setZ(fptr[2]);
-            break;
-
-        case GL_FLOAT_VEC4:
-            v.setX(fptr[0]);
-            v.setY(fptr[1]);
-            v.setZ(fptr[2]);
-            v.setW(fptr[3]);
-            break;
-
-        default:
-            break; // should never happen, we check types above
-        }
+        for (uint i = 0, m = dataSize(); i < m; ++i)
+            v[i] = fptr[i];
 
         result[c] = v;
         rawBuffer += stride;
@@ -153,18 +128,13 @@ QVector<QVector3D> QAttribute::asVector3D() const
     const float* fptr;
     int stride;
 
-    switch (type()) {
-    case GL_FLOAT_VEC2:
-        stride = sizeof(float) * 2; break;
-
-    case GL_FLOAT_VEC3:
-        stride = sizeof(float) * 3; break;
-
-    case GL_FLOAT_VEC4:
-        stride = sizeof(float) * 4; break;
+    switch (dataType()) {
+    case QAttribute::Float:
+        stride = sizeof(float) * dataSize();
+        break;
 
     default:
-        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector3D";
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << dataType() << "x" << dataSize() << "to QVector3D";
         return QVector<QVector3D>();
     }
 
@@ -177,22 +147,8 @@ QVector<QVector3D> QAttribute::asVector3D() const
         QVector3D v;
         fptr = reinterpret_cast<const float*>(rawBuffer);
 
-        switch (type()) {
-        case GL_FLOAT_VEC2:
-            v.setX(fptr[0]);
-            v.setY(fptr[1]);
-            break;
-
-        case GL_FLOAT_VEC3:
-        case GL_FLOAT_VEC4:
-            v.setX(fptr[0]);
-            v.setY(fptr[1]);
-            v.setZ(fptr[2]);
-            break;
-
-        default:
-            break; // should never happen, we check types above
-        }
+        for (uint i = 0, m = qMin(dataSize(), 3U); i < m; ++i)
+            v[i] = fptr[i];
 
         result[c] = v;
         rawBuffer += stride;
@@ -209,18 +165,13 @@ QVector<QVector2D> QAttribute::asVector2D() const
     float* fptr;
     int stride;
 
-    switch (type()) {
-    case GL_FLOAT_VEC2:
-        stride = sizeof(float) * 2; break;
-
-    case GL_FLOAT_VEC3:
-        stride = sizeof(float) * 3; break;
-
-    case GL_FLOAT_VEC4:
-        stride = sizeof(float) * 4; break;
+    switch (dataType()) {
+    case QAttribute::Float:
+        stride = sizeof(float) * dataSize();
+        break;
 
     default:
-        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << QString::number(type(), 16) << "to QVector2D";
+        qCDebug(Render::Io) << Q_FUNC_INFO << "can't convert" << dataType() << "x" << dataSize() << "to QVector3D";
         return QVector<QVector2D>();
     }
 
@@ -233,8 +184,8 @@ QVector<QVector2D> QAttribute::asVector2D() const
     for (uint c = 0; c < d->m_count; ++c) {
         QVector2D v;
         fptr = reinterpret_cast<float*>(rawBuffer);
-        v.setX(fptr[0]);
-        v.setY(fptr[1]);
+        for (uint i = 0, m = qMin(dataSize(), 2U); i < m; ++i)
+            v[i] = fptr[i];
         result[c] = v;
         rawBuffer += stride;
     }
@@ -254,33 +205,26 @@ void QAttribute::dump(int count)
     int stride = d->m_byteStride;
 
     for (int c=0; c<count; ++c) {
-        switch (type()) {
-        case GL_UNSIGNED_SHORT:
+        switch (dataType()) {
+        case QAttribute::UnsignedShort:
             if (stride == 0)
                 stride = sizeof(quint16);
             usptr = reinterpret_cast<const quint16*>(rawBuffer + stride * c);
             qCDebug(Render::Io) << c << ":u16:" << usptr[0];
             break;
-        case GL_UNSIGNED_INT:
+        case QAttribute::UnsignedInt:
             if (stride == 0)
                 stride = sizeof(quint32);
             qCDebug(Render::Io) << c << ":u32:" << reinterpret_cast<const quint32*>(rawBuffer + stride * c)[0];
             break;
-        case GL_FLOAT_VEC2:
+        case QAttribute::Float:
             if (stride == 0)
-                stride = sizeof(float) * 2;
+                stride = sizeof(float) * dataSize();
             fptr = reinterpret_cast<const float*>(rawBuffer + stride * c);
-            qCDebug(Render::Io) << c << ":vec2:"<< fptr[0] << fptr[1];
+            qCDebug(Render::Io) << c << QString::fromLatin1(":vec") + QString::number(dataSize()) << fptr[0] << fptr[1];
             break;
 
-        case GL_FLOAT_VEC3:
-            if (stride == 0)
-                stride = sizeof(float) * 3;
-            fptr = reinterpret_cast<const float*>(rawBuffer + stride * c);
-            qCDebug(Render::Io) << c << ":vec3:" << fptr[0] << fptr[1] << fptr[2];
-            break;
-
-        default: qCDebug(Render::Io) << Q_FUNC_INFO << "unspported type:" << QString::number(type(), 16);
+        default: qCDebug(Render::Io) << Q_FUNC_INFO << "unspported type:" << dataType();
         }
     }
 }

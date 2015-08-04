@@ -55,7 +55,8 @@ class QT3DCORESHARED_EXPORT QAbstractAttribute : public QNode
     Q_OBJECT
     Q_PROPERTY(Qt3D::QAbstractBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(int type READ type WRITE setType NOTIFY typeChanged) // TODO needs a better name. this is the GL type.
+    Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
+    Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
     Q_PROPERTY(uint count READ count WRITE setCount NOTIFY countChanged)
     Q_PROPERTY(uint byteStride READ byteStride WRITE setByteStride NOTIFY byteStrideChanged)
     Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
@@ -63,19 +64,34 @@ class QT3DCORESHARED_EXPORT QAbstractAttribute : public QNode
     Q_PROPERTY(AttributeType attributeType READ attributeType WRITE setAttributeType NOTIFY attributeTypeChanged)
 
 public:
-    explicit QAbstractAttribute(QNode *parent = 0);
-    ~QAbstractAttribute();
-    QAbstractAttribute(QAbstractBuffer *buf, int type, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
-
     enum AttributeType {
         VertexAttribute,
         IndexAttribute
     };
+
     Q_ENUM(AttributeType)
+
+    enum DataType {
+        Byte = 0,
+        UnsignedByte,
+        Short,
+        UnsignedShort,
+        Int,
+        UnsignedInt,
+        HalfFloat,
+        Float,
+        Double
+    };
+    Q_ENUM(DataType)
+
+    explicit QAbstractAttribute(QNode *parent = 0);
+    ~QAbstractAttribute();
+    QAbstractAttribute(QAbstractBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
 
     QAbstractBuffer *buffer() const;
     QString name() const;
-    int type() const;
+    DataType dataType() const;
+    uint dataSize() const;
     uint count() const;
     uint byteStride() const;
     uint byteOffset() const;
@@ -87,10 +103,10 @@ public:
     virtual QVector<QVector2D> asVector2D() const = 0;
     virtual void dump(int count) = 0;
 
-public Q_SLOTS:
     void setBuffer(QAbstractBuffer *buffer);
     void setName(const QString &name);
-    void setType(int type);
+    void setDataType(DataType type);
+    void setDataSize(uint size);
     void setCount(uint count);
     void setByteStride(uint byteStride);
     void setByteOffset(uint byteOffset);
@@ -100,7 +116,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void bufferChanged();
     void nameChanged();
-    void typeChanged();
+    void dataTypeChanged();
+    void dataSizeChanged();
     void countChanged();
     void byteStrideChanged();
     void byteOffsetChanged();
@@ -109,7 +126,7 @@ Q_SIGNALS:
 
 protected:
     QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = 0);
-    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, int type, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 

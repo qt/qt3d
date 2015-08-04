@@ -908,7 +908,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             const GLint primType = rGeometryRenderer->primitiveType();
             const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
             const bool drawIndexed = indexAttribute != Q_NULLPTR;
-            const GLint indexType = drawIndexed ? indexAttribute->type() : 0;
+            const GLint indexType = drawIndexed ? QGraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
 
             // TO DO: Add glMulti Draw variants
             if (!drawInstanced) { // Non instanced Rendering

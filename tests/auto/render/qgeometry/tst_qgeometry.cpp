@@ -142,16 +142,16 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
         Qt3D::QGeometry *geometry1 = new Qt3D::QGeometry();
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), GL_FLOAT_VEC3, 454));
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), GL_FLOAT_VEC4, 555));
+        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 454));
+        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 555));
         QTest::newRow("2 attributes") << geometry1 << 2;
 
 
         Qt3D::QGeometry *geometry2 = new Qt3D::QGeometry();
-        Qt3D::QAttribute *attribute = new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), GL_FLOAT_VEC4, 383);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), GL_FLOAT_VEC3, 427));
+        Qt3D::QAttribute *attribute = new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 383);
+        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 427));
         geometry2->addAttribute(attribute);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), GL_FLOAT_VEC2, 327));
+        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3D::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
     }

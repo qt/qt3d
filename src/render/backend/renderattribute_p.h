@@ -59,7 +59,8 @@ public:
 
     inline QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
-    inline int type() const { return m_type; }
+    inline QAbstractAttribute::DataType dataType() const { return m_dataType; }
+    inline uint dataSize() const { return m_dataSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
@@ -71,7 +72,8 @@ public:
 private:
     QNodeId m_bufferId;
     QString m_name;
-    int m_type;
+    QAbstractAttribute::DataType m_dataType;
+    uint m_dataSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;

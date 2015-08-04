@@ -52,7 +52,8 @@ QAbstractAttributePrivate::QAbstractAttributePrivate()
     : QNodePrivate()
     , m_buffer(Q_NULLPTR)
     , m_name()
-    , m_type(0)
+    , m_dataType(QAbstractAttribute::Float)
+    , m_dataSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
@@ -71,14 +72,15 @@ QAbstractAttribute::~QAbstractAttribute()
     Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractAttribute subclass didn't call QNode::cleanup in its destructor");
 }
 
-QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, int type, uint count, uint offset, uint stride, QNode *parent)
+QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(*new QAbstractAttributePrivate(), parent)
 {
     Q_D(QAbstractAttribute);
     d->m_buffer = buf;
     d->m_count = count;
     d->m_byteOffset = offset;
-    d->m_type = type;
+    d->m_dataType = type;
+    d->m_dataSize = dataSize;
     d->m_byteStride = stride;
 }
 
@@ -87,8 +89,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *par
 {
 }
 
-
-QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, int type, uint count, uint offset, uint stride, QNode *parent)
+QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QAbstractAttribute);
@@ -96,7 +97,8 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractB
     d->m_name = name;
     d->m_count = count;
     d->m_byteOffset = offset;
-    d->m_type = type;
+    d->m_dataType = dataType;
+    d->m_dataSize = dataSize;
     d->m_byteStride = stride;
 }
 
@@ -109,7 +111,8 @@ void QAbstractAttribute::copy(const QNode *ref)
     d_func()->m_count = attribute->d_func()->m_count;
     d_func()->m_divisor = attribute->d_func()->m_divisor;
     d_func()->m_byteOffset = attribute->d_func()->m_byteOffset;
-    d_func()->m_type = attribute->d_func()->m_type;
+    d_func()->m_dataType = attribute->d_func()->m_dataType;
+    d_func()->m_dataSize = attribute->d_func()->m_dataSize;
     d_func()->m_byteStride = attribute->d_func()->m_byteStride;
     d_func()->m_attributeType = attribute->d_func()->m_attributeType;
 }
@@ -126,10 +129,16 @@ QString QAbstractAttribute::name() const
     return d->m_name;
 }
 
-int QAbstractAttribute::type() const
+uint QAbstractAttribute::dataSize() const
 {
     Q_D(const QAbstractAttribute);
-    return d->m_type;
+    return d->m_dataSize;
+}
+
+QAbstractAttribute::DataType QAbstractAttribute::dataType() const
+{
+    Q_D(const QAbstractAttribute);
+    return d->m_dataType;
 }
 
 uint QAbstractAttribute::count() const
@@ -206,15 +215,25 @@ void QAbstractAttribute::setName(const QString &name)
     emit nameChanged();
 }
 
-void QAbstractAttribute::setType(int type)
+void QAbstractAttribute::setDataType(DataType type)
 {
     Q_D(QAbstractAttribute);
 
-    if (d->m_type == type)
+    if (d->m_dataType == type)
         return;
 
-    d->m_type = type;
-    emit typeChanged();
+    d->m_dataType = type;
+    emit dataTypeChanged();
+}
+
+void QAbstractAttribute::setDataSize(uint size)
+{
+    Q_D(QAbstractAttribute);
+    if (d->m_dataSize == size)
+        return;
+    Q_ASSERT(size >= 1 && size <= 4);
+    d->m_dataSize = size;
+    emit dataSizeChanged();
 }
 
 void QAbstractAttribute::setCount(uint count)

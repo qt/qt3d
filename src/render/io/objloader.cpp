@@ -249,36 +249,36 @@ QMeshData *ObjLoader::mesh() const
     buf->setData(bufferBytes);
 
 
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), new QAttribute(buf, GL_FLOAT_VEC3, count, 0, stride));
+    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), new QAttribute(buf, QAttribute::Float, 3, count, 0, stride));
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), new QAttribute(buf, GL_FLOAT_VEC2, count, offset, stride));
+        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), new QAttribute(buf, QAttribute::Float, 2, count, offset, stride));
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), new QAttribute(buf, GL_FLOAT_VEC3, count, offset, stride));
+        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), new QAttribute(buf, QAttribute::Float, 3, count, offset, stride));
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), new QAttribute(buf, GL_FLOAT_VEC4, count, offset, stride));
+        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), new QAttribute(buf, QAttribute::Float, 4, count, offset, stride));
         offset += sizeof(float) * 4;
     }
 
     QByteArray indexBytes;
-    GLuint ty;
+    QAttribute::DataType ty;
     if (m_indices.size() < 65536) {
         // we can use USHORT
-        ty = GL_UNSIGNED_SHORT;
+        ty = QAttribute::UnsignedShort;
         indexBytes.resize(m_indices.size() * sizeof(quint16));
         quint16* usptr = reinterpret_cast<quint16*>(indexBytes.data());
         for (int i=0; i<m_indices.size(); ++i)
             *usptr++ = static_cast<quint16>(m_indices.at(i));
     } else {
         // use UINT - no conversion needed, but let's ensure int is 32-bit!
-        ty = GL_UNSIGNED_INT;
+        ty = QAttribute::UnsignedInt;
         Q_ASSERT(sizeof(int) == sizeof(quint32));
         indexBytes.resize(m_indices.size() * sizeof(quint32));
         memcpy(indexBytes.data(), reinterpret_cast<const char*>(m_indices.data()), indexBytes.size());
@@ -287,7 +287,7 @@ QMeshData *ObjLoader::mesh() const
     QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
     indexBuffer->setUsage(QBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
-    mesh->setIndexAttribute(new QAttribute(indexBuffer, ty, m_indices.size(), 0, 0));
+    mesh->setIndexAttribute(new QAttribute(indexBuffer, ty, 1, m_indices.size(), 0, 0));
 
     mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
     qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();

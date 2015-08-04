@@ -54,8 +54,8 @@ class QT3DRENDERERSHARED_EXPORT QAttribute : public QAbstractAttribute
 
 public:
     explicit QAttribute(QNode *parent = 0);
-    QAttribute(QBuffer *buf, int type, int count, int offset=0, int stride = 0);
-    QAttribute(QBuffer *buf, const QString &name, int type, int count, int offset=0, int stride = 0);
+    QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
+    QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     ~QAttribute();
 
     QVector<QVector4D> asVector4D() const Q_DECL_OVERRIDE;

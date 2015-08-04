@@ -49,6 +49,7 @@
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -185,6 +186,8 @@ public:
     static GLint elementType(GLint type);
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
+    static GLint glDataTypeFromAttributeDataType(QAttribute::DataType dataType);
+
 
     bool supportsVAO() const { return m_supportsVAO; }
 
