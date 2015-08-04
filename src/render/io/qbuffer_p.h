@@ -39,6 +39,7 @@
 
 #include <private/qabstractbuffer_p.h>
 #include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QOpenGLBuffer>
 
@@ -53,6 +54,7 @@ public:
 
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
+    QBufferFunctorPtr m_functor;
 };
 
 } // Qt3D

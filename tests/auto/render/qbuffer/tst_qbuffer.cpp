@@ -164,6 +164,7 @@ private Q_SLOTS:
         QCOMPARE(buffer->data(), clone->data());
         QCOMPARE(buffer->usage(), clone->usage());
         QCOMPARE(buffer->type(), clone->type());
+        QCOMPARE(buffer->bufferFunctor(), clone->bufferFunctor());
     }
 
     void checkPropertyUpdates()

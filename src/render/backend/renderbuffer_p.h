@@ -39,6 +39,7 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,7 @@ private:
     QBuffer::UsageType m_usage;
     QByteArray m_data;
     bool m_bufferDirty;
+    QBufferFunctorPtr m_functor;
 };
 
 } // Render

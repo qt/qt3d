@@ -51,6 +51,8 @@ GLint tupleSizeFromType(GLint type);
 GLuint byteSizeFromType(GLint type);
 
 class QBufferPrivate;
+class QBufferFunctor;
+typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
 class QT3DRENDERERSHARED_EXPORT QBuffer : public QAbstractBuffer
 {
@@ -90,6 +92,9 @@ public:
 
     void setType(BufferType type);
     BufferType type() const;
+
+    void setBufferFunctor(const QBufferFunctorPtr &functor);
+    QBufferFunctorPtr bufferFunctor() const;
 
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent = 0);

@@ -72,6 +72,7 @@ void RenderBuffer::updateFromPeer(QNode *peer)
         m_type = buffer->type();
         m_usage = buffer->usage();
         m_data = buffer->data();
+        m_functor = buffer->bufferFunctor();
         m_bufferDirty = true;
     }
 }
@@ -82,14 +83,19 @@ void RenderBuffer::sceneChangeEvent(const QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         QByteArray propertyName = propertyChange->propertyName();
         if (propertyName == QByteArrayLiteral("data")) {
-            m_data = propertyChange->value().value<QByteArray>();
-            m_bufferDirty = true;
+            QByteArray newData = propertyChange->value().value<QByteArray>();
+            m_bufferDirty |= m_data != newData;
+            m_data = newData;
         } else if (propertyName == QByteArrayLiteral("type")) {
             m_type = static_cast<QBuffer::BufferType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
+        } else if (propertyName == QByteArrayLiteral("bufferFunctor")) {
+            QBufferFunctorPtr newFunctor = propertyChange->value().value<QBufferFunctorPtr>();
+            m_bufferDirty |= !(*newFunctor == *m_functor);
+            m_functor = newFunctor;
         }
     }
 }

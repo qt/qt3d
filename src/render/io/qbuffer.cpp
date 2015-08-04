@@ -37,6 +37,7 @@
 #include "qbuffer.h"
 #include "qbuffer_p.h"
 #include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,6 +80,7 @@ void QBuffer::copy(const QNode *ref)
     const QBuffer *buffer = static_cast<const QBuffer *>(ref);
     d_func()->m_type = buffer->d_func()->m_type;
     d_func()->m_usage = buffer->d_func()->m_usage;
+    d_func()->m_functor = buffer->d_func()->m_functor;
 }
 
 QBuffer::UsageType QBuffer::usage() const
@@ -100,6 +102,26 @@ QBuffer::BufferType QBuffer::type() const
 {
     Q_D(const QBuffer);
     return d->m_type;
+}
+
+void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
+{
+    Q_D(QBuffer);
+    if (functor && d->m_functor && *functor == *d->m_functor)
+        return;
+    d->m_functor = functor;
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        change->setPropertyName("bufferFunctor");
+        change->setValue(QVariant::fromValue(d->m_functor));
+        d->notifyObservers(change);
+    }
+}
+
+QBufferFunctorPtr QBuffer::bufferFunctor() const
+{
+    Q_D(const QBuffer);
+    return d->m_functor;
 }
 
 void QBuffer::setType(QBuffer::BufferType type)
