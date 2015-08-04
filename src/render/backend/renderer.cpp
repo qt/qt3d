@@ -884,9 +884,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
             // Update or set Attributes and Buffers for the given rGeometry and Command
             indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
-
-            if (vao)
-                vao->release();
         }
 
         //// Update program uniforms
@@ -908,9 +905,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
         if (specified || (vao && vao->isCreated())) {
-            if (vao && vao->isCreated())
-                vao->bind();
-
             const GLint primType = rGeometryRenderer->primitiveType();
             const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
             const bool drawIndexed = indexAttribute != Q_NULLPTR;
