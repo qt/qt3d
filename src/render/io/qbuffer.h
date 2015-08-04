@@ -91,15 +91,6 @@ public:
     void setType(BufferType type);
     BufferType type() const;
 
-    void bind() Q_DECL_OVERRIDE;
-    void create() Q_DECL_OVERRIDE;
-
-    QOpenGLBuffer createGL() const;
-    void upload(QOpenGLBuffer b);
-
-    // make a QObject and signal when contents change?
-    // GraphicsContext could listen, orphan the QOpenGLBuffer and hence
-    // reupload next time it's need
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent = 0);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;

@@ -111,44 +111,6 @@ void QBuffer::setType(QBuffer::BufferType type)
     }
 }
 
-void QBuffer::bind()
-{
-
-}
-
-void QBuffer::create()
-{
-    // TO DO -> Wrap createGL in here
-}
-
-QOpenGLBuffer QBuffer::createGL() const
-{
-    Q_D(const QBuffer);
-    QOpenGLBuffer b(static_cast<QOpenGLBuffer::Type>(d->m_type));
-    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(d->m_usage));
-    if (!b.create())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
-
-    if (!b.bind())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
-
-    b.allocate(d->m_data.count());
-    b.release();
-    return b;
-}
-
-void QBuffer::upload(QOpenGLBuffer b)
-{
-    Q_D(QBuffer);
-    if (!b.bind())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
-    b.allocate(NULL, d->m_data.count()); // orphan the buffer
-    b.allocate(d->m_data.data(),
-               d->m_data.count());
-    b.release();
-    qCDebug(Render::Io) << "uploaded buffer size=" << d->m_data.count();
-}
-
 } // Qt3D
 
 QT_END_NAMESPACE

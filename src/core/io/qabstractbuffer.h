@@ -58,8 +58,8 @@ public:
     virtual void setData(const QByteArray &bytes);
     QByteArray data() const;
 
-    virtual void bind() = 0;
-    virtual void create() = 0;
+    // TO DO: Add a functor here so that we can create CPU side buffer data
+    // in parallel with QAspectJobs
 
 protected:
     QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
