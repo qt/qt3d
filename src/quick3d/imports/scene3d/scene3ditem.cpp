@@ -156,7 +156,8 @@ public:
         , m_multisampledFBO(Q_NULLPTR)
         , m_finalFBO(Q_NULLPTR)
         , m_texture(Q_NULLPTR)
-        , m_enableMultisampledFBO(true)
+        , m_multisample(false) // this value is not used, will be synced from the Scene3DItem instead
+        , m_lastMultisample(false)
     {
         Q_CHECK_PTR(m_item);
         Q_CHECK_PTR(m_item->window());
@@ -213,6 +214,8 @@ public:
         }
     }
 
+    void synchronize();
+
 public Q_SLOTS:
     void render();
 
@@ -253,7 +256,8 @@ private:
     Scene3DSGNode *m_node; // Will be released by the QtQuick SceneGraph
     Scene3DCleaner *m_cleaner;
     QSize m_lastSize;
-    bool m_enableMultisampledFBO;
+    bool m_multisample;
+    bool m_lastMultisample;
 
     friend class Scene3DCleaner;
 };
@@ -415,7 +419,6 @@ private:
     QRectF m_rect;
 };
 
-
 /*!
     \class Qt3D::Scene3DItem
     \internal
@@ -436,6 +439,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
     , m_renderer(Q_NULLPTR)
     , m_rendererCleaner(new Scene3DCleaner())
+    , m_multisample(true)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -501,6 +505,34 @@ void Scene3DItem::applyRootEntityChange()
         m_aspectEngine->setRootEntity(m_entity);
 }
 
+/*!
+    \return \c true if a multisample renderbuffer is in use.
+ */
+bool Scene3DItem::multisample() const
+{
+    return m_multisample;
+}
+
+/*!
+    Enables or disables the usage of multisample renderbuffers based on \a enable.
+
+    By default multisampling is enabled. If the OpenGL implementation has no
+    support for multisample renderbuffers or framebuffer blits, the request to
+    use multisampling is ignored.
+
+    \note Refrain from changing the value frequently as it involves expensive
+    and potentially slow initialization of framebuffers and other OpenGL
+    resources.
+ */
+void Scene3DItem::setMultisample(bool enable)
+{
+    if (m_multisample != enable) {
+        m_multisample = enable;
+        emit multisampleChanged();
+        update();
+    }
+}
+
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
     // If the node already exists
@@ -516,10 +548,18 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
         m_renderer->setCleanerHelper(m_rendererCleaner);
     }
 
+    // The main thread is blocked, it is now time to sync data between the renderer and the item.
+    m_renderer->synchronize();
+
     Scene3DSGNode *fboNode = new Scene3DSGNode();
     fboNode->setRect(boundingRect());
     m_renderer->setSGNode(fboNode);
     return fboNode;
+}
+
+void Scene3DRenderer::synchronize()
+{
+    m_multisample = m_item->multisample();
 }
 
 void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT
@@ -542,14 +582,15 @@ void Scene3DRenderer::render()
     ContextSaver saver;
 
     const QSize currentSize = m_item->boundingRect().size().toSize();
-    const bool forceRecreate = currentSize != m_lastSize;
+    const bool forceRecreate = currentSize != m_lastSize || m_multisample != m_lastMultisample;
 
     // Rebuild FBO and textures if never created or a resize has occurred
-    if ((m_multisampledFBO.isNull() || forceRecreate) && m_enableMultisampledFBO) {
+    if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
+        qCDebug(Scene3D) << Q_FUNC_INFO << "Creating multisample framebuffer";
         m_multisampledFBO.reset(createMultisampledFramebufferObject(m_item->boundingRect().size().toSize()));
-
         if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
-            m_enableMultisampledFBO = false;
+            qCDebug(Scene3D) << Q_FUNC_INFO << "Failed to create multisample framebuffer";
+            m_multisample = false;
             m_multisampledFBO.reset(Q_NULLPTR);
         }
     }
@@ -563,9 +604,10 @@ void Scene3DRenderer::render()
     // Store the current size as a comparison
     // point for the next frame
     m_lastSize = currentSize;
+    m_lastMultisample = m_multisample;
 
     //Only try to use MSAA when available
-    if (m_enableMultisampledFBO) {
+    if (m_multisample) {
         // Bind FBO
         m_multisampledFBO->bind();
 

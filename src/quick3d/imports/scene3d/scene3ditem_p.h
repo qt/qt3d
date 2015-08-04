@@ -55,6 +55,7 @@ class Scene3DItem : public QQuickItem
     Q_OBJECT
     Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
     Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
+    Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
@@ -63,6 +64,9 @@ public:
     QStringList aspects() const;
     Qt3D::QEntity *entity() const;
 
+    bool multisample() const;
+    void setMultisample(bool enable);
+
 public Q_SLOTS:
     void setAspects(const QStringList &aspects);
     void setEntity(Qt3D::QEntity *entity);
@@ -70,6 +74,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void aspectsChanged();
     void entityChanged();
+    void multisampleChanged();
 
 private Q_SLOTS:
     void applyRootEntityChange();
@@ -84,6 +89,8 @@ private:
     Qt3D::QRenderAspect *m_renderAspect;
     Scene3DRenderer *m_renderer;
     Scene3DCleaner *m_rendererCleaner;
+
+    bool m_multisample;
 };
 
 } // Qt3D
