@@ -47,6 +47,8 @@ namespace Qt3D {
 
 namespace Render {
 
+class BufferManager;
+
 class Q_AUTOTEST_EXPORT RenderBuffer : public QBackendNode
 {
 public:
@@ -56,6 +58,9 @@ public:
 
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    void setManager(BufferManager *manager);
+    void executeFunctor();
 
     inline QBuffer::BufferType type() const { return m_type; }
     inline QBuffer::UsageType usage() const { return m_usage; }
@@ -69,6 +74,18 @@ private:
     QByteArray m_data;
     bool m_bufferDirty;
     QBufferFunctorPtr m_functor;
+    BufferManager *m_manager;
+};
+
+class RenderBufferFunctor : public QBackendNodeFunctor
+{
+public:
+    explicit RenderBufferFunctor(BufferManager *manager);
+    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+private:
+    BufferManager *m_manager;
 };
 
 } // Render

@@ -294,7 +294,6 @@ private:
 
     QVector<RenderAttribute *> m_dirtyAttributes;
     QVector<RenderGeometry *> m_dirtyGeometry;
-    QVector<RenderBuffer *> m_dirtyBuffers;
 };
 
 } // namespace Render

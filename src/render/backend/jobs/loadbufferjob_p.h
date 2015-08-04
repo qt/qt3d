@@ -57,8 +57,6 @@ public:
 
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
-    // TO DO: Add a set functor method in here
-
 protected:
     void run() Q_DECL_OVERRIDE;
     HBuffer m_handle;

@@ -74,7 +74,7 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRenderer/private/buffermanager_p.h>
 #include <Qt3DRenderer/private/loadbufferjob_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -769,31 +769,20 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
 // 1 dirty buffer == 1 job, all job can be performed in parallel
 QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
 {
-    const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
+    const QVector<QNodeId> dirtyBuffers = m_bufferManager->dirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
-    QVector<HBuffer> dirtyBuffers;
-    Q_FOREACH (const QNodeId &geomRendererId, dirtyGeometryRenderers) {
-        // Find the geometry, and find all unique dirty buffers for the attributes;
-        Render::RenderGeometryRenderer *geometryRenderer = m_geometryRendererManager->lookupResource(geomRendererId);
-        Q_ASSERT(geometryRenderer);
-        Render::RenderGeometry *geometry = m_geometryManager->lookupResource(geometryRenderer->geometryId());
-        if (geometry != Q_NULLPTR) {
-            Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
-                Render::RenderAttribute *attribute = m_attributeManager->lookupResource(attributeId);
-                if (attribute != Q_NULLPTR) {
-                    HBuffer bufferHandle = m_bufferManager->lookupHandle(attribute->bufferId());
-                    RenderBuffer *buffer = m_bufferManager->data(bufferHandle);
-                    if (buffer != Q_NULLPTR && !dirtyBuffers.contains(bufferHandle)) {
-                        // Create new buffer job
-                        LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
-                        job->setRenderer(this);
-                        dirtyBuffersJobs.push_back(job);
-                        dirtyBuffers.push_back(bufferHandle);
-                    }
-                }
-            }
+
+    Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
+        HBuffer bufferHandle = m_bufferManager->lookupHandle(bufId);
+        RenderBuffer *buffer = m_bufferManager->data(bufferHandle);
+        if (buffer != Q_NULLPTR) {
+            // Create new buffer job
+            LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
+            job->setRenderer(this);
+            dirtyBuffersJobs.push_back(job);
         }
     }
+
     return dirtyBuffersJobs;
 }
 
@@ -953,11 +942,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     // Reset to the state we were in before executing the render commands
     m_graphicsContext->setCurrentStateSet(globalState);
 
-    // Unset dirtiness on Geometry, Attributes and Buffers
-    Q_FOREACH (RenderBuffer *buffer, m_dirtyBuffers)
-        buffer->unsetDirty();
-    m_dirtyBuffers.clear();
-
+    // Unset dirtiness on Geometry and Attributes
     Q_FOREACH (RenderAttribute *attribute, m_dirtyAttributes)
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
@@ -983,6 +968,15 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
         if (buffer == Q_NULLPTR)
             continue;
 
+        if (buffer->isDirty()) {
+            // Reupload buffer data
+            m_graphicsContext->updateBuffer(buffer);
+
+            // Append buffer to temporary vector so that its dirtiness
+            // can be cleared at the end of the frame
+            buffer->unsetDirty();
+        }
+
         int estimatedCount = 0;
 
         // Update attribute and create buffer if needed
@@ -993,7 +987,7 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
                 m_graphicsContext->specifyIndices(buffer);
             estimatedCount = attribute->count();
             indexAttribute = attribute;
-        // Vertex Attribute
+            // Vertex Attribute
         } else if (command->m_parameterAttributeToShaderNames.contains(attribute->name())) {
             if (attribute->isDirty() || forceUpdate)
                 m_graphicsContext->specifyAttribute(attribute, buffer);
@@ -1010,17 +1004,8 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
         // can be cleared at the end of the frame
         m_dirtyAttributes.push_back(attribute);
 
-        if (buffer->isDirty()) {
-            // Reupload buffer data
-            m_graphicsContext->updateBuffer(buffer);
-
-            // Append buffer to temporary vector so that its dirtiness
-            // can be cleared at the end of the frame
-            m_dirtyBuffers.push_back(buffer);
-        }
-
-        // Note: We cannont call unsertDirty on the Attribute or Buffer at this
-        // point as we don't know if the attributes or buffers are being shared
+        // Note: We cannont call unsertDirty on the Attributeat this
+        // point as we don't know if the attributes are being shared
         // with other geometry / geometryRenderer in which case they still
         // should remain dirty so that VAO for these commands are properly
         // updated

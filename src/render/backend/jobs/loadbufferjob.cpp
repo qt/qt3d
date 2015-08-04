@@ -36,7 +36,8 @@
 
 #include "loadbufferjob_p.h"
 #include <Qt3DRenderer/private/renderbuffer_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRenderer/private/buffermanager_p.h>
+#include <Qt3DRenderer/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,11 +59,10 @@ LoadBufferJob::~LoadBufferJob()
 
 void LoadBufferJob::run()
 {
-    // TO DO: Load a job functor
-
-    // Unset the dirty flag on the buffer
+    // Let's leave it for the moment until this has been properly tested
+    qDebug() << Q_FUNC_INFO;
     RenderBuffer *buffer = m_renderer->bufferManager()->data(m_handle);
-    buffer->unsetDirty();
+    buffer->executeFunctor();
 }
 
 } // Render

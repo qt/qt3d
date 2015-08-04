@@ -36,6 +36,7 @@
 
 #include "renderbuffer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRenderer/private/buffermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,6 +49,7 @@ RenderBuffer::RenderBuffer()
     , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
+    , m_manager(Q_NULLPTR)
 {
     // Maybe it could become read write if we want to inform
     // the frontend QBuffer node of any backend issue
@@ -65,6 +67,17 @@ void RenderBuffer::cleanup()
     m_bufferDirty = false;
 }
 
+
+void RenderBuffer::setManager(BufferManager *manager)
+{
+    m_manager = manager;
+}
+
+void RenderBuffer::executeFunctor()
+{
+    m_data = (*m_functor)();
+}
+
 void RenderBuffer::updateFromPeer(QNode *peer)
 {
     QBuffer *buffer = static_cast<QBuffer *>(peer);
@@ -73,6 +86,9 @@ void RenderBuffer::updateFromPeer(QNode *peer)
         m_usage = buffer->usage();
         m_data = buffer->data();
         m_functor = buffer->bufferFunctor();
+        // Add to dirty list in the manager
+        if (m_functor)
+            m_manager->addDirtyBuffer(peerUuid());
         m_bufferDirty = true;
     }
 }
@@ -96,6 +112,8 @@ void RenderBuffer::sceneChangeEvent(const QSceneChangePtr &e)
             QBufferFunctorPtr newFunctor = propertyChange->value().value<QBufferFunctorPtr>();
             m_bufferDirty |= !(*newFunctor == *m_functor);
             m_functor = newFunctor;
+            if (m_functor)
+                m_manager->addDirtyBuffer(peerUuid());
         }
     }
 }
@@ -103,6 +121,30 @@ void RenderBuffer::sceneChangeEvent(const QSceneChangePtr &e)
 void RenderBuffer::unsetDirty()
 {
     m_bufferDirty = false;
+}
+
+RenderBufferFunctor::RenderBufferFunctor(BufferManager *manager)
+    : m_manager(manager)
+{
+}
+
+QBackendNode *RenderBufferFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+{
+    RenderBuffer *buffer = m_manager->getOrCreateResource(frontend->id());
+    buffer->setFactory(factory);
+    buffer->setManager(m_manager);
+    buffer->setPeer(frontend);
+    return buffer;
+}
+
+QBackendNode *RenderBufferFunctor::get(const QNodeId &id) const
+{
+    return m_manager->lookupResource(id);
+}
+
+void RenderBufferFunctor::destroy(const QNodeId &id) const
+{
+    return m_manager->releaseResource(id);
 }
 
 } // Render

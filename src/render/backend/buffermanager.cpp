@@ -34,44 +34,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_GEOMETRYRENDERERMANAGER_H
-#define QT3D_RENDER_GEOMETRYRENDERERMANAGER_H
-
-#include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
+#include "buffermanager_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
+
 namespace Render {
 
-class GeometryRendererManager : public QResourceManager<
-        RenderGeometryRenderer,
-        QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
+BufferManager::BufferManager()
 {
-public:
-    GeometryRendererManager();
-    ~GeometryRendererManager();
+}
 
-    // Aspect Thread
-    void addDirtyGeometryRenderer(const QNodeId &geometryRendererId);
-    QVector<QNodeId> dirtyGeometryRenderers();
+BufferManager::~BufferManager()
+{
+}
 
-private:
-    QVector<QNodeId> m_geometryRendererDirty;
-};
+void BufferManager::addDirtyBuffer(const QNodeId &bufferId)
+{
+    if (!m_dirtyBuffers.contains(bufferId))
+        m_dirtyBuffers.push_back(bufferId);
+}
+
+QVector<QNodeId> BufferManager::dirtyBuffers()
+{
+    QVector<QNodeId> vector(m_dirtyBuffers);
+    m_dirtyBuffers.clear();
+    return vector;
+}
 
 } // Render
-
-Q_DECLARE_RESOURCE_INFO(Render::RenderGeometryRenderer, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
 QT_END_NAMESPACE
-
-
-#endif // QT3D_RENDER_GEOMETRYRENDERERMANAGER_H

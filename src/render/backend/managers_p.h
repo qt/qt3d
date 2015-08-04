@@ -58,9 +58,9 @@
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
-#include <Qt3DRenderer/private/renderbuffer_p.h>
 #include <Qt3DRenderer/private/renderattribute_p.h>
 #include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -296,15 +296,6 @@ class TextureImageManager : public QResourceManager<
 {
 };
 
-class BufferManager : public QResourceManager<
-        RenderBuffer,
-        QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
-{
-};
-
 class AttributeManager : public QResourceManager<
         RenderAttribute,
         QNodeId,
@@ -316,6 +307,15 @@ class AttributeManager : public QResourceManager<
 
 class GeometryManager : public QResourceManager<
         RenderGeometry,
+        QNodeId,
+        16,
+        Qt3D::ArrayAllocatingPolicy,
+        Qt3D::ObjectLevelLockingPolicy>
+{
+};
+
+class GeometryRendererManager : public QResourceManager<
+        RenderGeometryRenderer,
         QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -338,9 +338,9 @@ Q_DECLARE_RESOURCE_INFO(Render::RenderTechnique, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderTexture, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderTextureImage, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderBuffer, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderAttribute, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderGeometry, Q_REQUIRES_CLEANUP);
+Q_DECLARE_RESOURCE_INFO(Render::RenderGeometryRenderer, Q_REQUIRES_CLEANUP);
 
 } // Qt3D
 
