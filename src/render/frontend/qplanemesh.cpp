@@ -35,142 +35,22 @@
 ****************************************************************************/
 
 #include "qplanemesh.h"
-#include "qplanemesh_p.h"
 
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
 #include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
-
+#include <Qt3DRenderer/qgeometry.h>
 #include <limits>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-/*!
-    \class Qt3D::QPlaneMeshPrivate
-    \internal
-*/
-QPlaneMeshPrivate::QPlaneMeshPrivate()
-    : QAbstractMeshPrivate()
-    , m_width(1.0f)
-    , m_height(1.0f)
-    , m_meshResolution(2, 2)
-{
-}
+namespace {
 
-QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QAbstractMesh(*new QPlaneMeshPrivate, parent)
-{
-    update();
-}
-
-QPlaneMesh::~QPlaneMesh()
-{
-    QNode::cleanup();
-}
-
-void QPlaneMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const QPlaneMesh *mesh = static_cast<const QPlaneMesh*>(ref);
-    d_func()->m_width = mesh->d_func()->m_width;
-    d_func()->m_height = mesh->d_func()->m_height;
-    d_func()->m_meshResolution = mesh->d_func()->m_meshResolution;
-}
-
-/*! \internal */
-QPlaneMesh::QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent)
-    : QAbstractMesh(dd, parent)
-{
-    update();
-}
-
-
-void QPlaneMesh::setWidth(float width)
-{
-    Q_D(QPlaneMesh);
-    if (width != d->m_width) {
-        d->m_width = width;
-        emit widthChanged();
-        update();
-    }
-}
-
-float QPlaneMesh::width() const
-{
-    Q_D(const QPlaneMesh);
-    return d->m_width;
-}
-
-void QPlaneMesh::setHeight(float height)
-{
-    Q_D(QPlaneMesh);
-    if (height != d->m_height) {
-        d->m_height = height;
-        emit heightChanged();
-        update();
-    }
-}
-
-float QPlaneMesh::height() const
-{
-    Q_D(const QPlaneMesh);
-    return d->m_height;
-}
-
-void QPlaneMesh::setMeshResolution(const QSize &resolution)
-{
-    Q_D(QPlaneMesh);
-    if (resolution != d->m_meshResolution) {
-        d->m_meshResolution = resolution;
-        emit meshResolutionChanged();
-        update();
-    }
-}
-
-QSize QPlaneMesh::meshResolution() const
-{
-    Q_D(const QPlaneMesh);
-    return d->m_meshResolution;
-}
-
-QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution);
-
-class PlaneMeshFunctor : public QAbstractMeshFunctor
-{
-public:
-    PlaneMeshFunctor(const QPlaneMesh &plane)
-        : m_width(plane.width())
-        , m_height(plane.height())
-        , m_meshResolution(plane.meshResolution())
-    {
-    }
-
-    QMeshDataPtr operator ()() Q_DECL_OVERRIDE
-    {
-        return createPlaneMesh(m_width, m_height, m_meshResolution);
-    }
-
-    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE
-    {
-        const PlaneMeshFunctor *otherFunctor = functor_cast<PlaneMeshFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
-            return (otherFunctor->m_width == m_width &&
-                    otherFunctor->m_height == m_height &&
-                    otherFunctor->m_meshResolution == m_meshResolution);
-        return false;
-    }
-
-    QT3D_FUNCTOR(PlaneMeshFunctor)
-private:
-    float m_width;
-    float m_height;
-    QSize m_meshResolution;
-};
-
-QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
+QByteArray createPlaneVertexData(float w, float h, const QSize &resolution)
 {
     Q_ASSERT(w > 0.0f);
     Q_ASSERT(h > 0.0f);
@@ -226,29 +106,11 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
         }
     }
 
-    // Wrap the raw bytes in a buffer
-    QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
-    buf->setUsage(QBuffer::StaticDraw);
-    buf->setData(bufferBytes);
+    return bufferBytes;
+}
 
-    // Create the mesh data, specify the vertex format and data
-    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
-    quint32 offset = 0;
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(),
-                       new QAttribute(buf, QAttribute::Float, 3, nVerts, offset, stride));
-    offset += 3 * sizeof(float);
-
-    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(),
-                       new QAttribute(buf, QAttribute::Float, 2, nVerts, offset, stride));
-    offset += 2 * sizeof(float);
-
-    mesh->addAttribute(QMeshData::defaultNormalAttributeName(),
-                       new QAttribute(buf, QAttribute::Float, 3, nVerts, offset, stride));
-    offset += 3 * sizeof(float);
-
-    mesh->addAttribute(QMeshData::defaultTangentAttributeName(),
-                       new QAttribute(buf, QAttribute::Float, 4, nVerts, offset, stride));
-
+QByteArray createPlaneIndexData(const QSize &resolution)
+{
     // Create the index data. 2 triangles per rectangular face
     const int faces = 2 * (resolution.width() - 1) * (resolution.height() - 1);
     const int indices = 3 * faces;
@@ -275,25 +137,268 @@ QMeshDataPtr createPlaneMesh(float w, float h, const QSize &resolution)
         }
     }
 
-    // Wrap the index bytes in a buffer
-    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
-    indexBuffer->setUsage(QBuffer::StaticDraw);
-    indexBuffer->setData(indexBytes);
-
-    // Specify index data on the mesh
-    mesh->setIndexAttribute(new QAttribute(indexBuffer, QAttribute::UnsignedShort, 1, indices, 0, 0));
-
-    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
-    qCDebug(Render::Frontend) << "computed axis-aligned bounding box is:" << mesh->boundingBox();
-
-    return mesh;
+    return indexBytes;
 }
 
-QAbstractMeshFunctorPtr QPlaneMesh::meshFunctor() const
+} // anonymous
+
+class PlaneVertexBufferFunctor : public QBufferFunctor
 {
-    return QAbstractMeshFunctorPtr(new PlaneMeshFunctor(*this));
+public:
+    explicit PlaneVertexBufferFunctor(float w, float h, const QSize &resolution)
+        : m_width(w)
+        , m_height(h)
+        , m_resolution(resolution)
+    {}
+
+    ~PlaneVertexBufferFunctor() {}
+
+    QByteArray operator()() Q_DECL_FINAL
+    {
+        return createPlaneVertexData(m_width, m_height, m_resolution);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    {
+        const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_width == m_width &&
+                    otherFunctor->m_height == m_height &&
+                    otherFunctor->m_resolution == m_resolution);
+        return false;
+    }
+
+    QT3D_FUNCTOR(PlaneVertexBufferFunctor)
+
+private:
+    float m_width;
+    float m_height;
+    QSize m_resolution;
+};
+
+class PlaneIndexBufferFunctor : public QBufferFunctor
+{
+public:
+    explicit PlaneIndexBufferFunctor(const QSize &resolution)
+        : m_resolution(resolution)
+    {}
+
+    ~PlaneIndexBufferFunctor() {}
+
+    QByteArray operator()() Q_DECL_FINAL
+    {
+        return createPlaneIndexData(m_resolution);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    {
+        const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_resolution == m_resolution);
+        return false;
+    }
+
+    QT3D_FUNCTOR(PlaneIndexBufferFunctor)
+
+private:
+    QSize m_resolution;
+};
+
+class PlaneGeometry : public QGeometry
+{
+    Q_OBJECT
+public:
+    explicit PlaneGeometry(QNode *parent = 0)
+        : QGeometry(parent)
+        , m_width(1.0f)
+        , m_height(1.0f)
+        , m_meshResolution(QSize(2, 2))
+        , m_positionAttribute(new QAttribute(this))
+        , m_normalAttribute(new QAttribute(this))
+        , m_texCoordAttribute(new QAttribute(this))
+        , m_tangentAttribute(new QAttribute(this))
+        , m_indexAttribute(new QAttribute(this))
+        , m_vertexBuffer(new QBuffer(QBuffer::VertexBuffer, this))
+        , m_indexBuffer(new QBuffer(QBuffer::IndexBuffer, this))
+    {
+        const int nVerts = m_meshResolution.width() * m_meshResolution.height();
+        const int stride = (3 + 2 + 3 + 4) * sizeof(float);
+        const int faces = 2 * (m_meshResolution.width() - 1) * (m_meshResolution.height() - 1);
+
+        m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
+        m_positionAttribute->setDataType(QAttribute::Float);
+        m_positionAttribute->setDataSize(3);
+        m_positionAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_positionAttribute->setBuffer(m_vertexBuffer);
+        m_positionAttribute->setByteStride(stride);
+        m_positionAttribute->setCount(nVerts);
+
+        m_texCoordAttribute->setName(QAttribute::defaultTextureCoordinateAttributeName());
+        m_texCoordAttribute->setDataType(QAttribute::Float);
+        m_texCoordAttribute->setDataSize(2);
+        m_texCoordAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_texCoordAttribute->setBuffer(m_vertexBuffer);
+        m_texCoordAttribute->setByteStride(stride);
+        m_texCoordAttribute->setByteOffset(3 * sizeof(float));
+        m_texCoordAttribute->setCount(nVerts);
+
+        m_normalAttribute->setName(QAttribute::defaultNormalAttributeName());
+        m_normalAttribute->setDataType(QAttribute::Float);
+        m_normalAttribute->setDataSize(3);
+        m_normalAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_normalAttribute->setBuffer(m_vertexBuffer);
+        m_normalAttribute->setByteStride(stride);
+        m_normalAttribute->setByteOffset(5 * sizeof(float));
+        m_normalAttribute->setCount(nVerts);
+
+        m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
+        m_tangentAttribute->setDataType(QAttribute::Float);
+        m_tangentAttribute->setDataSize(4);
+        m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_tangentAttribute->setBuffer(m_vertexBuffer);
+        m_tangentAttribute->setByteStride(stride);
+        m_tangentAttribute->setByteOffset(8 * sizeof(float));
+        m_tangentAttribute->setCount(nVerts);
+
+        m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
+        m_indexAttribute->setDataType(QAttribute::UnsignedShort);
+        m_indexAttribute->setBuffer(m_indexBuffer);
+
+        // Each primitive has 3 vertives
+        m_indexAttribute->setCount(faces * 3);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneVertexBufferFunctor(m_width, m_height, m_meshResolution)));
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneIndexBufferFunctor(m_meshResolution)));
+
+        addAttribute(m_positionAttribute);
+        addAttribute(m_texCoordAttribute);
+        addAttribute(m_normalAttribute);
+        addAttribute(m_tangentAttribute);
+        addAttribute(m_indexAttribute);
+    }
+
+    ~PlaneGeometry()
+    {
+        QGeometry::cleanup();
+    }
+
+    void updateVertices()
+    {
+        const int nVerts = m_meshResolution.width() * m_meshResolution.height();
+
+        m_positionAttribute->setCount(nVerts);
+        m_normalAttribute->setCount(nVerts);
+        m_texCoordAttribute->setCount(nVerts);
+        m_tangentAttribute->setCount(nVerts);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneVertexBufferFunctor(m_width, m_height, m_meshResolution)));
+    }
+
+    void updateIndices()
+    {
+        const int faces = 2 * (m_meshResolution.width() - 1) * (m_meshResolution.height() - 1);
+        // Each primitive has 3 vertices
+        m_indexAttribute->setCount(faces * 3);
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneIndexBufferFunctor(m_meshResolution)));
+    }
+
+    void setResolution(const QSize &resolution)
+    {
+        if (m_meshResolution == resolution)
+            return;
+        m_meshResolution = resolution;
+        updateVertices();
+        updateIndices();
+        emit resolutionChanged();
+    }
+
+    void setWidth(float width)
+    {
+        if (width == m_width)
+            return;
+        m_width = width;
+        updateVertices();
+        emit widthChanged();
+    }
+
+    void setHeight(float height)
+    {
+        if (height == m_height)
+            return;
+        m_height = height;
+        updateVertices();
+        emit heightChanged();
+    }
+
+    QSize resolution() const { return m_meshResolution; }
+    int width() const { return m_width; }
+    int height() const { return m_height; }
+
+Q_SIGNALS:
+    void resolutionChanged();
+    void widthChanged();
+    void heightChanged();
+
+private:
+    float m_width;
+    float m_height;
+    QSize m_meshResolution;
+    QAttribute *m_positionAttribute;
+    QAttribute *m_normalAttribute;
+    QAttribute *m_texCoordAttribute;
+    QAttribute *m_tangentAttribute;
+    QAttribute *m_indexAttribute;
+    QBuffer *m_vertexBuffer;
+    QBuffer *m_indexBuffer;
+};
+
+QPlaneMesh::QPlaneMesh(QNode *parent)
+    : QGeometryRenderer(parent)
+{
+    PlaneGeometry *geometry = new PlaneGeometry(this);
+    QObject::connect(geometry, &PlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
+    QObject::connect(geometry, &PlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
+    QObject::connect(geometry, &PlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
+    QGeometryRenderer::setGeometry(geometry);
+}
+
+QPlaneMesh::~QPlaneMesh()
+{
+    QNode::cleanup();
+}
+
+void QPlaneMesh::setWidth(float width)
+{
+    static_cast<PlaneGeometry *>(geometry())->setWidth(width);
+}
+
+float QPlaneMesh::width() const
+{
+    return static_cast<PlaneGeometry *>(geometry())->width();
+}
+
+void QPlaneMesh::setHeight(float height)
+{
+    static_cast<PlaneGeometry *>(geometry())->setHeight(height);
+}
+
+float QPlaneMesh::height() const
+{
+    return static_cast<PlaneGeometry *>(geometry())->height();
+}
+
+void QPlaneMesh::setMeshResolution(const QSize &resolution)
+{
+    static_cast<PlaneGeometry *>(geometry())->setResolution(resolution);
+}
+
+QSize QPlaneMesh::meshResolution() const
+{
+    return static_cast<PlaneGeometry *>(geometry())->resolution();
 }
 
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#include "qplanemesh.moc"

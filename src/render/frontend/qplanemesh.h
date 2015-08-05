@@ -38,19 +38,16 @@
 #define QT3D_QPLANEMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qabstractmesh.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QPlaneMeshPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
 {
     Q_OBJECT
-
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
@@ -68,20 +65,23 @@ public:
     void setMeshResolution(const QSize &resolution);
     QSize meshResolution() const;
 
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-
 Q_SIGNALS:
     void widthChanged();
     void heightChanged();
     void meshResolutionChanged();
 
-protected:
-    QPlaneMesh(QPlaneMeshPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
 private:
-    Q_DECLARE_PRIVATE(QPlaneMesh)
-    QT3D_CLONEABLE(QPlaneMesh)
+    // As this is a default provided geometry renderer, no one should be able
+    // to modify the QGeometryRenderer's properties
+
+    void setInstanceCount(int instanceCount);
+    void setPrimitiveCount(int primitiveCount);
+    void setBaseVertex(int baseVertex);
+    void setBaseInstance(int baseInstance);
+    void setRestartIndex(int index);
+    void setPrimitiveRestart(bool enabled);
+    void setGeometry(QGeometry *geometry);
+    void setPrimitiveType(PrimitiveType primitiveType);
 };
 
 } // namespace Qt3D

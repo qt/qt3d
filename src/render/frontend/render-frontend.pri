@@ -38,7 +38,6 @@ HEADERS += \
     $$PWD/qlayer_p.h \
     $$PWD/qopenglfilter.h \
     $$PWD/qplanemesh.h \
-    $$PWD/qplanemesh_p.h \
     $$PWD/qcuboidmesh.h \
     $$PWD/qcuboidmesh_p.h \
     $$PWD/qblendstate.h \
