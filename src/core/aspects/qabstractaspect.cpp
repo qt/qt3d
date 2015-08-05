@@ -195,6 +195,14 @@ bool QAbstractAspect::isShuttingDown() const
     return d->m_aspectManager->isShuttingDown();
 }
 
+void QAbstractAspect::onStartup()
+{
+}
+
+void QAbstractAspect::onShutdown()
+{
+}
+
 } // of namespace Qt3D
 
 QT_END_NAMESPACE

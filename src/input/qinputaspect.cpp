@@ -140,6 +140,14 @@ void QInputAspect::onInitialize(const QVariantMap &data)
     d->m_inputHandler->setEventSource(object);
 }
 
+void QInputAspect::onStartup()
+{
+}
+
+void QInputAspect::onShutdown()
+{
+}
+
 void QInputAspect::onCleanup()
 {
     Q_D(QInputAspect);

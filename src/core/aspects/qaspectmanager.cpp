@@ -181,8 +181,17 @@ void QAspectManager::exec()
                 m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
 
         // Start the frameAdvanceService if we're about to enter the running loop
-        if (m_runMainLoop.load())
+        bool needsShutdown = false;
+        if (m_runMainLoop.load()) {
+            needsShutdown = true;
             frameAdvanceService->start();
+
+            // We are about to enter the main loop. Give aspects a chance to do any last
+            // pieces of initialization
+            qCDebug(Aspects) << "Calling onStartup() for each aspect";
+            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+                aspect->onStartup();
+        }
 
         // Only enter main render loop once the renderer and other aspects are initialized
         while (m_runMainLoop.load())
@@ -199,6 +208,14 @@ void QAspectManager::exec()
 
             // Process any pending events
             eventLoop.processEvents();
+        }
+
+        if (needsShutdown) {
+            // Give aspects a chance to perform any shutdown actions. This may include unqueuing
+            // any blocking work on the main thread that could potentially deadlock during shutdown.
+            qCDebug(Aspects) << "Calling onShutdown() for each aspect";
+            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+                aspect->onShutdown();
         }
     }
     qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";

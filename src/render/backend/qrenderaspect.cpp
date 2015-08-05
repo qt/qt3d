@@ -370,6 +370,14 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         d->setSurface(surface);
 }
 
+void QRenderAspect::onStartup()
+{
+}
+
+void QRenderAspect::onShutdown()
+{
+}
+
 void QRenderAspect::onCleanup()
 {
     Q_D(QRenderAspect);
