@@ -189,7 +189,12 @@ void GLTFParser::setSource(const QUrl &source)
     QFile f(path);
     f.open(QIODevice::ReadOnly);
 
-    if (!setJSON(QJsonDocument::fromJson(f.readAll()))) {
+    QByteArray jsonData = f.readAll();
+    QJsonDocument sceneDocument = QJsonDocument::fromBinaryData(jsonData);
+    if (sceneDocument.isNull())
+        sceneDocument = QJsonDocument::fromJson(jsonData);
+
+    if (!setJSON(sceneDocument)) {
         qCWarning(GLTFParserLog) << "not a JSON document";
         return;
     }
