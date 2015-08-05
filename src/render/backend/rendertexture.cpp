@@ -255,6 +255,16 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
         }
     }
 
+    // Map ETC1 to ETC2 when supported. This allows using features like
+    // immutable storage as ETC2 is standard in GLES 3.0, while the ETC1 extension
+    // is written against GLES 1.0.
+    if (m_format == QAbstractTextureProvider::RGB8_ETC1) {
+        if ((ctx->isOpenGLES() && ctx->format().majorVersion() >= 3)
+                || ctx->hasExtension(QByteArrayLiteral("GL_OES_compressed_ETC2_RGB8_texture"))
+                || ctx->hasExtension(QByteArrayLiteral("GL_ARB_ES3_compatibility")))
+            format = m_format = QAbstractTextureProvider::RGB8_ETC2;
+    }
+
     glTex->setFormat(format == QAbstractTextureProvider::Automatic ?
                          QOpenGLTexture::NoFormat :
                          static_cast<QOpenGLTexture::TextureFormat>(format));

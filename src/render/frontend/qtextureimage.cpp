@@ -68,13 +68,16 @@ public:
         TexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
             QString source = QUrlHelper::urlToLocalFileOrQrc(m_url);
+            dataPtr.reset(new TexImageData());
+            if (dataPtr->setCompressedFile(source))
+                return dataPtr;
             QImage img;
             if (img.load(source)) {
-                dataPtr.reset(new TexImageData());
                 dataPtr->setImage(img);
-            } else {
-                qWarning() << "Failed to load image : " << source;
+                return dataPtr;
             }
+            dataPtr.reset();
+            qWarning() << "Failed to load image : " << source;
         } else {
             qWarning() << "implement loading from remote URLs";
         }

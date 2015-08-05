@@ -67,7 +67,8 @@ public:
     void setData(const QByteArray &data,
                  QOpenGLTexture::PixelFormat fmt,
                  QOpenGLTexture::PixelType ptype);
-    void setCompressedData(QByteArray data, QOpenGLTexture::PixelFormat fmt);
+
+    bool setCompressedFile(const QString &source);
 
     QByteArray data() const
     { return m_data; }
