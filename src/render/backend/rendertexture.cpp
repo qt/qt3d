@@ -239,9 +239,11 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
         switch (m_format) {
         case QOpenGLTexture::RGBA8_UNorm:
+        case QOpenGLTexture::RGBAFormat:
             format = QAbstractTextureProvider::RGBAFormat;
             break;
         case QOpenGLTexture::RGB8_UNorm:
+        case QOpenGLTexture::RGBFormat:
             format = QAbstractTextureProvider::RGBFormat;
             break;
         case QOpenGLTexture::DepthFormat:
