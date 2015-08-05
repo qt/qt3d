@@ -57,6 +57,8 @@
 #include <qmath.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRenderer/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -108,11 +110,11 @@ const QString ASSIMP_MATERIAL_REFLECTIVITY = QStringLiteral("reflectivity");
 
 const QString ASSIMP_MATERIAL_NAME = QStringLiteral("name");
 
-const QString VERTICES_ATTRIBUTE_NAME = QMeshData::defaultPositionAttributeName();
-const QString NORMAL_ATTRIBUTE_NAME =  QMeshData::defaultNormalAttributeName();
-const QString TANGENT_ATTRIBUTE_NAME = QMeshData::defaultTangentAttributeName();
-const QString TEXTCOORD_ATTRIBUTE_NAME = QMeshData::defaultTextureCoordinateAttributeName();
-const QString COLOR_ATTRIBUTE_NAME = QMeshData::defaultColorAttributeName();
+const QString VERTICES_ATTRIBUTE_NAME = QAttribute::defaultPositionAttributeName();
+const QString NORMAL_ATTRIBUTE_NAME =  QAttribute::defaultNormalAttributeName();
+const QString TANGENT_ATTRIBUTE_NAME = QAttribute::defaultTangentAttributeName();
+const QString TEXTCOORD_ATTRIBUTE_NAME = QAttribute::defaultTextureCoordinateAttributeName();
+const QString COLOR_ATTRIBUTE_NAME = QAttribute::defaultColorAttributeName();
 
 /*!
  * Returns a QMatrix4x4 from \a matrix;
@@ -251,35 +253,6 @@ QStringList AssimpParser::assimpSupportedFormats()
 
     return formats;
 }
-
-class AssimpMesh : public QAbstractMesh
-{
-    Q_OBJECT
-public :
-    explicit AssimpMesh(QNode *parent = 0);
-    ~AssimpMesh();
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-    void setData(QMeshDataPtr data);
-
-private:
-    QMeshDataPtr m_meshData;
-    QT3D_CLONEABLE(AssimpMesh)
-
-};
-
-class AssimpMeshFunctor : public QAbstractMeshFunctor
-{
-public:
-    explicit AssimpMeshFunctor(QMeshDataPtr meshData = QMeshDataPtr());
-    QMeshDataPtr operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-    QT3D_FUNCTOR(AssimpMeshFunctor)
-
-private:
-    QMeshDataPtr m_meshData;
-};
 
 class AssimpRawTextureImage : public QAbstractTextureImage
 {
@@ -420,7 +393,7 @@ QEntity *AssimpParser::node(aiNode *node)
     // Add Meshes to the node
     for (uint i = 0; i < node->mNumMeshes; i++) {
         uint meshIdx = node->mMeshes[i];
-        AssimpMesh * mesh = m_scene->m_meshes[meshIdx];
+        QGeometryRenderer *mesh = m_scene->m_meshes[meshIdx];
         // mesh material
         uint materialIndex = m_scene->m_aiScene->mMeshes[meshIdx]->mMaterialIndex;
         if (m_scene->m_materials.contains(materialIndex))
@@ -550,8 +523,14 @@ void AssimpParser::loadMesh(uint meshIndex)
 {
     aiMesh *mesh = m_scene->m_aiScene->mMeshes[meshIndex];
 
+    QGeometryRenderer *geometryRenderer = new QGeometryRenderer();
+    QGeometry *meshGeometry = new QGeometry(geometryRenderer);
+    QBuffer *vertexBuffer = new QBuffer(QBuffer::VertexBuffer, meshGeometry);
+    QBuffer *indexBuffer = new QBuffer(QBuffer::IndexBuffer, meshGeometry);
+
+    geometryRenderer->setGeometry(meshGeometry);
+
     // Primitive are always triangles with the current Assimp's configuration
-    QMeshDataPtr meshData(new QMeshData(QMeshData::Triangles));
 
     // Vertices and Normals always present with the current Assimp's configuration
     aiVector3D *vertices = mesh->mVertices;
@@ -598,45 +577,52 @@ void AssimpParser::loadMesh(uint meshIndex)
             vbufferContent[idx + offset + 3] = colors[i].a;
         }
     }
-    // Create a Buffer from the raw array
-    QBuffer *vbuffer(new QBuffer(QBuffer::VertexBuffer));
-    vbuffer->setUsage(QBuffer::StaticDraw);
-    vbuffer->setData(bufferArray);
+
+    vertexBuffer->setData(bufferArray);
 
     // Add vertex attributes to the mesh with the right array
-    meshData->addAttribute(VERTICES_ATTRIBUTE_NAME,
-                           new QAttribute(vbuffer,
+    QAttribute *positionAttribute = new QAttribute(vertexBuffer, VERTICES_ATTRIBUTE_NAME,
                                           QAttribute::Float, 3,
                                           mesh->mNumVertices,
                                           0,
-                                          chunkSize * sizeof(float)));
-    meshData->addAttribute(NORMAL_ATTRIBUTE_NAME,
-                           new QAttribute(vbuffer,
+                                          chunkSize * sizeof(float));
+
+    QAttribute *normalAttribute = new QAttribute(vertexBuffer, NORMAL_ATTRIBUTE_NAME,
                                           QAttribute::Float, 3,
                                           mesh->mNumVertices,
                                           3 * sizeof(float),
-                                          chunkSize * sizeof(float)));
-    if (hasTangent)
-        meshData->addAttribute(TANGENT_ATTRIBUTE_NAME,
-                               new QAttribute(vbuffer,
+                                          chunkSize * sizeof(float));
+
+    meshGeometry->addAttribute(positionAttribute);
+    meshGeometry->addAttribute(normalAttribute);
+
+    if (hasTangent) {
+        QAttribute *tangentsAttribute = new QAttribute(vertexBuffer, TANGENT_ATTRIBUTE_NAME,
                                               QAttribute::Float, 3,
                                               mesh->mNumVertices,
                                               6 * sizeof(float),
-                                              chunkSize * sizeof(float)));
-    if (hasTexture)
-        meshData->addAttribute(TEXTCOORD_ATTRIBUTE_NAME,
-                               new QAttribute(vbuffer,
+                                              chunkSize * sizeof(float));
+        meshGeometry->addAttribute(tangentsAttribute);
+    }
+
+    if (hasTexture) {
+        QAttribute *textureCoordAttribute = new QAttribute(vertexBuffer, TEXTCOORD_ATTRIBUTE_NAME,
                                               QAttribute::Float, 2,
                                               mesh->mNumVertices,
                                               (hasTangent ? 9 : 6) * sizeof(float),
-                                              chunkSize * sizeof(float)));
-    if (hasColor)
-        meshData->addAttribute(COLOR_ATTRIBUTE_NAME,
-                               new QAttribute(vbuffer,
+                                              chunkSize * sizeof(float));
+        meshGeometry->addAttribute(textureCoordAttribute);
+    }
+
+    if (hasColor) {
+        QAttribute *colorAttribute = new QAttribute(vertexBuffer, COLOR_ATTRIBUTE_NAME,
                                               QAttribute::Float, 4,
                                               mesh->mNumVertices,
                                               (6 + (hasTangent ? 3 : 0) + (hasTexture ? 2 : 0)) * sizeof(float),
-                                              chunkSize * sizeof(float)));
+                                              chunkSize * sizeof(float));
+        meshGeometry->addAttribute(colorAttribute);
+    }
+
     QAttribute::DataType indiceType;
     QByteArray ibufferContent;
     uint indices = mesh->mNumFaces * 3;
@@ -662,20 +648,15 @@ void AssimpParser::loadMesh(uint meshIndex)
         }
     }
 
-    // Create Indices buffer
-    QBuffer *ibuffer(new QBuffer(QBuffer::IndexBuffer));
-    ibuffer->setUsage(QBuffer::StaticDraw);
-    ibuffer->setData(ibufferContent);
+    indexBuffer->setData(ibufferContent);
 
     // Add indices attributes
-    meshData->setIndexAttribute(new QAttribute(ibuffer, indiceType, 1, indices, 0, 0));
+    QAttribute *indexAttribute = new QAttribute(indexBuffer, indiceType, 1, indices);
+    indexAttribute->setAttributeType(QAttribute::IndexAttribute);
 
-    meshData->computeBoundsFromAttribute(VERTICES_ATTRIBUTE_NAME);
+    meshGeometry->addAttribute(indexAttribute);
 
-    AssimpMesh *storedMesh = new AssimpMesh();
-    storedMesh->setObjectName(aiStringToQString(mesh->mName));
-    storedMesh->setData(meshData);
-    m_scene->m_meshes[meshIndex] = storedMesh;
+    m_scene->m_meshes[meshIndex] = geometryRenderer;
 
     qCDebug(AssimpParserLog) << Q_FUNC_INFO << " Mesh " << aiStringToQString(mesh->mName)
                              << " Vertices " << mesh->mNumVertices << " Faces " << mesh->mNumFaces << " Indices " << indices;
@@ -891,52 +872,6 @@ void AssimpParser::copyMaterialFloatProperties(QMaterial *material, aiMaterial *
         setParameterValue(ASSIMP_MATERIAL_REFLECTIVITY, material, value);
 }
 
-AssimpMesh::AssimpMesh(QNode *parent)
-    : QAbstractMesh(parent)
-{
-}
-
-AssimpMesh::~AssimpMesh()
-{
-    QNode::cleanup();
-}
-
-void AssimpMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const AssimpMesh *mesh = qobject_cast<const AssimpMesh *>(ref);
-    if (mesh != Q_NULLPTR) {
-        m_meshData = mesh->m_meshData;
-    }
-}
-
-void AssimpMesh::setData(QMeshDataPtr data)
-{
-    m_meshData = data;
-    QAbstractMesh::update();
-}
-
-QAbstractMeshFunctorPtr AssimpMesh::meshFunctor() const
-{
-    return QAbstractMeshFunctorPtr(new AssimpMeshFunctor(m_meshData));
-}
-
-AssimpMeshFunctor::AssimpMeshFunctor(QMeshDataPtr meshData)
-    : QAbstractMeshFunctor()
-    , m_meshData(meshData)
-{
-}
-
-QMeshDataPtr AssimpMeshFunctor::operator()()
-{
-    return m_meshData;
-}
-
-bool AssimpMeshFunctor::operator ==(const QAbstractMeshFunctor &) const
-{
-    return false;
-}
-
 AssimpRawTextureImage::AssimpRawTextureImage(QNode *parent)
     : QAbstractTextureImage(parent)
 {
@@ -989,7 +924,5 @@ AssimpParser::SceneImporter::~SceneImporter()
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-Q_DECLARE_METATYPE(Qt3D::AssimpMeshFunctor)
 
 #include "assimpparser.moc"

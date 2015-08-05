@@ -63,7 +63,7 @@ class QEffect;
 class QCamera;
 class QAbstractTextureProvider;
 class QMesh;
-class AssimpMesh;
+class QGeometryRenderer;
 
 Q_DECLARE_LOGGING_CATEGORY(AssimpParserLog)
 
@@ -117,7 +117,7 @@ private:
         Assimp::Importer *m_importer;
         mutable const aiScene *m_aiScene;
 
-        QMap<uint, AssimpMesh *> m_meshes;
+        QMap<uint, QGeometryRenderer *> m_meshes;
         QMap<uint, QMaterial*> m_materials;
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTextureProvider *> m_embeddedTextures;
