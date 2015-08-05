@@ -39,7 +39,6 @@ HEADERS += \
     $$PWD/qopenglfilter.h \
     $$PWD/qplanemesh.h \
     $$PWD/qcuboidmesh.h \
-    $$PWD/qcuboidmesh_p.h \
     $$PWD/qblendstate.h \
     $$PWD/qblendequation.h \
     $$PWD/qalphatest.h \

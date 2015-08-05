@@ -38,16 +38,14 @@
 #define QT3D_CUBOIDMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qabstractmesh.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QCuboidMeshPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
 {
     Q_OBJECT
 
@@ -80,8 +78,6 @@ public:
     void setXYMeshResolution(const QSize &resolution);
     QSize xyMeshResolution() const;
 
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-
 Q_SIGNALS:
     void xExtentChanged();
     void yExtentChanged();
@@ -91,13 +87,20 @@ Q_SIGNALS:
     void xzMeshResolutionChanged();
     void xyMeshResolutionChanged();
 
-protected:
-    QCuboidMesh(QCuboidMeshPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
 
 private:
-    QT3D_CLONEABLE(QCuboidMesh)
-    Q_DECLARE_PRIVATE(QCuboidMesh)
+    // As this is a default provided geometry renderer, no one should be able
+    // to modify the QGeometryRenderer's properties
+
+    void setInstanceCount(int instanceCount);
+    void setPrimitiveCount(int primitiveCount);
+    void setBaseVertex(int baseVertex);
+    void setBaseInstance(int baseInstance);
+    void setRestartIndex(int index);
+    void setPrimitiveRestart(bool enabled);
+    void setGeometry(QGeometry *geometry);
+    void setPrimitiveType(PrimitiveType primitiveType);
 };
 
 } // namespace Qt3D
