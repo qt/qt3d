@@ -189,6 +189,12 @@ QAbstractAspectJobManager *QAbstractAspect::jobManager() const
     return d->m_jobManager;
 }
 
+bool QAbstractAspect::isShuttingDown() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_aspectManager->isShuttingDown();
+}
+
 } // of namespace Qt3D
 
 QT_END_NAMESPACE

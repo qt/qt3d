@@ -66,6 +66,8 @@ public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
 
+    bool isShuttingDown() const;
+
 public Q_SLOTS:
     void initialize();
     void shutdown();

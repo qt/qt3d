@@ -82,6 +82,11 @@ QAspectManager::~QAspectManager()
     delete m_scheduler;
 }
 
+bool QAspectManager::isShuttingDown() const
+{
+    return !m_runMainLoop.load();
+}
+
 void QAspectManager::initialize()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;

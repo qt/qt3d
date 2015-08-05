@@ -88,6 +88,8 @@ public:
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
+    bool isShuttingDown() const;
+
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
