@@ -41,10 +41,9 @@
 
 #include "qspheremesh.h"
 #include <Qt3DRenderer/private/renderlogging_p.h>
-#include "qbuffer.h"
-#include "qattribute.h"
-#include "qmeshdata.h"
-#include <private/qabstractmesh_p.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qattribute.h>
 
 #include <qmath.h>
 
@@ -52,138 +51,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class SphereMeshFunctor : public QAbstractMeshFunctor
+namespace {
+
+QByteArray createSphereMeshVertexData(float radius, int rings, int slices)
 {
-public:
-    SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents);
-    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
-    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-    QT3D_FUNCTOR(SphereMeshFunctor)
-
-private:
-    int m_rings;
-    int m_slices;
-    float m_radius;
-    bool m_generateTangents;
-};
-
-class QSphereMeshPrivate : public QAbstractMeshPrivate
-{
-    QSphereMeshPrivate()
-        : QAbstractMeshPrivate()
-        , m_generateTangents(false)
-        , m_rings(16)
-        , m_slices(16)
-        , m_radius(1.0)
-    {}
-
-    Q_DECLARE_PUBLIC (QSphereMesh)
-    bool m_generateTangents;
-    int m_rings;
-    int m_slices;
-    float m_radius;
-};
-
-QSphereMesh::QSphereMesh(QNode *parent)
-    : QAbstractMesh(*new QSphereMeshPrivate, parent)
-{
-    update();
-}
-
-QSphereMesh::~QSphereMesh()
-{
-    QNode::cleanup();
-}
-
-void QSphereMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const QSphereMesh *mesh = static_cast<const QSphereMesh*>(ref);
-    d_func()->m_generateTangents = mesh->d_func()->m_generateTangents;
-    d_func()->m_rings = mesh->d_func()->m_rings;
-    d_func()->m_slices = mesh->d_func()->m_slices;
-    d_func()->m_radius = mesh->d_func()->m_radius;
-}
-
-void QSphereMesh::setRings(int rings)
-{
-    Q_D(QSphereMesh);
-    if (rings != d->m_rings) {
-        d->m_rings = rings;
-        emit ringsChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QSphereMesh::setSlices(int slices)
-{
-    Q_D(QSphereMesh);
-    if (slices != d->m_slices) {
-        d->m_slices = slices;
-        emit slicesChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QSphereMesh::setRadius(float radius)
-{
-    Q_D(QSphereMesh);
-    if (radius != d->m_radius) {
-        d->m_radius = radius;
-        emit radiusChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QSphereMesh::setGenerateTangents(bool gen)
-{
-    Q_D(QSphereMesh);
-    if (d->m_generateTangents != gen) {
-        d->m_generateTangents = gen;
-        emit generateTangentsChanged();
-        QAbstractMesh::update();
-    }
-}
-
-bool QSphereMesh::generateTangents() const
-{
-    Q_D(const QSphereMesh);
-    return d->m_generateTangents;
-}
-
-QAbstractMeshFunctorPtr QSphereMesh::meshFunctor() const
-{
-    Q_D(const QSphereMesh);
-    return QAbstractMeshFunctorPtr(new SphereMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_generateTangents));
-}
-
-int QSphereMesh::rings() const
-{
-    Q_D(const QSphereMesh);
-    return d->m_rings;
-}
-
-int QSphereMesh::slices() const
-{
-    Q_D(const QSphereMesh);
-    return d->m_slices;
-}
-
-float QSphereMesh::radius() const
-{
-    Q_D(const QSphereMesh);
-    return d->m_radius;
-}
-
-QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTangents)
-{
-    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
-
-    int nVerts  = ( slices + 1 ) * ( rings + 1 ); // One extra line of latitude
     QByteArray bufferBytes;
     // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
-    quint32 elementSize = 3 + 2 + 3 + (hasTangents ? 4 : 0);
-    quint32 stride = elementSize * sizeof(float);
+    const quint32 elementSize = 3 + 2 + 3 + 4;
+    const quint32 stride = elementSize * sizeof(float);
+    const int nVerts  = (slices + 1) * (rings + 1);
     bufferBytes.resize(stride * nVerts);
 
     float* fptr = reinterpret_cast<float*>(bufferBytes.data());
@@ -220,41 +96,25 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
             *fptr++ = sinPhi;
             *fptr++ = sinTheta * cosPhi;
 
-            if (hasTangents) {
-                *fptr++ = sinTheta;
-                *fptr++ = 0.0;
-                *fptr++ = -cosTheta;
-                *fptr++ = 1.0;
-            }
+            *fptr++ = sinTheta;
+            *fptr++ = 0.0;
+            *fptr++ = -cosTheta;
+            *fptr++ = 1.0;
         }
     }
+    return bufferBytes;
+}
 
-    QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
-    buf->setUsage(QBuffer::StaticDraw);
-    buf->setData(bufferBytes);
-
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), new QAttribute(buf, QAttribute::Float, 3, nVerts, 0, stride));
-    quint32 offset = sizeof(float) * 3;
-
-    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), new QAttribute(buf, QAttribute::Float, 2, nVerts, offset, stride));
-    offset += sizeof(float) * 2;
-
-    mesh->addAttribute(QMeshData::defaultNormalAttributeName(), new QAttribute(buf, QAttribute::Float, 3, nVerts, offset, stride));
-    offset += sizeof(float) * 3;
-
-    if (hasTangents) {
-        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), new QAttribute(buf, QAttribute::Float, 4, nVerts, offset, stride));
-        offset += sizeof(float) * 4;
-    }
-
+QByteArray createSphereMeshIndexData(int rings, int slices)
+{
     int faces = (slices * 2) * (rings - 2); // two tris per slice, for all middle rings
     faces += 2 * slices; // tri per slice for both top and bottom
 
     QByteArray indexBytes;
-    int indices = faces * 3;
+    const int indices = faces * 3;
     Q_ASSERT(indices < 65536);
     indexBytes.resize(indices * sizeof(quint16));
-    quint16* indexPtr = reinterpret_cast<quint16*>(indexBytes.data());
+    quint16 *indexPtr = reinterpret_cast<quint16*>(indexBytes.data());
 
     // top cap
     {
@@ -296,42 +156,297 @@ QMeshDataPtr createSphereMesh(double radius, int rings, int slices, bool hasTang
         }
     }
 
-    QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
-    indexBuffer->setUsage(QBuffer::StaticDraw);
-    indexBuffer->setData(indexBytes);
-    mesh->setIndexAttribute(new QAttribute(indexBuffer, QAttribute::UnsignedShort, 1, indices, 0, 0));
-
-    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
-    qCDebug(Render::Frontend) << "computed sphere bounds is:" << mesh->boundingBox();
-
-    return mesh;
+    return indexBytes;
 }
 
-SphereMeshFunctor::SphereMeshFunctor(int rings, int slices, float radius, bool generateTangents)
-    : QAbstractMeshFunctor()
-    , m_rings(rings)
-    , m_slices(slices)
-    , m_radius(radius)
-    , m_generateTangents(generateTangents)
+} // anonymous
+
+class SphereVertexDataFunctor : public QBufferFunctor
 {
+public:
+    SphereVertexDataFunctor(int rings, int slices, float radius)
+        : m_rings(rings)
+        , m_slices(slices)
+        , m_radius(radius)
+    {
+    }
+
+    QByteArray operator ()() Q_DECL_OVERRIDE
+    {
+        return createSphereMeshVertexData(m_radius, m_rings, m_slices);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const SphereVertexDataFunctor *otherFunctor = functor_cast<SphereVertexDataFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_rings == m_rings &&
+                    otherFunctor->m_slices == m_slices &&
+                    otherFunctor->m_radius == m_radius);
+        return false;
+    }
+
+    QT3D_FUNCTOR(SphereVertexDataFunctor)
+
+private:
+    int m_rings;
+    int m_slices;
+    float m_radius;
+};
+
+class SphereIndexDataFunctor : public QBufferFunctor
+{
+public:
+    SphereIndexDataFunctor(int rings, int slices)
+        : m_rings(rings)
+        , m_slices(slices)
+    {
+    }
+
+    QByteArray operator ()() Q_DECL_OVERRIDE
+    {
+        return createSphereMeshIndexData(m_rings, m_slices);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const SphereIndexDataFunctor *otherFunctor = functor_cast<SphereIndexDataFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_rings == m_rings &&
+                    otherFunctor->m_slices == m_slices);
+        return false;
+    }
+
+    QT3D_FUNCTOR(SphereIndexDataFunctor)
+
+private:
+    int m_rings;
+    int m_slices;
+};
+
+class SphereGeometry : public QGeometry
+{
+    Q_OBJECT
+public:
+    explicit SphereGeometry(QNode *parent = 0)
+        : QGeometry(parent)
+        , m_generateTangents(false)
+        , m_rings(16)
+        , m_slices(16)
+        , m_radius(1.0f)
+        , m_positionAttribute(new QAttribute(this))
+        , m_normalAttribute(new QAttribute(this))
+        , m_texCoordAttribute(new QAttribute(this))
+        , m_tangentAttribute(new QAttribute(this))
+        , m_indexAttribute(new QAttribute(this))
+        , m_vertexBuffer(new QBuffer(QBuffer::VertexBuffer, this))
+        , m_indexBuffer(new QBuffer(QBuffer::IndexBuffer, this))
+    {
+        // vec3 pos, vec2 tex, vec3 normal, vec4 tangent
+        const quint32 elementSize = 3 + 2 + 3 + 4;
+        const quint32 stride = elementSize * sizeof(float);
+        const int nVerts = (m_slices + 1) * (m_rings + 1);
+        const int faces = (m_slices * 2) * (m_rings - 2) + (2 * m_slices);
+
+        m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
+        m_positionAttribute->setDataType(QAttribute::Float);
+        m_positionAttribute->setDataSize(3);
+        m_positionAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_positionAttribute->setBuffer(m_vertexBuffer);
+        m_positionAttribute->setByteStride(stride);
+        m_positionAttribute->setCount(nVerts);
+
+        m_texCoordAttribute->setName(QAttribute::defaultTextureCoordinateAttributeName());
+        m_texCoordAttribute->setDataType(QAttribute::Float);
+        m_texCoordAttribute->setDataSize(2);
+        m_texCoordAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_texCoordAttribute->setBuffer(m_vertexBuffer);
+        m_texCoordAttribute->setByteStride(stride);
+        m_texCoordAttribute->setByteOffset(3 * sizeof(float));
+        m_texCoordAttribute->setCount(nVerts);
+
+        m_normalAttribute->setName(QAttribute::defaultNormalAttributeName());
+        m_normalAttribute->setDataType(QAttribute::Float);
+        m_normalAttribute->setDataSize(3);
+        m_normalAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_normalAttribute->setBuffer(m_vertexBuffer);
+        m_normalAttribute->setByteStride(stride);
+        m_normalAttribute->setByteOffset(5 * sizeof(float));
+        m_normalAttribute->setCount(nVerts);
+
+        m_tangentAttribute->setName(QAttribute::defaultTangentAttributeName());
+        m_tangentAttribute->setDataType(QAttribute::Float);
+        m_tangentAttribute->setDataSize(4);
+        m_tangentAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_tangentAttribute->setBuffer(m_vertexBuffer);
+        m_tangentAttribute->setByteStride(stride);
+        m_tangentAttribute->setByteOffset(8 * sizeof(float));
+        m_tangentAttribute->setCount(nVerts);
+
+        m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
+        m_indexAttribute->setDataType(QAttribute::UnsignedShort);
+        m_indexAttribute->setBuffer(m_indexBuffer);
+
+        m_indexAttribute->setCount(faces * 3);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new SphereVertexDataFunctor(m_rings, m_slices, m_radius)));
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new SphereIndexDataFunctor(m_rings, m_slices)));
+
+        addAttribute(m_positionAttribute);
+        addAttribute(m_texCoordAttribute);
+        addAttribute(m_normalAttribute);
+        if (m_generateTangents)
+            addAttribute(m_tangentAttribute);
+        addAttribute(m_indexAttribute);
+    }
+
+    ~SphereGeometry()
+    {
+        QGeometry::cleanup();
+    }
+
+    void updateVertices()
+    {
+        const int nVerts = (m_slices + 1) * (m_rings + 1);
+        m_positionAttribute->setCount(nVerts);
+        m_texCoordAttribute->setCount(nVerts);
+        m_normalAttribute->setCount(nVerts);
+        m_tangentAttribute->setCount(nVerts);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new SphereVertexDataFunctor(m_rings, m_slices, m_radius)));
+    }
+
+    void updateIndices()
+    {
+        const int faces = (m_slices * 2) * (m_rings - 2) + (2 * m_slices);
+        m_indexAttribute->setCount(faces * 3);
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new SphereIndexDataFunctor(m_rings, m_slices)));
+    }
+
+    void setRings(int rings)
+    {
+        if (rings != m_rings) {
+            m_rings = rings;
+            updateVertices();
+            updateIndices();
+            emit ringsChanged();
+        }
+    }
+
+    void setSlices(int slices)
+    {
+        if (slices != m_slices) {
+            m_slices = slices;
+            updateVertices();
+            updateIndices();
+            emit slicesChanged();
+        }
+    }
+
+    void setRadius(float radius)
+    {
+        if (radius != m_radius) {
+            m_radius = radius;
+            updateVertices();
+            emit radiusChanged();
+        }
+    }
+
+    void setGenerateTangents(bool gen)
+    {
+        if (m_generateTangents != gen) {
+            if (m_generateTangents)
+                removeAttribute(m_tangentAttribute);
+            m_generateTangents = gen;
+            if (m_generateTangents)
+                addAttribute(m_tangentAttribute);
+            emit generateTangentsChanged();
+        }
+    }
+
+    bool generateTangents() const { return m_generateTangents; }
+    int rings() const { return m_rings; }
+    int slices() const { return m_slices; }
+    float radius() const { return m_radius; }
+
+Q_SIGNALS:
+    void radiusChanged();
+    void ringsChanged();
+    void slicesChanged();
+    void generateTangentsChanged();
+
+private:
+    bool m_generateTangents;
+    int m_rings;
+    int m_slices;
+    float m_radius;
+    QAttribute *m_positionAttribute;
+    QAttribute *m_normalAttribute;
+    QAttribute *m_texCoordAttribute;
+    QAttribute *m_tangentAttribute;
+    QAttribute *m_indexAttribute;
+    QBuffer *m_vertexBuffer;
+    QBuffer *m_indexBuffer;
+};
+
+QSphereMesh::QSphereMesh(QNode *parent)
+    : QGeometryRenderer(parent)
+{
+    SphereGeometry *geometry = new SphereGeometry(this);
+    QObject::connect(geometry, &SphereGeometry::radiusChanged, this, &QSphereMesh::radiusChanged);
+    QObject::connect(geometry, &SphereGeometry::ringsChanged, this, &QSphereMesh::ringsChanged);
+    QObject::connect(geometry, &SphereGeometry::slicesChanged, this, &QSphereMesh::slicesChanged);
+    QObject::connect(geometry, &SphereGeometry::generateTangentsChanged, this, &QSphereMesh::generateTangentsChanged);
+    QGeometryRenderer::setGeometry(geometry);
 }
 
-QMeshDataPtr SphereMeshFunctor::operator ()()
+QSphereMesh::~QSphereMesh()
 {
-    return createSphereMesh(m_radius, m_rings, m_slices, m_generateTangents);
+    QNode::cleanup();
 }
 
-bool SphereMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+void QSphereMesh::setRings(int rings)
 {
-    const SphereMeshFunctor *otherFunctor = functor_cast<SphereMeshFunctor>(&other);
-    if (otherFunctor != Q_NULLPTR)
-        return (otherFunctor->m_rings == m_rings &&
-                otherFunctor->m_slices == m_slices &&
-                otherFunctor->m_radius == m_radius &&
-                otherFunctor->m_generateTangents == m_generateTangents);
-    return false;
+    static_cast<SphereGeometry *>(geometry())->setRings(rings);
+}
+
+void QSphereMesh::setSlices(int slices)
+{
+    static_cast<SphereGeometry *>(geometry())->setSlices(slices);
+}
+
+void QSphereMesh::setRadius(float radius)
+{
+    static_cast<SphereGeometry *>(geometry())->setRadius(radius);
+}
+
+void QSphereMesh::setGenerateTangents(bool gen)
+{
+    static_cast<SphereGeometry *>(geometry())->setGenerateTangents(gen);
+}
+
+bool QSphereMesh::generateTangents() const
+{
+    return static_cast<SphereGeometry *>(geometry())->generateTangents();
+}
+
+int QSphereMesh::rings() const
+{
+    return static_cast<SphereGeometry *>(geometry())->rings();
+}
+
+int QSphereMesh::slices() const
+{
+    return static_cast<SphereGeometry *>(geometry())->slices();
+}
+
+float QSphereMesh::radius() const
+{
+    return static_cast<SphereGeometry *>(geometry())->radius();
 }
 
 } //Qt3D
 
 QT_END_NAMESPACE
+
+#include "qspheremesh.moc"
