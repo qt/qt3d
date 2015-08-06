@@ -71,6 +71,7 @@ void RenderGeometryRenderer::cleanup()
     m_primitiveType = QGeometryRenderer::Triangles;
     m_geometryId = QNodeId();
     m_dirty = false;
+    m_functor.reset();
 }
 
 void RenderGeometryRenderer::updateFromPeer(QNode *peer)
@@ -86,6 +87,7 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
         m_primitiveType = geometryRenderer->primitiveType();
         if (geometryRenderer->geometry() != Q_NULLPTR)
             m_geometryId = geometryRenderer->geometry()->id();
+        m_functor = geometryRenderer->geometryFunctor();
         m_dirty = true;
     }
 }
@@ -119,6 +121,10 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("primitiveType")) {
             m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());
             m_dirty = true;
+        } else if (propertyName == QByteArrayLiteral("geometryFunctor")) {
+            QGeometryFunctorPtr newFunctor = propertyChange->value().value<QGeometryFunctorPtr>();
+            m_dirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
+            m_functor = newFunctor;
         }
         break;
     }

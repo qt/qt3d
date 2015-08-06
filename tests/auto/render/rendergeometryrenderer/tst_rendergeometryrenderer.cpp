@@ -37,7 +37,34 @@
 #include <QtTest/QTest>
 #include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
+
+class TestFunctor : public Qt3D::QGeometryFunctor
+{
+public:
+    explicit TestFunctor(int size)
+        : m_size(size)
+    {}
+
+    Qt3D::QGeometry *operator ()() Q_DECL_FINAL
+    {
+        return Q_NULLPTR;
+    }
+
+    bool operator ==(const Qt3D::QGeometryFunctor &other) const
+    {
+        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return otherFunctor->m_size == m_size;
+        return false;
+    }
+
+    QT3D_FUNCTOR(TestFunctor)
+
+private:
+    int m_size;
+};
 
 class tst_RenderGeometryRenderer : public QObject
 {
@@ -50,6 +77,7 @@ private Q_SLOTS:
         Qt3D::Render::RenderGeometryRenderer renderGeometryRenderer;
         Qt3D::QGeometryRenderer geometryRenderer;
         Qt3D::QGeometry geometry;
+        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1200));
 
         geometryRenderer.setInstanceCount(1584);
         geometryRenderer.setPrimitiveCount(1609);
@@ -59,6 +87,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveRestart(true);
         geometryRenderer.setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
+        geometryRenderer.setGeometryFunctor(functor);
 
         // WHEN
         renderGeometryRenderer.setPeer(&geometryRenderer);
@@ -74,6 +103,8 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), geometryRenderer.primitiveRestart());
         QCOMPARE(renderGeometryRenderer.primitiveType(), geometryRenderer.primitiveType());
         QCOMPARE(renderGeometryRenderer.geometryId(), geometry.id());
+        QCOMPARE(renderGeometryRenderer.geometryFunctor(), functor);
+        QVERIFY(*renderGeometryRenderer.geometryFunctor() == *functor);
     }
 
     void checkInitialAndCleanedUpState()
@@ -92,10 +123,13 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::Triangles);
+        QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
 
         // GIVEN
         Qt3D::QGeometryRenderer geometryRenderer;
         Qt3D::QGeometry geometry;
+        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1200));
+
 
         geometryRenderer.setInstanceCount(454);
         geometryRenderer.setPrimitiveCount(350);
@@ -105,6 +139,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveRestart(true);
         geometryRenderer.setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
+        geometryRenderer.setGeometryFunctor(functor);
 
         // WHEN
         renderGeometryRenderer.updateFromPeer(&geometryRenderer);
@@ -121,6 +156,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::Triangles);
+        QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
     }
 
     void checkPropertyChanges()
@@ -216,6 +252,20 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::LineLoop);
+        QVERIFY(renderGeometryRenderer.isDirty());
+
+        renderGeometryRenderer.unsetDirty();
+        QVERIFY(!renderGeometryRenderer.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange->setPropertyName("geometryFunctor");
+        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1450));
+        updateChange->setValue(QVariant::fromValue(functor));
+        renderGeometryRenderer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderGeometryRenderer.geometryFunctor(), functor);
         QVERIFY(renderGeometryRenderer.isDirty());
 
         renderGeometryRenderer.unsetDirty();
