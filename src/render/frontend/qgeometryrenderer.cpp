@@ -120,6 +120,12 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
     return d->m_primitiveType;
 }
 
+QGeometryFunctorPtr QGeometryRenderer::geometryFunctor() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_functor;
+}
+
 void QGeometryRenderer::setInstanceCount(int instanceCount)
 {
     Q_D(QGeometryRenderer);
@@ -219,6 +225,20 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
     emit primitiveTypeChanged();
 }
 
+void QGeometryRenderer::setGeometryFunctor(const QGeometryFunctorPtr &functor)
+{
+    Q_D(QGeometryRenderer);
+    if (functor && d->m_functor && *functor == *d->m_functor)
+        return;
+    d->m_functor = functor;
+    if (d->m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
+        change->setPropertyName("geometryFunctor");
+        change->setValue(QVariant::fromValue(d->m_functor));
+        d->notifyObservers(change);
+    }
+}
+
 void QGeometryRenderer::copy(const QNode *ref)
 {
     QComponent::copy(ref);
@@ -231,6 +251,7 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_primitiveRestart = other->d_func()->m_primitiveRestart;
     d_func()->m_primitiveType = other->d_func()->m_primitiveType;
     d_func()->m_geometry = static_cast<QGeometry *>(QNode::clone(other->d_func()->m_geometry));
+    d_func()->m_functor = other->d_func()->m_functor;
 }
 
 } // Qt3D

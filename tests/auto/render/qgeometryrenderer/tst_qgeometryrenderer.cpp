@@ -42,6 +42,7 @@
 #include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRenderer/qgeometryfunctor.h>
 #include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
@@ -121,6 +122,32 @@ void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
     m_arbiter->sceneChangeEventWithLock(e);
 }
 
+class TestFunctor : public Qt3D::QGeometryFunctor
+{
+public:
+    explicit TestFunctor(int size)
+        : m_size(size)
+    {}
+
+    Qt3D::QGeometry *operator ()() Q_DECL_FINAL
+    {
+        return Q_NULLPTR;
+    }
+
+    bool operator ==(const Qt3D::QGeometryFunctor &other) const
+    {
+        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return otherFunctor->m_size == m_size;
+        return false;
+    }
+
+    QT3D_FUNCTOR(TestFunctor)
+
+private:
+    int m_size;
+};
+
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
 class tst_QGeometryRenderer: public Qt3D::QNode
@@ -150,6 +177,7 @@ private Q_SLOTS:
         geometry1->setPrimitiveRestart(false);
         geometry1->setPrimitiveType(Qt3D::QGeometryRenderer::Triangles);
         geometry1->setPrimitiveCount(15);
+        geometry1->setGeometryFunctor(Qt3D::QGeometryFunctorPtr(new TestFunctor(383)));
         QTest::newRow("triangle") << geometry1;
 
         Qt3D::QGeometryRenderer *geometry2 = new Qt3D::QGeometryRenderer();
@@ -161,6 +189,7 @@ private Q_SLOTS:
         geometry1->setPrimitiveCount(2056);
         geometry2->setPrimitiveRestart(true);
         geometry2->setPrimitiveType(Qt3D::QGeometryRenderer::Lines);
+        geometry2->setGeometryFunctor(Qt3D::QGeometryFunctorPtr(new TestFunctor(305)));
         QTest::newRow("lines with restart") << geometry2;
     }
 
@@ -187,6 +216,12 @@ private Q_SLOTS:
         if (geometryRenderer->geometry() != Q_NULLPTR) {
             QVERIFY(clone->geometry() != Q_NULLPTR);
             QCOMPARE(clone->geometry()->id(), geometryRenderer->geometry()->id());
+        }
+
+        QCOMPARE(clone->geometryFunctor(), geometryRenderer->geometryFunctor());
+        if (geometryRenderer->geometryFunctor()) {
+            QVERIFY(clone->geometryFunctor());
+            QVERIFY(*clone->geometryFunctor() == *geometryRenderer->geometryFunctor());
         }
     }
 
@@ -283,6 +318,20 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "primitiveType");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QGeometryRenderer::Patches));
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(555));
+        geometryRenderer->setGeometryFunctor(functor);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "geometryFunctor");
+        QCOMPARE(change->value().value<Qt3D::QGeometryFunctorPtr>(), functor);
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
