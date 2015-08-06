@@ -254,6 +254,21 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_functor = other->d_func()->m_functor;
 }
 
+void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
+{
+    Q_D(QGeometryRenderer);
+    QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
+    if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
+        QGeometry *backendGeometry = change->value().value<QGeometry *>();
+        QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
+        if (frontendGeometry != Q_NULLPTR)
+            d->insertTree(frontendGeometry);
+        setGeometry(frontendGeometry);
+    }
+}
+
+
+
 } // Qt3D
 
 QT_END_NAMESPACE
