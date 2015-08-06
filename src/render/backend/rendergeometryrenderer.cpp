@@ -37,6 +37,7 @@
 #include "rendergeometryrenderer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +46,7 @@ namespace Qt3D {
 namespace Render {
 
 RenderGeometryRenderer::RenderGeometryRenderer()
-    : QBackendNode(ReadOnly)
+    : QBackendNode(ReadWrite)
     , m_instanceCount(0)
     , m_primitiveCount(0)
     , m_baseVertex(0)
@@ -161,6 +162,21 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
     }
 
     // Add to dirty list in manager
+}
+
+void RenderGeometryRenderer::executeFunctor()
+{
+    Q_ASSERT(m_functor);
+    QGeometry *geometry = (*m_functor)();
+
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    e->setPropertyName("geometry");
+    // The Frontend element has to perform the clone
+    // So that the objects are created in the main thread
+    e->setValue(QVariant::fromValue(geometry));
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
+    // Maybe we could also send a status to help troubleshoot errors
 }
 
 void RenderGeometryRenderer::unsetDirty()

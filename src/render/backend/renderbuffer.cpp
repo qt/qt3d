@@ -76,6 +76,7 @@ void RenderBuffer::setManager(BufferManager *manager)
 
 void RenderBuffer::executeFunctor()
 {
+    Q_ASSERT(m_functor);
     m_data = (*m_functor)();
 }
 

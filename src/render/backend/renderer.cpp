@@ -75,6 +75,7 @@
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRenderer/private/buffermanager_p.h>
 #include <Qt3DRenderer/private/loadbufferjob_p.h>
+#include <Qt3DRenderer/private/loadgeometryjob_p.h>
 #include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -792,7 +793,9 @@ QVector<QAspectJobPtr> Renderer::createGeometryRendererJobs()
     Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
         HGeometryRenderer geometryRendererHandle = m_geometryRendererManager->lookupHandle(geoRendererId);
         if (!geometryRendererHandle.isNull()) {
-            // TO DO: Create new job
+            LoadGeometryJobPtr job(new LoadGeometryJob(geometryRendererHandle));
+            job->setRenderer(this);
+            dirtyGeometryRendererJobs.push_back(job);
         }
     }
 

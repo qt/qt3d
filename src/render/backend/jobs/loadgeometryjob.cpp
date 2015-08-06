@@ -57,7 +57,8 @@ LoadGeometryJob::~LoadGeometryJob()
 void LoadGeometryJob::run()
 {
     RenderGeometryRenderer *geometryRenderer = m_renderer->geometryRendererManager()->data(m_handle);
-    // TO DO: Do something
+    if (geometryRenderer != Q_NULLPTR)
+        geometryRenderer->executeFunctor();
 }
 
 } // Render

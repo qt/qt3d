@@ -59,6 +59,7 @@ public:
     void setManager(GeometryRendererManager *manager);
     void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void executeFunctor();
 
     inline QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }

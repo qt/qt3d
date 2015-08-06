@@ -302,6 +302,9 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> bufferJobs = d->m_renderer->createRenderBufferJobs();
         jobs.append(bufferJobs);
 
+        const QVector<QAspectJobPtr> geometryJobs = d->m_renderer->createGeometryRendererJobs();
+        jobs.append(geometryJobs);
+
         // Create jobs to update transforms and bounding volumes
         // We can only update bounding volumes once all world transforms are known
         d->m_boundingVolumeJob->addDependency(d->m_worldTransformJob);
