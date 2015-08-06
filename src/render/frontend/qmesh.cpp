@@ -49,12 +49,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class MeshFunctor : public QAbstractMeshFunctor
+class MeshFunctor : public QGeometryFunctor
 {
 public :
     MeshFunctor(const QUrl &sourcePath);
-    QMeshDataPtr operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
+    QGeometry *operator()() Q_DECL_OVERRIDE;
+    bool operator ==(const QGeometryFunctor &other) const Q_DECL_OVERRIDE;
     QT3D_FUNCTOR(MeshFunctor)
 
 private:
@@ -67,19 +67,12 @@ private:
     \internal
 */
 QMeshPrivate::QMeshPrivate()
-    : QAbstractMeshPrivate()
+    : QGeometryRendererPrivate()
 {
-}
-
-void QMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const QMesh *mesh = static_cast<const QMesh*>(ref);
-    d_func()->m_source = mesh->d_func()->m_source;
 }
 
 QMesh::QMesh(QNode *parent)
-    : QAbstractMesh(*new QMeshPrivate, parent)
+    : QGeometryRenderer(*new QMeshPrivate, parent)
 {
 }
 
@@ -90,7 +83,7 @@ QMesh::~QMesh()
 
 /*! \internal */
 QMesh::QMesh(QMeshPrivate &dd, QNode *parent)
-    : QAbstractMesh(dd, parent)
+    : QGeometryRenderer(dd, parent)
 {
 }
 
@@ -100,9 +93,9 @@ void QMesh::setSource(const QUrl& source)
     if (d->m_source == source)
         return;
     d->m_source = source;
+    // update the functor
+    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source)));
     emit sourceChanged();
-    // Let aspects know about the change
-    QAbstractMesh::update();
 }
 
 QUrl QMesh::source() const
@@ -111,23 +104,17 @@ QUrl QMesh::source() const
     return d->m_source;
 }
 
-QAbstractMeshFunctorPtr QMesh::meshFunctor() const
-{
-    Q_D(const QMesh);
-    return QAbstractMeshFunctorPtr(new MeshFunctor(d->m_source));
-}
-
 MeshFunctor::MeshFunctor(const QUrl &sourcePath)
-    : QAbstractMeshFunctor()
+    : QGeometryFunctor()
     , m_sourcePath(sourcePath)
 {
 }
 
-QMeshDataPtr MeshFunctor::operator()()
+QGeometry *MeshFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
         qCWarning(Render::Jobs) << Q_FUNC_INFO << "Mesh is empty, nothing to load";
-        return QMeshDataPtr();
+        return Q_NULLPTR;
     }
 
     // TO DO : Maybe use Assimp instead of ObjLoader to handle more sources
@@ -140,13 +127,13 @@ QMeshDataPtr MeshFunctor::operator()()
     // TO DO: Handle file download if remote url
     QString filePath = QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
     if (loader.load(filePath))
-        return QMeshDataPtr(loader.mesh());
+        return loader.geometry();
 
     qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << filePath;
-    return QMeshDataPtr();
+    return Q_NULLPTR;
 }
 
-bool MeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+bool MeshFunctor::operator ==(const QGeometryFunctor &other) const
 {
     const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
     if (otherFunctor != Q_NULLPTR)

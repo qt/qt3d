@@ -48,6 +48,10 @@
 #include <QTextStream>
 #include <QVector>
 
+#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -68,14 +72,13 @@ ObjLoader::ObjLoader()
 
 bool ObjLoader::load( const QString& fileName )
 {
-    QFile file( fileName );
-    if ( !file.open( ::QIODevice::ReadOnly | ::QIODevice::Text ) )
-    {
+    QFile file(fileName);
+    if (!file.open(::QIODevice::ReadOnly|::QIODevice::Text)) {
         qCDebug(Render::Io) << "Could not open file" << fileName << "for reading";
         return false;
     }
 
-    return load( &file );
+    return load(&file);
 }
 
 static void addFaceVertex(const FaceIndices &faceIndices,
@@ -194,7 +197,6 @@ bool ObjLoader::load(::QIODevice *ioDev)
     if (m_centerMesh)
         center(m_points);
 
-//#if 0
     qCDebug(Render::Io) << "Loaded mesh:";
     qCDebug(Render::Io) << " " << m_points.size() << "points";
     qCDebug(Render::Io) << " " << faceCount << "faces";
@@ -202,21 +204,18 @@ bool ObjLoader::load(::QIODevice *ioDev)
     qCDebug(Render::Io) << " " << m_normals.size() << "normals";
     qCDebug(Render::Io) << " " << m_tangents.size() << "tangents ";
     qCDebug(Render::Io) << " " << m_texCoords.size() << "texture coordinates.";
-//#endif
 
     return true;
 }
 
-QMeshData *ObjLoader::mesh() const
+QGeometry *ObjLoader::geometry() const
 {
-    QMeshData *mesh = new QMeshData(QMeshData::Triangles);
-
     QByteArray bufferBytes;
     const int count = m_points.size();
-    quint32 elementSize = 3 + (hasTextureCoordinates() ? 2 : 0)
-                            + (hasNormals() ? 3 : 0)
-                            + (hasTangents() ? 4 : 0);
-    quint32 stride = elementSize * sizeof(float);
+    const quint32 elementSize = 3 + (hasTextureCoordinates() ? 2 : 0)
+            + (hasNormals() ? 3 : 0)
+            + (hasTangents() ? 4 : 0);
+    const quint32 stride = elementSize * sizeof(float);
     bufferBytes.resize(stride * count);
     float* fptr = reinterpret_cast<float*>(bufferBytes.data());
 
@@ -245,25 +244,28 @@ QMeshData *ObjLoader::mesh() const
     } // of buffer filling loop
 
     QBuffer *buf(new QBuffer(QBuffer::VertexBuffer));
-    buf->setUsage(QBuffer::StaticDraw);
     buf->setData(bufferBytes);
 
-
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), new QAttribute(buf, QAttribute::Float, 3, count, 0, stride));
+    QGeometry *geometry = new QGeometry();
+    QAttribute *positionAttribute = new QAttribute(buf, QAttribute::defaultPositionAttributeName(), QAttribute::Float, 3, count, 0, stride);
+    geometry->addAttribute(positionAttribute);
     quint32 offset = sizeof(float) * 3;
 
     if (hasTextureCoordinates()) {
-        mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), new QAttribute(buf, QAttribute::Float, 2, count, offset, stride));
+        QAttribute *texCoordAttribute = new QAttribute(buf, QAttribute::defaultTextureCoordinateAttributeName(),  QAttribute::Float, 2, count, offset, stride);
+        geometry->addAttribute(texCoordAttribute);
         offset += sizeof(float) * 2;
     }
 
     if (hasNormals()) {
-        mesh->addAttribute(QMeshData::defaultNormalAttributeName(), new QAttribute(buf, QAttribute::Float, 3, count, offset, stride));
+        QAttribute *normalAttribute = new QAttribute(buf, QAttribute::defaultNormalAttributeName(), QAttribute::Float, 3, count, offset, stride);
+        geometry->addAttribute(normalAttribute);
         offset += sizeof(float) * 3;
     }
 
     if (hasTangents()) {
-        mesh->addAttribute(QMeshData::defaultTangentAttributeName(), new QAttribute(buf, QAttribute::Float, 4, count, offset, stride));
+        QAttribute *tangentAttribute = new QAttribute(buf, QAttribute::defaultTangentAttributeName(),QAttribute::Float, 4, count, offset, stride);
+        geometry->addAttribute(tangentAttribute);
         offset += sizeof(float) * 4;
     }
 
@@ -285,14 +287,12 @@ QMeshData *ObjLoader::mesh() const
     }
 
     QBuffer *indexBuffer(new QBuffer(QBuffer::IndexBuffer));
-    indexBuffer->setUsage(QBuffer::StaticDraw);
     indexBuffer->setData(indexBytes);
-    mesh->setIndexAttribute(new QAttribute(indexBuffer, ty, 1, m_indices.size(), 0, 0));
+    QAttribute *indexAttribute = new QAttribute(indexBuffer, ty, 1, m_indices.size());
+    indexAttribute->setAttributeType(QAttribute::IndexAttribute);
+    geometry->addAttribute(indexAttribute);
 
-    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
-    qCDebug(Render::Io) << "computed bounds is:" << mesh->boundingBox();
-
-    return mesh;
+    return geometry;
 }
 
 void ObjLoader::updateIndices(const QVector<QVector3D> &positions,

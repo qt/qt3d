@@ -37,9 +37,8 @@
 #ifndef QT3D_QMESH_H
 #define QT3D_QMESH_H
 
-#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -54,7 +53,7 @@ typedef QSharedPointer<QMeshData> QMeshDataPtr;
 * @brief Simple static mesh
 *
 */
-class QT3DRENDERERSHARED_EXPORT QMesh : public QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
@@ -66,18 +65,14 @@ public:
     void setSource(const QUrl &source);
     QUrl source() const;
 
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-
 Q_SIGNALS:
     void sourceChanged();
 
 protected:
     QMesh(QMeshPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMesh)
-    QT3D_CLONEABLE(QMesh)
 };
 
 }

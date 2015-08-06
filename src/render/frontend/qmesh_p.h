@@ -37,9 +37,8 @@
 #ifndef QT3D_QMESH_P_H
 #define QT3D_QMESH_P_H
 
-#include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DRenderer/private/qgeometryrenderer_p.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -48,7 +47,7 @@ namespace Qt3D {
 
 class QMesh;
 
-class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QAbstractMeshPrivate
+class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
 public:
     QMeshPrivate();
