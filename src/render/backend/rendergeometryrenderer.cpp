@@ -95,8 +95,9 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
         if (geometryRenderer->geometry() != Q_NULLPTR)
             m_geometryId = geometryRenderer->geometry()->id();
         m_functor = geometryRenderer->geometryFunctor();
+        if (m_functor && m_manager != Q_NULLPTR)
+            m_manager->addDirtyGeometryRenderer(peerUuid());
         m_dirty = true;
-        // Add to dirty list in the manager
     }
 }
 
@@ -133,6 +134,8 @@ void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
             QGeometryFunctorPtr newFunctor = propertyChange->value().value<QGeometryFunctorPtr>();
             m_dirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
             m_functor = newFunctor;
+            if (m_functor && m_manager != Q_NULLPTR)
+                m_manager->addDirtyGeometryRenderer(peerUuid());
         }
         break;
     }

@@ -150,6 +150,7 @@ public:
 
     QVector<QAspectJobPtr> createRenderBinJobs();
     QVector<QAspectJobPtr> createRenderBufferJobs();
+    QVector<QAspectJobPtr> createGeometryRendererJobs();
     QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
     RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);

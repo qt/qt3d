@@ -785,6 +785,21 @@ QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
     return dirtyBuffersJobs;
 }
 
+QVector<QAspectJobPtr> Renderer::createGeometryRendererJobs()
+{
+    const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
+    QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
+
+    Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
+        HGeometryRenderer geometryRendererHandle = m_geometryRendererManager->lookupHandle(geoRendererId);
+        if (!geometryRendererHandle.isNull()) {
+            // TO DO: Create new job
+        }
+    }
+
+    return dirtyGeometryRendererJobs;
+}
+
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
 QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
 {
