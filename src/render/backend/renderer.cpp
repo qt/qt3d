@@ -60,7 +60,6 @@
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
@@ -135,7 +134,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_meshDataManager(new MeshDataManager())
-    , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())

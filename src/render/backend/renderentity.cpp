@@ -276,18 +276,6 @@ void RenderEntity::removeComponent(const QNodeId &nodeId)
 }
 
 template<>
-HMesh RenderEntity::componentHandle<RenderMesh>() const
-{
-    return m_renderer->meshManager()->lookupHandle(m_meshComponent);
-}
-
-template<>
-RenderMesh *RenderEntity::renderComponent<RenderMesh>() const
-{
-    return m_renderer->meshManager()->lookupResource(m_meshComponent);
-}
-
-template<>
 HMaterial RenderEntity::componentHandle<RenderMaterial>() const
 {
     return m_renderer->materialManager()->lookupHandle(m_materialComponent);
@@ -343,9 +331,6 @@ QNodeId RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraC
 
 template<>
 QNodeId RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
-
-template<>
-QNodeId RenderEntity::componentUuid<RenderMesh>() const { return m_meshComponent; }
 
 template<>
 QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const

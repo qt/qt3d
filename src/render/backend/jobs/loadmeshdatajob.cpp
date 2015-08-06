@@ -87,7 +87,7 @@ void LoadMeshDataJob::run()
             qCWarning(Jobs) << Q_FUNC_INFO << "unknown attribute: position";
     }
     lock.relock();
-    m_renderer->meshManager()->lookupResource(m_meshUuid)->setMeshData(meshDataHandle);
+//    m_renderer->meshManager()->lookupResource(m_meshUuid)->setMeshData(meshDataHandle);
 }
 
 } // namespace Render

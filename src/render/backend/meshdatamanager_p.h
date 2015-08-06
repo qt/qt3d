@@ -39,7 +39,6 @@
 
 #include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qmeshdata.h>
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 
 #include <Qt3DCore/private/qresourcemanager_p.h>

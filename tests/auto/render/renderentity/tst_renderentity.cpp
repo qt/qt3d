@@ -45,6 +45,7 @@
 #include <Qt3DRenderer/QMaterial>
 #include <Qt3DRenderer/QLayer>
 #include <Qt3DRenderer/QShaderData>
+#include <Qt3DRenderer/QGeometryRenderer>
 
 typedef Qt3D::QNodeId (*UuidMethod)(Qt3D::Render::RenderEntity *);
 typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3D::Render::RenderEntity *);
@@ -56,9 +57,9 @@ void noopDeleter(QNode *) {}
 
 
 QNodeId transformUuid(RenderEntity *entity) { return entity->componentUuid<RenderTransform>(); }
-QNodeId meshUuid(RenderEntity *entity) { return entity->componentUuid<RenderMesh>(); }
 QNodeId cameraLensUuid(RenderEntity *entity) { return entity->componentUuid<RenderCameraLens>(); }
 QNodeId materialUuid(RenderEntity *entity) { return entity->componentUuid<RenderMaterial>(); }
+QNodeId geometryRendererUuid(RenderEntity *entity) { return entity->componentUuid<RenderGeometryRenderer>(); }
 
 QList<QNodeId> layersUuid(RenderEntity *entity) { return entity->componentsUuid<RenderLayer>(); }
 QList<QNodeId> shadersUuid(RenderEntity *entity) { return entity->componentsUuid<RenderShaderData>(); }
@@ -79,8 +80,8 @@ private slots:
         QComponent *component = new Qt3D::QTransform;
         QTest::newRow("transform") << component << reinterpret_cast<void*>(transformUuid);
 
-        component = new QMesh;
-        QTest::newRow("mesh") << component << reinterpret_cast<void*>(meshUuid);
+        component = new QGeometryRenderer;
+        QTest::newRow("mesh") << component << reinterpret_cast<void*>(geometryRendererUuid);
 
         component = new QCameraLens;
         QTest::newRow("camera lens") << component << reinterpret_cast<void*>(cameraLensUuid);

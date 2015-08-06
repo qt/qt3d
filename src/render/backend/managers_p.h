@@ -45,7 +45,6 @@
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
@@ -155,17 +154,6 @@ class MatrixManager : public QResourceManager<QMatrix4x4, QNodeId, 16>
 {
 public:
     MatrixManager() {}
-};
-
-class MeshManager : public QResourceManager<
-        RenderMesh,
-        QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
-{
-public:
-    MeshManager() {}
 };
 
 class ShaderManager : public QResourceManager<
@@ -320,7 +308,6 @@ Q_DECLARE_RESOURCE_INFO(Render::RenderEffect, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderLayer, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderMaterial, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderMesh, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderShader, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::SortCriterion, Q_REQUIRES_CLEANUP);
 Q_DECLARE_RESOURCE_INFO(Render::RenderTarget, Q_REQUIRES_CLEANUP);

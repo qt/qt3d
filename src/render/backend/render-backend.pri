@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
     $$PWD/rendermaterial_p.h \
-    $$PWD/rendermesh_p.h \
     $$PWD/qgraphicscontext_p.h \
     $$PWD/rendershader_p.h \
     $$PWD/rendertechnique_p.h \
@@ -65,7 +64,6 @@ SOURCES += \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
     $$PWD/rendermaterial.cpp \
-    $$PWD/rendermesh.cpp \
     $$PWD/qgraphicscontext.cpp \
     $$PWD/rendershader.cpp \
     $$PWD/rendertechnique.cpp \

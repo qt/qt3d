@@ -86,7 +86,6 @@ class RenderTechnique;
 class RenderShader;
 class RenderEntity;
 class MeshDataManager;
-class MeshManager;
 class RenderCommand;
 class CameraManager;
 class EntityManager;
@@ -157,7 +156,6 @@ public:
     void addAllocator(QFrameAllocator *allocator);
 
     inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }
-    inline MeshManager *meshManager() const { return m_meshManager; }
     inline CameraManager *cameraManager() const { return m_cameraManager; }
     inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
     inline MaterialManager *materialManager() const { return m_materialManager; }
@@ -240,7 +238,6 @@ private:
     QScopedPointer<QGraphicsContext> m_graphicsContext;
     QSurface *m_surface;
     MeshDataManager *m_meshDataManager;
-    MeshManager *m_meshManager;
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;

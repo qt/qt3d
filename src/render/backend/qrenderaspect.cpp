@@ -37,7 +37,6 @@
 #include "qrenderaspect.h"
 #include "qrenderaspect_p.h"
 
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
@@ -213,7 +212,6 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
     registerBackendType<QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
     registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(d->m_renderer->layerManager())));
-    registerBackendType<QAbstractMesh>(QBackendNodeFunctorPtr(new Render::RenderMeshCreatorFunctor(d->m_renderer->meshManager(), d->m_renderer->meshDataManager())));
     registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
     registerBackendType<Render::QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
     registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
