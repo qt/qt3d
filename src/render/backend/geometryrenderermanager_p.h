@@ -56,6 +56,13 @@ class GeometryRendererManager : public QResourceManager<
 public:
     GeometryRendererManager();
     ~GeometryRendererManager();
+
+    // Aspect Thread
+    void addDirtyGeometryRenderer(const QNodeId &bufferId);
+    QVector<QNodeId> dirtyGeometryRenderers();
+
+private:
+    QVector<QNodeId> m_dirtyGeometryRenderers;
 };
 
 } // Render
