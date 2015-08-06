@@ -773,8 +773,7 @@ QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
 
     Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
         HBuffer bufferHandle = m_bufferManager->lookupHandle(bufId);
-        RenderBuffer *buffer = m_bufferManager->data(bufferHandle);
-        if (buffer != Q_NULLPTR) {
+        if (!bufferHandle.isNull()) {
             // Create new buffer job
             LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
             job->setRenderer(this);
