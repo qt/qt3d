@@ -76,7 +76,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint
     : QNode(*new QAbstractAttributePrivate(), parent)
 {
     Q_D(QAbstractAttribute);
-    d->m_buffer = buf;
+    setBuffer(buf);
     d->m_count = count;
     d->m_byteOffset = offset;
     d->m_dataType = type;
@@ -93,7 +93,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractB
     : QNode(dd, parent)
 {
     Q_D(QAbstractAttribute);
-    d->m_buffer = buf;
+    setBuffer(buf);
     d->m_name = name;
     d->m_count = count;
     d->m_byteOffset = offset;
@@ -184,18 +184,17 @@ void QAbstractAttribute::setBuffer(QAbstractBuffer *buffer)
         d->notifyObservers(change);
     }
 
-
-    d->m_buffer = buffer;
-    const bool blocked = blockNotifications(true);
-    emit bufferChanged();
-    blockNotifications(blocked);
-
     // We need to add it as a child of the current node if it has been declared inline
     // Or not previously added as a child of the current node so that
     // 1) The backend gets notified about it's creation
     // 2) When the current node is destroyed, it gets destroyed as well
     if (buffer && !buffer->parent())
         buffer->setParent(this);
+
+    d->m_buffer = buffer;
+    const bool blocked = blockNotifications(true);
+    emit bufferChanged();
+    blockNotifications(blocked);
 
     if (d->m_buffer && d->m_changeArbiter) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
