@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/qmeshdata_p.h \
     $$PWD/qmeshdata.h \
     $$PWD/uniformbuffer_p.h \
-    $$PWD/qbufferfunctor.h
+    $$PWD/qbufferfunctor.h \
+    $$PWD/qgeometryfunctor.h
 
 SOURCES += \
     $$PWD/gltfparser.cpp \
