@@ -42,6 +42,7 @@
 #include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
 
 class TestArbiter;
 
@@ -118,6 +119,32 @@ void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
     m_arbiter->sceneChangeEventWithLock(e);
 }
 
+class TestFunctor : public Qt3D::QBufferFunctor
+{
+public:
+    explicit TestFunctor(int size)
+        : m_size(size)
+    {}
+
+    QByteArray operator ()() Q_DECL_FINAL
+    {
+        return QByteArray();
+    }
+
+    bool operator ==(const Qt3D::QBufferFunctor &other) const
+    {
+        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return otherFunctor->m_size == m_size;
+        return false;
+    }
+
+    QT3D_FUNCTOR(TestFunctor)
+
+private:
+    int m_size;
+};
+
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
 class tst_QBuffer: public Qt3D::QNode
@@ -141,11 +168,13 @@ private Q_SLOTS:
         Qt3D::QBuffer *buffer = new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer);
         buffer->setUsage(Qt3D::QBuffer::DynamicRead);
         buffer->setData(QByteArrayLiteral("There's no replacement"));
+        buffer->setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(883)));
         QTest::newRow("vertex") << buffer;
 
         Qt3D::QBuffer *indexBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::IndexBuffer);
-        buffer->setUsage(Qt3D::QBuffer::StaticCopy);
-        buffer->setData(QByteArrayLiteral("For displacement"));
+        indexBuffer->setUsage(Qt3D::QBuffer::StaticCopy);
+        indexBuffer->setData(QByteArrayLiteral("For displacement"));
+        indexBuffer->setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(1340)));
         QTest::newRow("index") << indexBuffer;
     }
 
@@ -165,6 +194,10 @@ private Q_SLOTS:
         QCOMPARE(buffer->usage(), clone->usage());
         QCOMPARE(buffer->type(), clone->type());
         QCOMPARE(buffer->bufferFunctor(), clone->bufferFunctor());
+        if (buffer->bufferFunctor()) {
+            QVERIFY(clone->bufferFunctor());
+            QVERIFY(*clone->bufferFunctor() == *buffer->bufferFunctor());
+        }
     }
 
     void checkPropertyUpdates()
@@ -206,6 +239,19 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().value<QByteArray>(), QByteArrayLiteral("Z28"));
+
+        arbiter.events.clear();
+
+        // WHEN
+        Qt3D::QBufferFunctorPtr functor(new TestFunctor(355));
+        buffer->setBufferFunctor(functor);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "bufferFunctor");
+        QCOMPARE(change->value().value<Qt3D::QBufferFunctorPtr>(), functor);
 
         arbiter.events.clear();
     }

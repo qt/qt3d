@@ -64,6 +64,7 @@ void RenderBuffer::cleanup()
     m_type = QBuffer::VertexBuffer;
     m_usage = QBuffer::StaticDraw;
     m_data.clear();
+    m_functor.reset();
     m_bufferDirty = false;
 }
 
@@ -87,7 +88,7 @@ void RenderBuffer::updateFromPeer(QNode *peer)
         m_data = buffer->data();
         m_functor = buffer->bufferFunctor();
         // Add to dirty list in the manager
-        if (m_functor)
+        if (m_functor && m_manager != Q_NULLPTR)
             m_manager->addDirtyBuffer(peerUuid());
         m_bufferDirty = true;
     }
@@ -110,9 +111,9 @@ void RenderBuffer::sceneChangeEvent(const QSceneChangePtr &e)
             m_bufferDirty = true;
         } else if (propertyName == QByteArrayLiteral("bufferFunctor")) {
             QBufferFunctorPtr newFunctor = propertyChange->value().value<QBufferFunctorPtr>();
-            m_bufferDirty |= !(*newFunctor == *m_functor);
+            m_bufferDirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
             m_functor = newFunctor;
-            if (m_functor)
+            if (m_functor && m_manager != Q_NULLPTR)
                 m_manager->addDirtyBuffer(peerUuid());
         }
     }

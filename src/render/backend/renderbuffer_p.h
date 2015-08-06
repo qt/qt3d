@@ -66,6 +66,7 @@ public:
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
     inline bool isDirty() const { return m_bufferDirty; }
+    inline QBufferFunctorPtr bufferFunctor() const { return m_functor; }
     void unsetDirty();
 
 private:
