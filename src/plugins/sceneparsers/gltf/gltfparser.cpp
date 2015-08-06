@@ -63,6 +63,7 @@
 #include <Qt3DRenderer/QGeometry>
 #include <Qt3DRenderer/QGeometryRenderer>
 #include <Qt3DRenderer/QMaterial>
+#include <Qt3DRenderer/QOpenGLFilter>
 #include <Qt3DRenderer/QParameter>
 #include <Qt3DRenderer/QParameterMapping>
 #include <Qt3DRenderer/QPolygonOffset>
@@ -142,6 +143,8 @@ const QString KEY_ASPECT_RATIO    = QStringLiteral("aspect_ratio");
 const QString KEY_VALUE           = QStringLiteral("value");
 const QString KEY_ENABLE          = QStringLiteral("enable");
 const QString KEY_FUNCTIONS       = QStringLiteral("functions");
+const QString KEY_TECHNIQUE_CORE  = QStringLiteral("techniqueCore");
+const QString KEY_TECHNIQUE_GL2   = QStringLiteral("techniqueGL2");
 
 } // of anonymous namespace
 
@@ -443,6 +446,17 @@ QString GLTFParser::standardAttributeNameFromSemantic(const QString &semantic)
     return QString();
 }
 
+QParameter *GLTFParser::parameterFromTechnique(QTechnique *technique, const QString &parameterName)
+{
+    Q_FOREACH (QParameter *parameter, technique->parameters()) {
+        if (parameter->name() == parameterName) {
+            return parameter;
+        }
+    }
+
+    return Q_NULLPTR;
+}
+
 QEntity* GLTFParser::defaultScene()
 {
     if (m_defaultScene.isEmpty()) {
@@ -467,22 +481,65 @@ QMaterial* GLTFParser::material(const QString &id)
     QJsonObject jsonObj = mats.value(id).toObject();
 
     QJsonObject tech = jsonObj.value(KEY_INSTANCE_TECHNIQUE).toObject();
-    QString tname = tech.value(KEY_TECHNIQUE).toString();
-    if (!m_techniques.contains(tname)) {
-        qCWarning(GLTFParserLog) << "unknown technique" << tname
+
+    //Default ES2 Technique
+    QString techniqueName = tech.value(KEY_TECHNIQUE).toString();
+    if (!m_techniques.contains(techniqueName)) {
+        qCWarning(GLTFParserLog) << "unknown technique" << techniqueName
                                  << "for material" << id << "in GLTF file" << m_basePath;
         return NULL;
     }
+    QTechnique *technique = m_techniques.value(techniqueName);
+    technique->openGLFilter()->setApi(QOpenGLFilter::ES);
+    technique->openGLFilter()->setMajorVersion(2);
+    technique->openGLFilter()->setMinorVersion(0);
+    technique->openGLFilter()->setProfile(QOpenGLFilter::None);
 
-    QTechnique *technique = m_techniques.value(tname);
+
+    //Optional Core technique
+    QTechnique *coreTechnique = Q_NULLPTR;
+    QTechnique *gl2Technique = Q_NULLPTR;
+    QString coreTechniqueName = tech.value(KEY_TECHNIQUE_CORE).toString();
+    if (!coreTechniqueName.isNull()) {
+        if (!m_techniques.contains(coreTechniqueName)) {
+            qCWarning(GLTFParserLog) << "unknown technique" << coreTechniqueName
+                                     << "for material" << id << "in GLTF file" << m_basePath;
+        } else {
+            coreTechnique = m_techniques.value(coreTechniqueName);
+            coreTechnique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
+            coreTechnique->openGLFilter()->setMajorVersion(3);
+            coreTechnique->openGLFilter()->setMinorVersion(1);
+            coreTechnique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+        }
+    }
+    //Optional GL2 technique
+    QString gl2TechniqueName = tech.value(KEY_TECHNIQUE_GL2).toString();
+    if (!gl2TechniqueName.isNull()) {
+        if (!m_techniques.contains(gl2TechniqueName)) {
+            qCWarning(GLTFParserLog) << "unknown technique" << gl2TechniqueName
+                                     << "for material" << id << "in GLTF file" << m_basePath;
+        } else {
+            gl2Technique = m_techniques.value(gl2TechniqueName);
+            gl2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
+            gl2Technique->openGLFilter()->setMajorVersion(2);
+            gl2Technique->openGLFilter()->setMinorVersion(0);
+            gl2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+        }
+    }
+
+
     // glTF doesn't deal in effects, but we need a trivial one to wrap
     // up our techniques
     // However we need to create a unique effect for each material instead
     // of caching because QMaterial does not keep up with effects
     // its not the parent of.
     QEffect* effect = new QEffect;
-    effect->setObjectName(tname);
+    effect->setObjectName(techniqueName);
     effect->addTechnique(technique);
+    if (coreTechnique != Q_NULLPTR)
+        effect->addTechnique(coreTechnique);
+    if (gl2Technique != Q_NULLPTR)
+        effect->addTechnique(gl2Technique);
 
     QMaterial* mat = new QMaterial;
     mat->setEffect(effect);
@@ -491,15 +548,18 @@ QMaterial* GLTFParser::material(const QString &id)
 
     QJsonObject values = tech.value(KEY_VALUES).toObject();
     Q_FOREACH (QString vName, values.keys()) {
-        QParameter *param = Q_NULLPTR;
-        Q_FOREACH (QParameter *parameter, technique->parameters()) {
-            if (parameter->name() == vName) {
-                param = parameter;
-                break;
-            }
+        QParameter *param = parameterFromTechnique(technique, vName);
+
+        if (param == Q_NULLPTR && coreTechnique != Q_NULLPTR) {
+            param = parameterFromTechnique(coreTechnique, vName);
         }
+
+        if (param == Q_NULLPTR && gl2Technique != Q_NULLPTR) {
+            param = parameterFromTechnique(gl2Technique, vName);
+        }
+
         if (param == Q_NULLPTR) {
-            qCWarning(GLTFParserLog) << "unknown parameter:" << vName << "in technique" << tname
+            qCWarning(GLTFParserLog) << "unknown parameter:" << vName << "in technique" << techniqueName
                                      << "processing material" << id;
             continue;
         }

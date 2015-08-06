@@ -127,6 +127,7 @@ private:
     static void renameFromJson(const QJsonObject& json, QObject * const object );
     static QString standardUniformNamefromSemantic(const QString &semantic);
     static QString standardAttributeNameFromSemantic(const QString &semantic);
+    static QParameter *parameterFromTechnique(QTechnique *technique, const QString &parameterName);
 
     QEntity *defaultScene();
     QMaterial *material(const QString &id);

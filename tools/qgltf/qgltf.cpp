@@ -1250,8 +1250,17 @@ private:
 
     struct TechniqueInfo {
         TechniqueInfo() : opaque(true), prog(Q_NULLPTR) { }
-        TechniqueInfo(const QString &name, bool opaque, ProgramInfo *prog) : name(name), opaque(opaque), prog(prog) { }
+        TechniqueInfo(const QString &name, bool opaque, ProgramInfo *prog)
+            : name(name)
+            , opaque(opaque)
+            , prog(prog)
+        {
+            coreName = name + QStringLiteral("_core");
+            gl2Name = name + QStringLiteral("_gl2");
+        }
         QString name;
+        QString coreName;
+        QString gl2Name;
         bool opaque;
         ProgramInfo *prog;
     };
@@ -1769,7 +1778,8 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 break;
         }
         if (needsNewTechnique) {
-            techniqueInfo = TechniqueInfo(newTechniqueName(), opaque, prog);
+            QString techniqueName = newTechniqueName();
+            techniqueInfo = TechniqueInfo(techniqueName, opaque, prog);
             m_techniques.append(techniqueInfo);
             m_usedPrograms.insert(prog);
         }
@@ -1778,6 +1788,10 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
             qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
 
         tech["technique"] = techniqueInfo.name;
+        if (opts.genCore) {
+            tech["techniqueCore"] = techniqueInfo.coreName;
+            tech["techniqueGL2"] = techniqueInfo.gl2Name;
+        }
 
         material["instanceTechnique"] = tech;
         materials[matInfo.name] = material;
@@ -1840,9 +1854,14 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             vertexShader["uri"] = fn;
             writeShader(prog->vertShader, fn, m_subst_es2);
             if (opts.genCore) {
-                fn = QString(QStringLiteral("%1_core.%2")).arg(key).arg("vert");
-                vertexShader["uri_core"] = fn;
+                QJsonObject coreVertexShader;
+                QString coreKey = QString(QStringLiteral("%1_core").arg(key));
+                fn = QString(QStringLiteral("%1.%2")).arg(coreKey).arg("vert");
+                coreVertexShader["type"] = 35633;
+                coreVertexShader["uri"] = fn;
                 writeShader(prog->vertShader, fn, m_subst_core);
+                shaders[coreKey] = coreVertexShader;
+                shaderMap.insert(QString(prog->vertShader + QStringLiteral("_core")), coreKey);
             }
             shaders[key] = vertexShader;
             shaderMap.insert(prog->vertShader, key);
@@ -1857,9 +1876,14 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             fragmentShader["uri"] = fn;
             writeShader(prog->fragShader, fn, m_subst_es2);
             if (opts.genCore) {
-                fn = QString(QStringLiteral("%1_core.%2")).arg(key).arg("frag");
-                fragmentShader["uri_core"] = fn;
+                QJsonObject coreFragmentShader;
+                QString coreKey = QString(QStringLiteral("%1_core").arg(key));
+                fn = QString(QStringLiteral("%1.%2")).arg(coreKey).arg("frag");
+                coreFragmentShader["type"] = 35632;
+                coreFragmentShader["uri"] = fn;
                 writeShader(prog->fragShader, fn, m_subst_core);
+                shaders[coreKey] = coreFragmentShader;
+                shaderMap.insert(QString(prog->fragShader + QStringLiteral("_core")), coreKey);
             }
             shaders[key] = fragmentShader;
             shaderMap.insert(prog->fragShader, key);
@@ -1868,7 +1892,13 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
     obj["shaders"] = shaders;
 
     QJsonObject programs;
-    QHash<ProgramInfo *, QString> programMap;
+    struct ProgramNames
+    {
+        QString name;
+        QString coreName;
+    };
+
+    QHash<ProgramInfo *, ProgramNames> programMap;
     foreach (ProgramInfo *prog, m_usedPrograms) {
         QJsonObject program;
         program["vertexShader"] = shaderMap[prog->vertShader];
@@ -1877,8 +1907,19 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         foreach (const ProgramInfo::Param &param, prog->attributes)
             attrs << param.nameInShader;
         program["attributes"] = attrs;
-        programMap[prog] = newProgramName();
-        programs[programMap[prog]] = program;
+        QString programName = newProgramName();
+        programMap[prog].name = programName;
+        programs[programMap[prog].name] = program;
+        if (opts.genCore) {
+            program["vertexShader"] = shaderMap[QString(prog->vertShader + QStringLiteral("_core"))];
+            program["fragmentShader"] = shaderMap[QString(prog->fragShader + QStringLiteral("_core"))];
+            QJsonArray attrs;
+            foreach (const ProgramInfo::Param &param, prog->attributes)
+                attrs << param.nameInShader;
+            program["attributes"] = attrs;
+            programMap[prog].coreName = programName + QStringLiteral("_core");
+            programs[programMap[prog].coreName] = program;
+        }
     }
     obj["programs"] = programs;
 
@@ -1916,7 +1957,7 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         details["commonProfile"] = commonProfile;
         dp["details"] = details;
         QJsonObject instanceProgram;
-        instanceProgram["program"] = programMap[prog];
+        instanceProgram["program"] = programMap[prog].name;
         QJsonObject progAttrs;
         foreach (const ProgramInfo::Param &param, prog->attributes)
             progAttrs[param.nameInShader] = param.name;
@@ -1941,6 +1982,18 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         passes["defaultPass"] = dp;
         technique["passes"] = passes;
         techniques[techniqueInfo.name] = technique;
+
+        if (opts.genCore) {
+            //GL2 (same as ES2)
+            techniques[techniqueInfo.gl2Name] = technique;
+
+            //Core
+            instanceProgram["program"] = programMap[prog].coreName;
+            dp["instanceProgram"] = instanceProgram;
+            passes["defaultPass"] = dp;
+            technique["passes"] = passes;
+            techniques[techniqueInfo.coreName] = technique;
+        }
     }
     obj["techniques"] = techniques;
 }
