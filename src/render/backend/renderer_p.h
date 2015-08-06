@@ -153,7 +153,7 @@ public:
     QVector<QAspectJobPtr> createRenderBufferJobs();
     QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
-    RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLuint &count, bool forceUpdate);
+    RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
     void addAllocator(QFrameAllocator *allocator);
 
     inline MeshDataManager *meshDataManager() const { return m_meshDataManager; }

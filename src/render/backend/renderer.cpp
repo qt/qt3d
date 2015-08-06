@@ -855,7 +855,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         RenderAttribute *indexAttribute = Q_NULLPTR;
         bool specified = false;
         const bool requiresVAOUpdate = (!vao || !vao->isCreated()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
-        GLuint primitiveCount = rGeometryRenderer->primitiveCount();
+        GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
 
         // Append dirty Geometry to temporary vector
         // so that its dirtiness can be unset later
@@ -928,6 +928,10 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             if (err)
                 qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 
+
+            // Maybe we could cache the VAO and release it only at the end of the exectute frame
+            // in case we are always reusing the same one ?
+
             if (vao && vao->isCreated())
                 vao->release();
 
@@ -952,9 +956,10 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     m_dirtyGeometry.clear();
 }
 
-RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLuint &count, bool forceUpdate)
+RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
 {
     RenderAttribute *indexAttribute = Q_NULLPTR;
+    uint estimatedCount = 0;
 
     Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
@@ -977,28 +982,19 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
             buffer->unsetDirty();
         }
 
-        int estimatedCount = 0;
-
         // Update attribute and create buffer if needed
 
         // Index Attribute
         if (attribute->attributeType() == QAttribute::IndexAttribute) {
             if (attribute->isDirty() || forceUpdate)
                 m_graphicsContext->specifyIndices(buffer);
-            estimatedCount = attribute->count();
             indexAttribute = attribute;
             // Vertex Attribute
         } else if (command->m_parameterAttributeToShaderNames.contains(attribute->name())) {
             if (attribute->isDirty() || forceUpdate)
                 m_graphicsContext->specifyAttribute(attribute, buffer);
-            if (estimatedCount == 0)
-                estimatedCount = attribute->count();
+            estimatedCount = qMax(attribute->count(), estimatedCount);
         }
-
-        // If the count was not specified by the geometry renderer
-        // we set it to what we estimated it to be
-        if (count == 0)
-            count = estimatedCount;
 
         // Append attribute to temporary vector so that its dirtiness
         // can be cleared at the end of the frame
@@ -1010,6 +1006,11 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
         // should remain dirty so that VAO for these commands are properly
         // updated
     }
+
+    // If the count was not specified by the geometry renderer
+    // we set it to what we estimated it to be
+    if (count == 0)
+        count = indexAttribute ? indexAttribute->count() : estimatedCount;
     return indexAttribute;
 }
 
