@@ -41,7 +41,7 @@
 #include <QMetaObject>
 #include <QPlatformSurfaceEvent>
 #include <QOffscreenSurface>
-#include <QWindow>
+#include <QtGui/qwindow.h>
 
 QT_BEGIN_NAMESPACE
 
