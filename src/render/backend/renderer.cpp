@@ -1008,7 +1008,7 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
             // Vertex Attribute
         } else if (command->m_parameterAttributeToShaderNames.contains(attribute->name())) {
             if (attribute->isDirty() || forceUpdate)
-                m_graphicsContext->specifyAttribute(attribute, buffer);
+                m_graphicsContext->specifyAttribute(attribute, buffer, command->m_parameterAttributeToShaderNames.value(attribute->name()));
             estimatedCount = qMax(attribute->count(), estimatedCount);
         }
 

@@ -128,7 +128,7 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer);
+    void specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer, const QString &shaderName);
     void specifyIndices(RenderBuffer *buffer);
     void updateBuffer(RenderBuffer *buffer);
 

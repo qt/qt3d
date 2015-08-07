@@ -869,7 +869,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     m_activeShader->updateUniforms(this, uniforms);
 }
 
-void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer)
+void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer, const QString &shaderName)
 {
     if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
         return;
@@ -878,9 +878,9 @@ void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, Render
     buf.bind();
 
     QOpenGLShaderProgram* prog = activeShader();
-    int location = prog->attributeLocation(attribute->name());
+    int location = prog->attributeLocation(shaderName);
     if (location < 0) {
-        qCWarning(Backend) << "failed to resolve location for attribute:" << attribute->name();
+        qCWarning(Backend) << "failed to resolve location for attribute:" << shaderName;
         return;
     }
     prog->enableAttributeArray(location);
