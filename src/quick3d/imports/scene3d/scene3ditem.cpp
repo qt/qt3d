@@ -288,27 +288,55 @@ public:
 protected:
     const char *vertexShader() const Q_DECL_FINAL
     {
-        return ""
-               "uniform highp mat4 qt_Matrix;                       \n"
-               "attribute highp vec4 qt_VertexPosition;             \n"
-               "attribute highp vec2 qt_VertexTexCoord;             \n"
-               "varying highp vec2 qt_TexCoord;                     \n"
-               "void main() {                                       \n"
-               "   qt_TexCoord = qt_VertexTexCoord;                 \n"
-               "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
-               "}";
+        QOpenGLContext *ctx = QOpenGLContext::currentContext();
+        if (ctx->format().version() >= qMakePair(3, 2) && ctx->format().profile() == QSurfaceFormat::CoreProfile) {
+            return ""
+                   "#version 150 core                                   \n"
+                   "uniform mat4 qt_Matrix;                             \n"
+                   "in vec4 qt_VertexPosition;                          \n"
+                   "in vec2 qt_VertexTexCoord;                          \n"
+                   "out vec2 qt_TexCoord;                               \n"
+                   "void main() {                                       \n"
+                   "   qt_TexCoord = qt_VertexTexCoord;                 \n"
+                   "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
+                   "}";
+        } else {
+            return ""
+                   "uniform highp mat4 qt_Matrix;                       \n"
+                   "in highp vec4 qt_VertexPosition;                    \n"
+                   "in highp vec2 qt_VertexTexCoord;                    \n"
+                   "out highp vec2 qt_TexCoord;                         \n"
+                   "void main() {                                       \n"
+                   "   qt_TexCoord = qt_VertexTexCoord;                 \n"
+                   "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
+                   "}";
+        }
     }
 
     const char *fragmentShader() const Q_DECL_FINAL
     {
-        return ""
-               "uniform highp sampler2D source;                         \n"
-               "uniform highp float qt_Opacity;                         \n"
-               "varying highp vec2 qt_TexCoord;                         \n"
-               "void main() {                                           \n"
-               "   highp vec4 p = texture2D(source, qt_TexCoord);       \n"
-               "   gl_FragColor = vec4(p.rgb * p.a, qt_Opacity * p.a);  \n"
-               "}";
+        QOpenGLContext *ctx = QOpenGLContext::currentContext();
+        if (ctx->format().version() >= qMakePair(3, 2) && ctx->format().profile() == QSurfaceFormat::CoreProfile) {
+            return ""
+                   "#version 150 core                                   \n"
+                   "uniform sampler2D source;                           \n"
+                   "uniform float qt_Opacity;                           \n"
+                   "in vec2 qt_TexCoord;                                \n"
+                   "out vec4 fragColor;                                 \n"
+                   "void main() {                                       \n"
+                   "   vec4 p = texture(source, qt_TexCoord);         \n"
+                   "   fragColor = vec4(p.rgb * p.a, qt_Opacity * p.a); \n"
+                   "}";
+        } else {
+            return ""
+                   "uniform highp sampler2D source;                         \n"
+                   "uniform highp float qt_Opacity;                         \n"
+                   "varying highp vec2 qt_TexCoord;                         \n"
+                   "void main() {                                           \n"
+                   "   highp vec4 p = texture2D(source, qt_TexCoord);       \n"
+                   "   gl_FragColor = vec4(p.rgb * p.a, qt_Opacity * p.a);  \n"
+                   "}";
+        }
     }
 
     void initialize() Q_DECL_FINAL
