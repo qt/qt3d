@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICK3DINPUTPLUGIN_H
-#define QT3DQUICK3DINPUTPLUGIN_H
+#ifndef QT3DQUICK3DLOGICPLUGIN_H
+#define QT3DQUICK3DLOGICPLUGIN_H
 
 #include <QtQml/QQmlExtensionPlugin>
 
 QT_BEGIN_NAMESPACE
 
-class Qt3DQuick3DInputPlugin : public QQmlExtensionPlugin
+class Qt3DQuick3DLogicPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface/1.0")
@@ -51,4 +51,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DQUICK3DINPUTPLUGIN_H
+#endif // QT3DQUICK3DLOGICPLUGIN_H

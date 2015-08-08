@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
+void Qt3DQuick3DLogicPlugin::registerTypes(const char *uri)
 {
     qmlRegisterType<Qt3D::QLogicComponent>(uri, 2, 0, "LogicComponent");
 }
