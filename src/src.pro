@@ -50,6 +50,10 @@ src_quick3d_imports_logic.file = $$PWD/quick3d/imports/logic/importslogic.pro
 src_quick3d_imports_logic.target = sub-quick3d-imports-logic
 src_quick3d_imports_logic.depends = src_logic
 
+src_quick3d_imports_collision.file = $$PWD/quick3d/imports/collision/importscollision.pro
+src_quick3d_imports_collision.target = sub-quick3d-imports-collision
+src_quick3d_imports_collision.depends = src_collision
+
 # Qt3D Scene Parser plugins
 src_plugins_sceneparsers.file = $$PWD/plugins/sceneparsers/sceneparsers.pro
 src_plugins_sceneparsers.target = sub-plugins-sceneparsers
@@ -68,6 +72,7 @@ SUBDIRS += \
     src_quick3d_imports_scene3d \
     src_quick3d_imports_input \
     src_quick3d_imports_logic \
+    src_quick3d_imports_collision \
     src_plugins_sceneparsers
 
 
