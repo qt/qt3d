@@ -15,6 +15,10 @@ src_logic.subdir = $$PWD/logic
 src_logic.target = sub-logic
 src_logic.depends = src_core
 
+src_collision.subdir = $$PWD/collision
+src_collision.target = sub-collision
+src_collision.depends = src_core
+
 # Quick3D libs
 src_quick3d_core.subdir = $$PWD/quick3d/quick3d
 src_quick3d_core.target = sub-quick3d-core
@@ -56,6 +60,7 @@ SUBDIRS += \
     src_render \
     src_input \
     src_logic \
+    src_collision \
     src_quick3d_core \
     src_quick3d_core_imports \
     src_quick3d_render \

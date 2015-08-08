@@ -1,0 +1,62 @@
+include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+
+project                 = Qt3DCollision
+description             = Qt3D Collision Reference Documentation
+version                 = $QT_VERSION
+
+examplesinstallpath     = qt3d
+
+qhp.projects            = Qt3DCollision
+
+qhp.Qt3DCollision.file                = qt3dcollision.qhp
+qhp.Qt3DCollision.namespace           = org.qt-project.qt3dcollision.$QT_VERSION_TAG
+qhp.Qt3DCollision.virtualFolder       = qt3dcollision
+qhp.Qt3DCollision.indexTitle          = Qt3D Module
+qhp.Qt3DCollision.indexRoot           =
+
+qhp.Qt3DCollision.filterAttributes                   = qt3dcollision $QT_VERSION qtrefdoc
+qhp.Qt3DCollision.customFilters.Qt.name              = Qt3DCollision $QT_VERSION
+qhp.Qt3DCollision.customFilters.Qt.filterAttributes  = qt3dcollision $QT_VERSION
+
+qhp.Qt3DCollision.subprojects                    = classes qmltypes
+
+qhp.Qt3DCollision.subprojects.classes.title      = C++ Classes
+qhp.Qt3DCollision.subprojects.classes.indexTitle = Qt3D Collision C++ Classes
+qhp.Qt3DCollision.subprojects.classes.selectors  = class fake:headerfile
+qhp.Qt3DCollision.subprojects.classes.sortPages  = true
+
+qhp.Qt3DCollision.subprojects.qmltypes.title      = QML Types
+qhp.Qt3DCollision.subprojects.qmltypes.indexTitle = Qt3D Collision QML Types
+qhp.Qt3DCollision.subprojects.qmltypes.selectors  = qmlclass
+qhp.Qt3DCollision.subprojects.qmltypes.sortPages  = true
+
+tagfile                 = ../../../doc/qt3dcollision/qt3dcollision.tags
+
+depends                 += qtcore qtqml qtquick qtdoc qt3drenderer
+
+headerdirs += .. \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input
+
+sourcedirs += .. \
+              ../../plugins \
+              ../../quick3d/quick3d \
+              ../../input
+
+exampledirs += src/snippets
+
+#excludedirs +=
+
+imagedirs   += images \
+               ../../../examples/qt3d/shadow-map-qml/doc/images
+
+Cpp.ignoretokens     += QT3DCOLLISION_PRIVATE_EXPORT \
+                        QT3DINPUTSHARED_EXPORT \
+                        QT3DCOLLISIONSHARED_EXPORT
+
+Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
+
+navigation.landingpage = "Qt3D Module"
+navigation.cppclassespage = "Qt3D Collision C++ Classes"
+navigation.qmltypespage = "Qt3D Collision QML Types"
