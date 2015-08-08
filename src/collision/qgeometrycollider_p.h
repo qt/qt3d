@@ -34,21 +34,27 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qgeometrycollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#ifndef QT3D_QGEOMETRYCOLLIDER_P_H
+#define QT3D_QGEOMETRYCOLLIDER_P_H
+
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QGeometryCollider;
+
+class QGeometryColliderPrivate : public QComponentPrivate
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
-}
+    QGeometryColliderPrivate();
+
+    Q_DECLARE_PUBLIC(QGeometryCollider)
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QGEOMETRYCOLLIDER_P_H
+

@@ -34,21 +34,57 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qgeometrycollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#include "qgeometrycollider.h"
+#include "qgeometrycollider_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+/*!
+    \class Qt3D::QGeometryColliderPrivate
+    \internal
+*/
+QGeometryColliderPrivate::QGeometryColliderPrivate()
+    : QComponentPrivate()
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
+}
+
+/*!
+    \class Qt3D::QGeometryCollider
+    \inmodule Qt3DCollision
+    \since 5.5
+    \brief Represents a geometric mesh used for collision detection
+*/
+
+/*!
+    \qmltype GeometryCollider
+    \inqmlmodule Qt3D.Collision
+    \instantiates Qt3D::QGeometryCollider
+    \inherits Component3D
+    \since 5.5
+*/
+
+/*!
+    Constructs a new QGeometryCollider instance with parent \a parent.
+ */
+QGeometryCollider::QGeometryCollider(QNode *parent)
+    : QComponent(*new QGeometryColliderPrivate, parent)
+{
+}
+
+/*! \internal */
+QGeometryCollider::QGeometryCollider(QGeometryColliderPrivate &dd, QNode *parent)
+    : QComponent(dd, parent)
+{
+}
+
+QGeometryCollider::~QGeometryCollider()
+{
+    QNode::cleanup();
 }
 
 QT_END_NAMESPACE
+
+} // namespace Qt3D
+

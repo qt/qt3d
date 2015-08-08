@@ -34,21 +34,38 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qgeometrycollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#ifndef QT3D_QGEOMETRYCOLLIDER_H
+#define QT3D_QGEOMETRYCOLLIDER_H
+
+#include <QComponent>
+#include <Qt3DCollision/qt3dcollision_global.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QGeometryColliderPrivate;
+
+class QT3DCOLLISIONSHARED_EXPORT QGeometryCollider : public QComponent
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
-}
+    Q_OBJECT
+    // TODO: Add QAbstractGeometry * property to hold the mesh data. Can we reuse functors from render aspect?
+
+public:
+    explicit QGeometryCollider(QNode *parent = 0);
+    ~QGeometryCollider();
+
+protected:
+    QGeometryCollider(QGeometryColliderPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QGeometryCollider)
+    QT3D_CLONEABLE(QGeometryCollider)
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QGEOMETRYCOLLIDER_H

@@ -9,10 +9,13 @@ HEADERS += \
     $$PWD/qboxcollider.h \
     $$PWD/qboxcollider_p.h \
     $$PWD/qcapsulecollider.h \
-    $$PWD/qcapsulecollider_p.h
+    $$PWD/qcapsulecollider_p.h \
+    $$PWD/qgeometrycollider.h \
+    $$PWD/qgeometrycollider_p.h
 
 SOURCES += \
     $$PWD/qcollisionaspect.cpp \
     $$PWD/qspherecollider.cpp \
     $$PWD/qboxcollider.cpp \
-    $$PWD/qcapsulecollider.cpp
+    $$PWD/qcapsulecollider.cpp \
+    $$PWD/qgeometrycollider.cpp
