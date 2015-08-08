@@ -271,7 +271,7 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
 
         // Create the jobs to build the frame
-        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
+        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer->renderSceneRoot()));
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
         d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));

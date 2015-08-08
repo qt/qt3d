@@ -47,9 +47,8 @@ namespace Qt3D {
 
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(Renderer *renderer, RenderEntity *root)
-    : m_renderer(renderer)
-    , m_root(root)
+FramePreparationJob::FramePreparationJob(RenderEntity *root)
+    : m_root(root)
 {
 }
 
