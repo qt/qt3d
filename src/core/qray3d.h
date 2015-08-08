@@ -51,7 +51,7 @@ class QT3DCORESHARED_EXPORT QRay3D
 public:
     QRay3D();
     explicit QRay3D(const QVector3D &origin, const QVector3D &direction = QVector3D(0.0f, 0.0f, 1.0f));
-    virtual ~QRay3D();
+    ~QRay3D();
 
     QVector3D origin() const;
     void setOrigin(const QVector3D &value);
