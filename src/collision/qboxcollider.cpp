@@ -34,17 +34,91 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#include "qboxcollider.h"
+#include "qboxcollider_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+/*!
+    \class Qt3D::QBoxColliderPrivate
+    \internal
+*/
+QBoxColliderPrivate::QBoxColliderPrivate()
+    : QComponentPrivate()
+    , m_center()
+    , m_radii(0.5f, 0.5f, 0.5f) // Unit cube
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
+}
+
+/*!
+    \class Qt3D::QBoxCollider
+    \inmodule Qt3DCollision
+    \since 5.5
+    \brief Represents a box used for collision detection
+*/
+
+/*!
+    \qmltype BoxCollider
+    \inqmlmodule Qt3D.Collision
+    \instantiates Qt3D::QBoxCollider
+    \inherits Component3D
+    \since 5.5
+*/
+
+/*!
+    Constructs a new QBoxCollider instance with parent \a parent.
+ */
+QBoxCollider::QBoxCollider(QNode *parent)
+    : QComponent(*new QBoxColliderPrivate, parent)
+{
+}
+
+/*! \internal */
+QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
+    : QComponent(dd, parent)
+{
+}
+
+QBoxCollider::~QBoxCollider()
+{
+    QNode::cleanup();
+}
+
+QVector3D QBoxCollider::center() const
+{
+    Q_D(const QBoxCollider);
+    return d->m_center;
+}
+
+QVector3D QBoxCollider::radii() const
+{
+    Q_D(const QBoxCollider);
+    return d->m_radii;
+}
+
+void QBoxCollider::setCenter(const QVector3D &center)
+{
+    Q_D(QBoxCollider);
+    if (d->m_center == center)
+        return;
+
+    d->m_center = center;
+    emit centerChanged(center);
+}
+
+void QBoxCollider::setRadii(const QVector3D &radii)
+{
+    Q_D(QBoxCollider);
+    if (d->m_radii == radii)
+        return;
+
+    d->m_radii = radii;
+    emit radiiChanged(radii);
 }
 
 QT_END_NAMESPACE
+
+} // namespace Qt3D
+

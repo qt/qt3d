@@ -34,17 +34,50 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#ifndef QT3D_QBOXCOLLIDER_H
+#define QT3D_QBOXCOLLIDER_H
+
+#include <QComponent>
+#include <Qt3DCollision/qt3dcollision_global.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QBoxColliderPrivate;
+
+class QT3DCOLLISIONSHARED_EXPORT QBoxCollider : public QComponent
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
-}
+    Q_OBJECT
+    Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(QVector3D radii READ radii WRITE setRadii NOTIFY radiiChanged)
+
+public:
+    explicit QBoxCollider(QNode *parent = 0);
+    ~QBoxCollider();
+
+    QVector3D center() const;
+    QVector3D radii() const;
+
+public Q_SLOTS:
+    void setCenter(const QVector3D &center);
+    void setRadii(const QVector3D &radii);
+
+Q_SIGNALS:
+    void centerChanged(QVector3D center);
+    void radiiChanged(QVector3D radii);
+
+protected:
+    QBoxCollider(QBoxColliderPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QBoxCollider)
+    QT3D_CLONEABLE(QBoxCollider)
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QBOXCOLLIDER_H
