@@ -34,19 +34,65 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#ifndef QT3D_QCAPSULECOLLIDER_H
+#define QT3D_QCAPSULECOLLIDER_H
+
+#include <QComponent>
+#include <Qt3DCollision/qt3dcollision_global.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QCapsuleColliderPrivate;
+
+class QT3DCOLLISIONSHARED_EXPORT QCapsuleCollider : public QComponent
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
-}
+    Q_OBJECT
+    Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
+    Q_PROPERTY(Direction axisDirection READ axisDirection WRITE setAxisDirection NOTIFY axisDirectionChanged)
+
+public:
+    explicit QCapsuleCollider(QNode *parent = 0);
+    ~QCapsuleCollider();
+
+    enum Direction {
+        XAxis,
+        YAxis,
+        ZAxis
+    };
+    Q_ENUM(Direction)
+
+    QVector3D center() const;
+    float radius() const;
+    float length() const;
+    Direction axisDirection() const;
+
+public Q_SLOTS:
+    void setCenter(const QVector3D &center);
+    void setRadius(float radius);
+    void setLength(float length);
+    void setAxisDirection(Qt3D::QCapsuleCollider::Direction axisDirection);
+
+Q_SIGNALS:
+    void centerChanged(QVector3D center);
+    void radiusChanged(float radius);
+    void lengthChanged(float length);
+    void axisDirectionChanged(Qt3D::QCapsuleCollider::Direction axisDirection);
+
+protected:
+    QCapsuleCollider(QCapsuleColliderPrivate &dd, QNode *parent = 0);
+
+private:
+    Q_DECLARE_PRIVATE(QCapsuleCollider)
+    QT3D_CLONEABLE(QCapsuleCollider)
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QCAPSULECOLLIDER_H

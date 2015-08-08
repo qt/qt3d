@@ -34,19 +34,33 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#ifndef QT3D_QCAPSULECOLLIDER_P_H
+#define QT3D_QCAPSULECOLLIDER_P_H
+
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+class QCapsuleCollider;
+
+class QCapsuleColliderPrivate : public QComponentPrivate
 {
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
-}
+    QCapsuleColliderPrivate();
+
+    Q_DECLARE_PUBLIC(QCapsuleCollider)
+
+    QVector3D m_center;
+    float m_radius;
+    float m_length;
+    QCapsuleCollider::Direction m_axisDirection;
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QCAPSULECOLLIDER_P_H
+

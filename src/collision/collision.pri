@@ -7,9 +7,12 @@ HEADERS += \
     $$PWD/qspherecollider.h \
     $$PWD/qspherecollider_p.h \
     $$PWD/qboxcollider.h \
-    $$PWD/qboxcollider_p.h
+    $$PWD/qboxcollider_p.h \
+    $$PWD/qcapsulecollider.h \
+    $$PWD/qcapsulecollider_p.h
 
 SOURCES += \
     $$PWD/qcollisionaspect.cpp \
     $$PWD/qspherecollider.cpp \
-    $$PWD/qboxcollider.cpp
+    $$PWD/qboxcollider.cpp \
+    $$PWD/qcapsulecollider.cpp
