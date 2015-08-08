@@ -34,23 +34,55 @@
 **
 ****************************************************************************/
 
-#include <QtQml>
-#include <Qt3DCollision/qabstractcollider.h>
-#include <Qt3DCollision/qboxcollider.h>
-#include <Qt3DCollision/qcapsulecollider.h>
-#include <Qt3DCollision/qgeometrycollider.h>
-#include <Qt3DCollision/qspherecollider.h>
-#include "qt3dquick3dcollisionplugin.h"
+#include "qabstractcollider.h"
+#include "qabstractcollider_p.h"
 
 QT_BEGIN_NAMESPACE
 
-void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
+namespace Qt3D {
+
+/*!
+    \class Qt3D::QAbstractColliderPrivate
+    \internal
+*/
+QAbstractColliderPrivate::QAbstractColliderPrivate()
+    : QComponentPrivate()
 {
-    qmlRegisterUncreatableType<Qt3D::QAbstractCollider>(uri, 2, 0, "AbstractCollider", "AbstractColliders are only used for references");
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
+}
+
+/*! \internal */
+QAbstractCollider::QAbstractCollider(QAbstractColliderPrivate &dd, QNode *parent)
+    : QComponent(dd, parent)
+{
+}
+
+QAbstractCollider::~QAbstractCollider()
+{
+    QNode::cleanup();
+}
+
+void QAbstractCollider::onEntered(QCollisionEvent *e)
+{
+    // TODO: Emit with other collider (or event for more info about the collision)
+    Q_UNUSED(e);
+    emit entered(Q_NULLPTR);
+}
+
+void QAbstractCollider::onCollidingWith(QCollisionEvent *e)
+{
+    // TODO: Emit with other collider (or event for more info about the collision)
+    Q_UNUSED(e);
+    emit collidingWith(Q_NULLPTR);
+}
+
+void QAbstractCollider::onExited(QCollisionEvent *e)
+{
+    // TODO: Emit with other collider (or event for more info about the collision)
+    Q_UNUSED(e);
+    emit exited(Q_NULLPTR);
 }
 
 QT_END_NAMESPACE
+
+} // namespace Qt3D
+
