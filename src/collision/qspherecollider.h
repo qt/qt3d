@@ -39,6 +39,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCollision/qt3dcollision_global.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,10 +50,23 @@ class QSphereColliderPrivate;
 class QT3DCOLLISIONSHARED_EXPORT QSphereCollider : public QComponent
 {
     Q_OBJECT
+    Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
 
 public:
     explicit QSphereCollider(QNode *parent = 0);
     ~QSphereCollider();
+
+    QVector3D center() const;
+    float radius() const;
+
+public Q_SLOTS:
+    void setCenter(const QVector3D &center);
+    void setRadius(float radius);
+
+Q_SIGNALS:
+    void centerChanged(QVector3D center);
+    void radiusChanged(float radius);
 
 protected:
     QSphereCollider(QSphereColliderPrivate &dd, QNode *parent = 0);

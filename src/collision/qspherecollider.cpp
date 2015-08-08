@@ -86,6 +86,38 @@ QSphereCollider::~QSphereCollider()
     QNode::cleanup();
 }
 
+QVector3D QSphereCollider::center() const
+{
+    Q_D(const QSphereCollider);
+    return d->m_center;
+}
+
+float QSphereCollider::radius() const
+{
+    Q_D(const QSphereCollider);
+    return d->m_radius;
+}
+
+void QSphereCollider::setCenter(const QVector3D &center)
+{
+    Q_D(QSphereCollider);
+    if (d->m_center == center)
+        return;
+
+    d->m_center = center;
+    emit centerChanged(center);
+}
+
+void QSphereCollider::setRadius(float radius)
+{
+    Q_D(QSphereCollider);
+    if (d->m_radius == radius)
+        return;
+
+    d->m_radius = radius;
+    emit radiusChanged(radius);
+}
+
 }
 
 QT_END_NAMESPACE
