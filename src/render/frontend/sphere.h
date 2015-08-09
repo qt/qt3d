@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Q_AUTOTEST_EXPORT Sphere : public QBoundingSphere
+class QT3DRENDERERSHARED_EXPORT Sphere : public QBoundingSphere
 {
 public:
     inline Sphere(const QNodeId &i = QNodeId())
