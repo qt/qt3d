@@ -37,7 +37,7 @@
 #ifndef QT3D_COLLISION_QSPHERECOLLIDER_P_H
 #define QT3D_COLLISION_QSPHERECOLLIDER_P_H
 
-#include <private/qcomponent_p.h>
+#include <Qt3DCollision/private/qabstractcollider_p.h>
 #include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3D {
 
 class QSphereCollider;
 
-class QSphereColliderPrivate : public QComponentPrivate
+class QSphereColliderPrivate : public QAbstractColliderPrivate
 {
 public:
     QSphereColliderPrivate();

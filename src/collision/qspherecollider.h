@@ -37,7 +37,7 @@
 #ifndef QT3D_QCOLLISIONCOMPONENT_H
 #define QT3D_QCOLLISIONCOMPONENT_H
 
-#include <Qt3DCore/qcomponent.h>
+#include <Qt3DCollision/qabstractcollider.h>
 #include <Qt3DCollision/qt3dcollision_global.h>
 #include <QtGui/qvector3d.h>
 
@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QSphereColliderPrivate;
 
-class QT3DCOLLISIONSHARED_EXPORT QSphereCollider : public QComponent
+class QT3DCOLLISIONSHARED_EXPORT QSphereCollider : public QAbstractCollider
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D center READ center WRITE setCenter NOTIFY centerChanged)

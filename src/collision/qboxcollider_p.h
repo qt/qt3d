@@ -37,7 +37,7 @@
 #ifndef QT3D_QBOXCOLLIDER_P_H
 #define QT3D_QBOXCOLLIDER_P_H
 
-#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DCollision/private/qabstractcollider_p.h>
 #include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3D {
 
 class QBoxCollider;
 
-class QBoxColliderPrivate : public QComponentPrivate
+class QBoxColliderPrivate : public QAbstractColliderPrivate
 {
     QBoxColliderPrivate();
 

@@ -46,7 +46,7 @@ namespace Qt3D {
     \internal
 */
 QGeometryColliderPrivate::QGeometryColliderPrivate()
-    : QComponentPrivate()
+    : QAbstractColliderPrivate()
 {
 }
 
@@ -69,13 +69,13 @@ QGeometryColliderPrivate::QGeometryColliderPrivate()
     Constructs a new QGeometryCollider instance with parent \a parent.
  */
 QGeometryCollider::QGeometryCollider(QNode *parent)
-    : QComponent(*new QGeometryColliderPrivate, parent)
+    : QAbstractCollider(*new QGeometryColliderPrivate, parent)
 {
 }
 
 /*! \internal */
 QGeometryCollider::QGeometryCollider(QGeometryColliderPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : QAbstractCollider(dd, parent)
 {
 }
 

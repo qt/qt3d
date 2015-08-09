@@ -46,7 +46,7 @@ namespace Qt3D {
     \internal
 */
 QBoxColliderPrivate::QBoxColliderPrivate()
-    : QComponentPrivate()
+    : QAbstractColliderPrivate()
     , m_center()
     , m_radii(0.5f, 0.5f, 0.5f) // Unit cube
 {
@@ -71,13 +71,13 @@ QBoxColliderPrivate::QBoxColliderPrivate()
     Constructs a new QBoxCollider instance with parent \a parent.
  */
 QBoxCollider::QBoxCollider(QNode *parent)
-    : QComponent(*new QBoxColliderPrivate, parent)
+    : QAbstractCollider(*new QBoxColliderPrivate, parent)
 {
 }
 
 /*! \internal */
 QBoxCollider::QBoxCollider(QBoxColliderPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : QAbstractCollider(dd, parent)
 {
 }
 

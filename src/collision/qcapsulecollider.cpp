@@ -46,7 +46,7 @@ namespace Qt3D {
     \internal
 */
 QCapsuleColliderPrivate::QCapsuleColliderPrivate()
-    : QComponentPrivate()
+    : QAbstractColliderPrivate()
     , m_center()
     , m_radius(1.0f)
     , m_length(1.0f)
@@ -73,13 +73,13 @@ QCapsuleColliderPrivate::QCapsuleColliderPrivate()
     Constructs a new QCapsuleCollider instance with parent \a parent.
  */
 QCapsuleCollider::QCapsuleCollider(QNode *parent)
-    : QComponent(*new QCapsuleColliderPrivate, parent)
+    : QAbstractCollider(*new QCapsuleColliderPrivate, parent)
 {
 }
 
 /*! \internal */
 QCapsuleCollider::QCapsuleCollider(QCapsuleColliderPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : QAbstractCollider(dd, parent)
 {
 }
 

@@ -46,7 +46,7 @@ namespace Qt3D {
     \internal
 */
 QSphereColliderPrivate::QSphereColliderPrivate()
-    : QComponentPrivate()
+    : QAbstractColliderPrivate()
     , m_center()
     , m_radius(1.0f)
 {
@@ -71,13 +71,13 @@ QSphereColliderPrivate::QSphereColliderPrivate()
     Constructs a new QSphereCollider instance with parent \a parent.
  */
 QSphereCollider::QSphereCollider(QNode *parent)
-    : QComponent(*new QSphereColliderPrivate, parent)
+    : QAbstractCollider(*new QSphereColliderPrivate, parent)
 {
 }
 
 /*! \internal */
 QSphereCollider::QSphereCollider(QSphereColliderPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+    : QAbstractCollider(dd, parent)
 {
 }
 

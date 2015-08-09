@@ -37,7 +37,7 @@
 #ifndef QT3D_QGEOMETRYCOLLIDER_H
 #define QT3D_QGEOMETRYCOLLIDER_H
 
-#include <QComponent>
+#include <Qt3DCollision/qabstractcollider.h>
 #include <Qt3DCollision/qt3dcollision_global.h>
 #include <QtGui/qvector3d.h>
 
@@ -47,7 +47,7 @@ namespace Qt3D {
 
 class QGeometryColliderPrivate;
 
-class QT3DCOLLISIONSHARED_EXPORT QGeometryCollider : public QComponent
+class QT3DCOLLISIONSHARED_EXPORT QGeometryCollider : public QAbstractCollider
 {
     Q_OBJECT
     // TODO: Add QAbstractGeometry * property to hold the mesh data. Can we reuse functors from render aspect?

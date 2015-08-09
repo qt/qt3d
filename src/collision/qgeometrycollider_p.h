@@ -37,7 +37,7 @@
 #ifndef QT3D_QGEOMETRYCOLLIDER_P_H
 #define QT3D_QGEOMETRYCOLLIDER_P_H
 
-#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DCollision/private/qabstractcollider_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3D {
 
 class QGeometryCollider;
 
-class QGeometryColliderPrivate : public QComponentPrivate
+class QGeometryColliderPrivate : public QAbstractColliderPrivate
 {
     QGeometryColliderPrivate();
 
