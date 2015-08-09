@@ -78,7 +78,6 @@ private:
     // As this is a default provided geometry renderer, no one should be able
     // to modify the QGeometryRenderer's properties
 
-    void setInstanceCount(int instanceCount);
     void setPrimitiveCount(int primitiveCount);
     void setBaseVertex(int baseVertex);
     void setBaseInstance(int baseInstance);
