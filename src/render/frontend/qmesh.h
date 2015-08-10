@@ -46,9 +46,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3D {
 
 class QMeshPrivate;
-class QMeshData;
 
-typedef QSharedPointer<QMeshData> QMeshDataPtr;
 /**
 * @brief Simple static mesh
 *

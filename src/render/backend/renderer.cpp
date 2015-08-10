@@ -53,7 +53,6 @@
 #include <Qt3DRenderer/private/blendstate_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
@@ -134,7 +133,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_meshDataManager(new MeshDataManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())

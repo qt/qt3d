@@ -59,7 +59,6 @@
 #include <Qt3DRenderer/QGeometry>
 #include <Qt3DRenderer/QAttribute>
 #include <Qt3DRenderer/QBuffer>
-#include <Qt3DRenderer/QMeshData>
 
 #include <QPropertyAnimation>
 

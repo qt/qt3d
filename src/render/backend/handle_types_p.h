@@ -47,7 +47,6 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3D {
 
-class QMeshData;
 class TexImageData;
 
 namespace Render {
@@ -86,7 +85,6 @@ typedef QHandle<RenderMaterial, 16> HMaterial;
 typedef QHandle<QMatrix4x4, 16> HMatrix;
 typedef QHandle<RenderShader, 16> HShader;
 typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<QMeshData, 16> HMeshData;
 typedef QHandle<RenderShader, 16> HShader;
 typedef QHandle<SortCriterion, 8> HSortCriterion;
 typedef QHandle<RenderTechnique, 16> HTechnique;

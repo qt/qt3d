@@ -35,7 +35,6 @@
 ****************************************************************************/
 
 #include "renderentity_p.h"
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/qabstractlight.h>
@@ -93,9 +92,9 @@ void RenderEntity::cleanup()
 
         // Clear components
         m_transformComponent = QNodeId();
-        m_meshComponent = QNodeId();
         m_cameraComponent = QNodeId();
         m_materialComponent = QNodeId();
+        m_geometryRendererComponent = QNodeId();
         m_layerComponents.clear();
         m_shaderDataComponents.clear();
     }
@@ -141,8 +140,8 @@ void RenderEntity::updateFromPeer(QNode *peer)
     // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
     m_transformComponent = QNodeId();
     m_materialComponent = QNodeId();
-    m_meshComponent = QNodeId();
     m_cameraComponent = QNodeId();
+    m_geometryRendererComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
 
@@ -243,8 +242,6 @@ void RenderEntity::addComponent(QComponent *component)
 
     if (qobject_cast<QTransform*>(component) != Q_NULLPTR)
         m_transformComponent = component->id();
-    else if (qobject_cast<QAbstractMesh *>(component) != Q_NULLPTR)
-        m_meshComponent = component->id();
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = component->id();
     else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
@@ -261,8 +258,6 @@ void RenderEntity::removeComponent(const QNodeId &nodeId)
 {
     if (m_transformComponent == nodeId)
         m_transformComponent = QNodeId();
-    else if (m_meshComponent == nodeId)
-        m_meshComponent = QNodeId();
     else if (m_cameraComponent == nodeId)
         m_cameraComponent = QNodeId();
     else if (m_layerComponents.contains(nodeId))

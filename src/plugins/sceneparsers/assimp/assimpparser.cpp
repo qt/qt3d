@@ -41,7 +41,6 @@
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
-#include <private/qabstractmesh_p.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -515,9 +514,9 @@ void AssimpParser::loadMaterial(uint materialIndex)
 }
 
 /*!
- * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QMeshData
+ * Converts the Assimp aiMesh mesh identified by \a meshIndex to a QGeometryRenderer
  * and adds it to a dictionary of meshes.
- * \sa QMeshData
+ * \sa QGeometryRenderer
  */
 void AssimpParser::loadMesh(uint meshIndex)
 {

@@ -37,7 +37,6 @@
 #include "qrenderaspect.h"
 #include "qrenderaspect_p.h"
 
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
@@ -71,7 +70,6 @@
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
@@ -89,7 +87,6 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/loadmeshdatajob_p.h>
 #include <Qt3DRenderer/private/loadtexturedatajob_p.h>
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
@@ -275,14 +272,6 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
         d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
-
-        const QHash<QNodeId, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
-        Q_FOREACH (const QNodeId &meshId, meshSources.keys()) {
-            Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
-            loadMeshJob->setRenderer(d->m_renderer);
-            jobs.append(loadMeshJob);
-        }
-
 
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {

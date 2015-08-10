@@ -43,7 +43,6 @@
 
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qmeshdata.h>
 
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 

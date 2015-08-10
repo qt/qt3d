@@ -37,7 +37,6 @@
 
 #include <QtQml>
 #include "qt3dquick3drendererplugin.h"
-#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qsceneloader.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -204,7 +203,6 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
 
     // Meshes
-    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterType<Qt3D::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
     qmlRegisterType<Qt3D::QCylinderMesh>(uri, 2, 0, "CylinderMesh");

@@ -44,8 +44,6 @@
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/qmeshdata_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
@@ -138,11 +136,11 @@ QStringList RenderView::initializeStandardAttributeNames()
 {
     QStringList attributesNames;
 
-    attributesNames << QMeshData::defaultPositionAttributeName();
-    attributesNames << QMeshData::defaultTextureCoordinateAttributeName();
-    attributesNames << QMeshData::defaultNormalAttributeName();
-    attributesNames << QMeshData::defaultColorAttributeName();
-    attributesNames << QMeshData::defaultTangentAttributeName();
+    attributesNames << QAttribute::defaultPositionAttributeName();
+    attributesNames << QAttribute::defaultTextureCoordinateAttributeName();
+    attributesNames << QAttribute::defaultNormalAttributeName();
+    attributesNames << QAttribute::defaultColorAttributeName();
+    attributesNames << QAttribute::defaultTangentAttributeName();
 
     return attributesNames;
 }

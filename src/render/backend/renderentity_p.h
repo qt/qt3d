@@ -153,7 +153,6 @@ private:
 
     // Handles to Components
     QNodeId m_transformComponent;
-    QNodeId m_meshComponent;
     QNodeId m_materialComponent;
     QNodeId m_cameraComponent;
     QList<QNodeId> m_layerComponents;

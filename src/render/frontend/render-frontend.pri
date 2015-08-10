@@ -58,8 +58,6 @@ HEADERS += \
     $$PWD/qalphacoverage.h \
     $$PWD/qannotation.h \
     $$PWD/qannotation_p.h \
-    $$PWD/qabstractmesh_p.h \
-    $$PWD/qabstractmesh.h \
     $$PWD/qparametermapping_p.h \
     $$PWD/qparametermapping.h \
     $$PWD/qshaderdata.h \
@@ -80,7 +78,6 @@ HEADERS += \
     $$PWD/qstencilmask.h \
     $$PWD/qgeometryrenderer.h \
     $$PWD/qgeometry.h \
-    $$PWD/qmeshv2.h \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qwindow.h \
     $$PWD/qwindow_p.h
@@ -123,7 +120,6 @@ SOURCES += \
     $$PWD/qrendertarget.cpp \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qannotation.cpp \
-    $$PWD/qabstractmesh.cpp \
     $$PWD/qparametermapping.cpp \
     $$PWD/qshaderdata.cpp \
     $$PWD/qpolygonoffset.cpp \
@@ -140,5 +136,4 @@ SOURCES += \
     $$PWD/qstencilmask.cpp \
     $$PWD/qgeometryrenderer.cpp \
     $$PWD/qgeometry.cpp \
-    $$PWD/qmeshv2.cpp \
     $$PWD/qwindow.cpp

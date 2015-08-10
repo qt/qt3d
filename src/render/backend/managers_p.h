@@ -64,8 +64,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QMeshData;
-
 namespace Render {
 
 class AttachmentManager : public QResourceManager<

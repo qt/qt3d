@@ -38,7 +38,6 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
-#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/sphere.h>
 
 QT_BEGIN_NAMESPACE

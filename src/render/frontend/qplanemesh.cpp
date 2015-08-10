@@ -39,7 +39,6 @@
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qbufferfunctor.h>
-#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/qgeometry.h>
 #include <limits>

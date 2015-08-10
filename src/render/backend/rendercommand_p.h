@@ -40,7 +40,6 @@
 
 #include <qglobal.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/qmeshdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
