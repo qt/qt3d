@@ -324,11 +324,11 @@ bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature featu
 {
     switch (feature) {
     case MRT:
+    case UniformBufferObject:
+    case PrimitiveRestart:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
-    case UniformBufferObject:
-        return true;
     default:
         return false;
     }
@@ -879,6 +879,17 @@ GLint QGraphicsHelperGL3::maxClipPlaneCount()
     GLint max = 0;
     m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
     return max;
+}
+
+void QGraphicsHelperGL3::enablePrimitiveRestart(int primitiveRestartIndex)
+{
+    m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
+    m_funcs->glEnable(GL_PRIMITIVE_RESTART);
+}
+
+void QGraphicsHelperGL3::disablePrimitiveRestart()
+{
+    m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
 } // Render

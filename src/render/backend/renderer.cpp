@@ -916,6 +916,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
                 m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
 
+            if (rGeometryRenderer->primitiveRestart())
+                m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
+
             // TO DO: Add glMulti Draw variants
             if (!drawInstanced) { // Non instanced Rendering
                 if (drawIndexed)
@@ -945,6 +948,8 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             if (err)
                 qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 
+            if (rGeometryRenderer->primitiveRestart())
+                m_graphicsContext->disablePrimitiveRestart();
 
             // Maybe we could cache the VAO and release it only at the end of the exectute frame
             // in case we are always reusing the same one ?

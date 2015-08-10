@@ -863,6 +863,17 @@ GLint QGraphicsHelperGL4::maxClipPlaneCount()
     return max;
 }
 
+void QGraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
+{
+    m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
+    m_funcs->glEnable(GL_PRIMITIVE_RESTART);
+}
+
+void QGraphicsHelperGL4::disablePrimitiveRestart()
+{
+    m_funcs->glDisable(GL_PRIMITIVE_RESTART);
+}
+
 } // Render
 } // Qt3D
 

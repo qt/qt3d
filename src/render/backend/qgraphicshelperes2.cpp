@@ -302,12 +302,6 @@ void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
 bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
-    case MRT:
-        return false;
-    case Tessellation:
-        return false;
-    case UniformBufferObject:
-        return false;
     default:
         return false;
     }
@@ -526,6 +520,14 @@ void QGraphicsHelperES2::disableClipPlane(int)
 GLint QGraphicsHelperES2::maxClipPlaneCount()
 {
     return 0;
+}
+
+void QGraphicsHelperES2::enablePrimitiveRestart(int)
+{
+}
+
+void QGraphicsHelperES2::disablePrimitiveRestart()
+{
 }
 
 } // Render

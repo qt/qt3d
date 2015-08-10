@@ -742,6 +742,18 @@ GLint QGraphicsContext::maxClipPlaneCount()
     return m_glHelper->maxClipPlaneCount();
 }
 
+void QGraphicsContext::enablePrimitiveRestart(int restartIndex)
+{
+    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::PrimitiveRestart))
+        m_glHelper->enablePrimitiveRestart(restartIndex);
+}
+
+void QGraphicsContext::disablePrimitiveRestart()
+{
+    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::PrimitiveRestart))
+        m_glHelper->disablePrimitiveRestart();
+}
+
 /*!
     \internal
     Returns a texture unit for a texture, -1 if all texture units are assigned.

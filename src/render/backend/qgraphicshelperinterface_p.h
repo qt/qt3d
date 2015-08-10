@@ -56,7 +56,8 @@ public:
         MRT = 0,
         Tessellation,
         UniformBufferObject,
-        BindableFragmentOutputs
+        BindableFragmentOutputs,
+        PrimitiveRestart
     };
 
     virtual ~QGraphicsHelperInterface() {}
@@ -96,6 +97,8 @@ public:
     virtual void    enableClipPlane(int clipPlane) = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;
     virtual GLint   maxClipPlaneCount() = 0;
+    virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
+    virtual void    disablePrimitiveRestart() = 0;
 };
 
 

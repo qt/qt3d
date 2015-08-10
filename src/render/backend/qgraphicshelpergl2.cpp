@@ -303,10 +303,6 @@ bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature featu
     switch (feature) {
     case MRT:
         return (m_fboFuncs != Q_NULLPTR);
-    case Tessellation:
-        return false;
-    case UniformBufferObject:
-        return false;
     default:
         return false;
     }
@@ -534,6 +530,14 @@ GLint QGraphicsHelperGL2::maxClipPlaneCount()
     GLint max = 0;
     m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
     return max;
+}
+
+void QGraphicsHelperGL2::enablePrimitiveRestart(int)
+{
+}
+
+void QGraphicsHelperGL2::disablePrimitiveRestart()
+{
 }
 
 } // Render

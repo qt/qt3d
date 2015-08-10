@@ -181,6 +181,8 @@ public:
     void    enableClipPlane(int clipPlane);
     void    disableClipPlane(int clipPlane);
     GLint   maxClipPlaneCount();
+    void    enablePrimitiveRestart(int restartIndex);
+    void    disablePrimitiveRestart();
 
     // Helper methods
     static GLint elementType(GLint type);
