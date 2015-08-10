@@ -915,6 +915,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             const bool drawIndexed = indexAttribute != Q_NULLPTR;
             const GLint indexType = drawIndexed ? QGraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
 
+            if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
+                m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
+
             // TO DO: Add glMulti Draw variants
             if (!drawInstanced) { // Non instanced Rendering
                 if (drawIndexed)
