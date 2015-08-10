@@ -47,6 +47,7 @@ namespace Render {
 
 RenderGeometry::RenderGeometry()
     : QBackendNode(ReadOnly)
+    , m_verticesPerPatch(0)
     , m_geometryDirty(false)
 {
 }
@@ -57,6 +58,7 @@ RenderGeometry::~RenderGeometry()
 
 void RenderGeometry::cleanup()
 {
+    m_verticesPerPatch = 0;
     m_attributes.clear();
     m_geometryDirty = false;
 }
@@ -68,6 +70,7 @@ void RenderGeometry::updateFromPeer(QNode *peer)
         m_attributes.reserve(geometry->attributes().size());
         Q_FOREACH (QAbstractAttribute *attribute, geometry->attributes())
             m_attributes.push_back(attribute->id());
+        m_verticesPerPatch = geometry->verticesPerPatch();
         m_geometryDirty = true;
     }
 }
@@ -93,6 +96,15 @@ void RenderGeometry::sceneChangeEvent(const QSceneChangePtr &e)
         }
         break;
     }
+
+    case NodeUpdated:
+        if (propertyName == QByteArrayLiteral("verticesPerPatch")) {
+            m_verticesPerPatch = propertyChange->value().value<int>();
+            break;
+
+            // Note: doesn't set dirtyness as this parameter changing doesn't need
+            // a new VAO update.
+        }
 
     default:
         break;

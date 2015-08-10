@@ -59,10 +59,12 @@ public:
 
     inline QVector<QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
+    inline int verticesPerPatch() const { return m_verticesPerPatch; }
     void unsetDirty();
 
 private:
     QVector<QNodeId> m_attributes;
+    int m_verticesPerPatch;
     bool m_geometryDirty;
 };
 

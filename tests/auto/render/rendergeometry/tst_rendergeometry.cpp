@@ -60,6 +60,7 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
+        geometry.setVerticesPerPatch(4);
 
         // WHEN
         renderGeometry.setPeer(&geometry);
@@ -68,6 +69,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.peerUuid(), geometry.id());
         QCOMPARE(renderGeometry.isDirty(), true);
         QCOMPARE(renderGeometry.attributes().count(), 4);
+        QCOMPARE(renderGeometry.verticesPerPatch(), 4);
 
         for (int i = 0; i < 4; ++i)
             QCOMPARE(geometry.attributes().at(i)->id(), renderGeometry.attributes().at(i));
@@ -82,6 +84,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
         QVERIFY(renderGeometry.peerUuid().isNull());
+        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
 
         // GIVEN
         Qt3D::QGeometry geometry;
@@ -94,6 +97,7 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
+        geometry.setVerticesPerPatch(4);
 
         // WHEN
         renderGeometry.updateFromPeer(&geometry);
@@ -102,6 +106,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
+        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
     }
 
     void checkPropertyChanges()
@@ -134,6 +139,16 @@ private Q_SLOTS:
         QVERIFY(renderGeometry.isDirty());
 
         renderGeometry.unsetDirty();
+        QVERIFY(!renderGeometry.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange->setValue(QVariant::fromValue(3));
+        updateChange->setPropertyName("verticesPerPatch");
+        renderGeometry.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderGeometry.verticesPerPatch(), 3);
         QVERIFY(!renderGeometry.isDirty());
     }
 };
