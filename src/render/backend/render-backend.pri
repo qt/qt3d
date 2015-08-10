@@ -19,6 +19,7 @@ HEADERS += \
     $$PWD/states/blendstate_p.h \
     $$PWD/genericstate_p.h \
     $$PWD/qgraphicshelperinterface_p.h \
+    $$PWD/qgraphicshelpergl4_p.h \
     $$PWD/qgraphicshelpergl3_p.h \
     $$PWD/qgraphicshelperes2_p.h \
     $$PWD/qgraphicshelpergl2_p.h \
@@ -72,6 +73,7 @@ SOURCES += \
     $$PWD/quniformvalue.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/states/blendstate.cpp \
+    $$PWD/qgraphicshelpergl4.cpp \
     $$PWD/qgraphicshelpergl3.cpp \
     $$PWD/qgraphicshelperes2.cpp \
     $$PWD/qgraphicshelpergl2.cpp \
