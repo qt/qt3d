@@ -38,24 +38,16 @@
 
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qmeshdata.h>
+#include <Qt3DRenderer/qgeometry.h>
 
-TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
-    : Qt3D::QAbstractMesh(parent)
+class TessellatedGeometry : public Qt3D::QGeometry
 {
-}
-
-TessellatedQuadMesh::~TessellatedQuadMesh()
-{
-    QNode::cleanup();
-}
-
-class TessellatedQuadMeshFunctor : public Qt3D::QAbstractMeshFunctor
-{
+    Q_OBJECT
 public:
-    TessellatedQuadMeshFunctor() {}
-
-    Qt3D::QMeshDataPtr operator ()() Q_DECL_OVERRIDE
+    TessellatedGeometry(Qt3D::QNode *parent = Q_NULLPTR)
+        : Qt3D::QGeometry(parent)
+        , m_positionAttribute(new Qt3D::QAttribute(this))
+        , m_vertexBuffer(new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer, this))
     {
         const float positionData[] = {
             -0.8f, -0.8f, 0.0f,
@@ -70,29 +62,34 @@ public:
         positionBytes.resize(size);
         memcpy(positionBytes.data(), positionData, size);
 
-        Qt3D::QBuffer *vertexBuffer(new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer));
-        vertexBuffer->setUsage(Qt3D::QBuffer::StaticDraw);
-        vertexBuffer->setData(positionBytes);
+        m_vertexBuffer->setData(positionBytes);
 
-        Qt3D::QMeshDataPtr mesh(new Qt3D::QMeshData(Qt3D::QMeshData::Patches));
-        mesh->addAttribute(Qt3D::QMeshData::defaultPositionAttributeName(),
-                           new Qt3D::QAttribute(vertexBuffer, Qt3D::QAttribute::Float, 3, nVerts));
-        mesh->setVerticesPerPatch(4);
-        return mesh;
+        m_positionAttribute->setName(Qt3D::QAttribute::defaultPositionAttributeName());
+        m_positionAttribute->setDataType(Qt3D::QAttribute::Float);
+        m_positionAttribute->setDataSize(3);
+        m_positionAttribute->setCount(nVerts);
+        m_positionAttribute->setByteStride(3 * sizeof(float));
+        m_positionAttribute->setBuffer(m_vertexBuffer);
+
+        setVerticesPerPatch(4);
+        addAttribute(m_positionAttribute);
     }
 
-    bool operator ==(const Qt3D::QAbstractMeshFunctor &other) const
-    {
-        const TessellatedQuadMeshFunctor *otherFunctor = functor_cast<TessellatedQuadMeshFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
-            return true;
-        return false;
-    }
-
-    QT3D_FUNCTOR(TessellatedQuadMeshFunctor)
+private:
+    Qt3D::QAttribute *m_positionAttribute;
+    Qt3D::QBuffer *m_vertexBuffer;
 };
 
-Qt3D::QAbstractMeshFunctorPtr TessellatedQuadMesh::meshFunctor() const
+TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
+    : Qt3D::QGeometryRenderer(parent)
 {
-    return Qt3D::QAbstractMeshFunctorPtr(new TessellatedQuadMeshFunctor);
+    setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
+    setGeometry(new TessellatedGeometry(this));
 }
+
+TessellatedQuadMesh::~TessellatedQuadMesh()
+{
+    QNode::cleanup();
+}
+
+#include "tessellatedquadmesh.moc"

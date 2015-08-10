@@ -37,19 +37,14 @@
 #ifndef TESSELLATEDQUAD_H
 #define TESSELLATEDQUAD_H
 
-#include <Qt3DRenderer/qabstractmesh.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
-class TessellatedQuadMesh : public Qt3D::QAbstractMesh
+class TessellatedQuadMesh : public Qt3D::QGeometryRenderer
 {
     Q_OBJECT
 public:
     explicit TessellatedQuadMesh(Qt3D::QNode *parent = 0);
     ~TessellatedQuadMesh();
-
-    Qt3D::QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-
-private:
-    QT3D_CLONEABLE(TessellatedQuadMesh)
 };
 
 #endif // TESSELLATEDQUAD_H
