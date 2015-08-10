@@ -303,9 +303,9 @@ protected:
         } else {
             return ""
                    "uniform highp mat4 qt_Matrix;                       \n"
-                   "in highp vec4 qt_VertexPosition;                    \n"
-                   "in highp vec2 qt_VertexTexCoord;                    \n"
-                   "out highp vec2 qt_TexCoord;                         \n"
+                   "attribute highp vec4 qt_VertexPosition;             \n"
+                   "attribute highp vec2 qt_VertexTexCoord;             \n"
+                   "varying highp vec2 qt_TexCoord;                     \n"
                    "void main() {                                       \n"
                    "   qt_TexCoord = qt_VertexTexCoord;                 \n"
                    "   gl_Position = qt_Matrix * qt_VertexPosition;     \n"
