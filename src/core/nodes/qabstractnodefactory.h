@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,34 +34,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICK_GLOBAL_P_H
-#define QT3DQUICK_GLOBAL_P_H
+#ifndef QABSTRACTNODEFACTORY_H
+#define QABSTRACTNODEFACTORY_H
 
-#include <Qt3DQuick/qt3dquick_global.h>
-#include <QtQml/qqml.h>
-
-#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKSHARED_EXPORT
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Quick {
-
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_registerType(const char *className, const char *quickName, int major, int minor);
-
-template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
-                                                     const char *uri, int major, int minor, const char *name)
+class QT3DCORESHARED_EXPORT QAbstractNodeFactory
 {
-    qmlRegisterExtendedType<T, E>(uri, major, minor, name);
-    Quick3D_registerType(className, quickName, major, minor);
-}
+public:
+    virtual ~QAbstractNodeFactory();
 
-} // Quick
+    virtual QNode *createNode(const char *type) = 0;
 
-} // Qt3D
+    static void registerNodeFactory(QAbstractNodeFactory *factory);
+    static QList<QAbstractNodeFactory *> nodeFactories();
+
+    template<class T> static T *createNode(const char *type)
+    {
+        Q_FOREACH (QAbstractNodeFactory *f, QAbstractNodeFactory::nodeFactories()) {
+            QNode *n = f->createNode(type);
+            if (n)
+                return qobject_cast<T *>(n);
+        }
+        return new T;
+    }
+};
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DQUICK_GLOBAL_P_H
+#endif // QABSTRACTNODEFACTORY_H

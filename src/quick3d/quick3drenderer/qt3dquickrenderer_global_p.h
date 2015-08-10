@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,13 +35,13 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICK_GLOBAL_P_H
-#define QT3DQUICK_GLOBAL_P_H
+#ifndef QT3DQUICKRENDERER_GLOBAL_P_H
+#define QT3DQUICKRENDERER_GLOBAL_P_H
 
-#include <Qt3DQuick/qt3dquick_global.h>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <QtQml/qqml.h>
 
-#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKSHARED_EXPORT
+#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKRENDERERSHARED_EXPORT
 
 QT_BEGIN_NAMESPACE
 
@@ -48,14 +49,14 @@ namespace Qt3D {
 
 namespace Quick {
 
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_registerType(const char *className, const char *quickName, int major, int minor);
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_initialize();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)
 {
     qmlRegisterExtendedType<T, E>(uri, major, minor, name);
-    Quick3D_registerType(className, quickName, major, minor);
+    Quick3DRenderer_registerType(className, quickName, major, minor);
 }
 
 } // Quick
@@ -64,4 +65,4 @@ template<class T, class E> void registerExtendedType(const char *className, cons
 
 QT_END_NAMESPACE
 
-#endif // QT3DQUICK_GLOBAL_P_H
+#endif // QT3DQUICKRENDERER_GLOBAL_P_H

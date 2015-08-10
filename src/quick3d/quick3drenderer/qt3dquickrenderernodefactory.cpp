@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,34 +34,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DQUICK_GLOBAL_P_H
-#define QT3DQUICK_GLOBAL_P_H
-
-#include <Qt3DQuick/qt3dquick_global.h>
-#include <QtQml/qqml.h>
-
-#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKSHARED_EXPORT
+#include "qt3dquickrenderernodefactory_p.h"
+#include <QtQml/private/qqmlmetatype_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Quick {
+Q_GLOBAL_STATIC(QuickRendererNodeFactory, quick_renderer_node_factory)
 
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_registerType(const char *className, const char *quickName, int major, int minor);
-
-template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
-                                                     const char *uri, int major, int minor, const char *name)
+QuickRendererNodeFactory *QuickRendererNodeFactory::instance()
 {
-    qmlRegisterExtendedType<T, E>(uri, major, minor, name);
-    Quick3D_registerType(className, quickName, major, minor);
+    return quick_renderer_node_factory();
 }
 
-} // Quick
+void QuickRendererNodeFactory::registerType(const char *className, const char *quickName, int major, int minor)
+{
+    m_types.insert(className, Type(quickName, major, minor));
+}
 
-} // Qt3D
+QNode *QuickRendererNodeFactory::createNode(const char *type)
+{
+    if (!m_types.contains(type))
+        return Q_NULLPTR;
+
+    Type &typeInfo(m_types[type]);
+
+    if (!typeInfo.resolved) {
+        typeInfo.resolved = true;
+        typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
+    }
+
+    return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : Q_NULLPTR;
+}
+
+} // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3DQUICK_GLOBAL_P_H

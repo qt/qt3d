@@ -36,6 +36,8 @@
 
 import Qt3D 2.0
 import Qt3D.Renderer 2.0
+import Qt3D.Examples 2.0
+import QtQuick 2.0 as Quick
 
 Entity
 {
@@ -62,6 +64,53 @@ Entity
         controlledCamera: camera
     }
 
+    // test_scene.dae contains three named nodes. Once the asynchronous loading of the
+    // scene completes, we look up some of them.
+    SceneHelper {
+        id: sceneHelper
+    }
+
+    Quick.Component {
+        id: animParamComp
+        Quick.SequentialAnimation {
+            id: seqAnim
+            loops: Quick.Animation.Infinite
+            property variant target: null
+            Quick.ColorAnimation {
+                target: seqAnim.target
+                property: "value"
+                from: Qt.rgba(0, 0, 0, 1)
+                to: Qt.rgba(1, 1, 1, 1)
+                duration: 2000
+            }
+            Quick.ColorAnimation {
+                target: seqAnim.target
+                property: "value"
+                from: Qt.rgba(1, 1, 1, 1)
+                to: Qt.rgba(0, 0, 0, 1)
+                duration: 1000
+            }
+        }
+    }
+
+    Quick.Component {
+        id: rot90Comp
+        Rotate { axis: Qt.vector3d(1, 0, 0); angle: 90 }
+    }
+
+    Quick.Component {
+        id: animRotComp
+        Rotate {
+            axis: Qt.vector3d(0, 0, 1)
+            Quick.NumberAnimation on angle {
+                from: 0
+                to: 360
+                duration: 5000
+                loops: Quick.Animation.Infinite
+            }
+        }
+    }
+
     Entity {
         components : [
             Transform {
@@ -69,7 +118,44 @@ Entity
             },
             SceneLoader
             {
+                id: sceneLoader
                 source: "qrc:/assets/test_scene.dae"
+                onStatusChanged: {
+                    console.log("SceneLoader status: " + status);
+                    if (status == SceneLoader.Loaded) {
+                        console.log("Scene is ready");
+
+                        // Now find the torus and animate one of the material effect's parameters.
+                        var e = sceneHelper.findEntity(sceneLoader, "Torus");
+                        console.log("Found entity: " + e + " its components are:");
+                        for (var i = 0; i < e.components.length; ++i) {
+                            console.log("  " + e.components[i]);
+                            if (e.components[i].effect !== undefined) {
+                                var p = e.components[i].effect.parameters;
+                                for (var j = 0; j < p.length; ++j) {
+                                    if (p[j].name === "kd") {
+                                        var anim = animParamComp.createObject(p[j]);
+                                        anim.target = p[j];
+                                        anim.running = true;
+                                        break;
+                                    }
+                                }
+
+                            }
+                        }
+
+                        // Add an animated rotation transform.
+                        e = sceneHelper.findEntity(sceneLoader, "Suzanne");
+                        for (var i = 0; i < e.components.length; ++i) {
+                            if (e.components[i].transforms !== undefined) {
+                                var t = e.components[i].transforms;
+                                sceneHelper.addListEntry(t, rot90Comp.createObject());
+                                sceneHelper.addListEntry(t, animRotComp.createObject());
+                                break;
+                            }
+                        }
+                    }
+                }
             }]
     }
 

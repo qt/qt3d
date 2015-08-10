@@ -18,12 +18,14 @@ HEADERS += \
     qt3dquick_global.h \
     qt3dquick_global_p.h \
     qt3dquickvaluetypes_p.h \
+    qt3dquicknodefactory_p.h \
     qqmlaspectengine.h \
     qqmlaspectengine_p.h
 
 SOURCES += \
     qt3dquick_global.cpp \
     qt3dquickvaluetypes.cpp \
+    qt3dquicknodefactory.cpp \
     qqmlaspectengine.cpp
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL

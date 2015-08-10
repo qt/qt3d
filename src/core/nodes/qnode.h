@@ -41,6 +41,7 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qabstractnodefactory.h>
 
 #define Q_NODE_NULLPTR static_cast<Qt3D::QNode *>(Q_NULLPTR)
 
@@ -56,13 +57,14 @@ class QAspectEngine;
 typedef QList<QNode *> QNodeList;
 typedef QSharedPointer<QNode> QNodePtr;
 
+#define QT3D_QUOTE(str) #str
 #define QT3D_CLONEABLE(Class)                \
+    friend class QAbstractNodeFactory;       \
     QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone_ = new Class;            \
+        Class *clone_ = Qt3D::QAbstractNodeFactory::createNode<Class>(QT3D_QUOTE(Class)); \
         clone_->copy(this);                   \
         return clone_;                        \
     }
-
 
 // Each QNode subclass should call QNode::cleanup in it dtor
 // QNode::cleanup checks that a flags wasn't set to true,

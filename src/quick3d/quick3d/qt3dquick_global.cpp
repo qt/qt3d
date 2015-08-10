@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "qt3dquick_global_p.h"
+#include "qt3dquicknodefactory_p.h"
 #include <private/qqmlglobal_p.h>
 #include <private/qt3dquickvaluetypes_p.h>
 #include <private/qv8engine_p.h>
@@ -662,11 +663,17 @@ static Quick3DColorProvider *getColorProvider()
     return &colorProvider;
 }
 
-void Quick3D_initializeProviders()
+void Quick3D_initialize()
 {
     Qt3D::Quick::Quick3DValueTypes::registerValueTypes();
     QQml_addValueTypeProvider(getValueTypeProvider());
     QQml_setColorProvider(getColorProvider());
+    QAbstractNodeFactory::registerNodeFactory(QuickNodeFactory::instance());
+}
+
+void Quick3D_registerType(const char *className, const char *quickName, int major, int minor)
+{
+    QuickNodeFactory::instance()->registerType(className, quickName, major, minor);
 }
 
 } // Quick
