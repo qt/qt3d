@@ -52,6 +52,7 @@ typedef QVector<QAbstractAttribute *> QAttributeList;
 class QT3DRENDERERSHARED_EXPORT QGeometry : public QNode
 {
     Q_OBJECT
+    Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
 
 public:
     explicit QGeometry(QNode *parent = 0);
@@ -60,6 +61,12 @@ public:
     QAttributeList attributes() const;
     void addAttribute(QAbstractAttribute *attribute);
     void removeAttribute(QAbstractAttribute *attribute);
+
+    void setVerticesPerPatch(int verticesPerPatch);
+    int verticesPerPatch() const;
+
+Q_SIGNALS:
+    void verticesPerPatchChanged();
 
 protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;

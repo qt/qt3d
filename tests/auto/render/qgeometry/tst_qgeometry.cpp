@@ -142,6 +142,7 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
         Qt3D::QGeometry *geometry1 = new Qt3D::QGeometry();
+        geometry1->setVerticesPerPatch(2);
         geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 454));
         geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 555));
         QTest::newRow("2 attributes") << geometry1 << 2;
@@ -153,6 +154,7 @@ private Q_SLOTS:
         geometry2->addAttribute(attribute);
         geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3D::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
+        geometry2->setVerticesPerPatch(3);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
     }
 
@@ -171,6 +173,7 @@ private Q_SLOTS:
         QCOMPARE(geometry->id(), clone->id());
         QCOMPARE(attributeCount, geometry->attributes().count());
         QCOMPARE(attributeCount, clone->attributes().count());
+        QCOMPARE(geometry->verticesPerPatch(), clone->verticesPerPatch());
 
         for (int i = 0; i < attributeCount; ++i) {
             Qt3D::QAttribute *originalAttribute = static_cast<Qt3D::QAttribute *>(geometry->attributes()[i]);
@@ -224,6 +227,19 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "attribute");
         QCOMPARE(change->value().value<Qt3D::QNodeId>(), attr.id());
         QCOMPARE(change->type(), Qt3D::NodeRemoved);
+
+        arbiter.events.clear();
+
+        // WHEN
+        geometry->setVerticesPerPatch(2);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "verticesPerPatch");
+        QCOMPARE(change->value().toInt(), 2);
+        QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
     }

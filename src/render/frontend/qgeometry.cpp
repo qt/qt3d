@@ -50,9 +50,11 @@ public:
     Q_DECLARE_PUBLIC(QGeometry)
     QGeometryPrivate()
         : QNodePrivate()
+        , m_verticesPerPatch(0)
     {}
 
     QAttributeList m_attributes;
+    int m_verticesPerPatch;
 };
 
 QGeometry::QGeometry(QNode *parent)
@@ -99,6 +101,21 @@ void QGeometry::removeAttribute(QAbstractAttribute *attribute)
     d->m_attributes.removeOne(attribute);
 }
 
+void QGeometry::setVerticesPerPatch(int verticesPerPatch)
+{
+    Q_D(QGeometry);
+    if (d->m_verticesPerPatch != verticesPerPatch) {
+        d->m_verticesPerPatch = verticesPerPatch;
+        emit verticesPerPatchChanged();
+    }
+}
+
+int QGeometry::verticesPerPatch() const
+{
+    Q_D(const QGeometry);
+    return d->m_verticesPerPatch;
+}
+
 QAttributeList QGeometry::attributes() const
 {
     Q_D(const QGeometry);
@@ -109,6 +126,7 @@ void QGeometry::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QGeometry *geometry = static_cast<const QGeometry *>(ref);
+    d_func()->m_verticesPerPatch = geometry->d_func()->m_verticesPerPatch;
     Q_FOREACH (QAbstractAttribute *attribute, geometry->d_func()->m_attributes)
         d_func()->m_attributes.append(qobject_cast<QAbstractAttribute *>(QNode::clone(attribute)));
 }
