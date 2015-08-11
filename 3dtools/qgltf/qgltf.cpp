@@ -224,6 +224,11 @@ struct Options {
     bool interleave;
     float scale;
     bool genCore;
+    enum TextureCompression {
+        NoTextureCompression,
+        ETC1
+    };
+    TextureCompression texComp;
     bool showLog;
 } opts;
 
@@ -1162,9 +1167,11 @@ protected:
     bool nodeIsUseful(const Importer::Node *n) const;
     void copyExternalTextures(const QString &inputFilename);
     void exportEmbeddedTextures();
+    void compressTextures();
 
     Importer *m_importer;
     QSet<QString> m_files;
+    QHash<QString, QString> m_compressedTextures;
 };
 
 bool Exporter::nodeIsUseful(const Importer::Node *n) const
@@ -1208,6 +1215,36 @@ void Exporter::exportEmbeddedTextures()
         embTex.image.save(fn);
     }
 #endif
+}
+
+void Exporter::compressTextures()
+{
+    if (opts.texComp != Options::ETC1)
+        return;
+
+    QStringList imageList;
+    foreach (const QString &textureFilename, m_importer->externalTextures())
+        imageList << opts.outDir + textureFilename;
+    foreach (const Importer::EmbeddedTextureInfo &embTex, m_importer->embeddedTextures())
+        imageList << opts.outDir + embTex.name;
+
+    foreach (const QString &filename, imageList) {
+        if (QFileInfo(filename).suffix().toLower() != QStringLiteral("png"))
+            continue;
+        QByteArray cmd = QByteArrayLiteral("etc1tool ");
+        cmd += filename.toUtf8();
+        qDebug().noquote() << "Invoking" << cmd;
+        // No QProcess in bootstrap
+        if (system(cmd.constData()) == -1) {
+            qWarning() << "ERROR: Failed to launch etc1tool";
+        } else {
+            QString src = QFileInfo(filename).fileName();
+            QString dst = QFileInfo(src).baseName() + QStringLiteral(".pkm");
+            m_compressedTextures.insert(src, dst);
+            m_files.remove(src);
+            m_files.insert(dst);
+        }
+    }
 }
 
 class GltfExporter : public Exporter
@@ -2186,6 +2223,7 @@ void GltfExporter::save(const QString &inputFilename)
 
     copyExternalTextures(inputFilename);
     exportEmbeddedTextures();
+    compressTextures();
 
     m_obj = QJsonObject();
 
@@ -2335,7 +2373,7 @@ void GltfExporter::save(const QString &inputFilename)
     QJsonObject images;
     for (QHash<QString, QString>::const_iterator it = imageMap.constBegin(); it != imageMap.constEnd(); ++it) {
         QJsonObject image;
-        image["uri"] = it.key();
+        image["uri"] = m_compressedTextures.contains(it.key()) ? m_compressedTextures[it.key()] : it.key();
         images[it.value()] = image;
     }
     m_obj["images"] = images;
@@ -2429,6 +2467,8 @@ int main(int argc, char **argv)
     cmdLine.addOption(scaleOpt);
     QCommandLineOption coreOpt(QStringLiteral("g"), QStringLiteral("Generate OpenGL 3.2+ core profile shaders too"));
     cmdLine.addOption(coreOpt);
+    QCommandLineOption etc1Opt(QStringLiteral("1"), QStringLiteral("Generate ETC1 compressed textures by invoking etc1tool (PNG only)"));
+    cmdLine.addOption(etc1Opt);
     QCommandLineOption silentOpt(QStringLiteral("s"), QStringLiteral("Silence debug output"));
     cmdLine.addOption(silentOpt);
     cmdLine.process(app);
@@ -2447,6 +2487,7 @@ int main(int argc, char **argv)
             opts.scale = v;
     }
     opts.genCore = cmdLine.isSet(coreOpt);
+    opts.texComp = cmdLine.isSet(etc1Opt) ? Options::ETC1 : Options::NoTextureCompression;
     opts.showLog = !cmdLine.isSet(silentOpt);
     if (!opts.outDir.isEmpty()) {
         if (!opts.outDir.endsWith('/'))
