@@ -40,17 +40,17 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <QIODevice>
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QHash>
-#include <QDebug>
-#include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
+#include <qiodevice.h>
+#include <qfile.h>
+#include <qfileinfo.h>
+#include <qdir.h>
+#include <qhash.h>
+#include <qdebug.h>
+#include <qcoreapplication.h>
+#include <qcommandlineparser.h>
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <qjsonarray.h>
 #include <qmath.h>
 
 #define GLT_UNSIGNED_SHORT 0x1403
