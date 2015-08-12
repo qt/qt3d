@@ -8,6 +8,8 @@ out VertexData {
     vec3 normal;
 } v_out;
 
+out float gl_ClipDistance[8];
+
 struct Section {
     vec4 equation;
     vec3 center;

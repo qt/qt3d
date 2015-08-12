@@ -86,10 +86,6 @@ Entity {
             source: "assets/obj/trefoil.obj"
         }
 
-//        property SphereMesh mesh: SphereMesh {
-//            radius: 3
-//        }
-
         property Transform transform: Transform {
             Translate { dx: 0 }
             Scale { scale: 3 }

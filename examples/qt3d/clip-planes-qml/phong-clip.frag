@@ -11,7 +11,7 @@ uniform vec3 ks;            // Specular reflectivity
 uniform float shininess;    // Specular shininess factor
 
 in VertexData {
-    in vec4 position;
+    in vec3 position;
     in vec3 normal;
 } v_in;
 
@@ -43,5 +43,5 @@ vec3 adsModel( const in vec3 pos, const in vec3 n )
 
 void main()
 {
-    fragColor = vec4( adsModel( v_in.position.xyz, normalize( v_in.normal ) ), 1.0 );
+    fragColor = vec4( adsModel( v_in.position, normalize( v_in.normal ) ), 1.0 );
 }
