@@ -309,7 +309,7 @@ StencilOp *StencilOp::getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass, 
 }
 
 StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
-    : GenericState6(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass)
+    : GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass)
 {
 }
 
