@@ -40,7 +40,8 @@ SUBDIRS += \
     mouseinput-qml \
     custom-mesh-cpp \
     bigscene-instanced-qml \
-    custom-mesh-qml
+    custom-mesh-qml \
+    instanced-arrays-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
