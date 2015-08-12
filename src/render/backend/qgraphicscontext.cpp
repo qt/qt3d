@@ -57,9 +57,11 @@
 #if !defined(QT_OPENGL_ES_2)
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
+#include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
 #include <Qt3DRenderer/private/qgraphicshelpergl2_p.h>
 #include <Qt3DRenderer/private/qgraphicshelpergl3_p.h>
+#include <Qt3DRenderer/private/qgraphicshelpergl3_3_p.h>
 #include <Qt3DRenderer/private/qgraphicshelpergl4_p.h>
 #endif
 #include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
@@ -524,11 +526,13 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
         if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
             m_glHelper = new QGraphicsHelperGL4();
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != Q_NULLPTR) {
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
+            m_glHelper = new QGraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
             m_glHelper = new QGraphicsHelperGL3();
-        }
-        else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             m_glHelper = new QGraphicsHelperGL2();
         }
