@@ -72,7 +72,7 @@ void tst_RayCasting::shouldIntersect_data()
 {
     QTest::addColumn<QRay3D>("ray");
     QTest::addColumn<Sphere>("sphere");
-    QTest::addColumn<int>("shouldIntersect");
+    QTest::addColumn<bool>("shouldIntersect");
 
     QRay3D ray(QVector3D(1, 1, 1), QVector3D(0, 0, 1));
 
@@ -84,20 +84,20 @@ void tst_RayCasting::shouldIntersect_data()
     Sphere sphere6(QVector3D(2, 2, 13), 1);
     Sphere sphere7(QVector3D(2, 2, 15), 5);
 
-    QTest::newRow("Ray starts inside sphere") << ray << sphere1 << 1;
-    QTest::newRow("Ray starts inside sphere") << ray << sphere2 << 1;
-    QTest::newRow("Ray intersects sphere tangentially") << ray << sphere3 << 1;
-    QTest::newRow("No intersection") << ray << sphere4 << 0;
-    QTest::newRow("Ray intersect sphere") << ray << sphere5 << 1;
-    QTest::newRow("No intersection") << ray << sphere6 << 0;
-    QTest::newRow("Ray intersect sphere") << ray << sphere7 << 1;
+    QTest::newRow("Ray starts inside sphere") << ray << sphere1 << true;
+    QTest::newRow("Ray starts inside sphere") << ray << sphere2 << true;
+    QTest::newRow("Ray intersects sphere tangentially") << ray << sphere3 << true;
+    QTest::newRow("No intersection") << ray << sphere4 << false;
+    QTest::newRow("Ray intersect sphere") << ray << sphere5 << true;
+    QTest::newRow("No intersection") << ray << sphere6 << false;
+    QTest::newRow("Ray intersect sphere") << ray << sphere7 << true;
 }
 
 void tst_RayCasting::shouldIntersect()
 {
     QFETCH(QRay3D, ray);
     QFETCH(Sphere, sphere);
-    QFETCH(int, shouldIntersect);
+    QFETCH(bool, shouldIntersect);
 
     QVector3D intersectionPoint;
 
