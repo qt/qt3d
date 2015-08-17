@@ -1,5 +1,4 @@
 option(host_build)
-CONFIG += force_bootstrap
 
 SOURCES = $$PWD/qgltf.cpp
 
