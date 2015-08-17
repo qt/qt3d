@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qscene.h"
+#include "qscene_p.h"
 #include <QHash>
 #include <QReadLocker>
 #include <Qt3DCore/qnode.h>
@@ -148,6 +148,17 @@ QNode *QScene::lookupNode(const QNodeId &id) const
     return d->m_nodeLookupTable.value(id);
 }
 
+QVector<QNode *> QScene::lookupNodes(const QVector<QNodeId> &ids) const
+{
+    Q_D(const QScene);
+    QReadLocker lock(&d->m_lock);
+    QVector<QNode *> nodes(ids.size());
+    int index = 0;
+    Q_FOREACH (const QNodeId &id, ids)
+        nodes[index++] = d->m_nodeLookupTable.value(id);
+    return nodes;
+}
+
 QNodeId QScene::nodeIdFromObservable(QObservableInterface *observable) const
 {
     Q_D(const QScene);
@@ -159,6 +170,12 @@ void QScene::setArbiter(QLockableObserverInterface *arbiter)
 {
     Q_D(QScene);
     d->m_arbiter = arbiter;
+}
+
+QLockableObserverInterface *QScene::arbiter() const
+{
+    Q_D(const QScene);
+    return d->m_arbiter;
 }
 
 QList<QNodeId> QScene::entitiesForComponent(const QNodeId &id) const
@@ -180,6 +197,13 @@ void QScene::removeEntityForComponent(const QNodeId &componentUuid, const QNodeI
     Q_D(QScene);
     QWriteLocker lock(&d->m_lock);
     d->m_componentToEntities.remove(componentUuid, entityUuid);
+}
+
+bool QScene::hasEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid)
+{
+    Q_D(QScene);
+    QReadLocker lock(&d->m_lock);
+    return d->m_componentToEntities.values(componentUuid).contains(entityUuid);
 }
 
 } // Qt3D

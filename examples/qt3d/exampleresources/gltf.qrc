@@ -4,13 +4,15 @@
         <file>assets/gltf/wine/artezin_bottle.jpg</file>
         <file>assets/gltf/wine/wine.bin</file>
         <file>assets/gltf/wine/wine.dae</file>
-        <file>assets/gltf/wine/wine.json</file>
         <file>assets/gltf/wine/wine0FS.glsl</file>
         <file>assets/gltf/wine/wine0VS.glsl</file>
         <file>assets/gltf/wine/wine2FS.glsl</file>
         <file>assets/gltf/wine/wine2VS.glsl</file>
-        <file>assets/gltf/wine/wine4FS.glsl</file>
-        <file>assets/gltf/wine/wine4VS.glsl</file>
         <file>assets/gltf/wine/Wood_Cherry_Original_.jpg</file>
+        <file>assets/gltf/wine/wine.gltf</file>
+        <file>assets/gltf/wine/wine1FS.glsl</file>
+        <file>assets/gltf/wine/wine1VS.glsl</file>
+        <file>assets/gltf/wine/wine3FS.glsl</file>
+        <file>assets/gltf/wine/wine3VS.glsl</file>
     </qresource>
 </RCC>

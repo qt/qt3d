@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCamera>
-#include <Qt3DCore/QScene>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 #include <Qt3DInput/QInputAspect>
@@ -80,7 +80,7 @@ QCamera *Quick3DConfiguration::controlledCamera() const
 
 void Quick3DConfiguration::applyControlledCameraChange()
 {
-    QScene *scene = static_cast<QScene*>(QNodePrivate::get(m_camera)->scene());
+    QScene *scene = QNodePrivate::get(m_camera)->scene();
 
     // Too early, let's try again later
     if (!scene) {

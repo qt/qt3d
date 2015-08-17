@@ -47,11 +47,9 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/qmeshdata_p.h>
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +70,8 @@ class RenderTexture;
 class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
+class RenderAttribute;
+class RenderBuffer;
 
 enum TextureScope
 {
@@ -128,9 +128,9 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(QString nm, AttributePtr attr);
-
-    void specifyIndices(AttributePtr attr);
+    void specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer, const QString &shaderName);
+    void specifyIndices(RenderBuffer *buffer);
+    void updateBuffer(RenderBuffer *buffer);
 
     void setUniforms(QUniformPack &uniforms);
 
@@ -140,7 +140,8 @@ public:
      * @param buf
      * @return
      */
-    QOpenGLBuffer glBufferFor(BufferPtr buf);
+    QOpenGLBuffer glBufferForRenderBuffer(RenderBuffer *buf);
+
 
     /**
      * @brief activateTexture - make a texture active on a hardware unit
@@ -157,9 +158,9 @@ public:
     QOpenGLFilter *contextInfo() const;
 
     // Wrapper methods
-    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances);
+    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
-    void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices);
+    void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    setVerticesPerPatch(GLint verticesPerPatch);
     void    blendEquation(GLenum mode);
@@ -177,11 +178,18 @@ public:
     void    disableAlphaCoverage();
     GLuint  boundFrameBufferObject();
     void    clearColor(const QColor &color);
+    void    enableClipPlane(int clipPlane);
+    void    disableClipPlane(int clipPlane);
+    GLint   maxClipPlaneCount();
+    void    enablePrimitiveRestart(int restartIndex);
+    void    disablePrimitiveRestart();
 
     // Helper methods
     static GLint elementType(GLint type);
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
+    static GLint glDataTypeFromAttributeDataType(QAttribute::DataType dataType);
+
 
     bool supportsVAO() const { return m_supportsVAO; }
 
@@ -203,10 +211,11 @@ private:
     QOpenGLContext *m_gl;
     QSurface *m_surface;
     QGraphicsHelperInterface *m_glHelper;
+    bool m_ownCurrent;
 
     RenderShader *m_activeShader;
     QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
-    QHash<BufferPtr, QOpenGLBuffer> m_bufferHash;
+    QHash<RenderBuffer *, QOpenGLBuffer> m_renderBufferHash;
     QHash<QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 

@@ -40,6 +40,10 @@
     \brief Provides a pool of memory chunks to be used to allocate objects on a per frame basis.
 
     The memory can be recycled by following frames by calling clear which won't deallocate any memory.
+
+    \note Be really careful when allocating polymorphic types. You must be
+    sure to call deallocate with the subclass type to properly release all
+    memory.
 */
 
 #include "qframeallocator.h"
@@ -102,6 +106,16 @@ int QFrameAllocator::allocatorPoolSize() const
 {
     Q_D(const QFrameAllocator);
     return d->m_allocatorPool.size();
+}
+
+bool QFrameAllocator::isEmpty() const
+{
+    Q_D(const QFrameAllocator);
+    Q_FOREACH (const QFixedFrameAllocator &allocator, d->m_allocatorPool) {
+        if (!allocator.isEmpty())
+            return false;
+    }
+    return true;
 }
 
 uint QFrameAllocator::totalChunkCount() const
@@ -201,6 +215,15 @@ void QFixedFrameAllocator::clear()
 {
     for (int i = m_chunks.size() - 1; i >= 0; i--)
         m_chunks[i].clear(m_blockSize, m_nbrBlock);
+}
+
+bool QFixedFrameAllocator::isEmpty() const
+{
+    Q_FOREACH (const QFrameChunk &chunck, m_chunks) {
+        if (chunck.m_blocksAvailable != chunck.m_maxBlocksAvailable)
+            return false;
+    }
+    return true;
 }
 
 // QFrameChuck is agnostic about blocksize

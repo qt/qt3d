@@ -64,7 +64,7 @@ Entity {
             activeFrameGraph: Viewport {
                 id: viewport
                 rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
-                clearColor: Qt.rgba(0, 0.5, 1, 1)
+                clearColor: "transparent"
 
                 CameraSelector {
                     id : cameraSelector

@@ -38,16 +38,14 @@
 #define QT3D_QCYLINDERMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qabstractmesh.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
 
 namespace Qt3D {
 
-class QCylinderMeshPrivate;
-
-class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QAbstractMesh
+class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
@@ -68,20 +66,24 @@ public:
     float radius() const;
     float length() const;
 
-    QAbstractMeshFunctorPtr meshFunctor() const Q_DECL_OVERRIDE;
-
 Q_SIGNALS:
-    void ringsChanged(int rings);
-    void slicesChanged(int slices);
-    void radiusChanged(float radius);
-    void lengthChanged(float length);
-
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void ringsChanged();
+    void slicesChanged();
+    void radiusChanged();
+    void lengthChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QCylinderMesh)
-    QT3D_CLONEABLE(QCylinderMesh)
+    // As this is a default provided geometry renderer, no one should be able
+    // to modify the QGeometryRenderer's properties
+
+    void setInstanceCount(int instanceCount);
+    void setPrimitiveCount(int primitiveCount);
+    void setBaseVertex(int baseVertex);
+    void setBaseInstance(int baseInstance);
+    void setRestartIndex(int index);
+    void setPrimitiveRestart(bool enabled);
+    void setGeometry(QGeometry *geometry);
+    void setPrimitiveType(PrimitiveType primitiveType);
 };
 
 } // Qt3D

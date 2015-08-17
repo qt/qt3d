@@ -37,7 +37,7 @@
 #include "qkeyboardcontroller.h"
 #include "qkeyboardcontroller_p.h"
 #include "qkeyboardinput.h"
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -95,10 +95,11 @@ QKeyboardController::QKeyboardController(QKeyboardControllerPrivate &dd, QNode *
 
 void QKeyboardController::sceneChangeEvent(const QSceneChangePtr &change)
 {
+    Q_D(QKeyboardController);
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
         QNodeId activeInputId = e->value().value<QNodeId>();
-        setActiveInput(qobject_cast<QKeyboardInput *>(scene()->lookupNode(activeInputId)));
+        setActiveInput(qobject_cast<QKeyboardInput *>(d->scene()->lookupNode(activeInputId)));
     }
 }
 

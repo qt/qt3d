@@ -36,6 +36,8 @@
 
 #include "sphere.h"
 
+#include <Qt3DCore/qray3d.h>
+
 #include <QPair>
 
 #include <math.h>
@@ -43,6 +45,46 @@
 QT_BEGIN_NAMESPACE
 
 namespace {
+
+// Algorithms taken from Real-time collision detection, p178-179
+
+// Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
+// returns true and intersection point q; false otherwise
+bool intersectRaySphere(const Qt3D::QRay3D &ray, const Qt3D::Sphere &s, QVector3D *q = Q_NULLPTR)
+{
+    const QVector3D p = ray.origin();
+    const QVector3D d = ray.direction();
+    const QVector3D m = p - s.center();
+    const float c = QVector3D::dotProduct(m, m) - s.radius() * s.radius();
+
+    // If there is definitely at least one real root, there must be an intersection
+    if (q == Q_NULLPTR && c <= 0.0f)
+        return true;
+
+    const float b = QVector3D::dotProduct(m, d);
+    // Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
+    if (c > 0.0f && b > 0.0f)
+        return false;
+
+    const float discr = b*b - c;
+    // A negative discriminant corresponds to ray missing sphere
+    if (discr < 0.0f)
+        return false;
+
+    // If we don't need the intersection point, return early
+    if (q == Q_NULLPTR)
+        return true;
+
+    // Ray now found to intersect sphere, compute smallest t value of intersection
+    float t = -b - sqrt(discr);
+
+    // If t is negative, ray started inside sphere so clamp t to zero
+    if (t < 0.0f)
+        t = 0.0f;
+
+    *q = p + t * d;
+    return true;
+}
 
 inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
 {
@@ -167,6 +209,21 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
     QVector3D c = mat.mapVector(m_center);
     float rSquared = qMax(qMax((x - c).lengthSquared(), (y - c).lengthSquared()), (z - c).lengthSquared());
     return Sphere(c, sqrt(rSquared));
+}
+
+QNodeId Sphere::id() const
+{
+    return m_id;
+}
+
+bool Sphere::intersects(const QRay3D &ray, QVector3D *q) const
+{
+    return intersectRaySphere(ray, *this, q);
+}
+
+QBoundingVolume::Type Sphere::type() const
+{
+    return QBoundingVolume::Sphere;
 }
 
 }

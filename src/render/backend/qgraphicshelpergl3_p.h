@@ -57,9 +57,9 @@ public:
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
-    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances) Q_DECL_OVERRIDE;
+    void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
-    void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices) Q_DECL_OVERRIDE;
+    void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLint baseVertex = 0) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void setVerticesPerPatch(GLint verticesPerPatch) Q_DECL_OVERRIDE;
     void useProgram(GLuint programId) Q_DECL_OVERRIDE;
@@ -89,6 +89,11 @@ public:
     void bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
+    void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    GLint maxClipPlaneCount() Q_DECL_OVERRIDE;
+    void enablePrimitiveRestart(int primitiveRestartIndex) Q_DECL_OVERRIDE;
+    void disablePrimitiveRestart() Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions_3_2_Core *m_funcs;

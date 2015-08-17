@@ -37,7 +37,7 @@
 #include "renderscene_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>

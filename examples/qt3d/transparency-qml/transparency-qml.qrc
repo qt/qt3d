@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>phongalpha.vert</file>
+        <file>phongalpha.frag</file>
+    </qresource>
+</RCC>

@@ -40,7 +40,6 @@
 #include <QVariant>
 
 #include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
 #include <Qt3DCore/qbackendnode.h>
 
@@ -74,7 +73,6 @@ public:
     QNodeId effect() const;
 
 private:
-    RenderTextureProvider* m_textureProvider;
     ParameterPack m_parameterPack;
     QNodeId m_effectUuid;
     bool m_enabled;

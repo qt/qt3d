@@ -113,7 +113,7 @@ int main(int ac, char **av)
         const float angle = M_PI * 2.0f * i * det * 10.;
 
         material->setDiffuse(QColor(qFabs(qCos(angle)) * 255, 204, 75));
-        material->setAmbient(Qt::gray);
+        material->setAmbient(Qt::black);
         material->setSpecular(Qt::white);
         material->setShininess(150.0f);
 

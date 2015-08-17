@@ -54,6 +54,23 @@ private Q_SLOTS:
 
     }
 
+    void checkRenderViewDoesNotLeak()
+    {
+        // GIVEN
+        Qt3D::QFrameAllocator allocator(128, 16, 128);
+        Qt3D::Render::RenderView *rv = allocator.allocate<Qt3D::Render::RenderView>();
+        rv->setAllocator(&allocator);
+
+        // THEN
+        QVERIFY(!allocator.isEmpty());
+
+        // WHEN
+        delete rv;
+
+        // THEN
+        QVERIFY(allocator.isEmpty());
+    }
+
 private:
 };
 

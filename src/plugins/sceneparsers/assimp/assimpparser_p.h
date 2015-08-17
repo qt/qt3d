@@ -42,8 +42,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRenderer/qabstractmesh.h>
-#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include "assimphelpers_p.h"
 
@@ -63,7 +61,7 @@ class QEffect;
 class QCamera;
 class QAbstractTextureProvider;
 class QMesh;
-class AssimpMesh;
+class QGeometryRenderer;
 
 Q_DECLARE_LOGGING_CATEGORY(AssimpParserLog)
 
@@ -117,7 +115,7 @@ private:
         Assimp::Importer *m_importer;
         mutable const aiScene *m_aiScene;
 
-        QMap<uint, AssimpMesh *> m_meshes;
+        QMap<uint, QGeometryRenderer *> m_meshes;
         QMap<uint, QMaterial*> m_materials;
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTextureProvider *> m_embeddedTextures;

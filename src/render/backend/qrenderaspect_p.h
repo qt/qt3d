@@ -72,7 +72,6 @@ class QRenderAspectPrivate : public QAbstractAspectPrivate
     qint64 m_time;
 
     bool m_initialized;
-    bool m_shuttingDown;
     Render::FramePreparationJobPtr m_framePreparationJob;
     Render::FrameCleanupJobPtr m_cleanupJob;
     Render::UpdateWorldTransformJobPtr m_worldTransformJob;

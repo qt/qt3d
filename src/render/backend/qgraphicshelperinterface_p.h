@@ -56,14 +56,15 @@ public:
         MRT = 0,
         Tessellation,
         UniformBufferObject,
-        BindableFragmentOutputs
+        BindableFragmentOutputs,
+        PrimitiveRestart
     };
 
     virtual ~QGraphicsHelperInterface() {}
     virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
-    virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances) = 0;
+    virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0) = 0;
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
-    virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices) = 0;
+    virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual void    useProgram(GLuint programId) = 0;
@@ -93,6 +94,11 @@ public:
     virtual void    bindBufferBase(GLenum target, GLuint index, GLuint buffer) = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual uint    uniformByteSize(const ShaderUniform &description) = 0;
+    virtual void    enableClipPlane(int clipPlane) = 0;
+    virtual void    disableClipPlane(int clipPlane) = 0;
+    virtual GLint   maxClipPlaneCount() = 0;
+    virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
+    virtual void    disablePrimitiveRestart() = 0;
 };
 
 

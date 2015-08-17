@@ -42,6 +42,7 @@
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 
+#include <QPair>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -50,6 +51,9 @@ namespace Qt3D {
 
 namespace Render {
 
+typedef QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > FunctorImageHandlesPair;
+typedef QPair<QTextureDataFunctorPtr, HTextureData> FunctorTextureDataPair;
+
 class TextureDataManager : public QResourceManager<TexImageData,
                                                    QNodeId,
                                                    16,
@@ -57,21 +61,34 @@ class TextureDataManager : public QResourceManager<TexImageData,
                                                    Qt3D::ObjectLevelLockingPolicy>
 {
 public:
-    TextureDataManager() {}
+    TextureDataManager();
     void addToPendingTextures(const QNodeId &textureId);
 
     QVector<QNodeId> texturesPending();
-    HTextureData textureDataFromFunctor(QTextureDataFunctorPtr functor) const;
-    void addTextureDataForFunctor(HTextureData textureDataHandle, QTextureDataFunctorPtr functor);
+
+    HTextureData textureDataFromFunctor(const QTextureDataFunctorPtr &functor) const;
+    void addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureDataFunctorPtr &functor);
+    void removeTextureDataFunctor(const QTextureDataFunctorPtr &functor);
+
+    void assignFunctorToTextureImage(const QTextureDataFunctorPtr &functor, HTextureImage imageHandle);
+
+    QMutex *mutex() const;
+    void cleanup();
 
 private:
     QVector<QNodeId> m_texturesPending;
-    QHash<QTextureDataFunctorPtr, HTextureData> m_textureDataFunctors;
+    QVector<FunctorTextureDataPair > m_textureDataFunctors;
+    QVector<FunctorImageHandlesPair > m_texturesImagesPerFunctor;
+    mutable QMutex m_mutex;
+    QVector<HTextureData> m_textureHandlesToRelease;
 };
 
 } // Render
 
+Q_DECLARE_RESOURCE_INFO(TexImageData, Q_REQUIRES_CLEANUP);
+
 } // Qt3D
+
 
 QT_END_NAMESPACE
 

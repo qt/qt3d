@@ -42,6 +42,7 @@
 #include <QList>
 #include <QScopedPointer>
 #include <QVariant>
+#include <QSemaphore>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,8 @@ class QT3DCORESHARED_EXPORT QAspectManager : public QObject
 public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
+
+    bool isShuttingDown() const;
 
 public Q_SLOTS:
     void initialize();
@@ -92,6 +95,7 @@ private:
     QAtomicInt m_runMainLoop;
     QAtomicInt m_terminated;
     QScopedPointer<QServiceLocator> m_serviceLocator;
+    QSemaphore m_waitForEndOfExecLoop;
 };
 
 } // namespace Qt3D

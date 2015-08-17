@@ -53,6 +53,7 @@
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRenderer/QPointLight>
+#include <Qt3DRenderer/QWindow>
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QGuiApplication>
@@ -67,16 +68,9 @@ int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Window view;
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
-    engine.registerAspect(input);
-    engine.initialize();
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    Qt3D::QWindow view;
+    Qt3D::QInputAspect *input = new Qt3D::QInputAspect();
+    view.registerAspect(input);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
@@ -109,9 +103,8 @@ int main(int ac, char **av)
     rootEntity->addComponent(light1);
 
     // Scene Camera
-    Qt3D::QCamera *camera = new Qt3D::QCamera();
+    Qt3D::QCamera *camera = view.defaultCamera();
 
-    camera->setAspectRatio(16.0f/9.0f);
     camera->setFieldOfView(45.0f);
     camera->setNearPlane(0.01f);
     camera->setFarPlane(1000.0f);
@@ -136,7 +129,7 @@ int main(int ac, char **av)
     deferredRenderer->setScreenQuadLayers(quadLayer->names());
 
     frameGraph->setActiveFrameGraph(deferredRenderer);
-    rootEntity->addComponent(frameGraph);
+    view.setFrameGraph(frameGraph);
 
     // Scene Content
     Qt3D::QEntity *sphereOne = new Qt3D::QEntity(rootEntity);
@@ -200,7 +193,7 @@ int main(int ac, char **av)
     screenQuad->addComponent(planeMesh);
 
     // Set root object of the scene
-    engine.setRootEntity(rootEntity);
+    view.setRootEntity(rootEntity);
     // Show window
     view.show();
 

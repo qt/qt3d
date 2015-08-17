@@ -72,9 +72,21 @@ QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(QAbstractFrameAdvance
 }
 
 /*!
-    \fn qint64 Qt3D::QAbstractTickClockService::waitForNextTick()
+    \fn qint64 Qt3D::QAbstractFrameAdvanceService::waitForNextTick()
 
     Returns the current time, the call may be blocking if waiting for a tick.
+*/
+
+/*!
+    \fn void Qt3D::QAbstractFrameAdvanceService::start()
+
+    Starts the service.
+*/
+
+/*!
+    \fn void Qt3D::QAbstractFrameAdvanceService::stop()
+
+    Stops the service, performing any cleanup deemed necessary.
 */
 
 } // Qt3D

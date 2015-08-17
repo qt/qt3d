@@ -1,0 +1,31 @@
+load(resources)
+
+isEmpty(MODELS): error("qgltf must be loaded after specifying MODELS")
+
+QGLTF_DIR = qmodels
+
+qgltf.commands = qgltf -d $$QGLTF_DIR $$QGLTF_PARAMS ${QMAKE_FILE_NAME}
+qgltf.input = MODELS
+qgltf.output = $$QGLTF_DIR/${QMAKE_FILE_BASE}.gltf
+qgltf.CONFIG += no_link target_predeps
+silent {
+    qgltf.commands += -s
+    qgltf.commands = @echo qgltf ${QMAKE_FILE_IN} && $$qgltf.commands
+}
+QMAKE_EXTRA_COMPILERS += qgltf
+
+asset_builder.commands = $$QMAKE_RCC -binary $$QGLTF_DIR/${QMAKE_FILE_BASE}.qrc -o ${QMAKE_FILE_OUT} -compress 9 -threshold 0
+asset_builder.input = MODELS
+asset_builder.output = ${QMAKE_FILE_BASE}.qrb
+asset_builder.CONFIG += no_link target_predeps
+asset_builder.depends = $$QGLTF_DIR/${QMAKE_FILE_BASE}.gltf
+QMAKE_EXTRA_COMPILERS += asset_builder
+
+for (model, MODELS) {
+    base_model = $$basename(model)
+    qrb_model = $$replace(base_model, (.+)\\..+$, \\1.qrb)
+    asset_install.files += $$absolute_path($$qrb_model, $$OUT_PWD)
+}
+asset_install.path = $$target.path
+asset_install.CONFIG += no_check_exist
+INSTALLS += asset_install

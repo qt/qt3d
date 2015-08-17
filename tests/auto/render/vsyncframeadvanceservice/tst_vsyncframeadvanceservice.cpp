@@ -77,7 +77,9 @@ private Q_SLOTS:
         tickService.waitForNextFrame();
 
         // THEN
-        QVERIFY(t.elapsed() >= 1000);
+        // we allow for a little margin by checking for 950
+        // instead of 1000
+        QVERIFY(t.elapsed() >= 950);
     }
 
 };

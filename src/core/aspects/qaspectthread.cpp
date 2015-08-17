@@ -80,6 +80,8 @@ void QAspectThread::run()
 
     // Clean up
     m_aspectManager->shutdown();
+
+    // Delete the aspect manager while we're still in the thread
     delete m_aspectManager;
 
     qCDebug(Aspects) << "Exiting void QAspectThread::run()";

@@ -40,7 +40,7 @@
 #include <private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -100,7 +100,7 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-                functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
@@ -187,6 +187,20 @@ QAbstractAspectJobManager *QAbstractAspect::jobManager() const
 {
     Q_D(const QAbstractAspect);
     return d->m_jobManager;
+}
+
+bool QAbstractAspect::isShuttingDown() const
+{
+    Q_D(const QAbstractAspect);
+    return d->m_aspectManager->isShuttingDown();
+}
+
+void QAbstractAspect::onStartup()
+{
+}
+
+void QAbstractAspect::onShutdown()
+{
 }
 
 } // of namespace Qt3D

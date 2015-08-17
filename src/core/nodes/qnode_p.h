@@ -56,8 +56,8 @@ class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate, public QObserv
 public:
     QNodePrivate();
 
-    void setScene(QSceneInterface *scene);
-    QSceneInterface *scene() const;
+    void setScene(QScene *scene);
+    QScene *scene() const;
 
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
 
@@ -70,8 +70,8 @@ public:
 
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
-    QLockableObserverInterface *m_changeArbiter;
-    QSceneInterface *m_scene;
+    QAbstractArbiter *m_changeArbiter;
+    QScene *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;
     bool m_wasCleanedUp;

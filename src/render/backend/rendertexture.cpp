@@ -171,6 +171,7 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
         m_isDirty = false;
     }
 
+    // If the texture exists, we just update it and return
     if (m_gl != Q_NULLPTR) {
 
         bool refreshDNA = m_filtersAndWrapUpdated || m_dataUploadRequired;
@@ -188,6 +189,8 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
         return m_gl;
     }
 
+    // Builds a new Texture, the texture was never created or it was destroyed
+    // because it was dirty
     m_gl = buildGLTexture();
 
     m_gl->allocateStorage();
@@ -236,9 +239,11 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
         switch (m_format) {
         case QOpenGLTexture::RGBA8_UNorm:
+        case QOpenGLTexture::RGBAFormat:
             format = QAbstractTextureProvider::RGBAFormat;
             break;
         case QOpenGLTexture::RGB8_UNorm:
+        case QOpenGLTexture::RGBFormat:
             format = QAbstractTextureProvider::RGBFormat;
             break;
         case QOpenGLTexture::DepthFormat:
@@ -285,7 +290,7 @@ void RenderTexture::setToGLTexture(RenderTextureImage *rImg, TexImageData *imgDa
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
     // ensure we don't accidently cause a detach / copy of the raw bytes
-    const QByteArray& bytes(imgData->data());
+    const QByteArray &bytes(imgData->data());
     if (imgData->isCompressed()) {
         m_gl->setCompressedData(rImg->mipmapLevel(),
                                 rImg->layer(),

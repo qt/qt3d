@@ -44,8 +44,8 @@
 #include "qentity.h"
 
 #include <Qt3DCore/qservicelocator.h>
-#include <Qt3DCore/qtickclockservice.h>
 
+#include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
@@ -67,6 +67,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_jobManager(new QAspectJobManager(this))
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
+    , m_waitForEndOfExecLoop(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     m_runMainLoop.fetchAndStoreOrdered(0);
@@ -79,6 +80,11 @@ QAspectManager::~QAspectManager()
     delete m_changeArbiter;
     delete m_jobManager;
     delete m_scheduler;
+}
+
+bool QAspectManager::isShuttingDown() const
+{
+    return !m_runMainLoop.load();
 }
 
 void QAspectManager::initialize()
@@ -97,7 +103,7 @@ void QAspectManager::shutdown()
         aspect->onCleanup();
         m_changeArbiter->unregisterSceneObserver(aspect);
     }
-    qDeleteAll(m_aspects);
+    // Aspects must be deleted in the Thread they were created in
 }
 
 void QAspectManager::setRootEntity(Qt3D::QEntity *root)
@@ -172,7 +178,20 @@ void QAspectManager::exec()
 
         // Retrieve the frame advance service. Defaults to timer based if there is no renderer.
         QAbstractFrameAdvanceService *frameAdvanceService =
-            m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+                m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+
+        // Start the frameAdvanceService if we're about to enter the running loop
+        bool needsShutdown = false;
+        if (m_runMainLoop.load()) {
+            needsShutdown = true;
+            frameAdvanceService->start();
+
+            // We are about to enter the main loop. Give aspects a chance to do any last
+            // pieces of initialization
+            qCDebug(Aspects) << "Calling onStartup() for each aspect";
+            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+                aspect->onStartup();
+        }
 
         // Only enter main render loop once the renderer and other aspects are initialized
         while (m_runMainLoop.load())
@@ -190,13 +209,36 @@ void QAspectManager::exec()
             // Process any pending events
             eventLoop.processEvents();
         }
+
+        if (needsShutdown) {
+            // Give aspects a chance to perform any shutdown actions. This may include unqueuing
+            // any blocking work on the main thread that could potentially deadlock during shutdown.
+            qCDebug(Aspects) << "Calling onShutdown() for each aspect";
+            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+                aspect->onShutdown();
+        }
     }
+    qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";
+
+    m_waitForEndOfExecLoop.release(1);
 }
 
 void QAspectManager::quit()
 {
+    qCDebug(Aspects) << Q_FUNC_INFO;
+
     m_runMainLoop.fetchAndStoreOrdered(0);
     m_terminated.fetchAndStoreOrdered(1);
+
+    // Allow the Aspect thread to proceed in case it's locked by the
+    // FrameAdvanceService <=> it is still in the running loop
+    QAbstractFrameAdvanceService *advanceFrameService = m_serviceLocator->service<QAbstractFrameAdvanceService>(QServiceLocator::FrameAdvanceService);
+    if (advanceFrameService)
+        advanceFrameService->stop();
+
+    // We need to wait for the QAspectManager exec loop to terminate
+    m_waitForEndOfExecLoop.acquire(1);
+    qCDebug(Aspects) << Q_FUNC_INFO << "Exited event loop";
 }
 
 const QList<QAbstractAspect *> &QAspectManager::aspects() const

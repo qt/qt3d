@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Qt3DBenchMain.qml</file>
+        <file>Qt3DBenchFrameGraph.qml</file>
+        <file>SphereView.qml</file>
+        <file>SphereElement.qml</file>
+    </qresource>
+</RCC>

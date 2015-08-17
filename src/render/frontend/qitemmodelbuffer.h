@@ -40,7 +40,6 @@
 #include <QObject>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
-#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qattribute.h>
 
@@ -63,10 +62,10 @@ public:
     void mapRoleName(QByteArray roleName, int type);
     void mapRoleName(QByteArray roleName, QString attributeName, int type);
 
-    BufferPtr buffer();
+    QBuffer *buffer();
 
     QStringList attributeNames() const;
-    AttributePtr attributeByName(QString nm) const;
+    QAttribute *attributeByName(QString nm) const;
 
 private Q_SLOTS:
 
@@ -89,8 +88,8 @@ private:
 
     QList<RoleMapping> m_mappings;
 
-    BufferPtr m_buffer;
-    QMap<QString, AttributePtr> m_attributes;
+    QBuffer *m_buffer;
+    QMap<QString, QAttribute *> m_attributes;
     int m_itemStride;
 
     QByteArray computeBufferData();

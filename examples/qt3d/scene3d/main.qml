@@ -50,6 +50,18 @@ Item {
         }
     }
 
+    Text {
+        text: "Multisample: " + scene3d.multisample
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: scene3d.multisample = !scene3d.multisample
+        }
+    }
+
     Rectangle {
         id: scene
         width: Math.min(parent.width, parent.height) - 100
@@ -67,6 +79,7 @@ Item {
         }
 
         Scene3D {
+            id: scene3d
             anchors.fill: parent
             anchors.margins: 10
             focus: true

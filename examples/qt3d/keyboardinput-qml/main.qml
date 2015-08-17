@@ -48,7 +48,7 @@ Entity {
         aspectRatio: 16/9
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, -40.0 )
+        position: Qt.vector3d( 0.0, 0.0, 12.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
@@ -61,111 +61,32 @@ Entity {
         }
     }
 
-    Effect {
-        id: colorDiffuseEffect
-        parameters: [
-            Parameter { name: "ambient";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
-            Parameter { name: "diffuse";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
-            Parameter { name: "specular";  value: Qt.vector3d( 0.95, 0.95, 0.95 ) },
-            Parameter { name: "shininess"; value: root.shininess }
-        ]
-    }
-
-    SphereMesh {
-        id: sphereMesh
-    }
-
     KeyboardController {
         id: keyboardController
     }
 
-    Entity {
+    SphereEntity {
         id: sphere1
-        property Material material: Material {
-            effect: colorDiffuseEffect
-        }
-        property Transform transform: Transform {
-            Translate {
-                dx: 5
-            }
-            Scale {
-                scale: sphere1.input.focus ? 2 : 1
-            }
-        }
-        property KeyboardInput input: KeyboardInput {
-            controller: keyboardController
-            focus: true
-            onTabPressed: {
-                sphere2.input.focus = true
-            }
-        }
-
-        components: [material, transform, sphereMesh, input]
+        x: -5
+        color: "red"
+        input.onTabPressed: sphere2.input.focus = true
+        input.focus: true
+        input.controller: keyboardController
     }
 
-    Entity {
+    SphereEntity {
         id: sphere2
-        property Material material: Material {
-            effect: colorDiffuseEffect
-        }
-        property Transform transform: Transform {
-            Translate {
-                dx: 0
-            }
-            Scale {
-                scale: sphere2.input.focus ? 2 : 1
-            }
-        }
-        property KeyboardInput input: KeyboardInput {
-            controller: keyboardController
-
-            onTabPressed: {
-                sphere3.input.focus = true;
-            }
-        }
-
-        components: [material, transform, sphereMesh, input]
+        x: 0
+        color: "green"
+        input.onTabPressed: sphere3.input.focus = true
+        input.controller: keyboardController
     }
 
-    Entity {
+    SphereEntity {
         id: sphere3
-        property Material material: Material {
-            effect: colorDiffuseEffect
-        }
-        property Transform transform: Transform {
-            Translate {
-                id: sphere3dTranslate
-                dx: -5
-            }
-            Scale {
-                scale: sphere3.input.focus ? 2 : 1
-            }
-        }
-        property KeyboardInput input: KeyboardInput {
-            controller: keyboardController
-
-            onPressed: {
-                switch (event.key) {
-                case Qt.Key_W:
-                    sphere3dTranslate.dy += 0.1;
-                    break;
-                case Qt.Key_S:
-                    sphere3dTranslate.dy -= 0.1;
-                    break;
-                case Qt.Key_A:
-                    sphere3dTranslate.dx += 0.1;
-                    break;
-                case Qt.Key_D:
-                    sphere3dTranslate.dx -= 0.1;
-                    break;
-                }
-            }
-            onTabPressed: {
-                sphere1.input.focus = true;
-            }
-
-        }
-
-        components: [material, transform, sphereMesh, input]
+        x: 5
+        color: "blue"
+        input.onTabPressed: sphere1.input.focus = true
+        input.controller: keyboardController
     }
 }

@@ -83,8 +83,16 @@ void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
-                                               GLsizei instances)
+                                               GLsizei instances,
+                                               GLint baseVertex,
+                                               GLint baseInstance)
 {
+    if (baseInstance != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
+
+    if (baseVertex != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertex is not supported with OpenGL ES 2";
+
     for (GLint i = 0; i < instances; i++)
         drawElements(primitiveType,
                      primitiveCount,
@@ -106,8 +114,11 @@ void QGraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
 void QGraphicsHelperES2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
-                                      void *indices)
+                                      void *indices,
+                                      GLint baseVertex)
 {
+    if (baseVertex != 0)
+        qWarning() << "glDrawElementsBaseVertex is not supported with OpenGL ES 2";
     m_funcs->glDrawElements(primitiveType,
                             primitiveCount,
                             indexType,
@@ -291,12 +302,6 @@ void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
 bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
-    case MRT:
-        return false;
-    case Tessellation:
-        return false;
-    case UniformBufferObject:
-        return false;
     default:
         return false;
     }
@@ -337,7 +342,7 @@ void QGraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &des
 
     case GL_FLOAT_MAT3:
         m_funcs->glUniformMatrix3fv(description.m_location, description.m_size, GL_FALSE,
-                                      QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9));
+                                    QGraphicsUtils::valueArrayFromVariant<GLfloat>(v, description.m_size, 9));
         break;
 
     case GL_FLOAT_MAT4:
@@ -502,6 +507,27 @@ uint QGraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
     }
 
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
+}
+
+void QGraphicsHelperES2::enableClipPlane(int)
+{
+}
+
+void QGraphicsHelperES2::disableClipPlane(int)
+{
+}
+
+GLint QGraphicsHelperES2::maxClipPlaneCount()
+{
+    return 0;
+}
+
+void QGraphicsHelperES2::enablePrimitiveRestart(int)
+{
+}
+
+void QGraphicsHelperES2::disablePrimitiveRestart()
+{
 }
 
 } // Render

@@ -73,14 +73,20 @@ void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
-                                               GLsizei instances)
+                                               GLsizei instances,
+                                               GLint baseVertex,
+                                               GLint baseInstance)
 {
+    if (baseInstance != 0)
+        qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
+
     // glDrawElements OpenGL 3.1 or greater
-    m_funcs->glDrawElementsInstanced(primitiveType,
-                                     primitiveCount,
-                                     indexType,
-                                     indices,
-                                     instances);
+    m_funcs->glDrawElementsInstancedBaseVertex(primitiveType,
+                                               primitiveCount,
+                                               indexType,
+                                               indices,
+                                               instances,
+                                               baseVertex);
 }
 
 void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
@@ -98,12 +104,14 @@ void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
 void QGraphicsHelperGL3::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
-                                      void *indices)
+                                      void *indices,
+                                      GLint baseVertex)
 {
-    m_funcs->glDrawElements(primitiveType,
-                            primitiveCount,
-                            indexType,
-                            indices);
+    m_funcs->glDrawElementsBaseVertex(primitiveType,
+                                      primitiveCount,
+                                      indexType,
+                                      indices,
+                                      baseVertex);
 }
 
 void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
@@ -316,11 +324,11 @@ bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature featu
 {
     switch (feature) {
     case MRT:
+    case UniformBufferObject:
+    case PrimitiveRestart:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
-    case UniformBufferObject:
-        return true;
     default:
         return false;
     }
@@ -854,6 +862,34 @@ uint QGraphicsHelperGL3::uniformByteSize(const ShaderUniform &description)
     }
 
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
+}
+
+void QGraphicsHelperGL3::enableClipPlane(int clipPlane)
+{
+    m_funcs->glEnable(GL_CLIP_DISTANCE0 + clipPlane);
+}
+
+void QGraphicsHelperGL3::disableClipPlane(int clipPlane)
+{
+    m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
+}
+
+GLint QGraphicsHelperGL3::maxClipPlaneCount()
+{
+    GLint max = 0;
+    m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
+    return max;
+}
+
+void QGraphicsHelperGL3::enablePrimitiveRestart(int primitiveRestartIndex)
+{
+    m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
+    m_funcs->glEnable(GL_PRIMITIVE_RESTART);
+}
+
+void QGraphicsHelperGL3::disablePrimitiveRestart()
+{
+    m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
 } // Render

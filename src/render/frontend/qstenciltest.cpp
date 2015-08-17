@@ -39,6 +39,7 @@
 #include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include "qstenciltestseparate.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -50,16 +51,14 @@ class QStencilTestPrivate : public QRenderStatePrivate
 public:
     QStencilTestPrivate()
         : QRenderStatePrivate(QRenderState::StencilTest)
-        , m_mask(0)
-        , m_func(QStencilTest::Never)
-        , m_faceMode(QStencilTest::FrontAndBack)
+        , m_front(new QStencilTestSeparate(QStencilTestSeparate::Front))
+        , m_back(new QStencilTestSeparate(QStencilTestSeparate::Back))
     {
     }
 
     Q_DECLARE_PUBLIC(QStencilTest)
-    uint m_mask;
-    QStencilTest::StencilFunc m_func;
-    QStencilTest::StencilFaceMode m_faceMode;
+    QStencilTestSeparate *m_front;
+    QStencilTestSeparate *m_back;
 };
 
 QStencilTest::QStencilTest(QNode *parent)
@@ -72,59 +71,30 @@ QStencilTest::~QStencilTest()
     QNode::cleanup();
 }
 
+QStencilTestSeparate *QStencilTest::front() const
+{
+    Q_D(const QStencilTest);
+    return d->m_front;
+}
+
+QStencilTestSeparate *QStencilTest::back() const
+{
+    Q_D(const QStencilTest);
+    return d->m_back;
+}
+
 void QStencilTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
-    d_func()->m_mask = refState->d_func()->m_mask;
-    d_func()->m_faceMode = refState->d_func()->m_faceMode;
-    d_func()->m_func = refState->d_func()->m_func;
+    d_func()->m_front->setMask(refState->d_func()->m_front->mask());
+    d_func()->m_front->setRef(refState->d_func()->m_front->ref());
+    d_func()->m_front->setFunc(refState->d_func()->m_front->func());
+    d_func()->m_back->setMask(refState->d_func()->m_back->mask());
+    d_func()->m_back->setRef(refState->d_func()->m_back->ref());
+    d_func()->m_back->setFunc(refState->d_func()->m_back->func());
 }
 
-uint QStencilTest::mask() const
-{
-    Q_D(const QStencilTest);
-    return d->m_mask;
-}
-
-void QStencilTest::setMask(uint mask)
-{
-    Q_D(QStencilTest);
-    if (d->m_mask != mask) {
-        d->m_mask = mask;
-        emit maskChanged();
-    }
-}
-
-QStencilTest::StencilFaceMode QStencilTest::faceMode() const
-{
-    Q_D(const QStencilTest);
-    return d->m_faceMode;
-}
-
-void QStencilTest::setFaceMode(QStencilTest::StencilFaceMode mode)
-{
-    Q_D(QStencilTest);
-    if (d->m_faceMode != mode) {
-        d->m_faceMode = mode;
-        emit faceModeChanged();
-    }
-}
-
-QStencilTest::StencilFunc QStencilTest::func() const
-{
-    Q_D(const QStencilTest);
-    return d->m_func;
-}
-
-void QStencilTest::setFunc(QStencilTest::StencilFunc func)
-{
-    Q_D(QStencilTest);
-    if (d->m_func != func) {
-        d->m_func = func;
-        emit funcChanged();
-    }
-}
 
 } // Qt3D
 

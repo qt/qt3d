@@ -51,17 +51,15 @@ class RenderEntity;
 class FramePreparationJob : public Qt3D::QAspectJob
 {
 public:
-    FramePreparationJob(Renderer *renderer, RenderEntity *root);
+    FramePreparationJob(RenderEntity *root);
     ~FramePreparationJob();
 
 protected:
     void run() Q_DECL_FINAL;
 
 private:
-
     void parseNodeTree(RenderEntity *node);
 
-    Renderer *m_renderer;
     RenderEntity *m_root;
 };
 

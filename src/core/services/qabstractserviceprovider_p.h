@@ -52,6 +52,9 @@ public:
         , m_description(description)
     {}
 
+    Q_DECLARE_PUBLIC(QAbstractServiceProvider)
+    QAbstractServiceProvider *q_ptr;
+
     int m_type;
     QString m_description;
 };

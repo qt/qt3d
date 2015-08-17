@@ -37,7 +37,7 @@
 #include "qservicelocator.h"
 #include "qabstractserviceprovider_p.h"
 #include "nullservices_p.h"
-#include "qtickclockservice.h"
+#include "qtickclockservice_p.h"
 #include <QHash>
 
 QT_BEGIN_NAMESPACE
@@ -51,12 +51,14 @@ namespace Qt3D {
 QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)
     : d_ptr(new QAbstractServiceProviderPrivate(type, description))
 {
+    d_ptr->q_ptr = this;
 }
 
 /*! \internal */
 QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
     : d_ptr(&dd)
 {
+    d_ptr->q_ptr = this;
 }
 
 QAbstractServiceProvider::~QAbstractServiceProvider()

@@ -40,7 +40,8 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qsceneinterface.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
 #include <QEvent>
 #include <QChildEvent>
 #include <QMetaObject>
@@ -214,9 +215,11 @@ void QNodePrivate::setSceneHelper(QNode *root)
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
         const QVector<QEntity *> entities = c->entities();
         Q_FOREACH (QEntity *entity, entities) {
-            if (!c->shareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
-                qWarning() << "Trying to assign a non shareable component to more than one Entity";
-            m_scene->addEntityForComponent(c->id(), entity->id());
+            if (!m_scene->hasEntityForComponent(c->id(), entity->id())) {
+                if (!c->shareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
+                    qWarning() << "Trying to assign a non shareable component to more than one Entity";
+                m_scene->addEntityForComponent(c->id(), entity->id());
+            }
         }
     }
 }
@@ -233,7 +236,8 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
         const QVector<QEntity *> entities = c->entities();
         Q_FOREACH (QEntity *entity, entities) {
-            m_scene->removeEntityForComponent(c->id(), entity->id());
+            if (m_scene)
+                m_scene->removeEntityForComponent(c->id(), entity->id());
         }
     }
 
@@ -248,8 +252,10 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
 void QNodePrivate::addEntityComponentToScene(QNode *root)
 {
     if (QEntity *e = qobject_cast<QEntity *>(root)) {
-        Q_FOREACH (QComponent *c, e->components())
-            m_scene->addEntityForComponent(c->id(), e->id());
+        Q_FOREACH (QComponent *c, e->components()) {
+            if (!m_scene->hasEntityForComponent(c->id(), e->id()))
+                m_scene->addEntityForComponent(c->id(), e->id());
+        }
     }
 }
 
@@ -261,7 +267,7 @@ void QNodePrivate::setArbiter(QLockableObserverInterface *arbiter)
 {
     if (m_changeArbiter && m_changeArbiter != arbiter)
         unregisterNotifiedProperties();
-    m_changeArbiter = arbiter;
+    m_changeArbiter = static_cast<QAbstractArbiter *>(arbiter);
     if (m_changeArbiter)
         registerNotifiedProperties();
 }
@@ -282,7 +288,7 @@ void QNode::sceneChangeEvent(const QSceneChangePtr &change)
 /*!
     \internal
  */
-void QNodePrivate::setScene(QSceneInterface *scene)
+void QNodePrivate::setScene(QScene *scene)
 {
     if (m_scene != scene)
         m_scene = scene;
@@ -291,7 +297,7 @@ void QNodePrivate::setScene(QSceneInterface *scene)
 /*!
     \internal
  */
-QSceneInterface *QNodePrivate::scene() const
+QScene *QNodePrivate::scene() const
 {
     return m_scene;
 }
@@ -323,8 +329,11 @@ void QNodePrivate::notifyObservers(const QSceneChangePtr &change)
     if (m_blockNotifications && change->type() == NodeUpdated)
         return;
 
-    if (m_changeArbiter != Q_NULLPTR)
-        m_changeArbiter->sceneChangeEventWithLock(change);
+    if (m_changeArbiter != Q_NULLPTR) {
+        QAbstractPostman *postman = m_changeArbiter->postman();
+        if (postman != Q_NULLPTR)
+            postman->notifyBackend(change);
+    }
 }
 
 // Inserts this tree into the main Scene tree.
@@ -450,8 +459,10 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 */
 void QNode::copy(const QNode *ref)
 {
-    if (ref)
+    if (ref) {
         d_func()->m_id = ref->d_func()->m_id;
+        setObjectName(ref->objectName());
+    }
 }
 
 QNode::~QNode()
@@ -550,6 +561,9 @@ QNodeList QNode::childrenNodes() const
 */
 QNode *QNode::clone(QNode *node)
 {
+    if (node == Q_NULLPTR)
+        return Q_NULLPTR;
+
     static int clearLock = 0;
     clearLock++;
 
@@ -578,15 +592,6 @@ QNode *QNode::clone(QNode *node)
         QNodePrivate::m_clonesLookupTable.clear();
 
     return clonedNode;
-}
-
-/*!
-    Returns a pointer to the Qt3D::QNode instance's scene.
-*/
-QSceneInterface *QNode::scene() const
-{
-    Q_D(const QNode);
-    return d->m_scene;
 }
 
 /*!

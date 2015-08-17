@@ -40,168 +40,47 @@
 #endif
 
 #include "qtorusmesh.h"
-#include "qbuffer.h"
-#include "qattribute.h"
-#include "qmeshdata.h"
-#include <Qt3DRenderer/private/qabstractmesh_p.h>
-
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qbufferfunctor.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <QVector3D>
 #include <qmath.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class TorusMeshFunctor : public QAbstractMeshFunctor
+namespace {
+
+QByteArray createTorusVertexData(double radius, double minorRadius,
+                                 int rings, int sides)
 {
-public:
-    TorusMeshFunctor(int rings, int slices, float radius, float minorRadius);
-    QMeshDataPtr operator ()() Q_DECL_OVERRIDE;
-    bool operator ==(const QAbstractMeshFunctor &other) const Q_DECL_OVERRIDE;
-
-private:
-    int m_rings;
-    int m_slices;
-    float m_radius;
-    float m_minorRadius;
-};
-
-class QTorusMeshPrivate : public QAbstractMeshPrivate
-{
-    QTorusMeshPrivate()
-        : QAbstractMeshPrivate()
-        , m_rings(16)
-        , m_slices(16)
-        , m_radius(1.0)
-        , m_minorRadius(1.0)
-    {}
-
-    Q_DECLARE_PUBLIC(QTorusMesh)
-    int m_rings;
-    int m_slices;
-    float m_radius;
-    float m_minorRadius;
-};
-
-void QTorusMesh::copy(const QNode *ref)
-{
-    QAbstractMesh::copy(ref);
-    const QTorusMesh *mesh = static_cast<const QTorusMesh*>(ref);
-    d_func()->m_rings = mesh->d_func()->m_rings;
-    d_func()->m_slices = mesh->d_func()->m_slices;
-    d_func()->m_radius = mesh->d_func()->m_radius;
-    d_func()->m_minorRadius = mesh->d_func()->m_minorRadius;
-}
-
-
-QTorusMesh::QTorusMesh(QNode *parent)
-    : QAbstractMesh(*new QTorusMeshPrivate, parent)
-{
-    update();
-}
-
-QTorusMesh::~QTorusMesh()
-{
-    QNode::cleanup();
-}
-
-void QTorusMesh::setRings(int rings)
-{
-    Q_D(QTorusMesh);
-    if (rings != d->m_rings) {
-        d->m_rings = rings;
-        emit ringsChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QTorusMesh::setSlices(int slices)
-{
-    Q_D(QTorusMesh);
-    if (slices != d->m_slices) {
-        d->m_slices = slices;
-        emit slicesChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QTorusMesh::setRadius(float radius)
-{
-    Q_D(QTorusMesh);
-    if (radius != d->m_radius) {
-        d->m_radius = radius;
-        emit radiusChanged();
-        QAbstractMesh::update();
-    }
-}
-
-void QTorusMesh::setMinorRadius(float minorRadius)
-{
-    Q_D(QTorusMesh);
-    if (minorRadius != d->m_minorRadius) {
-        d->m_minorRadius = minorRadius;
-        emit minorRadiusChanged();
-        QAbstractMesh::update();
-    }
-}
-
-int QTorusMesh::rings() const
-{
-    Q_D(const QTorusMesh);
-    return d->m_rings;
-}
-
-int QTorusMesh::slices() const
-{
-    Q_D(const QTorusMesh);
-    return d->m_slices;
-}
-
-float QTorusMesh::radius() const
-{
-    Q_D(const QTorusMesh);
-    return d->m_radius;
-}
-
-float QTorusMesh::minorRadius() const
-{
-    Q_D(const QTorusMesh);
-    return d->m_minorRadius;
-}
-
-QMeshDataPtr createTorusMesh(double radius, double minorRadius,
-                            int rings, int sides)
-{
-    QMeshDataPtr mesh(new QMeshData(QMeshData::Triangles));
-
-    int nVerts  = sides * ( rings + 1 );
+    const int nVerts  = sides * (rings + 1);
     QByteArray bufferBytes;
     // vec3 pos, vec2 texCoord, vec3 normal
-    quint32 elementSize = 3 + 2 + 3;
-    quint32 stride = elementSize * sizeof(float);
+    const quint32 elementSize = 3 + 2 + 3;
+    const quint32 stride = elementSize * sizeof(float);
     bufferBytes.resize(stride * nVerts);
 
     float* fptr = reinterpret_cast<float*>(bufferBytes.data());
 
-    float ringFactor = (M_PI * 2) / static_cast<float>( rings );
-    float sideFactor = (M_PI * 2) / static_cast<float>( sides );
+    const float ringFactor = (M_PI * 2) / static_cast<float>( rings );
+    const float sideFactor = (M_PI * 2) / static_cast<float>( sides );
 
-    for ( int ring = 0; ring <= rings; ring++ )
-    {
-        float u = ring * ringFactor;
-        float cu = qCos( u );
-        float su = qSin( u );
+    for (int ring = 0; ring <= rings; ++ring) {
+        const float u = ring * ringFactor;
+        const float cu = qCos( u );
+        const float su = qSin( u );
 
-        for ( int side = 0; side < sides; side++ )
-        {
-            float v = side * sideFactor;
-            float cv = qCos( v );
-            float sv = qSin( v );
-            float r = ( radius + minorRadius * cv );
+        for (int side = 0; side < sides; ++side) {
+            const float v = side * sideFactor;
+            const float cv = qCos( v );
+            const float sv = qSin( v );
+            const float r = (radius + minorRadius * cv);
 
             *fptr++ = r * cu;
             *fptr++ = r * su;
             *fptr++ = minorRadius * sv;
-
 
             *fptr++ = u / (M_PI * 2);
             *fptr++ = v / (M_PI * 2);
@@ -214,19 +93,11 @@ QMeshDataPtr createTorusMesh(double radius, double minorRadius,
         }
     }
 
-    BufferPtr buf(new Buffer(QOpenGLBuffer::VertexBuffer));
-    buf->setUsage(QOpenGLBuffer::StaticDraw);
-    buf->setData(bufferBytes);
+    return bufferBytes;
+}
 
-    mesh->addAttribute(QMeshData::defaultPositionAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, 0, stride)));
-    quint32 offset = sizeof(float) * 3;
-
-    mesh->addAttribute(QMeshData::defaultTextureCoordinateAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC2, nVerts, offset, stride)));
-    offset += sizeof(float) * 2;
-
-    mesh->addAttribute(QMeshData::defaultNormalAttributeName(), QAbstractAttributePtr(new Attribute(buf, GL_FLOAT_VEC3, nVerts, offset, stride)));
-    offset += sizeof(float) * 3;
-
+QByteArray createTorusIndexData(int rings, int sides)
+{
     QByteArray indexBytes;
     int faces = (sides * 2) * rings; // two tris per side, for all rings
     int indices = faces * 3;
@@ -234,63 +105,299 @@ QMeshDataPtr createTorusMesh(double radius, double minorRadius,
     indexBytes.resize(indices * sizeof(quint16));
     quint16* indexPtr = reinterpret_cast<quint16*>(indexBytes.data());
 
-    for ( int ring = 0; ring < rings; ring++ )
-    {
-        int ringStart = ring * sides;
-        int nextRingStart = ( ring + 1 ) * sides;
-        for ( int side = 0; side < sides; side++ )
-        {
-            int nextSide = ( side + 1 ) % sides;
-            *indexPtr++ = ( ringStart + side );
-            *indexPtr++ = ( nextRingStart + side );
-            *indexPtr++ = ( nextRingStart + nextSide );
+    for (int ring = 0; ring < rings; ++ring) {
+        const int ringStart = ring * sides;
+        const int nextRingStart = (ring + 1) * sides;
+        for (int side = 0; side < sides; ++side) {
+            const int nextSide = (side + 1) % sides;
+            *indexPtr++ = (ringStart + side);
+            *indexPtr++ = (nextRingStart + side);
+            *indexPtr++ = (nextRingStart + nextSide);
             *indexPtr++ = ringStart + side;
             *indexPtr++ = nextRingStart + nextSide;
-            *indexPtr++ = ( ringStart + nextSide );
+            *indexPtr++ = (ringStart + nextSide);
         }
     }
 
-    BufferPtr indexBuffer(new Buffer(QOpenGLBuffer::IndexBuffer));
-    indexBuffer->setUsage(QOpenGLBuffer::StaticDraw);
-    indexBuffer->setData(indexBytes);
-    mesh->setIndexAttribute(AttributePtr(new Attribute(indexBuffer, GL_UNSIGNED_SHORT, indices, 0, 0)));
-
-    mesh->computeBoundsFromAttribute(QMeshData::defaultPositionAttributeName());
-
-    return mesh;
+    return indexBytes;
 }
 
-QAbstractMeshFunctorPtr QTorusMesh::meshFunctor() const
+} // anonymous
+
+class TorusVertexDataFunctor : public QBufferFunctor
 {
-    Q_D(const QTorusMesh);
-    return QAbstractMeshFunctorPtr(new TorusMeshFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius));
+public:
+    TorusVertexDataFunctor(int rings, int slices, float radius, float minorRadius)
+        : m_rings(rings)
+        , m_sides(slices)
+        , m_radius(radius)
+        , m_minorRadius(minorRadius)
+    {
+    }
+
+    QByteArray operator ()() Q_DECL_OVERRIDE
+    {
+        return createTorusVertexData(m_radius, m_minorRadius, m_rings, m_sides);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const TorusVertexDataFunctor *otherFunctor = functor_cast<TorusVertexDataFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_rings == m_rings &&
+                    otherFunctor->m_sides == m_sides &&
+                    otherFunctor->m_radius == m_radius &&
+                    otherFunctor->m_minorRadius == m_minorRadius);
+        return false;
+    }
+
+    QT3D_FUNCTOR(TorusVertexDataFunctor)
+
+private:
+    int m_rings;
+    int m_sides;
+    float m_radius;
+    float m_minorRadius;
+};
+
+class TorusIndexDataFunctor : public QBufferFunctor
+{
+public:
+    TorusIndexDataFunctor(int rings, int slices)
+        : m_rings(rings)
+        , m_sides(slices)
+    {
+    }
+
+    QByteArray operator ()() Q_DECL_OVERRIDE
+    {
+        return createTorusIndexData(m_rings, m_sides);
+    }
+
+    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    {
+        const TorusIndexDataFunctor *otherFunctor = functor_cast<TorusIndexDataFunctor>(&other);
+        if (otherFunctor != Q_NULLPTR)
+            return (otherFunctor->m_rings == m_rings &&
+                    otherFunctor->m_sides == m_sides);
+        return false;
+    }
+
+    QT3D_FUNCTOR(TorusIndexDataFunctor)
+
+private:
+    int m_rings;
+    int m_sides;
+};
+
+class TorusGeometry : public QGeometry
+{
+    Q_OBJECT
+public:
+    explicit TorusGeometry(QNode *parent = 0)
+        : QGeometry(parent)
+        , m_rings(16)
+        , m_slices(16)
+        , m_radius(1.0f)
+        , m_minorRadius(1.0f)
+        , m_positionAttribute(new QAttribute(this))
+        , m_normalAttribute(new QAttribute(this))
+        , m_texCoordAttribute(new QAttribute(this))
+        , m_indexAttribute(new QAttribute(this))
+        , m_vertexBuffer(new QBuffer(QBuffer::VertexBuffer, this))
+        , m_indexBuffer(new QBuffer(QBuffer::IndexBuffer, this))
+    {
+        // vec3 pos, vec2 tex, vec3 normal
+        const quint32 elementSize = 3 + 2 + 3;
+        const quint32 stride = elementSize * sizeof(float);
+        const int nVerts = (m_slices + 1) * (m_rings + 1);
+        const int faces = (m_slices * 2) * m_rings;
+
+        m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
+        m_positionAttribute->setDataType(QAttribute::Float);
+        m_positionAttribute->setDataSize(3);
+        m_positionAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_positionAttribute->setBuffer(m_vertexBuffer);
+        m_positionAttribute->setByteStride(stride);
+        m_positionAttribute->setCount(nVerts);
+
+        m_texCoordAttribute->setName(QAttribute::defaultTextureCoordinateAttributeName());
+        m_texCoordAttribute->setDataType(QAttribute::Float);
+        m_texCoordAttribute->setDataSize(2);
+        m_texCoordAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_texCoordAttribute->setBuffer(m_vertexBuffer);
+        m_texCoordAttribute->setByteStride(stride);
+        m_texCoordAttribute->setByteOffset(3 * sizeof(float));
+        m_texCoordAttribute->setCount(nVerts);
+
+        m_normalAttribute->setName(QAttribute::defaultNormalAttributeName());
+        m_normalAttribute->setDataType(QAttribute::Float);
+        m_normalAttribute->setDataSize(3);
+        m_normalAttribute->setAttributeType(QAttribute::VertexAttribute);
+        m_normalAttribute->setBuffer(m_vertexBuffer);
+        m_normalAttribute->setByteStride(stride);
+        m_normalAttribute->setByteOffset(5 * sizeof(float));
+        m_normalAttribute->setCount(nVerts);
+
+        m_indexAttribute->setAttributeType(QAttribute::IndexAttribute);
+        m_indexAttribute->setDataType(QAttribute::UnsignedShort);
+        m_indexAttribute->setBuffer(m_indexBuffer);
+
+        m_indexAttribute->setCount(faces * 3);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusVertexDataFunctor(m_rings, m_slices, m_radius, m_minorRadius)));
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusIndexDataFunctor(m_rings, m_slices)));
+
+        addAttribute(m_positionAttribute);
+        addAttribute(m_texCoordAttribute);
+        addAttribute(m_normalAttribute);
+        addAttribute(m_indexAttribute);
+    }
+
+    ~TorusGeometry()
+    {
+        QGeometry::cleanup();
+    }
+
+    void updateVertices()
+    {
+        const int nVerts = (m_slices + 1) * (m_rings + 1);
+        m_positionAttribute->setCount(nVerts);
+        m_texCoordAttribute->setCount(nVerts);
+        m_normalAttribute->setCount(nVerts);
+
+        m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusVertexDataFunctor(m_rings, m_slices, m_radius, m_minorRadius)));
+    }
+
+    void updateIndices()
+    {
+        const int faces = (m_slices * 2) * m_rings;
+        m_indexAttribute->setCount(faces * 3);
+        m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusIndexDataFunctor(m_rings, m_slices)));
+    }
+
+    void setRings(int rings)
+    {
+        if (rings != m_rings) {
+            m_rings = rings;
+            updateVertices();
+            updateIndices();
+            emit ringsChanged();
+        }
+    }
+
+    void setSlices(int slices)
+    {
+        if (slices != m_slices) {
+            m_slices = slices;
+            updateVertices();
+            updateIndices();
+            emit slicesChanged();
+        }
+    }
+
+    void setRadius(float radius)
+    {
+        if (radius != m_radius) {
+            m_radius = radius;
+            updateVertices();
+            emit radiusChanged();
+        }
+    }
+
+    void setMinorRadius(float minorRadius)
+    {
+        if (minorRadius != m_minorRadius) {
+            m_minorRadius = minorRadius;
+            updateVertices();
+            emit minorRadiusChanged();
+        }
+    }
+
+    int rings() const { return m_rings; }
+    int slices() const { return m_slices; }
+    float radius() const { return m_radius; }
+    float minorRadius() const { return m_minorRadius; }
+
+Q_SIGNALS:
+    void radiusChanged();
+    void ringsChanged();
+    void slicesChanged();
+    void minorRadiusChanged();
+
+private:
+    int m_rings;
+    int m_slices;
+    float m_radius;
+    float m_minorRadius;
+    QAttribute *m_positionAttribute;
+    QAttribute *m_normalAttribute;
+    QAttribute *m_texCoordAttribute;
+    QAttribute *m_indexAttribute;
+    QBuffer *m_vertexBuffer;
+    QBuffer *m_indexBuffer;
+};
+
+
+QTorusMesh::QTorusMesh(QNode *parent)
+    : QGeometryRenderer(parent)
+{
+    TorusGeometry *geometry = new TorusGeometry(this);
+    QObject::connect(geometry, &TorusGeometry::radiusChanged, this, &QTorusMesh::radiusChanged);
+    QObject::connect(geometry, &TorusGeometry::ringsChanged, this, &QTorusMesh::ringsChanged);
+    QObject::connect(geometry, &TorusGeometry::slicesChanged, this, &QTorusMesh::slicesChanged);
+    QObject::connect(geometry, &TorusGeometry::minorRadiusChanged, this, &QTorusMesh::minorRadiusChanged);
+
+    QGeometryRenderer::setGeometry(geometry);
 }
 
-TorusMeshFunctor::TorusMeshFunctor(int rings, int slices, float radius, float minorRadius)
-    : QAbstractMeshFunctor()
-    , m_rings(rings)
-    , m_slices(slices)
-    , m_radius(radius)
-    , m_minorRadius(minorRadius)
+QTorusMesh::~QTorusMesh()
 {
+    QGeometryRenderer::cleanup();
 }
 
-QMeshDataPtr TorusMeshFunctor::operator ()()
+void QTorusMesh::setRings(int rings)
 {
-    return createTorusMesh(m_radius, m_minorRadius, m_rings, m_slices);
+    static_cast<TorusGeometry *>(geometry())->setRings(rings);
 }
 
-bool TorusMeshFunctor::operator ==(const QAbstractMeshFunctor &other) const
+void QTorusMesh::setSlices(int slices)
 {
-    const TorusMeshFunctor *otherFunctor = dynamic_cast<const TorusMeshFunctor *>(&other);
-    if (otherFunctor != Q_NULLPTR)
-        return (otherFunctor->m_radius == m_radius &&
-                otherFunctor->m_slices == m_slices &&
-                otherFunctor->m_rings == m_rings &&
-                otherFunctor->m_minorRadius == m_minorRadius);
-    return false;
+    static_cast<TorusGeometry *>(geometry())->setSlices(slices);
+}
+
+void QTorusMesh::setRadius(float radius)
+{
+    static_cast<TorusGeometry *>(geometry())->setRadius(radius);
+}
+
+void QTorusMesh::setMinorRadius(float minorRadius)
+{
+    static_cast<TorusGeometry *>(geometry())->setMinorRadius(minorRadius);
+}
+
+int QTorusMesh::rings() const
+{
+    return static_cast<TorusGeometry *>(geometry())->rings();
+}
+
+int QTorusMesh::slices() const
+{
+    return static_cast<TorusGeometry *>(geometry())->slices();
+}
+
+float QTorusMesh::radius() const
+{
+    return static_cast<TorusGeometry *>(geometry())->radius();
+}
+
+float QTorusMesh::minorRadius() const
+{
+    return static_cast<TorusGeometry *>(geometry())->minorRadius();
 }
 
 } // Qt3D
 
 QT_END_NAMESPACE
+
+#include "qtorusmesh.moc"

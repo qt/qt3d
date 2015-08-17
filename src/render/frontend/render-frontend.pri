@@ -38,9 +38,7 @@ HEADERS += \
     $$PWD/qlayer_p.h \
     $$PWD/qopenglfilter.h \
     $$PWD/qplanemesh.h \
-    $$PWD/qplanemesh_p.h \
     $$PWD/qcuboidmesh.h \
-    $$PWD/qcuboidmesh_p.h \
     $$PWD/qblendstate.h \
     $$PWD/qblendequation.h \
     $$PWD/qalphatest.h \
@@ -60,8 +58,6 @@ HEADERS += \
     $$PWD/qalphacoverage.h \
     $$PWD/qannotation.h \
     $$PWD/qannotation_p.h \
-    $$PWD/qabstractmesh_p.h \
-    $$PWD/qabstractmesh.h \
     $$PWD/qparametermapping_p.h \
     $$PWD/qparametermapping.h \
     $$PWD/qshaderdata.h \
@@ -74,7 +70,17 @@ HEADERS += \
     $$PWD/qabstracttextureimage.h \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtextureimage.h \
-    $$PWD/qtextureproviders.h
+    $$PWD/qtextureproviders.h \
+    $$PWD/qclipplane.h \
+    $$PWD/qstencilop.h \
+    $$PWD/qstencilopseparate.h \
+    $$PWD/qstenciltestseparate.h \
+    $$PWD/qstencilmask.h \
+    $$PWD/qgeometryrenderer.h \
+    $$PWD/qgeometry.h \
+    $$PWD/qgeometryrenderer_p.h \
+    $$PWD/qwindow.h \
+    $$PWD/qwindow_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -114,7 +120,6 @@ SOURCES += \
     $$PWD/qrendertarget.cpp \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qannotation.cpp \
-    $$PWD/qabstractmesh.cpp \
     $$PWD/qparametermapping.cpp \
     $$PWD/qshaderdata.cpp \
     $$PWD/qpolygonoffset.cpp \
@@ -123,4 +128,12 @@ SOURCES += \
     $$PWD/qwrapmode.cpp \
     $$PWD/qabstracttextureimage.cpp \
     $$PWD/qtextureimage.cpp \
-    $$PWD/qtextureproviders.cpp
+    $$PWD/qtextureproviders.cpp \
+    $$PWD/qclipplane.cpp \
+    $$PWD/qstencilop.cpp \
+    $$PWD/qstencilopseparate.cpp \
+    $$PWD/qstenciltestseparate.cpp \
+    $$PWD/qstencilmask.cpp \
+    $$PWD/qgeometryrenderer.cpp \
+    $$PWD/qgeometry.cpp \
+    $$PWD/qwindow.cpp

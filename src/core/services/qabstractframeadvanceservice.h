@@ -51,6 +51,8 @@ class QT3DCORESHARED_EXPORT QAbstractFrameAdvanceService : public QAbstractServi
 {
 public:
     virtual qint64 waitForNextFrame() = 0;
+    virtual void start() = 0;
+    virtual void stop() = 0;
 
 protected:
     QAbstractFrameAdvanceService(const QString &description = QString());

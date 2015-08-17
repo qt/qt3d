@@ -220,7 +220,7 @@ void RenderShader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pac
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
     const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();
 
-    foreach (const ShaderUniform &uniform, m_uniforms) {
+    Q_FOREACH (const ShaderUniform &uniform, m_uniforms) {
         QHash<QString, const QUniformValue* >::const_iterator valueIt = values.constFind(uniform.m_name);
         if (valueIt != valueEnd)
             valueIt.value()->apply(ctx, uniform);

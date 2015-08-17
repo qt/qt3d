@@ -66,7 +66,10 @@ public:
         FrontFace,
         PolygonOffset,
         ScissorTest,
-        StencilTest
+        StencilTest,
+        StencilMask,
+        StencilOp,
+        ClipPlane
     };
     Q_ENUM(Type)
 

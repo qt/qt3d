@@ -50,31 +50,64 @@ GLint elementType(GLint type);
 GLint tupleSizeFromType(GLint type);
 GLuint byteSizeFromType(GLint type);
 
-class BufferPrivate;
+class QBufferPrivate;
+class QBufferFunctor;
+typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT Buffer : public QAbstractBuffer
+class QT3DRENDERERSHARED_EXPORT QBuffer : public QAbstractBuffer
 {
+    Q_OBJECT
+    Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
+
 public:
-    explicit Buffer(QOpenGLBuffer::Type ty);
+    enum BufferType
+    {
+        VertexBuffer        = 0x8892, // GL_ARRAY_BUFFER
+        IndexBuffer         = 0x8893, // GL_ELEMENT_ARRAY_BUFFER
+        PixelPackBuffer     = 0x88EB, // GL_PIXEL_PACK_BUFFER
+        PixelUnpackBuffer   = 0x88EC  // GL_PIXEL_UNPACK_BUFFER
+    };
+    Q_ENUM(BufferType)
 
-    void setUsage(QOpenGLBuffer::UsagePattern usage);
-    QOpenGLBuffer::Type type() const;
+    enum UsageType
+    {
+        StreamDraw          = 0x88E0, // GL_STREAM_DRAW
+        StreamRead          = 0x88E1, // GL_STREAM_READ
+        StreamCopy          = 0x88E2, // GL_STREAM_COPY
+        StaticDraw          = 0x88E4, // GL_STATIC_DRAW
+        StaticRead          = 0x88E5, // GL_STATIC_READ
+        StaticCopy          = 0x88E6, // GL_STATIC_COPY
+        DynamicDraw         = 0x88E8, // GL_DYNAMIC_DRAW
+        DynamicRead         = 0x88E9, // GL_DYNAMIC_READ
+        DynamicCopy         = 0x88EA  // GL_DYNAMIC_COPY
+    };
+    Q_ENUM(UsageType)
 
-    void bind() Q_DECL_OVERRIDE;
-    void create() Q_DECL_OVERRIDE;
+    QBuffer(BufferType ty = QBuffer::VertexBuffer, QNode *parent = 0);
+    ~QBuffer();
 
-    QOpenGLBuffer createGL() const;
-    void upload(QOpenGLBuffer b);
+    void setUsage(UsageType usage);
+    UsageType usage() const;
 
-    // make a QObject and signal when contents change?
-    // GraphicsContext could listen, orphan the QOpenGLBuffer and hence
-    // reupload next time it's need
+    void setType(BufferType type);
+    BufferType type() const;
+
+    void setBufferFunctor(const QBufferFunctorPtr &functor);
+    QBufferFunctorPtr bufferFunctor() const;
+
 protected:
-    Q_DECLARE_PRIVATE(Buffer)
-    Buffer(BufferPrivate &dd, QOpenGLBuffer::Type ty);
-};
+    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-typedef QSharedPointer<Buffer> BufferPtr;
+Q_SIGNALS:
+    void typeChanged();
+    void usageChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QBuffer)
+    QT3D_CLONEABLE(QBuffer)
+};
 
 } // Qt3D
 

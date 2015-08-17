@@ -38,7 +38,8 @@
 #define QT3D_QABSTRACTATTRIBUTE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <QSharedPointer>
+#include <Qt3DCore/QNode>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,27 +50,88 @@ class QAbstractAttributePrivate;
 
 typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractAttribute
+class QT3DCORESHARED_EXPORT QAbstractAttribute : public QNode
 {
-public:
-    explicit QAbstractAttribute(QAbstractBufferPtr buf, int type, uint count, uint offset = 0, uint stride = 0);
-    virtual ~QAbstractAttribute();
+    Q_OBJECT
+    Q_PROPERTY(Qt3D::QAbstractBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
+    Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
+    Q_PROPERTY(uint count READ count WRITE setCount NOTIFY countChanged)
+    Q_PROPERTY(uint byteStride READ byteStride WRITE setByteStride NOTIFY byteStrideChanged)
+    Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
+    Q_PROPERTY(uint divisor READ divisor WRITE setDivisor NOTIFY divisorChanged)
+    Q_PROPERTY(AttributeType attributeType READ attributeType WRITE setAttributeType NOTIFY attributeTypeChanged)
 
-    int type() const;
+public:
+    enum AttributeType {
+        VertexAttribute,
+        IndexAttribute
+    };
+
+    Q_ENUM(AttributeType)
+
+    enum DataType {
+        Byte = 0,
+        UnsignedByte,
+        Short,
+        UnsignedShort,
+        Int,
+        UnsignedInt,
+        HalfFloat,
+        Float,
+        Double
+    };
+    Q_ENUM(DataType)
+
+    explicit QAbstractAttribute(QNode *parent = 0);
+    ~QAbstractAttribute();
+    QAbstractAttribute(QAbstractBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+
+    QAbstractBuffer *buffer() const;
+    QString name() const;
+    DataType dataType() const;
+    uint dataSize() const;
     uint count() const;
     uint byteStride() const;
-    uint byteOffset();
+    uint byteOffset() const;
     uint divisor() const;
-    QAbstractBufferPtr buffer() const;
+    AttributeType attributeType() const;
 
+    virtual QVector<QVector4D> asVector4D() const = 0;
     virtual QVector<QVector3D> asVector3D() const = 0;
     virtual QVector<QVector2D> asVector2D() const = 0;
     virtual void dump(int count) = 0;
 
+    void setBuffer(QAbstractBuffer *buffer);
+    void setName(const QString &name);
+    void setDataType(DataType type);
+    void setDataSize(uint size);
+    void setCount(uint count);
+    void setByteStride(uint byteStride);
+    void setByteOffset(uint byteOffset);
+    void setDivisor(uint divisor);
+    void setAttributeType(AttributeType attributeType);
+
+Q_SIGNALS:
+    void bufferChanged();
+    void nameChanged();
+    void dataTypeChanged();
+    void dataSizeChanged();
+    void countChanged();
+    void byteStrideChanged();
+    void byteOffsetChanged();
+    void divisorChanged();
+    void attributeTypeChanged();
+
 protected:
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = 0);
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+private:
     Q_DECLARE_PRIVATE(QAbstractAttribute)
-    QAbstractAttributePrivate *d_ptr;
-    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBufferPtr buf, int type, uint count, uint offset = 0, uint stride = 0);
 };
 
 } // Qt3D

@@ -3,13 +3,23 @@ TEMPLATE = subdirs
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
         renderentity \
-        renderqueues \
+        renderqueue \
         renderrenderpass \
         qgraphicsutils \
         rendershader \
         renderviewutils \
         renderviews \
         rendermaterial \
-        rendermesh \
-        vsyncframeadvanceservice
+        vsyncframeadvanceservice \
+        meshfunctors \
+        qmaterial \
+        qattribute \
+        qbuffer \
+        qgeometry \
+        qgeometryrenderer \
+        renderbuffer \
+        renderattribute \
+        rendergeometry \
+        rendergeometryrenderer \
+        raycasting
 }

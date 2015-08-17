@@ -107,7 +107,65 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
                   QString::number(type, 16);
 }
 
+namespace {
+
+QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+{
+    switch (dataType) {
+
+    case GL_UNSIGNED_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedShort;
+
+    case GL_UNSIGNED_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedByte;
+
+    case GL_UNSIGNED_INT:
+        dataCount = 1;
+        return QAbstractAttribute::UnsignedInt;
+
+    case GL_SHORT:
+        dataCount = 1;
+        return QAbstractAttribute::Short;
+
+    case GL_BYTE:
+        dataCount = 1;
+        return QAbstractAttribute::Byte;
+
+    case GL_INT:
+        dataCount = 1;
+        return QAbstractAttribute::Int;
+
+    case GL_FLOAT:
+        dataCount = 1;
+        break;
+
+    case GL_FLOAT_VEC2:
+        dataCount = 2;
+        break;
+
+    case GL_FLOAT_VEC3:
+        dataCount = 3;
+        break;
+
+    case GL_FLOAT_VEC4:
+        dataCount = 4;
+        break;
+
+// TO DO: Handle doubles
+
+    default:
+        Q_UNREACHABLE();
+    }
+
+    return QAbstractAttribute::Float;
+}
+
+} // anonymous
+
 QItemModelBuffer::QItemModelBuffer()
+    : m_buffer(Q_NULLPTR)
 {
 }
 
@@ -117,7 +175,8 @@ void QItemModelBuffer::setModel(QAbstractItemModel *model)
         return;
 
     m_model = model;
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 
     connect(m_model, SIGNAL(modelReset()), this, SLOT(onModelReset()));
     connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
@@ -127,7 +186,8 @@ void QItemModelBuffer::setModel(QAbstractItemModel *model)
 void QItemModelBuffer::setRoot(const QModelIndex &rootIndex)
 {
     m_rootIndex = rootIndex;
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 }
 
 void QItemModelBuffer::mapRoleName(QByteArray roleName, int elementType)
@@ -144,21 +204,23 @@ void QItemModelBuffer::mapRoleName(QByteArray roleName, QString attributeName, i
     }
 
     m_mappings.append(RoleMapping(roleName, attributeName, elementType));
-    m_buffer.clear();
+    delete m_buffer;
+    m_buffer = Q_NULLPTR;
 }
 
-BufferPtr QItemModelBuffer::buffer()
+QBuffer *QItemModelBuffer::buffer()
 {
     if (!m_buffer) {
         if (!validateRoles())
             return m_buffer;
 
+        qDeleteAll(m_attributes);
         m_attributes.clear();
         m_itemStride = 0;
 
-        m_buffer.reset(new Buffer(QOpenGLBuffer::VertexBuffer));
+        m_buffer = new QBuffer(QBuffer::VertexBuffer);
         // assume model will change
-        m_buffer->setUsage(QOpenGLBuffer::DynamicDraw);
+        m_buffer->setUsage(QBuffer::DynamicDraw);
 
         int rowCount = m_model->rowCount(m_rootIndex);
         int offset = 0;
@@ -168,8 +230,10 @@ BufferPtr QItemModelBuffer::buffer()
 
         for (int m=0; m<mappingCount; ++m) {
             const RoleMapping mapping(m_mappings.at(m));
-            AttributePtr attr(new Attribute(m_buffer, mapping.type,
-                                            rowCount,
+            uint dataSize = 0;
+            QAttribute::DataType dataType = typeFromGLType(mapping.type, dataSize);
+            QAttribute *attr(new QAttribute(m_buffer, dataType,
+                                            dataSize, rowCount,
                                             offset, m_itemStride));
             m_attributes[mapping.attribute] = attr;
             offset += Render::QGraphicsContext::byteSizeFromType(mapping.type);
@@ -186,7 +250,7 @@ QStringList QItemModelBuffer::attributeNames() const
     return m_attributes.keys();
 }
 
-AttributePtr QItemModelBuffer::attributeByName(QString nm) const
+QAttribute *QItemModelBuffer::attributeByName(QString nm) const
 {
     return m_attributes.value(nm);
 }

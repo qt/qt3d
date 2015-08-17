@@ -38,3 +38,8 @@
     \externalpage http://en.wikipedia.org/wiki/Z-buffering
     \title early z-fill pass
 */
+
+/*!
+    \externalpage http://www.cs.northwestern.edu/~ago820/SIG98/abstract.html
+    \title original Gooch paper
+*/

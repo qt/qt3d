@@ -47,6 +47,58 @@
 #include <Qt3DRenderer/QRenderAspect>
 #include <Qt3DRenderer/QForwardRenderer>
 
+class SceneWalker : public QObject
+{
+public:
+    SceneWalker(Qt3D::QSceneLoader *loader) : m_loader(loader) { }
+
+    void onStatusChanged();
+
+private:
+    void walkEntity(Qt3D::QEntity *e, int depth = 0);
+
+    Qt3D::QSceneLoader *m_loader;
+};
+
+void SceneWalker::onStatusChanged()
+{
+    qDebug() << "Status changed:" << m_loader->status();
+    if (m_loader->status() != Qt3D::QSceneLoader::Loaded)
+        return;
+
+    // The QSceneLoader instance is a component of an entity. The loaded scene
+    // tree is added under this entity.
+    QVector<Qt3D::QEntity *> entities = m_loader->entities();
+
+    // Technically there could be multiple entities referencing the scene loader
+    // but sharing is discouraged, and in our case there will be one anyhow.
+    if (entities.isEmpty())
+        return;
+    Qt3D::QEntity *root = entities[0];
+    // Print the tree.
+    walkEntity(root);
+
+    // To access a given node (like a named mesh in the scene), use QObject::findChild().
+    // The scene structure and names always depend on the asset.
+    Qt3D::QEntity *e = root->findChild<Qt3D::QEntity *>(QStringLiteral("PlanePropeller_mesh")); // toyplane.obj
+    if (e)
+        qDebug() << "Found propeller node" << e << "with components" << e->components();
+}
+
+void SceneWalker::walkEntity(Qt3D::QEntity *e, int depth)
+{
+    Qt3D::QNodeList nodes = e->childrenNodes();
+    for (int i = 0; i < nodes.count(); ++i) {
+        Qt3D::QNode *node = nodes[i];
+        Qt3D::QEntity *entity = qobject_cast<Qt3D::QEntity *>(node);
+        if (entity) {
+            QString indent;
+            indent.fill(' ', depth * 2);
+            qDebug().noquote() << indent << "Entity:" << entity << "Components:" << entity->components();
+            walkEntity(entity, depth + 1);
+        }
+    }
+}
 
 int main(int ac, char **av)
 {
@@ -90,12 +142,25 @@ int main(int ac, char **av)
     // Scene loader
     Qt3D::QEntity *sceneLoaderEntity = new Qt3D::QEntity(sceneRoot);
     Qt3D::QSceneLoader *sceneLoader = new Qt3D::QSceneLoader(sceneLoaderEntity);
+    SceneWalker sceneWalker(sceneLoader);
+    QObject::connect(sceneLoader, &Qt3D::QSceneLoader::statusChanged, &sceneWalker, &SceneWalker::onStatusChanged);
     sceneLoaderEntity->addComponent(sceneLoader);
 
-    QWidget *container = new QWidget();
-    QFileDialog dialog;
-    dialog.setFileMode(QFileDialog::AnyFile);
-    sceneLoader->setSource(dialog.getOpenFileUrl(container, QStringLiteral("Open a scene file")));
+    QStringList args = QCoreApplication::arguments();
+    QUrl sourceFileName;
+    if (args.count() <= 1) {
+        QWidget *container = new QWidget();
+        QFileDialog dialog;
+        dialog.setFileMode(QFileDialog::AnyFile);
+        sourceFileName = dialog.getOpenFileUrl(container, QStringLiteral("Open a scene file"));
+    } else {
+        sourceFileName = QUrl::fromLocalFile(args[1]);
+    }
+
+    if (sourceFileName.isEmpty())
+        return 0;
+
+    sceneLoader->setSource(sourceFileName);
 
     engine.setRootEntity(sceneRoot);
     view.show();

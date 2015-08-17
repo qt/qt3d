@@ -179,11 +179,6 @@ public:
     void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
-
-    // This can be removed once we're 100% sure the QFrameAllocator is death proof
-    void setFrameIndex(int index) { m_frameIndex = index; }
-    int frameIndex() const { return m_frameIndex; }
-
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
     void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
     const AttachmentPack &attachmentPack() const;
@@ -230,7 +225,6 @@ private:
     QClearBuffer::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;
     bool m_noDraw;
-    int m_frameIndex;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst

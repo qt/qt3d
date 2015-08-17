@@ -218,7 +218,7 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 
     m_weaver->finish();
 #else
-    const int threadCount = QThread::idealThreadCount();
+    const int threadCount = m_threadPooler->maxThreadCount();
     QAtomicInt atomicCount(threadCount);
 
     QVector<RunnableInterface *> taskList;

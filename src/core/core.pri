@@ -30,8 +30,6 @@ HEADERS += \
     $$PWD/qscenepropertychange_p.h \
     $$PWD/qsceneobserverinterface.h \
     $$PWD/qpostman_p.h \
-    $$PWD/qscene.h \
-    $$PWD/qsceneinterface.h \
     $$PWD/qbackendscenepropertychange.h \
     $$PWD/qbackendscenepropertychange_p.h \
     $$PWD/qobservableinterface_p.h \
@@ -40,7 +38,12 @@ HEADERS += \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qbackendnodefactory.h \
     $$PWD/qray3d.h \
-    $$PWD/qt3dcore_global_p.h
+    $$PWD/qt3dcore_global_p.h \
+    $$PWD/qscene_p.h \
+    $$PWD/qabstractfunctor.h \
+    $$PWD/qboundingvolume.h \
+    $$PWD/qboundingsphere.h \
+    $$PWD/qboundingvolumeprovider.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -57,4 +60,8 @@ SOURCES += \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
     $$PWD/qbackendnodefactory.cpp \
-    $$PWD/qray3d.cpp
+    $$PWD/qray3d.cpp \
+    $$PWD/qabstractfunctor.cpp \
+    $$PWD/qboundingvolume.cpp \
+    $$PWD/qboundingsphere.cpp \
+    $$PWD/qboundingvolumeprovider.cpp

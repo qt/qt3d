@@ -37,9 +37,7 @@
 #include "framepreparationjob_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
-#include <Qt3DRenderer/qmeshdata.h>
 #include <Qt3DRenderer/sphere.h>
 
 QT_BEGIN_NAMESPACE
@@ -48,9 +46,8 @@ namespace Qt3D {
 
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(Renderer *renderer, RenderEntity *root)
-    : m_renderer(renderer)
-    , m_root(root)
+FramePreparationJob::FramePreparationJob(RenderEntity *root)
+    : m_root(root)
 {
 }
 
@@ -67,18 +64,19 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(RenderEntity *node)
 {
     // Initialize worldBoundingVolume if Mesh associated
-    Qt3D::Render::RenderMesh *mesh = Q_NULLPTR;
+    Qt3D::Render::RenderGeometryRenderer *mesh = Q_NULLPTR;
     if ((node->localBoundingVolume()->isNull())
-            && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR) {
-        if (!mesh->meshDataHandle().isNull()) {
-            Qt3D::QMeshData *meshData = mesh->meshData();
-            if (meshData != Q_NULLPTR) {
-                const QAxisAlignedBoundingBox box = meshData->boundingBox();
-                node->localBoundingVolume()->setCenter(box.center());
-                const QVector3D &radii = box.radii();
-                node->localBoundingVolume()->setRadius(qMax(radii.x(), qMax(radii.y(), radii.z())));
-            }
-        }
+            && (mesh = node->renderComponent<RenderGeometryRenderer>()) != Q_NULLPTR) {
+        //        if (!mesh->meshDataHandle().isNull()) {
+        //            Qt3D::QMeshData *meshData = mesh->meshData();
+        //            if (meshData != Q_NULLPTR) {
+        //                const QAxisAlignedBoundingBox box = meshData->boundingBox();
+        //                node->localBoundingVolume()->setCenter(box.center());
+        //                const QVector3D &radii = box.radii();
+        //                node->localBoundingVolume()->setRadius(qMax(radii.x(), qMax(radii.y(), radii.z())));
+        //            }
+        //        }
+        // TO DO: Make that work with the GeometryRenderer
     }
 
     // Update transform properties in RenderShaderData

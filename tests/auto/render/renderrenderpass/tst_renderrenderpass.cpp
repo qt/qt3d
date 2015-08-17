@@ -58,6 +58,11 @@
 #include <Qt3DRenderer/QPolygonOffset>
 #include <Qt3DRenderer/QScissorTest>
 #include <Qt3DRenderer/QStencilTest>
+#include <Qt3DRenderer/QStencilTestSeparate>
+#include <Qt3DRenderer/QStencilMask>
+#include <Qt3DRenderer/QStencilOp>
+#include <Qt3DRenderer/QStencilOpSeparate>
+#include <Qt3DRenderer/QClipPlane>
 
 #include <Qt3DRenderer/private/blendstate_p.h>
 
@@ -164,10 +169,33 @@ private slots:
 
         QStencilTest *stencilTest = new QStencilTest;
         frontendState = stencilTest;
-        backendState = StencilTest::getOrCreate(stencilTest->mask(),
-                                                stencilTest->func(),
-                                                stencilTest->faceMode());
+        backendState = StencilTest::getOrCreate(stencilTest->front()->func(),
+                                                stencilTest->front()->ref(),
+                                                stencilTest->front()->mask(),
+                                                stencilTest->back()->func(),
+                                                stencilTest->back()->ref(),
+                                                stencilTest->back()->mask());
         QTest::newRow("stenciltest") << frontendState << backendState;
+
+        QStencilMask *stencilMask = new QStencilMask;
+        frontendState = stencilMask;
+        backendState = StencilMask::getOrCreate(stencilMask->frontMask(), stencilMask->backMask());
+
+        QTest::newRow("stencilmask") << frontendState << backendState;
+
+        QStencilOp *stencilOp = new QStencilOp;
+        frontendState = stencilOp;
+        backendState = StencilOp::getOrCreate(stencilOp->front()->stencilFail(),
+                                              stencilOp->front()->depthFail(),
+                                              stencilOp->front()->stencilDepthPass(),
+                                              stencilOp->back()->stencilFail(),
+                                              stencilOp->back()->depthFail(),
+                                              stencilOp->back()->stencilDepthPass());
+        QTest::newRow("stencilop") << frontendState << backendState;
+
+        QClipPlane *clipPlane = new QClipPlane;
+        frontendState = clipPlane;
+        backendState = ClipPlane::getOrCreate(clipPlane->plane());
     }
 
     void shouldHavePropertiesMirroringItsPeer()

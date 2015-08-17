@@ -37,7 +37,6 @@
 
 #include <QtQml>
 #include "qt3dquick3drendererplugin.h"
-#include <Qt3DRenderer/qabstractmesh.h>
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qsceneloader.h>
 #include <Qt3DRenderer/qmesh.h>
@@ -76,6 +75,7 @@
 #include <Qt3DRenderer/qcullface.h>
 #include <Qt3DRenderer/qfrontface.h>
 #include <Qt3DRenderer/qstenciltest.h>
+#include <Qt3DRenderer/qstenciltestseparate.h>
 #include <Qt3DRenderer/qscissortest.h>
 #include <Qt3DRenderer/qdithering.h>
 #include <Qt3DRenderer/qrenderattachment.h>
@@ -86,6 +86,14 @@
 #include <Qt3DRenderer/qcolormask.h>
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qnodraw.h>
+#include <Qt3DRenderer/qclipplane.h>
+#include <Qt3DRenderer/qstencilop.h>
+#include <Qt3DRenderer/qstencilopseparate.h>
+#include <Qt3DRenderer/qstencilmask.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -103,6 +111,7 @@
 #include <Qt3DQuickRenderer/quick3dshaderdataarray.h>
 #include <Qt3DQuickRenderer/quick3dstateset.h>
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
+#include <Qt3DQuickRenderer/quick3dgeometry.h>
 
 static void initResources()
 {
@@ -117,12 +126,15 @@ static const struct {
 } qmldir [] = {
     // Materials
     { "PhongMaterial", 2, 0 },
+    { "PhongAlphaMaterial", 2, 0 },
     { "DiffuseMapMaterial", 2, 0 },
     { "DiffuseSpecularMapMaterial", 2, 0 },
     { "NormalDiffuseMapAlphaMaterial", 2, 0 },
     { "NormalDiffuseMapMaterial", 2, 0 },
     { "NormalDiffuseSpecularMapMaterial", 2, 0 },
     { "PerVertexColorMaterial", 2, 0 },
+    { "GoochMaterial", 2, 0 },
+    { "TextureMaterial", 2, 0 },
     // FrameGraphs
     { "ForwardRenderer", 2, 0 },
     // Entities
@@ -182,8 +194,15 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3D::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3D::QTextureImage>(uri, 2, 0, "TextureImage");
 
+    // Geometry
+    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3D::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
+    qmlRegisterType<Qt3D::QAttribute>(uri, 2, 0, "Attribute");
+    qmlRegisterType<Qt3D::QBuffer>(uri, 2, 0, "Buffer");
+    qmlRegisterExtendedType<Qt3D::QGeometry, Qt3D::Render::Quick::Quick3DGeometry>(uri, 2, 0, "Geometry");
+    qmlRegisterType<Qt3D::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
+
     // Meshes
-    qmlRegisterUncreatableType<Qt3D::QAbstractMesh>(uri, 2, 0, "QAbstractMesh", QStringLiteral("QAbstractMesh is abstract"));
     qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
     qmlRegisterType<Qt3D::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
     qmlRegisterType<Qt3D::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
@@ -231,12 +250,17 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3D::QDepthMask>(uri, 2, 0, "DepthMask");
     qmlRegisterType<Qt3D::QCullFace>(uri, 2, 0, "CullFace");
     qmlRegisterType<Qt3D::QFrontFace>(uri, 2, 0, "FrontFace");
+    qmlRegisterUncreatableType<Qt3D::QStencilTestSeparate>(uri, 2, 0, "StencilTestSeparate", QStringLiteral("QStencilTestSeparate cannot be instantiated on its own"));
     qmlRegisterType<Qt3D::QStencilTest>(uri, 2, 0, "StencilTest");
     qmlRegisterType<Qt3D::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3D::QDithering>(uri, 2, 0, "Dithering");
     qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
     qmlRegisterType<Qt3D::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
     qmlRegisterType<Qt3D::QColorMask>(uri, 2, 0, "ColorMask");
+    qmlRegisterType<Qt3D::QClipPlane>(uri, 2, 0, "ClipPlane");
+    qmlRegisterUncreatableType<Qt3D::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
+    qmlRegisterType<Qt3D::QStencilOp>(uri, 2, 0, "StencilOp");
+    qmlRegisterType<Qt3D::QStencilMask>(uri, 2, 0, "StencilMask");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {

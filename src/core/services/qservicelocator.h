@@ -78,11 +78,12 @@ public:
     enum ServiceType {
         SystemInformation,
         OpenGLInformation,
+        CollisionService,
         FrameAdvanceService,
 #if !defined(Q_QDOC)
         DefaultServiceCount, // Add additional default services before here
 #endif
-        UserService = 256,
+        UserService = 256
     };
 
     void registerServiceProvider(int serviceType, QAbstractServiceProvider *provider);

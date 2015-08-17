@@ -36,7 +36,6 @@
 
 #include <QGuiApplication>
 
-#include <window.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
@@ -57,44 +56,28 @@
 #include <Qt3DRenderer/QCylinderMesh>
 #include <Qt3DRenderer/QSphereMesh>
 #include <Qt3DRenderer/QTorusMesh>
+#include <Qt3DRenderer/QWindow>
 
 #include <QPropertyAnimation>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Window view;
-
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    Qt3D::QWindow view;
     Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
-    engine.registerAspect(input);
-    engine.initialize();
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(input);
 
     // Root entity
     Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
 
-
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3D::QCamera *cameraEntity = view.defaultCamera();
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, -40.0f));
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
     input->setCamera(cameraEntity);
-
-
-    // FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
-    forwardRenderer->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
-    forwardRenderer->setCamera(cameraEntity);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
 
     // Material
     Qt3D::QMaterial *material = new Qt3D::QPhongMaterial(rootEntity);
@@ -122,7 +105,6 @@ int main(int argc, char* argv[])
     torusEntity->addComponent(torusMesh);
     torusEntity->addComponent(torusTransform);
     torusEntity->addComponent(material);
-
 
     // Sphere
     Qt3D::QEntity *sphereEntity = new Qt3D::QEntity(rootEntity);
@@ -153,9 +135,7 @@ int main(int argc, char* argv[])
     sphereEntity->addComponent(sphereTransform);
     sphereEntity->addComponent(material);
 
-    rootEntity->addComponent(frameGraph);
-
-    engine.setRootEntity(rootEntity);
+    view.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

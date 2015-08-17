@@ -63,6 +63,8 @@ public:
 
     void setDependencyHandler(DependencyHandler *handler);
 
+    int maxThreadCount() const;
+
 private:
     void enqueueTasks(QVector<RunnableInterface *> &tasks);
     void acquire(int add);

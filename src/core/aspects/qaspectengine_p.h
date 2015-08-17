@@ -50,7 +50,7 @@ class QNode;
 class QAspectEngine;
 class QAspectThread;
 class QPostman;
-class QSceneInterface;
+class QScene;
 
 class QAspectEnginePrivate : public QObjectPrivate
 {
@@ -62,7 +62,7 @@ public:
     QAspectFactory m_factory;
     QAspectThread *m_aspectThread;
     QPostman *m_postman;
-    QSceneInterface *m_scene;
+    QScene *m_scene;
     QSharedPointer<QEntity> m_root;
     QList<QAbstractAspect*> m_aspects;
 

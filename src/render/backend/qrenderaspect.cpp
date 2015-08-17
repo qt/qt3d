@@ -37,11 +37,10 @@
 #include "qrenderaspect.h"
 #include "qrenderaspect_p.h"
 
-#include <Qt3DRenderer/private/rendermesh_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/scenemanager_p.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRenderer/qabstractsceneloader.h>
 #include <Qt3DRenderer/qcameraselector.h>
@@ -64,10 +63,13 @@
 #include <Qt3DRenderer/qstateset.h>
 #include <Qt3DRenderer/qnodraw.h>
 #include <Qt3DCore/qcameralens.h>
+#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRenderer/qgeometryrenderer.h>
 
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/renderannotation_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
@@ -85,7 +87,6 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendernodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/loadmeshdatajob_p.h>
 #include <Qt3DRenderer/private/loadtexturedatajob_p.h>
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
@@ -94,6 +95,10 @@
 #include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DRenderer/private/nodraw_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
+#include <Qt3DRenderer/private/renderattribute_p.h>
+#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -129,7 +134,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_surface(Q_NULLPTR)
     , m_time(0)
     , m_initialized(false)
-    , m_shuttingDown(false)
 {
     initResources();
     m_aspectType = QAbstractAspect::AspectRenderer;
@@ -205,7 +209,6 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAnnotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
     registerBackendType<QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderCameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
     registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(d->m_renderer->layerManager())));
-    registerBackendType<QAbstractMesh>(QBackendNodeFunctorPtr(new Render::RenderMeshCreatorFunctor(d->m_renderer->meshManager(), d->m_renderer->meshDataManager())));
     registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
     registerBackendType<Render::QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
     registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
@@ -226,6 +229,10 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
+    registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::RenderBufferFunctor(d->m_renderer->bufferManager())));
+    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
+    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
+    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderGeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
@@ -237,14 +244,16 @@ void QRenderAspect::renderInitialize(QOpenGLContext *context)
 void QRenderAspect::renderSynchronous()
 {
     Q_D(QRenderAspect);
-    d->m_renderer->doRender(1);
+    d->m_renderer->doRender();
 }
 
+/*!
+ * Only called when rendering with QtQuick 2 and a Scene3D item
+ */
 void QRenderAspect::renderShutdown()
 {
     Q_D(QRenderAspect);
-    d->m_shuttingDown = true;
-    d->m_renderer->doRender(); // Consume the remaining frames
+    d->m_renderer->shutdown();
 }
 
 QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
@@ -256,20 +265,15 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     QVector<QAspectJobPtr> jobs;
 
     // Create jobs to load in any meshes that are pending
-    if (d->m_renderer != Q_NULLPTR && !d->m_shuttingDown) {
-        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
+    if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
+
+        // Create the jobs to build the frame
+        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer->renderSceneRoot()));
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
         d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
 
-        QHash<QNodeId, QAbstractMeshFunctorPtr> meshSources = d->m_renderer->meshDataManager()->meshesPending();
-        Q_FOREACH (const QNodeId &meshId, meshSources.keys()) {
-            Render::LoadMeshDataJobPtr loadMeshJob(new Render::LoadMeshDataJob(meshSources[meshId], meshId));
-            loadMeshJob->setRenderer(d->m_renderer);
-            jobs.append(loadMeshJob);
-        }
-
-        QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
+        const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
             Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
             loadTextureJob->setRenderer(d->m_renderer);
@@ -278,11 +282,17 @@ QVector<QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // TO DO: Have 2 jobs queue
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
-        QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
-        Q_FOREACH (const Render::LoadSceneJobPtr &job, sceneJobs) {
+        const QVector<Render::LoadSceneJobPtr> sceneJobs = d->m_renderer->sceneManager()->pendingSceneLoaderJobs();
+        Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
             job->setRenderer(d->m_renderer);
             jobs.append(job);
         }
+
+        const QVector<QAspectJobPtr> bufferJobs = d->m_renderer->createRenderBufferJobs();
+        jobs.append(bufferJobs);
+
+        const QVector<QAspectJobPtr> geometryJobs = d->m_renderer->createGeometryRendererJobs();
+        jobs.append(geometryJobs);
 
         // Create jobs to update transforms and bounding volumes
         // We can only update bounding volumes once all world transforms are known
@@ -365,6 +375,14 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
 
     if (surface)
         d->setSurface(surface);
+}
+
+void QRenderAspect::onStartup()
+{
+}
+
+void QRenderAspect::onShutdown()
+{
 }
 
 void QRenderAspect::onCleanup()

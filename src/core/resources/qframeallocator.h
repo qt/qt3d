@@ -84,6 +84,7 @@ public:
     uint maxObjectSize() const;
     uint totalChunkCount() const;
     int allocatorPoolSize() const;
+    bool isEmpty() const;
 
 private:
     Q_DECLARE_PRIVATE(QFrameAllocator)

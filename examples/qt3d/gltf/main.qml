@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -36,150 +37,43 @@
 
 import Qt3D 2.0
 import Qt3D.Renderer 2.0
-import QtQuick 2.1 as QQ2
 
 Entity {
-    id: root
-    objectName: "root"
+    id: sceneRoot
 
-    Scene {
-        id: wineScene
-        source: ":/assets/gltf/wine/wine.json"
+    Camera {
+        id: camera
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 16/9
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 0.0, 20.0, -120.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+    }
 
-        Entity {
-            transforms: [
-                Translate {
-                    dx: 100
-                    dy: 0
-                    dz: -100
-                }
+    Configuration  {
+        controlledCamera: camera
+    }
 
-            ]
-
-            property Mesh myMesh: ballmesh
-        }
-
-        Entity {
-            property Mesh myMesh: ballmesh
-
-            transforms: [
-                Translate {
-                    dx: 0
-                    dy: 100
-                }
-
-            ]
-
-            property Material mat: greenMaterial
-        }
-
-        Entity {
-            property Shape myShape: sphere1
-
-            transforms: [
-                Translate {
-                    dx: 50
-                    dy: 50
-                }
-
-            ]
-
-            property Material mat: greenMaterial
-
-            Shape {
-                id: sphere1
-                radius: 25
-                rings: 32
-                slices: 32
-            }
-        }
-
-        Entity {
-            property Shape myShape: torus1
-
-            transforms: [
-                Translate {
-                    dx: 50
-                    dy: 120
-                }
-
-            ]
-
-            property Material mat: blueMaterial
-
-            Shape {
-                id: torus1
-                radius: 40
-                minorRadius: 15
-                type: Shape.ShapeTorus
-            }
-        }
-
-
-        Entity {
-            property Mesh myMesh: ballmesh
-
-            transforms: [
-                Rotate {
-                    angle: 45
-                    axis: Qt.vector3d(0, 1, 0)
-                },
-
-                Translate {
-                    dx: 40
-                    dy: 100
-                }
-            ]
-
-            property Material mat: blueMaterial
+    FrameGraph {
+        id : external_forward_renderer
+        activeFrameGraph : ForwardRenderer {
+            camera: camera
+            clearColor: "black"
         }
     }
 
-    Mesh {
-        id: ballmesh
-        source: ":/assets/obj/ball.obj"
+    components: [external_forward_renderer]
+
+    Wine {
+        id: wineRack
+        scale: 1
+        x: -60.0
+        y: -20.0
+        z: 0.0
+        angleX: 180
     }
 
-    Material {
-        id: greenMaterial
-
-        parameters: [
-            /*
-            Tag {
-                name: "kd"
-                value: Qt.green
-            }
-            */
-
-            Tag {
-                name: "kd"
-                value: Qt.vector3d( 0.2, 1.0, 0.1 )
-
-                QQ2.Vector3dAnimation on value {
-                    from: Qt.vector3d(0.0, 1.0, 0.1)
-                    to: Qt.vector3d(1.0, 1.0, 0.1)
-                    duration: 1000
-                    loops: QQ2.Animation.Infinite
-                }
-            },
-
-            Tag {
-                name: "diffuse"
-                value: brick
-            }
-        ]
-    }
-
-    Material {
-        id: blueMaterial
-
-        parameters: [
-            Tag { name: "kd"; value: Qt.vector3d(0.2, 0.2, 1.0) }
-        ]
-    }
-
-    Texture {
-        id: brick
-        source: "/Users/jmt/KDAB/Qt3D/qt3d-ng/assets/textures/brick1.jpg"
-    }
 }

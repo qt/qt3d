@@ -44,8 +44,6 @@
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/qmeshdata_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
@@ -56,6 +54,7 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
@@ -95,6 +94,15 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     return false;
 }
 
+void destroyUniformValue(const QUniformValue *value, QFrameAllocator *allocator)
+{
+    QUniformValue *v = const_cast<QUniformValue *>(value);
+    if (v->isTexture())
+        allocator->deallocate(static_cast<TextureUniform *>(v));
+    else
+        allocator->deallocate(v);
+}
+
 } // anonymouse namespace
 
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters = RenderView::initializeStandardUniformSetters();
@@ -128,11 +136,11 @@ QStringList RenderView::initializeStandardAttributeNames()
 {
     QStringList attributesNames;
 
-    attributesNames << QMeshData::defaultPositionAttributeName();
-    attributesNames << QMeshData::defaultTextureCoordinateAttributeName();
-    attributesNames << QMeshData::defaultNormalAttributeName();
-    attributesNames << QMeshData::defaultColorAttributeName();
-    attributesNames << QMeshData::defaultTangentAttributeName();
+    attributesNames << QAttribute::defaultPositionAttributeName();
+    attributesNames << QAttribute::defaultTextureCoordinateAttributeName();
+    attributesNames << QAttribute::defaultNormalAttributeName();
+    attributesNames << QAttribute::defaultColorAttributeName();
+    attributesNames << QAttribute::defaultTangentAttributeName();
 
     return attributesNames;
 }
@@ -265,8 +273,9 @@ RenderView::~RenderView()
         const QHash<QString, const QUniformValue* > uniforms = command->m_uniforms.uniforms();
         const QHash<QString, const QUniformValue* >::const_iterator end = uniforms.constEnd();
         QHash<QString, const QUniformValue* >::const_iterator it = uniforms.constBegin();
+
         for (; it != end; ++it)
-            m_allocator->deallocate<QUniformValue>(const_cast<QUniformValue *>(it.value()));
+            destroyUniformValue(it.value(), m_allocator);
 
         if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
@@ -324,7 +333,7 @@ void RenderView::sort()
             QHash<QString, const QUniformValue *> cachedUniforms = m_commands[j++]->m_uniforms.uniforms();
 
             while (j < i) {
-                QHash<QString, const QUniformValue *> &uniforms = m_commands[j]->m_uniforms.uniforms();
+                QHash<QString, const QUniformValue *> &uniforms = m_commands[j]->m_uniforms.m_uniforms;
                 QHash<QString, const QUniformValue *>::iterator it = uniforms.begin();
 
                 while (it != uniforms.end()) {
@@ -332,7 +341,7 @@ void RenderView::sort()
                     if (cachedUniforms.contains(it.key()) && !it.value()->isTexture()) {
                         const QUniformValue *refValue = cachedUniforms[it.key()];
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
-                            cachedUniforms.insert(it.key(), it.value());
+                            destroyUniformValue(it.value(), m_allocator);
                             it = uniforms.erase(it);
                             found = true;
                         }
@@ -360,11 +369,12 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 {
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
-        RenderMesh *mesh = Q_NULLPTR;
-        if (node->componentHandle<RenderMesh, 16>() != HMesh()
-                && (mesh = node->renderComponent<RenderMesh>()) != Q_NULLPTR
-                && mesh->isEnabled()) {
-            if (!mesh->meshDataHandle().isNull()) {
+        RenderGeometryRenderer *geometryRenderer = Q_NULLPTR;
+        if (node->componentHandle<RenderGeometryRenderer, 16>() != HGeometryRenderer()
+                && (geometryRenderer = node->renderComponent<RenderGeometryRenderer>()) != Q_NULLPTR) {
+
+            // There is a geometry renderer
+            if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
                 // TO DO: Perform culling here
                 // As shaders may be deforming, transforming the mesh
                 // We might want to make that optional or dependent on an explicit bounding box item
@@ -416,7 +426,9 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                    command->m_meshData = mesh->meshDataHandle();
+
+                    command->m_geometry = m_renderer->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+                    command->m_geometryRenderer = node->componentHandle<RenderGeometryRenderer, 16>();
                     command->m_instancesCount = 0;
                     command->m_stateSet = Q_NULLPTR;
                     command->m_changeCost = 0;
@@ -454,6 +466,7 @@ const AttachmentPack &RenderView::attachmentPack() const
 void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
 {
     RenderTexture *tex = Q_NULLPTR;
+
     if ((tex = value.value<RenderTexture *>()) != Q_NULLPTR) {
         uniformPack.setTexture(name, tex->peerUuid());
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();

@@ -38,17 +38,22 @@
 #define QT3D_QABSTRACTBUFFER_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <private/qnode_p.h>
+
 #include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate
+class QAbstractBuffer;
+
+class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
 {
 public:
-    QAbstractBufferPrivate();
+    Q_DECLARE_PUBLIC(QAbstractBuffer)
 
+    QAbstractBufferPrivate();
     QByteArray m_data;
 };
 

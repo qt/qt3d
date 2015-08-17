@@ -41,7 +41,6 @@
 #include <Qt3DRenderer/private/renderviewjobutils_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
@@ -49,19 +48,18 @@ namespace Render {
 
 void RenderViewJob::run()
 {
-    qCDebug(Jobs) << Q_FUNC_INFO << m_index << " frame " << m_frameIndex;
+    qCDebug(Jobs) << Q_FUNC_INFO << m_index;
 
     // Create a RenderView object
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
 
-    QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator(m_frameIndex);
+    QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
     RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
 
     // RenderView should allocate heap resources using only the currentFrameAllocator
     renderView->setAllocator(currentFrameAllocator);
     renderView->setRenderer(m_renderer);
     renderView->setSurfaceSize(m_surfaceSize);
-    renderView->setFrameIndex(m_frameIndex);
 
     // Populate the renderview's configuration from the framegraph
     setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);

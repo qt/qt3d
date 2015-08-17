@@ -37,8 +37,6 @@
 #ifndef OBJLOADER_H
 #define OBJLOADER_H
 
-#include <Qt3DRenderer/qmeshdata.h>
-
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
@@ -52,6 +50,8 @@ class QString;
 class QIODevice;
 
 namespace Qt3D {
+
+class QGeometry;
 
 struct FaceIndices
 {
@@ -106,7 +106,7 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    QMeshData *mesh() const;
+    QGeometry *geometry() const;
 
 private:
     void updateIndices(const QVector<QVector3D> &positions,

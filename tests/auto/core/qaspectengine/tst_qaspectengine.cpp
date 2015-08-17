@@ -48,7 +48,7 @@ public:
     tst_QAspectEngine() : QObject() {}
     ~tst_QAspectEngine() {}
 
-private slots:
+private Q_SLOTS:
     void constructionDestruction();
     void setRootEntity();
     void shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity();

@@ -38,6 +38,8 @@
 #define SPHERE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qboundingsphere.h>
 
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -46,17 +48,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Sphere
+class QT3DRENDERERSHARED_EXPORT Sphere : public QBoundingSphere
 {
 public:
-    inline Sphere()
-        : m_center(),
-          m_radius(0.0f)
+    inline Sphere(const QNodeId &i = QNodeId())
+        : m_center()
+        , m_radius(0.0f)
+        , m_id(i)
     {}
 
-    inline Sphere(const QVector3D &c, float r)
-        : m_center(c),
-          m_radius(r)
+    inline Sphere(const QVector3D &c, float r, const QNodeId &i = QNodeId())
+        : m_center(c)
+        , m_radius(r)
+        , m_id(i)
     {}
 
     void setCenter(const QVector3D &c);
@@ -85,11 +89,16 @@ public:
         return *this;
     }
 
+    QNodeId id() const Q_DECL_FINAL;
+    bool intersects(const QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    Type type() const Q_DECL_FINAL;
+
     static Sphere fromPoints(const QVector<QVector3D> &points);
 
 private:
     QVector3D m_center;
     float m_radius;
+    QNodeId m_id;
 
     static const float ms_epsilon;
 };
@@ -135,5 +144,7 @@ inline bool intersects(const Sphere &a, const Sphere &b)
 }
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3D::Sphere)
 
 #endif // SPHERE_H

@@ -50,8 +50,9 @@ class QT3DRENDERERSHARED_EXPORT TexImageData
 {
 public:
     TexImageData();
+    ~TexImageData();
 
-    ~TexImageData() {}
+    void cleanup();
 
     bool isCompressed() const
     { return m_isCompressed; }

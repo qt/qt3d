@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qtickclockservice.h"
+#include "qtickclockservice_p.h"
 #include "qtickclock_p.h"
 #include "qabstractframeadvanceservice_p.h"
 
@@ -79,6 +79,19 @@ qint64 QTickClockService::waitForNextFrame()
 {
     Q_D(QTickClockService);
     return d->m_clock.waitForNextTick();
+}
+
+/*!
+    Starts the inner tick clock used by the service.
+ */
+void QTickClockService::start()
+{
+    Q_D(QTickClockService);
+    d->m_clock.start();
+}
+
+void QTickClockService::stop()
+{
 }
 
 } // Qt3D

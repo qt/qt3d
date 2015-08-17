@@ -201,20 +201,23 @@ ScissorTest *ScissorTest::getOrCreate(int left, int bottom, int width, int heigh
     return getOrCreateImpl(ScissorTest(left, bottom, width, height));
 }
 
-StencilTest *StencilTest::getOrCreate(uint mask, GLenum func, GLenum faceMode)
+StencilTest *StencilTest::getOrCreate(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
 {
-    return getOrCreateImpl(StencilTest(mask, func, faceMode));
+    return getOrCreateImpl(StencilTest(frontFunc, frontRef, frontMask,
+                                       backFunc, backRef, backMask));
 }
 
-StencilTest::StencilTest(uint mask, GLenum func, GLenum faceMode)
-    : GenericState3<StencilTest, uint, GLenum, GLenum>(mask, func, faceMode)
+StencilTest::StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
+    : GenericState6<StencilTest, GLenum, int, uint, GLenum, int, uint>(frontFunc, frontRef, frontMask,
+                                                                       backFunc, backRef, backMask)
 {
 }
 
 void StencilTest::apply(QGraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
-    gc->openGLContext()->functions()->glStencilFunc(m_2, m_3, m_1);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, m_1, m_2, m_3);
+    gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, m_4, m_5, m_6);
 }
 
 AlphaCoverage::AlphaCoverage()
@@ -276,6 +279,53 @@ BlendStateSeparate *BlendStateSeparate::getOrCreate(GLenum srcRGB, GLenum dstRGB
 
 BlendStateSeparate::BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
     : GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>(srcRGB, dstRGB, srcAlpha, dstAlpha)
+{
+}
+
+void ClipPlane::apply(QGraphicsContext *gc) const
+{
+    gc->enableClipPlane(m_1);
+}
+
+ClipPlane::ClipPlane(int plane)
+    : GenericState1<ClipPlane, int>(plane)
+{
+}
+
+ClipPlane *ClipPlane::getOrCreate(int plane)
+{
+    return getOrCreateImpl(ClipPlane(plane));
+}
+
+void StencilOp::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, m_1, m_2, m_3);
+    gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, m_4, m_5, m_6);
+}
+
+StencilOp *StencilOp::getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
+{
+    return getOrCreateImpl(StencilOp(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass));
+}
+
+StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
+    : GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass)
+{
+}
+
+void StencilMask::apply(QGraphicsContext *gc) const
+{
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, m_1);
+    gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, m_2);
+}
+
+StencilMask *StencilMask::getOrCreate(uint frontMask, uint backMask)
+{
+    return getOrCreateImpl(StencilMask(frontMask, backMask));
+}
+
+StencilMask::StencilMask(uint frontMask, uint backMask)
+    : GenericState2<StencilMask, uint, uint>(frontMask, backMask)
 {
 }
 

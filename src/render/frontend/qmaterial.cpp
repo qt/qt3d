@@ -80,7 +80,9 @@ void QMaterial::copy(const QNode *ref)
     Q_FOREACH (QParameter *p, material->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 
-    if (material->d_func()->m_effect)
+    // TO DO: We may want to copy the node id of the effect and only send a clone
+    // when we are the parent of the effect
+    if (material->d_func()->m_effect && material->d_func()->m_effect->parent() == ref)
         setEffect(qobject_cast<QEffect *>(QNode::clone(material->d_func()->m_effect)));
 }
 
@@ -116,8 +118,9 @@ void QMaterial::setEffect(QEffect *effect)
         }
 
         d->m_effect = effect;
+        const bool blocked = blockNotifications(true);
         emit effectChanged();
-
+        blockNotifications(blocked);
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation

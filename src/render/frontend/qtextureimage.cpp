@@ -83,9 +83,11 @@ public:
 
     bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
     {
-        const QImageTextureDataFunctor *otherFunctor = dynamic_cast<const QImageTextureDataFunctor*>(&other);
+        const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
     }
+
+    QT3D_FUNCTOR(QImageTextureDataFunctor)
 
 private:
     QUrl m_url;

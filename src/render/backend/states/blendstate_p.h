@@ -182,16 +182,16 @@ private:
     ScissorTest(int left, int bottom, int width, int height);
 };
 
-class Q_AUTOTEST_EXPORT StencilTest : public GenericState3<StencilTest, uint, GLenum, GLenum>
+class Q_AUTOTEST_EXPORT StencilTest : public GenericState6<StencilTest, GLenum, int, uint, GLenum, int, uint>
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
-    { return StencilTestStateMask|StencilWriteStateMask; }
-    static StencilTest *getOrCreate(uint mask, GLenum func, GLenum faceMode);
+    { return StencilTestStateMask; }
+    static StencilTest *getOrCreate(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask);
 
 private:
-    StencilTest(uint mask, GLenum func, GLenum faceMode);
+    StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask);
 };
 
 class Q_AUTOTEST_EXPORT AlphaCoverage : public Qt3D::Render::RenderState
@@ -232,6 +232,47 @@ public:
 
 private:
     ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
+};
+
+class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, int>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return ClipPlaneMask; }
+    static ClipPlane *getOrCreate(int plane);
+
+private:
+    ClipPlane(int plane);
+};
+
+class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return StencilOpMask; }
+    static StencilOp *getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass,
+                                  GLenum bsfail, GLenum bdfail, GLenum bdspass);
+
+private:
+    StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass,
+              GLenum bsfail, GLenum bdfail, GLenum bdspass);
+};
+
+class Q_AUTOTEST_EXPORT StencilMask : public GenericState2<StencilMask, uint, uint>
+{
+public:
+    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+
+    StateMaskSet mask() const Q_DECL_FINAL
+    { return StencilWriteStateMask; }
+    static StencilMask *getOrCreate(uint frontMask, uint backMask);
+
+private:
+    StencilMask(uint frontMask, uint backMask);
 };
 
 } // Render

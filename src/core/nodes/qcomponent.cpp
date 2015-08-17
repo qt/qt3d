@@ -38,7 +38,7 @@
 #include "qcomponent_p.h"
 #include "qentity.h"
 #include "qentity_p.h"
-#include "qsceneinterface.h"
+#include "qscene_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ void QComponentPrivate::addEntity(QEntity *entity)
 {
     m_entities.append(entity);
 
-    if (m_scene != Q_NULLPTR) {
+    if (m_scene != Q_NULLPTR && !m_scene->hasEntityForComponent(m_id, entity->id())) {
         if (!m_shareable && !m_scene->entitiesForComponent(m_id).isEmpty())
             qWarning() << "Trying to assign a non shareable component to more than one Entity";
         m_scene->addEntityForComponent(m_id, entity->id());
@@ -128,7 +128,7 @@ QComponent::~QComponent()
     Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QComponent subclass didn't call QNode::cleanup in its destructor");
 
     Q_FOREACH (QEntity *entity, entities()) {
-        QEntityPrivate *entityPimpl = dynamic_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
+        QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
         if (entityPimpl)
             entityPimpl->m_components.removeAll(this);
     }

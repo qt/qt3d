@@ -47,6 +47,7 @@
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <qmath.h>
 
 // Add DEFINES += QT_BUILD_INTERNAL at least to Qt3d's core.pro
 // when running these tests. It makes QAspectJobManager available.
@@ -62,7 +63,7 @@ public:
 private:
     Qt3D::QAspectJobManager *m_jobManager;
 
-private slots:
+private Q_SLOTS:
     void init();
     void cleanup();
 
@@ -71,6 +72,7 @@ private slots:
     void doubleAspectQueue();
     void dependencyAspectQueue();
     void massTest();
+    void perThreadUniqueCall();
 };
 
 typedef Qt3D::QAspectJobManager JobManager;
@@ -81,7 +83,6 @@ void perThreadFunction(void *arg)
 {
     ((QAtomicInt *)arg)->ref();
 }
-
 
 // General test AspectJob
 
@@ -130,6 +131,11 @@ public:
 private:
     MassFunction m_func;
     QVector3D *m_data;
+};
+
+struct PerThreadUniqueData
+{
+
 };
 
 MassAspectJob::MassAspectJob(MassFunction func, QVector3D *data)
@@ -312,6 +318,58 @@ void tst_ThreadPooler::massTest()
 
     // THEN
     qDebug() << "time.elapsed() = " << time.elapsed() << " ms";
+}
+
+class PerThreadUniqueTester {
+
+public:
+    PerThreadUniqueTester()
+    {
+        m_globalAtomic.fetchAndStoreOrdered(0);
+        m_currentIndex.fetchAndStoreOrdered(0);
+    }
+
+    int currentJobIndex()
+    {
+        return m_currentIndex.fetchAndAddOrdered(1);
+    }
+
+    void updateGlobalAtomic(int index)
+    {
+        m_globalAtomic.fetchAndAddOrdered(qPow(3, index));
+    }
+
+    int globalAtomicValue() const
+    {
+        return m_globalAtomic.load();
+    }
+
+private:
+    QAtomicInt m_globalAtomic;
+    QAtomicInt m_currentIndex;
+};
+
+void perThreadFunctionUnique(void *arg)
+{
+    PerThreadUniqueTester *tester = reinterpret_cast<PerThreadUniqueTester *>(arg);
+    tester->updateGlobalAtomic(tester->currentJobIndex());
+}
+
+void tst_ThreadPooler::perThreadUniqueCall()
+{
+    // GIVEN
+    PerThreadUniqueTester tester;
+    const int maxThreads = QThread::idealThreadCount();
+    int maxValue = 0;
+    for (int i = 0; i < maxThreads; ++i) {
+        maxValue += qPow(3, i);
+    }
+
+    // WHEN
+    m_jobManager->waitForPerThreadFunction(perThreadFunctionUnique, &tester);
+
+    // THEN
+    QCOMPARE(maxValue, tester.globalAtomicValue());
 }
 
 QTEST_APPLESS_MAIN(tst_ThreadPooler)

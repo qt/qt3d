@@ -36,9 +36,10 @@
 
 import Qt3D 2.0
 import Qt3D.Renderer 2.0
+import QtQuick 2.4 as QQ2
 
 Entity {
-    components: [ mesh, material, transform ]
+    components: [ mesh, phongMaterial, transform ]
 
     CuboidMesh {
         id: mesh
@@ -47,16 +48,37 @@ Entity {
         xyMeshResolution: Qt.size(2, 2)
     }
 
-    Material {
-        id: material
-        effect : Effect { }
+    GoochMaterial {
+        id: phongMaterial
     }
 
     Transform {
         id: transform
-
-        Scale {
-            scale: 3
+        Scale { scale: 4 }
+        Rotate {
+            id: _rotate
+            axis: Qt.vector3d(0.0, 1.0, 0.0)
         }
+    }
+
+    QQ2.ColorAnimation {
+        target: phongMaterial
+        property: "warmColor"
+        from: "red"
+        to: "blue"
+        duration: 2500
+        loops: QQ2.Animation.Infinite
+        running: true
+    }
+
+    QQ2.NumberAnimation {
+        target: _rotate
+        property: "angle"
+        duration: 750
+        loops: QQ2.Animation.Infinite
+        running: true
+        easing.type: QQ2.Easing.InOutQuad
+        from: 0
+        to: 360
     }
 }

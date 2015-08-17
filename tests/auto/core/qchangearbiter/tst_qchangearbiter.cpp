@@ -38,10 +38,11 @@
 #include <Qt3DCore/private/qobserverinterface_p.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qpostman_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DCore/qscene.h>
+#include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qsceneobserverinterface.h>
@@ -247,14 +248,14 @@ private:
     QWaitCondition m_waitingForReplyToBeSent;
 };
 
-class tst_PostManObserver : public Qt3D::QObserverInterface
+class tst_PostManObserver : public Qt3D::QAbstractPostman
 {
 public:
 
     tst_PostManObserver() : m_sceneInterface(Q_NULLPTR)
     {}
 
-    void setScene(Qt3D::QSceneInterface *scene)
+    void setScene(Qt3D::QScene *scene) Q_DECL_FINAL
     {
         m_sceneInterface = scene;
     }
@@ -282,8 +283,13 @@ public:
         return m_lastChanges;
     }
 
+    void notifyBackend(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
+    {
+        m_sceneInterface->arbiter()->sceneChangeEventWithLock(e);
+    }
+
 private:
-    Qt3D::QSceneInterface *m_sceneInterface;
+    Qt3D::QScene *m_sceneInterface;
     QList<Qt3D::QSceneChangePtr> m_lastChanges;
 };
 
@@ -321,17 +327,21 @@ private:
 
 void tst_QChangeArbiter::registerObservers()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    arbiter->setPostman(new tst_PostManObserver());
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<Qt3D::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
     // Replaces initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
 
+    // WHEN
     Qt3D::QNode *root = new tst_Node();
     Qt3D::QNode *child = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -343,6 +353,7 @@ void tst_QChangeArbiter::registerObservers()
 
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers)
         QVERIFY(o->lastChange().isNull());
 
@@ -353,22 +364,26 @@ void tst_QChangeArbiter::registerObservers()
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
     }
 
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 void tst_QChangeArbiter::registerSceneObserver()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    arbiter->setPostman(new tst_PostManObserver());
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
-    // Replace initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<Qt3D::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
 
+    // WHEN
     tst_Node *root = new tst_Node();
     Qt3D::QNode *child = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -387,14 +402,17 @@ void tst_QChangeArbiter::registerSceneObserver()
 
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers)
         QVERIFY(o->lastChange().isNull());
     Q_FOREACH (tst_SceneObserver *s, sceneObservers)
         QVERIFY(s->lastChange().isNull());
 
+    // WHEN
     child->setParent(root);
-
     arbiter->syncChanges();
+
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
@@ -404,9 +422,11 @@ void tst_QChangeArbiter::registerSceneObserver()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeCreated);
     }
 
+    // WHEN
     root->sendComponentAddedNotification();
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::ComponentAdded);
@@ -416,22 +436,26 @@ void tst_QChangeArbiter::registerSceneObserver()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeCreated);
     }
 
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 void tst_QChangeArbiter::unregisterObservers()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    arbiter->setPostman(new tst_PostManObserver());
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
-    // Replace initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<Qt3D::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
 
+    // WHEN
     tst_Node *root = new tst_Node();
     Qt3D::QNode *child = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -443,44 +467,53 @@ void tst_QChangeArbiter::unregisterObservers()
 
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers)
         QVERIFY(o->lastChange().isNull());
 
+    // WHEN
     child->setParent(root);
-
     arbiter->syncChanges();
+
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
     }
 
+    // WHEN
     Q_FOREACH (tst_SimpleObserver *o, observers)
         arbiter->unregisterObserver(o, root->id());
 
     root->sendAllChangesNotification();
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
     }
 
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 void tst_QChangeArbiter::unregisterSceneObservers()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    arbiter->setPostman(new tst_PostManObserver());
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
-    // Replace initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<Qt3D::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
 
+    // WHEN
     tst_Node *root = new tst_Node();
     Qt3D::QNode *child = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     QList<tst_SimpleObserver *> observers;
@@ -499,14 +532,17 @@ void tst_QChangeArbiter::unregisterSceneObservers()
 
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers)
         QVERIFY(o->lastChange().isNull());
     Q_FOREACH (tst_SceneObserver *s, sceneObservers)
         QVERIFY(s->lastChange().isNull());
 
+    // WHEN
     child->setParent(root);
-
     arbiter->syncChanges();
+
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
@@ -516,9 +552,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeCreated);
     }
 
+    // WHEN
     root->sendComponentAddedNotification();
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::ComponentAdded);
@@ -528,9 +566,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeCreated);
     }
 
+    // WHEN
     child->setParent(Q_NODE_NULLPTR);
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeAboutToBeDeleted);
@@ -543,9 +583,11 @@ void tst_QChangeArbiter::unregisterSceneObservers()
     Q_FOREACH (tst_SceneObserver *s, sceneObservers)
         arbiter->unregisterSceneObserver(s);
 
+    // WHEN
     child->setParent(root);
     arbiter->syncChanges();
 
+    // THEN
     Q_FOREACH (tst_SimpleObserver *o, observers) {
         QVERIFY(!o->lastChange().isNull());
         QVERIFY(o->lastChange()->type() == Qt3D::NodeCreated);
@@ -555,21 +597,25 @@ void tst_QChangeArbiter::unregisterSceneObservers()
         QVERIFY(s->lastChange()->type() == Qt3D::NodeAboutToBeDeleted);
     }
 
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 void tst_QChangeArbiter::distributeFrontendChanges()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    arbiter->setPostman(new tst_PostManObserver());
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
-    // Replace initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<Qt3D::QAbstractPostman> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
 
+    // WHEN
     tst_Node *root = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     tst_SimpleObserver *backendAllChangedObserver = new tst_SimpleObserver();
@@ -588,6 +634,7 @@ void tst_QChangeArbiter::distributeFrontendChanges()
 
     arbiter->syncChanges();
 
+    // THEN
     QVERIFY(backendAllChangedObserver->lastChange().isNull());
     QVERIFY(backendNodeAddedObserver->lastChange().isNull());
     QVERIFY(backendNodeUpdatedObserver->lastChange().isNull());
@@ -595,9 +642,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QVERIFY(backendComponentAddedObserver->lastChange().isNull());
     QVERIFY(backendComponentRemovedObserver->lastChange().isNull());
 
+    // WHEN
     root->sendNodeAddedNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 0);
@@ -605,9 +654,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 0);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 0);
 
+    // WHEN
     root->sendNodeUpdatedNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 2);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 1);
@@ -615,10 +666,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 0);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 0);
 
-
+    // WHEN
     root->sendNodeRemovedNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 3);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 1);
@@ -626,9 +678,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 0);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 0);
 
+    // WHEN
     root->sendComponentAddedNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 4);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 1);
@@ -636,10 +690,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 0);
 
-
+    // WHEN
     root->sendComponentRemovedNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 5);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 1);
@@ -647,9 +702,11 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 1);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 1);
 
+    // WHEN
     root->sendAllChangesNotification();
     arbiter->syncChanges();
 
+    // THEN
     QCOMPARE(backendAllChangedObserver->lastChanges().count(), 6);
     QCOMPARE(backendNodeAddedObserver->lastChanges().count(), 2);
     QCOMPARE(backendNodeUpdatedObserver->lastChanges().count(), 2);
@@ -657,51 +714,60 @@ void tst_QChangeArbiter::distributeFrontendChanges()
     QCOMPARE(backendComponentAddedObserver->lastChanges().count(), 2);
     QCOMPARE(backendComponentRemovedObserver->lastChanges().count(), 2);
 
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 void tst_QChangeArbiter::distributeBackendChanges()
 {
-    Qt3D::QChangeArbiter *arbiter = new Qt3D::QChangeArbiter();
-    Qt3D::QScene *scene = new Qt3D::QScene();
-    tst_PostManObserver *postMan = new tst_PostManObserver();
+
+    // GIVEN
+    QScopedPointer<Qt3D::QChangeArbiter> arbiter(new Qt3D::QChangeArbiter());
+    QScopedPointer<Qt3D::QScene> scene(new Qt3D::QScene());
+    QScopedPointer<tst_PostManObserver> postman(new tst_PostManObserver);
+    arbiter->setPostman(postman.data());
+    arbiter->setScene(scene.data());
+    postman->setScene(scene.data());
+    scene->setArbiter(arbiter.data());
+    // Replaces initialize as we have no JobManager in this case
+    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter.data());
+
     // In order for backend -> frontend changes to work properly,
     // the backend notification should only be sent
     // from a worker thread which has a dedicated ChangeQueue in the
     // ChangeArbiter different than the frontend ChangeQueue. In this
     // test we will only check that the backend has received the frontend notification
 
-    arbiter->setPostman(postMan);
-    arbiter->setScene(scene);
-    scene->setArbiter(arbiter);
-    postMan->setScene(scene);
-    // Replace initialize as we have no JobManager in this case
-    Qt3D::QChangeArbiter::createThreadLocalChangeQueue(arbiter);
 
+    // WHEN
     tst_Node *root = new tst_Node();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3D::QNodePrivate::get(root)->setScene(scene.data());
     scene->addObservable(root);
 
     tst_BackendObserverObservable *backenObserverObservable = new tst_BackendObserverObservable();
     arbiter->registerObserver(Qt3D::QBackendNodePrivate::get(backenObserverObservable), root->id());
     arbiter->scene()->addObservable(Qt3D::QBackendNodePrivate::get(backenObserverObservable), root->id());
-    Qt3D::QBackendNodePrivate::get(backenObserverObservable)->setArbiter(arbiter);
+    Qt3D::QBackendNodePrivate::get(backenObserverObservable)->setArbiter(arbiter.data());
 
     arbiter->syncChanges();
+
+    // THEN
     QVERIFY(root->lastChange().isNull());
     QVERIFY(backenObserverObservable->lastChange().isNull());
     QCOMPARE(backenObserverObservable->lastChanges().count(), 0);
 
+    // WHEN
     root->sendAllChangesNotification();
     arbiter->syncChanges();
 
+    // THEN
     // backend observer receives event from frontend node "root"
     QCOMPARE(root->lastChanges().count(), 0);
-    QCOMPARE(postMan->lastChanges().count(), 0);
+    QCOMPARE(postman->lastChanges().count(), 0);
     QCOMPARE(backenObserverObservable->lastChanges().count(), 1);
 
+    // WHEN
     // simulate a worker thread
-    QScopedPointer<ThreadedAnswer> answer(new ThreadedAnswer(arbiter, backenObserverObservable));
+    QScopedPointer<ThreadedAnswer> answer(new ThreadedAnswer(arbiter.data(), backenObserverObservable));
 
     QMutex mutex;
     // sends reply from another thread (simulates job thread)
@@ -713,13 +779,14 @@ void tst_QChangeArbiter::distributeBackendChanges()
     // To verify that backendObserver sent a reply
     arbiter->syncChanges();
 
+    // THEN
     // the repliers should receive it's reply
     QCOMPARE(backenObserverObservable->lastChanges().count(), 2);
     // verify that postMan has received the change
-    QCOMPARE(postMan->lastChanges().count(), 1);
+    QCOMPARE(postman->lastChanges().count(), 1);
 
     // verify correctness of the reply
-    Qt3D::QBackendScenePropertyChangePtr c = qSharedPointerDynamicCast<Qt3D::QBackendScenePropertyChange>(postMan->lastChange());
+    Qt3D::QBackendScenePropertyChangePtr c = qSharedPointerDynamicCast<Qt3D::QBackendScenePropertyChange>(postman->lastChange());
     QVERIFY(!c.isNull());
     QVERIFY(c->targetNode() == root->id());
     qDebug() << c->propertyName();
@@ -728,7 +795,7 @@ void tst_QChangeArbiter::distributeBackendChanges()
 
     answer->exit();
     answer->wait();
-    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter);
+    Qt3D::QChangeArbiter::destroyThreadLocalChangeQueue(arbiter.data());
 }
 
 QTEST_GUILESS_MAIN(tst_QChangeArbiter)

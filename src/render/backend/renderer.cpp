@@ -53,20 +53,17 @@
 #include <Qt3DRenderer/private/blendstate_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
-#include <Qt3DRenderer/private/meshdatamanager_p.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
-#include <Qt3DRenderer/private/rendermesh_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderqueues_p.h>
+#include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
-#include <Qt3DRenderer/private/rendertextureprovider_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
@@ -75,6 +72,10 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/abstractsceneparser_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
+#include <Qt3DRenderer/private/buffermanager_p.h>
+#include <Qt3DRenderer/private/loadbufferjob_p.h>
+#include <Qt3DRenderer/private/loadgeometryjob_p.h>
+#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -107,13 +108,31 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
-Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
+
+/*!
+    \internal
+
+    Renderer shutdown procedure:
+
+    Since the renderer relies on the surface and OpenGLContext to perform its cleanup,
+    it is shutdown when the surface is set to Q_NULLPTR
+
+    When the surface is set to Q_NULLPTR this will request the RenderThread to terminate
+    and will prevent createRenderBinJobs from returning a set of jobs as there is nothing
+    more to be rendered.
+
+    In turn, this will call shutdown which will make the OpenGL context current one last time
+    to allow cleanups requiring a call to QOpenGLContext::currentContext to execute properly.
+    At the end of that function, the QGraphicsContext is set to null.
+
+    At this point though, the QAspectThread is still running its event loop and will only stop
+    a short while after.
+ */
+
+Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_textureProvider(new RenderTextureProvider)
-    , m_meshDataManager(new MeshDataManager())
-    , m_meshManager(new MeshManager())
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())
@@ -137,23 +156,28 @@ Renderer::Renderer(QRenderAspect::RenderType type, int cachedFrames)
     , m_shaderDataManager(new ShaderDataManager())
     , m_uboManager(new UBOManager())
     , m_textureImageManager(new TextureImageManager())
-    , m_renderQueues(new RenderQueues(cachedFrames - 1))
+    , m_bufferManager(new BufferManager())
+    , m_attributeManager(new AttributeManager())
+    , m_geometryManager(new GeometryManager())
+    , m_geometryRendererManager(new GeometryRendererManager)
+    , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
-    , m_frameCount(0)
-    , m_cachedFramesCount(cachedFrames)
     , m_debugLogger(Q_NULLPTR)
 {
-    m_currentPreprocessingFrameIndex = 0;
-
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
-    if (m_renderThread) {
-        m_running.fetchAndStoreOrdered(1);
+    m_running.fetchAndStoreOrdered(1);
+    if (m_renderThread)
         m_renderThread->waitForStart();
-    }
 
     loadSceneParsers();
+}
+
+Renderer::~Renderer()
+{
+    // Clean up the TLS allocators
+    destroyAllocators();
 }
 
 void Renderer::buildDefaultTechnique()
@@ -243,21 +267,6 @@ void Renderer::buildDefaultMaterial()
 
 }
 
-Renderer::~Renderer()
-{
-    // Bail out of the main render loop. Ensure that even if the render thread
-    // is waiting on RenderViews to be populated that we wake up the wait condition.
-    // We check for termination immediately after being awoken.
-    if (m_renderThread) {
-        m_running.fetchAndStoreOrdered(0);
-        m_submitRenderViewsSemaphore.release(1);
-        m_renderThread->wait();
-    }
-
-    // Clean up the TLS allocators
-    destroyAllocators();
-}
-
 void Renderer::createAllocators()
 {
     // Issue a set of jobs to create an allocator in TLS for each worker thread
@@ -269,14 +278,14 @@ void Renderer::createAllocators()
 
 void Renderer::destroyAllocators()
 {
-    // Issue a set of jobs to create an allocator in TLS for each worker thread
+    // Issue a set of jobs to destroy the allocator in TLS for each worker thread
     Q_ASSERT(m_rendererAspect);
     QAbstractAspectJobManager *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
 }
 
-QThreadStorage<QPair<int, QFrameAllocatorQueue *> *> *Renderer::tlsAllocators()
+QThreadStorage<QFrameAllocator *> *Renderer::tlsAllocators()
 {
     return &m_tlsAllocators;
 }
@@ -295,13 +304,26 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // RenderCommand has a sizeof 128
         // QMatrix4x4 has a sizeof 68
         // May need to fine tune parameters passed to QFrameAllocator for best performances
-        // We need to allocate one more buffer than we have frames to handle the case where we're computing frame 5
-        // While old frame 5 is being rendered
-        QFrameAllocatorQueue *allocatorQueue = new QFrameAllocatorQueue();
-        for (int i = 0; i <= theRenderer->cachedFramesCount(); i++)
-            allocatorQueue->append(new QFrameAllocator(128, 16, 128));
-        theRenderer->tlsAllocators()->setLocalData(new QPair<int, QFrameAllocatorQueue *>(0, allocatorQueue));
+        QFrameAllocator *allocator = new QFrameAllocator(128, 16, 128);
+        theRenderer->tlsAllocators()->setLocalData(allocator);
+
+        // Add the allocator to the renderer
+        // so that it can be accessed
+        theRenderer->addAllocator(allocator);
     }
+}
+
+
+/*!
+ * Returns the a FrameAllocator for the caller thread.
+ */
+QFrameAllocator *Renderer::currentFrameAllocator()
+{
+    // return the QFrameAllocator for the current thread
+    // It is never cleared as each renderview when it is destroyed
+    // takes care of releasing anything that may have been allocated
+    // using the allocator
+    return m_tlsAllocators.localData();
 }
 
 void Renderer::destroyThreadLocalAllocator(void *renderer)
@@ -309,11 +331,10 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
     Q_ASSERT(renderer);
     Renderer *theRenderer = static_cast<Renderer *>(renderer);
     if (theRenderer->tlsAllocators()->hasLocalData()) {
-        QPair<int, QFrameAllocatorQueue *> *frameAllocatorPair = theRenderer->tlsAllocators()->localData();
-        QFrameAllocatorQueue *allocatorQueue = frameAllocatorPair->second;
-        qDeleteAll(*allocatorQueue);
-        allocatorQueue->clear();
-        delete allocatorQueue;
+        QFrameAllocator *allocator = theRenderer->tlsAllocators()->localData();
+        allocator->clear();
+        // Setting the local data to null actually deletes the allocatorQeue
+        // as the tls object takes ownership of pointers
         theRenderer->tlsAllocators()->setLocalData(Q_NULLPTR);
     }
 }
@@ -335,6 +356,7 @@ void Renderer::initialize(QOpenGLContext *context)
     QSurfaceFormat sf = m_surface->format();
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
+
 
     QOpenGLContext* ctx = context ? context : new QOpenGLContext;
     if (!context) {
@@ -361,7 +383,6 @@ void Renderer::initialize(QOpenGLContext *context)
 
                 Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
                     logOpenGLDebugMessage(msg);
-
             }
         } else {
             qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
@@ -383,32 +404,20 @@ void Renderer::initialize(QOpenGLContext *context)
 */
 void Renderer::shutdown()
 {
-    // Stop and destroy the OpenGL logger
-    if (m_debugLogger) {
-        m_debugLogger->stopLogging();
-        m_debugLogger.reset(Q_NULLPTR);
-    }
+    // TO DO: Check that this works with iOs and other cases
+    if (m_surface) {
+        m_graphicsContext->makeCurrent(m_surface);
+        // Stop and destroy the OpenGL logger
+        if (m_debugLogger) {
+            m_debugLogger->stopLogging();
+            m_debugLogger.reset(Q_NULLPTR);
+        }
 
-    // Clean up the graphics context
-    m_graphicsContext.reset(Q_NULLPTR);
-}
-
-/*!
- * Returns the a FrameAllocator for the frame identified by \a frameIndex in the context
- * of the caller thread. This also clears the FrameAllocator before usage.
- */
-QFrameAllocator *Renderer::currentFrameAllocator(int frameIndex)
-{
-    // frameIndex between 0 and m_cachedFramesCount
-    // Check if index is the same as the current frame
-    // Otherwise we have to clear the QFrameAllocator at frameIndex
-    QPair<int, QFrameAllocatorQueue *> *data = m_tlsAllocators.localData();
-    if (data->first != frameIndex) {
-        qCDebug(Render::Memory) << Q_FUNC_INFO << "clearing " << frameIndex << " previous" << data->first;
-        data->first = frameIndex;
-        data->second->at(frameIndex)->clear();
+        // Clean up the graphics context
+        m_graphicsContext.reset(Q_NULLPTR);
+        m_surface = Q_NULLPTR;
+        qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
     }
-    return data->second->at(frameIndex);
 }
 
 void Renderer::setFrameGraphRoot(const QNodeId &frameGraphRootUuid)
@@ -486,13 +495,38 @@ void Renderer::setSurface(QSurface* surface)
     // of the Render Thread. On subsequent calls, just the surface will be
     // updated.
 
+    // setSurface(Q_NULLPTR) is also called when the window is destroyed,
+    // this is the opportunity to cleanup GL resources while we still have
+    // a valid QGraphicContext
+
     // TODO: Remove the need for a valid surface from the renderer initialization
     // We can use an offscreen surface to create and assess the OpenGL context.
     // This should allow us to get rid of the "swapBuffers called on a non-exposed
     // window" warning that we sometimes see.
     QMutexLocker locker(&m_mutex);
-    m_surface = surface;
-    m_waitForWindowToBeSetCondition.wakeOne();
+
+    // We are about to be destroyed
+    // cleanup GL now
+    if (surface == Q_NULLPTR) {
+        // Bail out of the main render loop. Ensure that even if the render thread
+        // is waiting on RenderViews to be populated that we wake up the wait condition.
+        // We check for termination immediately after being awaken.
+        m_running.fetchAndStoreOrdered(0);
+        if (m_renderThread) { // Pure Qt3D with RenderThread case
+            m_submitRenderViewsSemaphore.release(1);
+            m_renderThread->wait();
+            // This will call shutdown on the Renderer and cleanup GL context
+            // and then set the surface to Q_NULLPTR
+            m_surface = surface;
+        }
+        // else we are dealing with the QtQuick2 / Scene3D in which case we
+        // don't set the surface to Q_NULLPTR just yet as a call to
+        // QRenderAspect::renderShutdown() -> Renderer::shutdown() should
+        // follow and will take care of this
+    } else { // Setting a valid window on initialization
+        m_surface = surface;
+        m_waitForWindowToBeSetCondition.wakeOne();
+    }
 }
 
 void Renderer::render()
@@ -516,33 +550,48 @@ void Renderer::render()
     }
 }
 
-void Renderer::doRender(int maxFrameCount)
+void Renderer::doRender()
 {
-    // Render using current device state and renderer configuration
-    submitRenderViews(maxFrameCount);
 
-    // We allow the RenderTickClock service to proceed to the next frame
-    // In turn this will allow the aspect manager to request a new set of jobs
-    // to be performed for each aspect
-    m_vsyncFrameAdvanceService->proceedToNextFrame();
+    // Render using current device state and renderer configuration
+    submitRenderViews();
+
+    // Reset the m_renderQueue so that we won't try to render
+    // with a queue used by a previous frame with corrupted content
+    m_renderQueue->reset();
+
+    if (m_running.load()) { // Are we still running ?
+
+        if (m_renderThread) {
+            // If we are rendering using the render thread, make sure
+            // that all the RenderViews, RenderCommands, UniformValues ...
+            // have been completely destroyed and are leak free
+            // Note: we cannot check for non render thread cases
+            // (scene3d) as we aren't sure a full frame was previously submitted
+            Q_FOREACH (QFrameAllocator *allocator, m_allocators)
+                Q_ASSERT(allocator->isEmpty());
+        }
+
+        // We allow the RenderTickClock service to proceed to the next frame
+        // In turn this will allow the aspect manager to request a new set of jobs
+        // to be performed for each aspect
+        m_vsyncFrameAdvanceService->proceedToNextFrame();
+    }
 }
 
-// Called by threadWeaver RenderViewJobs
+// Called by RenderViewJobs
 void Renderer::enqueueRenderView(Render::RenderView *renderView, int submitOrder)
 {
-    //    qDebug() << Q_FUNC_INFO << QThread::currentThread();
-    m_renderQueues->queueRenderView(renderView, submitOrder);
-
-    if (m_renderQueues->isFrameQueueComplete()) {
-        // We can increment the currentProcessingFrameIndex here
-        // That index will then be used by RenderViewJobs to know which QFrameAllocator to use
-        // Increasing the frameIndex at that point is safe because :
-        // - This method is called by the last RenderViewJobs in ThreadWeaver
-        // - A new call to generate new RenderViewJobs cannot happen before all RenderViewJobs have finished executing aka locking the AspectThread
-        // - The Renderer thread doesn't modify the currentPreprocessingFrameIndex value
-        m_currentPreprocessingFrameIndex = (m_currentPreprocessingFrameIndex + 1) % (m_cachedFramesCount + 1);
-        m_renderQueues->pushFrameQueue();
-        qCDebug(Memory) << Q_FUNC_INFO << "Next frame index " << m_currentPreprocessingFrameIndex;
+    QMutexLocker locker(&m_mutex); // Prevent out of order execution
+    // We cannot use a lock free primitive here because:
+    // - QVector is not thread safe
+    // - Even if the insert is made correctly, the isFrameComplete call
+    //   could be invalid since depending on the order of execution
+    //   the counter could be complete but the renderview not yet added to the
+    //   buffer depending on whichever order the cpu decides to process this
+    if (m_renderQueue->queueRenderView(renderView, submitOrder)) {
+        if (m_renderThread && m_running.load())
+            Q_ASSERT(m_submitRenderViewsSemaphore.available() == 0);
         m_submitRenderViewsSemaphore.release(1);
     }
 }
@@ -567,108 +616,128 @@ bool Renderer::canRender() const
 }
 
 // Happens in RenderThread context when all RenderViewJobs are done
-void Renderer::submitRenderViews(int maxFrameCount)
+void Renderer::submitRenderViews()
 {
     // If we are using a render thread, make sure that
     // we've been told to render before rendering
-    if (m_renderThread)
+    if (m_renderThread) { // Prevent ouf of order execution
         m_submitRenderViewsSemaphore.acquire(1);
+
+        // Early return if we have been unlocked because of
+        // shutdown
+        if (!m_running.load())
+            return;
+
+        // When using Thread rendering, the semaphore should only
+        // be released when the frame queue is complete and there's
+        // something to render
+        // The case of shutdown should have been handled just before
+        Q_ASSERT(m_renderQueue->isFrameQueueComplete());
+    } else {
+
+        // When using synchronous rendering (QtQuick)
+        // We are not sure that the frame queue is actually complete
+        // Since a call to render may not be synched with the completions
+        // of the RenderViewJobs
+        // In such a case we return early, waiting for a next call with
+        // the frame queue complete at this point
+        QMutexLocker locker(&m_mutex);
+        if (!m_renderQueue->isFrameQueueComplete())
+            return ;
+    }
 
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
 
+    // Lock the mutex to protect access to m_surface and check if we are still set
+    // to the running state and that we have a valid surface on which to draw
+    QMutexLocker locker(&m_mutex);
+    const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+    if (!canRender()) {
+        qDeleteAll(renderViews);
+        return;
+    }
+
+    const int renderViewsCount = renderViews.size();
+    quint64 frameElapsed = queueElapsed;
+
+    // Early return if there's actually nothing to render
+    if (renderViewsCount <= 0)
+        return;
+
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
     GLuint boundFboId = 0;
+    QColor previousClearColor = renderViews.first()->clearColor();
 
-    while (m_renderQueues->queuedFrames() > 0)
-    {
-        if (maxFrameCount > 0 && m_frameCount >= uint(maxFrameCount)) {
-            break;
+    // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
+    if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
+        qDeleteAll(renderViews);
+        return;
+    }
+
+    if (!boundFboIdValid) {
+        boundFboIdValid = true;
+        boundFboId = m_graphicsContext->boundFrameBufferObject();
+    }
+
+    // Reset state to the default state
+    m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+
+    qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
+    for (int i = 0; i < renderViewsCount; ++i) {
+        // Initialize QGraphicsContext for drawing
+        // If the RenderView has a RenderStateSet defined
+        const RenderView *renderView = renderViews.at(i);
+
+        // Set RenderView render state
+        RenderStateSet *renderViewStateSet = renderView->stateSet();
+        if (renderViewStateSet)
+            m_graphicsContext->setCurrentStateSet(renderViewStateSet);
+
+        // Set RenderTarget ...
+        // Activate RenderTarget
+        m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderView->renderTargetHandle()),
+                                                renderView->attachmentPack(), boundFboId);
+
+        // Set clear color if different
+        if (previousClearColor != renderView->clearColor()) {
+            previousClearColor = renderView->clearColor();
+            m_graphicsContext->clearColor(previousClearColor);
         }
 
-        // Lock the mutex to protect access to m_surface and check if we are still set
-        // to the running state and that we have a valid surface on which to draw
-        QMutexLocker locker(&m_mutex);
-        if (!canRender()) {
-            QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
-            qDeleteAll(renderViews);
-            m_renderQueues->popFrameQueue();
-            return;
-        }
+        // Clear BackBuffer
+        m_graphicsContext->clearBackBuffer(renderView->clearBuffer());
+        // Set the Viewport
+        m_graphicsContext->setViewport(renderView->viewport());
 
-        QVector<Render::RenderView *> renderViews = m_renderQueues->nextFrameQueue();
-        int renderViewsCount = renderViews.size();
-        quint64 frameElapsed = queueElapsed;
+        // Execute the render commands
+        executeCommands(renderView->commands());
 
-        if (renderViewsCount <= 0)
-            continue;
+        // executeCommands takes care of restoring the stateset to the value
+        // of gc->currentContext() at the moment it was called (either
+        // renderViewStateSet or m_defaultRenderStateSet)
 
-        QColor previousClearColor = renderViews.first()->clearColor();
-        // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-        if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
-            qDeleteAll(renderViews);
-            m_renderQueues->popFrameQueue();
-            break;
-        }
+        frameElapsed = timer.elapsed() - frameElapsed;
+        qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
+        frameElapsed = timer.elapsed();
+    }
 
-        if (!boundFboIdValid) {
-            boundFboIdValid = true;
-            boundFboId = m_graphicsContext->boundFrameBufferObject();
-        }
-
-        // Reset state to the default state
+    // Reset state to the default state if the last stateset is not the
+    // defaultRenderStateSet
+    if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
         m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
-        qCDebug(Memory) << Q_FUNC_INFO << "rendering frame " << renderViews.last()->frameIndex() << " Queue " << m_renderQueues->queuedFrames();
-        for (int i = 0; i < renderViewsCount; i++) {
-            // Initialize QGraphicsContext for drawing
-            // If the RenderView has a RenderStateSet defined
-            if (renderViews[i]->stateSet())
-                m_graphicsContext->setCurrentStateSet(renderViews[i]->stateSet());
+    m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
-            // Set RenderTarget ...
-            // Activate RenderTarget
-            m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderViews[i]->renderTargetHandle()),
-                                                    renderViews[i]->attachmentPack(), boundFboId);
+    // Delete all the RenderViews which will clear the allocators
+    // that were used for their allocation
+    qDeleteAll(renderViews);
 
-            // Set clear color if different
-            if (previousClearColor != renderViews[i]->clearColor()) {
-                previousClearColor = renderViews[i]->clearColor();
-                m_graphicsContext->clearColor(previousClearColor);
-            }
-
-            // Clear BackBuffer
-            m_graphicsContext->clearBackBuffer(renderViews[i]->clearBuffer());
-            // Set the Viewport
-            m_graphicsContext->setViewport(renderViews[i]->viewport());
-
-            // TO DO only if the renderView doesn't contain a NoDraw
-            executeCommands(renderViews.at(i)->commands());
-
-            frameElapsed = timer.elapsed() - frameElapsed;
-            qCDebug(Rendering) << Q_FUNC_INFO << "Submitted Renderview " << i + 1 << "/" << renderViewsCount  << "in " << frameElapsed << "ms";
-            frameElapsed = timer.elapsed();
-        }
-
-        m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
-
-        // Let the Aspect Thread get a look in if it needs to change the surface
-        locker.unlock();
-
-        qDeleteAll(renderViews);
-        m_renderQueues->popFrameQueue();
-        queueElapsed = timer.elapsed() - queueElapsed;
-        qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue " << m_frameCount + 1 << "in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
-        qCDebug(Rendering) << Q_FUNC_INFO << "Queued frames for rendering remaining " << m_renderQueues->queuedFrames();;
-        qCDebug(Rendering) << Q_FUNC_INFO << "Average FPS : " << 1000 / (queueElapsed * 1.0f);
-        queueElapsed = timer.elapsed();
-        m_frameCount++;
-    }
-    qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed " << m_frameCount << " RenderQueues in " << timer.elapsed() << "ms";
-    m_frameCount = 0;
-
+    queueElapsed = timer.elapsed() - queueElapsed;
+    qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
+    qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
 }
 
 // Waits to be told to create jobs for the next frame
@@ -687,10 +756,48 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
     if (m_surface) {
         FrameGraphVisitor visitor;
         visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
-        m_renderQueues->setTargetRenderViewCount(renderBinJobs.size());
+
+        // Set target number of RenderViews
+        m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
+    }
+    return renderBinJobs;
+}
+
+// Returns a vector of jobs to be performed for dirty buffers
+// 1 dirty buffer == 1 job, all job can be performed in parallel
+QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
+{
+    const QVector<QNodeId> dirtyBuffers = m_bufferManager->dirtyBuffers();
+    QVector<QAspectJobPtr> dirtyBuffersJobs;
+
+    Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
+        HBuffer bufferHandle = m_bufferManager->lookupHandle(bufId);
+        if (!bufferHandle.isNull()) {
+            // Create new buffer job
+            LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
+            job->setRenderer(this);
+            dirtyBuffersJobs.push_back(job);
+        }
     }
 
-    return renderBinJobs;
+    return dirtyBuffersJobs;
+}
+
+QVector<QAspectJobPtr> Renderer::createGeometryRendererJobs()
+{
+    const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
+    QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
+
+    Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
+        HGeometryRenderer geometryRendererHandle = m_geometryRendererManager->lookupHandle(geoRendererId);
+        if (!geometryRendererHandle.isNull()) {
+            LoadGeometryJobPtr job(new LoadGeometryJob(geometryRendererHandle));
+            job->setRenderer(this);
+            dirtyGeometryRendererJobs.push_back(job);
+        }
+    }
+
+    return dirtyGeometryRendererJobs;
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
@@ -701,7 +808,6 @@ QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrde
     job->setSurfaceSize(m_surface->size());
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
-    job->setFrameIndex(m_currentPreprocessingFrameIndex);
     return job;
 }
 
@@ -713,13 +819,21 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     // Use the graphicscontext to submit the commands to the underlying
     // graphics API (OpenGL)
 
+    // Save the RenderView base stateset
+    RenderStateSet *globalState = m_graphicsContext->currentStateSet();
+
     Q_FOREACH (RenderCommand *command, commands) {
 
-        QMeshData *meshData = m_meshDataManager->data(command->m_meshData);
-        if (meshData == Q_NULLPTR || meshData->attributeNames().empty()) {
-            qCWarning(Rendering) << "RenderCommand should have a mesh";
-            continue ;
+        // Check if we have a valid GeometryRenderer + Geometry
+        RenderGeometry *rGeometry = m_geometryManager->data(command->m_geometry);
+        RenderGeometryRenderer *rGeometryRenderer = m_geometryRendererManager->data(command->m_geometryRenderer);
+        const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
+
+        if (!hasGeometryRenderer) {
+            qCWarning(Rendering) << "RenderCommand should have a mesh to render";
+            continue;
         }
+
         RenderShader *shader = m_shaderManager->data(command->m_shader);
         if (shader == Q_NULLPTR) {
             shader = m_defaultRenderShader;
@@ -727,23 +841,20 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             command->m_uniforms = m_defaultUniformPack;
         }
 
+        // The VAO should be created only once for a QGeometry and a ShaderProgram
+        // Manager should have a VAO Manager that are indexed by QMeshData and Shader
+        // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
         QOpenGLVertexArrayObject *vao = Q_NULLPTR;
         if (m_graphicsContext->supportsVAO()) {
-            command->m_vao = m_vaoManager->lookupHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+            command->m_vao = m_vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HMeshData, HShader>(command->m_meshData, command->m_shader));
+                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
                 *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
             }
             vao = *(m_vaoManager->data(command->m_vao));
             Q_ASSERT(vao);
         }
-
-        // The VAO should be created only once for a QMeshData and a ShaderProgram
-        // Manager should have a VAO Manager that are indexed by QMeshData and Shader
-        // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
-
-        bool drawIndexed = !meshData->indexAttribute().isNull();
 
         //// We activate the shader here
         // This will fill the attributes & uniforms info the first time the shader is loaded
@@ -755,28 +866,27 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Uniform and Attributes info from the shader
         // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
         // Before the shader was loader
+        RenderAttribute *indexAttribute = Q_NULLPTR;
         bool specified = false;
-        if (!command->m_parameterAttributeToShaderNames.isEmpty() && (!vao || !vao->isCreated())) {
+        const bool requiresVAOUpdate = (!vao || !vao->isCreated()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
+        GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
+
+        // Append dirty Geometry to temporary vector
+        // so that its dirtiness can be unset later
+        if (rGeometry->isDirty())
+            m_dirtyGeometry.push_back(rGeometry);
+
+        if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
             specified = true;
             if (vao) {
-                vao->create();
+                if (!vao->isCreated())
+                    vao->create();
                 vao->bind();
                 qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
             }
 
-            // TO DO : Do that in a better / nicer way
-            Q_FOREACH (const QString &nm, meshData->attributeNames()) {
-                AttributePtr attr(meshData->attributeByName(nm).staticCast<Attribute>());
-                if (command->m_parameterAttributeToShaderNames.contains(nm))
-                    m_graphicsContext->specifyAttribute(command->m_parameterAttributeToShaderNames[nm], attr);
-                else
-                    qCDebug(Render::Rendering) << "Couldn't find a Parameter attribute named " << nm;
-            }
-            if (drawIndexed)
-                m_graphicsContext->specifyIndices(meshData->indexAttribute().staticCast<Attribute>());
-
-            if (vao)
-                vao->release();
+            // Update or set Attributes and Buffers for the given rGeometry and Command
+            indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
         }
 
         //// Update program uniforms
@@ -784,45 +894,152 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         //// Draw Calls
         // Set state
-        RenderStateSet *globalState = m_graphicsContext->currentStateSet();
-        if (command->m_stateSet != Q_NULLPTR)
-            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+        RenderStateSet *localState = command->m_stateSet;
 
+        // Merge the RenderCommand state with the globalState of the RenderView
+        // Or restore the globalState if no stateSet for the RenderCommand
+        if (localState != Q_NULLPTR) {
+            command->m_stateSet->merge(globalState);
+            m_graphicsContext->setCurrentStateSet(command->m_stateSet);
+        } else {
+            m_graphicsContext->setCurrentStateSet(globalState);
+        }
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
         if (specified || (vao && vao->isCreated())) {
-            if (vao && vao->isCreated())
-                vao->bind();
+            const GLint primType = rGeometryRenderer->primitiveType();
+            const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
+            const bool drawIndexed = indexAttribute != Q_NULLPTR;
+            const GLint indexType = drawIndexed ? QGraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
 
-            GLint primType = meshData->primitiveType();
-            GLint primCount = meshData->primitiveCount();
-            GLint indexType = drawIndexed ? meshData->indexAttribute()->type() : 0;
+            if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
+                m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
 
-            if (primType == QMeshData::Patches && meshData->verticesPerPatch() != 0)
-                m_graphicsContext->setVerticesPerPatch(meshData->verticesPerPatch());
+            if (rGeometryRenderer->primitiveRestart())
+                m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
 
-            if (drawIndexed) {
-                m_graphicsContext->drawElements(primType,
-                                                primCount,
-                                                indexType,
-                                                reinterpret_cast<void*>(meshData->indexAttribute()->byteOffset()));
-            } else {
-                m_graphicsContext->drawArrays(primType, 0, primCount);
+            // TO DO: Add glMulti Draw variants
+            if (!drawInstanced) { // Non instanced Rendering
+                if (drawIndexed)
+                    m_graphicsContext->drawElements(primType,
+                                                    primitiveCount,
+                                                    indexType,
+                                                    reinterpret_cast<void*>(indexAttribute->byteOffset()),
+                                                    rGeometryRenderer->baseVertex());
+
+                else
+                    m_graphicsContext->drawArrays(primType, 0, primitiveCount);
+            } else { // Instanced Rendering
+                if (drawIndexed)
+                    m_graphicsContext->drawElementsInstanced(primType,
+                                                             primitiveCount,
+                                                             indexType,
+                                                             reinterpret_cast<void*>(indexAttribute->byteOffset()),
+                                                             rGeometryRenderer->instanceCount());
+                else
+                    m_graphicsContext->drawArraysInstanced(primType,
+                                                           rGeometryRenderer->baseInstance(),
+                                                           primitiveCount,
+                                                           rGeometryRenderer->instanceCount());
             }
-
-            // Reset state if overridden by pass state
-            if (command->m_stateSet != Q_NULLPTR)
-                m_graphicsContext->setCurrentStateSet(globalState);
 
             int err = m_graphicsContext->openGLContext()->functions()->glGetError();
             if (err)
                 qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 
+            if (rGeometryRenderer->primitiveRestart())
+                m_graphicsContext->disablePrimitiveRestart();
+
+            // Maybe we could cache the VAO and release it only at the end of the exectute frame
+            // in case we are always reusing the same one ?
+
             if (vao && vao->isCreated())
                 vao->release();
+
+            // Unset dirtiness on rGeometryRenderer only
+            // The rGeometry may be shared by several rGeometryRenderer
+            // so we cannot unset its dirtiness at this point
+            rGeometryRenderer->unsetDirty();
+
         }
+    } // end of RenderCommands loop
+
+    // Reset to the state we were in before executing the render commands
+    m_graphicsContext->setCurrentStateSet(globalState);
+
+    // Unset dirtiness on Geometry and Attributes
+    Q_FOREACH (RenderAttribute *attribute, m_dirtyAttributes)
+        attribute->unsetDirty();
+    m_dirtyAttributes.clear();
+
+    Q_FOREACH (RenderGeometry *geometry, m_dirtyGeometry)
+        geometry->unsetDirty();
+    m_dirtyGeometry.clear();
+}
+
+RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
+{
+    RenderAttribute *indexAttribute = Q_NULLPTR;
+    uint estimatedCount = 0;
+
+    Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
+        // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
+        RenderAttribute *attribute = attributeManager()->lookupResource(attributeId);
+
+        if (attribute == Q_NULLPTR)
+            continue;
+
+        RenderBuffer *buffer = bufferManager()->lookupResource(attribute->bufferId());
+
+        if (buffer == Q_NULLPTR)
+            continue;
+
+        if (buffer->isDirty()) {
+            // Reupload buffer data
+            m_graphicsContext->updateBuffer(buffer);
+
+            // Append buffer to temporary vector so that its dirtiness
+            // can be cleared at the end of the frame
+            buffer->unsetDirty();
+        }
+
+        // Update attribute and create buffer if needed
+
+        // Index Attribute
+        if (attribute->attributeType() == QAttribute::IndexAttribute) {
+            if (attribute->isDirty() || forceUpdate)
+                m_graphicsContext->specifyIndices(buffer);
+            indexAttribute = attribute;
+            // Vertex Attribute
+        } else if (command->m_parameterAttributeToShaderNames.contains(attribute->name())) {
+            if (attribute->isDirty() || forceUpdate)
+                m_graphicsContext->specifyAttribute(attribute, buffer, command->m_parameterAttributeToShaderNames.value(attribute->name()));
+            estimatedCount = qMax(attribute->count(), estimatedCount);
+        }
+
+        // Append attribute to temporary vector so that its dirtiness
+        // can be cleared at the end of the frame
+        m_dirtyAttributes.push_back(attribute);
+
+        // Note: We cannont call unsertDirty on the Attributeat this
+        // point as we don't know if the attributes are being shared
+        // with other geometry / geometryRenderer in which case they still
+        // should remain dirty so that VAO for these commands are properly
+        // updated
     }
+
+    // If the count was not specified by the geometry renderer
+    // we set it to what we estimated it to be
+    if (count == 0)
+        count = indexAttribute ? indexAttribute->count() : estimatedCount;
+    return indexAttribute;
+}
+
+void Renderer::addAllocator(QFrameAllocator *allocator)
+{
+    QMutexLocker lock(&m_mutex);
+    m_allocators.append(allocator);
 }
 
 QOpenGLFilter *Renderer::contextInfo() const

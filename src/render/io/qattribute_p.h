@@ -44,12 +44,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class Attribute;
+class QAttribute;
 
-class QT3DRENDERERSHARED_EXPORT AttributePrivate : public QAbstractAttributePrivate
+class QT3DRENDERERSHARED_EXPORT QAttributePrivate : public QAbstractAttributePrivate
 {
 public:
-    AttributePrivate();
+    QAttributePrivate();
 };
 
 } // Qt3D
