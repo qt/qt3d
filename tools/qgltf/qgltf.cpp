@@ -2361,8 +2361,8 @@ void GltfExporter::save(const QString &inputFilename)
         if (!imageMap.contains(it.key()))
             imageMap[it.key()] = newImageName();
         texture["source"] = imageMap[it.key()];
-        texture["format"] = 6408; // RGBA
-        texture["internalFormat"] = 6408;
+        texture["format"] = 0x1908; // RGBA
+        texture["internalFormat"] = !m_compressedTextures.contains(it.key()) ? 0x1908 : 0x8D64; // RGBA / ETC1
         texture["sampler"] = QStringLiteral("sampler_1");
         texture["target"] = 3553; // TEXTURE_2D
         texture["type"] = 5121; // UNSIGNED_BYTE
