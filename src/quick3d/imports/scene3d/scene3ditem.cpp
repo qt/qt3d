@@ -609,13 +609,13 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
-    const QSize currentSize = m_item->boundingRect().size().toSize();
+    const QSize currentSize = m_item->boundingRect().size().toSize() * window->effectiveDevicePixelRatio();
     const bool forceRecreate = currentSize != m_lastSize || m_multisample != m_lastMultisample;
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {
         qCDebug(Scene3D) << Q_FUNC_INFO << "Creating multisample framebuffer";
-        m_multisampledFBO.reset(createMultisampledFramebufferObject(m_item->boundingRect().size().toSize()));
+        m_multisampledFBO.reset(createMultisampledFramebufferObject(currentSize));
         if (m_multisampledFBO->format().samples() == 0 || !QOpenGLFramebufferObject::hasOpenGLFramebufferBlit()) {
             qCDebug(Scene3D) << Q_FUNC_INFO << "Failed to create multisample framebuffer";
             m_multisample = false;
@@ -624,7 +624,7 @@ void Scene3DRenderer::render()
     }
 
     if (m_finalFBO.isNull() || forceRecreate) {
-        m_finalFBO.reset(createFramebufferObject(m_item->boundingRect().size().toSize()));
+        m_finalFBO.reset(createFramebufferObject(currentSize));
         m_texture.reset(window->createTextureFromId(m_finalFBO->texture(), m_finalFBO->size(), QQuickWindow::TextureHasAlphaChannel));
         m_node->setTexture(m_texture.data());
     }
