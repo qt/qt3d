@@ -2362,8 +2362,9 @@ void GltfExporter::save(const QString &inputFilename)
             imageMap[it.key()] = newImageName();
         texture["source"] = imageMap[it.key()];
         texture["format"] = 0x1908; // RGBA
-        texture["internalFormat"] = !m_compressedTextures.contains(it.key()) ? 0x1908 : 0x8D64; // RGBA / ETC1
-        texture["sampler"] = QStringLiteral("sampler_1");
+        const bool compressed = m_compressedTextures.contains(it.key());
+        texture["internalFormat"] = !compressed ? 0x1908 : 0x8D64; // RGBA / ETC1
+        texture["sampler"] = !compressed ? QStringLiteral("sampler_mip_rep") : QStringLiteral("sampler_nonmip_rep");
         texture["target"] = 3553; // TEXTURE_2D
         texture["type"] = 5121; // UNSIGNED_BYTE
         textures[it.value()] = texture;
@@ -2384,7 +2385,12 @@ void GltfExporter::save(const QString &inputFilename)
     sampler["minFilter"] = 9987; // LINEAR_MIPMAP_LINEAR
     sampler["wrapS"] = 10497; // REPEAT
     sampler["wrapT"] = 10497;
-    samplers["sampler_1"] = sampler;
+    samplers["sampler_mip_rep"] = sampler;
+    // Compressed textures may not support mipmapping with GLES.
+    if (!m_compressedTextures.isEmpty()) {
+        sampler["minFilter"] = 9729; // LINEAR
+        samplers["sampler_nonmip_rep"] = sampler;
+    }
     m_obj["samplers"] = samplers;
 
     // Just a dummy light, never referenced.
