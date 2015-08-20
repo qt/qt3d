@@ -588,7 +588,7 @@ public:
     bool typedRead(const QVariant& src, int dstType, void *dst)
     {
         T *dstT = reinterpret_cast<T *>(dst);
-        if (src.type() == dstType) {
+        if (src.type() == QVariant::Type(dstType)) {
             *dstT = src.value<T>();
         } else {
             *dstT = T();
