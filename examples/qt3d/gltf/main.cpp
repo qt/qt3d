@@ -40,6 +40,7 @@
 #include <Qt3DQuick/QQmlAspectEngine>
 
 #include <QGuiApplication>
+#include <QOpenGLContext>
 #include <QtQml>
 
 int main(int argc, char* argv[])
@@ -60,6 +61,14 @@ int main(int argc, char* argv[])
 
     engine.setSource(QUrl("qrc:/main.qml"));
     view.show();
+
+    const bool isES = QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGLES
+        || view.requestedFormat().renderableType() == QSurfaceFormat::OpenGLES;
+    if (!isES)
+        qDebug("Using a non-OpenGL ES context. This may result in no material on the model "
+               "as currently the standard glTF format only includes OpenGL ES 2.0 shaders. "
+               "To overcome this, run the application on OpenGL ES or use the qgltf tool "
+               "with -g to generate a slightly extended glTF asset from the original COLLADA source.");
 
     return app.exec();
 }
