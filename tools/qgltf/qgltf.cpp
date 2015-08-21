@@ -2122,7 +2122,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
         acc.count = ai.keyFrames.count();
         acc.componentType = GLT_FLOAT;
         acc.type = QStringLiteral("SCALAR");
-        acc.offset = (p - base) * sizeof(float);
+        acc.offset = uint((p - base) * sizeof(float));
         foreach (const Importer::KeyFrame &kf, ai.keyFrames)
             *p++ = kf.t;
         parameters["TIME"] = acc.name;
@@ -2132,7 +2132,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC3");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.transValid ? &kf.trans : &lastV;
@@ -2149,7 +2149,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC4");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.rotValid ? &kf.rot : &lastV;
@@ -2167,7 +2167,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC3");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.scaleValid ? &kf.scale : &lastV;
@@ -2198,7 +2198,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
         Importer::MeshInfo::BufferView bv;
         bv.name = bvName;
         bv.offset = buf.data.size();
-        bv.length = (p - base) * sizeof(float);
+        bv.length = uint((p - base) * sizeof(float));
         bv.componentType = GLT_FLOAT;
         bvList << bv;
         extraData.resize(bv.length);
