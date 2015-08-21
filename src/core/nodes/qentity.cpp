@@ -57,7 +57,6 @@ namespace Qt3DCore {
 */
 QEntityPrivate::QEntityPrivate()
     : QNodePrivate()
-    , m_enabled(true)
     , m_parentEntityId()
 {}
 
@@ -113,7 +112,6 @@ void QEntity::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QEntity *entity = static_cast<const QEntity*>(ref);
-    d_func()->m_enabled = entity->d_func()->m_enabled;
     d_func()->m_visible = entity->d_func()->m_visible;
     d_func()->m_parentEntityId = entity->parentEntityId();
 

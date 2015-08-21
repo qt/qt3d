@@ -108,6 +108,9 @@ public:
     void addComponent(Qt3DCore::QComponent *component);
     void removeComponent(const Qt3DCore::QNodeId &nodeId);
 
+    bool isEnabled() const;
+    void setEnabled(bool isEnabled);
+
     template<class Backend, uint INDEXBITS>
     Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
     {
@@ -177,6 +180,7 @@ private:
     Qt3DCore::QNodeId m_objectPickerComponent;
 
     QString m_objectName;
+    bool m_enabled;
 };
 
 template<>

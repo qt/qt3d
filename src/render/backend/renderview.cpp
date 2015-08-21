@@ -374,6 +374,10 @@ void RenderView::setRenderer(Renderer *renderer)
 // Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(Entity *node)
 {
+    // Skip branches that are not enabled
+    if (!node->isEnabled())
+        return;
+
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
         GeometryRenderer *geometryRenderer = Q_NULLPTR;

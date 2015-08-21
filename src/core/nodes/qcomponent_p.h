@@ -65,7 +65,6 @@ public:
 
     Q_DECLARE_PUBLIC(QComponent)
     bool m_shareable;
-    bool m_enabled;
     QVector<QEntity *> m_entities;
 };
 

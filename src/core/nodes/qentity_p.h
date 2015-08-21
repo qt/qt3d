@@ -68,7 +68,6 @@ public :
 
     // TODO: Is a bool enough here or do we need additional states for entities?
     // Perhaps aboutToBeDeleted would be useful?
-    bool m_enabled;
     mutable QNodeId m_parentEntityId;
 };
 

@@ -66,6 +66,7 @@ namespace Render {
 Entity::Entity()
     : QBackendNode()
     , m_renderer(Q_NULLPTR)
+    , m_enabled(true)
 {
 }
 
@@ -103,6 +104,7 @@ void Entity::cleanup()
     m_localBoundingVolume.reset();
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
+    m_enabled = true;
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
@@ -156,6 +158,8 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     } else {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerUuid();
     }
+
+    m_enabled = entity->isEnabled();
 }
 
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -175,6 +179,12 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QNodeId nodeId = propertyChange->value().value<QNodeId>();
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
         removeComponent(nodeId);
+        break;
+    }
+
+    case NodeUpdated: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().value<bool>();
         break;
     }
 
@@ -275,6 +285,16 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_geometryRendererComponent = QNodeId();
     else if (m_objectPickerComponent == nodeId)
         m_objectPickerComponent = QNodeId();
+}
+
+bool Entity::isEnabled() const
+{
+    return m_enabled;
+}
+
+void Entity::setEnabled(bool isEnabled)
+{
+    m_enabled = isEnabled;
 }
 
 template<>

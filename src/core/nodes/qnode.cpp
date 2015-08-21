@@ -67,6 +67,7 @@ QNodePrivate::QNodePrivate()
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
     , m_wasCleanedUp(false)
+    , m_enabled(true)
     , m_propertyChangesSetup(false)
     , m_signals(this)
 {
@@ -461,6 +462,7 @@ void QNode::copy(const QNode *ref)
 {
     if (ref) {
         d_func()->m_id = ref->d_func()->m_id;
+        d_func()->m_enabled = ref->d_func()->m_enabled;
         setObjectName(ref->objectName());
     }
 }
@@ -553,6 +555,33 @@ QNodeList QNode::childrenNodes() const
 
     return nodeChildrenList;
 }
+/*!
+    Set the QNode to enabled if \a enabled is true.
+    By default a Qt3DCore::QNode is always enabled.
+
+    \note the interpretation of what enabled means is aspect-dependent. Even if
+    enabled is set to false, some aspects may still consider the node in
+    some manner. This is documented on a class by class basis.
+*/
+void QNode::setEnabled(bool isEnabled)
+{
+    Q_D(QNode);
+
+    if (d->m_enabled == isEnabled)
+        return;
+
+    d->m_enabled = isEnabled;
+    emit enabledChanged(isEnabled);
+}
+
+/*!
+    Returns whether the QNode is enabled or not.
+*/
+bool QNode::isEnabled() const
+{
+    Q_D(const QNode);
+    return d->m_enabled;
+}
 
 /*!
     Returns a clone of \a node. All the children of \a node are cloned as well.
@@ -615,7 +644,6 @@ void QNode::cleanup()
 }
 
 } // namespace Qt3DCore
-
 
 QT_END_NAMESPACE
 

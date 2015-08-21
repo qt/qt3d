@@ -54,7 +54,6 @@ typedef QList<QComponent*> QComponentList;
 class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
     Q_OBJECT
-
 public:
     explicit QEntity(QNode *parent = 0);
     virtual ~QEntity();

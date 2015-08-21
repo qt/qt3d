@@ -52,7 +52,6 @@ namespace Qt3DCore {
 QComponentPrivate::QComponentPrivate()
     : QNodePrivate()
     , m_shareable(true)
-    , m_enabled(true)
 {
 }
 
@@ -144,32 +143,6 @@ bool QComponent::shareable() const
 }
 
 /*!
-    Returns whether the QComponent is enabled or not.
-*/
-bool QComponent::isEnabled() const
-{
-    Q_D(const QComponent);
-    return d->m_enabled;
-}
-
-/*!
-    Set the QComponent to enabled if \a enabled is true.
-    By default a Qt3DCore::QComponent is always enabled.
-
-    \note the interpretation of what enabled means is aspect-dependent. Even if
-    enabled is set to false, some aspects may still consider the component in
-    some manner. This is documented on a class by class basis.
-*/
-void QComponent::setEnabled(bool enabled)
-{
-    Q_D(QComponent);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged();
-    }
-}
-
-/*!
     The QComponent can be shared across several entities if \a shareable is true.
 */
 void QComponent::setShareable(bool shareable)
@@ -185,7 +158,6 @@ void QComponent::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QComponent *comp = static_cast<const QComponent *>(ref);
-    setEnabled(comp->isEnabled());
     setShareable(comp->shareable());
 }
 
@@ -216,10 +188,6 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 
 /*!
     \qmlproperty bool Qt3DCore::Component3D::shareable
-*/
-
-/*!
-    \qmlproperty bool Qt3DCore::Component3D::enabled
 */
 
 QT_END_NAMESPACE
