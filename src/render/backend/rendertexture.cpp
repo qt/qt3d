@@ -441,11 +441,11 @@ void RenderTexture::sceneChangeEvent(const QSceneChangePtr &e)
             QTextureWrapMode::WrapMode oldWrapModeX = m_wrapModeX;
             m_wrapModeX = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldWrapModeX != m_wrapModeX);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeY")) {
             QTextureWrapMode::WrapMode oldWrapModeY = m_wrapModeY;
             m_wrapModeY = static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldWrapModeY != m_wrapModeY);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeZ")) {
             QTextureWrapMode::WrapMode oldWrapModeZ = m_wrapModeZ;
             m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldWrapModeZ != m_wrapModeZ);
