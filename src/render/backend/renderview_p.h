@@ -254,6 +254,7 @@ private:
     QUniformValue *time(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
+    void setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
     void setUniformBlockValue(QUniformPack &uniformPack,
                               RenderShader *shader,
                               const ShaderUniformBlock &block,
