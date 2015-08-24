@@ -589,7 +589,7 @@ void RenderView::buildSortingKey(RenderCommand *command)
             command->m_sortingType.sorts[i] = command->m_changeCost; // State change cost
             break;
         case QSortCriterion::BackToFront:
-            command->m_sortingType.sorts[i] = 0; // Depth value (not implemented yet)
+            command->m_sortBackToFront = true; // Depth value
             break;
         case QSortCriterion::Material:
             command->m_sortingType.sorts[i] = command->m_shaderDna; // Material

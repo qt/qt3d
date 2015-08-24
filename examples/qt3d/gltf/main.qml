@@ -58,14 +58,24 @@ Entity {
     }
 
     FrameGraph {
-        id : external_forward_renderer
-        activeFrameGraph : ForwardRenderer {
-            camera: camera
+        id : framegraph
+        activeFrameGraph : Viewport {
             clearColor: "black"
+            CameraSelector {
+                camera: camera
+                ClearBuffer {
+                    buffers : ClearBuffer.ColorDepthBuffer
+                    SortMethod {
+                        criteria: [
+                            SortCriterion { sort: SortCriterion.BackToFront }
+                        ]
+                    }
+                }
+            }
         }
     }
 
-    components: [external_forward_renderer]
+    components: [ framegraph ]
 
     Wine {
         id: wineRack

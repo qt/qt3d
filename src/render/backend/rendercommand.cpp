@@ -43,12 +43,17 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderCommand::RenderCommand()
+    : m_sortBackToFront(false)
 {
    m_sortingType.global = 0;
 }
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2)
 {
+    // The smaller m_depth is, the closer it is to the eye.
+    if (r1->m_sortBackToFront && r2->m_sortBackToFront)
+        return r1->m_depth > r2->m_depth;
+
     return r1->m_sortingType.global < r2->m_sortingType.global;
 }
 
