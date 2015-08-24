@@ -526,12 +526,18 @@ void RenderTexture::setTextureDataManager(TextureDataManager *manager)
 // RenderThread
 void RenderTexture::updateAndLoadTextureImage()
 {
+    QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
         RenderTextureImage *img = m_textureImageManager->data(t);
         if (img != Q_NULLPTR && img->isDirty()) {
+            if (dnas.contains(img->dna())) {
+                img->unsetDirty();
+                continue;
+            }
             TexImageData *data = m_textureDataManager->data(img->textureDataHandle());
             if (data != Q_NULLPTR) {
                 setToGLTexture(img, data);
+                dnas.append(img->dna());
                 img->unsetDirty();
             }
         }
