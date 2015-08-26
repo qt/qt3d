@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,42 +34,69 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTBUFFER_H
-#define QT3DCORE_QABSTRACTBUFFER_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/QNode>
-#include <QtCore/QSharedPointer>
+#include "quick3dbuffer.h"
+#include <QQmlEngine>
+#include <QJSValue>
+#include <QtQml/private/qqmlengine_p.h>
+#include <QtQml/private/qjsvalue_p.h>
+#include <QtQml/private/qv4typedarray_p.h>
+#include <QtQml/private/qv4arraybuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QAbstractBufferPrivate;
+namespace Render {
 
-class QT3DCORESHARED_EXPORT QAbstractBuffer : public QNode
+namespace Quick {
+
+Quick3DBuffer::Quick3DBuffer(QObject *parent)
+    : QObject(parent)
+    , m_engine(Q_NULLPTR)
+    , m_v4engine(Q_NULLPTR)
 {
-    Q_OBJECT
-public:
-    QAbstractBuffer(QNode *parent = 0);
-    virtual ~QAbstractBuffer();
+    QObject::connect(parentBuffer(), &Qt3DCore::QAbstractBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
+}
 
-    void setData(const QByteArray &bytes);
-    QByteArray data() const;
+QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)
+{
+    initEngines();
+    Q_ASSERT(m_v4engine);
+    QV4::Scope scope(m_v4engine);
+    QV4::Scoped<QV4::TypedArray> typedArray(scope,
+                                            QJSValuePrivate::convertedToValue(m_v4engine, jsValue));
+    if (!typedArray)
+        return QByteArray();
 
-protected:
-    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    char *dataPtr = reinterpret_cast<char *>(typedArray->arrayData()->data());
+    dataPtr += typedArray->d()->byteOffset;
+    uint byteLength = typedArray->byteLength();
+    return QByteArray::fromRawData(dataPtr, byteLength);
+}
 
-Q_SIGNALS:
-    void dataChanged();
+QVariant Quick3DBuffer::bufferData() const
+{
+    return QVariant::fromValue(parentBuffer()->data());
+}
 
-private:
-    Q_DECLARE_PRIVATE(QAbstractBuffer)
-};
+void Quick3DBuffer::setBufferData(const QVariant &bufferData)
+{
+    QJSValue jsValue = bufferData.value<QJSValue>();
+    parentBuffer()->setData(convertToRawData(jsValue));
+}
 
-} // Qt3D
+void Quick3DBuffer::initEngines()
+{
+    if (m_engine == Q_NULLPTR) {
+        m_engine = qmlEngine(parent());
+        m_v4engine = QQmlEnginePrivate::getV4Engine(m_engine);
+    }
+}
+
+} // Quick
+
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QABSTRACTBUFFER_H

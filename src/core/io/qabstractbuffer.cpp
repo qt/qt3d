@@ -79,6 +79,7 @@ void QAbstractBuffer::setData(const QByteArray &bytes)
     Q_D(QAbstractBuffer);
     if (bytes != d->m_data) {
         d->m_data = bytes;
+        QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
         emit dataChanged();
     }
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,42 +34,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTBUFFER_H
-#define QT3DCORE_QABSTRACTBUFFER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_H
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/QNode>
-#include <QtCore/QSharedPointer>
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <Qt3DRenderer/QBuffer>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+class QQmlEngine;
+class QJSValue;
 
-class QAbstractBufferPrivate;
+namespace QV4 {
+struct ExecutionEngine;
+}
 
-class QT3DCORESHARED_EXPORT QAbstractBuffer : public QNode
+namespace Qt3DRender {
+
+namespace Render {
+
+namespace Quick {
+
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DBuffer : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
 public:
-    QAbstractBuffer(QNode *parent = 0);
-    virtual ~QAbstractBuffer();
+    explicit Quick3DBuffer(QObject *parent = Q_NULLPTR);
+    inline QBuffer *parentBuffer() const { return qobject_cast<QBuffer *>(parent()); }
 
-    void setData(const QByteArray &bytes);
-    QByteArray data() const;
-
-protected:
-    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QVariant bufferData() const;
+    void setBufferData(const QVariant &bufferData);
 
 Q_SIGNALS:
-    void dataChanged();
+    void bufferDataChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QAbstractBuffer)
+    QQmlEngine *m_engine;
+    QV4::ExecutionEngine *m_v4engine;
+    void initEngines();
+    QByteArray convertToRawData(const QJSValue &jsValue);
 };
 
-} // Qt3D
+} // Quick
+
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QABSTRACTBUFFER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_H
