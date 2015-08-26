@@ -516,7 +516,8 @@ bool AssimpImporter::load(const QString &filename)
             | aiProcess_JoinIdenticalVertices
             | aiProcess_GenSmoothNormals
             | aiProcess_GenUVCoords
-            | aiProcess_FlipUVs;
+            | aiProcess_FlipUVs
+            | aiProcess_FindDegenerates;
 
     if (opts.genTangents)
         flags |= aiProcess_CalcTangentSpace;
