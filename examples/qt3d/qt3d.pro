@@ -39,7 +39,8 @@ SUBDIRS += \
     clip-planes-qml \
     mouseinput-qml \
     custom-mesh-cpp \
-    bigscene-instanced-qml
+    bigscene-instanced-qml \
+    custom-mesh-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d
