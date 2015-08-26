@@ -111,6 +111,7 @@
 #include <Qt3DQuickRenderer/quick3dstateset.h>
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
 #include <Qt3DQuickRenderer/quick3dgeometry.h>
+#include <Qt3DQuickRenderer/quick3dbuffer.h>
 #include <Qt3DQuickRenderer/private/qt3dquickrenderer_global_p.h>
 
 static void initResources()
@@ -200,7 +201,7 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DCore::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
     qmlRegisterUncreatableType<Qt3DCore::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
-    qmlRegisterType<Qt3DRender::QBuffer>(uri, 2, 0, "Buffer");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QBuffer, Qt3DRender::Render::Quick::Quick3DBuffer>("QBuffer", "Qt3D.Renderer/Buffer", uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Renderer/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
 
