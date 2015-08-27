@@ -51,7 +51,7 @@ class QT3DQUICKRENDERERSHARED_EXPORT Quick3DGeometry : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DCore::QAbstractAttribute> attributes READ attributeList)
-    Q_CLASSINFO("DefaultProperty", "attributeProviders")
+    Q_CLASSINFO("DefaultProperty", "attributes")
 
 public:
     explicit Quick3DGeometry(QObject *parent = 0);
