@@ -80,7 +80,8 @@ HEADERS += \
     $$PWD/qgeometry.h \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qwindow.h \
-    $$PWD/qwindow_p.h
+    $$PWD/qwindow_p.h \
+    $$PWD/qgeometry_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
