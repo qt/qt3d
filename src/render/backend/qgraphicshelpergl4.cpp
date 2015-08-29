@@ -203,8 +203,7 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL4::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperGL4::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(divisor);
+    m_funcs->glVertexAttribDivisor(index, divisor);
 }
 
 void QGraphicsHelperGL4::blendEquation(GLenum mode)
