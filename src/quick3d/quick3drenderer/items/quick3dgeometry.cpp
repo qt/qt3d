@@ -61,6 +61,7 @@ QQmlListProperty<QAbstractAttribute> Quick3DGeometry::attributeList()
 void Quick3DGeometry::appendAttribute(QQmlListProperty<QAbstractAttribute> *list, QAbstractAttribute *attribute)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
+    geometry->m_managedAttributes.append(attribute);
     geometry->parentGeometry()->addAttribute(attribute);
 }
 
@@ -79,8 +80,10 @@ int Quick3DGeometry::attributesCount(QQmlListProperty<QAbstractAttribute> *list)
 void Quick3DGeometry::clearAttributes(QQmlListProperty<QAbstractAttribute> *list)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    Q_FOREACH (QAbstractAttribute *attribute, geometry->parentGeometry()->attributes())
+    QVector<QAbstractAttribute *> &managedAttributes = geometry->m_managedAttributes;
+    Q_FOREACH (QAbstractAttribute *attribute, managedAttributes)
         geometry->parentGeometry()->removeAttribute(attribute);
+    managedAttributes.clear();
 }
 
 } // Quick
