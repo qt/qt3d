@@ -51,7 +51,7 @@ namespace Render {
 // That means a UBO is unique to a shader/shaderdata
 
 UniformBuffer::UniformBuffer()
-    : m_bufferId(-1)
+    : m_bufferId(~0)
     , m_isCreated(false)
 {
 }
