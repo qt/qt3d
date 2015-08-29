@@ -97,6 +97,7 @@
 #include <Qt3DRenderer/qcuboidgeometry.h>
 #include <Qt3DRenderer/qplanegeometry.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRenderer/qcylindergeometry.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
 #include <Qt3DQuickRenderer/quick3dtechniquefilter.h>
@@ -214,6 +215,7 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
     qmlRegisterType<Qt3DRender::QCuboidGeometry>(uri, 2, 0, "CuboidGeometry");
     qmlRegisterType<Qt3DRender::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
+    qmlRegisterType<Qt3DRender::QCylinderGeometry>(uri, 2, 0, "CylinderGeometry");
     qmlRegisterType<Qt3DRender::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
     qmlRegisterType<Qt3DRender::QPlaneGeometry>(uri, 2, 0, "PlaneGeometry");
     qmlRegisterType<Qt3DRender::QTorusMesh>(uri, 2, 0, "TorusMesh");
