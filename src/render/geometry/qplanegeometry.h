@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,58 +34,54 @@
 **
 ****************************************************************************/
 
-#include "qplanemesh.h"
-#include "qplanegeometry.h"
+#ifndef QT3DRENDER_QPLANEGEOMETRY_H
+#define QT3DRENDER_QPLANEGEOMETRY_H
+
+#include <Qt3DRenderer/qgeometry.h>
+#include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QGeometryRenderer(parent)
-{
-    QPlaneGeometry *geometry = new QPlaneGeometry(this);
-    QObject::connect(geometry, &QPlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
-    QObject::connect(geometry, &QPlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
-    QObject::connect(geometry, &QPlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
-    QGeometryRenderer::setGeometry(geometry);
-}
+class QPlaneGeometryPrivate;
 
-QPlaneMesh::~QPlaneMesh()
+class QT3DRENDERERSHARED_EXPORT QPlaneGeometry : public QGeometry
 {
-    QNode::cleanup();
-}
+    Q_OBJECT
+    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(QSize resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
+public:
+    explicit QPlaneGeometry(QNode *parent = Q_NULLPTR);
+    ~QPlaneGeometry();
 
-void QPlaneMesh::setWidth(float width)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setWidth(width);
-}
+    void updateVertices();
+    void updateIndices();
 
-float QPlaneMesh::width() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->width();
-}
+    void setResolution(const QSize &resolution);
+    void setWidth(float width);
+    void setHeight(float height);
 
-void QPlaneMesh::setHeight(float height)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setHeight(height);
-}
+    QSize resolution() const;
+    int width() const;
+    int height() const;
 
-float QPlaneMesh::height() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->height();
-}
+Q_SIGNALS:
+    void resolutionChanged();
+    void widthChanged();
+    void heightChanged();
 
-void QPlaneMesh::setMeshResolution(const QSize &resolution)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setResolution(resolution);
-}
+protected:
+    QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
 
-QSize QPlaneMesh::meshResolution() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->resolution();
-}
+private:
+    Q_DECLARE_PRIVATE(QPlaneGeometry)
+    QT3D_CLONEABLE(QPlaneGeometry)
+};
 
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QPLANEGEOMETRY_H

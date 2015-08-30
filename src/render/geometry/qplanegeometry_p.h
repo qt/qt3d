@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,58 +34,42 @@
 **
 ****************************************************************************/
 
-#include "qplanemesh.h"
-#include "qplanegeometry.h"
+#ifndef QT3DRENDER_QPLANEGEOMETRY_P_H
+#define QT3DRENDER_QPLANEGEOMETRY_P_H
+
+#include <Qt3DRenderer/private/qgeometry_p.h>
+#include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QPlaneMesh::QPlaneMesh(QNode *parent)
-    : QGeometryRenderer(parent)
-{
-    QPlaneGeometry *geometry = new QPlaneGeometry(this);
-    QObject::connect(geometry, &QPlaneGeometry::widthChanged, this, &QPlaneMesh::widthChanged);
-    QObject::connect(geometry, &QPlaneGeometry::heightChanged, this, &QPlaneMesh::heightChanged);
-    QObject::connect(geometry, &QPlaneGeometry::resolutionChanged, this, &QPlaneMesh::meshResolutionChanged);
-    QGeometryRenderer::setGeometry(geometry);
-}
+class QAttribute;
+class QBuffer;
 
-QPlaneMesh::~QPlaneMesh()
+class QPlaneGeometryPrivate : public QGeometryPrivate
 {
-    QNode::cleanup();
-}
+public:
+    QPlaneGeometryPrivate();
+    void init();
 
-void QPlaneMesh::setWidth(float width)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setWidth(width);
-}
+    float m_width;
+    float m_height;
+    QSize m_meshResolution;
+    QAttribute *m_positionAttribute;
+    QAttribute *m_normalAttribute;
+    QAttribute *m_texCoordAttribute;
+    QAttribute *m_tangentAttribute;
+    QAttribute *m_indexAttribute;
+    QBuffer *m_vertexBuffer;
+    QBuffer *m_indexBuffer;
 
-float QPlaneMesh::width() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->width();
-}
+    Q_DECLARE_PUBLIC(QPlaneGeometry)
+};
 
-void QPlaneMesh::setHeight(float height)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setHeight(height);
-}
-
-float QPlaneMesh::height() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->height();
-}
-
-void QPlaneMesh::setMeshResolution(const QSize &resolution)
-{
-    static_cast<QPlaneGeometry *>(geometry())->setResolution(resolution);
-}
-
-QSize QPlaneMesh::meshResolution() const
-{
-    return static_cast<QPlaneGeometry *>(geometry())->resolution();
-}
-
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QPLANEGEOMETRY_P_H
+
