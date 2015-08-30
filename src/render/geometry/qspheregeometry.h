@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -35,69 +34,56 @@
 **
 ****************************************************************************/
 
-#include "qspheremesh.h"
-#include "qspheregeometry.h"
+#ifndef QT3DRENDER_QSPHEREGEOMETRY_H
+#define QT3DRENDER_QSPHEREGEOMETRY_H
+
+#include <Qt3DRenderer/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QSphereMesh::QSphereMesh(QNode *parent)
-    : QGeometryRenderer(parent)
-{
-    QSphereGeometry *geometry = new QSphereGeometry(this);
-    QObject::connect(geometry, &QSphereGeometry::radiusChanged, this, &QSphereMesh::radiusChanged);
-    QObject::connect(geometry, &QSphereGeometry::ringsChanged, this, &QSphereMesh::ringsChanged);
-    QObject::connect(geometry, &QSphereGeometry::slicesChanged, this, &QSphereMesh::slicesChanged);
-    QObject::connect(geometry, &QSphereGeometry::generateTangentsChanged, this, &QSphereMesh::generateTangentsChanged);
-    QGeometryRenderer::setGeometry(geometry);
-}
+class QSphereGeometryPrivate;
 
-QSphereMesh::~QSphereMesh()
+class QT3DRENDERERSHARED_EXPORT QSphereGeometry : public QGeometry
 {
-    QNode::cleanup();
-}
+    Q_OBJECT
+    Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
+    Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
+public:
+    explicit QSphereGeometry(QNode *parent = Q_NULLPTR);
+    ~QSphereGeometry();
 
-void QSphereMesh::setRings(int rings)
-{
-    static_cast<QSphereGeometry *>(geometry())->setRings(rings);
-}
+    void updateVertices();
+    void updateIndices();
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setGenerateTangents(bool gen);
 
-void QSphereMesh::setSlices(int slices)
-{
-    static_cast<QSphereGeometry *>(geometry())->setSlices(slices);
-}
+    bool generateTangents() const;
+    int rings() const;
+    int slices() const;
+    float radius() const;
 
-void QSphereMesh::setRadius(float radius)
-{
-    static_cast<QSphereGeometry *>(geometry())->setRadius(radius);
-}
+Q_SIGNALS:
+    void radiusChanged();
+    void ringsChanged();
+    void slicesChanged();
+    void generateTangentsChanged();
 
-void QSphereMesh::setGenerateTangents(bool gen)
-{
-    static_cast<QSphereGeometry *>(geometry())->setGenerateTangents(gen);
-}
+protected:
+    QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent = Q_NULLPTR);
 
-bool QSphereMesh::generateTangents() const
-{
-    return static_cast<QSphereGeometry *>(geometry())->generateTangents();
-}
+private:
+    Q_DECLARE_PRIVATE(QSphereGeometry)
+    QT3D_CLONEABLE(QSphereGeometry)
+};
 
-int QSphereMesh::rings() const
-{
-    return static_cast<QSphereGeometry *>(geometry())->rings();
-}
-
-int QSphereMesh::slices() const
-{
-    return static_cast<QSphereGeometry *>(geometry())->slices();
-}
-
-float QSphereMesh::radius() const
-{
-    return static_cast<QSphereGeometry *>(geometry())->radius();
-}
-
-} //Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QSPHEREGEOMETRY_H
