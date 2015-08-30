@@ -39,8 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DLogic {
 namespace Logic {
 
 LogicCallbackJob::LogicCallbackJob()
@@ -60,8 +59,7 @@ void LogicCallbackJob::run()
     m_logicManager->triggerLogicFrameUpdates();
 }
 
-} // Logic
-
-} // Qt3D
+} // namespace Logic
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE

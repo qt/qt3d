@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_LOGICEXECUTOR_P_H
-#define QT3D_LOGIC_LOGICEXECUTOR_P_H
+#ifndef QT3DLOGIC_LOGIC_LOGICEXECUTOR_P_H
+#define QT3DLOGIC_LOGIC_LOGICEXECUTOR_P_H
 
 #include <QtCore/qobject.h>
 #include <QtCore/qcoreevent.h>
@@ -46,9 +46,10 @@ QT_BEGIN_NAMESPACE
 class QSemaphore;
 
 namespace Qt3D {
-
 class QScene;
+}
 
+namespace Qt3DLogic {
 namespace Logic {
 
 class FrameUpdateEvent : public QEvent
@@ -65,27 +66,26 @@ class LogicExecutor : public QObject
 public:
     explicit LogicExecutor(QObject *parent = 0);
 
-    void setScene(QScene *scene) { m_scene = scene; }
+    void setScene(Qt3D::QScene *scene) { m_scene = scene; }
     void setSemephore(QSemaphore *semaphore) { m_semaphore = semaphore; }
     void clearQueueAndProceed();
 
 public Q_SLOTS:
-    void enqueueLogicFrameUpdates(const QVector<QNodeId> &nodeIds);
+    void enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds);
 
 protected:
     bool event(QEvent *e);
     void processLogicFrameUpdates();
 
 private:
-    QVector<QNodeId> m_nodeIds;
-    QScene *m_scene;
+    QVector<Qt3D::QNodeId> m_nodeIds;
+    Qt3D::QScene *m_scene;
     QSemaphore *m_semaphore;
 };
 
-} // Logic
-
-} // Qt3D
+} // namespace Logic
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_LOGICEXECUTOR_P_H
+#endif // QT3DLOGIC_LOGIC_LOGICEXECUTOR_P_H

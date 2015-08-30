@@ -34,18 +34,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_QLOGICCOMPONENT_P_H
-#define QT3D_LOGIC_QLOGICCOMPONENT_P_H
+#ifndef QT3DLOGIC_QLOGICCOMPONENT_P_H
+#define QT3DLOGIC_QLOGICCOMPONENT_P_H
 
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 class QLogicComponent;
 
-class QLogicComponentPrivate : public QComponentPrivate
+class QLogicComponentPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QLogicComponentPrivate();
@@ -53,8 +53,8 @@ public:
     Q_DECLARE_PUBLIC(QLogicComponent)
 };
 
-} // Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_QLOGICCOMPONENT_P_H
+#endif // QT3DLOGIC_QLOGICCOMPONENT_P_H

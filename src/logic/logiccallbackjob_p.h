@@ -34,20 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_LOGICCALLBACKJOB_P_H
-#define QT3D_LOGIC_LOGICCALLBACKJOB_P_H
+#ifndef QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H
+#define QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H
 
 #include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DLogic {
 namespace Logic {
 
 class LogicManager;
 
-class LogicCallbackJob : public QAspectJob
+class LogicCallbackJob : public Qt3D::QAspectJob
 {
 public:
     LogicCallbackJob();
@@ -59,10 +58,9 @@ private:
     LogicManager *m_logicManager;
 };
 
-} // Logic
-
-} // Qt3D
+} // namespace Logic
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_LOGICCALLBACKJOB_P_H
+#endif // QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H

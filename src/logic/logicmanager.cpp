@@ -45,8 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DLogic {
 namespace Logic {
 
 LogicManager::LogicManager()
@@ -74,7 +73,7 @@ void LogicManager::appendLogicHandler(LogicHandler *handler)
     m_logicComponentIds.append(handler->peerUuid());
 }
 
-void LogicManager::removeLogicHandler(const QNodeId &id)
+void LogicManager::removeLogicHandler(const Qt3D::QNodeId &id)
 {
     HLogicHandler handle = m_logicHandlerManager->lookupHandle(id);
     m_logicComponentIds.removeAll(id);
@@ -99,8 +98,7 @@ void LogicManager::triggerLogicFrameUpdates()
     m_semaphore.acquire();
 }
 
-} // Logic
-
-} // namespace Qt3D
+} // namespace Logic
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE

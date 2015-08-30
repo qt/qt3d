@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_LOGICMANAGER_H
-#define QT3D_LOGIC_LOGICMANAGER_H
+#ifndef QT3DLOGIC_LOGIC_LOGICMANAGER_H
+#define QT3DLOGIC_LOGIC_LOGICMANAGER_H
 
 #include <Qt3DLogic/qt3dlogic_global.h>
 #include <Qt3DLogic/private/handle_types_p.h>
@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 class QLogicAspect;
 
@@ -67,23 +67,22 @@ public:
     LogicHandlerManager *logicHandlerManager() const { return m_logicHandlerManager.data(); }
 
     void appendLogicHandler(LogicHandler *handler);
-    void removeLogicHandler(const QNodeId &id);
+    void removeLogicHandler(const Qt3D::QNodeId &id);
 
     void triggerLogicFrameUpdates();
 
 private:
     QScopedPointer<LogicHandlerManager> m_logicHandlerManager;
     QVector<HLogicHandler> m_logicHandlers;
-    QVector<QNodeId> m_logicComponentIds;
+    QVector<Qt3D::QNodeId> m_logicComponentIds;
     QLogicAspect *m_logicAspect;
     LogicExecutor *m_executor;
     QSemaphore m_semaphore;
 };
 
-} // Logic
-
-} // namespace Qt3D
+} // namespace Logic
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_LOGICMANAGER_H
+#endif // QT3DLOGIC_LOGIC_LOGICMANAGER_H

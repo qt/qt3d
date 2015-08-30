@@ -34,48 +34,48 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLOGICASPECT_H
-#define QT3D_QLOGICASPECT_H
+#ifndef QT3DLOGIC_QLOGICASPECT_H
+#define QT3DLOGIC_QLOGICASPECT_H
 
 #include <Qt3DLogic/qt3dlogic_global.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 class QLogicAspectPrivate;
 
-class QT3DLOGICSHARED_EXPORT QLogicAspect : public QAbstractAspect
+class QT3DLOGICSHARED_EXPORT QLogicAspect : public Qt3D::QAbstractAspect
 {
     Q_OBJECT
 public:
     explicit QLogicAspect(QObject *parent = 0);
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3D::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 protected:
     void registerBackendTypes();
 
 private:
-    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void setRootEntity(Qt3D::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-    void visitNode(QNode *node);
+    void visitNode(Qt3D::QNode *node);
 
     Q_DECLARE_PRIVATE(QLogicAspect)
     QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);
 };
 
-}
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLOGICASPECT_H
+#endif // QT3DLOGIC_QLOGICASPECT_H
 

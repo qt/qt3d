@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 /*!
     \class Qt3D::QLogicComponentPrivate
@@ -106,6 +106,6 @@ void QLogicComponent::onFrameUpdate()
     emit frameUpdate();
 }
 
-}
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE

@@ -41,8 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DLogic {
 namespace Logic {
 
 LogicHandler::LogicHandler()
@@ -50,12 +49,12 @@ LogicHandler::LogicHandler()
 {
 }
 
-void LogicHandler::updateFromPeer(QNode *peer)
+void LogicHandler::updateFromPeer(Qt3D::QNode *peer)
 {
     Q_UNUSED(peer);
 }
 
-void LogicHandler::sceneChangeEvent(const QSceneChangePtr &e)
+void LogicHandler::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     Q_UNUSED(e);
 }
@@ -65,7 +64,7 @@ LogicHandlerFunctor::LogicHandlerFunctor(LogicManager *manager)
 {
 }
 
-QBackendNode *LogicHandlerFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *LogicHandlerFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     LogicHandler *handler = m_manager->logicHandlerManager()->getOrCreateResource(frontend->id());
     handler->setFactory(factory);
@@ -75,18 +74,17 @@ QBackendNode *LogicHandlerFunctor::create(QNode *frontend, const QBackendNodeFac
     return handler;
 }
 
-QBackendNode *LogicHandlerFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *LogicHandlerFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_manager->logicHandlerManager()->lookupResource(id);
 }
 
-void LogicHandlerFunctor::destroy(const QNodeId &id) const
+void LogicHandlerFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_manager->removeLogicHandler(id);
 }
 
-} // Logic
-
-} // Qt3D
+} // namespace Logic
+} // namespace Qt3D
 
 QT_END_NAMESPACE

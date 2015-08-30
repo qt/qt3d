@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_LOGICMANAGERS_P_H
-#define QT3D_LOGIC_LOGICMANAGERS_P_H
+#ifndef QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
+#define QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
 
 #include <QtGlobal>
 #include <Qt3DLogic/private/handle_types_p.h>
@@ -44,13 +44,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DLogic {
 namespace Logic {
 
-class LogicHandlerManager : public QResourceManager<
+class LogicHandlerManager : public Qt3D::QResourceManager<
         LogicHandler,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -58,11 +57,10 @@ public:
     LogicHandlerManager() {}
 };
 
-} // Logic
-
-} // Qt3D
+} // namespace Logic
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_LOGICMANAGERS_P_H
+#endif // QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
 

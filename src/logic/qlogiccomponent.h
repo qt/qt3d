@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLOGICCOMPONENT_H
-#define QT3D_QLOGICCOMPONENT_H
+#ifndef QT3DLOGIC_QLOGICCOMPONENT_H
+#define QT3DLOGIC_QLOGICCOMPONENT_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DLogic/qt3dlogic_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 class QLogicAspect;
 class QLogicComponentPrivate;
@@ -51,12 +51,12 @@ namespace Logic {
 class LogicExecutor;
 }
 
-class QT3DLOGICSHARED_EXPORT QLogicComponent : public QComponent
+class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3D::QComponent
 {
     Q_OBJECT
 
 public:
-    explicit QLogicComponent(QNode *parent = 0);
+    explicit QLogicComponent(Qt3D::QNode *parent = 0);
     ~QLogicComponent();
 
 protected:
@@ -74,8 +74,8 @@ private:
     friend class Logic::LogicExecutor;
 };
 
-}
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLOGICCOMPONENT_H
+#endif // QT3DLOGIC_QLOGICCOMPONENT_H
