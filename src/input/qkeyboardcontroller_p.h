@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_QKEYBOARDCONTROLLER_P_H
-#define QT3D_INPUT_QKEYBOARDCONTROLLER_P_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
+#define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
 
 #include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QKeyboardController;
 class QKeyboardInput;
 
-class QKeyboardControllerPrivate : public QNodePrivate
+class QKeyboardControllerPrivate : public Qt3D::QNodePrivate
 {
 public:
     QKeyboardControllerPrivate();
@@ -55,8 +55,8 @@ public:
     QKeyboardInput *m_activeInput;
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_QKEYBOARDCONTROLLER_P_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H

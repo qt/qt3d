@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_Q3DKEYEVENT_H
-#define QT3D_Q3DKEYEVENT_H
+#ifndef QT3DINPUT_Q3DKEYEVENT_H
+#define QT3DINPUT_Q3DKEYEVENT_H
 
 #include <QObject>
 #include <QKeyEvent>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class Q3DKeyEventPrivate;
 class Q3DKeyEvent;
@@ -80,8 +80,8 @@ private:
     QKeyEvent m_event;
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_Q3DKEYEVENT_H
+#endif // QT3DINPUT_Q3DKEYEVENT_H

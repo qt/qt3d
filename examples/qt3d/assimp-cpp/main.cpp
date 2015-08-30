@@ -107,7 +107,7 @@ int main(int ac, char **av)
     Window view;
 
     Qt3D::QAspectEngine engine;
-    Qt3D::QInputAspect *inputAspect = new Qt3D::QInputAspect();
+    Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
     engine.registerAspect(new Qt3D::QRenderAspect());
     engine.registerAspect(inputAspect);
     engine.initialize();

@@ -74,7 +74,7 @@ int main(int ac, char **av)
     Window view;
     Qt3D::QAspectEngine engine;
     engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;

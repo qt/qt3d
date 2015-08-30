@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMOUSEINPUT_P_H
-#define QT3D_QMOUSEINPUT_P_H
+#ifndef QT3DINPUT_QMOUSEINPUT_P_H
+#define QT3DINPUT_QMOUSEINPUT_P_H
 
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QMouseInput;
 class QMouseController;
 
-class QMouseInputPrivate : public QComponentPrivate
+class QMouseInputPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QMouseInputPrivate();
@@ -57,9 +57,9 @@ public:
     Q_DECLARE_PUBLIC(QMouseInput)
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMOUSEINPUT_P_H
+#endif // QT3DINPUT_QMOUSEINPUT_P_H
 

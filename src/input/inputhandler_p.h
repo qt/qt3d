@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_INPUTHANDLER_P_H
-#define QT3D_INPUT_INPUTHANDLER_P_H
+#ifndef QT3DINPUT_INPUT_INPUTHANDLER_P_H
+#define QT3DINPUT_INPUT_INPUTHANDLER_P_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/private/handle_types_p.h>
@@ -45,8 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class KeyboardInputManager;
@@ -83,8 +82,8 @@ public:
     void appendMouseController(HMouseController controller);
     void removeMouseController(HMouseController controller);
 
-    QVector<QAspectJobPtr> keyboardJobs();
-    QVector<QAspectJobPtr> mouseJobs();
+    QVector<Qt3D::QAspectJobPtr> keyboardJobs();
+    QVector<Qt3D::QAspectJobPtr> mouseJobs();
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
@@ -101,10 +100,9 @@ private:
     mutable QMutex m_mutex;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_INPUTHANDLER_P_H
+#endif // QT3DINPUT_INPUT_INPUTHANDLER_P_H

@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DInput {
 
 /*!
     \class Qt3D::QKeyboardControllerPrivate
@@ -93,7 +95,7 @@ QKeyboardController::QKeyboardController(QKeyboardControllerPrivate &dd, QNode *
 {
 }
 
-void QKeyboardController::sceneChangeEvent(const QSceneChangePtr &change)
+void QKeyboardController::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
 {
     Q_D(QKeyboardController);
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
@@ -112,6 +114,6 @@ void QKeyboardController::setActiveInput(QKeyboardInput *activeInput)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

@@ -41,11 +41,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
-MouseEventDispatcherJob::MouseEventDispatcherJob(const QNodeId &input, const QList<QMouseEvent> &events)
+MouseEventDispatcherJob::MouseEventDispatcherJob(const Qt3D::QNodeId &input, const QList<QMouseEvent> &events)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_mouseInput(input)
@@ -69,8 +68,7 @@ void MouseEventDispatcherJob::run()
     }
 }
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

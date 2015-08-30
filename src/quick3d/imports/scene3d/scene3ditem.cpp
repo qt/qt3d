@@ -508,7 +508,7 @@ void Scene3DItem::setAspects(const QStringList &aspects)
         if (aspect == QStringLiteral("render")) // This one is hardwired anyway
             continue;
         if (aspect == QStringLiteral("input"))  {
-            m_aspectEngine->registerAspect(new Qt3D::QInputAspect);
+            m_aspectEngine->registerAspect(new Qt3DInput::QInputAspect);
             continue;
         }
 

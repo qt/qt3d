@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_INPUTMANAGERS_P_H
-#define QT3D_INPUT_INPUTMANAGERS_P_H
+#ifndef QT3DINPUT_INPUT_INPUTMANAGERS_P_H
+#define QT3DINPUT_INPUT_INPUTMANAGERS_P_H
 
 #include <QtGlobal>
 #include <Qt3DInput/private/handle_types_p.h>
@@ -47,13 +47,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
-class KeyboardInputManager : public QResourceManager<
+class KeyboardInputManager : public Qt3D::QResourceManager<
         KeyboardInput,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -61,9 +60,9 @@ public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public QResourceManager<
+class KeyboardControllerManager : public Qt3D::QResourceManager<
         KeyboardController,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -71,9 +70,9 @@ public:
     KeyboardControllerManager() {}
 };
 
-class MouseControllerManager : public QResourceManager<
+class MouseControllerManager : public Qt3D::QResourceManager<
         MouseController,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -81,9 +80,9 @@ public:
     MouseControllerManager() {}
 };
 
-class MouseInputManager : public QResourceManager<
+class MouseInputManager : public Qt3D::QResourceManager<
         MouseInput,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -91,10 +90,9 @@ public:
     MouseInputManager() {}
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_INPUTMANAGERS_P_H
+#endif // QT3DINPUT_INPUT_INPUTMANAGERS_P_H

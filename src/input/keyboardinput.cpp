@@ -45,8 +45,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DInput {
 namespace Input {
 
 KeyboardInput::KeyboardInput()
@@ -56,7 +57,7 @@ KeyboardInput::KeyboardInput()
 {
 }
 
-void KeyboardInput::updateFromPeer(QNode *peer)
+void KeyboardInput::updateFromPeer(Qt3D::QNode *peer)
 {
     QKeyboardInput *input = static_cast<QKeyboardInput *>(peer);
     if (input->controller() != Q_NULLPTR)
@@ -67,7 +68,7 @@ void KeyboardInput::updateFromPeer(QNode *peer)
         requestFocus();
 }
 
-QNodeId KeyboardInput::keyboardController() const
+Qt3D::QNodeId KeyboardInput::keyboardController() const
 {
     return m_keyboardController;
 }
@@ -167,8 +168,7 @@ void KeyboardInputFunctor::destroy(const QNodeId &id) const
     m_handler->keyboardInputManager()->releaseResource(id);
 }
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

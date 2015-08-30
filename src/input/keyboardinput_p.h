@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_KEYBOARDINPUT_P_H
-#define QT3D_INPUT_KEYBOARDINPUT_P_H
+#ifndef QT3DINPUT_INPUT_KEYBOARDINPUT_P_H
+#define QT3DINPUT_INPUT_KEYBOARDINPUT_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class Q3DKeyEvent;
 
@@ -51,12 +51,12 @@ namespace Input {
 
 class InputHandler;
 
-class KeyboardInput : public QBackendNode
+class KeyboardInput : public Qt3D::QBackendNode
 {
 public:
     KeyboardInput();
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    QNodeId keyboardController() const;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    Qt3D::QNodeId keyboardController() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
     void keyEvent(const Q3DKeyEventPtr &event);
@@ -64,34 +64,33 @@ public:
     inline bool isEnabled() const { return m_enabled; }
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void requestFocus();
-    void setController(const QNodeId &controller);
+    void setController(const Qt3D::QNodeId &controller);
 
 private:
     InputHandler *m_inputHandler;
-    QNodeId m_keyboardController;
+    Qt3D::QNodeId m_keyboardController;
     bool m_focus;
     bool m_enabled;
 };
 
-class KeyboardInputFunctor : public QBackendNodeFunctor
+class KeyboardInputFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit KeyboardInputFunctor(InputHandler *handler);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_KEYBOARDINPUT_P_H
+#endif // QT3DINPUT_INPUT_KEYBOARDINPUT_P_H

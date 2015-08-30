@@ -34,15 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_KEYBOARDEVENTFILTER_P_H
-#define QT3D_INPUT_KEYBOARDEVENTFILTER_P_H
+#ifndef QT3DINPUT_INPUT_KEYBOARDEVENTFILTER_P_H
+#define QT3DINPUT_INPUT_KEYBOARDEVENTFILTER_P_H
 
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
@@ -62,10 +61,9 @@ private:
     InputHandler *m_inputHandler;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_KEYBOARDEVENTFILTER_P_H
+#endif // QT3DINPUT_INPUT_KEYBOARDEVENTFILTER_P_H

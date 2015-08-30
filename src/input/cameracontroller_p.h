@@ -49,10 +49,11 @@ class QKeyEvent;
 class QTimer;
 
 namespace Qt3D {
-
 class QCamera;
 class QEntity;
+}
 
+namespace Qt3DInput {
 namespace Input {
 
 class CameraController : public QObject
@@ -67,8 +68,8 @@ class CameraController : public QObject
 public:
     explicit CameraController(QObject *parent = 0);
 
-    void setCamera( QCamera* cam );
-    QCamera *camera() const;
+    void setCamera( Qt3D::QCamera* cam );
+    Qt3D::QCamera *camera() const;
 
     void setLinearSpeed( float speed );
     float linearSpeed() const;
@@ -106,8 +107,8 @@ private Q_SLOTS:
     void onUpdate();
 
 private:
-    QCamera* m_camera;
-    QEntity* m_cameraEntity;
+    Qt3D::QCamera* m_camera;
+    Qt3D::QEntity* m_cameraEntity;
 
     float m_vx;
     float m_vy;
@@ -132,9 +133,8 @@ private:
     QTimer *m_updateTimer;
 };
 
-} // of namespace Input
-
-} // of namespace Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 

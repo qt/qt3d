@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 QMouseControllerPrivate::QMouseControllerPrivate()
     : QNodePrivate()
@@ -80,12 +80,12 @@ QMouseController::~QMouseController()
     QNode::cleanup();
 }
 
-void QMouseController::sceneChangeEvent(const QSceneChangePtr &change)
+void QMouseController::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
 {
     Q_UNUSED(change);
     // TODO: To be completed as the mouse input aspect takes shape
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

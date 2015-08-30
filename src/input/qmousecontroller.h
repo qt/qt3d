@@ -34,41 +34,41 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMOUSECONTROLLER_H
-#define QT3D_QMOUSECONTROLLER_H
+#ifndef QT3DINPUT_QMOUSECONTROLLER_H
+#define QT3DINPUT_QMOUSECONTROLLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QMouseControllerPrivate;
 class QMouseInput;
 
-class QT3DINPUTSHARED_EXPORT QMouseController : public QNode
+class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3D::QNode
 {
     Q_OBJECT
 
 public:
-    explicit QMouseController(QNode *parent = 0);
+    explicit QMouseController(Qt3D::QNode *parent = 0);
 
 protected:
-    QMouseController(QMouseControllerPrivate &dd, QNode *parent = 0);
+    QMouseController(QMouseControllerPrivate &dd, Qt3D::QNode *parent = 0);
     ~QMouseController();
 
-    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMouseController)
     QT3D_CLONEABLE(QMouseController)
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QMouseController*)
+Q_DECLARE_METATYPE(Qt3DInput::QMouseController*)
 
-#endif // QT3D_QMOUSECONTROLLER_H
+#endif // QT3DINPUT_QMOUSECONTROLLER_H

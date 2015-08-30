@@ -34,25 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QINPUTASPECT_P_H
-#define QT3D_QINPUTASPECT_P_H
+#ifndef QT3DINPUT_QINPUTASPECT_P_H
+#define QT3DINPUT_QINPUTASPECT_P_H
 
 #include <private/qabstractaspect_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QInputAspect;
 
 namespace Input {
-
 class CameraController;
 class InputHandler;
-
 }
 
-class QInputAspectPrivate : public QAbstractAspectPrivate
+class QInputAspectPrivate : public Qt3D::QAbstractAspectPrivate
 {
 public:
     QInputAspectPrivate();
@@ -62,8 +60,8 @@ public:
     QScopedPointer<Input::CameraController> m_cameraController;
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QINPUTASPECT_P_H
+#endif // QT3DINPUT_QINPUTASPECT_P_H

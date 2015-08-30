@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
-#define QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#ifndef QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#define QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,29 +43,27 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class MouseEventDispatcherJob : public QAspectJob
+class MouseEventDispatcherJob : public Qt3D::QAspectJob
 {
 public:
-    explicit MouseEventDispatcherJob(const QNodeId &input, const QList<QMouseEvent> &events);
+    explicit MouseEventDispatcherJob(const Qt3D::QNodeId &input, const QList<QMouseEvent> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_FINAL;
 
 private:
     InputHandler *m_inputHandler;
-    const QNodeId m_mouseInput;
+    const Qt3D::QNodeId m_mouseInput;
     const QList<QMouseEvent> m_events;
 };
 
-} // Input
-
-} // Mouse
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#endif // QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H

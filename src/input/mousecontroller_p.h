@@ -34,57 +34,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSECONTROLLER_H
-#define QT3D_INPUT_MOUSECONTROLLER_H
+#ifndef QT3DINPUT_INPUT_MOUSECONTROLLER_H
+#define QT3DINPUT_INPUT_MOUSECONTROLLER_H
 
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class MouseController : public QBackendNode
+class MouseController : public Qt3D::QBackendNode
 {
 public:
     MouseController();
     ~MouseController();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     void setInputHandler(InputHandler *handler);
 
-    void addMouseInput(const QNodeId &input);
-    void removeMouseInput(const QNodeId &input);
+    void addMouseInput(const Qt3D::QNodeId &input);
+    void removeMouseInput(const Qt3D::QNodeId &input);
 
-    QVector<QNodeId> mouseInputs() const;
+    QVector<Qt3D::QNodeId> mouseInputs() const;
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QVector<QNodeId> m_mouseInputs;
+    QVector<Qt3D::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
 };
 
-class MouseControllerFunctor : public QBackendNodeFunctor
+class MouseControllerFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit MouseControllerFunctor(InputHandler *handler);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 

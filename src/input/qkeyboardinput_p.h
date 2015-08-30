@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_QKEYBOARDINPUT_P_H
-#define QT3D_INPUT_QKEYBOARDINPUT_P_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDINPUT_P_H
+#define QT3DINPUT_INPUT_QKEYBOARDINPUT_P_H
 
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QKeyboardInput;
 class QKeyboardController;
 
-class QKeyboardInputPrivate : public QComponentPrivate
+class QKeyboardInputPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QKeyboardInputPrivate();
@@ -56,8 +56,8 @@ public:
     bool m_focus;
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_QKEYBOARDINPUT_P_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDINPUT_P_H

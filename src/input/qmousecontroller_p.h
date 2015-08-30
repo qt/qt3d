@@ -34,18 +34,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMOUSECONTROLLER_P_H
-#define QT3D_QMOUSECONTROLLER_P_H
+#ifndef QT3DINPUT_QMOUSECONTROLLER_P_H
+#define QT3DINPUT_QMOUSECONTROLLER_P_H
 
 #include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QMouseController;
 
-class QMouseControllerPrivate : public QNodePrivate
+class QMouseControllerPrivate : public Qt3D::QNodePrivate
 {
 public:
     QMouseControllerPrivate();
@@ -53,9 +53,9 @@ public:
     Q_DECLARE_PUBLIC(QMouseController)
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMOUSECONTROLLER_P_H
+#endif // QT3DINPUT_QMOUSECONTROLLER_P_H
 

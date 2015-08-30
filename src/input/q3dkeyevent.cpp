@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 //Qt6: Move this into a QtQmlGui module and merge it with QQuickKeyEvent
 
@@ -147,6 +147,6 @@ Q3DKeyEvent::Q3DKeyEvent(const QKeyEvent &ke)
     \sa QKeySequence::StandardKey
 */
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

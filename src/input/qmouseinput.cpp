@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DInput {
 
 QMouseInputPrivate::QMouseInputPrivate()
     : QComponentPrivate()
@@ -139,7 +141,7 @@ void QMouseInput::copy(const QNode *ref)
         d->m_controller = static_cast<QMouseController *>(QNode::clone(refInput->controller()));
 }
 
-void QMouseInput::sceneChangeEvent(const QSceneChangePtr &change)
+void QMouseInput::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
 {
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
@@ -188,6 +190,6 @@ void QMouseInput::setContainsMouse(bool contains)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

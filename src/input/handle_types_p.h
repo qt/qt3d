@@ -34,15 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_HANDLE_TYPES_P_H
-#define QT3D_INPUT_HANDLE_TYPES_P_H
+#ifndef QT3DINPUT_INPUT_HANDLE_TYPES_P_H
+#define QT3DINPUT_INPUT_HANDLE_TYPES_P_H
 
 #include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class KeyboardController;
@@ -50,15 +49,14 @@ class KeyboardInput;
 class MouseController;
 class MouseInput;
 
-typedef QHandle<KeyboardController, 8> HKeyboardController;
-typedef QHandle<KeyboardInput, 16> HKeyboardInput;
-typedef QHandle<MouseController, 8> HMouseController;
-typedef QHandle<MouseInput, 16> HMouseInput;
+typedef Qt3D::QHandle<KeyboardController, 8> HKeyboardController;
+typedef Qt3D::QHandle<KeyboardInput, 16> HKeyboardInput;
+typedef Qt3D::QHandle<MouseController, 8> HMouseController;
+typedef Qt3D::QHandle<MouseInput, 16> HMouseInput;
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_HANDLE_TYPES_P_H
+#endif // QT3DINPUT_INPUT_HANDLE_TYPES_P_H

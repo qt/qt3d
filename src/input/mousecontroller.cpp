@@ -45,8 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 MouseController::MouseController()
@@ -58,7 +57,7 @@ MouseController::~MouseController()
 {
 }
 
-void MouseController::updateFromPeer(QNode *peer)
+void MouseController::updateFromPeer(Qt3D::QNode *peer)
 {
     Q_UNUSED(peer);
 }
@@ -68,23 +67,23 @@ void MouseController::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void MouseController::addMouseInput(const QNodeId &input)
+void MouseController::addMouseInput(const Qt3D::QNodeId &input)
 {
     if (!m_mouseInputs.contains(input))
         m_mouseInputs.append(input);
 }
 
-void MouseController::removeMouseInput(const QNodeId &input)
+void MouseController::removeMouseInput(const Qt3D::QNodeId &input)
 {
     m_mouseInputs.removeOne(input);
 }
 
-QVector<QNodeId> MouseController::mouseInputs() const
+QVector<Qt3D::QNodeId> MouseController::mouseInputs() const
 {
     return m_mouseInputs;
 }
 
-void MouseController::sceneChangeEvent(const QSceneChangePtr &e)
+void MouseController::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     Q_UNUSED(e);
 }
@@ -94,7 +93,7 @@ MouseControllerFunctor::MouseControllerFunctor(InputHandler *handler)
 {
 }
 
-QBackendNode *MouseControllerFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *MouseControllerFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     MouseController *controller = m_handler->mouseControllerManager()->getOrCreateResource(frontend->id());
     controller->setFactory(factory);
@@ -104,19 +103,18 @@ QBackendNode *MouseControllerFunctor::create(QNode *frontend, const QBackendNode
     return controller;
 }
 
-QBackendNode *MouseControllerFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *MouseControllerFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_handler->mouseControllerManager()->lookupResource(id);
 }
 
-void MouseControllerFunctor::destroy(const QNodeId &id) const
+void MouseControllerFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_handler->removeMouseController(m_handler->mouseControllerManager()->lookupHandle(id));
     m_handler->mouseControllerManager()->releaseResource(id);
 }
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

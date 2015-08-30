@@ -34,28 +34,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSEINPUT_H
-#define QT3D_INPUT_MOUSEINPUT_H
+#ifndef QT3DINPUT_INPUT_MOUSEINPUT_H
+#define QT3DINPUT_INPUT_MOUSEINPUT_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DInput/q3dmouseevent.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class MouseInput : public QBackendNode
+class MouseInput : public Qt3D::QBackendNode
 {
 public:
     MouseInput();
     ~MouseInput();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    QNodeId mouseController() const;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    Qt3D::QNodeId mouseController() const;
     void setInputHandler(InputHandler *handler);
     void mouseEvent(const Q3DMouseEventPtr &event);
     void wheelEvent(const Q3DWheelEventPtr &event);
@@ -63,31 +62,30 @@ public:
     inline bool isEnabled() const { return m_enabled; }
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setController(const QNodeId &controller);
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setController(const Qt3D::QNodeId &controller);
 
 private:
     bool m_enabled;
-    QNodeId m_mouseController;
+    Qt3D::QNodeId m_mouseController;
     InputHandler *m_inputHandler;
 };
 
-class MouseInputFunctor : public QBackendNodeFunctor
+class MouseInputFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit MouseInputFunctor(InputHandler *handler);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 

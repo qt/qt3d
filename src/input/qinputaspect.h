@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QINPUTASPECT_H
-#define QT3D_QINPUTASPECT_H
+#ifndef QT3DINPUT_QINPUTASPECT_H
+#define QT3DINPUT_QINPUTASPECT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qabstractaspect.h>
@@ -43,42 +43,45 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QCamera;
+}
+
+namespace Qt3DInput {
+
 class QInputAspectPrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputAspect : public QAbstractAspect
+class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3D::QAbstractAspect
 {
     Q_OBJECT
     Q_PROPERTY(Qt3D::QCamera* camera READ camera WRITE setCamera)
 public:
     explicit QInputAspect(QObject *parent = 0);
 
-    QCamera *camera() const;
+    Qt3D::QCamera *camera() const;
 
 public Q_SLOTS:
-    void setCamera(QCamera *camera);
+    void setCamera(Qt3D::QCamera *camera);
 
 public:
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3D::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void setRootEntity(Qt3D::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-    void visitNode(QNode *node);
+    void visitNode(Qt3D::QNode *node);
 
     Q_DECLARE_PRIVATE(QInputAspect)
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QINPUTASPECT_H
+#endif // QT3DINPUT_QINPUTASPECT_H

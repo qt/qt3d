@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 // Notes:
 // Maybe we should provide the world pos of the intersection
@@ -258,6 +258,6 @@ Q3DWheelEvent::Modifiers Q3DWheelEvent::modifier() const
     }
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

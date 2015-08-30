@@ -69,7 +69,7 @@ int main(int ac, char **av)
     QGuiApplication app(ac, av);
 
     Qt3D::QWindow view;
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect();
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect();
     view.registerAspect(input);
 
     // Root entity

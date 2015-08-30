@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
     view.resize(1600, 800);
     engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3D::QInputAspect());
+    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
     engine.aspectEngine()->initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
