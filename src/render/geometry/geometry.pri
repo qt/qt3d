@@ -29,7 +29,9 @@ HEADERS += \
     $$PWD/qtorusgeometry.h \
     $$PWD/qtorusgeometry_p.h \
     $$PWD/qspheregeometry.h \
-    $$PWD/qspheregeometry_p.h
+    $$PWD/qspheregeometry_p.h \
+    $$PWD/qcuboidgeometry.h \
+    $$PWD/qcuboidgeometry_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -50,4 +52,6 @@ SOURCES += \
     $$PWD/qspheremesh.cpp \
     $$PWD/qtorusmesh.cpp \
     $$PWD/qtorusgeometry.cpp \
-    $$PWD/qspheregeometry.cpp
+    $$PWD/qspheregeometry.cpp \
+    $$PWD/qcuboidgeometry.cpp
+
