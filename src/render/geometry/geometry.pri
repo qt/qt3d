@@ -25,7 +25,9 @@ HEADERS += \
     $$PWD/qmesh_p.h \
     $$PWD/qplanemesh.h \
     $$PWD/qspheremesh.h \
-    $$PWD/qtorusmesh.h
+    $$PWD/qtorusmesh.h \
+    $$PWD/qtorusgeometry.h \
+    $$PWD/qtorusgeometry_p.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -44,4 +46,5 @@ SOURCES += \
     $$PWD/qmesh.cpp \
     $$PWD/qplanemesh.cpp \
     $$PWD/qspheremesh.cpp \
-    $$PWD/qtorusmesh.cpp
+    $$PWD/qtorusmesh.cpp \
+    $$PWD/qtorusgeometry.cpp
