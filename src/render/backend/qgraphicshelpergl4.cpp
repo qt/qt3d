@@ -43,6 +43,10 @@
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
 
+# ifndef QT_OPENGL_4
+#  define GL_PATCH_VERTICES 36466
+# endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
