@@ -93,6 +93,7 @@
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qtorusgeometry.h>
+#include <Qt3DRenderer/qspheregeometry.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
 #include <Qt3DQuickRenderer/quick3dtechnique.h>
 #include <Qt3DQuickRenderer/quick3dmaterial.h>
@@ -214,6 +215,7 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QTorusMesh>(uri, 2, 0, "TorusMesh");
     qmlRegisterType<Qt3DRender::QTorusGeometry>(uri, 2, 0, "TorusGeometry");
     qmlRegisterType<Qt3DRender::QSphereMesh>(uri, 2, 0, "SphereMesh");
+    qmlRegisterType<Qt3DRender::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
 
     // Layers
     qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");

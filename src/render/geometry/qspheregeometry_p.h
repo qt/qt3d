@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire
-** Contact: paul.lemire350@gmail.com
+** Copyright (C) 2015 Paul Lemire paul.lemire350@gmail.com
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
