@@ -201,12 +201,12 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
 {
     // Transform extremities in x, y, and z directions to find extremities
     // of the resulting ellipsoid
-    QVector3D x = mat.mapVector(m_center + QVector3D(m_radius, 0.0f, 0.0f));
-    QVector3D y = mat.mapVector(m_center + QVector3D(0.0f, m_radius, 0.0f));
-    QVector3D z = mat.mapVector(m_center + QVector3D(0.0f, 0.0f, m_radius));
+    QVector3D x = mat.map(m_center + QVector3D(m_radius, 0.0f, 0.0f));
+    QVector3D y = mat.map(m_center + QVector3D(0.0f, m_radius, 0.0f));
+    QVector3D z = mat.map(m_center + QVector3D(0.0f, 0.0f, m_radius));
 
     // Transform center and find maximum radius of ellipsoid
-    QVector3D c = mat.mapVector(m_center);
+    QVector3D c = mat.map(m_center);
     float rSquared = qMax(qMax((x - c).lengthSquared(), (y - c).lengthSquared()), (z - c).lengthSquared());
     return Sphere(c, sqrt(rSquared));
 }

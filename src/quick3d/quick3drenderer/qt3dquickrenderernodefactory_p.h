@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +34,42 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#ifndef QUICKRENDERERNODEFACTORY_H
+#define QUICKRENDERERNODEFACTORY_H
 
-int main(int argc, char **argv)
+#include <Qt3DCore/qabstractnodefactory.h>
+#include <QtCore/qhash.h>
+
+QT_BEGIN_NAMESPACE
+
+class QQmlType;
+
+namespace Qt3D {
+
+class QuickRendererNodeFactory : public QAbstractNodeFactory
 {
-    QGuiApplication app(argc, argv);
+public:
+    QNode *createNode(const char *type) Q_DECL_OVERRIDE;
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
+    void registerType(const char *className, const char *quickName, int major, int minor);
 
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
+    static QuickRendererNodeFactory *instance();
 
-    return app.exec();
-}
+private:
+    struct Type {
+        Type() : t(Q_NULLPTR), resolved(false) { }
+        Type(const char *quickName, int major, int minor)
+            : quickName(quickName), version(major, minor), t(Q_NULLPTR), resolved(false) { }
+        QByteArray quickName;
+        QPair<int, int> version;
+        QQmlType *t;
+        bool resolved;
+    };
+    QHash<QByteArray, Type> m_types;
+};
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QUICKRENDERERNODEFACTORY_H

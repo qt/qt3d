@@ -1,7 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +35,34 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#ifndef QT3DQUICKRENDERER_GLOBAL_P_H
+#define QT3DQUICKRENDERER_GLOBAL_P_H
 
-int main(int argc, char **argv)
+#include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
+#include <QtQml/qqml.h>
+
+#define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKRENDERERSHARED_EXPORT
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+namespace Quick {
+
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_initialize();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor);
+
+template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
+                                                     const char *uri, int major, int minor, const char *name)
 {
-    QGuiApplication app(argc, argv);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
-
-    return app.exec();
+    qmlRegisterExtendedType<T, E>(uri, major, minor, name);
+    Quick3DRenderer_registerType(className, quickName, major, minor);
 }
+
+} // Quick
+
+} // Qt3D
+
+QT_END_NAMESPACE
+
+#endif // QT3DQUICKRENDERER_GLOBAL_P_H

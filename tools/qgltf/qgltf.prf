@@ -1,10 +1,12 @@
+qtPrepareTool(QMAKE_QGLTF, qgltf)
+
 load(resources)
 
 isEmpty(MODELS): error("qgltf must be loaded after specifying MODELS")
 
 QGLTF_DIR = qmodels
 
-qgltf.commands = qgltf -d $$QGLTF_DIR $$QGLTF_PARAMS ${QMAKE_FILE_NAME}
+qgltf.commands = $$QMAKE_QGLTF -d $$QGLTF_DIR $$QGLTF_PARAMS ${QMAKE_FILE_NAME}
 qgltf.input = MODELS
 qgltf.output = $$QGLTF_DIR/${QMAKE_FILE_BASE}.gltf
 qgltf.CONFIG += no_link target_predeps

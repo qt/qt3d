@@ -87,6 +87,7 @@ private:
 
 class tst_Node : public Qt3D::QNode
 {
+    Q_OBJECT
 public:
     tst_Node() : Qt3D::QNode()
     {}
@@ -102,6 +103,7 @@ protected:
 
 class tst_Component : public Qt3D::QComponent
 {
+    Q_OBJECT
 public:
     tst_Component() : Qt3D::QComponent()
     {}

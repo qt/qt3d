@@ -38,6 +38,7 @@
 #define QT3DQUICK_GLOBAL_P_H
 
 #include <Qt3DQuick/qt3dquick_global.h>
+#include <QtQml/qqml.h>
 
 #define QT3DQUICKSHARED_PRIVATE_EXPORT QT3DQUICKSHARED_EXPORT
 
@@ -47,7 +48,15 @@ namespace Qt3D {
 
 namespace Quick {
 
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initializeProviders();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_registerType(const char *className, const char *quickName, int major, int minor);
+
+template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
+                                                     const char *uri, int major, int minor, const char *name)
+{
+    qmlRegisterExtendedType<T, E>(uri, major, minor, name);
+    Quick3D_registerType(className, quickName, major, minor);
+}
 
 } // Quick
 

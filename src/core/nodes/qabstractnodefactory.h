@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +34,39 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#ifndef QABSTRACTNODEFACTORY_H
+#define QABSTRACTNODEFACTORY_H
 
-int main(int argc, char **argv)
+#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnode.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+class QT3DCORESHARED_EXPORT QAbstractNodeFactory
 {
-    QGuiApplication app(argc, argv);
+public:
+    virtual ~QAbstractNodeFactory();
 
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
+    virtual QNode *createNode(const char *type) = 0;
+
+    static void registerNodeFactory(QAbstractNodeFactory *factory);
+    static QList<QAbstractNodeFactory *> nodeFactories();
+
+    template<class T> static T *createNode(const char *type)
+    {
+        Q_FOREACH (QAbstractNodeFactory *f, QAbstractNodeFactory::nodeFactories()) {
+            QNode *n = f->createNode(type);
+            if (n)
+                return qobject_cast<T *>(n);
+        }
+        return new T;
     }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
+};
 
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
+} // namespace Qt3D
 
-    return app.exec();
-}
+QT_END_NAMESPACE
+
+#endif // QABSTRACTNODEFACTORY_H

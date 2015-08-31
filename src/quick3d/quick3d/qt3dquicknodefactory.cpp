@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +34,40 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#include "qt3dquicknodefactory_p.h"
+#include <QtQml/private/qqmlmetatype_p.h>
 
-int main(int argc, char **argv)
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+Q_GLOBAL_STATIC(QuickNodeFactory, quick_node_factory)
+
+QuickNodeFactory *QuickNodeFactory::instance()
 {
-    QGuiApplication app(argc, argv);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
-
-    return app.exec();
+    return quick_node_factory();
 }
+
+void QuickNodeFactory::registerType(const char *className, const char *quickName, int major, int minor)
+{
+    m_types.insert(className, Type(quickName, major, minor));
+}
+
+QNode *QuickNodeFactory::createNode(const char *type)
+{
+    if (!m_types.contains(type))
+        return Q_NULLPTR;
+
+    Type &typeInfo(m_types[type]);
+
+    if (!typeInfo.resolved) {
+        typeInfo.resolved = true;
+        typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
+    }
+
+    return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : Q_NULLPTR;
+}
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE

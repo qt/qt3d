@@ -35,12 +35,46 @@
 ****************************************************************************/
 
 #include <window.h>
-#include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DRenderer/QSceneLoader>
+#include <Qt3DCore/QEntity>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 
 #include <QGuiApplication>
-#include <QtQml>
+#include <qqml.h>
+
+class SceneHelper : public QObject
+{
+    Q_OBJECT
+
+public:
+    Q_INVOKABLE QObject *findEntity(Qt3D::QSceneLoader *loader, const QString &name);
+    Q_INVOKABLE void addListEntry(const QVariant &list, QObject *entry);
+};
+
+QObject *SceneHelper::findEntity(Qt3D::QSceneLoader *loader, const QString &name)
+{
+    // The QSceneLoader instance is a component of an entity. The loaded scene
+    // tree is added under this entity.
+    QVector<Qt3D::QEntity *> entities = loader->entities();
+
+    if (entities.isEmpty())
+        return 0;
+
+    // Technically there could be multiple entities referencing the scene loader
+    // but sharing is discouraged, and in our case there will be one anyhow.
+    Qt3D::QEntity *root = entities[0];
+
+    // The scene structure and names always depend on the asset.
+    return root->findChild<Qt3D::QEntity *>(name);
+}
+
+void SceneHelper::addListEntry(const QVariant &list, QObject *entry)
+{
+    QQmlListReference ref = list.value<QQmlListReference>();
+    ref.append(entry);
+}
 
 int main(int argc, char* argv[])
 {
@@ -56,8 +90,11 @@ int main(int argc, char* argv[])
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
     engine.aspectEngine()->setData(data);
     engine.aspectEngine()->initialize();
+    qmlRegisterType<SceneHelper>("Qt3D.Examples", 2, 0, "SceneHelper");
     engine.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();
 }
+
+#include "main.moc"

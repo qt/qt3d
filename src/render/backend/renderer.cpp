@@ -879,10 +879,11 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
             specified = true;
             if (vao) {
-                if (!vao->isCreated())
+                if (!vao->isCreated()) {
+                    qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
                     vao->create();
+                }
                 vao->bind();
-                qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
             }
 
             // Update or set Attributes and Buffers for the given rGeometry and Command

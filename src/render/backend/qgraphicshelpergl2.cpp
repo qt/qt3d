@@ -62,8 +62,6 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
     Q_UNUSED(ok);
-    // Check Vertex Array Object extension is present
-    Q_ASSERT(context->hasExtension(QByteArrayLiteral("GL_ARB_vertex_array_object")));
     if (context->hasExtension(QByteArrayLiteral("GL_ARB_framebuffer_object"))) {
         m_fboFuncs = new QOpenGLExtension_ARB_framebuffer_object();
         const bool extensionOk = m_fboFuncs->initializeOpenGLFunctions();

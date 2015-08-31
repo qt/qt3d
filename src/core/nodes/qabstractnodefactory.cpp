@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +34,28 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#include "qabstractnodefactory.h"
 
-int main(int argc, char **argv)
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+QAbstractNodeFactory::~QAbstractNodeFactory()
 {
-    QGuiApplication app(argc, argv);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
-
-    return app.exec();
 }
+
+QList<QAbstractNodeFactory *> node_factories;
+
+void QAbstractNodeFactory::registerNodeFactory(QAbstractNodeFactory *factory)
+{
+    node_factories << factory;
+}
+
+QList<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
+{
+    return node_factories;
+}
+
+} // namespace Qt3D
+
+QT_END_NAMESPACE

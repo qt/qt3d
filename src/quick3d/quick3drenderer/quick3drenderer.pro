@@ -15,8 +15,14 @@ gcov {
     QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
 }
 
+SOURCES += \
+    qt3dquickrenderer_global.cpp \
+    qt3dquickrenderernodefactory.cpp
+
 HEADERS += \
-    qt3dquickrenderer_global.h
+    qt3dquickrenderer_global.h \
+    qt3dquickrenderer_global_p.h \
+    qt3dquickrenderernodefactory_p.h
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 

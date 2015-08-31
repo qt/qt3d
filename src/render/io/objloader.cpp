@@ -132,6 +132,8 @@ bool ObjLoader::load(::QIODevice *ioDev)
                 // Process texture coordinate
                 float s,t;
                 lineStream >> s >> t;
+                //FlipUVs
+                t = 1.0f - t;
                 texCoords.append(QVector2D(s, t));
             } else if (token == QStringLiteral("vn")) {
                 float x, y, z;

@@ -1,7 +1,8 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,27 +35,27 @@
 **
 ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QQuickView>
-#include <QOpenGLContext>
+#include "qt3dquickrenderer_global_p.h"
+#include "qt3dquickrenderernodefactory_p.h"
 
-int main(int argc, char **argv)
+QT_BEGIN_NAMESPACE
+
+namespace Qt3D {
+
+namespace Quick {
+
+void Quick3DRenderer_initialize()
 {
-    QGuiApplication app(argc, argv);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(3, 2);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-
-    QQuickView view;
-    view.setFormat(format);
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setSource(QUrl("qrc:/PlanetsMain.qml"));
-    view.show();
-
-    return app.exec();
+    QAbstractNodeFactory::registerNodeFactory(QuickRendererNodeFactory::instance());
 }
+
+void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor)
+{
+    QuickRendererNodeFactory::instance()->registerType(className, quickName, major, minor);
+}
+
+} // Quick
+
+} // Qt3D
+
+QT_END_NAMESPACE

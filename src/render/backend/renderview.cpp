@@ -465,6 +465,9 @@ const AttachmentPack &RenderView::attachmentPack() const
 
 void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
 {
+    if (const QUniformValue *val = uniformPack.uniform(name))
+        destroyUniformValue(val, m_allocator);
+
     RenderTexture *tex = Q_NULLPTR;
 
     if ((tex = value.value<RenderTexture *>()) != Q_NULLPTR) {
@@ -475,6 +478,14 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     } else {
         uniformPack.setUniform(name, QUniformValue::fromVariant(value, m_allocator));
     }
+}
+
+void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform)
+{
+    if (const QUniformValue *val = uniformPack.uniform(glslName))
+        destroyUniformValue(val, m_allocator);
+
+    uniformPack.setUniform(glslName, (this->*ms_standardUniformSetters[name])(worldTransform));
 }
 
 void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value)
@@ -620,8 +631,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 // Set default standard uniforms without bindings
                 Q_FOREACH (const QString &uniformName, uniformNames) {
                     if (ms_standardUniformSetters.contains(uniformName))
-                        command->m_uniforms.setUniform(uniformName,
-                                                       (this->*ms_standardUniformSetters[uniformName])(worldTransform));
+                        setStandardUniformValue(command->m_uniforms, uniformName, uniformName, worldTransform);
                 }
 
                 // Set default attributes
@@ -640,8 +650,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                         } else if (binding.bindingType() == QParameterMapping::StandardUniform
                                    && uniformNames.contains(binding.shaderVariableName())
                                    && ms_standardUniformSetters.contains(binding.parameterName())) {
-                            command->m_uniforms.setUniform(binding.shaderVariableName(),
-                                                           (this->*ms_standardUniformSetters[binding.parameterName()])(worldTransform));
+                            setStandardUniformValue(command->m_uniforms, binding.shaderVariableName(), binding.parameterName(), worldTransform);
                         } else if (binding.bindingType() == QParameterMapping::FragmentOutput
                                    && fragOutputs.contains(binding.parameterName())) {
                             fragOutputs.insert(binding.shaderVariableName(), fragOutputs.take(binding.parameterName()));

@@ -516,7 +516,8 @@ bool AssimpImporter::load(const QString &filename)
             | aiProcess_JoinIdenticalVertices
             | aiProcess_GenSmoothNormals
             | aiProcess_GenUVCoords
-            | aiProcess_FlipUVs;
+            | aiProcess_FlipUVs
+            | aiProcess_FindDegenerates;
 
     if (opts.genTangents)
         flags |= aiProcess_CalcTangentSpace;
@@ -2122,7 +2123,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
         acc.count = ai.keyFrames.count();
         acc.componentType = GLT_FLOAT;
         acc.type = QStringLiteral("SCALAR");
-        acc.offset = (p - base) * sizeof(float);
+        acc.offset = uint((p - base) * sizeof(float));
         foreach (const Importer::KeyFrame &kf, ai.keyFrames)
             *p++ = kf.t;
         parameters["TIME"] = acc.name;
@@ -2132,7 +2133,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC3");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.transValid ? &kf.trans : &lastV;
@@ -2149,7 +2150,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC4");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.rotValid ? &kf.rot : &lastV;
@@ -2167,7 +2168,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
             acc.name = newAccessorName();
             acc.componentType = GLT_FLOAT;
             acc.type = QStringLiteral("VEC3");
-            acc.offset = (p - base) * sizeof(float);
+            acc.offset = uint((p - base) * sizeof(float));
             QVector<float> lastV;
             foreach (const Importer::KeyFrame &kf, ai.keyFrames) {
                 const QVector<float> *v = kf.scaleValid ? &kf.scale : &lastV;
@@ -2198,7 +2199,7 @@ void GltfExporter::exportAnimations(QJsonObject &obj,
         Importer::MeshInfo::BufferView bv;
         bv.name = bvName;
         bv.offset = buf.data.size();
-        bv.length = (p - base) * sizeof(float);
+        bv.length = uint((p - base) * sizeof(float));
         bv.componentType = GLT_FLOAT;
         bvList << bv;
         extraData.resize(bv.length);
@@ -2361,9 +2362,10 @@ void GltfExporter::save(const QString &inputFilename)
         if (!imageMap.contains(it.key()))
             imageMap[it.key()] = newImageName();
         texture["source"] = imageMap[it.key()];
-        texture["format"] = 6408; // RGBA
-        texture["internalFormat"] = 6408;
-        texture["sampler"] = QStringLiteral("sampler_1");
+        texture["format"] = 0x1908; // RGBA
+        const bool compressed = m_compressedTextures.contains(it.key());
+        texture["internalFormat"] = !compressed ? 0x1908 : 0x8D64; // RGBA / ETC1
+        texture["sampler"] = !compressed ? QStringLiteral("sampler_mip_rep") : QStringLiteral("sampler_nonmip_rep");
         texture["target"] = 3553; // TEXTURE_2D
         texture["type"] = 5121; // UNSIGNED_BYTE
         textures[it.value()] = texture;
@@ -2384,7 +2386,12 @@ void GltfExporter::save(const QString &inputFilename)
     sampler["minFilter"] = 9987; // LINEAR_MIPMAP_LINEAR
     sampler["wrapS"] = 10497; // REPEAT
     sampler["wrapT"] = 10497;
-    samplers["sampler_1"] = sampler;
+    samplers["sampler_mip_rep"] = sampler;
+    // Compressed textures may not support mipmapping with GLES.
+    if (!m_compressedTextures.isEmpty()) {
+        sampler["minFilter"] = 9729; // LINEAR
+        samplers["sampler_nonmip_rep"] = sampler;
+    }
     m_obj["samplers"] = samplers;
 
     // Just a dummy light, never referenced.

@@ -140,6 +140,7 @@ public:
     void setUniformBuffer(const BlockToUBO &blockToUBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
+    const QUniformValue *uniform(const QString &glslName) const { return m_uniforms.value(glslName); }
 
     struct NamedTexture
     {
