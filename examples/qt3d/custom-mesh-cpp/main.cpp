@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     Window view;
 
     Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
@@ -90,14 +90,14 @@ int main(int argc, char* argv[])
     input->setCamera(cameraEntity);
 
     // FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
     forwardRenderer->setCamera(cameraEntity);
     frameGraph->setActiveFrameGraph(forwardRenderer);
 
     // Material
-    Qt3D::QMaterial *material = new Qt3D::QPerVertexColorMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DRender::QPerVertexColorMaterial(rootEntity);
 
     // Torus
     Qt3D::QEntity *customMeshEntity = new Qt3D::QEntity(rootEntity);
@@ -109,11 +109,11 @@ int main(int argc, char* argv[])
     transform->addTransform(scaleTransform);
 
     // Custom Mesh (TetraHedron)
-    Qt3D::QGeometryRenderer *customMeshRenderer = new Qt3D::QGeometryRenderer;
-    Qt3D::QGeometry *customGeometry = new Qt3D::QGeometry(customMeshRenderer);
+    Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;
+    Qt3DRender::QGeometry *customGeometry = new Qt3DRender::QGeometry(customMeshRenderer);
 
-    Qt3D::QBuffer *vertexDataBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer, customGeometry);
-    Qt3D::QBuffer *indexDataBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::IndexBuffer, customGeometry);
+    Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, customGeometry);
+    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer, customGeometry);
 
     // vec3 for position
     // vec3 for colors
@@ -195,40 +195,40 @@ int main(int argc, char* argv[])
     indexDataBuffer->setData(indexBufferData);
 
     // Attributes
-    Qt3D::QAttribute *positionAttribute = new Qt3D::QAttribute();
-    positionAttribute->setAttributeType(Qt3D::QAttribute::VertexAttribute);
+    Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute();
+    positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     positionAttribute->setBuffer(vertexDataBuffer);
-    positionAttribute->setDataType(Qt3D::QAttribute::Float);
+    positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
     positionAttribute->setDataSize(3);
     positionAttribute->setByteOffset(0);
     positionAttribute->setByteStride(9 * sizeof(float));
     positionAttribute->setCount(4);
-    positionAttribute->setName(Qt3D::QAttribute::defaultPositionAttributeName());
+    positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
 
-    Qt3D::QAttribute *normalAttribute = new Qt3D::QAttribute();
-    normalAttribute->setAttributeType(Qt3D::QAttribute::VertexAttribute);
+    Qt3DRender::QAttribute *normalAttribute = new Qt3DRender::QAttribute();
+    normalAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     normalAttribute->setBuffer(vertexDataBuffer);
-    normalAttribute->setDataType(Qt3D::QAttribute::Float);
+    normalAttribute->setDataType(Qt3DRender::QAttribute::Float);
     normalAttribute->setDataSize(3);
     normalAttribute->setByteOffset(3 * sizeof(float));
     normalAttribute->setByteStride(9 * sizeof(float));
     normalAttribute->setCount(4);
-    normalAttribute->setName(Qt3D::QAttribute::defaultNormalAttributeName());
+    normalAttribute->setName(Qt3DRender::QAttribute::defaultNormalAttributeName());
 
-    Qt3D::QAttribute *colorAttribute = new Qt3D::QAttribute();
-    colorAttribute->setAttributeType(Qt3D::QAttribute::VertexAttribute);
+    Qt3DRender::QAttribute *colorAttribute = new Qt3DRender::QAttribute();
+    colorAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
     colorAttribute->setBuffer(vertexDataBuffer);
-    colorAttribute->setDataType(Qt3D::QAttribute::Float);
+    colorAttribute->setDataType(Qt3DRender::QAttribute::Float);
     colorAttribute->setDataSize(3);
     colorAttribute->setByteOffset(6 * sizeof(float));
     colorAttribute->setByteStride(9 * sizeof(float));
     colorAttribute->setCount(4);
-    colorAttribute->setName(Qt3D::QAttribute::defaultColorAttributeName());
+    colorAttribute->setName(Qt3DRender::QAttribute::defaultColorAttributeName());
 
-    Qt3D::QAttribute *indexAttribute = new Qt3D::QAttribute();
-    indexAttribute->setAttributeType(Qt3D::QAttribute::IndexAttribute);
+    Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute();
+    indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
     indexAttribute->setBuffer(indexDataBuffer);
-    indexAttribute->setDataType(Qt3D::QAttribute::UnsignedShort);
+    indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
     indexAttribute->setDataSize(1);
     indexAttribute->setByteOffset(0);
     indexAttribute->setByteStride(0);
@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
     customMeshRenderer->setInstanceCount(1);
     customMeshRenderer->setBaseVertex(0);
     customMeshRenderer->setBaseInstance(0);
-    customMeshRenderer->setPrimitiveType(Qt3D::QGeometryRenderer::Triangles);
+    customMeshRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
     customMeshRenderer->setGeometry(customGeometry);
     // 4 faces of 3 points
     customMeshRenderer->setPrimitiveCount(12);

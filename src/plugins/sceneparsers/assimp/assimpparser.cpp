@@ -61,10 +61,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::AssimpParser
+    \class Qt3DRender::AssimpParser
     \since 5.5
 
     \brief Provides a generic way of loading various 3D assets
@@ -156,9 +158,9 @@ QString texturePath(const aiString &path)
 }
 
 /*!
- * Returns the Qt3D::QParameter with named \a name if contained by the material
+ * Returns the Qt3DRender::QParameter with named \a name if contained by the material
  * \a material. If the material doesn't contain the named parameter, a new
- * Qt3D::QParameter is created and inserted into the material.
+ * Qt3DRender::QParameter is created and inserted into the material.
  */
 QParameter *findNamedParameter(const QString &name, QMaterial *material)
 {
@@ -318,7 +320,7 @@ bool AssimpParser::isAssimpPath(const QString &path)
  */
 void AssimpParser::setSource(const QUrl &source)
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
@@ -334,7 +336,7 @@ void AssimpParser::setSource(const QUrl &source)
  */
 bool AssimpParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
 }
 
@@ -345,7 +347,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source) const
  *
  * Returns \c Q_NULLPTR if \a id was specified but no node matching it was found.
  */
-QEntity *AssimpParser::scene(const QString &id)
+Qt3D::QEntity *AssimpParser::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -370,7 +372,7 @@ QEntity *AssimpParser::scene(const QString &id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns \c Q_NULLPTR if the node was not found.
  */
-QEntity *AssimpParser::node(const QString &id)
+Qt3D::QEntity *AssimpParser::node(const QString &id)
 {
     if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
@@ -382,7 +384,7 @@ QEntity *AssimpParser::node(const QString &id)
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
-QEntity *AssimpParser::node(aiNode *node)
+Qt3D::QEntity *AssimpParser::node(aiNode *node)
 {
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
@@ -413,7 +415,7 @@ QEntity *AssimpParser::node(aiNode *node)
 
     // Add Transformations
     const QMatrix4x4 qTransformMatrix = aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    QTransform *transform = new QTransform(new QMatrixTransform(qTransformMatrix));
+    Qt3D::QTransform *transform = new Qt3D::QTransform(new QMatrixTransform(qTransformMatrix));
     entityNode->addComponent(transform);
 
     // Add Camera
@@ -722,7 +724,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
                                    assimpCamera->mClipPlaneFar);
     camera->addComponent(lens);
 
-    QTransform *transform = new QTransform();
+    Qt3D::QTransform *transform = new Qt3D::QTransform();
     QLookAtTransform *lookAt = new QLookAtTransform();
     lookAt->setPosition(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z));
     lookAt->setViewCenter(QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z));
@@ -920,7 +922,7 @@ AssimpParser::SceneImporter::~SceneImporter()
     delete m_importer;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

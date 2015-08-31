@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CUBOIDMESH_H
-#define QT3D_CUBOIDMESH_H
+#ifndef QT3DRENDER_CUBOIDMESH_H
+#define QT3DRENDER_CUBOIDMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
 {
@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
     Q_PROPERTY(QSize xyMeshResolution READ xyMeshResolution WRITE setXYMeshResolution NOTIFY xyMeshResolutionChanged)
 
 public:
-    explicit QCuboidMesh(QNode *parent = 0);
+    explicit QCuboidMesh(Qt3D::QNode *parent = 0);
     ~QCuboidMesh();
 
     void setXExtent(float xExtent);
@@ -103,8 +103,8 @@ private:
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CUBOIDMESH_H
+#endif // QT3DRENDER_CUBOIDMESH_H

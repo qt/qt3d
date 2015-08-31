@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_PARAMETERPACK_H
-#define QT3D_RENDER_PARAMETERPACK_H
+#ifndef QT3DRENDER_RENDER_PARAMETERPACK_H
+#define QT3DRENDER_RENDER_PARAMETERPACK_H
 
 #include <Qt3DCore/qnodeid.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -52,18 +52,18 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const QNodeId &parameterId);
-    void removeParameter(const QNodeId &parameterId);
-    QList<QNodeId> parameters() const;
+    void appendParameter(const Qt3D::QNodeId &parameterId);
+    void removeParameter(const Qt3D::QNodeId &parameterId);
+    QList<Qt3D::QNodeId> parameters() const;
 
 private:
-    QList<QNodeId> m_peers;
+    QList<Qt3D::QNodeId> m_peers;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_PARAMETERPACK_H
+#endif // QT3DRENDER_RENDER_PARAMETERPACK_H

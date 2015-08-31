@@ -41,8 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderLayer::RenderLayer()
@@ -59,7 +60,7 @@ void RenderLayer::cleanup()
 {
 }
 
-void RenderLayer::updateFromPeer(QNode *peer)
+void RenderLayer::updateFromPeer(Qt3D::QNode *peer)
 {
     QLayer *layer = static_cast<QLayer *>(peer);
     m_layers = layer->names();
@@ -71,7 +72,7 @@ QStringList RenderLayer::layers() const
     return m_layers;
 }
 
-void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderLayer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names"))
@@ -80,8 +81,7 @@ void RenderLayer::sceneChangeEvent(const QSceneChangePtr &e)
         m_enabled = propertyChange->value().toBool();
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

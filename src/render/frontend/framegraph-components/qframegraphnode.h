@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHNODE_H
-#define QT3D_QFRAMEGRAPHNODE_H
+#ifndef QT3DRENDER_QFRAMEGRAPHNODE_H
+#define QT3DRENDER_QFRAMEGRAPHNODE_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,16 +43,16 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraphNodePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public QNode
+class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QFrameGraphNode(QNode *parent = 0);
+    explicit QFrameGraphNode(Qt3D::QNode *parent = 0);
     ~QFrameGraphNode();
 
     QFrameGraphNode *parentFrameGraphNode() const;
@@ -61,7 +61,7 @@ public:
     void setEnabled(bool enabled);
 
 protected:
-    QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent = 0);
+    QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3D::QNode *parent = 0);
 
 Q_SIGNALS:
     void enabledChanged();
@@ -70,8 +70,8 @@ private:
     Q_DECLARE_PRIVATE(QFrameGraphNode)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPHNODE_H
+#endif // QT3DRENDER_QFRAMEGRAPHNODE_H

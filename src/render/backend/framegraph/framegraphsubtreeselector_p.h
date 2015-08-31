@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHSUBTREESELECTOR_H
-#define QT3D_RENDER_FRAMEGRAPHSUBTREESELECTOR_H
+#ifndef QT3DRENDER_RENDER_FRAMEGRAPHSUBTREESELECTOR_H
+#define QT3DRENDER_RENDER_FRAMEGRAPHSUBTREESELECTOR_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/qframegraphselector.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -52,14 +52,14 @@ public:
     FrameGraphSubtreeSelector();
     ~FrameGraphSubtreeSelector();
 
-    void updateFromPeer(QNode *peer) Q_DECL_FINAL;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_FINAL;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMEGRAPHSUBTREESELECTOR_H
+#endif // QT3DRENDER_RENDER_FRAMEGRAPHSUBTREESELECTOR_H

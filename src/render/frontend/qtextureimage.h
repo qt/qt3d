@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTUREIMAGE_H
-#define QT3D_QTEXTUREIMAGE_H
+#ifndef QT3DRENDER_QTEXTUREIMAGE_H
+#define QT3DRENDER_QTEXTUREIMAGE_H
 
 #include <QUrl>
 #include <Qt3DRenderer/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTextureImagePrivate;
 
@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QTextureImage(QNode *parent = 0);
+    explicit QTextureImage(Qt3D::QNode *parent = 0);
     ~QTextureImage();
 
     QUrl source() const;
@@ -64,15 +64,15 @@ Q_SIGNALS:
     void sourceChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTextureImage)
     QT3D_CLONEABLE(QTextureImage)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTEXTUREIMAGE_H
+#endif // QT3DRENDER_QTEXTUREIMAGE_H

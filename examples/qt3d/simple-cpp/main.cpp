@@ -63,7 +63,7 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3D::QWindow view;
+    Qt3DRender::QWindow view;
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     view.registerAspect(input);
 
@@ -80,11 +80,11 @@ int main(int argc, char* argv[])
     input->setCamera(cameraEntity);
 
     // Material
-    Qt3D::QMaterial *material = new Qt3D::QPhongMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
 
     // Torus
     Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
-    Qt3D::QTorusMesh *torusMesh = new Qt3D::QTorusMesh;
+    Qt3DRender::QTorusMesh *torusMesh = new Qt3DRender::QTorusMesh;
     torusMesh->setRadius(5);
     torusMesh->setMinorRadius(1);
     torusMesh->setRings(100);
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
 
     // Sphere
     Qt3D::QEntity *sphereEntity = new Qt3D::QEntity(rootEntity);
-    Qt3D::QSphereMesh *sphereMesh = new Qt3D::QSphereMesh;
+    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh;
     sphereMesh->setRadius(3);
 
     Qt3D::QTransform *sphereTransform = new Qt3D::QTransform;

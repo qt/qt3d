@@ -34,17 +34,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETERMAPPING_P_H
-#define QT3D_QPARAMETERMAPPING_P_H
+#ifndef QT3DRENDER_QPARAMETERMAPPING_P_H
+#define QT3DRENDER_QPARAMETERMAPPING_P_H
 
 #include <private/qnode_p.h>
 #include <Qt3DRenderer/QParameterMapping>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QParameterMappingPrivate : public QNodePrivate
+class QParameterMappingPrivate : public Qt3D::QNodePrivate
 {
 public:
     QParameterMappingPrivate();
@@ -56,8 +56,8 @@ public:
     QParameterMapping::Binding m_bindingType;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPARAMETERMAPPING_P_H
+#endif // QT3DRENDER_QPARAMETERMAPPING_P_H

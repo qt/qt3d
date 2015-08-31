@@ -34,17 +34,16 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCAMERASELECTOR_H
-#define QT3D_QCAMERASELECTOR_H
+#ifndef QT3DRENDER_QCAMERASELECTOR_H
+#define QT3DRENDER_QCAMERASELECTOR_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QCamera;
 class QCameraSelectorPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
@@ -53,27 +52,27 @@ class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
     Q_PROPERTY(Qt3D::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit QCameraSelector(QNode *parent = 0);
+    explicit QCameraSelector(Qt3D::QNode *parent = 0);
     ~QCameraSelector();
 
-    void setCamera(QEntity *camera);
-    QEntity *camera() const;
+    void setCamera(Qt3D::QEntity *camera);
+    Qt3D::QEntity *camera() const;
 
 Q_SIGNALS:
     void cameraChanged();
 
 protected:
-    QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QCameraSelector(QCameraSelectorPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QCameraSelector)
     Q_DECLARE_PRIVATE(QCameraSelector)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_QCAMERASELECTOR_H
+#endif // QT3DRENDER_QCAMERASELECTOR_H

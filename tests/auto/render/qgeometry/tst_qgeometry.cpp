@@ -135,24 +135,24 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QGeometry *>("geometry");
+        QTest::addColumn<Qt3DRender::QGeometry *>("geometry");
         QTest::addColumn<int>("attributeCount");
 
-        Qt3D::QGeometry *defaultConstructed = new Qt3D::QGeometry();
+        Qt3DRender::QGeometry *defaultConstructed = new Qt3DRender::QGeometry();
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
-        Qt3D::QGeometry *geometry1 = new Qt3D::QGeometry();
+        Qt3DRender::QGeometry *geometry1 = new Qt3DRender::QGeometry();
         geometry1->setVerticesPerPatch(2);
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 454));
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 555));
+        geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 454));
+        geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
         QTest::newRow("2 attributes") << geometry1 << 2;
 
 
-        Qt3D::QGeometry *geometry2 = new Qt3D::QGeometry();
-        Qt3D::QAttribute *attribute = new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 383);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 427));
+        Qt3DRender::QGeometry *geometry2 = new Qt3DRender::QGeometry();
+        Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 383);
+        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 427));
         geometry2->addAttribute(attribute);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3D::QAttribute::Float, 2, 327));
+        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3DRender::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
         geometry2->setVerticesPerPatch(3);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
@@ -161,11 +161,11 @@ private Q_SLOTS:
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QGeometry *, geometry);
+        QFETCH(Qt3DRender::QGeometry *, geometry);
         QFETCH(int, attributeCount);
 
         // WHEN
-        Qt3D::QGeometry *clone = static_cast<Qt3D::QGeometry *>(QNode::clone(geometry));
+        Qt3DRender::QGeometry *clone = static_cast<Qt3DRender::QGeometry *>(QNode::clone(geometry));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
@@ -176,8 +176,8 @@ private Q_SLOTS:
         QCOMPARE(geometry->verticesPerPatch(), clone->verticesPerPatch());
 
         for (int i = 0; i < attributeCount; ++i) {
-            Qt3D::QAttribute *originalAttribute = static_cast<Qt3D::QAttribute *>(geometry->attributes()[i]);
-            Qt3D::QAttribute *cloneAttribute = static_cast<Qt3D::QAttribute *>(clone->attributes()[i]);
+            Qt3DRender::QAttribute *originalAttribute = static_cast<Qt3DRender::QAttribute *>(geometry->attributes()[i]);
+            Qt3DRender::QAttribute *cloneAttribute = static_cast<Qt3DRender::QAttribute *>(clone->attributes()[i]);
 
             QCOMPARE(originalAttribute->id(), cloneAttribute->id());
             QCOMPARE(originalAttribute->name(), cloneAttribute->name());
@@ -193,11 +193,11 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QGeometry> geometry(new Qt3D::QGeometry());
+        QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry());
         TestArbiter arbiter(geometry.data());
 
         // WHEN
-        Qt3D::QAttribute attr;
+        Qt3DRender::QAttribute attr;
         geometry->addAttribute(&attr);
         QCoreApplication::processEvents();
 

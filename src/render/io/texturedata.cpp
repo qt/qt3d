@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 TexImageData::TexImageData()
     : m_width(-1)
@@ -122,6 +122,6 @@ bool TexImageData::setCompressedFile(const QString &source)
     return false;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

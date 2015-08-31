@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_MANAGERS_P_H
-#define QT3D_RENDER_MANAGERS_P_H
+#ifndef QT3DRENDER_RENDER_MANAGERS_P_H
+#define QT3DRENDER_RENDER_MANAGERS_P_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderattachment_p.h>
@@ -62,13 +62,13 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
-class AttachmentManager : public QResourceManager<
+class AttachmentManager : public Qt3D::QResourceManager<
         RenderAttachment,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -77,9 +77,9 @@ public:
     AttachmentManager() {}
 };
 
-class CameraManager : public QResourceManager<
+class CameraManager : public Qt3D::QResourceManager<
         RenderCameraLens,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -87,9 +87,9 @@ public:
     CameraManager() {}
 };
 
-class CriterionManager : public QResourceManager<
+class CriterionManager : public Qt3D::QResourceManager<
         RenderAnnotation,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -99,9 +99,9 @@ public:
     CriterionManager() {}
 };
 
-class EffectManager : public QResourceManager<
+class EffectManager : public Qt3D::QResourceManager<
         RenderEffect,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -110,15 +110,15 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public QResourceManager<RenderEntity, QNodeId, 16>
+class EntityManager : public Qt3D::QResourceManager<RenderEntity, Qt3D::QNodeId, 16>
 {
 public:
     EntityManager() {}
 };
 
-class FrameGraphManager : public QResourceManager<
+class FrameGraphManager : public Qt3D::QResourceManager<
         FrameGraphNode *,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>
 {
@@ -126,9 +126,9 @@ public:
     FrameGraphManager() {}
 };
 
-class LayerManager : public QResourceManager<
+class LayerManager : public Qt3D::QResourceManager<
         RenderLayer,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -137,9 +137,9 @@ public:
     LayerManager() {}
 };
 
-class MaterialManager : public QResourceManager<
+class MaterialManager : public Qt3D::QResourceManager<
         RenderMaterial,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -148,15 +148,15 @@ public:
     MaterialManager() {}
 };
 
-class MatrixManager : public QResourceManager<QMatrix4x4, QNodeId, 16>
+class MatrixManager : public Qt3D::QResourceManager<QMatrix4x4, Qt3D::QNodeId, 16>
 {
 public:
     MatrixManager() {}
 };
 
-class ShaderManager : public QResourceManager<
+class ShaderManager : public Qt3D::QResourceManager<
         RenderShader,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -165,9 +165,9 @@ public:
     ShaderManager() {}
 };
 
-class SortCriterionManager : public QResourceManager<
+class SortCriterionManager : public Qt3D::QResourceManager<
         SortCriterion,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -176,9 +176,9 @@ public:
     SortCriterionManager() {}
 };
 
-class TechniqueManager : public QResourceManager<
+class TechniqueManager : public Qt3D::QResourceManager<
         RenderTechnique,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -187,9 +187,9 @@ public:
     TechniqueManager() {}
 };
 
-class TextureManager : public QResourceManager<
+class TextureManager : public Qt3D::QResourceManager<
         RenderTexture,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -198,9 +198,9 @@ public:
     TextureManager() {}
 };
 
-class TransformManager : public QResourceManager<
+class TransformManager : public Qt3D::QResourceManager<
         RenderTransform,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -209,7 +209,7 @@ public:
     TransformManager() {}
 };
 
-class VAOManager : public QResourceManager<
+class VAOManager : public Qt3D::QResourceManager<
         QOpenGLVertexArrayObject *,
         QPair<HGeometry, HShader>,
         16>
@@ -218,9 +218,9 @@ public:
     VAOManager() {}
 };
 
-class RenderTargetManager : public QResourceManager<
+class RenderTargetManager : public Qt3D::QResourceManager<
         RenderTarget,
-        QNodeId,
+        Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -229,9 +229,9 @@ public:
     RenderTargetManager() {}
 };
 
-class RenderPassManager : public QResourceManager<
+class RenderPassManager : public Qt3D::QResourceManager<
         RenderRenderPass,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -241,9 +241,9 @@ public:
 };
 
 
-class ParameterManager : public QResourceManager<
+class ParameterManager : public Qt3D::QResourceManager<
         RenderParameter,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -252,9 +252,9 @@ public:
     ParameterManager() {}
 };
 
-class ShaderDataManager : public QResourceManager<
+class ShaderDataManager : public Qt3D::QResourceManager<
         RenderShaderData,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -263,7 +263,7 @@ public:
     ShaderDataManager() {}
 };
 
-class UBOManager : public QResourceManager<
+class UBOManager : public Qt3D::QResourceManager<
         UniformBuffer,
         ShaderDataShaderUboKey,
         16,
@@ -272,53 +272,52 @@ class UBOManager : public QResourceManager<
 {
 };
 
-class TextureImageManager : public QResourceManager<
+class TextureImageManager : public Qt3D::QResourceManager<
         RenderTextureImage,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
 {
 };
 
-class AttributeManager : public QResourceManager<
+class AttributeManager : public Qt3D::QResourceManager<
         RenderAttribute,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
 {
 };
 
-class GeometryManager : public QResourceManager<
+class GeometryManager : public Qt3D::QResourceManager<
         RenderGeometry,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
 {
 };
 
-} // Render
+} // namespace Render
+} // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Render::RenderAnnotation, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderEffect, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderEntity, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderLayer, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderMaterial, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderShader, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::SortCriterion, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderTarget, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderTechnique, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderTexture, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderRenderPass, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderTextureImage, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderAttribute, Q_REQUIRES_CLEANUP);
-Q_DECLARE_RESOURCE_INFO(Render::RenderGeometry, Q_REQUIRES_CLEANUP);
-
-} // Qt3D
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderAnnotation, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderEffect, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderEntity, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderLayer, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderMaterial, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderShader, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTechnique, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTexture, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderRenderPass, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTextureImage, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderAttribute, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderGeometry, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_RENDER_MANAGERS_P_H
+#endif // QT3DRENDER_RENDER_MANAGERS_P_H

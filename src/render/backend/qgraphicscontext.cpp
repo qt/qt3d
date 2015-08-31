@@ -72,7 +72,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 static QHash<unsigned int, QGraphicsContext*> static_contexts;
@@ -1085,7 +1085,7 @@ GLint QGraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dat
     return GL_FLOAT;
 }
 
-} // Render
-} // Qt3D of namespace
+} // namespace Render
+} // namespace Qt3DRender of namespace
 
 QT_END_NAMESPACE

@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -67,9 +67,9 @@ private:
     QSemaphore m_semaphore;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTextureImagePrivate: public QAbstractTextureImagePrivate
 {
@@ -67,7 +67,7 @@ public:
     {
         TexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
-            QString source = QUrlHelper::urlToLocalFileOrQrc(m_url);
+            QString source = Qt3D::QUrlHelper::urlToLocalFileOrQrc(m_url);
             dataPtr.reset(new TexImageData());
             if (dataPtr->setCompressedFile(source))
                 return dataPtr;
@@ -109,7 +109,7 @@ private:
 
 /*!
     \qmltype TextureImage
-    \instantiates Qt3D::QTextureImage
+    \instantiates Qt3DRender::QTextureImage
     \inherits AbstractTextureImage
     \inqmlmodule Qt3D.Renderer
     \since 5.5
@@ -118,7 +118,7 @@ private:
 */
 
 /*!
-    Constructs a new Qt3D::QTextureImage instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTextureImage instance with \a parent as parent.
  */
 QTextureImage::QTextureImage(QNode *parent)
     : QAbstractTextureImage(*new QTextureImagePrivate, parent)
@@ -143,7 +143,7 @@ QUrl QTextureImage::source() const
 }
 
 /*!
-  \property Qt3D::QTextureImage::source
+  \property Qt3DRender::QTextureImage::source
 
   This property holdsthe source url from which data for the texture
   image will be loaded.
@@ -171,7 +171,7 @@ void QTextureImage::setSource(const QUrl &source)
 }
 
 /*!
-    Returns the Qt3D::QTextureDataFunctorPtr functor to be used by the
+    Returns the Qt3DRender::QTextureDataFunctorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
 QTextureDataFunctorPtr QTextureImage::dataFunctor() const
@@ -189,7 +189,7 @@ void QTextureImage::copy(const QNode *ref)
     d_func()->m_source = img->source();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

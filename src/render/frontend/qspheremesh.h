@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSPHEREMESH_H
-#define QT3D_QSPHEREMESH_H
+#ifndef QT3DRENDER_QSPHEREMESH_H
+#define QT3DRENDER_QSPHEREMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSphereMeshPrivate;
 
@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QSphereMesh : public QGeometryRenderer
     Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
 
 public:
-    explicit QSphereMesh(QNode *parent = 0);
+    explicit QSphereMesh(Qt3D::QNode *parent = 0);
     ~QSphereMesh();
 
     void setRings(int rings);
@@ -87,8 +87,8 @@ private:
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSPHEREMESH_H
+#endif // QT3DRENDER_QSPHEREMESH_H

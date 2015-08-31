@@ -40,7 +40,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 ViewportNode::ViewportNode()
@@ -52,7 +54,7 @@ ViewportNode::ViewportNode()
 {
 }
 
-void ViewportNode::updateFromPeer(QNode *peer)
+void ViewportNode::updateFromPeer(Qt3D::QNode *peer)
 {
     QViewport *viewport = static_cast<QViewport *>(peer);
     setXMin(viewport->rect().x());
@@ -105,7 +107,7 @@ QColor ViewportNode::clearColor() const
     return m_clearColor;
 }
 
-void ViewportNode::sceneChangeEvent(const QSceneChangePtr &e)
+void ViewportNode::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -141,7 +143,7 @@ QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentVi
     }
 }
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

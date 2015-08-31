@@ -42,11 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
-LoadTextureDataJob::LoadTextureDataJob(const QNodeId &textureId)
+LoadTextureDataJob::LoadTextureDataJob(const Qt3D::QNodeId &textureId)
     : m_textureId(textureId)
 {
 }
@@ -127,8 +126,7 @@ void LoadTextureDataJob::run()
     }
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

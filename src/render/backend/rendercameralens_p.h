@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCAMERA_H
-#define QT3D_RENDER_RENDERCAMERA_H
+#ifndef QT3DRENDER_RENDER_RENDERCAMERA_H
+#define QT3DRENDER_RENDER_RENDERCAMERA_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
@@ -43,20 +43,20 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class CameraManager;
 
-class RenderCameraLens : public QBackendNode
+class RenderCameraLens : public Qt3D::QBackendNode
 {
 public:
     RenderCameraLens();
     ~RenderCameraLens();
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
@@ -66,7 +66,7 @@ public:
 
     inline bool isEnabled() const { return m_enabled; }
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QVector4D m_clearColor;
@@ -74,9 +74,9 @@ private:
     bool m_enabled;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCAMERA_H
+#endif // QT3DRENDER_RENDER_RENDERCAMERA_H

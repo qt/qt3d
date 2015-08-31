@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DTechnique::Quick3DTechnique(QObject *parent)
@@ -49,22 +47,22 @@ Quick3DTechnique::Quick3DTechnique(QObject *parent)
 {
 }
 
-QQmlListProperty<Qt3D::QRenderPass> Quick3DTechnique::renderPassList()
+QQmlListProperty<QRenderPass> Quick3DTechnique::renderPassList()
 {
-    return QQmlListProperty<Qt3D::QRenderPass>(this, 0,
-                                              &Quick3DTechnique::appendRenderPass,
-                                              &Quick3DTechnique::renderPassCount,
-                                              &Quick3DTechnique::renderPassAt,
-                                              &Quick3DTechnique::clearRenderPasses);
+    return QQmlListProperty<QRenderPass>(this, 0,
+                                         &Quick3DTechnique::appendRenderPass,
+                                         &Quick3DTechnique::renderPassCount,
+                                         &Quick3DTechnique::renderPassAt,
+                                         &Quick3DTechnique::clearRenderPasses);
 }
 
 QQmlListProperty<QParameter> Quick3DTechnique::parameterList()
 {
-    return QQmlListProperty<Qt3D::QParameter>(this, 0,
-                                             &Quick3DTechnique::appendParameter,
-                                             &Quick3DTechnique::parametersCount,
-                                             &Quick3DTechnique::parameterAt,
-                                             &Quick3DTechnique::clearParameterList);
+    return QQmlListProperty<QParameter>(this, 0,
+                                        &Quick3DTechnique::appendParameter,
+                                        &Quick3DTechnique::parametersCount,
+                                        &Quick3DTechnique::parameterAt,
+                                        &Quick3DTechnique::clearParameterList);
 }
 
 void Quick3DTechnique::appendParameter(QQmlListProperty<QParameter> *list, QParameter *param)
@@ -125,13 +123,13 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
     }
 }
 
-QQmlListProperty<Qt3D::QAnnotation> Quick3DTechnique::annotationList()
+QQmlListProperty<QAnnotation> Quick3DTechnique::annotationList()
 {
-    return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                       &Quick3DTechnique::appendAnnotation,
-                                       &Quick3DTechnique::annotationCount,
-                                       &Quick3DTechnique::annotationAt,
-                                       &Quick3DTechnique::clearAnnotationList);
+    return QQmlListProperty<QAnnotation>(this, 0,
+                                         &Quick3DTechnique::appendAnnotation,
+                                         &Quick3DTechnique::annotationCount,
+                                         &Quick3DTechnique::annotationAt,
+                                         &Quick3DTechnique::clearAnnotationList);
 }
 
 void Quick3DTechnique::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
@@ -169,10 +167,8 @@ void Quick3DTechnique::clearAnnotationList(QQmlListProperty<QAnnotation> *list)
     }
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

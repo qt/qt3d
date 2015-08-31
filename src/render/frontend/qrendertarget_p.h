@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERTARGET_P_H
-#define QT3D_QRENDERTARGET_P_H
+#ifndef QT3DRENDER_QRENDERTARGET_P_H
+#define QT3DRENDER_QRENDERTARGET_P_H
 
 #include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderAttachment;
 class QRenderTarget;
 
-class QRenderTargetPrivate : public QComponentPrivate
+class QRenderTargetPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QRenderTargetPrivate();
@@ -59,4 +59,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERTARGET_P_H
+#endif // QT3DRENDER_QRENDERTARGET_P_H

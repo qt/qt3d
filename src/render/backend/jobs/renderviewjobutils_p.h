@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDERVIEWJOBUTILS_P_H
-#define QT3D_RENDERVIEWJOBUTILS_P_H
+#ifndef QT3DRENDER_RENDERVIEWJOBUTILS_P_H
+#define QT3DRENDER_RENDERVIEWJOBUTILS_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnodeid.h>
@@ -45,9 +45,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QFrameAllocator;
+}
 
+namespace Qt3DRender {
 namespace Render {
 
 class FrameGraphNode;
@@ -102,7 +103,7 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              RenderTechnique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                           const QList<QNodeId> &parameterIds);
+                                           const QList<Qt3D::QNodeId> &parameterIds);
 
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
@@ -117,7 +118,7 @@ Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *i
                                                             const QString &name);
 
 Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states,
-                                                      QFrameAllocator *allocator);
+                                                      Qt3D::QFrameAllocator *allocator);
 
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
@@ -139,10 +140,10 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
-Q_DECLARE_TYPEINFO(Qt3D::Render::ParameterInfo, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::Render::ParameterInfo, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERVIEWJOBUTILS_P_H
+#endif // QT3DRENDER_RENDERVIEWJOBUTILS_P_H

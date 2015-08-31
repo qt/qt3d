@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_SORTMETHOD_P_H
-#define QT3D_RENDER_SORTMETHOD_P_H
+#ifndef QT3DRENDER_RENDER_SORTMETHOD_P_H
+#define QT3DRENDER_RENDER_SORTMETHOD_P_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/qsortmethod.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -51,19 +51,19 @@ class SortMethod : public FrameGraphNode
 public:
     SortMethod();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QList<QNodeId> criteria() const;
+    QList<Qt3D::QNodeId> criteria() const;
 
 private:
-    QList<QNodeId> m_criteria;
+    QList<Qt3D::QNodeId> m_criteria;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_SORTMETHOD_P_H
+#endif // QT3DRENDER_RENDER_SORTMETHOD_P_H

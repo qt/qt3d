@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DSTATESET_H
-#define QT3D_RENDER_QUICK_QUICK3DSTATESET_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qstateset.h>
@@ -43,36 +43,32 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DStateSet : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderState> renderStates READ renderStateList CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList CONSTANT)
 public:
     explicit Quick3DStateSet(QObject *parent = 0);
     ~Quick3DStateSet();
 
-    QQmlListProperty<Qt3D::QRenderState> renderStateList();
+    QQmlListProperty<QRenderState> renderStateList();
     inline QStateSet *parentStateSet() const { return qobject_cast<QStateSet *>(parent()); }
 
 private:
-    static void appendRenderState(QQmlListProperty<Qt3D::QRenderState> *list, QRenderState *state);
-    static QRenderState *renderStateAt(QQmlListProperty<Qt3D::QRenderState> *list, int index);
-    static int renderStateCount(QQmlListProperty<Qt3D::QRenderState> *list);
-    static void clearRenderStates(QQmlListProperty<Qt3D::QRenderState> *list);
+    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
+    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
+    static int renderStateCount(QQmlListProperty<QRenderState> *list);
+    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DSTATESET_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H

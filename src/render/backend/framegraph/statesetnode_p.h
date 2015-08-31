@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_STATESETNODE_H
-#define QT3D_RENDER_STATESETNODE_H
+#ifndef QT3DRENDER_RENDER_STATESETNODE_H
+#define QT3DRENDER_RENDER_STATESETNODE_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -51,23 +51,23 @@ public:
     StateSetNode();
     ~StateSetNode();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     QList<RenderState *> renderStates() const;
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    void appendRenderState(const QNodeId &id, RenderState *renderState);
-    void removeRenderState(const QNodeId &renderStateId);
+    void appendRenderState(const Qt3D::QNodeId &id, RenderState *renderState);
+    void removeRenderState(const Qt3D::QNodeId &renderStateId);
 
-    QHash<QNodeId, RenderState *> m_renderStates;
+    QHash<Qt3D::QNodeId, RenderState *> m_renderStates;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_STATESETNODE_H
+#endif // QT3DRENDER_RENDER_STATESETNODE_H

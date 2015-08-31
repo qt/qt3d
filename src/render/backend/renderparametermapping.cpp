@@ -38,8 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 RenderParameterMapping::RenderParameterMapping()
@@ -48,7 +47,7 @@ RenderParameterMapping::RenderParameterMapping()
 }
 
 RenderParameterMapping::RenderParameterMapping(QParameterMapping *mapping)
-    : m_id(mapping ? mapping->id() : QNodeId())
+    : m_id(mapping ? mapping->id() : Qt3D::QNodeId())
     , m_parameterName(mapping ? mapping->parameterName() : QString())
     , m_shaderVariableName(mapping ? mapping->shaderVariableName() : QString())
     , m_bindingType(mapping ? mapping->bindingType() : QParameterMapping::Uniform)
@@ -60,7 +59,7 @@ bool RenderParameterMapping::isValid() const
     return !m_id.isNull();
 }
 
-QNodeId RenderParameterMapping::id() const
+Qt3D::QNodeId RenderParameterMapping::id() const
 {
     return m_id;
 }
@@ -80,8 +79,7 @@ QParameterMapping::Binding RenderParameterMapping::bindingType() const
     return m_bindingType;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

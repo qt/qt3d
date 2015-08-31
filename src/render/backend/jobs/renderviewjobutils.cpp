@@ -60,7 +60,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 /*!
@@ -322,7 +324,7 @@ ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QStri
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                const QList<QNodeId> &parameterIds)
+                                const QList<Qt3D::QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
         RenderParameter *param = manager->lookupResource(paramId);
@@ -434,6 +436,6 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(Render
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

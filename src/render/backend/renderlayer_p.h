@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERLAYER_H
-#define QT3D_RENDER_RENDERLAYER_H
+#ifndef QT3DRENDER_RENDER_RENDERLAYER_H
+#define QT3DRENDER_RENDER_RENDERLAYER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QLayer;
 
@@ -51,17 +51,17 @@ namespace Render {
 
 class LayerManager;
 
-class RenderLayer : public QBackendNode
+class RenderLayer : public Qt3D::QBackendNode
 {
 public:
     RenderLayer();
     ~RenderLayer();
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     QStringList layers() const;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
 private:
@@ -69,10 +69,10 @@ private:
     bool m_enabled;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERLAYER_H
+#endif // QT3DRENDER_RENDER_RENDERLAYER_H

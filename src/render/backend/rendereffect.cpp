@@ -45,8 +45,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderEffect::RenderEffect()
@@ -63,7 +64,7 @@ void RenderEffect::cleanup()
 {
 }
 
-void RenderEffect::updateFromPeer(QNode *peer)
+void RenderEffect::updateFromPeer(Qt3D::QNode *peer)
 {
     QEffect *effect = static_cast<QEffect *>(peer);
 
@@ -77,7 +78,7 @@ void RenderEffect::updateFromPeer(QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderEffect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QVariant propertyValue = propertyChange->value();
@@ -102,24 +103,23 @@ void RenderEffect::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(const QNodeId &technique)
+void RenderEffect::appendRenderTechnique(const Qt3D::QNodeId &technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<QNodeId> RenderEffect::techniques() const
+QList<Qt3D::QNodeId> RenderEffect::techniques() const
 {
     return m_techniques;
 }
 
-QList<QNodeId> RenderEffect::parameters() const
+QList<Qt3D::QNodeId> RenderEffect::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

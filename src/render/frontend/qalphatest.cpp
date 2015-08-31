@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAlphaTestPrivate : public QRenderStatePrivate
 {
@@ -107,6 +107,6 @@ void QAlphaTest::setClamp(float clamp)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

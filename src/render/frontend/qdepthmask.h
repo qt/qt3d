@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QDEPTHMASK_H
-#define QT3D_QDEPTHMASK_H
+#ifndef QT3DRENDER_QDEPTHMASK_H
+#define QT3DRENDER_QDEPTHMASK_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDepthMaskPrivate;
 
@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT  QDepthMask : public QRenderState
     Q_OBJECT
     Q_PROPERTY (bool mask READ mask WRITE setMask NOTIFY maskChanged)
 public:
-    explicit QDepthMask(QNode *parent = 0);
+    explicit QDepthMask(Qt3D::QNode *parent = 0);
     ~QDepthMask();
 
     bool mask() const;
@@ -61,15 +61,15 @@ Q_SIGNALS:
     void maskChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QDepthMask)
     QT3D_CLONEABLE(QDepthMask)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QDEPTHMASK_H
+#endif // QT3DRENDER_QDEPTHMASK_H

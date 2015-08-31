@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPOLYGONOFFSET_H
-#define QT3D_QPOLYGONOFFSET_H
+#ifndef QT3DRENDER_QPOLYGONOFFSET_H
+#define QT3DRENDER_QPOLYGONOFFSET_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPolygonOffsetPrivate;
 
@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QPolygonOffset : public QRenderState
     Q_PROPERTY(float factor READ factor WRITE setFactor NOTIFY factorChanged)
     Q_PROPERTY(float units READ units WRITE setUnits NOTIFY unitsChanged)
 public:
-    explicit QPolygonOffset(QNode *parent = Q_NULLPTR);
+    explicit QPolygonOffset(Qt3D::QNode *parent = Q_NULLPTR);
     ~QPolygonOffset();
 
     float factor() const;
@@ -66,15 +66,15 @@ Q_SIGNALS:
     void unitsChanged(float newUnits);
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QPolygonOffset)
     QT3D_CLONEABLE(QPolygonOffset)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPOLYGONOFFSET_H
+#endif // QT3DRENDER_QPOLYGONOFFSET_H

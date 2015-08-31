@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QLayerPrivate
+    \class Qt3DRender::QLayerPrivate
     \internal
 */
 QLayerPrivate::QLayerPrivate()
@@ -59,7 +59,7 @@ QLayerPrivate::QLayerPrivate()
 
 /*!
     \qmltype Layer
-    \instantiates Qt3D::QLayer
+    \instantiates Qt3DRender::QLayer
     \inherits Component3D
     \inqmlmodule Qt3D.Renderer
     \since 5.5
@@ -67,7 +67,7 @@ QLayerPrivate::QLayerPrivate()
 */
 
 
-/*! \fn void Qt3D::QLayer::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QLayer::copy(const QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QLayer::copy(const QNode *ref)
@@ -77,7 +77,7 @@ void QLayer::copy(const QNode *ref)
     d_func()->m_names = layer->d_func()->m_names;
 }
 
-/*! \fn Qt3D::QLayer::QLayer(QObject *parent)
+/*! \fn Qt3DRender::QLayer::QLayer(QObject *parent)
   Constructs a new QLayer with the specified \a parent.
  */
 
@@ -98,7 +98,7 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
 }
 
 /*!
-  \property Qt3D::QLayer::names
+  \property Qt3DRender::QLayer::names
 
  */
 
@@ -122,6 +122,6 @@ void QLayer::setNames(const QStringList &names)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

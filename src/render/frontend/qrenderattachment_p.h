@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERATTACHMENT_P_H
-#define QT3D_QRENDERATTACHMENT_P_H
+#ifndef QT3DRENDER_QRENDERATTACHMENT_P_H
+#define QT3DRENDER_QRENDERATTACHMENT_P_H
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRenderer/qrenderattachment.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 
-class QRenderAttachmentPrivate : public QNodePrivate
+class QRenderAttachmentPrivate : public Qt3D::QNodePrivate
 {
 public:
     QRenderAttachmentPrivate();
@@ -61,8 +61,8 @@ public:
     QString m_name;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERATTACHMENT_P_H
+#endif // QT3DRENDER_QRENDERATTACHMENT_P_H

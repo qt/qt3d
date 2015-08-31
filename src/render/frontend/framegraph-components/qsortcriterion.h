@@ -34,24 +34,24 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSORTCRITERION_H
-#define QT3D_QSORTCRITERION_H
+#ifndef QT3DRENDER_QSORTCRITERION_H
+#define QT3DRENDER_QSORTCRITERION_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSortCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSortCriterion : public QNode
+class QT3DRENDERERSHARED_EXPORT QSortCriterion : public Qt3D::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
+    Q_PROPERTY(Qt3DRender::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
 public:
-    explicit QSortCriterion(QNode *parent = 0);
+    explicit QSortCriterion(Qt3D::QNode *parent = 0);
     ~QSortCriterion();
 
     enum SortType {
@@ -68,15 +68,15 @@ Q_SIGNALS:
     void sortChanged();
 
 protected:
-    QSortCriterion(QSortCriterionPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QSortCriterion(QSortCriterionPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QSortCriterion)
     Q_DECLARE_PRIVATE(QSortCriterion)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

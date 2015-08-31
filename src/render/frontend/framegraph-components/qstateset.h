@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSTATESET_H
-#define QT3D_QSTATESET_H
+#ifndef QT3DRENDER_QSTATESET_H
+#define QT3DRENDER_QSTATESET_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStateSetPrivate;
 class QRenderState;
@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QStateSet : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QStateSet(QNode *parent = 0);
+    explicit QStateSet(Qt3D::QNode *parent = 0);
     ~QStateSet();
 
     void addRenderState(QRenderState *state);
@@ -59,16 +59,16 @@ public:
     QList<QRenderState *> renderStates() const;
 
 protected:
-    QStateSet(QStateSetPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QStateSet(QStateSetPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QStateSet)
     QT3D_CLONEABLE(QStateSet)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSTATESET_H
+#endif // QT3DRENDER_QSTATESET_H

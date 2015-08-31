@@ -46,8 +46,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QEntity;
+}
+
+namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
@@ -71,8 +73,8 @@ public:
 
     virtual void setSource(const QUrl &source) = 0;
     virtual bool isExtensionSupported(const QUrl &source) const = 0;
-    virtual QEntity *scene(const QString &id = QString()) = 0;
-    virtual QEntity *node(const QString &id) = 0;
+    virtual Qt3D::QEntity *scene(const QString &id = QString()) = 0;
+    virtual Qt3D::QEntity *node(const QString &id) = 0;
 
     ParserStatus parserStatus() const;
     QStringList errors() const;
@@ -91,7 +93,7 @@ private:
     QStringList m_errors;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

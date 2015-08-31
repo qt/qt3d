@@ -58,6 +58,7 @@
 #include <qmath.h>
 
 using namespace Qt3D;
+using namespace Qt3DRender;
 
 int main(int ac, char **av)
 {
@@ -65,7 +66,7 @@ int main(int ac, char **av)
 
     Window view;
     Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();

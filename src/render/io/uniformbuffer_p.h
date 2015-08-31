@@ -34,21 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_UNIFORMBUFFER_P_H
-#define QT3D_RENDER_UNIFORMBUFFER_P_H
+#ifndef QT3DRENDER_RENDER_UNIFORMBUFFER_P_H
+#define QT3DRENDER_RENDER_UNIFORMBUFFER_P_H
 
 #include <QOpenGLContext>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class QGraphicsContext;
 
-typedef QPair<QNodeId, QNodeId> ShaderDataShaderUboKey;
+typedef QPair<Qt3D::QNodeId, Qt3D::QNodeId> ShaderDataShaderUboKey;
 
 class UniformBuffer
 {
@@ -70,10 +70,10 @@ private:
     bool m_isCreated;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_UNIFORMBUFFER_P_H
+#endif // QT3DRENDER_RENDER_UNIFORMBUFFER_P_H

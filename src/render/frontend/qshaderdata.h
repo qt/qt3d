@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSHADERDATA_H
-#define QT3D_QSHADERDATA_H
+#ifndef QT3DRENDER_QSHADERDATA_H
+#define QT3DRENDER_QSHADERDATA_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QShaderDataPrivate;
 
@@ -55,11 +55,11 @@ public:
 
 typedef QSharedPointer<PropertyReaderInterface> PropertyReaderInterfacePtr;
 
-class QT3DRENDERERSHARED_EXPORT QShaderData : public QComponent
+class QT3DRENDERERSHARED_EXPORT QShaderData : public Qt3D::QComponent
 {
     Q_OBJECT
 public:
-    explicit QShaderData(QNode *parent = 0);
+    explicit QShaderData(Qt3D::QNode *parent = 0);
     ~QShaderData();
 
     enum TransformType {
@@ -71,8 +71,8 @@ public:
     PropertyReaderInterfacePtr propertyReader() const;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QShaderData(QShaderDataPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 
 private:
@@ -80,11 +80,11 @@ private:
     QT3D_CLONEABLE(QShaderData)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QShaderData*)
-Q_DECLARE_METATYPE(QList<Qt3D::QShaderData*>)
+Q_DECLARE_METATYPE(Qt3DRender::QShaderData*)
+Q_DECLARE_METATYPE(QList<Qt3DRender::QShaderData*>)
 
-#endif // QT3D_QSHADERDATA_H
+#endif // QT3DRENDER_QSHADERDATA_H

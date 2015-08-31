@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERRENDERPASS_H
-#define QT3D_RENDER_RENDERRENDERPASS_H
+#ifndef QT3DRENDER_RENDER_RENDERRENDERPASS_H
+#define QT3DRENDER_RENDER_RENDERRENDERPASS_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/renderparametermapping_p.h>
@@ -47,7 +47,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderPass;
 class QAbstractShader;
@@ -60,7 +60,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderRenderPass : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderRenderPass : public Qt3D::QBackendNode
 {
 public:
     RenderRenderPass();
@@ -68,36 +68,36 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QNodeId shaderProgram() const;
+    Qt3D::QNodeId shaderProgram() const;
     QList<RenderParameterMapping> bindings() const;
-    QList<QNodeId> annotations() const;
+    QList<Qt3D::QNodeId> annotations() const;
     QList<RenderState *> renderStates() const;
-    QList<QNodeId> parameters() const;
+    QList<Qt3D::QNodeId> parameters() const;
 
 private:
-    void appendAnnotation(const QNodeId &criterionId);
-    void removeAnnotation(const QNodeId &criterionId);
+    void appendAnnotation(const Qt3D::QNodeId &criterionId);
+    void removeAnnotation(const Qt3D::QNodeId &criterionId);
 
     void appendBinding(const RenderParameterMapping &binding);
-    void removeBinding(const QNodeId &bindingId);
+    void removeBinding(const Qt3D::QNodeId &bindingId);
 
-    void appendRenderState(const QNodeId &id, RenderState *renderState);
-    void removeRenderState(const QNodeId &renderStateId);
+    void appendRenderState(const Qt3D::QNodeId &id, RenderState *renderState);
+    void removeRenderState(const Qt3D::QNodeId &renderStateId);
 
-    QNodeId m_shaderUuid;
-    QHash<QNodeId, RenderParameterMapping> m_bindings;
-    QHash<QNodeId, RenderState *> m_renderStates;
-    QList<QNodeId> m_annotationList;
+    Qt3D::QNodeId m_shaderUuid;
+    QHash<Qt3D::QNodeId, RenderParameterMapping> m_bindings;
+    QHash<Qt3D::QNodeId, RenderState *> m_renderStates;
+    QList<Qt3D::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERRENDERPASS_H
+#endif // QT3DRENDER_RENDER_RENDERRENDERPASS_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERPASSFILTER_H
-#define QT3D_RENDER_RENDERPASSFILTER_H
+#ifndef QT3DRENDER_RENDER_RENDERPASSFILTER_H
+#define QT3DRENDER_RENDER_RENDERPASSFILTER_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAnnotation;
 class QRenderPassFilter;
@@ -59,21 +59,21 @@ class RenderPassFilter
 public:
     RenderPassFilter();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    QList<QNodeId> filters() const;
-    QList<QNodeId> parameters() const;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    QList<Qt3D::QNodeId> filters() const;
+    QList<Qt3D::QNodeId> parameters() const;
     void appendFilter(QAnnotation *criterion);
-    void removeFilter(const QNodeId &criterionId);
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void removeFilter(const Qt3D::QNodeId &criterionId);
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QNodeId> m_filters;
+    QList<Qt3D::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERPASSFILTER_H
+#endif // QT3DRENDER_RENDER_RENDERPASSFILTER_H

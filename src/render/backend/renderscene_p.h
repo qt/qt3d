@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSCENE_P_H
-#define QT3D_RENDER_RENDERSCENE_P_H
+#ifndef QT3DRENDER_RENDER_RENDERSCENE_P_H
+#define QT3DRENDER_RENDER_RENDERSCENE_P_H
 
 #include <QtGlobal>
 #include <Qt3DCore/qbackendnode.h>
@@ -44,24 +44,25 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QEntity;
+}
 
+namespace Qt3DRender {
 namespace Render {
 
 class SceneManager;
 
-class RenderScene : public QBackendNode
+class RenderScene : public Qt3D::QBackendNode
 {
 public:
     RenderScene();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     // QObserverInterface interface
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUrl source() const;
-    void setSceneSubtree(QEntity *subTree);
+    void setSceneSubtree(Qt3D::QEntity *subTree);
     void setSceneManager(SceneManager *manager);
 
 private:
@@ -69,22 +70,21 @@ private:
     QUrl m_source;
 };
 
-class RenderSceneFunctor : public QBackendNodeFunctor
+class RenderSceneFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderSceneFunctor(SceneManager *sceneManager);
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     SceneManager *m_sceneManager;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSCENE_P_H
+#endif // QT3DRENDER_RENDER_RENDERSCENE_P_H

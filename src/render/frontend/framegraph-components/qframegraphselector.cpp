@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QFrameGraphSelectorPrivate
+    \class Qt3DRender::QFrameGraphSelectorPrivate
     \internal
 */
 QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate()
@@ -51,19 +51,19 @@ QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate()
 }
 
 /*!
-    \class Qt3D::QFrameGraphSelector
+    \class Qt3DRender::QFrameGraphSelector
     \inmodule Qt3DRenderer
 
-    \brief Qt3D::QFrameGraphSelector provide a way to select a one or more subtree of
+    \brief Qt3DRender::QFrameGraphSelector provide a way to select a one or more subtree of
     the FrameGraph at runtime
 
-     The selection is made by executing Qt3D::QFrameGraphSelectorFunctor that will
+     The selection is made by executing Qt3DRender::QFrameGraphSelectorFunctor that will
      return a vector containing the indices of the \l {QFrameGraph}{FrameGraph} subtree to be used
      for the current frame.
  */
 
 /*!
-    Constructs a new Qt3D::QFrameGraphSelector instance using \a parent as parent.
+    Constructs a new Qt3DRender::QFrameGraphSelector instance using \a parent as parent.
  */
 QFrameGraphSelector::QFrameGraphSelector(QNode *parent)
     : QFrameGraphNode(*new QFrameGraphSelectorPrivate, parent)
@@ -99,6 +99,6 @@ void QFrameGraphSelector::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

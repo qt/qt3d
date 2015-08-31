@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_HANDLE_TYPES_P_H
-#define QT3D_RENDER_HANDLE_TYPES_P_H
+#ifndef QT3DRENDER_RENDER_HANDLE_TYPES_P_H
+#define QT3DRENDER_RENDER_HANDLE_TYPES_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qhandle.h>
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 class QMatrix4x4;
 class QOpenGLVertexArrayObject;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class TexImageData;
 
@@ -74,37 +74,37 @@ class RenderAttribute;
 class RenderGeometry;
 class RenderGeometryRenderer;
 
-typedef QHandle<RenderAttachment, 16> HAttachment;
-typedef QHandle<RenderCameraLens, 8> HCamera;
-typedef QHandle<RenderAnnotation, 16> HCriterion;
-typedef QHandle<RenderEffect, 16> HEffect;
-typedef QHandle<RenderEntity, 16> HEntity;
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-typedef QHandle<RenderLayer, 16> HLayer;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<QMatrix4x4, 16> HMatrix;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<SortCriterion, 8> HSortCriterion;
-typedef QHandle<RenderTechnique, 16> HTechnique;
-typedef QHandle<RenderTexture, 16> HTexture;
-typedef QHandle<RenderTransform, 16> HTransform;
-typedef QHandle<RenderTarget, 8> HTarget;
-typedef QHandle<RenderRenderPass, 16> HRenderPass;
-typedef QHandle<TexImageData, 16> HTextureData;
-typedef QHandle<RenderParameter, 16> HParameter;
-typedef QHandle<RenderShaderData, 16> HShaderData;
-typedef QHandle<RenderTextureImage, 16> HTextureImage;
-typedef QHandle<RenderBuffer, 16> HBuffer;
-typedef QHandle<RenderAttribute, 16> HAttribute;
-typedef QHandle<RenderGeometry, 16> HGeometry;
-typedef QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
+typedef Qt3D::QHandle<RenderAttachment, 16> HAttachment;
+typedef Qt3D::QHandle<RenderCameraLens, 8> HCamera;
+typedef Qt3D::QHandle<RenderAnnotation, 16> HCriterion;
+typedef Qt3D::QHandle<RenderEffect, 16> HEffect;
+typedef Qt3D::QHandle<RenderEntity, 16> HEntity;
+typedef Qt3D::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
+typedef Qt3D::QHandle<RenderLayer, 16> HLayer;
+typedef Qt3D::QHandle<RenderMaterial, 16> HMaterial;
+typedef Qt3D::QHandle<QMatrix4x4, 16> HMatrix;
+typedef Qt3D::QHandle<RenderShader, 16> HShader;
+typedef Qt3D::QHandle<QOpenGLVertexArrayObject*, 16> HVao;
+typedef Qt3D::QHandle<RenderShader, 16> HShader;
+typedef Qt3D::QHandle<SortCriterion, 8> HSortCriterion;
+typedef Qt3D::QHandle<RenderTechnique, 16> HTechnique;
+typedef Qt3D::QHandle<RenderTexture, 16> HTexture;
+typedef Qt3D::QHandle<RenderTransform, 16> HTransform;
+typedef Qt3D::QHandle<RenderTarget, 8> HTarget;
+typedef Qt3D::QHandle<RenderRenderPass, 16> HRenderPass;
+typedef Qt3D::QHandle<TexImageData, 16> HTextureData;
+typedef Qt3D::QHandle<RenderParameter, 16> HParameter;
+typedef Qt3D::QHandle<RenderShaderData, 16> HShaderData;
+typedef Qt3D::QHandle<RenderTextureImage, 16> HTextureImage;
+typedef Qt3D::QHandle<RenderBuffer, 16> HBuffer;
+typedef Qt3D::QHandle<RenderAttribute, 16> HAttribute;
+typedef Qt3D::QHandle<RenderGeometry, 16> HGeometry;
+typedef Qt3D::QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_HANDLE_TYPES_P_H
+#endif // QT3DRENDER_RENDER_HANDLE_TYPES_P_H

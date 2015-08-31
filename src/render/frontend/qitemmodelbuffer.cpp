@@ -41,7 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 void variantToBytes(void* dest, const QVariant& v, GLint type)
 {
@@ -109,7 +111,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+Qt3D::QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 
@@ -347,6 +349,6 @@ QItemModelBuffer::RoleMapping::RoleMapping(QByteArray rnm, QString nm, int ty) :
     byteSize = Render::QGraphicsContext::byteSizeFromType(ty);
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

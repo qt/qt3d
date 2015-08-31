@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_PLATFORMSURFACEFILTER_H
-#define QT3D_RENDER_PLATFORMSURFACEFILTER_H
+#ifndef QT3DRENDER_RENDER_PLATFORMSURFACEFILTER_H
+#define QT3DRENDER_RENDER_PLATFORMSURFACEFILTER_H
 
 #include <QtCore/qobject.h>
 #include <QtGui/qsurface.h>
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 class QOffscreenSurface;
 class QWindow;
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class Renderer;
@@ -89,8 +89,8 @@ private:
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_PLATFORMSURFACEFILTER_H
+#endif // QT3DRENDER_RENDER_PLATFORMSURFACEFILTER_H

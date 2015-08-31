@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBUFFER_P_H
-#define QT3D_QBUFFER_P_H
+#ifndef QT3DRENDER_QBUFFER_P_H
+#define QT3DRENDER_QBUFFER_P_H
 
 #include <private/qabstractbuffer_p.h>
 #include <Qt3DRenderer/qbuffer.h>
@@ -45,9 +45,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public QAbstractBufferPrivate
+class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public Qt3D::QAbstractBufferPrivate
 {
 public:
     QBufferPrivate();
@@ -57,8 +57,8 @@ public:
     QBufferFunctorPtr m_functor;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBUFFER_P_H
+#endif // QT3DRENDER_QBUFFER_P_H

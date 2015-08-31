@@ -66,7 +66,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 RenderStateSet::RenderStateSet()
@@ -330,7 +330,7 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
     }
 }
 
-} // Render
-} // namespace Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

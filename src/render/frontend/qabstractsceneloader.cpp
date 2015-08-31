@@ -42,12 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-namespace Render {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::Render::QAbstractSceneLoaderPrivate
+    \class Qt3DRender::Render::QAbstractSceneLoaderPrivate
     \internal
 */
 QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate()
@@ -70,7 +68,7 @@ QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
 
 QAbstractSceneLoader::~QAbstractSceneLoader()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractSceneLoader subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(Qt3D::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractSceneLoader subclass didn't call QNode::cleanup in its destructor");
 }
 
 void QAbstractSceneLoader::copy(const QNode *ref)
@@ -109,8 +107,6 @@ void QAbstractSceneLoader::setStatus(QAbstractSceneLoader::Status status)
     }
 }
 
-} // Render
-
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

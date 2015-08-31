@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCISSORTEST_H
-#define QT3D_QSCISSORTEST_H
+#ifndef QT3DRENDER_QSCISSORTEST_H
+#define QT3DRENDER_QSCISSORTEST_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QScissorTestPrivate;
 
@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QScissorTest  : public QRenderState
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
 
 public:
-    explicit QScissorTest(QNode *parent = 0);
+    explicit QScissorTest(Qt3D::QNode *parent = 0);
     ~QScissorTest();
 
     int left() const;
@@ -77,15 +77,15 @@ Q_SIGNALS:
     void heightChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScissorTest)
     QT3D_CLONEABLE(QScissorTest)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCISSORTEST_H
+#endif // QT3DRENDER_QSCISSORTEST_H

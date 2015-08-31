@@ -75,8 +75,8 @@ private:
     Qt3D::QTransform *m_transform;
     Qt3D::QTranslateTransform *m_translate;
     Qt3D::QScaleTransform *m_scale;
-    Qt3D::QCuboidMesh *m_mesh;
-    Qt3D::QPhongMaterial *m_material;
+    Qt3DRender::QCuboidMesh *m_mesh;
+    Qt3DRender::QPhongMaterial *m_material;
     float m_angle;
     float m_radius;
 };

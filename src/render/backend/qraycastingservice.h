@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QRAYCASTINGSERVICE_H
-#define QT3D_RENDER_QRAYCASTINGSERVICE_H
+#ifndef QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
+#define QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -44,19 +44,22 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QBoundingVolumeProvider;
+}
+
+namespace Qt3DRender {
+
 class QRayCastingServicePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRayCastingService : public QAbstractCollisionQueryService
+class QT3DRENDERERSHARED_EXPORT QRayCastingService : public Qt3D::QAbstractCollisionQueryService
 {
 public:
-    explicit QRayCastingService(QBoundingVolumeProvider *provider);
+    explicit QRayCastingService(Qt3D::QBoundingVolumeProvider *provider);
 
-    QQueryHandle query(const QRay3D &ray, QueryMode mode) Q_DECL_OVERRIDE;
+    Qt3D::QQueryHandle query(const Qt3D::QRay3D &ray, QueryMode mode) Q_DECL_OVERRIDE;
 
-    QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE;
-    QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
+    Qt3D::QCollisionQueryResult fetchResult(const Qt3D::QQueryHandle &handle) Q_DECL_OVERRIDE;
+    QVector<Qt3D::QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
 
 protected:
     QRayCastingService(QRayCastingServicePrivate &dd);
@@ -66,8 +69,8 @@ private:
     Q_DECLARE_PRIVATE(QRayCastingService)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QRAYCASTINGSERVICE_H
+#endif // QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H

@@ -35,17 +35,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERSTATE_P_H
-#define QT3D_QRENDERSTATE_P_H
+#ifndef QT3DRENDER_QRENDERSTATE_P_H
+#define QT3DRENDER_QRENDERSTATE_P_H
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QRenderStatePrivate : public QNodePrivate
+class QRenderStatePrivate : public Qt3D::QNodePrivate
 {
 public:
     QRenderStatePrivate(QRenderState::Type type);
@@ -58,4 +58,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERSTATE_P_H
+#endif // QT3DRENDER_QRENDERSTATE_P_H

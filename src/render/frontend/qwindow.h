@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QWINDOW_H
-#define QT3D_QWINDOW_H
+#ifndef QT3DRENDER_QWINDOW_H
+#define QT3DRENDER_QWINDOW_H
 
 #include <QtGui/qwindow.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,12 +43,15 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QEntity;
-class QWindowPrivate;
-class QFrameGraph;
 class QAbstractAspect;
 class QCamera;
+class QEntity;
+}
+
+namespace Qt3DRender {
+
+class QWindowPrivate;
+class QFrameGraph;
 
 class QT3DRENDERERSHARED_EXPORT QWindow : public ::QWindow
 {
@@ -58,12 +61,12 @@ public:
 
     void setFrameGraph(QFrameGraph *frameGraph);
     QFrameGraph *frameGraph() const;
-    QCamera *defaultCamera();
+    Qt3D::QCamera *defaultCamera();
 
-    void registerAspect(QAbstractAspect *aspect);
+    void registerAspect(Qt3D::QAbstractAspect *aspect);
     void registerAspect(const QString &name);
 
-    void setRootEntity(QEntity *root);
+    void setRootEntity(Qt3D::QEntity *root);
     void show();
 
 protected:
@@ -74,8 +77,8 @@ private:
     Q_DECLARE_PRIVATE(QWindow)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QWINDOW_H
+#endif // QT3DRENDER_QWINDOW_H

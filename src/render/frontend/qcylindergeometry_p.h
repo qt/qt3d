@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCYLINDERGEOMETRY_P_H
-#define QT3D_QCYLINDERGEOMETRY_P_H
+#ifndef QT3DRENDER_QCYLINDERGEOMETRY_P_H
+#define QT3DRENDER_QCYLINDERGEOMETRY_P_H
 
 #include <Qt3DRenderer/private/qgeometry_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAttribute;
 class QBuffer;
@@ -67,9 +67,9 @@ public:
     QBuffer *m_indexBuffer;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCYLINDERGEOMETRY_P_H
+#endif // QT3DRENDER_QCYLINDERGEOMETRY_P_H
 

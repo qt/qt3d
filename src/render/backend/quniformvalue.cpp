@@ -49,14 +49,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 QUniformValue::QUniformValue()
 {
 }
 
-QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *allocator)
+QUniformValue *QUniformValue::fromVariant(const QVariant &v, Qt3D::QFrameAllocator *allocator)
 {
     QUniformValue *u = allocator->allocate<QUniformValue>();
     u->m_var = v;
@@ -88,7 +88,7 @@ void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
     m_uniforms.insert(glslName, val);
 }
 
-void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)
+void QUniformPack::setTexture(const QString &glslName, const Qt3D::QNodeId &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {
@@ -125,6 +125,6 @@ void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &descripti
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

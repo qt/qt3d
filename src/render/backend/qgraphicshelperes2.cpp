@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 #define GL_SAMPLER_2D_ARRAY_SHADOW        0x8DC4
 #endif
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 QGraphicsHelperES2::QGraphicsHelperES2() :
@@ -554,7 +554,7 @@ QSize QGraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, 
     return QSize(0, 0);
 }
 
-} // Render
-} //Qt3D
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE

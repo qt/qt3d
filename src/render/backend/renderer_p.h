@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERER_H
-#define QT3D_RENDER_RENDERER_H
+#ifndef QT3DRENDER_RENDER_RENDERER_H
+#define QT3DRENDER_RENDER_RENDERER_H
 
 #include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qtechnique.h>
@@ -64,15 +64,18 @@ class QSurface;
 class QOpenGLDebugLogger;
 
 namespace Qt3D {
+class QEntity;
+class QFrameAllocator;
+}
+
+namespace Qt3DRender {
 
 class QCamera;
-class QEntity;
 class QMaterial;
 class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QFrameAllocator;
 class QOpenGLFilter;
 class AbstractSceneParser;
 
@@ -134,11 +137,11 @@ public:
     void createAllocators();
     void destroyAllocators();
 
-    QFrameAllocator *currentFrameAllocator();
+    Qt3D::QFrameAllocator *currentFrameAllocator();
 
-    QThreadStorage<QFrameAllocator *> *tlsAllocators();
+    QThreadStorage<Qt3D::QFrameAllocator *> *tlsAllocators();
 
-    void setFrameGraphRoot(const QNodeId &fgRoot);
+    void setFrameGraphRoot(const Qt3D::QNodeId &fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
     void setSceneGraphRoot(RenderEntity *sgRoot);
@@ -147,13 +150,13 @@ public:
     void render();
     void doRender();
 
-    QVector<QAspectJobPtr> createRenderBinJobs();
-    QVector<QAspectJobPtr> createRenderBufferJobs();
-    QVector<QAspectJobPtr> createGeometryRendererJobs();
-    QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    QVector<Qt3D::QAspectJobPtr> createRenderBinJobs();
+    QVector<Qt3D::QAspectJobPtr> createRenderBufferJobs();
+    QVector<Qt3D::QAspectJobPtr> createGeometryRendererJobs();
+    Qt3D::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
     RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
-    void addAllocator(QFrameAllocator *allocator);
+    void addAllocator(Qt3D::QFrameAllocator *allocator);
 
     inline CameraManager *cameraManager() const { return m_cameraManager; }
     inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
@@ -211,7 +214,7 @@ private:
     QRenderAspect *m_rendererAspect;
 
     // Frame graph root
-    QNodeId m_frameGraphRootUuid;
+    Qt3D::QNodeId m_frameGraphRootUuid;
 
     RenderEntity *m_renderSceneRoot;
 
@@ -279,21 +282,21 @@ private:
 
     static void createThreadLocalAllocator(void *renderer);
     static void destroyThreadLocalAllocator(void *renderer);
-    QThreadStorage<QFrameAllocator *> m_tlsAllocators;
+    QThreadStorage<Qt3D::QFrameAllocator *> m_tlsAllocators;
 
     QAtomicInt m_running;
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QList<AbstractSceneParser *> m_sceneParsers;
-    QVector<QFrameAllocator *> m_allocators;
+    QVector<Qt3D::QFrameAllocator *> m_allocators;
 
     QVector<RenderAttribute *> m_dirtyAttributes;
     QVector<RenderGeometry *> m_dirtyGeometry;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERER_H
+#endif // QT3DRENDER_RENDER_RENDERER_H

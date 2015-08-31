@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSCONTEXT_H
-#define QT3D_RENDER_QGRAPHICSCONTEXT_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H
+#define QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QOpenGLFilter;
 
@@ -216,7 +216,7 @@ private:
     RenderShader *m_activeShader;
     QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
     QHash<RenderBuffer *, QOpenGLBuffer> m_renderBufferHash;
-    QHash<QNodeId, GLuint> m_renderTargets;
+    QHash<Qt3D::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 
     // active textures, indexed by texture unit
@@ -243,9 +243,9 @@ private:
     bool m_supportsVAO;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QGRAPHICSCONTEXT_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTARGET_H
-#define QT3D_RENDER_RENDERTARGET_H
+#ifndef QT3DRENDER_RENDER_RENDERTARGET_H
+#define QT3DRENDER_RENDER_RENDERTARGET_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderTarget;
 class QRenderAttachment;
@@ -52,29 +52,29 @@ namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public QBackendNode
+class RenderTarget : public Qt3D::QBackendNode
 {
 public:
     RenderTarget();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const QNodeId &attachmentId);
-    void removeRenderAttachment(const QNodeId &attachmentId);
+    void appendRenderAttachment(const Qt3D::QNodeId &attachmentId);
+    void removeRenderAttachment(const Qt3D::QNodeId &attachmentId);
 
-    QList<QNodeId> renderAttachments() const;
+    QList<Qt3D::QNodeId> renderAttachments() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QNodeId> m_renderAttachments;
+    QList<Qt3D::QNodeId> m_renderAttachments;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTARGET_H
+#endif // QT3DRENDER_RENDER_RENDERTARGET_H

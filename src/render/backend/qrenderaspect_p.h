@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERASPECT_P_H
-#define QT3D_QRENDERASPECT_P_H
+#ifndef QT3DRENDER_QRENDERASPECT_P_H
+#define QT3DRENDER_QRENDERASPECT_P_H
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DRenderer/qrenderaspect.h>
@@ -49,13 +49,13 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 class Renderer;
 }
 
-class QRenderAspectPrivate : public QAbstractAspectPrivate
+class QRenderAspectPrivate : public Qt3D::QAbstractAspectPrivate
 {
     QRenderAspectPrivate(QRenderAspect::RenderType type);
 
@@ -82,4 +82,4 @@ class QRenderAspectPrivate : public QAbstractAspectPrivate
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERASPECT_P_H
+#endif // QT3DRENDER_QRENDERASPECT_P_H

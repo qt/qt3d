@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSTENCILOP_H
-#define QT3D_QSTENCILOP_H
+#ifndef QT3DRENDER_QSTENCILOP_H
+#define QT3DRENDER_QSTENCILOP_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilOpPrivate;
 class QStencilOpSeparate;
@@ -49,26 +49,26 @@ class QStencilOpSeparate;
 class QT3DRENDERERSHARED_EXPORT QStencilOp : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QStencilOpSeparate *front READ front CONSTANT)
-    Q_PROPERTY(Qt3D::QStencilOpSeparate *back READ back CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *front READ front CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *back READ back CONSTANT)
 
 public:
-    explicit QStencilOp(QNode *parent = 0);
+    explicit QStencilOp(Qt3D::QNode *parent = 0);
     ~QStencilOp();
 
     QStencilOpSeparate *front() const;
     QStencilOpSeparate *back() const;
 
 protected:
-    void copy(const QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QStencilOp)
     QT3D_CLONEABLE(QStencilOp)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSTENCILOP_H
+#endif // QT3DRENDER_QSTENCILOP_H

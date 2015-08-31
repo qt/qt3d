@@ -40,19 +40,20 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderAttribute::RenderAttribute()
     : QBackendNode(ReadOnly)
-    , m_dataType(QAbstractAttribute::Float)
+    , m_dataType(Qt3D::QAbstractAttribute::Float)
     , m_dataSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
     , m_divisor(0)
-    , m_attributeType(QAbstractAttribute::VertexAttribute)
+    , m_attributeType(Qt3D::QAbstractAttribute::VertexAttribute)
     , m_attributeDirty(false)
 {
 }
@@ -63,19 +64,19 @@ RenderAttribute::~RenderAttribute()
 
 void RenderAttribute::cleanup()
 {
-    m_dataType = QAbstractAttribute::Float;
+    m_dataType = Qt3D::QAbstractAttribute::Float;
     m_dataSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
     m_divisor = 0;
-    m_attributeType = QAbstractAttribute::VertexAttribute;
-    m_bufferId = QNodeId();
+    m_attributeType = Qt3D::QAbstractAttribute::VertexAttribute;
+    m_bufferId = Qt3D::QNodeId();
     m_name.clear();
     m_attributeDirty = false;
 }
 
-void RenderAttribute::updateFromPeer(QNode *peer)
+void RenderAttribute::updateFromPeer(Qt3D::QNode *peer)
 {
     QAttribute *attribute = static_cast<QAttribute *>(peer);
     if (attribute) {
@@ -93,7 +94,7 @@ void RenderAttribute::updateFromPeer(QNode *peer)
     }
 }
 
-void RenderAttribute::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderAttribute::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -155,8 +156,7 @@ void RenderAttribute::unsetDirty()
     m_attributeDirty = false;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

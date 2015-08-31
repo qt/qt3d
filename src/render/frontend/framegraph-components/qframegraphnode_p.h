@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHNODE_P_H
-#define QT3D_QFRAMEGRAPHNODE_P_H
+#ifndef QT3DRENDER_QFRAMEGRAPHNODE_P_H
+#define QT3DRENDER_QFRAMEGRAPHNODE_P_H
 
 #include <QtCore/QtGlobal>
 #include <private/qnode_p.h>
@@ -43,11 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraphNode;
 
-class QFrameGraphNodePrivate : public QNodePrivate
+class QFrameGraphNodePrivate : public Qt3D::QNodePrivate
 {
 public:
     QFrameGraphNodePrivate();
@@ -57,8 +57,8 @@ public:
     QList<QFrameGraphNode *> m_fgChildren;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPHNODE_P_H
+#endif // QT3DRENDER_QFRAMEGRAPHNODE_P_H

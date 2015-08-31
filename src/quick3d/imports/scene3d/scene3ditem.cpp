@@ -55,7 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class ContextSaver
 {
@@ -148,7 +148,7 @@ class Scene3DRenderer : public QObject
 public:
     Scene3DRenderer(Scene3DItem *item,
                     Qt3D::QAspectEngine *aspectEngine,
-                    Qt3D::QRenderAspect *renderAspect)
+                    QRenderAspect *renderAspect)
         : QObject()
         , m_item(item)
         , m_aspectEngine(aspectEngine)
@@ -249,7 +249,7 @@ public Q_SLOTS:
 private:
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
     Qt3D::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
-    Qt3D::QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
+    QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
     QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
     QScopedPointer<QSGTexture> m_texture;
@@ -464,7 +464,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_entity(Q_NULLPTR)
     , m_aspectEngine(new Qt3D::QAspectEngine())
-    , m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
+    , m_renderAspect(new QRenderAspect(QRenderAspect::Synchronous))
     , m_renderer(Q_NULLPTR)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
@@ -723,7 +723,7 @@ void Scene3DCleaner::cleanup()
     deleteLater();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

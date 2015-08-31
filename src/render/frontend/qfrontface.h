@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRONTFACE_H
-#define QT3D_QFRONTFACE_H
+#ifndef QT3DRENDER_QFRONTFACE_H
+#define QT3DRENDER_QFRONTFACE_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrontFacePrivate;
 
@@ -59,7 +59,7 @@ public:
     };
     Q_ENUM(FaceDir)
 
-    explicit QFrontFace(QNode *parent = 0);
+    explicit QFrontFace(Qt3D::QNode *parent = 0);
     ~QFrontFace();
 
     FaceDir direction() const;
@@ -69,15 +69,15 @@ Q_SIGNALS:
     void directionChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QFrontFace)
     QT3D_CLONEABLE(QFrontFace)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRONTFACE_H
+#endif // QT3DRENDER_QFRONTFACE_H

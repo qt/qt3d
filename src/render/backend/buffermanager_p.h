@@ -34,21 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_BUFFERMANAGER_H
-#define QT3D_RENDER_BUFFERMANAGER_H
+#ifndef QT3DRENDER_RENDER_BUFFERMANAGER_H
+#define QT3DRENDER_RENDER_BUFFERMANAGER_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
-class BufferManager : public QResourceManager<
+class BufferManager : public Qt3D::QResourceManager<
         RenderBuffer,
-        QNodeId,
+        Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
         Qt3D::ObjectLevelLockingPolicy>
@@ -58,20 +58,19 @@ public:
     ~BufferManager();
 
     // Aspect Thread
-    void addDirtyBuffer(const QNodeId &bufferId);
-    QVector<QNodeId> dirtyBuffers();
+    void addDirtyBuffer(const Qt3D::QNodeId &bufferId);
+    QVector<Qt3D::QNodeId> dirtyBuffers();
 
 private:
-    QVector<QNodeId> m_dirtyBuffers;
+    QVector<Qt3D::QNodeId> m_dirtyBuffers;
 };
 
-} // Render
+} // namespace Render
+} // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Render::RenderBuffer, Q_REQUIRES_CLEANUP);
-
-} // Qt3D
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderBuffer, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_RENDER_BUFFERMANAGER_H
+#endif // QT3DRENDER_RENDER_BUFFERMANAGER_H

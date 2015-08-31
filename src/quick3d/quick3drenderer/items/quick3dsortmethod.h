@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DSORTMETHOD_H
-#define QT3D_RENDER_QUICK_QUICK3DSORTMETHOD_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSORTMETHOD_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSORTMETHOD_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qsortmethod.h>
@@ -44,22 +44,20 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DSortMethod : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QSortCriterion> criteria READ criteriaList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QSortCriterion> criteria READ criteriaList)
 public:
     explicit Quick3DSortMethod(QObject *parent = 0);
 
     inline QSortMethod *parentSortMethod() const { return qobject_cast<QSortMethod *>(parent()); }
 
-    QQmlListProperty<Qt3D::QSortCriterion> criteriaList();
+    QQmlListProperty<QSortCriterion> criteriaList();
 
 private:
     static void appendCriterion(QQmlListProperty<QSortCriterion> *list, QSortCriterion *criterion);
@@ -68,12 +66,10 @@ private:
     static void clearCriteria(QQmlListProperty<QSortCriterion> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QUICK3DSORTMETHOD_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSORTMETHOD_H

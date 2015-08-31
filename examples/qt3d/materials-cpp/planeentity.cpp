@@ -43,7 +43,7 @@
 
 PlaneEntity::PlaneEntity(Qt3D::QNode *parent)
     : Qt3D::QEntity(new Qt3D::QEntity(parent))
-    , m_mesh(new Qt3D::QPlaneMesh())
+    , m_mesh(new Qt3DRender::QPlaneMesh())
     , m_transform(new Qt3D::QTransform())
     , m_scaleTransform(new Qt3D::QScaleTransform())
     , m_translateTransform(new Qt3D::QTranslateTransform())
@@ -68,7 +68,7 @@ Qt3D::QTranslateTransform *PlaneEntity::translateTransform() const
     return m_translateTransform;
 }
 
-Qt3D::QPlaneMesh *PlaneEntity::mesh() const
+Qt3DRender::QPlaneMesh *PlaneEntity::mesh() const
 {
     return m_mesh;
 }

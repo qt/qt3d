@@ -40,8 +40,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 NoDraw::NoDraw()
@@ -53,13 +54,13 @@ NoDraw::~NoDraw()
 {
 }
 
-void NoDraw::updateFromPeer(QNode *peer)
+void NoDraw::updateFromPeer(Qt3D::QNode *peer)
 {
     QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
     setEnabled(noDraw->isEnabled());
 }
 
-void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
+void NoDraw::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -76,8 +77,7 @@ void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

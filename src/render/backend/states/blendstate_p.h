@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class Q_AUTOTEST_EXPORT BlendState : public GenericState2<BlendState, GLenum, GLenum>
@@ -155,7 +155,7 @@ private:
     FrontFace(GLenum func);
 };
 
-class Q_AUTOTEST_EXPORT Dithering : public Qt3D::Render::RenderState
+class Q_AUTOTEST_EXPORT Dithering : public RenderState
 {
 public:
     virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -194,7 +194,7 @@ private:
     StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask);
 };
 
-class Q_AUTOTEST_EXPORT AlphaCoverage : public Qt3D::Render::RenderState
+class Q_AUTOTEST_EXPORT AlphaCoverage : public RenderState
 {
 public:
     void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -275,8 +275,8 @@ private:
     StencilMask(uint frontMask, uint backMask);
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

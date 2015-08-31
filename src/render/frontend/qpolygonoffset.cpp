@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPolygonOffsetPrivate : public QRenderStatePrivate
 {
@@ -105,6 +105,6 @@ void QPolygonOffset::copy(const QNode *ref)
     d_func()->m_units = refState->d_func()->m_units;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -49,9 +49,9 @@ private slots:
 };
 
 
-Qt3D::QShaderProgram *createFrontendShader()
+Qt3DRender::QShaderProgram *createFrontendShader()
 {
-    Qt3D::QShaderProgram *shader = new Qt3D::QShaderProgram();
+    Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram();
 
     shader->setVertexShaderCode(QByteArrayLiteral(
                                     "#version 150"\
@@ -78,7 +78,7 @@ Qt3D::QShaderProgram *createFrontendShader()
 
 void tst_RenderShader::hasCoherentInitialState()
 {
-    Qt3D::Render::RenderShader *shader = new Qt3D::Render::RenderShader();
+    Qt3DRender::Render::RenderShader *shader = new Qt3DRender::Render::RenderShader();
 
     QCOMPARE(shader->isLoaded(), false);
     QCOMPARE(shader->dna(), 0U);
@@ -92,22 +92,22 @@ void tst_RenderShader::hasCoherentInitialState()
 
 void tst_RenderShader::matchesFrontendPeer()
 {
-    Qt3D::QShaderProgram *frontend = createFrontendShader();
-    Qt3D::Render::RenderShader *backend = new Qt3D::Render::RenderShader();
+    Qt3DRender::QShaderProgram *frontend = createFrontendShader();
+    Qt3DRender::Render::RenderShader *backend = new Qt3DRender::Render::RenderShader();
 
     backend->updateFromPeer(frontend);
     QCOMPARE(backend->isLoaded(), false);
     QVERIFY(backend->dna() != 0U);
 
-    for (int i = Qt3D::QShaderProgram::Vertex; i <= Qt3D::QShaderProgram::Compute; ++i)
+    for (int i = Qt3DRender::QShaderProgram::Vertex; i <= Qt3DRender::QShaderProgram::Compute; ++i)
         QCOMPARE(backend->shaderCode()[i],
-                 frontend->shaderCode( static_cast<const Qt3D::QShaderProgram::ShaderType>(i)));
+                 frontend->shaderCode( static_cast<const Qt3DRender::QShaderProgram::ShaderType>(i)));
 }
 
 void tst_RenderShader::cleanupLeavesACoherentState()
 {
-    Qt3D::QShaderProgram *frontend = createFrontendShader();
-    Qt3D::Render::RenderShader *shader = new Qt3D::Render::RenderShader();
+    Qt3DRender::QShaderProgram *frontend = createFrontendShader();
+    Qt3DRender::Render::RenderShader *shader = new Qt3DRender::Render::RenderShader();
 
     shader->updateFromPeer(frontend);
 

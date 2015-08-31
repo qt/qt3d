@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERPASS_H
-#define QT3D_QRENDERPASS_H
+#ifndef QT3DRENDER_QRENDERPASS_H
+#define QT3DRENDER_QRENDERPASS_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
@@ -49,7 +49,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 class QRenderState;
@@ -58,13 +58,13 @@ typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderPass : public QNode
+class QT3DRENDERERSHARED_EXPORT QRenderPass : public Qt3D::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
+    Q_PROPERTY(Qt3DRender::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
-    explicit QRenderPass(QNode *parent = 0);
+    explicit QRenderPass(Qt3D::QNode *parent = 0);
     ~QRenderPass();
 
     QString glslNameForParameter(QString paramName) const;
@@ -95,8 +95,8 @@ Q_SIGNALS:
     void shaderProgramChanged();
 
 protected:
-    QRenderPass(QRenderPassPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QRenderPass(QRenderPassPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderPass)
@@ -107,4 +107,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERPASS_H
+#endif // QT3DRENDER_QRENDERPASS_H

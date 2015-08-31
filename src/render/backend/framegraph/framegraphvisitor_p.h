@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHVISITOR_H
-#define QT3D_RENDER_FRAMEGRAPHVISITOR_H
+#ifndef QT3DRENDER_RENDER_FRAMEGRAPHVISITOR_H
+#define QT3DRENDER_RENDER_FRAMEGRAPHVISITOR_H
 
 #include <qglobal.h>
 
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class FrameGraphNode;
@@ -58,19 +58,19 @@ public:
 
     void traverse(FrameGraphNode *root,
                   Renderer *renderer,
-                  QVector<QAspectJobPtr> *jobs);
+                  QVector<Qt3D::QAspectJobPtr> *jobs);
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
-    QVector<QAspectJobPtr> *m_jobs;
+    QVector<Qt3D::QAspectJobPtr> *m_jobs;
     int m_renderviewIndex;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMEGRAPHVISITOR_H
+#endif // QT3DRENDER_RENDER_FRAMEGRAPHVISITOR_H

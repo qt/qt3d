@@ -39,10 +39,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DEffect::Quick3DEffect(QObject *parent)
@@ -61,11 +59,11 @@ QQmlListProperty<QTechnique> Quick3DEffect::techniqueList()
 
 QQmlListProperty<QParameter> Quick3DEffect::parameterList()
 {
-    return QQmlListProperty<Qt3D::QParameter>(this, 0,
-                                             &Quick3DEffect::appendParameter,
-                                             &Quick3DEffect::parametersCount,
-                                             &Quick3DEffect::parameterAt,
-                                             &Quick3DEffect::clearParameterList);
+    return QQmlListProperty<QParameter>(this, 0,
+                                        &Quick3DEffect::appendParameter,
+                                        &Quick3DEffect::parametersCount,
+                                        &Quick3DEffect::parameterAt,
+                                        &Quick3DEffect::clearParameterList);
 }
 
 void Quick3DEffect::appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar)
@@ -128,10 +126,8 @@ void Quick3DEffect::clearParameterList(QQmlListProperty<QParameter> *list)
         qobject_cast<QEffect *>(effect->parentEffect())->removeParameter(p);
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

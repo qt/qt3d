@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCYLINDERGEOMETRY_H
-#define QT3D_QCYLINDERGEOMETRY_H
+#ifndef QT3DRENDER_QCYLINDERGEOMETRY_H
+#define QT3DRENDER_QCYLINDERGEOMETRY_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QCylinderGeometryPrivate;
 
@@ -84,8 +84,8 @@ private:
     QT3D_CLONEABLE(QCylinderGeometry)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCYLINDERGEOMETRY_H
+#endif // QT3DRENDER_QCYLINDERGEOMETRY_H

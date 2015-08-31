@@ -43,8 +43,9 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
- * \class Qt3D::QMaterial
+ * \class Qt3DRender::QMaterial
  * \inmodule Qt3DRenderer
+ *
  * \inherits Component
  *
  * \brief Provides an abstract class that should be the base of all
@@ -61,10 +62,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QMaterialPrivate
+    \class Qt3DRender::QMaterialPrivate
     \internal
 */
 QMaterialPrivate::QMaterialPrivate()
@@ -199,6 +202,6 @@ void QMaterial::setTextureParameter(QString name, QAbstractTextureProvider *tex)
     d->m_textures[name] = tex;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

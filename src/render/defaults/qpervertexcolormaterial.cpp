@@ -49,10 +49,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QPerVertexColorMaterialPrivate
+    \class Qt3DRender::QPerVertexColorMaterialPrivate
     \internal
 */
 QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
@@ -72,7 +72,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 }
 
 /*!
-    \class Qt3D::QPerVertexColorMaterial
+    \class Qt3DRender::QPerVertexColorMaterial
     \brief The QPerVertexColorMaterial class provides a default implementation for rendering the color properties set for each vertex.
     \inmodule Qt3DRenderer
     \since 5.5
@@ -90,7 +90,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 */
 
 /*!
-    \fn Qt3D::QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
+    \fn Qt3DRender::QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
 
     Constructs a new QPerVertexColorMaterial instance with parent object \a parent.
 */
@@ -102,7 +102,7 @@ QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
 }
 
 /*!
-   \fn Qt3D::QPerVertexColorMaterial::~QPerVertexColorMaterial()
+   \fn Qt3DRender::QPerVertexColorMaterial::~QPerVertexColorMaterial()
 
    Destroys the QPerVertexColorMaterial
 */
@@ -151,6 +151,6 @@ void QPerVertexColorMaterialPrivate::init()
     q_func()->setEffect(m_vertexEffect);
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

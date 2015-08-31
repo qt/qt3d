@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERGL2_H
-#define QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H
+#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 
@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLFunctions_2_0;
 class QOpenGLExtension_ARB_framebuffer_object;
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class QGraphicsHelperGL2 : public QGraphicsHelperInterface
@@ -101,11 +101,11 @@ private:
     QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H

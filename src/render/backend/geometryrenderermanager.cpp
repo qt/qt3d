@@ -38,9 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-
+namespace Qt3DRender {
 namespace Render {
 
 GeometryRendererManager::GeometryRendererManager()
@@ -51,21 +49,20 @@ GeometryRendererManager::~GeometryRendererManager()
 {
 }
 
-void GeometryRendererManager::addDirtyGeometryRenderer(const QNodeId &bufferId)
+void GeometryRendererManager::addDirtyGeometryRenderer(const Qt3D::QNodeId &bufferId)
 {
     if (!m_dirtyGeometryRenderers.contains(bufferId))
         m_dirtyGeometryRenderers.push_back(bufferId);
 }
 
-QVector<QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
+QVector<Qt3D::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
 {
-    QVector<QNodeId> vector(m_dirtyGeometryRenderers);
+    QVector<Qt3D::QNodeId> vector(m_dirtyGeometryRenderers);
     m_dirtyGeometryRenderers.clear();
     return vector;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

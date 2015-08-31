@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERGEOMETRY_H
-#define QT3D_RENDER_RENDERGEOMETRY_H
+#ifndef QT3DRENDER_RENDER_RENDERGEOMETRY_H
+#define QT3DRENDER_RENDER_RENDERGEOMETRY_H
 
 #include <Qt3DCore/qbackendnode.h>
 
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderGeometry : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderGeometry : public Qt3D::QBackendNode
 {
 public:
     RenderGeometry();
@@ -54,24 +54,24 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    inline QVector<QNodeId> attributes() const { return m_attributes; }
+    inline QVector<Qt3D::QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
     inline int verticesPerPatch() const { return m_verticesPerPatch; }
     void unsetDirty();
 
 private:
-    QVector<QNodeId> m_attributes;
+    QVector<Qt3D::QNodeId> m_attributes;
     int m_verticesPerPatch;
     bool m_geometryDirty;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERGEOMETRY_H
+#endif // QT3DRENDER_RENDER_RENDERGEOMETRY_H

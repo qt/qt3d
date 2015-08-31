@@ -43,7 +43,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 TechniqueFilter::TechniqueFilter()
@@ -51,7 +53,7 @@ TechniqueFilter::TechniqueFilter()
 {
 }
 
-void TechniqueFilter::updateFromPeer(QNode *peer)
+void TechniqueFilter::updateFromPeer(Qt3D::QNode *peer)
 {
     QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
     m_filters.clear();
@@ -63,12 +65,12 @@ void TechniqueFilter::updateFromPeer(QNode *peer)
     setEnabled(filter->isEnabled());
 }
 
-QList<QNodeId> TechniqueFilter::parameters() const
+QList<Qt3D::QNodeId> TechniqueFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QList<QNodeId> TechniqueFilter::filters() const
+QList<Qt3D::QNodeId> TechniqueFilter::filters() const
 {
     return m_filters;
 }
@@ -79,12 +81,12 @@ void TechniqueFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->id());
 }
 
-void TechniqueFilter::removeFilter(const QNodeId &criterionId)
+void TechniqueFilter::removeFilter(const Qt3D::QNodeId &criterionId)
 {
     m_filters.removeOne(criterionId);
 }
 
-void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
+void TechniqueFilter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -114,8 +116,7 @@ void TechniqueFilter::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

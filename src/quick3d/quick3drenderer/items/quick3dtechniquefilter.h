@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
-#define QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qtechniquefilter.h>
@@ -45,25 +45,23 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> requires READ requireList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> requireList();
-    QQmlListProperty<Qt3D::QParameter> parameterList();
+    QQmlListProperty<QAnnotation> requireList();
+    QQmlListProperty<QParameter> parameterList();
 
-    inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<Qt3D::QTechniqueFilter*>(parent()); }
+    inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }
 
 private:
     static void appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
@@ -77,12 +75,10 @@ private:
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H

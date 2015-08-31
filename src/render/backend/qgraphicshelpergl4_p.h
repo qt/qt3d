@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERGL4_H
-#define QT3D_RENDER_QGRAPHICSHELPERGL4_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H
+#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLFunctions_4_3_Core;
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class QGraphicsHelperGL4 : public QGraphicsHelperInterface
@@ -100,11 +100,11 @@ private:
     QOpenGLFunctions_4_3_Core *m_funcs;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERGL4_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H

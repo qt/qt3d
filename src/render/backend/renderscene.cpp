@@ -44,8 +44,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderScene::RenderScene()
@@ -54,7 +55,7 @@ RenderScene::RenderScene()
 {
 }
 
-void RenderScene::updateFromPeer(QNode *peer)
+void RenderScene::updateFromPeer(Qt3D::QNode *peer)
 {
     QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
 
@@ -62,7 +63,7 @@ void RenderScene::updateFromPeer(QNode *peer)
     m_sceneManager->addSceneData(m_source, peerUuid());
 }
 
-void RenderScene::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderScene::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
@@ -76,7 +77,7 @@ QUrl RenderScene::source() const
     return m_source;
 }
 
-void RenderScene::setSceneSubtree(QEntity *subTree)
+void RenderScene::setSceneSubtree(Qt3D::QEntity *subTree)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setPropertyName("scene");
@@ -103,7 +104,7 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 {
 }
 
-QBackendNode *RenderSceneFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *RenderSceneFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->id());
     scene->setFactory(factory);
@@ -112,18 +113,17 @@ QBackendNode *RenderSceneFunctor::create(QNode *frontend, const QBackendNodeFact
     return scene;
 }
 
-QBackendNode *RenderSceneFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *RenderSceneFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(const QNodeId &id) const
+void RenderSceneFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_sceneManager->releaseResource(id);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

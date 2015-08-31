@@ -47,11 +47,12 @@
 #include <Qt3DRenderer/QShaderData>
 #include <Qt3DRenderer/QGeometryRenderer>
 
-typedef Qt3D::QNodeId (*UuidMethod)(Qt3D::Render::RenderEntity *);
-typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3D::Render::RenderEntity *);
+typedef Qt3D::QNodeId (*UuidMethod)(Qt3DRender::Render::RenderEntity *);
+typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3DRender::Render::RenderEntity *);
 
 using namespace Qt3D;
-using namespace Qt3D::Render;
+using namespace Qt3DRender;
+using namespace Qt3DRender::Render;
 
 void noopDeleter(QNode *) {}
 

@@ -34,20 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERNODEFUNCTOR_P_H
-#define QT3D_RENDER_RENDERNODEFUNCTOR_P_H
+#ifndef QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H
+#define QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 template<class Backend, class Manager>
-class RenderNodeFunctor : public QBackendNodeFunctor
+class RenderNodeFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderNodeFunctor(Manager *manager)
@@ -55,7 +55,7 @@ public:
     {
     }
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL
     {
         Backend *backend = m_manager->getOrCreateResource(frontend->id());
         backend->setFactory(factory);
@@ -63,12 +63,12 @@ public:
         return backend;
     }
 
-    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(const QNodeId &id) const Q_DECL_FINAL
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL
     {
         m_manager->releaseResource(id);
     }
@@ -77,10 +77,10 @@ private:
     Manager *m_manager;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERNODEFUNCTOR_P_H
+#endif // QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H

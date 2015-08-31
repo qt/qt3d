@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
     \class Qt3D::QSortCriterionPrivate
@@ -91,6 +91,6 @@ QSortCriterion::QSortCriterion(QSortCriterionPrivate &dd, QNode *parent)
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

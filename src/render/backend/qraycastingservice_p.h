@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRAYCASTINGSERVICE_P_H
-#define QT3D_QRAYCASTINGSERVICE_P_H
+#ifndef QT3DRENDER_QRAYCASTINGSERVICE_P_H
+#define QT3DRENDER_QRAYCASTINGSERVICE_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qabstractcollisionqueryservice.h>
@@ -49,36 +49,41 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
-class QBoundingVolumeProvider;
 class QBoundingVolume;
-typedef QFuture<QCollisionQueryResult> FutureQueryResult;
+class QBoundingVolumeProvider;
+}
 
-class QRayCastingServicePrivate : public QAbstractCollisionQueryServicePrivate
+namespace Qt3DRender {
+
+typedef QFuture<Qt3D::QCollisionQueryResult> FutureQueryResult;
+
+class QRayCastingServicePrivate : public Qt3D::QAbstractCollisionQueryServicePrivate
 {
 public:
-    QRayCastingServicePrivate(const QString &description, QBoundingVolumeProvider *provider);
+    QRayCastingServicePrivate(const QString &description, Qt3D::QBoundingVolumeProvider *provider);
 
-    QCollisionQueryResult collides(const QRay3D &ray, QBoundingVolumeProvider *provider,
-                                   QAbstractCollisionQueryService::QueryMode mode, const QQueryHandle &handle);
+    Qt3D::QCollisionQueryResult collides(const Qt3D::QRay3D &ray,
+                                         Qt3D::QBoundingVolumeProvider *provider,
+                                         Qt3D::QAbstractCollisionQueryService::QueryMode mode,
+                                         const Qt3D::QQueryHandle &handle);
 
     Q_DECLARE_PUBLIC(QRayCastingService)
 
     struct Query
     {
-        QQueryHandle handle;
-        QRay3D ray;
+        Qt3D::QQueryHandle handle;
+        Qt3D::QRay3D ray;
         QRayCastingService::QueryMode mode;
     };
 
-    QHash<QQueryHandle, FutureQueryResult> m_results;
+    QHash<Qt3D::QQueryHandle, FutureQueryResult> m_results;
     QAtomicInt m_handlesCount;
 
-    QBoundingVolumeProvider *m_boundingProvider;
+    Qt3D::QBoundingVolumeProvider *m_boundingProvider;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRAYCASTINGSERVICE_P_H
+#endif // QT3DRENDER_QRAYCASTINGSERVICE_P_H

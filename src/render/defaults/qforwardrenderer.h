@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QFORWARDRENDERER_H
-#define QT3D_RENDER_QFORWARDRENDERER_H
+#ifndef QT3DRENDER_RENDER_QFORWARDRENDERER_H
+#define QT3DRENDER_RENDER_QFORWARDRENDERER_H
 
 #include <Qt3DRenderer/qtechniquefilter.h>
 #include <QRectF>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QForwardRendererPrivate;
 
@@ -52,18 +52,18 @@ class QT3DRENDERERSHARED_EXPORT QForwardRenderer : public QTechniqueFilter
     Q_OBJECT
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
-    Q_PROPERTY(QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(Qt3D::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 public:
-    explicit QForwardRenderer(QNode *parent = 0);
+    explicit QForwardRenderer(Qt3D::QNode *parent = 0);
     ~QForwardRenderer();
 
     void setViewportRect(const QRectF &viewportRect);
     void setClearColor(const QColor &clearColor);
-    void setCamera(QEntity *camera);
+    void setCamera(Qt3D::QEntity *camera);
 
     QRectF viewportRect() const;
     QColor clearColor() const;
-    QEntity *camera() const;
+    Qt3D::QEntity *camera() const;
 
 Q_SIGNALS:
     void viewportRectChanged();
@@ -74,8 +74,8 @@ private:
     Q_DECLARE_PRIVATE(QForwardRenderer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDERER_QFORWARDRENDERER_H
+#endif // QT3DRENDER_RENDERER_QFORWARDRENDERER_H

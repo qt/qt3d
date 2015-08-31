@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERPARAMETER_P_H
-#define QT3D_RENDER_RENDERPARAMETER_P_H
+#ifndef QT3DRENDER_RENDER_RENDERPARAMETER_P_H
+#define QT3DRENDER_RENDER_RENDERPARAMETER_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -50,13 +50,13 @@ class ParameterManager;
 class ShaderDataManager;
 class TextureManager;
 
-class RenderParameter : public QBackendNode
+class RenderParameter : public Qt3D::QBackendNode
 {
 public:
     RenderParameter();
 
-    void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const;
     QVariant value() const;
@@ -74,10 +74,10 @@ private:
     QVariant m_value;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERPARAMETER_P_H
+#endif // QT3DRENDER_RENDER_RENDERPARAMETER_P_H

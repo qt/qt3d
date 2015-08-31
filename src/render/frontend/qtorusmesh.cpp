@@ -48,7 +48,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace {
 
@@ -396,7 +396,7 @@ float QTorusMesh::minorRadius() const
     return static_cast<TorusGeometry *>(geometry())->minorRadius();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

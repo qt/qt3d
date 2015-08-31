@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QDIRECTIONALLIGHT_H
-#define QT3D_QDIRECTIONALLIGHT_H
+#ifndef QT3DRENDER_QDIRECTIONALLIGHT_H
+#define QT3DRENDER_QDIRECTIONALLIGHT_H
 
 #include <Qt3DRenderer/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDirectionalLightPrivate;
 
@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QDirectionalLight : public QAbstractLight
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)
 
 public:
-    explicit QDirectionalLight(QNode *parent = 0);
+    explicit QDirectionalLight(Qt3D::QNode *parent = 0);
 
     void setDirection(const QVector3D &direction);
     QVector3D direction() const;
@@ -60,16 +60,16 @@ Q_SIGNALS:
     void directionChanged();
 
 protected:
-    QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QDirectionalLight(QDirectionalLightPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QDirectionalLight)
     QT3D_CLONEABLE(QDirectionalLight)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QDIRECTIONALLIGHT_H
+#endif // QT3DRENDER_QDIRECTIONALLIGHT_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMEGRAPHNODE_H
-#define QT3D_RENDER_FRAMEGRAPHNODE_H
+#ifndef QT3DRENDER_RENDER_FRAMEGRAPHNODE_H
+#define QT3DRENDER_RENDER_FRAMEGRAPHNODE_H
 
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/qnode.h>
@@ -47,11 +47,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
-class FrameGraphNode : public QBackendNode
+class FrameGraphNode : public Qt3D::QBackendNode
 {
 public:
     FrameGraphNode();
@@ -105,7 +105,7 @@ private:
 };
 
 template<typename Backend, typename Frontend>
-class FrameGraphNodeFunctor : public QBackendNodeFunctor
+class FrameGraphNodeFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit FrameGraphNodeFunctor(FrameGraphManager *manager)
@@ -113,12 +113,12 @@ public:
     {
     }
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
     {
         return createBackendFrameGraphNode(frontend, factory);
     }
 
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE
     {
         FrameGraphNode **node = m_manager->lookupResource(id);
         if (node != Q_NULLPTR)
@@ -126,13 +126,13 @@ public:
         return Q_NULLPTR;
     }
 
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE
     {
         m_manager->releaseResource(id);
     }
 
 protected:
-    Backend *createBackendFrameGraphNode(QNode *n, const QBackendNodeFactory *factory) const
+    Backend *createBackendFrameGraphNode(Qt3D::QNode *n, const Qt3D::QBackendNodeFactory *factory) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
@@ -159,21 +159,21 @@ private:
     FrameGraphManager *m_manager;
 };
 
-class FrameGraphComponentFunctor : public QBackendNodeFunctor
+class FrameGraphComponentFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit FrameGraphComponentFunctor(Renderer *renderer);
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMEGRAPHNODE_H
+#endif // QT3DRENDER_RENDER_FRAMEGRAPHNODE_H

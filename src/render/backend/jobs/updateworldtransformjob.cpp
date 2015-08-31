@@ -45,12 +45,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node, const QMatrix4x4 &parentTransform)
+void updateWorldTransformAndBounds(Qt3DRender::Render::RenderEntity *node, const QMatrix4x4 &parentTransform)
 {
     QMatrix4x4 worldTransform(parentTransform);
     RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
@@ -60,7 +60,7 @@ void updateWorldTransformAndBounds(Qt3D::Render::RenderEntity *node, const QMatr
     *(node->worldTransform()) = worldTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
 
-    Q_FOREACH (Qt3D::Render::RenderEntity *child, node->children())
+    Q_FOREACH (Qt3DRender::Render::RenderEntity *child, node->children())
         updateWorldTransformAndBounds(child, worldTransform);
 }
 
@@ -93,6 +93,6 @@ void UpdateWorldTransformJob::run()
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

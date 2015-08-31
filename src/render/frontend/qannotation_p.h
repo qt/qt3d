@@ -34,17 +34,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QANNOTATION_P_H
-#define QT3D_QANNOTATION_P_H
+#ifndef QT3DRENDER_QANNOTATION_P_H
+#define QT3DRENDER_QANNOTATION_P_H
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRenderer/qannotation.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QAnnotationPrivate : public QNodePrivate
+class QAnnotationPrivate : public Qt3D::QNodePrivate
 {
 public:
     QAnnotationPrivate();
@@ -54,8 +54,8 @@ public:
     QVariant m_value;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QANNOTATION_P_H
+#endif // QT3DRENDER_QANNOTATION_P_H

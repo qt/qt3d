@@ -50,8 +50,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderRenderPass::RenderRenderPass()
@@ -68,7 +69,7 @@ void RenderRenderPass::cleanup()
 {
 }
 
-void RenderRenderPass::updateFromPeer(QNode *peer)
+void RenderRenderPass::updateFromPeer(Qt3D::QNode *peer)
 {
     QRenderPass *pass = static_cast<QRenderPass *>(peer);
 
@@ -88,7 +89,7 @@ void RenderRenderPass::updateFromPeer(QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderRenderPass::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
@@ -130,7 +131,7 @@ void RenderRenderPass::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QNodeId RenderRenderPass::shaderProgram() const
+Qt3D::QNodeId RenderRenderPass::shaderProgram() const
 {
     return m_shaderUuid;
 }
@@ -140,7 +141,7 @@ QList<RenderParameterMapping> RenderRenderPass::bindings() const
     return m_bindings.values();
 }
 
-QList<QNodeId> RenderRenderPass::annotations() const
+QList<Qt3D::QNodeId> RenderRenderPass::annotations() const
 {
     return m_annotationList;
 }
@@ -150,18 +151,18 @@ QList<RenderState *> RenderRenderPass::renderStates() const
     return m_renderStates.values();
 }
 
-QList<QNodeId> RenderRenderPass::parameters() const
+QList<Qt3D::QNodeId> RenderRenderPass::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void RenderRenderPass::appendAnnotation(const QNodeId &annotationId)
+void RenderRenderPass::appendAnnotation(const Qt3D::QNodeId &annotationId)
 {
     if (!m_annotationList.contains(annotationId))
         m_annotationList.append(annotationId);
 }
 
-void RenderRenderPass::removeAnnotation(const QNodeId &annotationId)
+void RenderRenderPass::removeAnnotation(const Qt3D::QNodeId &annotationId)
 {
     m_annotationList.removeOne(annotationId);
 }
@@ -172,24 +173,23 @@ void RenderRenderPass::appendBinding(const RenderParameterMapping &binding)
         m_bindings[binding.id()] = binding;
 }
 
-void RenderRenderPass::removeBinding(const QNodeId &bindingId)
+void RenderRenderPass::removeBinding(const Qt3D::QNodeId &bindingId)
 {
     m_bindings.remove(bindingId);
 }
 
-void RenderRenderPass::appendRenderState(const QNodeId &id, RenderState *renderState)
+void RenderRenderPass::appendRenderState(const Qt3D::QNodeId &id, RenderState *renderState)
 {
     if (!m_renderStates.contains(id))
         m_renderStates[id] = renderState;
 }
 
-void RenderRenderPass::removeRenderState(const QNodeId &renderStateId)
+void RenderRenderPass::removeRenderState(const Qt3D::QNodeId &renderStateId)
 {
     m_renderStates.remove(renderStateId);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

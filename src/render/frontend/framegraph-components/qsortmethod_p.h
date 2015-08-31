@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSORTMETHOD_P_H
-#define QT3D_QSORTMETHOD_P_H
+#ifndef QT3DRENDER_QSORTMETHOD_P_H
+#define QT3DRENDER_QSORTMETHOD_P_H
 
 #include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSortMethod;
 class QSortCriterion;
@@ -54,8 +54,8 @@ public:
     QList<QSortCriterion *> m_criteria;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSORTMETHOD_P_H
+#endif // QT3DRENDER_QSORTMETHOD_P_H

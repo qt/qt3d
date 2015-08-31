@@ -53,8 +53,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 
 /*!
  * \class Qt3D::QSkyboxEntityPrivate
@@ -74,7 +75,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
-    , m_transform(new QTransform())
+    , m_transform(new Qt3D::QTransform())
     , m_translate(new QTranslateTransform())
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
@@ -281,6 +282,6 @@ QVector3D QSkyboxEntity::cameraPosition() const
     return d->m_position;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

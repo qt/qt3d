@@ -34,28 +34,28 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODRAW_H
-#define QT3D_QNODRAW_H
+#ifndef QT3DRENDER_QNODRAW_H
+#define QT3DRENDER_QNODRAW_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QNoDraw : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QNoDraw(QNode *parent = 0);
+    explicit QNoDraw(Qt3D::QNode *parent = 0);
     ~QNoDraw();
 
 private:
     QT3D_CLONEABLE(QNoDraw)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QNODRAW_H
+#endif // QT3DRENDER_QNODRAW_H

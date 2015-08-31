@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 FrameGraphNode::FrameGraphNode()
@@ -139,7 +139,7 @@ FrameGraphComponentFunctor::FrameGraphComponentFunctor(Renderer *renderer)
 {
 }
 
-QBackendNode *FrameGraphComponentFunctor::create(QNode *frontend, const QBackendNodeFactory *) const
+Qt3D::QBackendNode *FrameGraphComponentFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *) const
 {
     // TO DO: Ideally we should have a RenderFrameGraph component and use its setPeer method
     // to do that
@@ -149,18 +149,18 @@ QBackendNode *FrameGraphComponentFunctor::create(QNode *frontend, const QBackend
     return Q_NULLPTR;
 }
 
-QBackendNode *FrameGraphComponentFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *FrameGraphComponentFunctor::get(const Qt3D::QNodeId &id) const
 {
     Q_UNUSED(id);
     return Q_NULLPTR;
 }
 
-void FrameGraphComponentFunctor::destroy(const QNodeId &id) const
+void FrameGraphComponentFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     Q_UNUSED(id);
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

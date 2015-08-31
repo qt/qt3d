@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LAYERFILTERNODE_H
-#define QT3D_RENDER_LAYERFILTERNODE_H
+#ifndef QT3DRENDER_RENDER_LAYERFILTERNODE_H
+#define QT3DRENDER_RENDER_LAYERFILTERNODE_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QLayerFilter;
 
@@ -55,8 +55,8 @@ class LayerFilterNode : public FrameGraphNode
 public:
     LayerFilterNode();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QStringList layers() const;
     void setLayers(const QStringList &list);
 
@@ -64,10 +64,10 @@ private:
     QStringList m_layers;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LAYERFILTERNODE_H
+#endif // QT3DRENDER_RENDER_LAYERFILTERNODE_H

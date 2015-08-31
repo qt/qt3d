@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QGEOMETRYRENDERER_H
-#define QT3D_QGEOMETRYRENDERER_H
+#ifndef QT3DRENDER_QGEOMETRYRENDERER_H
+#define QT3DRENDER_QGEOMETRYRENDERER_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qgeometry.h>
@@ -43,14 +43,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QGeometryRendererPrivate;
 class QGeometryFunctor;
 
 typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public QComponent
+class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public Qt3D::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
@@ -59,11 +59,11 @@ class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public QComponent
     Q_PROPERTY(int baseInstance READ baseInstance WRITE setBaseInstance NOTIFY baseInstanceChanged)
     Q_PROPERTY(int restartIndex READ restartIndex WRITE setRestartIndex NOTIFY restartIndexChanged)
     Q_PROPERTY(bool primitiveRestart READ primitiveRestart WRITE setPrimitiveRestart NOTIFY primitiveRestartChanged)
-    Q_PROPERTY(Qt3D::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
+    Q_PROPERTY(Qt3DRender::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
 
 public:
-    explicit QGeometryRenderer(QNode *parent = 0);
+    explicit QGeometryRenderer(Qt3D::QNode *parent = 0);
     ~QGeometryRenderer();
 
     enum PrimitiveType {
@@ -116,17 +116,17 @@ Q_SIGNALS:
     void primitiveTypeChanged();
 
 protected:
-    QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)
     QT3D_CLONEABLE(QGeometryRenderer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QGEOMETRYRENDERER_H
+#endif // QT3DRENDER_QGEOMETRYRENDERER_H

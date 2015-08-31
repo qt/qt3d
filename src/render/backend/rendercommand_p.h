@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCOMMAND_H
-#define QT3D_RENDER_RENDERCOMMAND_H
+#ifndef QT3DRENDER_RENDER_RENDERCOMMAND_H
+#define QT3DRENDER_RENDER_RENDERCOMMAND_H
 
 #include <qglobal.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLVertexArrayObject;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -87,10 +87,10 @@ public:
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2);
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCOMMAND_H
+#endif // QT3DRENDER_RENDER_RENDERCOMMAND_H

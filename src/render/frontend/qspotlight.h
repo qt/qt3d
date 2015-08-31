@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSPOTLIGHT_H
-#define QT3D_QSPOTLIGHT_H
+#ifndef QT3DRENDER_QSPOTLIGHT_H
+#define QT3DRENDER_QSPOTLIGHT_H
 
 #include <Qt3DRenderer/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSpotLightPrivate;
 
@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QSpotLight : public QAbstractLight
     Q_PROPERTY(float cutOffAngle READ cutOffAngle WRITE setCutOffAngle NOTIFY cutOffAngleChanged)
 
 public:
-    explicit QSpotLight(QNode *parent = 0);
+    explicit QSpotLight(Qt3D::QNode *parent = 0);
 
     QVector3D direction() const;
     float cutOffAngle() const;
@@ -65,16 +65,16 @@ Q_SIGNALS:
     void cutOffAngleChanged();
 
 protected:
-    QSpotLight(QSpotLightPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QSpotLight(QSpotLightPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QSpotLight)
     QT3D_CLONEABLE(QSpotLight)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSPOTLIGHT_H
+#endif // QT3DRENDER_QSPOTLIGHT_H

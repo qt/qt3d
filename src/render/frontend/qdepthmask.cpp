@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDepthMaskPrivate : public QRenderStatePrivate
 {
@@ -89,6 +89,6 @@ void QDepthMask::setMask(bool mask)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

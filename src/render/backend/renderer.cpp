@@ -97,8 +97,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
@@ -325,7 +326,7 @@ void Renderer::createThreadLocalAllocator(void *renderer)
 /*!
  * Returns the a FrameAllocator for the caller thread.
  */
-QFrameAllocator *Renderer::currentFrameAllocator()
+Qt3D::QFrameAllocator *Renderer::currentFrameAllocator()
 {
     // return the QFrameAllocator for the current thread
     // It is never cleared as each renderview when it is destroyed
@@ -355,7 +356,7 @@ void Renderer::initialize(QOpenGLContext *context)
     if (m_renderThread)
         m_waitForWindowToBeSetCondition.wait(mutex());
 
-    QByteArray debugLoggingMode = qgetenv("QT3D_DEBUG_LOGGING");
+    QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
     bool enableDebugLogging = !debugLoggingMode.isEmpty();
 
     m_graphicsContext.reset(new QGraphicsContext);
@@ -428,7 +429,7 @@ void Renderer::shutdown()
     }
 }
 
-void Renderer::setFrameGraphRoot(const QNodeId &frameGraphRootUuid)
+void Renderer::setFrameGraphRoot(const Qt3D::QNodeId &frameGraphRootUuid)
 {
     m_frameGraphRootUuid = frameGraphRootUuid;
     qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
@@ -549,7 +550,7 @@ void Renderer::render()
     // Matrice update, bounding volumes computation ...
     // Should be jobs
 
-    // Qt3D has 2 distincts node trees
+    // namespace Qt3D has 2 distincts node trees
     // One scene description
     // One framegraph description
 
@@ -757,7 +758,7 @@ bool Renderer::submitRenderViews()
 
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
-QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
+QVector<Qt3D::QAspectJobPtr> Renderer::createRenderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
@@ -780,7 +781,7 @@ QVector<QAspectJobPtr> Renderer::createRenderBinJobs()
 
 // Returns a vector of jobs to be performed for dirty buffers
 // 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
+QVector<Qt3D::QAspectJobPtr> Renderer::createRenderBufferJobs()
 {
     const QVector<QNodeId> dirtyBuffers = m_bufferManager->dirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
@@ -798,7 +799,7 @@ QVector<QAspectJobPtr> Renderer::createRenderBufferJobs()
     return dirtyBuffersJobs;
 }
 
-QVector<QAspectJobPtr> Renderer::createGeometryRendererJobs()
+QVector<Qt3D::QAspectJobPtr> Renderer::createGeometryRendererJobs()
 {
     const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
@@ -816,7 +817,7 @@ QVector<QAspectJobPtr> Renderer::createGeometryRendererJobs()
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
-QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
+Qt3D::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int submitOrderIndex)
 {
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
@@ -1052,7 +1053,7 @@ RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, 
     return indexAttribute;
 }
 
-void Renderer::addAllocator(QFrameAllocator *allocator)
+void Renderer::addAllocator(Qt3D::QFrameAllocator *allocator)
 {
     QMutexLocker lock(&m_mutex);
     m_allocators.append(allocator);
@@ -1064,6 +1065,6 @@ QOpenGLFilter *Renderer::contextInfo() const
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

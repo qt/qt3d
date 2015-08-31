@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCYLINDERMESH_H
-#define QT3D_QCYLINDERMESH_H
+#ifndef QT3DRENDER_QCYLINDERMESH_H
+#define QT3DRENDER_QCYLINDERMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -43,7 +43,7 @@
 QT_BEGIN_NAMESPACE
 
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
 {
@@ -53,7 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
-    explicit QCylinderMesh(QNode *parent = 0);
+    explicit QCylinderMesh(Qt3D::QNode *parent = 0);
     ~QCylinderMesh();
 
     void setRings(int rings);
@@ -86,8 +86,8 @@ private:
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCYLINDERMESH_H
+#endif // QT3DRENDER_QCYLINDERMESH_H

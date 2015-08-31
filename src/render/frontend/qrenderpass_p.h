@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERPASS_P_H
-#define QT3D_QRENDERPASS_P_H
+#ifndef QT3DRENDER_QRENDERPASS_P_H
+#define QT3DRENDER_QRENDERPASS_P_H
 
 #include <private/qnode_p.h>
 #include <Qt3DRenderer/qrenderpass.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 class QParameterMapping;
@@ -57,7 +57,7 @@ namespace Render
 class RenderStateSet;
 }
 
-class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public Qt3D::QNodePrivate
 {
 public:
     QRenderPassPrivate();
@@ -75,7 +75,7 @@ public:
     QShaderProgram *m_shader;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

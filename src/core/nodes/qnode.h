@@ -59,7 +59,7 @@ typedef QSharedPointer<QNode> QNodePtr;
 
 #define QT3D_QUOTE(str) #str
 #define QT3D_CLONEABLE(Class)                \
-    friend class QAbstractNodeFactory;       \
+    friend class Qt3D::QAbstractNodeFactory;       \
     QNode *doClone() const Q_DECL_OVERRIDE { \
         Class *clone_ = Qt3D::QAbstractNodeFactory::createNode<Class>(QT3D_QUOTE(Class)); \
         clone_->copy(this);                   \

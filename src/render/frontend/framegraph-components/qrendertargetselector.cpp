@@ -42,10 +42,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QRenderTargetSelectorPrivate
+    \class Qt3DRender::QRenderTargetSelectorPrivate
     \internal
 */
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
@@ -96,9 +98,9 @@ QRenderTarget *QRenderTargetSelector::target() const
 /*!
  * \internal
  * Sets the draw buffers \a buffers to be used. The draw buffers should be
- * matching the Qt3D::QRenderAttachment::RenderAttachmentType
- * defined in the attachments of the Qt3D::QRenderTarget associated to the
- * Qt3D::QRenderTargetSelector instance.
+ * matching the Qt3DRender::QRenderAttachment::RenderAttachmentType
+ * defined in the attachments of the Qt3DRender::QRenderTarget associated to the
+ * Qt3DRender::QRenderTargetSelector instance.
  *
  * \note At render time, if no draw buffer has been specified, the renderer will
  * default to using all the attachments' draw buffers.
@@ -120,7 +122,7 @@ void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::Render
 }
 
 /*!
- * Returns the list of draw buffers for the current Qt3D::QRenderTargetSelector instance.
+ * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
 QList<QRenderAttachment::RenderAttachmentType> QRenderTargetSelector::drawBuffers() const
 {
@@ -133,6 +135,6 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

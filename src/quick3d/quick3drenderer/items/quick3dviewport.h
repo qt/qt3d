@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
-#define QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
@@ -43,10 +43,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 // TO DO : Check if this is required or if this might as well be removed
@@ -58,13 +56,11 @@ public:
     explicit Quick3DViewport(QObject *parent = 0);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DVIEWPORT_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_H
 

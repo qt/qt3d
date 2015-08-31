@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTECHNIQUE_P_H
-#define QT3D_QTECHNIQUE_P_H
+#ifndef QT3DRENDER_QTECHNIQUE_P_H
+#define QT3DRENDER_QTECHNIQUE_P_H
 
 #include <private/qnode_p.h>
 #include <Qt3DRenderer/qopenglfilter.h>
@@ -43,14 +43,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTechnique;
 class QAnnotation;
 class QParameter;
 class QRenderPass;
 
-class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public Qt3D::QNodePrivate
 {
 public:
     QTechniquePrivate();
@@ -66,8 +66,8 @@ private:
     void _q_openGLFilterChanged();
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTECHNIQUE_P_H
+#endif // QT3DRENDER_QTECHNIQUE_P_H

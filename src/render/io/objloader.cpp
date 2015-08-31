@@ -54,9 +54,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-inline uint qHash(const Qt3D::FaceIndices &faceIndices)
+inline uint qHash(const FaceIndices &faceIndices)
 {
     return faceIndices.positionIndex
             + 10 * faceIndices.texCoordIndex
@@ -429,7 +429,7 @@ void ObjLoader::center( QVector<QVector3D>& points )
     if ( points.isEmpty() )
         return;
 
-    QAxisAlignedBoundingBox bb(points);
+    Qt3D::QAxisAlignedBoundingBox bb(points);
     QVector3D center = bb.center();
 
     // Translate center of the AABB to the origin

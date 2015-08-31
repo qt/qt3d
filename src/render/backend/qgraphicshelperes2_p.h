@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERES2_H
-#define QT3D_RENDER_QGRAPHICSHELPERES2_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H
+#define QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QOpenGLContext>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class QGraphicsHelperES2 : public QGraphicsHelperInterface
@@ -99,9 +99,9 @@ private:
     bool m_isES3;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERES2_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H

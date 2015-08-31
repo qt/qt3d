@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMESH_H
-#define QT3D_QMESH_H
+#ifndef QT3DRENDER_QMESH_H
+#define QT3DRENDER_QMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QMeshPrivate;
 
@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QMesh : public QGeometryRenderer
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QMesh(QNode *parent = 0);
+    explicit QMesh(Qt3D::QNode *parent = 0);
     ~QMesh();
 
     void setSource(const QUrl &source);
@@ -67,7 +67,7 @@ Q_SIGNALS:
     void sourceChanged();
 
 protected:
-    QMesh(QMeshPrivate &dd, QNode *parent = 0);
+    QMesh(QMeshPrivate &dd, Qt3D::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QMesh)
@@ -77,4 +77,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // of QT3D_QMESH_H
+#endif // of QT3DRENDER_QMESH_H

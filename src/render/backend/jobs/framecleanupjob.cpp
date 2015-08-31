@@ -43,8 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 FrameCleanupJob::FrameCleanupJob(Renderer *renderer)
@@ -59,7 +58,7 @@ FrameCleanupJob::~FrameCleanupJob()
 void FrameCleanupJob::run()
 {
     // set each RenderShaderData to not need an update
-    Q_FOREACH (const QNodeId &id, RenderShaderData::updatedShaderDataList()) {
+    Q_FOREACH (const Qt3D::QNodeId &id, RenderShaderData::updatedShaderDataList()) {
         RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
         if (shaderData != Q_NULLPTR)
             shaderData->clearUpdate();
@@ -71,8 +70,7 @@ void FrameCleanupJob::run()
     textureDataManager->cleanup();
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

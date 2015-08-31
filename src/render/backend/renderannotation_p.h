@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERANNOTATION_P_H
-#define QT3D_RENDER_RENDERANNOTATION_P_H
+#ifndef QT3DRENDER_RENDER_RENDERANNOTATION_P_H
+#define QT3DRENDER_RENDER_RENDERANNOTATION_P_H
 
 #include <Qt3DRenderer/qannotation.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAnnotation;
 
@@ -50,17 +50,17 @@ namespace Render {
 
 class CriterionManager;
 
-class RenderAnnotation : public QBackendNode
+class RenderAnnotation : public Qt3D::QBackendNode
 {
 public:
     RenderAnnotation();
     ~RenderAnnotation();
     void cleanup();
-    void updateFromPeer(QNode *criterion) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *criterion) Q_DECL_OVERRIDE;
 
     QVariant criterionValue() const;
     QString criterionName() const;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool operator ==(const RenderAnnotation &other);
     bool operator !=(const RenderAnnotation &other);
 
@@ -69,10 +69,10 @@ private:
     QString m_name;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERANNOTATION_P_H
+#endif // QT3DRENDER_RENDER_RENDERANNOTATION_P_H

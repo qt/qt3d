@@ -40,10 +40,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QLayerFilterPrivate
+    \class Qt3DRender::QLayerFilterPrivate
     \internal
 */
 QLayerFilterPrivate::QLayerFilterPrivate()
@@ -60,14 +60,14 @@ QLayerFilterPrivate::QLayerFilterPrivate()
 
 /*!
     \qmltype LayerFilter
-    \instantiates Qt3D::QLayerFilter
+    \instantiates Qt3DRender::QLayerFilter
     \inherits FrameGraphNode
     \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For ...
 */
 
-/*! \fn void Qt3D::QLayerFilter::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QLayerFilter::copy(const QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QLayerFilter::copy(const QNode *ref)
@@ -78,7 +78,7 @@ void QLayerFilter::copy(const QNode *ref)
 }
 
 
-/*! \fn Qt3D::QLayerFilter::QLayerFilter(QNode *parent)
+/*! \fn Qt3DRender::QLayerFilter::QLayerFilter(QNode *parent)
   Constructs a new QLayerFilter with the specified \a parent.
  */
 QLayerFilter::QLayerFilter(QNode *parent)
@@ -98,7 +98,7 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
 }
 
 /*!
-  \property Qt3D::QLayerFilter::layers
+  \property Qt3DRender::QLayerFilter::layers
 
  */
 
@@ -123,6 +123,6 @@ QStringList QLayerFilter::layers() const
 }
 
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

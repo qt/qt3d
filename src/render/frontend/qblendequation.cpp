@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QBlendEquationPrivate : public QRenderStatePrivate
 {
@@ -88,6 +88,6 @@ void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

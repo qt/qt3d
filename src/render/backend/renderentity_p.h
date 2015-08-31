@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERNODE_H
-#define QT3D_RENDER_RENDERNODE_H
+#ifndef QT3DRENDER_RENDER_RENDERNODE_H
+#define QT3DRENDER_RENDER_RENDERNODE_H
 
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
@@ -50,18 +50,21 @@ QT_BEGIN_NAMESPACE
 class QMatrix4x4;
 
 namespace Qt3D {
-
-class QRenderAspect;
-class Sphere;
 class QNode;
 class QEntity;
 class QComponent;
+}
+
+namespace Qt3DRender {
+
+class QRenderAspect;
+class Sphere;
 
 namespace Render {
 
 class Renderer;
 
-class Q_AUTOTEST_EXPORT RenderEntity : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderEntity : public Qt3D::QBackendNode
 {
 public:
     RenderEntity();
@@ -70,8 +73,8 @@ public:
 
     void setParentHandle(HEntity parentHandle);
     void setRenderer(Renderer *renderer);
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     void dump() const;
 
@@ -90,19 +93,19 @@ public:
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
 
-    void addComponent(QComponent *component);
-    void removeComponent(const QNodeId &nodeId);
+    void addComponent(Qt3D::QComponent *component);
+    void removeComponent(const Qt3D::QNodeId &nodeId);
 
     template<class Backend, uint INDEXBITS>
-    QHandle<Backend, INDEXBITS> componentHandle() const
+    Qt3D::QHandle<Backend, INDEXBITS> componentHandle() const
     {
-        return QHandle<Backend, INDEXBITS>();
+        return Qt3D::QHandle<Backend, INDEXBITS>();
     }
 
     template<class Backend, uint INDEXBITS>
-    QList<QHandle<Backend, INDEXBITS> > componentsHandle() const
+    QList<Qt3D::QHandle<Backend, INDEXBITS> > componentsHandle() const
     {
-        return QList<QHandle<Backend, INDEXBITS> >();
+        return QList<Qt3D::QHandle<Backend, INDEXBITS> >();
     }
 
     template<class Backend>
@@ -118,15 +121,15 @@ public:
     }
 
     template<class Backend>
-    QNodeId componentUuid() const
+    Qt3D::QNodeId componentUuid() const
     {
-        return QNodeId();
+        return Qt3D::QNodeId();
     }
 
     template<class Backend>
-    QList<QNodeId> componentsUuid() const
+    QList<Qt3D::QNodeId> componentsUuid() const
     {
-        return QList<QNodeId>();
+        return QList<Qt3D::QNodeId>();
     }
 
 private:
@@ -152,12 +155,12 @@ private:
     Sphere *m_worldBoundingVolume;
 
     // Handles to Components
-    QNodeId m_transformComponent;
-    QNodeId m_materialComponent;
-    QNodeId m_cameraComponent;
-    QList<QNodeId> m_layerComponents;
-    QList<QNodeId> m_shaderDataComponents;
-    QNodeId m_geometryRendererComponent;
+    Qt3D::QNodeId m_transformComponent;
+    Qt3D::QNodeId m_materialComponent;
+    Qt3D::QNodeId m_cameraComponent;
+    QList<Qt3D::QNodeId> m_layerComponents;
+    QList<Qt3D::QNodeId> m_shaderDataComponents;
+    Qt3D::QNodeId m_geometryRendererComponent;
 
     QString m_objectName;
 };
@@ -187,13 +190,13 @@ template<>
 Q_AUTOTEST_EXPORT RenderGeometryRenderer *RenderEntity::renderComponent<RenderGeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderTransform>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderTransform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
 
 template<>
 QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const;
@@ -202,7 +205,7 @@ template<>
 QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
 
 template<>
 QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const;
@@ -211,26 +214,26 @@ template<>
 QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
+Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const;
 
-class RenderEntityFunctor : public QBackendNodeFunctor
+class RenderEntityFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderEntityFunctor(Renderer *renderer);
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERNODE_H
+#endif // QT3DRENDER_RENDER_RENDERNODE_H

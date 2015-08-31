@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LOADTEXTUREDATAJOB_H
-#define QT3D_RENDER_LOADTEXTUREDATAJOB_H
+#ifndef QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
+#define QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H
 
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qaspectjob.h>
@@ -43,16 +43,16 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class Renderer;
 
-class LoadTextureDataJob : public QAspectJob
+class LoadTextureDataJob : public Qt3D::QAspectJob
 {
 public:
-    LoadTextureDataJob(const QNodeId &textureId);
+    LoadTextureDataJob(const Qt3D::QNodeId &textureId);
     ~LoadTextureDataJob();
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
@@ -60,16 +60,16 @@ protected:
     void run() Q_DECL_FINAL;
 
 private:
-    QNodeId m_textureId;
+    Qt3D::QNodeId m_textureId;
     Renderer *m_renderer;
 };
 
 typedef QSharedPointer<LoadTextureDataJob> LoadTextureDataJobPtr;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LOADTEXTUREDATAJOB_H
+#endif // QT3DRENDER_RENDER_LOADTEXTUREDATAJOB_H

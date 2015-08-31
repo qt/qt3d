@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace {
 
@@ -398,7 +398,7 @@ private:
 };
 
 /*!
-    \class Qt3D::QCuboidMeshPrivate
+    \class Qt3DRender::QCuboidMeshPrivate
     \internal
 */
 class CuboidGeometry : public QGeometry
@@ -690,7 +690,7 @@ QSize QCuboidMesh::xyMeshResolution() const
     return static_cast<CuboidGeometry *>(geometry())->xyMeshResolution();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

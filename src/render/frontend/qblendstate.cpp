@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QBlendStatePrivate : public QRenderStatePrivate
 {
@@ -260,6 +260,6 @@ QBlendStateSeparate::QBlendStateSeparate(QNode *parent)
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

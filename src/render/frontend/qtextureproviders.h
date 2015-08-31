@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTUREPROVIDERS_H
-#define QT3D_QTEXTUREPROVIDERS_H
+#ifndef QT3DRENDER_QTEXTUREPROVIDERS_H
+#define QT3DRENDER_QTEXTUREPROVIDERS_H
 
 #include <Qt3DRenderer/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QTexture1D : public QAbstractTextureProvider
 {
@@ -131,8 +131,8 @@ public:
     ~QTextureBuffer();
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTEXTUREPROVIDERS_H
+#endif // QT3DRENDER_QTEXTUREPROVIDERS_H

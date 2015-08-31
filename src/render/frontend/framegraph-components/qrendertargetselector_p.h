@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERTARGETSELECTOR_P_H
-#define QT3D_QRENDERTARGETSELECTOR_P_H
+#ifndef QT3DRENDER_QRENDERTARGETSELECTOR_P_H
+#define QT3DRENDER_QRENDERTARGETSELECTOR_P_H
 
 #include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderTargetSelector;
 class QRenderTarget;
@@ -56,8 +56,8 @@ public:
     QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERTARGETSELECTOR_P_H
+#endif // QT3DRENDER_QRENDERTARGETSELECTOR_P_H

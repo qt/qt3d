@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
  * \class Qt3D::QNoDraw::QNoDraw
@@ -48,8 +48,8 @@ namespace Qt3D {
  *
  * Qt3D::QNoDraw should be used when the FrameGraph needs to set up some render
  * states or clear some buffers without requiring any mesh to be drawn. It has
- * the same effect as having a Qt3D::QRenderPassFilter that matches none of
- * available Qt3D::QRenderPass instances of the scene without the overhead cost
+ * the same effect as having a Qt3DRender::QRenderPassFilter that matches none of
+ * available Qt3DRender::QRenderPass instances of the scene without the overhead cost
  * of actually performing the filtering.
  *
  * \since 5.5
@@ -65,6 +65,6 @@ QNoDraw::~QNoDraw()
     QNode::cleanup();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

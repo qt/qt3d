@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETERMAPPING_H
-#define QT3D_QPARAMETERMAPPING_H
+#ifndef QT3DRENDER_QPARAMETERMAPPING_H
+#define QT3DRENDER_QPARAMETERMAPPING_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameterMappingPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QParameterMapping : public QNode
+class QT3DRENDERERSHARED_EXPORT QParameterMapping : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString parameterName READ parameterName WRITE setParameterName NOTIFY parameterNameChanged)
@@ -62,8 +62,8 @@ public:
     };
     Q_ENUM(Binding)
 
-    explicit QParameterMapping(QNode *parent = 0);
-    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, QNode *parent = 0);
+    explicit QParameterMapping(Qt3D::QNode *parent = 0);
+    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3D::QNode *parent = 0);
     ~QParameterMapping();
 
     void setParameterName(const QString &name);
@@ -80,16 +80,16 @@ Q_SIGNALS:
     void bindingTypeChanged();
 
 protected:
-    QParameterMapping(QParameterMappingPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QParameterMapping(QParameterMappingPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QParameterMapping)
     QT3D_CLONEABLE(QParameterMapping)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPARAMETERBINDER_H
+#endif // QT3DRENDER_QPARAMETERBINDER_H

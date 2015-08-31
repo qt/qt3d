@@ -42,8 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 FramePreparationJob::FramePreparationJob(RenderEntity *root)
@@ -64,11 +63,11 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(RenderEntity *node)
 {
     // Initialize worldBoundingVolume if Mesh associated
-    Qt3D::Render::RenderGeometryRenderer *mesh = Q_NULLPTR;
+    Qt3DRender::Render::RenderGeometryRenderer *mesh = Q_NULLPTR;
     if ((node->localBoundingVolume()->isNull())
             && (mesh = node->renderComponent<RenderGeometryRenderer>()) != Q_NULLPTR) {
         //        if (!mesh->meshDataHandle().isNull()) {
-        //            Qt3D::QMeshData *meshData = mesh->meshData();
+        //            Qt3DRender::QMeshData *meshData = mesh->meshData();
         //            if (meshData != Q_NULLPTR) {
         //                const QAxisAlignedBoundingBox box = meshData->boundingBox();
         //                node->localBoundingVolume()->setCenter(box.center());
@@ -90,8 +89,7 @@ void FramePreparationJob::parseNodeTree(RenderEntity *node)
         parseNodeTree(child);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

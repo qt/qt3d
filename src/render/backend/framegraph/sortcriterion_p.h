@@ -34,40 +34,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_SORTCRITERION_P_H
-#define QT3D_RENDER_SORTCRITERION_P_H
+#ifndef QT3DRENDER_RENDER_SORTCRITERION_P_H
+#define QT3DRENDER_RENDER_SORTCRITERION_P_H
 
 #include <Qt3DRenderer/qsortcriterion.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class SortCriterionManager;
 
-class SortCriterion : public QBackendNode
+class SortCriterion : public Qt3D::QBackendNode
 {
 public:
     SortCriterion();
 
     void cleanup();
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     QSortCriterion::SortType sortType() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QSortCriterion::SortType m_type;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_SORTCRITERION_P_H
+#endif // QT3DRENDER_RENDER_SORTCRITERION_P_H

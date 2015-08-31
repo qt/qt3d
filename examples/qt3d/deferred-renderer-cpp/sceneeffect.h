@@ -40,19 +40,19 @@
 #include <Qt3DRenderer/QEffect>
 #include <Qt3DRenderer/QTechnique>
 
-class SceneEffect : public Qt3D::QEffect
+class SceneEffect : public Qt3DRender::QEffect
 {
 public:
     explicit SceneEffect(Qt3D::QNode *parent = 0);
 
-    QList<Qt3D::QAnnotation *> passCriteria() const;
+    QList<Qt3DRender::QAnnotation *> passCriteria() const;
 
 private:
-    Qt3D::QTechnique *m_gl3Technique;
-    Qt3D::QTechnique *m_gl2Technique;
-    Qt3D::QRenderPass *m_gl2Pass;
-    Qt3D::QRenderPass *m_gl3Pass;
-    Qt3D::QAnnotation *m_passCriterion;
+    Qt3DRender::QTechnique *m_gl3Technique;
+    Qt3DRender::QTechnique *m_gl2Technique;
+    Qt3DRender::QRenderPass *m_gl2Pass;
+    Qt3DRender::QRenderPass *m_gl3Pass;
+    Qt3DRender::QAnnotation *m_passCriterion;
 };
 
 #endif // SCENEEFFECT_H

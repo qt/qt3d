@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPOINTLIGHT_H
-#define QT3D_QPOINTLIGHT_H
+#ifndef QT3DRENDER_QPOINTLIGHT_H
+#define QT3DRENDER_QPOINTLIGHT_H
 
 #include <Qt3DRenderer/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPointLightPrivate;
 
@@ -50,16 +50,16 @@ class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
     Q_OBJECT
 
 public:
-    explicit QPointLight(QNode *parent = 0);
+    explicit QPointLight(Qt3D::QNode *parent = 0);
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)
-    QPointLight(QPointLightPrivate &dd, QNode *parent);
+    QPointLight(QPointLightPrivate &dd, Qt3D::QNode *parent);
     QT3D_CLONEABLE(QPointLight)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPOINTLIGHT_H
+#endif // QT3DRENDER_QPOINTLIGHT_H

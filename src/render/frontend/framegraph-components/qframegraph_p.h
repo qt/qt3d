@@ -34,20 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPH_P_H
-#define QT3D_QFRAMEGRAPH_P_H
+#ifndef QT3DRENDER_QFRAMEGRAPH_P_H
+#define QT3DRENDER_QFRAMEGRAPH_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraph;
 class QFrameGraphNode;
 
-class QFrameGraphPrivate : public QComponentPrivate
+class QFrameGraphPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QFrameGraphPrivate();
@@ -61,4 +61,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPH_P_H
+#endif // QT3DRENDER_QFRAMEGRAPH_P_H

@@ -116,6 +116,7 @@ enum
 };
 
 #define Q_DECLARE_RESOURCE_INFO(TYPE, FLAGS) \
+    namespace Qt3D { \
     template<> \
     struct QResourceInfo<TYPE > \
 { \
@@ -123,7 +124,8 @@ enum
 { \
     needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
 }; \
-}
+}; \
+} // namespace Qt3D
 
 template <int v>
 struct Int2Type

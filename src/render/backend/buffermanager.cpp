@@ -38,9 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
-
+namespace Qt3DRender {
 namespace Render {
 
 BufferManager::BufferManager()
@@ -51,21 +49,20 @@ BufferManager::~BufferManager()
 {
 }
 
-void BufferManager::addDirtyBuffer(const QNodeId &bufferId)
+void BufferManager::addDirtyBuffer(const Qt3D::QNodeId &bufferId)
 {
     if (!m_dirtyBuffers.contains(bufferId))
         m_dirtyBuffers.push_back(bufferId);
 }
 
-QVector<QNodeId> BufferManager::dirtyBuffers()
+QVector<Qt3D::QNodeId> BufferManager::dirtyBuffers()
 {
-    QVector<QNodeId> vector(m_dirtyBuffers);
+    QVector<Qt3D::QNodeId> vector(m_dirtyBuffers);
     m_dirtyBuffers.clear();
     return vector;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

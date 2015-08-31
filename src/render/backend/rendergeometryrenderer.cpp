@@ -41,8 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderGeometryRenderer::RenderGeometryRenderer()
@@ -72,7 +73,7 @@ void RenderGeometryRenderer::cleanup()
     m_restartIndex = -1;
     m_primitiveRestart = false;
     m_primitiveType = QGeometryRenderer::Triangles;
-    m_geometryId = QNodeId();
+    m_geometryId = Qt3D::QNodeId();
     m_dirty = false;
     m_functor.reset();
 }
@@ -82,7 +83,7 @@ void RenderGeometryRenderer::setManager(GeometryRendererManager *manager)
     m_manager = manager;
 }
 
-void RenderGeometryRenderer::updateFromPeer(QNode *peer)
+void RenderGeometryRenderer::updateFromPeer(Qt3D::QNode *peer)
 {
     QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
     if (geometryRenderer) {
@@ -102,7 +103,7 @@ void RenderGeometryRenderer::updateFromPeer(QNode *peer)
     }
 }
 
-void RenderGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderGeometryRenderer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -189,7 +190,7 @@ RenderGeometryRendererFunctor::RenderGeometryRendererFunctor(GeometryRendererMan
 {
 }
 
-QBackendNode *RenderGeometryRendererFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *RenderGeometryRendererFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     RenderGeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
     geometryRenderer->setFactory(factory);
@@ -198,18 +199,17 @@ QBackendNode *RenderGeometryRendererFunctor::create(QNode *frontend, const QBack
     return geometryRenderer;
 }
 
-QBackendNode *RenderGeometryRendererFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *RenderGeometryRendererFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void RenderGeometryRendererFunctor::destroy(const QNodeId &id) const
+void RenderGeometryRendererFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     return m_manager->releaseResource(id);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

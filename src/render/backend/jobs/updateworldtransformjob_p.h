@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
-#define QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
+#ifndef QT3DRENDER_RENDER_UPDATEWORLDTRANSFORMJOB_H
+#define QT3DRENDER_RENDER_UPDATEWORLDTRANSFORMJOB_H
 
 #include <Qt3DCore/qaspectjob.h>
 
@@ -43,12 +43,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class RenderEntity;
 
-class UpdateWorldTransformJob : public QAspectJob
+class UpdateWorldTransformJob : public Qt3D::QAspectJob
 {
 public:
     explicit UpdateWorldTransformJob(RenderEntity *node);
@@ -63,8 +63,8 @@ private:
 typedef QSharedPointer<UpdateWorldTransformJob> UpdateWorldTransformJobPtr;
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_UPDATEWORLDTRANSFORMJOB_H
+#endif // QT3DRENDER_RENDER_UPDATEWORLDTRANSFORMJOB_H

@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QALPHATEST_H
-#define QT3D_QALPHATEST_H
+#ifndef QT3DRENDER_QALPHATEST_H
+#define QT3DRENDER_QALPHATEST_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAlphaTestPrivate;
 
@@ -65,7 +65,7 @@ public:
     };
     Q_ENUM(AlphaFunc)
 
-    explicit QAlphaTest(QNode *parent = 0);
+    explicit QAlphaTest(Qt3D::QNode *parent = 0);
     ~QAlphaTest();
 
     AlphaFunc func() const;
@@ -79,15 +79,15 @@ Q_SIGNALS:
     void clampChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)
     QT3D_CLONEABLE(QAlphaTest)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QALPHATEST_H
+#endif // QT3DRENDER_QALPHATEST_H

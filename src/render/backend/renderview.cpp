@@ -71,7 +71,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 namespace  {
@@ -94,7 +94,7 @@ bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
     return false;
 }
 
-void destroyUniformValue(const QUniformValue *value, QFrameAllocator *allocator)
+void destroyUniformValue(const QUniformValue *value, Qt3D::QFrameAllocator *allocator)
 {
     QUniformValue *v = const_cast<QUniformValue *>(value);
     if (v->isTexture())
@@ -704,6 +704,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

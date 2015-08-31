@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTEXTURE_H
-#define QT3D_QTEXTURE_H
+#ifndef QT3DRENDER_QTEXTURE_H
+#define QT3DRENDER_QTEXTURE_H
 
 #include <QOpenGLTexture>
 #include <Qt3DRenderer/texturedata.h>
@@ -53,4 +53,4 @@ QT_BEGIN_NAMESPACE
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTEXTURE_H
+#endif // QT3DRENDER_QTEXTURE_H

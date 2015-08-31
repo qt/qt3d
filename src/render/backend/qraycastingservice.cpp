@@ -48,10 +48,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
-QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBoundingVolumeProvider *provider,
-                                                          QAbstractCollisionQueryService::QueryMode mode, const QQueryHandle &handle)
+namespace Qt3DRender {
+
+QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3D::QRay3D &ray, Qt3D::QBoundingVolumeProvider *provider,
+                                                          Qt3D::QAbstractCollisionQueryService::QueryMode mode, const Qt3D::QQueryHandle &handle)
 {
     Q_Q(QRayCastingService);
 
@@ -95,13 +97,13 @@ QRayCastingServicePrivate::QRayCastingServicePrivate(const QString &description,
 {
 }
 
-QRayCastingService::QRayCastingService(QBoundingVolumeProvider *provider)
+QRayCastingService::QRayCastingService(Qt3D::QBoundingVolumeProvider *provider)
     : QAbstractCollisionQueryService(*new QRayCastingServicePrivate(QStringLiteral("Collision detection service using Ray Casting"),
                                                                     provider))
 {
 }
 
-QQueryHandle QRayCastingService::query(const QRay3D &ray, QAbstractCollisionQueryService::QueryMode mode)
+Qt3D::QQueryHandle QRayCastingService::query(const Qt3D::QRay3D &ray, QAbstractCollisionQueryService::QueryMode mode)
 {
     Q_D(QRayCastingService);
 
@@ -115,14 +117,14 @@ QQueryHandle QRayCastingService::query(const QRay3D &ray, QAbstractCollisionQuer
     return handle;
 }
 
-QCollisionQueryResult QRayCastingService::fetchResult(const QQueryHandle &handle)
+Qt3D::QCollisionQueryResult QRayCastingService::fetchResult(const Qt3D::QQueryHandle &handle)
 {
     Q_D(QRayCastingService);
 
     return d->m_results.value(handle).result();
 }
 
-QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
+QVector<Qt3D::QCollisionQueryResult> QRayCastingService::fetchAllResults() const
 {
     Q_D(const QRayCastingService);
 
@@ -136,6 +138,6 @@ QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
     return results;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBUFFERFUNCTOR
-#define QT3D_QBUFFERFUNCTOR
+#ifndef QT3DRENDER_QBUFFERFUNCTOR
+#define QT3DRENDER_QBUFFERFUNCTOR
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qabstractfunctor.h>
@@ -43,9 +43,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QBufferFunctor : public QAbstractFunctor
+class QT3DRENDERERSHARED_EXPORT QBufferFunctor : public Qt3D::QAbstractFunctor
 {
 public:
     virtual ~QBufferFunctor() {}
@@ -55,11 +55,11 @@ public:
 
 typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QBufferFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QBufferFunctorPtr)
 
-#endif // QT3D_QBUFFERFUNCTOR
+#endif // QT3DRENDER_QBUFFERFUNCTOR
 

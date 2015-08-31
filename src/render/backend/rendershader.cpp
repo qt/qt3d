@@ -48,7 +48,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 RenderShader::RenderShader()
@@ -83,7 +85,7 @@ void RenderShader::cleanup()
     m_uniformBlocks.clear();
 }
 
-void RenderShader::updateFromPeer(QNode *peer)
+void RenderShader::updateFromPeer(Qt3D::QNode *peer)
 {
     QShaderProgram *shader = static_cast<QShaderProgram *>(peer);
 
@@ -120,7 +122,7 @@ QVector<QByteArray> RenderShader::shaderCode() const
     return m_shaderCode;
 }
 
-void RenderShader::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderShader::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
@@ -396,6 +398,6 @@ void RenderShader::initialize(const RenderShader &other)
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
-#define QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
 
 #include <Qt3DQuick/quick3dnode.h>
 #include <Qt3DRenderer/qrenderpassfilter.h>
@@ -44,25 +44,23 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> includes READ includeList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> includes READ includeList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> includeList();
-    QQmlListProperty<Qt3D::QParameter> parameterList();
+    QQmlListProperty<QAnnotation> includeList();
+    QQmlListProperty<QParameter> parameterList();
 
-    inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3D::QRenderPassFilter*>(parent()); }
+    inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3DRender::QRenderPassFilter*>(parent()); }
 
 private:
     static void appendInclude(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
@@ -76,12 +74,10 @@ private:
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_H

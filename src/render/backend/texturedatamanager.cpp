@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -48,7 +48,7 @@ TextureDataManager::TextureDataManager()
 {}
 
 // Called from AspectThread sync
-void TextureDataManager::addToPendingTextures(const QNodeId &textureId)
+void TextureDataManager::addToPendingTextures(const Qt3D::QNodeId &textureId)
 {
     // This simple check ensures that we won't be having n jobs
     // for one mesh, in case n Materials are referencing the said
@@ -58,9 +58,9 @@ void TextureDataManager::addToPendingTextures(const QNodeId &textureId)
 }
 
 // Called from AspectThread prepare jobs
-QVector<QNodeId> TextureDataManager::texturesPending()
+QVector<Qt3D::QNodeId> TextureDataManager::texturesPending()
 {
-    QVector<QNodeId> textureIds = m_texturesPending;
+    QVector<Qt3D::QNodeId> textureIds = m_texturesPending;
     m_texturesPending.clear();
     return textureIds;
 }
@@ -163,8 +163,8 @@ void TextureDataManager::cleanup()
    m_textureHandlesToRelease.clear();
 }
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

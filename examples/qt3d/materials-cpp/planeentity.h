@@ -51,10 +51,10 @@ public:
 
     Qt3D::QScaleTransform *scaleTransform() const;
     Qt3D::QTranslateTransform *translateTransform() const;
-    Qt3D::QPlaneMesh *mesh() const;
+    Qt3DRender::QPlaneMesh *mesh() const;
 
 private:
-    Qt3D::QPlaneMesh *m_mesh;
+    Qt3DRender::QPlaneMesh *m_mesh;
     Qt3D::QTransform *m_transform;
     Qt3D::QScaleTransform *m_scaleTransform;
     Qt3D::QTranslateTransform *m_translateTransform;

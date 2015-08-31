@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*
   Expected Shader struct
@@ -59,7 +59,7 @@ namespace Qt3D {
  */
 
 /*!
-    \class Qt3D::QPointLightPrivate
+    \class Qt3DRender::QPointLightPrivate
     \internal
 */
 QPointLightPrivate::QPointLightPrivate()
@@ -76,7 +76,7 @@ QPointLightPrivate::QPointLightPrivate()
 
 /*!
     \qmltype PointLight
-    \instantiates Qt3D::QPointLight
+    \instantiates Qt3DRender::QPointLight
     \inherits AbstractLight
     \inqmlmodule Qt3D.Renderer
     \since 5.5
@@ -84,7 +84,7 @@ QPointLightPrivate::QPointLightPrivate()
 */
 
 /*!
-  \fn Qt3D::QPointLight::QPointLight(QNode *parent)
+  \fn Qt3DRender::QPointLight::QPointLight(QNode *parent)
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)
@@ -98,6 +98,6 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

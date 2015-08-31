@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
-#define QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qmaterial.h>
@@ -44,10 +44,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 // FIXME - write a custom QML parser and stop mis-using Tag
@@ -56,7 +54,7 @@ namespace Quick {
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DMaterial : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ qmlParameters)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ qmlParameters)
 
 public:
     explicit Quick3DMaterial(QObject *parent = 0);
@@ -75,12 +73,10 @@ private:
     static void clearParameters(QQmlListProperty<QParameter> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DMATERIAL_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H

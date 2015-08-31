@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADER_H
-#define QT3D_RENDER_RENDERSHADER_H
+#ifndef QT3DRENDER_RENDER_RENDERSHADER_H
+#define QT3DRENDER_RENDER_RENDERSHADER_H
 
 #include <QVector>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 class QMutex;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QShaderProgram;
 
@@ -58,7 +58,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class Q_AUTOTEST_EXPORT RenderShader : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderShader : public Qt3D::QBackendNode
 {
 public:
     RenderShader();
@@ -66,7 +66,7 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
@@ -75,7 +75,7 @@ public:
     QVector<QString> uniformBlockNames() const;
     QVector<QByteArray> shaderCode() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
     ProgramDNA dna() const;
 
@@ -124,9 +124,9 @@ private:
     friend class QGraphicsContext;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSHADER_H
+#endif // QT3DRENDER_RENDER_RENDERSHADER_H

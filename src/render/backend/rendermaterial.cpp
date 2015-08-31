@@ -46,9 +46,11 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QOpenGLShaderProgram>
 
+using namespace Qt3D;
+
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 RenderMaterial::RenderMaterial()
@@ -67,7 +69,7 @@ void RenderMaterial::cleanup()
     m_parameterPack.clear();
 }
 
-void RenderMaterial::updateFromPeer(QNode *node)
+void RenderMaterial::updateFromPeer(Qt3D::QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
@@ -78,7 +80,7 @@ void RenderMaterial::updateFromPeer(QNode *node)
         m_parameterPack.appendParameter(p->id());
 }
 
-void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderMaterial::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -109,17 +111,17 @@ void RenderMaterial::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-QList<QNodeId> RenderMaterial::parameters() const
+QList<Qt3D::QNodeId> RenderMaterial::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QNodeId RenderMaterial::effect() const
+Qt3D::QNodeId RenderMaterial::effect() const
 {
     return m_effectUuid;
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

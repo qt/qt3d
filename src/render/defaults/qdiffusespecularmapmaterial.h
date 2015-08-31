@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
-#define QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
+#define QT3DRENDER_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 class QDiffuseSpecularMapMaterialPrivate;
@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QDiffuseSpecularMapMaterial : public QMaterial
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
 public:
-    explicit QDiffuseSpecularMapMaterial(QNode *parent = 0);
+    explicit QDiffuseSpecularMapMaterial(Qt3D::QNode *parent = 0);
     ~QDiffuseSpecularMapMaterial();
 
     QColor ambient() const;
@@ -83,8 +83,8 @@ private:
     Q_DECLARE_PRIVATE(QDiffuseSpecularMapMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QDIFFUSESPECULARMAPMATERIAL_H
+#endif // QT3DRENDER_RENDER_QDIFFUSESPECULARMAPMATERIAL_H

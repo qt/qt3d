@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QFrameGraphNodePrivate
+    \class Qt3DRender::QFrameGraphNodePrivate
     \internal
 */
 QFrameGraphNodePrivate::QFrameGraphNodePrivate()
@@ -82,7 +82,7 @@ QFrameGraphNode::QFrameGraphNode(QNode *parent)
 
 QFrameGraphNode::~QFrameGraphNode()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QFrameGraphNode subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(Qt3D::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QFrameGraphNode subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*!
@@ -114,7 +114,7 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
 */
 
 /*!
-    \property Qt3D::QFrameGraphNode::enabled
+    \property Qt3DRender::QFrameGraphNode::enabled
 
     Holds whether the frame graph node is enabled or disabled.
 */
@@ -135,6 +135,6 @@ void QFrameGraphNode::setEnabled(bool enabled)
 }
 
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

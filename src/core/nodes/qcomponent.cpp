@@ -108,7 +108,7 @@ void QComponentPrivate::removeEntity(QEntity *entity)
     Qt3D::QComponent subclasses are often aggregated in groups that impart useful
     behavior to the aggregating entity. For example, to have an Entity that gets
     drawn by the Qt3D renderer aspect, an entity would most likely aggregate
-    Qt3D::QTransform, Qt3D::QMesh, and Qt3D::QMaterial components.
+    Qt3D::QTransform, Qt3DRender::QMesh, and Qt3DRender::QMaterial components.
 
     \sa Qt3D::QEntity
 */

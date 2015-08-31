@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilMaskPrivate : public QRenderStatePrivate
 {
@@ -106,6 +106,6 @@ void QStencilMask::copy(const QNode *ref)
     d_func()->m_backMask = otherRef->backMask();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

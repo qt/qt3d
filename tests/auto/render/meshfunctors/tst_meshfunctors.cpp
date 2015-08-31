@@ -38,7 +38,7 @@
 #include <Qt3DRenderer/qgeometryfunctor.h>
 #include <Qt3DRenderer/qgeometry.h>
 
-class MeshFunctorA : public Qt3D::QGeometryFunctor
+class MeshFunctorA : public Qt3DRender::QGeometryFunctor
 {
 public:
     MeshFunctorA()
@@ -47,12 +47,12 @@ public:
     ~MeshFunctorA()
     {}
 
-    Qt3D::QGeometry *operator ()() Q_DECL_OVERRIDE
+    Qt3DRender::QGeometry *operator ()() Q_DECL_OVERRIDE
     {
         return Q_NULLPTR;
     }
 
-    bool operator ==(const Qt3D::QGeometryFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const Q_DECL_OVERRIDE
     {
         return functor_cast<MeshFunctorA>(&other);
     }
@@ -60,7 +60,7 @@ public:
     QT3D_FUNCTOR(MeshFunctorA)
 };
 
-class MeshFunctorB : public Qt3D::QGeometryFunctor
+class MeshFunctorB : public Qt3DRender::QGeometryFunctor
 {
 public:
     MeshFunctorB()
@@ -69,12 +69,12 @@ public:
     ~MeshFunctorB()
     {}
 
-    Qt3D::QGeometry *operator ()() Q_DECL_OVERRIDE
+    Qt3DRender::QGeometry *operator ()() Q_DECL_OVERRIDE
     {
         return Q_NULLPTR;
     }
 
-    bool operator ==(const Qt3D::QGeometryFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const Q_DECL_OVERRIDE
     {
         return functor_cast<MeshFunctorB>(&other);
     }
@@ -91,7 +91,7 @@ public:
     ~MeshFunctorASub()
     {}
 
-    bool operator ==(const Qt3D::QGeometryFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const Q_DECL_OVERRIDE
     {
         return functor_cast<MeshFunctorASub>(&other);
     }

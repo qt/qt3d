@@ -46,7 +46,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 RenderTargetSelector::RenderTargetSelector() :
@@ -54,7 +56,7 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::updateFromPeer(QNode *peer)
+void RenderTargetSelector::updateFromPeer(Qt3D::QNode *peer)
 {
     QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
     m_renderTargetUuid = QNodeId();
@@ -64,7 +66,7 @@ void RenderTargetSelector::updateFromPeer(QNode *peer)
     m_drawBuffers = selector->drawBuffers();
 }
 
-void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderTargetSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == NodeUpdated) {
@@ -74,11 +76,11 @@ void RenderTargetSelector::sceneChangeEvent(const QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("drawBuffers"))
-            m_drawBuffers = propertyChange->value().value<QList<Qt3D::QRenderAttachment::RenderAttachmentType> >();
+            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >();
     }
 }
 
-QNodeId RenderTargetSelector::renderTargetUuid() const
+Qt3D::QNodeId RenderTargetSelector::renderTargetUuid() const
 {
     return m_renderTargetUuid;
 }
@@ -88,7 +90,7 @@ QList<QRenderAttachment::RenderAttachmentType> RenderTargetSelector::drawBuffers
     return m_drawBuffers;
 }
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

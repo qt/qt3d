@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTLIGHT_H
-#define QT3D_QABSTRACTLIGHT_H
+#ifndef QT3DRENDER_QABSTRACTLIGHT_H
+#define QT3DRENDER_QABSTRACTLIGHT_H
 
 #include <Qt3DRenderer/qshaderdata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -45,8 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3DRender {
 
 class QAbstractLightPrivate;
 
@@ -59,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractLight : public QShaderData
     Q_PROPERTY(TransformType positionTransformed READ positionTransformed CONSTANT)
 
 public :
-    explicit QAbstractLight(QNode *parent = 0);
+    explicit QAbstractLight(Qt3D::QNode *parent = 0);
 
     QColor color() const;
     void setColor(const QColor &color);
@@ -73,8 +72,8 @@ public :
     TransformType positionTransformed() const;
 
 protected :
-    QAbstractLight(QAbstractLightPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractLight(QAbstractLightPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void colorChanged();
@@ -85,8 +84,8 @@ private:
     Q_DECLARE_PRIVATE(QAbstractLight)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LIGHT_H
+#endif // QT3DRENDER_LIGHT_H

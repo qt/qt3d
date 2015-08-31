@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTEXTUREIMAGE_H
-#define QT3D_RENDER_RENDERTEXTUREIMAGE_H
+#ifndef QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H
+#define QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H
 
 #include <qglobal.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -55,13 +55,13 @@ class TextureDataManager;
 
 typedef uint TextureImageDNA;
 
-class RenderTextureImage : public QBackendNode
+class RenderTextureImage : public Qt3D::QBackendNode
 {
 public:
     RenderTextureImage();
     void cleanup();
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int m_layer;
     int m_mipmapLevel;
@@ -94,22 +94,22 @@ private:
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
-    QList<QNodeId> m_referencedTextures;
+    QList<Qt3D::QNodeId> m_referencedTextures;
     HTexture m_textureProvider;
-    QNodeId m_textureProviderId;
+    Qt3D::QNodeId m_textureProviderId;
     TextureImageDNA m_dna;
 };
 
-class RenderTextureImageFunctor : public QBackendNodeFunctor
+class RenderTextureImageFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderTextureImageFunctor(TextureManager *textureManager,
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const QNodeId &id) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
 
 private:
     TextureManager *m_textureManager;
@@ -118,10 +118,10 @@ private:
 };
 
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTEXTUREIMAGE_H
+#endif // QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H

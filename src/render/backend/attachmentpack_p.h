@@ -34,16 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_ATTACHMENTPACK_P_H
-#define QT3D_RENDER_ATTACHMENTPACK_P_H
+#ifndef QT3DRENDER_RENDER_ATTACHMENTPACK_P_H
+#define QT3DRENDER_RENDER_ATTACHMENTPACK_P_H
 
 #include <Qt3DRenderer/qrenderattachment.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 struct Attachment
@@ -52,7 +51,7 @@ struct Attachment
     QString m_name;
     int m_mipLevel;
     int m_layer;
-    QNodeId m_textureUuid;
+    Qt3D::QNodeId m_textureUuid;
     QRenderAttachment::RenderAttachmentType m_type;
     QRenderAttachment::CubeMapFace m_face;
 };
@@ -73,10 +72,9 @@ private:
     QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_ATTACHMENTPACK_P_H
+#endif // QT3DRENDER_RENDER_ATTACHMENTPACK_P_H

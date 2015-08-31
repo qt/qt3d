@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSHADERDATA_P_H
-#define QT3D_RENDER_RENDERSHADERDATA_P_H
+#ifndef QT3DRENDER_RENDER_RENDERSHADERDATA_P_H
+#define QT3DRENDER_RENDER_RENDERSHADERDATA_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -53,18 +53,18 @@ class QGraphicsContext;
 class UniformBuffer;
 class ShaderDataManager;
 
-class Q_AUTOTEST_EXPORT RenderShaderData : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderShaderData : public Qt3D::QBackendNode
 {
 public:
     RenderShaderData();
     ~RenderShaderData();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<QString, QVariant> properties() const { return m_properties; }
     inline QHash<QString, QVariant> updatedProperties() const { return m_updatedProperties; }
 
     // Called by cleanup job
-    inline static QList<QNodeId> updatedShaderDataList() { return m_updatedShaderData; }
+    inline static QList<Qt3D::QNodeId> updatedShaderDataList() { return m_updatedShaderData; }
     inline static void clearShaderDataList() { return m_updatedShaderData.clear(); }
     void clearUpdate();
 
@@ -75,7 +75,7 @@ public:
     void updateTransformedProperties(const QMatrix4x4 &nodeWordlTransform);
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     // 1 to 1 match with frontend properties, modified only by sceneChangeEvent
@@ -91,7 +91,7 @@ private:
     QHash<QString, QShaderData::TransformType> m_transformedProperties;
     ShaderDataManager *m_manager;
     QMutex *m_mutex;
-    static QList<QNodeId> m_updatedShaderData;
+    static QList<Qt3D::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
     QMatrix4x4 m_viewMatrix;
 
@@ -101,25 +101,25 @@ private:
     friend class RenderShaderDataFunctor;
 };
 
-class RenderShaderDataFunctor : public QBackendNodeFunctor
+class RenderShaderDataFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderShaderDataFunctor(ShaderDataManager *manager);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const QNodeId &id) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
 
 private:
     ShaderDataManager *m_manager;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Render::RenderShaderData*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::RenderShaderData*)
 
-#endif // QT3D_RENDER_RENDERSHADERDATA_P_H
+#endif // QT3DRENDER_RENDER_RENDERSHADERDATA_P_H

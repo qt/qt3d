@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_SHADERPROPERTYPARSER_H
-#define QT3D_RENDER_QUICK_SHADERPROPERTYPARSER_H
+#ifndef QT3DRENDER_RENDER_QUICK_SHADERPROPERTYPARSER_H
+#define QT3DRENDER_RENDER_QUICK_SHADERPROPERTYPARSER_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <QtQml/private/qqmlcustomparser_p.h>
@@ -43,10 +43,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT ShaderPropertyParser : public QQmlCustomParser
@@ -61,12 +59,10 @@ public:
     void applyBindings(QObject *, QQmlCompiledData *, const QList<const QV4::CompiledData::Binding *> &) Q_DECL_OVERRIDE;
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_SHADERPROPERTYPARSER_H
+#endif // QT3DRENDER_RENDER_QUICK_SHADERPROPERTYPARSER_H

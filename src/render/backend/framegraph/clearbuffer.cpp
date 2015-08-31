@@ -39,8 +39,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 ClearBuffer::ClearBuffer()
@@ -49,14 +50,14 @@ ClearBuffer::ClearBuffer()
 {
 }
 
-void ClearBuffer::updateFromPeer(QNode *peer)
+void ClearBuffer::updateFromPeer(Qt3D::QNode *peer)
 {
     QClearBuffer *clearBuffer = static_cast<QClearBuffer *>(peer);
     m_type = clearBuffer->buffers();
     setEnabled(clearBuffer->isEnabled());
 }
 
-void ClearBuffer::sceneChangeEvent(const QSceneChangePtr &e)
+void ClearBuffer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -72,8 +73,7 @@ QClearBuffer::BufferType ClearBuffer::type() const
     return m_type;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

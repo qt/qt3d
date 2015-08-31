@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSTENCILTEST_H
-#define QT3D_QSTENCILTEST_H
+#ifndef QT3DRENDER_QSTENCILTEST_H
+#define QT3DRENDER_QSTENCILTEST_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilTestPrivate;
 class QStencilTestSeparate;
@@ -50,27 +50,27 @@ class QStencilTestSeparate;
 class QT3DRENDERERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QStencilTestSeparate *front READ front CONSTANT)
-    Q_PROPERTY(Qt3D::QStencilTestSeparate *back READ back CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilTestSeparate *front READ front CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilTestSeparate *back READ back CONSTANT)
 public:
 
-    explicit QStencilTest(QNode *parent = 0);
+    explicit QStencilTest(Qt3D::QNode *parent = 0);
     ~QStencilTest();
 
     QStencilTestSeparate *front() const;
     QStencilTestSeparate *back() const;
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
     QT3D_CLONEABLE(QStencilTest)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_QSTENCILTEST_H
+#endif // QT3DRENDER_QSTENCILTEST_H

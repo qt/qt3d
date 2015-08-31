@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QOPENGLFILTER_H
-#define QT3D_QOPENGLFILTER_H
+#ifndef QT3DRENDER_QOPENGLFILTER_H
+#define QT3DRENDER_QOPENGLFILTER_H
 
 #include <QObject>
 #include <QStringList>
@@ -44,15 +44,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QOpenGLFilterPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QOpenGLFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QOpenGLFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
-    Q_PROPERTY(Qt3D::QOpenGLFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
+    Q_PROPERTY(Qt3DRender::QOpenGLFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
+    Q_PROPERTY(Qt3DRender::QOpenGLFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
     Q_PROPERTY(int minorVersion READ minorVersion WRITE setMinorVersion NOTIFY minorVersionChanged)
     Q_PROPERTY(int majorVersion READ majorVersion WRITE setMajorVersion NOTIFY majorVersionChanged)
     Q_PROPERTY(QStringList extensions READ extensions WRITE setExtensions NOTIFY extensionsChanged)
@@ -109,8 +109,8 @@ private:
 bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
 bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QOPENGLFILTER_H
+#endif // QT3DRENDER_QOPENGLFILTER_H

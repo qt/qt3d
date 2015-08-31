@@ -47,10 +47,10 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3D::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::RenderAttribute renderAttribute;
 
-        Qt3D::QAttribute attribute;
-        attribute.setAttributeType(Qt3D::QAttribute::IndexAttribute);
+        Qt3DRender::QAttribute attribute;
+        attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         attribute.setByteOffset(1200);
         attribute.setByteStride(883);
         attribute.setCount(427);
@@ -59,8 +59,8 @@ private Q_SLOTS:
         attribute.setDataType(Qt3D::QAbstractAttribute::UnsignedShort);
         attribute.setDataSize(3);
 
-        Qt3D::QBuffer buffer(Qt3D::QBuffer::IndexBuffer);
-        buffer.setUsage(Qt3D::QBuffer::DynamicCopy);
+        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
         attribute.setBuffer(&buffer);
 
@@ -84,7 +84,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3D::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::RenderAttribute renderAttribute;
 
         // THEN
         QVERIFY(renderAttribute.peerUuid().isNull());
@@ -93,15 +93,15 @@ private Q_SLOTS:
         QCOMPARE(renderAttribute.isDirty(), false);
         QCOMPARE(renderAttribute.dataType(), Qt3D::QAbstractAttribute::Float);
         QCOMPARE(renderAttribute.dataSize(), 1U);
-        QCOMPARE(renderAttribute.attributeType(), Qt3D::QAttribute::VertexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
         QCOMPARE(renderAttribute.count(), 0U);
         QCOMPARE(renderAttribute.divisor(), 0U);
 
         // GIVEN
-        Qt3D::QAttribute attribute;
-        attribute.setAttributeType(Qt3D::QAttribute::IndexAttribute);
+        Qt3DRender::QAttribute attribute;
+        attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         attribute.setByteOffset(1200);
         attribute.setByteStride(883);
         attribute.setCount(427);
@@ -109,8 +109,8 @@ private Q_SLOTS:
         attribute.setName(QStringLiteral("C3"));
         attribute.setDataType(Qt3D::QAbstractAttribute::Double);
         attribute.setDataSize(4);
-        Qt3D::QBuffer buffer(Qt3D::QBuffer::IndexBuffer);
-        buffer.setUsage(Qt3D::QBuffer::DynamicCopy);
+        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("C7"));
         attribute.setBuffer(&buffer);
 
@@ -125,7 +125,7 @@ private Q_SLOTS:
         QCOMPARE(renderAttribute.isDirty(), false);
         QCOMPARE(renderAttribute.dataType(), Qt3D::QAbstractAttribute::Float);
         QCOMPARE(renderAttribute.dataSize(), 1U);
-        QCOMPARE(renderAttribute.attributeType(), Qt3D::QAttribute::VertexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
         QCOMPARE(renderAttribute.count(), 0U);
@@ -135,7 +135,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3D::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::RenderAttribute renderAttribute;
 
         QVERIFY(!renderAttribute.isDirty());
 
@@ -167,12 +167,12 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
-        updateChange->setValue(static_cast<int>(Qt3D::QAttribute::IndexAttribute));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::IndexAttribute));
         updateChange->setPropertyName("attributeType");
         renderAttribute.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderAttribute.attributeType(), Qt3D::QAttribute::IndexAttribute);
+        QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::IndexAttribute);
         QVERIFY(renderAttribute.isDirty());
 
         renderAttribute.unsetDirty();

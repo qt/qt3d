@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTEXTURE_H
-#define QT3D_RENDER_RENDERTEXTURE_H
+#ifndef QT3DRENDER_RENDER_RENDERTEXTURE_H
+#define QT3DRENDER_RENDER_RENDERTEXTURE_H
 
 #include <QOpenGLContext>
 #include <QMutex>
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLTexture;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 
@@ -60,14 +60,14 @@ class TextureDataManager;
 
 typedef uint TextureDNA;
 
-class RenderTexture : public QBackendNode
+class RenderTexture : public Qt3D::QBackendNode
 {
 public:
     RenderTexture();
     ~RenderTexture();
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     QOpenGLTexture* getOrCreateGLTexture() ;
 
@@ -75,7 +75,7 @@ public:
 
     bool isTextureReset() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     TextureDNA dna() const;
 
     void setTextureManager(TextureManager *manager);
@@ -134,16 +134,16 @@ private:
     void updateDNA();
 };
 
-class RenderTextureFunctor : public QBackendNodeFunctor
+class RenderTextureFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
     explicit RenderTextureFunctor(TextureManager *textureManager,
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const QNodeId &id) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
 
 private:
     TextureManager *m_textureManager;
@@ -152,10 +152,10 @@ private:
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Render::RenderTexture*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::RenderTexture*)
 
-#endif // QT3D_RENDER_RENDERTEXTURE_H
+#endif // QT3DRENDER_RENDER_RENDERTEXTURE_H

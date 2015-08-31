@@ -34,17 +34,17 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSORTCRITERION_P_H
-#define QT3D_QSORTCRITERION_P_H
+#ifndef QT3DRENDER_QSORTCRITERION_P_H
+#define QT3DRENDER_QSORTCRITERION_P_H
 
 #include <private/qnode_p.h>
 #include <Qt3DRenderer/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QSortCriterionPrivate : public QNodePrivate
+class QSortCriterionPrivate : public Qt3D::QNodePrivate
 {
 public:
     QSortCriterionPrivate();
@@ -53,8 +53,8 @@ public:
     QSortCriterion::SortType m_sort;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSORTCRITERION_P_H
+#endif // QT3DRENDER_QSORTCRITERION_P_H

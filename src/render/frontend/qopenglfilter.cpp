@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QOpenGLFilterPrivate : public QObjectPrivate
 {
@@ -64,7 +64,7 @@ public:
 };
 
 /*!
-    \class QOpenGLFilter
+    \class Qt3DRender::QOpenGLFilter
     \inmodule Qt3DRenderer
     \since 5.5
     \brief The QOpenGLFilter class provides ...
@@ -72,14 +72,14 @@ public:
 
 /*!
     \qmltype OpenGLFilter
-    \instantiates Qt3D::QOpenGLFilter
+    \instantiates Qt3DRender::QOpenGLFilter
     \inherits QtObject
     \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
 
-/*! \fn Qt3D::QOpenGLFilter::QOpenGLFilter(QObject *parent)
+/*! \fn Qt3DRender::QOpenGLFilter::QOpenGLFilter(QObject *parent)
   Constructs a new QOpenGLFilter with the specified \a parent.
  */
 QOpenGLFilter::QOpenGLFilter(QObject *parent)
@@ -87,7 +87,7 @@ QOpenGLFilter::QOpenGLFilter(QObject *parent)
 {
 }
 
-/*! \fn void Qt3D::QOpenGLFilter::copy(const QOpenGLFilter &ref)
+/*! \fn void Qt3DRender::QOpenGLFilter::copy(const QOpenGLFilter &ref)
   Copies the \a ref instance into this one.
  */
 void QOpenGLFilter::copy(const QOpenGLFilter &ref)
@@ -102,7 +102,7 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 }
 
 /*!
-  \enum Qt3D::QOpenGLFilter::Api
+  \enum Qt3DRender::QOpenGLFilter::Api
 
   \value ES QSurfaceFormat::OpenGLES
   \value Desktop QSurfaceFormat::OpenGL
@@ -110,7 +110,7 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 */
 
 /*!
-  \enum Qt3D::QOpenGLFilter::Profile
+  \enum Qt3DRender::QOpenGLFilter::Profile
 
   \value None QSurfaceFormat::NoProfile
   \value Core QSurfaceFormat::CoreProfile
@@ -119,7 +119,7 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 */
 
 /*!
-  \property Qt3D::QOpenGLFilter::api
+  \property Qt3DRender::QOpenGLFilter::api
 
 */
 
@@ -138,7 +138,7 @@ QOpenGLFilter::Api QOpenGLFilter::api() const
 }
 
 /*!
-  \property Qt3D::QOpenGLFilter::profile
+  \property Qt3DRender::QOpenGLFilter::profile
 
 */
 
@@ -157,7 +157,7 @@ QOpenGLFilter::Profile QOpenGLFilter::profile() const
 }
 
 /*!
-  \property Qt3D::QOpenGLFilter::minorVersion
+  \property Qt3DRender::QOpenGLFilter::minorVersion
 
  */
 
@@ -173,7 +173,7 @@ int QOpenGLFilter::minorVersion() const
 }
 
 /*!
-  \property Qt3D::QOpenGLFilter::majorVersion
+  \property Qt3DRender::QOpenGLFilter::majorVersion
 
  */
 
@@ -189,7 +189,7 @@ int QOpenGLFilter::majorVersion() const
 }
 
 /*!
-  \property Qt3D::QOpenGLFilter::extensions
+  \property Qt3DRender::QOpenGLFilter::extensions
 
  */
 
@@ -205,7 +205,7 @@ QStringList QOpenGLFilter::extensions() const
 }
 
 /*!
-  \property Qt3D::QOpenGLFilter::vendor
+  \property Qt3DRender::QOpenGLFilter::vendor
 
  */
 
@@ -281,7 +281,7 @@ void QOpenGLFilter::setVendor(const QString &vendor)
 }
 
 /*! \fn bool Qt3D::operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
-  \relates Qt3D::QOpenGLFilter
+  \relates Qt3DRender::QOpenGLFilter
   Returns true if \a reference and \a sample are equivalent.
  */
 bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
@@ -303,7 +303,7 @@ bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
 }
 
 /*! \fn bool Qt3D::operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
-  \relates Qt3D::QOpenGLFilter
+  \relates Qt3DRender::QOpenGLFilter
   Returns true if \a reference and \a sample are different.
  */
 bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
@@ -311,9 +311,9 @@ bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
     return !(reference == sample);
 }
 
-/*! \fn void Qt3D::QOpenGLFilter::openGLFilterChanged()
+/*! \fn void Qt3DRender::QOpenGLFilter::openGLFilterChanged()
   This signal is emitted when the value of any property is changed.
 */
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

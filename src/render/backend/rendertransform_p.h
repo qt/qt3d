@@ -34,29 +34,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTRANSFORM_H
-#define QT3D_RENDER_RENDERTRANSFORM_H
+#ifndef QT3DRENDER_RENDER_RENDERTRANSFORM_H
+#define QT3DRENDER_RENDER_RENDERTRANSFORM_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class Renderer;
 class TransformManager;
 
-class RenderTransform : public QBackendNode
+class RenderTransform : public Qt3D::QBackendNode
 {
 public:
     RenderTransform();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
 private:
@@ -64,10 +64,10 @@ private:
     bool m_enabled;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTRANSFORM_H
+#endif // QT3DRENDER_RENDER_RENDERTRANSFORM_H

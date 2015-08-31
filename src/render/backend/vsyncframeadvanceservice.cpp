@@ -42,11 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
-class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public QAbstractFrameAdvanceServicePrivate
+class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public Qt3D::QAbstractFrameAdvanceServicePrivate
 {
 public:
     VSyncFrameAdvanceServicePrivate()
@@ -109,8 +108,7 @@ void VSyncFrameAdvanceService::proceedToNextFrame()
     d->m_semaphore.release(1);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

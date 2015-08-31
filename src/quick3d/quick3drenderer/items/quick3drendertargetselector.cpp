@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DRenderTargetSelector::Quick3DRenderTargetSelector(QObject *parent)
@@ -76,10 +74,8 @@ void Quick3DRenderTargetSelector::setDrawBuffers(const QVariantList &buffers)
     }
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

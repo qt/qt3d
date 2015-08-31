@@ -34,18 +34,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSHADERPROGRAM_P_H
-#define QT3D_QSHADERPROGRAM_P_H
+#ifndef QT3DRENDER_QSHADERPROGRAM_P_H
+#define QT3DRENDER_QSHADERPROGRAM_P_H
 
 #include <private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QShaderProgram;
 
-class QShaderProgramPrivate : public QNodePrivate
+class QShaderProgramPrivate : public Qt3D::QNodePrivate
 {
 public:
     QShaderProgramPrivate();
@@ -65,8 +65,8 @@ public:
     QByteArray m_computeShaderCode;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSHADERPROGRAM_P_H
+#endif // QT3DRENDER_QSHADERPROGRAM_P_H

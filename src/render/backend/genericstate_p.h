@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_STATE_IMPLS_H
-#define QT3D_RENDER_STATE_IMPLS_H
+#ifndef QT3DRENDER_RENDER_STATE_IMPLS_H
+#define QT3DRENDER_RENDER_STATE_IMPLS_H
 
 #include <QList>
 
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 template <typename Derived, typename T>
@@ -147,8 +147,8 @@ protected:
     Z m_6;
 };
 
-} // Render
-} // Qt3D of namespace
+} // namespace Render
+} // namespace Qt3DRender of namespace
 
 QT_END_NAMESPACE
 

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTTEXTUREPROVIDER_H
-#define QT3D_QABSTRACTTEXTUREPROVIDER_H
+#ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
+#define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
 
 #include <Qt3DRenderer/texturedata.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,19 +43,19 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public QNode
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Target target READ target CONSTANT)
     Q_PROPERTY(TextureFormat format READ format WRITE setFormat NOTIFY formatChanged)
     Q_PROPERTY(bool generateMipMaps READ generateMipMaps WRITE setGenerateMipMaps NOTIFY generateMipMapsChanged)
-    Q_PROPERTY(Qt3D::QTextureWrapMode *wrapMode READ wrapMode CONSTANT)
+    Q_PROPERTY(Qt3DRender::QTextureWrapMode *wrapMode READ wrapMode CONSTANT)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
@@ -326,10 +326,10 @@ Q_SIGNALS:
     void uniqueChanged();
 
 protected:
-    explicit QAbstractTextureProvider(QNode *parent = 0);
-    explicit QAbstractTextureProvider(Target target, QNode *parent = 0);
-    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    explicit QAbstractTextureProvider(Qt3D::QNode *parent = 0);
+    explicit QAbstractTextureProvider(Target target, Qt3D::QNode *parent = 0);
+    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:
@@ -337,8 +337,8 @@ private:
     QT3D_CLONEABLE(QAbstractTextureProvider)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTTEXTUREPROVIDER_H
+#endif // QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H

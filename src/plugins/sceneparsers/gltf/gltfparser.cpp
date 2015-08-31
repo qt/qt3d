@@ -75,7 +75,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(GLTFParserLog, "Qt3D.GLTFParser")
 
@@ -183,7 +185,7 @@ bool GLTFParser::setJSON(const QJsonDocument &json )
  */
 void GLTFParser::setSource(const QUrl &source)
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo finfo(path);
     if (!finfo.exists()) {
         qCWarning(GLTFParserLog) << "missing file:" << path;
@@ -211,11 +213,11 @@ void GLTFParser::setSource(const QUrl &source)
  */
 bool GLTFParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);
 }
 
-QEntity* GLTFParser::node(const QString &id)
+Qt3D::QEntity* GLTFParser::node(const QString &id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
@@ -282,7 +284,7 @@ QEntity* GLTFParser::node(const QString &id)
         }
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
-        QTransform *trans = new QTransform();
+        Qt3D::QTransform *trans = new Qt3D::QTransform();
         trans->addTransform(new QMatrixTransform(m));
         result->addComponent(trans);
     }
@@ -300,7 +302,7 @@ QEntity* GLTFParser::node(const QString &id)
     return result;
 }
 
-QEntity* GLTFParser::scene(const QString &id)
+Qt3D::QEntity* GLTFParser::scene(const QString &id)
 {
     parse();
 
@@ -457,7 +459,7 @@ QParameter *GLTFParser::parameterFromTechnique(QTechnique *technique, const QStr
     return Q_NULLPTR;
 }
 
-QEntity* GLTFParser::defaultScene()
+Qt3D::QEntity* GLTFParser::defaultScene()
 {
     if (m_defaultScene.isEmpty()) {
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "no default scene";
@@ -776,8 +778,8 @@ void GLTFParser::processJSONProgram(const QString &id, const QJsonObject &jsonOb
         return;
     }
 
-    prog->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[fragName])));
-    prog->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[vertName])));
+    prog->setFragmentShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[fragName])));
+    prog->setVertexShaderCode(QShaderProgram::loadSource(QUrl::fromLocalFile(m_shaderPaths[vertName])));
     m_programs[id] = prog;
 }
 
@@ -1407,6 +1409,6 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     return Q_NULLPTR;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

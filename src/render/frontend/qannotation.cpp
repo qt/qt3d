@@ -41,11 +41,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 
 /*!
-    \class Qt3D::QAnnotationPrivate
+    \class Qt3DRender::QAnnotationPrivate
     \internal
 */
 QAnnotationPrivate::QAnnotationPrivate()
@@ -54,7 +54,7 @@ QAnnotationPrivate::QAnnotationPrivate()
 }
 
 /*!
-    \class QAnnotation
+    \class Qt3DRender::QAnnotation
     \inmodule Qt3DRenderer
     \since 5.5
     \brief The QAnnotation class provides ...
@@ -62,7 +62,7 @@ QAnnotationPrivate::QAnnotationPrivate()
 
 /*!
     \qmltype Annotation
-    \instantiates Qt3D::QAnnotation
+    \instantiates Qt3DRender::QAnnotation
     \inherits Node
     \inqmlmodule Qt3D.Renderer
     \since 5.5
@@ -141,6 +141,6 @@ QString QAnnotation::name() const
     return d->m_name;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

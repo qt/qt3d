@@ -34,26 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QEFFECT_H
-#define QT3D_QEFFECT_H
+#ifndef QT3DRENDER_QEFFECT_H
+#define QT3DRENDER_QEFFECT_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 class QTechnique;
 class QEffectPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QEffect
-        : public QNode
+        : public Qt3D::QNode
 {
     Q_OBJECT
 public:
-    explicit QEffect(QNode *parent = 0);
+    explicit QEffect(Qt3D::QNode *parent = 0);
     ~QEffect();
 
     void addParameter(QParameter *parameter);
@@ -65,16 +65,16 @@ public:
     QList<QTechnique *> techniques() const;
 
 protected:
-    QEffect(QEffectPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QEffect(QEffectPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QEffect)
     QT3D_CLONEABLE(QEffect)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QEFFECT_H
+#endif // QT3DRENDER_QEFFECT_H

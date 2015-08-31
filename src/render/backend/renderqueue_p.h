@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERQUEUE_H
-#define QT3D_RENDER_RENDERQUEUE_H
+#ifndef QT3DRENDER_RENDER_RENDERQUEUE_H
+#define QT3DRENDER_RENDER_RENDERQUEUE_H
 
 #include <QVector>
 #include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -68,10 +68,10 @@ private:
     QVector<RenderView *> m_currentWorkQueue;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERQUEUE_H
+#endif // QT3DRENDER_RENDER_RENDERQUEUE_H

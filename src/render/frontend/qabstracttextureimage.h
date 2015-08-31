@@ -34,21 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTTEXTUREIMAGE_H
-#define QT3D_QABSTRACTTEXTUREIMAGE_H
+#ifndef QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
+#define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 
 #include <Qt3DCore/qabstractfunctor.h>
 #include <Qt3DRenderer/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 // TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
 // We might also get rid of the layer, face, mipmap level from
 // TexImageDataPtr and store that in the functor directly
 // or use the QTextureImage instead
-class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor : public QAbstractFunctor
+class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor : public Qt3D::QAbstractFunctor
 {
 public:
     virtual ~QTextureDataFunctor() {}
@@ -60,14 +60,14 @@ typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
 
 class QAbstractTextureImagePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public QNode
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int mipmapLevel READ mipmapLevel WRITE setMipmapLevel NOTIFY mipmapLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
-    Q_PROPERTY(Qt3D::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
 public:
-    explicit QAbstractTextureImage(QNode *parent = 0);
+    explicit QAbstractTextureImage(Qt3D::QNode *parent = 0);
     virtual ~QAbstractTextureImage();
 
     int mipmapLevel() const;
@@ -87,17 +87,17 @@ Q_SIGNALS:
     void cubeMapFaceChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3D::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QTextureDataFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QTextureDataFunctorPtr)
 
-#endif // QT3D_QABSTRACTTEXTUREIMAGE_H
+#endif // QT3DRENDER_QABSTRACTTEXTUREIMAGE_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETER_H
-#define QT3D_QPARAMETER_H
+#ifndef QT3DRENDER_QPARAMETER_H
+#define QT3DRENDER_QPARAMETER_H
 
 #include <QVariant>
 #include <Qt3DCore/qnode.h>
@@ -43,22 +43,22 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameterPrivate;
 class QAbstractTextureProvider;
 
-class QT3DRENDERERSHARED_EXPORT QParameter : public QNode
+class QT3DRENDERERSHARED_EXPORT QParameter : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    explicit QParameter(QNode *parent = 0);
+    explicit QParameter(Qt3D::QNode *parent = 0);
     ~QParameter();
-    QParameter(const QString& name, const QVariant& value, QNode* parent = 0);
-    QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent = 0);
+    QParameter(const QString& name, const QVariant& value, Qt3D::QNode* parent = 0);
+    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3D::QNode *parent = 0);
 
     void setName(const QString &name);
     QString name() const;
@@ -75,16 +75,16 @@ Q_SIGNALS:
     void nameChanged();
 
 protected:
-    QParameter(QParameterPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QParameter(QParameterPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QParameter)
     QT3D_CLONEABLE(QParameter)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_PARAMETER_H
+#endif // QT3DRENDER_PARAMETER_H

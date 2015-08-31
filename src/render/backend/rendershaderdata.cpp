@@ -47,11 +47,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
-QList<QNodeId> RenderShaderData::m_updatedShaderData;
+QList<Qt3D::QNodeId> RenderShaderData::m_updatedShaderData;
 
 RenderShaderData::RenderShaderData()
     : QBackendNode()
@@ -65,7 +66,7 @@ RenderShaderData::~RenderShaderData()
     delete m_mutex;
 }
 
-void RenderShaderData::updateFromPeer(QNode *peer)
+void RenderShaderData::updateFromPeer(Qt3D::QNode *peer)
 {
     m_properties.clear();
     const QShaderData *shaderData = static_cast<const QShaderData *>(peer);
@@ -189,7 +190,7 @@ void RenderShaderData::addToClearUpdateList()
         RenderShaderData::m_updatedShaderData.append(peerUuid());
 }
 
-const int qNodeIdTypeId = qMetaTypeId<QNodeId>();
+const int qNodeIdTypeId = qMetaTypeId<Qt3D::QNodeId>();
 
 void RenderShaderData::readPeerProperties(QShaderData *shaderData)
 {
@@ -239,7 +240,7 @@ void RenderShaderData::setManager(ShaderDataManager *manager)
     m_manager = manager;
 }
 
-void RenderShaderData::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderShaderData::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (!m_propertyReader.isNull()) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -289,7 +290,7 @@ RenderShaderDataFunctor::RenderShaderDataFunctor(ShaderDataManager *manager)
 {
 }
 
-QBackendNode *RenderShaderDataFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *RenderShaderDataFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     RenderShaderData *backend = m_manager->getOrCreateResource(frontend->id());
     backend->setFactory(factory);
@@ -298,18 +299,17 @@ QBackendNode *RenderShaderDataFunctor::create(QNode *frontend, const QBackendNod
     return backend;
 }
 
-QBackendNode *RenderShaderDataFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *RenderShaderDataFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void RenderShaderDataFunctor::destroy(const QNodeId &id) const
+void RenderShaderDataFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_manager->releaseResource(id);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

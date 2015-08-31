@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCLEARBUFFER_H
-#define QT3D_QCLEARBUFFER_H
+#ifndef QT3DRENDER_QCLEARBUFFER_H
+#define QT3DRENDER_QCLEARBUFFER_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QClearBufferPrivate;
 
@@ -50,7 +50,7 @@ class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
 public:
-    explicit QClearBuffer(QNode *parent = 0);
+    explicit QClearBuffer(Qt3D::QNode *parent = 0);
     ~QClearBuffer();
 
     enum BufferType {
@@ -72,16 +72,16 @@ Q_SIGNALS:
     void buffersChanged();
 
 protected:
-    QClearBuffer(QClearBufferPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QClearBuffer(QClearBufferPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QClearBuffer)
     QT3D_CLONEABLE(QClearBuffer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCLEARBUFFER_H
+#endif // QT3DRENDER_QCLEARBUFFER_H

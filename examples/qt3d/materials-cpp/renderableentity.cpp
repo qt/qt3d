@@ -38,7 +38,7 @@
 
 RenderableEntity::RenderableEntity(Qt3D::QNode *parent)
     : Qt3D::QEntity(parent)
-    , m_mesh(new Qt3D::QMesh())
+    , m_mesh(new Qt3DRender::QMesh())
     , m_transform(new Qt3D::QTransform())
     , m_rotateTransform(new Qt3D::QRotateTransform())
     , m_scaleTransform(new Qt3D::QScaleTransform())
@@ -56,7 +56,7 @@ RenderableEntity::~RenderableEntity()
 
 }
 
-Qt3D::QMesh *RenderableEntity::mesh() const
+Qt3DRender::QMesh *RenderableEntity::mesh() const
 {
     return m_mesh;
 }

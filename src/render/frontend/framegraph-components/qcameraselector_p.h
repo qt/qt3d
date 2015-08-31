@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCAMERASELECTOR_P_H
-#define QT3D_QCAMERASELECTOR_P_H
+#ifndef QT3DRENDER_QCAMERASELECTOR_P_H
+#define QT3DRENDER_QCAMERASELECTOR_P_H
 
 #include <private/qframegraphnode_p.h>
 #include <Qt3DRenderer/qcameraselector.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QCameraSelector;
 
@@ -52,12 +52,12 @@ public:
     QCameraSelectorPrivate();
 
     Q_DECLARE_PUBLIC(QCameraSelector)
-    QEntity *m_camera;
+    Qt3D::QEntity *m_camera;
 };
 
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCAMERASELECTOR_P_H
+#endif // QT3DRENDER_QCAMERASELECTOR_P_H

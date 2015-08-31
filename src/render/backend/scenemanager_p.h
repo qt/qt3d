@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_SCENEMANAGER_P_H
-#define QT3D_RENDER_SCENEMANAGER_P_H
+#ifndef QT3DRENDER_RENDER_SCENEMANAGER_P_H
+#define QT3DRENDER_RENDER_SCENEMANAGER_P_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderscene_p.h>
@@ -45,13 +45,14 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
-
 class QEntity;
+}
 
+namespace Qt3DRender {
 namespace Render {
 
-class SceneManager : public QResourceManager<RenderScene,
-                                             QNodeId,
+class SceneManager : public Qt3D::QResourceManager<RenderScene,
+                                             Qt3D::QNodeId,
                                              8,
                                              Qt3D::ArrayAllocatingPolicy,
                                              Qt3D::ObjectLevelLockingPolicy>
@@ -59,20 +60,19 @@ class SceneManager : public QResourceManager<RenderScene,
 public:
     SceneManager();
 
-    void addSceneData(const QUrl &source, const QNodeId &sceneUuid);
+    void addSceneData(const QUrl &source, const Qt3D::QNodeId &sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
-    void addLoadedSceneTree(const QUrl &source, QEntity *tree);
-    QEntity *sceneTreeFromSource(const QUrl &source);
+    void addLoadedSceneTree(const QUrl &source, Qt3D::QEntity *tree);
+    Qt3D::QEntity *sceneTreeFromSource(const QUrl &source);
 
 private:
-    QHash<QUrl, QEntity *> m_loadedSceneTrees;
+    QHash<QUrl, Qt3D::QEntity *> m_loadedSceneTrees;
     QVector<LoadSceneJobPtr> m_pendingJobs;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

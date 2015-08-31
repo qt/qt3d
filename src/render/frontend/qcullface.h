@@ -36,14 +36,14 @@
 ****************************************************************************/
 
 
-#ifndef QT3D_QCULLFACE_H
-#define QT3D_QCULLFACE_H
+#ifndef QT3DRENDER_QCULLFACE_H
+#define QT3DRENDER_QCULLFACE_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QCullFacePrivate;
 
@@ -62,7 +62,7 @@ public:
     };
     Q_ENUM(CullingMode)
 
-    explicit QCullFace(QNode *parent = 0);
+    explicit QCullFace(Qt3D::QNode *parent = 0);
     ~QCullFace();
 
     CullingMode mode() const;
@@ -72,15 +72,15 @@ Q_SIGNALS:
     void modeChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QCullFace)
     QT3D_CLONEABLE(QCullFace)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCULLFACE_H
+#endif // QT3DRENDER_QCULLFACE_H

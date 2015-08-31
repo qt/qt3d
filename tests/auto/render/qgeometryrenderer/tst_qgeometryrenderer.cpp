@@ -122,19 +122,19 @@ void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
     m_arbiter->sceneChangeEventWithLock(e);
 }
 
-class TestFunctor : public Qt3D::QGeometryFunctor
+class TestFunctor : public Qt3DRender::QGeometryFunctor
 {
 public:
     explicit TestFunctor(int size)
         : m_size(size)
     {}
 
-    Qt3D::QGeometry *operator ()() Q_DECL_FINAL
+    Qt3DRender::QGeometry *operator ()() Q_DECL_FINAL
     {
         return Q_NULLPTR;
     }
 
-    bool operator ==(const Qt3D::QGeometryFunctor &other) const
+    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -163,43 +163,43 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QGeometryRenderer *>("geometryRenderer");
+        QTest::addColumn<Qt3DRender::QGeometryRenderer *>("geometryRenderer");
 
-        Qt3D::QGeometryRenderer *defaultConstructed = new Qt3D::QGeometryRenderer();
+        Qt3DRender::QGeometryRenderer *defaultConstructed = new Qt3DRender::QGeometryRenderer();
         QTest::newRow("defaultConstructed") << defaultConstructed ;
 
-        Qt3D::QGeometryRenderer *geometry1 = new Qt3D::QGeometryRenderer();
-        geometry1->setGeometry(new Qt3D::QGeometry());
+        Qt3DRender::QGeometryRenderer *geometry1 = new Qt3DRender::QGeometryRenderer();
+        geometry1->setGeometry(new Qt3DRender::QGeometry());
         geometry1->setInstanceCount(1);
         geometry1->setBaseVertex(0);
         geometry1->setBaseInstance(55);
         geometry1->setRestartIndex(-1);
         geometry1->setPrimitiveRestart(false);
-        geometry1->setPrimitiveType(Qt3D::QGeometryRenderer::Triangles);
+        geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
         geometry1->setPrimitiveCount(15);
-        geometry1->setGeometryFunctor(Qt3D::QGeometryFunctorPtr(new TestFunctor(383)));
+        geometry1->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(383)));
         QTest::newRow("triangle") << geometry1;
 
-        Qt3D::QGeometryRenderer *geometry2 = new Qt3D::QGeometryRenderer();
-        geometry2->setGeometry(new Qt3D::QGeometry());
+        Qt3DRender::QGeometryRenderer *geometry2 = new Qt3DRender::QGeometryRenderer();
+        geometry2->setGeometry(new Qt3DRender::QGeometry());
         geometry2->setInstanceCount(200);
         geometry2->setBaseVertex(58);
         geometry2->setBaseInstance(10);
         geometry2->setRestartIndex(65535);
         geometry1->setPrimitiveCount(2056);
         geometry2->setPrimitiveRestart(true);
-        geometry2->setPrimitiveType(Qt3D::QGeometryRenderer::Lines);
-        geometry2->setGeometryFunctor(Qt3D::QGeometryFunctorPtr(new TestFunctor(305)));
+        geometry2->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+        geometry2->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(305)));
         QTest::newRow("lines with restart") << geometry2;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QGeometryRenderer *, geometryRenderer);
+        QFETCH(Qt3DRender::QGeometryRenderer *, geometryRenderer);
 
         // WHEN
-        Qt3D::QGeometryRenderer *clone = static_cast<Qt3D::QGeometryRenderer *>(QNode::clone(geometryRenderer));
+        Qt3DRender::QGeometryRenderer *clone = static_cast<Qt3DRender::QGeometryRenderer *>(QNode::clone(geometryRenderer));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
@@ -228,7 +228,7 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QGeometryRenderer> geometryRenderer(new Qt3D::QGeometryRenderer());
+        QScopedPointer<Qt3DRender::QGeometryRenderer> geometryRenderer(new Qt3DRender::QGeometryRenderer());
         TestArbiter arbiter(geometryRenderer.data());
 
         // WHEN
@@ -310,20 +310,20 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        geometryRenderer->setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
+        geometryRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "primitiveType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QGeometryRenderer::Patches));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QGeometryRenderer::Patches));
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(555));
+        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(555));
         geometryRenderer->setGeometryFunctor(functor);
         QCoreApplication::processEvents();
 
@@ -331,13 +331,13 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "geometryFunctor");
-        QCOMPARE(change->value().value<Qt3D::QGeometryFunctorPtr>(), functor);
+        QCOMPARE(change->value().value<Qt3DRender::QGeometryFunctorPtr>(), functor);
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QGeometry geom;
+        Qt3DRender::QGeometry geom;
         geometryRenderer->setGeometry(&geom);
         QCoreApplication::processEvents();
 
@@ -351,7 +351,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QGeometry geom2;
+        Qt3DRender::QGeometry geom2;
         geometryRenderer->setGeometry(&geom2);
         QCoreApplication::processEvents();
 

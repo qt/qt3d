@@ -34,24 +34,24 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERTARGET_H
-#define QT3D_QRENDERTARGET_H
+#ifndef QT3DRENDER_QRENDERTARGET_H
+#define QT3DRENDER_QRENDERTARGET_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderTargetPrivate;
 class QRenderAttachment;
 
-class QT3DRENDERERSHARED_EXPORT QRenderTarget : public QComponent
+class QT3DRENDERERSHARED_EXPORT QRenderTarget : public Qt3D::QComponent
 {
     Q_OBJECT
 public:
-    explicit QRenderTarget(QNode *parent = 0);
+    explicit QRenderTarget(Qt3D::QNode *parent = 0);
     ~QRenderTarget();
 
     void addAttachment(QRenderAttachment *attachment);
@@ -59,16 +59,16 @@ public:
     QList<QRenderAttachment *> attachments() const;
 
 protected:
-    QRenderTarget(QRenderTargetPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QRenderTarget(QRenderTargetPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderTarget)
     QT3D_CLONEABLE(QRenderTarget)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERTARGET_H
+#endif // QT3DRENDER_QRENDERTARGET_H

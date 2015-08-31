@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LOADSCENEJOB_H
-#define QT3D_RENDER_LOADSCENEJOB_H
+#ifndef QT3DRENDER_RENDER_LOADSCENEJOB_H
+#define QT3DRENDER_RENDER_LOADSCENEJOB_H
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -53,7 +53,7 @@ class Renderer;
 class LoadSceneJob : public Qt3D::QAspectJob
 {
 public:
-    explicit LoadSceneJob(const QUrl &source, const QNodeId &sceneComponent);
+    explicit LoadSceneJob(const QUrl &source, const Qt3D::QNodeId &sceneComponent);
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
 protected:
@@ -62,14 +62,14 @@ protected:
 private:
     Renderer *m_renderer;
     QUrl m_source;
-    QNodeId m_sceneComponent;
+    Qt3D::QNodeId m_sceneComponent;
 };
 
 typedef QSharedPointer<LoadSceneJob> LoadSceneJobPtr;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

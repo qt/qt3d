@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilOpPrivate : public QRenderStatePrivate
 {
@@ -90,6 +90,6 @@ void QStencilOp::copy(const QNode *ref)
     d_func()->m_front->setStencilDepthPass(refState->d_func()->m_front->stencilDepthPass());
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

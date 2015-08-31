@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QFORWARDRENDERER_P_H
-#define QT3D_RENDER_QFORWARDRENDERER_P_H
+#ifndef QT3DRENDER_RENDER_QFORWARDRENDERER_P_H
+#define QT3DRENDER_RENDER_QFORWARDRENDERER_P_H
 
 #include <Qt3DRenderer/private/qtechniquefilter_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QForwardRenderer;
 class QViewport;
@@ -62,9 +62,9 @@ public:
     Q_DECLARE_PUBLIC(QForwardRenderer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QFORWARDRENDERER_P_H
+#endif // QT3DRENDER_RENDER_QFORWARDRENDERER_P_H
 

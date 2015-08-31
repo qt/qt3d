@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     Qt3D::Quick::QQmlAspectEngine engine;
 
     view.resize(1600, 800);
-    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
     engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
     engine.aspectEngine()->initialize();
     QVariantMap data;

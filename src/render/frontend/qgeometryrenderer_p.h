@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QGEOMETRYRENDERER_P_H
-#define QT3D_QGEOMETRYRENDERER_P_H
+#ifndef QT3DRENDER_QGEOMETRYRENDERER_P_H
+#define QT3DRENDER_QGEOMETRYRENDERER_P_H
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -43,9 +43,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QGeometryRendererPrivate : public QComponentPrivate
+class QGeometryRendererPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QGeometryRendererPrivate();
@@ -62,10 +62,10 @@ public:
     QGeometryFunctorPtr m_functor;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_QGEOMETRYRENDERER_P_H
+#endif // QT3DRENDER_QGEOMETRYRENDERER_P_H
 

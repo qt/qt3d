@@ -50,20 +50,20 @@
 class SceneWalker : public QObject
 {
 public:
-    SceneWalker(Qt3D::QSceneLoader *loader) : m_loader(loader) { }
+    SceneWalker(Qt3DRender::QSceneLoader *loader) : m_loader(loader) { }
 
     void onStatusChanged();
 
 private:
     void walkEntity(Qt3D::QEntity *e, int depth = 0);
 
-    Qt3D::QSceneLoader *m_loader;
+    Qt3DRender::QSceneLoader *m_loader;
 };
 
 void SceneWalker::onStatusChanged()
 {
     qDebug() << "Status changed:" << m_loader->status();
-    if (m_loader->status() != Qt3D::QSceneLoader::Loaded)
+    if (m_loader->status() != Qt3DRender::QSceneLoader::Loaded)
         return;
 
     // The QSceneLoader instance is a component of an entity. The loaded scene
@@ -108,7 +108,7 @@ int main(int ac, char **av)
 
     Qt3D::QAspectEngine engine;
     Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
     engine.registerAspect(inputAspect);
     engine.initialize();
     QVariantMap data;
@@ -132,8 +132,8 @@ int main(int ac, char **av)
     inputAspect->setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
-    Qt3D::QFrameGraph *frameGraphComponent = new Qt3D::QFrameGraph(sceneRoot);
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setCamera(basicCamera);
     forwardRenderer->setClearColor(Qt::black);
     frameGraphComponent->setActiveFrameGraph(forwardRenderer);
@@ -141,9 +141,9 @@ int main(int ac, char **av)
 
     // Scene loader
     Qt3D::QEntity *sceneLoaderEntity = new Qt3D::QEntity(sceneRoot);
-    Qt3D::QSceneLoader *sceneLoader = new Qt3D::QSceneLoader(sceneLoaderEntity);
+    Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
     SceneWalker sceneWalker(sceneLoader);
-    QObject::connect(sceneLoader, &Qt3D::QSceneLoader::statusChanged, &sceneWalker, &SceneWalker::onStatusChanged);
+    QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged, &sceneWalker, &SceneWalker::onStatusChanged);
     sceneLoaderEntity->addComponent(sceneLoader);
 
     QStringList args = QCoreApplication::arguments();

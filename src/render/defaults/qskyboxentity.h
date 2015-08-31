@@ -34,23 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QSKYBOXENTITY_H
-#define QT3D_RENDER_QSKYBOXENTITY_H
+#ifndef QT3DRENDER_RENDER_QSKYBOXENTITY_H
+#define QT3DRENDER_RENDER_QSKYBOXENTITY_H
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSkyboxEntityPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSkyboxEntity : public QEntity
+class QT3DRENDERERSHARED_EXPORT QSkyboxEntity : public Qt3D::QEntity
 {
     Q_OBJECT
 public:
-    explicit QSkyboxEntity(QNode *parent = 0);
+    explicit QSkyboxEntity(Qt3D::QNode *parent = 0);
     ~QSkyboxEntity();
 
     void setBaseName(const QString &path);
@@ -71,8 +71,8 @@ private:
     Q_DECLARE_PRIVATE(QSkyboxEntity)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QSKYBOXENTITY_H
+#endif // QT3DRENDER_RENDER_QSKYBOXENTITY_H

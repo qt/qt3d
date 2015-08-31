@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilTestSeparatePrivate : public QObjectPrivate
 {
@@ -121,6 +121,6 @@ QStencilTestSeparate::StencilFaceMode QStencilTestSeparate::faceMode() const
     return d->m_face;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

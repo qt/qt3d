@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBUFFER_H
-#define QT3D_QBUFFER_H
+#ifndef QT3DRENDER_QBUFFER_H
+#define QT3DRENDER_QBUFFER_H
 
 #include <Qt3DCore/qabstractbuffer.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 GLint elementType(GLint type);
 GLint tupleSizeFromType(GLint type);
@@ -54,7 +54,7 @@ class QBufferPrivate;
 class QBufferFunctor;
 typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QBuffer : public QAbstractBuffer
+class QT3DRENDERERSHARED_EXPORT QBuffer : public Qt3D::QAbstractBuffer
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
@@ -84,7 +84,7 @@ public:
     };
     Q_ENUM(UsageType)
 
-    QBuffer(BufferType ty = QBuffer::VertexBuffer, QNode *parent = 0);
+    QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3D::QNode *parent = 0);
     ~QBuffer();
 
     void setUsage(UsageType usage);
@@ -97,8 +97,8 @@ public:
     QBufferFunctorPtr bufferFunctor() const;
 
 protected:
-    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void typeChanged();
@@ -109,8 +109,8 @@ private:
     QT3D_CLONEABLE(QBuffer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBUFFER_H
+#endif // QT3DRENDER_QBUFFER_H

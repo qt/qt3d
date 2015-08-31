@@ -67,7 +67,7 @@ public slots:
 
 private:
     Qt3D::QEntity *m_rootEntity;
-    Qt3D::QTorusMesh *m_torus;
+    Qt3DRender::QTorusMesh *m_torus;
     Qt3D::QEntity *m_cylinderEntity;
     Qt3D::QEntity *m_torusEntity;
     Qt3D::QEntity *m_cuboidEntity;

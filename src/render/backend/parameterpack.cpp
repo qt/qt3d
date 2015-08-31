@@ -39,8 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 ParameterPack::ParameterPack()
@@ -56,25 +55,24 @@ void ParameterPack::clear()
     m_peers.clear();
 }
 
-void ParameterPack::appendParameter(const QNodeId &parameterId)
+void ParameterPack::appendParameter(const Qt3D::QNodeId &parameterId)
 {
     if (!m_peers.contains(parameterId)) {
         m_peers.append(parameterId);
     }
 }
 
-void ParameterPack::removeParameter(const QNodeId &parameterId)
+void ParameterPack::removeParameter(const Qt3D::QNodeId &parameterId)
 {
     m_peers.removeOne(parameterId);
 }
 
-QList<QNodeId> ParameterPack::parameters() const
+QList<Qt3D::QNodeId> ParameterPack::parameters() const
 {
     return m_peers;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

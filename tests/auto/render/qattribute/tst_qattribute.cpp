@@ -134,13 +134,13 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QAttribute *>("attribute");
+        QTest::addColumn<Qt3DRender::QAttribute *>("attribute");
 
-        Qt3D::QAttribute *defaultConstructed = new Qt3D::QAttribute();
+        Qt3DRender::QAttribute *defaultConstructed = new Qt3DRender::QAttribute();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3D::QAttribute *customVertex = new Qt3D::QAttribute();
-        Qt3D::QBuffer *buffer = new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer);
+        Qt3DRender::QAttribute *customVertex = new Qt3DRender::QAttribute();
+        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
         customVertex->setBuffer(buffer);
         customVertex->setAttributeType(Qt3D::QAbstractAttribute::VertexAttribute);
         customVertex->setCount(454);
@@ -148,12 +148,12 @@ private Q_SLOTS:
         customVertex->setByteOffset(305);
         customVertex->setDivisor(235);
         customVertex->setName("BB");
-        customVertex->setDataType(Qt3D::QAttribute::Float);
+        customVertex->setDataType(Qt3DRender::QAttribute::Float);
         customVertex->setDataSize(4);
         QTest::newRow("vertex") << customVertex;
 
-        Qt3D::QAttribute *customIndex = new Qt3D::QAttribute();
-        Qt3D::QBuffer *indexBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::IndexBuffer);
+        Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
+        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
         customIndex->setBuffer(indexBuffer);
         customIndex->setAttributeType(Qt3D::QAbstractAttribute::IndexAttribute);
         customIndex->setCount(383);
@@ -161,7 +161,7 @@ private Q_SLOTS:
         customIndex->setByteOffset(327);
         customIndex->setDivisor(355);
         customIndex->setName("SB");
-        customIndex->setDataType(Qt3D::QAttribute::Float);
+        customIndex->setDataType(Qt3DRender::QAttribute::Float);
         customIndex->setDataSize(3);
         QTest::newRow("index") << customIndex;
     }
@@ -169,10 +169,10 @@ private Q_SLOTS:
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QAttribute *, attribute);
+        QFETCH(Qt3DRender::QAttribute *, attribute);
 
         // WHEN
-        Qt3D::QAttribute *clone = static_cast<Qt3D::QAttribute *>(QNode::clone(attribute));
+        Qt3DRender::QAttribute *clone = static_cast<Qt3DRender::QAttribute *>(QNode::clone(attribute));
         QCoreApplication::processEvents();
 
         // THEN
@@ -198,18 +198,18 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QAttribute> attribute(new Qt3D::QAttribute());
+        QScopedPointer<Qt3DRender::QAttribute> attribute(new Qt3DRender::QAttribute());
         TestArbiter arbiter(attribute.data());
 
         // WHEN
-        attribute->setDataType(Qt3D::QAttribute::Double);
+        attribute->setDataType(Qt3DRender::QAttribute::Double);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "dataType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QAttribute::Double));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::Double));
         QCOMPARE(change->type(), Qt3D::NodeUpdated);
 
         arbiter.events.clear();
@@ -306,7 +306,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QBuffer buf;
+        Qt3DRender::QBuffer buf;
         attribute->setBuffer(&buf);
         QCoreApplication::processEvents();
 
@@ -320,7 +320,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QBuffer buf2;
+        Qt3DRender::QBuffer buf2;
         attribute->setBuffer(&buf2);
         QCoreApplication::processEvents();
 

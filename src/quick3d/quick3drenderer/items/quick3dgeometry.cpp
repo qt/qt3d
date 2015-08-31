@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DGeometry::Quick3DGeometry(QObject *parent)
@@ -49,47 +47,45 @@ Quick3DGeometry::Quick3DGeometry(QObject *parent)
 {
 }
 
-QQmlListProperty<QAbstractAttribute> Quick3DGeometry::attributeList()
+QQmlListProperty<Qt3D::QAbstractAttribute> Quick3DGeometry::attributeList()
 {
-    return QQmlListProperty<QAbstractAttribute>(this, 0,
-                                                &Quick3DGeometry::appendAttribute,
-                                                &Quick3DGeometry::attributesCount,
-                                                &Quick3DGeometry::attributeAt,
-                                                &Quick3DGeometry::clearAttributes);
+    return QQmlListProperty<Qt3D::QAbstractAttribute>(this, 0,
+                                                      &Quick3DGeometry::appendAttribute,
+                                                      &Quick3DGeometry::attributesCount,
+                                                      &Quick3DGeometry::attributeAt,
+                                                      &Quick3DGeometry::clearAttributes);
 }
 
-void Quick3DGeometry::appendAttribute(QQmlListProperty<QAbstractAttribute> *list, QAbstractAttribute *attribute)
+void Quick3DGeometry::appendAttribute(QQmlListProperty<Qt3D::QAbstractAttribute> *list, Qt3D::QAbstractAttribute *attribute)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
     geometry->m_managedAttributes.append(attribute);
     geometry->parentGeometry()->addAttribute(attribute);
 }
 
-QAbstractAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<QAbstractAttribute> *list, int index)
+Qt3D::QAbstractAttribute *Quick3DGeometry::attributeAt(QQmlListProperty<Qt3D::QAbstractAttribute> *list, int index)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
     return geometry->parentGeometry()->attributes().at(index);
 }
 
-int Quick3DGeometry::attributesCount(QQmlListProperty<QAbstractAttribute> *list)
+int Quick3DGeometry::attributesCount(QQmlListProperty<Qt3D::QAbstractAttribute> *list)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
     return geometry->parentGeometry()->attributes().count();
 }
 
-void Quick3DGeometry::clearAttributes(QQmlListProperty<QAbstractAttribute> *list)
+void Quick3DGeometry::clearAttributes(QQmlListProperty<Qt3D::QAbstractAttribute> *list)
 {
     Quick3DGeometry *geometry = static_cast<Quick3DGeometry *>(list->object);
-    QVector<QAbstractAttribute *> &managedAttributes = geometry->m_managedAttributes;
-    Q_FOREACH (QAbstractAttribute *attribute, managedAttributes)
+    QVector<Qt3D::QAbstractAttribute *> &managedAttributes = geometry->m_managedAttributes;
+    Q_FOREACH (Qt3D::QAbstractAttribute *attribute, managedAttributes)
         geometry->parentGeometry()->removeAttribute(attribute);
     managedAttributes.clear();
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE

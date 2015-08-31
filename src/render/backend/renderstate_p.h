@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERSTATE_H
-#define QT3D_RENDER_RENDERSTATE_H
+#ifndef QT3DRENDER_RENDER_RENDERSTATE_H
+#define QT3DRENDER_RENDER_RENDERSTATE_H
 
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderState;
 
@@ -123,9 +123,9 @@ private:
 
 };
 
-} // Render
-} // namespace Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERSTATE_H
+#endif // QT3DRENDER_RENDER_RENDERSTATE_H

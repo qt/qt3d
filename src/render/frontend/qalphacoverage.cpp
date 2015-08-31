@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
@@ -62,6 +62,6 @@ QAlphaCoverage::~QAlphaCoverage()
     QNode::cleanup();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -38,7 +38,7 @@
 #include <Qt3DRenderer/private/renderbuffer_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
-class TestFunctor : public Qt3D::QBufferFunctor
+class TestFunctor : public Qt3DRender::QBufferFunctor
 {
 public:
     explicit TestFunctor(int size)
@@ -50,7 +50,7 @@ public:
         return QByteArray();
     }
 
-    bool operator ==(const Qt3D::QBufferFunctor &other) const
+    bool operator ==(const Qt3DRender::QBufferFunctor &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -72,11 +72,11 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3D::Render::RenderBuffer renderBuffer;
-        Qt3D::QBuffer buffer(Qt3D::QBuffer::IndexBuffer);
-        buffer.setUsage(Qt3D::QBuffer::DynamicCopy);
+        Qt3DRender::Render::RenderBuffer renderBuffer;
+        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
-        buffer.setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(883)));
+        buffer.setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(883)));
 
         // WHEN
         renderBuffer.setPeer(&buffer);
@@ -94,21 +94,21 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3D::Render::RenderBuffer renderBuffer;
+        Qt3DRender::Render::RenderBuffer renderBuffer;
 
         // THEN
         QCOMPARE(renderBuffer.isDirty(), false);
-        QCOMPARE(renderBuffer.type(), Qt3D::QBuffer::VertexBuffer);
-        QCOMPARE(renderBuffer.usage(), Qt3D::QBuffer::StaticDraw);
+        QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::VertexBuffer);
+        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.peerUuid().isNull());
         QVERIFY(renderBuffer.bufferFunctor().isNull());
 
         // GIVEN
-        Qt3D::QBuffer buffer(Qt3D::QBuffer::IndexBuffer);
-        buffer.setUsage(Qt3D::QBuffer::DynamicCopy);
+        Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
+        buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("C7"));
-        buffer.setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(73)));
+        buffer.setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(73)));
 
         // WHEN
         renderBuffer.updateFromPeer(&buffer);
@@ -116,8 +116,8 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderBuffer.isDirty(), false);
-        QCOMPARE(renderBuffer.type(), Qt3D::QBuffer::VertexBuffer);
-        QCOMPARE(renderBuffer.usage(), Qt3D::QBuffer::StaticDraw);
+        QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::VertexBuffer);
+        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.bufferFunctor().isNull());
     }
@@ -125,22 +125,22 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3D::Render::RenderBuffer renderBuffer;
+        Qt3DRender::Render::RenderBuffer renderBuffer;
 
         // THEN
-        QVERIFY(renderBuffer.type() != Qt3D::QBuffer::IndexBuffer);
+        QVERIFY(renderBuffer.type() != Qt3DRender::QBuffer::IndexBuffer);
         QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.usage() != Qt3D::QBuffer::DynamicRead);
+        QVERIFY(renderBuffer.usage() != Qt3DRender::QBuffer::DynamicRead);
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
         Qt3D::QScenePropertyChangePtr updateChange(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
-        updateChange->setValue(static_cast<int>(Qt3D::QBuffer::IndexBuffer));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::IndexBuffer));
         updateChange->setPropertyName("type");
         renderBuffer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderBuffer.type(), Qt3D::QBuffer::IndexBuffer);
+        QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::IndexBuffer);
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();
@@ -148,12 +148,12 @@ private Q_SLOTS:
 
         // WHEN
         updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
-        updateChange->setValue(static_cast<int>(Qt3D::QBuffer::DynamicRead));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::DynamicRead));
         updateChange->setPropertyName("usage");
         renderBuffer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderBuffer.usage(), Qt3D::QBuffer::DynamicRead);
+        QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::DynamicRead);
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();
@@ -175,7 +175,7 @@ private Q_SLOTS:
 
 
         // WHEN
-        Qt3D::QBufferFunctorPtr functor(new TestFunctor(355));
+        Qt3DRender::QBufferFunctorPtr functor(new TestFunctor(355));
         updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
         updateChange->setValue(QVariant::fromValue(functor));
         updateChange->setPropertyName("bufferFunctor");

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
-#define QT3D_RENDER_QUICK_QUICK3DTECHNIQUE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qtechnique.h>
@@ -43,24 +43,22 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTechnique : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> annotations READ annotationList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderPass> renderPasses READ renderPassList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> annotations READ annotationList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderPass> renderPasses READ renderPassList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DTechnique(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> annotationList();
-    QQmlListProperty<Qt3D::QRenderPass> renderPassList();
-    QQmlListProperty<Qt3D::QParameter> parameterList();
+    QQmlListProperty<QAnnotation> annotationList();
+    QQmlListProperty<QRenderPass> renderPassList();
+    QQmlListProperty<QParameter> parameterList();
 
     // Use QAbstractTechnique when it has been properly defined
     inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
@@ -83,12 +81,10 @@ private:
     static void clearRenderPasses( QQmlListProperty<QRenderPass> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QUICK3DTECHNIQUE_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H

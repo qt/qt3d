@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERPASSFILTER_H
-#define QT3D_QRENDERPASSFILTER_H
+#ifndef QT3DRENDER_QRENDERPASSFILTER_H
+#define QT3DRENDER_QRENDERPASSFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qframegraphnode.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderPassFilterPrivate;
 class QAnnotation;
@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QRenderPassFilter(QNode *parent = 0);
+    explicit QRenderPassFilter(Qt3D::QNode *parent = 0);
     ~QRenderPassFilter();
 
     QList<QAnnotation *> includes() const;
@@ -67,16 +67,16 @@ public:
     QList<QParameter *> parameters() const;
 
 protected:
-    QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QRenderPassFilter(QRenderPassFilterPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderPassFilter)
     QT3D_CLONEABLE(QRenderPassFilter)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERPASSFILTER_H
+#endif // QT3DRENDER_QRENDERPASSFILTER_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDEREFFECT_H
-#define QT3D_RENDER_RENDEREFFECT_H
+#ifndef QT3DRENDER_RENDER_RENDEREFFECT_H
+#define QT3DRENDER_RENDER_RENDEREFFECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
@@ -45,36 +45,36 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTechnique;
 
 namespace Render {
 
 class RenderEffect
-        : public QBackendNode
+        : public Qt3D::QBackendNode
 {
 public:
     RenderEffect();
     ~RenderEffect();
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void appendRenderTechnique(const QNodeId &t);
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void appendRenderTechnique(const Qt3D::QNodeId &t);
 
-    QList<QNodeId> techniques() const;
-    QList<QNodeId> parameters() const;
+    QList<Qt3D::QNodeId> techniques() const;
+    QList<Qt3D::QNodeId> parameters() const;
 
 private:
-    QList<QNodeId> m_techniques;
+    QList<Qt3D::QNodeId> m_techniques;
     ParameterPack m_parameterPack;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDEREFFECT_H
+#endif // QT3DRENDER_RENDER_RENDEREFFECT_H

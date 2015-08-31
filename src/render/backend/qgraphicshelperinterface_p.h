@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
-#define QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H
+#define QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H
 
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 struct Attachment;
@@ -106,9 +106,9 @@ public:
 };
 
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERINTERFACE_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H

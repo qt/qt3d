@@ -41,7 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
     \class Qt3D::BufferPrivate
@@ -133,6 +135,6 @@ void QBuffer::setType(QBuffer::BufferType type)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

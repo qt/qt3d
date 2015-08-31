@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QFrameGraphPrivate
+    \class Qt3DRender::QFrameGraphPrivate
     \internal
 */
 QFrameGraphPrivate::QFrameGraphPrivate()
@@ -72,14 +72,14 @@ QFrameGraphPrivate::QFrameGraphPrivate()
 
 /*!
     \qmltype FrameGraph
-    \instantiates Qt3D::QFrameGraph
+    \instantiates Qt3DRender::QFrameGraph
     \inherits Component3D
     \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
 
-/*! \fn void Qt3D::QFrameGraph::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QFrameGraph::copy(const QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QFrameGraph::copy(const QNode *ref)
@@ -90,7 +90,7 @@ void QFrameGraph::copy(const QNode *ref)
 }
 
 /*!
-  \fn Qt3D::QFrameGraph::QFrameGraph(QNode *parent)
+  \fn Qt3DRender::QFrameGraph::QFrameGraph(QNode *parent)
   Constructs a new QFrameGraph with the specified \a parent.
 */
 QFrameGraph::QFrameGraph(QNode *parent)
@@ -116,7 +116,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 */
 
 /*!
-  \property Qt3D::QFrameGraph::activeFrameGraph
+  \property Qt3DRender::QFrameGraph::activeFrameGraph
 
   Holds the current activeFrameGraph root node.
  */
@@ -139,6 +139,6 @@ void QFrameGraph::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

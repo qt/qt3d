@@ -49,7 +49,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 QCylinderMesh::QCylinderMesh(QNode *parent)
     : QGeometryRenderer(parent)
@@ -108,6 +108,6 @@ float QCylinderMesh::length() const
     return static_cast<QCylinderGeometry *>(geometry())->length();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

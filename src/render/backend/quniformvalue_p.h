@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUNIFORMVALUE_H
-#define QT3D_RENDER_QUNIFORMVALUE_H
+#ifndef QT3DRENDER_RENDER_QUNIFORMVALUE_H
+#define QT3DRENDER_RENDER_QUNIFORMVALUE_H
 
 #include <QVariant>
 #include <QByteArray>
@@ -51,9 +51,10 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 
 namespace Qt3D {
-
 class QFrameAllocator;
+}
 
+namespace Qt3DRender {
 namespace Render {
 
 class QGraphicsContext;
@@ -67,7 +68,7 @@ public:
     QUniformValue();
     virtual ~QUniformValue() {}
 
-    static QUniformValue *fromVariant(const QVariant &v, QFrameAllocator *allocator);
+    static QUniformValue *fromVariant(const QVariant &v, Qt3D::QFrameAllocator *allocator);
 
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
@@ -97,12 +98,12 @@ public :
         return true;
     }
 
-    void setTextureId(const QNodeId &id)
+    void setTextureId(const Qt3D::QNodeId &id)
     {
         m_textureId = id;
     }
 
-    QNodeId textureId() const { return m_textureId; }
+    Qt3D::QNodeId textureId() const { return m_textureId; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -119,13 +120,13 @@ public :
     void apply(QGraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
 
 private:
-    QNodeId m_textureId;
+    Qt3D::QNodeId m_textureId;
     int m_textureUnit;
 };
 
 struct BlockToUBO {
     int m_blockIndex;
-    QNodeId m_shaderDataID;
+    Qt3D::QNodeId m_shaderDataID;
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
@@ -136,7 +137,7 @@ public:
     ~QUniformPack();
 
     void setUniform(const QString &glslName, const QUniformValue *val);
-    void setTexture(const QString &glslName, const QNodeId &id);
+    void setTexture(const QString &glslName, const Qt3D::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
@@ -145,13 +146,13 @@ public:
     struct NamedTexture
     {
         NamedTexture() {}
-        NamedTexture(const QString &nm, const QNodeId &t)
+        NamedTexture(const QString &nm, const Qt3D::QNodeId &t)
             : glslName(nm)
             , texId(t)
         { }
 
         QString glslName;
-        QNodeId texId;
+        Qt3D::QNodeId texId;
     };
 
     inline QVector<NamedTexture> textures() const { return m_textures; }
@@ -166,9 +167,9 @@ private:
     friend class RenderView;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUNIFORMVALUE_H
+#endif // QT3DRENDER_RENDER_QUNIFORMVALUE_H

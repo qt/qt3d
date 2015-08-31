@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSTENCILOPSEPARATE_H
-#define QT3D_QSTENCILOPSEPARATE_H
+#ifndef QT3DRENDER_QSTENCILOPSEPARATE_H
+#define QT3DRENDER_QSTENCILOPSEPARATE_H
 
 #include <QObject>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilOpPrivate;
 class QStencilOpSeparatePrivate;
@@ -103,8 +103,8 @@ private:
     friend class QStencilOpPrivate;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSTENCILOPSEPARATE_H
+#endif // QT3DRENDER_QSTENCILOPSEPARATE_H

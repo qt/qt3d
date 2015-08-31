@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBLENDSTATE_H
-#define QT3D_QBLENDSTATE_H
+#ifndef QT3DRENDER_QBLENDSTATE_H
+#define QT3DRENDER_QBLENDSTATE_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QBlendStatePrivate;
 
@@ -80,7 +80,7 @@ public:
     };
     Q_ENUM(Blending)
 
-    explicit QBlendState(QNode *parent = 0);
+    explicit QBlendState(Qt3D::QNode *parent = 0);
     ~QBlendState();
 
     Blending srcRGB() const;
@@ -102,8 +102,8 @@ Q_SIGNALS:
     void dstAlphaChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    QBlendState(QRenderState::Type type, QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QBlendState(QRenderState::Type type, Qt3D::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QBlendState)
@@ -114,11 +114,11 @@ class QT3DRENDERERSHARED_EXPORT QBlendStateSeparate : public QBlendState
 {
     Q_OBJECT
 public:
-    explicit QBlendStateSeparate(QNode *parent = 0);
+    explicit QBlendStateSeparate(Qt3D::QNode *parent = 0);
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBLENDSTATE_H
+#endif // QT3DRENDER_QBLENDSTATE_H

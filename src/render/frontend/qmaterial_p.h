@@ -34,20 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMATERIAL_P_H
-#define QT3D_QMATERIAL_P_H
+#ifndef QT3DRENDER_QMATERIAL_P_H
+#define QT3DRENDER_QMATERIAL_P_H
 
 #include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 class QEffect;
 
-class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QMaterialPrivate();
@@ -58,8 +58,8 @@ public:
     QEffect *m_effect;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMATERIAL_P_H
+#endif // QT3DRENDER_QMATERIAL_P_H

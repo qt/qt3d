@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERVIEWJOB_H
-#define QT3D_RENDER_RENDERVIEWJOB_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEWJOB_H
+#define QT3DRENDER_RENDER_RENDERVIEWJOB_H
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qframeallocator.h>
@@ -44,14 +44,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class Renderer;
 class FrameGraphNode;
 
-class RenderViewJob : public QAspectJob
+class RenderViewJob : public Qt3D::QAspectJob
 {
 public:
     RenderViewJob()
@@ -88,8 +88,8 @@ private:
 typedef QSharedPointer<RenderViewJob> RenderViewJobPtr;
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERVIEWJOB_H
+#endif // QT3DRENDER_RENDER_RENDERVIEWJOB_H

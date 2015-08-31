@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTECHNIQUE_H
-#define QT3D_QTECHNIQUE_H
+#ifndef QT3DRENDER_QTECHNIQUE_H
+#define QT3DRENDER_QTECHNIQUE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
@@ -46,19 +46,19 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 class QTechniquePrivate;
 class QOpenGLFilter;
 
-class QT3DRENDERERSHARED_EXPORT QTechnique : public QNode
+class QT3DRENDERERSHARED_EXPORT QTechnique : public Qt3D::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QOpenGLFilter *openGLFilter READ openGLFilter)
+    Q_PROPERTY(Qt3DRender::QOpenGLFilter *openGLFilter READ openGLFilter)
 
 public:
-    explicit QTechnique(QNode *parent = 0);
+    explicit QTechnique(Qt3D::QNode *parent = 0);
     ~QTechnique();
 
     void addAnnotation(QAnnotation *criterion);
@@ -76,8 +76,8 @@ public:
     QOpenGLFilter *openGLFilter();
 
 protected:
-    QTechnique(QTechniquePrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QTechnique(QTechniquePrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTechnique)
@@ -89,4 +89,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTECHNIQUE_H
+#endif // QT3DRENDER_QTECHNIQUE_H

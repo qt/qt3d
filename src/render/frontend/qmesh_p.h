@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMESH_P_H
-#define QT3D_QMESH_P_H
+#ifndef QT3DRENDER_QMESH_P_H
+#define QT3DRENDER_QMESH_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/qgeometryrenderer_p.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QMesh;
 
@@ -57,8 +57,8 @@ public:
     QUrl m_source;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMESH_P_H
+#endif // QT3DRENDER_QMESH_P_H

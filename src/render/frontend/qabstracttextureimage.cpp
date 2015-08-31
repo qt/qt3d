@@ -40,7 +40,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
     \class Qt3D::QAbstractTextureImagePrivate
@@ -89,7 +91,7 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
  */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(Qt3D::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
 }
 
 
@@ -217,6 +219,6 @@ QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Q
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

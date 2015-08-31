@@ -40,21 +40,21 @@
 #include <Qt3DRenderer/QEffect>
 #include <Qt3DRenderer/QTechnique>
 
-class FinalEffect : public Qt3D::QEffect
+class FinalEffect : public Qt3DRender::QEffect
 {
 public:
     explicit FinalEffect(Qt3D::QNode *parent = 0);
 
-    QList<Qt3D::QAnnotation *> passCriteria() const;
-    inline Qt3D::QTechnique *gl3Technique() const { return m_gl3Technique; }
-    inline Qt3D::QTechnique *gl2Technique() const { return m_gl2Technique; }
+    QList<Qt3DRender::QAnnotation *> passCriteria() const;
+    inline Qt3DRender::QTechnique *gl3Technique() const { return m_gl3Technique; }
+    inline Qt3DRender::QTechnique *gl2Technique() const { return m_gl2Technique; }
 
 private :
-    Qt3D::QTechnique *m_gl3Technique;
-    Qt3D::QTechnique *m_gl2Technique;
-    Qt3D::QRenderPass *m_gl2Pass;
-    Qt3D::QRenderPass *m_gl3Pass;
-    Qt3D::QAnnotation *m_passCriterion;
+    Qt3DRender::QTechnique *m_gl3Technique;
+    Qt3DRender::QTechnique *m_gl2Technique;
+    Qt3DRender::QRenderPass *m_gl2Pass;
+    Qt3DRender::QRenderPass *m_gl3Pass;
+    Qt3DRender::QAnnotation *m_passCriterion;
 };
 
 #endif // FINALEFFECT_H

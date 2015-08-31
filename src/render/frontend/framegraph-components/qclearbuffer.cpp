@@ -40,10 +40,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QClearBufferPrivate
+    \class Qt3DRender::QClearBufferPrivate
     \internal
 */
 QClearBufferPrivate::QClearBufferPrivate()
@@ -91,6 +91,6 @@ void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

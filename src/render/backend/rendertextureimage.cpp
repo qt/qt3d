@@ -41,8 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderTextureImage::RenderTextureImage()
@@ -72,7 +73,7 @@ void RenderTextureImage::cleanup()
     m_dna = 0;
 }
 
-void RenderTextureImage::updateFromPeer(QNode *peer)
+void RenderTextureImage::updateFromPeer(Qt3D::QNode *peer)
 {
     QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
     m_layer = textureImage->layer();
@@ -93,7 +94,7 @@ void RenderTextureImage::updateFromPeer(QNode *peer)
     }
 }
 
-void RenderTextureImage::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderTextureImage::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -160,7 +161,7 @@ RenderTextureImageFunctor::RenderTextureImageFunctor(TextureManager *textureMana
 {
 }
 
-QBackendNode *RenderTextureImageFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *RenderTextureImageFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     RenderTextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
     backend->setFactory(factory);
@@ -171,18 +172,17 @@ QBackendNode *RenderTextureImageFunctor::create(QNode *frontend, const QBackendN
     return backend;
 }
 
-QBackendNode *RenderTextureImageFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *RenderTextureImageFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_textureImageManager->lookupResource(id);
 }
 
-void RenderTextureImageFunctor::destroy(const QNodeId &id) const
+void RenderTextureImageFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_textureImageManager->releaseResource(id);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

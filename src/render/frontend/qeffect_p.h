@@ -34,21 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QEFFECT_P_H
-#define QT3D_QEFFECT_P_H
+#ifndef QT3DRENDER_QEFFECT_P_H
+#define QT3DRENDER_QEFFECT_P_H
 
 #include <private/qnode_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QEffect;
 class QParameter;
 class QTechnique;
 
-class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QEffectPrivate : public Qt3D::QNodePrivate
 {
 public :
     QEffectPrivate();
@@ -58,8 +58,8 @@ public :
     QList<QTechnique *> m_techniques;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QEFFECT_P_H
+#endif // QT3DRENDER_QEFFECT_P_H

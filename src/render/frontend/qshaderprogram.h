@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSHADERPROGRAM_H
-#define QT3D_QSHADERPROGRAM_H
+#ifndef QT3DRENDER_QSHADERPROGRAM_H
+#define QT3DRENDER_QSHADERPROGRAM_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QShaderProgramPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
+class QT3DRENDERERSHARED_EXPORT QShaderProgram : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode WRITE setVertexShaderCode NOTIFY vertexShaderCodeChanged)
@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public QNode
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
 
 public:
-    explicit QShaderProgram(QNode *parent = 0);
+    explicit QShaderProgram(Qt3D::QNode *parent = 0);
     ~QShaderProgram();
 
     enum ShaderType {
@@ -103,8 +103,8 @@ Q_SIGNALS:
     void computeShaderCodeChanged();
 
 protected:
-    QShaderProgram(QShaderProgramPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QShaderProgram(QShaderProgramPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)
@@ -115,4 +115,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSHADERPROGRAM_H
+#endif // QT3DRENDER_QSHADERPROGRAM_H

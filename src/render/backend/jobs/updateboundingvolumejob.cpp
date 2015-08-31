@@ -47,14 +47,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 namespace {
 
-void expandWorldBoundingVolume(Qt3D::Render::RenderEntity *node)
+void expandWorldBoundingVolume(Qt3DRender::Render::RenderEntity *node)
 {
-    Qt3D::Render::RenderEntity *currentNode = node;
+    Qt3DRender::Render::RenderEntity *currentNode = node;
     QStack<int> childIndexStack;
     forever {
 
@@ -68,15 +68,15 @@ void expandWorldBoundingVolume(Qt3D::Render::RenderEntity *node)
             return;
 
         // Initialize parent bounding volume to be equal to that of the first child
-        Qt3D::Render::RenderEntity *parentNode = currentNode->parent();
-        Qt3D::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
+        Qt3DRender::Render::RenderEntity *parentNode = currentNode->parent();
+        Qt3DRender::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
         *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
 
         // Expand the parent bounding volume by each of remaining the siblings
         QVector<RenderEntity *> siblings = parentNode->children();
         const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
-            Qt3D::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
+            Qt3DRender::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
             parentBoundingVolume->expandToContain(*siblingBoundingVolume);
         }
 
@@ -111,6 +111,6 @@ void UpdateBoundingVolumeJob::run()
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

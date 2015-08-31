@@ -48,7 +48,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace {
 
@@ -447,6 +447,6 @@ float QCylinderGeometry::length() const
     return d->m_length;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

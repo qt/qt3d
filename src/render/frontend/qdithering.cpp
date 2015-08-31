@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDitheringPrivate : public QRenderStatePrivate
 {
@@ -64,6 +64,6 @@ QDithering::~QDithering()
     QNode::cleanup();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

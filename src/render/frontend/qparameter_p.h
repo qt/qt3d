@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPARAMETER_P_H
-#define QT3D_QPARAMETER_P_H
+#ifndef QT3DRENDER_QPARAMETER_P_H
+#define QT3DRENDER_QPARAMETER_P_H
 
 #include <private/qnode_p.h>
 #include <private/qt3drenderer_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QParameter;
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public QNodePrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public Qt3D::QNodePrivate
 {
 public:
     QParameterPrivate();
@@ -60,8 +60,8 @@ public:
     QString m_meshName;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPARAMETER_P_H
+#endif // QT3DRENDER_QPARAMETER_P_H

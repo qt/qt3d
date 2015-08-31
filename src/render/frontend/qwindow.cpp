@@ -47,7 +47,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 QWindowPrivate::QWindowPrivate()
     : ::QWindowPrivate()
@@ -125,13 +127,13 @@ QFrameGraph *QWindow::frameGraph() const
     return d->m_frameGraph;
 }
 
-QCamera *QWindow::defaultCamera()
+Qt3D::QCamera *QWindow::defaultCamera()
 {
     Q_D(const QWindow);
     return d->m_defaultCamera;
 }
 
-void QWindow::registerAspect(QAbstractAspect *aspect)
+void QWindow::registerAspect(Qt3D::QAbstractAspect *aspect)
 {
     Q_ASSERT(!isVisible());
     Q_D(QWindow);
@@ -145,7 +147,7 @@ void QWindow::registerAspect(const QString &name)
     d->m_engine->registerAspect(name);
 }
 
-void QWindow::setRootEntity(QEntity *root)
+void QWindow::setRootEntity(Qt3D::QEntity *root)
 {
     Q_ASSERT(!isVisible());
     Q_D(QWindow);
@@ -178,6 +180,6 @@ void QWindow::show()
     ::QWindow::show();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

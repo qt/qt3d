@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTARGETSELECTOR_H
-#define QT3D_RENDER_RENDERTARGETSELECTOR_H
+#ifndef QT3DRENDER_RENDER_RENDERTARGETSELECTOR_H
+#define QT3DRENDER_RENDER_RENDERTARGETSELECTOR_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderTargetSelector;
 
@@ -52,19 +52,19 @@ class RenderTargetSelector : public FrameGraphNode
 public:
     RenderTargetSelector();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QNodeId renderTargetUuid() const;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    Qt3D::QNodeId renderTargetUuid() const;
     QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
 
 private:
-    QNodeId m_renderTargetUuid;
+    Qt3D::QNodeId m_renderTargetUuid;
     QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTARGETSELECTOR_H
+#endif // QT3DRENDER_RENDER_RENDERTARGETSELECTOR_H

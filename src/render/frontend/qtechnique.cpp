@@ -43,10 +43,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QTechniquePrivate
+    \class Qt3DRender::QTechniquePrivate
     \internal
 */
 QTechniquePrivate::QTechniquePrivate()
@@ -244,7 +246,7 @@ QOpenGLFilter *QTechnique::openGLFilter()
     return &d->m_openGLFilter;
 }
 
-} // of namespace Qt3D
+} // of namespace Qt3DRender
 
 QT_END_NAMESPACE
 

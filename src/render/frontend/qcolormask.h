@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCOLORMASK_H
-#define QT3D_QCOLORMASK_H
+#ifndef QT3DRENDER_QCOLORMASK_H
+#define QT3DRENDER_QCOLORMASK_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QColorMaskPrivate;
 
@@ -54,7 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QColorMask : public QRenderState
     Q_PROPERTY(bool alpha READ isAlpha WRITE setAlpha NOTIFY alphaChanged)
 
 public:
-    explicit QColorMask(QNode *parent = Q_NULLPTR);
+    explicit QColorMask(Qt3D::QNode *parent = Q_NULLPTR);
     ~QColorMask();
 
     bool isRed() const;
@@ -74,15 +74,15 @@ Q_SIGNALS:
     void alphaChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QColorMask)
     QT3D_CLONEABLE(QColorMask)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCOLORMASK_H
+#endif // QT3DRENDER_QCOLORMASK_H

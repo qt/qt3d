@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DTEXTURE_H
-#define QT3D_RENDER_QUICK_QUICK3DTEXTURE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dnode.h>
@@ -46,16 +46,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DTextureExtension : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAbstractTextureImage> textureImages READ textureImages)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAbstractTextureImage> textureImages READ textureImages)
     Q_CLASSINFO("DefaultProperty", "textureImages")
 
 public:
@@ -71,12 +69,10 @@ private:
     static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QUICK3DTEXTURE_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H

@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTextureWrapModePrivate : public QObjectPrivate
 {
@@ -59,11 +59,11 @@ public:
 };
 
 /*!
-    \class Qt3D::QTextureWrapMode
+    \class Qt3DRender::QTextureWrapMode
     \inmodule Qt3DRenderer
     \since 5.5
 
-    \brief Defines the wrap mode a Qt3D::QAbstractTextureProvider
+    \brief Defines the wrap mode a Qt3DRender::QAbstractTextureProvider
     should apply to a texture.
  */
 
@@ -76,7 +76,7 @@ QTextureWrapMode::QTextureWrapMode(WrapMode wrapMode, QObject *parent)
 }
 
 /*!
-    Contrusts a new Qt3D::QTextureWrapMode instance with the wrap mode to apply to
+    Contrusts a new Qt3DRender::QTextureWrapMode instance with the wrap mode to apply to
     each dimension \a x, \a y \a z of the texture and \a parent as parent.
  */
 QTextureWrapMode::QTextureWrapMode(WrapMode x,WrapMode y, WrapMode z, QObject *parent)
@@ -152,6 +152,6 @@ QTextureWrapMode::WrapMode QTextureWrapMode::z() const
     return d->m_z;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

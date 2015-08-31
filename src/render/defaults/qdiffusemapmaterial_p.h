@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QDIFFUSEMAPMATERIAL_P_H
-#define QT3D_RENDER_QDIFFUSEMAPMATERIAL_P_H
+#ifndef QT3DRENDER_RENDER_QDIFFUSEMAPMATERIAL_P_H
+#define QT3DRENDER_RENDER_QDIFFUSEMAPMATERIAL_P_H
 
 #include <Qt3DRenderer/private/qmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QEffect;
 class QAbstractTextureProvider;
@@ -80,9 +80,9 @@ class QDiffuseMapMaterialPrivate : public QMaterialPrivate
     Q_DECLARE_PUBLIC(QDiffuseMapMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QDIFFUSEAPMATERIAL_P_H
+#endif // QT3DRENDER_RENDER_QDIFFUSEAPMATERIAL_P_H
 

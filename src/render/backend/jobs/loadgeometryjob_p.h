@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LOADGEOMETRYJOB_H
-#define QT3D_RENDER_LOADGEOMETRYJOB_H
+#ifndef QT3DRENDER_RENDER_LOADGEOMETRYJOB_H
+#define QT3DRENDER_RENDER_LOADGEOMETRYJOB_H
 
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
@@ -43,13 +43,13 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class Renderer;
 
-class LoadGeometryJob : public QAspectJob
+class LoadGeometryJob : public Qt3D::QAspectJob
 {
 public:
     explicit LoadGeometryJob(const HGeometryRenderer &handle);
@@ -65,10 +65,10 @@ protected:
 
 typedef QSharedPointer<LoadGeometryJob> LoadGeometryJobPtr;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LOADGEOMETRYJOB_H
+#endif // QT3DRENDER_RENDER_LOADGEOMETRYJOB_H

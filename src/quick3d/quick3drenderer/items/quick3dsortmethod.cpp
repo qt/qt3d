@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DSortMethod::Quick3DSortMethod(QObject *parent)
@@ -90,10 +88,8 @@ void Quick3DSortMethod::clearCriteria(QQmlListProperty<QSortCriterion> *list)
     }
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

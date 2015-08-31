@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTORUSMESH_H
-#define QT3D_QTORUSMESH_H
+#ifndef QT3DRENDER_QTORUSMESH_H
+#define QT3DRENDER_QTORUSMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QTorusMesh : public QGeometryRenderer
 {
@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QTorusMesh : public QGeometryRenderer
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float minorRadius READ minorRadius WRITE setMinorRadius NOTIFY minorRadiusChanged)
 public:
-    explicit QTorusMesh(QNode *parent = 0);
+    explicit QTorusMesh(Qt3D::QNode *parent = 0);
     ~QTorusMesh();
 
     void setRings(int rings);
@@ -85,8 +85,8 @@ private:
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTORUSMESH_H
+#endif // QT3DRENDER_QTORUSMESH_H

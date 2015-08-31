@@ -40,19 +40,19 @@
 #include <Qt3DRenderer/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
-class TestFunctor : public Qt3D::QGeometryFunctor
+class TestFunctor : public Qt3DRender::QGeometryFunctor
 {
 public:
     explicit TestFunctor(int size)
         : m_size(size)
     {}
 
-    Qt3D::QGeometry *operator ()() Q_DECL_FINAL
+    Qt3DRender::QGeometry *operator ()() Q_DECL_FINAL
     {
         return Q_NULLPTR;
     }
 
-    bool operator ==(const Qt3D::QGeometryFunctor &other) const
+    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -74,10 +74,10 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometryRenderer renderGeometryRenderer;
-        Qt3D::QGeometryRenderer geometryRenderer;
-        Qt3D::QGeometry geometry;
-        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1200));
+        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::QGeometryRenderer geometryRenderer;
+        Qt3DRender::QGeometry geometry;
+        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(1200));
 
         geometryRenderer.setInstanceCount(1584);
         geometryRenderer.setPrimitiveCount(1609);
@@ -85,7 +85,7 @@ private Q_SLOTS:
         geometryRenderer.setBaseInstance(883);
         geometryRenderer.setRestartIndex(65536);
         geometryRenderer.setPrimitiveRestart(true);
-        geometryRenderer.setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
+        geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setGeometryFunctor(functor);
 
@@ -110,7 +110,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
 
         // THEN
         QVERIFY(renderGeometryRenderer.peerUuid().isNull());
@@ -122,13 +122,13 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.baseInstance(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
-        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::Triangles);
+        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
 
         // GIVEN
-        Qt3D::QGeometryRenderer geometryRenderer;
-        Qt3D::QGeometry geometry;
-        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1200));
+        Qt3DRender::QGeometryRenderer geometryRenderer;
+        Qt3DRender::QGeometry geometry;
+        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(1200));
 
 
         geometryRenderer.setInstanceCount(454);
@@ -137,7 +137,7 @@ private Q_SLOTS:
         geometryRenderer.setBaseInstance(383);
         geometryRenderer.setRestartIndex(555);
         geometryRenderer.setPrimitiveRestart(true);
-        geometryRenderer.setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
+        geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setGeometryFunctor(functor);
 
@@ -155,14 +155,14 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.baseInstance(), 0);
         QCOMPARE(renderGeometryRenderer.restartIndex(), -1);
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
-        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::Triangles);
+        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
     }
 
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
 
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -247,11 +247,11 @@ private Q_SLOTS:
         // WHEN
         updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
         updateChange->setPropertyName("primitiveType");
-        updateChange->setValue(static_cast<int>(Qt3D::QGeometryRenderer::LineLoop));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QGeometryRenderer::LineLoop));
         renderGeometryRenderer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3D::QGeometryRenderer::LineLoop);
+        QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::LineLoop);
         QVERIFY(renderGeometryRenderer.isDirty());
 
         renderGeometryRenderer.unsetDirty();
@@ -260,7 +260,7 @@ private Q_SLOTS:
         // WHEN
         updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
         updateChange->setPropertyName("geometryFunctor");
-        Qt3D::QGeometryFunctorPtr functor(new TestFunctor(1450));
+        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(1450));
         updateChange->setValue(QVariant::fromValue(functor));
         renderGeometryRenderer.sceneChangeEvent(updateChange);
 

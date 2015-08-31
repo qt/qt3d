@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPOINTLIGHT_P_H
-#define QT3D_QPOINTLIGHT_P_H
+#ifndef QT3DRENDER_QPOINTLIGHT_P_H
+#define QT3DRENDER_QPOINTLIGHT_P_H
 
 #include <private/qabstractlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPointLight;
 
@@ -53,7 +53,7 @@ public:
     Q_DECLARE_PUBLIC(QPointLight)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

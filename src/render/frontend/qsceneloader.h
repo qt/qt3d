@@ -34,29 +34,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENELOADER_H
-#define QT3D_QSCENELOADER_H
+#ifndef QT3DRENDER_QSCENELOADER_H
+#define QT3DRENDER_QSCENELOADER_H
 
 #include <Qt3DRenderer/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QSceneLoader : public Render::QAbstractSceneLoader
+class QT3DRENDERERSHARED_EXPORT QSceneLoader : public QAbstractSceneLoader
 {
     Q_OBJECT
 public:
-    explicit QSceneLoader(QNode *parent = 0);
+    explicit QSceneLoader(Qt3D::QNode *parent = 0);
     ~QSceneLoader();
-    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 protected:
     QT3D_CLONEABLE(QSceneLoader)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENELOADER_H
+#endif // QT3DRENDER_QSCENELOADER_H

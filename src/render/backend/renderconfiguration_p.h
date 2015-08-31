@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCONFIGURATION_H
-#define QT3D_RENDER_RENDERCONFIGURATION_H
+#ifndef QT3DRENDER_RENDER_RENDERCONFIGURATION_H
+#define QT3DRENDER_RENDER_RENDERCONFIGURATION_H
 
 #include <qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class RenderConfiguration
@@ -51,8 +51,8 @@ public:
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCONFIGURATION_H
+#endif // QT3DRENDER_RENDER_RENDERCONFIGURATION_H

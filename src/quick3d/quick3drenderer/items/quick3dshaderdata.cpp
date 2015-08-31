@@ -42,10 +42,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 namespace {
@@ -83,7 +81,7 @@ public:
             }
             return innerValues;
         } else if (v.userType() == quick3DShaderDataTypeId) {
-            QNodeId id;
+            Qt3D::QNodeId id;
             QShaderData *shaderData = v.value<Quick3DShaderData *>();
             if (shaderData)
                 id = shaderData->id();
@@ -99,10 +97,8 @@ Quick3DShaderData::Quick3DShaderData(QNode *parent)
 {
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3D
 
 QT_END_NAMESPACE

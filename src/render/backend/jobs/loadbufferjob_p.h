@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_LOADBUFFERJOB_H
-#define QT3D_RENDER_LOADBUFFERJOB_H
+#ifndef QT3DRENDER_RENDER_LOADBUFFERJOB_H
+#define QT3DRENDER_RENDER_LOADBUFFERJOB_H
 
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -65,10 +65,10 @@ protected:
 
 typedef QSharedPointer<LoadBufferJob> LoadBufferJobPtr;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_LOADBUFFERJOB_H
+#endif // QT3DRENDER_RENDER_LOADBUFFERJOB_H

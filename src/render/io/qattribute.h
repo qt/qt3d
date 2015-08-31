@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QATTRIBUTE_H
-#define QT3D_QATTRIBUTE_H
+#ifndef QT3DRENDER_QATTRIBUTE_H
+#define QT3DRENDER_QATTRIBUTE_H
 
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,17 +43,17 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAttributePrivate;
 class QBuffer;
 
-class QT3DRENDERERSHARED_EXPORT QAttribute : public QAbstractAttribute
+class QT3DRENDERERSHARED_EXPORT QAttribute : public Qt3D::QAbstractAttribute
 {
     Q_OBJECT
 
 public:
-    explicit QAttribute(QNode *parent = 0);
+    explicit QAttribute(Qt3D::QNode *parent = 0);
     QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     ~QAttribute();
@@ -73,15 +73,15 @@ public:
     static QString defaultTangentAttributeName();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QAttribute)
     Q_DECLARE_PRIVATE(QAttribute)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QATTRIBUTE_H
+#endif // QT3DRENDER_QATTRIBUTE_H

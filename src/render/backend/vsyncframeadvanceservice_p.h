@@ -34,20 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H
-#define QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H
+#ifndef QT3DRENDER_RENDER_VSYNCFRAMEADVANCESERVICE_H
+#define QT3DRENDER_RENDER_VSYNCFRAMEADVANCESERVICE_H
 
 #include <Qt3DCore/qabstractframeadvanceservice.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
 class VSyncFrameAdvanceServicePrivate;
 
-class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public QAbstractFrameAdvanceService
+class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public Qt3D::QAbstractFrameAdvanceService
 {
 public:
     VSyncFrameAdvanceService();
@@ -63,10 +63,10 @@ private:
     Q_DECLARE_PRIVATE(VSyncFrameAdvanceService)
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_VSYNCFRAMEADVANCESERVICE_H
+#endif // QT3DRENDER_RENDER_VSYNCFRAMEADVANCESERVICE_H

@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_VIEWPORTNODE_H
-#define QT3D_RENDER_VIEWPORTNODE_H
+#ifndef QT3DRENDER_RENDER_VIEWPORTNODE_H
+#define QT3DRENDER_RENDER_VIEWPORTNODE_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QViewport;
 
@@ -55,7 +55,7 @@ class ViewportNode : public FrameGraphNode
 public:
     ViewportNode();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
     float xMin() const;
     void setXMin(float xMin);
@@ -71,7 +71,7 @@ public:
 
     QColor clearColor() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     float m_xMin;
@@ -83,9 +83,9 @@ private:
 
 QRectF computeViewport(const QRectF &childViewport, const ViewportNode *parentViewport);
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_VIEWPORTNODE_H
+#endif // QT3DRENDER_RENDER_VIEWPORTNODE_H

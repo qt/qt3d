@@ -43,8 +43,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderTransform::RenderTransform()
@@ -52,9 +53,9 @@ RenderTransform::RenderTransform()
 {
 }
 
-void RenderTransform::updateFromPeer(QNode *peer)
+void RenderTransform::updateFromPeer(Qt3D::QNode *peer)
 {
-    QTransform *transform = static_cast<QTransform *>(peer);
+    Qt3D::QTransform *transform = static_cast<Qt3D::QTransform *>(peer);
 
     m_transformMatrix = transform->matrix();
     m_enabled = transform->isEnabled();
@@ -65,7 +66,7 @@ QMatrix4x4 RenderTransform::transformMatrix() const
     return m_transformMatrix;
 }
 
-void RenderTransform::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderTransform::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -76,8 +77,7 @@ void RenderTransform::sceneChangeEvent(const QSceneChangePtr &e)
     }
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLAYERFILTER_P_H
-#define QT3D_QLAYERFILTER_P_H
+#ifndef QT3DRENDER_QLAYERFILTER_P_H
+#define QT3DRENDER_QLAYERFILTER_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QLayerFilter;
 
@@ -55,8 +55,8 @@ public:
     QStringList m_layers;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLAYERFILTER_P_H
+#endif // QT3DRENDER_QLAYERFILTER_P_H

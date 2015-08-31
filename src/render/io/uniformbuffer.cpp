@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -89,8 +89,8 @@ void UniformBuffer::bindToUniformBlock(QGraphicsContext *ctx, int bindingPoint)
     ctx->bindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_bufferId);
 }
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

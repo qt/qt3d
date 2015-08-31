@@ -38,19 +38,18 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
 
 SceneManager::SceneManager() : QResourceManager<RenderScene,
-                                                 QNodeId,
-                                                 8,
-                                                 Qt3D::ArrayAllocatingPolicy,
-                                                 Qt3D::ObjectLevelLockingPolicy>()
+                                                Qt3D::QNodeId,
+                                                8,
+                                                Qt3D::ArrayAllocatingPolicy,
+                                                Qt3D::ObjectLevelLockingPolicy>()
 {
 }
 
-void SceneManager::addSceneData(const QUrl &source, const QNodeId &sceneUuid)
+void SceneManager::addSceneData(const QUrl &source, const Qt3D::QNodeId &sceneUuid)
 {
     LoadSceneJobPtr newJob(new LoadSceneJob(source, sceneUuid));
 
@@ -69,20 +68,19 @@ QVector<LoadSceneJobPtr> SceneManager::pendingSceneLoaderJobs()
     return copy;
 }
 
-void SceneManager::addLoadedSceneTree(const QUrl &source, QEntity *tree)
+void SceneManager::addLoadedSceneTree(const QUrl &source, Qt3D::QEntity *tree)
 {
     SceneManager::Locker lock(this);
     m_loadedSceneTrees.insert(source, tree);
 }
 
-QEntity *SceneManager::sceneTreeFromSource(const QUrl &source)
+Qt3D::QEntity *SceneManager::sceneTreeFromSource(const QUrl &source)
 {
     SceneManager::Locker lock(this);
     return m_loadedSceneTrees.value(source);
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

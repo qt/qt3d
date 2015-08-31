@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 void RenderViewJob::run()
@@ -53,7 +53,7 @@ void RenderViewJob::run()
     // Create a RenderView object
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
 
-    QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
+    Qt3D::QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
     RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
 
     // RenderView should allocate heap resources using only the currentFrameAllocator
@@ -77,6 +77,6 @@ void RenderViewJob::run()
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

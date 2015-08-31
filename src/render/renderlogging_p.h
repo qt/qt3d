@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERLOGGING_P_H
-#define QT3D_RENDER_RENDERLOGGING_P_H
+#ifndef QT3DRENDER_RENDER_RENDERLOGGING_P_H
+#define QT3DRENDER_RENDER_RENDERLOGGING_P_H
 
 #include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -57,10 +57,10 @@ Q_DECLARE_LOGGING_CATEGORY(Shaders)
 Q_DECLARE_LOGGING_CATEGORY(RenderStates)
 Q_DECLARE_LOGGING_CATEGORY(VSyncAdvanceService)
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERLOGGING_P_H
+#endif // QT3DRENDER_RENDER_RENDERLOGGING_P_H

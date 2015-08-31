@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSCENELOADER_P_H
-#define QT3D_QABSTRACTSCENELOADER_P_H
+#ifndef QT3DRENDER_QABSTRACTSCENELOADER_P_H
+#define QT3DRENDER_QABSTRACTSCENELOADER_P_H
 
 #include <private/qcomponent_p.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,14 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class AbstractSceneParser;
 
-namespace Render {
-
-
-class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QAbstractSceneLoaderPrivate();
@@ -61,10 +58,8 @@ public:
     QAbstractSceneLoader::Status m_status;
 };
 
-} // Render
-
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTSCENE_P_H
+#endif // QT3DRENDER_QABSTRACTSCENE_P_H

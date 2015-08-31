@@ -39,13 +39,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
-class Quick3DShaderDataArrayPrivate : public QNodePrivate
+class Quick3DShaderDataArrayPrivate : public Qt3D::QNodePrivate
 {
 public:
     Quick3DShaderDataArrayPrivate()
@@ -112,10 +110,8 @@ void Quick3DShaderDataArray::clearValues(QQmlListProperty<QShaderData> *list)
     static_cast<Quick3DShaderDataArrayPrivate *>(Quick3DShaderDataArrayPrivate::get(self))->m_values.clear();
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

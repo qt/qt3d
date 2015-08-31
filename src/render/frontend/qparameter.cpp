@@ -42,11 +42,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QParameterPrivate
+    \class Qt3DRender::QParameterPrivate
     \internal
 */
 QParameterPrivate::QParameterPrivate()
@@ -144,6 +145,6 @@ QVariant QParameter::value() const
     return d->m_value;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

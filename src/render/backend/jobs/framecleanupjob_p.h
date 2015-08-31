@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_FRAMECLEANUPJOB_H
-#define QT3D_RENDER_FRAMECLEANUPJOB_H
+#ifndef QT3DRENDER_RENDER_FRAMECLEANUPJOB_H
+#define QT3DRENDER_RENDER_FRAMECLEANUPJOB_H
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -64,10 +64,10 @@ private:
 
 typedef QSharedPointer<FrameCleanupJob> FrameCleanupJobPtr;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_FRAMECLEANUPJOB_H
+#endif // QT3DRENDER_RENDER_FRAMECLEANUPJOB_H

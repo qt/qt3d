@@ -49,11 +49,11 @@ class SceneHelper : public QObject
     Q_OBJECT
 
 public:
-    Q_INVOKABLE QObject *findEntity(Qt3D::QSceneLoader *loader, const QString &name);
+    Q_INVOKABLE QObject *findEntity(Qt3DRender::QSceneLoader *loader, const QString &name);
     Q_INVOKABLE void addListEntry(const QVariant &list, QObject *entry);
 };
 
-QObject *SceneHelper::findEntity(Qt3D::QSceneLoader *loader, const QString &name)
+QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString &name)
 {
     // The QSceneLoader instance is a component of an entity. The loaded scene
     // tree is added under this entity.
@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     Window view;
     Qt3D::Quick::QQmlAspectEngine engine;
 
-    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
     engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));

@@ -56,7 +56,7 @@ public:
     Qt3D::QTranslateTransform *translateTransform() const;
 
 private:
-    Qt3D::QMesh *m_mesh;
+    Qt3DRender::QMesh *m_mesh;
     Qt3D::QTransform *m_transform;
     Qt3D::QScaleTransform *m_scaleTransform;
     Qt3D::QRotateTransform *m_xaxisRotation;

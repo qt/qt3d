@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
     \class Qt3D::QSortMethodPrivate
@@ -113,6 +115,6 @@ QList<QSortCriterion *> QSortMethod::criteria() const
     return d->m_criteria;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

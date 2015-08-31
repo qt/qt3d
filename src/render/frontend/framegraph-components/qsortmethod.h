@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSORTMETHOD_H
-#define QT3D_QSORTMETHOD_H
+#ifndef QT3DRENDER_QSORTMETHOD_H
+#define QT3DRENDER_QSORTMETHOD_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QSortCriterion;
 class QSortMethodPrivate;
@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QSortMethod : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QSortMethod(QNode *parent = 0);
+    explicit QSortMethod(Qt3D::QNode *parent = 0);
     ~QSortMethod();
 
     void addCriterion(QSortCriterion *criterion);
@@ -59,16 +59,16 @@ public:
     QList<QSortCriterion *> criteria() const;
 
 protected:
-    QSortMethod(QSortMethodPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QSortMethod(QSortMethodPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QSortMethod)
     QT3D_CLONEABLE(QSortMethod)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSORTMETHOD_H
+#endif // QT3DRENDER_QSORTMETHOD_H

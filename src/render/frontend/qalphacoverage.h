@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QALPHACOVERAGE_H
-#define QT3D_QALPHACOVERAGE_H
+#ifndef QT3DRENDER_QALPHACOVERAGE_H
+#define QT3DRENDER_QALPHACOVERAGE_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAlphaCoveragePrivate;
 
@@ -50,7 +50,7 @@ class QT3DRENDERERSHARED_EXPORT QAlphaCoverage : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QAlphaCoverage(QNode *parent = 0);
+    explicit QAlphaCoverage(Qt3D::QNode *parent = 0);
     ~QAlphaCoverage();
 
 private:
@@ -58,8 +58,8 @@ private:
     QT3D_CLONEABLE(QAlphaCoverage)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QALPHACOVERAGE_H
+#endif // QT3DRENDER_QALPHACOVERAGE_H

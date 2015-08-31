@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLAYER_H
-#define QT3D_QLAYER_H
+#ifndef QT3DRENDER_QLAYER_H
+#define QT3DRENDER_QLAYER_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,16 +43,16 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QLayerPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QLayer : public QComponent
+class QT3DRENDERERSHARED_EXPORT QLayer : public Qt3D::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QStringList names READ names WRITE setNames NOTIFY namesChanged)
 public:
-    explicit QLayer(QNode *parent = 0);
+    explicit QLayer(Qt3D::QNode *parent = 0);
     ~QLayer();
 
     QStringList names() const;
@@ -62,16 +62,16 @@ Q_SIGNALS:
     void namesChanged();
 
 protected:
-    QLayer(QLayerPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QLayer(QLayerPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QLayer)
     QT3D_CLONEABLE(QLayer)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLAYER_H
+#endif // QT3DRENDER_QLAYER_H

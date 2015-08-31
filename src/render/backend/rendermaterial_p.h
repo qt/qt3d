@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERMATERIAL_H
-#define QT3D_RENDER_RENDERMATERIAL_H
+#ifndef QT3DRENDER_RENDER_RENDERMATERIAL_H
+#define QT3DRENDER_RENDER_RENDERMATERIAL_H
 
 #include <QVariant>
 
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QMaterial;
 class QParameter;
@@ -58,29 +58,29 @@ class RenderTechnique;
 class RenderEffect;
 class MaterialManager;
 
-class Q_AUTOTEST_EXPORT RenderMaterial : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderMaterial : public Qt3D::QBackendNode
 {
 public:
     RenderMaterial();
     ~RenderMaterial();
     void cleanup();
 
-    void updateFromPeer(QNode* mat) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
-    QList<QNodeId> parameters() const;
-    QNodeId effect() const;
+    QList<Qt3D::QNodeId> parameters() const;
+    Qt3D::QNodeId effect() const;
 
 private:
     ParameterPack m_parameterPack;
-    QNodeId m_effectUuid;
+    Qt3D::QNodeId m_effectUuid;
     bool m_enabled;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERMATERIAL_H
+#endif // QT3DRENDER_RENDER_RENDERMATERIAL_H

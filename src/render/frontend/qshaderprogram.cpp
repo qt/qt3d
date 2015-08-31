@@ -44,10 +44,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QShaderProgramPrivate
+    \class Qt3DRender::QShaderProgramPrivate
     \internal
 */
 QShaderProgramPrivate::QShaderProgramPrivate()
@@ -230,7 +230,7 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    QString filePath = QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
+    QString filePath = Qt3D::QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
 
     QFile f(filePath);
     if (!f.exists())
@@ -240,6 +240,6 @@ QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
     return f.readAll();
 }
 
-} // of namespace Qt3D
+} // of namespace Qt3DRender
 
 QT_END_NAMESPACE

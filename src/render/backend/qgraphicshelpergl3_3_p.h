@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H
-#define QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 class QOpenGLFunctions_3_3_Core;
 class QOpenGLExtension_ARB_tessellation_shader;
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 class QGraphicsHelperGL3_3 : public QGraphicsHelperInterface
@@ -102,11 +102,11 @@ private:
     QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H

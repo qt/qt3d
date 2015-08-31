@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSPOTLIGHT_P_H
-#define QT3D_QSPOTLIGHT_P_H
+#ifndef QT3DRENDER_QSPOTLIGHT_P_H
+#define QT3DRENDER_QSPOTLIGHT_P_H
 
 #include <private/qabstractlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
 {
@@ -53,8 +53,8 @@ public:
     QVector3D m_direction;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSPOTLIGHT_P_H
+#endif // QT3DRENDER_QSPOTLIGHT_P_H

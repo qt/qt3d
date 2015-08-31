@@ -49,7 +49,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 QGraphicsHelperGL4::QGraphicsHelperGL4()
@@ -905,8 +905,8 @@ QSize QGraphicsHelperGL4::getTextureDimensions(GLuint textureId, GLenum target, 
     return QSize(width, height);
 }
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

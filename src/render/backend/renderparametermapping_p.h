@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERPARAMETERMAPPING_P_H
-#define QT3D_RENDER_RENDERPARAMETERMAPPING_P_H
+#ifndef QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H
+#define QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H
 
 #include <Qt3DRenderer/qparametermapping.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -53,22 +53,22 @@ public:
 
     bool isValid() const;
 
-    QNodeId id() const;
+    Qt3D::QNodeId id() const;
     QString parameterName() const;
     QString shaderVariableName() const;
     QParameterMapping::Binding bindingType() const;
 
 private:
-    QNodeId m_id;
+    Qt3D::QNodeId m_id;
     QString m_parameterName;
     QString m_shaderVariableName;
     QParameterMapping::Binding m_bindingType;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERPARAMETERMAPPING_P_H
+#endif // QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H

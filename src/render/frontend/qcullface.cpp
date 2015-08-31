@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QCullFacePrivate : public QRenderStatePrivate
 {
@@ -89,6 +89,6 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

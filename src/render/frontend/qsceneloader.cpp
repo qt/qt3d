@@ -44,10 +44,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 QSceneLoader::QSceneLoader(QNode *parent)
-    : Render::QAbstractSceneLoader(parent)
+    : QAbstractSceneLoader(parent)
 {
 }
 
@@ -57,9 +59,9 @@ QSceneLoader::~QSceneLoader()
 }
 
 // Called in main thread
-void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
+void QSceneLoader::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
 {
-    Render::QAbstractSceneLoaderPrivate *d = static_cast<Render::QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
+    QAbstractSceneLoaderPrivate *d = static_cast<QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
@@ -84,6 +86,6 @@ void QSceneLoader::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

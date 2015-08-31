@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTTEXTUREPROVIDER_P_H
-#define QT3D_QABSTRACTTEXTUREPROVIDER_P_H
+#ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
+#define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/private/qnode_p.h>
@@ -44,9 +44,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QAbstractTextureProviderPrivate : public QNodePrivate
+class QAbstractTextureProviderPrivate : public Qt3D::QNodePrivate
 {
 public :
     QAbstractTextureProviderPrivate();
@@ -76,5 +76,5 @@ public :
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTTEXTUREPROVIDER_P_H
+#endif // QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
 

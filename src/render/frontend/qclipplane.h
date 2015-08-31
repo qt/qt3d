@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCLIPPLANE_H
-#define QT3D_QCLIPPLANE_H
+#ifndef QT3DRENDER_QCLIPPLANE_H
+#define QT3DRENDER_QCLIPPLANE_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QClipPlanePrivate;
 
@@ -50,14 +50,14 @@ class QT3DRENDERERSHARED_EXPORT QClipPlane : public QRenderState
     Q_OBJECT
     Q_PROPERTY(int plane READ plane WRITE setPlane NOTIFY planeChanged)
 public:
-    explicit QClipPlane(QNode *parent = 0);
+    explicit QClipPlane(Qt3D::QNode *parent = 0);
     ~QClipPlane();
 
     int plane() const;
     void setPlane(int);
 
 protected:
-    void copy(const QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
 
 Q_SIGNALS:
     void planeChanged();
@@ -67,8 +67,8 @@ private:
     QT3D_CLONEABLE(QClipPlane)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCLIPPLANE_H
+#endif // QT3DRENDER_QCLIPPLANE_H

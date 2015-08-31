@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -53,18 +53,18 @@ FrameGraphSubtreeSelector::~FrameGraphSubtreeSelector()
 {
 }
 
-void FrameGraphSubtreeSelector::updateFromPeer(QNode *peer)
+void FrameGraphSubtreeSelector::updateFromPeer(Qt3D::QNode *peer)
 {
     QFrameGraphSelector *selector = static_cast<QFrameGraphSelector *>(peer);
     setEnabled(selector->isEnabled());
 }
 
-void FrameGraphSubtreeSelector::sceneChangeEvent(const QSceneChangePtr &)
+void FrameGraphSubtreeSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &)
 {
 }
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

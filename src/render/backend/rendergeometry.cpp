@@ -41,8 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderGeometry::RenderGeometry()
@@ -63,7 +64,7 @@ void RenderGeometry::cleanup()
     m_geometryDirty = false;
 }
 
-void RenderGeometry::updateFromPeer(QNode *peer)
+void RenderGeometry::updateFromPeer(Qt3D::QNode *peer)
 {
     QGeometry *geometry = static_cast<QGeometry *>(peer);
     if (geometry != Q_NULLPTR) {
@@ -75,7 +76,7 @@ void RenderGeometry::updateFromPeer(QNode *peer)
     }
 }
 
-void RenderGeometry::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderGeometry::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -116,8 +117,7 @@ void RenderGeometry::unsetDirty()
     m_geometryDirty = false;
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

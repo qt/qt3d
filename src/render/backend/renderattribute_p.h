@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERATTRIBUTE_H
-#define QT3D_RENDER_RENDERATTRIBUTE_H
+#ifndef QT3DRENDER_RENDER_RENDERATTRIBUTE_H
+#define QT3DRENDER_RENDER_RENDERATTRIBUTE_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRenderer/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderAttribute : public QBackendNode
+class Q_AUTOTEST_EXPORT RenderAttribute : public Qt3D::QBackendNode
 {
 public:
     RenderAttribute();
@@ -54,38 +54,38 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    inline QNodeId bufferId() const { return m_bufferId; }
+    inline Qt3D::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
-    inline QAbstractAttribute::DataType dataType() const { return m_dataType; }
+    inline Qt3D::QAbstractAttribute::DataType dataType() const { return m_dataType; }
     inline uint dataSize() const { return m_dataSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
-    inline QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
+    inline Qt3D::QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
 
 private:
-    QNodeId m_bufferId;
+    Qt3D::QNodeId m_bufferId;
     QString m_name;
-    QAbstractAttribute::DataType m_dataType;
+    Qt3D::QAbstractAttribute::DataType m_dataType;
     uint m_dataSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
-    QAbstractAttribute::AttributeType m_attributeType;
+    Qt3D::QAbstractAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERATTRIBUTE_H
+#endif // QT3DRENDER_RENDER_RENDERATTRIBUTE_H

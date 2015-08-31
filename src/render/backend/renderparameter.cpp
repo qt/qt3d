@@ -44,8 +44,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderParameter::RenderParameter()
@@ -55,14 +56,14 @@ RenderParameter::RenderParameter()
 {
 }
 
-void RenderParameter::updateFromPeer(QNode *mat)
+void RenderParameter::updateFromPeer(Qt3D::QNode *mat)
 {
     QParameter *param = static_cast<QParameter *>(mat);
     m_name = param->name();
     m_value = toBackendValue(param->value());
 }
 
-void RenderParameter::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderParameter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -110,8 +111,7 @@ QVariant RenderParameter::toBackendValue(const QVariant &value)
     }
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

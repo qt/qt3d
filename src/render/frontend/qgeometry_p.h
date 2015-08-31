@@ -41,9 +41,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
-class QGeometryPrivate : public QNodePrivate
+class QGeometryPrivate : public Qt3D::QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QGeometry)
@@ -56,7 +56,7 @@ public:
     int m_verticesPerPatch;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

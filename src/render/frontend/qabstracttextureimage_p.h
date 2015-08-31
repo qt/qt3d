@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTTEXTUREIMAGE_P_H
-#define QT3D_QABSTRACTTEXTUREIMAGE_P_H
+#ifndef QT3DRENDER_QABSTRACTTEXTUREIMAGE_P_H
+#define QT3DRENDER_QABSTRACTTEXTUREIMAGE_P_H
 
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRenderer/private/qt3drenderer_global_p.h>
@@ -43,11 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public QNodePrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3D::QNodePrivate
 {
 public:
     QAbstractTextureImagePrivate()
@@ -65,9 +65,9 @@ public:
     QAbstractTextureProvider::CubeMapFace m_face;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTTEXTUREIMAGE_P_H
+#endif // QT3DRENDER_QABSTRACTTEXTUREIMAGE_P_H
 

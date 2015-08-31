@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QWRAPMODE_H
-#define QT3D_QWRAPMODE_H
+#ifndef QT3DRENDER_QWRAPMODE_H
+#define QT3DRENDER_QWRAPMODE_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTextureWrapModePrivate;
 
@@ -83,8 +83,8 @@ private:
     Q_DECLARE_PRIVATE(QTextureWrapMode)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QWRAPMODE_H
+#endif // QT3DRENDER_QWRAPMODE_H

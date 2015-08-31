@@ -57,14 +57,16 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 namespace Render {
 
 RenderEntity::RenderEntity()
     : QBackendNode()
     , m_renderer(Q_NULLPTR)
-    , m_localBoundingVolume(new Qt3D::Sphere)
-    , m_worldBoundingVolume(new Qt3D::Sphere)
+    , m_localBoundingVolume(new Sphere)
+    , m_worldBoundingVolume(new Sphere)
 {
 }
 
@@ -91,10 +93,10 @@ void RenderEntity::cleanup()
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
         // Clear components
-        m_transformComponent = QNodeId();
-        m_cameraComponent = QNodeId();
-        m_materialComponent = QNodeId();
-        m_geometryRendererComponent = QNodeId();
+        m_transformComponent = Qt3D::QNodeId();
+        m_cameraComponent = Qt3D::QNodeId();
+        m_materialComponent = Qt3D::QNodeId();
+        m_geometryRendererComponent = Qt3D::QNodeId();
         m_layerComponents.clear();
         m_shaderDataComponents.clear();
     }
@@ -129,7 +131,7 @@ void RenderEntity::setHandle(HEntity handle)
     m_handle = handle;
 }
 
-void RenderEntity::updateFromPeer(QNode *peer)
+void RenderEntity::updateFromPeer(Qt3D::QNode *peer)
 {
     QEntity *entity = static_cast<QEntity *>(peer);
     const QNodeId parentEntityId = entity->parentEntityId();
@@ -155,7 +157,7 @@ void RenderEntity::updateFromPeer(QNode *peer)
     }
 }
 
-void RenderEntity::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderEntity::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
@@ -235,12 +237,12 @@ const QMatrix4x4 *RenderEntity::worldTransform() const
     return m_renderer->worldMatrixManager()->data(m_worldTransform);
 }
 
-void RenderEntity::addComponent(QComponent *component)
+void RenderEntity::addComponent(Qt3D::QComponent *component)
 {
     // The backend element is always created when this method is called
     // If that's not the case something has gone wrong
 
-    if (qobject_cast<QTransform*>(component) != Q_NULLPTR)
+    if (qobject_cast<Qt3D::QTransform*>(component) != Q_NULLPTR)
         m_transformComponent = component->id();
     else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
         m_cameraComponent = component->id();
@@ -254,7 +256,7 @@ void RenderEntity::addComponent(QComponent *component)
         m_geometryRendererComponent = component->id();
 }
 
-void RenderEntity::removeComponent(const QNodeId &nodeId)
+void RenderEntity::removeComponent(const Qt3D::QNodeId &nodeId)
 {
     if (m_transformComponent == nodeId)
         m_transformComponent = QNodeId();
@@ -319,13 +321,13 @@ RenderGeometryRenderer *RenderEntity::renderComponent<RenderGeometryRenderer>() 
 }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
+Qt3D::QNodeId RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
+Qt3D::QNodeId RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
+Qt3D::QNodeId RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
 
 template<>
 QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const
@@ -346,7 +348,7 @@ QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const
 }
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
+QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
 
 template<>
 QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const
@@ -367,10 +369,10 @@ QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() con
 }
 
 template<>
-QList<QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }
+QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }
 
 template<>
-QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const { return m_geometryRendererComponent; }
+Qt3D::QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const { return m_geometryRendererComponent; }
 
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
@@ -378,7 +380,7 @@ RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
 {
 }
 
-QBackendNode *RenderEntityFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *RenderEntityFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
     HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->id());
     RenderEntity *entity = m_renderer->renderNodesManager()->data(renderNodeHandle);
@@ -389,17 +391,17 @@ QBackendNode *RenderEntityFunctor::create(QNode *frontend, const QBackendNodeFac
     return entity;
 }
 
-QBackendNode *RenderEntityFunctor::get(const QNodeId &id) const
+Qt3D::QBackendNode *RenderEntityFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_renderer->renderNodesManager()->lookupResource(id);
 }
 
-void RenderEntityFunctor::destroy(const QNodeId &id) const
+void RenderEntityFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_renderer->renderNodesManager()->releaseResource(id);
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

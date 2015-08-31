@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QScissorTestPrivate : public QRenderStatePrivate
 {
@@ -144,6 +144,6 @@ void QScissorTest::setHeight(int height)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

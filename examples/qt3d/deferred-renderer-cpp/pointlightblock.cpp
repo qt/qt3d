@@ -37,7 +37,7 @@
 #include "pointlightblock.h"
 
 PointLightBlock::PointLightBlock(Qt3D::QNode *parent)
-    : Qt3D::QShaderData(parent)
+    : Qt3DRender::QShaderData(parent)
 {
 
 }
@@ -46,12 +46,12 @@ PointLightBlock::~PointLightBlock()
 {
 }
 
-QList<Qt3D::QShaderData *> PointLightBlock::lights() const
+QList<Qt3DRender::QShaderData *> PointLightBlock::lights() const
 {
     return m_lights;
 }
 
-void PointLightBlock::addLight(Qt3D::QShaderData *light)
+void PointLightBlock::addLight(Qt3DRender::QShaderData *light)
 {
     m_lights.append(light);
     emit lightsChanged();

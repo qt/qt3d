@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QGEOMETRY_H
-#define QT3D_QGEOMETRY_H
+#ifndef QT3DRENDER_QGEOMETRY_H
+#define QT3DRENDER_QGEOMETRY_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
@@ -43,24 +43,27 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
+class QAbstractAttribute;
+}
+
+namespace Qt3DRender {
 
 class QGeometryPrivate;
-class QAbstractAttribute;
 
-typedef QVector<QAbstractAttribute *> QAttributeList;
+typedef QVector<Qt3D::QAbstractAttribute *> QAttributeList;
 
-class QT3DRENDERERSHARED_EXPORT QGeometry : public QNode
+class QT3DRENDERERSHARED_EXPORT QGeometry : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
 
 public:
-    explicit QGeometry(QNode *parent = 0);
+    explicit QGeometry(Qt3D::QNode *parent = 0);
     ~QGeometry();
 
     QAttributeList attributes() const;
-    void addAttribute(QAbstractAttribute *attribute);
-    void removeAttribute(QAbstractAttribute *attribute);
+    void addAttribute(Qt3D::QAbstractAttribute *attribute);
+    void removeAttribute(Qt3D::QAbstractAttribute *attribute);
 
     void setVerticesPerPatch(int verticesPerPatch);
     int verticesPerPatch() const;
@@ -69,16 +72,16 @@ Q_SIGNALS:
     void verticesPerPatchChanged();
 
 protected:
-    QGeometry(QGeometryPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QGeometry(QGeometryPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGeometry)
     QT3D_CLONEABLE(QGeometry)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QGEOMETRY_H
+#endif // QT3DRENDER_QGEOMETRY_H

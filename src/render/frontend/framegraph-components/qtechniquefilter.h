@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTECHNIQUEFILTER_H
-#define QT3D_QTECHNIQUEFILTER_H
+#ifndef QT3DRENDER_QTECHNIQUEFILTER_H
+#define QT3DRENDER_QTECHNIQUEFILTER_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTechniqueFilterPrivate;
 class QAnnotation;
@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QTechniqueFilter(QNode *parent = 0);
+    explicit QTechniqueFilter(Qt3D::QNode *parent = 0);
     ~QTechniqueFilter();
 
     QList<QAnnotation *> criteria() const;
@@ -64,16 +64,16 @@ public:
     QList<QParameter *> parameters() const;
 
 protected:
-    QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueFilter)
     QT3D_CLONEABLE(QTechniqueFilter)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTECHNIQUEFILTER_H
+#endif // QT3DRENDER_QTECHNIQUEFILTER_H

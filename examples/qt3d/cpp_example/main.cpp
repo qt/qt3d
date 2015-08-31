@@ -73,7 +73,7 @@ int main(int ac, char **av)
 
     Window view;
     Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
@@ -89,7 +89,7 @@ int main(int ac, char **av)
     Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
 
     // Torus shape data
-    Qt3D::QTorusMesh *torus = new Qt3D::QTorusMesh();
+    Qt3DRender::QTorusMesh *torus = new Qt3DRender::QTorusMesh();
     torus->setRadius(40);
     torus->setMinorRadius(15);
 
@@ -109,7 +109,7 @@ int main(int ac, char **av)
 
     // Scene file
     Qt3D::QEntity *sceneEntity = new Qt3D::QEntity(rootEntity);
-    Qt3D::QSceneLoader  *scene = new Qt3D::QSceneLoader();
+    Qt3DRender::QSceneLoader  *scene = new Qt3DRender::QSceneLoader();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
     Qt3D::QTranslateTransform *sceneTranslateTransform = new Qt3D::QTranslateTransform();
@@ -133,16 +133,16 @@ int main(int ac, char **av)
     input->setCamera(cameraEntity);
 
     // FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QTechniqueFilter *techniqueFilter = new Qt3D::QTechniqueFilter();
-    Qt3D::QViewport *viewport = new Qt3D::QViewport(techniqueFilter);
-    Qt3D::QClearBuffer *clearBuffer = new Qt3D::QClearBuffer(viewport);
-    Qt3D::QCameraSelector *cameraSelector = new Qt3D::QCameraSelector(clearBuffer);
-    (void) new Qt3D::QRenderPassFilter(cameraSelector);
+    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
+    Qt3DRender::QTechniqueFilter *techniqueFilter = new Qt3DRender::QTechniqueFilter();
+    Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport(techniqueFilter);
+    Qt3DRender::QClearBuffer *clearBuffer = new Qt3DRender::QClearBuffer(viewport);
+    Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffer);
+    (void) new Qt3DRender::QRenderPassFilter(cameraSelector);
 
     // TechiqueFilter and renderPassFilter are not implement yet
     viewport->setRect(QRectF(0, 0, 1, 1));
-    clearBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
+    clearBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
     cameraSelector->setCamera(cameraEntity);
     frameGraph->setActiveFrameGraph(techniqueFilter);
 

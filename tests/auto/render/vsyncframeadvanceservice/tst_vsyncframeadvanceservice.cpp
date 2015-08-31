@@ -41,7 +41,7 @@
 class FakeRenderThread Q_DECL_FINAL : public QThread
 {
 public:
-    FakeRenderThread(Qt3D::Render::VSyncFrameAdvanceService *tickService)
+    FakeRenderThread(Qt3DRender::Render::VSyncFrameAdvanceService *tickService)
         : m_tickService(tickService)
     {
     }
@@ -55,7 +55,7 @@ protected:
     }
 
 private:
-    Qt3D::Render::VSyncFrameAdvanceService *m_tickService;
+    Qt3DRender::Render::VSyncFrameAdvanceService *m_tickService;
 };
 
 class tst_VSyncFrameAdvanceService : public QObject
@@ -67,7 +67,7 @@ private Q_SLOTS:
     void checkSynchronisation()
     {
         // GIVEN
-        Qt3D::Render::VSyncFrameAdvanceService tickService;
+        Qt3DRender::Render::VSyncFrameAdvanceService tickService;
         FakeRenderThread renderThread(&tickService);
         QElapsedTimer t;
 

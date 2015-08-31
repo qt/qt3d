@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 class QString;
 class QIODevice;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QGeometry;
 

@@ -34,29 +34,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPH_H
-#define QT3D_QFRAMEGRAPH_H
+#ifndef QT3DRENDER_QFRAMEGRAPH_H
+#define QT3DRENDER_QFRAMEGRAPH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraphPrivate;
 class QFrameGraphNode;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraph : public QComponent
+class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::QComponent
 {
     Q_OBJECT
     // Note : The full namespace has to be used to define the property
     // otherwise this results in an error "cannot assign object to property"
-    Q_PROPERTY(Qt3D::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
+    Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
-    explicit QFrameGraph(QNode *parent = 0);
+    explicit QFrameGraph(Qt3D::QNode *parent = 0);
     ~QFrameGraph();
 
     QFrameGraphNode *activeFrameGraph() const;
@@ -66,16 +66,16 @@ Q_SIGNALS:
     void activeFrameGraphChanged();
 
 protected:
-    QFrameGraph(QFrameGraphPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QFrameGraph(QFrameGraphPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraph)
     QT3D_CLONEABLE(QFrameGraph)
 };
 
-} //Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPH_H
+#endif // QT3DRENDER_QFRAMEGRAPH_H

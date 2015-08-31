@@ -42,7 +42,7 @@
 #include <Qt3DRenderer/QCameraSelector>
 #include <Qt3DRenderer/QClearBuffer>
 
-class ForwardRenderer : public Qt3D::QFrameGraph
+class ForwardRenderer : public Qt3DRender::QFrameGraph
 {
 public:
     ForwardRenderer(Qt3D::QNode *parent);
@@ -50,9 +50,9 @@ public:
     void setCamera(Qt3D::QEntity *camera);
 
 private:
-    Qt3D::QViewport *m_viewport;
-    Qt3D::QCameraSelector *m_cameraSelector;
-    Qt3D::QClearBuffer *m_clearBuffer;
+    Qt3DRender::QViewport *m_viewport;
+    Qt3DRender::QCameraSelector *m_cameraSelector;
+    Qt3DRender::QClearBuffer *m_clearBuffer;
 };
 
 #endif // FORWARDRENDERER_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_TEXTUREDATA_H
-#define QT3D_TEXTUREDATA_H
+#ifndef QT3DRENDER_TEXTUREDATA_H
+#define QT3DRENDER_TEXTUREDATA_H
 
 #include <QOpenGLTexture>
 #include <QImage>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT TexImageData
 {
@@ -91,9 +91,9 @@ private:
 
 typedef QSharedPointer<TexImageData> TexImageDataPtr;
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 
 QT_END_NAMESPACE
 
-#endif // QT3D_TEXTUREDATA_H
+#endif // QT3DRENDER_TEXTUREDATA_H

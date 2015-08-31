@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
@@ -59,7 +61,7 @@ QGeometry::~QGeometry()
     QNode::cleanup();
 }
 
-void QGeometry::addAttribute(QAbstractAttribute *attribute)
+void QGeometry::addAttribute(Qt3D::QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
@@ -81,7 +83,7 @@ void QGeometry::addAttribute(QAbstractAttribute *attribute)
     }
 }
 
-void QGeometry::removeAttribute(QAbstractAttribute *attribute)
+void QGeometry::removeAttribute(Qt3D::QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -123,6 +125,6 @@ void QGeometry::copy(const QNode *ref)
         d_func()->m_attributes.append(qobject_cast<QAbstractAttribute *>(QNode::clone(attribute)));
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

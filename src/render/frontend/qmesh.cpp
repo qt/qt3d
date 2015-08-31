@@ -47,7 +47,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class MeshFunctor : public QGeometryFunctor
 {
@@ -63,7 +63,7 @@ private:
 
 
 /*!
-    \class Qt3D::QMeshPrivate
+    \class Qt3DRender::QMeshPrivate
     \internal
 */
 QMeshPrivate::QMeshPrivate()
@@ -125,7 +125,7 @@ QGeometry *MeshFunctor::operator()()
 
 
     // TO DO: Handle file download if remote url
-    QString filePath = QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+    QString filePath = Qt3D::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
     if (loader.load(filePath))
         return loader.geometry();
 
@@ -141,6 +141,6 @@ bool MeshFunctor::operator ==(const QGeometryFunctor &other) const
     return false;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

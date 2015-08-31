@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_SHADERVARIABLES_P_H
-#define QT3D_RENDER_SHADERVARIABLES_P_H
+#ifndef QT3DRENDER_RENDER_SHADERVARIABLES_P_H
+#define QT3DRENDER_RENDER_SHADERVARIABLES_P_H
 
 #include <QtGlobal>
 #include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -91,10 +91,10 @@ struct ShaderUniformBlock
     int m_size;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_SHADERVARIABLES_P_H
+#endif // QT3DRENDER_RENDER_SHADERVARIABLES_P_H

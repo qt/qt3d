@@ -48,13 +48,13 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::RenderGeometry renderGeometry;
 
-        Qt3D::QGeometry geometry;
-        Qt3D::QAttribute attr1;
-        Qt3D::QAttribute attr2;
-        Qt3D::QAttribute attr4;
-        Qt3D::QAttribute attr3;
+        Qt3DRender::QGeometry geometry;
+        Qt3DRender::QAttribute attr1;
+        Qt3DRender::QAttribute attr2;
+        Qt3DRender::QAttribute attr4;
+        Qt3DRender::QAttribute attr3;
 
         geometry.addAttribute(&attr1);
         geometry.addAttribute(&attr2);
@@ -78,7 +78,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::RenderGeometry renderGeometry;
 
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
@@ -87,11 +87,11 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.verticesPerPatch(), 0);
 
         // GIVEN
-        Qt3D::QGeometry geometry;
-        Qt3D::QAttribute attr1;
-        Qt3D::QAttribute attr2;
-        Qt3D::QAttribute attr4;
-        Qt3D::QAttribute attr3;
+        Qt3DRender::QGeometry geometry;
+        Qt3DRender::QAttribute attr1;
+        Qt3DRender::QAttribute attr2;
+        Qt3DRender::QAttribute attr4;
+        Qt3DRender::QAttribute attr3;
 
         geometry.addAttribute(&attr1);
         geometry.addAttribute(&attr2);
@@ -112,7 +112,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3D::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::RenderGeometry renderGeometry;
         Qt3D::QNodeId geometryId = Qt3D::QNodeId::createId();
 
         // WHEN

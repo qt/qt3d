@@ -40,10 +40,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
@@ -53,38 +51,38 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 
 QQmlListProperty<QAnnotation> Quick3DRenderPass::annotationList()
 {
-    return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                              &Quick3DRenderPass::appendAnnotation,
-                                              &Quick3DRenderPass::annotationsCount,
-                                              &Quick3DRenderPass::annotationAt,
-                                              &Quick3DRenderPass::clearAnnotations);
+    return QQmlListProperty<QAnnotation>(this, 0,
+                                         &Quick3DRenderPass::appendAnnotation,
+                                         &Quick3DRenderPass::annotationsCount,
+                                         &Quick3DRenderPass::annotationAt,
+                                         &Quick3DRenderPass::clearAnnotations);
 }
 
 QQmlListProperty<QParameterMapping> Quick3DRenderPass::bindingList()
 {
-    return QQmlListProperty<Qt3D::QParameterMapping>(this, 0,
-                                                    &Quick3DRenderPass::appendBinding,
-                                                    &Quick3DRenderPass::bindingsCount,
-                                                    &Quick3DRenderPass::bindingAt,
-                                                    &Quick3DRenderPass::clearBindings);
+    return QQmlListProperty<QParameterMapping>(this, 0,
+                                               &Quick3DRenderPass::appendBinding,
+                                               &Quick3DRenderPass::bindingsCount,
+                                               &Quick3DRenderPass::bindingAt,
+                                               &Quick3DRenderPass::clearBindings);
 }
 
 QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
 {
-    return QQmlListProperty<Qt3D::QRenderState>(this, 0,
-                                              &Quick3DRenderPass::appendRenderState,
-                                              &Quick3DRenderPass::renderStateCount,
-                                              &Quick3DRenderPass::renderStateAt,
-                                              &Quick3DRenderPass::clearRenderStates);
+    return QQmlListProperty<QRenderState>(this, 0,
+                                          &Quick3DRenderPass::appendRenderState,
+                                          &Quick3DRenderPass::renderStateCount,
+                                          &Quick3DRenderPass::renderStateAt,
+                                          &Quick3DRenderPass::clearRenderStates);
 }
 
 QQmlListProperty<QParameter> Quick3DRenderPass::parameterList()
 {
-    return QQmlListProperty<Qt3D::QParameter>(this, 0,
-                                             &Quick3DRenderPass::appendParameter,
-                                             &Quick3DRenderPass::parametersCount,
-                                             &Quick3DRenderPass::parameterAt,
-                                             &Quick3DRenderPass::clearParameterList);
+    return QQmlListProperty<QParameter>(this, 0,
+                                        &Quick3DRenderPass::appendParameter,
+                                        &Quick3DRenderPass::parametersCount,
+                                        &Quick3DRenderPass::parameterAt,
+                                        &Quick3DRenderPass::clearParameterList);
 }
 
 void Quick3DRenderPass::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
@@ -188,10 +186,8 @@ void Quick3DRenderPass::clearParameterList(QQmlListProperty<QParameter> *list)
 }
 
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

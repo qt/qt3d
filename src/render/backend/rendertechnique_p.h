@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTECHNIQUE_H
-#define QT3D_RENDER_RENDERTECHNIQUE_H
+#ifndef QT3DRENDER_RENDER_RENDERTECHNIQUE_H
+#define QT3DRENDER_RENDER_RENDERTECHNIQUE_H
 
 #include <QVector>
 #include <QStringList>
@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QTechnique;
 class QParameter;
@@ -58,39 +58,39 @@ namespace Render {
 
 class TechniqueManager;
 
-class RenderTechnique : public QBackendNode
+class RenderTechnique : public Qt3D::QBackendNode
 {
 public:
     RenderTechnique();
     ~RenderTechnique();
     void cleanup();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QList<QNodeId> parameters() const;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QList<Qt3D::QNodeId> parameters() const;
 
-    void appendRenderPass(const QNodeId &renderPassId);
-    void removeRenderPass(const QNodeId &renderPassId);
+    void appendRenderPass(const Qt3D::QNodeId &renderPassId);
+    void removeRenderPass(const Qt3D::QNodeId &renderPassId);
 
-    void appendAnnotation(const QNodeId &criterionId);
-    void removeAnnotation(const QNodeId &criterionId);
+    void appendAnnotation(const Qt3D::QNodeId &criterionId);
+    void removeAnnotation(const Qt3D::QNodeId &criterionId);
 
-    QList<QNodeId> annotations() const;
-    QList<QNodeId> renderPasses() const;
+    QList<Qt3D::QNodeId> annotations() const;
+    QList<Qt3D::QNodeId> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
 private:
     QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
-    QList<QNodeId> m_annotationList;
-    QList<QNodeId> m_renderPasses;
+    QList<Qt3D::QNodeId> m_annotationList;
+    QList<Qt3D::QNodeId> m_renderPasses;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTECHNIQUE_H
+#endif // QT3DRENDER_RENDER_RENDERTECHNIQUE_H

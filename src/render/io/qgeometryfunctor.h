@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QGEOMETRYFUNCTOR
-#define QT3D_QGEOMETRYFUNCTOR
+#ifndef QT3DRENDER_QGEOMETRYFUNCTOR
+#define QT3DRENDER_QGEOMETRYFUNCTOR
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qabstractfunctor.h>
@@ -43,11 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QGeometry;
 
-class QT3DRENDERERSHARED_EXPORT QGeometryFunctor : public QAbstractFunctor
+class QT3DRENDERERSHARED_EXPORT QGeometryFunctor : public Qt3D::QAbstractFunctor
 {
 public:
     virtual ~QGeometryFunctor() {}
@@ -57,11 +57,11 @@ public:
 
 typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QGeometryFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QGeometryFunctorPtr)
 
-#endif // QT3D_QGEOMETRYFUNCTOR
+#endif // QT3DRENDER_QGEOMETRYFUNCTOR
 

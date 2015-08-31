@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QPHONGMATERIAL_P_H
-#define QT3D_RENDER_QPHONGMATERIAL_P_H
+#ifndef QT3DRENDER_RENDER_QPHONGMATERIAL_P_H
+#define QT3DRENDER_RENDER_QPHONGMATERIAL_P_H
 
 #include <Qt3DRenderer/private/qmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QEffect;
 class QTechnique;
@@ -78,9 +78,9 @@ public:
     Q_DECLARE_PUBLIC(QPhongMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QPHONGMATERIAL_P_H
+#endif // QT3DRENDER_RENDER_QPHONGMATERIAL_P_H
 

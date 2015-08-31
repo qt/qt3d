@@ -34,17 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DPARAMETER_P_H
-#define QT3D_RENDER_QUICK_QUICK3DPARAMETER_P_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_H
 
 #include <Qt3DRenderer/private/qparameter_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class Quick3DParameter;
@@ -59,12 +57,10 @@ public:
     void setValue(const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DPARAMETER_P_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_H

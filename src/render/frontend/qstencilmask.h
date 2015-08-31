@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSTENCILMASK_H
-#define QT3D_QSTENCILMASK_H
+#ifndef QT3DRENDER_QSTENCILMASK_H
+#define QT3DRENDER_QSTENCILMASK_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QStencilMaskPrivate;
 
@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QStencilMask : public QRenderState
     Q_PROPERTY(uint frontMask READ frontMask WRITE setFrontMask NOTIFY frontMaskChanged)
     Q_PROPERTY(uint backMask READ backMask WRITE setBackMask NOTIFY backMaskChanged)
 public:
-    explicit QStencilMask(QNode *parent = 0);
+    explicit QStencilMask(Qt3D::QNode *parent = 0);
     ~QStencilMask();
 
     void setFrontMask(uint mask);
@@ -64,15 +64,15 @@ Q_SIGNALS:
     void backMaskChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QStencilMask)
     QT3D_CLONEABLE(QStencilMask)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSTENCILMASK_H
+#endif // QT3DRENDER_QSTENCILMASK_H

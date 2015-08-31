@@ -43,10 +43,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QEffectPrivate
+    \class Qt3DRender::QEffectPrivate
     \internal
 */
 QEffectPrivate::QEffectPrivate()
@@ -177,6 +179,6 @@ QList<QTechnique *> QEffect::techniques() const
 }
 
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

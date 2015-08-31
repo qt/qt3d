@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSCENELOADER_H
-#define QT3D_QABSTRACTSCENELOADER_H
+#ifndef QT3DRENDER_QABSTRACTSCENELOADER_H
+#define QT3DRENDER_QABSTRACTSCENELOADER_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qscenechange.h>
@@ -44,19 +44,18 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-namespace Render {
+namespace Qt3DRender {
 
 class QAbstractSceneLoader;
 class QAbstractSceneLoaderPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public QComponent
+class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public Qt3D::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QAbstractSceneLoader(QNode *parent = 0);
+    explicit QAbstractSceneLoader(Qt3D::QNode *parent = 0);
     ~QAbstractSceneLoader();
 
     enum Status {
@@ -77,17 +76,15 @@ Q_SIGNALS:
     void statusChanged();
 
 protected:
-    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractSceneLoader)
 };
 
-} // Render
-
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTSCENELOADER_H
+#endif // QT3DRENDER_QABSTRACTSCENELOADER_H

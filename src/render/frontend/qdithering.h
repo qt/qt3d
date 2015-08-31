@@ -35,14 +35,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QDITHERING_H
-#define QT3D_QDITHERING_H
+#ifndef QT3DRENDER_QDITHERING_H
+#define QT3DRENDER_QDITHERING_H
 
 #include <Qt3DRenderer/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDitheringPrivate;
 
@@ -50,7 +50,7 @@ class QT3DRENDERERSHARED_EXPORT QDithering : public QRenderState
 {
     Q_OBJECT
 public:
-    explicit QDithering(QNode *parent = 0);
+    explicit QDithering(Qt3D::QNode *parent = 0);
     ~QDithering();
 
 private:
@@ -58,8 +58,8 @@ private:
     QT3D_CLONEABLE(QDithering)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QDITHERING_H
+#endif // QT3DRENDER_QDITHERING_H

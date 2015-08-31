@@ -47,7 +47,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
    \class Qt3D::QGoochMaterialPrivate

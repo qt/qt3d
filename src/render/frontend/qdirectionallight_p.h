@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QDIRECTIONALLIGHT_P_H
-#define QT3D_QDIRECTIONALLIGHT_P_H
+#ifndef QT3DRENDER_QDIRECTIONALLIGHT_P_H
+#define QT3DRENDER_QDIRECTIONALLIGHT_P_H
 
 #include <private/qabstractlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QDirectionalLight;
 
@@ -54,8 +54,8 @@ public:
     QVector3D m_direction;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QDIRECTIONALLIGHT_P_H
+#endif // QT3DRENDER_QDIRECTIONALLIGHT_P_H

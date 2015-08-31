@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
     Window view;
     Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
@@ -77,8 +77,8 @@ int main(int argc, char* argv[])
     input->setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph(sceneRoot);
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph(sceneRoot);
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setCamera(basicCamera);
     frameGraph->setActiveFrameGraph(forwardRenderer);
     sceneRoot->addComponent(frameGraph);

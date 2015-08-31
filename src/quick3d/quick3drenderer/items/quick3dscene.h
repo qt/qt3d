@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DSCENE_H
-#define QT3D_RENDER_QUICK_QUICK3DSCENE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DQuick/quick3dentity.h>
@@ -43,10 +43,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DScene : public QObject
@@ -58,12 +56,10 @@ public:
     inline QAbstractSceneLoader *parentScene() const { return qobject_cast<QAbstractSceneLoader *>(parent()); }
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DSCENE_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H

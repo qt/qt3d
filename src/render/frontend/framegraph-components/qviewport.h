@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QVIEWPORT_H
-#define QT3D_QVIEWPORT_H
+#ifndef QT3DRENDER_QVIEWPORT_H
+#define QT3DRENDER_QVIEWPORT_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 #include <QRectF>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QViewportPrivate;
 
@@ -54,7 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphNode
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
 
 public:
-    explicit QViewport(QNode *parent = 0);
+    explicit QViewport(Qt3D::QNode *parent = 0);
     ~QViewport();
 
     QRectF rect() const;
@@ -68,16 +68,16 @@ Q_SIGNALS:
     void clearColorChanged();
 
 protected:
-    QViewport(QViewportPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QViewport(QViewportPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QViewport)
     QT3D_CLONEABLE(QViewport)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QVIEWPORT_H
+#endif // QT3DRENDER_QVIEWPORT_H

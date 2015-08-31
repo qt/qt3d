@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERASPECT_H
-#define QT3D_QRENDERASPECT_H
+#ifndef QT3DRENDER_QRENDERASPECT_H
+#define QT3DRENDER_QRENDERASPECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qabstractaspect.h>
@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLContext;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 class Renderer;
@@ -52,7 +52,7 @@ class Renderer;
 
 class QRenderAspectPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderAspect : public QAbstractAspect
+class QT3DRENDERERSHARED_EXPORT QRenderAspect : public Qt3D::QAbstractAspect
 {
     Q_OBJECT
 public:
@@ -68,10 +68,10 @@ public:
     void renderSynchronous();
     void renderShutdown();
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3D::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     qint64 time() const;
 
@@ -79,13 +79,13 @@ protected:
     void registerBackendTypes();
 
 private:
-    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void setRootEntity(Qt3D::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-    void visitNode(QNode *node);
+    void visitNode(Qt3D::QNode *node);
 
     Q_DECLARE_PRIVATE(QRenderAspect)
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
@@ -97,4 +97,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERASPECT_H
+#endif // QT3DRENDER_QRENDERASPECT_H

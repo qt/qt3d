@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 QStateSetPrivate::QStateSetPrivate()
     : QFrameGraphNodePrivate()
@@ -58,14 +60,14 @@ QStateSetPrivate::QStateSetPrivate()
  * branch.
  *
  * States set on a Qt3D::QStateSet are set globally, contrary to the per
- * Material states that can be set on a Qt3D::QRenderPass. By default an empty
+ * Material states that can be set on a Qt3DRender::QRenderPass. By default an empty
  * Qt3D::QStateSet will result in all render states being disabled when
  * executed. Adding a Qt3D::QRenderState state explicitly enables that render
  * state at runtime.
  *
  * \since 5.5
  *
- * \sa Qt3D::QRenderState, Qt3D::QRenderPass
+ * \sa Qt3D::QRenderState, Qt3DRender::QRenderPass
  */
 
 QStateSet::QStateSet(QNode *parent)
@@ -141,6 +143,6 @@ QList<QRenderState *> QStateSet::renderStates() const
     return d->m_renderStates;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

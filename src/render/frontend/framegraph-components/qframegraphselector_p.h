@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHSELECTOR_P_H
-#define QT3D_QFRAMEGRAPHSELECTOR_P_H
+#ifndef QT3DRENDER_QFRAMEGRAPHSELECTOR_P_H
+#define QT3DRENDER_QFRAMEGRAPHSELECTOR_P_H
 
 #include <Qt3DRenderer/private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraphSelector;
 class QFrameGraphSelectorFunctor;
@@ -57,9 +57,9 @@ public:
     Q_DECLARE_PUBLIC(QFrameGraphSelector)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QFRAMEGRAPHSELECTOR_P_H
+#endif // QT3DRENDER_QFRAMEGRAPHSELECTOR_P_H
 

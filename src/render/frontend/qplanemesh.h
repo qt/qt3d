@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPLANEMESH_H
-#define QT3D_QPLANEMESH_H
+#ifndef QT3DRENDER_QPLANEMESH_H
+#define QT3DRENDER_QPLANEMESH_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
 {
@@ -53,7 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
     Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
 
 public:
-    explicit QPlaneMesh(QNode *parent = 0);
+    explicit QPlaneMesh(Qt3D::QNode *parent = 0);
     ~QPlaneMesh();
 
     void setWidth(float width);
@@ -84,8 +84,8 @@ private:
     void setPrimitiveType(PrimitiveType primitiveType);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QPLANEMESH_H
+#endif // QT3DRENDER_QPLANEMESH_H

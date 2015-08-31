@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace AssimpHelper {
 
 //CUSTOM FILE STREAM
@@ -82,8 +82,8 @@ private:
     QMap<QByteArray, QIODevice::OpenMode> m_openModeMaps;
 };
 
-} // AssimpHelper namespace
-} // Qt3D namespace
+} // namespace AssimpHelper
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

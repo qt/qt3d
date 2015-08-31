@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_CAMERASELECTOR_H
-#define QT3D_RENDER_CAMERASELECTOR_H
+#ifndef QT3DRENDER_RENDER_CAMERASELECTOR_H
+#define QT3DRENDER_RENDER_CAMERASELECTOR_H
 
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QEntity;
 class QCameraSelector;
@@ -56,18 +56,18 @@ class CameraSelector : public FrameGraphNode
 public:
     CameraSelector();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QNodeId cameraUuid() const;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    Qt3D::QNodeId cameraUuid() const;
 
 private:
-    QNodeId m_cameraUuid;
+    Qt3D::QNodeId m_cameraUuid;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_CAMERASELECTOR_H
+#endif // QT3DRENDER_RENDER_CAMERASELECTOR_H

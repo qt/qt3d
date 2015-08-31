@@ -42,7 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 QGeometryRendererPrivate::QGeometryRendererPrivate()
     : QComponentPrivate()
@@ -254,7 +256,7 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_functor = other->d_func()->m_functor;
 }
 
-void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
+void QGeometryRenderer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     Q_D(QGeometryRenderer);
     QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
@@ -269,6 +271,6 @@ void QGeometryRenderer::sceneChangeEvent(const QSceneChangePtr &e)
 
 
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

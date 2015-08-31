@@ -38,17 +38,17 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QTexture1D
+    \class Qt3DRender::QTexture1D
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1D target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture1D instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture1D instance with \a parent as parent.
  */
 QTexture1D::QTexture1D(QNode *parent)
     : QAbstractTextureProvider(Target1D, parent)
@@ -60,14 +60,14 @@ QTexture1D::~QTexture1D()
 }
 
 /*!
-    \class Qt3D::QTexture1DArray
+    \class Qt3DRender::QTexture1DArray
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1DArray target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture1DArray instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture1DArray instance with \a parent as parent.
  */
 QTexture1DArray::QTexture1DArray(QNode *parent)
     : QAbstractTextureProvider(Target1DArray, parent)
@@ -79,14 +79,14 @@ QTexture1DArray::~QTexture1DArray()
 }
 
 /*!
-    \class Qt3D::QTexture2D
+    \class Qt3DRender::QTexture2D
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2D target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture2D instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture2D instance with \a parent as parent.
  */
 QTexture2D::QTexture2D(QNode *parent)
     : QAbstractTextureProvider(Target2D, parent)
@@ -98,14 +98,14 @@ QTexture2D::~QTexture2D()
 }
 
 /*!
-    \class Qt3D::QTexture2DArray
+    \class Qt3DRender::QTexture2DArray
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DArray target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture2DArray instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture2DArray instance with \a parent as parent.
  */
 QTexture2DArray::QTexture2DArray(QNode *parent)
     : QAbstractTextureProvider(Target2DArray, parent)
@@ -118,14 +118,14 @@ QTexture2DArray::~QTexture2DArray()
 
 
 /*!
-    \class Qt3D::QTexture3D
+    \class Qt3DRender::QTexture3D
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target3D target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture3D instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture3D instance with \a parent as parent.
  */
 QTexture3D::QTexture3D(QNode *parent)
     : QAbstractTextureProvider(Target2D, parent)
@@ -137,14 +137,14 @@ QTexture3D::~QTexture3D()
 }
 
 /*!
-    \class Qt3D::QTextureCubeMap
+    \class Qt3DRender::QTextureCubeMap
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMap target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTextureCubeMap instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTextureCubeMap instance with \a parent as parent.
  */
 QTextureCubeMap::QTextureCubeMap(QNode *parent)
     : QAbstractTextureProvider(TargetCubeMap, parent)
@@ -156,14 +156,14 @@ QTextureCubeMap::~QTextureCubeMap()
 }
 
 /*!
-    \class Qt3D::QTextureCubeMapArray
+    \class Qt3DRender::QTextureCubeMapArray
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMapArray target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTextureCubeMapArray instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTextureCubeMapArray instance with \a parent as parent.
  */
 QTextureCubeMapArray::QTextureCubeMapArray(QNode *parent)
     : QAbstractTextureProvider(TargetCubeMapArray, parent)
@@ -176,14 +176,14 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
 }
 
 /*!
-    \class Qt3D::QTexture2DMultisample
+    \class Qt3DRender::QTexture2DMultisample
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisample target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture2DMultisample instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture2DMultisample instance with \a parent as parent.
  */
 QTexture2DMultisample::QTexture2DMultisample(QNode *parent)
     : QAbstractTextureProvider(Target2DMultisample, parent)
@@ -195,14 +195,14 @@ QTexture2DMultisample::~QTexture2DMultisample()
 }
 
 /*!
-    \class Qt3D::QTexture2DMultisampleArray
+    \class Qt3DRender::QTexture2DMultisampleArray
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisampleArray target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTexture2DMultisampleArray instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTexture2DMultisampleArray instance with \a parent as parent.
  */
 QTexture2DMultisampleArray::QTexture2DMultisampleArray(QNode *parent)
     : QAbstractTextureProvider(Target2DMultisampleArray, parent)
@@ -214,14 +214,14 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
 }
 
 /*!
-    \class Qt3D::QTextureRectangle
+    \class Qt3DRender::QTextureRectangle
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetRectangle target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTextureRectangle instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTextureRectangle instance with \a parent as parent.
  */
 QTextureRectangle::QTextureRectangle(QNode *parent)
     : QAbstractTextureProvider(TargetRectangle, parent)
@@ -233,14 +233,14 @@ QTextureRectangle::~QTextureRectangle()
 }
 
 /*!
-    \class Qt3D::QTextureBuffer
+    \class Qt3DRender::QTextureBuffer
     \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetBuffer target format.
  */
 
 /*!
-    Constructs a new Qt3D::QTextureBuffer instance with \a parent as parent.
+    Constructs a new Qt3DRender::QTextureBuffer instance with \a parent as parent.
  */
 QTextureBuffer::QTextureBuffer(QNode *parent)
     : QAbstractTextureProvider(TargetBuffer, parent)
@@ -251,7 +251,7 @@ QTextureBuffer::~QTextureBuffer()
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

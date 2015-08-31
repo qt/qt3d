@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEGRAPHSELECTOR_H
-#define QT3D_QFRAMEGRAPHSELECTOR_H
+#ifndef QT3DRENDER_QFRAMEGRAPHSELECTOR_H
+#define QT3DRENDER_QFRAMEGRAPHSELECTOR_H
 
 #include <Qt3DRenderer/qframegraphnode.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QFrameGraphSelectorPrivate;
 
@@ -59,24 +59,24 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraphSelector : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QFrameGraphSelector(QNode *parent = 0);
+    explicit QFrameGraphSelector(Qt3D::QNode *parent = 0);
     ~QFrameGraphSelector();
 
     QFrameGraphSelectorFunctorPtr selectionFunctor() const;
     void setSelectionFunctor(QFrameGraphSelectorFunctorPtr functor);
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QFrameGraphSelector)
     Q_DECLARE_PRIVATE(QFrameGraphSelector)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QFrameGraphSelectorFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QFrameGraphSelectorFunctorPtr)
 
-#endif // QT3D_QGFRAMEGRAPHSELECTOR_H
+#endif // QT3DRENDER_QGFRAMEGRAPHSELECTOR_H

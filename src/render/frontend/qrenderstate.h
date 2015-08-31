@@ -35,19 +35,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRENDERSTATE_H
-#define QT3D_QRENDERSTATE_H
+#ifndef QT3DRENDER_QRENDERSTATE_H
+#define QT3DRENDER_QRENDERSTATE_H
 
-#include <Qt3DCore/QNode>
+#include <Qt3DCore/qnode.h>
 #include <Qt3DRenderer/qt3drenderer_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderStatePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderState : public QNode
+class QT3DRENDERERSHARED_EXPORT QRenderState : public Qt3D::QNode
 {
     Q_OBJECT
 
@@ -78,14 +78,14 @@ public:
     Type type() const;
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, QNode *parent = Q_NULLPTR);
+    QRenderState(QRenderStatePrivate &dd, Qt3D::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QRenderState)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRENDERSTATE_H
+#endif // QT3DRENDER_QRENDERSTATE_H

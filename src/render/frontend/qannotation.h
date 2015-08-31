@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QANNOTATION_H
-#define QT3D_QANNOTATION_H
+#ifndef QT3DRENDER_QANNOTATION_H
+#define QT3DRENDER_QANNOTATION_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qnode.h>
@@ -43,17 +43,17 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAnnotationPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAnnotation : public QNode
+class QT3DRENDERERSHARED_EXPORT QAnnotation : public Qt3D::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QAnnotation(QNode *parent = 0);
+    explicit QAnnotation(Qt3D::QNode *parent = 0);
     ~QAnnotation();
 
     void setValue(const QVariant &value);
@@ -67,15 +67,15 @@ Q_SIGNALS:
     void valueChanged();
 
 protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAnnotation)
     QT3D_CLONEABLE(QAnnotation)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QANNOTATION_H
+#endif // QT3DRENDER_QANNOTATION_H

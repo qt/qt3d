@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
+namespace Qt3DRender
 {
 
 /*!
@@ -155,6 +155,6 @@ QShaderData::TransformType QAbstractLight::positionTransformed() const
     return QShaderData::ModelToEye;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

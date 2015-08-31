@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QShaderDataPrivate
+    \class Qt3DRender::QShaderDataPrivate
     \internal
 */
 QShaderDataPrivate::QShaderDataPrivate()
@@ -52,7 +52,7 @@ QShaderDataPrivate::QShaderDataPrivate()
 }
 
 /*!
-    \class Qt3D::QShaderDataPrivate
+    \class Qt3DRender::QShaderDataPrivate
     \internal
 */
 QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
@@ -62,14 +62,15 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 }
 
 /*!
- * \class Qt3D::QShaderData
+ * \class Qt3DRender::QShaderData
  * \inmodule Qt3DRenderer
+ *
  * \brief Provides a way of specifying values of a Uniform Block or a shader
  * structure.
  *
- * \note When subclassing and adding properties to Qt3D::QShaderData, please note
- * that if you need to nest an inner Qt3D::QShaderData, the data type of the
- * property should be Qt3D::QShaderData* instead of the name of your subclass.
+ * \note When subclassing and adding properties to Qt3DRender::QShaderData, please note
+ * that if you need to nest an inner Qt3DRender::QShaderData, the data type of the
+ * property should be Qt3DRender::QShaderData* instead of the name of your subclass.
  *
  * \since 5.5
  */
@@ -115,6 +116,6 @@ void QShaderData::copy(const QNode *ref)
     }
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

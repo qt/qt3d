@@ -41,12 +41,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
-{
+namespace Qt3D {
 class QAspectEngine;
 class QEntity;
-class QRenderAspect;
+}
 
+namespace Qt3DRender {
+
+class QRenderAspect;
 class Scene3DRenderer;
 class Scene3DCleaner;
 
@@ -86,14 +88,14 @@ private:
     Qt3D::QEntity *m_entity;
 
     Qt3D::QAspectEngine *m_aspectEngine;
-    Qt3D::QRenderAspect *m_renderAspect;
+    QRenderAspect *m_renderAspect;
     Scene3DRenderer *m_renderer;
     Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
 };
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
 

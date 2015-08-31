@@ -42,7 +42,8 @@
 #include <Qt3DCore/qray3d.h>
 
 using namespace Qt3D;
-using namespace Qt3D::Render;
+using namespace Qt3DRender;
+using namespace Qt3DRender::Render;
 
 class tst_RayCasting : public QObject
 {

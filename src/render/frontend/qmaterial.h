@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMATERIAL_H
-#define QT3D_QMATERIAL_H
+#ifndef QT3DRENDER_QMATERIAL_H
+#define QT3DRENDER_QMATERIAL_H
 
 #include <QVariant>
 
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 class QParameter;
@@ -52,13 +52,13 @@ class QMaterialPrivate;
 class QEffect;
 typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
-class QT3DRENDERERSHARED_EXPORT QMaterial : public QComponent
+class QT3DRENDERERSHARED_EXPORT QMaterial : public Qt3D::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
+    Q_PROPERTY(Qt3DRender::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
-    explicit QMaterial(QNode *parent = 0);
+    explicit QMaterial(Qt3D::QNode *parent = 0);
     ~QMaterial();
 
     void setEffect(QEffect *effect);
@@ -76,8 +76,8 @@ Q_SIGNALS:
     void effectChanged();
 
 protected:
-    QMaterial(QMaterialPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    QMaterial(QMaterialPrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)
@@ -88,4 +88,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMATERIAL_H
+#endif // QT3DRENDER_QMATERIAL_H

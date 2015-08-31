@@ -41,10 +41,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QAbstractTextureProviderPrivate
+    \class Qt3DRender::QAbstractTextureProviderPrivate
     \internal
 */
 QAbstractTextureProviderPrivate::QAbstractTextureProviderPrivate()
@@ -88,12 +90,12 @@ void QAbstractTextureProvider::copy(const QNode *ref)
 }
 
 /*!
-    \class Qt3D::QAbstractTextureProvider
+    \class Qt3DRender::QAbstractTextureProvider
     \inmodule Qt3DRender
     \since 5.5
     \brief A base class to be used to provide textures.
 
-    Qt3D::QAbstractTextureProvider shouldn't be used directly but rather
+    Qt3DRender::QAbstractTextureProvider shouldn't be used directly but rather
     through one of its subclasses. Each subclass implements a given texture
     target (2D, 2DArray, 3D, CubeMap ...) Each subclass provides a set of
     functors for each layer, cube map face and mipmap level. In turn the
@@ -137,7 +139,7 @@ void QAbstractTextureProvider::setSize(int w, int h, int d)
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::width
+    \property Qt3DRender::QAbstractTextureProvider::width
 
     Holds the width of the texture provider.
  */
@@ -151,7 +153,7 @@ void QAbstractTextureProvider::setWidth(int width)
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::height
+    \property Qt3DRender::QAbstractTextureProvider::height
 
     Holds the height of the texture provider.
  */
@@ -165,7 +167,7 @@ void QAbstractTextureProvider::setHeight(int height)
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::depth
+    \property Qt3DRender::QAbstractTextureProvider::depth
 
     Holds the depth of the texture provider.
  */
@@ -197,7 +199,7 @@ int QAbstractTextureProvider::depth() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::maximumLayers
+    \property Qt3DRender::QAbstractTextureProvider::maximumLayers
 
     Holds the maximum layer count of the texture provider. By default, the
     maximum layer count is 1.
@@ -227,7 +229,7 @@ int QAbstractTextureProvider::maximumLayers() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::unique
+    \property Qt3DRender::QAbstractTextureProvider::unique
 
     Sets whether this texture provider should be unique by reading \a unique.
     By default this is false.
@@ -260,7 +262,7 @@ bool QAbstractTextureProvider::isUnique() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::format
+    \property Qt3DRender::QAbstractTextureProvider::format
 
     Holds the format of the texture provider.
  */
@@ -283,7 +285,7 @@ QAbstractTextureProvider::TextureFormat QAbstractTextureProvider::format() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::status readonly
+    \property Qt3DRender::QAbstractTextureProvider::status readonly
 
     Holds the current status of the texture provider.
  */
@@ -303,7 +305,7 @@ QAbstractTextureProvider::Status QAbstractTextureProvider::status() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::target readonly
+    \property Qt3DRender::QAbstractTextureProvider::target readonly
 
     Holds the target format of the texture provider.
 
@@ -319,7 +321,7 @@ QAbstractTextureProvider::Target QAbstractTextureProvider::target() const
     Adds a new Qt3D::QAbstractTextureImage \a textureImage to the texture provider.
 
     \note Qt3D::QAbstractTextureImage should never be shared between multiple
-    Qt3D::QAbstractTextureProvider instances.
+    Qt3DRender::QAbstractTextureProvider instances.
  */
 void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureImage)
 {
@@ -372,7 +374,7 @@ QList<QAbstractTextureImage *> QAbstractTextureProvider::textureImages() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::generateMipMaps
+    \property Qt3DRender::QAbstractTextureProvider::generateMipMaps
 
     Holds whether the texture provider should auto generate mipmaps.
  */
@@ -392,7 +394,7 @@ bool QAbstractTextureProvider::generateMipMaps() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::minificationFilter
+    \property Qt3DRender::QAbstractTextureProvider::minificationFilter
 
     Holds the minification filter of the texture provider.
  */
@@ -406,7 +408,7 @@ void QAbstractTextureProvider::setMinificationFilter(Filter f)
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::magnificationFilter
+    \property Qt3DRender::QAbstractTextureProvider::magnificationFilter
 
     Holds the magnification filter of the texture provider.
  */
@@ -432,7 +434,7 @@ QAbstractTextureProvider::Filter QAbstractTextureProvider::magnificationFilter()
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::wrapMode
+    \property Qt3DRender::QAbstractTextureProvider::wrapMode
 
     Holds the wrap mode of the texture provider.
  */
@@ -469,7 +471,7 @@ QTextureWrapMode *QAbstractTextureProvider::wrapMode()
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::maximumAnisotropy
+    \property Qt3DRender::QAbstractTextureProvider::maximumAnisotropy
 
     Holds the maximum anisotropy of the texture provider.
  */
@@ -489,7 +491,7 @@ float QAbstractTextureProvider::maximumAnisotropy() const
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::comparisonFunction
+    \property Qt3DRender::QAbstractTextureProvider::comparisonFunction
 
     Holds the comparison function of the texture provider.
  */
@@ -509,7 +511,7 @@ QAbstractTextureProvider::ComparisonFunction QAbstractTextureProvider::compariso
 }
 
 /*!
-    \property Qt3D::QAbstractTextureProvider::comparisonMode
+    \property Qt3DRender::QAbstractTextureProvider::comparisonMode
 
     Holds the comparison mode of the texture provider.
  */
@@ -528,6 +530,6 @@ QAbstractTextureProvider::ComparisonMode QAbstractTextureProvider::comparisonMod
     return d->m_comparisonMode;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
