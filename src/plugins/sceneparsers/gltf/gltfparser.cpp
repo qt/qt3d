@@ -1241,6 +1241,8 @@ QAttribute::DataType GLTFParser::accessorTypeFromJSON(int componentType)
         return QAttribute::Short;
     } else if (componentType == GL_UNSIGNED_SHORT) {
         return QAttribute::UnsignedShort;
+    } else if (componentType == GL_UNSIGNED_INT) {
+        return QAttribute::UnsignedInt;
     } else if (componentType == GL_FLOAT) {
         return QAttribute::Float;
     }
