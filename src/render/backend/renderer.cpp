@@ -926,7 +926,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                     m_graphicsContext->drawElements(primType,
                                                     primitiveCount,
                                                     indexType,
-                                                    reinterpret_cast<void*>(indexAttribute->byteOffset()),
+                                                    reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
                                                     rGeometryRenderer->baseVertex());
 
                 else
@@ -936,7 +936,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                     m_graphicsContext->drawElementsInstanced(primType,
                                                              primitiveCount,
                                                              indexType,
-                                                             reinterpret_cast<void*>(indexAttribute->byteOffset()),
+                                                             reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
                                                              rGeometryRenderer->instanceCount());
                 else
                     m_graphicsContext->drawArraysInstanced(primType,
