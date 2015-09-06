@@ -34,54 +34,71 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_LOGIC_LOGICHANDLER_H
-#define QT3DLOGIC_LOGIC_LOGICHANDLER_H
-
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qaspectjob.h>
+#include "executor_p.h"
+#include <Qt3DLogic/qlogiccomponent.h>
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/private/qscene_p.h>
+#include <QtCore/qsemaphore.h>
 
 QT_BEGIN_NAMESPACE
+
+using namespace Qt3D;
 
 namespace Qt3DLogic {
 namespace Logic {
 
-class LogicManager;
-
-class LogicHandler : public Qt3D::QBackendNode
+Executor::Executor(QObject *parent)
+    : QObject(parent)
+    , m_scene(Q_NULLPTR)
 {
-public:
-    LogicHandler();
+}
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-
-    void setLogicManager(LogicManager *manager) { m_logicManager = manager; }
-    LogicManager *logicManager() const { return m_logicManager; }
-
-protected:
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    LogicManager *m_logicManager;
-};
-
-
-class LogicHandlerFunctor : public Qt3D::QBackendNodeFunctor
+void Executor::clearQueueAndProceed()
 {
-public:
-    explicit LogicHandlerFunctor(LogicManager *handler);
+    // Clear the queue of nodes to process frame updates for (throw the work away).
+    // If the semaphore is acquired, release it to allow the logic job and hence the
+    // manager and frame to complete and shutdown to continue.
+    m_nodeIds.clear();
+    if (m_semaphore->available() == 0)
+        m_semaphore->release();
+}
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+void Executor::enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds)
+{
+    m_nodeIds = nodeIds;
+}
 
-private:
-    LogicManager *m_manager;
-};
+bool Executor::event(QEvent *e)
+{
+    if (e->type() == QEvent::User) {
+        processLogicFrameUpdates();
+        e->setAccepted(true);
+        return true;
+    }
+    return false;
+}
+
+/*!
+   \internal
+
+   Called from context of main thread
+*/
+void Executor::processLogicFrameUpdates()
+{
+    Q_ASSERT(m_scene);
+    Q_ASSERT(m_semaphore);
+    QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
+    foreach (QNode *node, nodes) {
+        QLogicComponent *logicComponent = qobject_cast<QLogicComponent *>(node);
+        if (logicComponent)
+            logicComponent->onFrameUpdate();
+    }
+
+    // Release the semaphore so the calling Manager can continue
+    m_semaphore->release();
+}
 
 } // namespace Logic
 } // namespace Qt3D
 
 QT_END_NAMESPACE
-
-#endif // QT3DLOGIC_LOGIC_LOGICHANDLER_H

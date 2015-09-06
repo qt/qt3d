@@ -34,55 +34,33 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_LOGIC_LOGICMANAGER_H
-#define QT3DLOGIC_LOGIC_LOGICMANAGER_H
+#ifndef QT3DLOGIC_LOGIC_MANAGERS_P_H
+#define QT3DLOGIC_LOGIC_MANAGERS_P_H
 
-#include <Qt3DLogic/qt3dlogic_global.h>
+#include <QtGlobal>
 #include <Qt3DLogic/private/handle_types_p.h>
-#include <Qt3DCore/qnodeid.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qscopedpointer.h>
-#include <QtCore/qsemaphore.h>
+#include <Qt3DLogic/private/handler_p.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
-
-class QLogicAspect;
-
 namespace Logic {
 
-class LogicExecutor;
-class LogicHandlerManager;
-
-class LogicManager
+class HandlerManager : public Qt3D::QResourceManager<
+        Handler,
+        Qt3D::QNodeId,
+        16,
+        Qt3D::ArrayAllocatingPolicy>
 {
 public:
-    LogicManager();
-    ~LogicManager();
-
-    void setLogicAspect(QLogicAspect *logicAspect) { m_logicAspect = logicAspect; }
-    void setExecutor(LogicExecutor *executor);
-
-    LogicHandlerManager *logicHandlerManager() const { return m_logicHandlerManager.data(); }
-
-    void appendLogicHandler(LogicHandler *handler);
-    void removeLogicHandler(const Qt3D::QNodeId &id);
-
-    void triggerLogicFrameUpdates();
-
-private:
-    QScopedPointer<LogicHandlerManager> m_logicHandlerManager;
-    QVector<HLogicHandler> m_logicHandlers;
-    QVector<Qt3D::QNodeId> m_logicComponentIds;
-    QLogicAspect *m_logicAspect;
-    LogicExecutor *m_executor;
-    QSemaphore m_semaphore;
+    HandlerManager() {}
 };
 
 } // namespace Logic
-} // namespace Qt3DLogic
+} // namespace Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QT3DLOGIC_LOGIC_LOGICMANAGER_H
+#endif // QT3DLOGIC_LOGIC_MANAGERS_P_H
+

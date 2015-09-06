@@ -34,68 +34,29 @@
 **
 ****************************************************************************/
 
-#include "logicmanager_p.h"
-#include "qlogicaspect.h"
-#include <Qt3DLogic/private/logicexecutor_p.h>
-#include <Qt3DLogic/private/logicmanagers_p.h>
-#include <QtCore/qcoreapplication.h>
-
-#include <QDebug>
-#include <QThread>
+#include "callbackjob_p.h"
+#include "manager_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 namespace Logic {
 
-LogicManager::LogicManager()
-    : m_logicHandlerManager(new LogicHandlerManager)
-    , m_semaphore(1)
-{
-    m_semaphore.acquire();
-}
-
-LogicManager::~LogicManager()
+CallbackJob::CallbackJob()
+    : QAspectJob()
+    , m_logicManager(Q_NULLPTR)
 {
 }
 
-void LogicManager::setExecutor(LogicExecutor *executor)
+void CallbackJob::setManager(Manager *manager)
 {
-    m_executor = executor;
-    if (m_executor)
-        m_executor->setSemephore(&m_semaphore);
+    m_logicManager = manager;
 }
 
-void LogicManager::appendLogicHandler(LogicHandler *handler)
+void CallbackJob::run()
 {
-    HLogicHandler handle = m_logicHandlerManager->lookupHandle(handler->peerUuid());
-    m_logicHandlers.append(handle);
-    m_logicComponentIds.append(handler->peerUuid());
-}
-
-void LogicManager::removeLogicHandler(const Qt3D::QNodeId &id)
-{
-    HLogicHandler handle = m_logicHandlerManager->lookupHandle(id);
-    m_logicComponentIds.removeAll(id);
-    m_logicHandlers.removeAll(handle);
-    m_logicHandlerManager->releaseResource(id);
-}
-
-void LogicManager::triggerLogicFrameUpdates()
-{
-    Q_ASSERT(m_executor);
-
-    // Don't use blocking queued connections to main thread if it is already
-    // in the process of shutting down as that will deadlock.
-    if (m_logicAspect->isShuttingDown())
-        return;
-
-    // Trigger the main thread to process logic frame updates for each
-    // logic component and then wait until done. The LogicExecutor will
-    // release the semaphore when it has completed its work.
-    m_executor->enqueueLogicFrameUpdates(m_logicComponentIds);
-    qApp->postEvent(m_executor, new FrameUpdateEvent);
-    m_semaphore.acquire();
+    Q_ASSERT(m_logicManager);
+    m_logicManager->triggerLogicFrameUpdates();
 }
 
 } // namespace Logic

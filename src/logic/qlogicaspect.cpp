@@ -36,9 +36,9 @@
 
 #include "qlogicaspect.h"
 #include "qlogicaspect_p.h"
-#include "logicexecutor_p.h"
-#include "logichandler_p.h"
-#include "logicmanager_p.h"
+#include "executor_p.h"
+#include "handler_p.h"
+#include "manager_p.h"
 #include "qlogiccomponent.h"
 
 #include <Qt3DCore/qnodevisitor.h>
@@ -68,12 +68,12 @@ QLogicAspectPrivate::QLogicAspectPrivate()
     : QAbstractAspectPrivate()
     , m_time(0)
     , m_initialized(false)
-    , m_manager(new Logic::LogicManager)
-    , m_executor(new Logic::LogicExecutor)
-    , m_callbackJob(new Logic::LogicCallbackJob)
+    , m_manager(new Logic::Manager)
+    , m_executor(new Logic::Executor)
+    , m_callbackJob(new Logic::CallbackJob)
 {
     m_aspectType = QAbstractAspect::AspectOther;
-    m_callbackJob->setLogicManager(m_manager.data());
+    m_callbackJob->setManager(m_manager.data());
     m_manager->setExecutor(m_executor.data());
 }
 
@@ -94,7 +94,7 @@ QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
 
 void QLogicAspect::registerBackendTypes()
 {
-    registerBackendType<QLogicComponent>(QBackendNodeFunctorPtr(new Logic::LogicHandlerFunctor(d_func()->m_manager.data())));
+    registerBackendType<QLogicComponent>(QBackendNodeFunctorPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)

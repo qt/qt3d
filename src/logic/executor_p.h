@@ -34,71 +34,58 @@
 **
 ****************************************************************************/
 
-#include "logicexecutor_p.h"
-#include <Qt3DLogic/qlogiccomponent.h>
-#include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qscene_p.h>
-#include <QtCore/qsemaphore.h>
+#ifndef QT3DLOGIC_LOGIC_EXECUTOR_P_H
+#define QT3DLOGIC_LOGIC_EXECUTOR_P_H
+
+#include <QtCore/qobject.h>
+#include <QtCore/qcoreevent.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+class QSemaphore;
+
+namespace Qt3D {
+class QScene;
+}
 
 namespace Qt3DLogic {
 namespace Logic {
 
-LogicExecutor::LogicExecutor(QObject *parent)
-    : QObject(parent)
-    , m_scene(Q_NULLPTR)
+class FrameUpdateEvent : public QEvent
 {
-}
+public:
+    FrameUpdateEvent()
+        : QEvent(QEvent::User)
+    {}
+};
 
-void LogicExecutor::clearQueueAndProceed()
+class Executor : public QObject
 {
-    // Clear the queue of nodes to process frame updates for (throw the work away).
-    // If the semaphore is acquired, release it to allow the logic job and hence the
-    // manager and frame to complete and shutdown to continue.
-    m_nodeIds.clear();
-    if (m_semaphore->available() == 0)
-        m_semaphore->release();
-}
+    Q_OBJECT
+public:
+    explicit Executor(QObject *parent = 0);
 
-void LogicExecutor::enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds)
-{
-    m_nodeIds = nodeIds;
-}
+    void setScene(Qt3D::QScene *scene) { m_scene = scene; }
+    void setSemephore(QSemaphore *semaphore) { m_semaphore = semaphore; }
+    void clearQueueAndProceed();
 
-bool LogicExecutor::event(QEvent *e)
-{
-    if (e->type() == QEvent::User) {
-        processLogicFrameUpdates();
-        e->setAccepted(true);
-        return true;
-    }
-    return false;
-}
+public Q_SLOTS:
+    void enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds);
 
-/*!
-   \internal
+protected:
+    bool event(QEvent *e);
+    void processLogicFrameUpdates();
 
-   Called from context of main thread
-*/
-void LogicExecutor::processLogicFrameUpdates()
-{
-    Q_ASSERT(m_scene);
-    Q_ASSERT(m_semaphore);
-    QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
-    foreach (QNode *node, nodes) {
-        QLogicComponent *logicComponent = qobject_cast<QLogicComponent *>(node);
-        if (logicComponent)
-            logicComponent->onFrameUpdate();
-    }
-
-    // Release the semaphore so the calling LogicManager can continue
-    m_semaphore->release();
-}
+private:
+    QVector<Qt3D::QNodeId> m_nodeIds;
+    Qt3D::QScene *m_scene;
+    QSemaphore *m_semaphore;
+};
 
 } // namespace Logic
 } // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3DLOGIC_LOGIC_EXECUTOR_P_H

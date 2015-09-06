@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
-#include "logichandler_p.h"
-#include "logicmanager_p.h"
-#include "logicmanagers_p.h"
+#include "handler_p.h"
+#include "manager_p.h"
+#include "managers_p.h"
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -44,44 +44,44 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DLogic {
 namespace Logic {
 
-LogicHandler::LogicHandler()
+Handler::Handler()
     : m_logicManager(Q_NULLPTR)
 {
 }
 
-void LogicHandler::updateFromPeer(Qt3D::QNode *peer)
+void Handler::updateFromPeer(Qt3D::QNode *peer)
 {
     Q_UNUSED(peer);
 }
 
-void LogicHandler::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Handler::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     Q_UNUSED(e);
 }
 
-LogicHandlerFunctor::LogicHandlerFunctor(LogicManager *manager)
+HandlerFunctor::HandlerFunctor(Manager *manager)
     : m_manager(manager)
 {
 }
 
-Qt3D::QBackendNode *LogicHandlerFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *HandlerFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
-    LogicHandler *handler = m_manager->logicHandlerManager()->getOrCreateResource(frontend->id());
+    Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(frontend->id());
     handler->setFactory(factory);
-    handler->setLogicManager(m_manager);
+    handler->setManager(m_manager);
     handler->setPeer(frontend);
-    m_manager->appendLogicHandler(handler);
+    m_manager->appendHandler(handler);
     return handler;
 }
 
-Qt3D::QBackendNode *LogicHandlerFunctor::get(const Qt3D::QNodeId &id) const
+Qt3D::QBackendNode *HandlerFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_manager->logicHandlerManager()->lookupResource(id);
 }
 
-void LogicHandlerFunctor::destroy(const Qt3D::QNodeId &id) const
+void HandlerFunctor::destroy(const Qt3D::QNodeId &id) const
 {
-    m_manager->removeLogicHandler(id);
+    m_manager->removeHandler(id);
 }
 
 } // namespace Logic

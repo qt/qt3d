@@ -34,27 +34,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
-#define QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
+#ifndef QT3DLOGIC_LOGIC_HANDLER_H
+#define QT3DLOGIC_LOGIC_HANDLER_H
 
-#include <QtGlobal>
-#include <Qt3DLogic/private/handle_types_p.h>
-#include <Qt3DLogic/private/logichandler_p.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 namespace Logic {
 
-class LogicHandlerManager : public Qt3D::QResourceManager<
-        LogicHandler,
-        Qt3D::QNodeId,
-        16,
-        Qt3D::ArrayAllocatingPolicy>
+class Manager;
+
+class Handler : public Qt3D::QBackendNode
 {
 public:
-    LogicHandlerManager() {}
+    Handler();
+
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+
+    void setManager(Manager *manager) { m_logicManager = manager; }
+    Manager *logicManager() const { return m_logicManager; }
+
+protected:
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    Manager *m_logicManager;
+};
+
+
+class HandlerFunctor : public Qt3D::QBackendNodeFunctor
+{
+public:
+    explicit HandlerFunctor(Manager *handler);
+
+    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+
+private:
+    Manager *m_manager;
 };
 
 } // namespace Logic
@@ -62,5 +84,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DLOGIC_LOGIC_LOGICMANAGERS_P_H
-
+#endif // QT3DLOGIC_LOGIC_HANDLER_H

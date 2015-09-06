@@ -34,32 +34,33 @@
 **
 ****************************************************************************/
 
-#include "logiccallbackjob_p.h"
-#include "logicmanager_p.h"
+#ifndef QT3DLOGIC_LOGIC_CALLBACKJOB_P_H
+#define QT3DLOGIC_LOGIC_CALLBACKJOB_P_H
+
+#include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 namespace Logic {
 
-LogicCallbackJob::LogicCallbackJob()
-    : QAspectJob()
-    , m_logicManager(Q_NULLPTR)
-{
-}
+class Manager;
 
-void LogicCallbackJob::setLogicManager(LogicManager *manager)
+class CallbackJob : public Qt3D::QAspectJob
 {
-    m_logicManager = manager;
-}
+public:
+    CallbackJob();
+    void setManager(Manager *manager);
 
-void LogicCallbackJob::run()
-{
-    Q_ASSERT(m_logicManager);
-    m_logicManager->triggerLogicFrameUpdates();
-}
+    void run() Q_DECL_OVERRIDE;
+
+private:
+    Manager *m_logicManager;
+};
 
 } // namespace Logic
-} // namespace Qt3DLogic
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3DLOGIC_LOGIC_CALLBACKJOB_P_H

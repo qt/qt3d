@@ -34,11 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_LOGIC_QLOGICASPECT_P_H
-#define QT3DLOGIC_LOGIC_QLOGICASPECT_P_H
+#ifndef QT3DLOGIC_QLOGICASPECT_P_H
+#define QT3DLOGIC_QLOGICASPECT_P_H
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DLogic/private/logiccallbackjob_p.h>
+#include <Qt3DLogic/private/callbackjob_p.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,8 +46,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DLogic {
 
 namespace Logic {
-class LogicExecutor;
-class LogicManager;
+class Executor;
+class Manager;
 }
 
 class QLogicAspectPrivate : public Qt3D::QAbstractAspectPrivate
@@ -58,14 +58,14 @@ class QLogicAspectPrivate : public Qt3D::QAbstractAspectPrivate
 
     qint64 m_time;
     bool m_initialized;
-    QScopedPointer<Logic::LogicManager> m_manager;
-    QScopedPointer<Logic::LogicExecutor> m_executor;
-    QSharedPointer<Logic::LogicCallbackJob> m_callbackJob;
+    QScopedPointer<Logic::Manager> m_manager;
+    QScopedPointer<Logic::Executor> m_executor;
+    QSharedPointer<Logic::CallbackJob> m_callbackJob;
 };
 
 } // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3DLOGIC_LOGIC_QLOGICASPECT_P_H
+#endif // QT3DLOGIC_QLOGICASPECT_P_H
 

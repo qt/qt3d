@@ -34,33 +34,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H
-#define QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H
+#ifndef QT3DLOGIC_LOGIC_MANAGER_H
+#define QT3DLOGIC_LOGIC_MANAGER_H
 
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DLogic/qt3dlogic_global.h>
+#include <Qt3DLogic/private/handle_types_p.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QtCore/qmutex.h>
+#include <QtCore/qscopedpointer.h>
+#include <QtCore/qsemaphore.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
+
+class QLogicAspect;
+
 namespace Logic {
 
-class LogicManager;
+class Executor;
+class HandlerManager;
 
-class LogicCallbackJob : public Qt3D::QAspectJob
+class Manager
 {
 public:
-    LogicCallbackJob();
-    void setLogicManager(LogicManager *manager);
+    Manager();
+    ~Manager();
 
-    void run() Q_DECL_OVERRIDE;
+    void setLogicAspect(QLogicAspect *logicAspect) { m_logicAspect = logicAspect; }
+    void setExecutor(Executor *executor);
+
+    HandlerManager *logicHandlerManager() const { return m_logicHandlerManager.data(); }
+
+    void appendHandler(Handler *handler);
+    void removeHandler(const Qt3D::QNodeId &id);
+
+    void triggerLogicFrameUpdates();
 
 private:
-    LogicManager *m_logicManager;
+    QScopedPointer<HandlerManager> m_logicHandlerManager;
+    QVector<HHandler> m_logicHandlers;
+    QVector<Qt3D::QNodeId> m_logicComponentIds;
+    QLogicAspect *m_logicAspect;
+    Executor *m_executor;
+    QSemaphore m_semaphore;
 };
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3DLOGIC_LOGIC_LOGICCALLBACKJOB_P_H
+#endif // QT3DLOGIC_LOGIC_MANAGER_H

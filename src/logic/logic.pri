@@ -6,17 +6,17 @@ HEADERS += \
     $$PWD/qlogicaspect_p.h \
     $$PWD/qlogiccomponent.h \
     $$PWD/handle_types_p.h \
-    $$PWD/logicmanagers_p.h \
-    $$PWD/logichandler_p.h \
-    $$PWD/logicmanager_p.h \
     $$PWD/qlogiccomponent_p.h \
-    $$PWD/logiccallbackjob_p.h \
-    $$PWD/logicexecutor_p.h
+    $$PWD/callbackjob_p.h \
+    $$PWD/executor_p.h \
+    $$PWD/handler_p.h \
+    $$PWD/manager_p.h \
+    $$PWD/managers_p.h
 
 SOURCES += \
     $$PWD/qlogicaspect.cpp \
     $$PWD/qlogiccomponent.cpp \
-    $$PWD/logichandler.cpp \
-    $$PWD/logicmanager.cpp \
-    $$PWD/logiccallbackjob.cpp \
-    $$PWD/logicexecutor.cpp
+    $$PWD/manager.cpp \
+    $$PWD/handler.cpp \
+    $$PWD/executor.cpp \
+    $$PWD/callbackjob.cpp

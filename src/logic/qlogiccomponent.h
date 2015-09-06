@@ -48,7 +48,7 @@ class QLogicAspect;
 class QLogicComponentPrivate;
 
 namespace Logic {
-class LogicExecutor;
+class Executor;
 }
 
 class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3D::QComponent
@@ -71,7 +71,7 @@ private:
 
     virtual void onFrameUpdate();
 
-    friend class Logic::LogicExecutor;
+    friend class Logic::Executor;
 };
 
 } // namespace Qt3DLogic

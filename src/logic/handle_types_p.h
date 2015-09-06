@@ -44,8 +44,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DLogic {
 namespace Logic {
 
-class LogicHandler;
-typedef Qt3D::QHandle<LogicHandler, 16> HLogicHandler;
+class Handler;
+typedef Qt3D::QHandle<Handler, 16> HHandler;
 
 } // namespace Logic
 } // namespace Qt3D
