@@ -95,7 +95,7 @@
 #include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DRenderer/private/nodraw_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRenderer/private/renderattribute_p.h>
+#include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/renderbuffer_p.h>
 #include <Qt3DRenderer/private/rendergeometry_p.h>
 #include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
@@ -232,7 +232,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::RenderBufferFunctor(d->m_renderer->bufferManager())));
-    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
+    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
     registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
     registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderGeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }

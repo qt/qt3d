@@ -35,11 +35,11 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/renderattribute_p.h>
+#include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
-class tst_RenderAttribute : public QObject
+class tst_Attribute : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:
@@ -47,7 +47,7 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DRender::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::Attribute renderAttribute;
 
         Qt3DRender::QAttribute attribute;
         attribute.setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
@@ -84,7 +84,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DRender::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::Attribute renderAttribute;
 
         // THEN
         QVERIFY(renderAttribute.peerUuid().isNull());
@@ -135,7 +135,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::Render::RenderAttribute renderAttribute;
+        Qt3DRender::Render::Attribute renderAttribute;
 
         QVERIFY(!renderAttribute.isDirty());
 
@@ -273,6 +273,6 @@ private Q_SLOTS:
 };
 
 
-QTEST_APPLESS_MAIN(tst_RenderAttribute)
+QTEST_APPLESS_MAIN(tst_Attribute)
 
-#include "tst_renderattribute.moc"
+#include "tst_attribute.moc"

@@ -18,7 +18,7 @@ contains(QT_CONFIG, private_tests) {
         qgeometry \
         qgeometryrenderer \
         renderbuffer \
-        renderattribute \
+        attribute \
         rendergeometry \
         rendergeometryrenderer \
         raycasting

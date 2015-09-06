@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "renderattribute_p.h"
+#include "attribute_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qbuffer.h>
 
@@ -45,7 +45,7 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderAttribute::RenderAttribute()
+Attribute::Attribute()
     : QBackendNode(ReadOnly)
     , m_dataType(Qt3D::QAbstractAttribute::Float)
     , m_dataSize(1)
@@ -58,11 +58,11 @@ RenderAttribute::RenderAttribute()
 {
 }
 
-RenderAttribute::~RenderAttribute()
+Attribute::~Attribute()
 {
 }
 
-void RenderAttribute::cleanup()
+void Attribute::cleanup()
 {
     m_dataType = Qt3D::QAbstractAttribute::Float;
     m_dataSize = 1;
@@ -76,7 +76,7 @@ void RenderAttribute::cleanup()
     m_attributeDirty = false;
 }
 
-void RenderAttribute::updateFromPeer(Qt3D::QNode *peer)
+void Attribute::updateFromPeer(Qt3D::QNode *peer)
 {
     QAttribute *attribute = static_cast<QAttribute *>(peer);
     if (attribute) {
@@ -94,7 +94,7 @@ void RenderAttribute::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void RenderAttribute::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Attribute::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -151,7 +151,7 @@ void RenderAttribute::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void RenderAttribute::unsetDirty()
+void Attribute::unsetDirty()
 {
     m_attributeDirty = false;
 }

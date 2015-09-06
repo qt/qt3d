@@ -882,7 +882,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Uniform and Attributes info from the shader
         // Otherwise we might create a VAO without attribute bindings as the RenderCommand had no way to know about attributes
         // Before the shader was loader
-        RenderAttribute *indexAttribute = Q_NULLPTR;
+        Attribute *indexAttribute = Q_NULLPTR;
         bool specified = false;
         const bool requiresVAOUpdate = (!vao || !vao->isCreated()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
         GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
@@ -986,7 +986,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     m_graphicsContext->setCurrentStateSet(globalState);
 
     // Unset dirtiness on Geometry and Attributes
-    Q_FOREACH (RenderAttribute *attribute, m_dirtyAttributes)
+    Q_FOREACH (Attribute *attribute, m_dirtyAttributes)
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
 
@@ -995,14 +995,14 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     m_dirtyGeometry.clear();
 }
 
-RenderAttribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
+Attribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
 {
-    RenderAttribute *indexAttribute = Q_NULLPTR;
+    Attribute *indexAttribute = Q_NULLPTR;
     uint estimatedCount = 0;
 
     Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
-        RenderAttribute *attribute = attributeManager()->lookupResource(attributeId);
+        Attribute *attribute = attributeManager()->lookupResource(attributeId);
 
         if (attribute == Q_NULLPTR)
             continue;

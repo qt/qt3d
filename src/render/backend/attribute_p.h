@@ -46,11 +46,11 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderAttribute : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Attribute : public Qt3D::QBackendNode
 {
 public:
-    RenderAttribute();
-    ~RenderAttribute();
+    Attribute();
+    ~Attribute();
 
     void cleanup();
 

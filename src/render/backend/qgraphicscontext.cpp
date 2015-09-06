@@ -44,7 +44,7 @@
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/renderbuffer_p.h>
-#include <Qt3DRenderer/private/renderattribute_p.h>
+#include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
@@ -911,7 +911,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     m_activeShader->updateUniforms(this, uniforms);
 }
 
-void QGraphicsContext::specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer, const QString &shaderName)
+void QGraphicsContext::specifyAttribute(const Attribute *attribute, RenderBuffer *buffer, const QString &shaderName)
 {
     if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
         return;

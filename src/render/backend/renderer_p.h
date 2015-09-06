@@ -155,7 +155,7 @@ public:
     QVector<Qt3D::QAspectJobPtr> createGeometryRendererJobs();
     Qt3D::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
-    RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
+    Attribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
     void addAllocator(Qt3D::QFrameAllocator *allocator);
 
     inline CameraManager *cameraManager() const { return m_cameraManager; }
@@ -290,7 +290,7 @@ private:
     QList<AbstractSceneParser *> m_sceneParsers;
     QVector<Qt3D::QFrameAllocator *> m_allocators;
 
-    QVector<RenderAttribute *> m_dirtyAttributes;
+    QVector<Attribute *> m_dirtyAttributes;
     QVector<RenderGeometry *> m_dirtyGeometry;
 };
 

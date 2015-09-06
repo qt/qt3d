@@ -70,7 +70,7 @@ class RenderTexture;
 class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
-class RenderAttribute;
+class Attribute;
 class RenderBuffer;
 
 enum TextureScope
@@ -128,7 +128,7 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const RenderAttribute *attribute, RenderBuffer *buffer, const QString &shaderName);
+    void specifyAttribute(const Attribute *attribute, RenderBuffer *buffer, const QString &shaderName);
     void specifyIndices(RenderBuffer *buffer);
     void updateBuffer(RenderBuffer *buffer);
 

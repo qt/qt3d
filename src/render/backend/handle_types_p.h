@@ -70,7 +70,7 @@ class RenderParameter;
 class RenderShaderData;
 class RenderTextureImage;
 class RenderBuffer;
-class RenderAttribute;
+class Attribute;
 class RenderGeometry;
 class RenderGeometryRenderer;
 
@@ -97,7 +97,7 @@ typedef Qt3D::QHandle<RenderParameter, 16> HParameter;
 typedef Qt3D::QHandle<RenderShaderData, 16> HShaderData;
 typedef Qt3D::QHandle<RenderTextureImage, 16> HTextureImage;
 typedef Qt3D::QHandle<RenderBuffer, 16> HBuffer;
-typedef Qt3D::QHandle<RenderAttribute, 16> HAttribute;
+typedef Qt3D::QHandle<Attribute, 16> HAttribute;
 typedef Qt3D::QHandle<RenderGeometry, 16> HGeometry;
 typedef Qt3D::QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
 
