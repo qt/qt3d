@@ -34,45 +34,71 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERANNOTATION_P_H
-#define QT3DRENDER_RENDER_RENDERANNOTATION_P_H
-
-#include <Qt3DRenderer/qannotation.h>
-#include <Qt3DCore/qbackendnode.h>
+#include "annotation_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3D;
+
 namespace Qt3DRender {
-
-class QAnnotation;
-
 namespace Render {
 
-class CriterionManager;
-
-class RenderAnnotation : public Qt3D::QBackendNode
+Annotation::Annotation()
+    : QBackendNode()
 {
-public:
-    RenderAnnotation();
-    ~RenderAnnotation();
-    void cleanup();
-    void updateFromPeer(Qt3D::QNode *criterion) Q_DECL_OVERRIDE;
+}
 
-    QVariant criterionValue() const;
-    QString criterionName() const;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool operator ==(const RenderAnnotation &other);
-    bool operator !=(const RenderAnnotation &other);
+Annotation::~Annotation()
+{
+    cleanup();
+}
 
-private:
-    QVariant m_value;
-    QString m_name;
-};
+void Annotation::cleanup()
+{
+}
+
+void Annotation::updateFromPeer(Qt3D::QNode *peer)
+{
+    QAnnotation *criterion = static_cast<QAnnotation *>(peer);
+
+    m_value = criterion->value();
+    m_name = criterion->name();
+}
+
+QVariant Annotation::criterionValue() const
+{
+    return m_value;
+}
+
+QString Annotation::criterionName() const
+{
+    return m_name;
+}
+
+void Annotation::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (propertyChange->propertyName() == QByteArrayLiteral("value"))
+        m_value = propertyChange->value();
+    else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
+        m_name = propertyChange->value().toString();
+}
+
+bool Annotation::operator ==(const Annotation &other)
+{
+    if (&other == this)
+        return true;
+    return ((other.criterionName() == criterionName()) &&
+            (other.criterionValue() == criterionValue()));
+}
+
+bool Annotation::operator !=(const Annotation &other)
+{
+    return !operator ==(other);
+}
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RENDERANNOTATION_P_H

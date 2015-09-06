@@ -40,7 +40,7 @@
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderattachment_p.h>
 #include <Qt3DRenderer/private/rendercameralens_p.h>
-#include <Qt3DRenderer/private/renderannotation_p.h>
+#include <Qt3DRenderer/private/annotation_p.h>
 #include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
@@ -88,7 +88,7 @@ public:
 };
 
 class CriterionManager : public Qt3D::QResourceManager<
-        RenderAnnotation,
+        Annotation,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -302,7 +302,7 @@ class GeometryManager : public Qt3D::QResourceManager<
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderAnnotation, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Annotation, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderEffect, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderEntity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderLayer, Q_REQUIRES_CLEANUP)

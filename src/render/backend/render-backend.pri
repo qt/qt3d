@@ -45,7 +45,6 @@ HEADERS += \
     $$PWD/rendernodefunctor_p.h \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
-    $$PWD/renderannotation_p.h \
     $$PWD/renderparameter_p.h \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/rendershaderdata_p.h \
@@ -59,7 +58,8 @@ HEADERS += \
     $$PWD/buffermanager_p.h \
     $$PWD/geometryrenderermanager_p.h \
     $$PWD/qraycastingservice.h \
-    $$PWD/qraycastingservice_p.h
+    $$PWD/qraycastingservice_p.h \
+    $$PWD/annotation_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -95,7 +95,6 @@ SOURCES += \
     $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
-    $$PWD/renderannotation.cpp \
     $$PWD/renderparameter.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/rendershaderdata.cpp \
@@ -108,4 +107,5 @@ SOURCES += \
     $$PWD/buffermanager.cpp \
     $$PWD/geometryrenderermanager.cpp \
     $$PWD/qraycastingservice.cpp \
-    $$PWD/vsyncframeadvanceservice.cpp
+    $$PWD/vsyncframeadvanceservice.cpp \
+    $$PWD/annotation.cpp
