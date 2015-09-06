@@ -42,7 +42,7 @@ src_quick3d_imports_scene3d.file = $$PWD/quick3d/imports/scene3d/importsscene3d.
 src_quick3d_imports_scene3d.target = sub-quick3d-imports-scene3d
 src_quick3d_imports_scene3d.depends = src_quick3d_render src_input
 
-src_quick3d_imports_input.file = $$PWD/quick3d/imports/input/importsinputs.pro
+src_quick3d_imports_input.file = $$PWD/quick3d/imports/input/importsinput.pro
 src_quick3d_imports_input.target = sub-quick3d-imports-input
 src_quick3d_imports_input.depends = src_input
 
