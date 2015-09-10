@@ -301,6 +301,8 @@ bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature featu
     switch (feature) {
     case MRT:
         return (m_fboFuncs != Q_NULLPTR);
+    case TextureDimensionRetrieval:
+        return true;
     default:
         return false;
     }
@@ -536,6 +538,26 @@ void QGraphicsHelperGL2::enablePrimitiveRestart(int)
 
 void QGraphicsHelperGL2::disablePrimitiveRestart()
 {
+}
+
+QSize QGraphicsHelperGL2::getRenderBufferDimensions(GLuint renderBufferId)
+{
+    Q_UNUSED(renderBufferId);
+    qCritical() << "RenderBuffer dimensions retrival not supported on OpenGL 2.0";
+    return QSize(0,0);
+}
+
+QSize QGraphicsHelperGL2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindTexture(target, textureId);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_WIDTH, &width);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_HEIGHT, &height);
+    m_funcs->glBindTexture(target, 0);
+
+    return QSize(width, height);
 }
 
 } // Render

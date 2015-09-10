@@ -324,6 +324,8 @@ bool QGraphicsHelperGL3_3::supportsFeature(QGraphicsHelperInterface::Feature fea
     case MRT:
     case UniformBufferObject:
     case PrimitiveRestart:
+    case RenderBufferDimensionRetrieval:
+    case TextureDimensionRetrieval:
         return true;
     case Tessellation:
         return !m_tessFuncs.isNull();
@@ -888,6 +890,32 @@ void QGraphicsHelperGL3_3::enablePrimitiveRestart(int primitiveRestartIndex)
 void QGraphicsHelperGL3_3::disablePrimitiveRestart()
 {
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
+}
+
+QSize QGraphicsHelperGL3_3::getRenderBufferDimensions(GLuint renderBufferId)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    return QSize(width, height);
+}
+
+QSize QGraphicsHelperGL3_3::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindTexture(target, textureId);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_WIDTH, &width);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_HEIGHT, &height);
+    m_funcs->glBindTexture(target, 0);
+
+    return QSize(width, height);
 }
 
 } // Render

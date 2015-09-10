@@ -57,7 +57,9 @@ public:
         Tessellation,
         UniformBufferObject,
         BindableFragmentOutputs,
-        PrimitiveRestart
+        PrimitiveRestart,
+        RenderBufferDimensionRetrieval,
+        TextureDimensionRetrieval
     };
 
     virtual ~QGraphicsHelperInterface() {}
@@ -99,6 +101,8 @@ public:
     virtual GLint   maxClipPlaneCount() = 0;
     virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
     virtual void    disablePrimitiveRestart() = 0;
+    virtual QSize   getRenderBufferDimensions(GLuint renderBufferId) = 0;
+    virtual QSize   getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) = 0;
 };
 
 
