@@ -50,7 +50,7 @@
 #include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderlayer_p.h>
+#include <Qt3DRenderer/private/layer_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
@@ -83,8 +83,8 @@ bool isEntityInLayers(const Entity *entity, const QStringList &layers)
     if (layers.isEmpty())
         return true;
 
-    QList<RenderLayer *> renderLayers = entity->renderComponents<RenderLayer>();
-    Q_FOREACH (RenderLayer *layer, renderLayers) {
+    QList<Layer *> renderLayers = entity->renderComponents<Layer>();
+    Q_FOREACH (Layer *layer, renderLayers) {
         if (layer->isEnabled())
             Q_FOREACH (const QString &layerName, layer->layers())
                 if (layers.contains(layerName))

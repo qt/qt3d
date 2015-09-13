@@ -330,7 +330,7 @@ template<>
 Qt3D::QNodeId Entity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
 
 template<>
-QList<HLayer> Entity::componentsHandle<RenderLayer>() const
+QList<HLayer> Entity::componentsHandle<Layer>() const
 {
     QList<HLayer> layerHandles;
     Q_FOREACH (const QNodeId &id, m_layerComponents)
@@ -339,16 +339,16 @@ QList<HLayer> Entity::componentsHandle<RenderLayer>() const
 }
 
 template<>
-QList<RenderLayer *> Entity::renderComponents<RenderLayer>() const
+QList<Layer *> Entity::renderComponents<Layer>() const
 {
-    QList<RenderLayer *> layers;
+    QList<Layer *> layers;
     Q_FOREACH (const QNodeId &id, m_layerComponents)
         layers.append(m_renderer->layerManager()->lookupResource(id));
     return layers;
 }
 
 template<>
-QList<Qt3D::QNodeId> Entity::componentsUuid<RenderLayer>() const { return m_layerComponents; }
+QList<Qt3D::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
 
 template<>
 QList<HShaderData> Entity::componentsHandle<RenderShaderData>() const

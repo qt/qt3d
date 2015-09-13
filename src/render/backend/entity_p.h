@@ -199,13 +199,13 @@ template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderMaterial>() const;
 
 template<>
-QList<HLayer> Entity::componentsHandle<RenderLayer>() const;
+QList<HLayer> Entity::componentsHandle<Layer>() const;
 
 template<>
-QList<RenderLayer *> Entity::renderComponents<RenderLayer>() const;
+QList<Layer *> Entity::renderComponents<Layer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> Entity::componentsUuid<RenderLayer>() const;
+Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> Entity::componentsUuid<Layer>() const;
 
 template<>
 QList<HShaderData> Entity::componentsHandle<RenderShaderData>() const;

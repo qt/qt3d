@@ -34,54 +34,45 @@
 **
 ****************************************************************************/
 
-#include "renderlayer_p.h"
-#include "qlayer.h"
-#include <Qt3DCore/qscenepropertychange.h>
-#include <QVariant>
+#ifndef QT3DRENDER_RENDER_LAYER_H
+#define QT3DRENDER_RENDER_LAYER_H
+
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
-
 namespace Qt3DRender {
+
+class QLayer;
+
 namespace Render {
 
-RenderLayer::RenderLayer()
-    : QBackendNode()
-{
-}
+class LayerManager;
 
-RenderLayer::~RenderLayer()
+class Layer : public Qt3D::QBackendNode
 {
-    cleanup();
-}
+public:
+    Layer();
+    ~Layer();
+    void cleanup();
 
-void RenderLayer::cleanup()
-{
-}
+    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
-void RenderLayer::updateFromPeer(Qt3D::QNode *peer)
-{
-    QLayer *layer = static_cast<QLayer *>(peer);
-    m_layers = layer->names();
-    m_enabled = layer->isEnabled();
-}
+    QStringList layers() const;
+    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    inline bool isEnabled() const { return m_enabled; }
 
-QStringList RenderLayer::layers() const
-{
-    return m_layers;
-}
-
-void RenderLayer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names"))
-        m_layers = propertyChange->value().toStringList();
-    else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-        m_enabled = propertyChange->value().toBool();
-}
+private:
+    QStringList m_layers;
+    bool m_enabled;
+};
 
 } // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_LAYER_H

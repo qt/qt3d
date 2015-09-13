@@ -29,7 +29,6 @@ HEADERS += \
     $$PWD/renderrenderpass_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
-    $$PWD/renderlayer_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/effect_p.h \
     $$PWD/entity_p.h \
     $$PWD/geometry_p.h \
-    $$PWD/geometryrenderer_p.h
+    $$PWD/geometryrenderer_p.h \
+    $$PWD/layer_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -85,7 +85,6 @@ SOURCES += \
     $$PWD/renderrenderpass.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
-    $$PWD/renderlayer.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/effect.cpp \
     $$PWD/entity.cpp \
     $$PWD/geometry.cpp \
-    $$PWD/geometryrenderer.cpp
+    $$PWD/geometryrenderer.cpp \
+    $$PWD/layer.cpp

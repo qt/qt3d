@@ -62,7 +62,7 @@ QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<RenderMaterial>(); }
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 
-QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<RenderLayer>(); }
+QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<RenderShaderData>(); }
 
 class tst_RenderEntity : public QObject

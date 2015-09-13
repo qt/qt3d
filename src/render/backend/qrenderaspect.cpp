@@ -210,7 +210,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Effect, Render::EffectManager>(d->m_renderer->effectManager())));
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
     registerBackendType<Qt3D::QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
-    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderLayer, Render::LayerManager>(d->m_renderer->layerManager())));
+    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Layer, Render::LayerManager>(d->m_renderer->layerManager())));
     registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
     registerBackendType<QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
     registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
