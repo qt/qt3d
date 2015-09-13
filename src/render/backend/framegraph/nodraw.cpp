@@ -68,6 +68,9 @@ void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         break;
+
+    default:
+        break;
     }
 
     }
