@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class TestFunctor : public Qt3DRender::QBufferFunctor
@@ -72,7 +72,7 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DRender::Render::RenderBuffer renderBuffer;
+        Qt3DRender::Render::Buffer renderBuffer;
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
@@ -94,7 +94,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DRender::Render::RenderBuffer renderBuffer;
+        Qt3DRender::Render::Buffer renderBuffer;
 
         // THEN
         QCOMPARE(renderBuffer.isDirty(), false);
@@ -125,7 +125,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::Render::RenderBuffer renderBuffer;
+        Qt3DRender::Render::Buffer renderBuffer;
 
         // THEN
         QVERIFY(renderBuffer.type() != Qt3DRender::QBuffer::IndexBuffer);
@@ -193,4 +193,4 @@ private Q_SLOTS:
 
 QTEST_APPLESS_MAIN(tst_RenderBuffer)
 
-#include "tst_renderbuffer.moc"
+#include "tst_buffer.moc"

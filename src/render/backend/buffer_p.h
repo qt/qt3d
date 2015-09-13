@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERBUFFER_H
-#define QT3DRENDER_RENDER_RENDERBUFFER_H
+#ifndef QT3DRENDER_RENDER_BUFFER_H
+#define QT3DRENDER_RENDER_BUFFER_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRenderer/qbuffer.h>
@@ -49,11 +49,11 @@ namespace Render {
 
 class BufferManager;
 
-class Q_AUTOTEST_EXPORT RenderBuffer : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Buffer : public Qt3D::QBackendNode
 {
 public:
-    RenderBuffer();
-    ~RenderBuffer();
+    Buffer();
+    ~Buffer();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
@@ -78,10 +78,10 @@ private:
     BufferManager *m_manager;
 };
 
-class RenderBufferFunctor : public Qt3D::QBackendNodeFunctor
+class BufferFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
-    explicit RenderBufferFunctor(BufferManager *manager);
+    explicit BufferFunctor(BufferManager *manager);
     Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
@@ -95,4 +95,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERBUFFER_H
+#endif // QT3DRENDER_RENDER_BUFFER_H

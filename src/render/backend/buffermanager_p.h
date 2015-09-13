@@ -38,7 +38,7 @@
 #define QT3DRENDER_RENDER_BUFFERMANAGER_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/buffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class BufferManager : public Qt3D::QResourceManager<
-        RenderBuffer,
+        Buffer,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -68,7 +68,7 @@ private:
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderBuffer, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Buffer, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

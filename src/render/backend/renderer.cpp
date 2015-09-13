@@ -1007,7 +1007,7 @@ Attribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, Render
         if (attribute == Q_NULLPTR)
             continue;
 
-        RenderBuffer *buffer = bufferManager()->lookupResource(attribute->bufferId());
+        Buffer *buffer = bufferManager()->lookupResource(attribute->bufferId());
 
         if (buffer == Q_NULLPTR)
             continue;

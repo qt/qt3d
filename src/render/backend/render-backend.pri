@@ -51,7 +51,7 @@ HEADERS += \
     $$PWD/renderparametermapping_p.h \
     $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
-    $$PWD/renderbuffer_p.h \
+    $$PWD/buffer_p.h \
     $$PWD/rendergeometry_p.h \
     $$PWD/rendergeometryrenderer_p.h \
     $$PWD/buffermanager_p.h \
@@ -59,7 +59,8 @@ HEADERS += \
     $$PWD/qraycastingservice.h \
     $$PWD/qraycastingservice_p.h \
     $$PWD/annotation_p.h \
-    $$PWD/attribute_p.h
+    $$PWD/attribute_p.h \
+    $$PWD/buffer_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -100,7 +101,6 @@ SOURCES += \
     $$PWD/rendershaderdata.cpp \
     $$PWD/renderparametermapping.cpp \
     $$PWD/rendertextureimage.cpp \
-    $$PWD/renderbuffer.cpp \
     $$PWD/rendergeometry.cpp \
     $$PWD/rendergeometryrenderer.cpp \
     $$PWD/buffermanager.cpp \
@@ -108,4 +108,5 @@ SOURCES += \
     $$PWD/qraycastingservice.cpp \
     $$PWD/vsyncframeadvanceservice.cpp \
     $$PWD/annotation.cpp \
-    $$PWD/attribute.cpp
+    $$PWD/attribute.cpp \
+    $$PWD/buffer.cpp

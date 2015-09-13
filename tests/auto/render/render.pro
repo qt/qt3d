@@ -17,7 +17,7 @@ contains(QT_CONFIG, private_tests) {
         qbuffer \
         qgeometry \
         qgeometryrenderer \
-        renderbuffer \
+        buffer \
         attribute \
         rendergeometry \
         rendergeometryrenderer \

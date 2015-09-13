@@ -71,7 +71,7 @@ class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
 class Attribute;
-class RenderBuffer;
+class Buffer;
 
 enum TextureScope
 {
@@ -128,9 +128,9 @@ public:
 
     void setRenderer(Renderer *renderer);
 
-    void specifyAttribute(const Attribute *attribute, RenderBuffer *buffer, const QString &shaderName);
-    void specifyIndices(RenderBuffer *buffer);
-    void updateBuffer(RenderBuffer *buffer);
+    void specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName);
+    void specifyIndices(Buffer *buffer);
+    void updateBuffer(Buffer *buffer);
 
     void setUniforms(QUniformPack &uniforms);
 
@@ -140,7 +140,7 @@ public:
      * @param buf
      * @return
      */
-    QOpenGLBuffer glBufferForRenderBuffer(RenderBuffer *buf);
+    QOpenGLBuffer glBufferForRenderBuffer(Buffer *buf);
 
 
     /**
@@ -215,7 +215,7 @@ private:
 
     RenderShader *m_activeShader;
     QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
-    QHash<RenderBuffer *, QOpenGLBuffer> m_renderBufferHash;
+    QHash<Buffer *, QOpenGLBuffer> m_renderBufferHash;
     QHash<Qt3D::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 

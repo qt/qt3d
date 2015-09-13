@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "loadbufferjob_p.h"
-#include <Qt3DRenderer/private/renderbuffer_p.h>
+#include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DRenderer/private/buffermanager_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 
@@ -61,7 +61,7 @@ void LoadBufferJob::run()
 {
     // Let's leave it for the moment until this has been properly tested
     qDebug() << Q_FUNC_INFO;
-    RenderBuffer *buffer = m_renderer->bufferManager()->data(m_handle);
+    Buffer *buffer = m_renderer->bufferManager()->data(m_handle);
     buffer->executeFunctor();
 }
 
