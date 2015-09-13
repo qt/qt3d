@@ -49,7 +49,6 @@ HEADERS += \
     $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
     $$PWD/buffer_p.h \
-    $$PWD/rendergeometry_p.h \
     $$PWD/rendergeometryrenderer_p.h \
     $$PWD/buffermanager_p.h \
     $$PWD/geometryrenderermanager_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/buffer_p.h \
     $$PWD/cameralens_p.h \
     $$PWD/effect_p.h \
-    $$PWD/entity_p.h
+    $$PWD/entity_p.h \
+    $$PWD/geometry_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -98,7 +98,6 @@ SOURCES += \
     $$PWD/rendershaderdata.cpp \
     $$PWD/renderparametermapping.cpp \
     $$PWD/rendertextureimage.cpp \
-    $$PWD/rendergeometry.cpp \
     $$PWD/rendergeometryrenderer.cpp \
     $$PWD/buffermanager.cpp \
     $$PWD/geometryrenderermanager.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/buffer.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/effect.cpp \
-    $$PWD/entity.cpp
+    $$PWD/entity.cpp \
+    $$PWD/geometry.cpp

@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/geometry_p.h>
 #include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -48,7 +48,7 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::Geometry renderGeometry;
 
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QAttribute attr1;
@@ -78,7 +78,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::Geometry renderGeometry;
 
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
@@ -112,7 +112,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometry renderGeometry;
+        Qt3DRender::Render::Geometry renderGeometry;
         Qt3D::QNodeId geometryId = Qt3D::QNodeId::createId();
 
         // WHEN
@@ -156,4 +156,4 @@ private Q_SLOTS:
 
 QTEST_APPLESS_MAIN(tst_RenderGeometry)
 
-#include "tst_rendergeometry.moc"
+#include "tst_geometry.moc"

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERGEOMETRY_H
-#define QT3DRENDER_RENDER_RENDERGEOMETRY_H
+#ifndef QT3DRENDER_RENDER_GEOMETRY_H
+#define QT3DRENDER_RENDER_GEOMETRY_H
 
 #include <Qt3DCore/qbackendnode.h>
 
@@ -46,11 +46,11 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderGeometry : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Geometry : public Qt3D::QBackendNode
 {
 public:
-    RenderGeometry();
-    ~RenderGeometry();
+    Geometry();
+    ~Geometry();
 
     void cleanup();
 
@@ -74,4 +74,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERGEOMETRY_H
+#endif // QT3DRENDER_RENDER_GEOMETRY_H

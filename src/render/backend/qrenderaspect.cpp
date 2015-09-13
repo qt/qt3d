@@ -97,7 +97,7 @@
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/buffer_p.h>
-#include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/geometry_p.h>
 #include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -233,7 +233,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::BufferFunctor(d->m_renderer->bufferManager())));
     registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
-    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderGeometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
+    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
     registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderGeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }
 

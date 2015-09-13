@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendergeometry_p.h"
+#include "geometry_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DRenderer/qgeometry.h>
@@ -46,25 +46,25 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderGeometry::RenderGeometry()
+Geometry::Geometry()
     : QBackendNode(ReadOnly)
     , m_verticesPerPatch(0)
     , m_geometryDirty(false)
 {
 }
 
-RenderGeometry::~RenderGeometry()
+Geometry::~Geometry()
 {
 }
 
-void RenderGeometry::cleanup()
+void Geometry::cleanup()
 {
     m_verticesPerPatch = 0;
     m_attributes.clear();
     m_geometryDirty = false;
 }
 
-void RenderGeometry::updateFromPeer(Qt3D::QNode *peer)
+void Geometry::updateFromPeer(Qt3D::QNode *peer)
 {
     QGeometry *geometry = static_cast<QGeometry *>(peer);
     if (geometry != Q_NULLPTR) {
@@ -76,7 +76,7 @@ void RenderGeometry::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void RenderGeometry::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Geometry::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -112,7 +112,7 @@ void RenderGeometry::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void RenderGeometry::unsetDirty()
+void Geometry::unsetDirty()
 {
     m_geometryDirty = false;
 }

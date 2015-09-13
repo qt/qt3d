@@ -841,7 +841,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     Q_FOREACH (RenderCommand *command, commands) {
 
         // Check if we have a valid GeometryRenderer + Geometry
-        RenderGeometry *rGeometry = m_geometryManager->data(command->m_geometry);
+        Geometry *rGeometry = m_geometryManager->data(command->m_geometry);
         RenderGeometryRenderer *rGeometryRenderer = m_geometryRendererManager->data(command->m_geometryRenderer);
         const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
 
@@ -990,12 +990,12 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
 
-    Q_FOREACH (RenderGeometry *geometry, m_dirtyGeometry)
+    Q_FOREACH (Geometry *geometry, m_dirtyGeometry)
         geometry->unsetDirty();
     m_dirtyGeometry.clear();
 }
 
-Attribute *Renderer::updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
+Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)
 {
     Attribute *indexAttribute = Q_NULLPTR;
     uint estimatedCount = 0;

@@ -58,7 +58,7 @@
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/private/rendergeometry_p.h>
+#include <Qt3DRenderer/private/geometry_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -291,7 +291,7 @@ class AttributeManager : public Qt3D::QResourceManager<
 };
 
 class GeometryManager : public Qt3D::QResourceManager<
-        RenderGeometry,
+        Geometry,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -315,7 +315,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTexture, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderRenderPass, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTextureImage, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderGeometry, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

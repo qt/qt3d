@@ -71,7 +71,7 @@ class RenderShaderData;
 class RenderTextureImage;
 class Buffer;
 class Attribute;
-class RenderGeometry;
+class Geometry;
 class RenderGeometryRenderer;
 
 typedef Qt3D::QHandle<RenderAttachment, 16> HAttachment;
@@ -98,7 +98,7 @@ typedef Qt3D::QHandle<RenderShaderData, 16> HShaderData;
 typedef Qt3D::QHandle<RenderTextureImage, 16> HTextureImage;
 typedef Qt3D::QHandle<Buffer, 16> HBuffer;
 typedef Qt3D::QHandle<Attribute, 16> HAttribute;
-typedef Qt3D::QHandle<RenderGeometry, 16> HGeometry;
+typedef Qt3D::QHandle<Geometry, 16> HGeometry;
 typedef Qt3D::QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
 
 } // namespace Render
