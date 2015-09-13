@@ -101,7 +101,7 @@ public:
         // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
         //
         // TODO: Is this worth it here. We don't have that many RenderViews to iterate over. This
-        // level of memory management would be better in RenderEntity's matrices as they will
+        // level of memory management would be better in Entity's matrices as they will
         // help cache performance during iteration
         m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
     }
@@ -175,7 +175,7 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
-    void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
+    void buildRenderCommands(Entity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }

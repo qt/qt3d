@@ -36,7 +36,7 @@
 
 #include "framepreparationjob_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/sphere.h>
 
@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(RenderEntity *root)
+FramePreparationJob::FramePreparationJob(Entity *root)
     : m_root(root)
 {
 }
@@ -60,7 +60,7 @@ void FramePreparationJob::run()
     parseNodeTree(m_root);
 }
 
-void FramePreparationJob::parseNodeTree(RenderEntity *node)
+void FramePreparationJob::parseNodeTree(Entity *node)
 {
     // Initialize worldBoundingVolume if Mesh associated
     Qt3DRender::Render::RenderGeometryRenderer *mesh = Q_NULLPTR;
@@ -85,7 +85,7 @@ void FramePreparationJob::parseNodeTree(RenderEntity *node)
     }
 
     // Traverse children
-    Q_FOREACH (RenderEntity *child, node->children())
+    Q_FOREACH (Entity *child, node->children())
         parseNodeTree(child);
 }
 

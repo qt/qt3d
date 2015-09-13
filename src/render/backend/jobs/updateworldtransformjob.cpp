@@ -37,7 +37,7 @@
 #include "updateworldtransformjob_p.h"
 
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <sphere.h>
 #include <Qt3DRenderer/private/rendertransform_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
@@ -50,7 +50,7 @@ namespace Render {
 
 namespace {
 
-void updateWorldTransformAndBounds(Qt3DRender::Render::RenderEntity *node, const QMatrix4x4 &parentTransform)
+void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatrix4x4 &parentTransform)
 {
     QMatrix4x4 worldTransform(parentTransform);
     RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
@@ -60,13 +60,13 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::RenderEntity *node, const
     *(node->worldTransform()) = worldTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
 
-    Q_FOREACH (Qt3DRender::Render::RenderEntity *child, node->children())
+    Q_FOREACH (Qt3DRender::Render::Entity *child, node->children())
         updateWorldTransformAndBounds(child, worldTransform);
 }
 
 }
 
-UpdateWorldTransformJob::UpdateWorldTransformJob(RenderEntity *node)
+UpdateWorldTransformJob::UpdateWorldTransformJob(Entity *node)
     : Qt3D::QAspectJob()
     , m_node(node)
 {
@@ -84,7 +84,7 @@ void UpdateWorldTransformJob::run()
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
     QMatrix4x4 parentTransform;
-    RenderEntity *parent = m_node->parent();
+    Entity *parent = m_node->parent();
     if (parent != Q_NULLPTR)
         parentTransform = *(parent->worldTransform());
     updateWorldTransformAndBounds(m_node, parentTransform);

@@ -1,9 +1,9 @@
 TEMPLATE = app
 
-TARGET = tst_renderentity
+TARGET = tst_entity
 
 QT += 3dcore 3dcore-private 3drenderer 3drenderer-private testlib
 
 CONFIG += testcase
 
-SOURCES += tst_renderentity.cpp
+SOURCES += tst_entity.cpp

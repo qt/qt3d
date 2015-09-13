@@ -89,7 +89,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Can be set only once and we take camera nearest to the leaf node
                 if (!rv->renderCamera()) {
                     const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
-                    RenderEntity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
+                    Entity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                     if (camNode) {
                         CameraLens *lens = camNode->renderComponent<CameraLens>();
                         if (lens && lens->isEnabled()) {

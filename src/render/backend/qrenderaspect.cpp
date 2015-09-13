@@ -71,7 +71,7 @@
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/annotation_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>

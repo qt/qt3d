@@ -46,18 +46,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class RenderEntity;
+class Entity;
 
 class UpdateBoundingVolumeJob : public Qt3D::QAspectJob
 {
 public:
-    explicit UpdateBoundingVolumeJob(RenderEntity *m_node);
+    explicit UpdateBoundingVolumeJob(Entity *m_node);
 
 protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    RenderEntity *m_node;
+    Entity *m_node;
 };
 
 typedef QSharedPointer<UpdateBoundingVolumeJob> UpdateBoundingVolumeJobPtr;

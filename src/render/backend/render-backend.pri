@@ -30,7 +30,6 @@ HEADERS += \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/renderlayer_p.h \
-    $$PWD/renderentity_p.h \
     $$PWD/rendertransform_p.h \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/attribute_p.h \
     $$PWD/buffer_p.h \
     $$PWD/cameralens_p.h \
-    $$PWD/effect_p.h
+    $$PWD/effect_p.h \
+    $$PWD/entity_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -86,7 +86,6 @@ SOURCES += \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/renderlayer.cpp \
-    $$PWD/renderentity.cpp \
     $$PWD/rendertransform.cpp \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/attribute.cpp \
     $$PWD/buffer.cpp \
     $$PWD/cameralens.cpp \
-    $$PWD/effect.cpp
+    $$PWD/effect.cpp \
+    $$PWD/entity.cpp

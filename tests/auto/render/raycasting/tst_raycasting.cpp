@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/qraycastingservice.h>
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>

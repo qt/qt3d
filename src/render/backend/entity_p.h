@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERNODE_H
-#define QT3DRENDER_RENDER_RENDERNODE_H
+#ifndef QT3DRENDER_RENDER_ENTITY_H
+#define QT3DRENDER_RENDER_ENTITY_H
 
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
@@ -64,11 +64,11 @@ namespace Render {
 
 class Renderer;
 
-class Q_AUTOTEST_EXPORT RenderEntity : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Entity : public Qt3D::QBackendNode
 {
 public:
-    RenderEntity();
-    ~RenderEntity();
+    Entity();
+    ~Entity();
     void cleanup();
 
     void setParentHandle(HEntity parentHandle);
@@ -80,13 +80,13 @@ public:
 
     void  setHandle(HEntity handle);
     HEntity handle() const { return m_handle; }
-    RenderEntity *parent() const;
+    Entity *parent() const;
     HEntity parentHandle() const { return m_parentHandle; }
 
     void appendChildHandle(HEntity childHandle);
     void removeChildHandle(HEntity childHandle);
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
-    QVector<RenderEntity *> children() const;
+    QVector<Entity *> children() const;
 
     QMatrix4x4 *worldTransform();
     const QMatrix4x4 *worldTransform() const;
@@ -166,58 +166,58 @@ private:
 };
 
 template<>
-HMaterial RenderEntity::componentHandle<RenderMaterial>() const;
+HMaterial Entity::componentHandle<RenderMaterial>() const;
 
 template<>
-RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const;
+RenderMaterial *Entity::renderComponent<RenderMaterial>() const;
 
 template<>
-HCamera RenderEntity::componentHandle<CameraLens>() const;
+HCamera Entity::componentHandle<CameraLens>() const;
 
 template<>
-CameraLens *RenderEntity::renderComponent<CameraLens>() const;
+CameraLens *Entity::renderComponent<CameraLens>() const;
 
 template<>
-HTransform RenderEntity::componentHandle<RenderTransform>() const;
+HTransform Entity::componentHandle<RenderTransform>() const;
 
 template<>
-RenderTransform *RenderEntity::renderComponent<RenderTransform>() const;
+RenderTransform *Entity::renderComponent<RenderTransform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT HGeometryRenderer RenderEntity::componentHandle<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<RenderGeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT RenderGeometryRenderer *RenderEntity::renderComponent<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT RenderGeometryRenderer *Entity::renderComponent<RenderGeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderTransform>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderTransform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<CameraLens>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<CameraLens>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderMaterial>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderMaterial>() const;
 
 template<>
-QList<HLayer> RenderEntity::componentsHandle<RenderLayer>() const;
+QList<HLayer> Entity::componentsHandle<RenderLayer>() const;
 
 template<>
-QList<RenderLayer *> RenderEntity::renderComponents<RenderLayer>() const;
+QList<RenderLayer *> Entity::renderComponents<RenderLayer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderLayer>() const;
+Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> Entity::componentsUuid<RenderLayer>() const;
 
 template<>
-QList<HShaderData> RenderEntity::componentsHandle<RenderShaderData>() const;
+QList<HShaderData> Entity::componentsHandle<RenderShaderData>() const;
 
 template<>
-QList<RenderShaderData *> RenderEntity::renderComponents<RenderShaderData>() const;
+QList<RenderShaderData *> Entity::renderComponents<RenderShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> RenderEntity::componentsUuid<RenderShaderData>() const;
+Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> Entity::componentsUuid<RenderShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderGeometryRenderer>() const;
 
 class RenderEntityFunctor : public Qt3D::QBackendNodeFunctor
 {
@@ -236,4 +236,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERNODE_H
+#endif // QT3DRENDER_RENDER_ENTITY_H

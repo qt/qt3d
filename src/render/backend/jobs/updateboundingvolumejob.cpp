@@ -37,7 +37,7 @@
 #include "updateboundingvolumejob_p.h"
 
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <sphere.h>
 
@@ -52,9 +52,9 @@ namespace Render {
 
 namespace {
 
-void expandWorldBoundingVolume(Qt3DRender::Render::RenderEntity *node)
+void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 {
-    Qt3DRender::Render::RenderEntity *currentNode = node;
+    Qt3DRender::Render::Entity *currentNode = node;
     QStack<int> childIndexStack;
     forever {
 
@@ -68,12 +68,12 @@ void expandWorldBoundingVolume(Qt3DRender::Render::RenderEntity *node)
             return;
 
         // Initialize parent bounding volume to be equal to that of the first child
-        Qt3DRender::Render::RenderEntity *parentNode = currentNode->parent();
+        Qt3DRender::Render::Entity *parentNode = currentNode->parent();
         Qt3DRender::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
         *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
 
         // Expand the parent bounding volume by each of remaining the siblings
-        QVector<RenderEntity *> siblings = parentNode->children();
+        QVector<Entity *> siblings = parentNode->children();
         const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
             Qt3DRender::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
@@ -85,7 +85,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::RenderEntity *node)
         currentNode = Q_NULLPTR;
         if (!childIndexStack.empty() && parentNode->parent()) {
             const int nextSiblingIndex = childIndexStack.top()++;
-            QVector<RenderEntity *> parentSiblings = parentNode->parent()->children();
+            QVector<Entity *> parentSiblings = parentNode->parent()->children();
             if (nextSiblingIndex < parentSiblings.size())
                 currentNode = parentSiblings.at(nextSiblingIndex);
         }
@@ -94,7 +94,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::RenderEntity *node)
 
 }
 
-UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(RenderEntity *node)
+UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(Entity *node)
     : m_node(node)
 {
 }

@@ -54,7 +54,7 @@ namespace Render {
 class FrameGraphNode;
 class ParameterManager;
 class Effect;
-class RenderEntity;
+class Entity;
 class RenderMaterial;
 class RenderRenderPass;
 class RenderStateSet;

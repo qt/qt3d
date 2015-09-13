@@ -42,7 +42,7 @@
 #include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/annotation_p.h>
 #include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/rendermaterial_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
@@ -110,7 +110,7 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public Qt3D::QResourceManager<RenderEntity, Qt3D::QNodeId, 16>
+class EntityManager : public Qt3D::QResourceManager<Entity, Qt3D::QNodeId, 16>
 {
 public:
     EntityManager() {}
@@ -304,7 +304,7 @@ class GeometryManager : public Qt3D::QResourceManager<
 
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Annotation, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Effect, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderEntity, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Entity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderLayer, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderMaterial, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderShader, Q_REQUIRES_CLEANUP)

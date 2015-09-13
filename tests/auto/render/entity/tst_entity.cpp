@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QScenePropertyChange>
@@ -47,8 +47,8 @@
 #include <Qt3DRenderer/QShaderData>
 #include <Qt3DRenderer/QGeometryRenderer>
 
-typedef Qt3D::QNodeId (*UuidMethod)(Qt3DRender::Render::RenderEntity *);
-typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3DRender::Render::RenderEntity *);
+typedef Qt3D::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
+typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
 
 using namespace Qt3D;
 using namespace Qt3DRender;
@@ -57,13 +57,13 @@ using namespace Qt3DRender::Render;
 void noopDeleter(QNode *) {}
 
 
-QNodeId transformUuid(RenderEntity *entity) { return entity->componentUuid<RenderTransform>(); }
-QNodeId cameraLensUuid(RenderEntity *entity) { return entity->componentUuid<CameraLens>(); }
-QNodeId materialUuid(RenderEntity *entity) { return entity->componentUuid<RenderMaterial>(); }
-QNodeId geometryRendererUuid(RenderEntity *entity) { return entity->componentUuid<RenderGeometryRenderer>(); }
+QNodeId transformUuid(Entity *entity) { return entity->componentUuid<RenderTransform>(); }
+QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
+QNodeId materialUuid(Entity *entity) { return entity->componentUuid<RenderMaterial>(); }
+QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<RenderGeometryRenderer>(); }
 
-QList<QNodeId> layersUuid(RenderEntity *entity) { return entity->componentsUuid<RenderLayer>(); }
-QList<QNodeId> shadersUuid(RenderEntity *entity) { return entity->componentsUuid<RenderShaderData>(); }
+QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<RenderLayer>(); }
+QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<RenderShaderData>(); }
 
 class tst_RenderEntity : public QObject
 {
@@ -98,7 +98,7 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidMethod method = reinterpret_cast<UuidMethod>(functionPtr);
 
-        RenderEntity entity;
+        Entity entity;
 
         // THEN
         QVERIFY(method(&entity).isNull());
@@ -147,7 +147,7 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidListMethod method = reinterpret_cast<UuidListMethod>(functionPtr);
 
-        RenderEntity entity;
+        Entity entity;
 
         // THEN
         QVERIFY(method(&entity).isEmpty());
@@ -182,4 +182,4 @@ private slots:
 
 QTEST_APPLESS_MAIN(tst_RenderEntity)
 
-#include "tst_renderentity.moc"
+#include "tst_entity.moc"

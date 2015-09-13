@@ -87,7 +87,7 @@ class FrameGraphNode;
 class RenderMaterial;
 class RenderTechnique;
 class RenderShader;
-class RenderEntity;
+class Entity;
 class RenderCommand;
 class CameraManager;
 class EntityManager;
@@ -144,8 +144,8 @@ public:
     void setFrameGraphRoot(const Qt3D::QNodeId &fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneGraphRoot(RenderEntity *sgRoot);
-    RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
+    void setSceneGraphRoot(Entity *sgRoot);
+    Entity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
     void doRender();
@@ -216,7 +216,7 @@ private:
     // Frame graph root
     Qt3D::QNodeId m_frameGraphRootUuid;
 
-    RenderEntity *m_renderSceneRoot;
+    Entity *m_renderSceneRoot;
 
     QHash<QMaterial*, RenderMaterial*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;

@@ -48,7 +48,7 @@
 #include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
@@ -78,7 +78,7 @@ namespace  {
 
 // TODO: Should we treat lack of layer data as implicitly meaning that an
 // entity is in all layers?
-bool isEntityInLayers(const RenderEntity *entity, const QStringList &layers)
+bool isEntityInLayers(const Entity *entity, const QStringList &layers)
 {
     if (layers.isEmpty())
         return true;
@@ -365,7 +365,7 @@ void RenderView::setRenderer(Renderer *renderer)
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(RenderEntity *node)
+void RenderView::buildRenderCommands(Entity *node)
 {
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
@@ -454,7 +454,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
     }
 
     // Traverse children
-    Q_FOREACH (RenderEntity *child, node->children())
+    Q_FOREACH (Entity *child, node->children())
         buildRenderCommands(child);
 }
 

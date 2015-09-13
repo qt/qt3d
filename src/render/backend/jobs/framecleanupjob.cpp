@@ -36,7 +36,7 @@
 
 #include "framecleanupjob_p.h"
 #include <private/renderer_p.h>
-#include <private/renderentity_p.h>
+#include <private/entity_p.h>
 #include <private/rendershaderdata_p.h>
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
