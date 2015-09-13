@@ -172,10 +172,10 @@ template<>
 RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const;
 
 template<>
-HCamera RenderEntity::componentHandle<RenderCameraLens>() const;
+HCamera RenderEntity::componentHandle<CameraLens>() const;
 
 template<>
-RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>() const;
+CameraLens *RenderEntity::renderComponent<CameraLens>() const;
 
 template<>
 HTransform RenderEntity::componentHandle<RenderTransform>() const;
@@ -193,7 +193,7 @@ template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderTransform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderCameraLens>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<CameraLens>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId RenderEntity::componentUuid<RenderMaterial>() const;

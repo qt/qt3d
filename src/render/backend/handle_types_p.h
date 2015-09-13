@@ -52,7 +52,7 @@ class TexImageData;
 namespace Render {
 
 class RenderAttachment;
-class RenderCameraLens;
+class CameraLens;
 class Annotation;
 class RenderEffect;
 class RenderEntity;
@@ -75,7 +75,7 @@ class RenderGeometry;
 class RenderGeometryRenderer;
 
 typedef Qt3D::QHandle<RenderAttachment, 16> HAttachment;
-typedef Qt3D::QHandle<RenderCameraLens, 8> HCamera;
+typedef Qt3D::QHandle<CameraLens, 8> HCamera;
 typedef Qt3D::QHandle<Annotation, 16> HCriterion;
 typedef Qt3D::QHandle<RenderEffect, 16> HEffect;
 typedef Qt3D::QHandle<RenderEntity, 16> HEntity;

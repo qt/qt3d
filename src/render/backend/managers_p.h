@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRenderer/private/renderattachment_p.h>
-#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/annotation_p.h>
 #include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
@@ -78,7 +78,7 @@ public:
 };
 
 class CameraManager : public Qt3D::QResourceManager<
-        RenderCameraLens,
+        CameraLens,
         Qt3D::QNodeId,
         8,
         Qt3D::ArrayAllocatingPolicy>

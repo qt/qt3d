@@ -54,7 +54,7 @@
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
 #include <Qt3DRenderer/private/qgraphicscontext_p.h>
-#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>

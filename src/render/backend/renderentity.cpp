@@ -285,13 +285,13 @@ RenderMaterial *RenderEntity::renderComponent<RenderMaterial>() const
 }
 
 template<>
-HCamera RenderEntity::componentHandle<RenderCameraLens>() const
+HCamera RenderEntity::componentHandle<CameraLens>() const
 {
     return m_renderer->cameraManager()->lookupHandle(m_cameraComponent);
 }
 
 template<>
-RenderCameraLens *RenderEntity::renderComponent<RenderCameraLens>() const
+CameraLens *RenderEntity::renderComponent<CameraLens>() const
 {
     return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
 }
@@ -324,7 +324,7 @@ template<>
 Qt3D::QNodeId RenderEntity::componentUuid<RenderTransform>() const { return m_transformComponent; }
 
 template<>
-Qt3D::QNodeId RenderEntity::componentUuid<RenderCameraLens>() const { return m_cameraComponent; }
+Qt3D::QNodeId RenderEntity::componentUuid<CameraLens>() const { return m_cameraComponent; }
 
 template<>
 Qt3D::QNodeId RenderEntity::componentUuid<RenderMaterial>() const { return m_materialComponent; }

@@ -13,7 +13,6 @@ HEADERS += \
     $$PWD/qgraphicscontext_p.h \
     $$PWD/rendershader_p.h \
     $$PWD/rendertechnique_p.h \
-    $$PWD/rendercameralens_p.h \
     $$PWD/quniformvalue_p.h \
     $$PWD/rendertexture_p.h \
     $$PWD/states/blendstate_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/qraycastingservice_p.h \
     $$PWD/annotation_p.h \
     $$PWD/attribute_p.h \
-    $$PWD/buffer_p.h
+    $$PWD/buffer_p.h \
+    $$PWD/cameralens_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -71,7 +71,6 @@ SOURCES += \
     $$PWD/qgraphicscontext.cpp \
     $$PWD/rendershader.cpp \
     $$PWD/rendertechnique.cpp \
-    $$PWD/rendercameralens.cpp \
     $$PWD/quniformvalue.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/states/blendstate.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/vsyncframeadvanceservice.cpp \
     $$PWD/annotation.cpp \
     $$PWD/attribute.cpp \
-    $$PWD/buffer.cpp
+    $$PWD/buffer.cpp \
+    $$PWD/cameralens.cpp

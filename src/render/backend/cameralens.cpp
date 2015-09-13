@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendercameralens_p.h"
+#include "cameralens_p.h"
 #include <Qt3DRenderer/private/renderlogging_p.h>
 
 #include <Qt3DCore/qtransform.h>
@@ -51,35 +51,35 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderCameraLens::RenderCameraLens()
+CameraLens::CameraLens()
     : QBackendNode()
 {
     m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
 
-RenderCameraLens::~RenderCameraLens()
+CameraLens::~CameraLens()
 {
     cleanup();
 }
 
-void RenderCameraLens::cleanup()
+void CameraLens::cleanup()
 {
 
 }
 
-void RenderCameraLens::updateFromPeer(Qt3D::QNode *peer)
+void CameraLens::updateFromPeer(Qt3D::QNode *peer)
 {
     QCameraLens *lens = static_cast<QCameraLens *>(peer);
     setProjection(lens->projectionMatrix());
     m_enabled = lens->isEnabled();
 }
 
-void RenderCameraLens::setProjection(const QMatrix4x4 &projection)
+void CameraLens::setProjection(const QMatrix4x4 &projection)
 {
     m_projection = projection;
 }
 
-void RenderCameraLens::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void CameraLens::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {

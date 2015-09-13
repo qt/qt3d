@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/qparameter_p.h>
-#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/rendereffect_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>

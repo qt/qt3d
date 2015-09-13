@@ -81,7 +81,7 @@ class AbstractSceneParser;
 
 namespace Render {
 
-class RenderCameraLens;
+class CameraLens;
 class QGraphicsContext;
 class FrameGraphNode;
 class RenderMaterial;

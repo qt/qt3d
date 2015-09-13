@@ -41,7 +41,7 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/qparameter.h>
@@ -107,8 +107,8 @@ public:
     }
     inline Qt3D::QFrameAllocator *allocator() const { return m_allocator; }
 
-    inline void setRenderCamera(RenderCameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
-    inline RenderCameraLens *renderCamera() const { return m_data->m_renderCamera; }
+    inline void setRenderCamera(CameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
+    inline CameraLens *renderCamera() const { return m_data->m_renderCamera; }
 
     inline void setViewMatrix(const QMatrix4x4 viewMatrix) { *(m_data->m_viewMatrix) = viewMatrix; }
     inline QMatrix4x4 viewmatrix() const { Q_ASSERT(m_data->m_viewMatrix); return *(m_data->m_viewMatrix); }
@@ -198,7 +198,7 @@ public:
             , m_viewMatrix(Q_NULLPTR)
         {
         }
-        RenderCameraLens *m_renderCamera;
+        CameraLens *m_renderCamera;
         const TechniqueFilter *m_techniqueFilter;
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;

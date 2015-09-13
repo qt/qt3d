@@ -91,7 +91,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
                     RenderEntity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                     if (camNode) {
-                        RenderCameraLens *lens = camNode->renderComponent<RenderCameraLens>();
+                        CameraLens *lens = camNode->renderComponent<CameraLens>();
                         if (lens && lens->isEnabled()) {
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());

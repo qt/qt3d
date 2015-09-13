@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERCAMERA_H
-#define QT3DRENDER_RENDER_RENDERCAMERA_H
+#ifndef QT3DRENDER_RENDER_CAMERALENS_H
+#define QT3DRENDER_RENDER_CAMERALENS_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
@@ -49,11 +49,11 @@ namespace Render {
 
 class CameraManager;
 
-class RenderCameraLens : public Qt3D::QBackendNode
+class CameraLens : public Qt3D::QBackendNode
 {
 public:
-    RenderCameraLens();
-    ~RenderCameraLens();
+    CameraLens();
+    ~CameraLens();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
@@ -79,4 +79,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERCAMERA_H
+#endif // QT3DRENDER_RENDER_CAMERALENS_H
