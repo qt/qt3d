@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRenderer/private/rendereffect_p.h>
+#include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/qeffect.h>
 #include <Qt3DRenderer/qparameter.h>
@@ -50,21 +50,21 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderEffect::RenderEffect()
+Effect::Effect()
     : QBackendNode()
 {
 }
 
-RenderEffect::~RenderEffect()
+Effect::~Effect()
 {
     cleanup();
 }
 
-void RenderEffect::cleanup()
+void Effect::cleanup()
 {
 }
 
-void RenderEffect::updateFromPeer(Qt3D::QNode *peer)
+void Effect::updateFromPeer(Qt3D::QNode *peer)
 {
     QEffect *effect = static_cast<QEffect *>(peer);
 
@@ -78,7 +78,7 @@ void RenderEffect::updateFromPeer(Qt3D::QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-void RenderEffect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Effect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QVariant propertyValue = propertyChange->value();
@@ -103,18 +103,18 @@ void RenderEffect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void RenderEffect::appendRenderTechnique(const Qt3D::QNodeId &technique)
+void Effect::appendRenderTechnique(const Qt3D::QNodeId &technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<Qt3D::QNodeId> RenderEffect::techniques() const
+QList<Qt3D::QNodeId> Effect::techniques() const
 {
     return m_techniques;
 }
 
-QList<Qt3D::QNodeId> RenderEffect::parameters() const
+QList<Qt3D::QNodeId> Effect::parameters() const
 {
     return m_parameterPack.parameters();
 }

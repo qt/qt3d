@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/private/qparameter_p.h>
 #include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
-#include <Qt3DRenderer/private/rendereffect_p.h>
+#include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/renderentity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/renderlayer_p.h>
@@ -381,7 +381,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
 
                 // Find the material, effect, technique and set of render passes to use
                 RenderMaterial *material = Q_NULLPTR;
-                RenderEffect *effect = Q_NULLPTR;
+                Effect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR && material->isEnabled())
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);

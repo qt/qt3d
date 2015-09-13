@@ -45,7 +45,7 @@
 #include <Qt3DRenderer/private/clearbuffer_p.h>
 #include <Qt3DRenderer/private/layerfilternode_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/rendereffect_p.h>
+#include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
@@ -212,7 +212,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 */
 RenderTechnique *findTechniqueForEffect(Renderer *renderer,
                                         RenderView *renderView,
-                                        RenderEffect *effect)
+                                        Effect *effect)
 {
     if (!effect)
         return Q_NULLPTR;
@@ -339,7 +339,7 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
 void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                            ParameterManager *manager,
                                            RenderMaterial *material,
-                                           RenderEffect *effect,
+                                           Effect *effect,
                                            RenderTechnique *technique)
 {
     // The parameters are taken in the following priority order:

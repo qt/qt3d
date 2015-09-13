@@ -100,7 +100,7 @@ class ShaderManager;
 class TechniqueManager;
 class EffectManager;
 class RenderPassManager;
-class RenderEffect;
+class Effect;
 class RenderRenderPass;
 class TextureManager;
 class TextureDataManager;

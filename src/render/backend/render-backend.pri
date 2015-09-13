@@ -26,7 +26,6 @@ HEADERS += \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderqueue_p.h \
-    $$PWD/rendereffect_p.h \
     $$PWD/renderrenderpass_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/annotation_p.h \
     $$PWD/attribute_p.h \
     $$PWD/buffer_p.h \
-    $$PWD/cameralens_p.h
+    $$PWD/cameralens_p.h \
+    $$PWD/effect_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -82,7 +82,6 @@ SOURCES += \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderqueue.cpp \
-    $$PWD/rendereffect.cpp \
     $$PWD/renderrenderpass.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/annotation.cpp \
     $$PWD/attribute.cpp \
     $$PWD/buffer.cpp \
-    $$PWD/cameralens.cpp
+    $$PWD/cameralens.cpp \
+    $$PWD/effect.cpp

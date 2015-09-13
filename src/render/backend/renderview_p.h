@@ -68,7 +68,7 @@ class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
-class RenderEffect;
+class Effect;
 class RenderRenderPass;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;

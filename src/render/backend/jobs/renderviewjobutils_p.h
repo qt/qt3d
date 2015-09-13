@@ -53,7 +53,7 @@ namespace Render {
 
 class FrameGraphNode;
 class ParameterManager;
-class RenderEffect;
+class Effect;
 class RenderEntity;
 class RenderMaterial;
 class RenderRenderPass;
@@ -71,7 +71,7 @@ Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
 
 Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
                                                           RenderView *renderView,
-                                                          RenderEffect *effect);
+                                                          Effect *effect);
 
 typedef QVarLengthArray<RenderRenderPass*, 4> RenderRenderPassList;
 Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
@@ -99,7 +99,7 @@ typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,
                                                              RenderMaterial *material,
-                                                             RenderEffect *effect,
+                                                             Effect *effect,
                                                              RenderTechnique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,

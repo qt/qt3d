@@ -54,7 +54,7 @@ namespace Render {
 class RenderAttachment;
 class CameraLens;
 class Annotation;
-class RenderEffect;
+class Effect;
 class RenderEntity;
 class RenderShader;
 class FrameGraphNode;
@@ -77,7 +77,7 @@ class RenderGeometryRenderer;
 typedef Qt3D::QHandle<RenderAttachment, 16> HAttachment;
 typedef Qt3D::QHandle<CameraLens, 8> HCamera;
 typedef Qt3D::QHandle<Annotation, 16> HCriterion;
-typedef Qt3D::QHandle<RenderEffect, 16> HEffect;
+typedef Qt3D::QHandle<Effect, 16> HEffect;
 typedef Qt3D::QHandle<RenderEntity, 16> HEntity;
 typedef Qt3D::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
 typedef Qt3D::QHandle<RenderLayer, 16> HLayer;

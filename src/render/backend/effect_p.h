@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDEREFFECT_H
-#define QT3DRENDER_RENDER_RENDEREFFECT_H
+#ifndef QT3DRENDER_RENDER_EFFECT_H
+#define QT3DRENDER_RENDER_EFFECT_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parameterpack_p.h>
@@ -51,12 +51,11 @@ class QTechnique;
 
 namespace Render {
 
-class RenderEffect
-        : public Qt3D::QBackendNode
+class Effect : public Qt3D::QBackendNode
 {
 public:
-    RenderEffect();
-    ~RenderEffect();
+    Effect();
+    ~Effect();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
@@ -77,4 +76,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDEREFFECT_H
+#endif // QT3DRENDER_RENDER_EFFECT_H

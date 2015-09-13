@@ -55,7 +55,7 @@ namespace Render {
 class Renderer;
 class QGraphicsContext;
 class RenderTechnique;
-class RenderEffect;
+class Effect;
 class MaterialManager;
 
 class Q_AUTOTEST_EXPORT RenderMaterial : public Qt3D::QBackendNode
