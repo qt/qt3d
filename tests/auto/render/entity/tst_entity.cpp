@@ -60,7 +60,7 @@ void noopDeleter(QNode *) {}
 QNodeId transformUuid(Entity *entity) { return entity->componentUuid<RenderTransform>(); }
 QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<RenderMaterial>(); }
-QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<RenderGeometryRenderer>(); }
+QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 
 QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<RenderLayer>(); }
 QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<RenderShaderData>(); }

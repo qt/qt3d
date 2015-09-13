@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendergeometryrenderer_p.h"
+#include "geometryrenderer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/private/geometryrenderermanager_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -46,7 +46,7 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderGeometryRenderer::RenderGeometryRenderer()
+GeometryRenderer::GeometryRenderer()
     : QBackendNode(ReadWrite)
     , m_instanceCount(0)
     , m_primitiveCount(0)
@@ -60,11 +60,11 @@ RenderGeometryRenderer::RenderGeometryRenderer()
 {
 }
 
-RenderGeometryRenderer::~RenderGeometryRenderer()
+GeometryRenderer::~GeometryRenderer()
 {
 }
 
-void RenderGeometryRenderer::cleanup()
+void GeometryRenderer::cleanup()
 {
     m_instanceCount = 0;
     m_primitiveCount = 0;
@@ -78,12 +78,12 @@ void RenderGeometryRenderer::cleanup()
     m_functor.reset();
 }
 
-void RenderGeometryRenderer::setManager(GeometryRendererManager *manager)
+void GeometryRenderer::setManager(GeometryRendererManager *manager)
 {
     m_manager = manager;
 }
 
-void RenderGeometryRenderer::updateFromPeer(Qt3D::QNode *peer)
+void GeometryRenderer::updateFromPeer(Qt3D::QNode *peer)
 {
     QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
     if (geometryRenderer) {
@@ -103,7 +103,7 @@ void RenderGeometryRenderer::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void RenderGeometryRenderer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void GeometryRenderer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QByteArray propertyName = propertyChange->propertyName();
@@ -165,7 +165,7 @@ void RenderGeometryRenderer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     // Add to dirty list in manager
 }
 
-void RenderGeometryRenderer::executeFunctor()
+void GeometryRenderer::executeFunctor()
 {
     Q_ASSERT(m_functor);
     QGeometry *geometry = (*m_functor)();
@@ -180,31 +180,31 @@ void RenderGeometryRenderer::executeFunctor()
     // Maybe we could also send a status to help troubleshoot errors
 }
 
-void RenderGeometryRenderer::unsetDirty()
+void GeometryRenderer::unsetDirty()
 {
     m_dirty = false;
 }
 
-RenderGeometryRendererFunctor::RenderGeometryRendererFunctor(GeometryRendererManager *manager)
+GeometryRendererFunctor::GeometryRendererFunctor(GeometryRendererManager *manager)
     : m_manager(manager)
 {
 }
 
-Qt3D::QBackendNode *RenderGeometryRendererFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *GeometryRendererFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
-    RenderGeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
+    GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
     geometryRenderer->setFactory(factory);
     geometryRenderer->setManager(m_manager);
     geometryRenderer->setPeer(frontend);
     return geometryRenderer;
 }
 
-Qt3D::QBackendNode *RenderGeometryRendererFunctor::get(const Qt3D::QNodeId &id) const
+Qt3D::QBackendNode *GeometryRendererFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void RenderGeometryRendererFunctor::destroy(const Qt3D::QNodeId &id) const
+void GeometryRendererFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     return m_manager->releaseResource(id);
 }

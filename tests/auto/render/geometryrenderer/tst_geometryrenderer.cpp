@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
+#include <Qt3DRenderer/private/geometryrenderer_p.h>
 #include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -74,7 +74,7 @@ private Q_SLOTS:
     void checkPeerPropertyMirroring()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
         Qt3DRender::QGeometryRenderer geometryRenderer;
         Qt3DRender::QGeometry geometry;
         Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(1200));
@@ -110,7 +110,7 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
 
         // THEN
         QVERIFY(renderGeometryRenderer.peerUuid().isNull());
@@ -162,7 +162,7 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
-        Qt3DRender::Render::RenderGeometryRenderer renderGeometryRenderer;
+        Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
 
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -302,4 +302,4 @@ private Q_SLOTS:
 
 QTEST_APPLESS_MAIN(tst_RenderGeometryRenderer)
 
-#include "tst_rendergeometryrenderer.moc"
+#include "tst_geometryrenderer.moc"

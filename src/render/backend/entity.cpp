@@ -309,13 +309,13 @@ RenderTransform *Entity::renderComponent<RenderTransform>() const
 }
 
 template<>
-HGeometryRenderer Entity::componentHandle<RenderGeometryRenderer>() const
+HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const
 {
     return m_renderer->geometryRendererManager()->lookupHandle(m_geometryRendererComponent);
 }
 
 template<>
-RenderGeometryRenderer *Entity::renderComponent<RenderGeometryRenderer>() const
+GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
 {
     return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
 }
@@ -372,7 +372,7 @@ template<>
 QList<Qt3D::QNodeId> Entity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }
 
 template<>
-Qt3D::QNodeId Entity::componentUuid<RenderGeometryRenderer>() const { return m_geometryRendererComponent; }
+Qt3D::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geometryRendererComponent; }
 
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)

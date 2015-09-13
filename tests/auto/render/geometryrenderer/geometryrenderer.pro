@@ -1,9 +1,9 @@
 TEMPLATE = app
 
-TARGET = tst_rendergeometryrenderer
+TARGET = tst_geometryrenderer
 
 QT += 3dcore 3dcore-private 3drenderer 3drenderer-private testlib
 
 CONFIG += testcase
 
-SOURCES += tst_rendergeometryrenderer.cpp
+SOURCES += tst_geometryrenderer.cpp

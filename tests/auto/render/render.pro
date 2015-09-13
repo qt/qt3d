@@ -20,6 +20,6 @@ contains(QT_CONFIG, private_tests) {
         buffer \
         attribute \
         geometry \
-        rendergeometryrenderer \
+        geometryrenderer \
         raycasting
 }

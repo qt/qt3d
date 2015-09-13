@@ -842,7 +842,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         // Check if we have a valid GeometryRenderer + Geometry
         Geometry *rGeometry = m_geometryManager->data(command->m_geometry);
-        RenderGeometryRenderer *rGeometryRenderer = m_geometryRendererManager->data(command->m_geometryRenderer);
+        GeometryRenderer *rGeometryRenderer = m_geometryRendererManager->data(command->m_geometryRenderer);
         const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
 
         if (!hasGeometryRenderer) {

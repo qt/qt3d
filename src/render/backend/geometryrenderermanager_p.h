@@ -38,7 +38,7 @@
 #define QT3DRENDER_RENDER_GEOMETRYRENDERERMANAGER_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
+#include <Qt3DRenderer/private/geometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class GeometryRendererManager : public Qt3D::QResourceManager<
-        RenderGeometryRenderer,
+        GeometryRenderer,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -68,7 +68,7 @@ private:
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderGeometryRenderer, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::GeometryRenderer, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

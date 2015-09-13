@@ -72,7 +72,7 @@ class RenderTextureImage;
 class Buffer;
 class Attribute;
 class Geometry;
-class RenderGeometryRenderer;
+class GeometryRenderer;
 
 typedef Qt3D::QHandle<RenderAttachment, 16> HAttachment;
 typedef Qt3D::QHandle<CameraLens, 8> HCamera;
@@ -99,7 +99,7 @@ typedef Qt3D::QHandle<RenderTextureImage, 16> HTextureImage;
 typedef Qt3D::QHandle<Buffer, 16> HBuffer;
 typedef Qt3D::QHandle<Attribute, 16> HAttribute;
 typedef Qt3D::QHandle<Geometry, 16> HGeometry;
-typedef Qt3D::QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
+typedef Qt3D::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 
 } // namespace Render
 

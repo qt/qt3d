@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERGEOMETRYRENDERER_H
-#define QT3DRENDER_RENDER_RENDERGEOMETRYRENDERER_H
+#ifndef QT3DRENDER_RENDER_GEOMETRYRENDERER_H
+#define QT3DRENDER_RENDER_GEOMETRYRENDERER_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
@@ -49,11 +49,11 @@ namespace Render {
 
 class GeometryRendererManager;
 
-class Q_AUTOTEST_EXPORT RenderGeometryRenderer : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT GeometryRenderer : public Qt3D::QBackendNode
 {
 public:
-    RenderGeometryRenderer();
-    ~RenderGeometryRenderer();
+    GeometryRenderer();
+    ~GeometryRenderer();
 
     void cleanup();
     void setManager(GeometryRendererManager *manager);
@@ -87,10 +87,10 @@ private:
     GeometryRendererManager *m_manager;
 };
 
-class RenderGeometryRendererFunctor : public Qt3D::QBackendNodeFunctor
+class GeometryRendererFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
-    explicit RenderGeometryRendererFunctor(GeometryRendererManager *manager);
+    explicit GeometryRendererFunctor(GeometryRendererManager *manager);
     Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;

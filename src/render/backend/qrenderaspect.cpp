@@ -98,7 +98,7 @@
 #include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DRenderer/private/geometry_p.h>
-#include <Qt3DRenderer/private/rendergeometryrenderer_p.h>
+#include <Qt3DRenderer/private/geometryrenderer_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -234,7 +234,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::BufferFunctor(d->m_renderer->bufferManager())));
     registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
     registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
-    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::RenderGeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
+    registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::GeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

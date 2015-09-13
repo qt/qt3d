@@ -184,10 +184,10 @@ template<>
 RenderTransform *Entity::renderComponent<RenderTransform>() const;
 
 template<>
-Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT RenderGeometryRenderer *Entity::renderComponent<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderTransform>() const;
@@ -217,7 +217,7 @@ template<>
 Q_AUTOTEST_EXPORT QList<Qt3D::QNodeId> Entity::componentsUuid<RenderShaderData>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderGeometryRenderer>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<GeometryRenderer>() const;
 
 class RenderEntityFunctor : public Qt3D::QBackendNodeFunctor
 {

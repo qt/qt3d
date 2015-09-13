@@ -63,9 +63,9 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
     // Initialize worldBoundingVolume if Mesh associated
-    Qt3DRender::Render::RenderGeometryRenderer *mesh = Q_NULLPTR;
+    Qt3DRender::Render::GeometryRenderer *mesh = Q_NULLPTR;
     if ((node->localBoundingVolume()->isNull())
-            && (mesh = node->renderComponent<RenderGeometryRenderer>()) != Q_NULLPTR) {
+            && (mesh = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR) {
         //        if (!mesh->meshDataHandle().isNull()) {
         //            Qt3DRender::QMeshData *meshData = mesh->meshData();
         //            if (meshData != Q_NULLPTR) {
