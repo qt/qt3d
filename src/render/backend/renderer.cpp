@@ -560,26 +560,31 @@ void Renderer::render()
 
 void Renderer::doRender()
 {
-
     // Render using current device state and renderer configuration
-    submitRenderViews();
+    const bool submissionSucceeded = submitRenderViews();
 
-    // Reset the m_renderQueue so that we won't try to render
-    // with a queue used by a previous frame with corrupted content
-    m_renderQueue->reset();
+    // Only reset renderQueue and proceed to next frame if the submission
+    // succeeded or it we are using a render thread.
 
-    if (m_running.load()) { // Are we still running ?
+    // If submissionSucceeded isn't true this implies that something went wrong
+    // with the rendering and/or the renderqueue is incomplete from some reason
+    // (in the case of scene3d the render jobs may be taking too long ....)
+    if (m_renderThread || submissionSucceeded) {
+        // Reset the m_renderQueue so that we won't try to render
+        // with a queue used by a previous frame with corrupted content
+        // if the current queue was correctly submitted
+        m_renderQueue->reset();
 
-        if (m_renderThread) {
-            // If we are rendering using the render thread, make sure
-            // that all the RenderViews, RenderCommands, UniformValues ...
-            // have been completely destroyed and are leak free
-            // Note: we cannot check for non render thread cases
-            // (scene3d) as we aren't sure a full frame was previously submitted
+        if (m_running.load()) { // Are we still running ?
+            // Make sure that all the RenderViews, RenderCommands,
+            // UniformValues ... have been completely destroyed and are leak
+            // free
+            // Note: we can check for non render thread cases (scene3d)
+            // only when we are sure that a full frame was previously submitted
+            // (submissionSucceeded == true)
             Q_FOREACH (QFrameAllocator *allocator, m_allocators)
                 Q_ASSERT(allocator->isEmpty());
         }
-
         // We allow the RenderTickClock service to proceed to the next frame
         // In turn this will allow the aspect manager to request a new set of jobs
         // to be performed for each aspect
@@ -624,7 +629,7 @@ bool Renderer::canRender() const
 }
 
 // Happens in RenderThread context when all RenderViewJobs are done
-void Renderer::submitRenderViews()
+bool Renderer::submitRenderViews()
 {
     // If we are using a render thread, make sure that
     // we've been told to render before rendering
@@ -634,7 +639,7 @@ void Renderer::submitRenderViews()
         // Early return if we have been unlocked because of
         // shutdown
         if (!m_running.load())
-            return;
+            return false;
 
         // When using Thread rendering, the semaphore should only
         // be released when the frame queue is complete and there's
@@ -651,7 +656,7 @@ void Renderer::submitRenderViews()
         // the frame queue complete at this point
         QMutexLocker locker(&m_mutex);
         if (!m_renderQueue->isFrameQueueComplete())
-            return ;
+            return false;
     }
 
     QElapsedTimer timer;
@@ -664,7 +669,7 @@ void Renderer::submitRenderViews()
     const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
     if (!canRender()) {
         qDeleteAll(renderViews);
-        return;
+        return false;
     }
 
     const int renderViewsCount = renderViews.size();
@@ -672,7 +677,7 @@ void Renderer::submitRenderViews()
 
     // Early return if there's actually nothing to render
     if (renderViewsCount <= 0)
-        return;
+        return true;
 
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
@@ -682,7 +687,7 @@ void Renderer::submitRenderViews()
     // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
     if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
         qDeleteAll(renderViews);
-        return;
+        return false;
     }
 
     if (!boundFboIdValid) {
@@ -746,6 +751,8 @@ void Renderer::submitRenderViews()
     queueElapsed = timer.elapsed() - queueElapsed;
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
+
+    return true;
 }
 
 // Waits to be told to create jobs for the next frame

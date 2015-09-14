@@ -197,7 +197,7 @@ public:
     void setSurface(QSurface *s);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    void submitRenderViews();
+    bool submitRenderViews();
 
     void initialize(QOpenGLContext *context = Q_NULLPTR);
     void shutdown();
