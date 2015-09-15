@@ -242,13 +242,21 @@ void Renderer::loadSceneParsers()
     QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath) + SCENE_PARSERS_PATH;
     QDir sceneParsersPluginDir(pluginsPath);
 
-    Q_FOREACH (const QString &plugin, sceneParsersPluginDir.entryList(QDir::Files)) {
+    const QStringList plugins =
+#ifndef Q_OS_WIN
+        sceneParsersPluginDir.entryList(QDir::Files);
+#else
+        sceneParsersPluginDir.entryList(QStringList(QStringLiteral("*.dll")), QDir::Files);
+#endif
+    Q_FOREACH (const QString &plugin, plugins) {
         QPluginLoader loader(sceneParsersPluginDir.absoluteFilePath(plugin));
         AbstractSceneParser *parser = qobject_cast<AbstractSceneParser *>(loader.instance());
-        if (parser != Q_NULLPTR)
+        if (parser != Q_NULLPTR) {
             m_sceneParsers.append(parser);
-        else
-            qWarning() << "Failed to load scene parser plugin " << loader.fileName();
+        } else {
+            qWarning().noquote().nospace() << "Failed to load scene parser plugin \""
+                << QDir::toNativeSeparators(loader.fileName()) << "\": " << loader.errorString();
+        }
     }
 }
 
