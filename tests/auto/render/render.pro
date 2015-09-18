@@ -4,7 +4,7 @@ contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
         entity \
         renderqueue \
-        renderrenderpass \
+        renderpass \
         qgraphicsutils \
         rendershader \
         renderviewutils \

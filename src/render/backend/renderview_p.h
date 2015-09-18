@@ -69,7 +69,7 @@ class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
 class Effect;
-class RenderRenderPass;
+class RenderPass;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent > ActiveProperty;
@@ -209,7 +209,7 @@ public:
     };
 
 private:
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
+    void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
 
     Renderer *m_renderer;
     QSize m_surfaceSize;

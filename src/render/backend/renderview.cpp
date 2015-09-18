@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/private/layer_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/renderpass_p.h>
 #include <Qt3DRenderer/private/geometryrenderer_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
@@ -418,9 +418,9 @@ void RenderView::buildRenderCommands(Entity *node)
                 parametersFromMaterialEffectTechnique(&parameters, m_renderer->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
-                Q_FOREACH (RenderRenderPass *pass, passes) {
+                Q_FOREACH (RenderPass *pass, passes) {
 
-                    // Add the RenderRenderPass Parameters
+                    // Add the RenderPass Parameters
                     ParameterInfoList globalParameters = parameters;
                     parametersFromParametersProvider(&globalParameters, m_renderer->parameterManager(), pass);
 
@@ -588,7 +588,7 @@ void RenderView::buildSortingKey(RenderCommand *command)
     }
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :

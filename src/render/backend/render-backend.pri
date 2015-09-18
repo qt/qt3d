@@ -25,7 +25,6 @@ HEADERS += \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderqueue_p.h \
-    $$PWD/renderrenderpass_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/rendertransform_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/material_p.h \
     $$PWD/nodefunctor_p.h \
     $$PWD/parameter_p.h \
-    $$PWD/parametermapping_p.h
+    $$PWD/parametermapping_p.h \
+    $$PWD/renderpass_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -81,7 +81,6 @@ SOURCES += \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderqueue.cpp \
-    $$PWD/renderrenderpass.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/rendertransform.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \
-    $$PWD/parametermapping.cpp
+    $$PWD/parametermapping.cpp \
+    $$PWD/renderpass.cpp

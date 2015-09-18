@@ -51,7 +51,7 @@
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/rendertransform_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/renderpass_p.h>
 #include <Qt3DRenderer/private/parameter_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
@@ -230,7 +230,7 @@ public:
 };
 
 class RenderPassManager : public Qt3D::QResourceManager<
-        RenderRenderPass,
+        RenderPass,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -312,7 +312,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTechnique, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTexture, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderRenderPass, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderPass, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTextureImage, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)

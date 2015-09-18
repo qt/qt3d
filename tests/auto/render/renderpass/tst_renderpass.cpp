@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/renderrenderpass_p.h>
+#include <Qt3DRenderer/private/renderpass_p.h>
 
 #include <Qt3DCore/QScenePropertyChange>
 
@@ -83,7 +83,7 @@ private slots:
     void shouldHaveInitialState()
     {
         // GIVEN
-        RenderRenderPass backend;
+        RenderPass backend;
 
         // THEN
         QVERIFY(backend.shaderProgram().isNull());
@@ -215,7 +215,7 @@ private slots:
         frontendState->setParent(&frontend);
         frontend.addRenderState(frontendState);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         QFETCH(RenderState*, backendState);
 
@@ -246,7 +246,7 @@ private slots:
         // GIVEN
         QScopedPointer<QShaderProgram> shader(new QShaderProgram);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
@@ -272,7 +272,7 @@ private slots:
         // GIVEN
         QScopedPointer<QAnnotation> annotation(new QAnnotation);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
@@ -299,7 +299,7 @@ private slots:
         // GIVEN
         QScopedPointer<QParameterMapping> binding(new QParameterMapping);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, binding->id()));
@@ -329,7 +329,7 @@ private slots:
         // GIVEN
         QScopedPointer<QParameter> parameter(new QParameter);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
@@ -362,7 +362,7 @@ private slots:
         QFETCH(QRenderState*, frontendState);
         QNodePtr frontendStatePtr(frontendState);
 
-        RenderRenderPass backend;
+        RenderPass backend;
 
         QFETCH(RenderState*, backendState);
 
@@ -389,4 +389,4 @@ private slots:
 
 QTEST_APPLESS_MAIN(tst_RenderRenderPass)
 
-#include "tst_renderrenderpass.moc"
+#include "tst_renderpass.moc"

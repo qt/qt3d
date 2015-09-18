@@ -56,7 +56,7 @@ class ParameterManager;
 class Effect;
 class Entity;
 class Material;
-class RenderRenderPass;
+class RenderPass;
 class RenderStateSet;
 class RenderTechnique;
 class RenderView;
@@ -73,7 +73,7 @@ Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
                                                           RenderView *renderView,
                                                           Effect *effect);
 
-typedef QVarLengthArray<RenderRenderPass*, 4> RenderRenderPassList;
+typedef QVarLengthArray<RenderPass*, 4> RenderRenderPassList;
 Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
                                                                     RenderView *renderView,
                                                                     RenderTechnique *technique);

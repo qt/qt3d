@@ -277,7 +277,7 @@ RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
 
     RenderRenderPassList passes;
     Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
-        RenderRenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
+        RenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
 
         if (renderPass) {
             const RenderPassFilter *passFilter = renderView->renderPassFilter();

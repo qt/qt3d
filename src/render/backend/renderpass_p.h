@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERRENDERPASS_H
-#define QT3DRENDER_RENDER_RENDERRENDERPASS_H
+#ifndef QT3DRENDER_RENDER_RENDERPASS_H
+#define QT3DRENDER_RENDER_RENDERPASS_H
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DRenderer/private/parametermapping_p.h>
@@ -60,11 +60,11 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderRenderPass : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT RenderPass : public Qt3D::QBackendNode
 {
 public:
-    RenderRenderPass();
-    ~RenderRenderPass();
+    RenderPass();
+    ~RenderPass();
 
     void cleanup();
 
@@ -100,4 +100,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERRENDERPASS_H
+#endif // QT3DRENDER_RENDER_RENDERPASS_H

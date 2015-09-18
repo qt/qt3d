@@ -101,7 +101,7 @@ class TechniqueManager;
 class EffectManager;
 class RenderPassManager;
 class Effect;
-class RenderRenderPass;
+class RenderPass;
 class TextureManager;
 class TextureDataManager;
 class LayerManager;
