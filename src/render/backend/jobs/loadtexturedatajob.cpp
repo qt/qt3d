@@ -58,7 +58,7 @@ void LoadTextureDataJob::run()
 {
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
 
-    RenderTexture *txt = m_renderer->textureManager()->lookupResource(m_textureId);
+    Texture *txt = m_renderer->textureManager()->lookupResource(m_textureId);
 
     if (txt != Q_NULLPTR) {
         // Load update each TextureImage

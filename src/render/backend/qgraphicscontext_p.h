@@ -66,7 +66,7 @@ class Renderer;
 class QGraphicsHelperInterface;
 class RenderStateSet;
 class Material;
-class RenderTexture;
+class Texture;
 class RenderCommand;
 class RenderTarget;
 class AttachmentPack;
@@ -149,9 +149,9 @@ public:
      * @param onUnit - option, specify the explicit unit to activate on
      * @return - the unit the texture was activated on
      */
-    int activateTexture(TextureScope scope, RenderTexture* tex, int onUnit = -1);
+    int activateTexture(TextureScope scope, Texture* tex, int onUnit = -1);
 
-    void deactivateTexture(RenderTexture *tex);
+    void deactivateTexture(Texture *tex);
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
@@ -198,7 +198,7 @@ private:
 
     void decayTextureScores();
 
-    GLint assignUnitForTexture(RenderTexture* tex);
+    GLint assignUnitForTexture(Texture* tex);
     void deactivateTexturesWithScope(TextureScope ts);
 
     void resolveHighestOpenGLFunctions();

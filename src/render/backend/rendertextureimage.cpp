@@ -80,14 +80,14 @@ void RenderTextureImage::updateFromPeer(Qt3D::QNode *peer)
     m_mipmapLevel = textureImage->mipmapLevel();
     m_face = textureImage->cubeMapFace();
     m_functor = textureImage->dataFunctor();
-    // Notify the RenderTexture that we are one of its TextureImage
+    // Notify the Texture that we are one of its TextureImage
     if (!peer->parentNode()) {
         qWarning() << "Not QAbstractTextureProvider parent found";
     } else {
         m_textureProviderId = peer->parentNode()->id();
         m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
-        RenderTexture *txt = m_textureManager->data(m_textureProvider);
-        // Notify the RenderTexture that it has a new RenderTextureImage and needs an update
+        Texture *txt = m_textureManager->data(m_textureProvider);
+        // Notify the Texture that it has a new RenderTextureImage and needs an update
         txt->addTextureImageData(m_textureImageManager->lookupHandle(peerUuid()));
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
@@ -113,8 +113,8 @@ void RenderTextureImage::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
             m_dirty = true;
         }
     }
-    if (m_dirty) {// Notify the RenderTexture that we were updated and request it to schedule an update job
-        RenderTexture *txt = m_textureManager->data(m_textureProvider);
+    if (m_dirty) {// Notify the Texture that we were updated and request it to schedule an update job
+        Texture *txt = m_textureManager->data(m_textureProvider);
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
     }

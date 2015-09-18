@@ -205,7 +205,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
     registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(d->m_renderer->materialManager())));
     registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Technique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
-    registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::RenderTextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
+    registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::TextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(d->m_renderer->shaderManager())));
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(d->m_renderer->effectManager())));
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_renderer->criterionManager())));

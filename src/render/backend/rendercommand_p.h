@@ -63,7 +63,7 @@ public:
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     HShader m_shader; // Shader for given pass and mesh
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
-                            // RenderTexture while submission is happening.
+                            // Texture while submission is happening.
     GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
     RenderStateSet *m_stateSet;
 

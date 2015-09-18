@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERTEXTURE_H
-#define QT3DRENDER_RENDER_RENDERTEXTURE_H
+#ifndef QT3DRENDER_RENDER_TEXTURE_H
+#define QT3DRENDER_RENDER_TEXTURE_H
 
 #include <QOpenGLContext>
 #include <QMutex>
@@ -60,11 +60,11 @@ class TextureDataManager;
 
 typedef uint TextureDNA;
 
-class RenderTexture : public Qt3D::QBackendNode
+class Texture : public Qt3D::QBackendNode
 {
 public:
-    RenderTexture();
-    ~RenderTexture();
+    Texture();
+    ~Texture();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
@@ -134,10 +134,10 @@ private:
     void updateDNA();
 };
 
-class RenderTextureFunctor : public Qt3D::QBackendNodeFunctor
+class TextureFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
-    explicit RenderTextureFunctor(TextureManager *textureManager,
+    explicit TextureFunctor(TextureManager *textureManager,
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
@@ -156,6 +156,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::RenderTexture*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Texture*)
 
-#endif // QT3DRENDER_RENDER_RENDERTEXTURE_H
+#endif // QT3DRENDER_RENDER_TEXTURE_H

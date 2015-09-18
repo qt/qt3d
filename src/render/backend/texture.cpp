@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtCore/qhash.h>
-#include "rendertexture_p.h"
+#include "texture_p.h"
 
 #include <QDebug>
 #include <QOpenGLFunctions>
@@ -55,7 +55,7 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderTexture::RenderTexture()
+Texture::Texture()
     : QBackendNode()
     , m_gl(Q_NULLPTR)
     , m_width(1)
@@ -86,14 +86,14 @@ RenderTexture::RenderTexture()
     // We need backend -> frontend notifications to update the status of the texture
 }
 
-RenderTexture::~RenderTexture()
+Texture::~Texture()
 {
     if (m_lock != Q_NULLPTR)
         delete m_lock;
     m_lock = Q_NULLPTR;
 }
 
-void RenderTexture::cleanup()
+void Texture::cleanup()
 {
     m_gl = Q_NULLPTR;
     m_width = 1;
@@ -123,7 +123,7 @@ void RenderTexture::cleanup()
 }
 
 // AspectThread
-void RenderTexture::updateFromPeer(Qt3D::QNode *peer)
+void Texture::updateFromPeer(Qt3D::QNode *peer)
 {
     QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
 
@@ -150,7 +150,7 @@ void RenderTexture::updateFromPeer(Qt3D::QNode *peer)
 }
 
 // RenderTread
-QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
+QOpenGLTexture *Texture::getOrCreateGLTexture()
 {
     // m_gl HAS to be destroyed in the OpenGL Thread
     // Will be recreated with updated values the next time
@@ -223,7 +223,7 @@ QOpenGLTexture *RenderTexture::getOrCreateGLTexture()
 }
 
 // RenderThread
-QOpenGLTexture *RenderTexture::buildGLTexture()
+QOpenGLTexture *Texture::buildGLTexture()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (!ctx) {
@@ -298,7 +298,7 @@ QOpenGLTexture *RenderTexture::buildGLTexture()
 }
 
 // RenderThread
-void RenderTexture::setToGLTexture(RenderTextureImage *rImg, TexImageData *imgData)
+void Texture::setToGLTexture(RenderTextureImage *rImg, TexImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
     // ensure we don't accidently cause a detach / copy of the raw bytes
@@ -332,7 +332,7 @@ void RenderTexture::setToGLTexture(RenderTextureImage *rImg, TexImageData *imgDa
 }
 
 // RenderThread
-void RenderTexture::updateWrapAndFilters()
+void Texture::updateWrapAndFilters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
     if (m_target != QAbstractTextureProvider::Target1D &&
@@ -351,7 +351,7 @@ void RenderTexture::updateWrapAndFilters()
     }
 }
 
-void RenderTexture::updateDNA()
+void Texture::updateDNA()
 {
     int key = m_width + m_height + m_depth + m_layers +
                          (m_generateMipMaps ? 1 : 0) +
@@ -375,19 +375,19 @@ void RenderTexture::updateDNA()
 }
 
 // RenderThread
-GLint RenderTexture::textureId()
+GLint Texture::textureId()
 {
     return getOrCreateGLTexture()->textureId();
 }
 
 // Any Thread
-bool RenderTexture::isTextureReset() const
+bool Texture::isTextureReset() const
 {
     QMutexLocker lock(m_lock);
     return m_isDirty;
 }
 
-void RenderTexture::setSize(int width, int height, int depth)
+void Texture::setSize(int width, int height, int depth)
 {
     if (width != m_width) {
         m_width = width;
@@ -403,7 +403,7 @@ void RenderTexture::setSize(int width, int height, int depth)
     }
 }
 
-void RenderTexture::setFormat(QAbstractTextureProvider::TextureFormat format)
+void Texture::setFormat(QAbstractTextureProvider::TextureFormat format)
 {
     if (format != m_format) {
         m_format = format;
@@ -412,7 +412,7 @@ void RenderTexture::setFormat(QAbstractTextureProvider::TextureFormat format)
 }
 
 // ChangeArbiter/Aspect Thread
-void RenderTexture::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Texture::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     // The QOpenGLTexture has to be manipulated from the RenderThread only
     QMutexLocker lock(m_lock);
@@ -503,30 +503,30 @@ void RenderTexture::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-TextureDNA RenderTexture::dna() const
+TextureDNA Texture::dna() const
 {
     return m_textureDNA;
 }
 
 // AspectThread
-void RenderTexture::setTextureManager(TextureManager *manager)
+void Texture::setTextureManager(TextureManager *manager)
 {
     m_textureManager = manager;
 }
 
 // AspectThread
-void RenderTexture::setTextureImageManager(TextureImageManager *manager)
+void Texture::setTextureImageManager(TextureImageManager *manager)
 {
     m_textureImageManager = manager;
 }
 
-void RenderTexture::setTextureDataManager(TextureDataManager *manager)
+void Texture::setTextureDataManager(TextureDataManager *manager)
 {
     m_textureDataManager = manager;
 }
 
 // RenderThread
-void RenderTexture::updateAndLoadTextureImage()
+void Texture::updateAndLoadTextureImage()
 {
     QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
@@ -547,17 +547,17 @@ void RenderTexture::updateAndLoadTextureImage()
     m_dataUploadRequired = false;
 }
 
-void RenderTexture::addTextureImageData(HTextureImage handle)
+void Texture::addTextureImageData(HTextureImage handle)
 {
     m_textureImages.append(handle);
 }
 
-void RenderTexture::removeTextureImageData(HTextureImage handle)
+void Texture::removeTextureImageData(HTextureImage handle)
 {
     m_textureImages.removeOne(handle);
 }
 
-void RenderTexture::requestTextureDataUpdate()
+void Texture::requestTextureDataUpdate()
 {
     m_dataUploadRequired = true;
 }
@@ -565,12 +565,12 @@ void RenderTexture::requestTextureDataUpdate()
 // Will request a new jobs, if one of the texture data has changed
 // after the job was executed, requestTextureDataUpdate will be called
 // Called by RenderTextureImages
-void RenderTexture::addToPendingTextureJobs()
+void Texture::addToPendingTextureJobs()
 {
     m_textureDataManager->addToPendingTextures(peerUuid());
 }
 
-RenderTextureFunctor::RenderTextureFunctor(TextureManager *textureManager,
+TextureFunctor::TextureFunctor(TextureManager *textureManager,
                                            TextureImageManager *textureImageManager,
                                            TextureDataManager *textureDataManager)
     : m_textureManager(textureManager)
@@ -579,9 +579,9 @@ RenderTextureFunctor::RenderTextureFunctor(TextureManager *textureManager,
 {
 }
 
-Qt3D::QBackendNode *RenderTextureFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *TextureFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
-    RenderTexture *backend = m_textureManager->getOrCreateResource(frontend->id());
+    Texture *backend = m_textureManager->getOrCreateResource(frontend->id());
     backend->setFactory(factory);
     backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
@@ -590,12 +590,12 @@ Qt3D::QBackendNode *RenderTextureFunctor::create(Qt3D::QNode *frontend, const Qt
     return backend;
 }
 
-Qt3D::QBackendNode *RenderTextureFunctor::get(const Qt3D::QNodeId &id) const
+Qt3D::QBackendNode *TextureFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_textureManager->lookupResource(id);
 }
 
-void RenderTextureFunctor::destroy(const Qt3D::QNodeId &id) const
+void TextureFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_textureManager->releaseResource(id);
 }

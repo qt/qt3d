@@ -42,7 +42,7 @@
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/private/material_p.h>
-#include <Qt3DRenderer/private/rendertexture_p.h>
+#include <Qt3DRenderer/private/texture_p.h>
 #include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
@@ -402,7 +402,7 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
             // We need to check if  one of the attachment was resized
             bool needsResize = false;
             Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
-                RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+                Texture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
                 if (rTex != Q_NULLPTR)
                     needsResize |= rTex->isTextureReset();
             }
@@ -424,7 +424,7 @@ void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attac
 
     QSize fboSize;
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
-        RenderTexture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+        Texture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
         if (rTex != Q_NULLPTR) {
             QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
             if (glTex != Q_NULLPTR) {
@@ -484,7 +484,7 @@ void QGraphicsContext::executeCommand(const RenderCommand *)
 {
 }
 
-int QGraphicsContext::activateTexture(TextureScope scope, RenderTexture *tex, int onUnit)
+int QGraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
 {
     // Returns the texture unit to use for the texture
     // This always return a valid unit, unless there are more textures than
@@ -574,7 +574,7 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
     m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
 }
 
-void QGraphicsContext::deactivateTexture(RenderTexture* tex)
+void QGraphicsContext::deactivateTexture(Texture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
         if (m_activeTextures[u] == tex->dna()) {
@@ -785,7 +785,7 @@ void QGraphicsContext::disablePrimitiveRestart()
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */
-GLint QGraphicsContext::assignUnitForTexture(RenderTexture *tex)
+GLint QGraphicsContext::assignUnitForTexture(Texture *tex)
 {
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
@@ -853,7 +853,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     const QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
     for (int i = 0; i < uniforms.textures().size(); ++i) {
         const QUniformPack::NamedTexture &namedTex = uniforms.textures().at(i);
-        RenderTexture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);
+        Texture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);
         const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded
         if (t != Q_NULLPTR) {

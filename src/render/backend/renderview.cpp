@@ -468,9 +468,9 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     if (const QUniformValue *val = uniformPack.uniform(name))
         destroyUniformValue(val, m_allocator);
 
-    RenderTexture *tex = Q_NULLPTR;
+    Texture *tex = Q_NULLPTR;
 
-    if ((tex = value.value<RenderTexture *>()) != Q_NULLPTR) {
+    if ((tex = value.value<Texture *>()) != Q_NULLPTR) {
         uniformPack.setTexture(name, tex->peerUuid());
         TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
         texUniform->setTextureId(tex->peerUuid());
