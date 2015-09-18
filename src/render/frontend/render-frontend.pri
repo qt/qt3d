@@ -3,6 +3,8 @@ INCLUDEPATH += $$PWD
 include(framegraph-components/framegraph-components.pri)
 
 HEADERS += \
+    $$PWD/qrenderaspect.h \
+    $$PWD/qrenderaspect_p.h \
     $$PWD/qmaterial.h \
     $$PWD/qmesh.h \
     $$PWD/qrenderpass.h \
@@ -86,6 +88,7 @@ HEADERS += \
     $$PWD/qgeometry_p.h
 
 SOURCES += \
+    $$PWD/qrenderaspect.cpp \
     $$PWD/qmaterial.cpp \
     $$PWD/qmesh.cpp \
     $$PWD/qrenderpass.cpp \

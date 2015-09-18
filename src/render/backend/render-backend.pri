@@ -4,8 +4,6 @@ include("framegraph/framegraph.pri")
 include("jobs/render-jobs.pri")
 
 HEADERS += \
-    $$PWD/qrenderaspect.h \
-    $$PWD/qrenderaspect_p.h \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
@@ -64,7 +62,6 @@ HEADERS += \
     $$PWD/transform_p.h
 
 SOURCES += \
-    $$PWD/qrenderaspect.cpp \
     $$PWD/renderthread.cpp \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
