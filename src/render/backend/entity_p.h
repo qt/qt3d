@@ -178,10 +178,10 @@ template<>
 CameraLens *Entity::renderComponent<CameraLens>() const;
 
 template<>
-HTransform Entity::componentHandle<RenderTransform>() const;
+HTransform Entity::componentHandle<Transform>() const;
 
 template<>
-RenderTransform *Entity::renderComponent<RenderTransform>() const;
+Transform *Entity::renderComponent<Transform>() const;
 
 template<>
 Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const;
@@ -190,7 +190,7 @@ template<>
 Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderTransform>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<Transform>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<CameraLens>() const;

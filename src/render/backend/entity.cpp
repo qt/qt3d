@@ -297,13 +297,13 @@ CameraLens *Entity::renderComponent<CameraLens>() const
 }
 
 template<>
-HTransform Entity::componentHandle<RenderTransform>() const
+HTransform Entity::componentHandle<Transform>() const
 {
     return m_renderer->transformManager()->lookupHandle(m_transformComponent);
 }
 
 template<>
-RenderTransform *Entity::renderComponent<RenderTransform>() const
+Transform *Entity::renderComponent<Transform>() const
 {
     return m_renderer->transformManager()->lookupResource(m_transformComponent);
 }
@@ -321,7 +321,7 @@ GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
 }
 
 template<>
-Qt3D::QNodeId Entity::componentUuid<RenderTransform>() const { return m_transformComponent; }
+Qt3D::QNodeId Entity::componentUuid<Transform>() const { return m_transformComponent; }
 
 template<>
 Qt3D::QNodeId Entity::componentUuid<CameraLens>() const { return m_cameraComponent; }

@@ -202,7 +202,7 @@ void QRenderAspect::registerBackendTypes()
 {
     Q_D(QRenderAspect);
     registerBackendType<Qt3D::QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(d->m_renderer)));
-    registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
+    registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Transform, Render::TransformManager>(d->m_renderer->transformManager())));
     registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(d->m_renderer->materialManager())));
     registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Technique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
     registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::TextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));

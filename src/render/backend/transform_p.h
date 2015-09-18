@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERTRANSFORM_H
-#define QT3DRENDER_RENDER_RENDERTRANSFORM_H
+#ifndef QT3DRENDER_RENDER_TRANSFORM_H
+#define QT3DRENDER_RENDER_TRANSFORM_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
@@ -49,10 +49,10 @@ namespace Render {
 class Renderer;
 class TransformManager;
 
-class RenderTransform : public Qt3D::QBackendNode
+class Transform : public Qt3D::QBackendNode
 {
 public:
-    RenderTransform();
+    Transform();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
@@ -70,4 +70,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERTRANSFORM_H
+#endif // QT3DRENDER_RENDER_TRANSFORM_H

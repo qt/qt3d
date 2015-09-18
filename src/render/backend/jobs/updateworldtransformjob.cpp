@@ -39,7 +39,7 @@
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
 #include <sphere.h>
-#include <Qt3DRenderer/private/rendertransform_p.h>
+#include <Qt3DRenderer/private/transform_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <QThread>
 
@@ -53,7 +53,7 @@ namespace {
 void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatrix4x4 &parentTransform)
 {
     QMatrix4x4 worldTransform(parentTransform);
-    RenderTransform *nodeTransform = node->renderComponent<RenderTransform>();
+    Transform *nodeTransform = node->renderComponent<Transform>();
     if (nodeTransform != Q_NULLPTR && nodeTransform->isEnabled())
         worldTransform = worldTransform * nodeTransform->transformMatrix();
 

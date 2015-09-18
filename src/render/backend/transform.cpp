@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendertransform_p.h"
+#include "transform_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -48,12 +48,12 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderTransform::RenderTransform()
+Transform::Transform()
     : QBackendNode()
 {
 }
 
-void RenderTransform::updateFromPeer(Qt3D::QNode *peer)
+void Transform::updateFromPeer(Qt3D::QNode *peer)
 {
     Qt3D::QTransform *transform = static_cast<Qt3D::QTransform *>(peer);
 
@@ -61,12 +61,12 @@ void RenderTransform::updateFromPeer(Qt3D::QNode *peer)
     m_enabled = transform->isEnabled();
 }
 
-QMatrix4x4 RenderTransform::transformMatrix() const
+QMatrix4x4 Transform::transformMatrix() const
 {
     return m_transformMatrix;
 }
 
-void RenderTransform::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Transform::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);

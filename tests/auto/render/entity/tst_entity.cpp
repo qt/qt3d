@@ -57,7 +57,7 @@ using namespace Qt3DRender::Render;
 void noopDeleter(QNode *) {}
 
 
-QNodeId transformUuid(Entity *entity) { return entity->componentUuid<RenderTransform>(); }
+QNodeId transformUuid(Entity *entity) { return entity->componentUuid<Transform>(); }
 QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>(); }
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }

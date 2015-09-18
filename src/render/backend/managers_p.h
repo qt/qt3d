@@ -49,7 +49,7 @@
 #include <Qt3DRenderer/private/sortcriterion_p.h>
 #include <Qt3DRenderer/private/technique_p.h>
 #include <Qt3DRenderer/private/texture_p.h>
-#include <Qt3DRenderer/private/rendertransform_p.h>
+#include <Qt3DRenderer/private/transform_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/renderpass_p.h>
 #include <Qt3DRenderer/private/parameter_p.h>
@@ -199,7 +199,7 @@ public:
 };
 
 class TransformManager : public Qt3D::QResourceManager<
-        RenderTransform,
+        Transform,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,

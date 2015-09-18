@@ -24,7 +24,6 @@ HEADERS += \
     $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
-    $$PWD/rendertransform_p.h \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
@@ -61,7 +60,8 @@ HEADERS += \
     $$PWD/shader_p.h \
     $$PWD/technique_p.h \
     $$PWD/texture_p.h \
-    $$PWD/textureimage_p.h
+    $$PWD/textureimage_p.h \
+    $$PWD/transform_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -81,7 +81,6 @@ SOURCES += \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
-    $$PWD/rendertransform.cpp \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
@@ -110,4 +109,5 @@ SOURCES += \
     $$PWD/shader.cpp \
     $$PWD/technique.cpp \
     $$PWD/texture.cpp \
-    $$PWD/textureimage.cpp
+    $$PWD/textureimage.cpp \
+    $$PWD/transform.cpp
