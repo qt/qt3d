@@ -37,7 +37,6 @@ HEADERS += \
     $$PWD/attachmentpack_p.h \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
-    $$PWD/rendernodefunctor_p.h \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
     $$PWD/renderparameter_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/geometry_p.h \
     $$PWD/geometryrenderer_p.h \
     $$PWD/layer_p.h \
-    $$PWD/material_p.h
+    $$PWD/material_p.h \
+    $$PWD/nodefunctor_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \

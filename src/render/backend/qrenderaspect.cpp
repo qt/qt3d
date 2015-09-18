@@ -85,7 +85,7 @@
 #include <Qt3DRenderer/private/sortcriterion_p.h>
 #include <Qt3DRenderer/private/framegraphsubtreeselector_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/rendernodefunctor_p.h>
+#include <Qt3DRenderer/private/nodefunctor_p.h>
 #include <Qt3DRenderer/private/framegraphnode_p.h>
 #include <Qt3DRenderer/private/loadtexturedatajob_p.h>
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
@@ -202,20 +202,20 @@ void QRenderAspect::registerBackendTypes()
 {
     Q_D(QRenderAspect);
     registerBackendType<Qt3D::QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(d->m_renderer)));
-    registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
-    registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Material, Render::MaterialManager>(d->m_renderer->materialManager())));
-    registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTechnique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
+    registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderTransform, Render::TransformManager>(d->m_renderer->transformManager())));
+    registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(d->m_renderer->materialManager())));
+    registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderTechnique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
     registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::RenderTextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
-    registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderShader, Render::ShaderManager>(d->m_renderer->shaderManager())));
-    registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Effect, Render::EffectManager>(d->m_renderer->effectManager())));
-    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
-    registerBackendType<Qt3D::QCameraLens>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
-    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Layer, Render::LayerManager>(d->m_renderer->layerManager())));
-    registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
+    registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderShader, Render::ShaderManager>(d->m_renderer->shaderManager())));
+    registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(d->m_renderer->effectManager())));
+    registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
+    registerBackendType<Qt3D::QCameraLens>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
+    registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(d->m_renderer->layerManager())));
+    registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderRenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
     registerBackendType<QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
-    registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
-    registerBackendType<QRenderAttachment>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderAttachment, Render::AttachmentManager>(d->m_renderer->attachmentManager())));
-    registerBackendType<QSortCriterion>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(d->m_renderer->sortCriterionManager())));
+    registerBackendType<QRenderTarget>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer->renderTargetManager())));
+    registerBackendType<QRenderAttachment>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderAttachment, Render::AttachmentManager>(d->m_renderer->attachmentManager())));
+    registerBackendType<QSortCriterion>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(d->m_renderer->sortCriterionManager())));
     registerBackendType<QClearBuffer>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffer, QClearBuffer>(d->m_renderer->frameGraphManager())));
     registerBackendType<QTechniqueFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(d->m_renderer->frameGraphManager())));
     registerBackendType<QViewport>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(d->m_renderer->frameGraphManager())));
@@ -226,14 +226,14 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraphSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
-    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
+    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::BufferFunctor(d->m_renderer->bufferManager())));
-    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
-    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::RenderNodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
+    registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
+    registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
     registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::GeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
 }
 

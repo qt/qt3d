@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H
-#define QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H
+#ifndef QT3DRENDER_RENDER_NODEFUNCTOR_P_H
+#define QT3DRENDER_RENDER_NODEFUNCTOR_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnode.h>
@@ -47,10 +47,10 @@ namespace Qt3DRender {
 namespace Render {
 
 template<class Backend, class Manager>
-class RenderNodeFunctor : public Qt3D::QBackendNodeFunctor
+class NodeFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
-    explicit RenderNodeFunctor(Manager *manager)
+    explicit NodeFunctor(Manager *manager)
         : m_manager(manager)
     {
     }
@@ -83,4 +83,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERNODEFUNCTOR_P_H
+#endif // QT3DRENDER_RENDER_NODEFUNCTOR_P_H
