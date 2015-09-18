@@ -21,9 +21,6 @@ HEADERS += \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
     $$PWD/platformsurfacefilter_p.h \
-    $$PWD/vsyncframeadvanceservice_p.h \
-    $$PWD/qraycastingservice.h \
-    $$PWD/qraycastingservice_p.h \
     $$PWD/cameralens_p.h \
     $$PWD/entity_p.h \
     $$PWD/layer_p.h \
@@ -45,8 +42,6 @@ SOURCES += \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
-    $$PWD/qraycastingservice.cpp \
-    $$PWD/vsyncframeadvanceservice.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
