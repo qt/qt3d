@@ -641,7 +641,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderRenderPass *
                 }
 
                 // Set uniforms and attributes explicitly binded
-                Q_FOREACH (const RenderParameterMapping &binding, rPass->bindings()) {
+                Q_FOREACH (const ParameterMapping &binding, rPass->bindings()) {
                     ParameterInfoList::iterator it = findParamInfo(&parameters, binding.parameterName());
                     if (it == parameters.end()) {
                         if (binding.bindingType() == QParameterMapping::Attribute

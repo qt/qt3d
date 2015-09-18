@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H
-#define QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H
+#ifndef QT3DRENDER_RENDER_PARAMETERMAPPING_P_H
+#define QT3DRENDER_RENDER_PARAMETERMAPPING_P_H
 
 #include <Qt3DRenderer/qparametermapping.h>
 
@@ -45,11 +45,11 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT RenderParameterMapping
+class Q_AUTOTEST_EXPORT ParameterMapping
 {
 public:
-    RenderParameterMapping();
-    RenderParameterMapping(QParameterMapping *mapping);
+    ParameterMapping();
+    ParameterMapping(QParameterMapping *mapping);
 
     bool isValid() const;
 
@@ -71,4 +71,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERPARAMETERMAPPING_P_H
+#endif // QT3DRENDER_RENDER_PARAMETERMAPPING_P_H

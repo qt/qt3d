@@ -41,7 +41,6 @@ HEADERS += \
     $$PWD/handle_types_p.h \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/rendershaderdata_p.h \
-    $$PWD/renderparametermapping_p.h \
     $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
     $$PWD/buffer_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/layer_p.h \
     $$PWD/material_p.h \
     $$PWD/nodefunctor_p.h \
-    $$PWD/parameter_p.h
+    $$PWD/parameter_p.h \
+    $$PWD/parametermapping_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -93,7 +93,6 @@ SOURCES += \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/rendershaderdata.cpp \
-    $$PWD/renderparametermapping.cpp \
     $$PWD/rendertextureimage.cpp \
     $$PWD/buffermanager.cpp \
     $$PWD/geometryrenderermanager.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/geometryrenderer.cpp \
     $$PWD/layer.cpp \
     $$PWD/material.cpp \
-    $$PWD/parameter.cpp
+    $$PWD/parameter.cpp \
+    $$PWD/parametermapping.cpp

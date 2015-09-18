@@ -34,19 +34,19 @@
 **
 ****************************************************************************/
 
-#include "renderparametermapping_p.h"
+#include "parametermapping_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-RenderParameterMapping::RenderParameterMapping()
+ParameterMapping::ParameterMapping()
     : m_bindingType(QParameterMapping::Uniform)
 {
 }
 
-RenderParameterMapping::RenderParameterMapping(QParameterMapping *mapping)
+ParameterMapping::ParameterMapping(QParameterMapping *mapping)
     : m_id(mapping ? mapping->id() : Qt3D::QNodeId())
     , m_parameterName(mapping ? mapping->parameterName() : QString())
     , m_shaderVariableName(mapping ? mapping->shaderVariableName() : QString())
@@ -54,27 +54,27 @@ RenderParameterMapping::RenderParameterMapping(QParameterMapping *mapping)
 {
 }
 
-bool RenderParameterMapping::isValid() const
+bool ParameterMapping::isValid() const
 {
     return !m_id.isNull();
 }
 
-Qt3D::QNodeId RenderParameterMapping::id() const
+Qt3D::QNodeId ParameterMapping::id() const
 {
     return m_id;
 }
 
-QString RenderParameterMapping::parameterName() const
+QString ParameterMapping::parameterName() const
 {
     return m_parameterName;
 }
 
-QString RenderParameterMapping::shaderVariableName() const
+QString ParameterMapping::shaderVariableName() const
 {
     return m_shaderVariableName;
 }
 
-QParameterMapping::Binding RenderParameterMapping::bindingType() const
+QParameterMapping::Binding ParameterMapping::bindingType() const
 {
     return m_bindingType;
 }

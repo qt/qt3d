@@ -80,7 +80,7 @@ void RenderRenderPass::updateFromPeer(Qt3D::QNode *peer)
     // The RenderPass clones frontend bindings in case the frontend ever removes them
     // TO DO: We probably need a QParameterMapper manager
     Q_FOREACH (QParameterMapping *binding, pass->bindings())
-        appendBinding(RenderParameterMapping(binding));
+        appendBinding(ParameterMapping(binding));
     Q_FOREACH (QAnnotation *c, pass->annotations())
         appendAnnotation(c->id());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
@@ -100,7 +100,7 @@ void RenderRenderPass::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("shaderProgram")) {
             m_shaderUuid = propertyChange->value().value<QNodeId>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("binding")) {
-            appendBinding(RenderParameterMapping(propertyChange->value().value<QParameterMapping *>()));
+            appendBinding(ParameterMapping(propertyChange->value().value<QParameterMapping *>()));
         } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
             QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
@@ -136,7 +136,7 @@ Qt3D::QNodeId RenderRenderPass::shaderProgram() const
     return m_shaderUuid;
 }
 
-QList<RenderParameterMapping> RenderRenderPass::bindings() const
+QList<ParameterMapping> RenderRenderPass::bindings() const
 {
     return m_bindings.values();
 }
@@ -167,7 +167,7 @@ void RenderRenderPass::removeAnnotation(const Qt3D::QNodeId &annotationId)
     m_annotationList.removeOne(annotationId);
 }
 
-void RenderRenderPass::appendBinding(const RenderParameterMapping &binding)
+void RenderRenderPass::appendBinding(const ParameterMapping &binding)
 {
     if (!m_bindings.contains(binding.id()))
         m_bindings[binding.id()] = binding;
