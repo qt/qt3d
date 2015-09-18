@@ -1,8 +1,5 @@
 INCLUDEPATH += $$PWD
 
-include("framegraph/framegraph.pri")
-include("jobs/render-jobs.pri")
-
 HEADERS += \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
@@ -14,7 +11,6 @@ HEADERS += \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
-    $$PWD/scenemanager_p.h \
     $$PWD/attachmentpack_p.h \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
@@ -25,7 +21,6 @@ HEADERS += \
     $$PWD/entity_p.h \
     $$PWD/layer_p.h \
     $$PWD/nodefunctor_p.h \
-    $$PWD/scene_p.h \
     $$PWD/transform_p.h
 
 SOURCES += \
@@ -39,11 +34,9 @@ SOURCES += \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
-    $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
-    $$PWD/scene.cpp \
     $$PWD/transform.cpp
