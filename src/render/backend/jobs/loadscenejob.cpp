@@ -66,7 +66,7 @@ void LoadSceneJob::run()
         }
     }
     // set clone of sceneTree in sceneComponent
-    RenderScene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
+    Scene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
     scene->setSceneSubtree(sceneTree);
 }
 

@@ -38,7 +38,7 @@
 #define QT3DRENDER_RENDER_SCENEMANAGER_P_H
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/renderscene_p.h>
+#include <Qt3DRenderer/private/scene_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRenderer/private/loadscenejob_p.h>
 
@@ -51,7 +51,7 @@ class QEntity;
 namespace Qt3DRender {
 namespace Render {
 
-class SceneManager : public Qt3D::QResourceManager<RenderScene,
+class SceneManager : public Qt3D::QResourceManager<Scene,
                                              Qt3D::QNodeId,
                                              8,
                                              Qt3D::ArrayAllocatingPolicy,

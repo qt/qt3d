@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "renderscene_p.h"
+#include "scene_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -49,13 +49,13 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderScene::RenderScene()
+Scene::Scene()
     : QBackendNode(QBackendNode::ReadWrite)
     , m_sceneManager(Q_NULLPTR)
 {
 }
 
-void RenderScene::updateFromPeer(Qt3D::QNode *peer)
+void Scene::updateFromPeer(Qt3D::QNode *peer)
 {
     QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
 
@@ -63,7 +63,7 @@ void RenderScene::updateFromPeer(Qt3D::QNode *peer)
     m_sceneManager->addSceneData(m_source, peerUuid());
 }
 
-void RenderScene::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Scene::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
@@ -72,12 +72,12 @@ void RenderScene::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QUrl RenderScene::source() const
+QUrl Scene::source() const
 {
     return m_source;
 }
 
-void RenderScene::setSceneSubtree(Qt3D::QEntity *subTree)
+void Scene::setSceneSubtree(Qt3D::QEntity *subTree)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setPropertyName("scene");
@@ -93,7 +93,7 @@ void RenderScene::setSceneSubtree(Qt3D::QEntity *subTree)
     notifyObservers(e2);
 }
 
-void RenderScene::setSceneManager(SceneManager *manager)
+void Scene::setSceneManager(SceneManager *manager)
 {
     if (m_sceneManager != manager)
         m_sceneManager = manager;
@@ -106,7 +106,7 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 
 Qt3D::QBackendNode *RenderSceneFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
-    RenderScene *scene = m_sceneManager->getOrCreateResource(frontend->id());
+    Scene *scene = m_sceneManager->getOrCreateResource(frontend->id());
     scene->setFactory(factory);
     scene->setSceneManager(m_sceneManager);
     scene->setPeer(frontend);

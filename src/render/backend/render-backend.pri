@@ -31,7 +31,6 @@ HEADERS += \
     $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
-    $$PWD/renderscene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/attachmentpack_p.h \
     $$PWD/shadervariables_p.h \
@@ -60,7 +59,8 @@ HEADERS += \
     $$PWD/nodefunctor_p.h \
     $$PWD/parameter_p.h \
     $$PWD/parametermapping_p.h \
-    $$PWD/renderpass_p.h
+    $$PWD/renderpass_p.h \
+    $$PWD/scene_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -87,7 +87,6 @@ SOURCES += \
     $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
-    $$PWD/renderscene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \
     $$PWD/parametermapping.cpp \
-    $$PWD/renderpass.cpp
+    $$PWD/renderpass.cpp \
+    $$PWD/scene.cpp

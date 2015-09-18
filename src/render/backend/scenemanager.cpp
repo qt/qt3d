@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-SceneManager::SceneManager() : QResourceManager<RenderScene,
+SceneManager::SceneManager() : QResourceManager<Scene,
                                                 Qt3D::QNodeId,
                                                 8,
                                                 Qt3D::ArrayAllocatingPolicy,

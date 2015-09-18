@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSCENE_P_H
-#define QT3DRENDER_RENDER_RENDERSCENE_P_H
+#ifndef QT3DRENDER_RENDER_SCENE_P_H
+#define QT3DRENDER_RENDER_SCENE_P_H
 
 #include <QtGlobal>
 #include <Qt3DCore/qbackendnode.h>
@@ -52,10 +52,10 @@ namespace Render {
 
 class SceneManager;
 
-class RenderScene : public Qt3D::QBackendNode
+class Scene : public Qt3D::QBackendNode
 {
 public:
-    RenderScene();
+    Scene();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
 
@@ -87,4 +87,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERSCENE_P_H
+#endif // QT3DRENDER_RENDER_SCENE_P_H
