@@ -207,10 +207,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
 /*!
     \internal
-    Searches the \a renderer for the best matching RenderTechnique from
+    Searches the \a renderer for the best matching Technique from
     \a effect specified by the \a renderView.
 */
-RenderTechnique *findTechniqueForEffect(Renderer *renderer,
+Technique *findTechniqueForEffect(Renderer *renderer,
                                         RenderView *renderView,
                                         Effect *effect)
 {
@@ -219,7 +219,7 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
     // Iterate through the techniques in the effect
     Q_FOREACH (const QNodeId &techniqueId, effect->techniques()) {
-        RenderTechnique *technique = renderer->techniqueManager()->lookupResource(techniqueId);
+        Technique *technique = renderer->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
             continue;
@@ -270,7 +270,7 @@ RenderTechnique *findTechniqueForEffect(Renderer *renderer,
 
 RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
                                                   RenderView *renderView,
-                                                  RenderTechnique *technique)
+                                                  Technique *technique)
 {
     Q_ASSERT(renderer);
     Q_ASSERT(technique);
@@ -340,7 +340,7 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                            ParameterManager *manager,
                                            Material *material,
                                            Effect *effect,
-                                           RenderTechnique *technique)
+                                           Technique *technique)
 {
     // The parameters are taken in the following priority order:
     //

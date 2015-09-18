@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERTECHNIQUE_H
-#define QT3DRENDER_RENDER_RENDERTECHNIQUE_H
+#ifndef QT3DRENDER_RENDER_TECHNIQUE_H
+#define QT3DRENDER_RENDER_TECHNIQUE_H
 
 #include <QVector>
 #include <QStringList>
@@ -58,11 +58,11 @@ namespace Render {
 
 class TechniqueManager;
 
-class RenderTechnique : public Qt3D::QBackendNode
+class Technique : public Qt3D::QBackendNode
 {
 public:
-    RenderTechnique();
-    ~RenderTechnique();
+    Technique();
+    ~Technique();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
@@ -93,4 +93,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERTECHNIQUE_H
+#endif // QT3DRENDER_RENDER_TECHNIQUE_H

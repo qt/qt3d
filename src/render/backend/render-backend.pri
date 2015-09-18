@@ -10,7 +10,6 @@ HEADERS += \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
     $$PWD/qgraphicscontext_p.h \
-    $$PWD/rendertechnique_p.h \
     $$PWD/quniformvalue_p.h \
     $$PWD/rendertexture_p.h \
     $$PWD/states/blendstate_p.h \
@@ -61,7 +60,8 @@ HEADERS += \
     $$PWD/renderpass_p.h \
     $$PWD/scene_p.h \
     $$PWD/shaderdata_p.h \
-    $$PWD/shader_p.h
+    $$PWD/shader_p.h \
+    $$PWD/technique_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -69,7 +69,6 @@ SOURCES += \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
     $$PWD/qgraphicscontext.cpp \
-    $$PWD/rendertechnique.cpp \
     $$PWD/quniformvalue.cpp \
     $$PWD/rendertexture.cpp \
     $$PWD/states/blendstate.cpp \
@@ -110,4 +109,5 @@ SOURCES += \
     $$PWD/renderpass.cpp \
     $$PWD/scene.cpp \
     $$PWD/shaderdata.cpp \
-    $$PWD/shader.cpp
+    $$PWD/shader.cpp \
+    $$PWD/technique.cpp

@@ -54,7 +54,7 @@ namespace Render {
 
 class Renderer;
 class QGraphicsContext;
-class RenderTechnique;
+class Technique;
 class Effect;
 class MaterialManager;
 

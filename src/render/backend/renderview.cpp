@@ -384,7 +384,7 @@ void RenderView::buildRenderCommands(Entity *node)
                 Effect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<Material>()) != Q_NULLPTR && material->isEnabled())
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
-                RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
+                Technique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
                 ParameterInfoList parameters;
                 // Order set:

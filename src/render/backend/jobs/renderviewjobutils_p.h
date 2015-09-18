@@ -58,7 +58,7 @@ class Entity;
 class Material;
 class RenderPass;
 class RenderStateSet;
-class RenderTechnique;
+class Technique;
 class RenderView;
 class Renderer;
 class ShaderDataManager;
@@ -69,14 +69,14 @@ class RenderState;
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
-Q_AUTOTEST_EXPORT RenderTechnique *findTechniqueForEffect(Renderer *renderer,
+Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(Renderer *renderer,
                                                           RenderView *renderView,
                                                           Effect *effect);
 
 typedef QVarLengthArray<RenderPass*, 4> RenderRenderPassList;
 Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
                                                                     RenderView *renderView,
-                                                                    RenderTechnique *technique);
+                                                                    Technique *technique);
 
 struct ParameterInfo
 {
@@ -100,7 +100,7 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              ParameterManager *manager,
                                                              Material *material,
                                                              Effect *effect,
-                                                             RenderTechnique *technique);
+                                                             Technique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                            const QList<Qt3D::QNodeId> &parameterIds);

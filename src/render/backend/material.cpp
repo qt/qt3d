@@ -36,7 +36,7 @@
 
 #include "material_p.h"
 #include "qgraphicscontext_p.h"
-#include "rendertechnique_p.h"
+#include "technique_p.h"
 #include "effect_p.h"
 #include "qparameter.h"
 #include "qtechnique.h"

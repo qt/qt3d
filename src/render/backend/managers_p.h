@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
-#include <Qt3DRenderer/private/rendertechnique_p.h>
+#include <Qt3DRenderer/private/technique_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/rendertransform_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
@@ -177,7 +177,7 @@ public:
 };
 
 class TechniqueManager : public Qt3D::QResourceManager<
-        RenderTechnique,
+        Technique,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -310,7 +310,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Material, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Shader, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTechnique, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Technique, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTexture, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderPass, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTextureImage, Q_REQUIRES_CLEANUP)

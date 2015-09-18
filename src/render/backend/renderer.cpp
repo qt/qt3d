@@ -63,7 +63,7 @@
 #include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
-#include <Qt3DRenderer/private/rendertechnique_p.h>
+#include <Qt3DRenderer/private/technique_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>

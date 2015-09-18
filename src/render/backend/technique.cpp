@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendertechnique_p.h"
+#include "technique_p.h"
 
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qparameter.h>
@@ -56,23 +56,23 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderTechnique::RenderTechnique()
+Technique::Technique()
     : QBackendNode()
     , m_openglFilter(new QOpenGLFilter())
 {
 }
 
-RenderTechnique::~RenderTechnique()
+Technique::~Technique()
 {
     cleanup();
     delete m_openglFilter;
 }
 
-void RenderTechnique::cleanup()
+void Technique::cleanup()
 {
 }
 
-void RenderTechnique::updateFromPeer(Qt3D::QNode *peer)
+void Technique::updateFromPeer(Qt3D::QNode *peer)
 {
     m_parameterPack.clear();
     m_renderPasses.clear();
@@ -94,7 +94,7 @@ void RenderTechnique::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void RenderTechnique::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Technique::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
@@ -141,44 +141,44 @@ void RenderTechnique::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QList<Qt3D::QNodeId> RenderTechnique::parameters() const
+QList<Qt3D::QNodeId> Technique::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void RenderTechnique::appendRenderPass(const Qt3D::QNodeId &renderPassId)
+void Technique::appendRenderPass(const Qt3D::QNodeId &renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void RenderTechnique::removeRenderPass(const Qt3D::QNodeId &renderPassId)
+void Technique::removeRenderPass(const Qt3D::QNodeId &renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<Qt3D::QNodeId> RenderTechnique::annotations() const
+QList<Qt3D::QNodeId> Technique::annotations() const
 {
     return m_annotationList;
 }
 
-QList<Qt3D::QNodeId> RenderTechnique::renderPasses() const
+QList<Qt3D::QNodeId> Technique::renderPasses() const
 {
     return m_renderPasses;
 }
 
-QOpenGLFilter *RenderTechnique::openGLFilter() const
+QOpenGLFilter *Technique::openGLFilter() const
 {
     return m_openglFilter;
 }
 
-void RenderTechnique::appendAnnotation(const Qt3D::QNodeId &criterionId)
+void Technique::appendAnnotation(const Qt3D::QNodeId &criterionId)
 {
     if (!m_annotationList.contains(criterionId))
         m_annotationList.append(criterionId);
 }
 
-void RenderTechnique::removeAnnotation(const Qt3D::QNodeId &criterionId)
+void Technique::removeAnnotation(const Qt3D::QNodeId &criterionId)
 {
     m_annotationList.removeOne(criterionId);
 }

@@ -85,7 +85,7 @@ class CameraLens;
 class QGraphicsContext;
 class FrameGraphNode;
 class Material;
-class RenderTechnique;
+class Technique;
 class Shader;
 class Entity;
 class RenderCommand;
@@ -219,7 +219,7 @@ private:
     Entity *m_renderSceneRoot;
 
     QHash<QMaterial*, Material*> m_materialHash;
-    QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
+    QHash<QTechnique *, Technique*> m_techniqueHash;
     QHash<QShaderProgram*, Shader*> m_shaderHash;
 
     QMaterial* m_defaultMaterial;
