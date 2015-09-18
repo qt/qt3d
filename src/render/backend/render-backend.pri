@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/renderthread_p.h \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
-    $$PWD/rendermaterial_p.h \
     $$PWD/qgraphicscontext_p.h \
     $$PWD/rendershader_p.h \
     $$PWD/rendertechnique_p.h \
@@ -60,14 +59,14 @@ HEADERS += \
     $$PWD/entity_p.h \
     $$PWD/geometry_p.h \
     $$PWD/geometryrenderer_p.h \
-    $$PWD/layer_p.h
+    $$PWD/layer_p.h \
+    $$PWD/material_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
     $$PWD/renderthread.cpp \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
-    $$PWD/rendermaterial.cpp \
     $$PWD/qgraphicscontext.cpp \
     $$PWD/rendershader.cpp \
     $$PWD/rendertechnique.cpp \
@@ -109,4 +108,5 @@ SOURCES += \
     $$PWD/entity.cpp \
     $$PWD/geometry.cpp \
     $$PWD/geometryrenderer.cpp \
-    $$PWD/layer.cpp
+    $$PWD/layer.cpp \
+    $$PWD/material.cpp

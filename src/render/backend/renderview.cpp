@@ -380,9 +380,9 @@ void RenderView::buildRenderCommands(Entity *node)
                 // We might want to make that optional or dependent on an explicit bounding box item
 
                 // Find the material, effect, technique and set of render passes to use
-                RenderMaterial *material = Q_NULLPTR;
+                Material *material = Q_NULLPTR;
                 Effect *effect = Q_NULLPTR;
-                if ((material = node->renderComponent<RenderMaterial>()) != Q_NULLPTR && material->isEnabled())
+                if ((material = node->renderComponent<Material>()) != Q_NULLPTR && material->isEnabled())
                     effect = m_renderer->effectManager()->lookupResource(material->effect());
                 RenderTechnique *technique = findTechniqueForEffect(m_renderer, this, effect);
 

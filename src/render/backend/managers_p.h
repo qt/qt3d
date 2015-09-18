@@ -44,7 +44,7 @@
 #include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/layer_p.h>
-#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
 #include <Qt3DRenderer/private/sortcriterion_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
@@ -138,7 +138,7 @@ public:
 };
 
 class MaterialManager : public Qt3D::QResourceManager<
-        RenderMaterial,
+        Material,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -306,7 +306,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Annotation, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Effect, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Entity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Layer, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderMaterial, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Material, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderShader, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::SortCriterion, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)

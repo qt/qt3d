@@ -273,13 +273,13 @@ void Entity::removeComponent(const Qt3D::QNodeId &nodeId)
 }
 
 template<>
-HMaterial Entity::componentHandle<RenderMaterial>() const
+HMaterial Entity::componentHandle<Material>() const
 {
     return m_renderer->materialManager()->lookupHandle(m_materialComponent);
 }
 
 template<>
-RenderMaterial *Entity::renderComponent<RenderMaterial>() const
+Material *Entity::renderComponent<Material>() const
 {
     return m_renderer->materialManager()->lookupResource(m_materialComponent);
 }
@@ -327,7 +327,7 @@ template<>
 Qt3D::QNodeId Entity::componentUuid<CameraLens>() const { return m_cameraComponent; }
 
 template<>
-Qt3D::QNodeId Entity::componentUuid<RenderMaterial>() const { return m_materialComponent; }
+Qt3D::QNodeId Entity::componentUuid<Material>() const { return m_materialComponent; }
 
 template<>
 QList<HLayer> Entity::componentsHandle<Layer>() const

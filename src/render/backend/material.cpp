@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendermaterial_p.h"
+#include "material_p.h"
 #include "qgraphicscontext_p.h"
 #include "rendertechnique_p.h"
 #include "effect_p.h"
@@ -53,23 +53,23 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-RenderMaterial::RenderMaterial()
+Material::Material()
     : QBackendNode()
     , m_enabled(true)
 {
 }
 
-RenderMaterial::~RenderMaterial()
+Material::~Material()
 {
     cleanup();
 }
 
-void RenderMaterial::cleanup()
+void Material::cleanup()
 {
     m_parameterPack.clear();
 }
 
-void RenderMaterial::updateFromPeer(Qt3D::QNode *node)
+void Material::updateFromPeer(Qt3D::QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
@@ -80,7 +80,7 @@ void RenderMaterial::updateFromPeer(Qt3D::QNode *node)
         m_parameterPack.appendParameter(p->id());
 }
 
-void RenderMaterial::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Material::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -111,12 +111,12 @@ void RenderMaterial::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QList<Qt3D::QNodeId> RenderMaterial::parameters() const
+QList<Qt3D::QNodeId> Material::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-Qt3D::QNodeId RenderMaterial::effect() const
+Qt3D::QNodeId Material::effect() const
 {
     return m_effectUuid;
 }

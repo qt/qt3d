@@ -55,7 +55,7 @@ class FrameGraphNode;
 class ParameterManager;
 class Effect;
 class Entity;
-class RenderMaterial;
+class Material;
 class RenderRenderPass;
 class RenderStateSet;
 class RenderTechnique;
@@ -98,7 +98,7 @@ typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 
 Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                                              ParameterManager *manager,
-                                                             RenderMaterial *material,
+                                                             Material *material,
                                                              Effect *effect,
                                                              RenderTechnique *technique);
 

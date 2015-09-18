@@ -58,7 +58,7 @@
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>

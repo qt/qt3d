@@ -65,7 +65,7 @@ namespace Render {
 class Renderer;
 class QGraphicsHelperInterface;
 class RenderStateSet;
-class RenderMaterial;
+class Material;
 class RenderTexture;
 class RenderCommand;
 class RenderTarget;
@@ -114,9 +114,9 @@ public:
     GLuint defaultFBO() const { return m_defaultFBO; }
     void activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId);
 
-    RenderMaterial* activeMaterial() const { return m_material; }
+    Material* activeMaterial() const { return m_material; }
 
-    void setActiveMaterial(RenderMaterial* rmat);
+    void setActiveMaterial(Material* rmat);
 
     void executeCommand(const RenderCommand *command);
 
@@ -228,7 +228,7 @@ private:
     // mean more recently used.
     QHash<uint, int> m_textureScores;
 
-    RenderMaterial* m_material;
+    Material* m_material;
     QRectF m_viewport;
     GLuint m_activeFBO;
     GLuint m_defaultFBO;

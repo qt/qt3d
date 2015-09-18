@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERMATERIAL_H
-#define QT3DRENDER_RENDER_RENDERMATERIAL_H
+#ifndef QT3DRENDER_RENDER_MATERIAL_H
+#define QT3DRENDER_RENDER_MATERIAL_H
 
 #include <QVariant>
 
@@ -58,11 +58,11 @@ class RenderTechnique;
 class Effect;
 class MaterialManager;
 
-class Q_AUTOTEST_EXPORT RenderMaterial : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Material : public Qt3D::QBackendNode
 {
 public:
-    RenderMaterial();
-    ~RenderMaterial();
+    Material();
+    ~Material();
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
@@ -83,4 +83,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERMATERIAL_H
+#endif // QT3DRENDER_RENDER_MATERIAL_H

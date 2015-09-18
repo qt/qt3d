@@ -41,7 +41,7 @@
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <Qt3DRenderer/private/rendershader_p.h>
-#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
@@ -470,7 +470,7 @@ void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 }
 
 
-void QGraphicsContext::setActiveMaterial(RenderMaterial *rmat)
+void QGraphicsContext::setActiveMaterial(Material *rmat)
 {
     if (m_material == rmat)
         return;

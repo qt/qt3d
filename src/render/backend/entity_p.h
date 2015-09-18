@@ -166,10 +166,10 @@ private:
 };
 
 template<>
-HMaterial Entity::componentHandle<RenderMaterial>() const;
+HMaterial Entity::componentHandle<Material>() const;
 
 template<>
-RenderMaterial *Entity::renderComponent<RenderMaterial>() const;
+Material *Entity::renderComponent<Material>() const;
 
 template<>
 HCamera Entity::componentHandle<CameraLens>() const;
@@ -196,7 +196,7 @@ template<>
 Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<CameraLens>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<RenderMaterial>() const;
+Q_AUTOTEST_EXPORT Qt3D::QNodeId Entity::componentUuid<Material>() const;
 
 template<>
 QList<HLayer> Entity::componentsHandle<Layer>() const;

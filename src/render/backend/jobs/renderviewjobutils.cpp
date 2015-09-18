@@ -338,7 +338,7 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
 
 void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
                                            ParameterManager *manager,
-                                           RenderMaterial *material,
+                                           Material *material,
                                            Effect *effect,
                                            RenderTechnique *technique)
 {

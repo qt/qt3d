@@ -84,7 +84,7 @@ namespace Render {
 class CameraLens;
 class QGraphicsContext;
 class FrameGraphNode;
-class RenderMaterial;
+class Material;
 class RenderTechnique;
 class RenderShader;
 class Entity;
@@ -218,7 +218,7 @@ private:
 
     Entity *m_renderSceneRoot;
 
-    QHash<QMaterial*, RenderMaterial*> m_materialHash;
+    QHash<QMaterial*, Material*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
     QHash<QShaderProgram*, RenderShader*> m_shaderHash;
 

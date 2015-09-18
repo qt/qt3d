@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/rendermaterial_p.h>
+#include <Qt3DRenderer/private/material_p.h>
 
 #include <Qt3DRenderer/QMaterial>
 #include <Qt3DRenderer/QParameter>
@@ -65,7 +65,7 @@ private slots:
 void tst_RenderMaterial::shouldHaveInitialState()
 {
     // GIVEN
-    RenderMaterial backend;
+    Material backend;
 
     // THEN
     QVERIFY(backend.parameters().isEmpty());
@@ -116,7 +116,7 @@ void tst_RenderMaterial::shouldHavePropertiesMirroringFromItsPeer()
 {
     // WHEN
     QFETCH(QMaterial *, frontendMaterial);
-    RenderMaterial backend;
+    Material backend;
 
     // GIVEN
     backend.setPeer(frontendMaterial);
@@ -137,7 +137,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
 {
     // GIVEN
     QScopedPointer<QParameter> parameter(new QParameter());
-    RenderMaterial backend;
+    Material backend;
 
     // WHEN
     QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
@@ -162,7 +162,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
 void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 {
     // GIVEN
-    RenderMaterial backend;
+    Material backend;
 
     // WHEN
     QScenePropertyChangePtr updateChange(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, QNodeId()));
@@ -185,4 +185,4 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 
 QTEST_APPLESS_MAIN(tst_RenderMaterial)
 
-#include "tst_rendermaterial.moc"
+#include "tst_material.moc"
