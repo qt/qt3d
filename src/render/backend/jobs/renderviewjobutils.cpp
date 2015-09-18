@@ -55,7 +55,7 @@
 #include <Qt3DRenderer/private/viewportnode_p.h>
 #include <Qt3DRenderer/private/shadervariables_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/private/statesetnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -391,7 +391,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
         if (list.at(0).userType() == qNodeIdTypeId) { // Array of struct qmlPropertyName[i].structMember
             for (int i = 0; i < list.size(); ++i) {
                 if (list.at(i).userType() == qNodeIdTypeId) {
-                    RenderShaderData *subShaderData = shaderDataManager->lookupResource(list.at(i).value<QNodeId>());
+                    ShaderData *subShaderData = shaderDataManager->lookupResource(list.at(i).value<QNodeId>());
                     if (subShaderData)
                         buildActiveUniformNameValueMapStructHelper(subShaderData,
                                                                    blockName + QStringLiteral(".") + qmlPropertyName + blockArray.arg(i),
@@ -406,7 +406,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
             }
         }
     } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
-        RenderShaderData *rSubShaderData = shaderDataManager->lookupResource(value.value<QNodeId>());
+        ShaderData *rSubShaderData = shaderDataManager->lookupResource(value.value<QNodeId>());
         if (rSubShaderData)
             buildActiveUniformNameValueMapStructHelper(rSubShaderData,
                                                        blockName,
@@ -420,7 +420,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
     }
 }
 
-void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
+void UniformBlockValueBuilder::buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData, const QString &blockName, const QString &qmlPropertyName)
 {
     const QHash<QString, QVariant> &properties = updatedPropertiesOnly ? rShaderData->updatedProperties() : rShaderData->properties();
     QHash<QString, QVariant>::const_iterator it = properties.begin();

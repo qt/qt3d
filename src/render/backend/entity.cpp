@@ -351,7 +351,7 @@ template<>
 QList<Qt3D::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
 
 template<>
-QList<HShaderData> Entity::componentsHandle<RenderShaderData>() const
+QList<HShaderData> Entity::componentsHandle<ShaderData>() const
 {
     QList<HShaderData> shaderDataHandles;
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
@@ -360,16 +360,16 @@ QList<HShaderData> Entity::componentsHandle<RenderShaderData>() const
 }
 
 template<>
-QList<RenderShaderData *> Entity::renderComponents<RenderShaderData>() const
+QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
-    QList<RenderShaderData *> shaderDatas;
+    QList<ShaderData *> shaderDatas;
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
         shaderDatas.append(m_renderer->shaderDataManager()->lookupResource(id));
     return shaderDatas;
 }
 
 template<>
-QList<Qt3D::QNodeId> Entity::componentsUuid<RenderShaderData>() const { return m_shaderDataComponents; }
+QList<Qt3D::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_shaderDataComponents; }
 
 template<>
 Qt3D::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geometryRendererComponent; }

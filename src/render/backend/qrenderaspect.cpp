@@ -73,7 +73,7 @@
 #include <Qt3DRenderer/private/annotation_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>

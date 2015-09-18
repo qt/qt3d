@@ -37,7 +37,7 @@
 #include <QtTest/QTest>
 
 #include <Qt3DRenderer/private/renderviewjobutils_p.h>
-#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/qshaderdata.h>
 
@@ -287,7 +287,7 @@ void initBackendShaderData(Qt3DRender::QShaderData *frontend,
     }
 
     // Create backend element for frontend one
-    Qt3DRender::Render::RenderShaderData *backend = manager->getOrCreateResource(frontend->id());
+    Qt3DRender::Render::ShaderData *backend = manager->getOrCreateResource(frontend->id());
     // Init the backend element
     backend->updateFromPeer(frontend);
 }
@@ -303,7 +303,7 @@ void tst_RenderViewUtils::topLevelScalarValueNoUniforms()
     shaderData->setScalar(883.0f);
     initBackendShaderData(shaderData.data(), manager.data());
 
-    Qt3DRender::Render::RenderShaderData *backendShaderData = manager->lookupResource(shaderData->id());
+    Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != Q_NULLPTR);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
@@ -323,7 +323,7 @@ void tst_RenderViewUtils::topLevelScalarValue()
     shaderData->setScalar(883.0f);
     initBackendShaderData(shaderData.data(), manager.data());
 
-    Qt3DRender::Render::RenderShaderData *backendShaderData = manager->lookupResource(shaderData->id());
+    Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != Q_NULLPTR);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
@@ -355,7 +355,7 @@ void tst_RenderViewUtils::topLevelArrayValue()
     shaderData->setArray(arrayValues);
     initBackendShaderData(shaderData.data(), manager.data());
 
-    Qt3DRender::Render::RenderShaderData *backendShaderData = manager->lookupResource(shaderData->id());
+    Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != Q_NULLPTR);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;
@@ -418,7 +418,7 @@ void tst_RenderViewUtils::topLevelStructValue()
 
     initBackendShaderData(shaderData, manager.data());
 
-    Qt3DRender::Render::RenderShaderData *backendShaderData = manager->lookupResource(shaderData->id());
+    Qt3DRender::Render::ShaderData *backendShaderData = manager->lookupResource(shaderData->id());
     QVERIFY(backendShaderData != Q_NULLPTR);
 
     Qt3DRender::Render::UniformBlockValueBuilder blockBuilder;

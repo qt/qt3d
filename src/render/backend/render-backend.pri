@@ -38,7 +38,7 @@ HEADERS += \
     $$PWD/managers_p.h \
     $$PWD/handle_types_p.h \
     $$PWD/platformsurfacefilter_p.h \
-    $$PWD/rendershaderdata_p.h \
+    $$PWD/shaderdata_p.h \
     $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
     $$PWD/buffer_p.h \
@@ -60,7 +60,8 @@ HEADERS += \
     $$PWD/parameter_p.h \
     $$PWD/parametermapping_p.h \
     $$PWD/renderpass_p.h \
-    $$PWD/scene_p.h
+    $$PWD/scene_p.h \
+    $$PWD/shaderdata_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -90,7 +91,6 @@ SOURCES += \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
-    $$PWD/rendershaderdata.cpp \
     $$PWD/rendertextureimage.cpp \
     $$PWD/buffermanager.cpp \
     $$PWD/geometryrenderermanager.cpp \
@@ -109,4 +109,5 @@ SOURCES += \
     $$PWD/parameter.cpp \
     $$PWD/parametermapping.cpp \
     $$PWD/renderpass.cpp \
-    $$PWD/scene.cpp
+    $$PWD/scene.cpp \
+    $$PWD/shaderdata.cpp

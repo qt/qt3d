@@ -37,7 +37,7 @@
 #include "framecleanupjob_p.h"
 #include <private/renderer_p.h>
 #include <private/entity_p.h>
-#include <private/rendershaderdata_p.h>
+#include <private/shaderdata_p.h>
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
 
@@ -57,13 +57,13 @@ FrameCleanupJob::~FrameCleanupJob()
 
 void FrameCleanupJob::run()
 {
-    // set each RenderShaderData to not need an update
-    Q_FOREACH (const Qt3D::QNodeId &id, RenderShaderData::updatedShaderDataList()) {
-        RenderShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
+    // set each ShaderData to not need an update
+    Q_FOREACH (const Qt3D::QNodeId &id, ShaderData::updatedShaderDataList()) {
+        ShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
         if (shaderData != Q_NULLPTR)
             shaderData->clearUpdate();
     }
-    RenderShaderData::clearShaderDataList();
+    ShaderData::clearShaderDataList();
 
     // Cleanup texture handles
     TextureDataManager *textureDataManager = m_renderer->textureDataManager();

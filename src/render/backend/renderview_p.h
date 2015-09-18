@@ -260,7 +260,7 @@ private:
                               const QVariant &value);
     void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
                                                RenderShader *shader,
-                                               RenderShaderData *shaderData,
+                                               ShaderData *shaderData,
                                                const QString &structName);
     void buildSortingKey(RenderCommand *command);
 };

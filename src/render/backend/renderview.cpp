@@ -490,8 +490,8 @@ void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QStrin
 
 void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
-    RenderShaderData *shaderData = Q_NULLPTR;
-    if ((shaderData = value.value<RenderShaderData *>())) {
+    ShaderData *shaderData = Q_NULLPTR;
+    if ((shaderData = value.value<ShaderData *>())) {
         // UBO are indexed by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
         // while still making sure that if they have a different layout everything will still work
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
@@ -539,7 +539,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, RenderShader *shader, RenderShaderData *shaderData, const QString &structName)
+void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, RenderShader *shader, ShaderData *shaderData, const QString &structName)
 {
     m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
@@ -680,8 +680,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                             it = parameters.erase(it);
                         } else {
                             const QVariant &v = it->value;
-                            RenderShaderData *shaderData = Q_NULLPTR;
-                            if ((shaderData = v.value<RenderShaderData *>()) != Q_NULLPTR) {
+                            ShaderData *shaderData = Q_NULLPTR;
+                            if ((shaderData = v.value<ShaderData *>()) != Q_NULLPTR) {
                                 // Try to check if we have a struct or array matching a QShaderData parameter
                                 setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, shaderData, it->name);
                                 it = parameters.erase(it);

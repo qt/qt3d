@@ -102,7 +102,7 @@ void QUniformPack::setTexture(const QString &glslName, const Qt3D::QNodeId &texI
     m_textures.append(NamedTexture(glslName, texId));
 }
 
-// Contains Uniform Block Index and QNodeId of the RenderShaderData (UBO)
+// Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
 void QUniformPack::setUniformBuffer(const BlockToUBO &blockToUBO)
 {
     m_uniformBuffers.append(blockToUBO);

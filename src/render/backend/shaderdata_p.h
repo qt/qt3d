@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSHADERDATA_P_H
-#define QT3DRENDER_RENDER_RENDERSHADERDATA_P_H
+#ifndef QT3DRENDER_RENDER_SHADERDATA_P_H
+#define QT3DRENDER_RENDER_SHADERDATA_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
@@ -53,11 +53,11 @@ class QGraphicsContext;
 class UniformBuffer;
 class ShaderDataManager;
 
-class Q_AUTOTEST_EXPORT RenderShaderData : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT ShaderData : public Qt3D::QBackendNode
 {
 public:
-    RenderShaderData();
-    ~RenderShaderData();
+    ShaderData();
+    ~ShaderData();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<QString, QVariant> properties() const { return m_properties; }
@@ -120,6 +120,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Render::RenderShaderData*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::ShaderData*)
 
-#endif // QT3DRENDER_RENDER_RENDERSHADERDATA_P_H
+#endif // QT3DRENDER_RENDER_SHADERDATA_P_H

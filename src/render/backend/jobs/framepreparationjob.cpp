@@ -37,7 +37,7 @@
 #include "framepreparationjob_p.h"
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/sphere.h>
 
 QT_BEGIN_NAMESPACE
@@ -78,9 +78,9 @@ void FramePreparationJob::parseNodeTree(Entity *node)
         // TO DO: Make that work with the GeometryRenderer
     }
 
-    // Update transform properties in RenderShaderData
-    QList<RenderShaderData *> shadersData = node->renderComponents<RenderShaderData>();
-    Q_FOREACH (RenderShaderData *r, shadersData) {
+    // Update transform properties in ShaderData
+    QList<ShaderData *> shadersData = node->renderComponents<ShaderData>();
+    Q_FOREACH (ShaderData *r, shadersData) {
         r->updateTransformedProperties(*node->worldTransform());
     }
 

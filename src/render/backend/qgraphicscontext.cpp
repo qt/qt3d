@@ -866,7 +866,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
         }
     }
 
-    // Bind UniformBlocks to UBO and update UBO from RenderShaderData
+    // Bind UniformBlocks to UBO and update UBO from ShaderData
     const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
     for (int i = 0; i < blockToUbos.length(); ++i) {
         const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);

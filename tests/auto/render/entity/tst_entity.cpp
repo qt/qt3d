@@ -63,7 +63,7 @@ QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>();
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 
 QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
-QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<RenderShaderData>(); }
+QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
 
 class tst_RenderEntity : public QObject
 {

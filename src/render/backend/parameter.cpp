@@ -104,7 +104,7 @@ QVariant Parameter::toBackendValue(const QVariant &value)
     } else if (qobject_cast<QAbstractTextureProvider*>(node)) {
         return QVariant::fromValue(static_cast<RenderTexture*>(createBackendNode(node)));
     } else if (qobject_cast<QShaderData*>(node)) {
-        return QVariant::fromValue(static_cast<RenderShaderData*>(createBackendNode(node)));
+        return QVariant::fromValue(static_cast<ShaderData*>(createBackendNode(node)));
     } else {
         qFatal("Texture and ShaderData are the only types of Node allowed as parameters");
         return QVariant();

@@ -63,7 +63,7 @@ class RenderView;
 class Renderer;
 class ShaderDataManager;
 struct ShaderUniform;
-class RenderShaderData;
+class ShaderData;
 class RenderState;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
@@ -129,7 +129,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
     void buildActiveUniformNameValueMapHelper(const QString &blockName,
                                               const QString &qmlPropertyName,
                                               const QVariant &value);
-    void buildActiveUniformNameValueMapStructHelper(RenderShaderData *rShaderData,
+    void buildActiveUniformNameValueMapStructHelper(ShaderData *rShaderData,
                                                     const QString &blockName,
                                                     const QString &qmlPropertyName = QString());
 

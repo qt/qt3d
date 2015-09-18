@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/renderpass_p.h>
 #include <Qt3DRenderer/private/parameter_p.h>
-#include <Qt3DRenderer/private/rendershaderdata_p.h>
+#include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
 #include <Qt3DRenderer/private/rendertextureimage_p.h>
@@ -253,7 +253,7 @@ public:
 };
 
 class ShaderDataManager : public Qt3D::QResourceManager<
-        RenderShaderData,
+        ShaderData,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
