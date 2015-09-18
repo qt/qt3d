@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSHADER_H
-#define QT3DRENDER_RENDER_RENDERSHADER_H
+#ifndef QT3DRENDER_RENDER_SHADER_H
+#define QT3DRENDER_RENDER_SHADER_H
 
 #include <QVector>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
@@ -58,11 +58,11 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class Q_AUTOTEST_EXPORT RenderShader : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Shader : public Qt3D::QBackendNode
 {
 public:
-    RenderShader();
-    ~RenderShader();
+    Shader();
+    ~Shader();
 
     void cleanup();
 
@@ -118,7 +118,7 @@ private:
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
     void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
 
-    void initialize(const RenderShader &other);
+    void initialize(const Shader &other);
 
     QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
     friend class QGraphicsContext;
@@ -129,4 +129,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERSHADER_H
+#endif // QT3DRENDER_RENDER_SHADER_H

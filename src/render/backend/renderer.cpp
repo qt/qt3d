@@ -61,7 +61,7 @@
 #include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderqueue_p.h>
-#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertechnique_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
@@ -850,7 +850,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             continue;
         }
 
-        RenderShader *shader = m_shaderManager->data(command->m_shader);
+        Shader *shader = m_shaderManager->data(command->m_shader);
         if (shader == Q_NULLPTR) {
             shader = m_defaultRenderShader;
             command->m_parameterAttributeToShaderNames = m_defaultParameterToGLSLAttributeNames;

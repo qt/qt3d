@@ -255,11 +255,11 @@ private:
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
     void setUniformBlockValue(QUniformPack &uniformPack,
-                              RenderShader *shader,
+                              Shader *shader,
                               const ShaderUniformBlock &block,
                               const QVariant &value);
     void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
-                                               RenderShader *shader,
+                                               Shader *shader,
                                                ShaderData *shaderData,
                                                const QString &structName);
     void buildSortingKey(RenderCommand *command);

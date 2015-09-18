@@ -86,7 +86,7 @@ class QGraphicsContext;
 class FrameGraphNode;
 class Material;
 class RenderTechnique;
-class RenderShader;
+class Shader;
 class Entity;
 class RenderCommand;
 class CameraManager;
@@ -220,7 +220,7 @@ private:
 
     QHash<QMaterial*, Material*> m_materialHash;
     QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
-    QHash<QShaderProgram*, RenderShader*> m_shaderHash;
+    QHash<QShaderProgram*, Shader*> m_shaderHash;
 
     QMaterial* m_defaultMaterial;
     QTechnique* m_defaultTechnique;
@@ -232,7 +232,7 @@ private:
 
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader
-    RenderShader *m_defaultRenderShader;
+    Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     QUniformPack m_defaultUniformPack;

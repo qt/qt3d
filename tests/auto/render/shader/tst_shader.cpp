@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/qshaderprogram.h>
 
 class tst_RenderShader : public QObject
@@ -78,7 +78,7 @@ Qt3DRender::QShaderProgram *createFrontendShader()
 
 void tst_RenderShader::hasCoherentInitialState()
 {
-    Qt3DRender::Render::RenderShader *shader = new Qt3DRender::Render::RenderShader();
+    Qt3DRender::Render::Shader *shader = new Qt3DRender::Render::Shader();
 
     QCOMPARE(shader->isLoaded(), false);
     QCOMPARE(shader->dna(), 0U);
@@ -93,7 +93,7 @@ void tst_RenderShader::hasCoherentInitialState()
 void tst_RenderShader::matchesFrontendPeer()
 {
     Qt3DRender::QShaderProgram *frontend = createFrontendShader();
-    Qt3DRender::Render::RenderShader *backend = new Qt3DRender::Render::RenderShader();
+    Qt3DRender::Render::Shader *backend = new Qt3DRender::Render::Shader();
 
     backend->updateFromPeer(frontend);
     QCOMPARE(backend->isLoaded(), false);
@@ -107,7 +107,7 @@ void tst_RenderShader::matchesFrontendPeer()
 void tst_RenderShader::cleanupLeavesACoherentState()
 {
     Qt3DRender::QShaderProgram *frontend = createFrontendShader();
-    Qt3DRender::Render::RenderShader *shader = new Qt3DRender::Render::RenderShader();
+    Qt3DRender::Render::Shader *shader = new Qt3DRender::Render::Shader();
 
     shader->updateFromPeer(frontend);
 
@@ -125,4 +125,4 @@ void tst_RenderShader::cleanupLeavesACoherentState()
 
 QTEST_APPLESS_MAIN(tst_RenderShader)
 
-#include "tst_rendershader.moc"
+#include "tst_shader.moc"

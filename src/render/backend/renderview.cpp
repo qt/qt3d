@@ -488,7 +488,7 @@ void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QStrin
     uniformPack.setUniform(glslName, (this->*ms_standardUniformSetters[name])(worldTransform));
 }
 
-void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *shader, const ShaderUniformBlock &block, const QVariant &value)
+void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
     ShaderData *shaderData = Q_NULLPTR;
     if ((shaderData = value.value<ShaderData *>())) {
@@ -539,7 +539,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, RenderShader *s
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, RenderShader *shader, ShaderData *shaderData, const QString &structName)
+void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName)
 {
     m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
@@ -601,9 +601,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
     // Once that works, improve that to try and minimize QUniformPack updates
 
     if (rPass != Q_NULLPTR) {
-        // Index RenderShader by Shader UUID
+        // Index Shader by Shader UUID
         command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
-        RenderShader *shader = Q_NULLPTR;
+        Shader *shader = Q_NULLPTR;
         if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
 
             command->m_shaderDna = shader->dna();

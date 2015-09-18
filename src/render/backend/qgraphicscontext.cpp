@@ -40,7 +40,7 @@
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/private/material_p.h>
 #include <Qt3DRenderer/private/rendertexture_p.h>
 #include <Qt3DRenderer/private/buffer_p.h>
@@ -323,8 +323,8 @@ void QGraphicsContext::doneCurrent()
     m_gl->doneCurrent();
 }
 
-// That assumes that the shaderProgram in RenderShader stays the same
-void QGraphicsContext::activateShader(RenderShader *shader)
+// That assumes that the shaderProgram in Shader stays the same
+void QGraphicsContext::activateShader(Shader *shader)
 {
     if (shader == Q_NULLPTR) {
         m_activeShader = Q_NULLPTR;
@@ -333,7 +333,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         return;
     }
 
-    // If RenderShader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
+    // If Shader has no QOpenGLShaderProgram or !shader->isLoaded (shader sources have changed)
     if (!m_renderShaderHash.contains(shader->dna())) {
         QOpenGLShaderProgram *prog = shader->getOrCreateProgram(this);
         Q_ASSERT(prog);
@@ -346,7 +346,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
         m_activeShader = Q_NULLPTR;
     } else if (!shader->isLoaded()) {
         // Shader program is already in the m_shaderHash but we still need to
-        // ensure that the RenderShader has full knowledge of attributes, uniforms,
+        // ensure that the Shader has full knowledge of attributes, uniforms,
         // and uniform blocks.
         shader->initialize(*m_renderShaderHash.value(shader->dna()));
     }
@@ -370,7 +370,7 @@ void QGraphicsContext::activateShader(RenderShader *shader)
  */
 QOpenGLShaderProgram *QGraphicsContext::containsProgram(const ProgramDNA &dna)
 {
-    RenderShader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
+    Shader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
     if (renderShader)
         return renderShader->getOrCreateProgram(this);
     return Q_NULLPTR;

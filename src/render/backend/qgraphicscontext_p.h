@@ -48,7 +48,7 @@
 #include <QBitArray>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
 #include <Qt3DRenderer/qclearbuffer.h>
-#include <Qt3DRenderer/private/rendershader_p.h>
+#include <Qt3DRenderer/private/shader_p.h>
 #include <Qt3DRenderer/qattribute.h>
 
 QT_BEGIN_NAMESPACE
@@ -107,7 +107,7 @@ public:
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
 
-    void activateShader(RenderShader* shader);
+    void activateShader(Shader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
 
     GLuint activeFBO() const { return m_activeFBO; }
@@ -213,8 +213,8 @@ private:
     QGraphicsHelperInterface *m_glHelper;
     bool m_ownCurrent;
 
-    RenderShader *m_activeShader;
-    QHash<ProgramDNA, RenderShader *> m_renderShaderHash;
+    Shader *m_activeShader;
+    QHash<ProgramDNA, Shader *> m_renderShaderHash;
     QHash<Buffer *, QOpenGLBuffer> m_renderBufferHash;
     QHash<Qt3D::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
