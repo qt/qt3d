@@ -67,7 +67,7 @@ public:
     void cleanup();
 
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack);
+    void updateUniforms(GraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
     QVector<QString> uniformsNames() const;
@@ -90,7 +90,7 @@ public:
 private:
     QOpenGLShaderProgram *m_program;
 
-    QOpenGLShaderProgram *createProgram(QGraphicsContext *context);
+    QOpenGLShaderProgram *createProgram(GraphicsContext *context);
     QOpenGLShaderProgram *createDefaultProgram();
 
     QVector<QString> m_uniformsNames;
@@ -120,8 +120,8 @@ private:
 
     void initialize(const Shader &other);
 
-    QOpenGLShaderProgram *getOrCreateProgram(QGraphicsContext *ctx);
-    friend class QGraphicsContext;
+    QOpenGLShaderProgram *getOrCreateProgram(GraphicsContext *ctx);
+    friend class GraphicsContext;
 };
 
 } // namespace Render

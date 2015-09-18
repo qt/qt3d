@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H
-#define QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSCONTEXT_H
+#define QT3DRENDER_RENDER_GRAPHICSCONTEXT_H
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
@@ -63,7 +63,7 @@ class QOpenGLFilter;
 namespace Render {
 
 class Renderer;
-class QGraphicsHelperInterface;
+class GraphicsHelperInterface;
 class RenderStateSet;
 class Material;
 class Texture;
@@ -82,11 +82,11 @@ enum TextureScope
 
 typedef QPair<QString, int> NamedUniformLocation;
 
-class QGraphicsContext
+class GraphicsContext
 {
 public:
-    QGraphicsContext();
-    ~QGraphicsContext();
+    GraphicsContext();
+    ~GraphicsContext();
 
     int id() const; // unique, small integer ID of this context
 
@@ -210,7 +210,7 @@ private:
     const unsigned int m_id;
     QOpenGLContext *m_gl;
     QSurface *m_surface;
-    QGraphicsHelperInterface *m_glHelper;
+    GraphicsHelperInterface *m_glHelper;
     bool m_ownCurrent;
 
     Shader *m_activeShader;
@@ -248,4 +248,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSCONTEXT_H
+#endif // QT3DRENDER_RENDER_GRAPHICSCONTEXT_H

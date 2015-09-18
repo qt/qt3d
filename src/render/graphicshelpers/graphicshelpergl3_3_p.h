@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERGL3_3_P_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERGL3_3_P_H
 
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
 
 #ifndef QT_OPENGL_ES_2
@@ -50,10 +50,10 @@ class QOpenGLExtension_ARB_tessellation_shader;
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsHelperGL3_3 : public QGraphicsHelperInterface
+class GraphicsHelperGL3_3 : public GraphicsHelperInterface
 {
 public:
-    QGraphicsHelperGL3_3();
+    GraphicsHelperGL3_3();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -109,4 +109,4 @@ QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERGL3_3_P_H

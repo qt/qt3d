@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "qgraphicscontext_p.h"
+#include "graphicscontext_p.h"
 
 #include <Qt3DRenderer/qopenglfilter.h>
 #include <Qt3DRenderer/qparameter.h>
@@ -48,7 +48,7 @@
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
@@ -59,12 +59,12 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
-#include <Qt3DRenderer/private/qgraphicshelpergl2_p.h>
-#include <Qt3DRenderer/private/qgraphicshelpergl3_p.h>
-#include <Qt3DRenderer/private/qgraphicshelpergl3_3_p.h>
-#include <Qt3DRenderer/private/qgraphicshelpergl4_p.h>
+#include <Qt3DRenderer/private/graphicshelpergl2_p.h>
+#include <Qt3DRenderer/private/graphicshelpergl3_p.h>
+#include <Qt3DRenderer/private/graphicshelpergl3_3_p.h>
+#include <Qt3DRenderer/private/graphicshelpergl4_p.h>
 #endif
-#include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
+#include <Qt3DRenderer/private/graphicshelperes2_p.h>
 
 #include <QSurface>
 #include <QWindow>
@@ -75,7 +75,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-static QHash<unsigned int, QGraphicsContext*> static_contexts;
+static QHash<unsigned int, GraphicsContext*> static_contexts;
 
 namespace {
 
@@ -118,7 +118,7 @@ unsigned int nextFreeContextId()
     return 0;
 }
 
-QGraphicsContext::QGraphicsContext()
+GraphicsContext::GraphicsContext()
     : m_initialized(false)
     , m_id(nextFreeContextId())
     , m_gl(Q_NULLPTR)
@@ -138,7 +138,7 @@ QGraphicsContext::QGraphicsContext()
     static_contexts[m_id] = this;
 }
 
-QGraphicsContext::~QGraphicsContext()
+GraphicsContext::~GraphicsContext()
 {
     releaseOpenGL();
 
@@ -146,7 +146,7 @@ QGraphicsContext::~QGraphicsContext()
     static_contexts.remove(m_id);
 }
 
-void QGraphicsContext::initialize()
+void GraphicsContext::initialize()
 {
     m_initialized = true;
 
@@ -173,7 +173,7 @@ void QGraphicsContext::initialize()
     qCDebug(Backend) << "VAO support = " << m_supportsVAO;
 }
 
-bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
+bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
 {
     Q_ASSERT(surface);
     Q_ASSERT(m_gl);
@@ -208,7 +208,7 @@ bool QGraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
     return true;
 }
 
-void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
+void GraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
 {
     if (buffers != QClearBuffer::None) {
         GLbitfield mask = 0;
@@ -224,7 +224,7 @@ void QGraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
     }
 }
 
-void QGraphicsContext::endDrawing(bool swapBuffers)
+void GraphicsContext::endDrawing(bool swapBuffers)
 {
     if (swapBuffers)
         m_gl->swapBuffers(m_surface);
@@ -234,7 +234,7 @@ void QGraphicsContext::endDrawing(bool swapBuffers)
     decayTextureScores();
 }
 
-void QGraphicsContext::setViewport(const QRectF &viewport)
+void GraphicsContext::setViewport(const QRectF &viewport)
 {
     m_viewport = viewport;
     QSize renderTargetSize;
@@ -257,9 +257,9 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
                                                                      GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
                                                                      &attachment0Name);
 
-            if (attachmentObjectType == GL_RENDERBUFFER && m_glHelper->supportsFeature(QGraphicsHelperInterface::RenderBufferDimensionRetrieval))
+            if (attachmentObjectType == GL_RENDERBUFFER && m_glHelper->supportsFeature(GraphicsHelperInterface::RenderBufferDimensionRetrieval))
                 renderTargetSize = m_glHelper->getRenderBufferDimensions(attachment0Name);
-            else if (attachmentObjectType == GL_TEXTURE && m_glHelper->supportsFeature(QGraphicsHelperInterface::TextureDimensionRetrieval))
+            else if (attachmentObjectType == GL_TEXTURE && m_glHelper->supportsFeature(GraphicsHelperInterface::TextureDimensionRetrieval))
                 // Assumes texture level 0 and GL_TEXTURE_2D target
                 renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name, GL_TEXTURE_2D);
             else
@@ -287,13 +287,13 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
                                   m_viewport.height() * renderTargetSize.height());
 }
 
-void QGraphicsContext::releaseOpenGL()
+void GraphicsContext::releaseOpenGL()
 {
     m_renderShaderHash.clear();
     m_renderBufferHash.clear();
 }
 
-void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
+void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
 {
     Q_ASSERT(surface);
     Q_ASSERT(ctx);
@@ -307,7 +307,7 @@ void QGraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
     }
 }
 
-bool QGraphicsContext::makeCurrent(QSurface *surface)
+bool GraphicsContext::makeCurrent(QSurface *surface)
 {
     Q_ASSERT(m_gl);
     if (!m_gl->makeCurrent(surface)) {
@@ -317,14 +317,14 @@ bool QGraphicsContext::makeCurrent(QSurface *surface)
     return true;
 }
 
-void QGraphicsContext::doneCurrent()
+void GraphicsContext::doneCurrent()
 {
     Q_ASSERT(m_gl);
     m_gl->doneCurrent();
 }
 
 // That assumes that the shaderProgram in Shader stays the same
-void QGraphicsContext::activateShader(Shader *shader)
+void GraphicsContext::activateShader(Shader *shader)
 {
     if (shader == Q_NULLPTR) {
         m_activeShader = Q_NULLPTR;
@@ -341,7 +341,7 @@ void QGraphicsContext::activateShader(Shader *shader)
         qCDebug(Backend) << Q_FUNC_INFO << "shader count =" << m_renderShaderHash.count();
         shader->initializeUniforms(m_glHelper->programUniformsAndLocations(prog->programId()));
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
-        if (m_glHelper->supportsFeature(QGraphicsHelperInterface::UniformBufferObject))
+        if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
             shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
         m_activeShader = Q_NULLPTR;
     } else if (!shader->isLoaded()) {
@@ -368,7 +368,7 @@ void QGraphicsContext::activateShader(Shader *shader)
  * Returns the QOpenGLShaderProgram matching the ProgramDNA \a dna. If no match
  * is found, Q_NULLPTR is returned.
  */
-QOpenGLShaderProgram *QGraphicsContext::containsProgram(const ProgramDNA &dna)
+QOpenGLShaderProgram *GraphicsContext::containsProgram(const ProgramDNA &dna)
 {
     Shader *renderShader = m_renderShaderHash.value(dna, Q_NULLPTR);
     if (renderShader)
@@ -376,7 +376,7 @@ QOpenGLShaderProgram *QGraphicsContext::containsProgram(const ProgramDNA &dna)
     return Q_NULLPTR;
 }
 
-void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
+void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const AttachmentPack &attachments, GLuint defaultFboId)
 {
     GLuint fboId = defaultFboId; // Default FBO
     if (renderTarget != Q_NULLPTR) {
@@ -418,7 +418,7 @@ void QGraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const At
     activateDrawBuffers(attachments);
 }
 
-void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
+void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments)
 {
     // Set FBO attachments
 
@@ -439,7 +439,7 @@ void QGraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attac
     m_renderTargetsSize.insert(fboId, fboSize);
 }
 
-void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
+void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
     int activeDrawBuffers[QRenderAttachment::ColorAttachment15 + 1];
     int i = 0;
@@ -459,7 +459,7 @@ void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 
     if (m_glHelper->checkFrameBufferComplete()) {
         if (i > 1) {// We need MRT
-            if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT)) {
+            if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT)) {
                 // Set up MRT, glDrawBuffers...
                 m_glHelper->drawBuffers(i, activeDrawBuffers);
             }
@@ -470,7 +470,7 @@ void QGraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 }
 
 
-void QGraphicsContext::setActiveMaterial(Material *rmat)
+void GraphicsContext::setActiveMaterial(Material *rmat)
 {
     if (m_material == rmat)
         return;
@@ -480,11 +480,11 @@ void QGraphicsContext::setActiveMaterial(Material *rmat)
 }
 
 // TO DO : Try to move what's in Renderer here
-void QGraphicsContext::executeCommand(const RenderCommand *)
+void GraphicsContext::executeCommand(const RenderCommand *)
 {
 }
 
-int QGraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
+int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
 {
     // Returns the texture unit to use for the texture
     // This always return a valid unit, unless there are more textures than
@@ -515,7 +515,7 @@ int QGraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUn
     return onUnit;
 }
 
-void QGraphicsContext::deactivateTexturesWithScope(TextureScope ts)
+void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
         if (!m_pinnedTextureUnits[u])
@@ -532,12 +532,12 @@ void QGraphicsContext::deactivateTexturesWithScope(TextureScope ts)
  * Finds the highest supported opengl version and internally use the most optimized
  * helper for a given version.
  */
-void QGraphicsContext::resolveHighestOpenGLFunctions()
+void GraphicsContext::resolveHighestOpenGLFunctions()
 {
     Q_ASSERT(m_gl);
 
     if (m_gl->isOpenGLES()) {
-        m_glHelper = new QGraphicsHelperES2();
+        m_glHelper = new GraphicsHelperES2();
         m_glHelper->initializeHelper(m_gl, Q_NULLPTR);
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
@@ -546,18 +546,18 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
         QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
         if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
-            m_glHelper = new QGraphicsHelperGL4();
+            m_glHelper = new GraphicsHelperGL4();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
-            m_glHelper = new QGraphicsHelperGL3_3();
+            m_glHelper = new GraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-            m_glHelper = new QGraphicsHelperGL3();
+            m_glHelper = new GraphicsHelperGL3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
-            m_glHelper = new QGraphicsHelperGL2();
+            m_glHelper = new GraphicsHelperGL2();
         }
-        Q_ASSERT_X(m_glHelper, "QGraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
+        Q_ASSERT_X(m_glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
         m_glHelper->initializeHelper(m_gl, glFunctions);
     }
 #endif
@@ -574,7 +574,7 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
     m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
 }
 
-void QGraphicsContext::deactivateTexture(Texture* tex)
+void GraphicsContext::deactivateTexture(Texture* tex)
 {
     for (int u=0; u<m_activeTextures.size(); ++u) {
         if (m_activeTextures[u] == tex->dna()) {
@@ -587,7 +587,7 @@ void QGraphicsContext::deactivateTexture(Texture* tex)
     qCWarning(Backend) << Q_FUNC_INFO << "texture not active:" << tex;
 }
 
-void QGraphicsContext::setCurrentStateSet(RenderStateSet *ss)
+void GraphicsContext::setCurrentStateSet(RenderStateSet *ss)
 {
     if (ss == m_stateSet)
         return;
@@ -596,12 +596,12 @@ void QGraphicsContext::setCurrentStateSet(RenderStateSet *ss)
     m_stateSet = ss;
 }
 
-RenderStateSet *QGraphicsContext::currentStateSet() const
+RenderStateSet *GraphicsContext::currentStateSet() const
 {
     return m_stateSet;
 }
 
-QOpenGLFilter *QGraphicsContext::contextInfo() const
+QOpenGLFilter *GraphicsContext::contextInfo() const
 {
     return m_contextInfo;
 }
@@ -611,7 +611,7 @@ QOpenGLFilter *QGraphicsContext::contextInfo() const
  * If the call is not supported by the system's OpenGL version,
  * it is simulated with a loop.
  */
-void QGraphicsContext::drawElementsInstanced(GLenum primitiveType,
+void GraphicsContext::drawElementsInstanced(GLenum primitiveType,
                                              GLsizei primitiveCount,
                                              GLint indexType,
                                              void *indices,
@@ -631,7 +631,7 @@ void QGraphicsContext::drawElementsInstanced(GLenum primitiveType,
 /*!
  * Wraps an OpenGL call to glDrawArraysInstanced.
  */
-void QGraphicsContext::drawArraysInstanced(GLenum primitiveType,
+void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
                                            GLint first,
                                            GLsizei count,
                                            GLsizei instances)
@@ -645,7 +645,7 @@ void QGraphicsContext::drawArraysInstanced(GLenum primitiveType,
 /*!
  * Wraps an OpenGL call to glDrawElements.
  */
-void QGraphicsContext::drawElements(GLenum primitiveType,
+void GraphicsContext::drawElements(GLenum primitiveType,
                                     GLsizei primitiveCount,
                                     GLint indexType,
                                     void *indices,
@@ -661,7 +661,7 @@ void QGraphicsContext::drawElements(GLenum primitiveType,
 /*!
  * Wraps an OpenGL call to glDrawArrays.
  */
-void QGraphicsContext::drawArrays(GLenum primitiveType,
+void GraphicsContext::drawArrays(GLenum primitiveType,
                                   GLint first,
                                   GLsizei count)
 {
@@ -670,112 +670,112 @@ void QGraphicsContext::drawArrays(GLenum primitiveType,
                            count);
 }
 
-void QGraphicsContext::setVerticesPerPatch(GLint verticesPerPatch)
+void GraphicsContext::setVerticesPerPatch(GLint verticesPerPatch)
 {
     m_glHelper->setVerticesPerPatch(verticesPerPatch);
 }
 
-void QGraphicsContext::blendEquation(GLenum mode)
+void GraphicsContext::blendEquation(GLenum mode)
 {
     m_glHelper->blendEquation(mode);
 }
 
-void QGraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
+void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
 {
     m_glHelper->alphaTest(mode1, mode2);
 }
 
-void QGraphicsContext::depthTest(GLenum mode)
+void GraphicsContext::depthTest(GLenum mode)
 {
     m_glHelper->depthTest(mode);
 }
 
-void QGraphicsContext::depthMask(GLenum mode)
+void GraphicsContext::depthMask(GLenum mode)
 {
     m_glHelper->depthMask(mode);
 }
 
-void QGraphicsContext::cullFace(GLenum mode)
+void GraphicsContext::cullFace(GLenum mode)
 {
     m_glHelper->cullFace(mode);
 }
 
-void QGraphicsContext::frontFace(GLenum mode)
+void GraphicsContext::frontFace(GLenum mode)
 {
     m_glHelper->frontFace(mode);
 }
 
-void QGraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs)
+void GraphicsContext::bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs)
 {
-    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::MRT) &&
-            m_glHelper->supportsFeature(QGraphicsHelperInterface::BindableFragmentOutputs))
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::MRT) &&
+            m_glHelper->supportsFeature(GraphicsHelperInterface::BindableFragmentOutputs))
         m_glHelper->bindFragDataLocation(shader, outputs);
 }
 
-void QGraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &description)
+void GraphicsContext::bindUniform(const QVariant &v, const ShaderUniform &description)
 {
     m_glHelper->bindUniform(v, description);
 }
 
-void QGraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
-void QGraphicsContext::bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer)
+void GraphicsContext::bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer)
 {
     m_glHelper->bindBufferBase(target, bindingIndex, buffer);
 }
 
-void QGraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+void GraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
     m_glHelper->buildUniformBuffer(v, description, buffer);
 }
 
-void QGraphicsContext::enableAlphaCoverage()
+void GraphicsContext::enableAlphaCoverage()
 {
     m_glHelper->enableAlphaCoverage();
 }
 
-void QGraphicsContext::disableAlphaCoverage()
+void GraphicsContext::disableAlphaCoverage()
 {
     m_glHelper->disableAlphaCoverage();
 }
 
-GLuint QGraphicsContext::boundFrameBufferObject()
+GLuint GraphicsContext::boundFrameBufferObject()
 {
     return m_glHelper->boundFrameBufferObject();
 }
 
-void QGraphicsContext::clearColor(const QColor &color)
+void GraphicsContext::clearColor(const QColor &color)
 {
     m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
-void QGraphicsContext::enableClipPlane(int clipPlane)
+void GraphicsContext::enableClipPlane(int clipPlane)
 {
     m_glHelper->enableClipPlane(clipPlane);
 }
 
-void QGraphicsContext::disableClipPlane(int clipPlane)
+void GraphicsContext::disableClipPlane(int clipPlane)
 {
     m_glHelper->disableClipPlane(clipPlane);
 }
 
-GLint QGraphicsContext::maxClipPlaneCount()
+GLint GraphicsContext::maxClipPlaneCount()
 {
     return m_glHelper->maxClipPlaneCount();
 }
 
-void QGraphicsContext::enablePrimitiveRestart(int restartIndex)
+void GraphicsContext::enablePrimitiveRestart(int restartIndex)
 {
-    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::PrimitiveRestart))
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
         m_glHelper->enablePrimitiveRestart(restartIndex);
 }
 
-void QGraphicsContext::disablePrimitiveRestart()
+void GraphicsContext::disablePrimitiveRestart()
 {
-    if (m_glHelper->supportsFeature(QGraphicsHelperInterface::PrimitiveRestart))
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::PrimitiveRestart))
         m_glHelper->disablePrimitiveRestart();
 }
 
@@ -785,7 +785,7 @@ void QGraphicsContext::disablePrimitiveRestart()
     Tries to use the texture unit with the texture that hasn't been used for the longest time
     if the texture happens not to be already pinned on a texture unit.
  */
-GLint QGraphicsContext::assignUnitForTexture(Texture *tex)
+GLint GraphicsContext::assignUnitForTexture(Texture *tex)
 {
     int lowestScoredUnit = -1;
     int lowestScore = 0xfffffff;
@@ -812,7 +812,7 @@ GLint QGraphicsContext::assignUnitForTexture(Texture *tex)
     return lowestScoredUnit;
 }
 
-void QGraphicsContext::decayTextureScores()
+void GraphicsContext::decayTextureScores()
 {
     QHash<uint, int>::iterator it = m_textureScores.begin();
     const QHash<uint, int>::iterator end = m_textureScores.end();
@@ -828,20 +828,20 @@ void QGraphicsContext::decayTextureScores()
     }
 }
 
-QOpenGLShaderProgram* QGraphicsContext::activeShader()
+QOpenGLShaderProgram* GraphicsContext::activeShader()
 {
     Q_ASSERT(m_activeShader);
     return m_activeShader->getOrCreateProgram(this);
 }
 
-void QGraphicsContext::setRenderer(Renderer *renderer)
+void GraphicsContext::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
 }
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-void QGraphicsContext::setUniforms(QUniformPack &uniforms)
+void GraphicsContext::setUniforms(QUniformPack &uniforms)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
@@ -911,7 +911,7 @@ void QGraphicsContext::setUniforms(QUniformPack &uniforms)
     m_activeShader->updateUniforms(this, uniforms);
 }
 
-void QGraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
+void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)
 {
     if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
         return;
@@ -940,7 +940,7 @@ void QGraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buff
     buf.release();
 }
 
-void QGraphicsContext::specifyIndices(Buffer *buffer)
+void GraphicsContext::specifyIndices(Buffer *buffer)
 {
     Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
 
@@ -951,14 +951,14 @@ void QGraphicsContext::specifyIndices(Buffer *buffer)
     // bind within the current VAO
 }
 
-void QGraphicsContext::updateBuffer(Buffer *buffer)
+void GraphicsContext::updateBuffer(Buffer *buffer)
 {
     const QHash<Buffer *, QOpenGLBuffer>::iterator it = m_renderBufferHash.find(buffer);
     if (it != m_renderBufferHash.end())
         uploadDataToGLBuffer(buffer, it.value());
 }
 
-QOpenGLBuffer QGraphicsContext::glBufferForRenderBuffer(Buffer *buf)
+QOpenGLBuffer GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
 {
     if (m_renderBufferHash.contains(buf))
         return m_renderBufferHash.value(buf);
@@ -968,7 +968,7 @@ QOpenGLBuffer QGraphicsContext::glBufferForRenderBuffer(Buffer *buf)
     return glbuf;
 }
 
-GLint QGraphicsContext::elementType(GLint type)
+GLint GraphicsContext::elementType(GLint type)
 {
     switch (type) {
     case GL_FLOAT:
@@ -993,7 +993,7 @@ GLint QGraphicsContext::elementType(GLint type)
     return GL_INVALID_VALUE;
 }
 
-GLint QGraphicsContext::tupleSizeFromType(GLint type)
+GLint GraphicsContext::tupleSizeFromType(GLint type)
 {
     switch (type) {
     case GL_FLOAT:
@@ -1029,7 +1029,7 @@ GLint QGraphicsContext::tupleSizeFromType(GLint type)
     return 1;
 }
 
-GLuint QGraphicsContext::byteSizeFromType(GLint type)
+GLuint GraphicsContext::byteSizeFromType(GLint type)
 {
     switch (type) {
     case GL_FLOAT:          return sizeof(float);
@@ -1054,7 +1054,7 @@ GLuint QGraphicsContext::byteSizeFromType(GLint type)
     return 0;
 }
 
-GLint QGraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dataType)
+GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dataType)
 {
     switch (dataType) {
     case QAttribute::DataType::Byte:

@@ -37,7 +37,7 @@
 
 #include "blendstate_p.h"
 
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
 
 #include <QOpenGLFunctions_3_2_Core>
 
@@ -60,7 +60,7 @@ State* getOrCreateImpl(const State& data)
     return result;
 }
 
-void BlendState::apply(QGraphicsContext* gc) const
+void BlendState::apply(GraphicsContext* gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_BLEND);
     gc->openGLContext()->functions()->glBlendFunc( m_1, m_2 );
@@ -77,7 +77,7 @@ BlendState::BlendState(GLenum src, GLenum dst) :
 {
 }
 
-void BlendEquation::apply(QGraphicsContext *gc) const
+void BlendEquation::apply(GraphicsContext *gc) const
 {
     gc->blendEquation(m_1);
 }
@@ -93,7 +93,7 @@ BlendEquation::BlendEquation(GLenum func) :
 }
 
 
-void AlphaFunc::apply(QGraphicsContext* gc) const
+void AlphaFunc::apply(GraphicsContext* gc) const
 {
     gc->alphaTest(m_1, m_2);
 }
@@ -109,7 +109,7 @@ AlphaFunc::AlphaFunc(GLenum func, GLclampf value) :
 {
 }
 
-void DepthTest::apply(QGraphicsContext *gc) const
+void DepthTest::apply(GraphicsContext *gc) const
 {
     gc->depthTest(m_1);
 }
@@ -125,7 +125,7 @@ DepthTest::DepthTest(GLenum func) :
 {
 }
 
-void CullFace::apply(QGraphicsContext *gc) const
+void CullFace::apply(GraphicsContext *gc) const
 {
     gc->cullFace(m_1);
 }
@@ -140,7 +140,7 @@ CullFace::CullFace(GLenum func) :
 {
 }
 
-void FrontFace::apply(QGraphicsContext *gc) const
+void FrontFace::apply(GraphicsContext *gc) const
 {
     gc->frontFace(m_1);
 }
@@ -155,7 +155,7 @@ FrontFace::FrontFace(GLenum func) :
 {
 }
 
-void DepthMask::apply(QGraphicsContext *gc) const
+void DepthMask::apply(GraphicsContext *gc) const
 {
    gc->depthMask(m_1);
 }
@@ -175,7 +175,7 @@ Dithering::Dithering()
 {
 }
 
-void Dithering::apply(QGraphicsContext *gc) const
+void Dithering::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_DITHER);
 }
@@ -190,7 +190,7 @@ ScissorTest::ScissorTest(int left, int bottom, int width, int height)
 {
 }
 
-void ScissorTest::apply(QGraphicsContext *gc) const
+void ScissorTest::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_SCISSOR_TEST);
     gc->openGLContext()->functions()->glScissor(m_1, m_2, m_3, m_4);
@@ -213,7 +213,7 @@ StencilTest::StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum 
 {
 }
 
-void StencilTest::apply(QGraphicsContext *gc) const
+void StencilTest::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_STENCIL_TEST);
     gc->openGLContext()->functions()->glStencilFuncSeparate(GL_FRONT, m_1, m_2, m_3);
@@ -225,7 +225,7 @@ AlphaCoverage::AlphaCoverage()
 {
 }
 
-void AlphaCoverage::apply(QGraphicsContext *gc) const
+void AlphaCoverage::apply(GraphicsContext *gc) const
 {
     gc->enableAlphaCoverage();
 }
@@ -235,7 +235,7 @@ AlphaCoverage *AlphaCoverage::getOrCreate()
     return getOrCreateImpl(AlphaCoverage());
 }
 
-void PolygonOffset::apply(QGraphicsContext *gc) const
+void PolygonOffset::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_POLYGON_OFFSET_FILL);
     gc->openGLContext()->functions()->glPolygonOffset(m_1, m_2);
@@ -251,7 +251,7 @@ PolygonOffset::PolygonOffset(GLfloat factor, GLfloat units)
 {
 }
 
-void ColorMask::apply(QGraphicsContext *gc) const
+void ColorMask::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glColorMask(m_1, m_2, m_3, m_4);
 }
@@ -266,7 +266,7 @@ ColorMask *ColorMask::getOrCreate(GLboolean red, GLboolean green, GLboolean blue
     return getOrCreateImpl(ColorMask(red, green, blue, alpha));
 }
 
-void BlendStateSeparate::apply(QGraphicsContext *gc) const
+void BlendStateSeparate::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_BLEND);
     gc->openGLContext()->functions()->glBlendFuncSeparate(m_1, m_2, m_3, m_4);
@@ -282,7 +282,7 @@ BlendStateSeparate::BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcA
 {
 }
 
-void ClipPlane::apply(QGraphicsContext *gc) const
+void ClipPlane::apply(GraphicsContext *gc) const
 {
     gc->enableClipPlane(m_1);
 }
@@ -297,7 +297,7 @@ ClipPlane *ClipPlane::getOrCreate(int plane)
     return getOrCreateImpl(ClipPlane(plane));
 }
 
-void StencilOp::apply(QGraphicsContext *gc) const
+void StencilOp::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, m_1, m_2, m_3);
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, m_4, m_5, m_6);
@@ -313,7 +313,7 @@ StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail
 {
 }
 
-void StencilMask::apply(QGraphicsContext *gc) const
+void StencilMask::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, m_1);
     gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, m_2);

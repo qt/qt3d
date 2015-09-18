@@ -34,23 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERGL3_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERGL3_H
 
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
+#include <QtCore/qscopedpointer.h>
+
+#ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
+
+class QOpenGLFunctions_3_2_Core;
+class QOpenGLExtension_ARB_tessellation_shader;
 
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsHelperES2 : public QGraphicsHelperInterface
+class GraphicsHelperGL3 : public GraphicsHelperInterface
 {
 public:
-    QGraphicsHelperES2();
-    virtual ~QGraphicsHelperES2();
+    GraphicsHelperGL3();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -83,7 +86,7 @@ public:
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
-    void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
+    void bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
@@ -95,8 +98,8 @@ public:
     QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions *m_funcs;
-    bool m_isES3;
+    QOpenGLFunctions_3_2_Core *m_funcs;
+    QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
 };
 
 } // namespace Render
@@ -104,4 +107,6 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERES2_H
+#endif // !QT_OPENGL_ES_2
+
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERGL3_H

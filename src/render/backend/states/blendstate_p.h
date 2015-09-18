@@ -51,7 +51,7 @@ namespace Render {
 class Q_AUTOTEST_EXPORT BlendState : public GenericState2<BlendState, GLenum, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return BlendStateMask; }
 
@@ -63,7 +63,7 @@ private:
 class Q_AUTOTEST_EXPORT BlendStateSeparate : public GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return BlendStateMask; }
 
@@ -75,7 +75,7 @@ private:
 class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendEquation, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return BlendStateMask; }
@@ -90,7 +90,7 @@ private:
 class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState2<AlphaFunc, GLenum, GLclampf>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return AlphaTestMask; }
@@ -103,7 +103,7 @@ private:
 class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTest, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return DepthTestStateMask; }
@@ -117,7 +117,7 @@ private:
 class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthMask, GLboolean>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const  Q_DECL_OVERRIDE
     { return DepthWriteStateMask; }
@@ -131,7 +131,7 @@ private:
 class Q_AUTOTEST_EXPORT CullFace : public GenericState1<CullFace, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return CullFaceStateMask; }
@@ -145,7 +145,7 @@ private:
 class Q_AUTOTEST_EXPORT FrontFace : public GenericState1<FrontFace, GLenum>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return FrontFaceStateMask; }
@@ -158,7 +158,7 @@ private:
 class Q_AUTOTEST_EXPORT Dithering : public RenderState
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return DitheringStateMask; }
 
@@ -172,7 +172,7 @@ private:
 class Q_AUTOTEST_EXPORT ScissorTest : public GenericState4<ScissorTest, int, int, int, int>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return ScissorStateMask; }
 
@@ -185,7 +185,7 @@ private:
 class Q_AUTOTEST_EXPORT StencilTest : public GenericState6<StencilTest, GLenum, int, uint, GLenum, int, uint>
 {
 public:
-    virtual void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return StencilTestStateMask; }
     static StencilTest *getOrCreate(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask);
@@ -197,7 +197,7 @@ private:
 class Q_AUTOTEST_EXPORT AlphaCoverage : public RenderState
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     StateMaskSet mask() const Q_DECL_OVERRIDE
     { return AlphaCoverageStateMask; }
 
@@ -212,7 +212,7 @@ private:
 class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffset, GLfloat, GLfloat>
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     StateMaskSet mask() const Q_DECL_OVERRIDE
     { return PolygonOffsetStateMask; }
 
@@ -225,7 +225,7 @@ private:
 class Q_AUTOTEST_EXPORT ColorMask : public GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
     StateMaskSet mask() const Q_DECL_FINAL { return ColorStateMask; }
 
     static ColorMask *getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha);
@@ -237,7 +237,7 @@ private:
 class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, int>
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
 
     StateMaskSet mask() const Q_DECL_FINAL
     { return ClipPlaneMask; }
@@ -250,7 +250,7 @@ private:
 class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
 
     StateMaskSet mask() const Q_DECL_FINAL
     { return StencilOpMask; }
@@ -265,7 +265,7 @@ private:
 class Q_AUTOTEST_EXPORT StencilMask : public GenericState2<StencilMask, uint, uint>
 {
 public:
-    void apply(QGraphicsContext *gc) const Q_DECL_FINAL;
+    void apply(GraphicsContext *gc) const Q_DECL_FINAL;
 
     StateMaskSet mask() const Q_DECL_FINAL
     { return StencilWriteStateMask; }

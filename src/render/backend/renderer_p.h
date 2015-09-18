@@ -82,7 +82,7 @@ class AbstractSceneParser;
 namespace Render {
 
 class CameraLens;
-class QGraphicsContext;
+class GraphicsContext;
 class FrameGraphNode;
 class Material;
 class Technique;
@@ -237,7 +237,7 @@ private:
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     QUniformPack m_defaultUniformPack;
 
-    QScopedPointer<QGraphicsContext> m_graphicsContext;
+    QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;

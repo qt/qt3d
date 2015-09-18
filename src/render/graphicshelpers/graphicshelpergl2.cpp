@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qgraphicshelpergl2_p.h"
+#include "graphicshelpergl2_p.h"
 #ifndef QT_OPENGL_ES_2
 #include <QOpenGLFunctions_2_0>
 #include <private/attachmentpack_p.h>
@@ -47,14 +47,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-QGraphicsHelperGL2::QGraphicsHelperGL2()
+GraphicsHelperGL2::GraphicsHelperGL2()
     : m_funcs(Q_NULLPTR)
     , m_fboFuncs(Q_NULLPTR)
 {
 
 }
 
-void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
+void GraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context);
@@ -70,7 +70,7 @@ void QGraphicsHelperGL2::initializeHelper(QOpenGLContext *context,
     }
 }
 
-void QGraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
+void GraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
@@ -91,7 +91,7 @@ void QGraphicsHelperGL2::drawElementsInstanced(GLenum primitiveType,
                      indices);
 }
 
-void QGraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
+void GraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
                                              GLint first,
                                              GLsizei count,
                                              GLsizei instances)
@@ -102,7 +102,7 @@ void QGraphicsHelperGL2::drawArraysInstanced(GLenum primitiveType,
                    count);
 }
 
-void QGraphicsHelperGL2::drawElements(GLenum primitiveType,
+void GraphicsHelperGL2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
                                       void *indices,
@@ -117,7 +117,7 @@ void QGraphicsHelperGL2::drawElements(GLenum primitiveType,
                             indices);
 }
 
-void QGraphicsHelperGL2::drawArrays(GLenum primitiveType,
+void GraphicsHelperGL2::drawArrays(GLenum primitiveType,
                                     GLint first,
                                     GLsizei count)
 {
@@ -126,18 +126,18 @@ void QGraphicsHelperGL2::drawArrays(GLenum primitiveType,
                           count);
 }
 
-void QGraphicsHelperGL2::setVerticesPerPatch(GLint verticesPerPatch)
+void GraphicsHelperGL2::setVerticesPerPatch(GLint verticesPerPatch)
 {
     Q_UNUSED(verticesPerPatch);
     qWarning() << "Tessellation not supported with OpenGL 2";
 }
 
-void QGraphicsHelperGL2::useProgram(GLuint programId)
+void GraphicsHelperGL2::useProgram(GLuint programId)
 {
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> QGraphicsHelperGL2::programUniformsAndLocations(GLuint programId)
+QVector<ShaderUniform> GraphicsHelperGL2::programUniformsAndLocations(GLuint programId)
 {
     QVector<ShaderUniform> uniforms;
 
@@ -160,7 +160,7 @@ QVector<ShaderUniform> QGraphicsHelperGL2::programUniformsAndLocations(GLuint pr
     return uniforms;
 }
 
-QVector<ShaderAttribute> QGraphicsHelperGL2::programAttributesAndLocations(GLuint programId)
+QVector<ShaderAttribute> GraphicsHelperGL2::programAttributesAndLocations(GLuint programId)
 {
     QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
@@ -182,7 +182,7 @@ QVector<ShaderAttribute> QGraphicsHelperGL2::programAttributesAndLocations(GLuin
     return attributes;
 }
 
-QVector<ShaderUniformBlock> QGraphicsHelperGL2::programUniformBlocks(GLuint programId)
+QVector<ShaderUniformBlock> GraphicsHelperGL2::programUniformBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
@@ -190,57 +190,57 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL2::programUniformBlocks(GLuint prog
     return blocks;
 }
 
-void QGraphicsHelperGL2::vertexAttribDivisor(GLuint index,
+void GraphicsHelperGL2::vertexAttribDivisor(GLuint index,
                                              GLuint divisor)
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
 }
 
-void QGraphicsHelperGL2::blendEquation(GLenum mode)
+void GraphicsHelperGL2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
 }
 
-void QGraphicsHelperGL2::alphaTest(GLenum mode1, GLenum mode2)
+void GraphicsHelperGL2::alphaTest(GLenum mode1, GLenum mode2)
 {
     m_funcs->glEnable(GL_ALPHA_TEST);
     m_funcs->glAlphaFunc(mode1, mode2);
 }
 
-void QGraphicsHelperGL2::depthTest(GLenum mode)
+void GraphicsHelperGL2::depthTest(GLenum mode)
 {
     m_funcs->glEnable(GL_DEPTH_TEST);
     m_funcs->glDepthFunc(mode);
 }
 
-void QGraphicsHelperGL2::depthMask(GLenum mode)
+void GraphicsHelperGL2::depthMask(GLenum mode)
 {
     m_funcs->glDepthMask(mode);
 }
 
-void QGraphicsHelperGL2::cullFace(GLenum mode)
+void GraphicsHelperGL2::cullFace(GLenum mode)
 {
     m_funcs->glEnable(GL_CULL_FACE);
     m_funcs->glCullFace(mode);
 }
 
-void QGraphicsHelperGL2::frontFace(GLenum mode)
+void GraphicsHelperGL2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 }
 
-void QGraphicsHelperGL2::enableAlphaCoverage()
+void GraphicsHelperGL2::enableAlphaCoverage()
 {
     m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-void QGraphicsHelperGL2::disableAlphaCoverage()
+void GraphicsHelperGL2::disableAlphaCoverage()
 {
     m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-GLuint QGraphicsHelperGL2::createFrameBufferObject()
+GLuint GraphicsHelperGL2::createFrameBufferObject()
 {
     if (m_fboFuncs != Q_NULLPTR) {
         GLuint id;
@@ -251,7 +251,7 @@ GLuint QGraphicsHelperGL2::createFrameBufferObject()
     return 0;
 }
 
-void QGraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
 {
     if (m_fboFuncs != Q_NULLPTR)
         m_fboFuncs->glDeleteFramebuffers(1, &frameBufferId);
@@ -259,14 +259,14 @@ void QGraphicsHelperGL2::releaseFrameBufferObject(GLuint frameBufferId)
         qWarning() << "FBO not supported by your OpenGL hardware";
 }
 
-bool QGraphicsHelperGL2::checkFrameBufferComplete()
+bool GraphicsHelperGL2::checkFrameBufferComplete()
 {
     if (m_fboFuncs != Q_NULLPTR)
         return (m_fboFuncs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
     return false;
 }
 
-void QGraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     if (m_fboFuncs != Q_NULLPTR) {
         GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
@@ -296,7 +296,7 @@ void QGraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
     }
 }
 
-bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+bool GraphicsHelperGL2::supportsFeature(GraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
     case MRT:
@@ -308,7 +308,7 @@ bool QGraphicsHelperGL2::supportsFeature(QGraphicsHelperInterface::Feature featu
     }
 }
 
-void QGraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
 {
     QVarLengthArray<GLenum, 16> drawBufs(n);
 
@@ -317,12 +317,12 @@ void QGraphicsHelperGL2::drawBuffers(GLsizei n, const int *bufs)
     m_funcs->glDrawBuffers(n, drawBufs.constData());
 }
 
-void QGraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &)
+void GraphicsHelperGL2::bindFragDataLocation(GLuint, const QHash<QString, int> &)
 {
     qCritical() << "bindFragDataLocation is not supported by GL 2.0";
 }
 
-void QGraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &description)
+void GraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &description)
 {
     switch (description.m_type) {
 
@@ -414,7 +414,7 @@ void QGraphicsHelperGL2::bindUniform(const QVariant &v, const ShaderUniform &des
     }
 }
 
-void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
 {
     if (m_fboFuncs != Q_NULLPTR)
         m_fboFuncs->glBindFramebuffer(GL_READ_FRAMEBUFFER, frameBufferId);
@@ -422,14 +422,14 @@ void QGraphicsHelperGL2::bindFrameBufferObject(GLuint frameBufferId)
         qWarning() << "FBO not supported by your OpenGL hardware";
 }
 
-GLuint QGraphicsHelperGL2::boundFrameBufferObject()
+GLuint GraphicsHelperGL2::boundFrameBufferObject()
 {
     GLint id = 0;
     m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
     return id;
 }
 
-void QGraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void GraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     Q_UNUSED(programId);
     Q_UNUSED(uniformBlockIndex);
@@ -437,7 +437,7 @@ void QGraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockI
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 
-void QGraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+void GraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     Q_UNUSED(target);
     Q_UNUSED(index);
@@ -445,7 +445,7 @@ void QGraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buff
     qWarning() << "bindBufferBase is not supported by OpenGL 2.0 (since OpenGL 3.0)";
 }
 
-void QGraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+void GraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
     Q_UNUSED(v);
     Q_UNUSED(description);
@@ -453,7 +453,7 @@ void QGraphicsHelperGL2::buildUniformBuffer(const QVariant &v, const ShaderUnifo
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 
-uint QGraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
+uint GraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
 {
     uint rawByteSize = 0;
     int arrayStride = qMax(description.m_arrayStride, 0);
@@ -515,39 +515,39 @@ uint QGraphicsHelperGL2::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
-void QGraphicsHelperGL2::enableClipPlane(int clipPlane)
+void GraphicsHelperGL2::enableClipPlane(int clipPlane)
 {
     m_funcs->glEnable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-void QGraphicsHelperGL2::disableClipPlane(int clipPlane)
+void GraphicsHelperGL2::disableClipPlane(int clipPlane)
 {
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-GLint QGraphicsHelperGL2::maxClipPlaneCount()
+GLint GraphicsHelperGL2::maxClipPlaneCount()
 {
     GLint max = 0;
     m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
     return max;
 }
 
-void QGraphicsHelperGL2::enablePrimitiveRestart(int)
+void GraphicsHelperGL2::enablePrimitiveRestart(int)
 {
 }
 
-void QGraphicsHelperGL2::disablePrimitiveRestart()
+void GraphicsHelperGL2::disablePrimitiveRestart()
 {
 }
 
-QSize QGraphicsHelperGL2::getRenderBufferDimensions(GLuint renderBufferId)
+QSize GraphicsHelperGL2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     Q_UNUSED(renderBufferId);
     qCritical() << "RenderBuffer dimensions retrival not supported on OpenGL 2.0";
     return QSize(0,0);
 }
 
-QSize QGraphicsHelperGL2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+QSize GraphicsHelperGL2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
 {
     GLint width = 0;
     GLint height = 0;

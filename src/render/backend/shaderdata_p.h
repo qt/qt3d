@@ -49,7 +49,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class QGraphicsContext;
+class GraphicsContext;
 class UniformBuffer;
 class ShaderDataManager;
 

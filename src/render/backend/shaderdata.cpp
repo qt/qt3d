@@ -40,7 +40,7 @@
 #include <QMetaProperty>
 #include <QMetaObject>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <private/qgraphicscontext_p.h>
+#include <private/graphicscontext_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/uniformbuffer_p.h>
 #include <private/managers_p.h>

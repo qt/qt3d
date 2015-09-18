@@ -214,7 +214,7 @@ QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
     return QUniformValue::fromVariant(QVariant::fromValue((*m_data->m_viewMatrix * model).normalMatrix()), m_allocator);
 }
 
-// TODO: Move this somewhere global where QGraphicsContext::setViewport() can use it too
+// TODO: Move this somewhere global where GraphicsContext::setViewport() can use it too
 static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &surfaceSize)
 {
     return QRectF(fractionalViewport.x() * surfaceSize.width(),

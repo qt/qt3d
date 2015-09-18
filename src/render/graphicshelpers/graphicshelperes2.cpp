@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qgraphicshelperes2_p.h"
+#include "graphicshelperes2_p.h"
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
@@ -61,16 +61,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-QGraphicsHelperES2::QGraphicsHelperES2() :
+GraphicsHelperES2::GraphicsHelperES2() :
     m_funcs(0)
 {
 }
 
-QGraphicsHelperES2::~QGraphicsHelperES2()
+GraphicsHelperES2::~GraphicsHelperES2()
 {
 }
 
-void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
+void GraphicsHelperES2::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *)
 {
     Q_ASSERT(context);
@@ -79,7 +79,7 @@ void QGraphicsHelperES2::initializeHelper(QOpenGLContext *context,
     m_isES3 = context->format().majorVersion() >= 3;
 }
 
-void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
+void GraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
@@ -100,7 +100,7 @@ void QGraphicsHelperES2::drawElementsInstanced(GLenum primitiveType,
                      indices);
 }
 
-void QGraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
+void GraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
                                              GLint first,
                                              GLsizei count,
                                              GLsizei instances)
@@ -111,7 +111,7 @@ void QGraphicsHelperES2::drawArraysInstanced(GLenum primitiveType,
                    count);
 }
 
-void QGraphicsHelperES2::drawElements(GLenum primitiveType,
+void GraphicsHelperES2::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
                                       void *indices,
@@ -125,7 +125,7 @@ void QGraphicsHelperES2::drawElements(GLenum primitiveType,
                             indices);
 }
 
-void QGraphicsHelperES2::drawArrays(GLenum primitiveType,
+void GraphicsHelperES2::drawArrays(GLenum primitiveType,
                                     GLint first,
                                     GLsizei count)
 {
@@ -134,18 +134,18 @@ void QGraphicsHelperES2::drawArrays(GLenum primitiveType,
                           count);
 }
 
-void QGraphicsHelperES2::setVerticesPerPatch(GLint verticesPerPatch)
+void GraphicsHelperES2::setVerticesPerPatch(GLint verticesPerPatch)
 {
     Q_UNUSED(verticesPerPatch);
     qWarning() << "Tessellation not supported with OpenGL ES 2";
 }
 
-void QGraphicsHelperES2::useProgram(GLuint programId)
+void GraphicsHelperES2::useProgram(GLuint programId)
 {
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> QGraphicsHelperES2::programUniformsAndLocations(GLuint programId)
+QVector<ShaderUniform> GraphicsHelperES2::programUniformsAndLocations(GLuint programId)
 {
     QVector<ShaderUniform> uniforms;
 
@@ -168,7 +168,7 @@ QVector<ShaderUniform> QGraphicsHelperES2::programUniformsAndLocations(GLuint pr
     return uniforms;
 }
 
-QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuint programId)
+QVector<ShaderAttribute> GraphicsHelperES2::programAttributesAndLocations(GLuint programId)
 {
     QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
@@ -190,7 +190,7 @@ QVector<ShaderAttribute> QGraphicsHelperES2::programAttributesAndLocations(GLuin
     return attributes;
 }
 
-QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint programId)
+QVector<ShaderUniformBlock> GraphicsHelperES2::programUniformBlocks(GLuint programId)
 {
     Q_UNUSED(programId);
     QVector<ShaderUniformBlock> blocks;
@@ -198,84 +198,84 @@ QVector<ShaderUniformBlock> QGraphicsHelperES2::programUniformBlocks(GLuint prog
     return blocks;
 }
 
-void QGraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
+void GraphicsHelperES2::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
     Q_UNUSED(index);
     Q_UNUSED(divisor);
 }
 
-void QGraphicsHelperES2::blendEquation(GLenum mode)
+void GraphicsHelperES2::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
 }
 
-void QGraphicsHelperES2::alphaTest(GLenum, GLenum)
+void GraphicsHelperES2::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";
 }
 
-void QGraphicsHelperES2::depthTest(GLenum mode)
+void GraphicsHelperES2::depthTest(GLenum mode)
 {
     m_funcs->glEnable(GL_DEPTH_TEST);
     m_funcs->glDepthFunc(mode);
 }
 
-void QGraphicsHelperES2::depthMask(GLenum mode)
+void GraphicsHelperES2::depthMask(GLenum mode)
 {
     m_funcs->glDepthMask(mode);
 }
 
-void QGraphicsHelperES2::cullFace(GLenum mode)
+void GraphicsHelperES2::cullFace(GLenum mode)
 {
     m_funcs->glEnable(GL_CULL_FACE);
     m_funcs->glCullFace(mode);
 }
 
-void QGraphicsHelperES2::frontFace(GLenum mode)
+void GraphicsHelperES2::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 }
 
-void QGraphicsHelperES2::enableAlphaCoverage()
+void GraphicsHelperES2::enableAlphaCoverage()
 {
     m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-void QGraphicsHelperES2::disableAlphaCoverage()
+void GraphicsHelperES2::disableAlphaCoverage()
 {
     m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-GLuint QGraphicsHelperES2::createFrameBufferObject()
+GLuint GraphicsHelperES2::createFrameBufferObject()
 {
     GLuint id;
     m_funcs->glGenFramebuffers(1, &id);
     return id;
 }
 
-void QGraphicsHelperES2::releaseFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperES2::releaseFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glDeleteFramebuffers(1, &frameBufferId);
 }
 
-void QGraphicsHelperES2::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperES2::bindFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
 }
 
-GLuint QGraphicsHelperES2::boundFrameBufferObject()
+GLuint GraphicsHelperES2::boundFrameBufferObject()
 {
     GLint id = 0;
     m_funcs->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &id);
     return id;
 }
 
-bool QGraphicsHelperES2::checkFrameBufferComplete()
+bool GraphicsHelperES2::checkFrameBufferComplete()
 {
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
-void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;
 
@@ -299,7 +299,7 @@ void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
     texture->release();
 }
 
-bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+bool GraphicsHelperES2::supportsFeature(GraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
     case RenderBufferDimensionRetrieval:
@@ -308,12 +308,12 @@ bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature featu
         return false;
     }
 }
-void QGraphicsHelperES2::drawBuffers(GLsizei , const int *)
+void GraphicsHelperES2::drawBuffers(GLsizei , const int *)
 {
     qCritical() << "drawBuffers is not supported by ES 2.0";
 }
 
-void QGraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)
+void GraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &description)
 {
     switch (description.m_type) {
 
@@ -420,12 +420,12 @@ void QGraphicsHelperES2::bindUniform(const QVariant &v, const ShaderUniform &des
     }
 }
 
-void QGraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int> &)
+void GraphicsHelperES2::bindFragDataLocation(GLuint , const QHash<QString, int> &)
 {
     qCritical() << "bindFragDataLocation is not supported by ES 2.0";
 }
 
-void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void GraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     Q_UNUSED(programId);
     Q_UNUSED(uniformBlockIndex);
@@ -433,7 +433,7 @@ void QGraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockI
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
-void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+void GraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     Q_UNUSED(target);
     Q_UNUSED(index);
@@ -441,7 +441,7 @@ void QGraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buff
     qWarning() << "bindBufferBase is not supported by ES 2.0 (since ES 3.0)";
 }
 
-void QGraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+void GraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
     Q_UNUSED(v);
     Q_UNUSED(description);
@@ -449,7 +449,7 @@ void QGraphicsHelperES2::buildUniformBuffer(const QVariant &v, const ShaderUnifo
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
-uint QGraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
+uint GraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
 {
     uint rawByteSize = 0;
     int arrayStride = qMax(description.m_arrayStride, 0);
@@ -511,28 +511,28 @@ uint QGraphicsHelperES2::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
-void QGraphicsHelperES2::enableClipPlane(int)
+void GraphicsHelperES2::enableClipPlane(int)
 {
 }
 
-void QGraphicsHelperES2::disableClipPlane(int)
+void GraphicsHelperES2::disableClipPlane(int)
 {
 }
 
-GLint QGraphicsHelperES2::maxClipPlaneCount()
+GLint GraphicsHelperES2::maxClipPlaneCount()
 {
     return 0;
 }
 
-void QGraphicsHelperES2::enablePrimitiveRestart(int)
+void GraphicsHelperES2::enablePrimitiveRestart(int)
 {
 }
 
-void QGraphicsHelperES2::disablePrimitiveRestart()
+void GraphicsHelperES2::disablePrimitiveRestart()
 {
 }
 
-QSize QGraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
+QSize GraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;
     GLint height = 0;
@@ -545,7 +545,7 @@ QSize QGraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
     return QSize(width, height);
 }
 
-QSize QGraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+QSize GraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
 {
     Q_UNUSED(textureId);
     Q_UNUSED(target);

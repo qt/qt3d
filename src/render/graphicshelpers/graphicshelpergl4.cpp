@@ -34,42 +34,40 @@
 **
 ****************************************************************************/
 
-#include "qgraphicshelpergl3_p.h"
+#include "graphicshelpergl4_p.h"
 
 #ifndef QT_OPENGL_ES_2
-#include <QOpenGLFunctions_3_2_Core>
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 #include <QtOpenGLExtensions/qopenglextensions.h>
 #include <Qt3DRenderer/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
+
+# ifndef QT_OPENGL_4
+#  define GL_PATCH_VERTICES 36466
+# endif
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-QGraphicsHelperGL3::QGraphicsHelperGL3()
+GraphicsHelperGL4::GraphicsHelperGL4()
     : m_funcs(Q_NULLPTR)
-    , m_tessFuncs()
 {
 }
 
-void QGraphicsHelperGL3::initializeHelper(QOpenGLContext *context,
+void GraphicsHelperGL4::initializeHelper(QOpenGLContext *context,
                                           QAbstractOpenGLFunctions *functions)
 {
-    m_funcs = static_cast<QOpenGLFunctions_3_2_Core*>(functions);
+    Q_UNUSED(context);
+    m_funcs = static_cast<QOpenGLFunctions_4_3_Core*>(functions);
     const bool ok = m_funcs->initializeOpenGLFunctions();
     Q_ASSERT(ok);
     Q_UNUSED(ok);
-
-    if (context->hasExtension(QByteArrayLiteral("GL_ARB_tessellation_shader"))) {
-        m_tessFuncs.reset(new QOpenGLExtension_ARB_tessellation_shader);
-        m_tessFuncs->initializeOpenGLFunctions();
-    }
 }
 
-void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
+void GraphicsHelperGL4::drawElementsInstanced(GLenum primitiveType,
                                                GLsizei primitiveCount,
                                                GLint indexType,
                                                void *indices,
@@ -89,7 +87,7 @@ void QGraphicsHelperGL3::drawElementsInstanced(GLenum primitiveType,
                                                baseVertex);
 }
 
-void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
+void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,
                                              GLint first,
                                              GLsizei count,
                                              GLsizei instances)
@@ -101,7 +99,7 @@ void QGraphicsHelperGL3::drawArraysInstanced(GLenum primitiveType,
                                    instances);
 }
 
-void QGraphicsHelperGL3::drawElements(GLenum primitiveType,
+void GraphicsHelperGL4::drawElements(GLenum primitiveType,
                                       GLsizei primitiveCount,
                                       GLint indexType,
                                       void *indices,
@@ -114,7 +112,7 @@ void QGraphicsHelperGL3::drawElements(GLenum primitiveType,
                                       baseVertex);
 }
 
-void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
+void GraphicsHelperGL4::drawArrays(GLenum primitiveType,
                                     GLint first,
                                     GLsizei count)
 {
@@ -123,27 +121,17 @@ void QGraphicsHelperGL3::drawArrays(GLenum primitiveType,
                           count);
 }
 
-void QGraphicsHelperGL3::setVerticesPerPatch(GLint verticesPerPatch)
+void GraphicsHelperGL4::setVerticesPerPatch(GLint verticesPerPatch)
 {
-#if defined(QT_OPENGL_4)
-    if (!m_tessFuncs) {
-        qWarning() << "Tessellation not supported with OpenGL 3 without GL_ARB_tessellation_shader";
-        return;
-    }
-
-    m_tessFuncs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
-#else
-    Q_UNUSED(verticesPerPatch);
-    qWarning() << "Tessellation not supported";
-#endif
+    m_funcs->glPatchParameteri(GL_PATCH_VERTICES, verticesPerPatch);
 }
 
-void QGraphicsHelperGL3::useProgram(GLuint programId)
+void GraphicsHelperGL4::useProgram(GLuint programId)
 {
     m_funcs->glUseProgram(programId);
 }
 
-QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint programId)
+QVector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint programId)
 {
     QVector<ShaderUniform> uniforms;
 
@@ -175,7 +163,7 @@ QVector<ShaderUniform> QGraphicsHelperGL3::programUniformsAndLocations(GLuint pr
     return uniforms;
 }
 
-QVector<ShaderAttribute> QGraphicsHelperGL3::programAttributesAndLocations(GLuint programId)
+QVector<ShaderAttribute> GraphicsHelperGL4::programAttributesAndLocations(GLuint programId)
 {
     QVector<ShaderAttribute> attributes;
     GLint nbrActiveAttributes = 0;
@@ -197,7 +185,7 @@ QVector<ShaderAttribute> QGraphicsHelperGL3::programAttributesAndLocations(GLuin
     return attributes;
 }
 
-QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint programId)
+QVector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint programId)
 {
     QVector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
@@ -217,86 +205,84 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL3::programUniformBlocks(GLuint prog
     return blocks;
 }
 
-void QGraphicsHelperGL3::vertexAttribDivisor(GLuint index, GLuint divisor)
+void GraphicsHelperGL4::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(divisor);
-    qCWarning(Render::Rendering) << "Vertex attribute divisor not available with OpenGL 3.2 core";
+    m_funcs->glVertexAttribDivisor(index, divisor);
 }
 
-void QGraphicsHelperGL3::blendEquation(GLenum mode)
+void GraphicsHelperGL4::blendEquation(GLenum mode)
 {
     m_funcs->glBlendEquation(mode);
 }
 
-void QGraphicsHelperGL3::alphaTest(GLenum, GLenum)
+void GraphicsHelperGL4::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
 }
 
-void QGraphicsHelperGL3::depthTest(GLenum mode)
+void GraphicsHelperGL4::depthTest(GLenum mode)
 {
     m_funcs->glEnable(GL_DEPTH_TEST);
     m_funcs->glDepthFunc(mode);
 }
 
-void QGraphicsHelperGL3::depthMask(GLenum mode)
+void GraphicsHelperGL4::depthMask(GLenum mode)
 {
     m_funcs->glDepthMask(mode);
 }
 
-void QGraphicsHelperGL3::cullFace(GLenum mode)
+void GraphicsHelperGL4::cullFace(GLenum mode)
 {
     m_funcs->glEnable(GL_CULL_FACE);
     m_funcs->glCullFace(mode);
 }
 
-void QGraphicsHelperGL3::frontFace(GLenum mode)
+void GraphicsHelperGL4::frontFace(GLenum mode)
 {
     m_funcs->glFrontFace(mode);
 
 }
 
-void QGraphicsHelperGL3::enableAlphaCoverage()
+void GraphicsHelperGL4::enableAlphaCoverage()
 {
     m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-void QGraphicsHelperGL3::disableAlphaCoverage()
+void GraphicsHelperGL4::disableAlphaCoverage()
 {
     m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
-GLuint QGraphicsHelperGL3::createFrameBufferObject()
+GLuint GraphicsHelperGL4::createFrameBufferObject()
 {
     GLuint id;
     m_funcs->glGenFramebuffers(1, &id);
     return id;
 }
 
-void QGraphicsHelperGL3::releaseFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL4::releaseFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glDeleteFramebuffers(1, &frameBufferId);
 }
 
-void QGraphicsHelperGL3::bindFrameBufferObject(GLuint frameBufferId)
+void GraphicsHelperGL4::bindFrameBufferObject(GLuint frameBufferId)
 {
     m_funcs->glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBufferId);
 }
 
-GLuint QGraphicsHelperGL3::boundFrameBufferObject()
+GLuint GraphicsHelperGL4::boundFrameBufferObject()
 {
     GLint id = 0;
     m_funcs->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &id);
     return id;
 }
 
-bool QGraphicsHelperGL3::checkFrameBufferComplete()
+bool GraphicsHelperGL4::checkFrameBufferComplete()
 {
     return (m_funcs->glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 }
 
-void QGraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
+void GraphicsHelperGL4::bindFrameBufferAttachment(QOpenGLTexture *texture, const Attachment &attachment)
 {
     GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
@@ -321,23 +307,21 @@ void QGraphicsHelperGL3::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
     texture->release();
 }
 
-bool QGraphicsHelperGL3::supportsFeature(QGraphicsHelperInterface::Feature feature) const
+bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
     case MRT:
+    case Tessellation:
     case UniformBufferObject:
-    case PrimitiveRestart:
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
         return true;
-    case Tessellation:
-        return !m_tessFuncs.isNull();
     default:
         return false;
     }
 }
 
-void QGraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
+void GraphicsHelperGL4::drawBuffers(GLsizei n, const int *bufs)
 {
     // Use QVarLengthArray here
     QVarLengthArray<GLenum, 16> drawBufs(n);
@@ -347,13 +331,13 @@ void QGraphicsHelperGL3::drawBuffers(GLsizei n, const int *bufs)
     m_funcs->glDrawBuffers(n, drawBufs.constData());
 }
 
-void QGraphicsHelperGL3::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
+void GraphicsHelperGL4::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
 {
     Q_FOREACH (const QString &name, outputs.keys())
         m_funcs->glBindFragDataLocation(shader, outputs.value(name), name.toStdString().c_str());
 }
 
-void QGraphicsHelperGL3::bindUniform(const QVariant &v, const ShaderUniform &description)
+void GraphicsHelperGL4::bindUniform(const QVariant &v, const ShaderUniform &description)
 {
     switch (description.m_type) {
 
@@ -529,17 +513,17 @@ void QGraphicsHelperGL3::bindUniform(const QVariant &v, const ShaderUniform &des
     }
 }
 
-void QGraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
+void GraphicsHelperGL4::bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding)
 {
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
-void QGraphicsHelperGL3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
+void GraphicsHelperGL4::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_funcs->glBindBufferBase(target, index, buffer);
 }
 
-void QGraphicsHelperGL3::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
+void GraphicsHelperGL4::buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer)
 {
     char *bufferData = buffer.data();
 
@@ -743,7 +727,7 @@ void QGraphicsHelperGL3::buildUniformBuffer(const QVariant &v, const ShaderUnifo
     }
 }
 
-uint QGraphicsHelperGL3::uniformByteSize(const ShaderUniform &description)
+uint GraphicsHelperGL4::uniformByteSize(const ShaderUniform &description)
 {
     uint rawByteSize = 0;
     int arrayStride = qMax(description.m_arrayStride, 0);
@@ -867,35 +851,35 @@ uint QGraphicsHelperGL3::uniformByteSize(const ShaderUniform &description)
     return arrayStride ? rawByteSize * arrayStride : rawByteSize;
 }
 
-void QGraphicsHelperGL3::enableClipPlane(int clipPlane)
+void GraphicsHelperGL4::enableClipPlane(int clipPlane)
 {
     m_funcs->glEnable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-void QGraphicsHelperGL3::disableClipPlane(int clipPlane)
+void GraphicsHelperGL4::disableClipPlane(int clipPlane)
 {
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-GLint QGraphicsHelperGL3::maxClipPlaneCount()
+GLint GraphicsHelperGL4::maxClipPlaneCount()
 {
     GLint max = 0;
     m_funcs->glGetIntegerv(GL_MAX_CLIP_DISTANCES, &max);
     return max;
 }
 
-void QGraphicsHelperGL3::enablePrimitiveRestart(int primitiveRestartIndex)
+void GraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
 {
     m_funcs->glPrimitiveRestartIndex(primitiveRestartIndex);
     m_funcs->glEnable(GL_PRIMITIVE_RESTART);
 }
 
-void QGraphicsHelperGL3::disablePrimitiveRestart()
+void GraphicsHelperGL4::disablePrimitiveRestart()
 {
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
-QSize QGraphicsHelperGL3::getRenderBufferDimensions(GLuint renderBufferId)
+QSize GraphicsHelperGL4::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;
     GLint height = 0;
@@ -908,7 +892,7 @@ QSize QGraphicsHelperGL3::getRenderBufferDimensions(GLuint renderBufferId)
     return QSize(width, height);
 }
 
-QSize QGraphicsHelperGL3::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+QSize GraphicsHelperGL4::getTextureDimensions(GLuint textureId, GLenum target, uint level)
 {
     GLint width = 0;
     GLint height = 0;

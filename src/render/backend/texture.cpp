@@ -211,7 +211,7 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     // Update DNA
     updateDNA();
 
-    // Ideally we might want to abstract that and use the QGraphicsContext as a wrapper
+    // Ideally we might want to abstract that and use the GraphicsContext as a wrapper
     // around that.
     if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
         int err = ctx->functions()->glGetError();

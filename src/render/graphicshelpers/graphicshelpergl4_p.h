@@ -34,26 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H
 
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
 
 #ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLFunctions_3_2_Core;
-class QOpenGLExtension_ARB_tessellation_shader;
+class QOpenGLFunctions_4_3_Core;
 
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsHelperGL3 : public QGraphicsHelperInterface
+class GraphicsHelperGL4 : public GraphicsHelperInterface
 {
 public:
-    QGraphicsHelperGL3();
+    GraphicsHelperGL4();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -98,8 +97,7 @@ public:
     QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions_3_2_Core *m_funcs;
-    QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
+    QOpenGLFunctions_4_3_Core *m_funcs;
 };
 
 } // namespace Render
@@ -109,4 +107,4 @@ QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL3_H
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERGL4_H

@@ -34,25 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERES2_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERES2_H
 
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
-
-#ifndef QT_OPENGL_ES_2
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 
 QT_BEGIN_NAMESPACE
-
-class QOpenGLFunctions_2_0;
-class QOpenGLExtension_ARB_framebuffer_object;
 
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsHelperGL2 : public QGraphicsHelperInterface
+class GraphicsHelperES2 : public GraphicsHelperInterface
 {
 public:
-    QGraphicsHelperGL2();
+    GraphicsHelperES2();
+    virtual ~GraphicsHelperES2();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -97,8 +95,8 @@ public:
     QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions_2_0 *m_funcs;
-    QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
+    QOpenGLFunctions *m_funcs;
+    bool m_isES3;
 };
 
 } // namespace Render
@@ -106,6 +104,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // !QT_OPENGL_ES_2
-
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL2_H
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERES2_H

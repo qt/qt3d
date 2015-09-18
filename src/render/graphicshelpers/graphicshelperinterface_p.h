@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H
 
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
@@ -49,7 +49,7 @@ namespace Render {
 
 struct Attachment;
 
-class QGraphicsHelperInterface
+class GraphicsHelperInterface
 {
 public:
     enum Feature {
@@ -62,7 +62,7 @@ public:
         TextureDimensionRetrieval
     };
 
-    virtual ~QGraphicsHelperInterface() {}
+    virtual ~GraphicsHelperInterface() {}
     virtual void    initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) = 0;
     virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0) = 0;
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
@@ -111,4 +111,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERINTERFACE_H
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERINTERFACE_H

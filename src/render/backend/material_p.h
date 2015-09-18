@@ -53,7 +53,7 @@ class QParameter;
 namespace Render {
 
 class Renderer;
-class QGraphicsContext;
+class GraphicsContext;
 class Technique;
 class Effect;
 class MaterialManager;

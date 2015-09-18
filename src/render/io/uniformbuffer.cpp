@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "uniformbuffer_p.h"
-#include <private/qgraphicscontext_p.h>
+#include <private/graphicscontext_p.h>
 
 #if !defined(GL_UNIFORM_BUFFER)
 #define GL_UNIFORM_BUFFER 0x8A11
@@ -56,19 +56,19 @@ UniformBuffer::UniformBuffer()
 {
 }
 
-void UniformBuffer::create(QGraphicsContext *ctx)
+void UniformBuffer::create(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glGenBuffers(1, &m_bufferId);
     m_isCreated = true;
 }
 
-void UniformBuffer::destroy(QGraphicsContext *ctx)
+void UniformBuffer::destroy(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glDeleteBuffers(1, &m_bufferId);
     m_isCreated = false;
 }
 
-void UniformBuffer::allocate(QGraphicsContext *ctx, uint size, bool dynamic)
+void UniformBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
 {
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
     // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
@@ -77,14 +77,14 @@ void UniformBuffer::allocate(QGraphicsContext *ctx, uint size, bool dynamic)
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::update(QGraphicsContext *ctx, const void *data, uint size, int offset)
+void UniformBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
 {
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
     ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::bindToUniformBlock(QGraphicsContext *ctx, int bindingPoint)
+void UniformBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)
 {
     ctx->bindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_bufferId);
 }

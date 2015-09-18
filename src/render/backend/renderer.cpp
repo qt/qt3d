@@ -53,7 +53,7 @@
 #include <Qt3DRenderer/private/blendstate_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
 #include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
 #include <Qt3DRenderer/private/entity_p.h>
@@ -124,7 +124,7 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
     In turn, this will call shutdown which will make the OpenGL context current one last time
     to allow cleanups requiring a call to QOpenGLContext::currentContext to execute properly.
-    At the end of that function, the QGraphicsContext is set to null.
+    At the end of that function, the GraphicsContext is set to null.
 
     At this point though, the QAspectThread is still running its event loop and will only stop
     a short while after.
@@ -359,7 +359,7 @@ void Renderer::initialize(QOpenGLContext *context)
     QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
     bool enableDebugLogging = !debugLoggingMode.isEmpty();
 
-    m_graphicsContext.reset(new QGraphicsContext);
+    m_graphicsContext.reset(new GraphicsContext);
     m_graphicsContext->setRenderer(this);
 
     QSurfaceFormat sf = m_surface->format();
@@ -701,7 +701,7 @@ bool Renderer::submitRenderViews()
 
     qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
     for (int i = 0; i < renderViewsCount; ++i) {
-        // Initialize QGraphicsContext for drawing
+        // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
         const RenderView *renderView = renderViews.at(i);
 
@@ -928,7 +928,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             const GLint primType = rGeometryRenderer->primitiveType();
             const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
             const bool drawIndexed = indexAttribute != Q_NULLPTR;
-            const GLint indexType = drawIndexed ? QGraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
+            const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
 
             if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
                 m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());

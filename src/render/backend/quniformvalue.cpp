@@ -36,7 +36,7 @@
 
 #include "quniformvalue_p.h"
 
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
 #include <Qt3DRenderer/private/texture_p.h>
 
 #include <Qt3DCore/qframeallocator.h>
@@ -73,7 +73,7 @@ bool QUniformValue::operator !=(const QUniformValue &other)
     return !operator ==(other);
 }
 
-void QUniformValue::apply(QGraphicsContext *ctx, const ShaderUniform &shaderDescription) const
+void QUniformValue::apply(GraphicsContext *ctx, const ShaderUniform &shaderDescription) const
 {
     ctx->bindUniform(m_var, shaderDescription);
 }
@@ -108,7 +108,7 @@ void QUniformPack::setUniformBuffer(const BlockToUBO &blockToUBO)
     m_uniformBuffers.append(blockToUBO);
 }
 
-void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &description) const
+void TextureUniform::apply(GraphicsContext *ctx, const ShaderUniform &description) const
 {
     // We assume that the texture has been successfully bound and attache to a texture unit
     if (m_textureUnit != -1) {

@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class QGraphicsContext;
+class GraphicsContext;
 
 typedef QPair<Qt3D::QNodeId, Qt3D::QNodeId> ShaderDataShaderUboKey;
 
@@ -55,12 +55,12 @@ class UniformBuffer
 public:
     UniformBuffer();
 
-    void bind(QGraphicsContext *ctx);
-    void create(QGraphicsContext *ctx);
-    void destroy(QGraphicsContext *ctx);
-    void allocate(QGraphicsContext *ctx, uint size, bool dynamic = true);
-    void update(QGraphicsContext *ctx, const void *data, uint size, int offset = 0);
-    void bindToUniformBlock(QGraphicsContext *ctx, int bindingPoint);
+    void bind(GraphicsContext *ctx);
+    void create(GraphicsContext *ctx);
+    void destroy(GraphicsContext *ctx);
+    void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
+    void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
+    void bindToUniformBlock(GraphicsContext *ctx, int bindingPoint);
 
     inline GLuint bufferId() const { return m_bufferId; }
     inline bool isCreated() const { return m_isCreated; }

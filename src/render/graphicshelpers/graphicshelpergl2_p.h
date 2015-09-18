@@ -34,25 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H
-#define QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H
+#ifndef QT3DRENDER_RENDER_GRAPHICSHELPERGL2_H
+#define QT3DRENDER_RENDER_GRAPHICSHELPERGL2_H
 
-#include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
-#include <QtCore/qscopedpointer.h>
+#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
 
 #ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLFunctions_4_3_Core;
+class QOpenGLFunctions_2_0;
+class QOpenGLExtension_ARB_framebuffer_object;
 
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsHelperGL4 : public QGraphicsHelperInterface
+class GraphicsHelperGL2 : public GraphicsHelperInterface
 {
 public:
-    QGraphicsHelperGL4();
+    GraphicsHelperGL2();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -85,7 +85,7 @@ public:
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
-    void bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer) Q_DECL_OVERRIDE;
+    void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
@@ -97,7 +97,8 @@ public:
     QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions_4_3_Core *m_funcs;
+    QOpenGLFunctions_2_0 *m_funcs;
+    QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
 };
 
 } // namespace Render
@@ -107,4 +108,4 @@ QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3DRENDER_RENDER_QGRAPHICSHELPERGL4_H
+#endif // QT3DRENDER_RENDER_GRAPHICSHELPERGL2_H

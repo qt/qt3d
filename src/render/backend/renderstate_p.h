@@ -48,7 +48,7 @@ class QRenderState;
 
 namespace Render {
 
-class QGraphicsContext;
+class GraphicsContext;
 
 enum StateMask
 {
@@ -76,7 +76,7 @@ class Q_AUTOTEST_EXPORT RenderState
 public:
     virtual ~RenderState() {}
 
-    virtual void apply(QGraphicsContext* gc) const = 0;
+    virtual void apply(GraphicsContext* gc) const = 0;
 
     virtual StateMaskSet mask() const = 0;
 
@@ -101,11 +101,11 @@ public:
      */
     int changeCost(RenderStateSet* previousState);
 
-    void apply(QGraphicsContext* gc);
+    void apply(GraphicsContext* gc);
 
     StateMaskSet stateMask() const;
     void merge(RenderStateSet *other);
-    void resetMasked(StateMaskSet maskOfStatesToReset, QGraphicsContext* gc);
+    void resetMasked(StateMaskSet maskOfStatesToReset, GraphicsContext* gc);
 private:
     /**
      * @brief contains - check if this set contains a matching piece of state

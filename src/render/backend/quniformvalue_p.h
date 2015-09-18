@@ -57,7 +57,7 @@ class QFrameAllocator;
 namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsContext;
+class GraphicsContext;
 /**
  * @brief The QUniformValue class - immutable storage of uniform value
  * in the rendering backend.
@@ -78,7 +78,7 @@ public:
         return false;
     }
 
-    virtual void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
+    virtual void apply(GraphicsContext *ctx, const ShaderUniform &description) const;
 
 protected:
     QVariant m_var;
@@ -117,7 +117,7 @@ public :
     // Called by the QGraphicContext prior applying
     void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
 
-    void apply(QGraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
 
 private:
     Qt3D::QNodeId m_textureId;

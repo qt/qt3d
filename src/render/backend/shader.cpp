@@ -42,7 +42,7 @@
 #include <QOpenGLShaderProgram>
 #include <QMutexLocker>
 #include <qshaderprogram.h>
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -205,7 +205,7 @@ ShaderUniformBlock Shader::uniformBlock(const QString &blockName)
 /*!
  * Must be called with a valid, current QOpenGLContext
  */
-QOpenGLShaderProgram *Shader::getOrCreateProgram(QGraphicsContext *ctx)
+QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
 {
     if (!m_isLoaded) {
         delete m_program;
@@ -217,7 +217,7 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(QGraphicsContext *ctx)
     return m_program;
 }
 
-void Shader::updateUniforms(QGraphicsContext *ctx, const QUniformPack &pack)
+void Shader::updateUniforms(GraphicsContext *ctx, const QUniformPack &pack)
 {
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
     const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();
@@ -251,7 +251,7 @@ static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
     }
 }
 
-QOpenGLShaderProgram *Shader::createProgram(QGraphicsContext *context)
+QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
 {
     Q_ASSERT(QOpenGLContext::currentContext());
 
