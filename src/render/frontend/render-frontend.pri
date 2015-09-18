@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qitemmodelbuffer.h \
-    $$PWD/qtexture.h \
     $$PWD/sphere.h \
     $$PWD/qabstractsceneloader.h \
     $$PWD/qsceneloader.h \
@@ -17,13 +16,6 @@ HEADERS += \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
-    $$PWD/qabstracttextureprovider.h \
-    $$PWD/qabstracttextureprovider_p.h \
-    $$PWD/qwrapmode.h \
-    $$PWD/qabstracttextureimage.h \
-    $$PWD/qabstracttextureimage_p.h \
-    $$PWD/qtextureimage.h \
-    $$PWD/qtextureproviders.h \
     $$PWD/qwindow.h \
     $$PWD/qwindow_p.h
 
@@ -36,9 +28,4 @@ SOURCES += \
     $$PWD/qlayer.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qabstracttextureprovider.cpp \
-    $$PWD/qwrapmode.cpp \
-    $$PWD/qabstracttextureimage.cpp \
-    $$PWD/qtextureimage.cpp \
-    $$PWD/qtextureproviders.cpp \
     $$PWD/qwindow.cpp

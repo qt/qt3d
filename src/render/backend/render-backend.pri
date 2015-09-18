@@ -12,7 +12,6 @@ HEADERS += \
     $$PWD/rendercommand_p.h \
     $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
-    $$PWD/texturedatamanager_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
     $$PWD/scenemanager_p.h \
@@ -30,8 +29,6 @@ HEADERS += \
     $$PWD/layer_p.h \
     $$PWD/nodefunctor_p.h \
     $$PWD/scene_p.h \
-    $$PWD/texture_p.h \
-    $$PWD/textureimage_p.h \
     $$PWD/transform_p.h
 
 SOURCES += \
@@ -43,7 +40,6 @@ SOURCES += \
     $$PWD/rendercommand.cpp \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
-    $$PWD/texturedatamanager.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
     $$PWD/scenemanager.cpp \
@@ -55,6 +51,4 @@ SOURCES += \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
     $$PWD/scene.cpp \
-    $$PWD/texture.cpp \
-    $$PWD/textureimage.cpp \
     $$PWD/transform.cpp

@@ -20,6 +20,7 @@ include (materialsystem/materialsystem.pri)
 include (renderstates/renderstates.pri)
 include (io/render-io.pri)
 include (defaults/defaults.pri)
+include (texture/texture.pri)
 
 RESOURCES += $$PWD/render.qrc
 
