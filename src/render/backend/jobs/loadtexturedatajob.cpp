@@ -63,7 +63,7 @@ void LoadTextureDataJob::run()
     if (txt != Q_NULLPTR) {
         // Load update each TextureImage
         Q_FOREACH (HTextureImage texImgHandle, txt->textureImages()) {
-            RenderTextureImage *texImg = m_renderer->textureImageManager()->data(texImgHandle);
+            TextureImage *texImg = m_renderer->textureImageManager()->data(texImgHandle);
             if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataFunctor().isNull()) {
                 QTextureDataFunctorPtr functor = texImg->dataFunctor();
                 HTextureData textureDataHandle;

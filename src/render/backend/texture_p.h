@@ -98,7 +98,7 @@ private:
     QOpenGLTexture *m_gl;
 
     QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(RenderTextureImage *rImg, TexImageData *imgData);
+    void setToGLTexture(TextureImage *rImg, TexImageData *imgData);
     void updateWrapAndFilters();
 
     int m_width;

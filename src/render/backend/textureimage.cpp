@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "rendertextureimage_p.h"
+#include "textureimage_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/texturedatamanager_p.h>
@@ -46,7 +46,7 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderTextureImage::RenderTextureImage()
+TextureImage::TextureImage()
     : QBackendNode()
     , m_layer(0)
     , m_mipmapLevel(0)
@@ -59,7 +59,7 @@ RenderTextureImage::RenderTextureImage()
 {
 }
 
-void RenderTextureImage::cleanup()
+void TextureImage::cleanup()
 {
     m_layer = 0;
     m_mipmapLevel = 0;
@@ -73,7 +73,7 @@ void RenderTextureImage::cleanup()
     m_dna = 0;
 }
 
-void RenderTextureImage::updateFromPeer(Qt3D::QNode *peer)
+void TextureImage::updateFromPeer(Qt3D::QNode *peer)
 {
     QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
     m_layer = textureImage->layer();
@@ -87,14 +87,14 @@ void RenderTextureImage::updateFromPeer(Qt3D::QNode *peer)
         m_textureProviderId = peer->parentNode()->id();
         m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
         Texture *txt = m_textureManager->data(m_textureProvider);
-        // Notify the Texture that it has a new RenderTextureImage and needs an update
+        // Notify the Texture that it has a new TextureImage and needs an update
         txt->addTextureImageData(m_textureImageManager->lookupHandle(peerUuid()));
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
     }
 }
 
-void RenderTextureImage::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void TextureImage::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -120,39 +120,39 @@ void RenderTextureImage::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void RenderTextureImage::setTextureManager(TextureManager *manager)
+void TextureImage::setTextureManager(TextureManager *manager)
 {
     m_textureManager = manager;
 }
 
-void RenderTextureImage::setTextureImageManager(TextureImageManager *manager)
+void TextureImage::setTextureImageManager(TextureImageManager *manager)
 {
     m_textureImageManager = manager;
 }
 
-void RenderTextureImage::setTextureDataManager(TextureDataManager *manager)
+void TextureImage::setTextureDataManager(TextureDataManager *manager)
 {
     m_textureDataManager = manager;
 }
 
-void RenderTextureImage::unsetDirty()
+void TextureImage::unsetDirty()
 {
     m_dirty = false;
 }
 
 // Called by LoadDataTextureJob when the texture data has been successfully load
-void RenderTextureImage::setTextureDataHandle(HTextureData handle)
+void TextureImage::setTextureDataHandle(HTextureData handle)
 {
     m_textureDataHandle = handle;
     updateDNA();
 }
 
-void RenderTextureImage::updateDNA()
+void TextureImage::updateDNA()
 {
     m_dna = ::qHash(m_layer + m_mipmapLevel + static_cast<int>(m_face) + m_textureDataHandle);
 }
 
-RenderTextureImageFunctor::RenderTextureImageFunctor(TextureManager *textureManager,
+TextureImageFunctor::TextureImageFunctor(TextureManager *textureManager,
                                                      TextureImageManager *textureImageManager,
                                                      TextureDataManager *textureDataManager)
     : m_textureManager(textureManager)
@@ -161,9 +161,9 @@ RenderTextureImageFunctor::RenderTextureImageFunctor(TextureManager *textureMana
 {
 }
 
-Qt3D::QBackendNode *RenderTextureImageFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3D::QBackendNode *TextureImageFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
 {
-    RenderTextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
+    TextureImage *backend = m_textureImageManager->getOrCreateResource(frontend->id());
     backend->setFactory(factory);
     backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
@@ -172,12 +172,12 @@ Qt3D::QBackendNode *RenderTextureImageFunctor::create(Qt3D::QNode *frontend, con
     return backend;
 }
 
-Qt3D::QBackendNode *RenderTextureImageFunctor::get(const Qt3D::QNodeId &id) const
+Qt3D::QBackendNode *TextureImageFunctor::get(const Qt3D::QNodeId &id) const
 {
     return m_textureImageManager->lookupResource(id);
 }
 
-void RenderTextureImageFunctor::destroy(const Qt3D::QNodeId &id) const
+void TextureImageFunctor::destroy(const Qt3D::QNodeId &id) const
 {
     m_textureImageManager->releaseResource(id);
 }

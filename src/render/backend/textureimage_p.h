@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H
-#define QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H
+#ifndef QT3DRENDER_RENDER_TEXTUREIMAGE_H
+#define QT3DRENDER_RENDER_TEXTUREIMAGE_H
 
 #include <qglobal.h>
 #include <Qt3DCore/qbackendnode.h>
@@ -55,10 +55,10 @@ class TextureDataManager;
 
 typedef uint TextureImageDNA;
 
-class RenderTextureImage : public Qt3D::QBackendNode
+class TextureImage : public Qt3D::QBackendNode
 {
 public:
-    RenderTextureImage();
+    TextureImage();
     void cleanup();
     void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -100,10 +100,10 @@ private:
     TextureImageDNA m_dna;
 };
 
-class RenderTextureImageFunctor : public Qt3D::QBackendNodeFunctor
+class TextureImageFunctor : public Qt3D::QBackendNodeFunctor
 {
 public:
-    explicit RenderTextureImageFunctor(TextureManager *textureManager,
+    explicit TextureImageFunctor(TextureManager *textureManager,
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
@@ -124,4 +124,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERTEXTUREIMAGE_H
+#endif // QT3DRENDER_RENDER_TEXTUREIMAGE_H

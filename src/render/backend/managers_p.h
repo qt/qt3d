@@ -56,7 +56,7 @@
 #include <Qt3DRenderer/private/shaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
-#include <Qt3DRenderer/private/rendertextureimage_p.h>
+#include <Qt3DRenderer/private/textureimage_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/geometry_p.h>
 
@@ -273,7 +273,7 @@ class UBOManager : public Qt3D::QResourceManager<
 };
 
 class TextureImageManager : public Qt3D::QResourceManager<
-        RenderTextureImage,
+        TextureImage,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
@@ -313,7 +313,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTarget, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Technique, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Texture, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderPass, Q_REQUIRES_CLEANUP)
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::RenderTextureImage, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::TextureImage, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)
 

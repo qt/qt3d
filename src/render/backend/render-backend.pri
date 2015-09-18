@@ -36,7 +36,6 @@ HEADERS += \
     $$PWD/handle_types_p.h \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/shaderdata_p.h \
-    $$PWD/rendertextureimage_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
     $$PWD/buffer_p.h \
     $$PWD/buffermanager_p.h \
@@ -61,7 +60,8 @@ HEADERS += \
     $$PWD/shaderdata_p.h \
     $$PWD/shader_p.h \
     $$PWD/technique_p.h \
-    $$PWD/texture_p.h
+    $$PWD/texture_p.h \
+    $$PWD/textureimage_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -88,7 +88,6 @@ SOURCES += \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
-    $$PWD/rendertextureimage.cpp \
     $$PWD/buffermanager.cpp \
     $$PWD/geometryrenderermanager.cpp \
     $$PWD/qraycastingservice.cpp \
@@ -110,4 +109,5 @@ SOURCES += \
     $$PWD/shaderdata.cpp \
     $$PWD/shader.cpp \
     $$PWD/technique.cpp \
-    $$PWD/texture.cpp
+    $$PWD/texture.cpp \
+    $$PWD/textureimage.cpp

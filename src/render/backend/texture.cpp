@@ -298,7 +298,7 @@ QOpenGLTexture *Texture::buildGLTexture()
 }
 
 // RenderThread
-void Texture::setToGLTexture(RenderTextureImage *rImg, TexImageData *imgData)
+void Texture::setToGLTexture(TextureImage *rImg, TexImageData *imgData)
 {
     Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
     // ensure we don't accidently cause a detach / copy of the raw bytes
@@ -366,7 +366,7 @@ void Texture::updateDNA()
                          static_cast<int>(m_comparisonMode);
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
     Q_FOREACH (HTextureImage imgHandle, m_textureImages) {
-        RenderTextureImage *img = m_textureImageManager->data(imgHandle);
+        TextureImage *img = m_textureImageManager->data(imgHandle);
         if (img)
             m_textureDNA += img->dna();
     }
@@ -530,7 +530,7 @@ void Texture::updateAndLoadTextureImage()
 {
     QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
-        RenderTextureImage *img = m_textureImageManager->data(t);
+        TextureImage *img = m_textureImageManager->data(t);
         if (img != Q_NULLPTR && img->isDirty()) {
             if (dnas.contains(img->dna())) {
                 img->unsetDirty();

@@ -91,7 +91,7 @@
 #include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
 #include <Qt3DRenderer/private/updateworldtransformjob_p.h>
 #include <Qt3DRenderer/private/framecleanupjob_p.h>
-#include <Qt3DRenderer/private/rendertextureimage_p.h>
+#include <Qt3DRenderer/private/textureimage_p.h>
 #include <Qt3DRenderer/private/statesetnode_p.h>
 #include <Qt3DRenderer/private/nodraw_p.h>
 #include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
@@ -228,7 +228,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
-    registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
+    registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::TextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer->frameGraphManager())));
     registerBackendType<QBuffer>(QBackendNodeFunctorPtr(new Render::BufferFunctor(d->m_renderer->bufferManager())));
