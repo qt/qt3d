@@ -12,6 +12,7 @@ MODULE_PLUGIN_TYPES = \
 load(qt_module)
 
 include (backend/render-backend.pri)
+include (geometry/geometry.pri)
 include (graphicshelpers/graphicshelpers.pri)
 include (frontend/render-frontend.pri)
 include (renderstates/renderstates.pri)

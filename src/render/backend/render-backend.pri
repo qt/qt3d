@@ -24,19 +24,12 @@ HEADERS += \
     $$PWD/platformsurfacefilter_p.h \
     $$PWD/shaderdata_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
-    $$PWD/buffer_p.h \
-    $$PWD/buffermanager_p.h \
-    $$PWD/geometryrenderermanager_p.h \
     $$PWD/qraycastingservice.h \
     $$PWD/qraycastingservice_p.h \
     $$PWD/annotation_p.h \
-    $$PWD/attribute_p.h \
-    $$PWD/buffer_p.h \
     $$PWD/cameralens_p.h \
     $$PWD/effect_p.h \
     $$PWD/entity_p.h \
-    $$PWD/geometry_p.h \
-    $$PWD/geometryrenderer_p.h \
     $$PWD/layer_p.h \
     $$PWD/material_p.h \
     $$PWD/nodefunctor_p.h \
@@ -66,18 +59,12 @@ SOURCES += \
     $$PWD/scenemanager.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/platformsurfacefilter.cpp \
-    $$PWD/buffermanager.cpp \
-    $$PWD/geometryrenderermanager.cpp \
     $$PWD/qraycastingservice.cpp \
     $$PWD/vsyncframeadvanceservice.cpp \
     $$PWD/annotation.cpp \
-    $$PWD/attribute.cpp \
-    $$PWD/buffer.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/effect.cpp \
     $$PWD/entity.cpp \
-    $$PWD/geometry.cpp \
-    $$PWD/geometryrenderer.cpp \
     $$PWD/layer.cpp \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \

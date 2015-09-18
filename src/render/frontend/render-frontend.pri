@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qmaterial.h \
-    $$PWD/qmesh.h \
     $$PWD/qrenderpass.h \
     $$PWD/qshaderprogram.h \
     $$PWD/qshaderprogram_p.h \
@@ -19,10 +18,6 @@ HEADERS += \
     $$PWD/qsceneloader.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
-    $$PWD/qcylindermesh.h \
-    $$PWD/qtorusmesh.h \
-    $$PWD/qspheremesh.h \
-    $$PWD/qmesh_p.h \
     $$PWD/qabstractlight.h \
     $$PWD/qpointlight.h \
     $$PWD/qspotlight.h \
@@ -39,8 +34,6 @@ HEADERS += \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
     $$PWD/qopenglfilter.h \
-    $$PWD/qplanemesh.h \
-    $$PWD/qcuboidmesh.h \
     $$PWD/qrenderattachment.h \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
@@ -58,19 +51,12 @@ HEADERS += \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtextureimage.h \
     $$PWD/qtextureproviders.h \
-    $$PWD/qgeometryrenderer.h \
-    $$PWD/qgeometry.h \
-    $$PWD/qgeometryrenderer_p.h \
     $$PWD/qwindow.h \
-    $$PWD/qwindow_p.h \
-    $$PWD/qcylindergeometry.h \
-    $$PWD/qcylindergeometry_p.h \
-    $$PWD/qgeometry_p.h
+    $$PWD/qwindow_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
     $$PWD/qmaterial.cpp \
-    $$PWD/qmesh.cpp \
     $$PWD/qrenderpass.cpp \
     $$PWD/qshaderprogram.cpp \
     $$PWD/qtechnique.cpp \
@@ -80,17 +66,12 @@ SOURCES += \
     $$PWD/qeffect.cpp \
     $$PWD/qsceneloader.cpp \
     $$PWD/qparameter.cpp \
-    $$PWD/qcylindermesh.cpp \
-    $$PWD/qtorusmesh.cpp \
-    $$PWD/qspheremesh.cpp \
     $$PWD/qabstractlight.cpp \
     $$PWD/qpointlight.cpp \
     $$PWD/qspotlight.cpp \
     $$PWD/qdirectionallight.cpp \
     $$PWD/qlayer.cpp \
     $$PWD/qopenglfilter.cpp \
-    $$PWD/qplanemesh.cpp \
-    $$PWD/qcuboidmesh.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
     $$PWD/qannotation.cpp \
@@ -101,7 +82,4 @@ SOURCES += \
     $$PWD/qabstracttextureimage.cpp \
     $$PWD/qtextureimage.cpp \
     $$PWD/qtextureproviders.cpp \
-    $$PWD/qgeometryrenderer.cpp \
-    $$PWD/qgeometry.cpp \
-    $$PWD/qwindow.cpp \
-    $$PWD/qcylindergeometry.cpp
+    $$PWD/qwindow.cpp
