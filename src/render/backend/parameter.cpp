@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "renderparameter_p.h"
+#include "parameter_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qtexture.h>
@@ -49,21 +49,21 @@ using namespace Qt3D;
 namespace Qt3DRender {
 namespace Render {
 
-RenderParameter::RenderParameter()
+Parameter::Parameter()
     : QBackendNode()
     , m_shaderDataManager(Q_NULLPTR)
     , m_textureManager(Q_NULLPTR)
 {
 }
 
-void RenderParameter::updateFromPeer(Qt3D::QNode *mat)
+void Parameter::updateFromPeer(Qt3D::QNode *mat)
 {
     QParameter *param = static_cast<QParameter *>(mat);
     m_name = param->name();
     m_value = toBackendValue(param->value());
 }
 
-void RenderParameter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Parameter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -75,27 +75,27 @@ void RenderParameter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QString RenderParameter::name() const
+QString Parameter::name() const
 {
     return m_name;
 }
 
-QVariant RenderParameter::value() const
+QVariant Parameter::value() const
 {
     return m_value;
 }
 
-void RenderParameter::setShaderDataManager(ShaderDataManager *shaderDataManager)
+void Parameter::setShaderDataManager(ShaderDataManager *shaderDataManager)
 {
     m_shaderDataManager = shaderDataManager;
 }
 
-void RenderParameter::setTextureManager(TextureManager *textureManager)
+void Parameter::setTextureManager(TextureManager *textureManager)
 {
     m_textureManager = textureManager;
 }
 
-QVariant RenderParameter::toBackendValue(const QVariant &value)
+QVariant Parameter::toBackendValue(const QVariant &value)
 {
     QNode *node = value.value<QNode *>();
 

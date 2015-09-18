@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERPARAMETER_P_H
-#define QT3DRENDER_RENDER_RENDERPARAMETER_P_H
+#ifndef QT3DRENDER_RENDER_PARAMETER_P_H
+#define QT3DRENDER_RENDER_PARAMETER_P_H
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QVariant>
@@ -50,10 +50,10 @@ class ParameterManager;
 class ShaderDataManager;
 class TextureManager;
 
-class RenderParameter : public Qt3D::QBackendNode
+class Parameter : public Qt3D::QBackendNode
 {
 public:
-    RenderParameter();
+    Parameter();
 
     void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -80,4 +80,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERPARAMETER_P_H
+#endif // QT3DRENDER_RENDER_PARAMETER_P_H

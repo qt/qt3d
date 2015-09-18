@@ -226,7 +226,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraphSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_renderer->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
-    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderParameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
+    registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_renderer->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_renderer->shaderDataManager())));
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::RenderTextureImageFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer->frameGraphManager())));

@@ -327,7 +327,7 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                 const QList<Qt3D::QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
-        RenderParameter *param = manager->lookupResource(paramId);
+        Parameter *param = manager->lookupResource(paramId);
         if (param != Q_NULLPTR) {
             ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->name());
             if (it == params->end() || it->name != param->name())

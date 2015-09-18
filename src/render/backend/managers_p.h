@@ -52,7 +52,7 @@
 #include <Qt3DRenderer/private/rendertransform_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/renderrenderpass_p.h>
-#include <Qt3DRenderer/private/renderparameter_p.h>
+#include <Qt3DRenderer/private/parameter_p.h>
 #include <Qt3DRenderer/private/rendershaderdata_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/private/uniformbuffer_p.h>
@@ -242,7 +242,7 @@ public:
 
 
 class ParameterManager : public Qt3D::QResourceManager<
-        RenderParameter,
+        Parameter,
         Qt3D::QNodeId,
         16,
         Qt3D::ArrayAllocatingPolicy,
