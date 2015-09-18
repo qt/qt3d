@@ -35,10 +35,9 @@
 **
 ****************************************************************************/
 
-#ifndef BLENDSTATE_H
-#define BLENDSTATE_H
+#ifndef QT3DRENDER_RENDER_RENDERSTATES_H
+#define QT3DRENDER_RENDER_RENDERSTATES_H
 
-#include <Qt3DRenderer/private/renderstate_p.h>
 #include <Qt3DRenderer/private/genericstate_p.h>
 
 #include <QOpenGLContext>
@@ -280,4 +279,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // BLENDSTATE_H
+#endif // QT3DRENDER_RENDER_RENDERSTATES_H

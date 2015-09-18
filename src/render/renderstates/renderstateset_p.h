@@ -38,6 +38,7 @@
 #ifndef QT3DRENDER_RENDER_RENDERSTATE_H
 #define QT3DRENDER_RENDER_RENDERSTATE_H
 
+#include <Qt3DRenderer/private/genericstate_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -49,40 +50,7 @@ class QRenderState;
 namespace Render {
 
 class GraphicsContext;
-
-enum StateMask
-{
-    BlendStateMask          = 1 << 0,
-    StencilWriteStateMask   = 1 << 1,
-    StencilTestStateMask    = 1 << 2,
-    ScissorStateMask        = 1 << 3,
-    DepthTestStateMask      = 1 << 4,
-    DepthWriteStateMask     = 1 << 5,
-    CullFaceStateMask       = 1 << 6,
-    AlphaTestMask           = 1 << 7,
-    FrontFaceStateMask      = 1 << 8,
-    DitheringStateMask      = 1 << 9,
-    AlphaCoverageStateMask  = 1 << 10,
-    PolygonOffsetStateMask  = 1 << 11,
-    ColorStateMask          = 1 << 12,
-    ClipPlaneMask           = 1 << 13,
-    StencilOpMask           = 1 << 14
-};
-
-typedef quint64 StateMaskSet;
-
-class Q_AUTOTEST_EXPORT RenderState
-{
-public:
-    virtual ~RenderState() {}
-
-    virtual void apply(GraphicsContext* gc) const = 0;
-
-    virtual StateMaskSet mask() const = 0;
-
-    static RenderState *getOrCreateBackendState(QRenderState *renderState);
-protected:
-};
+class RenderState;
 
 class RenderStateSet
 {
@@ -120,7 +88,6 @@ private:
 
     RenderStateSet* m_cachedPrevious;
     QVector<RenderState*> m_cachedDeltaStates;
-
 };
 
 } // namespace Render

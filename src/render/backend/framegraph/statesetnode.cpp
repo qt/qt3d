@@ -38,7 +38,8 @@
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRenderer/qstateset.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/genericstate_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 
 QT_BEGIN_NAMESPACE
 

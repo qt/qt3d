@@ -64,7 +64,7 @@
 #include <Qt3DRenderer/QStencilOpSeparate>
 #include <Qt3DRenderer/QClipPlane>
 
-#include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DRenderer/private/renderstates_p.h>
 
 using namespace Qt3D;
 using namespace Qt3DRender;

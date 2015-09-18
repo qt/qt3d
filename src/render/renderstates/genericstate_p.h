@@ -35,17 +35,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_STATE_IMPLS_H
-#define QT3DRENDER_RENDER_STATE_IMPLS_H
+#ifndef QT3DRENDER_RENDER_GENERICSTATE_H
+#define QT3DRENDER_RENDER_GENERICSTATE_H
 
 #include <QList>
-
-#include <Qt3DRenderer/private/renderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+class QRenderState;
+
 namespace Render {
+
+class GraphicsContext;
+
+enum StateMask
+{
+    BlendStateMask          = 1 << 0,
+    StencilWriteStateMask   = 1 << 1,
+    StencilTestStateMask    = 1 << 2,
+    ScissorStateMask        = 1 << 3,
+    DepthTestStateMask      = 1 << 4,
+    DepthWriteStateMask     = 1 << 5,
+    CullFaceStateMask       = 1 << 6,
+    AlphaTestMask           = 1 << 7,
+    FrontFaceStateMask      = 1 << 8,
+    DitheringStateMask      = 1 << 9,
+    AlphaCoverageStateMask  = 1 << 10,
+    PolygonOffsetStateMask  = 1 << 11,
+    ColorStateMask          = 1 << 12,
+    ClipPlaneMask           = 1 << 13,
+    StencilOpMask           = 1 << 14
+};
+
+typedef quint64 StateMaskSet;
+
+class Q_AUTOTEST_EXPORT RenderState
+{
+public:
+    virtual ~RenderState() {}
+    virtual void apply(GraphicsContext* gc) const = 0;
+    virtual StateMaskSet mask() const = 0;
+
+    static RenderState *getOrCreateBackendState(QRenderState *renderState);
+};
 
 template <typename Derived, typename T>
 class GenericState1 : public RenderState
@@ -148,8 +182,8 @@ protected:
 };
 
 } // namespace Render
-} // namespace Qt3DRender of namespace
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // STATE_IMPLS_H
+#endif // QT3DRENDER_RENDER_GENERICSTATE_H

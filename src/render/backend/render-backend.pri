@@ -8,14 +8,11 @@ HEADERS += \
     $$PWD/renderconfiguration_p.h \
     $$PWD/renderer_p.h \
     $$PWD/quniformvalue_p.h \
-    $$PWD/states/blendstate_p.h \
-    $$PWD/genericstate_p.h \
     $$PWD/renderview_p.h \
     $$PWD/rendercommand_p.h \
     $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/texturedatamanager_p.h \
-    $$PWD/renderstate_p.h \
     $$PWD/rendertarget_p.h \
     $$PWD/renderattachment_p.h \
     $$PWD/scenemanager_p.h \
@@ -59,13 +56,11 @@ SOURCES += \
     $$PWD/renderconfiguration.cpp \
     $$PWD/renderer.cpp \
     $$PWD/quniformvalue.cpp \
-    $$PWD/states/blendstate.cpp \
     $$PWD/renderview.cpp \
     $$PWD/rendercommand.cpp \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/texturedatamanager.cpp \
-    $$PWD/renderstate.cpp \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
     $$PWD/scenemanager.cpp \

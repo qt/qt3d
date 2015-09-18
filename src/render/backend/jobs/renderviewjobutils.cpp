@@ -47,7 +47,7 @@
 #include <Qt3DRenderer/private/managers_p.h>
 #include <Qt3DRenderer/private/effect_p.h>
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 #include <Qt3DRenderer/private/rendertargetselectornode_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>
 #include <Qt3DRenderer/private/sortmethod_p.h>

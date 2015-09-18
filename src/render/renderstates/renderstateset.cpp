@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "renderstate_p.h"
+#include "renderstateset_p.h"
 
 #include <bitset>
 
@@ -43,7 +43,7 @@
 #include <QOpenGLContext>
 
 #include <Qt3DRenderer/private/graphicscontext_p.h>
-#include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DRenderer/private/renderstates_p.h>
 
 #include <Qt3DRenderer/qalphacoverage.h>
 #include <Qt3DRenderer/qalphatest.h>

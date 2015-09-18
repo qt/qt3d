@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "blendstate_p.h"
+#include "renderstates_p.h"
 
 #include <Qt3DRenderer/private/graphicscontext_p.h>
 

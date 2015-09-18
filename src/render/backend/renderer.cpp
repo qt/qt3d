@@ -50,7 +50,7 @@
 #include <Qt3DRenderer/qeffect.h>
 
 #include <Qt3DRenderer/private/renderviewjob_p.h>
-#include <Qt3DRenderer/private/blendstate_p.h>
+#include <Qt3DRenderer/private/renderstates_p.h>
 #include <Qt3DRenderer/private/cameraselectornode_p.h>
 #include <Qt3DRenderer/private/framegraphvisitor_p.h>
 #include <Qt3DRenderer/private/graphicscontext_p.h>
@@ -62,7 +62,7 @@
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderqueue_p.h>
 #include <Qt3DRenderer/private/shader_p.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 #include <Qt3DRenderer/private/technique_p.h>
 #include <Qt3DRenderer/private/renderthread_p.h>
 #include <Qt3DRenderer/private/renderview_p.h>

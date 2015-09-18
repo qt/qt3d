@@ -46,7 +46,7 @@
 #include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DRenderer/private/attribute_p.h>
 #include <Qt3DRenderer/private/rendercommand_p.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 #include <Qt3DRenderer/private/rendertarget_p.h>
 #include <Qt3DRenderer/private/graphicshelperinterface_p.h>
 #include <Qt3DRenderer/private/renderer_p.h>

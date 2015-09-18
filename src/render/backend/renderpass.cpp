@@ -42,9 +42,8 @@
 #include <Qt3DRenderer/qrenderpass.h>
 #include <Qt3DRenderer/qparameter.h>
 
-// TODO: Rename this include to something more descriptive
-#include <Qt3DRenderer/private/blendstate_p.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/renderstates_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 

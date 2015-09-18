@@ -41,31 +41,16 @@ HEADERS += \
     $$PWD/qopenglfilter.h \
     $$PWD/qplanemesh.h \
     $$PWD/qcuboidmesh.h \
-    $$PWD/qblendstate.h \
-    $$PWD/qblendequation.h \
-    $$PWD/qalphatest.h \
-    $$PWD/qdepthtest.h \
-    $$PWD/qdepthmask.h \
-    $$PWD/qcullface.h \
-    $$PWD/qfrontface.h \
-    $$PWD/qstenciltest.h \
-    $$PWD/qscissortest.h \
-    $$PWD/qdithering.h \
-    $$PWD/qrenderstate.h \
     $$PWD/qrenderattachment.h \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
-    $$PWD/qrenderstate_p.h \
-    $$PWD/qalphacoverage.h \
     $$PWD/qannotation.h \
     $$PWD/qannotation_p.h \
     $$PWD/qparametermapping_p.h \
     $$PWD/qparametermapping.h \
     $$PWD/qshaderdata.h \
     $$PWD/qshaderdata_p.h \
-    $$PWD/qpolygonoffset.h \
-    $$PWD/qcolormask.h \
     $$PWD/qabstracttextureprovider.h \
     $$PWD/qabstracttextureprovider_p.h \
     $$PWD/qwrapmode.h \
@@ -73,11 +58,6 @@ HEADERS += \
     $$PWD/qabstracttextureimage_p.h \
     $$PWD/qtextureimage.h \
     $$PWD/qtextureproviders.h \
-    $$PWD/qclipplane.h \
-    $$PWD/qstencilop.h \
-    $$PWD/qstencilopseparate.h \
-    $$PWD/qstenciltestseparate.h \
-    $$PWD/qstencilmask.h \
     $$PWD/qgeometryrenderer.h \
     $$PWD/qgeometry.h \
     $$PWD/qgeometryrenderer_p.h \
@@ -111,35 +91,16 @@ SOURCES += \
     $$PWD/qopenglfilter.cpp \
     $$PWD/qplanemesh.cpp \
     $$PWD/qcuboidmesh.cpp \
-    $$PWD/qblendstate.cpp \
-    $$PWD/qblendequation.cpp \
-    $$PWD/qalphatest.cpp \
-    $$PWD/qdepthtest.cpp \
-    $$PWD/qdepthmask.cpp \
-    $$PWD/qcullface.cpp \
-    $$PWD/qfrontface.cpp \
-    $$PWD/qstenciltest.cpp \
-    $$PWD/qscissortest.cpp \
-    $$PWD/qdithering.cpp \
-    $$PWD/qrenderstate.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qalphacoverage.cpp \
     $$PWD/qannotation.cpp \
     $$PWD/qparametermapping.cpp \
     $$PWD/qshaderdata.cpp \
-    $$PWD/qpolygonoffset.cpp \
-    $$PWD/qcolormask.cpp \
     $$PWD/qabstracttextureprovider.cpp \
     $$PWD/qwrapmode.cpp \
     $$PWD/qabstracttextureimage.cpp \
     $$PWD/qtextureimage.cpp \
     $$PWD/qtextureproviders.cpp \
-    $$PWD/qclipplane.cpp \
-    $$PWD/qstencilop.cpp \
-    $$PWD/qstencilopseparate.cpp \
-    $$PWD/qstenciltestseparate.cpp \
-    $$PWD/qstencilmask.cpp \
     $$PWD/qgeometryrenderer.cpp \
     $$PWD/qgeometry.cpp \
     $$PWD/qwindow.cpp \

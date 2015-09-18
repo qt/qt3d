@@ -14,6 +14,7 @@ load(qt_module)
 include (backend/render-backend.pri)
 include (graphicshelpers/graphicshelpers.pri)
 include (frontend/render-frontend.pri)
+include (renderstates/renderstates.pri)
 include (io/render-io.pri)
 include (defaults/defaults.pri)
 

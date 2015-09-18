@@ -55,7 +55,7 @@
 #include <Qt3DRenderer/private/renderpassfilternode_p.h>
 #include <Qt3DRenderer/private/renderpass_p.h>
 #include <Qt3DRenderer/private/geometryrenderer_p.h>
-#include <Qt3DRenderer/private/renderstate_p.h>
+#include <Qt3DRenderer/private/renderstateset_p.h>
 #include <Qt3DRenderer/private/techniquefilternode_p.h>
 #include <Qt3DRenderer/private/viewportnode_p.h>
 
