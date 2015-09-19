@@ -837,6 +837,8 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     // Save the RenderView base stateset
     RenderStateSet *globalState = m_graphicsContext->currentStateSet();
+    QOpenGLVertexArrayObject *vao = Q_NULLPTR;
+    HVao previousVaoHandle;
 
     Q_FOREACH (RenderCommand *command, commands) {
 
@@ -860,7 +862,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // The VAO should be created only once for a QGeometry and a ShaderProgram
         // Manager should have a VAO Manager that are indexed by QMeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
-        QOpenGLVertexArrayObject *vao = Q_NULLPTR;
+        bool needsToBindVAO = false;
         if (m_graphicsContext->supportsVAO()) {
             command->m_vao = m_vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
             if (command->m_vao.isNull()) {
@@ -868,7 +870,11 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
                 *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
             }
-            vao = *(m_vaoManager->data(command->m_vao));
+            if (previousVaoHandle != command->m_vao) {
+                needsToBindVAO = true;
+                previousVaoHandle = command->m_vao;
+                vao = *(m_vaoManager->data(command->m_vao));
+            }
             Q_ASSERT(vao);
         }
 
@@ -894,7 +900,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
             specified = true;
-            if (vao) {
+            if (needsToBindVAO && vao) {
                 if (!vao->isCreated()) {
                     qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
                     vao->create();
@@ -968,11 +974,6 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             if (rGeometryRenderer->primitiveRestart())
                 m_graphicsContext->disablePrimitiveRestart();
 
-            // Maybe we could cache the VAO and release it only at the end of the exectute frame
-            // in case we are always reusing the same one ?
-
-            if (vao && vao->isCreated())
-                vao->release();
 
             // Unset dirtiness on rGeometryRenderer only
             // The rGeometry may be shared by several rGeometryRenderer
@@ -981,6 +982,11 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         }
     } // end of RenderCommands loop
+
+    // We cache the VAO and release it only at the end of the exectute frame
+    // We try to minimize VAO binding between RenderCommands
+    if (vao && vao->isCreated())
+        vao->release();
 
     // Reset to the state we were in before executing the render commands
     m_graphicsContext->setCurrentStateSet(globalState);
