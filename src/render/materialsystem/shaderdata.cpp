@@ -129,25 +129,26 @@ bool ShaderData::needsUpdate(const QMatrix4x4 &viewMatrix)
             ++transformedIt;
         }
     }
-
     const QHash<QString, QVariant>::const_iterator end = m_nestedShaderDataProperties.end();
     QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
 
     while (it != end) {
         if (it.value().userType() == QMetaType::QVariantList) {
             QVariantList updatedNodes;
+            bool nestedNeedsUpdate = false;
             Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
                 ShaderData *nested = m_manager->lookupResource(v.value<QNodeId>());
                 if (nested != Q_NULLPTR) {
-                    // We need to add the nested nodes the the updated property list
-                    // as if we need to maintain order
+                    // We need to add the nested nodes to the updated property list
+                    // as we need to maintain order
                     // if node[0] doesn't need update but node[1] does,
                     // if we only have a single element, the renderer would update element [0]
-                    nested->needsUpdate(viewMatrix);
+                    nestedNeedsUpdate |= nested->needsUpdate(viewMatrix);
                     updatedNodes << v;
                 }
             }
-            if (!updatedNodes.empty())
+            // Of course we only add all the nodes if at least one of the nested nodes required and update
+            if (nestedNeedsUpdate && !updatedNodes.empty())
                 m_updatedProperties.insert(it.key(), updatedNodes);
         } else {
             ShaderData *nested = m_manager->lookupResource(it.value().value<QNodeId>());
