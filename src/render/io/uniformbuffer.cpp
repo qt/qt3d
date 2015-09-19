@@ -53,7 +53,20 @@ namespace Render {
 UniformBuffer::UniformBuffer()
     : m_bufferId(~0)
     , m_isCreated(false)
+    , m_bound(false)
 {
+}
+
+void UniformBuffer::bind(GraphicsContext *ctx)
+{
+    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
+    m_bound = true;
+}
+
+void UniformBuffer::release(GraphicsContext *ctx)
+{
+    m_bound = false;
+    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void UniformBuffer::create(GraphicsContext *ctx)
@@ -70,18 +83,14 @@ void UniformBuffer::destroy(GraphicsContext *ctx)
 
 void UniformBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
 {
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
     // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
     // TO DO: find a way to know how a buffer/QShaderData will be used to use the right usage
     ctx->openGLContext()->functions()->glBufferData(GL_UNIFORM_BUFFER, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void UniformBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
 {
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
     ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void UniformBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)

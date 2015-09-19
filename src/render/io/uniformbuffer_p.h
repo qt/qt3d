@@ -67,6 +67,7 @@ public:
     UniformBuffer();
 
     void bind(GraphicsContext *ctx);
+    void release(GraphicsContext *ctx);
     void create(GraphicsContext *ctx);
     void destroy(GraphicsContext *ctx);
     void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
@@ -75,10 +76,12 @@ public:
 
     inline GLuint bufferId() const { return m_bufferId; }
     inline bool isCreated() const { return m_isCreated; }
+    inline bool isBound() const { return m_bound; }
 
 private:
     GLuint m_bufferId;
     bool m_isCreated;
+    bool m_bound;
 };
 
 } // namespace Render

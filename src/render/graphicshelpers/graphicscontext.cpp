@@ -868,10 +868,12 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
 
     // Bind UniformBlocks to UBO and update UBO from ShaderData
     const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
+    UniformBuffer *ubo = Q_NULLPTR;
+    bool needsToUnbindUBO = false;
     for (int i = 0; i < blockToUbos.length(); ++i) {
         const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
         if (block.m_index != -1 && block.m_size > 0) {
-            UniformBuffer *ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
+            ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
                                                                                                  m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
             bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
@@ -881,11 +883,15 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
             // Allocate ubo if not allocated previously
             if (!ubo->isCreated()) {
                 ubo->create(this);
+                ubo->bind(this);
                 ubo->allocate(this, block.m_size);
             }
 
             // update the ubo if needed
             if (blockToUbos[i].m_needsUpdate) {
+                if (!ubo->isBound())
+                    ubo->bind(this);
+                needsToUnbindUBO |= true;
                 const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForBlock(block.m_index);
                 const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
                 QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
@@ -906,6 +912,9 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
             ubo->bindToUniformBlock(this, i);
         }
     }
+
+    if (needsToUnbindUBO)
+        ubo->release(this);
 
     // Update uniforms in the Default Uniform Block
     m_activeShader->updateUniforms(this, uniforms);
