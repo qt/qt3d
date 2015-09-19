@@ -338,7 +338,14 @@ void RenderView::sort()
 
                 while (it != uniforms.end()) {
                     bool found = false;
-                    if (cachedUniforms.contains(it.key()) && !it.value()->isTexture()) {
+                    // We are comparing the values:
+                    // - raw uniform values
+                    // - the texture Node id if the uniform represents a texture
+                    // since all textures are assigned texture units before the RenderCommands
+                    // sharing the same material (shader) are rendered, we can't have the case
+                    // where two uniforms, referencing the same texture eventually have 2 different
+                    // texture unit values
+                    if (cachedUniforms.contains(it.key())) {
                         const QUniformValue *refValue = cachedUniforms[it.key()];
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
                             destroyUniformValue(it.value(), m_allocator);
