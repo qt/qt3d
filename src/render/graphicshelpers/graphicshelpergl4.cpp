@@ -193,9 +193,10 @@ QVector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint progr
     blocks.reserve(nbrActiveUniformsBlocks);
     for (GLint i = 0; i < nbrActiveUniformsBlocks; i++) {
         QByteArray uniformBlockName(256, '\0');
+        GLsizei length = 0;
         ShaderUniformBlock uniformBlock;
-        m_funcs->glGetActiveUniformBlockName(programId, i, 256, NULL, uniformBlockName.data());
-        uniformBlock.m_name = QString::fromUtf8(uniformBlockName);
+        m_funcs->glGetActiveUniformBlockName(programId, i, 256, &length, uniformBlockName.data());
+        uniformBlock.m_name = QString::fromUtf8(uniformBlockName.left(length));
         uniformBlock.m_index = i;
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformBlock.m_activeUniformsCount);
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_BINDING, &uniformBlock.m_binding);
