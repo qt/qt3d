@@ -37,9 +37,6 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/QEffect>
 #include <Qt3DRenderer/QMaterial>
@@ -54,6 +51,8 @@
 #include <Qt3DRenderer/QDiffuseSpecularMapMaterial>
 #include <Qt3DRenderer/QNormalDiffuseMapAlphaMaterial>
 #include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
+
+#include "testpostmanarbiter.h"
 
 class TestMaterial : public Qt3DRender::QMaterial
 {
@@ -81,81 +80,6 @@ public:
     Qt3DRender::QRenderPass *m_renderPass;
     Qt3DRender::QShaderProgram *m_shaderProgram;
 };
-
-class TestArbiter;
-
-class TestPostman : public Qt3DCore::QAbstractPostman
-{
-public:
-    TestPostman(TestArbiter *arbiter)
-        : m_arbiter(arbiter)
-    {}
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_FINAL
-    {}
-
-    void setScene(Qt3DCore::QScene *) Q_DECL_FINAL
-    {}
-
-    void notifyBackend(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-
-private:
-    TestArbiter *m_arbiter;
-};
-
-class TestArbiter : public Qt3DCore::QAbstractArbiter
-{
-public:
-    TestArbiter(Qt3DCore::QNode *node)
-        : m_postman(new TestPostman(this))
-        , m_node(node)
-    {
-        assignArbiter(m_node);
-    }
-
-    ~TestArbiter()
-    {
-        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
-    }
-
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3DCore::QSceneChangeList &e) Q_DECL_FINAL
-    {
-        events += QVector<Qt3DCore::QSceneChangePtr>::fromStdVector(e);
-    }
-
-    Qt3DCore::QAbstractPostman *postman() const Q_DECL_FINAL
-    {
-        return m_postman;
-    }
-
-    QVector<Qt3DCore::QSceneChangePtr> events;
-
-private:
-    TestPostman *m_postman;
-    Qt3DCore::QNode *m_node;
-
-    void assignArbiter(Qt3DCore::QNode *node)
-    {
-        Qt3DCore::QNodePrivate::get(node)->setArbiter(this);
-        Q_FOREACH (Qt3DCore::QNode *n, node->childrenNodes())
-            assignArbiter(n);
-    }
-};
-
-void TestPostman::notifyBackend(const Qt3DCore::QSceneChangePtr &e)
-{
-    m_arbiter->sceneChangeEventWithLock(e);
-}
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
