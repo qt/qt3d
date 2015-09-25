@@ -21,5 +21,6 @@ contains(QT_CONFIG, private_tests) {
         attribute \
         geometry \
         geometryrenderer \
-        raycasting
+        raycasting \
+        qcameraselector
 }
