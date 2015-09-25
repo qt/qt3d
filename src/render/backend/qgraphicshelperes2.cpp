@@ -302,6 +302,8 @@ void QGraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, cons
 bool QGraphicsHelperES2::supportsFeature(QGraphicsHelperInterface::Feature feature) const
 {
     switch (feature) {
+    case RenderBufferDimensionRetrieval:
+        return true;
     default:
         return false;
     }
@@ -528,6 +530,28 @@ void QGraphicsHelperES2::enablePrimitiveRestart(int)
 
 void QGraphicsHelperES2::disablePrimitiveRestart()
 {
+}
+
+QSize QGraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    return QSize(width, height);
+}
+
+QSize QGraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+{
+    Q_UNUSED(textureId);
+    Q_UNUSED(target);
+    Q_UNUSED(level);
+    qCritical() << "getTextureDimensions is not supported by ES 2.0";
+    return QSize(0, 0);
 }
 
 } // Render

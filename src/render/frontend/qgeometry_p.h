@@ -34,50 +34,31 @@
 **
 ****************************************************************************/
 
-#include "nodraw_p.h"
-#include <Qt3DRenderer/qnodraw.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QGEOMETRY_P_H
+#define QT3D_QGEOMETRY_P_H
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
-
-NoDraw::NoDraw()
-    : FrameGraphNode(FrameGraphNode::NoDraw)
+class QGeometryPrivate : public QNodePrivate
 {
-}
+public:
+    Q_DECLARE_PUBLIC(QGeometry)
+    QGeometryPrivate()
+        : QNodePrivate()
+        , m_verticesPerPatch(0)
+    {}
 
-NoDraw::~NoDraw()
-{
-}
+    QAttributeList m_attributes;
+    int m_verticesPerPatch;
+};
 
-void NoDraw::updateFromPeer(QNode *peer)
-{
-    QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
-    setEnabled(noDraw->isEnabled());
-}
-
-void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-
-    switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        break;
-
-    default:
-        break;
-    }
-
-    }
-}
-
-} // Render
-
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QGEOMETRY_P_H
+

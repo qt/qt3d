@@ -101,10 +101,6 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              RenderEffect *effect,
                                                              RenderTechnique *technique);
 
-Q_AUTOTEST_EXPORT void parametersFromRenderPass(ParameterInfoList *infoList,
-                                                ParameterManager *manager,
-                                                RenderRenderPass *pass);
-
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                                            const QList<QNodeId> &parameterIds);
 

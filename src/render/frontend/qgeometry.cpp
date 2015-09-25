@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "qgeometry.h"
-
+#include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -44,21 +44,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-class QGeometryPrivate : public QNodePrivate
-{
-public:
-    Q_DECLARE_PUBLIC(QGeometry)
-    QGeometryPrivate()
-        : QNodePrivate()
-        , m_verticesPerPatch(0)
-    {}
-
-    QAttributeList m_attributes;
-    int m_verticesPerPatch;
-};
-
 QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
+{
+}
+
+QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
+    : QNode(dd, parent)
 {
 }
 

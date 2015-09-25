@@ -57,9 +57,11 @@
 #if !defined(QT_OPENGL_ES_2)
 #include <QOpenGLFunctions_2_0>
 #include <QOpenGLFunctions_3_2_Core>
+#include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
 #include <Qt3DRenderer/private/qgraphicshelpergl2_p.h>
 #include <Qt3DRenderer/private/qgraphicshelpergl3_p.h>
+#include <Qt3DRenderer/private/qgraphicshelpergl3_3_p.h>
 #include <Qt3DRenderer/private/qgraphicshelpergl4_p.h>
 #endif
 #include <Qt3DRenderer/private/qgraphicshelperes2_p.h>
@@ -237,11 +239,32 @@ void QGraphicsContext::setViewport(const QRectF &viewport)
     m_viewport = viewport;
     QSize renderTargetSize;
     if (m_activeFBO != m_defaultFBO) {
-        // For external FBOs we may not have an m_renderTargets entry. Do not call glViewport in that case.
-        if (m_renderTargetsSize.contains(m_activeFBO))
+        // For external FBOs we may not have a m_renderTargets entry.
+        if (m_renderTargetsSize.contains(m_activeFBO)) {
             renderTargetSize = m_renderTargetsSize[m_activeFBO];
-        else
-            return;
+        } else {
+            // External FBO (when used with QtQuick2 Scene3D)
+
+            // Query FBO color attachment 0 size
+            GLint attachmentObjectType = GL_NONE;
+            GLint attachment0Name = 0;
+            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
+                                                                     GL_COLOR_ATTACHMENT0,
+                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
+                                                                     &attachmentObjectType);
+            m_gl->functions()->glGetFramebufferAttachmentParameteriv(GL_FRAMEBUFFER,
+                                                                     GL_COLOR_ATTACHMENT0,
+                                                                     GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+                                                                     &attachment0Name);
+
+            if (attachmentObjectType == GL_RENDERBUFFER && m_glHelper->supportsFeature(QGraphicsHelperInterface::RenderBufferDimensionRetrieval))
+                renderTargetSize = m_glHelper->getRenderBufferDimensions(attachment0Name);
+            else if (attachmentObjectType == GL_TEXTURE && m_glHelper->supportsFeature(QGraphicsHelperInterface::TextureDimensionRetrieval))
+                // Assumes texture level 0 and GL_TEXTURE_2D target
+                renderTargetSize = m_glHelper->getTextureDimensions(attachment0Name, GL_TEXTURE_2D);
+            else
+                return;
+        }
     } else {
         renderTargetSize = m_surface->size();
         if (m_surface->surfaceClass() == QSurface::Window) {
@@ -524,11 +547,13 @@ void QGraphicsContext::resolveHighestOpenGLFunctions()
         if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
             m_glHelper = new QGraphicsHelperGL4();
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != Q_NULLPTR) {
+            qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
+            m_glHelper = new QGraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
             m_glHelper = new QGraphicsHelperGL3();
-        }
-        else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
+        } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
             m_glHelper = new QGraphicsHelperGL2();
         }

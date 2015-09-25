@@ -34,50 +34,58 @@
 **
 ****************************************************************************/
 
-#include "nodraw_p.h"
-#include <Qt3DRenderer/qnodraw.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QCYLINDERGEOMETRY_H
+#define QT3D_QCYLINDERGEOMETRY_H
+
+#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRenderer/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class QCylinderGeometryPrivate;
 
-NoDraw::NoDraw()
-    : FrameGraphNode(FrameGraphNode::NoDraw)
+class QT3DRENDERERSHARED_EXPORT QCylinderGeometry : public QGeometry
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)
+    Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 
-NoDraw::~NoDraw()
-{
-}
+public:
+    explicit QCylinderGeometry(QNode *parent = 0);
+    ~QCylinderGeometry();
 
-void NoDraw::updateFromPeer(QNode *peer)
-{
-    QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
-    setEnabled(noDraw->isEnabled());
-}
+    void updateVertices();
+    void updateIndices();
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setLength(float length);
 
-void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    int rings() const;
+    int slices() const;
+    float radius() const;
+    float length() const;
 
-    switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        break;
+Q_SIGNALS:
+    void radiusChanged();
+    void ringsChanged();
+    void slicesChanged();
+    void lengthChanged();
 
-    default:
-        break;
-    }
+protected:
+    QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent = 0);
 
-    }
-}
+private:
+    Q_DECLARE_PRIVATE(QCylinderGeometry)
+    QT3D_CLONEABLE(QCylinderGeometry)
+};
 
-} // Render
-
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QCYLINDERGEOMETRY_H

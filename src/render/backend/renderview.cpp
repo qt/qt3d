@@ -421,8 +421,8 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                 Q_FOREACH (RenderRenderPass *pass, passes) {
 
                     // Add the RenderRenderPass Parameters
-                    ParameterInfoList globalParameter = parameters;
-                    parametersFromParametersProvider(&globalParameter, m_renderer->parameterManager(), pass);
+                    ParameterInfoList globalParameters = parameters;
+                    parametersFromParametersProvider(&globalParameters, m_renderer->parameterManager(), pass);
 
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
@@ -445,7 +445,7 @@ void RenderView::buildRenderCommands(RenderEntity *node)
                             command->m_stateSet->merge(m_stateSet);
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     }
-                    setShaderAndUniforms(command, pass, parameters, *(node->worldTransform()));
+                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()));
                     buildSortingKey(command);
                     m_commands.append(command);
                 }

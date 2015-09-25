@@ -80,7 +80,10 @@ HEADERS += \
     $$PWD/qgeometry.h \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qwindow.h \
-    $$PWD/qwindow_p.h
+    $$PWD/qwindow_p.h \
+    $$PWD/qcylindergeometry.h \
+    $$PWD/qcylindergeometry_p.h \
+    $$PWD/qgeometry_p.h
 
 SOURCES += \
     $$PWD/qmaterial.cpp \
@@ -136,4 +139,5 @@ SOURCES += \
     $$PWD/qstencilmask.cpp \
     $$PWD/qgeometryrenderer.cpp \
     $$PWD/qgeometry.cpp \
-    $$PWD/qwindow.cpp
+    $$PWD/qwindow.cpp \
+    $$PWD/qcylindergeometry.cpp

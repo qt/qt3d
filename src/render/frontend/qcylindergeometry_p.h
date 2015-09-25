@@ -34,50 +34,42 @@
 **
 ****************************************************************************/
 
-#include "nodraw_p.h"
-#include <Qt3DRenderer/qnodraw.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3D_QCYLINDERGEOMETRY_P_H
+#define QT3D_QCYLINDERGEOMETRY_P_H
+
+#include <Qt3DRenderer/private/qgeometry_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3D {
 
-namespace Render {
+class QAttribute;
+class QBuffer;
 
-NoDraw::NoDraw()
-    : FrameGraphNode(FrameGraphNode::NoDraw)
+class QCylinderGeometryPrivate : public QGeometryPrivate
 {
-}
+public:
+    QCylinderGeometryPrivate();
 
-NoDraw::~NoDraw()
-{
-}
+    void init();
 
-void NoDraw::updateFromPeer(QNode *peer)
-{
-    QNoDraw *noDraw = static_cast<QNoDraw *>(peer);
-    setEnabled(noDraw->isEnabled());
-}
+    Q_DECLARE_PUBLIC(QCylinderGeometry)
 
-void NoDraw::sceneChangeEvent(const QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    int m_rings;
+    int m_slices;
+    float m_radius;
+    float m_length;
+    QAttribute *m_positionAttribute;
+    QAttribute *m_normalAttribute;
+    QAttribute *m_texCoordAttribute;
+    QAttribute *m_indexAttribute;
+    QBuffer *m_vertexBuffer;
+    QBuffer *m_indexBuffer;
+};
 
-    switch (e->type()) {
-    case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        break;
-
-    default:
-        break;
-    }
-
-    }
-}
-
-} // Render
-
-} // Qt3D
+} // namespace Qt3D
 
 QT_END_NAMESPACE
+
+#endif // QT3D_QCYLINDERGEOMETRY_P_H
+

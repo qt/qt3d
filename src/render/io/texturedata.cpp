@@ -75,6 +75,7 @@ void TexImageData::setImage(const QImage &image)
     m_depth = 1;
 
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
+    Q_ASSERT_X(glImage.bytesPerLine() == (glImage.width() * glImage.depth() + 7) / 8, "TexImageData::setImage", "glImage is not packed"); // QTBUG-48330
     QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
     setData(imageBytes, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
     m_format = QOpenGLTexture::RGBA8_UNorm;

@@ -203,8 +203,7 @@ QVector<ShaderUniformBlock> QGraphicsHelperGL4::programUniformBlocks(GLuint prog
 
 void QGraphicsHelperGL4::vertexAttribDivisor(GLuint index, GLuint divisor)
 {
-    Q_UNUSED(index);
-    Q_UNUSED(divisor);
+    m_funcs->glVertexAttribDivisor(index, divisor);
 }
 
 void QGraphicsHelperGL4::blendEquation(GLenum mode)
@@ -310,6 +309,8 @@ bool QGraphicsHelperGL4::supportsFeature(QGraphicsHelperInterface::Feature featu
     case MRT:
     case Tessellation:
     case UniformBufferObject:
+    case RenderBufferDimensionRetrieval:
+    case TextureDimensionRetrieval:
         return true;
     default:
         return false;
@@ -872,6 +873,32 @@ void QGraphicsHelperGL4::enablePrimitiveRestart(int primitiveRestartIndex)
 void QGraphicsHelperGL4::disablePrimitiveRestart()
 {
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
+}
+
+QSize QGraphicsHelperGL4::getRenderBufferDimensions(GLuint renderBufferId)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
+    m_funcs->glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &height);
+    m_funcs->glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    return QSize(width, height);
+}
+
+QSize QGraphicsHelperGL4::getTextureDimensions(GLuint textureId, GLenum target, uint level)
+{
+    GLint width = 0;
+    GLint height = 0;
+
+    m_funcs->glBindTexture(target, textureId);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_WIDTH, &width);
+    m_funcs->glGetTexLevelParameteriv(target, level, GL_TEXTURE_HEIGHT, &height);
+    m_funcs->glBindTexture(target, 0);
+
+    return QSize(width, height);
 }
 
 } // Render

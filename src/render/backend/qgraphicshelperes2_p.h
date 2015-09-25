@@ -91,6 +91,8 @@ public:
     GLint maxClipPlaneCount() Q_DECL_OVERRIDE;
     void enablePrimitiveRestart(int primitiveRestartIndex) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
+    QSize getRenderBufferDimensions(GLuint renderBufferId) Q_DECL_OVERRIDE;
+    QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
     QOpenGLFunctions *m_funcs;

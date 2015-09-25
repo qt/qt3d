@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,25 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGRAPHICSHELPERGL2_H
-#define QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#ifndef QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H
+#define QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H
 
 #include <Qt3DRenderer/private/qgraphicshelperinterface_p.h>
+#include <QtCore/qscopedpointer.h>
 
 #ifndef QT_OPENGL_ES_2
 
 QT_BEGIN_NAMESPACE
 
-class QOpenGLFunctions_2_0;
-class QOpenGLExtension_ARB_framebuffer_object;
+class QOpenGLFunctions_3_3_Core;
+class QOpenGLExtension_ARB_tessellation_shader;
 
 namespace Qt3D {
 namespace Render {
 
-class QGraphicsHelperGL2 : public QGraphicsHelperInterface
+class QGraphicsHelperGL3_3 : public QGraphicsHelperInterface
 {
 public:
-    QGraphicsHelperGL2();
+    QGraphicsHelperGL3_3();
 
     // QGraphicHelperInterface interface
     void initializeHelper(QOpenGLContext *context, QAbstractOpenGLFunctions *functions) Q_DECL_OVERRIDE;
@@ -85,7 +86,7 @@ public:
     void bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
-    void bindBufferBase(GLenum target, GLuint index, GLuint buffer) Q_DECL_OVERRIDE;
+    void bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer) Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     uint uniformByteSize(const ShaderUniform &description) Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
@@ -97,8 +98,8 @@ public:
     QSize getTextureDimensions(GLuint textureId, GLenum target, uint level = 0) Q_DECL_OVERRIDE;
 
 private:
-    QOpenGLFunctions_2_0 *m_funcs;
-    QOpenGLExtension_ARB_framebuffer_object *m_fboFuncs;
+    QOpenGLFunctions_3_3_Core *m_funcs;
+    QScopedPointer<QOpenGLExtension_ARB_tessellation_shader> m_tessFuncs;
 };
 
 } // Render
@@ -108,4 +109,4 @@ QT_END_NAMESPACE
 
 #endif // !QT_OPENGL_ES_2
 
-#endif // QT3D_RENDER_QGRAPHICSHELPERGL2_H
+#endif // QT3D_RENDER_QGRAPHICSHELPERGL3_3_P_H

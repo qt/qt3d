@@ -66,6 +66,8 @@ private:
     static QAbstractAttribute *attributeAt(QQmlListProperty<QAbstractAttribute> *list, int index);
     static int attributesCount(QQmlListProperty<QAbstractAttribute> *list);
     static void clearAttributes(QQmlListProperty<QAbstractAttribute> *list);
+
+    QVector<QAbstractAttribute *> m_managedAttributes;
 };
 
 } // Quick
