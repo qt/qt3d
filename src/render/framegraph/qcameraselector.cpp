@@ -91,7 +91,7 @@ void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!camera->parent())
+        if (camera && !camera->parent())
             camera->setParent(this);
         emit cameraChanged();
     }
