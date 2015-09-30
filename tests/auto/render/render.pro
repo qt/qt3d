@@ -26,5 +26,6 @@ contains(QT_CONFIG, private_tests) {
         qclearbuffer \
         qframegraphnode \
         qframegraph \
-        qlayerfilter
+        qlayerfilter \
+        qrenderpassfilter
 }
