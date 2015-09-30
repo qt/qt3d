@@ -131,7 +131,7 @@ void QFrameGraph::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     Q_D(QFrameGraph);
     if (activeFrameGraph != d->m_activeFrameGraph) {
 
-        if (!activeFrameGraph->parent())
+        if (activeFrameGraph != Q_NULLPTR && !activeFrameGraph->parent())
             activeFrameGraph->setParent(this);
 
         d->m_activeFrameGraph = activeFrameGraph;
