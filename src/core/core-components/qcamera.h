@@ -79,6 +79,7 @@ public:
         TranslateViewCenter,
         DontTranslateViewCenter
     };
+    Q_ENUM(CameraTranslationOption)
 
     QCameraLens *lens() const;
     QTransform *transform() const;
@@ -89,21 +90,21 @@ public:
     QQuaternion rollRotation(float angle) const;
 
     // Translate relative to camera orientation axes
-    void translate( const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
 
     // Translate relative to world axes
-    void translateWorld( const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translateWorld(const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
 
-    void tilt( const float& angle );
-    void pan( const float& angle );
-    void roll( const float& angle );
+    Q_INVOKABLE void tilt(float angle);
+    Q_INVOKABLE void pan(float angle);
+    Q_INVOKABLE void roll(float angle);
 
-    void tiltAboutViewCenter( const float& angle );
-    void panAboutViewCenter( const float& angle );
-    void rollAboutViewCenter( const float& angle );
+    Q_INVOKABLE void tiltAboutViewCenter(float angle);
+    Q_INVOKABLE void panAboutViewCenter(float angle);
+    Q_INVOKABLE void rollAboutViewCenter(float angle);
 
-    void rotate( const QQuaternion& q );
-    void rotateAboutViewCenter( const QQuaternion& q );
+    Q_INVOKABLE void rotate(const QQuaternion& q);
+    Q_INVOKABLE void rotateAboutViewCenter(const QQuaternion& q);
 
     void setProjectionType(QCameraLens::ProjectionType type);
     QCameraLens::ProjectionType projectionType() const;
