@@ -89,7 +89,7 @@ void QRenderPassFilter::addInclude(QAnnotation *annotation)
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("include");
-            propertyChange->setValue(QVariant::fromValue(annotation));
+            propertyChange->setValue(QVariant::fromValue(annotation->id()));
             d->notifyObservers(propertyChange);
         }
     }
@@ -101,7 +101,7 @@ void QRenderPassFilter::removeInclude(QAnnotation *annotation)
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("include");
-        propertyChange->setValue(QVariant::fromValue(annotation));
+        propertyChange->setValue(QVariant::fromValue(annotation->id()));
         d->notifyObservers(propertyChange);
     }
     d->m_includeList.removeOne(annotation);
@@ -113,6 +113,8 @@ void QRenderPassFilter::copy(const QNode *ref)
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
     Q_FOREACH (QAnnotation *c, other->d_func()->m_includeList)
         addInclude(qobject_cast<QAnnotation *>(QNode::clone(c)));
+    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
 void QRenderPassFilter::addParameter(QParameter *parameter)

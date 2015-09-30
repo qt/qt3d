@@ -73,7 +73,7 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     QList<Qt3DCore::QNodeId> filters() const;
     QList<Qt3DCore::QNodeId> parameters() const;
-    void appendFilter(QAnnotation *criterion);
+    void appendFilter(const Qt3DCore::QNodeId &criterionId);
     void removeFilter(const Qt3DCore::QNodeId &criterionId);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
