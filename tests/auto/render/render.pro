@@ -23,5 +23,6 @@ contains(QT_CONFIG, private_tests) {
         geometryrenderer \
         raycasting \
         qcameraselector \
-        qclearbuffer
+        qclearbuffer \
+        qframegraphnode
 }
