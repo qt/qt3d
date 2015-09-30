@@ -62,6 +62,7 @@ void QRenderTargetSelector::copy(const QNode *ref)
 
     const QRenderTargetSelector *other = static_cast<const QRenderTargetSelector*>(ref);
 
+    setDrawBuffers(other->drawBuffers());
     if (other->d_func()->m_target)
         setTarget(qobject_cast<QRenderTarget *>(QNode::clone(other->d_func()->m_target)));
 }
@@ -83,7 +84,7 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
         d->m_target = target;
 
         // For inline declaration cases
-        if (!target->parent())
+        if (target != Q_NULLPTR && !target->parent())
             target->setParent(this);
         emit targetChanged();
     }
