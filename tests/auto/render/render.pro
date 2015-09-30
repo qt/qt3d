@@ -24,5 +24,6 @@ contains(QT_CONFIG, private_tests) {
         raycasting \
         qcameraselector \
         qclearbuffer \
-        qframegraphnode
+        qframegraphnode \
+        qframegraph
 }
