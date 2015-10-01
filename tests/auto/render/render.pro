@@ -29,5 +29,6 @@ contains(QT_CONFIG, private_tests) {
         qlayerfilter \
         qrenderpassfilter \
         qrendertargetselector \
-        qsortcriterion
+        qsortcriterion \
+        qsortmethod
 }
