@@ -37,7 +37,7 @@
 
 /*!
     \page qt3d-index.html
-    \title Qt3D Module
+    \title Qt 3D
 
     \e Qt3D provides functionality for near-realtime simulation systems
     with support for 2D and 3D rendering in both Qt C++ and Qt Quick
@@ -55,11 +55,12 @@
 
     \section1 Getting Started
 
-    For a C++ application that performs 2D or 3D rendering and also handles user
-    input, add the following line to your \l qmake \c .pro file:
+    For a C++ application that performs 2D or 3D rendering, collision
+    detection, and also handle user input, add the following line to its
+    \l qmake \c .pro file:
 
     \badcode
-    QT += 3dcore 3drenderer 3dinput
+    QT += 3dcore 3drenderer 3dinput 3dcollision 3dlogic
     \endcode
 
     To include the definitions of the modules' classes, use the following
@@ -69,12 +70,14 @@
     #include <Qt3DCore>
     #include <Qt3DRenderer>
     #include <Qt3DInput>
+    #include <Qt3DCollision>
+    #include <Qt3DLogic>
     \endcode
 
     A Qt Quick application requires also additional dependencies:
 
     \badcode
-    QT += 3dcore 3drenderer 3dinput qml quick 3dquick
+    QT += 3dcore 3drenderer 3dinput 3dcollision qml quick 3dquick
     \endcode
 
     \section1 Overview
@@ -86,7 +89,8 @@
     \section1 Reference
     \list
         \li \l {Qt3D Overview}
-        \li \l [CPP] {Qt3D}{Qt3D Namespace}
+        \li \l {Qt 3D C++ Classes}
+        \li \l {Qt 3D QML Types}
         \li \l {Qt3D Examples}
     \endlist
 

@@ -36,15 +36,44 @@
 
 /*!
     \module Qt3DCore
-    \title Qt3D Core C++ Classes
-    \brief The Qt3D Core module contains functionality to support near-realtime simulation systems.
+    \title Qt 3D Core C++ Classes
+    \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
 
     \ingroup modules
     \ingroup qt3d-modules
     \qtvariable 3dcore
 
-    The Qt3D Core module provides the foundations and core types used for near-realtime
-    simulations built on the Qt3D framework.
+    The Qt 3D module provides the foundations and core types used for near-realtime
+    simulations built on the Qt 3D framework.
+*/
+
+/*!
+    \page qt3d-cpp.html
+    \title Qt 3D C++ Classes
+    \brief The Qt 3D module contains functionality to support near-realtime simulation systems.
+
+    The Qt 3D module provides the foundations and core types used for near-realtime
+    simulations built on the Qt 3D framework.
+
+    \section1 Namespaces
+    \annotatedlist qt3d-namespaces
+
+    \section1 Classes
+
+    \section2 Qt 3D Core Module
+    \generatelist {classesbymodule Qt3DCore}
+
+    \section2 Qt 3D Collision Module
+    \generatelist {classesbymodule Qt3DCollision}
+
+    \section2 Qt 3D Input Module
+    \generatelist {classesbymodule Qt3DInput}
+
+    \section2 Qt 3D Logic Module
+    \generatelist {classesbymodule Qt3DLogic}
+
+    \section2 Qt 3D Renderer Module
+    \generatelist {classesbymodule Qt3DRenderer}
 */
 
 /*!
@@ -52,18 +81,18 @@
     \inmodule Qt3DCore
     \ingroup qt3d-namespaces
 
-    \brief Contains classes and types that are the foundation of the Qt3D simulation
-    framework, as well as classes that provide the ability to render using the Qt3D
-    framework.
+    \brief Contains classes that are the foundation for Qt 3D simulation
+    framework, as well as classes that provide the ability to render using the
+    Qt 3D framework.
 */
 
 /*!
    \qmlmodule Qt3D 2.0
-   \title Qt3D Core QML Types
+   \title Qt 3D QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides core Qt3D QML types.
+   \brief Provides core Qt 3D QML types.
 
    To import and use the module's QML types, use the following statement:
 
@@ -71,5 +100,31 @@
    import Qt3D 2.0
    \endcode
 
+   For collision detection, renderer, and input-related QML types, use the
+   following import statements:
+
+   \badcode
+   import Qt3D.Collision 2.0
+   import Qt3D.Renderer 2.0
+   import Qt3D.Input 2.0
+   import Qt3D.Logic 2.0
+   \endcode
+
    \section1 QML Types
+
+   \section2 Qt 3D Core Module
+   \generatelist {qmltypesbymodule Qt3D}
+
+   \section2 Qt 3D Collision Module
+   \generatelist {qmltypesbymodule Qt3D.Collision}
+
+   \section2 Qt 3D Input Module
+   \generatelist {qmltypesbymodule Qt3D.Input}
+
+   \section2 Qt 3D Logic Module
+   \generatelist {qmltypesbymodule Qt3D.Logic}
+
+   \section2 Qt 3D Renderer Module
+   \generatelist {qmltypesbymodule Qt3D.Renderer}
+   \noautolist
 */

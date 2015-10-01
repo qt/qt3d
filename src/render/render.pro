@@ -11,8 +11,6 @@ MODULE_PLUGIN_TYPES = \
 
 load(qt_module)
 
-QMAKE_DOCS = $$PWD/doc/qt3drenderer.qdocconf
-
 include (backend/render-backend.pri)
 include (frontend/render-frontend.pri)
 include (io/render-io.pri)
