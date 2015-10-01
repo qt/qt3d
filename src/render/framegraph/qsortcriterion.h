@@ -62,7 +62,7 @@ public:
     Q_ENUM(SortType)
 
     SortType sort() const;
-    void setSort(SortType &sort);
+    void setSort(SortType sort);
 
 Q_SIGNALS:
     void sortChanged();

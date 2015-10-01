@@ -75,11 +75,10 @@ QSortCriterion::SortType QSortCriterion::sort() const
     return d->m_sort;
 }
 
-void QSortCriterion::setSort(QSortCriterion::SortType &sort)
+void QSortCriterion::setSort(QSortCriterion::SortType sort)
 {
     Q_D(QSortCriterion);
     if (d->m_sort != sort) {
-
         d->m_sort = sort;
         emit sortChanged();
     }
