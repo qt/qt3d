@@ -31,5 +31,6 @@ contains(QT_CONFIG, private_tests) {
         qrendertargetselector \
         qsortcriterion \
         qsortmethod \
-        qstateset
+        qstateset \
+        qtechniquefilter
 }
