@@ -63,12 +63,12 @@ void SortMethod::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
-        QSortCriterion *c = propertyChange->value().value<QSortCriterion *>();
-        if (c != Q_NULLPTR) {
+        const QNodeId cId = propertyChange->value().value<QNodeId>();
+        if (!cId.isNull()) {
             if (e->type() == NodeAdded)
-                m_criteria.append(c->id());
+                m_criteria.append(cId);
             else if (e->type() == NodeRemoved)
-                m_criteria.removeAll(c->id());
+                m_criteria.removeAll(cId);
         }
     } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
         setEnabled(propertyChange->value().toBool());
