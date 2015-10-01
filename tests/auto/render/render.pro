@@ -32,5 +32,6 @@ contains(QT_CONFIG, private_tests) {
         qsortcriterion \
         qsortmethod \
         qstateset \
-        qtechniquefilter
+        qtechniquefilter \
+        qviewport
 }
