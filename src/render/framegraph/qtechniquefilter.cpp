@@ -63,6 +63,8 @@ void QTechniqueFilter::copy(const QNode *ref)
 
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
         addRequirement(qobject_cast<QAnnotation *>(QNode::clone(crit)));
+    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
 QTechniqueFilter::QTechniqueFilter(QNode *parent)
@@ -90,20 +92,22 @@ QList<QAnnotation *> QTechniqueFilter::criteria() const
 void QTechniqueFilter::addRequirement(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
-    d->m_requireList.append(criterion);
+    if (!d->m_requireList.contains(criterion)) {
+        d->m_requireList.append(criterion);
 
-    // We need to add it as a child of the current node if it has been declared inline
-    // Or not previously added as a child of the current node so that
-    // 1) The backend gets notified about it's creation
-    // 2) When the current node is destroyed, it gets destroyed as well
-    if (!criterion->parent())
-        criterion->setParent(this);
+        // We need to add it as a child of the current node if it has been declared inline
+        // Or not previously added as a child of the current node so that
+        // 1) The backend gets notified about it's creation
+        // 2) When the current node is destroyed, it gets destroyed as well
+        if (!criterion->parent())
+            criterion->setParent(this);
 
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("require");
-        propertyChange->setValue(QVariant::fromValue(criterion));
-        d->notifyObservers(propertyChange);
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
+            propertyChange->setPropertyName("require");
+            propertyChange->setValue(QVariant::fromValue(criterion->id()));
+            d->notifyObservers(propertyChange);
+        }
     }
 }
 

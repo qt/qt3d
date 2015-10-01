@@ -59,7 +59,7 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     m_filters.clear();
     m_parameterPack.clear();
     Q_FOREACH (QAnnotation *criterion, filter->criteria())
-        appendFilter(criterion);
+        appendFilter(criterion->id());
     Q_FOREACH (QParameter *p, filter->parameters())
         m_parameterPack.appendParameter(p->id());
     setEnabled(filter->isEnabled());
@@ -75,10 +75,10 @@ QList<Qt3DCore::QNodeId> TechniqueFilter::filters() const
     return m_filters;
 }
 
-void TechniqueFilter::appendFilter(QAnnotation *criterion)
+void TechniqueFilter::appendFilter(const QNodeId &criterionId)
 {
-    if (!m_filters.contains(criterion->id()))
-        m_filters.append(criterion->id());
+    if (!m_filters.contains(criterionId))
+        m_filters.append(criterionId);
 }
 
 void TechniqueFilter::removeFilter(const Qt3DCore::QNodeId &criterionId)
@@ -99,7 +99,7 @@ void TechniqueFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("require"))
-            appendFilter(propertyChange->value().value<QAnnotation *>());
+            appendFilter(propertyChange->value().value<QNodeId>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter"))
             m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
     }
