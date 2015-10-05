@@ -51,6 +51,7 @@ QStateSetPrivate::QStateSetPrivate()
 
 /*!
  * \class Qt3D::QStateSet
+ * \inmodule Qt3DRender
  *
  * \brief The Qt3D::QStateSet FrameGraph node offers a way of specifying a set
  * of Qt3D::QRenderState to be applied during the execution of a FrameGraph

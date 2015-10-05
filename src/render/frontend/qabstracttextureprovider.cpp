@@ -89,6 +89,7 @@ void QAbstractTextureProvider::copy(const QNode *ref)
 
 /*!
     \class Qt3D::QAbstractTextureProvider
+    \inmodule Qt3DRender
     \since 5.5
     \brief A base class to be used to provide textures.
 

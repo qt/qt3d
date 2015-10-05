@@ -62,6 +62,7 @@ public:
 
 /*!
     \class Qt3D::QColorMask
+    \inmodule Qt3DRenderer
 
     \brief Allows specifying which color components should be written to the
     currently bound frame buffer.

@@ -45,6 +45,7 @@ namespace Qt3D {
 
 /*!
     \class Qt3D::QBackendScenePropertyChange
+    \inmodule Qt3DCore
 */
 
 /*!

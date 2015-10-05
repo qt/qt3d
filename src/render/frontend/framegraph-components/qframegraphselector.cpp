@@ -52,6 +52,7 @@ QFrameGraphSelectorPrivate::QFrameGraphSelectorPrivate()
 
 /*!
     \class Qt3D::QFrameGraphSelector
+    \inmodule Qt3DRenderer
 
     \brief Qt3D::QFrameGraphSelector provide a way to select a one or more subtree of
     the FrameGraph at runtime

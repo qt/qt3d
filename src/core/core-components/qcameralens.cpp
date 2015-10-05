@@ -88,6 +88,7 @@ void QCameraLens::copy(const QNode *ref)
 }
 
 /*! \class Qt3D::QCameraLens
+ *  \inmodule Qt3DCore
  *
  * \brief Qt3D::QCameraLens specifies the projection matrix that will be used to
  * define a Camera for a 3D scene.

@@ -46,6 +46,7 @@ namespace Qt3D {
 
 /*!
     \class Qt3D::QAbstractServiceProvider
+    \inmodule Qt3DCore
 */
 
 QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &description)

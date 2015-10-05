@@ -44,6 +44,7 @@ namespace Qt3D {
 
 /*!
     \class Qt3D::QScenePropertyChange
+    \inmodule Qt3dCore
 */
 
 QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(128, sizeof(QScenePropertyChange), sizeof(QScenePropertyChangePrivate) * 2);

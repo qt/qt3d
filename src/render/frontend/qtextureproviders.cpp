@@ -42,6 +42,7 @@ namespace Qt3D {
 
 /*!
     \class Qt3D::QTexture1D
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1D target format.
  */
@@ -60,6 +61,7 @@ QTexture1D::~QTexture1D()
 
 /*!
     \class Qt3D::QTexture1DArray
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target1DArray target format.
  */
@@ -78,6 +80,7 @@ QTexture1DArray::~QTexture1DArray()
 
 /*!
     \class Qt3D::QTexture2D
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2D target format.
  */
@@ -96,6 +99,7 @@ QTexture2D::~QTexture2D()
 
 /*!
     \class Qt3D::QTexture2DArray
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DArray target format.
  */
@@ -115,6 +119,7 @@ QTexture2DArray::~QTexture2DArray()
 
 /*!
     \class Qt3D::QTexture3D
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target3D target format.
  */
@@ -133,6 +138,7 @@ QTexture3D::~QTexture3D()
 
 /*!
     \class Qt3D::QTextureCubeMap
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMap target format.
  */
@@ -151,6 +157,7 @@ QTextureCubeMap::~QTextureCubeMap()
 
 /*!
     \class Qt3D::QTextureCubeMapArray
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetCubeMapArray target format.
  */
@@ -170,6 +177,7 @@ QTextureCubeMapArray::~QTextureCubeMapArray()
 
 /*!
     \class Qt3D::QTexture2DMultisample
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisample target format.
  */
@@ -188,6 +196,7 @@ QTexture2DMultisample::~QTexture2DMultisample()
 
 /*!
     \class Qt3D::QTexture2DMultisampleArray
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a Target2DMultisampleArray target format.
  */
@@ -206,6 +215,7 @@ QTexture2DMultisampleArray::~QTexture2DMultisampleArray()
 
 /*!
     \class Qt3D::QTextureRectangle
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetRectangle target format.
  */
@@ -224,6 +234,7 @@ QTextureRectangle::~QTextureRectangle()
 
 /*!
     \class Qt3D::QTextureBuffer
+    \inmodule Qt3DRenderer
     \since 5.5
     \brief A QAbstractTextureProvider with a TargetBuffer target format.
  */

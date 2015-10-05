@@ -49,6 +49,7 @@ namespace Qt3D {
 
 /*!
  * \class Qt3D::Q3DMouseEvent
+ * \inmodule Qt3DInput
  *
  * \brief The Qt3D::Q3DMouseEvent contains parameters that describe a mouse event.
  *
@@ -160,6 +161,7 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
 
 /*!
  * \class Qt3D::Q3DWheelEvent
+ * \inmodule Qt3DInput
  *
  * \brief The Qt3D::Q3DWheelEvent contains parameters that describe a mouse wheel event.
  *

@@ -51,6 +51,7 @@ QMouseControllerPrivate::QMouseControllerPrivate()
 
 /*!
  * \class Qt3D::QMouseController
+ * \inmodule Qt3DInput
  *
  * \brief Qt3D::QMouseController is in charge of dispatching mouse events to
  * attached Qt3D::QMouseInput objects.

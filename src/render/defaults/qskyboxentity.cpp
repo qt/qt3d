@@ -184,6 +184,7 @@ void QSkyboxEntityPrivate::reloadTexture()
 
 /*!
  * \class Qt3D::QSkyboxEntity
+ * \inmodule Qt3DRenderer
  *
  * \brief Qt3D::QSkyboxEntity is a convenience Qt3D::QEntity subclass that can
  * be used to insert a skybox in a 3D scene.

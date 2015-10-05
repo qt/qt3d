@@ -44,7 +44,7 @@
 
 /*!
  * \class Qt3D::QMaterial
- *
+ * \inmodule Qt3DRenderer
  * \inherits Component
  *
  * \brief Provides an abstract class that should be the base of all

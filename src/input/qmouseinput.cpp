@@ -54,6 +54,7 @@ QMouseInputPrivate::QMouseInputPrivate()
 
 /*!
  * \class Qt3D::QMouseInput
+ * \inmodule Qt3DInput
  *
  * \brief Provides a mean of being notified about mouse events when attached to
  * a Qt3D::QMouseController instance.

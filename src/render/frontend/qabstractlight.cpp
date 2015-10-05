@@ -72,6 +72,7 @@ void QAbstractLight::copy(const QNode *ref)
 
 /*!
     \class Qt3D::QAbstractLight
+    \inmodule Qt3DRender
 */
 
 /*!
