@@ -86,6 +86,7 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
             break;
 
         case QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed:
+            setSurface<QWindow>(Q_NULLPTR);
             setRendererSurface(Q_NULLPTR);
             break;
 
