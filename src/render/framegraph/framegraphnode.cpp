@@ -68,6 +68,11 @@ void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)
         m_manager = manager;
 }
 
+FrameGraphManager *FrameGraphNode::manager() const
+{
+    return m_manager;
+}
+
 void FrameGraphNode::setHandle(HFrameGraphNode handle)
 {
     m_handle = handle;
@@ -75,10 +80,12 @@ void FrameGraphNode::setHandle(HFrameGraphNode handle)
 
 void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
 {
-    m_parentHandle = parentHandle;
-    FrameGraphNode **parent = m_manager->data(m_parentHandle);
-    if (parent != Q_NULLPTR && *parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
-        (*parent)->m_childrenHandles.append(m_handle);
+    if (m_parentHandle != parentHandle) {
+        m_parentHandle = parentHandle;
+        FrameGraphNode **parent = m_manager->data(m_parentHandle);
+        if (parent != Q_NULLPTR && *parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
+            (*parent)->m_childrenHandles.append(m_handle);
+    }
 }
 
 void FrameGraphNode::appendChildHandle(HFrameGraphNode childHandle)
@@ -94,8 +101,13 @@ void FrameGraphNode::appendChildHandle(HFrameGraphNode childHandle)
 
 void FrameGraphNode::removeChildHandle(HFrameGraphNode childHandle)
 {
-    if (m_childrenHandles.contains(childHandle))
+    if (m_childrenHandles.contains(childHandle)) {
+        FrameGraphNode **child = m_manager->data(childHandle);
+        if (child != Q_NULLPTR) {
+            (*child)->m_parentHandle = HFrameGraphNode();
+        }
         m_childrenHandles.removeAll(childHandle);
+    }
 }
 
 HFrameGraphNode FrameGraphNode::handle() const

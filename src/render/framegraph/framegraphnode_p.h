@@ -62,7 +62,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class FrameGraphNode : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT FrameGraphNode : public Qt3DCore::QBackendNode
 {
 public:
     FrameGraphNode();
@@ -88,6 +88,7 @@ public:
     inline bool isEnabled() const { return m_enabled; }
 
     void setFrameGraphManager(FrameGraphManager *manager);
+    FrameGraphManager *manager() const;
 
     void setHandle(HFrameGraphNode handle);
     void setParentHandle(HFrameGraphNode parentHandle);
