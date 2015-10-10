@@ -11,10 +11,13 @@ CONFIG -= precompile_header
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
 contains(QT_CONFIG, system-zlib) {
-    unix|mingw: LIBS += -lz
-    else: LIBS += zdll.lib
+    if (unix|mingw):         LIBS += -lz
+    else:                    LIBS += zdll.lib
 } else {
-    INCLUDEPATH += $$[QT_INSTALL_HEADERS/get]/QtZlib
+    git_build: \
+        INCLUDEPATH += $$[QT_INSTALL_HEADERS/get]/QtZlib
+    else: \
+        INCLUDEPATH += $$[QT_INSTALL_HEADERS/src]/QtZlib
 }
 
 DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_NO_Q3BSP_IMPORTER
