@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTTHREAD_H
-#define QT3D_QASPECTTHREAD_H
+#ifndef QT3D_QASPECTTHREAD_P_H
+#define QT3D_QASPECTTHREAD_P_H
 
 #include <QThread>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -70,4 +70,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTTHREAD_H
+#endif // QT3D_QASPECTTHREAD_P_H

@@ -34,8 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qaspectthread.h"
-
+#include "qaspectthread_p.h"
 #include "qaspectmanager_p.h"
 
 #include <Qt3DCore/private/corelogging_p.h>
