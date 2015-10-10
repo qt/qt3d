@@ -378,7 +378,8 @@ void RenderView::buildRenderCommands(Entity *node)
     if (isEntityInLayers(node, m_data->m_layers)) {
         GeometryRenderer *geometryRenderer = Q_NULLPTR;
         if (node->componentHandle<GeometryRenderer, 16>() != HGeometryRenderer()
-                && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR) {
+                && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR
+                && geometryRenderer->isEnabled()) {
 
             // There is a geometry renderer
             if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
