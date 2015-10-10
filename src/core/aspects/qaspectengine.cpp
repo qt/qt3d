@@ -37,7 +37,7 @@
 #include "qaspectengine.h"
 
 #include "qabstractaspect.h"
-#include "qaspectthread.h"
+#include "qaspectthread_p.h"
 #include "qaspectmanager_p.h"
 #include "qchangearbiter_p.h"
 #include "qabstractaspect.h"
