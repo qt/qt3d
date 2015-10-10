@@ -56,6 +56,7 @@ GeometryRenderer::GeometryRenderer()
     , m_primitiveRestart(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
+    , m_enabled(true)
     , m_manager(Q_NULLPTR)
 {
 }
@@ -75,6 +76,7 @@ void GeometryRenderer::cleanup()
     m_primitiveType = QGeometryRenderer::Triangles;
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
+    m_enabled = true;
     m_functor.reset();
 }
 
@@ -94,6 +96,7 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
         m_restartIndex = geometryRenderer->restartIndex();
         m_primitiveRestart = geometryRenderer->primitiveRestart();
         m_primitiveType = geometryRenderer->primitiveType();
+        m_enabled = geometryRenderer->isEnabled();
         if (geometryRenderer->geometry() != Q_NULLPTR)
             m_geometryId = geometryRenderer->geometry()->id();
         m_functor = geometryRenderer->geometryFunctor();
@@ -129,6 +132,8 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("primitiveRestart")) {
             m_primitiveRestart = propertyChange->value().value<bool>();
             m_dirty = true;
+        } else if (propertyName == QByteArrayLiteral("enabled")) {
+            m_enabled = propertyChange->value().value<bool>();
         } else if (propertyName == QByteArrayLiteral("primitiveType")) {
             m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());
             m_dirty = true;
