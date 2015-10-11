@@ -66,6 +66,7 @@ public:
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QBufferFunctorPtr m_functor;
+    bool m_sync;
 };
 
 } // namespace Qt3DRender

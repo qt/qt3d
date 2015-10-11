@@ -59,6 +59,7 @@ class QT3DRENDERERSHARED_EXPORT QBuffer : public Qt3DCore::QAbstractBuffer
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
+    Q_PROPERTY(bool sync READ isSync WRITE setSync NOTIFY syncChanged)
 
 public:
     enum BufferType
@@ -96,6 +97,9 @@ public:
     void setBufferFunctor(const QBufferFunctorPtr &functor);
     QBufferFunctorPtr bufferFunctor() const;
 
+    void setSync(bool sync);
+    bool isSync() const;
+
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
@@ -103,6 +107,7 @@ protected:
 Q_SIGNALS:
     void typeChanged();
     void usageChanged();
+    void syncChanged();
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

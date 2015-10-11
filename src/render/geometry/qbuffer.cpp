@@ -46,12 +46,13 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::BufferPrivate
+    \class Qt3DRender::QBufferPrivate
     \internal
 */
 QBufferPrivate::QBufferPrivate()
     : QAbstractBufferPrivate()
     , m_usage(QBuffer::StaticDraw)
+    , m_sync(false)
 {
 }
 
@@ -83,6 +84,7 @@ void QBuffer::copy(const QNode *ref)
     d_func()->m_type = buffer->d_func()->m_type;
     d_func()->m_usage = buffer->d_func()->m_usage;
     d_func()->m_functor = buffer->d_func()->m_functor;
+    d_func()->m_sync = buffer->d_func()->m_sync;
 }
 
 QBuffer::UsageType QBuffer::usage() const
@@ -124,6 +126,33 @@ QBufferFunctorPtr QBuffer::bufferFunctor() const
 {
     Q_D(const QBuffer);
     return d->m_functor;
+}
+
+/*!
+    Sets the sync to \a sync. When sync is true, this will force data created
+    by a Qt3DRender::QBufferFunctor to also be updated on the frontend
+    Qt3DRender::QBuffer node. By default sync is false.
+
+    \note: This has no effect if the buffer's data was set directly using the data
+    property.
+ */
+void QBuffer::setSync(bool sync)
+{
+    Q_D(QBuffer);
+    if (d->m_sync != sync) {
+        d->m_sync = sync;
+        emit syncChanged();
+    }
+}
+
+/*!
+    Returns whether data loaded by a Qt3DRender::QBufferFunctor should be
+    synched with the Qt3DRender::QBuffer node or not.
+ */
+bool QBuffer::isSync() const
+{
+    Q_D(const QBuffer);
+    return d->m_sync;
 }
 
 void QBuffer::setType(QBuffer::BufferType type)
