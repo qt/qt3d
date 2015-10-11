@@ -8,3 +8,5 @@ CONFIG += testcase
 
 SOURCES += \
     tst_attribute.cpp
+
+include(../commons/commons.pri)

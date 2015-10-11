@@ -87,6 +87,16 @@ void QBuffer::copy(const QNode *ref)
     d_func()->m_sync = buffer->d_func()->m_sync;
 }
 
+void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
+{
+    QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
+    if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("data")) {
+        const bool blocked = blockNotifications(true);
+        setData(e->value().toByteArray());
+        blockNotifications(blocked);
+    }
+}
+
 QBuffer::UsageType QBuffer::usage() const
 {
     Q_D(const QBuffer);

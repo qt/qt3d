@@ -37,6 +37,8 @@
 #include <QtTest/QTest>
 #include <Qt3DRenderer/private/buffer_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include "testpostmanarbiter.h"
 
 class TestFunctor : public Qt3DRender::QBufferFunctor
 {
@@ -47,7 +49,7 @@ public:
 
     QByteArray operator ()() Q_DECL_FINAL
     {
-        return QByteArray();
+        return QByteArrayLiteral("454");
     }
 
     bool operator ==(const Qt3DRender::QBufferFunctor &other) const
@@ -187,6 +189,28 @@ private Q_SLOTS:
 
         renderBuffer.unsetDirty();
         QVERIFY(!renderBuffer.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange->setValue(true);
+        updateChange->setPropertyName("sync");
+        renderBuffer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderBuffer.isSync(), true);
+        QVERIFY(!renderBuffer.isDirty());
+
+        // WHEN
+        TestArbiter arbiter;
+        Qt3DCore::QBackendNodePrivate::get(&renderBuffer)->setArbiter(&arbiter);
+        renderBuffer.executeFunctor();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "data");
+        QCOMPARE(change->value().toByteArray(), QByteArrayLiteral("454"));
+
     }
 };
 

@@ -103,6 +103,7 @@ public:
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void typeChanged();

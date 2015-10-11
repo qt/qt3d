@@ -36,6 +36,7 @@
 
 #include "buffer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRenderer/private/buffermanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,10 +47,11 @@ namespace Qt3DRender {
 namespace Render {
 
 Buffer::Buffer()
-    : QBackendNode(QBackendNode::ReadOnly)
+    : QBackendNode(QBackendNode::ReadWrite)
     , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)
+    , m_sync(false)
     , m_manager(Q_NULLPTR)
 {
     // Maybe it could become read write if we want to inform
@@ -67,6 +69,7 @@ void Buffer::cleanup()
     m_data.clear();
     m_functor.reset();
     m_bufferDirty = false;
+    m_sync = false;
 }
 
 
@@ -79,6 +82,14 @@ void Buffer::executeFunctor()
 {
     Q_ASSERT(m_functor);
     m_data = (*m_functor)();
+    if (m_sync) {
+        // Send data back to the frontend
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+        e->setPropertyName("data");
+        e->setTargetNode(peerUuid());
+        e->setValue(QVariant::fromValue(m_data));
+        notifyObservers(e);
+    }
 }
 
 void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
@@ -93,6 +104,7 @@ void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
         if (m_functor && m_manager != Q_NULLPTR)
             m_manager->addDirtyBuffer(peerUuid());
         m_bufferDirty = true;
+        m_sync = buffer->isSync();
     }
 }
 
@@ -117,6 +129,8 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_functor = newFunctor;
             if (m_functor && m_manager != Q_NULLPTR)
                 m_manager->addDirtyBuffer(peerUuid());
+        } else if (propertyName == QByteArrayLiteral("sync")) {
+            m_sync = propertyChange->value().toBool();
         }
     }
 }

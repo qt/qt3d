@@ -58,12 +58,14 @@ TestArbiter::TestArbiter(Qt3DCore::QNode *node)
     : m_postman(new TestPostman(this))
     , m_node(node)
 {
-    assignArbiter(m_node);
+    if (m_node)
+        assignArbiter(m_node);
 }
 
 TestArbiter::~TestArbiter()
 {
-    Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
+    if (m_node)
+        Qt3DCore::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
 }
 
 void TestArbiter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
