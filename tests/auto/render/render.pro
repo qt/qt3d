@@ -35,5 +35,6 @@ contains(QT_CONFIG, private_tests) {
         qtechniquefilter \
         qviewport \
         framegraphnode \
-        qobjectpicker
+        qobjectpicker \
+        objectpicker
 }
