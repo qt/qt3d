@@ -99,13 +99,14 @@ public:
 
     inline void expandToContain(const QVector3D &pt)
     {
-        QVector<QVector3D> pts = QVector<QVector3D>() << pt;
+        QVector<QVector3D> pts = QVector<QVector3D>() << minPoint() << maxPoint() << pt;
         update(pts);
     }
 
     inline void expandToContain(const QAxisAlignedBoundingBox &other)
     {
-        QVector<QVector3D> pts = QVector<QVector3D>() << other.minPoint() << other.maxPoint();
+        QVector<QVector3D> pts = QVector<QVector3D>() << minPoint() << maxPoint()
+                                                      << other.minPoint() << other.maxPoint();
         update(pts);
     }
 
