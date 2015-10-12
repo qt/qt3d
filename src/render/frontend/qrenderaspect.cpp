@@ -273,7 +273,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer->renderSceneRoot()));
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
-        d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
+        d->m_updateBoundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
+        d->m_calculateBoundingVolumeJob.reset(new Render::CalculateBoundingVolumeJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
 
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
@@ -298,12 +299,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         // Create jobs to update transforms and bounding volumes
         // We can only update bounding volumes once all world transforms are known
-        d->m_boundingVolumeJob->addDependency(d->m_worldTransformJob);
+        d->m_updateBoundingVolumeJob->addDependency(d->m_worldTransformJob);
         d->m_framePreparationJob->addDependency(d->m_worldTransformJob);
 
+        // All world stuff depends on the RenderEntity's localBoundingVolume
+        d->m_worldTransformJob->addDependency(d->m_calculateBoundingVolumeJob);
+
         // Add all jobs to queue
+        jobs.append(d->m_calculateBoundingVolumeJob);
         jobs.append(d->m_worldTransformJob);
-        jobs.append(d->m_boundingVolumeJob);
+        jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
 
         // Traverse the current framegraph and create jobs to populate
@@ -312,7 +317,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-            renderBinJob->addDependency(d->m_boundingVolumeJob);
+            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
             jobs.append(renderBinJob);
             d->m_cleanupJob->addDependency(renderBinJob);
         }

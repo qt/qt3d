@@ -82,7 +82,7 @@ public:
     };
     Q_ENUM(PrimitiveType)
 
-    // how to figure out index count, bounding boxes, and all the fancy stuff that QMeshData provides for us?
+    // how to figure out index count and all the fancy stuff that QMeshData provides for us?
     // also how to figure out which attribute(s?) hold the indices?
 
     int instanceCount() const;

@@ -67,6 +67,7 @@ Entity::Entity()
     , m_renderer(Q_NULLPTR)
     , m_localBoundingVolume(new Sphere)
     , m_worldBoundingVolume(new Sphere)
+    , m_worldBoundingVolumeWithChildren(new Sphere)
 {
 }
 
@@ -102,10 +103,10 @@ void Entity::cleanup()
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
+    delete m_worldBoundingVolumeWithChildren;
     m_localBoundingVolume = Q_NULLPTR;
     m_worldBoundingVolume = Q_NULLPTR;
-
-
+    m_worldBoundingVolumeWithChildren = Q_NULLPTR;
 }
 
 void Entity::setParentHandle(HEntity parentHandle)

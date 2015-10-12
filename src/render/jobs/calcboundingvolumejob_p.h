@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,46 +35,39 @@
 **
 ****************************************************************************/
 
-#include "framepreparationjob_p.h"
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/sphere.h>
+#ifndef QT3DRENDER_RENDER_CALCBOUNDINGVOLUMEJOB_H
+#define QT3DRENDER_RENDER_CALCBOUNDINGVOLUMEJOB_H
+
+#include <Qt3DCore/qaspectjob.h>
+
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(Entity *root)
-    : m_root(root)
+class Renderer;
+class Entity;
+
+class CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
-}
+public:
+    CalculateBoundingVolumeJob(Renderer *renderer, Entity *node);
 
-FramePreparationJob::~FramePreparationJob()
-{
+protected:
+    void run() Q_DECL_OVERRIDE;
 
-}
+private:
+    Renderer *m_renderer;
+    Entity *m_node;
+};
 
-void FramePreparationJob::run()
-{
-    parseNodeTree(m_root);
-}
-
-void FramePreparationJob::parseNodeTree(Entity *node)
-{
-    // Update transform properties in ShaderData
-    QList<ShaderData *> shadersData = node->renderComponents<ShaderData>();
-    Q_FOREACH (ShaderData *r, shadersData) {
-        r->updateTransformedProperties(*node->worldTransform());
-    }
-
-    // Traverse children
-    Q_FOREACH (Entity *child, node->children())
-        parseNodeTree(child);
-}
+typedef QSharedPointer<CalculateBoundingVolumeJob> CalculateBoundingVolumeJobPtr;
 
 } // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_CALCBOUNDINGVOLUMEJOB_H

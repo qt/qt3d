@@ -103,6 +103,7 @@ public:
     const QMatrix4x4 *worldTransform() const;
     Sphere *localBoundingVolume() { return m_localBoundingVolume; }
     Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
+    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren; }
 
     void addComponent(Qt3DCore::QComponent *component);
     void removeComponent(const Qt3DCore::QNodeId &nodeId);
@@ -164,6 +165,7 @@ private:
     HMatrix m_worldTransform;
     Sphere *m_localBoundingVolume;
     Sphere *m_worldBoundingVolume;
+    Sphere *m_worldBoundingVolumeWithChildren;
 
     // Handles to Components
     Qt3DCore::QNodeId m_transformComponent;

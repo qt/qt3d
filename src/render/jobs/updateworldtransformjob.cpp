@@ -59,6 +59,7 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 
     *(node->worldTransform()) = worldTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
+    *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob
 
     Q_FOREACH (Qt3DRender::Render::Entity *child, node->children())
         updateWorldTransformAndBounds(child, worldTransform);

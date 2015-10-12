@@ -69,14 +69,14 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 
         // Initialize parent bounding volume to be equal to that of the first child
         Qt3DRender::Render::Entity *parentNode = currentNode->parent();
-        Qt3DRender::Sphere *parentBoundingVolume = parentNode->worldBoundingVolume();
-        *(parentBoundingVolume) = *(currentNode->worldBoundingVolume());
+        Qt3DRender::Sphere *parentBoundingVolume = parentNode->worldBoundingVolumeWithChildren();
+        *(parentBoundingVolume) = *(currentNode->worldBoundingVolumeWithChildren());
 
         // Expand the parent bounding volume by each of remaining the siblings
         QVector<Entity *> siblings = parentNode->children();
         const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
-            Qt3DRender::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolume();
+            Qt3DRender::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolumeWithChildren();
             parentBoundingVolume->expandToContain(*siblingBoundingVolume);
         }
 
@@ -101,8 +101,8 @@ UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(Entity *node)
 
 void UpdateBoundingVolumeJob::run()
 {
-    // Expand the bounding volumes of each node that has children by the
-    // bounding volumes of the children
+    // Expand worldBoundingVolumeWithChildren of each node that has children by the
+    // bounding volumes of the children.
 
     // TODO: Implement this using a parallel_for
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
