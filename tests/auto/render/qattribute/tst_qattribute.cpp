@@ -49,6 +49,11 @@ class tst_QAttribute: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
+    tst_QAttribute()
+    {
+        qRegisterMetaType<Qt3DCore::QAbstractBuffer*>("Qt3DCore::QAbstractBuffer*");
+    }
+
     ~tst_QAttribute()
     {
         QNode::cleanup();
@@ -239,7 +244,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "buffer");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -249,15 +254,11 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter.events.size(), 2);
+        QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "buffer");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
-        change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "buffer");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), buf2.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
     }
 
