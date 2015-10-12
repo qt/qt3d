@@ -37,6 +37,17 @@
 #ifndef QT3DRENDER_RENDER_SHADERDATA_P_H
 #define QT3DRENDER_RENDER_SHADERDATA_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
 #include <Qt3DRenderer/qshaderdata.h>

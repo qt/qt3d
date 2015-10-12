@@ -37,6 +37,17 @@
 #ifndef QT3DRENDER_RENDER_LOADGEOMETRYJOB_H
 #define QT3DRENDER_RENDER_LOADGEOMETRYJOB_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRenderer/private/handle_types_p.h>

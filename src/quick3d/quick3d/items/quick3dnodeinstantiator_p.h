@@ -38,6 +38,17 @@
 #ifndef QT3D_QUICK_NODEINSTANTIATOR_H
 #define QT3D_QUICK_NODEINSTANTIATOR_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DQuick/qt3dquick_global.h>
 #include <Qt3DCore/qnode.h>
 #include <QtQml/qqmlcomponent.h>

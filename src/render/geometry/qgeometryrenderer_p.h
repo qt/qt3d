@@ -37,6 +37,17 @@
 #ifndef QT3DRENDER_QGEOMETRYRENDERER_P_H
 #define QT3DRENDER_QGEOMETRYRENDERER_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRenderer/qgeometryrenderer.h>
 #include <Qt3DRenderer/qgeometryfunctor.h>

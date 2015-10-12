@@ -2,7 +2,7 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/qraycastingservice.h \
-    $$PWD/qraycastingservice_p.h
+    $$PWD/qraycastingservice_p.h \
     $$PWD/vsyncframeadvanceservice_p.h \
 
 SOURCES += \
