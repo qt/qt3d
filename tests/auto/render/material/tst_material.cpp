@@ -59,6 +59,7 @@ private slots:
     void shouldHavePropertiesMirroringFromItsPeer();
     void shouldHandleParametersPropertyChange();
     void shouldHandleEnablePropertyChange();
+    void shouldHandleEffectPropertyChange();
 };
 
 
@@ -181,6 +182,23 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 
     // THEN
     QVERIFY(backend.isEnabled());
+
+}
+
+void tst_RenderMaterial::shouldHandleEffectPropertyChange()
+{
+    // GIVEN
+    Material backend;
+
+    // WHEN
+    QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+    Qt3DCore::QNodeId effectId = Qt3DCore::QNodeId::createId();
+    updateChange->setValue(QVariant::fromValue(effectId));
+    updateChange->setPropertyName("effect");
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.effect(), effectId);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderMaterial)

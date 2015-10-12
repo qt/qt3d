@@ -113,30 +113,14 @@ void QMaterial::setEffect(QEffect *effect)
     Q_D(QMaterial);
     if (effect != d->m_effect) {
 
-        if (d->m_effect && d->m_changeArbiter) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-            change->setPropertyName("effect");
-            change->setValue(QVariant::fromValue(d->m_effect->id()));
-            d->notifyObservers(change);
-        }
-
-        d->m_effect = effect;
-        const bool blocked = blockNotifications(true);
-        emit effectChanged();
-        blockNotifications(blocked);
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
         if (effect && !effect->parent())
             effect->setParent(this);
-
-        if (d->m_effect && d->m_changeArbiter) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("effect");
-            change->setValue(QVariant::fromValue(effect->id()));
-            d->notifyObservers(change);
-        }
+        d->m_effect = effect;
+        emit effectChanged();
     }
 }
 

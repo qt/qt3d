@@ -88,6 +88,8 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             m_enabled = propertyChange->value().toBool();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("effect"))
+            m_effectUuid = propertyChange->value().value<QNodeId>();
         break;
     }
         // Check for shader parameter
