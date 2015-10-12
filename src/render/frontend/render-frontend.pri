@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/qwindow.h \
-    $$PWD/qwindow_p.h
+    $$PWD/qwindow_p.h \
+    $$PWD/qobjectpicker.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \
@@ -21,4 +22,5 @@ SOURCES += \
     $$PWD/qlayer.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qwindow.cpp
+    $$PWD/qwindow.cpp \
+    $$PWD/qobjectpicker.cpp
