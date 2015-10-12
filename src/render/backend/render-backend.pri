@@ -21,7 +21,8 @@ HEADERS += \
     $$PWD/entity_p.h \
     $$PWD/layer_p.h \
     $$PWD/nodefunctor_p.h \
-    $$PWD/transform_p.h
+    $$PWD/transform_p.h \
+    $$PWD/objectpicker_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -39,4 +40,5 @@ SOURCES += \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
-    $$PWD/transform.cpp
+    $$PWD/transform.cpp \
+    $$PWD/objectpicker.cpp
