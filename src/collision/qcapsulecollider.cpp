@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 /*!
     \class Qt3D::QCapsuleColliderPrivate
@@ -142,7 +142,7 @@ void QCapsuleCollider::setLength(float length)
     emit lengthChanged(length);
 }
 
-void QCapsuleCollider::setAxisDirection(Qt3D::QCapsuleCollider::Direction axisDirection)
+void QCapsuleCollider::setAxisDirection(Qt3DCollision::QCapsuleCollider::Direction axisDirection)
 {
     Q_D(QCapsuleCollider);
     if (d->m_axisDirection == axisDirection)
@@ -154,5 +154,5 @@ void QCapsuleCollider::setAxisDirection(Qt3D::QCapsuleCollider::Direction axisDi
 
 QT_END_NAMESPACE
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 

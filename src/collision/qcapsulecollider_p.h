@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QCapsuleCollider;
 
@@ -58,7 +58,7 @@ class QCapsuleColliderPrivate : public QAbstractColliderPrivate
     QCapsuleCollider::Direction m_axisDirection;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

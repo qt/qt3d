@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QCapsuleColliderPrivate;
 
@@ -75,13 +75,13 @@ public Q_SLOTS:
     void setCenter(const QVector3D &center);
     void setRadius(float radius);
     void setLength(float length);
-    void setAxisDirection(Qt3D::QCapsuleCollider::Direction axisDirection);
+    void setAxisDirection(Qt3DCollision::QCapsuleCollider::Direction axisDirection);
 
 Q_SIGNALS:
     void centerChanged(QVector3D center);
     void radiusChanged(float radius);
     void lengthChanged(float length);
-    void axisDirectionChanged(Qt3D::QCapsuleCollider::Direction axisDirection);
+    void axisDirectionChanged(Qt3DCollision::QCapsuleCollider::Direction axisDirection);
 
 protected:
     QCapsuleCollider(QCapsuleColliderPrivate &dd, QNode *parent = 0);
@@ -91,7 +91,7 @@ private:
     QT3D_CLONEABLE(QCapsuleCollider)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QGeometryCollider;
 
@@ -52,7 +52,7 @@ class QGeometryColliderPrivate : public QAbstractColliderPrivate
     Q_DECLARE_PUBLIC(QGeometryCollider)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

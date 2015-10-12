@@ -41,11 +41,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QAbstractCollider;
 
-class QAbstractColliderPrivate : public QComponentPrivate
+class QAbstractColliderPrivate : public Qt3D::QComponentPrivate
 {
 public:
     QAbstractColliderPrivate();
@@ -53,7 +53,7 @@ public:
     Q_DECLARE_PUBLIC(QAbstractCollider)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

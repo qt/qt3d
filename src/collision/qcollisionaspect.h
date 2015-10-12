@@ -42,30 +42,30 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QCollisionAspectPrivate;
 
-class QT3DCOLLISIONSHARED_EXPORT QCollisionAspect : public QAbstractAspect
+class QT3DCOLLISIONSHARED_EXPORT QCollisionAspect : public Qt3D::QAbstractAspect
 {
     Q_OBJECT
 public:
     explicit QCollisionAspect(QObject *parent = 0);
 
-    QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3D::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 protected:
     void registerBackendTypes();
 
 private:
-    void setRootEntity(QEntity *rootObject) Q_DECL_OVERRIDE;
+    void setRootEntity(Qt3D::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-    void visitNode(QNode *node);
+    void visitNode(Qt3D::QNode *node);
 
     Q_DECLARE_PRIVATE(QCollisionAspect)
     QCollisionAspect(QCollisionAspectPrivate &dd, QObject *parent);

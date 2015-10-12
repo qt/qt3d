@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QBoxCollider;
 
@@ -56,7 +56,7 @@ class QBoxColliderPrivate : public QAbstractColliderPrivate
     QVector3D m_radii;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

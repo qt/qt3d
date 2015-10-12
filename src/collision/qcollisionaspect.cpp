@@ -49,14 +49,16 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3D;
+
+namespace Qt3DCollision {
 
 /*!
     \class Qt3D::QCollisionAspectPrivate
     \internal
 */
 QCollisionAspectPrivate::QCollisionAspectPrivate()
-    : QAbstractAspectPrivate()
+    : Qt3D::QAbstractAspectPrivate()
     , m_time(0)
 {
     m_aspectType = QAbstractAspect::AspectCollision;
@@ -80,36 +82,36 @@ void QCollisionAspect::registerBackendTypes()
     //registerBackendType<QSphereCollider>(QBackendNodeFunctorPtr(new Collision::SphereColliderFunctor(d_func()->m_manager.data())));
 }
 
-QVector<QAspectJobPtr> QCollisionAspect::jobsToExecute(qint64 time)
+QVector<Qt3D::QAspectJobPtr> QCollisionAspect::jobsToExecute(qint64 time)
 {
     Q_D(QCollisionAspect);
     d->m_time = time;
 
     // Create jobs that will get exectued by the threadpool
-    QVector<QAspectJobPtr> jobs;
+    QVector<Qt3D::QAspectJobPtr> jobs;
     return jobs;
 }
 
-void QCollisionAspect::sceneNodeAdded(QSceneChangePtr &e)
+void QCollisionAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3D::QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
     visitor.traverse(n, this, &QCollisionAspect::visitNode);
 }
 
-void QCollisionAspect::sceneNodeRemoved(QSceneChangePtr &e)
+void QCollisionAspect::sceneNodeRemoved(Qt3D::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3D::QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<Qt3D::QNodePtr>();
     QNode *n = nodePtr.data();
     QAbstractAspect::clearBackendNode(n);
 }
 
-void QCollisionAspect::setRootEntity(QEntity *rootObject)
+void QCollisionAspect::setRootEntity(Qt3D::QEntity *rootObject)
 {
-    QNodeVisitor visitor;
+    Qt3D::QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QCollisionAspect::visitNode);
 }
 
@@ -122,7 +124,7 @@ void QCollisionAspect::onCleanup()
 {
 }
 
-void QCollisionAspect::visitNode(QNode *node)
+void QCollisionAspect::visitNode(Qt3D::QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }
@@ -131,5 +133,5 @@ void QCollisionAspect::visitNode(QNode *node)
 
 QT_END_NAMESPACE
 
-QT3D_REGISTER_NAMESPACED_ASPECT("collision", QT_PREPEND_NAMESPACE(Qt3D), QCollisionAspect)
+QT3D_REGISTER_NAMESPACED_ASPECT("collision", QT_PREPEND_NAMESPACE(Qt3DCollision), QCollisionAspect)
 

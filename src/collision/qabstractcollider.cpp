@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 /*!
     \class Qt3D::QAbstractColliderPrivate
@@ -84,5 +84,5 @@ void QAbstractCollider::onExited(QCollisionEvent *e)
 
 QT_END_NAMESPACE
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 

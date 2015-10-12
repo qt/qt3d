@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 /*!
     \class Qt3D::QBoxColliderPrivate
@@ -120,5 +120,5 @@ void QBoxCollider::setRadii(const QVector3D &radii)
 
 QT_END_NAMESPACE
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
