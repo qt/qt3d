@@ -59,39 +59,39 @@ namespace Logic {
 
 class Manager;
 
-class Handler : public Qt3D::QBackendNode
+class Handler : public Qt3DCore::QBackendNode
 {
 public:
     Handler();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void setManager(Manager *manager) { m_logicManager = manager; }
     Manager *logicManager() const { return m_logicManager; }
 
 protected:
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     Manager *m_logicManager;
 };
 
 
-class HandlerFunctor : public Qt3D::QBackendNodeFunctor
+class HandlerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit HandlerFunctor(Manager *handler);
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     Manager *m_manager;
 };
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 

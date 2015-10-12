@@ -52,11 +52,11 @@ KeyboardController::KeyboardController()
 {
 }
 
-void KeyboardController::updateFromPeer(Qt3D::QNode *)
+void KeyboardController::updateFromPeer(Qt3DCore::QNode *)
 {
 }
 
-void KeyboardController::requestFocusForInput(const Qt3D::QNodeId &inputId)
+void KeyboardController::requestFocusForInput(const Qt3DCore::QNodeId &inputId)
 {
     // Saves the last inputId, this will then be used in an Aspect Job to determine which
     // input will have the focus. This in turn will call KeyboardInput::setFocus which will
@@ -69,7 +69,7 @@ void KeyboardController::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void KeyboardController::addKeyboardInput(const Qt3D::QNodeId &input)
+void KeyboardController::addKeyboardInput(const Qt3DCore::QNodeId &input)
 {
     if (!m_keyboardInputs.contains(input)) {
         m_keyboardInputs.append(input);
@@ -77,18 +77,18 @@ void KeyboardController::addKeyboardInput(const Qt3D::QNodeId &input)
     }
 }
 
-void KeyboardController::removeKeyboardInput(const Qt3D::QNodeId &input)
+void KeyboardController::removeKeyboardInput(const Qt3DCore::QNodeId &input)
 {
     m_keyboardInputs.removeAll(input);
     m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
-void KeyboardController::setCurrentFocusItem(const Qt3D::QNodeId &input)
+void KeyboardController::setCurrentFocusItem(const Qt3DCore::QNodeId &input)
 {
     m_currentFocusItem = input;
 }
 
-void KeyboardController::sceneChangeEvent(const Qt3D::QSceneChangePtr &)
+void KeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 
@@ -97,7 +97,7 @@ KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
 {
 }
 
-Qt3D::QBackendNode *KeyboardControllerFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
     KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
     controller->setFactory(factory);
@@ -107,12 +107,12 @@ Qt3D::QBackendNode *KeyboardControllerFunctor::create(Qt3D::QNode *frontend, con
     return controller;
 }
 
-Qt3D::QBackendNode *KeyboardControllerFunctor::get(const Qt3D::QNodeId &id) const
+Qt3DCore::QBackendNode *KeyboardControllerFunctor::get(const Qt3DCore::QNodeId &id) const
 {
     return m_handler->keyboardControllerManager()->lookupResource(id);
 }
 
-void KeyboardControllerFunctor::destroy(const Qt3D::QNodeId &id) const
+void KeyboardControllerFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
     m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(id));
     m_handler->keyboardControllerManager()->releaseResource(id);

@@ -43,21 +43,20 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 class QT3DQUICKSHARED_EXPORT Quick3DNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QNode> childNodes READ childNodes)
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QNode> childNodes READ childNodes)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit Quick3DNode(QObject *parent = 0);
 
     QQmlListProperty<QObject> data();
-    QQmlListProperty<Qt3D::QNode> childNodes();
+    QQmlListProperty<Qt3DCore::QNode> childNodes();
 
     inline QNode *parentNode() const { return qobject_cast<QNode*>(parent()); }
 
@@ -67,19 +66,18 @@ private:
     static int dataCount(QQmlListProperty<QObject> *list);
     static void clearData(QQmlListProperty<QObject> *list);
 
-    static void appendChild(QQmlListProperty<Qt3D::QNode> *list, Qt3D::QNode *obj);
-    static QNode *childAt(QQmlListProperty<Qt3D::QNode> *list, int index);
-    static int childCount(QQmlListProperty<Qt3D::QNode> *list);
-    static void clearChildren(QQmlListProperty<Qt3D::QNode> *list);
+    static void appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj);
+    static QNode *childAt(QQmlListProperty<Qt3DCore::QNode> *list, int index);
+    static int childCount(QQmlListProperty<Qt3DCore::QNode> *list);
+    static void clearChildren(QQmlListProperty<Qt3DCore::QNode> *list);
 
 private Q_SLOTS:
     void childAppended(int idx, QObject *child);
     void childRemoved(int idx, QObject *child);
 };
 
-} // Quick;
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

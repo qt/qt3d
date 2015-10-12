@@ -48,16 +48,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT Sphere : public Qt3D::QBoundingSphere
+class QT3DRENDERERSHARED_EXPORT Sphere : public Qt3DCore::QBoundingSphere
 {
 public:
-    inline Sphere(const Qt3D::QNodeId &i = Qt3D::QNodeId())
+    inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
         : m_center()
         , m_radius(0.0f)
         , m_id(i)
     {}
 
-    inline Sphere(const QVector3D &c, float r, const Qt3D::QNodeId &i = Qt3D::QNodeId())
+    inline Sphere(const QVector3D &c, float r, const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
         : m_center(c)
         , m_radius(r)
         , m_id(i)
@@ -89,8 +89,8 @@ public:
         return *this;
     }
 
-    Qt3D::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const Qt3D::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    Qt3DCore::QNodeId id() const Q_DECL_FINAL;
+    bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
     Type type() const Q_DECL_FINAL;
 
     static Sphere fromPoints(const QVector<QVector3D> &points);
@@ -98,7 +98,7 @@ public:
 private:
     QVector3D m_center;
     float m_radius;
-    Qt3D::QNodeId m_id;
+    Qt3DCore::QNodeId m_id;
 
     static const float ms_epsilon;
 };

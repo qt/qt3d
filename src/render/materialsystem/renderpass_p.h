@@ -71,7 +71,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderPass : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT RenderPass : public Qt3DCore::QBackendNode
 {
 public:
     RenderPass();
@@ -79,29 +79,29 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    Qt3D::QNodeId shaderProgram() const;
+    Qt3DCore::QNodeId shaderProgram() const;
     QList<ParameterMapping> bindings() const;
-    QList<Qt3D::QNodeId> annotations() const;
+    QList<Qt3DCore::QNodeId> annotations() const;
     QList<RenderState *> renderStates() const;
-    QList<Qt3D::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    void appendAnnotation(const Qt3D::QNodeId &criterionId);
-    void removeAnnotation(const Qt3D::QNodeId &criterionId);
+    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
 
     void appendBinding(const ParameterMapping &binding);
-    void removeBinding(const Qt3D::QNodeId &bindingId);
+    void removeBinding(const Qt3DCore::QNodeId &bindingId);
 
-    void appendRenderState(const Qt3D::QNodeId &id, RenderState *renderState);
-    void removeRenderState(const Qt3D::QNodeId &renderStateId);
+    void appendRenderState(const Qt3DCore::QNodeId &id, RenderState *renderState);
+    void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
 
-    Qt3D::QNodeId m_shaderUuid;
-    QHash<Qt3D::QNodeId, ParameterMapping> m_bindings;
-    QHash<Qt3D::QNodeId, RenderState *> m_renderStates;
-    QList<Qt3D::QNodeId> m_annotationList;
+    Qt3DCore::QNodeId m_shaderUuid;
+    QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;
+    QHash<Qt3DCore::QNodeId, RenderState *> m_renderStates;
+    QList<Qt3DCore::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };
 

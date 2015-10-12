@@ -47,7 +47,7 @@ namespace Qt3DCollision {
 class QAbstractColliderPrivate;
 class QCollisionEvent;
 
-class QT3DCOLLISIONSHARED_EXPORT QAbstractCollider : public Qt3D::QComponent
+class QT3DCOLLISIONSHARED_EXPORT QAbstractCollider : public Qt3DCore::QComponent
 {
     Q_OBJECT
 

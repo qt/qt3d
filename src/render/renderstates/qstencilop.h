@@ -53,14 +53,14 @@ class QT3DRENDERERSHARED_EXPORT QStencilOp : public QRenderState
     Q_PROPERTY(Qt3DRender::QStencilOpSeparate *back READ back CONSTANT)
 
 public:
-    explicit QStencilOp(Qt3D::QNode *parent = 0);
+    explicit QStencilOp(Qt3DCore::QNode *parent = 0);
     ~QStencilOp();
 
     QStencilOpSeparate *front() const;
     QStencilOpSeparate *back() const;
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QStencilOp)

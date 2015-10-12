@@ -64,13 +64,13 @@ public:
 
     bool isValid() const;
 
-    Qt3D::QNodeId id() const;
+    Qt3DCore::QNodeId id() const;
     QString parameterName() const;
     QString shaderVariableName() const;
     QParameterMapping::Binding bindingType() const;
 
 private:
-    Qt3D::QNodeId m_id;
+    Qt3DCore::QNodeId m_id;
     QString m_parameterName;
     QString m_shaderVariableName;
     QParameterMapping::Binding m_bindingType;

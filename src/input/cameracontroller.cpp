@@ -47,7 +47,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 namespace Input {
@@ -81,7 +81,7 @@ CameraController::CameraController(QObject *parent) :
  * an Entity, a CameraLens and a Transform instead of using the
  * ready made Camera element, it won't work.
  */
-void CameraController::setCamera( Qt3D::QCamera* cam )
+void CameraController::setCamera( Qt3DCore::QCamera* cam )
 {
     m_camera = cam;
     m_cameraEntity = cam;
@@ -92,7 +92,7 @@ void CameraController::setCamera( Qt3D::QCamera* cam )
         m_updateTimer->stop();
 }
 
-Qt3D::QCamera *CameraController::camera() const
+Qt3DCore::QCamera *CameraController::camera() const
 {
     return m_camera;
 }

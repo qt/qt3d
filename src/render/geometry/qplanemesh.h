@@ -53,7 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
     Q_PROPERTY(QSize meshResolution READ meshResolution WRITE setMeshResolution NOTIFY meshResolutionChanged)
 
 public:
-    explicit QPlaneMesh(Qt3D::QNode *parent = 0);
+    explicit QPlaneMesh(Qt3DCore::QNode *parent = 0);
     ~QPlaneMesh();
 
     void setWidth(float width);

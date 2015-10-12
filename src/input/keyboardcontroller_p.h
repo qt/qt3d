@@ -59,43 +59,43 @@ namespace Input {
 
 class InputHandler;
 
-class KeyboardController : public Qt3D::QBackendNode
+class KeyboardController : public Qt3DCore::QBackendNode
 {
 public:
     KeyboardController();
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void requestFocusForInput(const Qt3D::QNodeId &inputId);
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void requestFocusForInput(const Qt3DCore::QNodeId &inputId);
     void setInputHandler(InputHandler *handler);
 
-    void addKeyboardInput(const Qt3D::QNodeId &input);
-    void removeKeyboardInput(const Qt3D::QNodeId &input);
+    void addKeyboardInput(const Qt3DCore::QNodeId &input);
+    void removeKeyboardInput(const Qt3DCore::QNodeId &input);
 
-    void setCurrentFocusItem(const Qt3D::QNodeId &input);
+    void setCurrentFocusItem(const Qt3DCore::QNodeId &input);
 
-    inline Qt3D::QNodeId currentFocusItem() const { return m_currentFocusItem; }
-    inline Qt3D::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
-    inline QVector<Qt3D::QNodeId> keyboardInputs() const { return m_keyboardInputs; }
+    inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
+    inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
+    inline QVector<Qt3DCore::QNodeId> keyboardInputs() const { return m_keyboardInputs; }
     inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    QVector<Qt3D::QNodeId> m_keyboardInputs;
+    QVector<Qt3DCore::QNodeId> m_keyboardInputs;
     QVector<HKeyboardInput> m_keyboardInputHandles;
-    Qt3D::QNodeId m_lastRequester;
-    Qt3D::QNodeId m_currentFocusItem;
+    Qt3DCore::QNodeId m_lastRequester;
+    Qt3DCore::QNodeId m_currentFocusItem;
 };
 
-class KeyboardControllerFunctor : public Qt3D::QBackendNodeFunctor
+class KeyboardControllerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit KeyboardControllerFunctor(InputHandler *handler);
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;

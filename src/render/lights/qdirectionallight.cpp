@@ -62,7 +62,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    \class Qt3D::QDirectionalLightPrivate
+    \class Qt3DCore::QDirectionalLightPrivate
     \internal
 */
 QDirectionalLightPrivate::QDirectionalLightPrivate()

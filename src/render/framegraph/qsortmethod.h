@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QSortMethod : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QSortMethod(Qt3D::QNode *parent = 0);
+    explicit QSortMethod(Qt3DCore::QNode *parent = 0);
     ~QSortMethod();
 
     void addCriterion(QSortCriterion *criterion);
@@ -59,8 +59,8 @@ public:
     QList<QSortCriterion *> criteria() const;
 
 protected:
-    QSortMethod(QSortMethodPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QSortMethod(QSortMethodPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QSortMethod)

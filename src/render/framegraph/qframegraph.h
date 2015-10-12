@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QFrameGraphPrivate;
 class QFrameGraphNode;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3DCore::QComponent
 {
     Q_OBJECT
     // Note : The full namespace has to be used to define the property
@@ -56,7 +56,7 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraph : public Qt3D::QComponent
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
-    explicit QFrameGraph(Qt3D::QNode *parent = 0);
+    explicit QFrameGraph(Qt3DCore::QNode *parent = 0);
     ~QFrameGraph();
 
     QFrameGraphNode *activeFrameGraph() const;
@@ -66,8 +66,8 @@ Q_SIGNALS:
     void activeFrameGraphChanged();
 
 protected:
-    QFrameGraph(QFrameGraphPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QFrameGraph(QFrameGraphPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QFrameGraph)

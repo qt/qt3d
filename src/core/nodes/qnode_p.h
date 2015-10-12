@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODE_P_H
-#define QT3D_QNODE_P_H
+#ifndef QT3DCORE_QNODE_P_H
+#define QT3DCORE_QNODE_P_H
 
 //
 //  W A R N I N G
@@ -57,7 +57,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QNode;
 class QAspectEngine;
@@ -108,8 +108,8 @@ private:
     static QHash<QNodeId, QNode *> m_clonesLookupTable;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_NODE_P_H
+#endif // QT3DCORE_NODE_P_H

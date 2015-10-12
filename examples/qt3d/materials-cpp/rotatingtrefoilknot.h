@@ -43,7 +43,7 @@
 class RotatingTrefoilKnot : public TrefoilKnot
 {
 public:
-    explicit RotatingTrefoilKnot(Qt3D::QNode *parent = 0);
+    explicit RotatingTrefoilKnot(Qt3DCore::QNode *parent = 0);
     ~RotatingTrefoilKnot();
 
 private:

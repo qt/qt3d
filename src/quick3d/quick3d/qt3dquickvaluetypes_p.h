@@ -61,10 +61,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
-
 namespace Quick3DValueTypes {
 
 QT3DQUICKSHARED_PRIVATE_EXPORT void registerValueTypes();
@@ -281,9 +279,8 @@ public:
     Q_INVOKABLE bool fuzzyEquals(const QMatrix4x4 &m) const;
 };
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -60,14 +60,14 @@ namespace Render {
 
 class CameraManager;
 
-class CameraLens : public Qt3D::QBackendNode
+class CameraLens : public Qt3DCore::QBackendNode
 {
 public:
     CameraLens();
     ~CameraLens();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void setClearColor();
     QVector4D clearColor() const { return m_clearColor; }
@@ -77,7 +77,7 @@ public:
 
     inline bool isEnabled() const { return m_enabled; }
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QVector4D m_clearColor;

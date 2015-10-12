@@ -75,7 +75,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -185,7 +185,7 @@ bool GLTFParser::setJSON(const QJsonDocument &json )
  */
 void GLTFParser::setSource(const QUrl &source)
 {
-    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo finfo(path);
     if (!finfo.exists()) {
         qCWarning(GLTFParserLog) << "missing file:" << path;
@@ -213,11 +213,11 @@ void GLTFParser::setSource(const QUrl &source)
  */
 bool GLTFParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);
 }
 
-Qt3D::QEntity* GLTFParser::node(const QString &id)
+Qt3DCore::QEntity* GLTFParser::node(const QString &id)
 {
     QJsonObject nodes = m_json.object().value(KEY_NODES).toObject();
     if (!nodes.contains(id)) {
@@ -284,7 +284,7 @@ Qt3D::QEntity* GLTFParser::node(const QString &id)
         }
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
-        Qt3D::QTransform *trans = new Qt3D::QTransform();
+        Qt3DCore::QTransform *trans = new Qt3DCore::QTransform();
         trans->addTransform(new QMatrixTransform(m));
         result->addComponent(trans);
     }
@@ -302,7 +302,7 @@ Qt3D::QEntity* GLTFParser::node(const QString &id)
     return result;
 }
 
-Qt3D::QEntity* GLTFParser::scene(const QString &id)
+Qt3DCore::QEntity* GLTFParser::scene(const QString &id)
 {
     parse();
 
@@ -459,7 +459,7 @@ QParameter *GLTFParser::parameterFromTechnique(QTechnique *technique, const QStr
     return Q_NULLPTR;
 }
 
-Qt3D::QEntity* GLTFParser::defaultScene()
+Qt3DCore::QEntity* GLTFParser::defaultScene()
 {
     if (m_defaultScene.isEmpty()) {
         qCWarning(GLTFParserLog) << Q_FUNC_INFO << "no default scene";

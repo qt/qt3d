@@ -56,7 +56,7 @@ QUniformValue::QUniformValue()
 {
 }
 
-QUniformValue *QUniformValue::fromVariant(const QVariant &v, Qt3D::QFrameAllocator *allocator)
+QUniformValue *QUniformValue::fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator)
 {
     QUniformValue *u = allocator->allocate<QUniformValue>();
     u->m_var = v;
@@ -88,7 +88,7 @@ void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
     m_uniforms.insert(glslName, val);
 }
 
-void QUniformPack::setTexture(const QString &glslName, const Qt3D::QNodeId &texId)
+void QUniformPack::setTexture(const QString &glslName, const Qt3DCore::QNodeId &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {

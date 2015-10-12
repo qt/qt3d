@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCHEDULER_P_H
-#define QT3D_QSCHEDULER_P_H
+#ifndef QT3DCORE_QSCHEDULER_P_H
+#define QT3DCORE_QSCHEDULER_P_H
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -53,7 +53,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAspectManager;
 
@@ -72,8 +72,8 @@ private:
     QAspectManager *m_aspectManager;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCHEDULER_P_H
+#endif // QT3DCORE_QSCHEDULER_P_H

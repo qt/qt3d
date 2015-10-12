@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBOUDINGSPHERE_H
-#define QT3D_QBOUDINGSPHERE_H
+#ifndef QT3DCORE_QBOUDINGSPHERE_H
+#define QT3DCORE_QBOUDINGSPHERE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qboundingvolume.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QBoundingSphere : public QBoundingVolume
 {
@@ -54,8 +54,8 @@ public:
     virtual float radius() const = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBOUDINGSPHERE_H
+#endif // QT3DCORE_QBOUDINGSPHERE_H

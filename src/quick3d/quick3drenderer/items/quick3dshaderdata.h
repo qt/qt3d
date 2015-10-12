@@ -61,7 +61,7 @@ private:
 
 } // namespace Quick
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

@@ -50,7 +50,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -123,7 +123,7 @@ void Texture::cleanup()
 }
 
 // AspectThread
-void Texture::updateFromPeer(Qt3D::QNode *peer)
+void Texture::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
 
@@ -412,7 +412,7 @@ void Texture::setFormat(QAbstractTextureProvider::TextureFormat format)
 }
 
 // ChangeArbiter/Aspect Thread
-void Texture::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // The QOpenGLTexture has to be manipulated from the RenderThread only
     QMutexLocker lock(m_lock);
@@ -579,7 +579,7 @@ TextureFunctor::TextureFunctor(TextureManager *textureManager,
 {
 }
 
-Qt3D::QBackendNode *TextureFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
     Texture *backend = m_textureManager->getOrCreateResource(frontend->id());
     backend->setFactory(factory);
@@ -590,12 +590,12 @@ Qt3D::QBackendNode *TextureFunctor::create(Qt3D::QNode *frontend, const Qt3D::QB
     return backend;
 }
 
-Qt3D::QBackendNode *TextureFunctor::get(const Qt3D::QNodeId &id) const
+Qt3DCore::QBackendNode *TextureFunctor::get(const Qt3DCore::QNodeId &id) const
 {
     return m_textureManager->lookupResource(id);
 }
 
-void TextureFunctor::destroy(const Qt3D::QNodeId &id) const
+void TextureFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
     m_textureManager->releaseResource(id);
 }

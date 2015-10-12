@@ -43,11 +43,11 @@
 #include <QNormalDiffuseMapMaterial>
 #include <QTextureImage>
 
-class HousePlant : public Qt3D::QEntity
+class HousePlant : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    explicit HousePlant(Qt3D::QNode *parent = 0);
+    explicit HousePlant(Qt3DCore::QNode *parent = 0);
     ~HousePlant();
 
     enum PotShape {

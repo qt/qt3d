@@ -54,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QEntity;
 }
 
@@ -63,17 +63,17 @@ namespace Render {
 
 class SceneManager;
 
-class Scene : public Qt3D::QBackendNode
+class Scene : public Qt3DCore::QBackendNode
 {
 public:
     Scene();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     // QObserverInterface interface
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QUrl source() const;
-    void setSceneSubtree(Qt3D::QEntity *subTree);
+    void setSceneSubtree(Qt3DCore::QEntity *subTree);
     void setSceneManager(SceneManager *manager);
 
 private:
@@ -81,13 +81,13 @@ private:
     QUrl m_source;
 };
 
-class RenderSceneFunctor : public Qt3D::QBackendNodeFunctor
+class RenderSceneFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit RenderSceneFunctor(SceneManager *sceneManager);
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     SceneManager *m_sceneManager;

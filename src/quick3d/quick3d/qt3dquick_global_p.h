@@ -55,8 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3D_initialize();
@@ -69,9 +68,8 @@ template<class T, class E> void registerExtendedType(const char *className, cons
     Quick3D_registerType(className, quickName, major, minor);
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

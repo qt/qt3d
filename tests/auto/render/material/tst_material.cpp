@@ -43,7 +43,7 @@
 #include <Qt3DCore/QScenePropertyChange>
 
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 

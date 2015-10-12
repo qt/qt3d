@@ -57,12 +57,12 @@
  * sound should reflect off an element, the temperature of a surface,
  * and so on.
  *
- * \sa QEffect, QMesh, {Qt3D::}{QComponent}
+ * \sa QEffect, QMesh, {Qt3DCore::}{QComponent}
  */
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 

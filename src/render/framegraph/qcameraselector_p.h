@@ -63,7 +63,7 @@ public:
     QCameraSelectorPrivate();
 
     Q_DECLARE_PUBLIC(QCameraSelector)
-    Qt3D::QEntity *m_camera;
+    Qt3DCore::QEntity *m_camera;
 };
 
 

@@ -59,7 +59,7 @@ class QWheelEvent;
 class QKeyEvent;
 class QTimer;
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QCamera;
 class QEntity;
 }
@@ -79,8 +79,8 @@ class CameraController : public QObject
 public:
     explicit CameraController(QObject *parent = 0);
 
-    void setCamera( Qt3D::QCamera* cam );
-    Qt3D::QCamera *camera() const;
+    void setCamera( Qt3DCore::QCamera* cam );
+    Qt3DCore::QCamera *camera() const;
 
     void setLinearSpeed( float speed );
     float linearSpeed() const;
@@ -118,8 +118,8 @@ private Q_SLOTS:
     void onUpdate();
 
 private:
-    Qt3D::QCamera* m_camera;
-    Qt3D::QEntity* m_cameraEntity;
+    Qt3DCore::QCamera* m_camera;
+    Qt3DCore::QEntity* m_cameraEntity;
 
     float m_vx;
     float m_vy;

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QOBSERVERINTERFACE_P_H
-#define QT3D_QOBSERVERINTERFACE_P_H
+#ifndef QT3DCORE_QOBSERVERINTERFACE_P_H
+#define QT3DCORE_QOBSERVERINTERFACE_P_H
 
 //
 //  W A R N I N G
@@ -52,7 +52,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QObserverInterface
 {
@@ -61,10 +61,10 @@ public:
     virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QObserverInterface *)
+Q_DECLARE_METATYPE(Qt3DCore::QObserverInterface *)
 
-#endif // QT3D_QOBSERVERINTERFACE_P_H
+#endif // QT3DCORE_QOBSERVERINTERFACE_P_H

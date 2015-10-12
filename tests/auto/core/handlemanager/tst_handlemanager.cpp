@@ -67,17 +67,17 @@ public:
     int m_value;
 };
 
-typedef Qt3D::QHandle<SimpleResource> Handle;
+typedef Qt3DCore::QHandle<SimpleResource> Handle;
 
 void tst_HandleManager::construction()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     QVERIFY(manager.activeEntries() == 0);
 }
 
 void tst_HandleManager::correctPointer()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     SimpleResource *p1 = (SimpleResource *)0xdeadbeef;
     const Handle h = manager.acquire(p1);
 
@@ -89,7 +89,7 @@ void tst_HandleManager::correctPointer()
 
 void tst_HandleManager::correctPointers()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     SimpleResource *p[3];
     p[0] = (SimpleResource *)0xdeadbeef;
     p[1] = (SimpleResource *)0x11111111;
@@ -109,7 +109,7 @@ void tst_HandleManager::correctPointers()
 
 void tst_HandleManager::correctConstPointer()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     QSharedPointer<SimpleResource> p1(new SimpleResource);
     const Handle h = manager.acquire(p1.data());
 
@@ -121,7 +121,7 @@ void tst_HandleManager::correctConstPointer()
 
 void tst_HandleManager::nullForRemovedEntry()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     QSharedPointer<SimpleResource> p1(new SimpleResource);
     const Handle h = manager.acquire(p1.data());
     manager.release(h);
@@ -134,7 +134,7 @@ void tst_HandleManager::nullForRemovedEntry()
 
 void tst_HandleManager::validHandleForReplacementEntry()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     QSharedPointer<SimpleResource> p1(new SimpleResource);
     const Handle h = manager.acquire(p1.data());
     QVERIFY(manager.activeEntries() == 1);
@@ -155,7 +155,7 @@ void tst_HandleManager::validHandleForReplacementEntry()
 
 void tst_HandleManager::updateChangesValue()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     QSharedPointer<SimpleResource> p1(new SimpleResource);
     const Handle h = manager.acquire(p1.data());
 
@@ -171,7 +171,7 @@ void tst_HandleManager::updateChangesValue()
 
 void tst_HandleManager::resetRemovesAllEntries()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
     for (int i = 0; i < 100; ++i) {
         SimpleResource *p = (SimpleResource *) 0xdead0000 + i;
         const Handle h = manager.acquire(p);
@@ -190,7 +190,7 @@ void tst_HandleManager::resetRemovesAllEntries()
 
 void tst_HandleManager::maximumEntries()
 {
-    Qt3D::QHandleManager<SimpleResource> manager;
+    Qt3DCore::QHandleManager<SimpleResource> manager;
 
     QCOMPARE(Handle::maxIndex(), (uint)((1 << 16) - 1));
 

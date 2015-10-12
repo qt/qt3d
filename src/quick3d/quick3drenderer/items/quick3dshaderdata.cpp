@@ -81,7 +81,7 @@ public:
             }
             return innerValues;
         } else if (v.userType() == quick3DShaderDataTypeId) {
-            Qt3D::QNodeId id;
+            Qt3DCore::QNodeId id;
             QShaderData *shaderData = v.value<Quick3DShaderData *>();
             if (shaderData)
                 id = shaderData->id();
@@ -99,6 +99,6 @@ Quick3DShaderData::Quick3DShaderData(QNode *parent)
 
 } // namespace Quick
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

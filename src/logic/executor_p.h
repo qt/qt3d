@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 class QSemaphore;
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QScene;
 }
 
@@ -77,25 +77,25 @@ class Executor : public QObject
 public:
     explicit Executor(QObject *parent = 0);
 
-    void setScene(Qt3D::QScene *scene) { m_scene = scene; }
+    void setScene(Qt3DCore::QScene *scene) { m_scene = scene; }
     void setSemephore(QSemaphore *semaphore) { m_semaphore = semaphore; }
     void clearQueueAndProceed();
 
 public Q_SLOTS:
-    void enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds);
+    void enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds);
 
 protected:
     bool event(QEvent *e);
     void processLogicFrameUpdates();
 
 private:
-    QVector<Qt3D::QNodeId> m_nodeIds;
-    Qt3D::QScene *m_scene;
+    QVector<Qt3DCore::QNodeId> m_nodeIds;
+    Qt3DCore::QScene *m_scene;
     QSemaphore *m_semaphore;
 };
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 

@@ -39,15 +39,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QOpenGLInformationServicePrivate
+    \class Qt3DCore::QOpenGLInformationServicePrivate
     \internal
 */
 
 /*!
-    \class Qt3D::QOpenGLInformationService
+    \class Qt3DCore::QOpenGLInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D OpenGL information service
 
@@ -76,12 +76,12 @@ QOpenGLInformationService::QOpenGLInformationService(QOpenGLInformationServicePr
 }
 
 /*!
-    \fn QSurfaceFormat Qt3D::QOpenGLInformationService::format() const
+    \fn QSurfaceFormat Qt3DCore::QOpenGLInformationService::format() const
 
     Subclasses should override this function to return the QSurfaceFormat of the
     OpenGL context in use.
 */
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

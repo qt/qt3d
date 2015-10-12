@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QCamera;
 }
 
@@ -50,32 +50,32 @@ namespace Qt3DInput {
 
 class QInputAspectPrivate;
 
-class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3D::QAbstractAspect
+class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QCamera* camera READ camera WRITE setCamera)
+    Q_PROPERTY(Qt3DCore::QCamera* camera READ camera WRITE setCamera)
 public:
     explicit QInputAspect(QObject *parent = 0);
 
-    Qt3D::QCamera *camera() const;
+    Qt3DCore::QCamera *camera() const;
 
 public Q_SLOTS:
-    void setCamera(Qt3D::QCamera *camera);
+    void setCamera(Qt3DCore::QCamera *camera);
 
 public:
-    QVector<Qt3D::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    void setRootEntity(Qt3D::QEntity *rootObject) Q_DECL_OVERRIDE;
+    void setRootEntity(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
-    void visitNode(Qt3D::QNode *node);
+    void visitNode(Qt3DCore::QNode *node);
 
     Q_DECLARE_PRIVATE(QInputAspect)
 };

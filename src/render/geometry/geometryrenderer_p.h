@@ -60,7 +60,7 @@ namespace Render {
 
 class GeometryRendererManager;
 
-class Q_AUTOTEST_EXPORT GeometryRenderer : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT GeometryRenderer : public Qt3DCore::QBackendNode
 {
 public:
     GeometryRenderer();
@@ -68,11 +68,11 @@ public:
 
     void cleanup();
     void setManager(GeometryRendererManager *manager);
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void executeFunctor();
 
-    inline Qt3D::QNodeId geometryId() const { return m_geometryId; }
+    inline Qt3DCore::QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }
     inline int primitiveCount() const { return m_primitiveCount; }
     inline int baseVertex() const { return m_baseVertex; }
@@ -85,7 +85,7 @@ public:
     void unsetDirty();
 
 private:
-    Qt3D::QNodeId m_geometryId;
+    Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
     int m_primitiveCount;
     int m_baseVertex;
@@ -98,13 +98,13 @@ private:
     GeometryRendererManager *m_manager;
 };
 
-class GeometryRendererFunctor : public Qt3D::QBackendNodeFunctor
+class GeometryRendererFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit GeometryRendererFunctor(GeometryRendererManager *manager);
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 private:
     GeometryRendererManager *m_manager;
 };

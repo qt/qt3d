@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODE_H
-#define QT3D_QNODE_H
+#ifndef QT3DCORE_QNODE_H
+#define QT3DCORE_QNODE_H
 
 #include <QObject>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -43,11 +43,11 @@
 #include <Qt3DCore/qscenechange.h>
 #include <Qt3DCore/qabstractnodefactory.h>
 
-#define Q_NODE_NULLPTR static_cast<Qt3D::QNode *>(Q_NULLPTR)
+#define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(Q_NULLPTR)
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QNode;
 class QNodePrivate;
@@ -57,11 +57,11 @@ class QAspectEngine;
 typedef QList<QNode *> QNodeList;
 typedef QSharedPointer<QNode> QNodePtr;
 
-#define QT3D_QUOTE(str) #str
+#define QT3DCORE_QUOTE(str) #str
 #define QT3D_CLONEABLE(Class)                \
-    friend class Qt3D::QAbstractNodeFactory;       \
+    friend class Qt3DCore::QAbstractNodeFactory;       \
     QNode *doClone() const Q_DECL_OVERRIDE { \
-        Class *clone_ = Qt3D::QAbstractNodeFactory::createNode<Class>(QT3D_QUOTE(Class)); \
+        Class *clone_ = Qt3DCore::QAbstractNodeFactory::createNode<Class>(QT3DCORE_QUOTE(Class)); \
         clone_->copy(this);                   \
         return clone_;                        \
     }
@@ -73,7 +73,7 @@ typedef QSharedPointer<QNode> QNodePtr;
 class QT3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
+    Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
 public:
     explicit QNode(QNode *parent = 0);
     virtual ~QNode();
@@ -116,7 +116,7 @@ Q_SIGNALS:
     void parentChanged();
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

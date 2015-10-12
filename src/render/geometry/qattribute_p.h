@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 class QAttribute;
 
-class QT3DRENDERERSHARED_EXPORT QAttributePrivate : public Qt3D::QAbstractAttributePrivate
+class QT3DRENDERERSHARED_EXPORT QAttributePrivate : public Qt3DCore::QAbstractAttributePrivate
 {
 public:
     QAttributePrivate();

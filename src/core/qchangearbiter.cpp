@@ -49,10 +49,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QChangeArbiter
+    \class Qt3DCore::QChangeArbiter
     \inmodule Qt3DCore
     \since 5.5
 
@@ -331,6 +331,6 @@ void QChangeArbiter::destroyThreadLocalChangeQueue(void *changeArbiter)
     }
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

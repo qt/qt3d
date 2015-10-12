@@ -56,7 +56,7 @@ namespace Qt3DRender {
 
 class QShaderProgram;
 
-class QShaderProgramPrivate : public Qt3D::QNodePrivate
+class QShaderProgramPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QShaderProgramPrivate();

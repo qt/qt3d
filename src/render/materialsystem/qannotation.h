@@ -47,13 +47,13 @@ namespace Qt3DRender {
 
 class QAnnotationPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAnnotation : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QAnnotation : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QAnnotation(Qt3D::QNode *parent = 0);
+    explicit QAnnotation(Qt3DCore::QNode *parent = 0);
     ~QAnnotation();
 
     void setValue(const QVariant &value);
@@ -67,7 +67,7 @@ Q_SIGNALS:
     void valueChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAnnotation)

@@ -47,10 +47,10 @@
 #include <Qt3DRenderer/QShaderData>
 #include <Qt3DRenderer/QGeometryRenderer>
 
-typedef Qt3D::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
-typedef QList<Qt3D::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
+typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
+typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 
@@ -78,7 +78,7 @@ private slots:
         QTest::addColumn<QComponent*>("component");
         QTest::addColumn<void*>("functionPtr");
 
-        QComponent *component = new Qt3D::QTransform;
+        QComponent *component = new Qt3DCore::QTransform;
         QTest::newRow("transform") << component << reinterpret_cast<void*>(transformUuid);
 
         component = new QGeometryRenderer;

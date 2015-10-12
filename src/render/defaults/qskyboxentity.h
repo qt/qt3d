@@ -46,11 +46,11 @@ namespace Qt3DRender {
 
 class QSkyboxEntityPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSkyboxEntity : public Qt3D::QEntity
+class QT3DRENDERERSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    explicit QSkyboxEntity(Qt3D::QNode *parent = 0);
+    explicit QSkyboxEntity(Qt3DCore::QNode *parent = 0);
     ~QSkyboxEntity();
 
     void setBaseName(const QString &path);

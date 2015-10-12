@@ -50,7 +50,7 @@ class QGeometryFunctor;
 
 typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
@@ -63,7 +63,7 @@ class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public Qt3D::QComponent
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
 
 public:
-    explicit QGeometryRenderer(Qt3D::QNode *parent = 0);
+    explicit QGeometryRenderer(Qt3DCore::QNode *parent = 0);
     ~QGeometryRenderer();
 
     enum PrimitiveType {
@@ -116,9 +116,9 @@ Q_SIGNALS:
     void primitiveTypeChanged();
 
 protected:
-    QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)

@@ -36,7 +36,7 @@
 
 #include "pointlightblock.h"
 
-PointLightBlock::PointLightBlock(Qt3D::QNode *parent)
+PointLightBlock::PointLightBlock(Qt3DCore::QNode *parent)
     : Qt3DRender::QShaderData(parent)
 {
 

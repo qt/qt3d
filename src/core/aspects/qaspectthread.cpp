@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QAspectThread::QAspectThread(QObject *parent)
     : QThread(parent),
@@ -87,6 +87,6 @@ void QAspectThread::run()
     qCDebug(Aspects) << "Exiting void QAspectThread::run()";
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

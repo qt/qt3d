@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QTechniqueFilter(Qt3D::QNode *parent = 0);
+    explicit QTechniqueFilter(Qt3DCore::QNode *parent = 0);
     ~QTechniqueFilter();
 
     QList<QAnnotation *> criteria() const;
@@ -64,8 +64,8 @@ public:
     QList<QParameter *> parameters() const;
 
 protected:
-    QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QTechniqueFilter(QTechniqueFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTechniqueFilter)

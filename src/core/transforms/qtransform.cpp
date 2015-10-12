@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QTransformPrivate
+    \class Qt3DCore::QTransformPrivate
     \internal
 */
 QTransformPrivate::QTransformPrivate()
@@ -159,7 +159,7 @@ QMatrix4x4 QTransform::matrix() const
     return d->m_matrix;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

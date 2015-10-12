@@ -197,8 +197,8 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
 
     // Geometry
-    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
-    qmlRegisterUncreatableType<Qt3D::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
     qmlRegisterType<Qt3DRender::QBuffer>(uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Renderer/Geometry", uri, 2, 0, "Geometry");
@@ -223,7 +223,7 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
 
     // FrameGraph
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QCameraSelector, Qt3D::Quick::Quick3DNode>("QCameraSelector", "Qt3D.Renderer/CameraSelector", uri, 2, 0, "CameraSelector");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QCameraSelector, Qt3DCore::Quick::Quick3DNode>("QCameraSelector", "Qt3D.Renderer/CameraSelector", uri, 2, 0, "CameraSelector");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPassFilter, Qt3DRender::Render::Quick::Quick3DRenderPassFilter>("QRenderPassFilter", "Qt3D.Renderer/RenderPassFilter", uri, 2, 0, "RenderPassFilter");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechniqueFilter, Qt3DRender::Render::Quick::Quick3DTechniqueFilter>("QTechniqueFilter", "Qt3D.Renderer/TechniqueFilter", uri, 2, 0, "TechniqueFilter");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QViewport, Qt3DRender::Render::Quick::Quick3DViewport>("QViewport", "Qt3D.Renderer/Viewport", uri, 2, 0, "Viewport");

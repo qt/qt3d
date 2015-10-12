@@ -48,7 +48,7 @@ namespace Qt3DRender {
 // We might also get rid of the layer, face, mipmap level from
 // TexImageDataPtr and store that in the functor directly
 // or use the QTextureImage instead
-class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor : public Qt3D::QAbstractFunctor
+class QT3DRENDERERSHARED_EXPORT QTextureDataFunctor : public Qt3DCore::QAbstractFunctor
 {
 public:
     virtual ~QTextureDataFunctor() {}
@@ -60,14 +60,14 @@ typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
 
 class QAbstractTextureImagePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int mipmapLevel READ mipmapLevel WRITE setMipmapLevel NOTIFY mipmapLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
 public:
-    explicit QAbstractTextureImage(Qt3D::QNode *parent = 0);
+    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = 0);
     virtual ~QAbstractTextureImage();
 
     int mipmapLevel() const;
@@ -87,8 +87,8 @@ Q_SIGNALS:
     void cubeMapFaceChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
-    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3D::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)

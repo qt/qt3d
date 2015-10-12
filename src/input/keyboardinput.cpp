@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 namespace Input {
@@ -57,7 +57,7 @@ KeyboardInput::KeyboardInput()
 {
 }
 
-void KeyboardInput::updateFromPeer(Qt3D::QNode *peer)
+void KeyboardInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QKeyboardInput *input = static_cast<QKeyboardInput *>(peer);
     if (input->controller() != Q_NULLPTR)
@@ -68,7 +68,7 @@ void KeyboardInput::updateFromPeer(Qt3D::QNode *peer)
         requestFocus();
 }
 
-Qt3D::QNodeId KeyboardInput::keyboardController() const
+Qt3DCore::QNodeId KeyboardInput::keyboardController() const
 {
     return m_keyboardController;
 }

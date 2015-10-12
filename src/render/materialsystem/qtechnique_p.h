@@ -61,7 +61,7 @@ class QAnnotation;
 class QParameter;
 class QRenderPass;
 
-class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public Qt3D::QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QTechniquePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QTechniquePrivate();

@@ -64,18 +64,18 @@ class GraphicsContext;
 class UniformBuffer;
 class ShaderDataManager;
 
-class Q_AUTOTEST_EXPORT ShaderData : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT ShaderData : public Qt3DCore::QBackendNode
 {
 public:
     ShaderData();
     ~ShaderData();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     inline QHash<QString, QVariant> properties() const { return m_properties; }
     inline QHash<QString, QVariant> updatedProperties() const { return m_updatedProperties; }
 
     // Called by cleanup job
-    inline static QList<Qt3D::QNodeId> updatedShaderDataList() { return m_updatedShaderData; }
+    inline static QList<Qt3DCore::QNodeId> updatedShaderDataList() { return m_updatedShaderData; }
     inline static void clearShaderDataList() { return m_updatedShaderData.clear(); }
     void clearUpdate();
 
@@ -86,7 +86,7 @@ public:
     void updateTransformedProperties(const QMatrix4x4 &nodeWordlTransform);
 
 protected:
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     // 1 to 1 match with frontend properties, modified only by sceneChangeEvent
@@ -102,7 +102,7 @@ private:
     QHash<QString, QShaderData::TransformType> m_transformedProperties;
     ShaderDataManager *m_manager;
     QMutex *m_mutex;
-    static QList<Qt3D::QNodeId> m_updatedShaderData;
+    static QList<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
     QMatrix4x4 m_viewMatrix;
 
@@ -112,14 +112,14 @@ private:
     friend class RenderShaderDataFunctor;
 };
 
-class RenderShaderDataFunctor : public Qt3D::QBackendNodeFunctor
+class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit RenderShaderDataFunctor(ShaderDataManager *manager);
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
 
 private:
     ShaderDataManager *m_manager;

@@ -34,18 +34,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMATRIXTRANSFORM_H
-#define QT3D_QMATRIXTRANSFORM_H
+#ifndef QT3DCORE_QMATRIXTRANSFORM_H
+#define QT3DCORE_QMATRIXTRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QMatrixTransformPrivate;
 
-class QT3DCORESHARED_EXPORT QMatrixTransform : public Qt3D::QAbstractTransform
+class QT3DCORESHARED_EXPORT QMatrixTransform : public Qt3DCore::QAbstractTransform
 {
     Q_OBJECT
     Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)
@@ -69,8 +69,8 @@ private:
     Q_DISABLE_COPY(QMatrixTransform)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMATRIXTRANSFORM_H
+#endif // QT3DCORE_QMATRIXTRANSFORM_H

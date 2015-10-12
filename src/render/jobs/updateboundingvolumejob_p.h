@@ -59,7 +59,7 @@ namespace Render {
 
 class Entity;
 
-class UpdateBoundingVolumeJob : public Qt3D::QAspectJob
+class UpdateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit UpdateBoundingVolumeJob(Entity *m_node);

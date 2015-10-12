@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 
     widget->setWindowTitle(QStringLiteral("Basic shapes"));
 
-    Qt3D::QAspectEngine engine;
+    Qt3DCore::QAspectEngine engine;
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
@@ -100,10 +100,10 @@ int main(int argc, char **argv)
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);

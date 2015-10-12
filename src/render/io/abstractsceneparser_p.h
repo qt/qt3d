@@ -56,7 +56,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QEntity;
 }
 
@@ -84,8 +84,8 @@ public:
 
     virtual void setSource(const QUrl &source) = 0;
     virtual bool isExtensionSupported(const QUrl &source) const = 0;
-    virtual Qt3D::QEntity *scene(const QString &id = QString()) = 0;
-    virtual Qt3D::QEntity *node(const QString &id) = 0;
+    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
+    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
 
     ParserStatus parserStatus() const;
     QStringList errors() const;

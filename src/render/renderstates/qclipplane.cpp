@@ -53,21 +53,21 @@ public:
 };
 
 /*!
-    \class Qt3D::QClipPlane
+    \class Qt3DCore::QClipPlane
     \inmodule Qt3DRenderer
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
     using gl_ClipDistance
 
     By default, OpenGL supports up to 8 additional clipping planes.
-    Qt3D::QClipPlane allows to enable one of these additional planes. These
+    Qt3DCore::QClipPlane allows to enable one of these additional planes. These
     planes can then be manipulated in the shaders using gl_ClipDistance[i]
     where i varies between 0 and 8.
  */
 
 /*!
     \qmltype ClipPlane
-    \instantiates Qt3D::QClipPlane
+    \instantiates Qt3DCore::QClipPlane
     \inherits RenderState
     \inqmlmodule Qt3D.Renderer
     \since 5.5

@@ -78,14 +78,14 @@ public:
     HandlerManager *logicHandlerManager() const { return m_logicHandlerManager.data(); }
 
     void appendHandler(Handler *handler);
-    void removeHandler(const Qt3D::QNodeId &id);
+    void removeHandler(const Qt3DCore::QNodeId &id);
 
     void triggerLogicFrameUpdates();
 
 private:
     QScopedPointer<HandlerManager> m_logicHandlerManager;
     QVector<HHandler> m_logicHandlers;
-    QVector<Qt3D::QNodeId> m_logicComponentIds;
+    QVector<Qt3DCore::QNodeId> m_logicComponentIds;
     QLogicAspect *m_logicAspect;
     Executor *m_executor;
     QSemaphore m_semaphore;

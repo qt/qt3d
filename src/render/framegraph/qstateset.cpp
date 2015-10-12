@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -52,22 +52,22 @@ QStateSetPrivate::QStateSetPrivate()
 }
 
 /*!
- * \class Qt3D::QStateSet
+ * \class Qt3DCore::QStateSet
  * \inmodule Qt3DRender
  *
- * \brief The Qt3D::QStateSet FrameGraph node offers a way of specifying a set
- * of Qt3D::QRenderState to be applied during the execution of a FrameGraph
+ * \brief The Qt3DCore::QStateSet FrameGraph node offers a way of specifying a set
+ * of Qt3DCore::QRenderState to be applied during the execution of a FrameGraph
  * branch.
  *
- * States set on a Qt3D::QStateSet are set globally, contrary to the per
+ * States set on a Qt3DCore::QStateSet are set globally, contrary to the per
  * Material states that can be set on a Qt3DRender::QRenderPass. By default an empty
- * Qt3D::QStateSet will result in all render states being disabled when
- * executed. Adding a Qt3D::QRenderState state explicitly enables that render
+ * Qt3DCore::QStateSet will result in all render states being disabled when
+ * executed. Adding a Qt3DCore::QRenderState state explicitly enables that render
  * state at runtime.
  *
  * \since 5.5
  *
- * \sa Qt3D::QRenderState, Qt3DRender::QRenderPass
+ * \sa Qt3DCore::QRenderState, Qt3DRender::QRenderPass
  */
 
 QStateSet::QStateSet(QNode *parent)
@@ -95,9 +95,9 @@ void QStateSet::copy(const QNode *ref)
 }
 
 /*!
- * Adds a new Qt3D::QRenderState \a state to the Qt3D::QStateSet instance.
+ * Adds a new Qt3DCore::QRenderState \a state to the Qt3DCore::QStateSet instance.
  *
- * \note Not setting any Qt3D::QRenderState state on a Qt3D::QStateSet instance
+ * \note Not setting any Qt3DCore::QRenderState state on a Qt3DCore::QStateSet instance
  * implies all the render states will be disabled at render time.
  */
 void QStateSet::addRenderState(QRenderState *state)
@@ -120,7 +120,7 @@ void QStateSet::addRenderState(QRenderState *state)
 }
 
 /*!
- * Removes the Qt3D::QRenderState \a state from the Qt3D::QStateSet instance.
+ * Removes the Qt3DCore::QRenderState \a state from the Qt3DCore::QStateSet instance.
  */
 void QStateSet::removeRenderState(QRenderState *state)
 {
@@ -135,7 +135,7 @@ void QStateSet::removeRenderState(QRenderState *state)
 }
 
 /*!
- * Returns the list of Qt3D::QRenderState that compose the Qt3D::QStateSet instance.
+ * Returns the list of Qt3DCore::QRenderState that compose the Qt3DCore::QStateSet instance.
  */
 QList<QRenderState *> QStateSet::renderStates() const
 {

@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3D::QNodeId &m_sceneComponent)
+LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
     : QAspectJob()
     , m_renderer(Q_NULLPTR)
     , m_source(source)
@@ -55,7 +55,7 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3D::QNodeId &m_sceneCompo
 
 void LoadSceneJob::run()
 {
-    Qt3D::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
+    Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
         Q_FOREACH (AbstractSceneParser *parser, m_renderer->sceneParsers()) {
             if (parser->isExtensionSupported(m_source)) {

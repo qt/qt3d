@@ -52,7 +52,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QAspectEngine;
 class QCamera;
 class QEntity;
@@ -70,11 +70,11 @@ public:
     QWindowPrivate();
 
     Q_DECLARE_PUBLIC(QWindow)
-    Qt3D::QEntity *m_root;
-    Qt3D::QEntity *   m_userRoot;
-    Qt3D::QCamera *m_defaultCamera;
+    Qt3DCore::QEntity *m_root;
+    Qt3DCore::QEntity *   m_userRoot;
+    Qt3DCore::QCamera *m_defaultCamera;
     QFrameGraph *m_frameGraph;
-    QScopedPointer<Qt3D::QAspectEngine> m_engine;
+    QScopedPointer<Qt3DCore::QAspectEngine> m_engine;
     QRenderAspect *m_renderAspect;
 };
 

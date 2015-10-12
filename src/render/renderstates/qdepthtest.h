@@ -64,7 +64,7 @@ public:
     };
     Q_ENUM(DepthFunc)
 
-    explicit QDepthTest(Qt3D::QNode *parent = 0);
+    explicit QDepthTest(Qt3DCore::QNode *parent = 0);
     ~QDepthTest();
 
     DepthFunc func() const;
@@ -74,7 +74,7 @@ Q_SIGNALS:
     void funcChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QDepthTest)

@@ -59,7 +59,7 @@ namespace Render {
 class Renderer;
 class Entity;
 
-class FramePreparationJob : public Qt3D::QAspectJob
+class FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
     FramePreparationJob(Entity *root);

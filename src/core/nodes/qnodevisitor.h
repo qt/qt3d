@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODEVISITOR_H
-#define QT3D_QNODEVISITOR_H
+#ifndef QT3DCORE_QNODEVISITOR_H
+#define QT3DCORE_QNODEVISITOR_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D
+namespace Qt3DCore
 {
 
 class QT3DCORESHARED_EXPORT QNodeVisitor
@@ -248,8 +248,8 @@ private:
     }
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QNODEVISITOR_H
+#endif // QT3DCORE_QNODEVISITOR_H

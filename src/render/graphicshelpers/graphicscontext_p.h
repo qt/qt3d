@@ -227,7 +227,7 @@ private:
     Shader *m_activeShader;
     QHash<ProgramDNA, Shader *> m_renderShaderHash;
     QHash<Buffer *, QOpenGLBuffer> m_renderBufferHash;
-    QHash<Qt3D::QNodeId, GLuint> m_renderTargets;
+    QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 
     // active textures, indexed by texture unit

@@ -58,7 +58,7 @@ namespace Render {
 
 class VSyncFrameAdvanceServicePrivate;
 
-class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public Qt3D::QAbstractFrameAdvanceService
+class Q_AUTOTEST_EXPORT VSyncFrameAdvanceService Q_DECL_FINAL : public Qt3DCore::QAbstractFrameAdvanceService
 {
 public:
     VSyncFrameAdvanceService();

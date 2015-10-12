@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -52,7 +52,7 @@ RenderPassFilter::RenderPassFilter()
 {
 }
 
-void RenderPassFilter::updateFromPeer(Qt3D::QNode *peer)
+void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderPassFilter *filter = static_cast<QRenderPassFilter *>(peer);
     m_filters.clear();
@@ -64,7 +64,7 @@ void RenderPassFilter::updateFromPeer(Qt3D::QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-QList<Qt3D::QNodeId> RenderPassFilter::filters() const
+QList<Qt3DCore::QNodeId> RenderPassFilter::filters() const
 {
     return m_filters;
 }
@@ -75,17 +75,17 @@ void RenderPassFilter::appendFilter(QAnnotation *criterion)
         m_filters.append(criterion->id());
 }
 
-void RenderPassFilter::removeFilter(const Qt3D::QNodeId &criterionId)
+void RenderPassFilter::removeFilter(const Qt3DCore::QNodeId &criterionId)
 {
     m_filters.removeOne(criterionId);
 }
 
-QList<Qt3D::QNodeId> RenderPassFilter::parameters() const
+QList<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void RenderPassFilter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void RenderPassFilter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 

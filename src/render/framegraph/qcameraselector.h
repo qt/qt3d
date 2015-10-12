@@ -49,21 +49,21 @@ class QCameraSelectorPrivate;
 class QT3DRENDERERSHARED_EXPORT QCameraSelector : public QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit QCameraSelector(Qt3D::QNode *parent = 0);
+    explicit QCameraSelector(Qt3DCore::QNode *parent = 0);
     ~QCameraSelector();
 
-    void setCamera(Qt3D::QEntity *camera);
-    Qt3D::QEntity *camera() const;
+    void setCamera(Qt3DCore::QEntity *camera);
+    Qt3DCore::QEntity *camera() const;
 
 Q_SIGNALS:
     void cameraChanged();
 
 protected:
-    QCameraSelector(QCameraSelectorPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QCameraSelector(QCameraSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QCameraSelector)

@@ -45,12 +45,12 @@ QT_BEGIN_NAMESPACE
 class QTimer;
 QT_END_NAMESPACE
 
-class ExampleScene : public Qt3D::QEntity
+class ExampleScene : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
 public:
-    explicit ExampleScene(Qt3D::QNode *parent = 0);
+    explicit ExampleScene(Qt3DCore::QNode *parent = 0);
     ~ExampleScene();
 
 private Q_SLOTS:

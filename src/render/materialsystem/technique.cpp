@@ -51,7 +51,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -72,7 +72,7 @@ void Technique::cleanup()
 {
 }
 
-void Technique::updateFromPeer(Qt3D::QNode *peer)
+void Technique::updateFromPeer(Qt3DCore::QNode *peer)
 {
     m_parameterPack.clear();
     m_renderPasses.clear();
@@ -94,7 +94,7 @@ void Technique::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void Technique::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     switch (e->type()) {
@@ -141,28 +141,28 @@ void Technique::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QList<Qt3D::QNodeId> Technique::parameters() const
+QList<Qt3DCore::QNodeId> Technique::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-void Technique::appendRenderPass(const Qt3D::QNodeId &renderPassId)
+void Technique::appendRenderPass(const Qt3DCore::QNodeId &renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void Technique::removeRenderPass(const Qt3D::QNodeId &renderPassId)
+void Technique::removeRenderPass(const Qt3DCore::QNodeId &renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<Qt3D::QNodeId> Technique::annotations() const
+QList<Qt3DCore::QNodeId> Technique::annotations() const
 {
     return m_annotationList;
 }
 
-QList<Qt3D::QNodeId> Technique::renderPasses() const
+QList<Qt3DCore::QNodeId> Technique::renderPasses() const
 {
     return m_renderPasses;
 }
@@ -172,13 +172,13 @@ QOpenGLFilter *Technique::openGLFilter() const
     return m_openglFilter;
 }
 
-void Technique::appendAnnotation(const Qt3D::QNodeId &criterionId)
+void Technique::appendAnnotation(const Qt3DCore::QNodeId &criterionId)
 {
     if (!m_annotationList.contains(criterionId))
         m_annotationList.append(criterionId);
 }
 
-void Technique::removeAnnotation(const Qt3D::QNodeId &criterionId)
+void Technique::removeAnnotation(const Qt3DCore::QNodeId &criterionId)
 {
     m_annotationList.removeOne(criterionId);
 }

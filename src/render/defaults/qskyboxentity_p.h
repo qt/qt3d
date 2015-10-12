@@ -53,7 +53,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QTransform;
 class QTranslateTransform;
 }
@@ -71,7 +71,7 @@ class QParameter;
 class QMaterial;
 class QEffect;
 
-class QSkyboxEntityPrivate : public Qt3D::QEntityPrivate
+class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
 {
     QSkyboxEntityPrivate();
 
@@ -92,8 +92,8 @@ class QSkyboxEntityPrivate : public Qt3D::QEntityPrivate
     QRenderPass *m_es2RenderPass;
     QRenderPass *m_gl3RenderPass;
     QCuboidMesh *m_mesh;
-    Qt3D::QTransform *m_transform;
-    Qt3D::QTranslateTransform *m_translate;
+    Qt3DCore::QTransform *m_transform;
+    Qt3DCore::QTranslateTransform *m_translate;
     QParameter *m_textureParameter;
     QTextureImage *m_posXImage;
     QTextureImage *m_posYImage;

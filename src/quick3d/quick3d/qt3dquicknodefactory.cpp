@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 Q_GLOBAL_STATIC(QuickNodeFactory, quick_node_factory)
 
@@ -68,6 +68,6 @@ QNode *QuickNodeFactory::createNode(const char *type)
     return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : Q_NULLPTR;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

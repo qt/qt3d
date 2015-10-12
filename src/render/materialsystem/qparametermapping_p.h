@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QParameterMappingPrivate : public Qt3D::QNodePrivate
+class QParameterMappingPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QParameterMappingPrivate();

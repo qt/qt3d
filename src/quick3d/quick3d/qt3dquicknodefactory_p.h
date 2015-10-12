@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 class QQmlType;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QuickNodeFactory : public QAbstractNodeFactory
 {
@@ -79,7 +79,7 @@ private:
     QHash<QByteArray, Type> m_types;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

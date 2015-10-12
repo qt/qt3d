@@ -54,14 +54,14 @@ class QT3DRENDERERSHARED_EXPORT QStencilTest : public QRenderState
     Q_PROPERTY(Qt3DRender::QStencilTestSeparate *back READ back CONSTANT)
 public:
 
-    explicit QStencilTest(Qt3D::QNode *parent = 0);
+    explicit QStencilTest(Qt3DCore::QNode *parent = 0);
     ~QStencilTest();
 
     QStencilTestSeparate *front() const;
     QStencilTestSeparate *back() const;
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QStencilTest)

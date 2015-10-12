@@ -66,7 +66,7 @@ class ViewportNode : public FrameGraphNode
 public:
     ViewportNode();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     float xMin() const;
     void setXMin(float xMin);
@@ -82,7 +82,7 @@ public:
 
     QColor clearColor() const;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     float m_xMin;

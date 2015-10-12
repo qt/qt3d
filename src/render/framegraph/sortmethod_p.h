@@ -62,13 +62,13 @@ class SortMethod : public FrameGraphNode
 public:
     SortMethod();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    QList<Qt3D::QNodeId> criteria() const;
+    QList<Qt3DCore::QNodeId> criteria() const;
 
 private:
-    QList<Qt3D::QNodeId> m_criteria;
+    QList<Qt3DCore::QNodeId> m_criteria;
 };
 
 } // namespace Render

@@ -66,7 +66,7 @@ namespace Render {
 class Renderer;
 }
 
-class QRenderAspectPrivate : public Qt3D::QAbstractAspectPrivate
+class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
     QRenderAspectPrivate(QRenderAspect::RenderType type);
 

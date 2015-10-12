@@ -44,7 +44,7 @@
 class GBuffer : public Qt3DRender::QRenderTarget
 {
 public:
-    explicit GBuffer(Qt3D::QNode *parent = 0);
+    explicit GBuffer(Qt3DCore::QNode *parent = 0);
 
     enum Attachments {
         Color = 0,

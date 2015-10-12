@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3D::QSphereColliderPrivate
+    \class Qt3DCore::QSphereColliderPrivate
     \internal
 */
 QSphereColliderPrivate::QSphereColliderPrivate()
@@ -53,7 +53,7 @@ QSphereColliderPrivate::QSphereColliderPrivate()
 }
 
 /*!
-    \class Qt3D::QSphereCollider
+    \class Qt3DCore::QSphereCollider
     \inmodule Qt3DCollision
     \since 5.5
     \brief Represents a sphere used for collision detection
@@ -62,7 +62,7 @@ QSphereColliderPrivate::QSphereColliderPrivate()
 /*!
     \qmltype SphereCollider
     \inqmlmodule Qt3D.Collision
-    \instantiates Qt3D::QSphereCollider
+    \instantiates Qt3DCore::QSphereCollider
     \inherits Component3D
     \since 5.5
 */

@@ -53,8 +53,8 @@ const char *plantNames[] = {
 };
 
 
-HousePlant::HousePlant(Qt3D::QNode *parent)
-    : Qt3D::QEntity(parent)
+HousePlant::HousePlant(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent)
     , m_pot(new RenderableEntity(this))
     , m_plant(new RenderableEntity(m_pot))
     , m_cover(new RenderableEntity(m_pot))

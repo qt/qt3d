@@ -69,7 +69,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class Q_AUTOTEST_EXPORT Shader : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Shader : public Qt3DCore::QBackendNode
 {
 public:
     Shader();
@@ -77,7 +77,7 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void updateUniforms(GraphicsContext *ctx, const QUniformPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
@@ -86,7 +86,7 @@ public:
     QVector<QString> uniformBlockNames() const;
     QVector<QByteArray> shaderCode() const;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool isLoaded() const;
     ProgramDNA dna() const;
 

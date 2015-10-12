@@ -36,7 +36,7 @@
 
 #include "forwardrenderer.h"
 
-ForwardRenderer::ForwardRenderer(Qt3D::QNode *parent)
+ForwardRenderer::ForwardRenderer(Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraph(parent)
     , m_viewport(new Qt3DRender::QViewport())
     , m_cameraSelector(new Qt3DRender::QCameraSelector())
@@ -50,7 +50,7 @@ ForwardRenderer::ForwardRenderer(Qt3D::QNode *parent)
     setActiveFrameGraph(m_viewport);
 }
 
-void ForwardRenderer::setCamera(Qt3D::QEntity *camera)
+void ForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
 {
     m_cameraSelector->setCamera(camera);
 }

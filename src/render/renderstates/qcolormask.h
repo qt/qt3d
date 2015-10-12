@@ -54,7 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QColorMask : public QRenderState
     Q_PROPERTY(bool alpha READ isAlpha WRITE setAlpha NOTIFY alphaChanged)
 
 public:
-    explicit QColorMask(Qt3D::QNode *parent = Q_NULLPTR);
+    explicit QColorMask(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QColorMask();
 
     bool isRed() const;
@@ -74,7 +74,7 @@ Q_SIGNALS:
     void alphaChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_FINAL;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 private:
     Q_DECLARE_PRIVATE(QColorMask)

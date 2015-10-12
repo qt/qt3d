@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTMANAGER_P_H
-#define QT3D_QASPECTMANAGER_P_H
+#ifndef QT3DCORE_QASPECTMANAGER_P_H
+#define QT3DCORE_QASPECTMANAGER_P_H
 
 //
 //  W A R N I N G
@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QNode;
 class QEntity;
@@ -83,9 +83,9 @@ public Q_SLOTS:
     void initialize();
     void shutdown();
 
-    void setRootEntity(Qt3D::QEntity *root);
+    void setRootEntity(Qt3DCore::QEntity *root);
     void setData(const QVariantMap &data);
-    void registerAspect(Qt3D::QAbstractAspect *aspect);
+    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     QVariantMap data() const;
 
     void exec();
@@ -109,8 +109,8 @@ private:
     QSemaphore m_waitForEndOfExecLoop;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTMANAGER_P_H
+#endif // QT3DCORE_QASPECTMANAGER_P_H

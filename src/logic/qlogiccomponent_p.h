@@ -56,7 +56,7 @@ namespace Qt3DLogic {
 
 class QLogicComponent;
 
-class QLogicComponentPrivate : public Qt3D::QComponentPrivate
+class QLogicComponentPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QLogicComponentPrivate();

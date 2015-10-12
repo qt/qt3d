@@ -65,7 +65,7 @@ public:
     };
     Q_ENUM(AlphaFunc)
 
-    explicit QAlphaTest(Qt3D::QNode *parent = 0);
+    explicit QAlphaTest(Qt3DCore::QNode *parent = 0);
     ~QAlphaTest();
 
     AlphaFunc func() const;
@@ -79,7 +79,7 @@ Q_SIGNALS:
     void clampChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAlphaTest)

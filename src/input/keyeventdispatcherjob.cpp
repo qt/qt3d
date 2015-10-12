@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-KeyEventDispatcherJob::KeyEventDispatcherJob(const Qt3D::QNodeId &input, const QList<QKeyEvent> &events)
+KeyEventDispatcherJob::KeyEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QKeyEvent> &events)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_keyboardInput(input)

@@ -65,17 +65,17 @@ namespace Render {
 typedef QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > FunctorImageHandlesPair;
 typedef QPair<QTextureDataFunctorPtr, HTextureData> FunctorTextureDataPair;
 
-class TextureDataManager : public Qt3D::QResourceManager<TexImageData,
-                                                         Qt3D::QNodeId,
+class TextureDataManager : public Qt3DCore::QResourceManager<TexImageData,
+                                                         Qt3DCore::QNodeId,
                                                          16,
-                                                         Qt3D::ArrayAllocatingPolicy,
-                                                         Qt3D::ObjectLevelLockingPolicy>
+                                                         Qt3DCore::ArrayAllocatingPolicy,
+                                                         Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     TextureDataManager();
-    void addToPendingTextures(const Qt3D::QNodeId &textureId);
+    void addToPendingTextures(const Qt3DCore::QNodeId &textureId);
 
-    QVector<Qt3D::QNodeId> texturesPending();
+    QVector<Qt3DCore::QNodeId> texturesPending();
 
     HTextureData textureDataFromFunctor(const QTextureDataFunctorPtr &functor) const;
     void addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureDataFunctorPtr &functor);
@@ -87,7 +87,7 @@ public:
     void cleanup();
 
 private:
-    QVector<Qt3D::QNodeId> m_texturesPending;
+    QVector<Qt3DCore::QNodeId> m_texturesPending;
     QVector<FunctorTextureDataPair > m_textureDataFunctors;
     QVector<FunctorImageHandlesPair > m_texturesImagesPerFunctor;
     mutable QMutex m_mutex;

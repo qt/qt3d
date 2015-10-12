@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCIRCULARBUFFER_H
-#define QT3D_QCIRCULARBUFFER_H
+#ifndef QT3DCORE_QCIRCULARBUFFER_H
+#define QT3DCORE_QCIRCULARBUFFER_H
 
 //
 //  W A R N I N G
@@ -66,7 +66,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class CircularBufferData : public QSharedData
 {
@@ -1322,4 +1322,4 @@ Q_DECLARE_MUTABLE_SEQUENTIAL_ITERATOR(CircularBuffer)
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCIRCULARBUFFER_H
+#endif // QT3DCORE_QCIRCULARBUFFER_H

@@ -62,17 +62,17 @@ namespace Render {
 
 class LayerManager;
 
-class Layer : public Qt3D::QBackendNode
+class Layer : public Qt3DCore::QBackendNode
 {
 public:
     Layer();
     ~Layer();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QStringList layers() const;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
 private:

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QAXISALIGNEDBOUNDINGBOX_H
-#define QT3D_QAXISALIGNEDBOUNDINGBOX_H
+#ifndef QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H
+#define QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 
@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 
 class QDebug;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QAxisAlignedBoundingBox
 {
@@ -148,8 +148,8 @@ inline bool intersects(const QAxisAlignedBoundingBox &a,
     return true;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QAXISALIGNEDBOUNDINGBOX_H
+#endif // QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H

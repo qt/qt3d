@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QNODEID_H
-#define QT3D_QNODEID_H
+#ifndef QT3DCORE_QNODEID_H
+#define QT3DCORE_QNODEID_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QNodeId
 {
@@ -100,11 +100,11 @@ inline uint qHash(const QNodeId &id, uint seed = 0) Q_DECL_NOTHROW
 
 } // Qt3D
 
-Q_DECLARE_TYPEINFO(Qt3D::QNodeId, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DCore::QNodeId, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QNodeId)
+Q_DECLARE_METATYPE(Qt3DCore::QNodeId)
 
 
-#endif // QT3D_QNODEID_H
+#endif // QT3DCORE_QNODEID_H

@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QAspectEngine;
 class QEntity;
 }
@@ -55,7 +55,7 @@ class Scene3DCleaner;
 class Scene3DItem : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
+    Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
     Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
     Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
@@ -64,14 +64,14 @@ public:
     ~Scene3DItem();
 
     QStringList aspects() const;
-    Qt3D::QEntity *entity() const;
+    Qt3DCore::QEntity *entity() const;
 
     bool multisample() const;
     void setMultisample(bool enable);
 
 public Q_SLOTS:
     void setAspects(const QStringList &aspects);
-    void setEntity(Qt3D::QEntity *entity);
+    void setEntity(Qt3DCore::QEntity *entity);
 
 Q_SIGNALS:
     void aspectsChanged();
@@ -85,9 +85,9 @@ private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
     QStringList m_aspects;
-    Qt3D::QEntity *m_entity;
+    Qt3DCore::QEntity *m_entity;
 
-    Qt3D::QAspectEngine *m_aspectEngine;
+    Qt3DCore::QAspectEngine *m_aspectEngine;
     QRenderAspect *m_renderAspect;
     Scene3DRenderer *m_renderer;
     Scene3DCleaner *m_rendererCleaner;

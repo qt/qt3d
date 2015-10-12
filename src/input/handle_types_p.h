@@ -60,10 +60,10 @@ class KeyboardInput;
 class MouseController;
 class MouseInput;
 
-typedef Qt3D::QHandle<KeyboardController, 8> HKeyboardController;
-typedef Qt3D::QHandle<KeyboardInput, 16> HKeyboardInput;
-typedef Qt3D::QHandle<MouseController, 8> HMouseController;
-typedef Qt3D::QHandle<MouseInput, 16> HMouseInput;
+typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
+typedef Qt3DCore::QHandle<KeyboardInput, 16> HKeyboardInput;
+typedef Qt3DCore::QHandle<MouseController, 8> HMouseController;
+typedef Qt3DCore::QHandle<MouseInput, 16> HMouseInput;
 
 } // namespace Input
 } // namespace Qt3DInput

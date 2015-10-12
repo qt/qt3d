@@ -39,7 +39,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 class tst_QAspectEngine : public QObject
 {
@@ -85,7 +85,7 @@ void tst_QAspectEngine::shouldNotCrashOnShutdownWhenComponentIsCreatedWithParent
     // GIVEN
     QEntity *root = new QEntity;
     // A component parented to an entity...
-    QComponent *component = new Qt3D::QTransform(root);
+    QComponent *component = new Qt3DCore::QTransform(root);
     // ... created *before* the entity it will be added to.
     QEntity *entity = new QEntity(root);
     entity->addComponent(component);

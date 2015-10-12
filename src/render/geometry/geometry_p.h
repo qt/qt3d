@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Geometry : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Geometry : public Qt3DCore::QBackendNode
 {
 public:
     Geometry();
@@ -65,16 +65,16 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    inline QVector<Qt3D::QNodeId> attributes() const { return m_attributes; }
+    inline QVector<Qt3DCore::QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
     inline int verticesPerPatch() const { return m_verticesPerPatch; }
     void unsetDirty();
 
 private:
-    QVector<Qt3D::QNodeId> m_attributes;
+    QVector<Qt3DCore::QNodeId> m_attributes;
     int m_verticesPerPatch;
     bool m_geometryDirty;
 };

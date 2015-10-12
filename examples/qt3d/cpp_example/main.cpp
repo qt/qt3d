@@ -72,7 +72,7 @@ int main(int ac, char **av)
     QGuiApplication app(ac, av);
 
     Window view;
-    Qt3D::QAspectEngine engine;
+    Qt3DCore::QAspectEngine engine;
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
@@ -83,10 +83,10 @@ int main(int ac, char **av)
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
     rootEntity->setObjectName(QStringLiteral("rootEntity"));
     // Torus
-    Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
+    Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
 
     // Torus shape data
     Qt3DRender::QTorusMesh *torus = new Qt3DRender::QTorusMesh();
@@ -96,9 +96,9 @@ int main(int ac, char **av)
     torusEntity->addComponent(torus);
 
     // TorusMesh Transform
-    Qt3D::QTranslateTransform *torusTranslation = new Qt3D::QTranslateTransform();
-    Qt3D::QRotateTransform *torusRotation = new Qt3D::QRotateTransform();
-    Qt3D::QTransform *torusTransforms = new Qt3D::QTransform();
+    Qt3DCore::QTranslateTransform *torusTranslation = new Qt3DCore::QTranslateTransform();
+    Qt3DCore::QRotateTransform *torusRotation = new Qt3DCore::QRotateTransform();
+    Qt3DCore::QTransform *torusTransforms = new Qt3DCore::QTransform();
 
     torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
     torusRotation->setAxis(QVector3D(1, 0, 0));
@@ -108,11 +108,11 @@ int main(int ac, char **av)
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
-    Qt3D::QEntity *sceneEntity = new Qt3D::QEntity(rootEntity);
+    Qt3DCore::QEntity *sceneEntity = new Qt3DCore::QEntity(rootEntity);
     Qt3DRender::QSceneLoader  *scene = new Qt3DRender::QSceneLoader();
     scene->setObjectName(QStringLiteral("scene"));
-    Qt3D::QTransform *sceneTransform = new Qt3D::QTransform();
-    Qt3D::QTranslateTransform *sceneTranslateTransform = new Qt3D::QTranslateTransform();
+    Qt3DCore::QTransform *sceneTransform = new Qt3DCore::QTransform();
+    Qt3DCore::QTranslateTransform *sceneTranslateTransform = new Qt3DCore::QTranslateTransform();
     sceneTranslateTransform->setDx(2.5);
     sceneTranslateTransform->setDy(0.5);
     sceneTranslateTransform->setDz(-10);
@@ -123,7 +123,7 @@ int main(int ac, char **av)
     sceneEntity->addComponent(scene);
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
 
     cameraEntity->lens()->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);

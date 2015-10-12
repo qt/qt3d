@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -56,14 +56,14 @@ Parameter::Parameter()
 {
 }
 
-void Parameter::updateFromPeer(Qt3D::QNode *mat)
+void Parameter::updateFromPeer(Qt3DCore::QNode *mat)
 {
     QParameter *param = static_cast<QParameter *>(mat);
     m_name = param->name();
     m_value = toBackendValue(param->value());
 }
 
-void Parameter::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 

@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
@@ -55,22 +55,22 @@ QMouseInputPrivate::QMouseInputPrivate()
 }
 
 /*!
- * \class Qt3D::QMouseInput
+ * \class Qt3DCore::QMouseInput
  * \inmodule Qt3DInput
  *
  * \brief Provides a mean of being notified about mouse events when attached to
- * a Qt3D::QMouseController instance.
+ * a Qt3DCore::QMouseController instance.
  *
  * \since 5.5
  *
- * \note Qt3D::QMouseInput components shouldn't be shared, not respecting that
+ * \note Qt3DCore::QMouseInput components shouldn't be shared, not respecting that
  * condition will most likely result in undefined behaviors.
  *
- * \sa Qt3D::QMouseController
+ * \sa Qt3DCore::QMouseController
  */
 
 /*!
- * Constructs a new Qt3D::QMouseInput instance with parent \a parent.
+ * Constructs a new Qt3DCore::QMouseInput instance with parent \a parent.
  */
 QMouseInput::QMouseInput(QNode *parent)
     : QComponent(*new QMouseInputPrivate, parent)
@@ -94,7 +94,7 @@ QMouseInput::~QMouseInput()
 }
 
 /*!
- * Sets the mouse controller of the Qt3D::QMouseInput instance to \a controller.
+ * Sets the mouse controller of the Qt3DCore::QMouseInput instance to \a controller.
  */
 void QMouseInput::setController(QMouseController *controller)
 {
@@ -118,8 +118,8 @@ QMouseController *QMouseInput::controller() const
  * Returns true if the QMouseInput currently contains the mouse.
  *
  * \note: In this context, contains mean that the ray originating from the
- * mouse is intersecting with the Qt3D::QEntity that aggregates the current
- * Qt3D::QMouseInput instance component.
+ * mouse is intersecting with the Qt3DCore::QEntity that aggregates the current
+ * Qt3DCore::QMouseInput instance component.
  */
 bool QMouseInput::containsMouse() const
 {
@@ -141,7 +141,7 @@ void QMouseInput::copy(const QNode *ref)
         d->m_controller = static_cast<QMouseController *>(QNode::clone(refInput->controller()));
 }
 
-void QMouseInput::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
+void QMouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {

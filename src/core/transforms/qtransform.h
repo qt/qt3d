@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTRANSFORM_H
-#define QT3D_QTRANSFORM_H
+#ifndef QT3DCORE_QTRANSFORM_H
+#define QT3DCORE_QTRANSFORM_H
 
 #include <Qt3DCore/qcomponent.h>
 
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractTransform;
 
@@ -80,8 +80,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_update())
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTRANSFORM_H
+#endif // QT3DCORE_QTRANSFORM_H

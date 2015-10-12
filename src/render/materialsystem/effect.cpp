@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -64,7 +64,7 @@ void Effect::cleanup()
 {
 }
 
-void Effect::updateFromPeer(Qt3D::QNode *peer)
+void Effect::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QEffect *effect = static_cast<QEffect *>(peer);
 
@@ -78,7 +78,7 @@ void Effect::updateFromPeer(Qt3D::QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-void Effect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     QVariant propertyValue = propertyChange->value();
@@ -103,18 +103,18 @@ void Effect::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void Effect::appendRenderTechnique(const Qt3D::QNodeId &technique)
+void Effect::appendRenderTechnique(const Qt3DCore::QNodeId &technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);
 }
 
-QList<Qt3D::QNodeId> Effect::techniques() const
+QList<Qt3DCore::QNodeId> Effect::techniques() const
 {
     return m_techniques;
 }
 
-QList<Qt3D::QNodeId> Effect::parameters() const
+QList<Qt3DCore::QNodeId> Effect::parameters() const
 {
     return m_parameterPack.parameters();
 }

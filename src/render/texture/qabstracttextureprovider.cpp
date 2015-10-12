@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -237,7 +237,7 @@ int QAbstractTextureProvider::maximumLayers() const
     By default the renderer based on the attributes of texture providers is
     able to compare them and detect duplicates (same size, format and image
     sources) and smartly avoid unnecessary computations. In some cases however
-    (texture providers used as Qt3D::RenderTarget attachments) you don't want
+    (texture providers used as Qt3DCore::RenderTarget attachments) you don't want
     the renderer to perform these comparison, in which case you can set is
     unique to true.
  */
@@ -318,9 +318,9 @@ QAbstractTextureProvider::Target QAbstractTextureProvider::target() const
 }
 
 /*!
-    Adds a new Qt3D::QAbstractTextureImage \a textureImage to the texture provider.
+    Adds a new Qt3DCore::QAbstractTextureImage \a textureImage to the texture provider.
 
-    \note Qt3D::QAbstractTextureImage should never be shared between multiple
+    \note Qt3DCore::QAbstractTextureImage should never be shared between multiple
     Qt3DRender::QAbstractTextureProvider instances.
  */
 void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureImage)
@@ -349,7 +349,7 @@ void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureIma
 }
 
 /*!
-    Removes a Qt3D::QAbstractTextureImage \a textureImage from the texture provider.
+    Removes a Qt3DCore::QAbstractTextureImage \a textureImage from the texture provider.
  */
 void QAbstractTextureProvider::removeTextureImage(QAbstractTextureImage *textureImage)
 {

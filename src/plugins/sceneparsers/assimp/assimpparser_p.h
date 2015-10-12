@@ -64,7 +64,7 @@ QT_BEGIN_NAMESPACE
 
 class QFile;
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QCamera;
 }
 
@@ -91,14 +91,14 @@ public:
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
     bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
-    Qt3D::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
-    Qt3D::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
+    Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
+    Qt3DCore::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
 
 private:
     static bool isAssimpPath(const QString &path);
     static QStringList assimpSupportedFormats();
 
-    Qt3D::QEntity *node(aiNode *node);
+    Qt3DCore::QEntity *node(aiNode *node);
 
     void readSceneFile(const QString &file);
 
@@ -134,7 +134,7 @@ private:
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTextureProvider *> m_embeddedTextures;
         QMap<QString, QAbstractTextureProvider *> m_materialTextures;
-        QMap<aiNode*, Qt3D::QEntity*> m_cameras;
+        QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
 //    QMap<aiNode*, Light*> m_lights;
     };

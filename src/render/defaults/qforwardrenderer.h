@@ -52,18 +52,18 @@ class QT3DRENDERERSHARED_EXPORT QForwardRenderer : public QTechniqueFilter
     Q_OBJECT
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
-    Q_PROPERTY(Qt3D::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 public:
-    explicit QForwardRenderer(Qt3D::QNode *parent = 0);
+    explicit QForwardRenderer(Qt3DCore::QNode *parent = 0);
     ~QForwardRenderer();
 
     void setViewportRect(const QRectF &viewportRect);
     void setClearColor(const QColor &clearColor);
-    void setCamera(Qt3D::QEntity *camera);
+    void setCamera(Qt3DCore::QEntity *camera);
 
     QRectF viewportRect() const;
     QColor clearColor() const;
-    Qt3D::QEntity *camera() const;
+    Qt3DCore::QEntity *camera() const;
 
 Q_SIGNALS:
     void viewportRectChanged();

@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QLayerPrivate : public Qt3D::QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QLayerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QLayerPrivate();

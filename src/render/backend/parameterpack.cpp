@@ -55,19 +55,19 @@ void ParameterPack::clear()
     m_peers.clear();
 }
 
-void ParameterPack::appendParameter(const Qt3D::QNodeId &parameterId)
+void ParameterPack::appendParameter(const Qt3DCore::QNodeId &parameterId)
 {
     if (!m_peers.contains(parameterId)) {
         m_peers.append(parameterId);
     }
 }
 
-void ParameterPack::removeParameter(const Qt3D::QNodeId &parameterId)
+void ParameterPack::removeParameter(const Qt3DCore::QNodeId &parameterId)
 {
     m_peers.removeOne(parameterId);
 }
 
-QList<Qt3D::QNodeId> ParameterPack::parameters() const
+QList<Qt3DCore::QNodeId> ParameterPack::parameters() const
 {
     return m_peers;
 }

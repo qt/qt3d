@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -61,7 +61,7 @@ QGeometry::~QGeometry()
     QNode::cleanup();
 }
 
-void QGeometry::addAttribute(Qt3D::QAbstractAttribute *attribute)
+void QGeometry::addAttribute(Qt3DCore::QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
@@ -83,7 +83,7 @@ void QGeometry::addAttribute(Qt3D::QAbstractAttribute *attribute)
     }
 }
 
-void QGeometry::removeAttribute(Qt3D::QAbstractAttribute *attribute)
+void QGeometry::removeAttribute(Qt3DCore::QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {

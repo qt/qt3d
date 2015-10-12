@@ -57,17 +57,17 @@ QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString
 {
     // The QSceneLoader instance is a component of an entity. The loaded scene
     // tree is added under this entity.
-    QVector<Qt3D::QEntity *> entities = loader->entities();
+    QVector<Qt3DCore::QEntity *> entities = loader->entities();
 
     if (entities.isEmpty())
         return 0;
 
     // Technically there could be multiple entities referencing the scene loader
     // but sharing is discouraged, and in our case there will be one anyhow.
-    Qt3D::QEntity *root = entities[0];
+    Qt3DCore::QEntity *root = entities[0];
 
     // The scene structure and names always depend on the asset.
-    return root->findChild<Qt3D::QEntity *>(name);
+    return root->findChild<Qt3DCore::QEntity *>(name);
 }
 
 void SceneHelper::addListEntry(const QVariant &list, QObject *entry)
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Window view;
-    Qt3D::Quick::QQmlAspectEngine engine;
+    Qt3DCore::Quick::QQmlAspectEngine engine;
 
     engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
     engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());

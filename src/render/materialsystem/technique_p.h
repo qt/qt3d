@@ -69,34 +69,34 @@ namespace Render {
 
 class TechniqueManager;
 
-class Technique : public Qt3D::QBackendNode
+class Technique : public Qt3DCore::QBackendNode
 {
 public:
     Technique();
     ~Technique();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QList<Qt3D::QNodeId> parameters() const;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
-    void appendRenderPass(const Qt3D::QNodeId &renderPassId);
-    void removeRenderPass(const Qt3D::QNodeId &renderPassId);
+    void appendRenderPass(const Qt3DCore::QNodeId &renderPassId);
+    void removeRenderPass(const Qt3DCore::QNodeId &renderPassId);
 
-    void appendAnnotation(const Qt3D::QNodeId &criterionId);
-    void removeAnnotation(const Qt3D::QNodeId &criterionId);
+    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
 
-    QList<Qt3D::QNodeId> annotations() const;
-    QList<Qt3D::QNodeId> renderPasses() const;
+    QList<Qt3DCore::QNodeId> annotations() const;
+    QList<Qt3DCore::QNodeId> renderPasses() const;
     QOpenGLFilter *openGLFilter() const;
 
 private:
     QOpenGLFilter *m_openglFilter;
 
     ParameterPack m_parameterPack;
-    QList<Qt3D::QNodeId> m_annotationList;
-    QList<Qt3D::QNodeId> m_renderPasses;
+    QList<Qt3DCore::QNodeId> m_annotationList;
+    QList<Qt3DCore::QNodeId> m_renderPasses;
 };
 
 } // namespace Render

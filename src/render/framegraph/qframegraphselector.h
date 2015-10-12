@@ -59,14 +59,14 @@ class QT3DRENDERERSHARED_EXPORT QFrameGraphSelector : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QFrameGraphSelector(Qt3D::QNode *parent = 0);
+    explicit QFrameGraphSelector(Qt3DCore::QNode *parent = 0);
     ~QFrameGraphSelector();
 
     QFrameGraphSelectorFunctorPtr selectionFunctor() const;
     void setSelectionFunctor(QFrameGraphSelectorFunctorPtr functor);
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QFrameGraphSelector)

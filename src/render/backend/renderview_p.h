@@ -104,7 +104,7 @@ public:
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline Renderer *renderer() const { return m_renderer; }
 
-    inline void setAllocator(Qt3D::QFrameAllocator *allocator)
+    inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
     {
         m_allocator = allocator;
         m_data = m_allocator->allocate<InnerData>();
@@ -116,7 +116,7 @@ public:
         // help cache performance during iteration
         m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
     }
-    inline Qt3D::QFrameAllocator *allocator() const { return m_allocator; }
+    inline Qt3DCore::QFrameAllocator *allocator() const { return m_allocator; }
 
     inline void setRenderCamera(CameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
     inline CameraLens *renderCamera() const { return m_data->m_renderCamera; }
@@ -196,7 +196,7 @@ public:
     void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const { return m_renderTarget; }
 
-    void addSortCriteria(const QList<Qt3D::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
+    void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
@@ -214,7 +214,7 @@ public:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
-        QList<Qt3D::QNodeId> m_sortingCriteria;
+        QList<Qt3DCore::QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
     };
@@ -224,7 +224,7 @@ private:
 
     Renderer *m_renderer;
     QSize m_surfaceSize;
-    Qt3D::QFrameAllocator *m_allocator;
+    Qt3DCore::QFrameAllocator *m_allocator;
 
     InnerData *m_data;
 

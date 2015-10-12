@@ -68,7 +68,7 @@ namespace Render
 class RenderStateSet;
 }
 
-class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public Qt3D::QNodePrivate
+class QT3DRENDERERSHARED_EXPORT QRenderPassPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QRenderPassPrivate();

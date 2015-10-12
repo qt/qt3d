@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 namespace Input {
@@ -62,7 +62,7 @@ MouseInput::~MouseInput()
 {
 }
 
-void MouseInput::updateFromPeer(Qt3D::QNode *peer)
+void MouseInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QMouseInput *input = static_cast<QMouseInput *>(peer);
     if (input->controller() != Q_NULLPTR)
@@ -70,7 +70,7 @@ void MouseInput::updateFromPeer(Qt3D::QNode *peer)
     m_enabled = input->isEnabled();
 }
 
-Qt3D::QNodeId MouseInput::mouseController() const
+Qt3DCore::QNodeId MouseInput::mouseController() const
 {
     return m_mouseController;
 }
@@ -98,7 +98,7 @@ void MouseInput::wheelEvent(const Q3DWheelEventPtr &event)
     notifyObservers(e);
 }
 
-void MouseInput::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void MouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -111,7 +111,7 @@ void MouseInput::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-void MouseInput::setController(const Qt3D::QNodeId &controller)
+void MouseInput::setController(const Qt3DCore::QNodeId &controller)
 {
     if (!m_mouseController.isNull()) {
         MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
@@ -131,7 +131,7 @@ MouseInputFunctor::MouseInputFunctor(InputHandler *handler)
 {
 }
 
-Qt3D::QBackendNode *MouseInputFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *MouseInputFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
     MouseInput *input = m_handler->mouseInputManager()->getOrCreateResource(frontend->id());
     input->setFactory(factory);
@@ -140,12 +140,12 @@ Qt3D::QBackendNode *MouseInputFunctor::create(Qt3D::QNode *frontend, const Qt3D:
     return input;
 }
 
-Qt3D::QBackendNode *MouseInputFunctor::get(const Qt3D::QNodeId &id) const
+Qt3DCore::QBackendNode *MouseInputFunctor::get(const Qt3DCore::QNodeId &id) const
 {
     return m_handler->mouseInputManager()->lookupResource(id);
 }
 
-void MouseInputFunctor::destroy(const Qt3D::QNodeId &id) const
+void MouseInputFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
     m_handler->mouseInputManager()->releaseResource(id);
 }

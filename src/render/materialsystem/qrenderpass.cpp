@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -221,11 +221,11 @@ QList<QParameterMapping *> QRenderPass::bindings() const
 }
 
 /*!
- * Adds a Qt3D::QRenderState \a state to the rendering pass. That implies that
+ * Adds a Qt3DCore::QRenderState \a state to the rendering pass. That implies that
  * when the pass is executed at render time, the globally set render state will
  * be modifed by the states defined locally by the Qt3DRender::QRenderPass.
  *
- * \note not defining any Qt3D::QRenderState in a pass will result in the pass using
+ * \note not defining any Qt3DCore::QRenderState in a pass will result in the pass using
  * the globally set render state for a given FrameGraph branch execution path.
  */
 void QRenderPass::addRenderState(QRenderState *state)
@@ -263,7 +263,7 @@ void QRenderPass::removeRenderState(QRenderState *state)
 }
 
 /*!
- * Returns the list of Qt3D::QRenderState state objects making up the render
+ * Returns the list of Qt3DCore::QRenderState state objects making up the render
  * state of the Qt3DRender::QRenderPass.
  */
 QList<QRenderState *> QRenderPass::renderStates() const

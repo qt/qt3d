@@ -61,17 +61,17 @@ namespace Render {
 
 class CriterionManager;
 
-class Annotation : public Qt3D::QBackendNode
+class Annotation : public Qt3DCore::QBackendNode
 {
 public:
     Annotation();
     ~Annotation();
     void cleanup();
-    void updateFromPeer(Qt3D::QNode *criterion) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *criterion) Q_DECL_OVERRIDE;
 
     QVariant criterionValue() const;
     QString criterionName() const;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     bool operator ==(const Annotation &other);
     bool operator !=(const Annotation &other);
 

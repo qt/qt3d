@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QBoundingSphere::QBoundingSphere()
 {
@@ -48,6 +48,6 @@ QBoundingSphere::~QBoundingSphere()
 {
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

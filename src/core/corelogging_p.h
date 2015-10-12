@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CORELOGGING_P_H
-#define QT3D_CORELOGGING_P_H
+#ifndef QT3DCORE_CORELOGGING_P_H
+#define QT3DCORE_CORELOGGING_P_H
 
 //
 //  W A R N I N G
@@ -52,7 +52,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 Q_DECLARE_LOGGING_CATEGORY(Resources)
 Q_DECLARE_LOGGING_CATEGORY(Nodes)
@@ -64,4 +64,4 @@ Q_DECLARE_LOGGING_CATEGORY(ChangeArbiter)
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CORELOGGING_P_H
+#endif // QT3DCORE_CORELOGGING_P_H

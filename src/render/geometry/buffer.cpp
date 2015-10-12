@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -81,7 +81,7 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
 }
 
-void Buffer::updateFromPeer(Qt3D::QNode *peer)
+void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QBuffer *buffer = static_cast<QBuffer *>(peer);
     if (buffer != Q_NULLPTR) {
@@ -96,7 +96,7 @@ void Buffer::updateFromPeer(Qt3D::QNode *peer)
     }
 }
 
-void Buffer::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -131,7 +131,7 @@ BufferFunctor::BufferFunctor(BufferManager *manager)
 {
 }
 
-Qt3D::QBackendNode *BufferFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
     Buffer *buffer = m_manager->getOrCreateResource(frontend->id());
     buffer->setFactory(factory);
@@ -140,12 +140,12 @@ Qt3D::QBackendNode *BufferFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBa
     return buffer;
 }
 
-Qt3D::QBackendNode *BufferFunctor::get(const Qt3D::QNodeId &id) const
+Qt3DCore::QBackendNode *BufferFunctor::get(const Qt3DCore::QNodeId &id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void BufferFunctor::destroy(const Qt3D::QNodeId &id) const
+void BufferFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
     return m_manager->releaseResource(id);
 }

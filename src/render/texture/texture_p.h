@@ -71,14 +71,14 @@ class TextureDataManager;
 
 typedef uint TextureDNA;
 
-class Texture : public Qt3D::QBackendNode
+class Texture : public Qt3DCore::QBackendNode
 {
 public:
     Texture();
     ~Texture();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QOpenGLTexture* getOrCreateGLTexture() ;
 
@@ -86,7 +86,7 @@ public:
 
     bool isTextureReset() const;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     TextureDNA dna() const;
 
     void setTextureManager(TextureManager *manager);
@@ -145,16 +145,16 @@ private:
     void updateDNA();
 };
 
-class TextureFunctor : public Qt3D::QBackendNodeFunctor
+class TextureFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit TextureFunctor(TextureManager *textureManager,
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
 
 private:
     TextureManager *m_textureManager;

@@ -51,11 +51,11 @@ private slots:
     void checkEntityCloning();
 };
 
-class MyQNode : public Qt3D::QNode
+class MyQNode : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit MyQNode(Qt3D::QNode *parent = 0) : QNode(parent)
+    explicit MyQNode(Qt3DCore::QNode *parent = 0) : QNode(parent)
     {}
 
     ~MyQNode()
@@ -75,19 +75,19 @@ public:
     }
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE
     {
-        Qt3D::QNode::copy(ref);
+        Qt3DCore::QNode::copy(ref);
         const MyQNode *refNode = qobject_cast<const MyQNode *>(ref);
         setCustomProperty(refNode->customProperty());
     }
 };
 
-class MyQComponent : public Qt3D::QComponent
+class MyQComponent : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit MyQComponent(Qt3D::QNode *parent = 0) : QComponent(parent)
+    explicit MyQComponent(Qt3DCore::QNode *parent = 0) : QComponent(parent)
     {}
 
     ~MyQComponent()
@@ -101,11 +101,11 @@ public:
 void tst_Cloning::checkEntityCloning()
 {
     // GIVEN
-    Qt3D::QScene *scene = new Qt3D::QScene();
+    Qt3DCore::QScene *scene = new Qt3DCore::QScene();
     MyQNode *root = new MyQNode();
-    Qt3D::QNodePrivate::get(root)->setScene(scene);
+    Qt3DCore::QNodePrivate::get(root)->setScene(scene);
 
-    Qt3D::QEntity *entity = new Qt3D::QEntity(root);
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(root);
 
     // WHEN
     MyQComponent *comp1 = new MyQComponent();
@@ -133,16 +133,16 @@ void tst_Cloning::checkEntityCloning()
     QCOMPARE(cloneRoot->id(), root->id());
     QVERIFY(cloneRoot->customProperty() == root->customProperty());
 
-    Qt3D::QEntity *cloneEntity = qobject_cast<Qt3D::QEntity *>(cloneRoot->children().first());
+    Qt3DCore::QEntity *cloneEntity = qobject_cast<Qt3DCore::QEntity *>(cloneRoot->children().first());
     QVERIFY(cloneEntity != Q_NULLPTR);
     QCOMPARE(cloneEntity->id(), entity->id());
     QCOMPARE(cloneEntity->children().count(), 4);
     QCOMPARE(cloneEntity->components().count(), 3);
 
-    QList<Qt3D::QNodeId> ids = QList<Qt3D::QNodeId>() << comp1->id() << comp2->id() << comp3->id() << childNode->id();
+    QList<Qt3DCore::QNodeId> ids = QList<Qt3DCore::QNodeId>() << comp1->id() << comp2->id() << comp3->id() << childNode->id();
 
     Q_FOREACH (QObject *c, cloneEntity->children()) {
-        Qt3D::QNode *n = qobject_cast<Qt3D::QNode *>(c);
+        Qt3DCore::QNode *n = qobject_cast<Qt3DCore::QNode *>(c);
         QVERIFY(ids.contains(n->id()));
         ids.removeAll(n->id());
     }

@@ -280,7 +280,7 @@ void QOpenGLFilter::setVendor(const QString &vendor)
     }
 }
 
-/*! \fn bool Qt3D::operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+/*! \fn bool Qt3DCore::operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
   \relates Qt3DRender::QOpenGLFilter
   Returns true if \a reference and \a sample are equivalent.
  */
@@ -302,7 +302,7 @@ bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
     return false;
 }
 
-/*! \fn bool Qt3D::operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+/*! \fn bool Qt3DCore::operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
   \relates Qt3DRender::QOpenGLFilter
   Returns true if \a reference and \a sample are different.
  */

@@ -59,17 +59,17 @@ namespace Render {
 
 class SortCriterionManager;
 
-class SortCriterion : public Qt3D::QBackendNode
+class SortCriterion : public Qt3DCore::QBackendNode
 {
 public:
     SortCriterion();
 
     void cleanup();
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QSortCriterion::SortType sortType() const;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QSortCriterion::SortType m_type;

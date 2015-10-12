@@ -61,7 +61,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -320,7 +320,7 @@ bool AssimpParser::isAssimpPath(const QString &path)
  */
 void AssimpParser::setSource(const QUrl &source)
 {
-    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
@@ -336,7 +336,7 @@ void AssimpParser::setSource(const QUrl &source)
  */
 bool AssimpParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = Qt3D::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
 }
 
@@ -347,7 +347,7 @@ bool AssimpParser::isExtensionSupported(const QUrl &source) const
  *
  * Returns \c Q_NULLPTR if \a id was specified but no node matching it was found.
  */
-Qt3D::QEntity *AssimpParser::scene(const QString &id)
+Qt3DCore::QEntity *AssimpParser::scene(const QString &id)
 {
     // m_aiScene shouldn't be null.
     // If it is either, the file failed to be imported or
@@ -372,7 +372,7 @@ Qt3D::QEntity *AssimpParser::scene(const QString &id)
  *  Returns a Node from the scene identified by \a id.
  *  Returns \c Q_NULLPTR if the node was not found.
  */
-Qt3D::QEntity *AssimpParser::node(const QString &id)
+Qt3DCore::QEntity *AssimpParser::node(const QString &id)
 {
     if (m_scene == Q_NULLPTR || m_scene->m_aiScene == Q_NULLPTR)
         return Q_NULLPTR;
@@ -384,7 +384,7 @@ Qt3D::QEntity *AssimpParser::node(const QString &id)
 /*!
  * Returns a Node from an Assimp aiNode \a node.
  */
-Qt3D::QEntity *AssimpParser::node(aiNode *node)
+Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
 {
     if (node == Q_NULLPTR)
         return Q_NULLPTR;
@@ -415,7 +415,7 @@ Qt3D::QEntity *AssimpParser::node(aiNode *node)
 
     // Add Transformations
     const QMatrix4x4 qTransformMatrix = aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    Qt3D::QTransform *transform = new Qt3D::QTransform(new QMatrixTransform(qTransformMatrix));
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(new QMatrixTransform(qTransformMatrix));
     entityNode->addComponent(transform);
 
     // Add Camera
@@ -724,7 +724,7 @@ void AssimpParser::loadCamera(uint cameraIndex)
                                    assimpCamera->mClipPlaneFar);
     camera->addComponent(lens);
 
-    Qt3D::QTransform *transform = new Qt3D::QTransform();
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
     QLookAtTransform *lookAt = new QLookAtTransform();
     lookAt->setPosition(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z));
     lookAt->setViewCenter(QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z));

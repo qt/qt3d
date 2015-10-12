@@ -52,13 +52,13 @@ class QMaterialPrivate;
 class QEffect;
 typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
-class QT3DRENDERERSHARED_EXPORT QMaterial : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)
 
 public:
-    explicit QMaterial(Qt3D::QNode *parent = 0);
+    explicit QMaterial(Qt3DCore::QNode *parent = 0);
     ~QMaterial();
 
     void setEffect(QEffect *effect);
@@ -76,8 +76,8 @@ Q_SIGNALS:
     void effectChanged();
 
 protected:
-    QMaterial(QMaterialPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMaterial)

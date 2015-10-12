@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOB_H
-#define QT3D_QASPECTJOB_H
+#ifndef QT3DCORE_QASPECTJOB_H
+#define QT3DCORE_QASPECTJOB_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QSharedPointer>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAspectJobPrivate;
 
@@ -68,8 +68,8 @@ private:
 
 typedef QSharedPointer<QAspectJob> QAspectJobPtr;
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOB_H
+#endif // QT3DCORE_QASPECTJOB_H

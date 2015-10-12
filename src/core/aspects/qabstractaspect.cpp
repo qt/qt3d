@@ -50,10 +50,10 @@ static QByteArray className(const QMetaObject &obj)
     return QByteArray::fromRawData(obj.className(), int(strlen(obj.className())));
 }
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractAspectPrivate
+    \class Qt3DCore::QAbstractAspectPrivate
     \internal
 */
 QAbstractAspectPrivate::QAbstractAspectPrivate()
@@ -71,7 +71,7 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 }
 
 /*!
-    \class Qt3D::QAbstractAspect
+    \class Qt3DCore::QAbstractAspect
     \inmodule Qt3DCore
     \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
@@ -203,6 +203,6 @@ void QAbstractAspect::onShutdown()
 {
 }
 
-} // of namespace Qt3D
+} // of namespace Qt3DCore
 
 QT_END_NAMESPACE

@@ -54,20 +54,20 @@ namespace Quick {
 class Quick3DShaderDataArrayPrivate;
 class Quick3DShaderData;
 
-class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderDataArray : public Qt3D::QNode
+class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderDataArray : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QShaderData> values READ valuesList)
     Q_CLASSINFO("DefaultProperty", "values")
 
 public:
-    explicit Quick3DShaderDataArray(Qt3D::QNode *parent = 0);
+    explicit Quick3DShaderDataArray(Qt3DCore::QNode *parent = 0);
     ~Quick3DShaderDataArray();
     QQmlListProperty<QShaderData> valuesList();
     QList<QShaderData *> values() const;
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     static void appendValue(QQmlListProperty<QShaderData> *list, QShaderData *bar);

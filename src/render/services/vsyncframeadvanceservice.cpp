@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public Qt3D::QAbstractFrameAdvanceServicePrivate
+class VSyncFrameAdvanceServicePrivate Q_DECL_FINAL : public Qt3DCore::QAbstractFrameAdvanceServicePrivate
 {
 public:
     VSyncFrameAdvanceServicePrivate()

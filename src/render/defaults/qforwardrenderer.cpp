@@ -131,7 +131,7 @@ void QForwardRenderer::setClearColor(const QColor &clearColor)
 
     \note A camera is a QEntity having a QCameraLens as one of its components.
 */
-void QForwardRenderer::setCamera(Qt3D::QEntity *camera)
+void QForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QForwardRenderer);
     d->m_cameraSelector->setCamera(camera);
@@ -166,7 +166,7 @@ QColor QForwardRenderer::clearColor() const
 
     \note A camera is a QEntity that has a QCameraLens as one of its components.
 */
-Qt3D::QEntity *QForwardRenderer::camera() const
+Qt3DCore::QEntity *QForwardRenderer::camera() const
 {
     Q_D(const QForwardRenderer);
     return d->m_cameraSelector->camera();

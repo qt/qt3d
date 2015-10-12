@@ -59,7 +59,7 @@ public:
     };
     Q_ENUM(FaceDir)
 
-    explicit QFrontFace(Qt3D::QNode *parent = 0);
+    explicit QFrontFace(Qt3DCore::QNode *parent = 0);
     ~QFrontFace();
 
     FaceDir direction() const;
@@ -69,7 +69,7 @@ Q_SIGNALS:
     void directionChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QFrontFace)

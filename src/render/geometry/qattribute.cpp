@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    class Qt3D::AttributePrivate
+    class Qt3DCore::AttributePrivate
     \internal
 */
 QAttributePrivate::QAttributePrivate()

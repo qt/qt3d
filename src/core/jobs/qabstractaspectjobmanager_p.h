@@ -54,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractAspectJobManager : public QObject
 {
@@ -71,7 +71,7 @@ public:
     virtual void waitForPerThreadFunction(JobFunction func, void *arg) = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

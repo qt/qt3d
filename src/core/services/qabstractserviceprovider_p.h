@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTSERVICEPROVIDER_P_H
-#define QT3D_QABSTRACTSERVICEPROVIDER_P_H
+#ifndef QT3DCORE_QABSTRACTSERVICEPROVIDER_P_H
+#define QT3DCORE_QABSTRACTSERVICEPROVIDER_P_H
 
 //
 //  W A R N I N G
@@ -53,7 +53,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractServiceProviderPrivate
 {
@@ -70,8 +70,8 @@ public:
     QString m_description;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTSERVICEPROVIDER_P_H
+#endif // QT3DCORE_QABSTRACTSERVICEPROVIDER_P_H

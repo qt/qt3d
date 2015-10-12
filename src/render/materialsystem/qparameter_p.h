@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 class QParameter;
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public Qt3D::QNodePrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QParameterPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QParameterPrivate();

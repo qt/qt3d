@@ -45,9 +45,9 @@
 class ForwardRenderer : public Qt3DRender::QFrameGraph
 {
 public:
-    ForwardRenderer(Qt3D::QNode *parent);
+    ForwardRenderer(Qt3DCore::QNode *parent);
 
-    void setCamera(Qt3D::QEntity *camera);
+    void setCamera(Qt3DCore::QEntity *camera);
 
 private:
     Qt3DRender::QViewport *m_viewport;

@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
     \class QRay3D
@@ -354,6 +354,6 @@ QDataStream &operator>>(QDataStream &stream, QRay3D &ray)
 
 #endif // QT_NO_DATASTREAM
 
-}  // namespace Qt3D
+}  // namespace Qt3DCore
 
 QT_END_NAMESPACE

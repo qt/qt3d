@@ -51,7 +51,7 @@ namespace Qt3DRender
 
 
 /*!
-    \class Qt3D::QAbstractLightPrivate
+    \class Qt3DCore::QAbstractLightPrivate
     \internal
 */
 QAbstractLightPrivate::QAbstractLightPrivate()
@@ -71,14 +71,14 @@ void QAbstractLight::copy(const QNode *ref)
 }
 
 /*!
-    \class Qt3D::QAbstractLight
+    \class Qt3DCore::QAbstractLight
     \inmodule Qt3DRender
 */
 
 /*!
  * Constructs a new QAbstractLight with the given \a parent.
  */
-QAbstractLight::QAbstractLight(Qt3D::QNode *parent) :
+QAbstractLight::QAbstractLight(Qt3DCore::QNode *parent) :
     QShaderData(*new QAbstractLightPrivate, parent)
 {
 }
@@ -91,7 +91,7 @@ QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
 
 
 /*!
- *  \property Qt3D::QAbstractLight::color
+ *  \property Qt3DCore::QAbstractLight::color
  *
  * Holds the current QAbstractLight color.
  */
@@ -111,7 +111,7 @@ void QAbstractLight::setColor(const QColor &color)
 }
 
 /*!
-    \property Qt3D::QAbstractLight::intensity
+    \property Qt3DCore::QAbstractLight::intensity
 
     Holds the current QAbstractLight intensity.
 */
@@ -131,7 +131,7 @@ void QAbstractLight::setIntensity(float intensity)
 }
 
 /*!
-    \property Qt3D::QAbstractLight::position
+    \property Qt3DCore::QAbstractLight::position
 
     Holds the current QAbstractLight position.
 */

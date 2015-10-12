@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 
 class QFile;
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QCamera;
 class QCameraLens;
 class QEntity;
@@ -95,8 +95,8 @@ public:
     // SceneParserInterface interface
     void setSource(const QUrl &source) Q_DECL_FINAL;
     bool isExtensionSupported(const QUrl &source) const Q_DECL_FINAL;
-    Qt3D::QEntity *node(const QString &id) Q_DECL_FINAL;
-    Qt3D::QEntity *scene(const QString &id = QString()) Q_DECL_FINAL;
+    Qt3DCore::QEntity *node(const QString &id) Q_DECL_FINAL;
+    Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_FINAL;
 
 private:
     class BufferData
@@ -142,9 +142,9 @@ private:
     static QString standardAttributeNameFromSemantic(const QString &semantic);
     static QParameter *parameterFromTechnique(QTechnique *technique, const QString &parameterName);
 
-    Qt3D::QEntity *defaultScene();
+    Qt3DCore::QEntity *defaultScene();
     QMaterial *material(const QString &id);
-    Qt3D::QCameraLens *camera(const QString &id) const;
+    Qt3DCore::QCameraLens *camera(const QString &id) const;
 
     void parse();
     void cleanup();
@@ -165,7 +165,7 @@ private:
     QFile* resolveLocalData(QString path) const;
 
     QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
-    static Qt3D::QAbstractAttribute::DataType accessorTypeFromJSON(int componentType);
+    static Qt3DCore::QAbstractAttribute::DataType accessorTypeFromJSON(int componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     static QRenderState *buildStateEnable(int state);

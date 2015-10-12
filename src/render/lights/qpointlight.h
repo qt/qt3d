@@ -50,11 +50,11 @@ class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
     Q_OBJECT
 
 public:
-    explicit QPointLight(Qt3D::QNode *parent = 0);
+    explicit QPointLight(Qt3DCore::QNode *parent = 0);
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)
-    QPointLight(QPointLightPrivate &dd, Qt3D::QNode *parent);
+    QPointLight(QPointLightPrivate &dd, Qt3DCore::QNode *parent);
     QT3D_CLONEABLE(QPointLight)
 };
 

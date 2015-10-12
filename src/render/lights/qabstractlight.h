@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QAbstractLight : public QShaderData
     Q_PROPERTY(TransformType positionTransformed READ positionTransformed CONSTANT)
 
 public :
-    explicit QAbstractLight(Qt3D::QNode *parent = 0);
+    explicit QAbstractLight(Qt3DCore::QNode *parent = 0);
 
     QColor color() const;
     void setColor(const QColor &color);
@@ -72,8 +72,8 @@ public :
     TransformType positionTransformed() const;
 
 protected :
-    QAbstractLight(QAbstractLightPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void colorChanged();

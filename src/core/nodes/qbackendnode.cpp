@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QBackendNodePrivate
+    \class Qt3DCore::QBackendNodePrivate
     \internal
 */
 QBackendNodePrivate::QBackendNodePrivate(QBackendNode::Mode mode)

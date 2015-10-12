@@ -57,7 +57,7 @@ namespace Qt3DInput {
 class QMouseInput;
 class QMouseController;
 
-class QMouseInputPrivate : public Qt3D::QComponentPrivate
+class QMouseInputPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMouseInputPrivate();

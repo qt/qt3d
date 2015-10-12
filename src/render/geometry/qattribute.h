@@ -48,12 +48,12 @@ namespace Qt3DRender {
 class QAttributePrivate;
 class QBuffer;
 
-class QT3DRENDERERSHARED_EXPORT QAttribute : public Qt3D::QAbstractAttribute
+class QT3DRENDERERSHARED_EXPORT QAttribute : public Qt3DCore::QAbstractAttribute
 {
     Q_OBJECT
 
 public:
-    explicit QAttribute(Qt3D::QNode *parent = 0);
+    explicit QAttribute(Qt3DCore::QNode *parent = 0);
     QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     ~QAttribute();
@@ -73,7 +73,7 @@ public:
     static QString defaultTangentAttributeName();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QAttribute)

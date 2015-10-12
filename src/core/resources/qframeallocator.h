@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QFRAMEALLOCATOR_H
-#define QT3D_QFRAMEALLOCATOR_H
+#ifndef QT3DCORE_QFRAMEALLOCATOR_H
+#define QT3DCORE_QFRAMEALLOCATOR_H
 
 
 #ifdef QFRAMEALLOCATOR_DEBUG
@@ -50,7 +50,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QFrameAllocatorPrivate;
 

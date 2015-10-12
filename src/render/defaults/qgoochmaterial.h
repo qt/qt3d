@@ -58,7 +58,7 @@ class QGoochMaterial : public QMaterial
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    explicit QGoochMaterial(Qt3D::QNode *parent = 0);
+    explicit QGoochMaterial(Qt3DCore::QNode *parent = 0);
     QColor diffuse() const;
     QColor specular() const;
     QColor cool() const;
@@ -86,7 +86,7 @@ Q_SIGNALS:
     void shininessChanged();
 
 protected:
-    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3D::QNode *parent = 0);
+    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QGoochMaterial)

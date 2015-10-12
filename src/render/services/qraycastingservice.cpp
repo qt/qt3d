@@ -48,12 +48,12 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3D::QRay3D &ray, Qt3D::QBoundingVolumeProvider *provider,
-                                                          Qt3D::QAbstractCollisionQueryService::QueryMode mode, const Qt3D::QQueryHandle &handle)
+QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, Qt3DCore::QBoundingVolumeProvider *provider,
+                                                          Qt3DCore::QAbstractCollisionQueryService::QueryMode mode, const Qt3DCore::QQueryHandle &handle)
 {
     Q_Q(QRayCastingService);
 
@@ -97,13 +97,13 @@ QRayCastingServicePrivate::QRayCastingServicePrivate(const QString &description,
 {
 }
 
-QRayCastingService::QRayCastingService(Qt3D::QBoundingVolumeProvider *provider)
+QRayCastingService::QRayCastingService(Qt3DCore::QBoundingVolumeProvider *provider)
     : QAbstractCollisionQueryService(*new QRayCastingServicePrivate(QStringLiteral("Collision detection service using Ray Casting"),
                                                                     provider))
 {
 }
 
-Qt3D::QQueryHandle QRayCastingService::query(const Qt3D::QRay3D &ray, QAbstractCollisionQueryService::QueryMode mode)
+Qt3DCore::QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray, QAbstractCollisionQueryService::QueryMode mode)
 {
     Q_D(QRayCastingService);
 
@@ -117,14 +117,14 @@ Qt3D::QQueryHandle QRayCastingService::query(const Qt3D::QRay3D &ray, QAbstractC
     return handle;
 }
 
-Qt3D::QCollisionQueryResult QRayCastingService::fetchResult(const Qt3D::QQueryHandle &handle)
+Qt3DCore::QCollisionQueryResult QRayCastingService::fetchResult(const Qt3DCore::QQueryHandle &handle)
 {
     Q_D(QRayCastingService);
 
     return d->m_results.value(handle).result();
 }
 
-QVector<Qt3D::QCollisionQueryResult> QRayCastingService::fetchAllResults() const
+QVector<Qt3DCore::QCollisionQueryResult> QRayCastingService::fetchAllResults() const
 {
     Q_D(const QRayCastingService);
 

@@ -54,29 +54,29 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 {
-    Qt3D::Quick::Quick3D_initialize();
+    Qt3DCore::Quick::Quick3D_initialize();
 
-    qmlRegisterUncreatableType<Qt3D::QComponent>(uri, 2, 0, "Component3D", QStringLiteral(""));
-    qmlRegisterUncreatableType<Qt3D::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
+    qmlRegisterUncreatableType<Qt3DCore::QComponent>(uri, 2, 0, "Component3D", QStringLiteral(""));
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractTransform>(uri, 2, 0, "QAbstractTransform", QStringLiteral("QAbstractTransform is abstract"));
 
-    qmlRegisterType<Qt3D::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
-    Qt3D::Quick::registerExtendedType<Qt3D::QEntity, Qt3D::Quick::Quick3DEntity>("QEntity", "Qt3D/Entity", uri, 2, 0, "Entity");
-    qmlRegisterType<Qt3D::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
-    qmlRegisterType<Qt3D::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTransform, Qt3D::Quick::Quick3DTransform>("QTransform", "Qt3D/Transform", uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3DCore::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
+    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D/Entity", uri, 2, 0, "Entity");
+    qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
+    qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
+    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QTransform, Qt3DCore::Quick::Quick3DTransform>("QTransform", "Qt3D/Transform", uri, 2, 0, "Transform");
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
-    qmlRegisterExtendedUncreatableType<Qt3D::QNode, Qt3D::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
-    Qt3D::Quick::registerExtendedType<Qt3D::QCamera, Qt3D::Quick::Quick3DNode>("QCamera", "Qt3D/Camera", uri, 2, 0, "Camera");
-    qmlRegisterType<Qt3D::QCameraLens>(uri, 2, 0, "CameraLens");
+    qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
+    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QCamera, Qt3DCore::Quick::Quick3DNode>("QCamera", "Qt3D/Camera", uri, 2, 0, "Camera");
+    qmlRegisterType<Qt3DCore::QCameraLens>(uri, 2, 0, "CameraLens");
 
-    qmlRegisterType<Qt3D::QMatrixTransform>(uri, 2, 0, "MatrixTransform");
-    qmlRegisterType<Qt3D::QTranslateTransform>(uri, 2, 0, "Translate");
-    qmlRegisterType<Qt3D::QRotateTransform>(uri, 2, 0, "Rotate");
-    qmlRegisterType<Qt3D::QLookAtTransform>(uri, 2, 0, "LookAt");
-    qmlRegisterType<Qt3D::QScaleTransform>(uri, 2, 0, "Scale");
+    qmlRegisterType<Qt3DCore::QMatrixTransform>(uri, 2, 0, "MatrixTransform");
+    qmlRegisterType<Qt3DCore::QTranslateTransform>(uri, 2, 0, "Translate");
+    qmlRegisterType<Qt3DCore::QRotateTransform>(uri, 2, 0, "Rotate");
+    qmlRegisterType<Qt3DCore::QLookAtTransform>(uri, 2, 0, "LookAt");
+    qmlRegisterType<Qt3DCore::QScaleTransform>(uri, 2, 0, "Scale");
 
-    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "AbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractAttribute>(uri, 2, 0, "AbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
 }
 
 QT_END_NAMESPACE

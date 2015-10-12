@@ -66,7 +66,7 @@
 
 #include <Qt3DRenderer/private/renderstates_p.h>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 

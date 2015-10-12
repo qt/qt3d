@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QScissorTest  : public QRenderState
     Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
 
 public:
-    explicit QScissorTest(Qt3D::QNode *parent = 0);
+    explicit QScissorTest(Qt3DCore::QNode *parent = 0);
     ~QScissorTest();
 
     int left() const;
@@ -77,7 +77,7 @@ Q_SIGNALS:
     void heightChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QScissorTest)

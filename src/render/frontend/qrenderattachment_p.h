@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 
-class QRenderAttachmentPrivate : public Qt3D::QNodePrivate
+class QRenderAttachmentPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QRenderAttachmentPrivate();

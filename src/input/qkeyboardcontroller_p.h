@@ -57,7 +57,7 @@ namespace Qt3DInput {
 class QKeyboardController;
 class QKeyboardInput;
 
-class QKeyboardControllerPrivate : public Qt3D::QNodePrivate
+class QKeyboardControllerPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QKeyboardControllerPrivate();

@@ -48,7 +48,7 @@ namespace Qt3DInput {
 class QKeyboardController;
 class QKeyboardInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardInput : public Qt3D::QComponent
+class QT3DINPUTSHARED_EXPORT QKeyboardInput : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QKeyboardController *controller READ controller WRITE setController NOTIFY controllerChanged)
@@ -112,8 +112,8 @@ Q_SIGNALS:
 
 protected:
     QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void keyEvent(Q3DKeyEvent *event);
 
 private:

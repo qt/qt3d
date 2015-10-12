@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 class QQmlComponent;
 
-namespace Qt3D {
+namespace Qt3DCore {
 namespace Quick {
 
 class Quick3DNodeInstantiatorPrivate : public QNodePrivate
@@ -86,7 +86,7 @@ public:
 };
 
 } // namespace Quick
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

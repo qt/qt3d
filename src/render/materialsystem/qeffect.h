@@ -49,11 +49,11 @@ class QTechnique;
 class QEffectPrivate;
 
 class QT3DRENDERERSHARED_EXPORT QEffect
-        : public Qt3D::QNode
+        : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    explicit QEffect(Qt3D::QNode *parent = 0);
+    explicit QEffect(Qt3DCore::QNode *parent = 0);
     ~QEffect();
 
     void addParameter(QParameter *parameter);
@@ -65,8 +65,8 @@ public:
     QList<QTechnique *> techniques() const;
 
 protected:
-    QEffect(QEffectPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QEffect(QEffectPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QEffect)

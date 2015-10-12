@@ -57,10 +57,10 @@ class QQmlType;
 
 namespace Qt3DRender {
 
-class QuickRendererNodeFactory : public Qt3D::QAbstractNodeFactory
+class QuickRendererNodeFactory : public Qt3DCore::QAbstractNodeFactory
 {
 public:
-    Qt3D::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
+    Qt3DCore::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
 
     void registerType(const char *className, const char *quickName, int major, int minor);
 
@@ -79,7 +79,7 @@ private:
     QHash<QByteArray, Type> m_types;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

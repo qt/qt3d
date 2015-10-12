@@ -40,10 +40,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QScenePropertyChange
+    \class Qt3DCore::QScenePropertyChange
     \inmodule Qt3dCore
 */
 
@@ -51,7 +51,7 @@ QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(
 QMutex QScenePropertyChangePrivate::m_mutex;
 
 /*!
-    \class Qt3D::QScenePropertyChangePrivate
+    \class Qt3DCore::QScenePropertyChangePrivate
     \internal
 */
 QScenePropertyChangePrivate::QScenePropertyChangePrivate()

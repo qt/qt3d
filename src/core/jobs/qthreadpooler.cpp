@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QThreadPoolerPrivate
+    \class Qt3DCore::QThreadPoolerPrivate
     \internal
 */
 QThreadPooler::QThreadPooler(QObject *parent)
@@ -169,6 +169,6 @@ int QThreadPooler::maxThreadCount() const
     return QThreadPool::globalInstance()->maxThreadCount();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

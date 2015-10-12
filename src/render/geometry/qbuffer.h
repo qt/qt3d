@@ -54,7 +54,7 @@ class QBufferPrivate;
 class QBufferFunctor;
 typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QBuffer : public Qt3D::QAbstractBuffer
+class QT3DRENDERERSHARED_EXPORT QBuffer : public Qt3DCore::QAbstractBuffer
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
@@ -84,7 +84,7 @@ public:
     };
     Q_ENUM(UsageType)
 
-    QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3D::QNode *parent = 0);
+    QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
     ~QBuffer();
 
     void setUsage(UsageType usage);
@@ -97,8 +97,8 @@ public:
     QBufferFunctorPtr bufferFunctor() const;
 
 protected:
-    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void typeChanged();

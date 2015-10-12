@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSortCriterionPrivate : public Qt3D::QNodePrivate
+class QSortCriterionPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QSortCriterionPrivate();

@@ -134,7 +134,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        Qt3D::QScenePropertyChangePtr updateChange(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::IndexBuffer));
         updateChange->setPropertyName("type");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -147,7 +147,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QBuffer::DynamicRead));
         updateChange->setPropertyName("usage");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -160,7 +160,7 @@ private Q_SLOTS:
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QByteArrayLiteral("LS9"));
         updateChange->setPropertyName("data");
         renderBuffer.sceneChangeEvent(updateChange);
@@ -176,7 +176,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::QBufferFunctorPtr functor(new TestFunctor(355));
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(functor));
         updateChange->setPropertyName("bufferFunctor");
         renderBuffer.sceneChangeEvent(updateChange);

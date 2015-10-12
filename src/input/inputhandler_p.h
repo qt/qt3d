@@ -93,8 +93,8 @@ public:
     void appendMouseController(HMouseController controller);
     void removeMouseController(HMouseController controller);
 
-    QVector<Qt3D::QAspectJobPtr> keyboardJobs();
-    QVector<Qt3D::QAspectJobPtr> mouseJobs();
+    QVector<Qt3DCore::QAspectJobPtr> keyboardJobs();
+    QVector<Qt3DCore::QAspectJobPtr> mouseJobs();
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;

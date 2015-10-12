@@ -48,17 +48,17 @@ namespace Qt3DRender {
 class QParameterPrivate;
 class QAbstractTextureProvider;
 
-class QT3DRENDERERSHARED_EXPORT QParameter : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    explicit QParameter(Qt3D::QNode *parent = 0);
+    explicit QParameter(Qt3DCore::QNode *parent = 0);
     ~QParameter();
-    QParameter(const QString& name, const QVariant& value, Qt3D::QNode* parent = 0);
-    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3D::QNode *parent = 0);
+    QParameter(const QString& name, const QVariant& value, Qt3DCore::QNode* parent = 0);
+    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = 0);
 
     void setName(const QString &name);
     QString name() const;
@@ -75,8 +75,8 @@ Q_SIGNALS:
     void nameChanged();
 
 protected:
-    QParameter(QParameterPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QParameter)

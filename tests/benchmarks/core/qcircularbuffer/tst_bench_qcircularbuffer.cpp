@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/private/qcircularbuffer_p.h>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 class tst_QCircularBuffer : public QObject
 {

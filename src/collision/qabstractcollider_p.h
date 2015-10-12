@@ -56,7 +56,7 @@ namespace Qt3DCollision {
 
 class QAbstractCollider;
 
-class QAbstractColliderPrivate : public Qt3D::QComponentPrivate
+class QAbstractColliderPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAbstractColliderPrivate();

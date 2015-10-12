@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENE_P_H
-#define QT3D_QSCENE_P_H
+#ifndef QT3DCORE_QSCENE_P_H
+#define QT3DCORE_QSCENE_P_H
 
 //
 //  W A R N I N G
@@ -54,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QNode;
 class QScenePrivate;
@@ -80,8 +80,8 @@ public:
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
-    void setArbiter(Qt3D::QLockableObserverInterface *arbiter);
-    Qt3D::QLockableObserverInterface *arbiter() const;
+    void setArbiter(Qt3DCore::QLockableObserverInterface *arbiter);
+    Qt3DCore::QLockableObserverInterface *arbiter() const;
 
     // Component -> Entities
     QList<QNodeId> entitiesForComponent(const QNodeId &id) const;
@@ -98,6 +98,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QScene*)
+Q_DECLARE_METATYPE(Qt3DCore::QScene*)
 
-#endif // QT3D_QSCENE_P_H
+#endif // QT3DCORE_QSCENE_P_H

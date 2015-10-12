@@ -36,7 +36,7 @@
 
 #include "gbuffer.h"
 
-GBuffer::GBuffer(Qt3D::QNode *parent)
+GBuffer::GBuffer(Qt3DCore::QNode *parent)
     : Qt3DRender::QRenderTarget(parent)
 {
     const Qt3DRender::QAbstractTextureProvider::TextureFormat formats[AttachmentsCount] = {

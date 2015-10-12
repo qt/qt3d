@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -58,7 +58,7 @@ void Annotation::cleanup()
 {
 }
 
-void Annotation::updateFromPeer(Qt3D::QNode *peer)
+void Annotation::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAnnotation *criterion = static_cast<QAnnotation *>(peer);
 
@@ -76,7 +76,7 @@ QString Annotation::criterionName() const
     return m_name;
 }
 
-void Annotation::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Annotation::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("value"))

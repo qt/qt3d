@@ -555,6 +555,6 @@ QSize GraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, u
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

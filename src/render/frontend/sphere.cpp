@@ -50,7 +50,7 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3D::QRay3D &ray, const Qt3DRender::Sphere &s, QVector3D *q = Q_NULLPTR)
+bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Sphere &s, QVector3D *q = Q_NULLPTR)
 {
     const QVector3D p = ray.origin();
     const QVector3D d = ray.direction();
@@ -211,17 +211,17 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
     return Sphere(c, sqrt(rSquared));
 }
 
-Qt3D::QNodeId Sphere::id() const
+Qt3DCore::QNodeId Sphere::id() const
 {
     return m_id;
 }
 
-bool Sphere::intersects(const Qt3D::QRay3D &ray, QVector3D *q) const
+bool Sphere::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
 {
     return intersectRaySphere(ray, *this, q);
 }
 
-Qt3D::QBoundingVolume::Type Sphere::type() const
+Qt3DCore::QBoundingVolume::Type Sphere::type() const
 {
     return QBoundingVolume::Sphere;
 }

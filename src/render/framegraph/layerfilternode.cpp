@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -50,14 +50,14 @@ LayerFilterNode::LayerFilterNode()
 {
 }
 
-void LayerFilterNode::updateFromPeer(Qt3D::QNode *peer)
+void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
     m_layers = layerFilter->layers();
     setEnabled(layerFilter->isEnabled());
 }
 
-void LayerFilterNode::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);

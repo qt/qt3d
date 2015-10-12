@@ -62,22 +62,22 @@ class QTechnique;
 
 namespace Render {
 
-class Effect : public Qt3D::QBackendNode
+class Effect : public Qt3DCore::QBackendNode
 {
 public:
     Effect();
     ~Effect();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void appendRenderTechnique(const Qt3D::QNodeId &t);
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void appendRenderTechnique(const Qt3DCore::QNodeId &t);
 
-    QList<Qt3D::QNodeId> techniques() const;
-    QList<Qt3D::QNodeId> parameters() const;
+    QList<Qt3DCore::QNodeId> techniques() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    QList<Qt3D::QNodeId> m_techniques;
+    QList<Qt3DCore::QNodeId> m_techniques;
     ParameterPack m_parameterPack;
 };
 

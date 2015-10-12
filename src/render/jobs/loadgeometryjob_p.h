@@ -60,7 +60,7 @@ namespace Render {
 
 class Renderer;
 
-class LoadGeometryJob : public Qt3D::QAspectJob
+class LoadGeometryJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit LoadGeometryJob(const HGeometryRenderer &handle);

@@ -44,24 +44,24 @@
 #include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRenderer/QMesh>
 
-class TrefoilKnot : public Qt3D::QEntity
+class TrefoilKnot : public Qt3DCore::QEntity
 {
 public:
-    explicit TrefoilKnot(Qt3D::QNode *parent = 0);
+    explicit TrefoilKnot(Qt3DCore::QNode *parent = 0);
     ~TrefoilKnot();
 
-    Qt3D::QScaleTransform *scaleTransform() const;
-    Qt3D::QRotateTransform *xaxisRotateTransform() const;
-    Qt3D::QRotateTransform *yaxisRotateTransform() const;
-    Qt3D::QTranslateTransform *translateTransform() const;
+    Qt3DCore::QScaleTransform *scaleTransform() const;
+    Qt3DCore::QRotateTransform *xaxisRotateTransform() const;
+    Qt3DCore::QRotateTransform *yaxisRotateTransform() const;
+    Qt3DCore::QTranslateTransform *translateTransform() const;
 
 private:
     Qt3DRender::QMesh *m_mesh;
-    Qt3D::QTransform *m_transform;
-    Qt3D::QScaleTransform *m_scaleTransform;
-    Qt3D::QRotateTransform *m_xaxisRotation;
-    Qt3D::QRotateTransform *m_yaxisRotation;
-    Qt3D::QTranslateTransform *m_translateTransform;
+    Qt3DCore::QTransform *m_transform;
+    Qt3DCore::QScaleTransform *m_scaleTransform;
+    Qt3DCore::QRotateTransform *m_xaxisRotation;
+    Qt3DCore::QRotateTransform *m_yaxisRotation;
+    Qt3DCore::QTranslateTransform *m_translateTransform;
 };
 
 #endif // TREFOILKNOT_H

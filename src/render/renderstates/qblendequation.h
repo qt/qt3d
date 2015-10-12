@@ -62,7 +62,7 @@ public:
     };
     Q_ENUM(BlendMode)
 
-    explicit QBlendEquation(Qt3D::QNode *parent = 0);
+    explicit QBlendEquation(Qt3DCore::QNode *parent = 0);
     ~QBlendEquation();
 
     BlendMode mode() const;
@@ -72,7 +72,7 @@ Q_SIGNALS:
     void modeChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquation)

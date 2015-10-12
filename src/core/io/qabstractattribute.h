@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTATTRIBUTE_H
-#define QT3D_QABSTRACTATTRIBUTE_H
+#ifndef QT3DCORE_QABSTRACTATTRIBUTE_H
+#define QT3DCORE_QABSTRACTATTRIBUTE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/QNode>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractBuffer;
 class QAbstractAttributePrivate;
@@ -53,7 +53,7 @@ typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
 class QT3DCORESHARED_EXPORT QAbstractAttribute : public QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QAbstractBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
+    Q_PROPERTY(Qt3DCore::QAbstractBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
     Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
@@ -138,4 +138,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTATTRIBUTE_H
+#endif // QT3DCORE_QABSTRACTATTRIBUTE_H

@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -55,7 +55,7 @@ CameraSelector::CameraSelector()
 {
 }
 
-void CameraSelector::updateFromPeer(Qt3D::QNode *peer)
+void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QCameraSelector *selector = static_cast<QCameraSelector *>(peer);
     m_cameraUuid = QNodeId();
@@ -64,7 +64,7 @@ void CameraSelector::updateFromPeer(Qt3D::QNode *peer)
     setEnabled(selector->isEnabled());
 }
 
-void CameraSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == NodeUpdated) {

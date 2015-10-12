@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QShaderProgramPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QShaderProgram : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QShaderProgram : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QByteArray vertexShaderCode READ vertexShaderCode WRITE setVertexShaderCode NOTIFY vertexShaderCodeChanged)
@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QShaderProgram : public Qt3D::QNode
     Q_PROPERTY(QByteArray computeShaderCode READ computeShaderCode WRITE setComputeShaderCode NOTIFY computeShaderCodeChanged)
 
 public:
-    explicit QShaderProgram(Qt3D::QNode *parent = 0);
+    explicit QShaderProgram(Qt3DCore::QNode *parent = 0);
     ~QShaderProgram();
 
     enum ShaderType {
@@ -103,8 +103,8 @@ Q_SIGNALS:
     void computeShaderCodeChanged();
 
 protected:
-    QShaderProgram(QShaderProgramPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)

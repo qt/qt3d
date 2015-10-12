@@ -51,12 +51,12 @@ namespace Logic {
 class Executor;
 }
 
-class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3D::QComponent
+class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3DCore::QComponent
 {
     Q_OBJECT
 
 public:
-    explicit QLogicComponent(Qt3D::QNode *parent = 0);
+    explicit QLogicComponent(Qt3DCore::QNode *parent = 0);
     ~QLogicComponent();
 
 protected:

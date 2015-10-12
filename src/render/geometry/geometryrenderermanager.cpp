@@ -49,15 +49,15 @@ GeometryRendererManager::~GeometryRendererManager()
 {
 }
 
-void GeometryRendererManager::addDirtyGeometryRenderer(const Qt3D::QNodeId &bufferId)
+void GeometryRendererManager::addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId)
 {
     if (!m_dirtyGeometryRenderers.contains(bufferId))
         m_dirtyGeometryRenderers.push_back(bufferId);
 }
 
-QVector<Qt3D::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
+QVector<Qt3DCore::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
 {
-    QVector<Qt3D::QNodeId> vector(m_dirtyGeometryRenderers);
+    QVector<Qt3DCore::QNodeId> vector(m_dirtyGeometryRenderers);
     m_dirtyGeometryRenderers.clear();
     return vector;
 }

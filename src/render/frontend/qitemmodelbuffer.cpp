@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -111,7 +111,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-Qt3D::QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+Qt3DCore::QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 

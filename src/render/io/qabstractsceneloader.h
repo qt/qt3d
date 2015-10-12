@@ -49,13 +49,13 @@ namespace Qt3DRender {
 class QAbstractSceneLoader;
 class QAbstractSceneLoaderPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QAbstractSceneLoader(Qt3D::QNode *parent = 0);
+    explicit QAbstractSceneLoader(Qt3DCore::QNode *parent = 0);
     ~QAbstractSceneLoader();
 
     enum Status {
@@ -76,8 +76,8 @@ Q_SIGNALS:
     void statusChanged();
 
 protected:
-    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAbstractSceneLoader)

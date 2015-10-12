@@ -67,13 +67,13 @@ class CameraSelector : public FrameGraphNode
 public:
     CameraSelector();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Qt3D::QNodeId cameraUuid() const;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeId cameraUuid() const;
 
 private:
-    Qt3D::QNodeId m_cameraUuid;
+    Qt3DCore::QNodeId m_cameraUuid;
 };
 
 } // namespace Render

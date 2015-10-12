@@ -47,18 +47,18 @@ namespace Qt3DInput {
 class QMouseControllerPrivate;
 class QMouseInput;
 
-class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3D::QNode
+class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3DCore::QNode
 {
     Q_OBJECT
 
 public:
-    explicit QMouseController(Qt3D::QNode *parent = 0);
+    explicit QMouseController(Qt3DCore::QNode *parent = 0);
 
 protected:
-    QMouseController(QMouseControllerPrivate &dd, Qt3D::QNode *parent = 0);
+    QMouseController(QMouseControllerPrivate &dd, Qt3DCore::QNode *parent = 0);
     ~QMouseController();
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QMouseController)

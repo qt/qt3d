@@ -61,7 +61,7 @@ public:
 };
 
 /*!
-    \class Qt3D::QColorMask
+    \class Qt3DCore::QColorMask
     \inmodule Qt3DRenderer
 
     \brief Allows specifying which color components should be written to the
@@ -75,7 +75,7 @@ public:
 
 
 /*!
-    Constructs a new Qt3D::QColorMask instance with \a parent as parent.
+    Constructs a new Qt3DCore::QColorMask instance with \a parent as parent.
  */
 QColorMask::QColorMask(QNode *parent)
     : QRenderState(*new QColorMaskPrivate, parent)
@@ -112,7 +112,7 @@ bool QColorMask::isAlpha() const
 }
 
 /*!
-    \property Qt3D::QColorMask::red
+    \property Qt3DCore::QColorMask::red
     Holds whether the red color component should be written to the frame buffer.
  */
 void QColorMask::setRed(bool red)
@@ -125,7 +125,7 @@ void QColorMask::setRed(bool red)
 }
 
 /*!
-    \property Qt3D::QColorMask::green
+    \property Qt3DCore::QColorMask::green
     Holds whether the green color component should be written to the frame buffer.
  */
 void QColorMask::setGreen(bool green)
@@ -138,7 +138,7 @@ void QColorMask::setGreen(bool green)
 }
 
 /*!
-    \property Qt3D::QColorMask::blue
+    \property Qt3DCore::QColorMask::blue
     Holds whether the blue color component should be written to the frame buffer.
  */
 void QColorMask::setBlue(bool blue)
@@ -151,7 +151,7 @@ void QColorMask::setBlue(bool blue)
 }
 
 /*!
-    \property Qt3D::QColorMask::alpha
+    \property Qt3DCore::QColorMask::alpha
     Holds whether the alpha component should be written to the frame buffer.
  */
 void QColorMask::setAlpha(bool alpha)

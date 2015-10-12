@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QAbstractAttribute;
 }
 
@@ -50,20 +50,20 @@ namespace Qt3DRender {
 
 class QGeometryPrivate;
 
-typedef QVector<Qt3D::QAbstractAttribute *> QAttributeList;
+typedef QVector<Qt3DCore::QAbstractAttribute *> QAttributeList;
 
-class QT3DRENDERERSHARED_EXPORT QGeometry : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
 
 public:
-    explicit QGeometry(Qt3D::QNode *parent = 0);
+    explicit QGeometry(Qt3DCore::QNode *parent = 0);
     ~QGeometry();
 
     QAttributeList attributes() const;
-    void addAttribute(Qt3D::QAbstractAttribute *attribute);
-    void removeAttribute(Qt3D::QAbstractAttribute *attribute);
+    void addAttribute(Qt3DCore::QAbstractAttribute *attribute);
+    void removeAttribute(Qt3DCore::QAbstractAttribute *attribute);
 
     void setVerticesPerPatch(int verticesPerPatch);
     int verticesPerPatch() const;
@@ -72,8 +72,8 @@ Q_SIGNALS:
     void verticesPerPatchChanged();
 
 protected:
-    QGeometry(QGeometryPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QGeometry)

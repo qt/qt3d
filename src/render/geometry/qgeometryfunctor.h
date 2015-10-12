@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QGeometry;
 
-class QT3DRENDERERSHARED_EXPORT QGeometryFunctor : public Qt3D::QAbstractFunctor
+class QT3DRENDERERSHARED_EXPORT QGeometryFunctor : public Qt3DCore::QAbstractFunctor
 {
 public:
     virtual ~QGeometryFunctor() {}

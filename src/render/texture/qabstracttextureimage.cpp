@@ -40,18 +40,18 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QAbstractTextureImagePrivate
+    \class Qt3DCore::QAbstractTextureImagePrivate
     \internal
 */
 
 /*!
     \qmltype AbstractTextureImage
-    \instantiates Qt3D::QAbstractTextureImage
+    \instantiates Qt3DCore::QAbstractTextureImage
     \inherits Node
     \inqmlmodule Qt3D.Renderer
     \qmlabstract
@@ -79,7 +79,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    Constructs a new Qt3D::QAbstractTextureImage instance with \a parent as parent.
+    Constructs a new Qt3DCore::QAbstractTextureImage instance with \a parent as parent.
  */
 QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
     : QNode(*new QAbstractTextureImagePrivate, parent)
@@ -91,7 +91,7 @@ QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
  */
 QAbstractTextureImage::~QAbstractTextureImage()
 {
-    Q_ASSERT_X(Qt3D::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractTextureImage subclass didn't call QNode::cleanup in its destructor");
 }
 
 
@@ -102,7 +102,7 @@ QAbstractTextureImage::~QAbstractTextureImage()
  */
 
 /*!
-    \property Qt3D::QAbstractTextureImage::mipmapLevel
+    \property Qt3DCore::QAbstractTextureImage::mipmapLevel
 
     Holds the mipmap level of the texture image.
  */
@@ -119,7 +119,7 @@ int QAbstractTextureImage::mipmapLevel() const
  */
 
 /*!
-    \property Qt3D::QAbstractTextureImage::layer
+    \property Qt3DCore::QAbstractTextureImage::layer
 
     Holds the layer of the texture image.
  */
@@ -147,7 +147,7 @@ int QAbstractTextureImage::layer() const
  */
 
 /*!
-    \property Qt3D::QAbstractTextureImage::cubeMapFace
+    \property Qt3DCore::QAbstractTextureImage::cubeMapFace
 
     Holds the cube map face of the texture image.
 

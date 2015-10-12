@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3D::CameraSelector
+    \class Qt3DCore::CameraSelector
 */
 
 /*! \internal */
@@ -69,10 +69,10 @@ void QCameraSelector::copy(const QNode *ref)
     const QCameraSelector *other = static_cast<const QCameraSelector*>(ref);
 
     if (other->d_func()->m_camera)
-        setCamera(qobject_cast<Qt3D::QEntity *>(QNode::clone(other->d_func()->m_camera)));
+        setCamera(qobject_cast<Qt3DCore::QEntity *>(QNode::clone(other->d_func()->m_camera)));
 }
 
-QCameraSelector::QCameraSelector(Qt3D::QNode *parent)
+QCameraSelector::QCameraSelector(Qt3DCore::QNode *parent)
     :   QFrameGraphNode(*new QCameraSelectorPrivate, parent)
 {}
 
@@ -81,7 +81,7 @@ QCameraSelector::~QCameraSelector()
     QNode::cleanup();
 }
 
-void QCameraSelector::setCamera(Qt3D::QEntity *camera)
+void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QCameraSelector);
     if (d->m_camera != camera) {
@@ -97,7 +97,7 @@ void QCameraSelector::setCamera(Qt3D::QEntity *camera)
     }
 }
 
-Qt3D::QEntity *QCameraSelector::camera() const
+Qt3DCore::QEntity *QCameraSelector::camera() const
 {
     Q_D(const QCameraSelector);
     return d->m_camera;

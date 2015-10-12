@@ -45,7 +45,7 @@ namespace Quick {
 
 void Quick3DRenderer_initialize()
 {
-    Qt3D::QAbstractNodeFactory::registerNodeFactory(QuickRendererNodeFactory::instance());
+    Qt3DCore::QAbstractNodeFactory::registerNodeFactory(QuickRendererNodeFactory::instance());
 }
 
 void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor)

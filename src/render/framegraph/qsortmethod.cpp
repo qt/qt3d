@@ -42,12 +42,12 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QSortMethodPrivate
+    \class Qt3DCore::QSortMethodPrivate
     \internal
 */
 QSortMethodPrivate::QSortMethodPrivate()

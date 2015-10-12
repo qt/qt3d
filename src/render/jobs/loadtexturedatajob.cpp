@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-LoadTextureDataJob::LoadTextureDataJob(const Qt3D::QNodeId &textureId)
+LoadTextureDataJob::LoadTextureDataJob(const Qt3DCore::QNodeId &textureId)
     : m_textureId(textureId)
 {
 }

@@ -49,16 +49,16 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3D::QCollisionAspectPrivate
+    \class Qt3DCore::QCollisionAspectPrivate
     \internal
 */
 QCollisionAspectPrivate::QCollisionAspectPrivate()
-    : Qt3D::QAbstractAspectPrivate()
+    : QAbstractAspectPrivate()
     , m_time(0)
 {
     m_aspectType = QAbstractAspect::AspectCollision;
@@ -82,36 +82,36 @@ void QCollisionAspect::registerBackendTypes()
     //registerBackendType<QSphereCollider>(QBackendNodeFunctorPtr(new Collision::SphereColliderFunctor(d_func()->m_manager.data())));
 }
 
-QVector<Qt3D::QAspectJobPtr> QCollisionAspect::jobsToExecute(qint64 time)
+QVector<Qt3DCore::QAspectJobPtr> QCollisionAspect::jobsToExecute(qint64 time)
 {
     Q_D(QCollisionAspect);
     d->m_time = time;
 
     // Create jobs that will get exectued by the threadpool
-    QVector<Qt3D::QAspectJobPtr> jobs;
+    QVector<Qt3DCore::QAspectJobPtr> jobs;
     return jobs;
 }
 
-void QCollisionAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
+void QCollisionAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3D::QScenePropertyChange>();
+    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3DCore::QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
     visitor.traverse(n, this, &QCollisionAspect::visitNode);
 }
 
-void QCollisionAspect::sceneNodeRemoved(Qt3D::QSceneChangePtr &e)
+void QCollisionAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3D::QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<Qt3D::QNodePtr>();
+    QScenePropertyChangePtr propertyChange = e.staticCast<Qt3DCore::QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<Qt3DCore::QNodePtr>();
     QNode *n = nodePtr.data();
     QAbstractAspect::clearBackendNode(n);
 }
 
-void QCollisionAspect::setRootEntity(Qt3D::QEntity *rootObject)
+void QCollisionAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
 {
-    Qt3D::QNodeVisitor visitor;
+    Qt3DCore::QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QCollisionAspect::visitNode);
 }
 
@@ -124,12 +124,12 @@ void QCollisionAspect::onCleanup()
 {
 }
 
-void QCollisionAspect::visitNode(Qt3D::QNode *node)
+void QCollisionAspect::visitNode(Qt3DCore::QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }
 
-} // Qt3D
+} // Qt3DCollision
 
 QT_END_NAMESPACE
 

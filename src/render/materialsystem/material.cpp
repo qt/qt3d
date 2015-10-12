@@ -46,7 +46,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QOpenGLShaderProgram>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +69,7 @@ void Material::cleanup()
     m_parameterPack.clear();
 }
 
-void Material::updateFromPeer(Qt3D::QNode *node)
+void Material::updateFromPeer(Qt3DCore::QNode *node)
 {
     QMaterial *mat = static_cast<QMaterial *>(node);
     m_parameterPack.clear();
@@ -80,7 +80,7 @@ void Material::updateFromPeer(Qt3D::QNode *node)
         m_parameterPack.appendParameter(p->id());
 }
 
-void Material::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
 
@@ -111,12 +111,12 @@ void Material::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-QList<Qt3D::QNodeId> Material::parameters() const
+QList<Qt3DCore::QNodeId> Material::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-Qt3D::QNodeId Material::effect() const
+Qt3DCore::QNodeId Material::effect() const
 {
     return m_effectUuid;
 }

@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QAbstractCollisionQueryService::QAbstractCollisionQueryService(const QString &description)
     : QAbstractServiceProvider(*new QAbstractCollisionQueryServicePrivate(description))

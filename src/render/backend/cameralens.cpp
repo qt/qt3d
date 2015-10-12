@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -67,7 +67,7 @@ void CameraLens::cleanup()
 
 }
 
-void CameraLens::updateFromPeer(Qt3D::QNode *peer)
+void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QCameraLens *lens = static_cast<QCameraLens *>(peer);
     setProjection(lens->projectionMatrix());
@@ -79,7 +79,7 @@ void CameraLens::setProjection(const QMatrix4x4 &projection)
     m_projection = projection;
 }
 
-void CameraLens::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     switch (e->type()) {
     case NodeUpdated: {

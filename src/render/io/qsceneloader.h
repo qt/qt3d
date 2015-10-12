@@ -47,9 +47,9 @@ class QT3DRENDERERSHARED_EXPORT QSceneLoader : public QAbstractSceneLoader
 {
     Q_OBJECT
 public:
-    explicit QSceneLoader(Qt3D::QNode *parent = 0);
+    explicit QSceneLoader(Qt3DCore::QNode *parent = 0);
     ~QSceneLoader();
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 protected:
     QT3D_CLONEABLE(QSceneLoader)

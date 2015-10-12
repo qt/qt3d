@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -56,7 +56,7 @@ FrameGraphVisitor::FrameGraphVisitor()
 
 void FrameGraphVisitor::traverse(FrameGraphNode *root,
                                  Renderer *renderer,
-                                 QVector<Qt3D::QAspectJobPtr> *jobs)
+                                 QVector<Qt3DCore::QAspectJobPtr> *jobs)
 {
     m_renderer = renderer;
     m_jobs = jobs;

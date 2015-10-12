@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public Qt3D::QAbstractBufferPrivate
+class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public Qt3DCore::QAbstractBufferPrivate
 {
 public:
     QBufferPrivate();

@@ -63,12 +63,12 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const Qt3D::QNodeId &parameterId);
-    void removeParameter(const Qt3D::QNodeId &parameterId);
-    QList<Qt3D::QNodeId> parameters() const;
+    void appendParameter(const Qt3DCore::QNodeId &parameterId);
+    void removeParameter(const Qt3DCore::QNodeId &parameterId);
+    QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    QList<Qt3D::QNodeId> m_peers;
+    QList<Qt3DCore::QNodeId> m_peers;
 };
 
 } // namespace Render

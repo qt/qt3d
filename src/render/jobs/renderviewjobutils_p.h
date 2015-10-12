@@ -55,7 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QFrameAllocator;
 }
 
@@ -114,7 +114,7 @@ Q_AUTOTEST_EXPORT void parametersFromMaterialEffectTechnique(ParameterInfoList *
                                                              Technique *technique);
 
 Q_AUTOTEST_EXPORT void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                           const QList<Qt3D::QNodeId> &parameterIds);
+                                           const QList<Qt3DCore::QNodeId> &parameterIds);
 
 template<class T>
 void parametersFromParametersProvider(ParameterInfoList *infoList,
@@ -129,7 +129,7 @@ Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *i
                                                             const QString &name);
 
 Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states,
-                                                      Qt3D::QFrameAllocator *allocator);
+                                                      Qt3DCore::QFrameAllocator *allocator);
 
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder

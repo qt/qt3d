@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractTransformPrivate
+    \class Qt3DCore::QAbstractTransformPrivate
     \internal
 */
 QAbstractTransformPrivate::QAbstractTransformPrivate()
@@ -61,6 +61,6 @@ QAbstractTransform::QAbstractTransform(QAbstractTransformPrivate &dd, QObject *p
 {
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

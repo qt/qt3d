@@ -57,7 +57,7 @@ namespace Logic {
 
 class Manager;
 
-class CallbackJob : public Qt3D::QAspectJob
+class CallbackJob : public Qt3DCore::QAspectJob
 {
 public:
     CallbackJob();
@@ -70,7 +70,7 @@ private:
 };
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 

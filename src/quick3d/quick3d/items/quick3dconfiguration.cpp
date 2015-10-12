@@ -46,8 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 /*!
@@ -71,7 +70,7 @@ void Quick3DConfiguration::setControlledCamera(QCamera *camera)
 }
 
 /*!
-    \qmlproperty Camera Qt3D::Configuration::controlledCamera
+    \qmlproperty Camera Qt3DCore::Configuration::controlledCamera
 */
 QCamera *Quick3DConfiguration::controlledCamera() const
 {
@@ -96,8 +95,7 @@ void Quick3DConfiguration::applyControlledCameraChange()
     }
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

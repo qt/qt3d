@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QAbstractTextureProvider;
 class QRenderAttachmentPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(RenderAttachmentType type READ type WRITE setType NOTIFY typeChanged)
@@ -91,7 +91,7 @@ public:
     };
     Q_ENUM(CubeMapFace)
 
-    explicit QRenderAttachment(Qt3D::QNode *parent = 0);
+    explicit QRenderAttachment(Qt3DCore::QNode *parent = 0);
     ~QRenderAttachment();
 
     void setType(RenderAttachmentType type);
@@ -121,8 +121,8 @@ Q_SIGNALS:
     void nameChanged();
 
 protected:
-    QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QRenderAttachment)

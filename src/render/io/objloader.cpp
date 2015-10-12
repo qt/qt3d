@@ -429,7 +429,7 @@ void ObjLoader::center( QVector<QVector3D>& points )
     if ( points.isEmpty() )
         return;
 
-    Qt3D::QAxisAlignedBoundingBox bb(points);
+    Qt3DCore::QAxisAlignedBoundingBox bb(points);
     QVector3D center = bb.center();
 
     // Translate center of the AABB to the origin

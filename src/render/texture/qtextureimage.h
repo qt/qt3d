@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QTextureImage(Qt3D::QNode *parent = 0);
+    explicit QTextureImage(Qt3DCore::QNode *parent = 0);
     ~QTextureImage();
 
     QUrl source() const;
@@ -64,7 +64,7 @@ Q_SIGNALS:
     void sourceChanged();
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTextureImage)

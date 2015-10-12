@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTFACTORY_H
-#define QT3D_QASPECTFACTORY_H
+#ifndef QT3DCORE_QASPECTFACTORY_H
+#define QT3DCORE_QASPECTFACTORY_H
 
 #include <QSharedDataPointer>
 #include <QStringList>
@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 
 class QObject;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractAspect;
 class QAspectFactoryPrivate;
@@ -85,20 +85,20 @@ private:
     QSharedDataPointer<QAspectFactoryPrivate> d;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
 #define QT3D_REGISTER_NAMESPACED_ASPECT(name, AspectNamespace, AspectType) \
     QT_BEGIN_NAMESPACE \
-    namespace Qt3D { \
+    namespace Qt3DCore { \
         QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &, QAspectFactory::CreateFunction); \
     } \
     QT_END_NAMESPACE \
     namespace { \
     void qt3d_ ## AspectType ## _registerFunction() \
     { \
-        using namespace QT_PREPEND_NAMESPACE(Qt3D); \
+        using namespace QT_PREPEND_NAMESPACE(Qt3DCore); \
         qt3d_QAspectFactoryPrivate_addDefaultFactory(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
     } \
     \
@@ -108,4 +108,4 @@ QT_END_NAMESPACE
 #define QT3D_REGISTER_ASPECT(name, AspectType) \
     QT3D_REGISTER_NAMESPACED_ASPECT(name, , AspectType)
 
-#endif // QT3D_QASPECTFACTORY_H
+#endif // QT3DCORE_QASPECTFACTORY_H

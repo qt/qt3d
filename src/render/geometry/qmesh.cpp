@@ -125,7 +125,7 @@ QGeometry *MeshFunctor::operator()()
 
 
     // TO DO: Handle file download if remote url
-    QString filePath = Qt3D::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
     if (loader.load(filePath))
         return loader.geometry();
 

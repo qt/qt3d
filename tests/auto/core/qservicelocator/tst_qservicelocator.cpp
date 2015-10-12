@@ -41,7 +41,7 @@
 
 #include <QScopedPointer>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 class DummyService : public QAbstractServiceProvider
 {

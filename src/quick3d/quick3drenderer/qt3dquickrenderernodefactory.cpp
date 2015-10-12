@@ -53,7 +53,7 @@ void QuickRendererNodeFactory::registerType(const char *className, const char *q
     m_types.insert(className, Type(quickName, major, minor));
 }
 
-Qt3D::QNode *QuickRendererNodeFactory::createNode(const char *type)
+Qt3DCore::QNode *QuickRendererNodeFactory::createNode(const char *type)
 {
     if (!m_types.contains(type))
         return Q_NULLPTR;
@@ -65,7 +65,7 @@ Qt3D::QNode *QuickRendererNodeFactory::createNode(const char *type)
         typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
     }
 
-    return typeInfo.t ? qobject_cast<Qt3D::QNode *>(typeInfo.t->create()) : Q_NULLPTR;
+    return typeInfo.t ? qobject_cast<Qt3DCore::QNode *>(typeInfo.t->create()) : Q_NULLPTR;
 }
 
 } // namespace Qt3DRender

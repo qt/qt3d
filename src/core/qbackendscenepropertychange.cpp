@@ -41,15 +41,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QBackendScenePropertyChange
+    \class Qt3DCore::QBackendScenePropertyChange
     \inmodule Qt3DCore
 */
 
 /*!
-    \class Qt3D::QBackendScenePropertyChangePrivate
+    \class Qt3DCore::QBackendScenePropertyChangePrivate
     \internal
 */
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()

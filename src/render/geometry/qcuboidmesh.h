@@ -57,7 +57,7 @@ class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
     Q_PROPERTY(QSize xyMeshResolution READ xyMeshResolution WRITE setXYMeshResolution NOTIFY xyMeshResolutionChanged)
 
 public:
-    explicit QCuboidMesh(Qt3D::QNode *parent = 0);
+    explicit QCuboidMesh(Qt3DCore::QNode *parent = 0);
     ~QCuboidMesh();
 
     void setXExtent(float xExtent);

@@ -60,15 +60,15 @@ namespace Render {
 
 class BufferManager;
 
-class Q_AUTOTEST_EXPORT Buffer : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Buffer : public Qt3DCore::QBackendNode
 {
 public:
     Buffer();
     ~Buffer();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void setManager(BufferManager *manager);
     void executeFunctor();
@@ -89,13 +89,13 @@ private:
     BufferManager *m_manager;
 };
 
-class BufferFunctor : public Qt3D::QBackendNodeFunctor
+class BufferFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit BufferFunctor(BufferManager *manager);
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 private:
     BufferManager *m_manager;
 };

@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QParameterMappingPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QParameterMapping : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QParameterMapping : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString parameterName READ parameterName WRITE setParameterName NOTIFY parameterNameChanged)
@@ -62,8 +62,8 @@ public:
     };
     Q_ENUM(Binding)
 
-    explicit QParameterMapping(Qt3D::QNode *parent = 0);
-    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3D::QNode *parent = 0);
+    explicit QParameterMapping(Qt3DCore::QNode *parent = 0);
+    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3DCore::QNode *parent = 0);
     ~QParameterMapping();
 
     void setParameterName(const QString &name);
@@ -80,8 +80,8 @@ Q_SIGNALS:
     void bindingTypeChanged();
 
 protected:
-    QParameterMapping(QParameterMappingPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QParameterMapping(QParameterMappingPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QParameterMapping)

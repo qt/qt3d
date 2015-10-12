@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -53,9 +53,9 @@ Transform::Transform()
 {
 }
 
-void Transform::updateFromPeer(Qt3D::QNode *peer)
+void Transform::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    Qt3D::QTransform *transform = static_cast<Qt3D::QTransform *>(peer);
+    Qt3DCore::QTransform *transform = static_cast<Qt3DCore::QTransform *>(peer);
 
     m_transformMatrix = transform->matrix();
     m_enabled = transform->isEnabled();
@@ -66,7 +66,7 @@ QMatrix4x4 Transform::transformMatrix() const
     return m_transformMatrix;
 }
 
-void Transform::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);

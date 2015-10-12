@@ -52,7 +52,7 @@ class QT3DRENDERERSHARED_EXPORT QPolygonOffset : public QRenderState
     Q_PROPERTY(float factor READ factor WRITE setFactor NOTIFY factorChanged)
     Q_PROPERTY(float units READ units WRITE setUnits NOTIFY unitsChanged)
 public:
-    explicit QPolygonOffset(Qt3D::QNode *parent = Q_NULLPTR);
+    explicit QPolygonOffset(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPolygonOffset();
 
     float factor() const;
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void unitsChanged(float newUnits);
 
 protected:
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QPolygonOffset)

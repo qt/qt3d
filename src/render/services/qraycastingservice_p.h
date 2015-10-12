@@ -59,38 +59,38 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QBoundingVolume;
 class QBoundingVolumeProvider;
 }
 
 namespace Qt3DRender {
 
-typedef QFuture<Qt3D::QCollisionQueryResult> FutureQueryResult;
+typedef QFuture<Qt3DCore::QCollisionQueryResult> FutureQueryResult;
 
-class QRayCastingServicePrivate : public Qt3D::QAbstractCollisionQueryServicePrivate
+class QRayCastingServicePrivate : public Qt3DCore::QAbstractCollisionQueryServicePrivate
 {
 public:
-    QRayCastingServicePrivate(const QString &description, Qt3D::QBoundingVolumeProvider *provider);
+    QRayCastingServicePrivate(const QString &description, Qt3DCore::QBoundingVolumeProvider *provider);
 
-    Qt3D::QCollisionQueryResult collides(const Qt3D::QRay3D &ray,
-                                         Qt3D::QBoundingVolumeProvider *provider,
-                                         Qt3D::QAbstractCollisionQueryService::QueryMode mode,
-                                         const Qt3D::QQueryHandle &handle);
+    Qt3DCore::QCollisionQueryResult collides(const Qt3DCore::QRay3D &ray,
+                                         Qt3DCore::QBoundingVolumeProvider *provider,
+                                         Qt3DCore::QAbstractCollisionQueryService::QueryMode mode,
+                                         const Qt3DCore::QQueryHandle &handle);
 
     Q_DECLARE_PUBLIC(QRayCastingService)
 
     struct Query
     {
-        Qt3D::QQueryHandle handle;
-        Qt3D::QRay3D ray;
+        Qt3DCore::QQueryHandle handle;
+        Qt3DCore::QRay3D ray;
         QRayCastingService::QueryMode mode;
     };
 
-    QHash<Qt3D::QQueryHandle, FutureQueryResult> m_results;
+    QHash<Qt3DCore::QQueryHandle, FutureQueryResult> m_results;
     QAtomicInt m_handlesCount;
 
-    Qt3D::QBoundingVolumeProvider *m_boundingProvider;
+    Qt3DCore::QBoundingVolumeProvider *m_boundingProvider;
 };
 
 } // namespace Qt3DRender

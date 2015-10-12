@@ -58,18 +58,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DLogic {
 namespace Logic {
 
-class HandlerManager : public Qt3D::QResourceManager<
+class HandlerManager : public Qt3DCore::QResourceManager<
         Handler,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     HandlerManager() {}
 };
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 

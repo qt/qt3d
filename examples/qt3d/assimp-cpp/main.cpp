@@ -55,7 +55,7 @@ public:
     void onStatusChanged();
 
 private:
-    void walkEntity(Qt3D::QEntity *e, int depth = 0);
+    void walkEntity(Qt3DCore::QEntity *e, int depth = 0);
 
     Qt3DRender::QSceneLoader *m_loader;
 };
@@ -68,29 +68,29 @@ void SceneWalker::onStatusChanged()
 
     // The QSceneLoader instance is a component of an entity. The loaded scene
     // tree is added under this entity.
-    QVector<Qt3D::QEntity *> entities = m_loader->entities();
+    QVector<Qt3DCore::QEntity *> entities = m_loader->entities();
 
     // Technically there could be multiple entities referencing the scene loader
     // but sharing is discouraged, and in our case there will be one anyhow.
     if (entities.isEmpty())
         return;
-    Qt3D::QEntity *root = entities[0];
+    Qt3DCore::QEntity *root = entities[0];
     // Print the tree.
     walkEntity(root);
 
     // To access a given node (like a named mesh in the scene), use QObject::findChild().
     // The scene structure and names always depend on the asset.
-    Qt3D::QEntity *e = root->findChild<Qt3D::QEntity *>(QStringLiteral("PlanePropeller_mesh")); // toyplane.obj
+    Qt3DCore::QEntity *e = root->findChild<Qt3DCore::QEntity *>(QStringLiteral("PlanePropeller_mesh")); // toyplane.obj
     if (e)
         qDebug() << "Found propeller node" << e << "with components" << e->components();
 }
 
-void SceneWalker::walkEntity(Qt3D::QEntity *e, int depth)
+void SceneWalker::walkEntity(Qt3DCore::QEntity *e, int depth)
 {
-    Qt3D::QNodeList nodes = e->childrenNodes();
+    Qt3DCore::QNodeList nodes = e->childrenNodes();
     for (int i = 0; i < nodes.count(); ++i) {
-        Qt3D::QNode *node = nodes[i];
-        Qt3D::QEntity *entity = qobject_cast<Qt3D::QEntity *>(node);
+        Qt3DCore::QNode *node = nodes[i];
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(node);
         if (entity) {
             QString indent;
             indent.fill(' ', depth * 2);
@@ -106,7 +106,7 @@ int main(int ac, char **av)
 
     Window view;
 
-    Qt3D::QAspectEngine engine;
+    Qt3DCore::QAspectEngine engine;
     Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     engine.registerAspect(inputAspect);
@@ -117,11 +117,11 @@ int main(int ac, char **av)
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *sceneRoot = new Qt3D::QEntity();
+    Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3D::QCamera *basicCamera = new Qt3D::QCamera(sceneRoot);
-    basicCamera->setProjectionType(Qt3D::QCameraLens::PerspectiveProjection);
+    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
@@ -140,7 +140,7 @@ int main(int ac, char **av)
     sceneRoot->addComponent(frameGraphComponent);
 
     // Scene loader
-    Qt3D::QEntity *sceneLoaderEntity = new Qt3D::QEntity(sceneRoot);
+    Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(sceneRoot);
     Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
     SceneWalker sceneWalker(sceneLoader);
     QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged, &sceneWalker, &SceneWalker::onStatusChanged);

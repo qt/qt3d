@@ -59,7 +59,7 @@ namespace Render {
 
 class GraphicsContext;
 
-typedef QPair<Qt3D::QNodeId, Qt3D::QNodeId> ShaderDataShaderUboKey;
+typedef QPair<Qt3DCore::QNodeId, Qt3DCore::QNodeId> ShaderDataShaderUboKey;
 
 class UniformBuffer
 {

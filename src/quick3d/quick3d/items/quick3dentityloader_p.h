@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 class QQmlIncubator;
 class QQmlContext;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QEntity;
 
@@ -89,9 +89,8 @@ public:
     QEntity *m_entity;
 };
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -60,14 +60,14 @@ namespace Render {
 class Renderer;
 class TransformManager;
 
-class Transform : public Qt3D::QBackendNode
+class Transform : public Qt3DCore::QBackendNode
 {
 public:
     Transform();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     QMatrix4x4 transformMatrix() const;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
 private:

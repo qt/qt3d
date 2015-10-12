@@ -49,15 +49,15 @@ BufferManager::~BufferManager()
 {
 }
 
-void BufferManager::addDirtyBuffer(const Qt3D::QNodeId &bufferId)
+void BufferManager::addDirtyBuffer(const Qt3DCore::QNodeId &bufferId)
 {
     if (!m_dirtyBuffers.contains(bufferId))
         m_dirtyBuffers.push_back(bufferId);
 }
 
-QVector<Qt3D::QNodeId> BufferManager::dirtyBuffers()
+QVector<Qt3DCore::QNodeId> BufferManager::dirtyBuffers()
 {
-    QVector<Qt3D::QNodeId> vector(m_dirtyBuffers);
+    QVector<Qt3DCore::QNodeId> vector(m_dirtyBuffers);
     m_dirtyBuffers.clear();
     return vector;
 }

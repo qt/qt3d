@@ -62,7 +62,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class FrameGraphNode : public Qt3D::QBackendNode
+class FrameGraphNode : public Qt3DCore::QBackendNode
 {
 public:
     FrameGraphNode();
@@ -116,7 +116,7 @@ private:
 };
 
 template<typename Backend, typename Frontend>
-class FrameGraphNodeFunctor : public Qt3D::QBackendNodeFunctor
+class FrameGraphNodeFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit FrameGraphNodeFunctor(FrameGraphManager *manager)
@@ -124,12 +124,12 @@ public:
     {
     }
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
     {
         return createBackendFrameGraphNode(frontend, factory);
     }
 
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
     {
         FrameGraphNode **node = m_manager->lookupResource(id);
         if (node != Q_NULLPTR)
@@ -137,13 +137,13 @@ public:
         return Q_NULLPTR;
     }
 
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
     {
         m_manager->releaseResource(id);
     }
 
 protected:
-    Backend *createBackendFrameGraphNode(Qt3D::QNode *n, const Qt3D::QBackendNodeFactory *factory) const
+    Backend *createBackendFrameGraphNode(Qt3DCore::QNode *n, const Qt3DCore::QBackendNodeFactory *factory) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
@@ -170,13 +170,13 @@ private:
     FrameGraphManager *m_manager;
 };
 
-class FrameGraphComponentFunctor : public Qt3D::QBackendNodeFunctor
+class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit FrameGraphComponentFunctor(Renderer *renderer);
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     Renderer *m_renderer;

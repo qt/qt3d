@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
     Window view;
 
-    Qt3D::QAspectEngine engine;
+    Qt3DCore::QAspectEngine engine;
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
@@ -78,10 +78,10 @@ int main(int argc, char* argv[])
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, -40.0f));
@@ -100,11 +100,11 @@ int main(int argc, char* argv[])
     Qt3DRender::QMaterial *material = new Qt3DRender::QPerVertexColorMaterial(rootEntity);
 
     // Torus
-    Qt3D::QEntity *customMeshEntity = new Qt3D::QEntity(rootEntity);
+    Qt3DCore::QEntity *customMeshEntity = new Qt3DCore::QEntity(rootEntity);
 
     // Transform
-    Qt3D::QTransform *transform = new Qt3D::QTransform;
-    Qt3D::QScaleTransform *scaleTransform = new Qt3D::QScaleTransform;
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
+    Qt3DCore::QScaleTransform *scaleTransform = new Qt3DCore::QScaleTransform;
     scaleTransform->setScale(8.0f);
     transform->addTransform(scaleTransform);
 

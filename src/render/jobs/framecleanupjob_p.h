@@ -60,7 +60,7 @@ namespace Render {
 class Renderer;
 class Entity;
 
-class FrameCleanupJob : public Qt3D::QAspectJob
+class FrameCleanupJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit FrameCleanupJob(Renderer *renderer);

@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QAbstractAspect;
 class QCamera;
 class QEntity;
@@ -61,12 +61,12 @@ public:
 
     void setFrameGraph(QFrameGraph *frameGraph);
     QFrameGraph *frameGraph() const;
-    Qt3D::QCamera *defaultCamera();
+    Qt3DCore::QCamera *defaultCamera();
 
-    void registerAspect(Qt3D::QAbstractAspect *aspect);
+    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
     void registerAspect(const QString &name);
 
-    void setRootEntity(Qt3D::QEntity *root);
+    void setRootEntity(Qt3DCore::QEntity *root);
     void show();
 
 protected:

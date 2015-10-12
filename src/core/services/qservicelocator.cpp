@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractServiceProvider
+    \class Qt3DCore::QAbstractServiceProvider
     \inmodule Qt3DCore
 */
 
@@ -96,23 +96,23 @@ public:
 
 
 /*!
-    \class Qt3D::QServiceLocator
+    \class Qt3DCore::QServiceLocator
     \inmodule Qt3DCore
     \brief Service locator used by aspects to retrieve pointers to concrete service objects
 
-    The Qt3D::QServiceLocator class can be used by aspects to obtain pointers to concrete
-    providers of abstract service interfaces. A subclass of Qt3D::QAbstractServiceProvider
+    The Qt3DCore::QServiceLocator class can be used by aspects to obtain pointers to concrete
+    providers of abstract service interfaces. A subclass of Qt3DCore::QAbstractServiceProvider
     encapsulates a service that can be provided by an aspect for other parts of the system.
     For example, an aspect may wish to know the current frame number, or how many CPU cores
     are available in the Qt3D tasking threadpool.
 
-    Aspects or the Qt3D::QAspectEngine are able to register objects as providers of services.
-    The service locator itself can be accessed via the Qt3D::QAbstractAspect::services()
+    Aspects or the Qt3DCore::QAspectEngine are able to register objects as providers of services.
+    The service locator itself can be accessed via the Qt3DCore::QAbstractAspect::services()
     function.
 
     As a convenience, the service locator provides methods to access services provided by
-    built in Qt3D aspects. Currently these are Qt3D::QSystemInformationService and
-    Qt3D::QOpenGLInformationService. For such services, the service provider will never
+    built in Qt3D aspects. Currently these are Qt3DCore::QSystemInformationService and
+    Qt3DCore::QOpenGLInformationService. For such services, the service provider will never
     return a null pointer. The default implementations of these services are simple null or
     do nothing implementations.
 */
@@ -170,7 +170,7 @@ int QServiceLocator::serviceCount() const
 }
 
 /*!
-    \fn T *Qt3D::QServiceLocator::service(int serviceType)
+    \fn T *Qt3DCore::QServiceLocator::service(int serviceType)
 
     Returns a pointer to the service provider for \a serviceType. If no provider
     has been explicitly registered, this returns a null pointer for non-Qt3D provided

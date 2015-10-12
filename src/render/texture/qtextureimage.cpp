@@ -67,7 +67,7 @@ public:
     {
         TexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
-            QString source = Qt3D::QUrlHelper::urlToLocalFileOrQrc(m_url);
+            QString source = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_url);
             dataPtr.reset(new TexImageData());
             if (dataPtr->setCompressedFile(source))
                 return dataPtr;

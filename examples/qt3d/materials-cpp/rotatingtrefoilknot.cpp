@@ -36,7 +36,7 @@
 
 #include "rotatingtrefoilknot.h"
 
-RotatingTrefoilKnot::RotatingTrefoilKnot(Qt3D::QNode *parent)
+RotatingTrefoilKnot::RotatingTrefoilKnot(Qt3DCore::QNode *parent)
     : TrefoilKnot(parent)
     , m_thetaAnimation(new QPropertyAnimation(this))
     , m_phiAnimation(new QPropertyAnimation(this))

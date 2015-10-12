@@ -43,7 +43,7 @@ namespace Qt3DInput {
 //Qt6: Move this into a QtQmlGui module and merge it with QQuickKeyEvent
 
 /*!
-    \class Qt3D::Q3DKeyEvent
+    \class Qt3DCore::Q3DKeyEvent
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -51,7 +51,7 @@ namespace Qt3DInput {
 /*!
     \qmltype KeyEvent
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3D::Q3DKeyEvent
+    \instantiates Qt3DCore::Q3DKeyEvent
     \since 5.5
 
     The KeyEvent QML type cannot be directly created. Objects of this type

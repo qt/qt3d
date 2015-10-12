@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
@@ -59,7 +59,7 @@ QSceneLoader::~QSceneLoader()
 }
 
 // Called in main thread
-void QSceneLoader::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
+void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     QAbstractSceneLoaderPrivate *d = static_cast<QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);

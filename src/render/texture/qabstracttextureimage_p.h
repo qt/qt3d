@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3D::QNodePrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAbstractTextureImagePrivate()

@@ -44,7 +44,7 @@ class PointLightBlock : public Qt3DRender::QShaderData
     Q_OBJECT
     Q_PROPERTY(QList<QShaderData *> lights READ lights NOTIFY lightsChanged)
 public:
-    explicit PointLightBlock(Qt3D::QNode *parent = 0);
+    explicit PointLightBlock(Qt3DCore::QNode *parent = 0);
     ~PointLightBlock();
 
     QList<Qt3DRender::QShaderData *> lights() const;

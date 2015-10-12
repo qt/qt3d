@@ -53,13 +53,13 @@ FrameGraphSubtreeSelector::~FrameGraphSubtreeSelector()
 {
 }
 
-void FrameGraphSubtreeSelector::updateFromPeer(Qt3D::QNode *peer)
+void FrameGraphSubtreeSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QFrameGraphSelector *selector = static_cast<QFrameGraphSelector *>(peer);
     setEnabled(selector->isEnabled());
 }
 
-void FrameGraphSubtreeSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &)
+void FrameGraphSubtreeSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 

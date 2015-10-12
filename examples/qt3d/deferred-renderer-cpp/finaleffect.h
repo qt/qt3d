@@ -43,7 +43,7 @@
 class FinalEffect : public Qt3DRender::QEffect
 {
 public:
-    explicit FinalEffect(Qt3D::QNode *parent = 0);
+    explicit FinalEffect(Qt3DCore::QNode *parent = 0);
 
     QList<Qt3DRender::QAnnotation *> passCriteria() const;
     inline Qt3DRender::QTechnique *gl3Technique() const { return m_gl3Technique; }

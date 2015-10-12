@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTRANSLATETRANSFORM_H
-#define QT3D_QTRANSLATETRANSFORM_H
+#ifndef QT3DCORE_QTRANSLATETRANSFORM_H
+#define QT3DCORE_QTRANSLATETRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
 
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QTranslateTransformPrivate;
 
@@ -85,8 +85,8 @@ private:
     Q_DISABLE_COPY(QTranslateTransform)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTRANSLATETRANSFORM_H
+#endif // QT3DCORE_QTRANSLATETRANSFORM_H

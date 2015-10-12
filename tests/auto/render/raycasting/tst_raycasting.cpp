@@ -41,7 +41,7 @@
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DCore/qray3d.h>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 

@@ -48,7 +48,7 @@ namespace Qt3DInput {
 class QMouseController;
 class QMouseInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QMouseInput : public Qt3D::QComponent
+class QT3DINPUTSHARED_EXPORT QMouseInput : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QMouseController *controller READ controller WRITE setController NOTIFY controllerChanged)
@@ -81,9 +81,9 @@ Q_SIGNALS:
     void wheel(Qt3DInput::Q3DWheelEvent *wheel);
 
 protected:
-    QMouseInput(QMouseInputPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    QMouseInput(QMouseInputPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void mouseEvent(Q3DMouseEvent *event);
     void setContainsMouse(bool contains);
 

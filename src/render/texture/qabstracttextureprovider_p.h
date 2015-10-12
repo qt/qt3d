@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProviderPrivate : public Qt3D::QNodePrivate
+class QAbstractTextureProviderPrivate : public Qt3DCore::QNodePrivate
 {
 public :
     QAbstractTextureProviderPrivate();

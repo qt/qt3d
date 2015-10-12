@@ -49,7 +49,7 @@ class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Target target READ target CONSTANT)
@@ -326,10 +326,10 @@ Q_SIGNALS:
     void uniqueChanged();
 
 protected:
-    explicit QAbstractTextureProvider(Qt3D::QNode *parent = 0);
-    explicit QAbstractTextureProvider(Target target, Qt3D::QNode *parent = 0);
-    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    explicit QAbstractTextureProvider(Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTextureProvider(Target target, Qt3DCore::QNode *parent = 0);
+    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:

@@ -59,16 +59,16 @@ namespace Input {
 
 class InputHandler;
 
-class MouseEventDispatcherJob : public Qt3D::QAspectJob
+class MouseEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit MouseEventDispatcherJob(const Qt3D::QNodeId &input, const QList<QMouseEvent> &events);
+    explicit MouseEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QMouseEvent> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_FINAL;
 
 private:
     InputHandler *m_inputHandler;
-    const Qt3D::QNodeId m_mouseInput;
+    const Qt3DCore::QNodeId m_mouseInput;
     const QList<QMouseEvent> m_events;
 };
 

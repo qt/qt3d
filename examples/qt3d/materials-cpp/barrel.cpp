@@ -57,7 +57,7 @@ const char *bumpsName[] = {
     "hard_bumps"
 };
 
-Barrel::Barrel(Qt3D::QNode *parent)
+Barrel::Barrel(Qt3DCore::QNode *parent)
     : RenderableEntity(parent)
     , m_bumps(NoBumps)
     , m_diffuseColor(Red)

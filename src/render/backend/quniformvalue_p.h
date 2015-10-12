@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QFrameAllocator;
 }
 
@@ -79,7 +79,7 @@ public:
     QUniformValue();
     virtual ~QUniformValue() {}
 
-    static QUniformValue *fromVariant(const QVariant &v, Qt3D::QFrameAllocator *allocator);
+    static QUniformValue *fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator);
 
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
@@ -109,12 +109,12 @@ public :
         return true;
     }
 
-    void setTextureId(const Qt3D::QNodeId &id)
+    void setTextureId(const Qt3DCore::QNodeId &id)
     {
         m_textureId = id;
     }
 
-    Qt3D::QNodeId textureId() const { return m_textureId; }
+    Qt3DCore::QNodeId textureId() const { return m_textureId; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -131,13 +131,13 @@ public :
     void apply(GraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
 
 private:
-    Qt3D::QNodeId m_textureId;
+    Qt3DCore::QNodeId m_textureId;
     int m_textureUnit;
 };
 
 struct BlockToUBO {
     int m_blockIndex;
-    Qt3D::QNodeId m_shaderDataID;
+    Qt3DCore::QNodeId m_shaderDataID;
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
@@ -148,7 +148,7 @@ public:
     ~QUniformPack();
 
     void setUniform(const QString &glslName, const QUniformValue *val);
-    void setTexture(const QString &glslName, const Qt3D::QNodeId &id);
+    void setTexture(const QString &glslName, const Qt3DCore::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
@@ -157,13 +157,13 @@ public:
     struct NamedTexture
     {
         NamedTexture() {}
-        NamedTexture(const QString &nm, const Qt3D::QNodeId &t)
+        NamedTexture(const QString &nm, const Qt3DCore::QNodeId &t)
             : glslName(nm)
             , texId(t)
         { }
 
         QString glslName;
-        Qt3D::QNodeId texId;
+        Qt3DCore::QNodeId texId;
     };
 
     inline QVector<NamedTexture> textures() const { return m_textures; }

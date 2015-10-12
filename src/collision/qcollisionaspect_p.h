@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCollision {
 
-class QCollisionAspectPrivate : public Qt3D::QAbstractAspectPrivate
+class QCollisionAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
     QCollisionAspectPrivate();
 

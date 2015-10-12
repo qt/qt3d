@@ -59,7 +59,7 @@ namespace Render {
 
 class Entity;
 
-class UpdateWorldTransformJob : public Qt3D::QAspectJob
+class UpdateWorldTransformJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit UpdateWorldTransformJob(Entity *node);

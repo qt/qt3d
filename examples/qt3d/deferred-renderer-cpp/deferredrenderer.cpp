@@ -37,7 +37,7 @@
 #include "deferredrenderer.h"
 
 
-DeferredRenderer::DeferredRenderer(Qt3D::QNode *parent)
+DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     : Qt3DRender::QViewport(parent)
     , m_sceneFilter(new Qt3DRender::QLayerFilter(this))
     , m_screenQuadFilter(new Qt3DRender::QLayerFilter(this))
@@ -52,7 +52,7 @@ DeferredRenderer::DeferredRenderer(Qt3D::QNode *parent)
     m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
 }
 
-void DeferredRenderer::setSceneCamera(Qt3D::QEntity *camera)
+void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)
 {
     m_sceneCameraSelector->setCamera(camera);
 }

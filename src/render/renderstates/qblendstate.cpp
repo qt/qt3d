@@ -65,7 +65,7 @@ public:
 };
 
 /*!
-    \class Qt3D::QBlendState
+    \class Qt3DCore::QBlendState
     \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
@@ -73,7 +73,7 @@ public:
 
 /*!
     \qmltype BlendState
-    \instantiates Qt3D::QBlendState
+    \instantiates Qt3DCore::QBlendState
     \inherits RenderState
     \inqmlmodule Qt3D.Renderer
     \since 5.5
@@ -116,7 +116,7 @@ QBlendState::QBlendState(QRenderState::Type type, QNode *parent)
 }
 
 /*!
-  \enum Qt3D::QBlendState::Blending
+  \enum Qt3DCore::QBlendState::Blending
 
   \value Zero 0
   \value One 1
@@ -145,7 +145,7 @@ QBlendState::QBlendState(QRenderState::Type type, QNode *parent)
  */
 
 /*!
-    \property Qt3D::QBlendState::srcRGB
+    \property Qt3DCore::QBlendState::srcRGB
 
  */
 QBlendState::Blending QBlendState::srcRGB() const
@@ -169,7 +169,7 @@ void QBlendState::setSrcRGB(QBlendState::Blending srcRGB)
  */
 
 /*!
-    \property Qt3D::QBlendState::dstRGB
+    \property Qt3DCore::QBlendState::dstRGB
 
  */
 QBlendState::Blending QBlendState::dstRGB() const
@@ -193,7 +193,7 @@ void QBlendState::setDstRGB(QBlendState::Blending dstRGB)
  */
 
 /*!
-    \property Qt3D::QBlendState::srcAlpha
+    \property Qt3DCore::QBlendState::srcAlpha
 
  */
 QBlendState::Blending QBlendState::srcAlpha() const
@@ -217,7 +217,7 @@ void QBlendState::setSrcAlpha(QBlendState::Blending srcAlpha)
  */
 
 /*!
-    \property Qt3D::QBlendState::dstAlpha
+    \property Qt3DCore::QBlendState::dstAlpha
 
  */
 QBlendState::Blending QBlendState::dstAlpha() const
@@ -244,7 +244,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
 
 /*!
     \qmltype BlendStateSeparate
-    \instantiates Qt3D::QBlendStateSeparate
+    \instantiates Qt3DCore::QBlendStateSeparate
     \inherits RenderState
     \inqmlmodule Qt3D.Renderer
     \since 5.5

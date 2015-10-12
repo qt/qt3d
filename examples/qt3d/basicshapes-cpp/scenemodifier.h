@@ -56,7 +56,7 @@ class SceneModifier : public QObject
     Q_OBJECT
 
 public:
-    explicit SceneModifier(Qt3D::QEntity *rootEntity);
+    explicit SceneModifier(Qt3DCore::QEntity *rootEntity);
     ~SceneModifier();
 
 public slots:
@@ -66,12 +66,12 @@ public slots:
     void enableSphere(bool enabled);
 
 private:
-    Qt3D::QEntity *m_rootEntity;
+    Qt3DCore::QEntity *m_rootEntity;
     Qt3DRender::QTorusMesh *m_torus;
-    Qt3D::QEntity *m_cylinderEntity;
-    Qt3D::QEntity *m_torusEntity;
-    Qt3D::QEntity *m_cuboidEntity;
-    Qt3D::QEntity *m_sphereEntity;
+    Qt3DCore::QEntity *m_cylinderEntity;
+    Qt3DCore::QEntity *m_torusEntity;
+    Qt3DCore::QEntity *m_cuboidEntity;
+    Qt3DCore::QEntity *m_sphereEntity;
 };
 
 #endif // SCENEMODIFIER_H

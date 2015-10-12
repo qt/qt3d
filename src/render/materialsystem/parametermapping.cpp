@@ -47,7 +47,7 @@ ParameterMapping::ParameterMapping()
 }
 
 ParameterMapping::ParameterMapping(QParameterMapping *mapping)
-    : m_id(mapping ? mapping->id() : Qt3D::QNodeId())
+    : m_id(mapping ? mapping->id() : Qt3DCore::QNodeId())
     , m_parameterName(mapping ? mapping->parameterName() : QString())
     , m_shaderVariableName(mapping ? mapping->shaderVariableName() : QString())
     , m_bindingType(mapping ? mapping->bindingType() : QParameterMapping::Uniform)
@@ -59,7 +59,7 @@ bool ParameterMapping::isValid() const
     return !m_id.isNull();
 }
 
-Qt3D::QNodeId ParameterMapping::id() const
+Qt3DCore::QNodeId ParameterMapping::id() const
 {
     return m_id;
 }

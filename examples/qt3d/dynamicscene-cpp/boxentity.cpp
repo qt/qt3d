@@ -39,9 +39,9 @@
 #include <qmath.h>
 
 BoxEntity::BoxEntity(QNode *parent)
-    : Qt3D::QEntity(parent)
-    , m_transform(new Qt3D::QTransform())
-    , m_translate(new Qt3D::QTranslateTransform())
+    : Qt3DCore::QEntity(parent)
+    , m_transform(new Qt3DCore::QTransform())
+    , m_translate(new Qt3DCore::QTranslateTransform())
     , m_mesh(new Qt3DRender::QCuboidMesh())
     , m_material(new Qt3DRender::QPhongMaterial())
     , m_angle(0.0f)

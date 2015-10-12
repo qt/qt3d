@@ -113,10 +113,10 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::Geometry renderGeometry;
-        Qt3D::QNodeId geometryId = Qt3D::QNodeId::createId();
+        Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
 
         // WHEN
-        Qt3D::QScenePropertyChangePtr updateChange(new Qt3D::QScenePropertyChange(Qt3D::NodeAdded, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(updateChange);
@@ -129,7 +129,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeRemoved, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("attribute");
         renderGeometry.sceneChangeEvent(updateChange);
@@ -142,7 +142,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(3));
         updateChange->setPropertyName("verticesPerPatch");
         renderGeometry.sceneChangeEvent(updateChange);

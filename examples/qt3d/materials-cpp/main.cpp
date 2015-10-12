@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Window view;
-    Qt3D::QAspectEngine engine;
+    Qt3DCore::QAspectEngine engine;
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
@@ -71,11 +71,11 @@ int main(int argc, char* argv[])
     engine.setData(data);
 
     // Scene Root
-    Qt3D::QEntity *sceneRoot = new Qt3D::QEntity();
+    Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3D::QCamera *basicCamera = new Qt3D::QCamera(sceneRoot);
-    basicCamera->setProjectionType(Qt3D::QCameraLens::PerspectiveProjection);
+    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));

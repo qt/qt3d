@@ -51,7 +51,7 @@ class QT3DRENDERERSHARED_EXPORT QLayerFilter : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(QStringList layers READ layers WRITE setLayers NOTIFY layersChanged)
 public:
-    explicit QLayerFilter(Qt3D::QNode *parent = 0);
+    explicit QLayerFilter(Qt3DCore::QNode *parent = 0);
     ~QLayerFilter();
 
     void setLayers(const QStringList &layers);
@@ -61,8 +61,8 @@ Q_SIGNALS:
     void layersChanged();
 
 protected:
-    QLayerFilter(QLayerFilterPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QLayerFilter)

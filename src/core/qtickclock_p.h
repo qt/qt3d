@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTICKCLOCK_P_H
-#define QT3D_QTICKCLOCK_P_H
+#ifndef QT3DCORE_QTICKCLOCK_P_H
+#define QT3DCORE_QTICKCLOCK_P_H
 
 //
 //  W A R N I N G
@@ -54,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QTickClock
 {
@@ -74,8 +74,8 @@ private:
     qint64 m_time;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTICKCLOCK_P_H
+#endif // QT3DCORE_QTICKCLOCK_P_H

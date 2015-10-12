@@ -41,12 +41,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3D::QNoDraw::QNoDraw
+ * \class Qt3DCore::QNoDraw::QNoDraw
  *
- * \brief When a Qt3D::QNoDraw node is present in a FrameGraph branch, this
+ * \brief When a Qt3DCore::QNoDraw node is present in a FrameGraph branch, this
  * prevents the renderer from rendering any primitive.
  *
- * Qt3D::QNoDraw should be used when the FrameGraph needs to set up some render
+ * Qt3DCore::QNoDraw should be used when the FrameGraph needs to set up some render
  * states or clear some buffers without requiring any mesh to be drawn. It has
  * the same effect as having a Qt3DRender::QRenderPassFilter that matches none of
  * available Qt3DRender::QRenderPass instances of the scene without the overhead cost

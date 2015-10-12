@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QPOSTMAN_P_H
-#define QT3D_QPOSTMAN_P_H
+#ifndef QT3DCORE_QPOSTMAN_P_H
+#define QT3DCORE_QPOSTMAN_P_H
 
 //
 //  W A R N I N G
@@ -53,7 +53,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QScene;
 class QPostmanPrivate;
@@ -90,6 +90,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QAbstractPostman*)
+Q_DECLARE_METATYPE(Qt3DCore::QAbstractPostman*)
 
-#endif // QT3D_QPOSTMAN_P_H
+#endif // QT3DCORE_QPOSTMAN_P_H

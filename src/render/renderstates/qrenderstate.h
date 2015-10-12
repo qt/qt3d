@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QRenderStatePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderState : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
 {
     Q_OBJECT
 
@@ -78,7 +78,7 @@ public:
     Type type() const;
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, Qt3D::QNode *parent = Q_NULLPTR);
+    QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QRenderState)

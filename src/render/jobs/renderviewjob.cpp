@@ -53,7 +53,7 @@ void RenderViewJob::run()
     // Create a RenderView object
     // The RenderView are created from a QFrameAllocator stored in the current Thread local storage
 
-    Qt3D::QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
+    Qt3DCore::QFrameAllocator *currentFrameAllocator = m_renderer->currentFrameAllocator();
     RenderView *renderView = currentFrameAllocator->allocate<RenderView>();
 
     // RenderView should allocate heap resources using only the currentFrameAllocator

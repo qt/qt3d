@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERA_H
-#define QT3D_CAMERA_H
+#ifndef QT3DCORE_CAMERA_H
+#define QT3DCORE_CAMERA_H
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QLookAtTransform;
 class QTransform;
@@ -55,7 +55,7 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
 {
     Q_OBJECT
     // CameraLens
-    Q_PROPERTY(Qt3D::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
+    Q_PROPERTY(Qt3DCore::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
     Q_PROPERTY(float nearPlane READ nearPlane WRITE setNearPlane NOTIFY nearPlaneChanged)
     Q_PROPERTY(float farPlane READ farPlane WRITE setFarPlane NOTIFY farPlaneChanged)
     Q_PROPERTY(float fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY fieldOfViewChanged)
@@ -167,8 +167,8 @@ protected:
     QCamera(QCameraPrivate &dd, QNode *parent = 0);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CAMERA_H
+#endif // QT3DCORE_CAMERA_H

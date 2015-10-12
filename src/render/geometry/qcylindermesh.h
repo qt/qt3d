@@ -53,7 +53,7 @@ class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
-    explicit QCylinderMesh(Qt3D::QNode *parent = 0);
+    explicit QCylinderMesh(Qt3DCore::QNode *parent = 0);
     ~QCylinderMesh();
 
     void setRings(int rings);

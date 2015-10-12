@@ -60,10 +60,10 @@ namespace Render {
 
 class Renderer;
 
-class LoadTextureDataJob : public Qt3D::QAspectJob
+class LoadTextureDataJob : public Qt3DCore::QAspectJob
 {
 public:
-    LoadTextureDataJob(const Qt3D::QNodeId &textureId);
+    LoadTextureDataJob(const Qt3DCore::QNodeId &textureId);
     ~LoadTextureDataJob();
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
@@ -71,7 +71,7 @@ protected:
     void run() Q_DECL_FINAL;
 
 private:
-    Qt3D::QNodeId m_textureId;
+    Qt3DCore::QNodeId m_textureId;
     Renderer *m_renderer;
 };
 

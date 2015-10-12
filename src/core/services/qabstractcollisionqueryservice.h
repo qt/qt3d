@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTCOLLISIONQUERYSERVICE_H
-#define QT3D_QABSTRACTCOLLISIONQUERYSERVICE_H
+#ifndef QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H
+#define QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H
 
 #include <QVector>
 
@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QRay3D;
 class QAbstractCollisionQueryServicePrivate;
@@ -79,6 +79,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QAbstractCollisionQueryService::QueryMode)
+Q_DECLARE_METATYPE(Qt3DCore::QAbstractCollisionQueryService::QueryMode)
 
-#endif // QT3D_QABSTRACTCOLLISIONQUERYSERVICE_H
+#endif // QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H

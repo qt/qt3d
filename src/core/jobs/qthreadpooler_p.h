@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QTHREADPOOLER_H
-#define QT3D_QTHREADPOOLER_H
+#ifndef QT3DCORE_QTHREADPOOLER_H
+#define QT3DCORE_QTHREADPOOLER_H
 
 //
 //  W A R N I N G
@@ -58,7 +58,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QThreadPooler : public QObject
 {
@@ -89,8 +89,8 @@ private:
     QAtomicInt m_taskCount;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QTHREADPOOLER_H
+#endif // QT3DCORE_QTHREADPOOLER_H

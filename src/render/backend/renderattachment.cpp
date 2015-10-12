@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -51,7 +51,7 @@ RenderAttachment::RenderAttachment()
 {
 }
 
-void RenderAttachment::updateFromPeer(Qt3D::QNode *peer)
+void RenderAttachment::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderAttachment *attachment = static_cast<QRenderAttachment *>(peer);
 
@@ -64,7 +64,7 @@ void RenderAttachment::updateFromPeer(Qt3D::QNode *peer)
         m_attachmentData.m_textureUuid = attachment->texture()->id();
 }
 
-Qt3D::QNodeId RenderAttachment::textureUuid() const
+Qt3DCore::QNodeId RenderAttachment::textureUuid() const
 {
     return m_attachmentData.m_textureUuid;
 }
@@ -94,7 +94,7 @@ QRenderAttachment::RenderAttachmentType RenderAttachment::type() const
     return m_attachmentData.m_type;
 }
 
-void RenderAttachment::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated) {

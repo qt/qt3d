@@ -55,11 +55,11 @@ public:
 
 typedef QSharedPointer<PropertyReaderInterface> PropertyReaderInterfacePtr;
 
-class QT3DRENDERERSHARED_EXPORT QShaderData : public Qt3D::QComponent
+class QT3DRENDERERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QShaderData(Qt3D::QNode *parent = 0);
+    explicit QShaderData(Qt3DCore::QNode *parent = 0);
     ~QShaderData();
 
     enum TransformType {
@@ -71,8 +71,8 @@ public:
     PropertyReaderInterfacePtr propertyReader() const;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 
 private:

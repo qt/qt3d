@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERALENS_H
-#define QT3D_CAMERALENS_H
+#ifndef QT3DCORE_CAMERALENS_H
+#define QT3DCORE_CAMERALENS_H
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QCameraLensPrivate;
 

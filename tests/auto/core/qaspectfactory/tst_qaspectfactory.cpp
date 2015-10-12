@@ -38,7 +38,7 @@
 #include <Qt3DCore/QAspectFactory>
 #include <Qt3DCore/QAbstractAspect>
 
-using namespace QT_PREPEND_NAMESPACE(Qt3D);
+using namespace QT_PREPEND_NAMESPACE(Qt3DCore);
 
 #define FAKE_ASPECT(ClassName) \
 class ClassName : public QAbstractAspect \

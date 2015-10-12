@@ -57,7 +57,7 @@ namespace Qt3DRender {
 class QRenderAttachment;
 class QRenderTarget;
 
-class QRenderTargetPrivate : public Qt3D::QComponentPrivate
+class QRenderTargetPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QRenderTargetPrivate();

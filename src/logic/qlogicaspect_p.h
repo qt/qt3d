@@ -61,7 +61,7 @@ class Executor;
 class Manager;
 }
 
-class QLogicAspectPrivate : public Qt3D::QAbstractAspectPrivate
+class QLogicAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
     QLogicAspectPrivate();
 

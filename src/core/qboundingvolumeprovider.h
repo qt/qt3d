@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBOUNDINGVOLUMEPROVIDER_H
-#define QT3D_QBOUNDINGVOLUMEPROVIDER_H
+#ifndef QT3DCORE_QBOUNDINGVOLUMEPROVIDER_H
+#define QT3DCORE_QBOUNDINGVOLUMEPROVIDER_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QBoundingVolume;
 
@@ -52,8 +52,8 @@ public:
     virtual QVector<QBoundingVolume *> boundingVolumes() const = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBOUNDINGVOLUMEPROVIDER_H
+#endif // QT3DCORE_QBOUNDINGVOLUMEPROVIDER_H

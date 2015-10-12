@@ -63,7 +63,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    \class Qt3D::QSpotLightPrivate
+    \class Qt3DCore::QSpotLightPrivate
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
@@ -81,14 +81,14 @@ QSpotLightPrivate::QSpotLightPrivate()
 
 /*!
     \qmltype SpotLight
-    \instantiates Qt3D::QSpotLight
+    \instantiates Qt3DCore::QSpotLight
     \inherits AbstractLight
     \inqmlmodule Qt3D.Renderer
     \since 5.5
     \brief For OpenGL ...
 */
 
-/*! \fn void Qt3D::QSpotLight::copy(const QNode *ref)
+/*! \fn void Qt3DCore::QSpotLight::copy(const QNode *ref)
   Copies the \a ref instance into this one.
  */
 
@@ -104,7 +104,7 @@ void QSpotLight::copy(const QNode *ref)
 
 
 /*!
-  \fn Qt3D::QSpotLight::QSpotLight(QNode *parent)
+  \fn Qt3DCore::QSpotLight::QSpotLight(QNode *parent)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
@@ -124,7 +124,7 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 */
 
 /*!
-  \property Qt3D::QSpotLight::direction
+  \property Qt3DCore::QSpotLight::direction
 
  */
 
@@ -141,7 +141,7 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 */
 
 /*!
-  \property Qt3D::QSpotLight::cutOffAngle
+  \property Qt3DCore::QSpotLight::cutOffAngle
 
  */
 float QSpotLight::cutOffAngle() const

@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 namespace Input {
@@ -147,7 +147,7 @@ void InputHandler::removeMouseController(HMouseController controller)
 
 // Return a vector of jobs to be performed for keyboard events
 // Handles all dependencies between jobs
-QVector<Qt3D::QAspectJobPtr> InputHandler::keyboardJobs()
+QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 {
     // One job for Keyboard focus change event per Keyboard Controller
     QVector<QAspectJobPtr> jobs;
@@ -177,7 +177,7 @@ QVector<Qt3D::QAspectJobPtr> InputHandler::keyboardJobs()
     return jobs;
 }
 
-QVector<Qt3D::QAspectJobPtr> InputHandler::mouseJobs()
+QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 {
     QVector<QAspectJobPtr> jobs;
     const QList<QMouseEvent> events = pendingMouseEvents();

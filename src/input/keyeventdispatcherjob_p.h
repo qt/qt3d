@@ -59,16 +59,16 @@ namespace Input {
 
 class InputHandler;
 
-class KeyEventDispatcherJob : public Qt3D::QAspectJob
+class KeyEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit KeyEventDispatcherJob(const Qt3D::QNodeId &input, const QList<QKeyEvent> &events);
+    explicit KeyEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QKeyEvent> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    const Qt3D::QNodeId m_keyboardInput;
+    const Qt3DCore::QNodeId m_keyboardInput;
     const QList<QKeyEvent> m_events;
 };
 

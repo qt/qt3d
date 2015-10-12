@@ -58,7 +58,7 @@ FrameCleanupJob::~FrameCleanupJob()
 void FrameCleanupJob::run()
 {
     // set each ShaderData to not need an update
-    Q_FOREACH (const Qt3D::QNodeId &id, ShaderData::updatedShaderDataList()) {
+    Q_FOREACH (const Qt3DCore::QNodeId &id, ShaderData::updatedShaderDataList()) {
         ShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
         if (shaderData != Q_NULLPTR)
             shaderData->clearUpdate();

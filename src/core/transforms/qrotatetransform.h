@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QROTATETRANSFORM_H
-#define QT3D_QROTATETRANSFORM_H
+#ifndef QT3DCORE_QROTATETRANSFORM_H
+#define QT3DCORE_QROTATETRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
 
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QRotateTransformPrivate;
 
@@ -79,8 +79,8 @@ private:
     Q_DISABLE_COPY(QRotateTransform)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QROTATETRANSFORM_H
+#endif // QT3DCORE_QROTATETRANSFORM_H

@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class QFrameGraphNode;
 
-class QFrameGraphNodePrivate : public Qt3D::QNodePrivate
+class QFrameGraphNodePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QFrameGraphNodePrivate();

@@ -69,23 +69,23 @@ class Technique;
 class Effect;
 class MaterialManager;
 
-class Q_AUTOTEST_EXPORT Material : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Material : public Qt3DCore::QBackendNode
 {
 public:
     Material();
     ~Material();
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode* mat) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
-    QList<Qt3D::QNodeId> parameters() const;
-    Qt3D::QNodeId effect() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
+    Qt3DCore::QNodeId effect() const;
 
 private:
     ParameterPack m_parameterPack;
-    Qt3D::QNodeId m_effectUuid;
+    Qt3DCore::QNodeId m_effectUuid;
     bool m_enabled;
 };
 

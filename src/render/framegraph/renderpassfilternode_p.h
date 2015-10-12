@@ -70,15 +70,15 @@ class RenderPassFilter
 public:
     RenderPassFilter();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    QList<Qt3D::QNodeId> filters() const;
-    QList<Qt3D::QNodeId> parameters() const;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    QList<Qt3DCore::QNodeId> filters() const;
+    QList<Qt3DCore::QNodeId> parameters() const;
     void appendFilter(QAnnotation *criterion);
-    void removeFilter(const Qt3D::QNodeId &criterionId);
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void removeFilter(const Qt3DCore::QNodeId &criterionId);
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<Qt3D::QNodeId> m_filters;
+    QList<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;
 };
 

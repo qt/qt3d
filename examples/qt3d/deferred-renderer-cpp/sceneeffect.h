@@ -43,7 +43,7 @@
 class SceneEffect : public Qt3DRender::QEffect
 {
 public:
-    explicit SceneEffect(Qt3D::QNode *parent = 0);
+    explicit SceneEffect(Qt3DCore::QNode *parent = 0);
 
     QList<Qt3DRender::QAnnotation *> passCriteria() const;
 

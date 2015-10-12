@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 RunnableInterface::~RunnableInterface()
 {
@@ -123,6 +123,6 @@ DependencyHandler *SyncTaskRunnable::dependencyHandler()
     return Q_NULLPTR;
 }
 
-} // namespace Qt3D {
+} // namespace Qt3DCore {
 
 QT_END_NAMESPACE

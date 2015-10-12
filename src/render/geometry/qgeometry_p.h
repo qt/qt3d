@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QGeometryPrivate : public Qt3D::QNodePrivate
+class QGeometryPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QGeometry)

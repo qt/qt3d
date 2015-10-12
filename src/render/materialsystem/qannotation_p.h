@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotationPrivate : public Qt3D::QNodePrivate
+class QAnnotationPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAnnotationPrivate();

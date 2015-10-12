@@ -167,7 +167,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        Qt3D::QScenePropertyChangePtr updateChange(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("instanceCount");
         updateChange->setValue(2);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -180,7 +180,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("primitiveCount");
         updateChange->setValue(56);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -193,7 +193,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("baseVertex");
         updateChange->setValue(65);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -206,7 +206,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("baseInstance");
         updateChange->setValue(82);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -219,7 +219,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("restartIndex");
         updateChange->setValue(46);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -232,7 +232,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("primitiveRestart");
         updateChange->setValue(true);
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -245,7 +245,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("primitiveType");
         updateChange->setValue(static_cast<int>(Qt3DRender::QGeometryRenderer::LineLoop));
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -258,7 +258,7 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeUpdated, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setPropertyName("geometryFunctor");
         Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(1450));
         updateChange->setValue(QVariant::fromValue(functor));
@@ -272,8 +272,8 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeAdded, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
-        Qt3D::QNodeId geometryId = Qt3D::QNodeId::createId();
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(updateChange);
@@ -286,13 +286,13 @@ private Q_SLOTS:
         QVERIFY(!renderGeometryRenderer.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3D::QScenePropertyChange(Qt3D::NodeRemoved, Qt3D::QSceneChange::Node, Qt3D::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(geometryId));
         updateChange->setPropertyName("geometry");
         renderGeometryRenderer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderGeometryRenderer.geometryId(), Qt3D::QNodeId());
+        QCOMPARE(renderGeometryRenderer.geometryId(), Qt3DCore::QNodeId());
         QVERIFY(renderGeometryRenderer.isDirty());
 
         renderGeometryRenderer.unsetDirty();

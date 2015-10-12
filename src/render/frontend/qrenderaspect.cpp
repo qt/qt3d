@@ -121,12 +121,12 @@ static void initResources()
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QRenderAspectPrivate
+    \class Qt3DCore::QRenderAspectPrivate
     \internal
 */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
@@ -138,7 +138,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_initialized(false)
 {
     initResources();
-    m_aspectType = Qt3D::QAbstractAspect::AspectRenderer;
+    m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
 }
 
 void QRenderAspectPrivate::setSurface(QSurface *surface)
@@ -201,15 +201,15 @@ QRenderAspect::QRenderAspect(QRenderAspectPrivate &dd, QObject *parent)
 void QRenderAspect::registerBackendTypes()
 {
     Q_D(QRenderAspect);
-    registerBackendType<Qt3D::QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(d->m_renderer)));
-    registerBackendType<Qt3D::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Transform, Render::TransformManager>(d->m_renderer->transformManager())));
+    registerBackendType<Qt3DCore::QEntity>(QBackendNodeFunctorPtr(new Render::RenderEntityFunctor(d->m_renderer)));
+    registerBackendType<Qt3DCore::QTransform>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Transform, Render::TransformManager>(d->m_renderer->transformManager())));
     registerBackendType<QMaterial>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(d->m_renderer->materialManager())));
     registerBackendType<QTechnique>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Technique, Render::TechniqueManager>(d->m_renderer->techniqueManager())));
     registerBackendType<QAbstractTextureProvider>(QBackendNodeFunctorPtr(new Render::TextureFunctor(d->m_renderer->textureManager(), d->m_renderer->textureImageManager(), d->m_renderer->textureDataManager())));
     registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(d->m_renderer->shaderManager())));
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(d->m_renderer->effectManager())));
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_renderer->criterionManager())));
-    registerBackendType<Qt3D::QCameraLens>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
+    registerBackendType<Qt3DCore::QCameraLens>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_renderer->cameraManager())));
     registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(d->m_renderer->layerManager())));
     registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(d->m_renderer->renderPassManager())));
     registerBackendType<QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_renderer->sceneManager())));
@@ -258,7 +258,7 @@ void QRenderAspect::renderShutdown()
     d->m_renderer->shutdown();
 }
 
-QVector<Qt3D::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
+QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     Q_D(QRenderAspect);
     d->m_time = time;
@@ -321,7 +321,7 @@ QVector<Qt3D::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QRenderAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
+void QRenderAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -330,7 +330,7 @@ void QRenderAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
     visitor.traverse(n, this, &QRenderAspect::visitNode);
 }
 
-void QRenderAspect::sceneNodeRemoved(Qt3D::QSceneChangePtr &e)
+void QRenderAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -344,7 +344,7 @@ qint64 QRenderAspect::time() const
     return d->m_time;
 }
 
-void QRenderAspect::setRootEntity(Qt3D::QEntity *rootObject)
+void QRenderAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
 {
     // setSceneGraphRoot is synchronized using the Renderer's mutex
     Q_D(QRenderAspect);
@@ -362,7 +362,7 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
 
         // Register the VSyncFrameAdvanceService to drive the aspect manager loop
         // depending on the vsync
-        services()->registerServiceProvider(Qt3D::QServiceLocator::FrameAdvanceService,
+        services()->registerServiceProvider(Qt3DCore::QServiceLocator::FrameAdvanceService,
                                             d->m_renderer->vsyncFrameAdvanceService());
 
         d->m_renderer->setQRenderAspect(this);
@@ -394,7 +394,7 @@ void QRenderAspect::onCleanup()
     d->m_renderer = Q_NULLPTR;
 }
 
-void QRenderAspect::visitNode(Qt3D::QNode *node)
+void QRenderAspect::visitNode(Qt3DCore::QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }

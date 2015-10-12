@@ -48,9 +48,9 @@
 class DeferredRenderer : public Qt3DRender::QViewport
 {
 public:
-    explicit DeferredRenderer(Qt3D::QNode *parent = 0);
+    explicit DeferredRenderer(Qt3DCore::QNode *parent = 0);
 
-    void setSceneCamera(Qt3D::QEntity *camera);
+    void setSceneCamera(Qt3DCore::QEntity *camera);
     void setGBuffer(Qt3DRender::QRenderTarget *gBuffer);
     void setGeometryPassCriteria(QList<Qt3DRender::QAnnotation *> criteria);
     void setFinalPassCriteria(QList<Qt3DRender::QAnnotation *> criteria);

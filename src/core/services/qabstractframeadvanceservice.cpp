@@ -39,15 +39,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractFrameAdvanceServicePrivate
+    \class Qt3DCore::QAbstractFrameAdvanceServicePrivate
     \internal
 */
 
 /*!
-    \class Qt3D::QAbstractFrameAdvanceService
+    \class Qt3DCore::QAbstractFrameAdvanceService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D frame advance service
 
@@ -72,19 +72,19 @@ QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(QAbstractFrameAdvance
 }
 
 /*!
-    \fn qint64 Qt3D::QAbstractFrameAdvanceService::waitForNextTick()
+    \fn qint64 Qt3DCore::QAbstractFrameAdvanceService::waitForNextTick()
 
     Returns the current time, the call may be blocking if waiting for a tick.
 */
 
 /*!
-    \fn void Qt3D::QAbstractFrameAdvanceService::start()
+    \fn void Qt3DCore::QAbstractFrameAdvanceService::start()
 
     Starts the service.
 */
 
 /*!
-    \fn void Qt3D::QAbstractFrameAdvanceService::stop()
+    \fn void Qt3DCore::QAbstractFrameAdvanceService::stop()
 
     Stops the service, performing any cleanup deemed necessary.
 */

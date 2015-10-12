@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3D::QAbstractColliderPrivate
+    \class Qt3DCore::QAbstractColliderPrivate
     \internal
 */
 QAbstractColliderPrivate::QAbstractColliderPrivate()

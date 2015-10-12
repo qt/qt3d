@@ -57,36 +57,36 @@ namespace Input {
 
 class InputHandler;
 
-class MouseController : public Qt3D::QBackendNode
+class MouseController : public Qt3DCore::QBackendNode
 {
 public:
     MouseController();
     ~MouseController();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void setInputHandler(InputHandler *handler);
 
-    void addMouseInput(const Qt3D::QNodeId &input);
-    void removeMouseInput(const Qt3D::QNodeId &input);
+    void addMouseInput(const Qt3DCore::QNodeId &input);
+    void removeMouseInput(const Qt3DCore::QNodeId &input);
 
-    QVector<Qt3D::QNodeId> mouseInputs() const;
+    QVector<Qt3DCore::QNodeId> mouseInputs() const;
 
 protected:
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QVector<Qt3D::QNodeId> m_mouseInputs;
+    QVector<Qt3DCore::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
 };
 
-class MouseControllerFunctor : public Qt3D::QBackendNodeFunctor
+class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit MouseControllerFunctor(InputHandler *handler);
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;

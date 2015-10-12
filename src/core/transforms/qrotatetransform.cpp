@@ -46,10 +46,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QRotateTransformPrivate
+    \class Qt3DCore::QRotateTransformPrivate
     \internal
 */
 QRotateTransformPrivate::QRotateTransformPrivate()
@@ -85,7 +85,7 @@ float QRotateTransform::angleDeg() const
     return d->m_angleDeg;
 }
 
-float Qt3D::QRotateTransform::angleRad() const
+float Qt3DCore::QRotateTransform::angleRad() const
 {
     Q_D(const QRotateTransform);
     return qDegreesToRadians(d->m_angleDeg);
@@ -130,6 +130,6 @@ void QRotateTransform::setAxis(const QVector3D& arg)
     }
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

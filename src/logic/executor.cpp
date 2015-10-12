@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DLogic {
 namespace Logic {
@@ -63,7 +63,7 @@ void Executor::clearQueueAndProceed()
         m_semaphore->release();
 }
 
-void Executor::enqueueLogicFrameUpdates(const QVector<Qt3D::QNodeId> &nodeIds)
+void Executor::enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeIds)
 {
     m_nodeIds = nodeIds;
 }
@@ -99,6 +99,6 @@ void Executor::processLogicFrameUpdates()
 }
 
 } // namespace Logic
-} // namespace Qt3D
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE

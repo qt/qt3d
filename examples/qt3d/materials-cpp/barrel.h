@@ -44,7 +44,7 @@
 class Barrel : public RenderableEntity
 {
 public:
-    Barrel(Qt3D::QNode *parent = 0);
+    Barrel(Qt3DCore::QNode *parent = 0);
     ~Barrel();
 
     enum DiffuseColor {

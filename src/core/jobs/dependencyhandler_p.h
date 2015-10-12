@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_DEPENDENCYHANDLER_P_H
-#define QT3D_DEPENDENCYHANDLER_P_H
+#ifndef QT3DCORE_DEPENDENCYHANDLER_P_H
+#define QT3DCORE_DEPENDENCYHANDLER_P_H
 
 //
 //  W A R N I N G
@@ -55,7 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 struct Dependency
 {
@@ -68,12 +68,12 @@ struct Dependency
     RunnableInterface *dependee;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 template <>
-class QTypeInfo<Qt3D::Dependency> : public QTypeInfoMerger<Qt3D::Dependency, Qt3D::RunnableInterface *> {};
+class QTypeInfo<Qt3DCore::Dependency> : public QTypeInfoMerger<Qt3DCore::Dependency, Qt3DCore::RunnableInterface *> {};
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 inline bool operator==(const Dependency &left, const Dependency &right)
 {
@@ -102,9 +102,9 @@ private:
     QMutex *m_mutex;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_DEPENDENCYHANDLER_P_H
+#endif // QT3DCORE_DEPENDENCYHANDLER_P_H
 

@@ -56,12 +56,12 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DLogic {
 
 /*!
-    \class Qt3D::QLogicAspectPrivate
+    \class Qt3DCore::QLogicAspectPrivate
     \internal
 */
 QLogicAspectPrivate::QLogicAspectPrivate()
@@ -109,7 +109,7 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QLogicAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
+void QLogicAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -118,7 +118,7 @@ void QLogicAspect::sceneNodeAdded(Qt3D::QSceneChangePtr &e)
     visitor.traverse(n, this, &QLogicAspect::visitNode);
 }
 
-void QLogicAspect::sceneNodeRemoved(Qt3D::QSceneChangePtr &e)
+void QLogicAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -126,7 +126,7 @@ void QLogicAspect::sceneNodeRemoved(Qt3D::QSceneChangePtr &e)
     QAbstractAspect::clearBackendNode(n);
 }
 
-void QLogicAspect::setRootEntity(Qt3D::QEntity *rootObject)
+void QLogicAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
 {
     QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QLogicAspect::visitNode);
@@ -155,7 +155,7 @@ void QLogicAspect::onShutdown()
     d->m_executor->clearQueueAndProceed();
 }
 
-void QLogicAspect::visitNode(Qt3D::QNode *node)
+void QLogicAspect::visitNode(Qt3DCore::QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }

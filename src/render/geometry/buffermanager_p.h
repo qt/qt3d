@@ -57,23 +57,23 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class BufferManager : public Qt3D::QResourceManager<
+class BufferManager : public Qt3DCore::QResourceManager<
         Buffer,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     BufferManager();
     ~BufferManager();
 
     // Aspect Thread
-    void addDirtyBuffer(const Qt3D::QNodeId &bufferId);
-    QVector<Qt3D::QNodeId> dirtyBuffers();
+    void addDirtyBuffer(const Qt3DCore::QNodeId &bufferId);
+    QVector<Qt3DCore::QNodeId> dirtyBuffers();
 
 private:
-    QVector<Qt3D::QNodeId> m_dirtyBuffers;
+    QVector<Qt3DCore::QNodeId> m_dirtyBuffers;
 };
 
 } // namespace Render

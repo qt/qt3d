@@ -56,7 +56,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 #ifdef THREAD_WEAVER
 namespace {
@@ -102,7 +102,7 @@ void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *t
 #endif
 
 /*!
-    \class Qt3D::QAspectJobManager
+    \class Qt3DCore::QAspectJobManager
     \internal
 */
 QAspectJobManager::QAspectJobManager(QObject *parent)
@@ -234,6 +234,6 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 #endif
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

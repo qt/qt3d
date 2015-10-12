@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 /*!
-    \class Qt3D::QFrameAllocator
+    \class Qt3DCore::QFrameAllocator
     \inmodule Qt3DCore
     \brief Provides a pool of memory chunks to be used to allocate objects on a per frame basis.
 
@@ -51,10 +51,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QFrameAllocatorPrivate
+    \class Qt3DCore::QFrameAllocatorPrivate
     \internal
 */
 QFrameAllocatorPrivate::QFrameAllocatorPrivate()

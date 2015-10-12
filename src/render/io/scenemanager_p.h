@@ -55,30 +55,30 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 class QEntity;
 }
 
 namespace Qt3DRender {
 namespace Render {
 
-class SceneManager : public Qt3D::QResourceManager<Scene,
-                                             Qt3D::QNodeId,
+class SceneManager : public Qt3DCore::QResourceManager<Scene,
+                                             Qt3DCore::QNodeId,
                                              8,
-                                             Qt3D::ArrayAllocatingPolicy,
-                                             Qt3D::ObjectLevelLockingPolicy>
+                                             Qt3DCore::ArrayAllocatingPolicy,
+                                             Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     SceneManager();
 
-    void addSceneData(const QUrl &source, const Qt3D::QNodeId &sceneUuid);
+    void addSceneData(const QUrl &source, const Qt3DCore::QNodeId &sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
-    void addLoadedSceneTree(const QUrl &source, Qt3D::QEntity *tree);
-    Qt3D::QEntity *sceneTreeFromSource(const QUrl &source);
+    void addLoadedSceneTree(const QUrl &source, Qt3DCore::QEntity *tree);
+    Qt3DCore::QEntity *sceneTreeFromSource(const QUrl &source);
 
 private:
-    QHash<QUrl, Qt3D::QEntity *> m_loadedSceneTrees;
+    QHash<QUrl, Qt3DCore::QEntity *> m_loadedSceneTrees;
     QVector<LoadSceneJobPtr> m_pendingJobs;
 };
 

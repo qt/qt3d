@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTJOBMANAGER_P_H
-#define QT3D_QASPECTJOBMANAGER_P_H
+#ifndef QT3DCORE_QASPECTJOBMANAGER_P_H
+#define QT3DCORE_QASPECTJOBMANAGER_P_H
 
 //
 //  W A R N I N G
@@ -63,7 +63,7 @@ class Queue;
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QThreadPooler;
 class DependencyHandler;
@@ -93,8 +93,8 @@ private:
     QScopedPointer<DependencyHandler> m_dependencyHandler;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTJOBMANAGER_P_H
+#endif // QT3DCORE_QASPECTJOBMANAGER_P_H

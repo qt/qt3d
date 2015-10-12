@@ -39,8 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 /*!
@@ -56,12 +55,12 @@ Quick3DEntity::Quick3DEntity(QObject *parent)
 }
 
 /*!
-    \qmlproperty list<Component3D> Qt3D::Entity::components
+    \qmlproperty list<Component3D> Qt3DCore::Entity::components
     \readonly
 */
 QQmlListProperty<QComponent> Quick3DEntity::componentList()
 {
-    return QQmlListProperty<Qt3D::QComponent>(this, 0,
+    return QQmlListProperty<Qt3DCore::QComponent>(this, 0,
                                              Quick3DEntity::qmlAppendComponent,
                                              Quick3DEntity::qmlComponentsCount,
                                              Quick3DEntity::qmlComponentAt,
@@ -97,8 +96,7 @@ void Quick3DEntity::qmlClearComponents(QQmlListProperty<QComponent> *list)
     }
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

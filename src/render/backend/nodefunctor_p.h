@@ -58,7 +58,7 @@ namespace Qt3DRender {
 namespace Render {
 
 template<class Backend, class Manager>
-class NodeFunctor : public Qt3D::QBackendNodeFunctor
+class NodeFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit NodeFunctor(Manager *manager)
@@ -66,7 +66,7 @@ public:
     {
     }
 
-    Qt3D::QBackendNode *create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL
     {
         Backend *backend = m_manager->getOrCreateResource(frontend->id());
         backend->setFactory(factory);
@@ -74,12 +74,12 @@ public:
         return backend;
     }
 
-    Qt3D::QBackendNode *get(const Qt3D::QNodeId &id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(const Qt3D::QNodeId &id) const Q_DECL_FINAL
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
     {
         m_manager->releaseResource(id);
     }

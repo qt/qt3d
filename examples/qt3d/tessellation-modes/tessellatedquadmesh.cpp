@@ -44,7 +44,7 @@ class TessellatedGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
 public:
-    TessellatedGeometry(Qt3D::QNode *parent = Q_NULLPTR)
+    TessellatedGeometry(Qt3DCore::QNode *parent = Q_NULLPTR)
         : Qt3DRender::QGeometry(parent)
         , m_positionAttribute(new Qt3DRender::QAttribute(this))
         , m_vertexBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this))
@@ -80,7 +80,7 @@ private:
     Qt3DRender::QBuffer *m_vertexBuffer;
 };
 
-TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
+TessellatedQuadMesh::TessellatedQuadMesh(Qt3DCore::QNode *parent)
     : Qt3DRender::QGeometryRenderer(parent)
 {
     setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);

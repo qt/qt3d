@@ -48,7 +48,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -85,7 +85,7 @@ void Shader::cleanup()
     m_uniformBlocks.clear();
 }
 
-void Shader::updateFromPeer(Qt3D::QNode *peer)
+void Shader::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QShaderProgram *shader = static_cast<QShaderProgram *>(peer);
 
@@ -122,7 +122,7 @@ QVector<QByteArray> Shader::shaderCode() const
     return m_shaderCode;
 }
 
-void Shader::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();

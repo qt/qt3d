@@ -52,13 +52,13 @@ class QParameter;
 class QTechniquePrivate;
 class QOpenGLFilter;
 
-class QT3DRENDERERSHARED_EXPORT QTechnique : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QOpenGLFilter *openGLFilter READ openGLFilter)
 
 public:
-    explicit QTechnique(Qt3D::QNode *parent = 0);
+    explicit QTechnique(Qt3DCore::QNode *parent = 0);
     ~QTechnique();
 
     void addAnnotation(QAnnotation *criterion);
@@ -76,8 +76,8 @@ public:
     QOpenGLFilter *openGLFilter();
 
 protected:
-    QTechnique(QTechniquePrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QTechnique)

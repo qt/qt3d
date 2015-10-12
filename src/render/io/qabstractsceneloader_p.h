@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class AbstractSceneParser;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public Qt3D::QComponentPrivate
+class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAbstractSceneLoaderPrivate();

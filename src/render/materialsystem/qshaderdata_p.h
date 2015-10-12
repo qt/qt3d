@@ -83,7 +83,7 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
     }
 };
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QShaderDataPrivate : public Qt3D::QComponentPrivate
+class QT3DRENDERERSHARED_PRIVATE_EXPORT QShaderDataPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QShaderDataPrivate();

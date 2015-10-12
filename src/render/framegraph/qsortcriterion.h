@@ -46,12 +46,12 @@ namespace Qt3DRender {
 
 class QSortCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSortCriterion : public Qt3D::QNode
+class QT3DRENDERERSHARED_EXPORT QSortCriterion : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)
 public:
-    explicit QSortCriterion(Qt3D::QNode *parent = 0);
+    explicit QSortCriterion(Qt3DCore::QNode *parent = 0);
     ~QSortCriterion();
 
     enum SortType {
@@ -68,8 +68,8 @@ Q_SIGNALS:
     void sortChanged();
 
 protected:
-    QSortCriterion(QSortCriterionPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QSortCriterion(QSortCriterionPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QSortCriterion)

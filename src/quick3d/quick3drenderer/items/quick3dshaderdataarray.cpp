@@ -43,7 +43,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class Quick3DShaderDataArrayPrivate : public Qt3D::QNodePrivate
+class Quick3DShaderDataArrayPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     Quick3DShaderDataArrayPrivate()

@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Attribute : public Qt3D::QBackendNode
+class Q_AUTOTEST_EXPORT Attribute : public Qt3DCore::QBackendNode
 {
 public:
     Attribute();
@@ -65,31 +65,31 @@ public:
 
     void cleanup();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    inline Qt3D::QNodeId bufferId() const { return m_bufferId; }
+    inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
-    inline Qt3D::QAbstractAttribute::DataType dataType() const { return m_dataType; }
+    inline Qt3DCore::QAbstractAttribute::DataType dataType() const { return m_dataType; }
     inline uint dataSize() const { return m_dataSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
-    inline Qt3D::QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
+    inline Qt3DCore::QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
 
 private:
-    Qt3D::QNodeId m_bufferId;
+    Qt3DCore::QNodeId m_bufferId;
     QString m_name;
-    Qt3D::QAbstractAttribute::DataType m_dataType;
+    Qt3DCore::QAbstractAttribute::DataType m_dataType;
     uint m_dataSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
-    Qt3D::QAbstractAttribute::AttributeType m_attributeType;
+    Qt3DCore::QAbstractAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };
 

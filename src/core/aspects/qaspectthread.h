@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTTHREAD_H
-#define QT3D_QASPECTTHREAD_H
+#ifndef QT3DCORE_QASPECTTHREAD_H
+#define QT3DCORE_QASPECTTHREAD_H
 
 #include <QThread>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAspectManager;
 
@@ -66,8 +66,8 @@ private:
     QSemaphore m_semaphore;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QASPECTTHREAD_H
+#endif // QT3DCORE_QASPECTTHREAD_H

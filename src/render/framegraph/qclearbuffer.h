@@ -50,7 +50,7 @@ class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
 public:
-    explicit QClearBuffer(Qt3D::QNode *parent = 0);
+    explicit QClearBuffer(Qt3DCore::QNode *parent = 0);
     ~QClearBuffer();
 
     enum BufferType {
@@ -72,8 +72,8 @@ Q_SIGNALS:
     void buffersChanged();
 
 protected:
-    QClearBuffer(QClearBufferPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QClearBuffer(QClearBufferPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QClearBuffer)

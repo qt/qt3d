@@ -50,14 +50,14 @@ QMouseControllerPrivate::QMouseControllerPrivate()
 }
 
 /*!
- * \class Qt3D::QMouseController
+ * \class Qt3DCore::QMouseController
  * \inmodule Qt3DInput
  *
- * \brief Qt3D::QMouseController is in charge of dispatching mouse events to
- * attached Qt3D::QMouseInput objects.
+ * \brief Qt3DCore::QMouseController is in charge of dispatching mouse events to
+ * attached Qt3DCore::QMouseInput objects.
  *
  * \since 5.5
- * \sa Qt3D::QMouseInput
+ * \sa Qt3DCore::QMouseInput
  */
 QMouseController::QMouseController(QNode *parent)
     : QNode(*new QMouseControllerPrivate, parent)
@@ -80,7 +80,7 @@ QMouseController::~QMouseController()
     QNode::cleanup();
 }
 
-void QMouseController::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
+void QMouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change);
     // TODO: To be completed as the mouse input aspect takes shape

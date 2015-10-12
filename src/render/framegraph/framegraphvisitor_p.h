@@ -69,13 +69,13 @@ public:
 
     void traverse(FrameGraphNode *root,
                   Renderer *renderer,
-                  QVector<Qt3D::QAspectJobPtr> *jobs);
+                  QVector<Qt3DCore::QAspectJobPtr> *jobs);
 
 private:
     void visit(Render::FrameGraphNode *node);
 
     Renderer *m_renderer;
-    QVector<Qt3D::QAspectJobPtr> *m_jobs;
+    QVector<Qt3DCore::QAspectJobPtr> *m_jobs;
     int m_renderviewIndex;
 };
 

@@ -60,7 +60,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -324,7 +324,7 @@ ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QStri
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                const QList<Qt3D::QNodeId> &parameterIds)
+                                const QList<Qt3DCore::QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
         Parameter *param = manager->lookupResource(paramId);

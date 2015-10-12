@@ -57,23 +57,23 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class GeometryRendererManager : public Qt3D::QResourceManager<
+class GeometryRendererManager : public Qt3DCore::QResourceManager<
         GeometryRenderer,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy,
-        Qt3D::ObjectLevelLockingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
 {
 public:
     GeometryRendererManager();
     ~GeometryRendererManager();
 
     // Aspect Thread
-    void addDirtyGeometryRenderer(const Qt3D::QNodeId &bufferId);
-    QVector<Qt3D::QNodeId> dirtyGeometryRenderers();
+    void addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId);
+    QVector<Qt3DCore::QNodeId> dirtyGeometryRenderers();
 
 private:
-    QVector<Qt3D::QNodeId> m_dirtyGeometryRenderers;
+    QVector<Qt3DCore::QNodeId> m_dirtyGeometryRenderers;
 };
 
 } // namespace Render

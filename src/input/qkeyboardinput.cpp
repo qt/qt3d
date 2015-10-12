@@ -41,12 +41,12 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
 /*!
-    \class Qt3D::QKeyboardInputPrivate
+    \class Qt3DCore::QKeyboardInputPrivate
     \internal
 */
 QKeyboardInputPrivate::QKeyboardInputPrivate()
@@ -58,7 +58,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate()
 }
 
 /*!
-    \class Qt3D::QKeyboardInput
+    \class Qt3DCore::QKeyboardInput
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -66,7 +66,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate()
 /*!
     \qmltype KeyboardInput
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3D::QKeyboardInput
+    \instantiates Qt3DCore::QKeyboardInput
     \inherits Component3D
     \since 5.5
 */
@@ -154,7 +154,7 @@ const QByteArray keyToSignal(int key)
     return keySignal;
 }
 
-void QKeyboardInput::sceneChangeEvent(const Qt3D::QSceneChangePtr &change)
+void QKeyboardInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {

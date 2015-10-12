@@ -63,23 +63,23 @@ namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public Qt3D::QBackendNode
+class RenderTarget : public Qt3DCore::QBackendNode
 {
 public:
     RenderTarget();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const Qt3D::QNodeId &attachmentId);
-    void removeRenderAttachment(const Qt3D::QNodeId &attachmentId);
+    void appendRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
+    void removeRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
 
-    QList<Qt3D::QNodeId> renderAttachments() const;
+    QList<Qt3DCore::QNodeId> renderAttachments() const;
 
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<Qt3D::QNodeId> m_renderAttachments;
+    QList<Qt3DCore::QNodeId> m_renderAttachments;
 };
 
 } // namespace Render

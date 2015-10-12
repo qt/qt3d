@@ -56,7 +56,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /**
  * The property change handler is similar to QSignalSpy, but geared towards the usecase of Qt3D.

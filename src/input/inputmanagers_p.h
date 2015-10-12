@@ -61,41 +61,41 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-class KeyboardInputManager : public Qt3D::QResourceManager<
+class KeyboardInputManager : public Qt3DCore::QResourceManager<
         KeyboardInput,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public Qt3D::QResourceManager<
+class KeyboardControllerManager : public Qt3DCore::QResourceManager<
         KeyboardController,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         8,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     KeyboardControllerManager() {}
 };
 
-class MouseControllerManager : public Qt3D::QResourceManager<
+class MouseControllerManager : public Qt3DCore::QResourceManager<
         MouseController,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         8,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     MouseControllerManager() {}
 };
 
-class MouseInputManager : public Qt3D::QResourceManager<
+class MouseInputManager : public Qt3DCore::QResourceManager<
         MouseInput,
-        Qt3D::QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     MouseInputManager() {}

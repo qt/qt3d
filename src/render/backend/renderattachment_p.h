@@ -63,24 +63,24 @@ namespace Render {
 
 class AttachmentManager;
 
-class RenderAttachment : public Qt3D::QBackendNode
+class RenderAttachment : public Qt3DCore::QBackendNode
 {
 public:
     RenderAttachment();
 
-    void updateFromPeer(Qt3D::QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    Qt3D::QNodeId textureUuid() const;
+    Qt3DCore::QNodeId textureUuid() const;
     int mipLevel() const;
     int layer() const;
     QString name() const;
     QRenderAttachment::CubeMapFace face() const;
     QRenderAttachment::RenderAttachmentType type() const;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     Attachment attachment() const;
 
 private:
-    Qt3D::QNodeId m_attachmentUuid;
+    Qt3DCore::QNodeId m_attachmentUuid;
     Attachment m_attachmentData;
 };
 

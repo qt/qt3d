@@ -61,10 +61,10 @@ namespace Render {
 
 class Renderer;
 
-class LoadSceneJob : public Qt3D::QAspectJob
+class LoadSceneJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit LoadSceneJob(const QUrl &source, const Qt3D::QNodeId &sceneComponent);
+    explicit LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &sceneComponent);
     void setRenderer(Renderer *renderer) { m_renderer = renderer; }
 
 protected:
@@ -73,7 +73,7 @@ protected:
 private:
     Renderer *m_renderer;
     QUrl m_source;
-    Qt3D::QNodeId m_sceneComponent;
+    Qt3DCore::QNodeId m_sceneComponent;
 };
 
 typedef QSharedPointer<LoadSceneJob> LoadSceneJobPtr;

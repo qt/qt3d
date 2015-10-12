@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QMatrixTransformPrivate
+    \class Qt3DCore::QMatrixTransformPrivate
     \internal
 */
 QMatrixTransformPrivate::QMatrixTransformPrivate()
@@ -89,17 +89,17 @@ QMatrix4x4 QMatrixTransform::transformMatrix() const
     return matrix();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 /*!
     \qmltype MatrixTransform
     \inqmlmodule Qt3D
     \since 5.5
-    \instantiates Qt3D::QMatrixTransform
+    \instantiates Qt3DCore::QMatrixTransform
 */
 
 /*!
-    \qmlproperty matrix4x4 Qt3D::MatrixTransform::matrix
+    \qmlproperty matrix4x4 Qt3DCore::MatrixTransform::matrix
 */
 
 QT_END_NAMESPACE

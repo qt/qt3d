@@ -54,7 +54,7 @@ class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphNode
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
 
 public:
-    explicit QViewport(Qt3D::QNode *parent = 0);
+    explicit QViewport(Qt3DCore::QNode *parent = 0);
     ~QViewport();
 
     QRectF rect() const;
@@ -68,8 +68,8 @@ Q_SIGNALS:
     void clearColorChanged();
 
 protected:
-    QViewport(QViewportPrivate &dd, Qt3D::QNode *parent = 0);
-    void copy(const Qt3D::QNode *ref) Q_DECL_OVERRIDE;
+    QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QViewport)

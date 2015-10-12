@@ -61,13 +61,13 @@ class ParameterManager;
 class ShaderDataManager;
 class TextureManager;
 
-class Parameter : public Qt3D::QBackendNode
+class Parameter : public Qt3DCore::QBackendNode
 {
 public:
     Parameter();
 
-    void updateFromPeer(Qt3D::QNode* mat) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode* mat) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QString name() const;
     QVariant value() const;

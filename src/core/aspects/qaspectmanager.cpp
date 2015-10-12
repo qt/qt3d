@@ -58,7 +58,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QAspectManager::QAspectManager(QObject *parent)
     : QObject(parent)
@@ -106,7 +106,7 @@ void QAspectManager::shutdown()
     // Aspects must be deleted in the Thread they were created in
 }
 
-void QAspectManager::setRootEntity(Qt3D::QEntity *root)
+void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
@@ -261,7 +261,7 @@ QServiceLocator *QAspectManager::serviceLocator() const
     return m_serviceLocator.data();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

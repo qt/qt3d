@@ -61,7 +61,7 @@ class CameraController;
 class InputHandler;
 }
 
-class QInputAspectPrivate : public Qt3D::QAbstractAspectPrivate
+class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
     QInputAspectPrivate();

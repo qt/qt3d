@@ -97,42 +97,42 @@ void benchmarkReleaseResources()
 
 void tst_ArrayPolicy::benchmarkDynamicAllocateSmallResources()
 {
-    benchmarkAllocateResources<Qt3D::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
+    benchmarkAllocateResources<Qt3DCore::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicReleaseSmallResources()
 {
-    benchmarkReleaseResources<Qt3D::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
+    benchmarkReleaseResources<Qt3DCore::ArrayAllocatingPolicy<SmallType, 16>, SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicAllocateBigResources()
 {
-    benchmarkAllocateResources<Qt3D::ArrayAllocatingPolicy<BigType, 16>, BigType>();
+    benchmarkAllocateResources<Qt3DCore::ArrayAllocatingPolicy<BigType, 16>, BigType>();
 }
 
 void tst_ArrayPolicy::benchmarkDynamicReleaseBigResources()
 {
-    benchmarkReleaseResources<Qt3D::ArrayAllocatingPolicy<BigType, 16>, BigType>();
+    benchmarkReleaseResources<Qt3DCore::ArrayAllocatingPolicy<BigType, 16>, BigType>();
 }
 
 void tst_ArrayPolicy::benchmarkPreallocatedAllocateSmallResources()
 {
-    benchmarkAllocateResources<Qt3D::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
+    benchmarkAllocateResources<Qt3DCore::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkPreallocatedReleaseSmallResources()
 {
-    benchmarkReleaseResources<Qt3D::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
+    benchmarkReleaseResources<Qt3DCore::ArrayPreallocationPolicy<SmallType, 16>, SmallType>();
 }
 
 void tst_ArrayPolicy::benchmarkPreallocatedAllocateBigResources()
 {
-    benchmarkAllocateResources<Qt3D::ArrayPreallocationPolicy<BigType, 16>, BigType>();
+    benchmarkAllocateResources<Qt3DCore::ArrayPreallocationPolicy<BigType, 16>, BigType>();
 }
 
 void tst_ArrayPolicy::benchmarkPreallocatedReleaseBigResources()
 {
-    benchmarkReleaseResources<Qt3D::ArrayPreallocationPolicy<BigType, 16>, BigType>();
+    benchmarkReleaseResources<Qt3DCore::ArrayPreallocationPolicy<BigType, 16>, BigType>();
 }
 
 QTEST_APPLESS_MAIN(tst_ArrayPolicy)

@@ -230,7 +230,7 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    QString filePath = Qt3D::QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
+    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
 
     QFile f(filePath);
     if (!f.exists())

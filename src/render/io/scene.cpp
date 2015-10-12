@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -55,7 +55,7 @@ Scene::Scene()
 {
 }
 
-void Scene::updateFromPeer(Qt3D::QNode *peer)
+void Scene::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
 
@@ -63,7 +63,7 @@ void Scene::updateFromPeer(Qt3D::QNode *peer)
     m_sceneManager->addSceneData(m_source, peerUuid());
 }
 
-void Scene::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
@@ -77,7 +77,7 @@ QUrl Scene::source() const
     return m_source;
 }
 
-void Scene::setSceneSubtree(Qt3D::QEntity *subTree)
+void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setPropertyName("scene");
@@ -104,7 +104,7 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 {
 }
 
-Qt3D::QBackendNode *RenderSceneFunctor::create(Qt3D::QNode *frontend, const Qt3D::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
     Scene *scene = m_sceneManager->getOrCreateResource(frontend->id());
     scene->setFactory(factory);
@@ -113,12 +113,12 @@ Qt3D::QBackendNode *RenderSceneFunctor::create(Qt3D::QNode *frontend, const Qt3D
     return scene;
 }
 
-Qt3D::QBackendNode *RenderSceneFunctor::get(const Qt3D::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::get(const Qt3DCore::QNodeId &id) const
 {
     return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(const Qt3D::QNodeId &id) const
+void RenderSceneFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
     m_sceneManager->releaseResource(id);
 }

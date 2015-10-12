@@ -40,7 +40,7 @@
 #include <Qt3DRenderer/QShaderProgram>
 #include <QUrl>
 
-SceneEffect::SceneEffect(Qt3D::QNode *parent)
+SceneEffect::SceneEffect(Qt3DCore::QNode *parent)
     : Qt3DRender::QEffect(parent)
     , m_gl3Technique(new Qt3DRender::QTechnique())
     , m_gl2Technique(new Qt3DRender::QTechnique())

@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -55,7 +55,7 @@ void SortCriterion::cleanup()
 {
 }
 
-void SortCriterion::updateFromPeer(Qt3D::QNode *peer)
+void SortCriterion::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QSortCriterion *criterion = static_cast<QSortCriterion *>(peer);
     m_type = criterion->sort();
@@ -66,7 +66,7 @@ QSortCriterion::SortType SortCriterion::sortType() const
     return m_type;
 }
 
-void SortCriterion::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void SortCriterion::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("sort")) {

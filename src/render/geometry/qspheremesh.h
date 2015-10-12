@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QSphereMesh : public QGeometryRenderer
     Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
 
 public:
-    explicit QSphereMesh(Qt3D::QNode *parent = 0);
+    explicit QSphereMesh(Qt3DCore::QNode *parent = 0);
     ~QSphereMesh();
 
     void setRings(int rings);

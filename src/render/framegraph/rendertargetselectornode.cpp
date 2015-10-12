@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
@@ -56,7 +56,7 @@ RenderTargetSelector::RenderTargetSelector() :
 {
 }
 
-void RenderTargetSelector::updateFromPeer(Qt3D::QNode *peer)
+void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTargetSelector *selector = static_cast<QRenderTargetSelector *>(peer);
     m_renderTargetUuid = QNodeId();
@@ -66,7 +66,7 @@ void RenderTargetSelector::updateFromPeer(Qt3D::QNode *peer)
     m_drawBuffers = selector->drawBuffers();
 }
 
-void RenderTargetSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
+void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;
     if (e->type() == NodeUpdated) {
@@ -80,7 +80,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3D::QSceneChangePtr &e)
     }
 }
 
-Qt3D::QNodeId RenderTargetSelector::renderTargetUuid() const
+Qt3DCore::QNodeId RenderTargetSelector::renderTargetUuid() const
 {
     return m_renderTargetUuid;
 }

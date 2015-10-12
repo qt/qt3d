@@ -94,7 +94,7 @@ bool isEntityInLayers(const Entity *entity, const QStringList &layers)
     return false;
 }
 
-void destroyUniformValue(const QUniformValue *value, Qt3D::QFrameAllocator *allocator)
+void destroyUniformValue(const QUniformValue *value, Qt3DCore::QFrameAllocator *allocator)
 {
     QUniformValue *v = const_cast<QUniformValue *>(value);
     if (v->isTexture())

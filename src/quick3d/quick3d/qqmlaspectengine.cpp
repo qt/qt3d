@@ -43,12 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 /*!
-    \class Qt3D::Quick::QQmlAspectEnginePrivate
+    \class Qt3DCore::Quick::QQmlAspectEnginePrivate
     \internal
 */
 QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
@@ -140,9 +139,8 @@ void QQmlAspectEnginePrivate::_q_continueExecute()
     emit q->statusChanged(q->status());
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QCHANGEARBITER_P_H
-#define QT3D_QCHANGEARBITER_P_H
+#ifndef QT3DCORE_QCHANGEARBITER_P_H
+#define QT3DCORE_QCHANGEARBITER_P_H
 
 //
 //  W A R N I N G
@@ -63,7 +63,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QNode;
 class QObservableInterface;
@@ -88,7 +88,7 @@ public:
     explicit QChangeArbiter(QObject *parent = 0);
     ~QChangeArbiter();
 
-    void initialize(Qt3D::QAbstractAspectJobManager *jobManager);
+    void initialize(Qt3DCore::QAbstractAspectJobManager *jobManager);
 
     void syncChanges();
 
@@ -105,8 +105,8 @@ public:
     void sceneChangeEventWithLock(const QSceneChangePtr &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
     void sceneChangeEventWithLock(const QSceneChangeList &e) Q_DECL_OVERRIDE; // QLockableObserverInterface impl
 
-    Q_INVOKABLE void setPostman(Qt3D::QAbstractPostman *postman);
-    Q_INVOKABLE void setScene(Qt3D::QScene *scene);
+    Q_INVOKABLE void setPostman(Qt3DCore::QAbstractPostman *postman);
+    Q_INVOKABLE void setScene(Qt3DCore::QScene *scene);
 
     QAbstractPostman *postman() const Q_DECL_FINAL;
     QScene *scene() const;
@@ -156,8 +156,8 @@ private:
     QScene *m_scene;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QCHANGEARBITER_P_H
+#endif // QT3DCORE_QCHANGEARBITER_P_H
