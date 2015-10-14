@@ -98,6 +98,7 @@
 #include <Qt3DRender/qplanegeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qcylindergeometry.h>
+#include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DQuickRender/quick3dtechnique.h>
 #include <Qt3DQuickRender/quick3dmaterial.h>
 #include <Qt3DQuickRender/quick3dtechniquefilter.h>
@@ -209,6 +210,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QBuffer, Qt3DRender::Render::Quick::Quick3DBuffer>("QBuffer", "Qt3D.Renderer/Buffer", uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Renderer/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
+
+    // Picking
+    qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
 
     // Meshes
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
