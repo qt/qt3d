@@ -94,9 +94,14 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 
 }
 
-UpdateBoundingVolumeJob::UpdateBoundingVolumeJob(Entity *node)
-    : m_node(node)
+UpdateBoundingVolumeJob::UpdateBoundingVolumeJob()
+    : m_node(Q_NULLPTR)
 {
+}
+
+void UpdateBoundingVolumeJob::setRoot(Entity *root)
+{
+    m_node = root;
 }
 
 void UpdateBoundingVolumeJob::run()
