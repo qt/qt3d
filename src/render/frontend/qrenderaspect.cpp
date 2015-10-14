@@ -140,6 +140,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_cleanupJob(new Render::FrameCleanupJob(m_renderer))
     , m_worldTransformJob(new Render::UpdateWorldTransformJob())
     , m_updateBoundingVolumeJob(new Render::UpdateBoundingVolumeJob())
+    , m_calculateBoundingVolumeJob(new Render::CalculateBoundingVolumeJob(m_renderer))
 {
     initResources();
     m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
@@ -277,7 +278,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_framePreparationJob->setRoot(d->m_renderer->renderSceneRoot());
         d->m_worldTransformJob->setRoot(d->m_renderer->renderSceneRoot());
         d->m_updateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
-        d->m_calculateBoundingVolumeJob.reset(new Render::CalculateBoundingVolumeJob(d->m_renderer, d->m_renderer->renderSceneRoot()));
+        d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
 
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {

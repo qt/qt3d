@@ -112,15 +112,20 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
 
 } // anonymous
 
-CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(Renderer *renderer, Entity *node)
+CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(Renderer *renderer)
     : m_renderer(renderer),
-      m_node(node)
+      m_node(Q_NULLPTR)
 {
 }
 
 void CalculateBoundingVolumeJob::run()
 {
     calculateLocalBoundingVolume(m_renderer, m_node);
+}
+
+void CalculateBoundingVolumeJob::setRoot(Entity *node)
+{
+    m_node = node;
 }
 
 } // namespace Render
