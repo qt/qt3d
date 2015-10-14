@@ -39,7 +39,6 @@
 
 #include <Qt3DCore/qentity.h>
 
-
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparametermapping.h>
@@ -76,6 +75,7 @@
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/pickeventfilter_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
@@ -134,6 +134,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
+    , m_eventSource(Q_NULLPTR)
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())
@@ -536,6 +537,17 @@ void Renderer::setSurface(QSurface* surface)
     } else { // Setting a valid window on initialization
         m_surface = surface;
         m_waitForWindowToBeSetCondition.wakeOne();
+    }
+}
+
+void Renderer::setEventSource(QObject *eventSource)
+{
+    if (eventSource != m_eventSource) {
+        if (m_eventSource)
+            m_eventSource->removeEventFilter(m_pickEventFilter.data());
+        m_eventSource = eventSource;
+        if (m_eventSource)
+            m_eventSource->installEventFilter(m_pickEventFilter.data());
     }
 }
 

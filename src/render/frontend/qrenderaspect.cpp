@@ -390,6 +390,12 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
 
     if (surface)
         d->setSurface(surface);
+
+    QObject *eventSource = Q_NULLPTR;
+    const QVariant &eventSourceVariant = data.value(QStringLiteral("eventSource"));
+    if (eventSourceVariant.isValid())
+        eventSource = eventSourceVariant.value<QObject *>();
+    d->m_renderer->setEventSource(eventSource);
 }
 
 void QRenderAspect::onStartup()

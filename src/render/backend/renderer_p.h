@@ -136,6 +136,7 @@ class AttributeManager;
 class GeometryManager;
 class GeometryRendererManager;
 class ObjectPickerManager;
+class PickEventFilter;
 
 class Renderer
 {
@@ -211,6 +212,7 @@ public:
     QOpenGLFilter *contextInfo() const;
 
     void setSurface(QSurface *s);
+    void setEventSource(QObject *eventSource);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool submitRenderViews();
@@ -252,6 +254,7 @@ private:
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
+    QObject *m_eventSource;
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
@@ -301,6 +304,7 @@ private:
     QAtomicInt m_running;
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
+    QScopedPointer<PickEventFilter> m_pickEventFilter;
     QList<AbstractSceneParser *> m_sceneParsers;
     QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
