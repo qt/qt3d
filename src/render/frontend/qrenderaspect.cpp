@@ -67,6 +67,7 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qobjectpicker.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -99,6 +100,7 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -240,6 +242,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QAttribute>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer->attributeManager())));
     registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
     registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::GeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
+    registerBackendType<QObjectPicker>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(d->m_renderer->objectPickerManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
