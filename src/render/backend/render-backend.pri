@@ -22,7 +22,8 @@ HEADERS += \
     $$PWD/layer_p.h \
     $$PWD/nodefunctor_p.h \
     $$PWD/transform_p.h \
-    $$PWD/objectpicker_p.h
+    $$PWD/objectpicker_p.h \
+    $$PWD/pickeventfilter_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -41,4 +42,5 @@ SOURCES += \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
     $$PWD/transform.cpp \
-    $$PWD/objectpicker.cpp
+    $$PWD/objectpicker.cpp \
+    $$PWD/pickeventfilter.cpp
