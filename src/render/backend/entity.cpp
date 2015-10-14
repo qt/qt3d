@@ -66,9 +66,6 @@ namespace Render {
 Entity::Entity()
     : QBackendNode()
     , m_renderer(Q_NULLPTR)
-    , m_localBoundingVolume(new Sphere)
-    , m_worldBoundingVolume(new Sphere)
-    , m_worldBoundingVolumeWithChildren(new Sphere)
 {
 }
 
@@ -103,12 +100,9 @@ void Entity::cleanup()
     m_objectPickerComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
-    delete m_localBoundingVolume;
-    delete m_worldBoundingVolume;
-    delete m_worldBoundingVolumeWithChildren;
-    m_localBoundingVolume = Q_NULLPTR;
-    m_worldBoundingVolume = Q_NULLPTR;
-    m_worldBoundingVolumeWithChildren = Q_NULLPTR;
+    m_localBoundingVolume.reset();
+    m_worldBoundingVolume.reset();
+    m_worldBoundingVolumeWithChildren.reset();
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
@@ -150,6 +144,9 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_objectPickerComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
+    m_localBoundingVolume.reset(new Sphere(peerUuid()));
+    m_worldBoundingVolume.reset(new Sphere(peerUuid()));
+    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerUuid()));
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);

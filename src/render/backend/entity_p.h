@@ -101,9 +101,9 @@ public:
 
     QMatrix4x4 *worldTransform();
     const QMatrix4x4 *worldTransform() const;
-    Sphere *localBoundingVolume() { return m_localBoundingVolume; }
-    Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
-    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren; }
+    Sphere *localBoundingVolume() { return m_localBoundingVolume.data(); }
+    Sphere *worldBoundingVolume() { return m_worldBoundingVolume.data(); }
+    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
     void removeComponent(const Qt3DCore::QNodeId &nodeId);
@@ -163,9 +163,9 @@ private:
     QVector<HEntity > m_childrenHandles;
 
     HMatrix m_worldTransform;
-    Sphere *m_localBoundingVolume;
-    Sphere *m_worldBoundingVolume;
-    Sphere *m_worldBoundingVolumeWithChildren;
+    QSharedPointer<Sphere> m_localBoundingVolume;
+    QSharedPointer<Sphere> m_worldBoundingVolume;
+    QSharedPointer<Sphere> m_worldBoundingVolumeWithChildren;
 
     // Handles to Components
     Qt3DCore::QNodeId m_transformComponent;

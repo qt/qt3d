@@ -208,7 +208,7 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
     // Transform center and find maximum radius of ellipsoid
     QVector3D c = mat.map(m_center);
     float rSquared = qMax(qMax((x - c).lengthSquared(), (y - c).lengthSquared()), (z - c).lengthSquared());
-    return Sphere(c, sqrt(rSquared));
+    return Sphere(c, sqrt(rSquared), id());
 }
 
 Qt3DCore::QNodeId Sphere::id() const
