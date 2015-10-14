@@ -47,7 +47,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QEntity;
 
@@ -82,9 +82,8 @@ private:
     QT3D_CLONEABLE(Quick3DEntityLoader)
 };
 
-} // Quick;
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 AbstractSceneParser::AbstractSceneParser() : QObject(),
     m_parserStatus(Empty)
@@ -80,6 +80,6 @@ void AbstractSceneParser::logInfo(const QString &info)
     qCDebug(Render::Io) << info;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

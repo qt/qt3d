@@ -43,38 +43,34 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DGeometry : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<QAbstractAttribute> attributes READ attributeList)
-    Q_CLASSINFO("DefaultProperty", "attributeProviders")
+    Q_PROPERTY(QQmlListProperty<Qt3DCore::QAbstractAttribute> attributes READ attributeList)
+    Q_CLASSINFO("DefaultProperty", "attributes")
 
 public:
     explicit Quick3DGeometry(QObject *parent = 0);
     inline QGeometry *parentGeometry() const { return qobject_cast<QGeometry *>(parent()); }
 
-    QQmlListProperty<QAbstractAttribute> attributeList();
+    QQmlListProperty<Qt3DCore::QAbstractAttribute> attributeList();
 
 private:
-    static void appendAttribute(QQmlListProperty<QAbstractAttribute> *list, QAbstractAttribute *provider);
-    static QAbstractAttribute *attributeAt(QQmlListProperty<QAbstractAttribute> *list, int index);
-    static int attributesCount(QQmlListProperty<QAbstractAttribute> *list);
-    static void clearAttributes(QQmlListProperty<QAbstractAttribute> *list);
+    static void appendAttribute(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list, Qt3DCore::QAbstractAttribute *provider);
+    static Qt3DCore::QAbstractAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list, int index);
+    static int attributesCount(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list);
+    static void clearAttributes(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list);
 
-    QVector<QAbstractAttribute *> m_managedAttributes;
+    QVector<Qt3DCore::QAbstractAttribute *> m_managedAttributes;
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

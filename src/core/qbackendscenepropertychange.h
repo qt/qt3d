@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBACKENDSCENEPROPERTYCHANGE_H
-#define QT3D_QBACKENDSCENEPROPERTYCHANGE_H
+#ifndef QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
+#define QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QBackendScenePropertyChangePrivate;
 class QBackendNode;
@@ -70,4 +70,4 @@ typedef QSharedPointer<QBackendScenePropertyChange> QBackendScenePropertyChangeP
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBACKENDSCENEPROPERTYCHANGE_H
+#endif // QT3DCORE_QBACKENDSCENEPROPERTYCHANGE_H

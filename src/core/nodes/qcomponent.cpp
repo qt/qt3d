@@ -43,10 +43,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QComponentPrivate
+    \class Qt3DCore::QComponentPrivate
     \internal
 */
 QComponentPrivate::QComponentPrivate()
@@ -94,23 +94,23 @@ void QComponentPrivate::removeEntity(QEntity *entity)
 }
 
 /*!
-    \class Qt3D::QComponent
+    \class Qt3DCore::QComponent
     \inmodule Qt3DCore
-    \inherits Qt3D::QNode
+    \inherits Qt3DCore::QNode
     \since 5.5
 
-    \brief The base class of scene nodes that can be aggregated by Qt3D::QEntity
+    \brief The base class of scene nodes that can be aggregated by Qt3DCore::QEntity
     instances as a component.
 
-    A Qt3D::QComponent provides a vertical slice of behavior that can be assigned to and
-    sometimes shared across Qt3D::QEntity instances.
+    A Qt3DCore::QComponent provides a vertical slice of behavior that can be assigned to and
+    sometimes shared across Qt3DCore::QEntity instances.
 
-    Qt3D::QComponent subclasses are often aggregated in groups that impart useful
+    Qt3DCore::QComponent subclasses are often aggregated in groups that impart useful
     behavior to the aggregating entity. For example, to have an Entity that gets
     drawn by the Qt3D renderer aspect, an entity would most likely aggregate
-    Qt3D::QTransform, Qt3D::QMesh, and Qt3D::QMaterial components.
+    Qt3DCore::QTransform, Qt3DRender::QMesh, and Qt3DRender::QMaterial components.
 
-    \sa Qt3D::QEntity
+    \sa Qt3DCore::QEntity
 */
 
 /*!
@@ -125,7 +125,7 @@ QComponent::QComponent(QNode *parent)
 
 QComponent::~QComponent()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QComponent subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QComponent subclass didn't call QNode::cleanup in its destructor");
 
     Q_FOREACH (QEntity *entity, entities()) {
         QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
@@ -154,7 +154,7 @@ bool QComponent::isEnabled() const
 
 /*!
     Set the QComponent to enabled if \a enabled is true.
-    By default a Qt3D::QComponent is always enabled.
+    By default a Qt3DCore::QComponent is always enabled.
 
     \note the interpretation of what enabled means is aspect-dependent. Even if
     enabled is set to false, some aspects may still consider the component in
@@ -204,22 +204,22 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
 {
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 /*!
     \qmltype Component3D
-    \instantiates Qt3D::QComponent
+    \instantiates Qt3DCore::QComponent
     \inqmlmodule Qt3D
     \inherits Node
     \since 5.5
 */
 
 /*!
-    \qmlproperty bool Qt3D::Component3D::shareable
+    \qmlproperty bool Qt3DCore::Component3D::shareable
 */
 
 /*!
-    \qmlproperty bool Qt3D::Component3D::enabled
+    \qmlproperty bool Qt3DCore::Component3D::enabled
 */
 
 QT_END_NAMESPACE

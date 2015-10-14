@@ -38,6 +38,17 @@
 #ifndef QT3DQUICKVALUETYPES_P_H
 #define QT3DQUICKVALUETYPES_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <private/qt3dquick_global_p.h>
 #include <private/qqmlvaluetype_p.h>
 
@@ -50,10 +61,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
-
 namespace Quick3DValueTypes {
 
 QT3DQUICKSHARED_PRIVATE_EXPORT void registerValueTypes();
@@ -270,9 +279,8 @@ public:
     Q_INVOKABLE bool fuzzyEquals(const QMatrix4x4 &m) const;
 };
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

@@ -37,6 +37,17 @@
 #ifndef QT3D_QUICK_QUICK3DENTITYLOADER_P_H
 #define QT3D_QUICK_QUICK3DENTITYLOADER_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include "quick3dentityloader.h"
 
 #include <QQmlComponent>
@@ -48,7 +59,7 @@ QT_BEGIN_NAMESPACE
 class QQmlIncubator;
 class QQmlContext;
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QEntity;
 
@@ -78,9 +89,8 @@ public:
     QEntity *m_entity;
 };
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

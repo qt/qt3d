@@ -2,14 +2,14 @@ TEMPLATE = subdirs
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \
-        renderentity \
+        entity \
         renderqueue \
-        renderrenderpass \
+        renderpass \
         qgraphicsutils \
-        rendershader \
+        shader \
         renderviewutils \
         renderviews \
-        rendermaterial \
+        material \
         vsyncframeadvanceservice \
         meshfunctors \
         qmaterial \
@@ -17,9 +17,21 @@ contains(QT_CONFIG, private_tests) {
         qbuffer \
         qgeometry \
         qgeometryrenderer \
-        renderbuffer \
-        renderattribute \
-        rendergeometry \
-        rendergeometryrenderer \
-        raycasting
+        buffer \
+        attribute \
+        geometry \
+        geometryrenderer \
+        raycasting \
+        qcameraselector \
+        qclearbuffer \
+        qframegraphnode \
+        qframegraph \
+        qlayerfilter \
+        qrenderpassfilter \
+        qrendertargetselector \
+        qsortcriterion \
+        qsortmethod \
+        qstateset \
+        qtechniquefilter \
+        qviewport
 }

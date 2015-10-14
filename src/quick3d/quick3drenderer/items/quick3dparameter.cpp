@@ -42,16 +42,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 namespace {
-
 const int qjsValueTypeId = qMetaTypeId<QJSValue>();
-
 }
 
 Quick3DParameterPrivate::Quick3DParameterPrivate()
@@ -81,11 +77,9 @@ Quick3DParameter::Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent)
 {
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

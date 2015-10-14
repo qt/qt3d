@@ -37,6 +37,17 @@
 #ifndef ASSIMPHELPERS_H
 #define ASSIMPHELPERS_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 // ASSIMP INCLUDES
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
@@ -46,7 +57,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace AssimpHelper {
 
 //CUSTOM FILE STREAM
@@ -82,8 +93,8 @@ private:
     QMap<QByteArray, QIODevice::OpenMode> m_openModeMaps;
 };
 
-} // AssimpHelper namespace
-} // Qt3D namespace
+} // namespace AssimpHelper
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

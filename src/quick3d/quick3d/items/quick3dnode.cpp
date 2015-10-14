@@ -39,8 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 /*!
@@ -58,7 +57,7 @@ Quick3DNode::Quick3DNode(QObject *parent)
 }
 
 /*!
-    \qmlproperty list<QtQml::QtObject> Qt3D::Node::data
+    \qmlproperty list<QtQml::QtObject> Qt3DCore::Node::data
     \default
 */
 
@@ -72,7 +71,7 @@ QQmlListProperty<QObject> Quick3DNode::data()
 }
 
 /*!
-    \qmlproperty list<Node> Qt3D::Node::childNodes
+    \qmlproperty list<Node> Qt3DCore::Node::childNodes
     \readonly
 */
 
@@ -113,7 +112,7 @@ void Quick3DNode::clearData(QQmlListProperty<QObject> *list)
         self->childRemoved(0, child);
 }
 
-void Quick3DNode::appendChild(QQmlListProperty<Qt3D::QNode> *list, Qt3D::QNode *obj)
+void Quick3DNode::appendChild(QQmlListProperty<Qt3DCore::QNode> *list, Qt3DCore::QNode *obj)
 {
     if (!obj)
         return;
@@ -124,19 +123,19 @@ void Quick3DNode::appendChild(QQmlListProperty<Qt3D::QNode> *list, Qt3D::QNode *
     self->childAppended(0, obj);
 }
 
-Qt3D::QNode *Quick3DNode::childAt(QQmlListProperty<Qt3D::QNode> *list, int index)
+Qt3DCore::QNode *Quick3DNode::childAt(QQmlListProperty<Qt3DCore::QNode> *list, int index)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return qobject_cast<QNode *>(self->parentNode()->children().at(index));
 }
 
-int Quick3DNode::childCount(QQmlListProperty<Qt3D::QNode> *list)
+int Quick3DNode::childCount(QQmlListProperty<Qt3DCore::QNode> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     return self->parentNode()->children().count();
 }
 
-void Quick3DNode::clearChildren(QQmlListProperty<Qt3D::QNode> *list)
+void Quick3DNode::clearChildren(QQmlListProperty<Qt3DCore::QNode> *list)
 {
     Quick3DNode *self = static_cast<Quick3DNode *>(list->object);
     Q_FOREACH (QObject *const child, self->parentNode()->children())
@@ -163,8 +162,7 @@ void Quick3DNode::childRemoved(int, QObject *obj)
         obj->setParent(Q_NULLPTR);
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

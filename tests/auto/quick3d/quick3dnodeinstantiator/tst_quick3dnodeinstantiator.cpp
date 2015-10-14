@@ -48,7 +48,7 @@
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlcontext.h>
 
-using namespace Qt3D::Quick;
+using namespace Qt3DCore::Quick;
 
 class tst_quick3dnodeinstantiator: public QQmlDataTest
 {

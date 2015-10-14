@@ -89,9 +89,9 @@ int main(int argc, char **argv)
 
     widget->setWindowTitle(QStringLiteral("Basic shapes"));
 
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DCore::QAspectEngine engine;
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
@@ -100,10 +100,10 @@ int main(int argc, char **argv)
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -113,8 +113,8 @@ int main(int argc, char **argv)
     input->setCamera(cameraEntity);
 
     // FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
 
     forwardRenderer->setCamera(cameraEntity);
     forwardRenderer->setClearColor(QColor(QRgb(0x4d4d4f)));

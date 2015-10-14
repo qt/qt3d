@@ -55,10 +55,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAspectEnginePrivate
+    \class Qt3DCore::QAspectEnginePrivate
     \internal
 */
 QAspectEnginePrivate::QAspectEnginePrivate()
@@ -66,11 +66,11 @@ QAspectEnginePrivate::QAspectEnginePrivate()
     , m_postman(Q_NULLPTR)
     , m_scene(Q_NULLPTR)
 {
-    qRegisterMetaType<Qt3D::QAbstractAspect *>();
-    qRegisterMetaType<Qt3D::QObserverInterface *>();
-    qRegisterMetaType<Qt3D::QEntity *>();
-    qRegisterMetaType<Qt3D::QScene *>();
-    qRegisterMetaType<Qt3D::QAbstractPostman *>();
+    qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
+    qRegisterMetaType<Qt3DCore::QObserverInterface *>();
+    qRegisterMetaType<Qt3DCore::QEntity *>();
+    qRegisterMetaType<Qt3DCore::QScene *>();
+    qRegisterMetaType<Qt3DCore::QAbstractPostman *>();
 }
 
 /*!
@@ -146,10 +146,10 @@ void QAspectEngine::initialize()
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
     QMetaObject::invokeMethod(arbiter,
                               "setPostman",
-                              Q_ARG(Qt3D::QAbstractPostman*, d->m_postman));
+                              Q_ARG(Qt3DCore::QAbstractPostman*, d->m_postman));
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
-                              Q_ARG(Qt3D::QScene*, d->m_scene));
+                              Q_ARG(Qt3DCore::QScene*, d->m_scene));
 }
 
 void QAspectEngine::shutdown()
@@ -202,7 +202,7 @@ void QAspectEngine::registerAspect(QAbstractAspect *aspect)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "registerAspect",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3D::QAbstractAspect *, aspect));
+                              Q_ARG(Qt3DCore::QAbstractAspect *, aspect));
 }
 
 /*!
@@ -256,7 +256,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRootEntity",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3D::QEntity *, root));
+                              Q_ARG(Qt3DCore::QEntity *, root));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
 }
 
@@ -278,6 +278,6 @@ void QAspectEngine::setAspectFactory(const QAspectFactory &factory)
     d->m_factory = factory;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_KEYBOARDCONTROLLER_P_H
-#define QT3D_INPUT_KEYBOARDCONTROLLER_P_H
+#ifndef QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H
+#define QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,58 +54,56 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class KeyboardController : public QBackendNode
+class KeyboardController : public Qt3DCore::QBackendNode
 {
 public:
     KeyboardController();
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
-    void requestFocusForInput(const QNodeId &inputId);
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void requestFocusForInput(const Qt3DCore::QNodeId &inputId);
     void setInputHandler(InputHandler *handler);
 
-    void addKeyboardInput(const QNodeId &input);
-    void removeKeyboardInput(const QNodeId &input);
+    void addKeyboardInput(const Qt3DCore::QNodeId &input);
+    void removeKeyboardInput(const Qt3DCore::QNodeId &input);
 
-    void setCurrentFocusItem(const QNodeId &input);
+    void setCurrentFocusItem(const Qt3DCore::QNodeId &input);
 
-    inline QNodeId currentFocusItem() const { return m_currentFocusItem; }
-    inline QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
-    inline QVector<QNodeId> keyboardInputs() const { return m_keyboardInputs; }
+    inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
+    inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
+    inline QVector<Qt3DCore::QNodeId> keyboardInputs() const { return m_keyboardInputs; }
     inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
-    void sceneChangeEvent(const QSceneChangePtr &) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    QVector<QNodeId> m_keyboardInputs;
+    QVector<Qt3DCore::QNodeId> m_keyboardInputs;
     QVector<HKeyboardInput> m_keyboardInputHandles;
-    QNodeId m_lastRequester;
-    QNodeId m_currentFocusItem;
+    Qt3DCore::QNodeId m_lastRequester;
+    Qt3DCore::QNodeId m_currentFocusItem;
 };
 
-class KeyboardControllerFunctor : public QBackendNodeFunctor
+class KeyboardControllerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit KeyboardControllerFunctor(InputHandler *handler);
 
-    QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
-    QBackendNode *get(const QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_handler;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_KEYBOARDCONTROLLER_P_H
+#endif // QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H

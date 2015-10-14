@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QMOUSEINPUT_H
-#define QT3D_QMOUSEINPUT_H
+#ifndef QT3DINPUT_QMOUSEINPUT_H
+#define QT3DINPUT_QMOUSEINPUT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/q3dmouseevent.h>
@@ -43,15 +43,15 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QMouseController;
 class QMouseInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QMouseInput : public QComponent
+class QT3DINPUTSHARED_EXPORT QMouseInput : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QMouseController *controller READ controller WRITE setController NOTIFY controllerChanged)
+    Q_PROPERTY(Qt3DInput::QMouseController *controller READ controller WRITE setController NOTIFY controllerChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
@@ -67,23 +67,23 @@ Q_SIGNALS:
     void controllerChanged();
     void containsMouseChanged();
 
-    void clicked(Qt3D::Q3DMouseEvent *mouse);
-    void doubleClicked(Qt3D::Q3DMouseEvent *mouse);
+    void clicked(Qt3DInput::Q3DMouseEvent *mouse);
+    void doubleClicked(Qt3DInput::Q3DMouseEvent *mouse);
 
     void entered();
     void exited();
 
-    void pressed(Qt3D::Q3DMouseEvent *mouse);
-    void released(Qt3D::Q3DMouseEvent *mouse);
-    void pressAndHold(Qt3D::Q3DMouseEvent *mouse);
-    void positionChanged(Qt3D::Q3DMouseEvent *mouse);
+    void pressed(Qt3DInput::Q3DMouseEvent *mouse);
+    void released(Qt3DInput::Q3DMouseEvent *mouse);
+    void pressAndHold(Qt3DInput::Q3DMouseEvent *mouse);
+    void positionChanged(Qt3DInput::Q3DMouseEvent *mouse);
 
-    void wheel(Qt3D::Q3DWheelEvent *wheel);
+    void wheel(Qt3DInput::Q3DWheelEvent *wheel);
 
 protected:
-    QMouseInput(QMouseInputPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    QMouseInput(QMouseInputPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void mouseEvent(Q3DMouseEvent *event);
     void setContainsMouse(bool contains);
 
@@ -92,8 +92,8 @@ private:
     QT3D_CLONEABLE(QMouseInput)
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QMOUSEINPUT_H
+#endif // QT3DINPUT_QMOUSEINPUT_H

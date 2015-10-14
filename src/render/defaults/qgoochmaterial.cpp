@@ -47,10 +47,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-   \class Qt3D::QGoochMaterialPrivate
+   \class Qt3DCore::QGoochMaterialPrivate
    \internal
 */
 QGoochMaterialPrivate::QGoochMaterialPrivate()
@@ -129,7 +129,7 @@ void QGoochMaterialPrivate::init()
 }
 
 /*!
-    \class Qt3D::QGoochMaterial
+    \class Qt3DCore::QGoochMaterial
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
     \inmodule Qt3DRenderer
@@ -157,7 +157,7 @@ void QGoochMaterialPrivate::init()
 */
 
 /*!
-    Constructs a new Qt3D::QGoochMaterial instance with parent object \a parent.
+    Constructs a new Qt3DCore::QGoochMaterial instance with parent object \a parent.
 */
 QGoochMaterial::QGoochMaterial(QNode *parent)
     : QMaterial(*new QGoochMaterialPrivate, parent)
@@ -174,7 +174,7 @@ QGoochMaterial::QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent)
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::diffuse
+    \property Qt3DCore::QGoochMaterial::diffuse
 
     Holds the current diffuse color.
 */
@@ -185,7 +185,7 @@ QColor QGoochMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::specular
+    \property Qt3DCore::QGoochMaterial::specular
 
     Holds the current specular color.
 */
@@ -196,7 +196,7 @@ QColor QGoochMaterial::specular() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::cool
+    \property Qt3DCore::QGoochMaterial::cool
 
     Holds the current cool color.
 */
@@ -207,7 +207,7 @@ QColor QGoochMaterial::cool() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::warm
+    \property Qt3DCore::QGoochMaterial::warm
 
     Holds the current warm color.
 */
@@ -218,7 +218,7 @@ QColor QGoochMaterial::warm() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::alpha
+    \property Qt3DCore::QGoochMaterial::alpha
 
     Holds the current alpha value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = cool + alpha * diffuse}.
@@ -230,7 +230,7 @@ float QGoochMaterial::alpha() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::beta
+    \property Qt3DCore::QGoochMaterial::beta
 
     Holds the current beta value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = warm + beta * diffuse}.
@@ -242,7 +242,7 @@ float QGoochMaterial::beta() const
 }
 
 /*!
-    \property Qt3D::QGoochMaterial::shininess
+    \property Qt3DCore::QGoochMaterial::shininess
 
     Holds the current shininess value. Higher values of shininess result in
     a smaller and brighter highlight.

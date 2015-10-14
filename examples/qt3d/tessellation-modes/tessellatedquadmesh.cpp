@@ -40,14 +40,14 @@
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qgeometry.h>
 
-class TessellatedGeometry : public Qt3D::QGeometry
+class TessellatedGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
 public:
-    TessellatedGeometry(Qt3D::QNode *parent = Q_NULLPTR)
-        : Qt3D::QGeometry(parent)
-        , m_positionAttribute(new Qt3D::QAttribute(this))
-        , m_vertexBuffer(new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer, this))
+    TessellatedGeometry(Qt3DCore::QNode *parent = Q_NULLPTR)
+        : Qt3DRender::QGeometry(parent)
+        , m_positionAttribute(new Qt3DRender::QAttribute(this))
+        , m_vertexBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this))
     {
         const float positionData[] = {
             -0.8f, -0.8f, 0.0f,
@@ -64,8 +64,8 @@ public:
 
         m_vertexBuffer->setData(positionBytes);
 
-        m_positionAttribute->setName(Qt3D::QAttribute::defaultPositionAttributeName());
-        m_positionAttribute->setDataType(Qt3D::QAttribute::Float);
+        m_positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+        m_positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
         m_positionAttribute->setDataSize(3);
         m_positionAttribute->setCount(nVerts);
         m_positionAttribute->setByteStride(3 * sizeof(float));
@@ -76,14 +76,14 @@ public:
     }
 
 private:
-    Qt3D::QAttribute *m_positionAttribute;
-    Qt3D::QBuffer *m_vertexBuffer;
+    Qt3DRender::QAttribute *m_positionAttribute;
+    Qt3DRender::QBuffer *m_vertexBuffer;
 };
 
-TessellatedQuadMesh::TessellatedQuadMesh(Qt3D::QNode *parent)
-    : Qt3D::QGeometryRenderer(parent)
+TessellatedQuadMesh::TessellatedQuadMesh(Qt3DCore::QNode *parent)
+    : Qt3DRender::QGeometryRenderer(parent)
 {
-    setPrimitiveType(Qt3D::QGeometryRenderer::Patches);
+    setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
     setGeometry(new TessellatedGeometry(this));
 }
 

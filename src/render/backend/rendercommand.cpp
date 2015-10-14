@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 RenderCommand::RenderCommand()
@@ -53,6 +53,6 @@ bool compareCommands(RenderCommand *r1, RenderCommand *r2)
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

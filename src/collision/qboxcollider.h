@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QBoxColliderPrivate;
 
@@ -76,7 +76,7 @@ private:
     QT3D_CLONEABLE(QBoxCollider)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

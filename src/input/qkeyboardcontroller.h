@@ -34,23 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_QKEYBOARDCONTROLLER_H
-#define QT3D_INPUT_QKEYBOARDCONTROLLER_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
+#define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 class QKeyboardControllerPrivate;
 class QKeyboardInput;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardController : public QNode
+class QT3DINPUTSHARED_EXPORT QKeyboardController : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QKeyboardInput *activeInput READ activeInput NOTIFY activeInputChanged)
+    Q_PROPERTY(Qt3DInput::QKeyboardInput *activeInput READ activeInput NOTIFY activeInputChanged)
 
 public:
     explicit QKeyboardController(QNode *parent = 0);
@@ -60,7 +60,7 @@ public:
 
 protected:
     QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent = 0);
-    void sceneChangeEvent(const QSceneChangePtr &change) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void activeInputChanged();
@@ -71,8 +71,8 @@ private:
     void setActiveInput(QKeyboardInput *activeInput);
 };
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_QKEYBOARDCONTROLLER_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H

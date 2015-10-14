@@ -42,8 +42,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3DCore;
 
+namespace Qt3DRender {
 namespace Render {
 
 RenderTarget::RenderTarget()
@@ -51,7 +52,7 @@ RenderTarget::RenderTarget()
 {
 }
 
-void RenderTarget::updateFromPeer(QNode *peer)
+void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
     m_renderAttachments.clear();
@@ -74,12 +75,12 @@ void RenderTarget::removeRenderAttachment(const QNodeId &attachmentId)
     m_renderAttachments.removeOne(attachmentId);
 }
 
-QList<QNodeId> RenderTarget::renderAttachments() const
+QList<Qt3DCore::QNodeId> RenderTarget::renderAttachments() const
 {
     return m_renderAttachments;
 }
 
-void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
+void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
@@ -88,8 +89,7 @@ void RenderTarget::sceneChangeEvent(const QSceneChangePtr &e)
         removeRenderAttachment(propertyChange->value().value<QNodeId>());
 }
 
-} // Render
-
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

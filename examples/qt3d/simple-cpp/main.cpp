@@ -63,15 +63,15 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3D::QWindow view;
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DRender::QWindow view;
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     view.registerAspect(input);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = view.defaultCamera();
+    Qt3DCore::QCamera *cameraEntity = view.defaultCamera();
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, -40.0f));
@@ -80,21 +80,21 @@ int main(int argc, char* argv[])
     input->setCamera(cameraEntity);
 
     // Material
-    Qt3D::QMaterial *material = new Qt3D::QPhongMaterial(rootEntity);
+    Qt3DRender::QMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
 
     // Torus
-    Qt3D::QEntity *torusEntity = new Qt3D::QEntity(rootEntity);
-    Qt3D::QTorusMesh *torusMesh = new Qt3D::QTorusMesh;
+    Qt3DCore::QEntity *torusEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DRender::QTorusMesh *torusMesh = new Qt3DRender::QTorusMesh;
     torusMesh->setRadius(5);
     torusMesh->setMinorRadius(1);
     torusMesh->setRings(100);
     torusMesh->setSlices(20);
 
-    Qt3D::QTransform *torusTransform = new Qt3D::QTransform;
-    Qt3D::QScaleTransform *torusScaleTransform = new Qt3D::QScaleTransform;
+    Qt3DCore::QTransform *torusTransform = new Qt3DCore::QTransform;
+    Qt3DCore::QScaleTransform *torusScaleTransform = new Qt3DCore::QScaleTransform;
     torusScaleTransform->setScale3D(QVector3D(1.5, 1, 0.5));
 
-    Qt3D::QRotateTransform *torusRotateTransform = new Qt3D::QRotateTransform;
+    Qt3DCore::QRotateTransform *torusRotateTransform = new Qt3DCore::QRotateTransform;
     torusRotateTransform->setAxis(QVector3D(1, 0, 0));
     torusRotateTransform->setAngleDeg(45);
 
@@ -107,15 +107,15 @@ int main(int argc, char* argv[])
     torusEntity->addComponent(material);
 
     // Sphere
-    Qt3D::QEntity *sphereEntity = new Qt3D::QEntity(rootEntity);
-    Qt3D::QSphereMesh *sphereMesh = new Qt3D::QSphereMesh;
+    Qt3DCore::QEntity *sphereEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh;
     sphereMesh->setRadius(3);
 
-    Qt3D::QTransform *sphereTransform = new Qt3D::QTransform;
-    Qt3D::QTranslateTransform *sphereTranslateTransform = new Qt3D::QTranslateTransform;
+    Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;
+    Qt3DCore::QTranslateTransform *sphereTranslateTransform = new Qt3DCore::QTranslateTransform;
     sphereTranslateTransform->setTranslation(QVector3D(20, 0, 0));
 
-    Qt3D::QRotateTransform *sphereRotateTransform = new Qt3D::QRotateTransform;
+    Qt3DCore::QRotateTransform *sphereRotateTransform = new Qt3DCore::QRotateTransform;
     QPropertyAnimation *sphereRotateTransformAnimation = new QPropertyAnimation(sphereRotateTransform);
     sphereRotateTransformAnimation->setTargetObject(sphereRotateTransform);
     sphereRotateTransformAnimation->setPropertyName("angle");

@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENEPROPERTYCHANGE_H
-#define QT3D_QSCENEPROPERTYCHANGE_H
+#ifndef QT3DCORE_QSCENEPROPERTYCHANGE_H
+#define QT3DCORE_QSCENEPROPERTYCHANGE_H
 
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QScenePropertyChangePrivate;
 
@@ -68,8 +68,8 @@ protected:
 
 typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENEPROPERTYCHANGE_H
+#endif // QT3DCORE_QSCENEPROPERTYCHANGE_H

@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QGOOCHMATERIAL_H
-#define QT3D_RENDER_QGOOCHMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QGOOCHMATERIAL_H
+#define QT3DRENDER_RENDER_QGOOCHMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QGoochMaterialPrivate;
 
@@ -58,7 +58,7 @@ class QGoochMaterial : public QMaterial
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    explicit QGoochMaterial(QNode *parent = 0);
+    explicit QGoochMaterial(Qt3DCore::QNode *parent = 0);
     QColor diffuse() const;
     QColor specular() const;
     QColor cool() const;
@@ -86,14 +86,14 @@ Q_SIGNALS:
     void shininessChanged();
 
 protected:
-    QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent = 0);
+    QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QGoochMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QGOOCHMATERIAL_H
+#endif // QT3DRENDER_RENDER_QGOOCHMATERIAL_H

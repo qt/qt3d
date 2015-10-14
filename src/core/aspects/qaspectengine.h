@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QASPECTENGINE_H
-#define QT3D_QASPECTENGINE_H
+#ifndef QT3DCORE_QASPECTENGINE_H
+#define QT3DCORE_QASPECTENGINE_H
 
 #include <QObject>
 #include <Qt3DCore/QAspectFactory>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractAspect;
 class QAspectThread;
@@ -81,9 +81,9 @@ private:
     void initNodeTree(QNode *node);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_QASPECTENGINE_H
+#endif // QT3DCORE_QASPECTENGINE_H

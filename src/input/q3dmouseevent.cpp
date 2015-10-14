@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DInput {
 
 // Notes:
 // Maybe we should provide the world pos of the intersection
@@ -48,9 +48,10 @@ namespace Qt3D {
 // These can always be added in follow up commits once the input API takes shape
 
 /*!
- * \class Qt3D::Q3DMouseEvent
+ * \class Qt3DCore::Q3DMouseEvent
+ * \inmodule Qt3DInput
  *
- * \brief The Qt3D::Q3DMouseEvent contains parameters that describe a mouse event.
+ * \brief The Qt3DCore::Q3DMouseEvent contains parameters that describe a mouse event.
  *
  * Mouse events occur when a mouse button is pressed and the ray
  * traversing the view, originating from the mouse position intersects with one
@@ -58,30 +59,30 @@ namespace Qt3D {
  *
  * \since 5.5
  *
- * \sa Qt3D::Q3DKeyEvent, Qt3D::Q3DWheelEvent, Qt3D::QMouseInput
+ * \sa Qt3DCore::Q3DKeyEvent, Qt3DCore::Q3DWheelEvent, Qt3DCore::QMouseInput
  *
  */
 
 /*!
- * \fn int Qt3D::Q3DMouseEvent::x() const
+ * \fn int Qt3DCore::Q3DMouseEvent::x() const
  *
  *  Returns the x position of the mouse event.
  */
 
 /*!
- * \fn int Qt3D::Q3DMouseEvent::y() const
+ * \fn int Qt3DCore::Q3DMouseEvent::y() const
  *
  *  Returns the y position of the mouse event.
  */
 
 /*!
- * \fn bool Qt3D::Q3DMouseEvent::isAccepted() const
+ * \fn bool Qt3DCore::Q3DMouseEvent::isAccepted() const
  *
  *  Returns whether the event was accepted.
  */
 
 /*!
- * \fn void Qt3D::Q3DMouseEvent::setAccepted(bool accepted)
+ * \fn void Qt3DCore::Q3DMouseEvent::setAccepted(bool accepted)
  *
  *  Sets the event as accepted if \a accepted is true.
  *
@@ -90,13 +91,13 @@ namespace Qt3D {
  */
 
 /*!
- * \fn QEvent::Type Qt3D::Q3DMouseEvent::type() const
+ * \fn QEvent::Type Qt3DCore::Q3DMouseEvent::type() const
  *
  *  Returns the QEvent::Type of the event.
  */
 
 /*!
- * Constructs a new Qt3D::Q3DMouseEvent instance for the QMouseEvent \a e.
+ * Constructs a new Qt3DCore::Q3DMouseEvent instance for the QMouseEvent \a e.
  */
 Q3DMouseEvent::Q3DMouseEvent(const QMouseEvent &e)
     : QObject()
@@ -159,32 +160,33 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
 
 
 /*!
- * \class Qt3D::Q3DWheelEvent
+ * \class Qt3DCore::Q3DWheelEvent
+ * \inmodule Qt3DInput
  *
- * \brief The Qt3D::Q3DWheelEvent contains parameters that describe a mouse wheel event.
+ * \brief The Qt3DCore::Q3DWheelEvent contains parameters that describe a mouse wheel event.
  *
  * Mouse wheel events occur when the mouse is rotated.
  *
  * \since 5.5
  *
- * \sa Qt3D::Q3DKeyEvent, Qt3D::Q3DMouseEvent, Qt3D::QMouseInput
+ * \sa Qt3DCore::Q3DKeyEvent, Qt3DCore::Q3DMouseEvent, Qt3DCore::QMouseInput
  *
  */
 
 /*!
- * \fn int Qt3D::Q3DWheelEvent::x() const
- *
- *  Returns the x position of the mouse event.
- */
-
-/*!
- * \fn int Qt3D::Q3DWheelEvent::y() const
+ * \fn int Qt3DCore::Q3DWheelEvent::x() const
  *
  *  Returns the x position of the mouse event.
  */
 
 /*!
- * \fn QPoint Qt3D::Q3DWheelEvent::angleDelta() const
+ * \fn int Qt3DCore::Q3DWheelEvent::y() const
+ *
+ *  Returns the x position of the mouse event.
+ */
+
+/*!
+ * \fn QPoint Qt3DCore::Q3DWheelEvent::angleDelta() const
  *
  * Returns the distance that the wheel is rotated, in eighths of a degree. A
  * positive value indicates that the wheel was rotated forward (away from the
@@ -193,13 +195,13 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
  */
 
 /*!
- * \fn bool Qt3D::Q3DWheelEvent::isAccepted() const
+ * \fn bool Qt3DCore::Q3DWheelEvent::isAccepted() const
  *
  *  Returns whether the event was accepted.
  */
 
 /*!
- * \fn void Qt3D::Q3DWheelEvent::setAccepted(bool accepted)
+ * \fn void Qt3DCore::Q3DWheelEvent::setAccepted(bool accepted)
  *
  *  Sets the event as accepted if \a accepted is true.
  *
@@ -208,13 +210,13 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
  */
 
 /*!
- * \fn QEvent::Type Qt3D::Q3DWheelEvent::type() const
+ * \fn QEvent::Type Qt3DCore::Q3DWheelEvent::type() const
  *
  *  Returns the QEvent::Type of the event.
  */
 
 /*!
- * Constructs a new Qt3D::Q3DWheelEvent instance from the QWheelEvent \a e.
+ * Constructs a new Qt3DCore::Q3DWheelEvent instance from the QWheelEvent \a e.
  */
 Q3DWheelEvent::Q3DWheelEvent(const QWheelEvent &e)
     : QObject()
@@ -256,6 +258,6 @@ Q3DWheelEvent::Modifiers Q3DWheelEvent::modifier() const
     }
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

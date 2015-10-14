@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
@@ -49,22 +47,22 @@ Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
 {
 }
 
-QQmlListProperty<Qt3D::QAnnotation> Quick3DTechniqueFilter::requireList()
+QQmlListProperty<QAnnotation> Quick3DTechniqueFilter::requireList()
 {
-    return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                               &Quick3DTechniqueFilter::appendRequire,
-                                               &Quick3DTechniqueFilter::requiresCount,
-                                               &Quick3DTechniqueFilter::requireAt,
-                                               &Quick3DTechniqueFilter::clearRequires);
+    return QQmlListProperty<QAnnotation>(this, 0,
+                                         &Quick3DTechniqueFilter::appendRequire,
+                                         &Quick3DTechniqueFilter::requiresCount,
+                                         &Quick3DTechniqueFilter::requireAt,
+                                         &Quick3DTechniqueFilter::clearRequires);
 }
 
 QQmlListProperty<QParameter> Quick3DTechniqueFilter::parameterList()
 {
-    return QQmlListProperty<Qt3D::QParameter>(this, 0,
-                                             &Quick3DTechniqueFilter::appendParameter,
-                                             &Quick3DTechniqueFilter::parametersCount,
-                                             &Quick3DTechniqueFilter::parameterAt,
-                                             &Quick3DTechniqueFilter::clearParameterList);
+    return QQmlListProperty<QParameter>(this, 0,
+                                        &Quick3DTechniqueFilter::appendParameter,
+                                        &Quick3DTechniqueFilter::parametersCount,
+                                        &Quick3DTechniqueFilter::parameterAt,
+                                        &Quick3DTechniqueFilter::clearParameterList);
 }
 
 void Quick3DTechniqueFilter::appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion)
@@ -126,10 +124,8 @@ void Quick3DTechniqueFilter::clearParameterList(QQmlListProperty<QParameter> *li
         techniqueFilter->parentTechniqueFilter()->removeParameter(p);
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

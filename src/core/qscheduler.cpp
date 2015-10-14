@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QScheduler::QScheduler(QObject *parent)
     : QObject(parent)
@@ -87,6 +87,6 @@ void QScheduler::update(qint64 time)
     m_aspectManager->jobManager()->waitForAllJobs();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

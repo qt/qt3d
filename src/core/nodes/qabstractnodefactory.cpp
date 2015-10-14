@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QAbstractNodeFactory::~QAbstractNodeFactory()
 {
@@ -56,6 +56,6 @@ QList<QAbstractNodeFactory *> QAbstractNodeFactory::nodeFactories()
     return node_factories;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

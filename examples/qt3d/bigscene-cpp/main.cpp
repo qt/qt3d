@@ -57,16 +57,17 @@
 #include <Qt3DRenderer/QForwardRenderer>
 #include <qmath.h>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
+using namespace Qt3DRender;
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
     Window view;
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DCore::QAspectEngine engine;
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
@@ -99,7 +100,7 @@ int main(int ac, char **av)
     // Scene
     for (int i = 0; i < max; i++) {
         QEntity *e = new QEntity();
-        Qt3D::QTransform *transform = new Qt3D::QTransform();
+        Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
         QTranslateTransform *translation = new QTranslateTransform();
         QRotateTransform *rotateX = new QRotateTransform();
         QRotateTransform *rotateZ = new QRotateTransform();

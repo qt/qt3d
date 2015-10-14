@@ -60,9 +60,9 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Window view;
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DCore::QAspectEngine engine;
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
@@ -71,11 +71,11 @@ int main(int argc, char* argv[])
     engine.setData(data);
 
     // Scene Root
-    Qt3D::QEntity *sceneRoot = new Qt3D::QEntity();
+    Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3D::QCamera *basicCamera = new Qt3D::QCamera(sceneRoot);
-    basicCamera->setProjectionType(Qt3D::QCameraLens::PerspectiveProjection);
+    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
     input->setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
-    Qt3D::QFrameGraph *frameGraphComponent = new Qt3D::QFrameGraph(sceneRoot);
-    Qt3D::QForwardRenderer *forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setCamera(basicCamera);
     frameGraphComponent->setActiveFrameGraph(forwardRenderer);
     sceneRoot->addComponent(frameGraphComponent);
@@ -96,20 +96,20 @@ int main(int argc, char* argv[])
     planeEntity->mesh()->setWidth(100.0f);
     planeEntity->mesh()->setMeshResolution(QSize(20, 20));
 
-    Qt3D::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3D::QNormalDiffuseSpecularMapMaterial();
+    Qt3DRender::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
     normalDiffuseSpecularMapMaterial->setTextureScale(10.0f);
     normalDiffuseSpecularMapMaterial->setShininess(80.0f);
     normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
 
-    Qt3D::QTextureImage *diffuseImage = new Qt3D::QTextureImage();
+    Qt3DRender::QTextureImage *diffuseImage = new Qt3DRender::QTextureImage();
     diffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/diffuse.webp")));
     normalDiffuseSpecularMapMaterial->diffuse()->addTextureImage(diffuseImage);
 
-    Qt3D::QTextureImage *specularImage = new Qt3D::QTextureImage();
+    Qt3DRender::QTextureImage *specularImage = new Qt3DRender::QTextureImage();
     specularImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/specular.webp")));
     normalDiffuseSpecularMapMaterial->specular()->addTextureImage(specularImage);
 
-    Qt3D::QTextureImage *normalImage = new Qt3D::QTextureImage();
+    Qt3DRender::QTextureImage *normalImage = new Qt3DRender::QTextureImage();
     normalImage->setSource(QUrl((QStringLiteral("qrc:/assets/textures/pattern_09/normal.webp"))));
     normalDiffuseSpecularMapMaterial->normal()->addTextureImage(normalImage);
 
@@ -119,11 +119,11 @@ int main(int argc, char* argv[])
     RenderableEntity *chest = new RenderableEntity(sceneRoot);
     chest->scaleTransform()->setScale(0.03f);
     chest->mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/chest/Chest.obj")));
-    Qt3D::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3D::QDiffuseMapMaterial();
+    Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
     diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
     diffuseMapMaterial->setShininess(2.0f);
 
-    Qt3D::QTextureImage *chestDiffuseImage = new Qt3D::QTextureImage();
+    Qt3DRender::QTextureImage *chestDiffuseImage = new Qt3DRender::QTextureImage();
     chestDiffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/chest/diffuse.webp")));
     diffuseMapMaterial->diffuse()->addTextureImage(chestDiffuseImage);
 
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
     RotatingTrefoilKnot *trefoil = new RotatingTrefoilKnot(sceneRoot);
     trefoil->translateTransform()->setDy(3.5);
     trefoil->scaleTransform()->setScale(0.5f);
-    Qt3D::QPhongMaterial *phongMaterial = new Qt3D::QPhongMaterial();
+    Qt3DRender::QPhongMaterial *phongMaterial = new Qt3DRender::QPhongMaterial();
     phongMaterial->setDiffuse(QColor(204, 205, 75)); // Safari Yellow #cccd4b
     phongMaterial->setSpecular(Qt::white);
     trefoil->addComponent(phongMaterial);

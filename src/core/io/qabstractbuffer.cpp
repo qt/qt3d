@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractBufferPrivate
+    \class Qt3DCore::QAbstractBufferPrivate
     \internal
 */
 
@@ -58,7 +58,7 @@ QAbstractBuffer::QAbstractBuffer(QNode *parent)
 
 QAbstractBuffer::~QAbstractBuffer()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractBuffer subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QAbstractBuffer subclass didn't call QNode::cleanup in its destructor");
 }
 
 /*! \internal */
@@ -79,6 +79,7 @@ void QAbstractBuffer::setData(const QByteArray &bytes)
     Q_D(QAbstractBuffer);
     if (bytes != d->m_data) {
         d->m_data = bytes;
+        QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
         emit dataChanged();
     }
 }

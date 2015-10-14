@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -96,7 +96,7 @@ void Quick3DMaterial::clearParameters(QQmlListProperty<QParameter> *list)
 
 } // Quick
 
-} // Render
+} // namespace Render
 
 } // Qt3D
 

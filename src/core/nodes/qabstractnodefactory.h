@@ -42,7 +42,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QAbstractNodeFactory
 {
@@ -65,7 +65,7 @@ public:
     }
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

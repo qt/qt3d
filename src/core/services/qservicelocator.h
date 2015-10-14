@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSERVICELOCATOR_H
-#define QT3D_QSERVICELOCATOR_H
+#ifndef QT3DCORE_QSERVICELOCATOR_H
+#define QT3DCORE_QSERVICELOCATOR_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QScopedPointer>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractServiceProviderPrivate;
 
@@ -115,4 +115,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSERVICELOCATOR_H
+#endif // QT3DCORE_QSERVICELOCATOR_H

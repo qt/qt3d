@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAspectJobPrivate
+    \class Qt3DCore::QAspectJobPrivate
     \internal
 */
 QAspectJobPrivate::QAspectJobPrivate()
@@ -77,6 +77,6 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
     return d->m_dependencies;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

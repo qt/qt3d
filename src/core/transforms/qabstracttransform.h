@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACT_TRANSFORM_H
-#define QT3D_QABSTRACT_TRANSFORM_H
+#ifndef QT3DCORE_QABSTRACT_TRANSFORM_H
+#define QT3DCORE_QABSTRACT_TRANSFORM_H
 
 #include <QtCore/qobject.h>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractTransformPrivate;
 class QT3DCORESHARED_EXPORT QAbstractTransform : public QObject
@@ -67,8 +67,8 @@ private:
     Q_DISABLE_COPY(QAbstractTransform)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // of QT3D_QABSTRACT_TRANSFORM_H
+#endif // of QT3DCORE_QABSTRACT_TRANSFORM_H

@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_COMPONENT_H
-#define QT3D_COMPONENT_H
+#ifndef QT3DCORE_COMPONENT_H
+#define QT3DCORE_COMPONENT_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QComponentPrivate;
 
@@ -76,8 +76,8 @@ private:
     Q_DECLARE_PRIVATE(QComponent)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_COMPONENT_H
+#endif // QT3DCORE_COMPONENT_H

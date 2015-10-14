@@ -47,14 +47,14 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::Q3DKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
-    qmlRegisterType<Qt3D::QKeyboardController>(uri, 2, 0, "KeyboardController");
-    qmlRegisterType<Qt3D::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
+    qmlRegisterUncreatableType<Qt3DInput::Q3DKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterType<Qt3DInput::QKeyboardController>(uri, 2, 0, "KeyboardController");
+    qmlRegisterType<Qt3DInput::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
 
-    qmlRegisterUncreatableType<Qt3D::Q3DMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
-    qmlRegisterUncreatableType<Qt3D::Q3DWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
-    qmlRegisterType<Qt3D::QMouseInput>(uri, 2, 0, "MouseInput");
-    qmlRegisterType<Qt3D::QMouseController>(uri, 2, 0, "MouseController");
+    qmlRegisterUncreatableType<Qt3DInput::Q3DMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3DInput::Q3DWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterType<Qt3DInput::QMouseInput>(uri, 2, 0, "MouseInput");
+    qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
 }
 
 QT_END_NAMESPACE

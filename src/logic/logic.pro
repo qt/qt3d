@@ -6,8 +6,6 @@ load(qt_module)
 
 DEFINES += QT3DLOGIC_LIBRARY
 
-QMAKE_DOCS = $$PWD/doc/qt3dlogic.qdocconf
-
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

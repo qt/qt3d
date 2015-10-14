@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QHANDLEMANAGER_H
-#define QT3D_QHANDLEMANAGER_H
+#ifndef QT3DCORE_QHANDLEMANAGER_H
+#define QT3DCORE_QHANDLEMANAGER_H
 
 #include <QtGlobal>
 #include <Qt3DCore/qt3dcore_global.h>
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 template <typename T, uint INDEXBITS = 16>
 class QHandleManager
@@ -201,4 +201,4 @@ const T *QHandleManager<T, INDEXBITS>::constData(const QHandle<T, INDEXBITS> &ha
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QHANDLEMANAGER_H
+#endif // QT3DCORE_QHANDLEMANAGER_H

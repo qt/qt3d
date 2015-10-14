@@ -39,8 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 /*!
@@ -51,16 +50,16 @@ namespace Quick {
 Quick3DTransform::Quick3DTransform(QObject *parent)
     : QObject(parent)
 {
-    Q_ASSERT(qobject_cast<Qt3D::QTransform *>(parent) != Q_NULLPTR);
+    Q_ASSERT(qobject_cast<Qt3DCore::QTransform *>(parent) != Q_NULLPTR);
 }
 
 /*!
-    \qmlproperty matrix4x4 Qt3D::Transform::matrix
+    \qmlproperty matrix4x4 Qt3DCore::Transform::matrix
     \readonly
 */
 
 /*!
-    \qmlproperty list<QAbstractTransform> Qt3D::Transform::transforms
+    \qmlproperty list<QAbstractTransform> Qt3DCore::Transform::transforms
     \default
 */
 QQmlListProperty<QAbstractTransform> Quick3DTransform::transformList()
@@ -100,8 +99,7 @@ void Quick3DTransform::qmlClearTransforms(QQmlListProperty<QAbstractTransform> *
         self->parentTransform()->removeTransform(trans);
 }
 
-} //Quick
-
-} //Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

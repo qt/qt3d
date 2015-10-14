@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
 Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
@@ -55,7 +55,7 @@ QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QS
 }
 
 /*!
-    \class Qt3D::QAspectFactoryPrivate
+    \class Qt3DCore::QAspectFactoryPrivate
     \internal
 */
 QAspectFactoryPrivate::QAspectFactoryPrivate()
@@ -103,6 +103,6 @@ QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *pa
     }
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

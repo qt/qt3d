@@ -34,23 +34,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_LOGIC_QLOGICASPECT_P_H
-#define QT3D_LOGIC_QLOGICASPECT_P_H
+#ifndef QT3DLOGIC_QLOGICASPECT_P_H
+#define QT3DLOGIC_QLOGICASPECT_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DLogic/private/logiccallbackjob_p.h>
+#include <Qt3DLogic/private/callbackjob_p.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DLogic {
 
 namespace Logic {
-class LogicExecutor;
-class LogicManager;
+class Executor;
+class Manager;
 }
 
-class QLogicAspectPrivate : public QAbstractAspectPrivate
+class QLogicAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
     QLogicAspectPrivate();
 
@@ -58,14 +69,14 @@ class QLogicAspectPrivate : public QAbstractAspectPrivate
 
     qint64 m_time;
     bool m_initialized;
-    QScopedPointer<Logic::LogicManager> m_manager;
-    QScopedPointer<Logic::LogicExecutor> m_executor;
-    QSharedPointer<Logic::LogicCallbackJob> m_callbackJob;
+    QScopedPointer<Logic::Manager> m_manager;
+    QScopedPointer<Logic::Executor> m_executor;
+    QSharedPointer<Logic::CallbackJob> m_callbackJob;
 };
 
-}
+} // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3D_LOGIC_QLOGICASPECT_P_H
+#endif // QT3DLOGIC_QLOGICASPECT_P_H
 

@@ -36,14 +36,14 @@
 
 #include "trefoilknot.h"
 
-TrefoilKnot::TrefoilKnot(Qt3D::QNode *parent)
-    : Qt3D::QEntity(parent)
-    , m_mesh(new Qt3D::QMesh())
-    , m_transform(new Qt3D::QTransform())
-    , m_scaleTransform(new Qt3D::QScaleTransform())
-    , m_xaxisRotation(new Qt3D::QRotateTransform())
-    , m_yaxisRotation(new Qt3D::QRotateTransform())
-    , m_translateTransform(new Qt3D::QTranslateTransform())
+TrefoilKnot::TrefoilKnot(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent)
+    , m_mesh(new Qt3DRender::QMesh())
+    , m_transform(new Qt3DCore::QTransform())
+    , m_scaleTransform(new Qt3DCore::QScaleTransform())
+    , m_xaxisRotation(new Qt3DCore::QRotateTransform())
+    , m_yaxisRotation(new Qt3DCore::QRotateTransform())
+    , m_translateTransform(new Qt3DCore::QTranslateTransform())
 {
     m_mesh->setSource(QUrl("qrc:/assets/obj/trefoil.obj"));
     m_xaxisRotation->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
@@ -62,22 +62,22 @@ TrefoilKnot::~TrefoilKnot()
 {
 }
 
-Qt3D::QScaleTransform *TrefoilKnot::scaleTransform() const
+Qt3DCore::QScaleTransform *TrefoilKnot::scaleTransform() const
 {
     return m_scaleTransform;
 }
 
-Qt3D::QRotateTransform *TrefoilKnot::xaxisRotateTransform() const
+Qt3DCore::QRotateTransform *TrefoilKnot::xaxisRotateTransform() const
 {
     return m_xaxisRotation;
 }
 
-Qt3D::QRotateTransform *TrefoilKnot::yaxisRotateTransform() const
+Qt3DCore::QRotateTransform *TrefoilKnot::yaxisRotateTransform() const
 {
     return m_yaxisRotation;
 }
 
-Qt3D::QTranslateTransform *TrefoilKnot::translateTransform() const
+Qt3DCore::QTranslateTransform *TrefoilKnot::translateTransform() const
 {
     return m_translateTransform;
 }

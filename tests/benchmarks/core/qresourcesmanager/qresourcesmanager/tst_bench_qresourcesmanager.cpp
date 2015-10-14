@@ -77,7 +77,7 @@ public:
 template<typename Resource>
 void benchmarkAllocateResources()
 {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
 
     volatile Resource *c;
     QBENCHMARK_ONCE {
@@ -91,9 +91,9 @@ void benchmarkAllocateResources()
 template<typename Resource>
 void benchmarkAccessResources()
 {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3D::QHandle<Resource> > handles(max);
+    QVector<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 
@@ -107,9 +107,9 @@ void benchmarkAccessResources()
 
 template<typename Resource>
 void benchmarkRandomAccessResource() {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3D::QHandle<Resource> > handles(max);
+    QVector<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 
@@ -126,7 +126,7 @@ void benchmarkRandomAccessResource() {
 template<typename Resource>
 void benchmarkLookupResources()
 {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     for (int i = 0; i < max; i++)
         manager.getOrCreateResource(i);
@@ -142,7 +142,7 @@ void benchmarkLookupResources()
 template<typename Resource>
 void benchmarkRandomLookupResources()
 {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
     QVector<int> resourcesIndices(max);
     for (int i = 0; i < max; i++) {
@@ -162,9 +162,9 @@ void benchmarkRandomLookupResources()
 template<typename Resource>
 void benchmarkReleaseResources()
 {
-    Qt3D::QResourceManager<Resource, int, 16> manager;
+    Qt3DCore::QResourceManager<Resource, int, 16> manager;
     const int max = (1 << 16) - 1;
-    QVector<Qt3D::QHandle<Resource> > handles(max);
+    QVector<Qt3DCore::QHandle<Resource> > handles(max);
     for (int i = 0; i < max; i++)
         handles[i] = manager.acquire();
 

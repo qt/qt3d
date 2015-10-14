@@ -35,14 +35,15 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/renderentity_p.h>
+#include <Qt3DRenderer/private/entity_p.h>
 #include <Qt3DRenderer/qraycastingservice.h>
 #include <Qt3DRenderer/sphere.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DCore/qray3d.h>
 
-using namespace Qt3D;
-using namespace Qt3D::Render;
+using namespace Qt3DCore;
+using namespace Qt3DRender;
+using namespace Qt3DRender::Render;
 
 class tst_RayCasting : public QObject
 {

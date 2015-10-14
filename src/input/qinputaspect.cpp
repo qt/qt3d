@@ -52,10 +52,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3DCore;
+
+namespace Qt3DInput {
 
 /*!
-    \class Qt3D::QInputAspectPrivate
+    \class Qt3DInput::QInputAspectPrivate
     \internal
 */
 QInputAspectPrivate::QInputAspectPrivate()
@@ -67,7 +69,7 @@ QInputAspectPrivate::QInputAspectPrivate()
 }
 
 /*!
-    \class Qt3D::QInputAspect
+    \class Qt3DInput::QInputAspect
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -81,13 +83,13 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QMouseInput>(QBackendNodeFunctorPtr(new Input::MouseInputFunctor(d_func()->m_inputHandler.data())));
 }
 
-QCamera *QInputAspect::camera() const
+Qt3DCore::QCamera *QInputAspect::camera() const
 {
     Q_D(const QInputAspect);
     return d->m_cameraController->camera();
 }
 
-void QInputAspect::setCamera(QCamera *camera)
+void QInputAspect::setCamera(Qt3DCore::QCamera *camera)
 {
     Q_D(QInputAspect);
     d->m_cameraController->setCamera(camera);
@@ -105,7 +107,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QInputAspect::sceneNodeAdded(QSceneChangePtr &e)
+void QInputAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -114,7 +116,7 @@ void QInputAspect::sceneNodeAdded(QSceneChangePtr &e)
     visitor.traverse(n, this, &QInputAspect::visitNode);
 }
 
-void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
+void QInputAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
@@ -122,7 +124,7 @@ void QInputAspect::sceneNodeRemoved(QSceneChangePtr &e)
     QAbstractAspect::clearBackendNode(n);
 }
 
-void QInputAspect::setRootEntity(QEntity *rootObject)
+void QInputAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
 {
     QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QInputAspect::visitNode);
@@ -156,13 +158,13 @@ void QInputAspect::onCleanup()
     d->m_inputHandler.reset(Q_NULLPTR);
 }
 
-void QInputAspect::visitNode(QNode *node)
+void QInputAspect::visitNode(Qt3DCore::QNode *node)
 {
     QAbstractAspect::createBackendNode(node);
 }
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-QT3D_REGISTER_NAMESPACED_ASPECT("input", QT_PREPEND_NAMESPACE(Qt3D), QInputAspect)
+QT3D_REGISTER_NAMESPACED_ASPECT("input", QT_PREPEND_NAMESPACE(Qt3DInput), QInputAspect)

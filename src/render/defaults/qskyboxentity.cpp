@@ -53,11 +53,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3DCore;
 
+namespace Qt3DRender {
 
 /*!
- * \class Qt3D::QSkyboxEntityPrivate
+ * \class Qt3DCore::QSkyboxEntityPrivate
  * \internal
  */
 QSkyboxEntityPrivate::QSkyboxEntityPrivate()
@@ -74,7 +75,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
-    , m_transform(new QTransform())
+    , m_transform(new Qt3DCore::QTransform())
     , m_translate(new QTranslateTransform())
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
@@ -183,12 +184,13 @@ void QSkyboxEntityPrivate::reloadTexture()
 }
 
 /*!
- * \class Qt3D::QSkyboxEntity
+ * \class Qt3DCore::QSkyboxEntity
+ * \inmodule Qt3DRenderer
  *
- * \brief Qt3D::QSkyboxEntity is a convenience Qt3D::QEntity subclass that can
+ * \brief Qt3DCore::QSkyboxEntity is a convenience Qt3DCore::QEntity subclass that can
  * be used to insert a skybox in a 3D scene.
  *
- * By specifying a base name and an extension, Qt3D::QSkyboxEntity
+ * By specifying a base name and an extension, Qt3DCore::QSkyboxEntity
  * will take care of building a TextureCubeMap to be rendered at runtime. The
  * images in the source directory should match the pattern:
  * \b base name + * "_posx|_posy|_posz|_negx|_negy|_negz" + extension
@@ -202,7 +204,7 @@ void QSkyboxEntityPrivate::reloadTexture()
  */
 
 /*!
- * Constructs a new Qt3D::QSkyboxEntity object with \a parent as parent.
+ * Constructs a new Qt3DCore::QSkyboxEntity object with \a parent as parent.
  */
 QSkyboxEntity::QSkyboxEntity(QNode *parent)
     : QEntity(*new QSkyboxEntityPrivate, parent)
@@ -280,6 +282,6 @@ QVector3D QSkyboxEntity::cameraPosition() const
     return d->m_position;
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -57,18 +57,18 @@ const char *bumpsName[] = {
     "hard_bumps"
 };
 
-Barrel::Barrel(Qt3D::QNode *parent)
+Barrel::Barrel(Qt3DCore::QNode *parent)
     : RenderableEntity(parent)
     , m_bumps(NoBumps)
     , m_diffuseColor(Red)
     , m_specularColor(None)
-    , m_material(new Qt3D::QNormalDiffuseSpecularMapMaterial())
+    , m_material(new Qt3DRender::QNormalDiffuseSpecularMapMaterial())
     , m_diffuseTexture(m_material->diffuse())
     , m_normalTexture(m_material->normal())
     , m_specularTexture(m_material->specular())
-    , m_diffuseTextureImage(new Qt3D::QTextureImage())
-    , m_normalTextureImage(new Qt3D::QTextureImage())
-    , m_specularTextureImage(new Qt3D::QTextureImage())
+    , m_diffuseTextureImage(new Qt3DRender::QTextureImage())
+    , m_normalTextureImage(new Qt3DRender::QTextureImage())
+    , m_specularTextureImage(new Qt3DRender::QTextureImage())
 {
     mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/metalbarrel/metal_barrel.obj")));
     scaleTransform()->setScale(0.03f);

@@ -37,89 +37,13 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/qbuffer.h>
 #include <Qt3DRenderer/qbufferfunctor.h>
 
-class TestArbiter;
+#include "testpostmanarbiter.h"
 
-class TestPostman : public Qt3D::QAbstractPostman
-{
-public:
-    TestPostman(TestArbiter *arbiter)
-        : m_arbiter(arbiter)
-    {}
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_FINAL
-    {}
-
-    void setScene(Qt3D::QScene *) Q_DECL_FINAL
-    {}
-
-    void notifyBackend(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL;
-
-private:
-    TestArbiter *m_arbiter;
-};
-
-class TestArbiter : public Qt3D::QAbstractArbiter
-{
-public:
-    TestArbiter(Qt3D::QNode *node)
-        : m_postman(new TestPostman(this))
-        , m_node(node)
-    {
-        assignArbiter(m_node);
-    }
-
-    ~TestArbiter()
-    {
-        Qt3D::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
-    }
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangeList &e) Q_DECL_FINAL
-    {
-        events += QVector<Qt3D::QSceneChangePtr>::fromStdVector(e);
-    }
-
-    Qt3D::QAbstractPostman *postman() const Q_DECL_FINAL
-    {
-        return m_postman;
-    }
-
-    QVector<Qt3D::QSceneChangePtr> events;
-
-private:
-    TestPostman *m_postman;
-    Qt3D::QNode *m_node;
-
-    void assignArbiter(Qt3D::QNode *node)
-    {
-        Qt3D::QNodePrivate::get(node)->setArbiter(this);
-        Q_FOREACH (Qt3D::QNode *n, node->childrenNodes())
-            assignArbiter(n);
-    }
-};
-
-void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
-{
-    m_arbiter->sceneChangeEventWithLock(e);
-}
-
-class TestFunctor : public Qt3D::QBufferFunctor
+class TestFunctor : public Qt3DRender::QBufferFunctor
 {
 public:
     explicit TestFunctor(int size)
@@ -131,7 +55,7 @@ public:
         return QByteArray();
     }
 
-    bool operator ==(const Qt3D::QBufferFunctor &other) const
+    bool operator ==(const Qt3DRender::QBufferFunctor &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -147,7 +71,7 @@ private:
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QBuffer: public Qt3D::QNode
+class tst_QBuffer: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
@@ -160,31 +84,31 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QBuffer *>("buffer");
+        QTest::addColumn<Qt3DRender::QBuffer *>("buffer");
 
-        Qt3D::QBuffer *defaultConstructed = new Qt3D::QBuffer();
+        Qt3DRender::QBuffer *defaultConstructed = new Qt3DRender::QBuffer();
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
-        Qt3D::QBuffer *buffer = new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer);
-        buffer->setUsage(Qt3D::QBuffer::DynamicRead);
+        Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
+        buffer->setUsage(Qt3DRender::QBuffer::DynamicRead);
         buffer->setData(QByteArrayLiteral("There's no replacement"));
-        buffer->setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(883)));
+        buffer->setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(883)));
         QTest::newRow("vertex") << buffer;
 
-        Qt3D::QBuffer *indexBuffer = new Qt3D::QBuffer(Qt3D::QBuffer::IndexBuffer);
-        indexBuffer->setUsage(Qt3D::QBuffer::StaticCopy);
+        Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
+        indexBuffer->setUsage(Qt3DRender::QBuffer::StaticCopy);
         indexBuffer->setData(QByteArrayLiteral("For displacement"));
-        indexBuffer->setBufferFunctor(Qt3D::QBufferFunctorPtr(new TestFunctor(1340)));
+        indexBuffer->setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(1340)));
         QTest::newRow("index") << indexBuffer;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QBuffer *, buffer);
+        QFETCH(Qt3DRender::QBuffer *, buffer);
 
         // WHEN
-        Qt3D::QBuffer *clone = static_cast<Qt3D::QBuffer *>(QNode::clone(buffer));
+        Qt3DRender::QBuffer *clone = static_cast<Qt3DRender::QBuffer *>(QNode::clone(buffer));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
@@ -203,30 +127,30 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QBuffer> buffer(new Qt3D::QBuffer(Qt3D::QBuffer::VertexBuffer));
+        QScopedPointer<Qt3DRender::QBuffer> buffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer));
         TestArbiter arbiter(buffer.data());
 
         // WHEN
-        buffer->setType(Qt3D::QBuffer::IndexBuffer);
+        buffer->setType(Qt3DRender::QBuffer::IndexBuffer);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "type");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QBuffer::IndexBuffer));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QBuffer::IndexBuffer));
 
         arbiter.events.clear();
 
         // WHEN
-        buffer->setUsage(Qt3D::QBuffer::DynamicCopy);
+        buffer->setUsage(Qt3DRender::QBuffer::DynamicCopy);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "usage");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3D::QBuffer::DynamicCopy));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QBuffer::DynamicCopy));
 
         arbiter.events.clear();
 
@@ -236,28 +160,28 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "data");
         QCOMPARE(change->value().value<QByteArray>(), QByteArrayLiteral("Z28"));
 
         arbiter.events.clear();
 
         // WHEN
-        Qt3D::QBufferFunctorPtr functor(new TestFunctor(355));
+        Qt3DRender::QBufferFunctorPtr functor(new TestFunctor(355));
         buffer->setBufferFunctor(functor);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "bufferFunctor");
-        QCOMPARE(change->value().value<Qt3D::QBufferFunctorPtr>(), functor);
+        QCOMPARE(change->value().value<Qt3DRender::QBufferFunctorPtr>(), functor);
 
         arbiter.events.clear();
     }
 
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
+    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
     {
         return Q_NULLPTR;
     }

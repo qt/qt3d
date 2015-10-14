@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
-#define QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qrenderpass.h>
@@ -44,44 +44,42 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QAnnotation> annotations READ annotationList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameterMapping> bindings READ bindingList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QRenderState> renderStates READ renderStateList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> annotations READ annotationList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameterMapping> bindings READ bindingList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
-    QQmlListProperty<Qt3D::QAnnotation> annotationList();
-    QQmlListProperty<Qt3D::QParameterMapping> bindingList();
-    QQmlListProperty<Qt3D::QRenderState> renderStateList();
-    QQmlListProperty<Qt3D::QParameter> parameterList();
+    QQmlListProperty<QAnnotation> annotationList();
+    QQmlListProperty<QParameterMapping> bindingList();
+    QQmlListProperty<QRenderState> renderStateList();
+    QQmlListProperty<QParameter> parameterList();
 
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
-    static void appendAnnotation(QQmlListProperty<Qt3D::QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *annotationAt(QQmlListProperty<Qt3D::QAnnotation> *list, int index);
-    static int annotationsCount(QQmlListProperty<Qt3D::QAnnotation> *list);
-    static void clearAnnotations(QQmlListProperty<Qt3D::QAnnotation> *list);
+    static void appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *annotationAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int annotationsCount(QQmlListProperty<QAnnotation> *list);
+    static void clearAnnotations(QQmlListProperty<QAnnotation> *list);
 
-    static void appendBinding(QQmlListProperty<Qt3D::QParameterMapping> *list, QParameterMapping *binding);
-    static QParameterMapping *bindingAt(QQmlListProperty<Qt3D::QParameterMapping> *list, int index);
-    static int bindingsCount(QQmlListProperty<Qt3D::QParameterMapping> *list);
-    static void clearBindings(QQmlListProperty<Qt3D::QParameterMapping> *list);
+    static void appendBinding(QQmlListProperty<QParameterMapping> *list, QParameterMapping *binding);
+    static QParameterMapping *bindingAt(QQmlListProperty<QParameterMapping> *list, int index);
+    static int bindingsCount(QQmlListProperty<QParameterMapping> *list);
+    static void clearBindings(QQmlListProperty<QParameterMapping> *list);
 
-    static void appendRenderState(QQmlListProperty<Qt3D::QRenderState> *list, QRenderState *state);
-    static QRenderState *renderStateAt(QQmlListProperty<Qt3D::QRenderState> *list, int index);
-    static int renderStateCount(QQmlListProperty<Qt3D::QRenderState> *list);
-    static void clearRenderStates(QQmlListProperty<Qt3D::QRenderState> *list);
+    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
+    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
+    static int renderStateCount(QQmlListProperty<QRenderState> *list);
+    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
     static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
@@ -89,12 +87,10 @@ private:
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DRENDERPASS_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_H

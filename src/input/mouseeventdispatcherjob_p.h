@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
-#define QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#ifndef QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#define QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,29 +54,27 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class MouseEventDispatcherJob : public QAspectJob
+class MouseEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit MouseEventDispatcherJob(const QNodeId &input, const QList<QMouseEvent> &events);
+    explicit MouseEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QMouseEvent> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_FINAL;
 
 private:
     InputHandler *m_inputHandler;
-    const QNodeId m_mouseInput;
+    const Qt3DCore::QNodeId m_mouseInput;
     const QList<QMouseEvent> m_events;
 };
 
-} // Input
-
-} // Mouse
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_MOUSEEVENTDISPATCHERJOB_P_H
+#endif // QT3DINPUT_INPUT_MOUSEEVENTDISPATCHERJOB_P_H

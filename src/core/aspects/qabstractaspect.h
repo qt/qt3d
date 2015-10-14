@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTASPECT_H
-#define QT3D_QABSTRACTASPECT_H
+#ifndef QT3DCORE_QABSTRACTASPECT_H
+#define QT3DCORE_QABSTRACTASPECT_H
 
 #include <QObject>
 #include <QSharedPointer>
@@ -46,7 +46,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAspectManager;
 class QNode;
@@ -118,8 +118,8 @@ void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
     registerBackendType(Frontend::staticMetaObject, functor);
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_ABSTRACTASPECT_H
+#endif // QT3DCORE_ABSTRACTASPECT_H

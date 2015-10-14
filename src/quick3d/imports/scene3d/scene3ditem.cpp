@@ -55,7 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class ContextSaver
 {
@@ -83,13 +83,13 @@ private:
 class Scene3DSGNode;
 
 /*!
-    \class Qt3D::Scene3DRenderer
+    \class Qt3DCore::Scene3DRenderer
     \internal
 
-    \brief The Qt3D::Scene3DRenderer class takes care of rendering a Qt3D scene
+    \brief The Qt3DCore::Scene3DRenderer class takes care of rendering a Qt3D scene
     within a Framebuffer object to be used by the QtQuick 2 renderer.
 
-    The Qt3D::Scene3DRenderer class renders a Qt3D scene as provided by a Qt3D::Scene3DItem.
+    The Qt3DCore::Scene3DRenderer class renders a Qt3D scene as provided by a Qt3DCore::Scene3DItem.
     It owns the aspectEngine even though it doesn't instantiate it.
 
     The shutdown procedure is a two steps process that goes as follow:
@@ -147,8 +147,8 @@ class Scene3DRenderer : public QObject
     Q_OBJECT
 public:
     Scene3DRenderer(Scene3DItem *item,
-                    Qt3D::QAspectEngine *aspectEngine,
-                    Qt3D::QRenderAspect *renderAspect)
+                    Qt3DCore::QAspectEngine *aspectEngine,
+                    QRenderAspect *renderAspect)
         : QObject()
         , m_item(item)
         , m_aspectEngine(aspectEngine)
@@ -248,8 +248,8 @@ public Q_SLOTS:
 
 private:
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
-    Qt3D::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
-    Qt3D::QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
+    Qt3DCore::QAspectEngine *m_aspectEngine; // Will be released by the Scene3DRendererCleaner
+    QRenderAspect *m_renderAspect; // Will be released by the aspectEngine
     QScopedPointer<QOpenGLFramebufferObject> m_multisampledFBO;
     QScopedPointer<QOpenGLFramebufferObject> m_finalFBO;
     QScopedPointer<QSGTexture> m_texture;
@@ -263,13 +263,13 @@ private:
 };
 
 /*!
-    \class Qt3D::SCene3DMaterialShader
+    \class Qt3DCore::SCene3DMaterialShader
     \internal
 
-    \brief The Qt3D::Scene3DSGMaterialShader class is a custom
-    QSGMaterialShader subclass instantiated by a Qt3D::Scene3DSGMateria1
+    \brief The Qt3DCore::Scene3DSGMaterialShader class is a custom
+    QSGMaterialShader subclass instantiated by a Qt3DCore::Scene3DSGMateria1
 
-    The Qt3D::Scene3DSGMaterialShader provides a shader that renders a texture
+    The Qt3DCore::Scene3DSGMaterialShader provides a shader that renders a texture
     using premultiplied alpha.
  */
 class Scene3DSGMaterialShader : public QSGMaterialShader
@@ -353,14 +353,14 @@ private:
 QSGMaterialType Scene3DSGMaterialShader::type;
 
 /*!
-    \class Qt3D::Scene3DSGMaterial
+    \class Qt3DCore::Scene3DSGMaterial
     \internal
     \inherit QSGMaterial
 
-    \brief The Qt3D::Scene3DSGMaterial class is a custom QSGMaterial subclass used to
-    render a Qt3D::Scene3DSGNode
+    \brief The Qt3DCore::Scene3DSGMaterial class is a custom QSGMaterial subclass used to
+    render a Qt3DCore::Scene3DSGNode
 
-    The Qt3D::Scene3DSGMaterial class renders a texture using premultiplied
+    The Qt3DCore::Scene3DSGMaterial class renders a texture using premultiplied
     alpha unlike the QSGSimpleTextureMaterial.
 
     This is needed to properly integrate alpha blending from a Qt3D scene
@@ -389,13 +389,13 @@ private:
 };
 
 /*!
-    \class Qt3D::Scene3DSGNode
+    \class Qt3DCore::Scene3DSGNode
     \internal
 
-    \brief The Qt3D::Scene3DSGNode class is a simple QSGeometryNode subclass that
-    uses a Qt3D::Scene3DMaterial
+    \brief The Qt3DCore::Scene3DSGNode class is a simple QSGeometryNode subclass that
+    uses a Qt3DCore::Scene3DMaterial
 
-    The Qt3D::Scene3DSGNode allows to render a simple rect texture with
+    The Qt3DCore::Scene3DSGNode allows to render a simple rect texture with
     premultiplied alpha.
  */
 class Scene3DSGNode : public QSGGeometryNode
@@ -448,23 +448,23 @@ private:
 };
 
 /*!
-    \class Qt3D::Scene3DItem
+    \class Qt3DCore::Scene3DItem
     \internal
 
-    \brief The Qt3D::Scene3DItem class is a QQuickItem subclass used to integrate
+    \brief The Qt3DCore::Scene3DItem class is a QQuickItem subclass used to integrate
     a Qt3D scene into a QtQuick 2 scene.
 
-    The Qt3D::Scene3DItem class renders a Qt3D scene, provided by a Qt3D::QEntity
+    The Qt3DCore::Scene3DItem class renders a Qt3D scene, provided by a Qt3DCore::QEntity
     into a multisampled Framebuffer object that is later blitted into a non
     multisampled Framebuffer object to be then renderer through the use of a
-    Qt3D::Scene3DSGNode with premultiplied alpha.
+    Qt3DCore::Scene3DSGNode with premultiplied alpha.
  */
 
 Scene3DItem::Scene3DItem(QQuickItem *parent)
     : QQuickItem(parent)
     , m_entity(Q_NULLPTR)
-    , m_aspectEngine(new Qt3D::QAspectEngine())
-    , m_renderAspect(new Qt3D::QRenderAspect(Qt3D::QRenderAspect::Synchronous))
+    , m_aspectEngine(new Qt3DCore::QAspectEngine())
+    , m_renderAspect(new QRenderAspect(QRenderAspect::Synchronous))
     , m_renderer(Q_NULLPTR)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
@@ -489,7 +489,7 @@ QStringList Scene3DItem::aspects() const
     return m_aspects;
 }
 
-Qt3D::QEntity *Scene3DItem::entity() const
+Qt3DCore::QEntity *Scene3DItem::entity() const
 {
     return m_entity;
 }
@@ -508,7 +508,7 @@ void Scene3DItem::setAspects(const QStringList &aspects)
         if (aspect == QStringLiteral("render")) // This one is hardwired anyway
             continue;
         if (aspect == QStringLiteral("input"))  {
-            m_aspectEngine->registerAspect(new Qt3D::QInputAspect);
+            m_aspectEngine->registerAspect(new Qt3DInput::QInputAspect);
             continue;
         }
 
@@ -518,7 +518,7 @@ void Scene3DItem::setAspects(const QStringList &aspects)
     emit aspectsChanged();
 }
 
-void Scene3DItem::setEntity(Qt3D::QEntity *entity)
+void Scene3DItem::setEntity(Qt3DCore::QEntity *entity)
 {
     if (entity == m_entity)
         return;
@@ -723,7 +723,7 @@ void Scene3DCleaner::cleanup()
     deleteLater();
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

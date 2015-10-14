@@ -139,11 +139,11 @@ void tst_QRay3D::create()
 {
     QFETCH(QVector3D, point);
     QFETCH(QVector3D, direction);
-    Qt3D::QRay3D ray(point, direction);
+    Qt3DCore::QRay3D ray(point, direction);
     QVERIFY(fuzzyCompare(ray.direction(), direction));
     QVERIFY(fuzzyCompare(ray.origin(), point));
 
-    Qt3D::QRay3D ray2;
+    Qt3DCore::QRay3D ray2;
     QCOMPARE(ray2.origin(), QVector3D(0, 0, 0));
     QCOMPARE(ray2.direction(), QVector3D(0, 0, 1));
     ray2.setOrigin(point);
@@ -196,7 +196,7 @@ void tst_QRay3D::projection()
     QFETCH(QVector3D, direction);
     QFETCH(QVector3D, vector);
     QFETCH(QVector3D, expected);
-    Qt3D::QRay3D line(point, direction);
+    Qt3DCore::QRay3D line(point, direction);
     QVector3D result = line.project(vector);
     QVERIFY(fuzzyCompare(result, expected));
 }
@@ -245,7 +245,7 @@ void tst_QRay3D::point()
     QFETCH(QVector3D, direction);
     QFETCH(QVector3D, point_on_line_pos_0_6);
     QFETCH(QVector3D, point_on_line_neg_7_2);
-    Qt3D::QRay3D line(point, direction);
+    Qt3DCore::QRay3D line(point, direction);
     QVERIFY(fuzzyCompare(line.point(0.6), point_on_line_pos_0_6));
     QVERIFY(fuzzyCompare(line.point(-7.2), point_on_line_neg_7_2));
     QVERIFY(fuzzyCompare(line.projectedDistance(point_on_line_pos_0_6), 0.6));
@@ -335,7 +335,7 @@ void tst_QRay3D::contains_point()
     QFETCH(QVector3D, point);
     QFETCH(bool, contains);
 
-    Qt3D::QRay3D line(origin, direction);
+    Qt3DCore::QRay3D line(origin, direction);
     QCOMPARE(line.contains(point), contains);
 }
 
@@ -351,23 +351,23 @@ void tst_QRay3D::contains_ray()
     QFETCH(QVector3D, point);
     QFETCH(bool, contains);
 
-    Qt3D::QRay3D line(origin, direction);
+    Qt3DCore::QRay3D line(origin, direction);
     if (contains) {
-        Qt3D::QRay3D line2(point, direction);
+        Qt3DCore::QRay3D line2(point, direction);
         QVERIFY(line.contains(line2));
         QVERIFY(line2.contains(line));
 
         // Reversed direction is also contained.
-        Qt3D::QRay3D line3(point, -direction);
+        Qt3DCore::QRay3D line3(point, -direction);
         QVERIFY(line.contains(line2));
         QVERIFY(line2.contains(line));
 
         // Different direction.
-        Qt3D::QRay3D line4(point, QVector3D(direction.y(), direction.x(), direction.z()));
+        Qt3DCore::QRay3D line4(point, QVector3D(direction.y(), direction.x(), direction.z()));
         QVERIFY(!line.contains(line4));
         QVERIFY(!line4.contains(line));
     } else {
-        Qt3D::QRay3D line2(point, direction);
+        Qt3DCore::QRay3D line2(point, direction);
         QVERIFY(!line.contains(line2));
         QVERIFY(!line2.contains(line));
     }
@@ -412,15 +412,15 @@ void tst_QRay3D::distance()
     QFETCH(QVector3D, point);
     QFETCH(float, distance);
 
-    Qt3D::QRay3D line(origin, direction);
+    Qt3DCore::QRay3D line(origin, direction);
     QCOMPARE(line.distance(point), distance);
 }
 
 void tst_QRay3D::compare()
 {
-    Qt3D::QRay3D ray1(QVector3D(10, 20, 30), QVector3D(-3, -4, -5));
-    Qt3D::QRay3D ray2(QVector3D(10, 20, 30), QVector3D(1.5f, 2.0f, 2.5f));
-    Qt3D::QRay3D ray3(QVector3D(0, 20, 30), QVector3D(-3, -4, -5));
+    Qt3DCore::QRay3D ray1(QVector3D(10, 20, 30), QVector3D(-3, -4, -5));
+    Qt3DCore::QRay3D ray2(QVector3D(10, 20, 30), QVector3D(1.5f, 2.0f, 2.5f));
+    Qt3DCore::QRay3D ray3(QVector3D(0, 20, 30), QVector3D(-3, -4, -5));
     QVERIFY(ray1 == ray1);
     QVERIFY(!(ray1 != ray1));
     QVERIFY(qFuzzyCompare(ray1, ray1));
@@ -435,7 +435,7 @@ void tst_QRay3D::compare()
 void tst_QRay3D::dataStream()
 {
 #ifndef QT_NO_DATASTREAM
-    Qt3D::QRay3D ray(QVector3D(1.0f, 2.0f, 3.0f), QVector3D(4.0f, 5.0f, 6.0f));
+    Qt3DCore::QRay3D ray(QVector3D(1.0f, 2.0f, 3.0f), QVector3D(4.0f, 5.0f, 6.0f));
 
     QByteArray data;
     {
@@ -443,7 +443,7 @@ void tst_QRay3D::dataStream()
         stream << ray;
     }
 
-    Qt3D::QRay3D ray2;
+    Qt3DCore::QRay3D ray2;
     {
         QDataStream stream2(data);
         stream2 >> ray2;
@@ -468,9 +468,9 @@ void tst_QRay3D::transform()
     m.rotate(45.0f, 1.0f, 1.0f, 1.0f);
     m.scale(23.5f);
 
-    Qt3D::QRay3D ray1(point, direction);
-    Qt3D::QRay3D ray2(ray1);
-    Qt3D::QRay3D ray3;
+    Qt3DCore::QRay3D ray1(point, direction);
+    Qt3DCore::QRay3D ray2(ray1);
+    Qt3DCore::QRay3D ray3;
 
     ray1.transform(m);
     ray3 = ray2.transformed(m);
@@ -485,15 +485,15 @@ void tst_QRay3D::transform()
 class tst_QRay3DProperties : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3D::QRay3D ray READ ray WRITE setRay)
+    Q_PROPERTY(Qt3DCore::QRay3D ray READ ray WRITE setRay)
 public:
     tst_QRay3DProperties(QObject *parent = 0) : QObject(parent) {}
 
-    Qt3D::QRay3D ray() const { return r; }
-    void setRay(const Qt3D::QRay3D& value) { r = value; }
+    Qt3DCore::QRay3D ray() const { return r; }
+    void setRay(const Qt3DCore::QRay3D& value) { r = value; }
 
 private:
-    Qt3D::QRay3D r;
+    Qt3DCore::QRay3D r;
 };
 
 // Test getting and setting properties via the metaobject system.
@@ -501,35 +501,35 @@ void tst_QRay3D::properties()
 {
     tst_QRay3DProperties obj;
 
-    qRegisterMetaType<Qt3D::QRay3D>();
+    qRegisterMetaType<Qt3DCore::QRay3D>();
 
-    obj.setRay(Qt3D::QRay3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6)));
+    obj.setRay(Qt3DCore::QRay3D(QVector3D(1, 2, 3), QVector3D(4, 5, 6)));
 
-    Qt3D::QRay3D r = qvariant_cast<Qt3D::QRay3D>(obj.property("ray"));
+    Qt3DCore::QRay3D r = qvariant_cast<Qt3DCore::QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), QVector3D(1, 2, 3));
     QCOMPARE(r.direction(), QVector3D(4, 5, 6));
 
     obj.setProperty("ray",
                     qVariantFromValue
-                        (Qt3D::QRay3D(QVector3D(-1, -2, -3), QVector3D(-4, -5, -6))));
+                        (Qt3DCore::QRay3D(QVector3D(-1, -2, -3), QVector3D(-4, -5, -6))));
 
-    r = qvariant_cast<Qt3D::QRay3D>(obj.property("ray"));
+    r = qvariant_cast<Qt3DCore::QRay3D>(obj.property("ray"));
     QCOMPARE(r.origin(), QVector3D(-1, -2, -3));
     QCOMPARE(r.direction(), QVector3D(-4, -5, -6));
 }
 
 void tst_QRay3D::metaTypes()
 {
-    int id = qMetaTypeId<Qt3D::QRay3D>();
-    QVERIFY(QMetaType::type("Qt3D::QRay3D") == id);
-    QCOMPARE(QByteArray(QMetaType::typeName(id)), QByteArray("Qt3D::QRay3D"));
+    int id = qMetaTypeId<Qt3DCore::QRay3D>();
+    QVERIFY(QMetaType::type("Qt3DCore::QRay3D") == id);
+    QCOMPARE(QByteArray(QMetaType::typeName(id)), QByteArray("Qt3DCore::QRay3D"));
     QVERIFY(QMetaType::isRegistered(id));
 }
 
 void tst_QRay3D::shouldNotAllowNullDirection()
 {
     // GIVEN
-    Qt3D::QRay3D ray;
+    Qt3DCore::QRay3D ray;
 
     QCOMPARE(ray.origin(), QVector3D(0, 0, 0));
     QCOMPARE(ray.direction(), QVector3D(0, 0, 1));

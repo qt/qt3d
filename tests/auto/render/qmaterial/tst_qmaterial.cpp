@@ -37,9 +37,6 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/QEffect>
 #include <Qt3DRenderer/QMaterial>
@@ -55,15 +52,17 @@
 #include <Qt3DRenderer/QNormalDiffuseMapAlphaMaterial>
 #include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
 
-class TestMaterial : public Qt3D::QMaterial
+#include "testpostmanarbiter.h"
+
+class TestMaterial : public Qt3DRender::QMaterial
 {
 public:
-    explicit TestMaterial(Qt3D::QNode *parent = 0)
-        : Qt3D::QMaterial(parent)
-        , m_effect(new Qt3D::QEffect(this))
-        , m_technique(new Qt3D::QTechnique(this))
-        , m_renderPass(new Qt3D::QRenderPass(this))
-        , m_shaderProgram(new Qt3D::QShaderProgram(this))
+    explicit TestMaterial(Qt3DCore::QNode *parent = 0)
+        : Qt3DRender::QMaterial(parent)
+        , m_effect(new Qt3DRender::QEffect(this))
+        , m_technique(new Qt3DRender::QTechnique(this))
+        , m_renderPass(new Qt3DRender::QRenderPass(this))
+        , m_shaderProgram(new Qt3DRender::QShaderProgram(this))
     {
         m_renderPass->setShaderProgram(m_shaderProgram);
         m_technique->addPass(m_renderPass);
@@ -76,90 +75,15 @@ public:
         QNode::cleanup();
     }
 
-    Qt3D::QEffect *m_effect;
-    Qt3D::QTechnique *m_technique;
-    Qt3D::QRenderPass *m_renderPass;
-    Qt3D::QShaderProgram *m_shaderProgram;
+    Qt3DRender::QEffect *m_effect;
+    Qt3DRender::QTechnique *m_technique;
+    Qt3DRender::QRenderPass *m_renderPass;
+    Qt3DRender::QShaderProgram *m_shaderProgram;
 };
-
-class TestArbiter;
-
-class TestPostman : public Qt3D::QAbstractPostman
-{
-public:
-    TestPostman(TestArbiter *arbiter)
-        : m_arbiter(arbiter)
-    {}
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_FINAL
-    {}
-
-    void setScene(Qt3D::QScene *) Q_DECL_FINAL
-    {}
-
-    void notifyBackend(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL;
-
-private:
-    TestArbiter *m_arbiter;
-};
-
-class TestArbiter : public Qt3D::QAbstractArbiter
-{
-public:
-    TestArbiter(Qt3D::QNode *node)
-        : m_postman(new TestPostman(this))
-        , m_node(node)
-    {
-        assignArbiter(m_node);
-    }
-
-    ~TestArbiter()
-    {
-        Qt3D::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
-    }
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangeList &e) Q_DECL_FINAL
-    {
-        events += QVector<Qt3D::QSceneChangePtr>::fromStdVector(e);
-    }
-
-    Qt3D::QAbstractPostman *postman() const Q_DECL_FINAL
-    {
-        return m_postman;
-    }
-
-    QVector<Qt3D::QSceneChangePtr> events;
-
-private:
-    TestPostman *m_postman;
-    Qt3D::QNode *m_node;
-
-    void assignArbiter(Qt3D::QNode *node)
-    {
-        Qt3D::QNodePrivate::get(node)->setArbiter(this);
-        Q_FOREACH (Qt3D::QNode *n, node->childrenNodes())
-            assignArbiter(n);
-    }
-};
-
-void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
-{
-    m_arbiter->sceneChangeEventWithLock(e);
-}
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QMaterial : public Qt3D::QNode
+class tst_QMaterial : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
@@ -170,7 +94,7 @@ public:
 
 private:
 
-    void compareEffects(const Qt3D::QEffect *original, const Qt3D::QEffect *clone)
+    void compareEffects(const Qt3DRender::QEffect *original, const Qt3DRender::QEffect *clone)
     {
         bool isEffectNull = (original == Q_NULLPTR);
         if (isEffectNull) {
@@ -189,7 +113,7 @@ private:
         }
     }
 
-    void compareTechniques(const Qt3D::QTechnique *original, const Qt3D::QTechnique *clone)
+    void compareTechniques(const Qt3DRender::QTechnique *original, const Qt3DRender::QTechnique *clone)
     {
         QCOMPARE(original->id(), clone->id());
 
@@ -202,7 +126,7 @@ private:
             compareRenderPasses(original->renderPasses().at(i), clone->renderPasses().at(i));
     }
 
-    void compareRenderPasses(const Qt3D::QRenderPass *original, const Qt3D::QRenderPass *clone)
+    void compareRenderPasses(const Qt3DRender::QRenderPass *original, const Qt3DRender::QRenderPass *clone)
     {
         QCOMPARE(original->id(), clone->id());
 
@@ -213,41 +137,41 @@ private:
         compareShaderPrograms(original->shaderProgram(), clone->shaderProgram());
     }
 
-    void compareParameters(const Qt3D::ParameterList &original, const Qt3D::ParameterList &clone)
+    void compareParameters(const Qt3DRender::ParameterList &original, const Qt3DRender::ParameterList &clone)
     {
         QCOMPARE(original.size(), clone.size());
         const int parametersCount = original.size();
         for (int i = 0; i < parametersCount; ++i) {
-            const Qt3D::QParameter *originParam = original.at(i);
-            const Qt3D::QParameter *cloneParam = clone.at(i);
+            const Qt3DRender::QParameter *originParam = original.at(i);
+            const Qt3DRender::QParameter *cloneParam = clone.at(i);
             QCOMPARE(originParam->id(), cloneParam->id());
             QCOMPARE(cloneParam->name(), originParam->name());
             QCOMPARE(cloneParam->value(), originParam->value());
         }
     }
 
-    void compareAnnotations(const QList<Qt3D::QAnnotation *> &original, const QList<Qt3D::QAnnotation *> &clone)
+    void compareAnnotations(const QList<Qt3DRender::QAnnotation *> &original, const QList<Qt3DRender::QAnnotation *> &clone)
     {
         const int annotationsCount = original.size();
         QCOMPARE(annotationsCount, clone.size());
 
         for (int i = 0; i < annotationsCount; ++i) {
-            const Qt3D::QAnnotation *origAnnotation = original.at(i);
-            const Qt3D::QAnnotation *cloneAnnotation = clone.at(i);
+            const Qt3DRender::QAnnotation *origAnnotation = original.at(i);
+            const Qt3DRender::QAnnotation *cloneAnnotation = clone.at(i);
             QCOMPARE(origAnnotation->id(), cloneAnnotation->id());
             QCOMPARE(origAnnotation->name(), cloneAnnotation->name());
             QCOMPARE(origAnnotation->value(), cloneAnnotation->value());
         }
     }
 
-    void compareBindings(const QList<Qt3D::QParameterMapping *> &original, const QList<Qt3D::QParameterMapping *> &clone)
+    void compareBindings(const QList<Qt3DRender::QParameterMapping *> &original, const QList<Qt3DRender::QParameterMapping *> &clone)
     {
         const int bindingsCount = original.size();
         QCOMPARE(bindingsCount, clone.size());
 
         for (int i = 0; i < bindingsCount; ++i) {
-            const Qt3D::QParameterMapping *origMapping = original.at(i);
-            const Qt3D::QParameterMapping *cloneMapping = clone.at(i);
+            const Qt3DRender::QParameterMapping *origMapping = original.at(i);
+            const Qt3DRender::QParameterMapping *cloneMapping = clone.at(i);
 
             QCOMPARE(origMapping->id(), cloneMapping->id());
             QCOMPARE(origMapping->bindingType(), cloneMapping->bindingType());
@@ -256,20 +180,20 @@ private:
         }
     }
 
-    void compareRenderStates(const QList<Qt3D::QRenderState *> &original, const QList<Qt3D::QRenderState *> &clone)
+    void compareRenderStates(const QList<Qt3DRender::QRenderState *> &original, const QList<Qt3DRender::QRenderState *> &clone)
     {
         const int renderStatesCount = original.size();
         QCOMPARE(renderStatesCount, clone.size());
 
         for (int i = 0; i < renderStatesCount; ++i) {
-            const Qt3D::QRenderState *originState = original.at(i);
-            const Qt3D::QRenderState *cloneState = clone.at(i);
+            const Qt3DRender::QRenderState *originState = original.at(i);
+            const Qt3DRender::QRenderState *cloneState = clone.at(i);
             QCOMPARE(originState->id(), originState->id());
             QVERIFY(originState->type() == cloneState->type());
         }
     }
 
-    void compareShaderPrograms(const Qt3D::QShaderProgram *original, const Qt3D::QShaderProgram *clone)
+    void compareShaderPrograms(const Qt3DRender::QShaderProgram *original, const Qt3DRender::QShaderProgram *clone)
     {
         bool isOriginalNull = (original == Q_NULLPTR);
         if (isOriginalNull) {
@@ -290,35 +214,35 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QMaterial *>("material");
+        QTest::addColumn<Qt3DRender::QMaterial *>("material");
 
-        Qt3D::QMaterial *material = new Qt3D::QMaterial();
+        Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial();
         QTest::newRow("empty material") << material;
         material = new TestMaterial();
         QTest::newRow("test material") << material;
-        material = new Qt3D::QPhongMaterial();
+        material = new Qt3DRender::QPhongMaterial();
         QTest::newRow("QPhongMaterial") << material;
-        material = new Qt3D::QDiffuseMapMaterial();
+        material = new Qt3DRender::QDiffuseMapMaterial();
         QTest::newRow("QDiffuseMapMaterial") << material;
-        material = new Qt3D::QDiffuseSpecularMapMaterial();
+        material = new Qt3DRender::QDiffuseSpecularMapMaterial();
         QTest::newRow("QDiffuseMapSpecularMaterial") << material;
-        material = new Qt3D::QPerVertexColorMaterial();
+        material = new Qt3DRender::QPerVertexColorMaterial();
         QTest::newRow("QPerVertexColorMaterial") << material;
-        material = new Qt3D::QNormalDiffuseMapMaterial();
+        material = new Qt3DRender::QNormalDiffuseMapMaterial();
         QTest::newRow("QNormalDiffuseMapMaterial") << material;
-        material = new Qt3D::QNormalDiffuseMapAlphaMaterial();
+        material = new Qt3DRender::QNormalDiffuseMapAlphaMaterial();
         QTest::newRow("QNormalDiffuseMapAlphaMaterial") << material;
-        material = new Qt3D::QNormalDiffuseSpecularMapMaterial();
+        material = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
         QTest::newRow("QNormalDiffuseSpecularMapMaterial") << material;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QMaterial *, material);
+        QFETCH(Qt3DRender::QMaterial *, material);
 
         // WHEN
-        Qt3D::QMaterial *clone = static_cast<Qt3D::QMaterial *>(QNode::clone(material));
+        Qt3DRender::QMaterial *clone = static_cast<Qt3DRender::QMaterial *>(QNode::clone(material));
         QCoreApplication::processEvents();
 
         // THEN
@@ -330,20 +254,20 @@ private Q_SLOTS:
     void checkEffectUpdate()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QMaterial> material(new Qt3D::QMaterial());
+        QScopedPointer<Qt3DRender::QMaterial> material(new Qt3DRender::QMaterial());
         TestArbiter arbiter(material.data());
 
         // WHEN
-        Qt3D::QEffect effect;
+        Qt3DRender::QEffect effect;
         material->setEffect(&effect);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
@@ -352,21 +276,21 @@ private Q_SLOTS:
         TestArbiter arbiter2(material2.data());
 
         // WHEN
-        Qt3D::QEffect *oldEffect = material2->effect();
+        Qt3DRender::QEffect *oldEffect = material2->effect();
         material2->setEffect(&effect);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter2.events.size(), 2);
-        change = arbiter2.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter2.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), oldEffect->id());
-        QCOMPARE(change->type(), Qt3D::NodeRemoved);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), oldEffect->id());
+        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
 
-        change = arbiter2.events.last().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter2.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
     }
 
     void checkDynamicParametersAddedUpdates()
@@ -376,58 +300,58 @@ private Q_SLOTS:
         TestArbiter arbiter(material);
 
         // WHEN (add parameter to material)
-        Qt3D::QParameter *param = new Qt3D::QParameter("testParamMaterial", QVariant::fromValue(383.0f));
+        Qt3DRender::QParameter *param = new Qt3DRender::QParameter("testParamMaterial", QVariant::fromValue(383.0f));
         material->addParameter(param);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN (add parameter to effect)
-        param = new Qt3D::QParameter("testParamEffect", QVariant::fromValue(383.0f));
+        param = new Qt3DRender::QParameter("testParamEffect", QVariant::fromValue(383.0f));
         material->effect()->addParameter(param);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN (add parameter to technique)
-        param = new Qt3D::QParameter("testParamTechnique", QVariant::fromValue(383.0f));
+        param = new Qt3DRender::QParameter("testParamTechnique", QVariant::fromValue(383.0f));
         material->m_technique->addParameter(param);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN (add parameter to renderpass)
-        param = new Qt3D::QParameter("testParamRenderPass", QVariant::fromValue(383.0f));
+        param = new Qt3DRender::QParameter("testParamRenderPass", QVariant::fromValue(383.0f));
         material->m_renderPass->addParameter(param);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "parameter");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), param->id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), param->id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
     }
@@ -445,10 +369,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "vertexShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), vertexCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -459,10 +383,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "fragmentShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), fragmentCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -473,10 +397,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "geometryShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), geometryCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -487,10 +411,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "computeShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), computeCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -501,10 +425,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationControlShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselControlCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -515,16 +439,16 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "tessellationEvaluationShaderCode");
         QCOMPARE(change->value().value<QByteArray>(), tesselEvalCode);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
     }
 
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
+    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
     {
         return Q_NULLPTR;
     }

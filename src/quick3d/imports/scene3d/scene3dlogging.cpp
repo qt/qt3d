@@ -38,10 +38,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 Q_LOGGING_CATEGORY(Scene3D, "Qt3D.Scene3D")
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE

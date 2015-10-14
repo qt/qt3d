@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_CAMERA_H
-#define QT3D_CAMERA_H
+#ifndef QT3DCORE_CAMERA_H
+#define QT3DCORE_CAMERA_H
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QLookAtTransform;
 class QTransform;
@@ -55,7 +55,7 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
 {
     Q_OBJECT
     // CameraLens
-    Q_PROPERTY(Qt3D::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
+    Q_PROPERTY(Qt3DCore::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
     Q_PROPERTY(float nearPlane READ nearPlane WRITE setNearPlane NOTIFY nearPlaneChanged)
     Q_PROPERTY(float farPlane READ farPlane WRITE setFarPlane NOTIFY farPlaneChanged)
     Q_PROPERTY(float fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY fieldOfViewChanged)
@@ -79,6 +79,7 @@ public:
         TranslateViewCenter,
         DontTranslateViewCenter
     };
+    Q_ENUM(CameraTranslationOption)
 
     QCameraLens *lens() const;
     QTransform *transform() const;
@@ -89,21 +90,21 @@ public:
     QQuaternion rollRotation(float angle) const;
 
     // Translate relative to camera orientation axes
-    void translate( const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
 
     // Translate relative to world axes
-    void translateWorld( const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translateWorld(const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
 
-    void tilt( const float& angle );
-    void pan( const float& angle );
-    void roll( const float& angle );
+    Q_INVOKABLE void tilt(float angle);
+    Q_INVOKABLE void pan(float angle);
+    Q_INVOKABLE void roll(float angle);
 
-    void tiltAboutViewCenter( const float& angle );
-    void panAboutViewCenter( const float& angle );
-    void rollAboutViewCenter( const float& angle );
+    Q_INVOKABLE void tiltAboutViewCenter(float angle);
+    Q_INVOKABLE void panAboutViewCenter(float angle);
+    Q_INVOKABLE void rollAboutViewCenter(float angle);
 
-    void rotate( const QQuaternion& q );
-    void rotateAboutViewCenter( const QQuaternion& q );
+    Q_INVOKABLE void rotate(const QQuaternion& q);
+    Q_INVOKABLE void rotateAboutViewCenter(const QQuaternion& q);
 
     void setProjectionType(QCameraLens::ProjectionType type);
     QCameraLens::ProjectionType projectionType() const;
@@ -167,8 +168,8 @@ protected:
     QCamera(QCameraPrivate &dd, QNode *parent = 0);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_CAMERA_H
+#endif // QT3DCORE_CAMERA_H

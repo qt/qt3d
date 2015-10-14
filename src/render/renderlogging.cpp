@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -54,8 +54,8 @@ Q_LOGGING_CATEGORY(Shaders, "Qt3D.Renderer.Shaders")
 Q_LOGGING_CATEGORY(RenderStates, "Qt3D.Renderer.RenderStates")
 Q_LOGGING_CATEGORY(VSyncAdvanceService, "Qt3D.Renderer.VsyncAdvanceService")
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -42,10 +42,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractAttributePrivate
+    \class Qt3DCore::QAbstractAttributePrivate
     \internal
 */
 QAbstractAttributePrivate::QAbstractAttributePrivate()
@@ -69,7 +69,7 @@ QAbstractAttribute::QAbstractAttribute(QNode *parent)
 
 QAbstractAttribute::~QAbstractAttribute()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3D::QAbstractAttribute subclass didn't call QNode::cleanup in its destructor");
+    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QAbstractAttribute subclass didn't call QNode::cleanup in its destructor");
 }
 
 QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)

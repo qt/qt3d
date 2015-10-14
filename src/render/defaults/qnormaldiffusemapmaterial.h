@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QNORMALDIFFUSEMAPMATERIAL_H
-#define QT3D_RENDER_QNORMALDIFFUSEMAPMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QNORMALDIFFUSEMAPMATERIAL_H
+#define QT3DRENDER_RENDER_QNORMALDIFFUSEMAPMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 class QNormalDiffuseMapMaterialPrivate;
@@ -58,7 +58,7 @@ class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapMaterial : public QMaterial
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
 public:
-    explicit QNormalDiffuseMapMaterial(QNode *parent = 0);
+    explicit QNormalDiffuseMapMaterial(Qt3DCore::QNode *parent = 0);
     ~QNormalDiffuseMapMaterial();
 
     QColor ambient() const;
@@ -84,13 +84,13 @@ Q_SIGNALS:
     void textureScaleChanged();
 
 protected:
-    QNormalDiffuseMapMaterial(QNormalDiffuseMapMaterialPrivate &dd, QNode *parent = 0);
+    QNormalDiffuseMapMaterial(QNormalDiffuseMapMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QNormalDiffuseMapMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

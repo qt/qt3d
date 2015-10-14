@@ -34,15 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_PARAMETERPACK_H
-#define QT3D_RENDER_PARAMETERPACK_H
+#ifndef QT3DRENDER_RENDER_PARAMETERPACK_H
+#define QT3DRENDER_RENDER_PARAMETERPACK_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qnodeid.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -52,18 +63,18 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const QNodeId &parameterId);
-    void removeParameter(const QNodeId &parameterId);
-    QList<QNodeId> parameters() const;
+    void appendParameter(const Qt3DCore::QNodeId &parameterId);
+    void removeParameter(const Qt3DCore::QNodeId &parameterId);
+    QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    QList<QNodeId> m_peers;
+    QList<Qt3DCore::QNodeId> m_peers;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_PARAMETERPACK_H
+#endif // QT3DRENDER_RENDER_PARAMETERPACK_H

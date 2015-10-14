@@ -37,6 +37,17 @@
 #ifndef QT3D_ASSIMPPARSER_H
 #define QT3D_ASSIMPPARSER_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 // ASSIMP LIBRARY INCLUDE
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -53,12 +64,15 @@ QT_BEGIN_NAMESPACE
 
 class QFile;
 
-namespace Qt3D {
+namespace Qt3DCore {
+class QCamera;
+}
+
+namespace Qt3DRender {
 
 class QMaterial;
 class QShaderProgram;
 class QEffect;
-class QCamera;
 class QAbstractTextureProvider;
 class QMesh;
 class QGeometryRenderer;
@@ -77,14 +91,14 @@ public:
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
     bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
-    QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
-    QEntity *node(const QString &id) Q_DECL_OVERRIDE;
+    Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
+    Qt3DCore::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
 
 private:
     static bool isAssimpPath(const QString &path);
     static QStringList assimpSupportedFormats();
 
-    QEntity *node(aiNode *node);
+    Qt3DCore::QEntity *node(aiNode *node);
 
     void readSceneFile(const QString &file);
 
@@ -120,7 +134,7 @@ private:
         QMap<uint, QEffect *> m_effects;
         QMap<uint, QAbstractTextureProvider *> m_embeddedTextures;
         QMap<QString, QAbstractTextureProvider *> m_materialTextures;
-        QMap<aiNode*, QEntity*> m_cameras;
+        QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
 //    QMap<aiNode*, Light*> m_lights;
     };
@@ -131,7 +145,7 @@ private:
     static QStringList assimpSupportedFormatsList;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

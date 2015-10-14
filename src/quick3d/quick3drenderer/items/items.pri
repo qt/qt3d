@@ -17,7 +17,8 @@ HEADERS += \
     $$PWD/quick3dshaderdataarray.h \
     $$PWD/quick3dstateset.h \
     $$PWD/quick3drendertargetselector.h \
-    $$PWD/quick3dgeometry.h
+    $$PWD/quick3dgeometry.h \
+    $$PWD/quick3dbuffer.h
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
     $$PWD/quick3dshaderdataarray.cpp \
     $$PWD/quick3dstateset.cpp \
     $$PWD/quick3drendertargetselector.cpp \
-    $$PWD/quick3dgeometry.cpp
+    $$PWD/quick3dgeometry.cpp \
+    $$PWD/quick3dbuffer.cpp
 
 INCLUDEPATH += $$PWD

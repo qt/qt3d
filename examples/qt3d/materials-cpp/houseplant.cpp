@@ -53,21 +53,21 @@ const char *plantNames[] = {
 };
 
 
-HousePlant::HousePlant(Qt3D::QNode *parent)
-    : Qt3D::QEntity(parent)
+HousePlant::HousePlant(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent)
     , m_pot(new RenderableEntity(this))
     , m_plant(new RenderableEntity(m_pot))
     , m_cover(new RenderableEntity(m_pot))
-    , m_potMaterial(new Qt3D::QNormalDiffuseMapMaterial())
-    , m_plantMaterial(new Qt3D::QNormalDiffuseMapAlphaMaterial())
-    , m_coverMaterial(new Qt3D::QNormalDiffuseMapMaterial())
-    , m_potImage(new Qt3D::QTextureImage())
+    , m_potMaterial(new Qt3DRender::QNormalDiffuseMapMaterial())
+    , m_plantMaterial(new Qt3DRender::QNormalDiffuseMapAlphaMaterial())
+    , m_coverMaterial(new Qt3DRender::QNormalDiffuseMapMaterial())
+    , m_potImage(new Qt3DRender::QTextureImage())
 
-    , m_potNormalImage(new Qt3D::QTextureImage())
-    , m_plantImage(new Qt3D::QTextureImage())
-    , m_plantNormalImage(new Qt3D::QTextureImage())
-    , m_coverImage(new Qt3D::QTextureImage())
-    , m_coverNormalImage(new Qt3D::QTextureImage())
+    , m_potNormalImage(new Qt3DRender::QTextureImage())
+    , m_plantImage(new Qt3DRender::QTextureImage())
+    , m_plantNormalImage(new Qt3DRender::QTextureImage())
+    , m_coverImage(new Qt3DRender::QTextureImage())
+    , m_coverNormalImage(new Qt3DRender::QTextureImage())
     , m_plantType(Bamboo)
     , m_potShape(Cross)
 {

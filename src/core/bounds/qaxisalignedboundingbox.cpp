@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 void QAxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 {
@@ -89,6 +89,6 @@ QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c)
     return dbg;
 }
 
-} //namespace Qt3D
+} //namespace Qt3DCore
 
 QT_END_NAMESPACE

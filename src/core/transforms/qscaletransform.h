@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_SCALETRANSFORM_H
-#define QT3D_SCALETRANSFORM_H
+#ifndef QT3DCORE_SCALETRANSFORM_H
+#define QT3DCORE_SCALETRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QScaleTransformPrivate;
 
@@ -78,4 +78,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_SCALETRANSFORM_H
+#endif // QT3DCORE_SCALETRANSFORM_H

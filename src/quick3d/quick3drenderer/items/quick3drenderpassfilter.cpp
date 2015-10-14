@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
@@ -51,20 +49,20 @@ Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
 
 QQmlListProperty<QAnnotation> Quick3DRenderPassFilter::includeList()
 {
-    return QQmlListProperty<Qt3D::QAnnotation>(this, 0,
-                                               &Quick3DRenderPassFilter::appendInclude,
-                                               &Quick3DRenderPassFilter::includesCount,
-                                               &Quick3DRenderPassFilter::includeAt,
-                                               &Quick3DRenderPassFilter::clearIncludes);
+    return QQmlListProperty<QAnnotation>(this, 0,
+                                         &Quick3DRenderPassFilter::appendInclude,
+                                         &Quick3DRenderPassFilter::includesCount,
+                                         &Quick3DRenderPassFilter::includeAt,
+                                         &Quick3DRenderPassFilter::clearIncludes);
 }
 
 QQmlListProperty<QParameter> Quick3DRenderPassFilter::parameterList()
 {
-    return QQmlListProperty<Qt3D::QParameter>(this, 0,
-                                              &Quick3DRenderPassFilter::appendParameter,
-                                              &Quick3DRenderPassFilter::parametersCount,
-                                              &Quick3DRenderPassFilter::parameterAt,
-                                              &Quick3DRenderPassFilter::clearParameterList);
+    return QQmlListProperty<QParameter>(this, 0,
+                                        &Quick3DRenderPassFilter::appendParameter,
+                                        &Quick3DRenderPassFilter::parametersCount,
+                                        &Quick3DRenderPassFilter::parameterAt,
+                                        &Quick3DRenderPassFilter::clearParameterList);
 
 }
 
@@ -127,10 +125,8 @@ void Quick3DRenderPassFilter::clearParameterList(QQmlListProperty<QParameter> *l
         rPassFilter->parentRenderPassFilter()->removeParameter(p);
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

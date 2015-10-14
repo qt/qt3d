@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 Q_LOGGING_CATEGORY(Nodes, "Qt3D.Core.Nodes")
 Q_LOGGING_CATEGORY(Aspects, "Qt3D.Core.Aspects")

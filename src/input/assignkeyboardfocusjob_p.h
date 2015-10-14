@@ -34,36 +34,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
-#define QT3D_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+#ifndef QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+#define QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
 class InputHandler;
 
-class AssignKeyboardFocusJob : public QAspectJob
+class AssignKeyboardFocusJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit AssignKeyboardFocusJob(const QNodeId &controller);
+    explicit AssignKeyboardFocusJob(const Qt3DCore::QNodeId &controller);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
-    const QNodeId m_keyboardController;
+    const Qt3DCore::QNodeId m_keyboardController;
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H
+#endif // QT3DINPUT_INPUT_ASSIGNKEYBOARDFOCUSJOB_P_H

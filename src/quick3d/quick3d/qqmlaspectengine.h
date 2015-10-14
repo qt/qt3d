@@ -43,8 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 class QQmlAspectEnginePrivate;
@@ -71,9 +70,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_continueExecute())
 };
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

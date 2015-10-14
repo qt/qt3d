@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_WEAVERJOB_H
-#define QT3D_WEAVERJOB_H
+#ifndef QT3DCORE_WEAVERJOB_H
+#define QT3DCORE_WEAVERJOB_H
 
 #include <job.h>
 #include <Qt3DCore/qaspectjob.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class WeaverJob : public ThreadWeaver::Job
 {
@@ -54,8 +54,8 @@ public:
     QAspectJobPtr m_job;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_WEAVERJOB_H
+#endif // QT3DCORE_WEAVERJOB_H

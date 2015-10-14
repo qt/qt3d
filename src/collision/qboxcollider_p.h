@@ -37,12 +37,23 @@
 #ifndef QT3D_QBOXCOLLIDER_P_H
 #define QT3D_QBOXCOLLIDER_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DCollision/private/qabstractcollider_p.h>
 #include <QtGui/QVector3D>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 class QBoxCollider;
 
@@ -56,7 +67,7 @@ class QBoxColliderPrivate : public QAbstractColliderPrivate
     QVector3D m_radii;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 
 QT_END_NAMESPACE
 

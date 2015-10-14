@@ -37,92 +37,16 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/private/qpostman_p.h>
-#include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DCore/QScenePropertyChange>
 
 #include <Qt3DRenderer/qgeometry.h>
 #include <Qt3DRenderer/qattribute.h>
 #include <Qt3DRenderer/qbuffer.h>
 
-class TestArbiter;
-
-class TestPostman : public Qt3D::QAbstractPostman
-{
-public:
-    TestPostman(TestArbiter *arbiter)
-        : m_arbiter(arbiter)
-    {}
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &) Q_DECL_FINAL
-    {}
-
-    void setScene(Qt3D::QScene *) Q_DECL_FINAL
-    {}
-
-    void notifyBackend(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL;
-
-private:
-    TestArbiter *m_arbiter;
-};
-
-class TestArbiter : public Qt3D::QAbstractArbiter
-{
-public:
-    TestArbiter(Qt3D::QNode *node)
-        : m_postman(new TestPostman(this))
-        , m_node(node)
-    {
-        assignArbiter(m_node);
-    }
-
-    ~TestArbiter()
-    {
-        Qt3D::QNodePrivate::get(m_node)->setArbiter(Q_NULLPTR);
-    }
-
-    void sceneChangeEvent(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangePtr &e) Q_DECL_FINAL
-    {
-        events.push_back(e);
-    }
-
-    void sceneChangeEventWithLock(const Qt3D::QSceneChangeList &e) Q_DECL_FINAL
-    {
-        events += QVector<Qt3D::QSceneChangePtr>::fromStdVector(e);
-    }
-
-    Qt3D::QAbstractPostman *postman() const Q_DECL_FINAL
-    {
-        return m_postman;
-    }
-
-    QVector<Qt3D::QSceneChangePtr> events;
-
-private:
-    TestPostman *m_postman;
-    Qt3D::QNode *m_node;
-
-    void assignArbiter(Qt3D::QNode *node)
-    {
-        Qt3D::QNodePrivate::get(node)->setArbiter(this);
-        Q_FOREACH (Qt3D::QNode *n, node->childrenNodes())
-            assignArbiter(n);
-    }
-};
-
-void TestPostman::notifyBackend(const Qt3D::QSceneChangePtr &e)
-{
-    m_arbiter->sceneChangeEventWithLock(e);
-}
+#include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QGeometry: public Qt3D::QNode
+class tst_QGeometry: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
@@ -135,24 +59,24 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3D::QGeometry *>("geometry");
+        QTest::addColumn<Qt3DRender::QGeometry *>("geometry");
         QTest::addColumn<int>("attributeCount");
 
-        Qt3D::QGeometry *defaultConstructed = new Qt3D::QGeometry();
+        Qt3DRender::QGeometry *defaultConstructed = new Qt3DRender::QGeometry();
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
-        Qt3D::QGeometry *geometry1 = new Qt3D::QGeometry();
+        Qt3DRender::QGeometry *geometry1 = new Qt3DRender::QGeometry();
         geometry1->setVerticesPerPatch(2);
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 454));
-        geometry1->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 555));
+        geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 454));
+        geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
         QTest::newRow("2 attributes") << geometry1 << 2;
 
 
-        Qt3D::QGeometry *geometry2 = new Qt3D::QGeometry();
-        Qt3D::QAttribute *attribute = new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3D::QAttribute::Float, 4, 383);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3D::QAttribute::Float, 3, 427));
+        Qt3DRender::QGeometry *geometry2 = new Qt3DRender::QGeometry();
+        Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 383);
+        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 3, 427));
         geometry2->addAttribute(attribute);
-        geometry2->addAttribute(new Qt3D::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3D::QAttribute::Float, 2, 327));
+        geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3DRender::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
         geometry2->setVerticesPerPatch(3);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
@@ -161,11 +85,11 @@ private Q_SLOTS:
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3D::QGeometry *, geometry);
+        QFETCH(Qt3DRender::QGeometry *, geometry);
         QFETCH(int, attributeCount);
 
         // WHEN
-        Qt3D::QGeometry *clone = static_cast<Qt3D::QGeometry *>(QNode::clone(geometry));
+        Qt3DRender::QGeometry *clone = static_cast<Qt3DRender::QGeometry *>(QNode::clone(geometry));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
@@ -176,8 +100,8 @@ private Q_SLOTS:
         QCOMPARE(geometry->verticesPerPatch(), clone->verticesPerPatch());
 
         for (int i = 0; i < attributeCount; ++i) {
-            Qt3D::QAttribute *originalAttribute = static_cast<Qt3D::QAttribute *>(geometry->attributes()[i]);
-            Qt3D::QAttribute *cloneAttribute = static_cast<Qt3D::QAttribute *>(clone->attributes()[i]);
+            Qt3DRender::QAttribute *originalAttribute = static_cast<Qt3DRender::QAttribute *>(geometry->attributes()[i]);
+            Qt3DRender::QAttribute *cloneAttribute = static_cast<Qt3DRender::QAttribute *>(clone->attributes()[i]);
 
             QCOMPARE(originalAttribute->id(), cloneAttribute->id());
             QCOMPARE(originalAttribute->name(), cloneAttribute->name());
@@ -193,20 +117,20 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3D::QGeometry> geometry(new Qt3D::QGeometry());
+        QScopedPointer<Qt3DRender::QGeometry> geometry(new Qt3DRender::QGeometry());
         TestArbiter arbiter(geometry.data());
 
         // WHEN
-        Qt3D::QAttribute attr;
+        Qt3DRender::QAttribute attr;
         geometry->addAttribute(&attr);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3D::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "attribute");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), attr.id());
-        QCOMPARE(change->type(), Qt3D::NodeAdded);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
+        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
@@ -223,10 +147,10 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "attribute");
-        QCOMPARE(change->value().value<Qt3D::QNodeId>(), attr.id());
-        QCOMPARE(change->type(), Qt3D::NodeRemoved);
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
+        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
 
         arbiter.events.clear();
 
@@ -236,16 +160,16 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3D::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "verticesPerPatch");
         QCOMPARE(change->value().toInt(), 2);
-        QCOMPARE(change->type(), Qt3D::NodeUpdated);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
     }
 
 protected:
-    Qt3D::QNode *doClone() const Q_DECL_OVERRIDE
+    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
     {
         return Q_NULLPTR;
     }

@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_HANDLE_TYPES_P_H
-#define QT3D_RENDER_HANDLE_TYPES_P_H
+#ifndef QT3DRENDER_RENDER_HANDLE_TYPES_P_H
+#define QT3DRENDER_RENDER_HANDLE_TYPES_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DRenderer/qt3drenderer_global.h>
 #include <Qt3DCore/qhandle.h>
@@ -45,66 +56,66 @@ QT_BEGIN_NAMESPACE
 class QMatrix4x4;
 class QOpenGLVertexArrayObject;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class TexImageData;
 
 namespace Render {
 
 class RenderAttachment;
-class RenderCameraLens;
-class RenderAnnotation;
-class RenderEffect;
-class RenderEntity;
-class RenderShader;
+class CameraLens;
+class Annotation;
+class Effect;
+class Entity;
+class Shader;
 class FrameGraphNode;
-class RenderLayer;
-class RenderMaterial;
+class Layer;
+class Material;
 class SortCriterion;
-class RenderTechnique;
-class RenderTexture;
-class RenderTransform;
+class Technique;
+class Texture;
+class Transform;
 class RenderTarget;
-class RenderRenderPass;
-class RenderParameter;
-class RenderShaderData;
-class RenderTextureImage;
-class RenderBuffer;
-class RenderAttribute;
-class RenderGeometry;
-class RenderGeometryRenderer;
+class RenderPass;
+class Parameter;
+class ShaderData;
+class TextureImage;
+class Buffer;
+class Attribute;
+class Geometry;
+class GeometryRenderer;
 
-typedef QHandle<RenderAttachment, 16> HAttachment;
-typedef QHandle<RenderCameraLens, 8> HCamera;
-typedef QHandle<RenderAnnotation, 16> HCriterion;
-typedef QHandle<RenderEffect, 16> HEffect;
-typedef QHandle<RenderEntity, 16> HEntity;
-typedef QHandle<FrameGraphNode *, 8> HFrameGraphNode;
-typedef QHandle<RenderLayer, 16> HLayer;
-typedef QHandle<RenderMaterial, 16> HMaterial;
-typedef QHandle<QMatrix4x4, 16> HMatrix;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<QOpenGLVertexArrayObject*, 16> HVao;
-typedef QHandle<RenderShader, 16> HShader;
-typedef QHandle<SortCriterion, 8> HSortCriterion;
-typedef QHandle<RenderTechnique, 16> HTechnique;
-typedef QHandle<RenderTexture, 16> HTexture;
-typedef QHandle<RenderTransform, 16> HTransform;
-typedef QHandle<RenderTarget, 8> HTarget;
-typedef QHandle<RenderRenderPass, 16> HRenderPass;
-typedef QHandle<TexImageData, 16> HTextureData;
-typedef QHandle<RenderParameter, 16> HParameter;
-typedef QHandle<RenderShaderData, 16> HShaderData;
-typedef QHandle<RenderTextureImage, 16> HTextureImage;
-typedef QHandle<RenderBuffer, 16> HBuffer;
-typedef QHandle<RenderAttribute, 16> HAttribute;
-typedef QHandle<RenderGeometry, 16> HGeometry;
-typedef QHandle<RenderGeometryRenderer, 16> HGeometryRenderer;
+typedef Qt3DCore::QHandle<RenderAttachment, 16> HAttachment;
+typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
+typedef Qt3DCore::QHandle<Annotation, 16> HCriterion;
+typedef Qt3DCore::QHandle<Effect, 16> HEffect;
+typedef Qt3DCore::QHandle<Entity, 16> HEntity;
+typedef Qt3DCore::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
+typedef Qt3DCore::QHandle<Layer, 16> HLayer;
+typedef Qt3DCore::QHandle<Material, 16> HMaterial;
+typedef Qt3DCore::QHandle<QMatrix4x4, 16> HMatrix;
+typedef Qt3DCore::QHandle<Shader, 16> HShader;
+typedef Qt3DCore::QHandle<QOpenGLVertexArrayObject*, 16> HVao;
+typedef Qt3DCore::QHandle<Shader, 16> HShader;
+typedef Qt3DCore::QHandle<SortCriterion, 8> HSortCriterion;
+typedef Qt3DCore::QHandle<Technique, 16> HTechnique;
+typedef Qt3DCore::QHandle<Texture, 16> HTexture;
+typedef Qt3DCore::QHandle<Transform, 16> HTransform;
+typedef Qt3DCore::QHandle<RenderTarget, 8> HTarget;
+typedef Qt3DCore::QHandle<RenderPass, 16> HRenderPass;
+typedef Qt3DCore::QHandle<TexImageData, 16> HTextureData;
+typedef Qt3DCore::QHandle<Parameter, 16> HParameter;
+typedef Qt3DCore::QHandle<ShaderData, 16> HShaderData;
+typedef Qt3DCore::QHandle<TextureImage, 16> HTextureImage;
+typedef Qt3DCore::QHandle<Buffer, 16> HBuffer;
+typedef Qt3DCore::QHandle<Attribute, 16> HAttribute;
+typedef Qt3DCore::QHandle<Geometry, 16> HGeometry;
+typedef Qt3DCore::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_HANDLE_TYPES_P_H
+#endif // QT3DRENDER_RENDER_HANDLE_TYPES_P_H

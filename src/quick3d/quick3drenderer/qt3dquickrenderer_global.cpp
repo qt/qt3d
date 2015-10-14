@@ -40,13 +40,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Quick {
 
 void Quick3DRenderer_initialize()
 {
-    QAbstractNodeFactory::registerNodeFactory(QuickRendererNodeFactory::instance());
+    Qt3DCore::QAbstractNodeFactory::registerNodeFactory(QuickRendererNodeFactory::instance());
 }
 
 void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor)
@@ -54,8 +53,7 @@ void Quick3DRenderer_registerType(const char *className, const char *quickName, 
     QuickRendererNodeFactory::instance()->registerType(className, quickName, major, minor);
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

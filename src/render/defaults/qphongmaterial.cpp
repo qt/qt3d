@@ -49,10 +49,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QPhongMaterialPrivate
+    \class Qt3DRender::QPhongMaterialPrivate
     \internal
 */
 QPhongMaterialPrivate::QPhongMaterialPrivate()
@@ -76,7 +76,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 }
 
 /*!
-    \class Qt3D::QPhongMaterial
+    \class Qt3DRender::QPhongMaterial
     \brief The QPhongMaterial class provides a default implementation of the phong lighting effect.
     \inmodule Qt3DRenderer
     \since 5.5
@@ -96,7 +96,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 */
 
 /*!
-    \fn Qt3D::QPhongMaterial::QPhongMaterial(QNode *parent)
+    \fn Qt3DRender::QPhongMaterial::QPhongMaterial(QNode *parent)
 
     Constructs a new QPhongMaterial instance with parent object \a parent.
 */
@@ -112,7 +112,7 @@ QPhongMaterial::QPhongMaterial(QNode *parent)
 }
 
 /*!
-   \fn Qt3D::QPhongMaterial::~QPhongMaterial()
+   \fn Qt3DRender::QPhongMaterial::~QPhongMaterial()
 
    Destroys the QPhongMaterial.
 */
@@ -121,7 +121,7 @@ QPhongMaterial::~QPhongMaterial()
 }
 
 /*!
-    \property Qt3D::QPhongMaterial::ambient
+    \property Qt3DRender::QPhongMaterial::ambient
 
     Holds the ambient color.
 */
@@ -132,7 +132,7 @@ QColor QPhongMaterial::ambient() const
 }
 
 /*!
-    \property Qt3D::QPhongMaterial::diffuse
+    \property Qt3DRender::QPhongMaterial::diffuse
 
     Holds the diffuse color.
 */
@@ -143,7 +143,7 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \property QColor Qt3D::QPhongMaterial::specular
+    \property QColor Qt3DRender::QPhongMaterial::specular
 
     Holds the specular color.
 */
@@ -154,7 +154,7 @@ QColor QPhongMaterial::specular() const
 }
 
 /*!
-    \property Qt3D::QPhongMaterial::shininess
+    \property Qt3DRender::QPhongMaterial::shininess
 
     Holds the shininess exponent.
 */
@@ -233,6 +233,6 @@ void QPhongMaterialPrivate::init()
     q_func()->setEffect(m_phongEffect);
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

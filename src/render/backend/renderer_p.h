@@ -35,8 +35,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERER_H
-#define QT3D_RENDER_RENDERER_H
+#ifndef QT3DRENDER_RENDER_RENDERER_H
+#define QT3DRENDER_RENDER_RENDERER_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DRenderer/qrenderaspect.h>
 #include <Qt3DRenderer/qtechnique.h>
@@ -63,28 +74,31 @@ QT_BEGIN_NAMESPACE
 class QSurface;
 class QOpenGLDebugLogger;
 
-namespace Qt3D {
+namespace Qt3DCore {
+class QEntity;
+class QFrameAllocator;
+}
+
+namespace Qt3DRender {
 
 class QCamera;
-class QEntity;
 class QMaterial;
 class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QFrameAllocator;
 class QOpenGLFilter;
 class AbstractSceneParser;
 
 namespace Render {
 
-class RenderCameraLens;
-class QGraphicsContext;
+class CameraLens;
+class GraphicsContext;
 class FrameGraphNode;
-class RenderMaterial;
-class RenderTechnique;
-class RenderShader;
-class RenderEntity;
+class Material;
+class Technique;
+class Shader;
+class Entity;
 class RenderCommand;
 class CameraManager;
 class EntityManager;
@@ -97,8 +111,8 @@ class ShaderManager;
 class TechniqueManager;
 class EffectManager;
 class RenderPassManager;
-class RenderEffect;
-class RenderRenderPass;
+class Effect;
+class RenderPass;
 class TextureManager;
 class TextureDataManager;
 class LayerManager;
@@ -134,26 +148,26 @@ public:
     void createAllocators();
     void destroyAllocators();
 
-    QFrameAllocator *currentFrameAllocator();
+    Qt3DCore::QFrameAllocator *currentFrameAllocator();
 
-    QThreadStorage<QFrameAllocator *> *tlsAllocators();
+    QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
 
-    void setFrameGraphRoot(const QNodeId &fgRoot);
+    void setFrameGraphRoot(const Qt3DCore::QNodeId &fgRoot);
     Render::FrameGraphNode *frameGraphRoot() const;
 
-    void setSceneGraphRoot(RenderEntity *sgRoot);
-    RenderEntity *renderSceneRoot() const { return m_renderSceneRoot; }
+    void setSceneGraphRoot(Entity *sgRoot);
+    Entity *renderSceneRoot() const { return m_renderSceneRoot; }
 
     void render();
     void doRender();
 
-    QVector<QAspectJobPtr> createRenderBinJobs();
-    QVector<QAspectJobPtr> createRenderBufferJobs();
-    QVector<QAspectJobPtr> createGeometryRendererJobs();
-    QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBinJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    Qt3DCore::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
     void executeCommands(const QVector<RenderCommand *> &commands);
-    RenderAttribute *updateBuffersAndAttributes(RenderGeometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
-    void addAllocator(QFrameAllocator *allocator);
+    Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
+    void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
     inline CameraManager *cameraManager() const { return m_cameraManager; }
     inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
@@ -211,13 +225,13 @@ private:
     QRenderAspect *m_rendererAspect;
 
     // Frame graph root
-    QNodeId m_frameGraphRootUuid;
+    Qt3DCore::QNodeId m_frameGraphRootUuid;
 
-    RenderEntity *m_renderSceneRoot;
+    Entity *m_renderSceneRoot;
 
-    QHash<QMaterial*, RenderMaterial*> m_materialHash;
-    QHash<QTechnique *, RenderTechnique*> m_techniqueHash;
-    QHash<QShaderProgram*, RenderShader*> m_shaderHash;
+    QHash<QMaterial*, Material*> m_materialHash;
+    QHash<QTechnique *, Technique*> m_techniqueHash;
+    QHash<QShaderProgram*, Shader*> m_shaderHash;
 
     QMaterial* m_defaultMaterial;
     QTechnique* m_defaultTechnique;
@@ -229,12 +243,12 @@ private:
 
     // Fail safe values that we can use if a RenderCommand
     // is missing a shader
-    RenderShader *m_defaultRenderShader;
+    Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     QUniformPack m_defaultUniformPack;
 
-    QScopedPointer<QGraphicsContext> m_graphicsContext;
+    QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
@@ -279,21 +293,21 @@ private:
 
     static void createThreadLocalAllocator(void *renderer);
     static void destroyThreadLocalAllocator(void *renderer);
-    QThreadStorage<QFrameAllocator *> m_tlsAllocators;
+    QThreadStorage<Qt3DCore::QFrameAllocator *> m_tlsAllocators;
 
     QAtomicInt m_running;
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QList<AbstractSceneParser *> m_sceneParsers;
-    QVector<QFrameAllocator *> m_allocators;
+    QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
-    QVector<RenderAttribute *> m_dirtyAttributes;
-    QVector<RenderGeometry *> m_dirtyGeometry;
+    QVector<Attribute *> m_dirtyAttributes;
+    QVector<Geometry *> m_dirtyGeometry;
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERER_H
+#endif // QT3DRENDER_RENDER_RENDERER_H

@@ -50,10 +50,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QDiffuseMapMaterialPrivate
+    \class Qt3DRender::QDiffuseMapMaterialPrivate
     \internal
 */
 QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
@@ -129,7 +129,7 @@ void QDiffuseMapMaterialPrivate::init()
 }
 
 /*!
-    \class Qt3D::QDiffuseMapMaterial
+    \class Qt3DRender::QDiffuseMapMaterial
     \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect where the diffuse light component
     is read from a texture map.
     \inmodule Qt3DRenderer
@@ -150,7 +150,7 @@ void QDiffuseMapMaterialPrivate::init()
 */
 
 /*!
-    Constructs a new Qt3D::QDiffuseMapMaterial instance with parent object \a parent.
+    Constructs a new Qt3DRender::QDiffuseMapMaterial instance with parent object \a parent.
  */
 QDiffuseMapMaterial::QDiffuseMapMaterial(QNode *parent)
     : QMaterial(*new QDiffuseMapMaterialPrivate, parent)
@@ -172,7 +172,7 @@ QDiffuseMapMaterial::~QDiffuseMapMaterial()
 }
 
 /*!
-    \property Qt3D::QDiffuseMapMaterial::ambient
+    \property Qt3DRender::QDiffuseMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -184,7 +184,7 @@ QColor QDiffuseMapMaterial::ambient() const
 }
 
 /*!
-    \property Qt3D::QDiffuseMapMaterial::specular
+    \property Qt3DRender::QDiffuseMapMaterial::specular
 
     Holds the current specular color.
 */
@@ -195,7 +195,7 @@ QColor QDiffuseMapMaterial::specular() const
 }
 
 /*!
-    \property Qt3D::QDiffuseMapMaterial::shininess
+    \property Qt3DRender::QDiffuseMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -206,7 +206,7 @@ float QDiffuseMapMaterial::shininess() const
 }
 
 /*!
-    \property Qt3D::QDiffuseMapMaterial::diffuse
+    \property Qt3DRender::QDiffuseMapMaterial::diffuse
 
     Holds the current QTexture used as the diffuse map.
 
@@ -226,7 +226,7 @@ QAbstractTextureProvider *QDiffuseMapMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3D::QDiffuseMapMaterial::textureScale
+    \property Qt3DRender::QDiffuseMapMaterial::textureScale
 
     Holds the current texture scale as a float value.
 
@@ -267,6 +267,6 @@ void QDiffuseMapMaterial::setTextureScale(float textureScale)
     d->m_textureScaleParameter->setValue(textureScale);
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

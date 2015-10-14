@@ -39,20 +39,20 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QAbstractServiceProviderPrivate
+    \class Qt3DCore::QAbstractServiceProviderPrivate
     \internal
 */
 
 /*!
-    \class Qt3D::QSystemInformationServicePrivate
+    \class Qt3DCore::QSystemInformationServicePrivate
     \internal
 */
 
 /*!
-    \class Qt3D::QSystemInformationService
+    \class Qt3DCore::QSystemInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D system information service
 
@@ -79,7 +79,7 @@ QSystemInformationService::QSystemInformationService(QSystemInformationServicePr
 }
 
 /*!
-    \fn QStringList Qt3D::QSystemInformationService::aspectNames()
+    \fn QStringList Qt3DCore::QSystemInformationService::aspectNames()
 
     Subclasses should override this function and return a string list containing the
     names of all registered aspects.

@@ -37,6 +37,17 @@
 #ifndef CAMERA_CONTROLLER_H
 #define CAMERA_CONTROLLER_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QObject>
 
 #include <QPoint>
@@ -48,11 +59,12 @@ class QWheelEvent;
 class QKeyEvent;
 class QTimer;
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 class QCamera;
 class QEntity;
+}
 
+namespace Qt3DInput {
 namespace Input {
 
 class CameraController : public QObject
@@ -67,8 +79,8 @@ class CameraController : public QObject
 public:
     explicit CameraController(QObject *parent = 0);
 
-    void setCamera( QCamera* cam );
-    QCamera *camera() const;
+    void setCamera( Qt3DCore::QCamera* cam );
+    Qt3DCore::QCamera *camera() const;
 
     void setLinearSpeed( float speed );
     float linearSpeed() const;
@@ -106,8 +118,8 @@ private Q_SLOTS:
     void onUpdate();
 
 private:
-    QCamera* m_camera;
-    QEntity* m_cameraEntity;
+    Qt3DCore::QCamera* m_camera;
+    Qt3DCore::QEntity* m_cameraEntity;
 
     float m_vx;
     float m_vy;
@@ -132,9 +144,8 @@ private:
     QTimer *m_updateTimer;
 };
 
-} // of namespace Input
-
-} // of namespace Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 

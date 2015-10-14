@@ -110,7 +110,7 @@ private slots:
 
 void tst_QFrameAllocator::initQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -127,7 +127,7 @@ void tst_QFrameAllocator::initQFrameChunk()
 
 void tst_QFrameAllocator::singleAllocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -143,7 +143,7 @@ void tst_QFrameAllocator::singleAllocationQFrameChunk()
 
 void tst_QFrameAllocator::qvectorAllocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -159,7 +159,7 @@ void tst_QFrameAllocator::qvectorAllocationQFrameChunk()
 
 void tst_QFrameAllocator::multipleAllocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -180,7 +180,7 @@ void tst_QFrameAllocator::multipleAllocationQFrameChunk()
 
 void tst_QFrameAllocator::overflowAllocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -206,7 +206,7 @@ void tst_QFrameAllocator::overflowAllocationQFrameChunk()
 
 void tst_QFrameAllocator::singleDeallocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -227,7 +227,7 @@ void tst_QFrameAllocator::singleDeallocationQFrameChunk()
 
 void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
 
@@ -291,8 +291,8 @@ void tst_QFrameAllocator::multipleDeallocationQFrameChunk()
 
 void tst_QFrameAllocator::containsCheckQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
-    Qt3D::QFrameChunk c2;
+    Qt3DCore::QFrameChunk c;
+    Qt3DCore::QFrameChunk c2;
 
     c.init(16, 12);
     c2.init(16, 12);
@@ -322,7 +322,7 @@ void tst_QFrameAllocator::containsCheckQFrameChunk()
 
 void tst_QFrameAllocator::clearQFrameChunk()
 {
-    Qt3D::QFrameChunk c;
+    Qt3DCore::QFrameChunk c;
 
     c.init(16, 12);
     QList<void *> ptrs;
@@ -342,7 +342,7 @@ void tst_QFrameAllocator::clearQFrameChunk()
 
 void tst_QFrameAllocator::initQFixedFrameAllocator()
 {
-    Qt3D::QFixedFrameAllocator f;
+    Qt3DCore::QFixedFrameAllocator f;
 
     f.init(4);
 
@@ -352,7 +352,7 @@ void tst_QFrameAllocator::initQFixedFrameAllocator()
 
 void tst_QFrameAllocator::allocateQFixedFrameAllocator()
 {
-    Qt3D::QFixedFrameAllocator f;
+    Qt3DCore::QFixedFrameAllocator f;
 
     f.init(4, 128);
 
@@ -390,7 +390,7 @@ void tst_QFrameAllocator::allocateQFixedFrameAllocator()
 
 void tst_QFrameAllocator::deallocateQFixedFrameAllocator()
 {
-    Qt3D::QFixedFrameAllocator f;
+    Qt3DCore::QFixedFrameAllocator f;
 
     f.init(4);
 
@@ -429,7 +429,7 @@ void tst_QFrameAllocator::deallocateQFixedFrameAllocator()
 
 void tst_QFrameAllocator::checkFragmentationQFixedFrameAllocator()
 {
-    Qt3D::QFixedFrameAllocator f;
+    Qt3DCore::QFixedFrameAllocator f;
 
     f.init(4);
 
@@ -459,7 +459,7 @@ void tst_QFrameAllocator::checkFragmentationQFixedFrameAllocator()
 
 void tst_QFrameAllocator::clearQFixedFrameAllocator()
 {
-    Qt3D::QFixedFrameAllocator f;
+    Qt3DCore::QFixedFrameAllocator f;
 
     f.init(16);
 
@@ -485,17 +485,17 @@ void tst_QFrameAllocator::clearQFixedFrameAllocator()
 
 void tst_QFrameAllocator::initQFrameAllocator()
 {
-    Qt3D::QFrameAllocator f(4, 4);
+    Qt3DCore::QFrameAllocator f(4, 4);
     QCOMPARE(f.allocatorPoolSize(), 1);
 
 
-    Qt3D::QFrameAllocator f2(32, 4);
+    Qt3DCore::QFrameAllocator f2(32, 4);
     QCOMPARE(f2.allocatorPoolSize(), 8);
 }
 
 void tst_QFrameAllocator::allocateWithQFrameAllocator()
 {
-    Qt3D::QFrameAllocator f2(256, 4);
+    Qt3DCore::QFrameAllocator f2(256, 4);
     QCOMPARE(f2.allocatorPoolSize(), 256 / 4);
 
     QVERIFY(f2.allocate<small>());
@@ -537,7 +537,7 @@ void tst_QFrameAllocator::allocateWithQFrameAllocator()
 
 void tst_QFrameAllocator::deallocateWithQFrameAllocator()
 {
-    Qt3D::QFrameAllocator f2(256, 4);
+    Qt3DCore::QFrameAllocator f2(256, 4);
     QCOMPARE(f2.allocatorPoolSize(), 256 / 4);
 
     small *s = f2.allocate<small>();
@@ -557,7 +557,7 @@ void tst_QFrameAllocator::deallocateWithQFrameAllocator()
 
 void tst_QFrameAllocator::testAllocationComposedValues()
 {
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
 
     composed t;
 
@@ -600,7 +600,7 @@ void tst_QFrameAllocator::testAllocationComposedValues()
 
 void tst_QFrameAllocator::allocateSubclass()
 {
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
 
     QList<composed *> composeds;
 
@@ -626,7 +626,7 @@ void tst_QFrameAllocator::allocateSubclass()
 
 void tst_QFrameAllocator::deallocateSubclass()
 {
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
 
 
     const int NUM_ITEMS = 256;
@@ -655,7 +655,7 @@ void tst_QFrameAllocator::deallocateSubclass()
 
 void tst_QFrameAllocator::clearQFrameAllocator()
 {
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
 
     for (int i = 0; i < 256; i++) {
         f.allocate<composed>();
@@ -683,7 +683,7 @@ void tst_QFrameAllocator::clearQFrameAllocator()
 void tst_QFrameAllocator::isEmptyQFrameAllocator()
 {
     // GIVEN
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
 
 
     // WHEN
@@ -720,7 +720,7 @@ void tst_QFrameAllocator::isEmptyQFrameAllocator()
 void tst_QFrameAllocator::subclassPointerClearing()
 {
     // GIVEN
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
     QVector<composed *> data;
 
     // WHEN
@@ -746,7 +746,7 @@ void tst_QFrameAllocator::subclassPointerClearing()
 void tst_QFrameAllocator::allocateWithRawMemoryDeallocate()
 {
     // GIVEN
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
     subclass *s = static_cast<subclass *>(f.allocateRawMemory(sizeof(subclass)));
     new (s) subclass();
 
@@ -760,7 +760,7 @@ void tst_QFrameAllocator::allocateWithRawMemoryDeallocate()
 void tst_QFrameAllocator::allocateDeallocateRawMemory()
 {
     // GIVEN
-    Qt3D::QFrameAllocator f(128, 32);
+    Qt3DCore::QFrameAllocator f(128, 32);
     subclass *s = f.allocate<subclass>();
 
     // WHEN

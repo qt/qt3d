@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTCOLLISIONQUERYSERVICE_P_H
-#define QT3D_QABSTRACTCOLLISIONQUERYSERVICE_P_H
+#ifndef QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_P_H
+#define QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/private/qabstractserviceprovider_p.h>
@@ -43,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QAbstractCollisionQueryServicePrivate : public QAbstractServiceProviderPrivate
 {
@@ -57,4 +68,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QAbstractCOLLISIONQUERYSERVICE_P_H
+#endif // QT3DCORE_QAbstractCOLLISIONQUERYSERVICE_P_H

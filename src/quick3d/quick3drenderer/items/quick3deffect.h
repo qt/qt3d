@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DEFFECT_H
-#define QT3D_RENDER_QUICK_QUICK3DEFFECT_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <QQmlListProperty>
@@ -45,25 +45,23 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DEffect : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3D::QTechnique> techniques READ techniqueList)
-    Q_PROPERTY(QQmlListProperty<Qt3D::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QTechnique> techniques READ techniqueList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DEffect(QObject *parent = 0);
 
     inline QEffect *parentEffect() const { return qobject_cast<QEffect*>(parent()); }
 
-    QQmlListProperty<Qt3D::QTechnique> techniqueList();
-    QQmlListProperty<Qt3D::QParameter> parameterList();
+    QQmlListProperty<QTechnique> techniqueList();
+    QQmlListProperty<QParameter> parameterList();
 
 private:
     static void appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar);
@@ -77,12 +75,10 @@ private:
     static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUICK_QUICK3DEFFECT_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H

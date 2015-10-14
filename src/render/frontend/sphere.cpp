@@ -50,7 +50,7 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3D::QRay3D &ray, const Qt3D::Sphere &s, QVector3D *q = Q_NULLPTR)
+bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Sphere &s, QVector3D *q = Q_NULLPTR)
 {
     const QVector3D p = ray.origin();
     const QVector3D d = ray.direction();
@@ -121,7 +121,7 @@ inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
     return extremeIndices;
 }
 
-inline void sphereFromExtremePoints(Qt3D::Sphere &s, const QVector<QVector3D> &points)
+inline void sphereFromExtremePoints(Qt3DRender::Sphere &s, const QVector<QVector3D> &points)
 {
     // Find two most separated points on any of the basis vectors
     QPair<int, int> extremeIndices = findExtremePoints(points);
@@ -134,7 +134,7 @@ inline void sphereFromExtremePoints(Qt3D::Sphere &s, const QVector<QVector3D> &p
     s.setRadius((q - c).length());
 }
 
-inline void constructRitterSphere(Qt3D::Sphere &s, const QVector<QVector3D> &points)
+inline void constructRitterSphere(Qt3DRender::Sphere &s, const QVector<QVector3D> &points)
 {
     // Calculate the sphere encompassing two axially extreme points
     sphereFromExtremePoints(s, points);
@@ -145,7 +145,7 @@ inline void constructRitterSphere(Qt3D::Sphere &s, const QVector<QVector3D> &poi
 
 } // anonymous namespace
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 const float Sphere::ms_epsilon = 1.0e-7f;
 
@@ -211,17 +211,17 @@ Sphere Sphere::transformed(const QMatrix4x4 &mat)
     return Sphere(c, sqrt(rSquared));
 }
 
-QNodeId Sphere::id() const
+Qt3DCore::QNodeId Sphere::id() const
 {
     return m_id;
 }
 
-bool Sphere::intersects(const QRay3D &ray, QVector3D *q) const
+bool Sphere::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
 {
     return intersectRaySphere(ray, *this, q);
 }
 
-QBoundingVolume::Type Sphere::type() const
+Qt3DCore::QBoundingVolume::Type Sphere::type() const
 {
     return QBoundingVolume::Sphere;
 }

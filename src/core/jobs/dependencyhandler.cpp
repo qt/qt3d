@@ -40,7 +40,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 namespace {
     template <template <typename T> class Op>
@@ -148,6 +148,6 @@ QVector<RunnableInterface *> DependencyHandler::freeDependencies(const RunnableI
     return freedList;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

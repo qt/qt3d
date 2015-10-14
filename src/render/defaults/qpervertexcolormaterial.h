@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QPERVERTEXCOLORMATERIAL_H
-#define QT3D_RENDER_QPERVERTEXCOLORMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QPERVERTEXCOLORMATERIAL_H
+#define QT3DRENDER_RENDER_QPERVERTEXCOLORMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPerVertexColorMaterialPrivate;
 
@@ -51,15 +51,15 @@ class QT3DRENDERERSHARED_EXPORT QPerVertexColorMaterial : public QMaterial
     Q_OBJECT
 
 public:
-    explicit QPerVertexColorMaterial(QNode *parent = 0);
+    explicit QPerVertexColorMaterial(Qt3DCore::QNode *parent = 0);
     ~QPerVertexColorMaterial();
 
 private:
     Q_DECLARE_PRIVATE(QPerVertexColorMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QPERVERTEXCOLORMATERIAL_H
+#endif // QT3DRENDER_RENDER_QPERVERTEXCOLORMATERIAL_H

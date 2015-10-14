@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 /*!
-    \class Qt3D::QLookAtTransformPrivate
+    \class Qt3DCore::QLookAtTransformPrivate
     \internal
 */
 QLookAtTransformPrivate::QLookAtTransformPrivate()
@@ -149,6 +149,6 @@ QVector3D QLookAtTransform::viewVector() const
     return d->m_viewVector;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

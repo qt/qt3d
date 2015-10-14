@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H
-#define QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_H
 
 #include <Qt3DQuickRenderer/qt3dquickrenderer_global.h>
 #include <Qt3DRenderer/qshaderdata.h>
@@ -45,10 +45,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 class QT3DQUICKRENDERERSHARED_EXPORT Quick3DShaderData : public QShaderData
@@ -61,14 +59,12 @@ private:
     QT3D_CLONEABLE(Quick3DShaderData)
 };
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::Render::Quick::Quick3DShaderData*)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderData*)
 
-#endif // QT3D_RENDER_QUICK_QUICK3DSHADERDATA_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_H

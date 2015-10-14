@@ -69,8 +69,8 @@ public:
     int m_value;
 };
 
-typedef Qt3D::QHandle<SimpleResource> Handle;
-typedef Qt3D::QHandle<SimpleResource, 22> BigHandle;
+typedef Qt3DCore::QHandle<SimpleResource> Handle;
+typedef Qt3DCore::QHandle<SimpleResource, 22> BigHandle;
 
 void tst_Handle::defaultConstruction()
 {

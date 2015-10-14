@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QHANDLE_H
-#define QT3D_QHANDLE_H
+#ifndef QT3DCORE_QHANDLE_H
+#define QT3DCORE_QHANDLE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtCore/QDebug>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 template <typename T, uint INDEXBITS>
 class QHandleManager;
@@ -117,4 +117,4 @@ QDebug operator<<(QDebug dbg, const QHandle<T, INDEXBITS> &h)
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QRHANDLE_H
+#endif // QT3DCORE_QRHANDLE_H

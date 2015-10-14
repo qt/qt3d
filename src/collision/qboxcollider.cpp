@@ -39,10 +39,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCollision {
 
 /*!
-    \class Qt3D::QBoxColliderPrivate
+    \class Qt3DCore::QBoxColliderPrivate
     \internal
 */
 QBoxColliderPrivate::QBoxColliderPrivate()
@@ -53,7 +53,7 @@ QBoxColliderPrivate::QBoxColliderPrivate()
 }
 
 /*!
-    \class Qt3D::QBoxCollider
+    \class Qt3DCore::QBoxCollider
     \inmodule Qt3DCollision
     \since 5.5
     \brief Represents a box used for collision detection
@@ -62,7 +62,7 @@ QBoxColliderPrivate::QBoxColliderPrivate()
 /*!
     \qmltype BoxCollider
     \inqmlmodule Qt3D.Collision
-    \instantiates Qt3D::QBoxCollider
+    \instantiates Qt3DCore::QBoxCollider
     \inherits Component3D
     \since 5.5
 */
@@ -120,5 +120,5 @@ void QBoxCollider::setRadii(const QVector3D &radii)
 
 QT_END_NAMESPACE
 
-} // namespace Qt3D
+} // namespace Qt3DCollision
 

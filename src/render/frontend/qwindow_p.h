@@ -34,21 +34,35 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QWINDOW_P_H
-#define QT3D_QWINDOW_P_H
+#ifndef QT3DRENDER_QWINDOW_P_H
+#define QT3DRENDER_QWINDOW_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <QtGui/private/qwindow_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
+class QAspectEngine;
+class QCamera;
+class QEntity;
+}
+
+namespace Qt3DRender {
 
 class QWindow;
-class QEntity;
 class QFrameGraph;
-class QAspectEngine;
 class QRenderAspect;
-class QCamera;
 
 class QWindowPrivate : public ::QWindowPrivate
 {
@@ -56,18 +70,18 @@ public:
     QWindowPrivate();
 
     Q_DECLARE_PUBLIC(QWindow)
-    QEntity *m_root;
-    QEntity *   m_userRoot;
-    QCamera *m_defaultCamera;
+    Qt3DCore::QEntity *m_root;
+    Qt3DCore::QEntity *   m_userRoot;
+    Qt3DCore::QCamera *m_defaultCamera;
     QFrameGraph *m_frameGraph;
-    QScopedPointer<QAspectEngine> m_engine;
+    QScopedPointer<Qt3DCore::QAspectEngine> m_engine;
     QRenderAspect *m_renderAspect;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
 
-#endif // QT3D_QWINDOW_P_H
+#endif // QT3DRENDER_QWINDOW_P_H
 

@@ -46,11 +46,11 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DCollisionPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3D::QAbstractCollider>(uri, 2, 0, "AbstractCollider", "AbstractColliders are only used for references");
-    qmlRegisterType<Qt3D::QBoxCollider>(uri, 2, 0, "BoxCollider");
-    qmlRegisterType<Qt3D::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
-    qmlRegisterType<Qt3D::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
-    qmlRegisterType<Qt3D::QSphereCollider>(uri, 2, 0, "SphereCollider");
+    qmlRegisterUncreatableType<Qt3DCollision::QAbstractCollider>(uri, 2, 0, "AbstractCollider", "AbstractColliders are only used for references");
+    qmlRegisterType<Qt3DCollision::QBoxCollider>(uri, 2, 0, "BoxCollider");
+    qmlRegisterType<Qt3DCollision::QCapsuleCollider>(uri, 2, 0, "CapsuleCollider");
+    qmlRegisterType<Qt3DCollision::QGeometryCollider>(uri, 2, 0, "GeometryCollider");
+    qmlRegisterType<Qt3DCollision::QSphereCollider>(uri, 2, 0, "SphereCollider");
 }
 
 QT_END_NAMESPACE

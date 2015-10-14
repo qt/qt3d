@@ -53,11 +53,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 
 /*!
-    \class Qt3D::QNormalDiffuseMapAlphaMaterialPrivate
+    \class Qt3DRender::QNormalDiffuseMapAlphaMaterialPrivate
     \internal
 */
 QNormalDiffuseMapAlphaMaterialPrivate::QNormalDiffuseMapAlphaMaterialPrivate()
@@ -125,7 +125,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
 
 
 /*!
-    \class Qt3D::QNormalDiffuseMapAlphaMaterial
+    \class Qt3DRender::QNormalDiffuseMapAlphaMaterial
     \brief The QNormalDiffuseMapAlphaMaterial provides a default implementation of the phong lighting and bump effect where the diffuse light component
     is read from a texture map and the normals of the mesh being rendered from a normal texture map. In addition, it defines an alpha to coverage and
     a depth test to be performed in the rendering pass.
@@ -146,7 +146,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     Techniques are provided for OpenGL 2, OpenGL 3 or above as well as OpenGL ES 2.
 */
 /*!
-    Constructs a new Qt3D::QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
+    Constructs a new Qt3DRender::QNormalDiffuseMapAlphaMaterial instance with parent object \a parent.
 */
 QNormalDiffuseMapAlphaMaterial::QNormalDiffuseMapAlphaMaterial(QNode *parent)
     : QNormalDiffuseMapMaterial(*new QNormalDiffuseMapAlphaMaterialPrivate, parent)
@@ -160,6 +160,6 @@ QNormalDiffuseMapAlphaMaterial::~QNormalDiffuseMapAlphaMaterial()
 {
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

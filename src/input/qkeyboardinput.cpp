@@ -41,10 +41,12 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3DCore;
+
+namespace Qt3DInput {
 
 /*!
-    \class Qt3D::QKeyboardInputPrivate
+    \class Qt3DCore::QKeyboardInputPrivate
     \internal
 */
 QKeyboardInputPrivate::QKeyboardInputPrivate()
@@ -56,7 +58,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate()
 }
 
 /*!
-    \class Qt3D::QKeyboardInput
+    \class Qt3DCore::QKeyboardInput
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -64,7 +66,7 @@ QKeyboardInputPrivate::QKeyboardInputPrivate()
 /*!
     \qmltype KeyboardInput
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3D::QKeyboardInput
+    \instantiates Qt3DCore::QKeyboardInput
     \inherits Component3D
     \since 5.5
 */
@@ -152,7 +154,7 @@ const QByteArray keyToSignal(int key)
     return keySignal;
 }
 
-void QKeyboardInput::sceneChangeEvent(const QSceneChangePtr &change)
+void QKeyboardInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
@@ -174,7 +176,7 @@ void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
 
         QByteArray keySignal = keyToSignal(event->key());
         if (!keySignal.isEmpty()) {
-            keySignal += "(Qt3D::Q3DKeyEvent*)";
+            keySignal += "(Qt3DInput::Q3DKeyEvent*)";
             // TO DO: Finding if the signal is connected to anything before doing the invocation
             // could be an improvement
             // That's what QQ2 does but since it accesses QML private classes to do so, that may not be
@@ -406,6 +408,6 @@ void QKeyboardInput::setFocus(bool focus)
     qmlsignal Qt3D.Input::KeyboardInput::released(KeyEvent event)
 */
 
-} // Qt3D
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE

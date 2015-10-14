@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENEOBSERVERINTERFACE_H
-#define QT3D_QSCENEOBSERVERINTERFACE_H
+#ifndef QT3DCORE_QSCENEOBSERVERINTERFACE_H
+#define QT3DCORE_QSCENEOBSERVERINTERFACE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QSceneObserverInterface
 {
@@ -56,6 +56,6 @@ public:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QSceneObserverInterface *)
+Q_DECLARE_METATYPE(Qt3DCore::QSceneObserverInterface *)
 
-#endif // QT3D_QSCENEOBSERVERINTERFACE_H
+#endif // QT3DCORE_QSCENEOBSERVERINTERFACE_H

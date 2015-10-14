@@ -40,40 +40,40 @@
 #include <Qt3DRenderer/QShaderProgram>
 #include <QUrl>
 
-SceneEffect::SceneEffect(Qt3D::QNode *parent)
-    : Qt3D::QEffect(parent)
-    , m_gl3Technique(new Qt3D::QTechnique())
-    , m_gl2Technique(new Qt3D::QTechnique())
-    , m_gl2Pass(new Qt3D::QRenderPass())
-    , m_gl3Pass(new Qt3D::QRenderPass())
-    , m_passCriterion(new Qt3D::QAnnotation(this))
+SceneEffect::SceneEffect(Qt3DCore::QNode *parent)
+    : Qt3DRender::QEffect(parent)
+    , m_gl3Technique(new Qt3DRender::QTechnique())
+    , m_gl2Technique(new Qt3DRender::QTechnique())
+    , m_gl2Pass(new Qt3DRender::QRenderPass())
+    , m_gl3Pass(new Qt3DRender::QRenderPass())
+    , m_passCriterion(new Qt3DRender::QAnnotation(this))
 {
 
-    m_gl3Technique->openGLFilter()->setProfile(Qt3D::QOpenGLFilter::None);
-    m_gl3Technique->openGLFilter()->setApi(Qt3D::QOpenGLFilter::Desktop);
+    m_gl3Technique->openGLFilter()->setProfile(Qt3DRender::QOpenGLFilter::None);
+    m_gl3Technique->openGLFilter()->setApi(Qt3DRender::QOpenGLFilter::Desktop);
     m_gl3Technique->openGLFilter()->setMajorVersion(3);
     m_gl3Technique->openGLFilter()->setMinorVersion(3);
 
-    m_gl2Technique->openGLFilter()->setApi(Qt3D::QOpenGLFilter::Desktop);
+    m_gl2Technique->openGLFilter()->setApi(Qt3DRender::QOpenGLFilter::Desktop);
     m_gl2Technique->openGLFilter()->setMajorVersion(2);
     m_gl2Technique->openGLFilter()->setMinorVersion(0);
-    m_gl2Technique->openGLFilter()->setProfile(Qt3D::QOpenGLFilter::None);
+    m_gl2Technique->openGLFilter()->setProfile(Qt3DRender::QOpenGLFilter::None);
 
 
     m_passCriterion->setName(QStringLiteral("pass"));
     m_passCriterion->setValue(QStringLiteral("geometry"));
 
-    Qt3D::QShaderProgram *gl3Shader = new Qt3D::QShaderProgram();
-    gl3Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.vert"))));
-    gl3Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.frag"))));
+    Qt3DRender::QShaderProgram *gl3Shader = new Qt3DRender::QShaderProgram();
+    gl3Shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.vert"))));
+    gl3Shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl3.frag"))));
 
     m_gl3Pass->addAnnotation(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
     m_gl3Technique->addPass(m_gl3Pass);
 
-    Qt3D::QShaderProgram *gl2Shader = new Qt3D::QShaderProgram();
-    gl2Shader->setVertexShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.vert"))));
-    gl2Shader->setFragmentShaderCode(Qt3D::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.frag"))));
+    Qt3DRender::QShaderProgram *gl2Shader = new Qt3DRender::QShaderProgram();
+    gl2Shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.vert"))));
+    gl2Shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/geometry_gl2.frag"))));
 
     m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);
@@ -83,7 +83,7 @@ SceneEffect::SceneEffect(Qt3D::QNode *parent)
     addTechnique(m_gl2Technique);
 }
 
-QList<Qt3D::QAnnotation *> SceneEffect::passCriteria() const
+QList<Qt3DRender::QAnnotation *> SceneEffect::passCriteria() const
 {
-    return QList<Qt3D::QAnnotation *>() << m_passCriterion;
+    return QList<Qt3DRender::QAnnotation *>() << m_passCriterion;
 }

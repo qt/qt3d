@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
-#define QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
+#define QT3DRENDER_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
 
 #include <Qt3DRenderer/qnormaldiffusemapmaterial.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QNormalDiffuseMapAlphaMaterialPrivate;
 
@@ -49,15 +49,15 @@ class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapAlphaMaterial : public QNormalD
 {
     Q_OBJECT
 public:
-    explicit QNormalDiffuseMapAlphaMaterial(QNode *parent = 0);
+    explicit QNormalDiffuseMapAlphaMaterial(Qt3DCore::QNode *parent = 0);
     ~QNormalDiffuseMapAlphaMaterial();
 
 private:
     Q_DECLARE_PRIVATE(QNormalDiffuseMapAlphaMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
+#endif // QT3DRENDER_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H

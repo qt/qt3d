@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_INPUT_INPUTMANAGERS_P_H
-#define QT3D_INPUT_INPUTMANAGERS_P_H
+#ifndef QT3DINPUT_INPUT_INPUTMANAGERS_P_H
+#define QT3DINPUT_INPUT_INPUTMANAGERS_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <QtGlobal>
 #include <Qt3DInput/private/handle_types_p.h>
@@ -47,54 +58,52 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DInput {
 namespace Input {
 
-class KeyboardInputManager : public QResourceManager<
+class KeyboardInputManager : public Qt3DCore::QResourceManager<
         KeyboardInput,
-        QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public QResourceManager<
+class KeyboardControllerManager : public Qt3DCore::QResourceManager<
         KeyboardController,
-        QNodeId,
+        Qt3DCore::QNodeId,
         8,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     KeyboardControllerManager() {}
 };
 
-class MouseControllerManager : public QResourceManager<
+class MouseControllerManager : public Qt3DCore::QResourceManager<
         MouseController,
-        QNodeId,
+        Qt3DCore::QNodeId,
         8,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     MouseControllerManager() {}
 };
 
-class MouseInputManager : public QResourceManager<
+class MouseInputManager : public Qt3DCore::QResourceManager<
         MouseInput,
-        QNodeId,
+        Qt3DCore::QNodeId,
         16,
-        Qt3D::ArrayAllocatingPolicy>
+        Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
     MouseInputManager() {}
 };
 
-} // Input
-
-} // Qt3D
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3D_INPUT_INPUTMANAGERS_P_H
+#endif // QT3DINPUT_INPUT_INPUTMANAGERS_P_H

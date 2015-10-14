@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QString QUrlHelper::urlToLocalFileOrQrc(const QUrl &url)
 {

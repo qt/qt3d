@@ -10,6 +10,7 @@ HEADERS += \
         $$PWD/qabstractaspect.h \
         $$PWD/qaspectengine.h \
         $$PWD/qaspectfactory.h \
+        $$PWD/qaspectfactory_p.h \
         $$PWD/qaspectthread.h \
         $$PWD/qabstractaspect_p.h \
         $$PWD/qaspectengine_p.h \

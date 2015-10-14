@@ -37,6 +37,17 @@
 #ifndef ABSTRACTSCENEPARSER_H
 #define ABSTRACTSCENEPARSER_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <QObject>
 #include <QStringList>
 #include <QLoggingCategory>
@@ -45,9 +56,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 class QEntity;
+}
+
+namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
@@ -71,8 +84,8 @@ public:
 
     virtual void setSource(const QUrl &source) = 0;
     virtual bool isExtensionSupported(const QUrl &source) const = 0;
-    virtual QEntity *scene(const QString &id = QString()) = 0;
-    virtual QEntity *node(const QString &id) = 0;
+    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
+    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
 
     ParserStatus parserStatus() const;
     QStringList errors() const;
@@ -91,7 +104,7 @@ private:
     QStringList m_errors;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

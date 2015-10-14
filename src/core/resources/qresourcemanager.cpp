@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 /*!
-    \class Qt3D::QResourceManager
+    \class Qt3DCore::QResourceManager
     \inmodule Qt3DCore
     \since 5.5
 
@@ -55,7 +55,7 @@
 */
 
 /*!
-    \class Qt3D::ArrayAllocatingPolicy
+    \class Qt3DCore::ArrayAllocatingPolicy
     \inmodule Qt3DCore
     \since 5.5
 
@@ -69,7 +69,7 @@
 */
 
 /*!
-    \class Qt3D::ListAllocatingPolicy
+    \class Qt3DCore::ListAllocatingPolicy
     \inmodule Qt3DCore
     \since 5.5
 
@@ -86,7 +86,7 @@
 */
 
 /*!
-    \class Qt3D::ObjectLevelLockingPolicy
+    \class Qt3DCore::ObjectLevelLockingPolicy
     \inmodule Qt3DCore
     \since 5.5
 

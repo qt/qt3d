@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERTARGET_H
-#define QT3D_RENDER_RENDERTARGET_H
+#ifndef QT3DRENDER_RENDER_RENDERTARGET_H
+#define QT3DRENDER_RENDER_RENDERTARGET_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -43,7 +54,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderTarget;
 class QRenderAttachment;
@@ -52,29 +63,29 @@ namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public QBackendNode
+class RenderTarget : public Qt3DCore::QBackendNode
 {
 public:
     RenderTarget();
 
-    void updateFromPeer(QNode *peer) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const QNodeId &attachmentId);
-    void removeRenderAttachment(const QNodeId &attachmentId);
+    void appendRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
+    void removeRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
 
-    QList<QNodeId> renderAttachments() const;
+    QList<Qt3DCore::QNodeId> renderAttachments() const;
 
-    void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<QNodeId> m_renderAttachments;
+    QList<Qt3DCore::QNodeId> m_renderAttachments;
 };
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERTARGET_H
+#endif // QT3DRENDER_RENDER_RENDERTARGET_H

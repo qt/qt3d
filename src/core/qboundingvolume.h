@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBOUDINGVOLUME_P_H
-#define QT3D_QBOUDINGVOLUME_P_H
+#ifndef QT3DCORE_QBOUDINGVOLUME_P_H
+#define QT3DCORE_QBOUDINGVOLUME_P_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QRay3D;
 
@@ -62,10 +62,10 @@ public:
     virtual Type type() const = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3D::QBoundingVolume*)
+Q_DECLARE_METATYPE(Qt3DCore::QBoundingVolume*)
 
-#endif // QT3D_QBOUDINGVOLUME_P_H
+#endif // QT3DCORE_QBOUDINGVOLUME_P_H

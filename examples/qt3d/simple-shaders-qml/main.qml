@@ -185,7 +185,7 @@ Entity {
                                 vertexShaderCode: loadSource("qrc:/simple-shader.vert")
                                 fragmentShaderCode: loadSource("qrc:/simple-shader.frag")
                             } // ShaderProgram
-                        } // RenderPass
+                        } // namespace RenderPass
                     } // Technique
                 ] // techniques
             } // Effect

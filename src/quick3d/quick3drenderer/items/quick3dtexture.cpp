@@ -39,10 +39,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DTextureExtension::Quick3DTextureExtension(QObject *parent)
@@ -90,10 +88,8 @@ void Quick3DTextureExtension::clearTextureImageList(QQmlListProperty<QAbstractTe
             self->parentTexture()->removeTextureImage(img);
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -66,9 +66,9 @@ int main(int argc, char **argv)
     QGuiApplication app(argc, argv);
 
     Window view;
-    Qt3D::QAspectEngine engine;
-    engine.registerAspect(new Qt3D::QRenderAspect());
-    Qt3D::QInputAspect *input = new Qt3D::QInputAspect;
+    Qt3DCore::QAspectEngine engine;
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
     engine.registerAspect(input);
     engine.initialize();
     QVariantMap data;
@@ -77,10 +77,10 @@ int main(int argc, char **argv)
     engine.setData(data);
 
     // Root entity
-    Qt3D::QEntity *rootEntity = new Qt3D::QEntity();
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3D::QCamera *cameraEntity = new Qt3D::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
@@ -90,8 +90,8 @@ int main(int argc, char **argv)
     input->setCamera(cameraEntity);
 
     // FrameGraph
-    Qt3D::QFrameGraph *frameGraph = new Qt3D::QFrameGraph();
-    Qt3D::QForwardRenderer * forwardRenderer = new Qt3D::QForwardRenderer();
+    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
 
     // TechiqueFilter and renderPassFilter are not implement yet
     forwardRenderer->setCamera(cameraEntity);
@@ -101,16 +101,16 @@ int main(int argc, char **argv)
 
 
     // Cylinder shape data
-    Qt3D::QCylinderMesh *cylinder = new Qt3D::QCylinderMesh();
+    Qt3DRender::QCylinderMesh *cylinder = new Qt3DRender::QCylinderMesh();
     cylinder->setRadius(1);
     cylinder->setLength(3);
     cylinder->setRings(100);
     cylinder->setSlices(20);
 
     // CylinderMesh Transform
-    Qt3D::QScaleTransform *cylinderScale = new Qt3D::QScaleTransform();
-    Qt3D::QRotateTransform *cylinderRotation = new Qt3D::QRotateTransform();
-    Qt3D::QTransform *cylinderTransforms = new Qt3D::QTransform();
+    Qt3DCore::QScaleTransform *cylinderScale = new Qt3DCore::QScaleTransform();
+    Qt3DCore::QRotateTransform *cylinderRotation = new Qt3DCore::QRotateTransform();
+    Qt3DCore::QTransform *cylinderTransforms = new Qt3DCore::QTransform();
 
     cylinderScale->setScale3D(QVector3D(1.5f, 1.5f, 1.5f));
     cylinderRotation->setAngleDeg(45.0f);
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     cylinderTransforms->addTransform(cylinderRotation);
 
     // Cylinder
-    Qt3D::QEntity *cylinderEntity = new Qt3D::QEntity(rootEntity);
+    Qt3DCore::QEntity *cylinderEntity = new Qt3DCore::QEntity(rootEntity);
     cylinderEntity->addComponent(cylinder);
     cylinderEntity->addComponent(cylinderTransforms);
 

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSCENECHANGE_H
-#define QT3D_QSCENECHANGE_H
+#ifndef QT3DCORE_QSCENECHANGE_H
+#define QT3DCORE_QSCENECHANGE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QSharedPointer>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 enum ChangeFlag {
     NodeCreated             = 1 << 0,
@@ -99,8 +99,8 @@ protected:
 
 typedef QSharedPointer<QSceneChange> QSceneChangePtr;
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSCENECHANGE_H
+#endif // QT3DCORE_QSCENECHANGE_H

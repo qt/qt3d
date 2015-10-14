@@ -45,8 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 class Quick3DEntityLoaderIncubator : public QQmlIncubator
@@ -105,7 +104,7 @@ Quick3DEntityLoader::~Quick3DEntityLoader()
 }
 
 /*!
-    \qmlproperty QtQml::QtObject Qt3D::EntityLoader::entity
+    \qmlproperty QtQml::QtObject Qt3DCore::EntityLoader::entity
     \readonly
 */
 QObject *Quick3DEntityLoader::entity() const
@@ -115,7 +114,7 @@ QObject *Quick3DEntityLoader::entity() const
 }
 
 /*!
-    \qmlproperty url Qt3D::EntityLoader::source
+    \qmlproperty url Qt3DCore::EntityLoader::source
 */
 QUrl Quick3DEntityLoader::source() const
 {
@@ -146,7 +145,7 @@ void Quick3DEntityLoader::copy(const QNode *ref)
 }
 
 /*!
-    \class Qt3D::Quick::Quick3DEntityLoaderPrivate
+    \class Qt3DCore::Quick::Quick3DEntityLoaderPrivate
     \internal
 */
 Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
@@ -236,9 +235,8 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
     m_component->create(*m_incubator, m_context);
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

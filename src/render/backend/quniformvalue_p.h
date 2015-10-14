@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QUNIFORMVALUE_H
-#define QT3D_RENDER_QUNIFORMVALUE_H
+#ifndef QT3DRENDER_RENDER_QUNIFORMVALUE_H
+#define QT3DRENDER_RENDER_QUNIFORMVALUE_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <QVariant>
 #include <QByteArray>
@@ -50,13 +61,14 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 class QFrameAllocator;
+}
 
+namespace Qt3DRender {
 namespace Render {
 
-class QGraphicsContext;
+class GraphicsContext;
 /**
  * @brief The QUniformValue class - immutable storage of uniform value
  * in the rendering backend.
@@ -67,7 +79,7 @@ public:
     QUniformValue();
     virtual ~QUniformValue() {}
 
-    static QUniformValue *fromVariant(const QVariant &v, QFrameAllocator *allocator);
+    static QUniformValue *fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator);
 
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
@@ -77,7 +89,7 @@ public:
         return false;
     }
 
-    virtual void apply(QGraphicsContext *ctx, const ShaderUniform &description) const;
+    virtual void apply(GraphicsContext *ctx, const ShaderUniform &description) const;
 
 protected:
     QVariant m_var;
@@ -97,12 +109,12 @@ public :
         return true;
     }
 
-    void setTextureId(const QNodeId &id)
+    void setTextureId(const Qt3DCore::QNodeId &id)
     {
         m_textureId = id;
     }
 
-    QNodeId textureId() const { return m_textureId; }
+    Qt3DCore::QNodeId textureId() const { return m_textureId; }
 
     bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
     {
@@ -116,16 +128,16 @@ public :
     // Called by the QGraphicContext prior applying
     void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
 
-    void apply(QGraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
+    void apply(GraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
 
 private:
-    QNodeId m_textureId;
+    Qt3DCore::QNodeId m_textureId;
     int m_textureUnit;
 };
 
 struct BlockToUBO {
     int m_blockIndex;
-    QNodeId m_shaderDataID;
+    Qt3DCore::QNodeId m_shaderDataID;
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
 };
@@ -136,7 +148,7 @@ public:
     ~QUniformPack();
 
     void setUniform(const QString &glslName, const QUniformValue *val);
-    void setTexture(const QString &glslName, const QNodeId &id);
+    void setTexture(const QString &glslName, const Qt3DCore::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
@@ -145,13 +157,13 @@ public:
     struct NamedTexture
     {
         NamedTexture() {}
-        NamedTexture(const QString &nm, const QNodeId &t)
+        NamedTexture(const QString &nm, const Qt3DCore::QNodeId &t)
             : glslName(nm)
             , texId(t)
         { }
 
         QString glslName;
-        QNodeId texId;
+        Qt3DCore::QNodeId texId;
     };
 
     inline QVector<NamedTexture> textures() const { return m_textures; }
@@ -166,9 +178,9 @@ private:
     friend class RenderView;
 };
 
-} // Render
-} // Qt3D
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QUNIFORMVALUE_H
+#endif // QT3DRENDER_RENDER_QUNIFORMVALUE_H

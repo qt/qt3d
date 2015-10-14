@@ -111,6 +111,7 @@
 #include <Qt3DQuickRenderer/quick3dstateset.h>
 #include <Qt3DQuickRenderer/quick3drendertargetselector.h>
 #include <Qt3DQuickRenderer/quick3dgeometry.h>
+#include <Qt3DQuickRenderer/quick3dbuffer.h>
 #include <Qt3DQuickRenderer/private/qt3dquickrenderer_global_p.h>
 
 static void initResources()
@@ -141,12 +142,12 @@ static const struct {
     { "SkyboxEntity", 2, 0 }
 };
 
-QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3D::Render::Quick::Quick3DShaderDataArray *array)
+QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3DRender::Render::Quick::Quick3DShaderDataArray *array)
 {
-    QList<Qt3D::QShaderData *> arrayValues = array->values();
+    QList<Qt3DRender::QShaderData *> arrayValues = array->values();
     QVariantList values;
     values.reserve(arrayValues.size());
-    Q_FOREACH (Qt3D::QShaderData *data, arrayValues)
+    Q_FOREACH (Qt3DRender::QShaderData *data, arrayValues)
         values.append(QVariant::fromValue(data));
     return values;
 }
@@ -156,113 +157,113 @@ void Qt3DQuick3DRendererPlugin::registerTypes(const char *uri)
     // Init resources for defaults QML files
     initResources();
 
-    Qt3D::Quick::Quick3DRenderer_initialize();
+    Qt3DRender::Quick::Quick3DRenderer_initialize();
 
     // Converters
-    QMetaType::registerConverter<Qt3D::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
+    QMetaType::registerConverter<Qt3DRender::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
     // @uri Qt3D.Renderer
-    qmlRegisterUncreatableType<Qt3D::Render::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");
-    Qt3D::Quick::registerExtendedType<Qt3D::QSceneLoader, Qt3D::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Renderer/SceneLoader", uri, 2, 0, "SceneLoader");
-//    qmlRegisterCustomType<Qt3D::Effect>(uri, 2, 0, "Effect", new Qt3D::Render::Quick::ShaderPropertyParser());
-    Qt3D::Quick::registerExtendedType<Qt3D::QEffect, Qt3D::Render::Quick::Quick3DEffect>("QEffect", "Qt3D.Renderer/Effect", uri, 2, 0, "Effect");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTechnique, Qt3D::Render::Quick::Quick3DTechnique>("QTechnique", "Qt3D.Renderer/Technique", uri, 2, 0, "Technique");
-    qmlRegisterType<Qt3D::QAnnotation>(uri, 2, 0, "Annotation");
-    qmlRegisterType<Qt3D::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
-    qmlRegisterUncreatableType<Qt3D::QParameter>(uri, 2, 0, "QParameter", "Quick3D should instantiate Quick3DParameter only");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DParameter>(uri, 2, 0, "Parameter");
-    qmlRegisterType<Qt3D::QParameterMapping>(uri, 2, 0, "ParameterMapping");
-    Qt3D::Quick::registerExtendedType<Qt3D::QMaterial, Qt3D::Render::Quick::Quick3DMaterial>("QMaterial", "Qt3D.Renderer/Material", uri, 2, 0, "Material");
-    Qt3D::Quick::registerExtendedType<Qt3D::QRenderPass, Qt3D::Render::Quick::Quick3DRenderPass>("QRenderPass", "Qt3D.Renderer/RenderPass", uri, 2, 0, "RenderPass");
-    qmlRegisterType<Qt3D::QShaderProgram>(uri, 2, 0, "ShaderProgram");
-    qmlRegisterUncreatableType<Qt3D::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
-    qmlRegisterType<Qt3D::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSceneLoader, Qt3DRender::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Renderer/SceneLoader", uri, 2, 0, "SceneLoader");
+//    qmlRegisterCustomType<Qt3DRender::Effect>(uri, 2, 0, "Effect", new Qt3DRender::Render::Quick::ShaderPropertyParser());
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QEffect, Qt3DRender::Render::Quick::Quick3DEffect>("QEffect", "Qt3D.Renderer/Effect", uri, 2, 0, "Effect");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechnique, Qt3DRender::Render::Quick::Quick3DTechnique>("QTechnique", "Qt3D.Renderer/Technique", uri, 2, 0, "Technique");
+    qmlRegisterType<Qt3DRender::QAnnotation>(uri, 2, 0, "Annotation");
+    qmlRegisterType<Qt3DRender::QOpenGLFilter>(uri, 2, 0, "OpenGLFilter");
+    qmlRegisterUncreatableType<Qt3DRender::QParameter>(uri, 2, 0, "QParameter", "Quick3D should instantiate Quick3DParameter only");
+    qmlRegisterType<Qt3DRender::Render::Quick::Quick3DParameter>(uri, 2, 0, "Parameter");
+    qmlRegisterType<Qt3DRender::QParameterMapping>(uri, 2, 0, "ParameterMapping");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QMaterial, Qt3DRender::Render::Quick::Quick3DMaterial>("QMaterial", "Qt3D.Renderer/Material", uri, 2, 0, "Material");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPass, Qt3DRender::Render::Quick::Quick3DRenderPass>("QRenderPass", "Qt3D.Renderer/RenderPass", uri, 2, 0, "RenderPass");
+    qmlRegisterType<Qt3DRender::QShaderProgram>(uri, 2, 0, "ShaderProgram");
+    qmlRegisterUncreatableType<Qt3DRender::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");
+    qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
+    qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
 
     // Textures
-    qmlRegisterType<Qt3D::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));
-    qmlRegisterUncreatableType<Qt3D::QAbstractTextureProvider>(uri, 2, 0, "Texture", QStringLiteral("Texture should be created from one of the subclasses"));
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture1D, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture1D", "Qt3D.Renderer/Texture1D", uri, 2, 0, "Texture1D");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture1DArray, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture1DArray", "Qt3D.Renderer/Texture1DArray", uri, 2, 0, "Texture1DArray");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture2D, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture2D", "Qt3D.Renderer/Texture2D", uri, 2, 0, "Texture2D");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture2DArray, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture2DArray", "Qt3D.Renderer/Texture2DArray", uri, 2, 0, "Texture2DArray");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture3D, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture3D", "Qt3D.Renderer/Texture3D", uri, 2, 0, "Texture3D");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTextureCubeMap, Qt3D::Render::Quick::Quick3DTextureExtension>("QTextureCubeMap", "Qt3D.Renderer/TextureCubeMap", uri, 2, 0, "TextureCubeMap");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTextureCubeMapArray, Qt3D::Render::Quick::Quick3DTextureExtension>("QTextureCubeMapArray", "Qt3D.Renderer/TextureCubeMapArray", uri, 2, 0, "TextureCubeMapArray");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture2DMultisample, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture2DMultisample", "Qt3D.Renderer/Texture2DMultisample", uri, 2, 0, "Texture2DMultisample");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTexture2DMultisampleArray, Qt3D::Render::Quick::Quick3DTextureExtension>("QTexture2DMultisampleArray", "Qt3D.Renderer/Texture2DMultisampleArray", uri, 2, 0, "Texture2DMultisampleArray");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTextureRectangle, Qt3D::Render::Quick::Quick3DTextureExtension>("QTextureRectangle", "Qt3D.Renderer/TextureRectangle", uri, 2, 0, "TextureRectangle");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTextureBuffer, Qt3D::Render::Quick::Quick3DTextureExtension>("QTextureBuffer", "Qt3D.Renderer/TextureBuffer", uri, 2, 0, "TextureBuffer");
-    qmlRegisterUncreatableType<Qt3D::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
-    qmlRegisterType<Qt3D::QTextureImage>(uri, 2, 0, "TextureImage");
+    qmlRegisterType<Qt3DRender::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractTextureProvider>(uri, 2, 0, "Texture", QStringLiteral("Texture should be created from one of the subclasses"));
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture1D, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture1D", "Qt3D.Renderer/Texture1D", uri, 2, 0, "Texture1D");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture1DArray, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture1DArray", "Qt3D.Renderer/Texture1DArray", uri, 2, 0, "Texture1DArray");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture2D, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture2D", "Qt3D.Renderer/Texture2D", uri, 2, 0, "Texture2D");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture2DArray, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture2DArray", "Qt3D.Renderer/Texture2DArray", uri, 2, 0, "Texture2DArray");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture3D, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture3D", "Qt3D.Renderer/Texture3D", uri, 2, 0, "Texture3D");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureCubeMap, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureCubeMap", "Qt3D.Renderer/TextureCubeMap", uri, 2, 0, "TextureCubeMap");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureCubeMapArray, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureCubeMapArray", "Qt3D.Renderer/TextureCubeMapArray", uri, 2, 0, "TextureCubeMapArray");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture2DMultisample, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture2DMultisample", "Qt3D.Renderer/Texture2DMultisample", uri, 2, 0, "Texture2DMultisample");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture2DMultisampleArray, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture2DMultisampleArray", "Qt3D.Renderer/Texture2DMultisampleArray", uri, 2, 0, "Texture2DMultisampleArray");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureRectangle, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureRectangle", "Qt3D.Renderer/TextureRectangle", uri, 2, 0, "TextureRectangle");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureBuffer, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureBuffer", "Qt3D.Renderer/TextureBuffer", uri, 2, 0, "TextureBuffer");
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
+    qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
 
     // Geometry
-    qmlRegisterUncreatableType<Qt3D::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
-    qmlRegisterUncreatableType<Qt3D::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
-    qmlRegisterType<Qt3D::QAttribute>(uri, 2, 0, "Attribute");
-    qmlRegisterType<Qt3D::QBuffer>(uri, 2, 0, "Buffer");
-    Qt3D::Quick::registerExtendedType<Qt3D::QGeometry, Qt3D::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Renderer/Geometry", uri, 2, 0, "Geometry");
-    qmlRegisterType<Qt3D::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3DCore::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
+    qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QBuffer, Qt3DRender::Render::Quick::Quick3DBuffer>("QBuffer", "Qt3D.Renderer/Buffer", uri, 2, 0, "Buffer");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Renderer/Geometry", uri, 2, 0, "Geometry");
+    qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
 
     // Meshes
-    qmlRegisterType<Qt3D::QMesh>(uri, 2, 0, "Mesh");
-    qmlRegisterType<Qt3D::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
-    qmlRegisterType<Qt3D::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
-    qmlRegisterType<Qt3D::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
-    qmlRegisterType<Qt3D::QTorusMesh>(uri, 2, 0, "TorusMesh");
-    qmlRegisterType<Qt3D::QSphereMesh>(uri, 2, 0, "SphereMesh");
+    qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
+    qmlRegisterType<Qt3DRender::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
+    qmlRegisterType<Qt3DRender::QCylinderMesh>(uri, 2, 0, "CylinderMesh");
+    qmlRegisterType<Qt3DRender::QPlaneMesh>(uri, 2, 0, "PlaneMesh");
+    qmlRegisterType<Qt3DRender::QTorusMesh>(uri, 2, 0, "TorusMesh");
+    qmlRegisterType<Qt3DRender::QSphereMesh>(uri, 2, 0, "SphereMesh");
 
     // Layers
-    qmlRegisterType<Qt3D::QLayer>(uri, 2, 0, "Layer");
-    qmlRegisterType<Qt3D::QLayerFilter>(uri, 2, 0, "LayerFilter");
+    qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");
+    qmlRegisterType<Qt3DRender::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
     // Lights
-    qmlRegisterUncreatableType<Qt3D::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
-    qmlRegisterType<Qt3D::QPointLight>(uri, 2, 0, "PointLight");
-    qmlRegisterType<Qt3D::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
-    qmlRegisterType<Qt3D::QSpotLight>(uri, 2, 0, "SpotLight");
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
+    qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
+    qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
+    qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
 
     // FrameGraph
-    Qt3D::Quick::registerExtendedType<Qt3D::QCameraSelector, Qt3D::Quick::Quick3DNode>("QCameraSelector", "Qt3D.Renderer/CameraSelector", uri, 2, 0, "CameraSelector");
-    Qt3D::Quick::registerExtendedType<Qt3D::QRenderPassFilter, Qt3D::Render::Quick::Quick3DRenderPassFilter>("QRenderPassFilter", "Qt3D.Renderer/RenderPassFilter", uri, 2, 0, "RenderPassFilter");
-    Qt3D::Quick::registerExtendedType<Qt3D::QTechniqueFilter, Qt3D::Render::Quick::Quick3DTechniqueFilter>("QTechniqueFilter", "Qt3D.Renderer/TechniqueFilter", uri, 2, 0, "TechniqueFilter");
-    Qt3D::Quick::registerExtendedType<Qt3D::QViewport, Qt3D::Render::Quick::Quick3DViewport>("QViewport", "Qt3D.Renderer/Viewport", uri, 2, 0, "Viewport");
-    Qt3D::Quick::registerExtendedType<Qt3D::QRenderTargetSelector, Qt3D::Render::Quick::Quick3DRenderTargetSelector>("QRenderTargetSelector", "Qt3D.Renderer/RenderTargetSelector", uri, 2, 0, "RenderTargetSelector");
-    qmlRegisterType<Qt3D::QClearBuffer>(uri, 2, 0, "ClearBuffer");
-    qmlRegisterUncreatableType<Qt3D::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
-    Qt3D::Quick::registerExtendedType<Qt3D::QStateSet, Qt3D::Render::Quick::Quick3DStateSet>("QStateSet", "Qt3D.Renderer/StateSet", uri, 2, 0, "StateSet");
-    qmlRegisterType<Qt3D::QNoDraw>(uri, 2, 0, "NoDraw");
-    qmlRegisterType<Qt3D::QFrameGraph>(uri, 2, 0, "FrameGraph");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QCameraSelector, Qt3DCore::Quick::Quick3DNode>("QCameraSelector", "Qt3D.Renderer/CameraSelector", uri, 2, 0, "CameraSelector");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderPassFilter, Qt3DRender::Render::Quick::Quick3DRenderPassFilter>("QRenderPassFilter", "Qt3D.Renderer/RenderPassFilter", uri, 2, 0, "RenderPassFilter");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechniqueFilter, Qt3DRender::Render::Quick::Quick3DTechniqueFilter>("QTechniqueFilter", "Qt3D.Renderer/TechniqueFilter", uri, 2, 0, "TechniqueFilter");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QViewport, Qt3DRender::Render::Quick::Quick3DViewport>("QViewport", "Qt3D.Renderer/Viewport", uri, 2, 0, "Viewport");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTargetSelector, Qt3DRender::Render::Quick::Quick3DRenderTargetSelector>("QRenderTargetSelector", "Qt3D.Renderer/RenderTargetSelector", uri, 2, 0, "RenderTargetSelector");
+    qmlRegisterType<Qt3DRender::QClearBuffer>(uri, 2, 0, "ClearBuffer");
+    qmlRegisterUncreatableType<Qt3DRender::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QStateSet", "Qt3D.Renderer/StateSet", uri, 2, 0, "StateSet");
+    qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
+    qmlRegisterType<Qt3DRender::QFrameGraph>(uri, 2, 0, "FrameGraph");
 
     // RenderTarget
-    qmlRegisterType<Qt3D::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
-    Qt3D::Quick::registerExtendedType<Qt3D::QRenderTarget, Qt3D::Render::Quick::Quick3DRenderTarget>("QRenderTarget", "Qt3D.Renderer/RenderTarget", uri, 2, 0, "RenderTarget");
+    qmlRegisterType<Qt3DRender::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTarget, Qt3DRender::Render::Quick::Quick3DRenderTarget>("QRenderTarget", "Qt3D.Renderer/RenderTarget", uri, 2, 0, "RenderTarget");
 
     // Sorting
-    qmlRegisterType<Qt3D::QSortCriterion>(uri, 2, 0, "SortCriterion");
-    Qt3D::Quick::registerExtendedType<Qt3D::QSortMethod, Qt3D::Render::Quick::Quick3DSortMethod>("QSortMethod", "Qt3D.Renderer/SortMethod", uri, 2, 0, "SortMethod");
+    qmlRegisterType<Qt3DRender::QSortCriterion>(uri, 2, 0, "SortCriterion");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSortMethod, Qt3DRender::Render::Quick::Quick3DSortMethod>("QSortMethod", "Qt3D.Renderer/SortMethod", uri, 2, 0, "SortMethod");
 
     // RenderStates
-    qmlRegisterUncreatableType<Qt3D::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
-    qmlRegisterType<Qt3D::QBlendState>(uri, 2, 0, "BlendState");
-    qmlRegisterType<Qt3D::QBlendStateSeparate>(uri, 2, 0, "BlendStateSeparate");
-    qmlRegisterType<Qt3D::QBlendEquation>(uri, 2, 0, "BlendEquation");
-    qmlRegisterType<Qt3D::QAlphaTest>(uri, 2, 0, "AlphaTest");
-    qmlRegisterType<Qt3D::QDepthTest>(uri, 2, 0, "DepthTest");
-    qmlRegisterType<Qt3D::QDepthMask>(uri, 2, 0, "DepthMask");
-    qmlRegisterType<Qt3D::QCullFace>(uri, 2, 0, "CullFace");
-    qmlRegisterType<Qt3D::QFrontFace>(uri, 2, 0, "FrontFace");
-    qmlRegisterUncreatableType<Qt3D::QStencilTestSeparate>(uri, 2, 0, "StencilTestSeparate", QStringLiteral("QStencilTestSeparate cannot be instantiated on its own"));
-    qmlRegisterType<Qt3D::QStencilTest>(uri, 2, 0, "StencilTest");
-    qmlRegisterType<Qt3D::QScissorTest>(uri, 2, 0, "ScissorTest");
-    qmlRegisterType<Qt3D::QDithering>(uri, 2, 0, "Dithering");
-    qmlRegisterType<Qt3D::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
-    qmlRegisterType<Qt3D::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
-    qmlRegisterType<Qt3D::QColorMask>(uri, 2, 0, "ColorMask");
-    qmlRegisterType<Qt3D::QClipPlane>(uri, 2, 0, "ClipPlane");
-    qmlRegisterUncreatableType<Qt3D::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
-    qmlRegisterType<Qt3D::QStencilOp>(uri, 2, 0, "StencilOp");
-    qmlRegisterType<Qt3D::QStencilMask>(uri, 2, 0, "StencilMask");
+    qmlRegisterUncreatableType<Qt3DRender::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
+    qmlRegisterType<Qt3DRender::QBlendState>(uri, 2, 0, "BlendState");
+    qmlRegisterType<Qt3DRender::QBlendStateSeparate>(uri, 2, 0, "BlendStateSeparate");
+    qmlRegisterType<Qt3DRender::QBlendEquation>(uri, 2, 0, "BlendEquation");
+    qmlRegisterType<Qt3DRender::QAlphaTest>(uri, 2, 0, "AlphaTest");
+    qmlRegisterType<Qt3DRender::QDepthTest>(uri, 2, 0, "DepthTest");
+    qmlRegisterType<Qt3DRender::QDepthMask>(uri, 2, 0, "DepthMask");
+    qmlRegisterType<Qt3DRender::QCullFace>(uri, 2, 0, "CullFace");
+    qmlRegisterType<Qt3DRender::QFrontFace>(uri, 2, 0, "FrontFace");
+    qmlRegisterUncreatableType<Qt3DRender::QStencilTestSeparate>(uri, 2, 0, "StencilTestSeparate", QStringLiteral("QStencilTestSeparate cannot be instantiated on its own"));
+    qmlRegisterType<Qt3DRender::QStencilTest>(uri, 2, 0, "StencilTest");
+    qmlRegisterType<Qt3DRender::QScissorTest>(uri, 2, 0, "ScissorTest");
+    qmlRegisterType<Qt3DRender::QDithering>(uri, 2, 0, "Dithering");
+    qmlRegisterType<Qt3DRender::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
+    qmlRegisterType<Qt3DRender::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
+    qmlRegisterType<Qt3DRender::QColorMask>(uri, 2, 0, "ColorMask");
+    qmlRegisterType<Qt3DRender::QClipPlane>(uri, 2, 0, "ClipPlane");
+    qmlRegisterUncreatableType<Qt3DRender::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
+    qmlRegisterType<Qt3DRender::QStencilOp>(uri, 2, 0, "StencilOp");
+    qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {

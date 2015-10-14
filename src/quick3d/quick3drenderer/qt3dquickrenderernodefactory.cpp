@@ -39,7 +39,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 Q_GLOBAL_STATIC(QuickRendererNodeFactory, quick_renderer_node_factory)
 
@@ -53,7 +53,7 @@ void QuickRendererNodeFactory::registerType(const char *className, const char *q
     m_types.insert(className, Type(quickName, major, minor));
 }
 
-QNode *QuickRendererNodeFactory::createNode(const char *type)
+Qt3DCore::QNode *QuickRendererNodeFactory::createNode(const char *type)
 {
     if (!m_types.contains(type))
         return Q_NULLPTR;
@@ -65,9 +65,9 @@ QNode *QuickRendererNodeFactory::createNode(const char *type)
         typeInfo.t = QQmlMetaType::qmlType(QString::fromLatin1(typeInfo.quickName), typeInfo.version.first, typeInfo.version.second);
     }
 
-    return typeInfo.t ? qobject_cast<QNode *>(typeInfo.t->create()) : Q_NULLPTR;
+    return typeInfo.t ? qobject_cast<Qt3DCore::QNode *>(typeInfo.t->create()) : Q_NULLPTR;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

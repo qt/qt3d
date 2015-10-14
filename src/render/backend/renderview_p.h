@@ -35,13 +35,24 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERVIEW_H
-#define QT3D_RENDER_RENDERVIEW_H
+#ifndef QT3DRENDER_RENDER_RENDERVIEW_H
+#define QT3DRENDER_RENDER_RENDERVIEW_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DRenderer/qparameter.h>
 #include <Qt3DRenderer/qclearbuffer.h>
 #include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/rendercameralens_p.h>
+#include <Qt3DRenderer/private/cameralens_p.h>
 #include <Qt3DRenderer/private/attachmentpack_p.h>
 #include <Qt3DRenderer/private/handle_types_p.h>
 #include <Qt3DRenderer/qparameter.h>
@@ -57,10 +68,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QRenderPass;
-class QFrameAllocator;
 
 namespace Render {
 
@@ -69,8 +79,8 @@ class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
 class ViewportNode;
-class RenderEffect;
-class RenderRenderPass;
+class Effect;
+class RenderPass;
 
 typedef QPair<ShaderUniform, QVariant> ActivePropertyContent;
 typedef QPair<QString, ActivePropertyContent > ActiveProperty;
@@ -94,7 +104,7 @@ public:
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline Renderer *renderer() const { return m_renderer; }
 
-    inline void setAllocator(QFrameAllocator *allocator)
+    inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
     {
         m_allocator = allocator;
         m_data = m_allocator->allocate<InnerData>();
@@ -102,14 +112,14 @@ public:
         // This allows us to keep the size of RenderView smaller and avoid huge block fragmentation
         //
         // TODO: Is this worth it here. We don't have that many RenderViews to iterate over. This
-        // level of memory management would be better in RenderEntity's matrices as they will
+        // level of memory management would be better in Entity's matrices as they will
         // help cache performance during iteration
         m_data->m_viewMatrix = m_allocator->allocate<QMatrix4x4>();
     }
-    inline QFrameAllocator *allocator() const { return m_allocator; }
+    inline Qt3DCore::QFrameAllocator *allocator() const { return m_allocator; }
 
-    inline void setRenderCamera(RenderCameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
-    inline RenderCameraLens *renderCamera() const { return m_data->m_renderCamera; }
+    inline void setRenderCamera(CameraLens *renderCamera) { m_data->m_renderCamera = renderCamera; }
+    inline CameraLens *renderCamera() const { return m_data->m_renderCamera; }
 
     inline void setViewMatrix(const QMatrix4x4 viewMatrix) { *(m_data->m_viewMatrix) = viewMatrix; }
     inline QMatrix4x4 viewmatrix() const { Q_ASSERT(m_data->m_viewMatrix); return *(m_data->m_viewMatrix); }
@@ -176,7 +186,7 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
 
-    void buildRenderCommands(RenderEntity *preprocessedTreeRoot);
+    void buildRenderCommands(Entity *preprocessedTreeRoot);
     QVector<RenderCommand *> commands() const { return m_commands; }
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
@@ -186,7 +196,7 @@ public:
     void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const { return m_renderTarget; }
 
-    void addSortCriteria(const QList<QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
+    void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
@@ -199,22 +209,22 @@ public:
             , m_viewMatrix(Q_NULLPTR)
         {
         }
-        RenderCameraLens *m_renderCamera;
+        CameraLens *m_renderCamera;
         const TechniqueFilter *m_techniqueFilter;
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QStringList m_layers;
-        QList<QNodeId> m_sortingCriteria;
+        QList<Qt3DCore::QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
     };
 
 private:
-    void setShaderAndUniforms(RenderCommand *command, RenderRenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
+    void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
 
     Renderer *m_renderer;
     QSize m_surfaceSize;
-    QFrameAllocator *m_allocator;
+    Qt3DCore::QFrameAllocator *m_allocator;
 
     InnerData *m_data;
 
@@ -256,19 +266,19 @@ private:
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
     void setUniformBlockValue(QUniformPack &uniformPack,
-                              RenderShader *shader,
+                              Shader *shader,
                               const ShaderUniformBlock &block,
                               const QVariant &value);
     void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
-                                               RenderShader *shader,
-                                               RenderShaderData *shaderData,
+                                               Shader *shader,
+                                               ShaderData *shaderData,
                                                const QString &structName);
     void buildSortingKey(RenderCommand *command);
 };
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERVIEW_H
+#endif // QT3DRENDER_RENDER_RENDERVIEW_H

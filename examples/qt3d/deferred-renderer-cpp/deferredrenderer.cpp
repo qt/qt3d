@@ -37,40 +37,40 @@
 #include "deferredrenderer.h"
 
 
-DeferredRenderer::DeferredRenderer(Qt3D::QNode *parent)
-    : Qt3D::QViewport(parent)
-    , m_sceneFilter(new Qt3D::QLayerFilter(this))
-    , m_screenQuadFilter(new Qt3D::QLayerFilter(this))
-    , m_clearScreenQuad(new Qt3D::QClearBuffer(m_screenQuadFilter))
-    , m_gBufferTargetSelector(new Qt3D::QRenderTargetSelector(m_sceneFilter))
-    , m_clearGBuffer(new Qt3D::QClearBuffer(m_gBufferTargetSelector))
-    , m_geometryPassFilter(new Qt3D::QRenderPassFilter(m_clearGBuffer))
-    , m_finalPassFilter(new Qt3D::QRenderPassFilter(m_clearScreenQuad))
-    , m_sceneCameraSelector(new Qt3D::QCameraSelector(m_geometryPassFilter))
+DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
+    : Qt3DRender::QViewport(parent)
+    , m_sceneFilter(new Qt3DRender::QLayerFilter(this))
+    , m_screenQuadFilter(new Qt3DRender::QLayerFilter(this))
+    , m_clearScreenQuad(new Qt3DRender::QClearBuffer(m_screenQuadFilter))
+    , m_gBufferTargetSelector(new Qt3DRender::QRenderTargetSelector(m_sceneFilter))
+    , m_clearGBuffer(new Qt3DRender::QClearBuffer(m_gBufferTargetSelector))
+    , m_geometryPassFilter(new Qt3DRender::QRenderPassFilter(m_clearGBuffer))
+    , m_finalPassFilter(new Qt3DRender::QRenderPassFilter(m_clearScreenQuad))
+    , m_sceneCameraSelector(new Qt3DRender::QCameraSelector(m_geometryPassFilter))
 {
-    m_clearGBuffer->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
-    m_clearScreenQuad->setBuffers(Qt3D::QClearBuffer::ColorDepthBuffer);
+    m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
+    m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
 }
 
-void DeferredRenderer::setSceneCamera(Qt3D::QEntity *camera)
+void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)
 {
     m_sceneCameraSelector->setCamera(camera);
 }
 
-void DeferredRenderer::setGBuffer(Qt3D::QRenderTarget *gBuffer)
+void DeferredRenderer::setGBuffer(Qt3DRender::QRenderTarget *gBuffer)
 {
     m_gBufferTargetSelector->setTarget(gBuffer);
 }
 
-void DeferredRenderer::setGeometryPassCriteria(QList<Qt3D::QAnnotation *> criteria)
+void DeferredRenderer::setGeometryPassCriteria(QList<Qt3DRender::QAnnotation *> criteria)
 {
-    Q_FOREACH (Qt3D::QAnnotation *c, criteria)
+    Q_FOREACH (Qt3DRender::QAnnotation *c, criteria)
         m_geometryPassFilter->addInclude(c);
 }
 
-void DeferredRenderer::setFinalPassCriteria(QList<Qt3D::QAnnotation *> criteria)
+void DeferredRenderer::setFinalPassCriteria(QList<Qt3DRender::QAnnotation *> criteria)
 {
-    Q_FOREACH (Qt3D::QAnnotation *c, criteria)
+    Q_FOREACH (Qt3DRender::QAnnotation *c, criteria)
         c->setParent(m_finalPassFilter);
 }
 

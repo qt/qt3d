@@ -11,12 +11,19 @@ MODULE_PLUGIN_TYPES = \
 
 load(qt_module)
 
-QMAKE_DOCS = $$PWD/doc/qt3drenderer.qdocconf
-
 include (backend/render-backend.pri)
+include (geometry/geometry.pri)
+include (graphicshelpers/graphicshelpers.pri)
+include (framegraph/framegraph.pri)
 include (frontend/render-frontend.pri)
-include (io/render-io.pri)
+include (jobs/jobs.pri)
+include (lights/lights.pri)
+include (materialsystem/materialsystem.pri)
+include (renderstates/renderstates.pri)
+include (io/io.pri)
 include (defaults/defaults.pri)
+include (services/services.pri)
+include (texture/texture.pri)
 
 RESOURCES += $$PWD/render.qrc
 

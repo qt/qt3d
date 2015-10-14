@@ -40,8 +40,8 @@
 #include <QTimer>
 #include <qmath.h>
 
-ExampleScene::ExampleScene(Qt3D::QNode *parent)
-    : Qt3D::QEntity(parent)
+ExampleScene::ExampleScene(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(parent)
     , m_timer(new QTimer(this))
     , m_even(true)
 {

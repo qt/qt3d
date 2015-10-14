@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QLOOKATTRANSFORM_H
-#define QT3D_QLOOKATTRANSFORM_H
+#ifndef QT3DCORE_QLOOKATTRANSFORM_H
+#define QT3DCORE_QLOOKATTRANSFORM_H
 
 #include <Qt3DCore/qabstracttransform.h>
 
@@ -43,11 +43,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QLookAtTransformPrivate;
 
-class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3D::QAbstractTransform
+class QT3DCORESHARED_EXPORT QLookAtTransform : public Qt3DCore::QAbstractTransform
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
@@ -86,8 +86,8 @@ private:
     Q_DISABLE_COPY(QLookAtTransform)
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QLOOKATTRANSFORM_H
+#endif // QT3DCORE_QLOOKATTRANSFORM_H

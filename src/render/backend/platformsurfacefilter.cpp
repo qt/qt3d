@@ -45,7 +45,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 PlatformSurfaceFilter::PlatformSurfaceFilter(Renderer *renderer,
@@ -86,6 +86,7 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
             break;
 
         case QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed:
+            setSurface<QWindow>(Q_NULLPTR);
             setRendererSurface(Q_NULLPTR);
             break;
 
@@ -112,6 +113,6 @@ void PlatformSurfaceFilter::setRendererSurface(QSurface *surface)
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

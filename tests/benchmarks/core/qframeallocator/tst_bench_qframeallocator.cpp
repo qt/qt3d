@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/QFrameAllocator>
 
-using namespace Qt3D;
+using namespace Qt3DCore;
 
 class tst_QFrameAllocator : public QObject
 {

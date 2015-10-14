@@ -44,7 +44,7 @@
 class Barrel : public RenderableEntity
 {
 public:
-    Barrel(Qt3D::QNode *parent = 0);
+    Barrel(Qt3DCore::QNode *parent = 0);
     ~Barrel();
 
     enum DiffuseColor {
@@ -82,13 +82,13 @@ private:
     Bumps m_bumps;
     DiffuseColor m_diffuseColor;
     SpecularColor m_specularColor;
-    Qt3D::QNormalDiffuseSpecularMapMaterial *m_material;
-    Qt3D::QAbstractTextureProvider *m_diffuseTexture;
-    Qt3D::QAbstractTextureProvider *m_normalTexture;
-    Qt3D::QAbstractTextureProvider *m_specularTexture;
-    Qt3D::QTextureImage *m_diffuseTextureImage;
-    Qt3D::QTextureImage *m_normalTextureImage;
-    Qt3D::QTextureImage *m_specularTextureImage;
+    Qt3DRender::QNormalDiffuseSpecularMapMaterial *m_material;
+    Qt3DRender::QAbstractTextureProvider *m_diffuseTexture;
+    Qt3DRender::QAbstractTextureProvider *m_normalTexture;
+    Qt3DRender::QAbstractTextureProvider *m_specularTexture;
+    Qt3DRender::QTextureImage *m_diffuseTextureImage;
+    Qt3DRender::QTextureImage *m_normalTextureImage;
+    Qt3DRender::QTextureImage *m_specularTextureImage;
 
     void setNormalTextureSource();
     void setDiffuseTextureSource();

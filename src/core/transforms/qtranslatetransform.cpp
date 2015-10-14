@@ -39,11 +39,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 
 /*!
-    \class Qt3D::QTranslateTransformPrivate
+    \class Qt3DCore::QTranslateTransformPrivate
     \internal
 */
 QTranslateTransformPrivate::QTranslateTransformPrivate()
@@ -135,6 +135,6 @@ void QTranslateTransform::setTranslation(const QVector3D &arg)
     }
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

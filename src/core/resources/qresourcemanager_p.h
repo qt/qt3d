@@ -34,8 +34,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QABSTRACTRESOURCESMANAGER_H
-#define QT3D_QABSTRACTRESOURCESMANAGER_H
+#ifndef QT3DCORE_QABSTRACTRESOURCESMANAGER_H
+#define QT3DCORE_QABSTRACTRESOURCESMANAGER_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <QtGlobal>
 #include <QMutex>
@@ -46,7 +57,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 template <class Host>
 struct NonLockingPolicy
@@ -116,6 +127,7 @@ enum
 };
 
 #define Q_DECLARE_RESOURCE_INFO(TYPE, FLAGS) \
+    namespace Qt3DCore { \
     template<> \
     struct QResourceInfo<TYPE > \
 { \
@@ -123,7 +135,8 @@ enum
 { \
     needsCleanup = ((FLAGS & Q_REQUIRES_CLEANUP) == 0) \
 }; \
-}
+}; \
+} // namespace Qt3DCore
 
 template <int v>
 struct Int2Type
@@ -444,4 +457,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QABSTRACTRESOURCESMANAGER_H
+#endif // QT3DCORE_QABSTRACTRESOURCESMANAGER_H

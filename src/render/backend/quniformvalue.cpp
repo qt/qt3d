@@ -36,8 +36,8 @@
 
 #include "quniformvalue_p.h"
 
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
-#include <Qt3DRenderer/private/rendertexture_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
+#include <Qt3DRenderer/private/texture_p.h>
 
 #include <Qt3DCore/qframeallocator.h>
 
@@ -49,14 +49,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 namespace Render {
 
 QUniformValue::QUniformValue()
 {
 }
 
-QUniformValue *QUniformValue::fromVariant(const QVariant &v, QFrameAllocator *allocator)
+QUniformValue *QUniformValue::fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator)
 {
     QUniformValue *u = allocator->allocate<QUniformValue>();
     u->m_var = v;
@@ -73,7 +73,7 @@ bool QUniformValue::operator !=(const QUniformValue &other)
     return !operator ==(other);
 }
 
-void QUniformValue::apply(QGraphicsContext *ctx, const ShaderUniform &shaderDescription) const
+void QUniformValue::apply(GraphicsContext *ctx, const ShaderUniform &shaderDescription) const
 {
     ctx->bindUniform(m_var, shaderDescription);
 }
@@ -88,7 +88,7 @@ void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
     m_uniforms.insert(glslName, val);
 }
 
-void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)
+void QUniformPack::setTexture(const QString &glslName, const Qt3DCore::QNodeId &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {
@@ -102,13 +102,13 @@ void QUniformPack::setTexture(const QString &glslName, const QNodeId &texId)
     m_textures.append(NamedTexture(glslName, texId));
 }
 
-// Contains Uniform Block Index and QNodeId of the RenderShaderData (UBO)
+// Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
 void QUniformPack::setUniformBuffer(const BlockToUBO &blockToUBO)
 {
     m_uniformBuffers.append(blockToUBO);
 }
 
-void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &description) const
+void TextureUniform::apply(GraphicsContext *ctx, const ShaderUniform &description) const
 {
     // We assume that the texture has been successfully bound and attache to a texture unit
     if (m_textureUnit != -1) {
@@ -125,6 +125,6 @@ void TextureUniform::apply(QGraphicsContext *ctx, const ShaderUniform &descripti
 }
 
 } // namespace Render
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

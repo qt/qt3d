@@ -34,17 +34,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QSKYBOXENTITY_P_H
-#define QT3D_RENDER_QSKYBOXENTITY_P_H
+#ifndef QT3DRENDER_RENDER_QSKYBOXENTITY_P_H
+#define QT3DRENDER_RENDER_QSKYBOXENTITY_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/private/qentity_p.h>
 #include <QVector3D>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
+class QTransform;
 class QTranslateTransform;
+}
+
+namespace Qt3DRender {
+
 class QTextureCubeMap;
 class QShaderProgram;
 class QSkyboxEntity;
@@ -52,12 +67,11 @@ class QTextureImage;
 class QCuboidMesh;
 class QRenderPass;
 class QTechnique;
-class QTransform;
 class QParameter;
 class QMaterial;
 class QEffect;
 
-class QSkyboxEntityPrivate : public QEntityPrivate
+class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
 {
     QSkyboxEntityPrivate();
 
@@ -78,8 +92,8 @@ class QSkyboxEntityPrivate : public QEntityPrivate
     QRenderPass *m_es2RenderPass;
     QRenderPass *m_gl3RenderPass;
     QCuboidMesh *m_mesh;
-    QTransform *m_transform;
-    QTranslateTransform *m_translate;
+    Qt3DCore::QTransform *m_transform;
+    Qt3DCore::QTranslateTransform *m_translate;
     QParameter *m_textureParameter;
     QTextureImage *m_posXImage;
     QTextureImage *m_posYImage;
@@ -92,9 +106,9 @@ class QSkyboxEntityPrivate : public QEntityPrivate
     QVector3D m_position;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QSKYBOXENTITY_P_H
+#endif // QT3DRENDER_RENDER_QSKYBOXENTITY_P_H
 

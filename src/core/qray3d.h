@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QRAY3D_H
-#define QT3D_QRAY3D_H
+#ifndef QT3DCORE_QRAY3D_H
+#define QT3DCORE_QRAY3D_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QtGui/qvector3d.h>
@@ -44,7 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QT3DCORESHARED_EXPORT QRay3D
 {
@@ -81,24 +81,24 @@ private:
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const Qt3D::QRay3D &ray);
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const Qt3DCore::QRay3D &ray);
 #endif
 
 #ifndef QT_NO_DATASTREAM
-QT3DCORESHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const Qt3D::QRay3D &ray);
-QT3DCORESHARED_EXPORT QDataStream &operator>>(QDataStream &stream, Qt3D::QRay3D &ray);
+QT3DCORESHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const Qt3DCore::QRay3D &ray);
+QT3DCORESHARED_EXPORT QDataStream &operator>>(QDataStream &stream, Qt3DCore::QRay3D &ray);
 #endif
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-inline bool qFuzzyCompare(const Qt3D::QRay3D &ray1, const Qt3D::QRay3D &ray2)
+inline bool qFuzzyCompare(const Qt3DCore::QRay3D &ray1, const Qt3DCore::QRay3D &ray2)
 {
     return qFuzzyCompare(ray1.origin(), ray2.origin()) &&
            qFuzzyCompare(ray1.direction(), ray2.direction());
 }
 
-Q_DECLARE_METATYPE(Qt3D::QRay3D)
+Q_DECLARE_METATYPE(Qt3DCore::QRay3D)
 
-#endif // QT3D_QRAY3D_H
+#endif // QT3DCORE_QRAY3D_H

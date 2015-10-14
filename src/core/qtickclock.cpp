@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 QTickClock::QTickClock()
     : m_tickInterval(1000000000 / 60) // Nanoseconds
@@ -86,7 +86,7 @@ qint64 QTickClock::waitForNextTick()
     //qCDebug(ChangeArbiter) << "sleeping for" << sleepTimeMicroSeconds << "us";
     QThread::usleep(sleepTimeMicroSeconds);
 
-#if defined(QT3D_DEBUG_TICKCLOCK)
+#if defined(QT3DCORE_DEBUG_TICKCLOCK)
     qint64 expectedWakeTime = t + sleepTimeMicroSeconds * 1000;
     qint64 wakeTime = m_timer.nsecsElapsed();
     qCDebug(ChangeArbiter) << "t =" << t / 1000000 << "timeToSleep =" << timeToSleep / 1000000
@@ -99,6 +99,6 @@ qint64 QTickClock::waitForNextTick()
     return m_time;
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

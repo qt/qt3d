@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -88,7 +88,7 @@ void ShaderPropertyParser::applyBindings(QObject *, QQmlCompiledData *, const QL
 
 } // Quick
 
-} // Render
+} // namespace Render
 
 } // Qt3D
 

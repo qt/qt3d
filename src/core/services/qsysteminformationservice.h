@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QSYSTEMINFORMATIONSERVICE_H
-#define QT3D_QSYSTEMINFORMATIONSERVICE_H
+#ifndef QT3DCORE_QSYSTEMINFORMATIONSERVICE_H
+#define QT3DCORE_QSYSTEMINFORMATIONSERVICE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qservicelocator.h>
@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QSystemInformationServicePrivate;
 
@@ -58,8 +58,8 @@ protected:
     QSystemInformationService(QSystemInformationServicePrivate &dd);
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QSYSTEMINFORMATIONSERVICE_H
+#endif // QT3DCORE_QSYSTEMINFORMATIONSERVICE_H

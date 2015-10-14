@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 WeaverJob::WeaverJob()
 {
@@ -52,6 +52,6 @@ void WeaverJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
         m_job->run();
 }
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QBACKENDNODEFACTORY_H
-#define QT3D_QBACKENDNODEFACTORY_H
+#ifndef QT3DCORE_QBACKENDNODEFACTORY_H
+#define QT3DCORE_QBACKENDNODEFACTORY_H
 
 #include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DCore {
 
 class QBackendNode;
 class QNode;
@@ -53,8 +53,8 @@ public:
     virtual QBackendNode *createBackendNode(QNode *frontend) const = 0;
 };
 
-} // namespace Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QBACKENDNODEFACTORY_H
+#endif // QT3DCORE_QBACKENDNODEFACTORY_H

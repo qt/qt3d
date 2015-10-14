@@ -61,7 +61,7 @@ private Q_SLOTS:
 void tst_RenderQueue::setRenderViewCount()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue renderQueue;
+    Qt3DRender::Render::RenderQueue renderQueue;
 
     // WHEN
     renderQueue.setTargetRenderViewCount(7);
@@ -74,7 +74,7 @@ void tst_RenderQueue::setRenderViewCount()
 void tst_RenderQueue::circleQueues()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue renderQueue;
+    Qt3DRender::Render::RenderQueue renderQueue;
     renderQueue.setTargetRenderViewCount(7);
 
     // WHEN
@@ -88,9 +88,9 @@ void tst_RenderQueue::circleQueues()
         QCOMPARE(renderQueue.currentRenderViewCount(), 0);
 
         // WHEN
-        QList<Qt3D::Render::RenderView *> renderViews;
+        QList<Qt3DRender::Render::RenderView *> renderViews;
         for (int i = 0; i < 7; i++) {
-            renderViews << new Qt3D::Render::RenderView();
+            renderViews << new Qt3DRender::Render::RenderView();
             renderQueue.queueRenderView(renderViews.at(i), i);
         }
 
@@ -102,19 +102,19 @@ void tst_RenderQueue::circleQueues()
 void tst_RenderQueue::checkOrder()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue renderQueue;
+    Qt3DRender::Render::RenderQueue renderQueue;
     renderQueue.setTargetRenderViewCount(7);
-    QVector<Qt3D::Render::RenderView *> renderViews(7);
+    QVector<Qt3DRender::Render::RenderView *> renderViews(7);
 
     // WHEN
     for (int i = 0; i < 7; ++i) {
         int processingOrder = (i % 2 == 0) ? (6 - i) : i;
-        renderViews[processingOrder] = new Qt3D::Render::RenderView();
+        renderViews[processingOrder] = new Qt3DRender::Render::RenderView();
         renderQueue.queueRenderView(renderViews[processingOrder], processingOrder);
     }
 
     // THEN
-    QVector<Qt3D::Render::RenderView *> frame = renderQueue.nextFrameQueue();
+    QVector<Qt3DRender::Render::RenderView *> frame = renderQueue.nextFrameQueue();
     for (int i = 0; i < 7; ++i) {
         QVERIFY(frame[i] == renderViews[i]);
     }
@@ -123,14 +123,14 @@ void tst_RenderQueue::checkOrder()
 void tst_RenderQueue::checkTimeToSubmit()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue renderQueue;
+    Qt3DRender::Render::RenderQueue renderQueue;
     renderQueue.setTargetRenderViewCount(7);
-    QVector<Qt3D::Render::RenderView *> renderViews(7);
+    QVector<Qt3DRender::Render::RenderView *> renderViews(7);
 
     // WHEN
     for (int i = 0; i < 7; i++) {
         int processingOrder = (i % 2 == 0) ? (6 - i) : i;
-        renderViews[processingOrder] = new Qt3D::Render::RenderView();
+        renderViews[processingOrder] = new Qt3DRender::Render::RenderView();
         renderQueue.queueRenderView(renderViews[processingOrder], processingOrder);
 
         // THEN
@@ -148,7 +148,7 @@ public:
     QWaitCondition m_waitTimeToSubmit;
     QWaitCondition m_waitToFillQueue;
     QMutex m_mutex;
-    Qt3D::Render::RenderQueue *m_renderQueues;
+    Qt3DRender::Render::RenderQueue *m_renderQueues;
 
 public Q_SLOTS:
 
@@ -166,7 +166,7 @@ public Q_SLOTS:
                 // THEN
                 QCOMPARE(m_renderQueues->currentRenderViewCount(), j);
                 // WHEN
-                m_renderQueues->queueRenderView(new Qt3D::Render::RenderView(), j);
+                m_renderQueues->queueRenderView(new Qt3DRender::Render::RenderView(), j);
                 // THEN
                 QVERIFY(m_renderQueues->targetRenderViewCount() == 7);
                 QCOMPARE(m_renderQueues->currentRenderViewCount(), j + 1);
@@ -184,7 +184,7 @@ public Q_SLOTS:
 void tst_RenderQueue::concurrentQueueAccess()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue *renderQueue = new Qt3D::Render::RenderQueue;
+    Qt3DRender::Render::RenderQueue *renderQueue = new Qt3DRender::Render::RenderQueue;
 
     SimpleWorker *jobsThread = new SimpleWorker();
     renderQueue->setTargetRenderViewCount(7);
@@ -222,7 +222,7 @@ void tst_RenderQueue::concurrentQueueAccess()
 void tst_RenderQueue::resetQueue()
 {
     // GIVEN
-    Qt3D::Render::RenderQueue renderQueue;
+    Qt3DRender::Render::RenderQueue renderQueue;
 
     for (int j = 0; j < 5; j++) {
         // WHEN
@@ -231,7 +231,7 @@ void tst_RenderQueue::resetQueue()
         QVERIFY(renderQueue.currentRenderViewCount() == 0);
 
         // WHEN
-        QVector<Qt3D::Render::RenderView *> renderViews(5);
+        QVector<Qt3DRender::Render::RenderView *> renderViews(5);
         for (int i = 0; i < 5; ++i) {
             renderQueue.queueRenderView(renderViews.at(i), i);
         }

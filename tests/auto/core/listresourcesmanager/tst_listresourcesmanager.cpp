@@ -69,16 +69,16 @@ public:
     QAtomicInt m_value;
 };
 
-typedef Qt3D::QHandle<tst_ListResource> tHandle;
-typedef Qt3D::QHandle<tst_ListResource, 4> tHandle4;
-typedef Qt3D::QHandle<tst_ListResource, 8> tHandle8;
-typedef Qt3D::QHandle<tst_ListResource, 16> tHandle16;
+typedef Qt3DCore::QHandle<tst_ListResource> tHandle;
+typedef Qt3DCore::QHandle<tst_ListResource, 4> tHandle4;
+typedef Qt3DCore::QHandle<tst_ListResource, 8> tHandle8;
+typedef Qt3DCore::QHandle<tst_ListResource, 16> tHandle16;
 
 void tst_ListResourcesManager::createResourcesManager()
 {
-    Qt3D::QResourceManager<tst_ListResource, int, 16, Qt3D::ListAllocatingPolicy> manager16;
-    Qt3D::QResourceManager<tst_ListResource, int, 4, Qt3D::ListAllocatingPolicy> manager4;
-    Qt3D::QResourceManager<tst_ListResource, int, 8, Qt3D::ListAllocatingPolicy> manager8;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 16, Qt3DCore::ListAllocatingPolicy> manager16;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 4, Qt3DCore::ListAllocatingPolicy> manager4;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 8, Qt3DCore::ListAllocatingPolicy> manager8;
 
     QVERIFY(manager16.maxResourcesEntries() == 65535);
     QVERIFY(manager8.maxResourcesEntries() == 255);
@@ -91,7 +91,7 @@ void tst_ListResourcesManager::createResourcesManager()
  */
 void tst_ListResourcesManager::acquireResources()
 {
-    Qt3D::QResourceManager<tst_ListResource, int, 4, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 4, Qt3DCore::ListAllocatingPolicy> manager;
 
     QList<tHandle4> handles;
 
@@ -111,7 +111,7 @@ void tst_ListResourcesManager::acquireResources()
 void tst_ListResourcesManager::getResources()
 {
 
-    Qt3D::QResourceManager<tst_ListResource, int, 8, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 8, Qt3DCore::ListAllocatingPolicy> manager;
     QList<tst_ListResource *> resources;
     QList<tHandle8> handles;
 
@@ -142,7 +142,7 @@ void tst_ListResourcesManager::getResources()
  */
 void tst_ListResourcesManager::registerResourcesResize()
 {
-    Qt3D::QResourceManager<tst_ListResource, int, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 16, Qt3DCore::ListAllocatingPolicy> manager;
     QList<tHandle16> handles;
 
     for (uint i = 0; i < 2; i++) {
@@ -170,7 +170,7 @@ void tst_ListResourcesManager::registerResourcesResize()
  */
 void tst_ListResourcesManager::removeResource()
 {
-    Qt3D::QResourceManager<tst_ListResource, int, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 16, Qt3DCore::ListAllocatingPolicy> manager;
 
     QList<tst_ListResource *> resources;
     QList<tHandle> handles;
@@ -194,7 +194,7 @@ void tst_ListResourcesManager::removeResource()
  */
 void tst_ListResourcesManager::resetResource()
 {
-    Qt3D::QResourceManager<tst_ListResource, int, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, int, 16, Qt3DCore::ListAllocatingPolicy> manager;
 
     QList<tst_ListResource *> resources;
     QList<tHandle16> handles;
@@ -221,7 +221,7 @@ void tst_ListResourcesManager::resetResource()
 
 void tst_ListResourcesManager::lookupResource()
 {
-    Qt3D::QResourceManager<tst_ListResource, uint, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, uint, 16, Qt3DCore::ListAllocatingPolicy> manager;
 
     QList<tst_ListResource *> resources;
     QList<tHandle16> handles;
@@ -246,7 +246,7 @@ void tst_ListResourcesManager::lookupResource()
 
 void tst_ListResourcesManager::releaseResource()
 {
-    Qt3D::QResourceManager<tst_ListResource, uint, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, uint, 16, Qt3DCore::ListAllocatingPolicy> manager;
     QList<tst_ListResource *> resources;
 
     for (int i = 0; i < 5; i++) {
@@ -268,11 +268,11 @@ class tst_Thread : public QThread
     Q_OBJECT
 public:
 
-    typedef Qt3D::QResourceManager<tst_ListResource,
+    typedef Qt3DCore::QResourceManager<tst_ListResource,
                             int,
                             16,
-                            Qt3D::ListAllocatingPolicy,
-                            Qt3D::ObjectLevelLockingPolicy> Manager;
+                            Qt3DCore::ListAllocatingPolicy,
+                            Qt3DCore::ObjectLevelLockingPolicy> Manager;
 
     tst_Thread() : QThread()
     {
@@ -339,11 +339,11 @@ class tst_Thread2 : public QThread
     Q_OBJECT
 public:
 
-    typedef Qt3D::QResourceManager<tst_ListResource,
+    typedef Qt3DCore::QResourceManager<tst_ListResource,
                             int,
                             16,
-                            Qt3D::ListAllocatingPolicy,
-                            Qt3D::ObjectLevelLockingPolicy> Manager;
+                            Qt3DCore::ListAllocatingPolicy,
+                            Qt3DCore::ObjectLevelLockingPolicy> Manager;
 
     tst_Thread2(int releaseAbove = 7)
         : QThread()
@@ -415,7 +415,7 @@ void tst_ListResourcesManager::heavyDutyMultiThreadedAccessRelease()
 
 void tst_ListResourcesManager::maximumNumberOfResources()
 {
-    Qt3D::QResourceManager<tst_ListResource, uint, 16, Qt3D::ListAllocatingPolicy> manager;
+    Qt3DCore::QResourceManager<tst_ListResource, uint, 16, Qt3DCore::ListAllocatingPolicy> manager;
 
     QList<tst_ListResource *> resources;
     QList<tHandle16> handles;

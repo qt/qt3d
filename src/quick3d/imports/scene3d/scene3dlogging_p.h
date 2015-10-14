@@ -41,11 +41,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(Scene3D)
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
 

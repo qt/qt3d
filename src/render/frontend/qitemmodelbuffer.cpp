@@ -35,13 +35,15 @@
 ****************************************************************************/
 
 #include "qitemmodelbuffer.h"
-#include <Qt3DRenderer/private/qgraphicscontext_p.h>
+#include <Qt3DRenderer/private/graphicscontext_p.h>
 #include <QDebug>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+using namespace Qt3DCore;
+
+namespace Qt3DRender {
 
 void variantToBytes(void* dest, const QVariant& v, GLint type)
 {
@@ -109,7 +111,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+Qt3DCore::QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 
@@ -236,7 +238,7 @@ QBuffer *QItemModelBuffer::buffer()
                                             dataSize, rowCount,
                                             offset, m_itemStride));
             m_attributes[mapping.attribute] = attr;
-            offset += Render::QGraphicsContext::byteSizeFromType(mapping.type);
+            offset += Render::GraphicsContext::byteSizeFromType(mapping.type);
         } // of mappings iteration
 
         m_buffer->setData(computeBufferData());
@@ -344,9 +346,9 @@ QItemModelBuffer::RoleMapping::RoleMapping(QByteArray rnm, QString nm, int ty) :
     attribute(nm),
     type(ty)
 {
-    byteSize = Render::QGraphicsContext::byteSizeFromType(ty);
+    byteSize = Render::GraphicsContext::byteSizeFromType(ty);
 }
 
-} // namespace Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE

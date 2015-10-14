@@ -36,21 +36,21 @@
 
 #include "gbuffer.h"
 
-GBuffer::GBuffer(Qt3D::QNode *parent)
-    : Qt3D::QRenderTarget(parent)
+GBuffer::GBuffer(Qt3DCore::QNode *parent)
+    : Qt3DRender::QRenderTarget(parent)
 {
-    const Qt3D::QAbstractTextureProvider::TextureFormat formats[AttachmentsCount] = {
-        Qt3D::QAbstractTextureProvider::RGBA32F,
-        Qt3D::QAbstractTextureProvider::RGB32F,
-        Qt3D::QAbstractTextureProvider::RGB16F,
-        Qt3D::QAbstractTextureProvider::D32F
+    const Qt3DRender::QAbstractTextureProvider::TextureFormat formats[AttachmentsCount] = {
+        Qt3DRender::QAbstractTextureProvider::RGBA32F,
+        Qt3DRender::QAbstractTextureProvider::RGB32F,
+        Qt3DRender::QAbstractTextureProvider::RGB16F,
+        Qt3DRender::QAbstractTextureProvider::D32F
     };
 
-    const Qt3D::QRenderAttachment::RenderAttachmentType attachmentTypes[AttachmentsCount] = {
-        Qt3D::QRenderAttachment::ColorAttachment0,
-        Qt3D::QRenderAttachment::ColorAttachment1,
-        Qt3D::QRenderAttachment::ColorAttachment2,
-        Qt3D::QRenderAttachment::DepthAttachment
+    const Qt3DRender::QRenderAttachment::RenderAttachmentType attachmentTypes[AttachmentsCount] = {
+        Qt3DRender::QRenderAttachment::ColorAttachment0,
+        Qt3DRender::QRenderAttachment::ColorAttachment1,
+        Qt3DRender::QRenderAttachment::ColorAttachment2,
+        Qt3DRender::QRenderAttachment::DepthAttachment
     };
 
     const QString attachmentNames[AttachmentsCount] = {
@@ -61,16 +61,16 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {
-        Qt3D::QRenderAttachment *attachment = new Qt3D::QRenderAttachment(this);
+        Qt3DRender::QRenderAttachment *attachment = new Qt3DRender::QRenderAttachment(this);
 
-        m_textures[i] = new Qt3D::QTexture2D();
+        m_textures[i] = new Qt3DRender::QTexture2D();
         m_textures[i]->setFormat(formats[i]);
         m_textures[i]->setWidth(1024);
         m_textures[i]->setHeight(1024);
         m_textures[i]->setGenerateMipMaps(false);
-        m_textures[i]->setWrapMode(Qt3D::QTextureWrapMode(Qt3D::QTextureWrapMode::ClampToEdge));
-        m_textures[i]->setMinificationFilter(Qt3D::QAbstractTextureProvider::Linear);
-        m_textures[i]->setMagnificationFilter(Qt3D::QAbstractTextureProvider::Linear);
+        m_textures[i]->setWrapMode(Qt3DRender::QTextureWrapMode(Qt3DRender::QTextureWrapMode::ClampToEdge));
+        m_textures[i]->setMinificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
+        m_textures[i]->setMagnificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
 
         attachment->setTexture(m_textures[i]);
         attachment->setType(attachmentTypes[i]);
@@ -80,22 +80,22 @@ GBuffer::GBuffer(Qt3D::QNode *parent)
     }
 }
 
-Qt3D::QAbstractTextureProvider *GBuffer::colorTexture() const
+Qt3DRender::QAbstractTextureProvider *GBuffer::colorTexture() const
 {
     return m_textures[Color];
 }
 
-Qt3D::QAbstractTextureProvider *GBuffer::positionTexture() const
+Qt3DRender::QAbstractTextureProvider *GBuffer::positionTexture() const
 {
     return m_textures[Position];
 }
 
-Qt3D::QAbstractTextureProvider *GBuffer::normalTexture() const
+Qt3DRender::QAbstractTextureProvider *GBuffer::normalTexture() const
 {
     return m_textures[Normal];
 }
 
-Qt3D::QAbstractTextureProvider *GBuffer::depthTexture() const
+Qt3DRender::QAbstractTextureProvider *GBuffer::depthTexture() const
 {
     return m_textures[Depth];
 }

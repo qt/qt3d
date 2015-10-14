@@ -38,10 +38,8 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DRender {
 namespace Render {
-
 namespace Quick {
 
 Quick3DStateSet::Quick3DStateSet(QObject *parent)
@@ -55,11 +53,11 @@ Quick3DStateSet::~Quick3DStateSet()
 
 QQmlListProperty<QRenderState> Quick3DStateSet::renderStateList()
 {
-    return QQmlListProperty<Qt3D::QRenderState>(this, 0,
-                                              &Quick3DStateSet::appendRenderState,
-                                              &Quick3DStateSet::renderStateCount,
-                                              &Quick3DStateSet::renderStateAt,
-                                              &Quick3DStateSet::clearRenderStates);
+    return QQmlListProperty<QRenderState>(this, 0,
+                                          &Quick3DStateSet::appendRenderState,
+                                          &Quick3DStateSet::renderStateCount,
+                                          &Quick3DStateSet::renderStateAt,
+                                          &Quick3DStateSet::clearRenderStates);
 
 }
 
@@ -88,11 +86,9 @@ void Quick3DStateSet::clearRenderStates(QQmlListProperty<QRenderState> *list)
         stateSet->parentStateSet()->removeRenderState(s);
 }
 
-} // Quick
-
-} // Render
-
-} // Qt3D
+} // namespace Quick
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 

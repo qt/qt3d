@@ -46,9 +46,9 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
 
     Window view;
-    Qt3D::Quick::QQmlAspectEngine engine;
+    Qt3DCore::Quick::QQmlAspectEngine engine;
 
-    engine.aspectEngine()->registerAspect(new Qt3D::QRenderAspect());
+    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
 
     // Expose the window as a context property so we can set the aspect ratio
     engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);

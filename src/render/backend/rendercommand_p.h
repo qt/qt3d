@@ -35,8 +35,19 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_RENDERCOMMAND_H
-#define QT3D_RENDER_RENDERCOMMAND_H
+#ifndef QT3DRENDER_RENDER_RENDERCOMMAND_H
+#define QT3DRENDER_RENDER_RENDERCOMMAND_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <qglobal.h>
 #include <Qt3DRenderer/private/quniformvalue_p.h>
@@ -49,7 +60,7 @@ QT_BEGIN_NAMESPACE
 
 class QOpenGLVertexArrayObject;
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 namespace Render {
 
@@ -63,7 +74,7 @@ public:
     HVao m_vao; // VAO used during the submission step to store all states and VBOs
     HShader m_shader; // Shader for given pass and mesh
     QUniformPack m_uniforms; // Might need to be reworked so as to be able to destroy the
-                            // RenderTexture while submission is happening.
+                            // Texture while submission is happening.
     GLint m_instancesCount; // Number of instances of the mesh, if 0 regular draw otherwise glDrawArraysInstanced or glDrawElementsInstanced
     RenderStateSet *m_stateSet;
 
@@ -71,7 +82,7 @@ public:
     HGeometryRenderer m_geometryRenderer;
 
     // A QAttribute pack might be interesting
-    // This is a temporary fix in the meantime, to remove the hacked methods in RenderTechnique
+    // This is a temporary fix in the meantime, to remove the hacked methods in Technique
     QHash<QString, QString> m_parameterAttributeToShaderNames;
 
     float m_depth;
@@ -87,10 +98,10 @@ public:
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2);
 
-} // Render
+} // namespace Render
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_RENDERCOMMAND_H
+#endif // QT3DRENDER_RENDER_RENDERCOMMAND_H

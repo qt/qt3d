@@ -39,11 +39,11 @@
 
 #include <Qt3DRenderer/qgeometryrenderer.h>
 
-class TessellatedQuadMesh : public Qt3D::QGeometryRenderer
+class TessellatedQuadMesh : public Qt3DRender::QGeometryRenderer
 {
     Q_OBJECT
 public:
-    explicit TessellatedQuadMesh(Qt3D::QNode *parent = 0);
+    explicit TessellatedQuadMesh(Qt3DCore::QNode *parent = 0);
     ~TessellatedQuadMesh();
 };
 

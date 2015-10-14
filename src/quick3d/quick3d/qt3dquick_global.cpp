@@ -44,8 +44,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
-
+namespace Qt3DCore {
 namespace Quick {
 
 class Quick3DColorProvider : public QQmlColorProvider
@@ -665,7 +664,7 @@ static Quick3DColorProvider *getColorProvider()
 
 void Quick3D_initialize()
 {
-    Qt3D::Quick::Quick3DValueTypes::registerValueTypes();
+    Qt3DCore::Quick::Quick3DValueTypes::registerValueTypes();
     QQml_addValueTypeProvider(getValueTypeProvider());
     QQml_setColorProvider(getColorProvider());
     QAbstractNodeFactory::registerNodeFactory(QuickNodeFactory::instance());
@@ -676,8 +675,7 @@ void Quick3D_registerType(const char *className, const char *quickName, int majo
     QuickNodeFactory::instance()->registerType(className, quickName, major, minor);
 }
 
-} // Quick
-
-} // Qt3D
+} // namespace Quick
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE

@@ -34,15 +34,15 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_RENDER_QPHONGMATERIAL_H
-#define QT3D_RENDER_QPHONGMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QPHONGMATERIAL_H
+#define QT3DRENDER_RENDER_QPHONGMATERIAL_H
 
 #include <Qt3DRenderer/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 class QPhongMaterialPrivate;
 
@@ -55,7 +55,7 @@ class QT3DRENDERERSHARED_EXPORT QPhongMaterial : public QMaterial
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
 
 public:
-    explicit QPhongMaterial(QNode *parent = 0);
+    explicit QPhongMaterial(Qt3DCore::QNode *parent = 0);
     ~QPhongMaterial();
 
     QColor ambient() const;
@@ -78,8 +78,8 @@ private:
     Q_DECLARE_PRIVATE(QPhongMaterial)
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_RENDER_QPHONGMATERIAL_H
+#endif // QT3DRENDER_RENDER_QPHONGMATERIAL_H

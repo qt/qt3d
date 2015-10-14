@@ -50,10 +50,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3D {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3D::QNormalDiffuseSpecularMapMaterialPrivate
+    \class Qt3DRender::QNormalDiffuseSpecularMapMaterialPrivate
     \internal
 */
 QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPrivate()
@@ -144,7 +144,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
 }
 
 /*!
-    \class Qt3D::QNormalDiffuseSpecularMapMaterial
+    \class Qt3DRender::QNormalDiffuseSpecularMapMaterial
     \brief The QNormalDiffuseSpecularMapMaterial provides a default implementation of the phong lighting and bump effect where the diffuse and specular light components
     are read from texture maps and the normals of the mesh being rendered from a normal texture map.
     \inmodule Qt3DRenderer
@@ -165,7 +165,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
 */
 
 /*!
-    Constructs a new Qt3D::QNormalDiffuseSpecularMapMaterial instance with parent object \a parent.
+    Constructs a new Qt3DRender::QNormalDiffuseSpecularMapMaterial instance with parent object \a parent.
 */
 QNormalDiffuseSpecularMapMaterial::QNormalDiffuseSpecularMapMaterial(QNode *parent)
     : QMaterial(*new QNormalDiffuseSpecularMapMaterialPrivate, parent)
@@ -195,14 +195,14 @@ QNormalDiffuseSpecularMapMaterial::QNormalDiffuseSpecularMapMaterial(QNormalDiff
 }
 
 /*!
-    Destroys the Qt3D::QNormalDiffuseSpecularMapMaterial instance.
+    Destroys the Qt3DRender::QNormalDiffuseSpecularMapMaterial instance.
 */
 QNormalDiffuseSpecularMapMaterial::~QNormalDiffuseSpecularMapMaterial()
 {
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::ambient
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::ambient
 
     Holds the current ambient color.
 */
@@ -213,7 +213,7 @@ QColor QNormalDiffuseSpecularMapMaterial::ambient() const
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::diffuse
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::diffuse
 
     Holds the current diffuse map texture.
 
@@ -233,7 +233,7 @@ QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::normal
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::normal
 
     Holds the current normal map texture.
 
@@ -252,7 +252,7 @@ QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::normal() const
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::specular
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::specular
 
     Holds the current specular map texture.
 
@@ -272,7 +272,7 @@ QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::specular() const
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::shininess
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::shininess
 
     Holds the current shininess as a float value.
 */
@@ -283,7 +283,7 @@ float QNormalDiffuseSpecularMapMaterial::shininess() const
 }
 
 /*!
-    \property Qt3D::QNormalDiffuseSpecularMapMaterial::textureScale
+    \property Qt3DRender::QNormalDiffuseSpecularMapMaterial::textureScale
 
     Holds the current texture scale as a float value.
 */
@@ -329,6 +329,6 @@ void QNormalDiffuseSpecularMapMaterial::setTextureScale(float textureScale)
     d->m_textureScaleParameter->setValue(textureScale);
 }
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
