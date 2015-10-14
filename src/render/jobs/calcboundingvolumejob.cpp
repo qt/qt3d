@@ -41,8 +41,9 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/sphere.h>
 #include <Qt3DCore/qaxisalignedboundingbox.h>
@@ -58,51 +59,58 @@ namespace {
 
 void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
 {
-    Qt3DRender::Render::GeometryRenderer *mesh = node->renderComponent<GeometryRenderer>();
-    if (mesh) {
-        Geometry *geom = renderer->geometryManager()->lookupResource(mesh->geometryId());
-        if (geom) {
-            Q_FOREACH (const Qt3DCore::QNodeId &attrId, geom->attributes()) {
-                Attribute *attr = renderer->attributeManager()->lookupResource(attrId);
-                if (!attr
-                        || attr->attributeType() != Qt3DCore::QAbstractAttribute::VertexAttribute
-                        || !attr->isDirty()
-                        || attr->name() != QAttribute::defaultPositionAttributeName()
-                        || attr->dataType() != Qt3DCore::QAbstractAttribute::Float
-                        || attr->dataSize() < 3)
-                    continue;
+    // TO DO: How do we set the object picker to dirty when the buffer
+    // referenced by the pickVolumeAttribute changes or has its internal buffer
+    // data changed
 
-                Buffer *buf = renderer->bufferManager()->lookupResource(attr->bufferId());
-                // No point in continuing if the positionAttribute doesn't have a suitable buffer
-                if (!buf)
-                    break;
-
-                Qt3DCore::QAxisAlignedBoundingBox bbox;
-                const QByteArray buffer = buf->data();
-                const char *rawBuffer = buffer.constData();
-                rawBuffer += attr->byteOffset();
-                const int stride = attr->byteStride() ? attr->byteStride() : sizeof(float) * attr->dataSize();
-                QVector<QVector3D> vertices(attr->count());
-
-                // TO DO: We don't need to create a vector of QVector3D
-                // to build bbox used to then build a sphere, we could build the sphere
-                // by just looking at the vertices using more efficient algorithms (EPOS, Ritters)
-                for (int c = 0, vC = vertices.size(); c < vC; ++c) {
-                    QVector3D v;
-                    const float *fptr = reinterpret_cast<const float*>(rawBuffer);
-                    for (uint i = 0, m = qMin(attr->dataSize(), 3U); i < m; ++i)
-                        v[i] = fptr[i];
-                    vertices[c] = v;
-                    rawBuffer += stride;
-                }
-                //Phase 1
-                bbox.update(vertices);
-
-                //Phase 2
-                node->localBoundingVolume()->setCenter(bbox.center());
-                node->localBoundingVolume()->setRadius(bbox.maxExtent() * 0.5f);
-                break;
+    Qt3DRender::Render::ObjectPicker *objPicker = node->renderComponent<ObjectPicker>();
+    if (objPicker && objPicker->isDirty()) {
+        Qt3DRender::Render::Attribute *pickVolumeAttribute = renderer->attributeManager()->lookupResource(objPicker->pickAttributeId());
+        if (pickVolumeAttribute) {
+            if (!pickVolumeAttribute
+                    || pickVolumeAttribute->attributeType() != Qt3DCore::QAbstractAttribute::VertexAttribute
+                    || !pickVolumeAttribute->isDirty()
+                    || pickVolumeAttribute->name() != QAttribute::defaultPositionAttributeName()
+                    || pickVolumeAttribute->dataType() != Qt3DCore::QAbstractAttribute::Float
+                    || pickVolumeAttribute->dataSize() < 3) {
+                qWarning() << "ObjectPicker pickVolume Attribute not suited for bounding volume computation";
+                return;
             }
+
+            Buffer *buf = renderer->bufferManager()->lookupResource(pickVolumeAttribute->bufferId());
+            // No point in continuing if the positionAttribute doesn't have a suitable buffer
+            if (!buf) {
+                qWarning() << "ObjectPicker pickVolume Attribute not referencing a valid buffer";
+                return;
+            }
+
+            Qt3DCore::QAxisAlignedBoundingBox bbox;
+            const QByteArray buffer = buf->data();
+            const char *rawBuffer = buffer.constData();
+            rawBuffer += pickVolumeAttribute->byteOffset();
+            const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
+            QVector<QVector3D> vertices(pickVolumeAttribute->count());
+
+            // TO DO: We don't need to create a vector of QVector3D
+            // to build bbox used to then build a sphere, we could build the sphere
+            // by just looking at the vertices using more efficient algorithms (EPOS, Ritters)
+            for (int c = 0, vC = vertices.size(); c < vC; ++c) {
+                QVector3D v;
+                const float *fptr = reinterpret_cast<const float*>(rawBuffer);
+                for (uint i = 0, m = qMin(pickVolumeAttribute->dataSize(), 3U); i < m; ++i)
+                    v[i] = fptr[i];
+                vertices[c] = v;
+                rawBuffer += stride;
+            }
+            //Phase 1
+            bbox.update(vertices);
+
+            //Phase 2
+            node->localBoundingVolume()->setCenter(bbox.center());
+            node->localBoundingVolume()->setRadius(bbox.maxExtent() * 0.5f);
+
+            // Unset dirtiness of
+            objPicker->unsetDirty();
         }
     }
 
