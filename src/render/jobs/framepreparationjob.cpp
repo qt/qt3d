@@ -45,14 +45,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(Entity *root)
-    : m_root(root)
+FramePreparationJob::FramePreparationJob()
+    : m_root(Q_NULLPTR)
 {
 }
 
 FramePreparationJob::~FramePreparationJob()
 {
 
+}
+
+void FramePreparationJob::setRoot(Entity *root)
+{
+    m_root = root;
 }
 
 void FramePreparationJob::run()

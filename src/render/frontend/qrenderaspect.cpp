@@ -136,6 +136,7 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_surface(Q_NULLPTR)
     , m_time(0)
     , m_initialized(false)
+    , m_framePreparationJob(new Render::FramePreparationJob())
 {
     initResources();
     m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
@@ -270,7 +271,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
 
         // Create the jobs to build the frame
-        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer->renderSceneRoot()));
+        d->m_framePreparationJob->setRoot(d->m_renderer->renderSceneRoot());
         d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
         d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
         d->m_updateBoundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
@@ -310,6 +311,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(d->m_worldTransformJob);
         jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
+
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands

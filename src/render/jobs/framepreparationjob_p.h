@@ -62,8 +62,10 @@ class Entity;
 class FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob(Entity *root);
+    FramePreparationJob();
     ~FramePreparationJob();
+
+    void setRoot(Entity *root);
 
 protected:
     void run() Q_DECL_FINAL;
