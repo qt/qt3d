@@ -135,6 +135,7 @@ class BufferManager;
 class AttributeManager;
 class GeometryManager;
 class GeometryRendererManager;
+class ObjectPickerManager;
 
 class Renderer
 {
@@ -196,6 +197,7 @@ public:
     inline AttributeManager *attributeManager() const { return m_attributeManager; }
     inline GeometryManager *geometryManager() const { return m_geometryManager; }
     inline GeometryRendererManager *geometryRendererManager() const { return m_geometryRendererManager; }
+    inline ObjectPickerManager *objectPickerManager() const { return m_objectPickerManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -277,6 +279,7 @@ private:
     AttributeManager *m_attributeManager;
     GeometryManager *m_geometryManager;
     GeometryRendererManager *m_geometryRendererManager;
+    ObjectPickerManager *m_objectPickerManager;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
