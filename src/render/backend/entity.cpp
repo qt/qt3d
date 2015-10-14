@@ -88,21 +88,21 @@ void Entity::cleanup()
         // We need to release using peerUuid otherwise the handle will be cleared
         // but would still remain in the Id to Handle table
         m_renderer->worldMatrixManager()->releaseResource(peerUuid());
-        m_worldTransform = HMatrix();
 
-        // Release all component will have to perform their own release when they receive the
-        // NodeDeleted/NodeAboutToBeDeleted notification
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
-        // Clear components
-        m_transformComponent = Qt3DCore::QNodeId();
-        m_cameraComponent = Qt3DCore::QNodeId();
-        m_materialComponent = Qt3DCore::QNodeId();
-        m_geometryRendererComponent = Qt3DCore::QNodeId();
-        m_objectPickerComponent = QNodeId();
-        m_layerComponents.clear();
-        m_shaderDataComponents.clear();
     }
+    m_worldTransform = HMatrix();
+    // Release all component will have to perform their own release when they receive the
+    // NodeDeleted/NodeAboutToBeDeleted notification
+    // Clear components
+    m_transformComponent = Qt3DCore::QNodeId();
+    m_cameraComponent = Qt3DCore::QNodeId();
+    m_materialComponent = Qt3DCore::QNodeId();
+    m_geometryRendererComponent = Qt3DCore::QNodeId();
+    m_objectPickerComponent = QNodeId();
+    m_layerComponents.clear();
+    m_shaderDataComponents.clear();
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
     delete m_worldBoundingVolumeWithChildren;
