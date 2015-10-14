@@ -45,6 +45,7 @@
 #include <Qt3DRender/sphere.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -98,6 +99,7 @@ void Entity::cleanup()
         m_cameraComponent = Qt3DCore::QNodeId();
         m_materialComponent = Qt3DCore::QNodeId();
         m_geometryRendererComponent = Qt3DCore::QNodeId();
+        m_objectPickerComponent = QNodeId();
         m_layerComponents.clear();
         m_shaderDataComponents.clear();
     }
@@ -145,6 +147,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_materialComponent = QNodeId();
     m_cameraComponent = QNodeId();
     m_geometryRendererComponent = QNodeId();
+    m_objectPickerComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
 
@@ -255,6 +258,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_shaderDataComponents.append(component->id());
     else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR)
         m_geometryRendererComponent = component->id();
+    else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR)
+        m_objectPickerComponent = component->id();
 }
 
 void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
@@ -271,6 +276,8 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_shaderDataComponents.removeAll(nodeId);
     else if (m_geometryRendererComponent == nodeId)
         m_geometryRendererComponent = QNodeId();
+    else if (m_objectPickerComponent == nodeId)
+        m_objectPickerComponent = QNodeId();
 }
 
 template<>
@@ -319,6 +326,18 @@ template<>
 GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
 {
     return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
+}
+
+template<>
+HObjectPicker Entity::componentHandle<ObjectPicker>() const
+{
+    return m_renderer->objectPickerManager()->lookupHandle(m_objectPickerComponent);
+}
+
+template<>
+ObjectPicker *Entity::renderComponent<ObjectPicker>() const
+{
+    return m_renderer->objectPickerManager()->lookupResource(m_objectPickerComponent);
 }
 
 template<>
@@ -375,6 +394,8 @@ QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_s
 template<>
 Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geometryRendererComponent; }
 
+template<>
+QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerComponent; }
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)

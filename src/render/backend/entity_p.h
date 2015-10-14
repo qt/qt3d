@@ -174,6 +174,7 @@ private:
     QList<Qt3DCore::QNodeId> m_layerComponents;
     QList<Qt3DCore::QNodeId> m_shaderDataComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
+    Qt3DCore::QNodeId m_objectPickerComponent;
 
     QString m_objectName;
 };
@@ -201,6 +202,12 @@ Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() 
 
 template<>
 Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
+
+template<>
+Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
+
+template<>
+Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
@@ -231,6 +238,9 @@ Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() 
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
+
+template<>
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {
