@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/loadtexturedatajob_p.h \
     $$PWD/loadbufferjob_p.h \
     $$PWD/loadgeometryjob_p.h \
-    $$PWD/calcboundingvolumejob_p.h
+    $$PWD/calcboundingvolumejob_p.h \
+    $$PWD/pickboundingvolumejob_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \
@@ -24,4 +25,5 @@ SOURCES += \
     $$PWD/loadtexturedatajob.cpp \
     $$PWD/loadbufferjob.cpp \
     $$PWD/loadgeometryjob.cpp \
-    $$PWD/calcboundingvolumejob.cpp
+    $$PWD/calcboundingvolumejob.cpp \
+    $$PWD/pickboundingvolumejob.cpp

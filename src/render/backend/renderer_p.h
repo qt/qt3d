@@ -212,6 +212,7 @@ public:
     QOpenGLFilter *contextInfo() const;
 
     void setSurface(QSurface *s);
+    inline QSurface *surface() const { return m_surface; }
     void setEventSource(QObject *eventSource);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
