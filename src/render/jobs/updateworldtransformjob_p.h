@@ -62,7 +62,9 @@ class Entity;
 class UpdateWorldTransformJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit UpdateWorldTransformJob(Entity *node);
+    UpdateWorldTransformJob();
+
+    void setRoot(Entity *root);
 
 protected:
     void run() Q_DECL_OVERRIDE;

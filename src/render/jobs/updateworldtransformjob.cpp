@@ -67,10 +67,15 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 
 }
 
-UpdateWorldTransformJob::UpdateWorldTransformJob(Entity *node)
+UpdateWorldTransformJob::UpdateWorldTransformJob()
     : Qt3DCore::QAspectJob()
-    , m_node(node)
+    , m_node(Q_NULLPTR)
 {
+}
+
+void UpdateWorldTransformJob::setRoot(Entity *root)
+{
+    m_node = root;
 }
 
 void UpdateWorldTransformJob::run()
