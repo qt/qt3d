@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+import Qt3D.Core 2.0
 import Qt3D.Renderer 2.0
 
 // For Qt.vector3d() and friends. For some reason this is provided by

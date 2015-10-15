@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
+import Qt3D.Core 2.0
 import Qt3D.Renderer 2.0
 import Qt3D.Input 2.0
 import QtQuick 2.2 as QQ2

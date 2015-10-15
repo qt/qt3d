@@ -45,7 +45,7 @@ namespace Quick {
 namespace Quick3DValueTypes {
     void registerValueTypes()
     {
-        QQmlValueTypeFactory::registerValueTypes("Qt3D", 2, 0);
+        QQmlValueTypeFactory::registerValueTypes("Qt3D.Core", 2, 0);
     }
 }
 

@@ -1,13 +1,11 @@
 import QtQml 2.1
-// To avoid clash with Component.onCompleted
-// TODO: Export Qt3D::QComponent with a different name
-import Qt3D 2.0 as Qt3D
+import Qt3D.Core 2.0
 
-Qt3D.Entity {
-    Qt3D.NodeInstantiator {
+Entity {
+    NodeInstantiator {
         objectName: "instantiator1"
         model: model1
-        delegate: Qt3D.Entity {
+        delegate: Entity {
             property string datum: model.text
         }
     }

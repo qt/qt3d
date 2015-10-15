@@ -7,6 +7,14 @@ SOURCES += \
     tst_quick3dnodeinstantiator.cpp
 HEADERS += stringmodel.h
 
+OTHER_FILES = \
+    data/createAndRemove.qml \
+    data/createMultiple.qml \
+    data/createNone.qml \
+    data/createSingle.qml \
+    data/inactive.qml \
+    data/stringModel.qml
+
 include (../../shared/util.pri)
 
 TESTDATA = data/*
