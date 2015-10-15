@@ -49,8 +49,8 @@ class QPlaneGeometryPrivate;
 class QT3DRENDERERSHARED_EXPORT QPlaneGeometry : public QGeometry
 {
     Q_OBJECT
-    Q_PROPERTY(int width READ width WRITE setWidth NOTIFY widthChanged)
-    Q_PROPERTY(int height READ height WRITE setHeight NOTIFY heightChanged)
+    Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
+    Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(QSize resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
 public:
     explicit QPlaneGeometry(QNode *parent = Q_NULLPTR);
@@ -64,8 +64,8 @@ public:
     void setHeight(float height);
 
     QSize resolution() const;
-    int width() const;
-    int height() const;
+    float width() const;
+    float height() const;
 
 Q_SIGNALS:
     void resolutionChanged();

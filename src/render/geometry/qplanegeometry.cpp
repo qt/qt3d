@@ -279,13 +279,13 @@ QSize QPlaneGeometry::resolution() const
     return d->m_meshResolution;
 }
 
-int QPlaneGeometry::width() const
+float QPlaneGeometry::width() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_width;
 }
 
-int QPlaneGeometry::height() const
+float QPlaneGeometry::height() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_height;
