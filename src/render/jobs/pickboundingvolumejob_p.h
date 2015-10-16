@@ -51,6 +51,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DCore/qray3d.h>
 #include <QSharedPointer>
 #include <QMouseEvent>
 
@@ -58,6 +59,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 class QNodeId;
+class QAbstractCollisionQueryService;
 }
 
 namespace Qt3DRender {
@@ -67,15 +69,18 @@ namespace Render {
 class Entity;
 class Renderer;
 
-class PickBoundingVolumeJob : public Qt3DCore::QAspectJob, public Qt3DCore::QBoundingVolumeProvider
+class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public Qt3DCore::QAspectJob, public Qt3DCore::QBoundingVolumeProvider
 {
 public:
     PickBoundingVolumeJob(Renderer *renderer);
 
     void setRoot(Entity *root);
-    void setMouseEvents(const QList<QMouseEvent> &mouseEvents);
     QVector<Qt3DCore::QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL;
 
+    static Qt3DCore::QRay3D intersectionRay(const QPoint &pos,
+                                            const QMatrix4x4 &viewMatrix,
+                                            const QMatrix4x4 &projectionMatrix,
+                                            const QRect &viewport);
 protected:
     void run() Q_DECL_FINAL;
 
@@ -88,8 +93,14 @@ private:
     void viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId,
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
-    QRect windowViewport(const QRectF &relativeViewport);
+    QRect windowViewport(const QRectF &relativeViewport) const;
+    QVector<Qt3DCore::QNodeId> hitsForViewportAndCamera(const QPoint &pos,
+                                                        const QRectF &relativeViewport,
+                                                        const Qt3DCore::QNodeId &cameraId,
+                                                        Qt3DCore::QAbstractCollisionQueryService *rayCasting) const;
+    void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
+    QVector<HObjectPicker> m_hoveredPickers;
 };
 
 typedef QSharedPointer<PickBoundingVolumeJob> PickBoundingVolumeJobPtr;

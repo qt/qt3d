@@ -80,6 +80,7 @@ private:
     ViewportCameraPair gatherUpViewportCameras(Render::FrameGraphNode *node) const
     {
         ViewportCameraPair vc;
+        vc.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
 
         while (node) {
             if (node->isEnabled()) {
@@ -131,18 +132,28 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
     m_node = root;
 }
 
-void PickBoundingVolumeJob::setMouseEvents(const QList<QMouseEvent> &mouseEvents)
-{
-    m_mouseEvents = mouseEvents;
-}
-
 QVector<Qt3DCore::QBoundingVolume *> PickBoundingVolumeJob::boundingVolumes() const
 {
     return gatherBoundingVolumes(m_node);
 }
 
+Qt3DCore::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+{
+    // TO DO: We may need to invert the y pos (Qt vs GL coordinates)
+    QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
+    nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
+    QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
+    farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
+
+    Qt3DCore::QRay3D ray;
+    ray.setOrigin(nearPos);
+    ray.setDirection((farPos - nearPos).normalized());
+    return ray;
+}
+
 void PickBoundingVolumeJob::run()
 {
+    m_mouseEvents = m_renderer->pendingPickingEvents();
     if (m_mouseEvents.empty())
         return;
 
@@ -160,67 +171,84 @@ void PickBoundingVolumeJob::run()
         const QVector<ViewportCameraPair> vcPairs = vcGatherer.gather(m_renderer->frameGraphRoot());
 
         if (!vcPairs.empty()) {
-            // Note we may want to keep all the pressed / hovered nodes
-            // so that we know when to call the release / exited events
-
             Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
                 Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
-                    QMatrix4x4 viewMatrix;
-                    QMatrix4x4 projectionMatrix;
-                    viewMatrixForCamera(vc.cameraId, viewMatrix, projectionMatrix);
-                    const QRect viewport = windowViewport(vc.viewport);
+                    const QVector<Qt3DCore::QNodeId> hits = hitsForViewportAndCamera(event.pos(),
+                                                                                     vc.viewport,
+                                                                                     vc.cameraId,
+                                                                                     rayCasting);
+                    ObjectPicker *lastCurrentPicker = m_renderer->objectPickerManager()->data(m_currentPicker);
 
-                    QVector3D nearPos = QVector3D(event.pos().x(), event.pos().y(), 0.0f);
-                    nearPos.unproject(viewMatrix, projectionMatrix, viewport);
-                    QVector3D farPos = QVector3D(event.pos().x(), event.pos().y(), 1.0f);
-                    farPos.unproject(viewMatrix, projectionMatrix, viewport);
+                    // If we have hits
+                    if (!hits.isEmpty()) {
+                        Q_FOREACH (const Qt3DCore::QNodeId &entityId, hits) {
+                            Entity *entity = m_renderer->renderNodesManager()->lookupResource(entityId);
+                            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+                            ObjectPicker *objectPicker = m_renderer->objectPickerManager()->data(objectPickerHandle);
 
-                    Qt3DCore::QRay3D ray;
-                    ray.setOrigin(nearPos);
-                    ray.setDirection(farPos);
-
-                    const Qt3DCore::QQueryHandle rayCastingHandle = rayCasting->query(ray, Qt3DCore::QAbstractCollisionQueryService::FirstHit);
-                    const Qt3DCore::QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
-
-                    Q_FOREACH (const Qt3DCore::QNodeId &entityId, queryResult.entitiesHit()) {
-                        Entity *entity = m_renderer->renderNodesManager()->lookupResource(entityId);
-                        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-                        ObjectPicker *objectPicker = m_renderer->objectPickerManager()->data(objectPickerHandle);
-                        if (objectPicker != Q_NULLPTR) {
-                            // Send the correspond event
-                            switch (event.type()) {
-                            case QEvent::MouseButtonPress: {
-                                // Store pressed object handle
-                                if (objectPickerHandle != m_currentPicker) {
-                                    // Send release event to m_currentPicker
+                            if (objectPicker != Q_NULLPTR) {
+                                // Send the corresponding event
+                                switch (event.type()) {
+                                case QEvent::MouseButtonPress: {
+                                    // Store pressed object handle
                                     m_currentPicker = objectPickerHandle;
                                     // Send pressed event to m_currentPicker
+                                    objectPicker->onPressed();
                                 }
-                                break;
-                            }
+                                    break;
 
-                            case QEvent::MouseButtonRelease: {
-                                // Send release event to m_currentPicker
-                                break;
-                            }
-
-                            case QEvent::MouseMove: {
-                                if (objectPickerHandle != m_currentPicker) {
-                                    // Send exited event to m_currentPicker
-                                    // if m_currentPick hoverEnabled
-                                    m_currentPicker = objectPickerHandle;
-                                    // Send entered event to m_currentPicker
-                                    // if m_currentPick hoverEnabled
-                                } else {
-                                    // Send mose event to m_currentPick
-                                    // if m_currentPick hoverEnabled
+                                case QEvent::MouseButtonRelease: {
+                                    // Send release event to m_currentPicker
+                                    if (lastCurrentPicker != Q_NULLPTR)
+                                        lastCurrentPicker->onReleased();
+                                    break;
                                 }
-                                break;
-                            }
 
-                            default:
-                                break;
+                                case Qt::TapGesture: {
+                                    objectPicker->onClicked();
+                                    break;
+                                }
+
+                                case QEvent::MouseMove: {
+                                    if (!m_hoveredPickers.contains(objectPickerHandle)) {
+                                        // Send exited event to object pickers on which we
+                                        // had set the hovered flag
+                                        clearPreviouslyHoveredPickers();
+
+                                        if (objectPicker->hoverEnabled()) {
+                                            // Send entered event to objectPicker
+                                            objectPicker->onEntered();
+                                            // and save it in the hoveredPickers
+                                            m_hoveredPickers.push_back(objectPickerHandle);
+                                        }
+                                    }
+                                    break;
+                                }
+
+                                default:
+                                    break;
+                                }
                             }
+                            lastCurrentPicker = m_renderer->objectPickerManager()->data(m_currentPicker);
+                        }
+
+                        // Otherwise
+                    } else {
+                        switch (event.type()) {
+                        case QEvent::MouseButtonRelease: {
+                            // Send release event to m_currentPicker
+                            if (lastCurrentPicker != Q_NULLPTR)
+                                lastCurrentPicker->onReleased();
+                            break;
+                        }
+                        case QEvent::MouseMove: {
+                            // Send exited event to object pickers on which we
+                            // had set the hovered flag
+                            clearPreviouslyHoveredPickers();
+                            break;
+                        }
+                        default:
+                            break;
                         }
                     }
                 }
@@ -236,12 +264,13 @@ QVector<Qt3DCore::QBoundingVolume *> PickBoundingVolumeJob::gatherBoundingVolume
 {
     QVector<Qt3DCore::QBoundingVolume *> volumes;
 
-    volumes.push_back(entity->worldBoundingVolume());
+    if (entity != Q_NULLPTR) {
+        volumes.push_back(entity->worldBoundingVolume());
 
-    // Traverse children
-    Q_FOREACH (Entity *child, m_node->children())
-        volumes += gatherBoundingVolumes(child);
-
+        // Traverse children
+        Q_FOREACH (Entity *child, entity->children())
+            volumes += gatherBoundingVolumes(child);
+    }
     return volumes;
 }
 
@@ -259,11 +288,10 @@ void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraI
     }
 }
 
-QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport)
+QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) const
 {
     // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    QSurface *s = m_renderer->surface();
-
+    const QSurface *s = m_renderer->surface();
     if (s) {
         const int surfaceWidth = s->size().width();
         const int surfaceHeight = s->size().height();
@@ -273,6 +301,37 @@ QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport)
                      relativeViewport.height() * surfaceHeight);
     }
     return relativeViewport.toRect();
+}
+
+
+QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::hitsForViewportAndCamera(const QPoint &pos,
+                                                                           const QRectF &relativeViewport,
+                                                                           const Qt3DCore::QNodeId &cameraId,
+                                                                           Qt3DCore::QAbstractCollisionQueryService *rayCasting) const
+{
+    QMatrix4x4 viewMatrix;
+    QMatrix4x4 projectionMatrix;
+    viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
+    const QRect viewport = windowViewport(relativeViewport);
+
+    const QSurface *s = m_renderer->surface();
+    // TO DO: find another way to retrieve the size since this won't work with Scene3D
+    // In GL the y is inverted compared to Qt
+    const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
+    const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
+    const Qt3DCore::QQueryHandle rayCastingHandle = rayCasting->query(ray, Qt3DCore::QAbstractCollisionQueryService::FirstHit);
+    const Qt3DCore::QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
+    return queryResult.entitiesHit();
+}
+
+void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
+{
+    Q_FOREACH (const HObjectPicker &pickHandle, m_hoveredPickers) {
+        ObjectPicker *pick = m_renderer->objectPickerManager()->data(pickHandle);
+        if (pick)
+            pick->onExited();
+    }
+    m_hoveredPickers.clear();
 }
 
 } // namespace Render
