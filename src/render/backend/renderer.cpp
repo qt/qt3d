@@ -167,6 +167,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
     , m_debugLogger(Q_NULLPTR)
+    , m_pickEventFilter(new PickEventFilter())
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -1076,6 +1077,11 @@ void Renderer::addAllocator(Qt3DCore::QFrameAllocator *allocator)
 {
     QMutexLocker lock(&m_mutex);
     m_allocators.append(allocator);
+}
+
+QList<QMouseEvent> Renderer::pendingPickingEvents() const
+{
+    return m_pickEventFilter->pendingEvents();
 }
 
 QOpenGLFilter *Renderer::contextInfo() const

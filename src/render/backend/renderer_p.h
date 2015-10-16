@@ -73,6 +73,7 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QOpenGLDebugLogger;
+class QMouseEvent;
 
 namespace Qt3DCore {
 class QEntity;
@@ -208,6 +209,8 @@ public:
 
     inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
     inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
+
+    QList<QMouseEvent> pendingPickingEvents() const;
 
     QOpenGLFilter *contextInfo() const;
 
