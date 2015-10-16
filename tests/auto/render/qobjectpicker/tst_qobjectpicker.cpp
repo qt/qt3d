@@ -35,11 +35,13 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-
+#include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QPickEvent>
 
 #include "testpostmanarbiter.h"
 
@@ -51,8 +53,14 @@ public:
         : Qt3DRender::QObjectPicker(parent)
     {}
 
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_FINAL
+    {
+        Qt3DRender::QObjectPicker::sceneChangeEvent(change);
+    }
+
 private:
     friend class tst_ObjectPicker;
+
 };
 
 // We need to call QNode::clone which is protected
@@ -64,6 +72,7 @@ public:
     tst_QObjectPicker()
     {
         qRegisterMetaType<Qt3DRender::QAttribute*>("Qt3DRender::QAttribute*");
+        qRegisterMetaType<Qt3DRender::QPickEvent*>("Qt3DRender::QPickEvent*");
     }
 
     ~tst_QObjectPicker()
@@ -146,18 +155,49 @@ private Q_SLOTS:
 
     }
 
+    void checkBackendUpdates_data()
+    {
+        QTest::addColumn<QByteArray>("signalPrototype");
+        QTest::addColumn<QByteArray>("propertyName");
+
+        QTest::newRow("clicked")
+                << QByteArray(SIGNAL(clicked(QPickEvent *)))
+                << QByteArrayLiteral("clicked");
+
+        QTest::newRow("pressed")
+                << QByteArray(SIGNAL(pressed(QPickEvent *)))
+                << QByteArrayLiteral("pressed");
+
+        QTest::newRow("released")
+                << QByteArray(SIGNAL(released(QPickEvent *)))
+                << QByteArrayLiteral("released");
+
+        QTest::newRow("entered")
+                << QByteArray(SIGNAL(entered()))
+                << QByteArrayLiteral("entered");
+
+        QTest::newRow("exited")
+                << QByteArray(SIGNAL(exited()))
+                << QByteArrayLiteral("exited");
+    }
+
     void checkBackendUpdates()
     {
         // GIVEN
-        //QScopedPointer<MyObjectPicker> objectPicker(new MyObjectPicker());
+        QFETCH(QByteArray, signalPrototype);
+        QFETCH(QByteArray, propertyName);
+        QScopedPointer<MyObjectPicker> objectPicker(new MyObjectPicker());
+        QSignalSpy spy(objectPicker.data(), signalPrototype.constData());
 
-        // TO DO: Complete
         // WHEN
         // Create Backend Change and distribute it to frontend node
-        // objectPicker->sceneChangeEvent();
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, objectPicker->id()));
+        e->setPropertyName(propertyName.constData());
+        objectPicker->sceneChangeEvent(e);
 
         // THEN
-        // Check that the QOjectPicker triggers the expected signal
+        // Check that the QObjectPicker triggers the expected signal
+        QCOMPARE(spy.count(), 1);
     }
 
 
