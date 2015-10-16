@@ -35,9 +35,11 @@
 ****************************************************************************/
 
 #include "qobjectpicker.h"
+#include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -91,13 +93,29 @@ public:
         , m_hoverEnabled(false)
         , m_pressed(false)
         , m_containsMouse(false)
-    {}
+        , m_acceptedLastPressedEvent(true)
+    {
+        m_shareable = false;
+    }
 
     Q_DECLARE_PUBLIC(QObjectPicker)
     Qt3DRender::QAttribute *m_pickAttribute;
     bool m_hoverEnabled;
     bool m_pressed;
     bool m_containsMouse;
+    bool m_acceptedLastPressedEvent;
+
+    enum EventType {
+        Pressed,
+        Released,
+        Clicked
+    };
+
+    void propagateEvent(QPickEvent *event, EventType type);
+
+    void pressedEvent(QPickEvent *event);
+    void clickedEvent(QPickEvent *event);
+    void releasedEvent(QPickEvent *event);
 };
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
@@ -180,10 +198,28 @@ void QObjectPicker::copy(const QNode *ref)
 
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
+    Q_D(QObjectPicker);
     Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
     if (e->type() == Qt3DCore::NodeUpdated) {
         // TO DO: Complete this part
         // to emit the correct signals
+        const QByteArray propertyName = e->propertyName();
+        if (propertyName == QByteArrayLiteral("pressed")) {
+            QPickEvent e;
+            d->pressedEvent(&e);
+        } else if (propertyName == QByteArrayLiteral("released")) {
+            QPickEvent e;
+            d->releasedEvent(&e);
+        } else if (propertyName == QByteArrayLiteral("clicked")) {
+            QPickEvent e;
+            d->clickedEvent(&e);
+        } else if (propertyName == QByteArrayLiteral("entered")) {
+            emit entered();
+            setContainsMouse(true);
+        } else if (propertyName == QByteArrayLiteral("exited")) {
+            setContainsMouse(false);
+            emit exited();
+        }
     }
 }
 
@@ -206,6 +242,82 @@ void QObjectPicker::setContainsMouse(bool containsMouse)
         d->m_containsMouse = containsMouse;
         emit containsMouseChanged();
         blockNotifications(blocked);
+    }
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
+{
+    if (!m_entities.isEmpty()) {
+        Qt3DCore::QEntity *entity = m_entities.first();
+        Qt3DCore::QEntity *parentEntity = Q_NULLPTR;
+        Qt3DRender::QObjectPicker *objectPicker = Q_NULLPTR;
+        while (entity != Q_NULLPTR && entity->parent() != Q_NULLPTR && !event->isAccepted()) {
+            parentEntity = entity->parentEntity();
+            Q_FOREACH (Qt3DCore::QComponent *c, parentEntity->components()) {
+                if ((objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) != Q_NULLPTR) {
+                    QObjectPickerPrivate *objectPickerPrivate = static_cast<QObjectPickerPrivate *>(QObjectPickerPrivate::get(objectPicker));
+                    switch (type) {
+                    case EventType::Pressed:
+                        objectPickerPrivate->pressedEvent(event);
+                        break;
+                    case EventType::Released:
+                        objectPickerPrivate->releasedEvent(event);
+                        break;
+                    case EventType::Clicked:
+                        objectPickerPrivate->clickedEvent(event);
+                        break;
+                    }
+                    break;
+                }
+            }
+            entity = parentEntity;
+        }
+    }
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::pressedEvent(QPickEvent *event)
+{
+    Q_Q(QObjectPicker);
+    emit q->pressed(event);
+
+    m_acceptedLastPressedEvent = event->isAccepted();
+    if (!m_acceptedLastPressedEvent) {
+        // Travel parents to transmit the event
+        propagateEvent(event, EventType::Pressed);
+    } else {
+        q->setPressed(true);
+    }
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::clickedEvent(QPickEvent *event)
+{
+    Q_Q(QObjectPicker);
+    emit q->clicked(event);
+    if (!event->isAccepted())
+        propagateEvent(event, EventType::Clicked);
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
+{
+    Q_Q(QObjectPicker);
+    if (m_acceptedLastPressedEvent) {
+        emit q->released(event);
+        q->setPressed(false);
+    } else {
+        event->setAccepted(false);
+        propagateEvent(event, EventType::Released);
     }
 }
 

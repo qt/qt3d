@@ -46,6 +46,7 @@ namespace Qt3DRender {
 
 class QAttribute;
 class QObjectPickerPrivate;
+class QPickEvent;
 
 class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 {
@@ -69,9 +70,9 @@ public:
     bool isPressed() const;
 
 Q_SIGNALS:
-    void pressed();
-    void released();
-    void clicked();
+    void pressed(QPickEvent *event);
+    void released(QPickEvent *event);
+    void clicked(QPickEvent *event);
     void entered();
     void exited();
     void pickAttributeChanged();
