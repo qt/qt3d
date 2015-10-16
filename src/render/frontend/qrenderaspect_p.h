@@ -56,6 +56,7 @@
 #include <Qt3DRender/private/framepreparationjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
+#include <Qt3DRender/private/pickboundingvolumejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,6 +90,7 @@ class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
     Render::UpdateWorldTransformJobPtr m_worldTransformJob;
     Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
     Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
+    Render::PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 };
 
 }

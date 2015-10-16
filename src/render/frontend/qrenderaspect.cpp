@@ -89,9 +89,6 @@
 #include <Qt3DRender/private/nodefunctor_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
 #include <Qt3DRender/private/loadtexturedatajob_p.h>
-#include <Qt3DRender/private/updateboundingvolumejob_p.h>
-#include <Qt3DRender/private/updateworldtransformjob_p.h>
-#include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/nodraw_p.h>
@@ -101,6 +98,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
+
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -143,9 +141,19 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_worldTransformJob(new Render::UpdateWorldTransformJob())
     , m_updateBoundingVolumeJob(new Render::UpdateBoundingVolumeJob())
     , m_calculateBoundingVolumeJob(new Render::CalculateBoundingVolumeJob(m_renderer))
+    , m_pickBoundingVolumeJob(new Render::PickBoundingVolumeJob(m_renderer))
 {
     initResources();
     m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
+
+    // Create jobs to update transforms and bounding volumes
+    // We can only update bounding volumes once all world transforms are known
+    m_updateBoundingVolumeJob->addDependency(m_worldTransformJob);
+    m_framePreparationJob->addDependency(m_worldTransformJob);
+
+    // All world stuff depends on the RenderEntity's localBoundingVolume
+    m_worldTransformJob->addDependency(m_calculateBoundingVolumeJob);
+    m_pickBoundingVolumeJob->addDependency(m_updateBoundingVolumeJob);
 }
 
 void QRenderAspectPrivate::setSurface(QSurface *surface)
@@ -282,6 +290,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_worldTransformJob->setRoot(d->m_renderer->renderSceneRoot());
         d->m_updateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
         d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
+        d->m_pickBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
 
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
@@ -304,19 +313,12 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = d->m_renderer->createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-        // Create jobs to update transforms and bounding volumes
-        // We can only update bounding volumes once all world transforms are known
-        d->m_updateBoundingVolumeJob->addDependency(d->m_worldTransformJob);
-        d->m_framePreparationJob->addDependency(d->m_worldTransformJob);
-
-        // All world stuff depends on the RenderEntity's localBoundingVolume
-        d->m_worldTransformJob->addDependency(d->m_calculateBoundingVolumeJob);
-
         // Add all jobs to queue
         jobs.append(d->m_calculateBoundingVolumeJob);
         jobs.append(d->m_worldTransformJob);
         jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
+        jobs.append(d->m_pickBoundingVolumeJob);
 
 
         // Traverse the current framegraph and create jobs to populate
