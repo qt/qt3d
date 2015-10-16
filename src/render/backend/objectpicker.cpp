@@ -38,6 +38,7 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -108,6 +109,46 @@ void ObjectPicker::unsetDirty()
 bool ObjectPicker::hoverEnabled() const
 {
     return m_hoverEnabled;
+}
+
+void ObjectPicker::onClicked()
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("clicked");
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
+}
+
+void ObjectPicker::onPressed()
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("pressed");
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
+}
+
+void ObjectPicker::onReleased()
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("released");
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
+}
+
+void ObjectPicker::onEntered()
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("entered");
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
+}
+
+void ObjectPicker::onExited()
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("exited");
+    e->setTargetNode(peerUuid());
+    notifyObservers(e);
 }
 
 } // Render

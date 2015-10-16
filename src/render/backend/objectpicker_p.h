@@ -70,6 +70,12 @@ public:
     void unsetDirty();
     bool hoverEnabled() const;
 
+    void onClicked();
+    void onPressed();
+    void onReleased();
+    void onEntered();
+    void onExited();
+
 private:
     Qt3DCore::QNodeId m_pickAttributeId;
     bool m_isDirty;
