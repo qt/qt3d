@@ -38,7 +38,9 @@
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include "testpostmanarbiter.h"
 
 class tst_ObjectPicker : public QObject
 {
@@ -125,6 +127,65 @@ private Q_SLOTS:
 
         objectPicker.unsetDirty();
         QVERIFY(!objectPicker.isDirty());
+    }
+
+    void checkBackendPropertyNotifications()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DRender::Render::ObjectPicker objectPicker;
+        Qt3DCore::QBackendNodePrivate::get(&objectPicker)->setArbiter(&arbiter);
+        QVERIFY(!objectPicker.isDirty());
+
+        // WHEN
+        objectPicker.onPressed();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "pressed");
+
+        arbiter.events.clear();
+
+        // WHEN
+        objectPicker.onReleased();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "released");
+
+        arbiter.events.clear();
+
+        // WHEN
+        objectPicker.onClicked();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "clicked");
+
+        arbiter.events.clear();
+
+        // WHEN
+        objectPicker.onEntered();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "entered");
+
+        arbiter.events.clear();
+
+        // WHEN
+        objectPicker.onExited();
+
+        // THEN
+        QCOMPARE(arbiter.events.count(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "exited");
+
+        arbiter.events.clear();
     }
 };
 
