@@ -7,15 +7,6 @@ SOURCES += \
     $$PWD/task.cpp \
     $$PWD/dependencyhandler.cpp
 
-# TODO: Make tasking API configurable
-#use_thread_weaver {
-#SOURCES += \
-#    $$PWD/weaverjob.cpp
-#
-#HEADERS += \
-#    $$PWD/weaverjob_p.h \
-#}
-
 HEADERS += \
     $$PWD/qaspectjob.h \
     $$PWD/qaspectjob_p.h \
