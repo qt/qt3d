@@ -49,9 +49,9 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/scene_p.h>
+#include <Qt3DRender/private/scene_p.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRenderer/private/loadscenejob_p.h>
+#include <Qt3DRender/private/loadscenejob_p.h>
 
 QT_BEGIN_NAMESPACE
 

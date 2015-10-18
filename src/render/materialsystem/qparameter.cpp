@@ -35,10 +35,10 @@
 ****************************************************************************/
 
 #include "qparameter.h"
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <private/qparameter_p.h>
-#include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE
 

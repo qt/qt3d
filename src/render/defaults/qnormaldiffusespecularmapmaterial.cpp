@@ -36,14 +36,14 @@
 
 #include "qnormaldiffusespecularmapmaterial.h"
 #include "qnormaldiffusespecularmapmaterial_p.h"
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/qshaderprogram.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qopenglfilter.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qopenglfilter.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>

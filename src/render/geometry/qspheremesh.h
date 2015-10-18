@@ -37,8 +37,8 @@
 #ifndef QT3DRENDER_QSPHEREMESH_H
 #define QT3DRENDER_QSPHEREMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QSphereMeshPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSphereMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QSphereMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

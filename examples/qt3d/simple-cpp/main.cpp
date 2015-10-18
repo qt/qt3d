@@ -48,15 +48,15 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QForwardRenderer>
-#include <Qt3DRenderer/QPhongMaterial>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QPhongMaterial>
 
-#include <Qt3DRenderer/QCylinderMesh>
-#include <Qt3DRenderer/QSphereMesh>
-#include <Qt3DRenderer/QTorusMesh>
-#include <Qt3DRenderer/QWindow>
+#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DRender/QSphereMesh>
+#include <Qt3DRender/QTorusMesh>
+#include <Qt3DRender/QWindow>
 
 #include <QPropertyAnimation>
 

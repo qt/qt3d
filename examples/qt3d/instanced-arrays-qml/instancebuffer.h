@@ -37,7 +37,7 @@
 #ifndef INSTANCEBUFFER_H
 #define INSTANCEBUFFER_H
 
-#include <Qt3DRenderer/QBuffer>
+#include <Qt3DRender/QBuffer>
 
 class InstanceBuffer : public Qt3DRender::QBuffer
 {

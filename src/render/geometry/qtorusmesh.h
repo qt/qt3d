@@ -37,14 +37,14 @@
 #ifndef QT3DRENDER_QTORUSMESH_H
 #define QT3DRENDER_QTORUSMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QTorusMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QTorusMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

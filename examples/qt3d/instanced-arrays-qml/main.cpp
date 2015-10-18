@@ -36,7 +36,7 @@
 
 #include "instancebuffer.h"
 #include <window.h>
-#include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <QtQml>

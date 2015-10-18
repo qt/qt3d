@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRenderer/private/rendertarget_p.h>
+#include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qrendertarget.h>
-#include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/qrenderattachment.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE

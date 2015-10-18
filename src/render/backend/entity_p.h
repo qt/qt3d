@@ -49,8 +49,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qhandle.h>

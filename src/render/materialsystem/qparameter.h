@@ -39,7 +39,7 @@
 
 #include <QVariant>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 class QParameterPrivate;
 class QAbstractTextureProvider;
 
-class QT3DRENDERERSHARED_EXPORT QParameter : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)

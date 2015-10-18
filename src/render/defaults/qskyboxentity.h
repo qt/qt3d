@@ -38,7 +38,7 @@
 #define QT3DRENDER_RENDER_QSKYBOXENTITY_H
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QSkyboxEntityPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
+class QT3DRENDERSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:

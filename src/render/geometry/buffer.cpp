@@ -37,7 +37,7 @@
 #include "buffer_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRenderer/private/buffermanager_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

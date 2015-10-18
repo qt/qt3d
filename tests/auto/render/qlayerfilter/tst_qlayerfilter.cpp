@@ -38,7 +38,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/qlayerfilter.h>
+#include <Qt3DRender/qlayerfilter.h>
 
 #include "testpostmanarbiter.h"
 

@@ -1,3 +1,3 @@
-module Qt3D.Renderer
-plugin quick3drendererplugin
-classname Qt3DQuick3DRendererPlugin
+module Qt3D.Render
+plugin quick3drenderplugin
+classname Qt3DQuick3DRenderPlugin

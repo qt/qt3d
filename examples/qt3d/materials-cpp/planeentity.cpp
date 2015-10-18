@@ -36,7 +36,7 @@
 
 #include "planeentity.h"
 
-#include <Qt3DRenderer/QPlaneMesh>
+#include <Qt3DRender/QPlaneMesh>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/QTranslateTransform>

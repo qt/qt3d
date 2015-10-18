@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/qbuffer.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class tst_Attribute : public QObject

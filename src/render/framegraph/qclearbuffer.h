@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QCLEARBUFFER_H
 #define QT3DRENDER_QCLEARBUFFER_H
 
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QClearBufferPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)

@@ -38,7 +38,7 @@
 #include "qmaterial_p.h"
 #include "qtexture.h"
 #include "qeffect.h"
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include "qparameter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QPOLYGONOFFSET_H
 #define QT3DRENDER_QPOLYGONOFFSET_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QPolygonOffsetPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QPolygonOffset : public QRenderState
+class QT3DRENDERSHARED_EXPORT QPolygonOffset : public QRenderState
 {
     Q_OBJECT
 

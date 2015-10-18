@@ -37,15 +37,15 @@
 #ifndef QT3DRENDER_QPLANEMESH_H
 #define QT3DRENDER_QPLANEMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QPlaneMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)

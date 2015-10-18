@@ -38,7 +38,7 @@
 #define QT3DRENDER_QEFFECT_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ class QParameter;
 class QTechnique;
 class QEffectPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QEffect
+class QT3DRENDERSHARED_EXPORT QEffect
         : public Qt3DCore::QNode
 {
     Q_OBJECT

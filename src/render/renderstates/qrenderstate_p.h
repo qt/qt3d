@@ -50,14 +50,14 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRenderer/qrenderstate.h>
-#include <Qt3DRenderer/private/qt3drenderer_global_p.h>
+#include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QRenderStatePrivate : public Qt3DCore::QNodePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderStatePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QRenderStatePrivate(QRenderState::Type type);

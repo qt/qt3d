@@ -37,9 +37,9 @@
 #include "techniquefilternode_p.h"
 #include "qannotation.h"
 #include "qtechniquefilter.h"
-#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRender/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 

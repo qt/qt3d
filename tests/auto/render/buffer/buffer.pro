@@ -2,7 +2,7 @@ TEMPLATE = app
 
 TARGET = tst_buffer
 
-QT += 3dcore 3dcore-private 3drenderer 3drenderer-private testlib
+QT += 3dcore 3dcore-private 3drender 3drender-private testlib
 
 CONFIG += testcase
 

@@ -49,7 +49,7 @@
 //
 
 #include <private/qnode_p.h>
-#include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DRender/qsortcriterion.h>
 
 QT_BEGIN_NAMESPACE
 

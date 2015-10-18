@@ -1,8 +1,8 @@
 %modules = ( # path to module name map
     "Qt3DCore" => "$basedir/src/core",
-    "Qt3DRenderer" => "$basedir/src/render",
+    "Qt3DRender" => "$basedir/src/render",
     "Qt3DQuick" => "$basedir/src/quick3d/quick3d",
-    "Qt3DQuickRenderer" => "$basedir/src/quick3d/quick3drenderer",
+    "Qt3DQuickRender" => "$basedir/src/quick3d/quick3drender",
     "Qt3DInput" => "$basedir/src/input",
     "Qt3DLogic" => "$basedir/src/logic",
     "Qt3DCollision" => "$basedir/src/collision",

@@ -37,7 +37,7 @@
 #include "qabstracttextureprovider.h"
 #include "qabstracttextureprovider_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qabstracttextureimage.h>
+#include <Qt3DRender/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -9,10 +9,10 @@ find_package(Qt5Core REQUIRED)
 
 include("${_Qt5CTestMacros}")
 
-set(QAspectEngine_NAMESPACE Qt3D)
-set(QMesh_NAMESPACE Qt3D)
+set(QAspectEngine_NAMESPACE Qt3DCore)
+set(QMesh_NAMESPACE Qt3DRender)
 
 test_module_includes(
   3DCore QAspectEngine
-  3DRenderer QMesh
+  3DRender QMesh
 )

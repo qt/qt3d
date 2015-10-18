@@ -37,14 +37,14 @@
 
 #include "calcboundingvolumejob_p.h"
 
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
-#include <Qt3DRenderer/private/buffermanager_p.h>
-#include <Qt3DRenderer/private/buffer_p.h>
-#include <Qt3DRenderer/sphere.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/sphere.h>
 #include <Qt3DCore/qaxisalignedboundingbox.h>
 
 #include <QtCore/qmath.h>

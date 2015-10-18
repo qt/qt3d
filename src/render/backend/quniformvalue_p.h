@@ -53,9 +53,9 @@
 #include <QVector>
 #include <QOpenGLShaderProgram>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
-#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
 

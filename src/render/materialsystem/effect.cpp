@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRender/private/effect_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qparameter.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 

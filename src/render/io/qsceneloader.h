@@ -37,13 +37,13 @@
 #ifndef QT3DRENDER_QSCENELOADER_H
 #define QT3DRENDER_QSCENELOADER_H
 
-#include <Qt3DRenderer/qabstractsceneloader.h>
+#include <Qt3DRender/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QSceneLoader : public QAbstractSceneLoader
+class QT3DRENDERSHARED_EXPORT QSceneLoader : public QAbstractSceneLoader
 {
     Q_OBJECT
 public:

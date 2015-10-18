@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QWRAPMODE_H
 #define QT3DRENDER_QWRAPMODE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QTextureWrapModePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTextureWrapMode : public QObject
+class QT3DRENDERSHARED_EXPORT QTextureWrapMode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(WrapMode x READ x WRITE setX NOTIFY xChanged)

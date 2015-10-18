@@ -39,9 +39,9 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRenderer/qstateset.h>
-#include <Qt3DRenderer/private/qrenderstate_p.h>
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/private/qrenderstate_p.h>
+#include <Qt3DRender/qrenderstate.h>
 
 #include "testpostmanarbiter.h"
 

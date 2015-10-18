@@ -38,17 +38,17 @@
 #include "qskyboxentity_p.h"
 
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qcullface.h>
-#include <Qt3DRenderer/qdepthtest.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/qcuboidmesh.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qshaderprogram.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/qdepthtest.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qcuboidmesh.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DCore/qtranslatetransform.h>
 
 QT_BEGIN_NAMESPACE

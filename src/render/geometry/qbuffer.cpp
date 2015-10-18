@@ -36,7 +36,7 @@
 
 #include "qbuffer.h"
 #include "qbuffer_p.h"
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

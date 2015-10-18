@@ -45,11 +45,11 @@
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/QTranslateTransform>
 
-#include <Qt3DRenderer/QTorusMesh>
-#include <Qt3DRenderer/QCylinderMesh>
-#include <Qt3DRenderer/QCuboidMesh>
-#include <Qt3DRenderer/QSphereMesh>
-#include <Qt3DRenderer/QPhongMaterial>
+#include <Qt3DRender/QTorusMesh>
+#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DRender/QCuboidMesh>
+#include <Qt3DRender/QSphereMesh>
+#include <Qt3DRender/QPhongMaterial>
 
 class SceneModifier : public QObject
 {

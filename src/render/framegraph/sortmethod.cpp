@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "sortmethod_p.h"
-#include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

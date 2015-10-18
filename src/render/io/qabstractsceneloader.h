@@ -39,7 +39,7 @@
 
 #include <Qt3DCore/qcomponent.h>
 #include <Qt3DCore/qscenechange.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -49,7 +49,7 @@ namespace Qt3DRender {
 class QAbstractSceneLoader;
 class QAbstractSceneLoaderPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractSceneLoader : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QAbstractSceneLoader : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

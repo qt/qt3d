@@ -38,7 +38,7 @@
 #define QT3DRENDER_QATTRIBUTE_H
 
 #include <Qt3DCore/qabstractattribute.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 class QAttributePrivate;
 class QBuffer;
 
-class QT3DRENDERERSHARED_EXPORT QAttribute : public Qt3DCore::QAbstractAttribute
+class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QAbstractAttribute
 {
     Q_OBJECT
 

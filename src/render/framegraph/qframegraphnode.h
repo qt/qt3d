@@ -38,7 +38,7 @@
 #define QT3DRENDER_QFRAMEGRAPHNODE_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QFrameGraphNodePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)

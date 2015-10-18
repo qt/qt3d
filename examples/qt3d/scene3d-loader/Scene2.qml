@@ -37,7 +37,7 @@
 import QtQuick 2.0
 import QtQuick.Scene3D 2.0
 import Qt3D.Core 2.0
-import Qt3D.Renderer 2.0
+import Qt3D.Render 2.0
 
 Scene3D {
     focus: true

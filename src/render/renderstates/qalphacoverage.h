@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QALPHACOVERAGE_H
 #define QT3DRENDER_QALPHACOVERAGE_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QAlphaCoveragePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAlphaCoverage : public QRenderState
+class QT3DRENDERSHARED_EXPORT QAlphaCoverage : public QRenderState
 {
     Q_OBJECT
 public:

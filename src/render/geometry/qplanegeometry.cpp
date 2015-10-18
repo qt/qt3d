@@ -36,9 +36,9 @@
 
 #include "qplanegeometry.h"
 #include "qplanegeometry_p.h"
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qbufferfunctor.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qbufferfunctor.h>
 #include <limits>
 
 QT_BEGIN_NAMESPACE

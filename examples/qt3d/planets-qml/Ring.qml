@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-import Qt3D.Renderer 2.0
+import Qt3D.Render 2.0
 
 // TODO: Once support for meshes from arrays is implemented, replace ring.obj with that
 Mesh {

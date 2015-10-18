@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QCUBOIDGEOMETRY_H
 #define QT3DRENDER_QCUBOIDGEOMETRY_H
 
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometry.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QCuboidGeometryPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCuboidGeometry : public QGeometry
+class QT3DRENDERSHARED_EXPORT QCuboidGeometry : public QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(float xExtent READ xExtent WRITE setXExtent NOTIFY xExtentChanged)

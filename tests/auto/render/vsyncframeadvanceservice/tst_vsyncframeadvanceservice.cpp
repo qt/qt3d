@@ -36,7 +36,7 @@
 
 #include <QtTest/QtTest>
 
-#include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
+#include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
 
 class FakeRenderThread Q_DECL_FINAL : public QThread
 {

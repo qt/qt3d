@@ -36,9 +36,9 @@
 
 #include "qrendertargetselector.h"
 #include "qrendertargetselector_p.h"
-#include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/private/qrenderpass_p.h>
+#include <Qt3DRender/private/qrenderpass_p.h>
 
 QT_BEGIN_NAMESPACE
 

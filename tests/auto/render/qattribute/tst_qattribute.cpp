@@ -38,8 +38,8 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/QAttribute>
-#include <Qt3DRenderer/QBuffer>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
 
 #include "testpostmanarbiter.h"
 

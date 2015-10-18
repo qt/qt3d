@@ -40,8 +40,8 @@
 #include <QVector3D>
 #include <QVector2D>
 #include <QVector>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -38,19 +38,19 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QParameter>
-#include <Qt3DRenderer/QTechnique>
-#include <Qt3DRenderer/QRenderPass>
-#include <Qt3DRenderer/QPhongMaterial>
-#include <Qt3DRenderer/QParameterMapping>
-#include <Qt3DRenderer/QDiffuseMapMaterial>
-#include <Qt3DRenderer/QPerVertexColorMaterial>
-#include <Qt3DRenderer/QNormalDiffuseMapMaterial>
-#include <Qt3DRenderer/QDiffuseSpecularMapMaterial>
-#include <Qt3DRenderer/QNormalDiffuseMapAlphaMaterial>
-#include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DRender/QParameterMapping>
+#include <Qt3DRender/QDiffuseMapMaterial>
+#include <Qt3DRender/QPerVertexColorMaterial>
+#include <Qt3DRender/QNormalDiffuseMapMaterial>
+#include <Qt3DRender/QDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
 
 #include "testpostmanarbiter.h"
 

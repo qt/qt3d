@@ -37,7 +37,7 @@
 #include "geometry_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractattribute.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 

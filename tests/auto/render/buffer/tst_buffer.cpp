@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/buffer_p.h>
+#include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"

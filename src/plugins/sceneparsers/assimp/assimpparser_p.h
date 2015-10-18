@@ -53,7 +53,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRenderer/private/abstractsceneparser_p.h>
+#include <Qt3DRender/private/abstractsceneparser_p.h>
 #include "assimphelpers_p.h"
 
 #include <QMap>

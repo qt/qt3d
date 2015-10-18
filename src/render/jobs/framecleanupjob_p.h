@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 

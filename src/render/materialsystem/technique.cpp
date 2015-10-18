@@ -36,13 +36,13 @@
 
 #include "technique_p.h"
 
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/annotation_p.h>
-#include <Qt3DRenderer/private/shader_p.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>

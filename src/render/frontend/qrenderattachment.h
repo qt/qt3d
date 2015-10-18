@@ -38,7 +38,7 @@
 #define QT3DRENDER_QRENDERATTACHMENT_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QAbstractTextureProvider;
 class QRenderAttachmentPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(RenderAttachmentType type READ type WRITE setType NOTIFY typeChanged)

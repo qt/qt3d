@@ -37,9 +37,9 @@
 #ifndef GBUFFER_H
 #define GBUFFER_H
 
-#include <Qt3DRenderer/QRenderTarget>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/QRenderAttachment>
+#include <Qt3DRender/QRenderTarget>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/QRenderAttachment>
 
 class GBuffer : public Qt3DRender::QRenderTarget
 {

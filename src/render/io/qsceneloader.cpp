@@ -39,7 +39,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <QThread>
 
 QT_BEGIN_NAMESPACE

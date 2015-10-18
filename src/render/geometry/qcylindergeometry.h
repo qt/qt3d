@@ -37,8 +37,8 @@
 #ifndef QT3DRENDER_QCYLINDERGEOMETRY_H
 #define QT3DRENDER_QCYLINDERGEOMETRY_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QCylinderGeometryPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QCylinderGeometry : public QGeometry
+class QT3DRENDERSHARED_EXPORT QCylinderGeometry : public QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

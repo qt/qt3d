@@ -49,7 +49,7 @@
 //
 
 #include <private/qcomponent_p.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ namespace Qt3DRender {
 class QParameter;
 class QEffect;
 
-class QT3DRENDERERSHARED_EXPORT QMaterialPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_EXPORT QMaterialPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMaterialPrivate();

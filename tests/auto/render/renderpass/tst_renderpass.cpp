@@ -35,36 +35,36 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/renderpass_p.h>
+#include <Qt3DRender/private/renderpass_p.h>
 
 #include <Qt3DCore/QScenePropertyChange>
 
-#include <Qt3DRenderer/QAnnotation>
-#include <Qt3DRenderer/QParameterMapping>
-#include <Qt3DRenderer/QRenderPass>
-#include <Qt3DRenderer/QShaderProgram>
-#include <Qt3DRenderer/QParameter>
+#include <Qt3DRender/QAnnotation>
+#include <Qt3DRender/QParameterMapping>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QParameter>
 
-#include <Qt3DRenderer/QAlphaCoverage>
-#include <Qt3DRenderer/QAlphaTest>
-#include <Qt3DRenderer/QBlendEquation>
-#include <Qt3DRenderer/QBlendState>
-#include <Qt3DRenderer/QColorMask>
-#include <Qt3DRenderer/QCullFace>
-#include <Qt3DRenderer/QDepthMask>
-#include <Qt3DRenderer/QDepthTest>
-#include <Qt3DRenderer/QDithering>
-#include <Qt3DRenderer/QFrontFace>
-#include <Qt3DRenderer/QPolygonOffset>
-#include <Qt3DRenderer/QScissorTest>
-#include <Qt3DRenderer/QStencilTest>
-#include <Qt3DRenderer/QStencilTestSeparate>
-#include <Qt3DRenderer/QStencilMask>
-#include <Qt3DRenderer/QStencilOp>
-#include <Qt3DRenderer/QStencilOpSeparate>
-#include <Qt3DRenderer/QClipPlane>
+#include <Qt3DRender/QAlphaCoverage>
+#include <Qt3DRender/QAlphaTest>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendState>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthMask>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QDithering>
+#include <Qt3DRender/QFrontFace>
+#include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QScissorTest>
+#include <Qt3DRender/QStencilTest>
+#include <Qt3DRender/QStencilTestSeparate>
+#include <Qt3DRender/QStencilMask>
+#include <Qt3DRender/QStencilOp>
+#include <Qt3DRender/QStencilOpSeparate>
+#include <Qt3DRender/QClipPlane>
 
-#include <Qt3DRenderer/private/renderstates_p.h>
+#include <Qt3DRender/private/renderstates_p.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;

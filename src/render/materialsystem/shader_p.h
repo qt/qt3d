@@ -49,8 +49,8 @@
 //
 
 #include <QVector>
-#include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE

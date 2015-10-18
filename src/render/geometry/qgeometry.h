@@ -38,7 +38,7 @@
 #define QT3DRENDER_QGEOMETRY_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ class QGeometryPrivate;
 
 typedef QVector<Qt3DCore::QAbstractAttribute *> QAttributeList;
 
-class QT3DRENDERERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)

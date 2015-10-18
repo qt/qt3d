@@ -37,21 +37,21 @@
 
 #include "graphicscontext_p.h"
 
-#include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/shader_p.h>
-#include <Qt3DRenderer/private/material_p.h>
-#include <Qt3DRenderer/private/texture_p.h>
-#include <Qt3DRenderer/private/buffer_p.h>
-#include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/private/rendercommand_p.h>
-#include <Qt3DRenderer/private/renderstateset_p.h>
-#include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/attachmentpack_p.h>
+#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/material_p.h>
+#include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
+#include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/graphicshelperinterface_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/attachmentpack_p.h>
 #include <QOpenGLShaderProgram>
 
 #if !defined(QT_OPENGL_ES_2)
@@ -59,12 +59,12 @@
 #include <QOpenGLFunctions_3_2_Core>
 #include <QOpenGLFunctions_3_3_Core>
 #include <QOpenGLFunctions_4_3_Core>
-#include <Qt3DRenderer/private/graphicshelpergl2_p.h>
-#include <Qt3DRenderer/private/graphicshelpergl3_p.h>
-#include <Qt3DRenderer/private/graphicshelpergl3_3_p.h>
-#include <Qt3DRenderer/private/graphicshelpergl4_p.h>
+#include <Qt3DRender/private/graphicshelpergl2_p.h>
+#include <Qt3DRender/private/graphicshelpergl3_p.h>
+#include <Qt3DRender/private/graphicshelpergl3_3_p.h>
+#include <Qt3DRender/private/graphicshelpergl4_p.h>
 #endif
-#include <Qt3DRenderer/private/graphicshelperes2_p.h>
+#include <Qt3DRender/private/graphicshelperes2_p.h>
 
 #include <QSurface>
 #include <QWindow>

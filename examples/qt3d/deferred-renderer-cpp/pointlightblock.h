@@ -37,7 +37,7 @@
 #ifndef POINTLIGHTBLOCK_H
 #define POINTLIGHTBLOCK_H
 
-#include <Qt3DRenderer/QShaderData>
+#include <Qt3DRender/QShaderData>
 
 class PointLightBlock : public Qt3DRender::QShaderData
 {

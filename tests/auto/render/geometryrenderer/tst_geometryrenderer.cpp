@@ -35,9 +35,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qgeometryfunctor.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class TestFunctor : public Qt3DRender::QGeometryFunctor

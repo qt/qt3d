@@ -49,16 +49,16 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRenderer/QStateSet>
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QForwardRenderer>
-#include <Qt3DRenderer/QPerVertexColorMaterial>
+#include <Qt3DRender/QStateSet>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QPerVertexColorMaterial>
 
-#include <Qt3DRenderer/QGeometryRenderer>
-#include <Qt3DRenderer/QGeometry>
-#include <Qt3DRenderer/QAttribute>
-#include <Qt3DRenderer/QBuffer>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
 
 #include <QPropertyAnimation>
 

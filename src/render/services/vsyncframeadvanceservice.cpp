@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "vsyncframeadvanceservice_p.h"
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
 #include <QSemaphore>
 #include <QElapsedTimer>

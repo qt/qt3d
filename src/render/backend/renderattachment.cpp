@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRenderer/private/renderattachment_p.h>
+#include <Qt3DRender/private/renderattachment_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qtexture.h>
+#include <Qt3DRender/qtexture.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE

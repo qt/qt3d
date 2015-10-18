@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSTENCILMASK_H
 #define QT3DRENDER_QSTENCILMASK_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QStencilMaskPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QStencilMask : public QRenderState
+class QT3DRENDERSHARED_EXPORT QStencilMask : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(uint frontMask READ frontMask WRITE setFrontMask NOTIFY frontMaskChanged)

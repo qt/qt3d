@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/framegraphnode_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE

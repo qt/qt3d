@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QSTENCILTEST_H
 #define QT3DRENDER_QSTENCILTEST_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 class QStencilTestPrivate;
 class QStencilTestSeparate;
 
-class QT3DRENDERERSHARED_EXPORT QStencilTest : public QRenderState
+class QT3DRENDERSHARED_EXPORT QStencilTest : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QStencilTestSeparate *front READ front CONSTANT)

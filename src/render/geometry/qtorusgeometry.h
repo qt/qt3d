@@ -37,8 +37,8 @@
 #ifndef QT3D_QTORUSGEOMETRY_H
 #define QT3D_QTORUSGEOMETRY_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QTorusGeometryPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTorusGeometry : public QGeometry
+class QT3DRENDERSHARED_EXPORT QTorusGeometry : public QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

@@ -39,21 +39,21 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QSphereMesh>
-#include <Qt3DRenderer/QPlaneMesh>
-#include <Qt3DRenderer/QLayer>
-#include <Qt3DRenderer/QParameter>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QSphereMesh>
+#include <Qt3DRender/QPlaneMesh>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QParameter>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QLookAtTransform>
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
-#include <Qt3DRenderer/QPointLight>
-#include <Qt3DRenderer/QWindow>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DRender/QWindow>
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QGuiApplication>

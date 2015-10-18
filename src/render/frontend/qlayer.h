@@ -38,7 +38,7 @@
 #define QT3DRENDER_QLAYER_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QLayerPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QLayer : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QLayer : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QStringList names READ names WRITE setNames NOTIFY namesChanged)

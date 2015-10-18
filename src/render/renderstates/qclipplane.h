@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QCLIPPLANE_H
 #define QT3DRENDER_QCLIPPLANE_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QClipPlanePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QClipPlane : public QRenderState
+class QT3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(int plane READ plane WRITE setPlane NOTIFY planeChanged)

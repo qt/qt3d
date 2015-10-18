@@ -42,7 +42,7 @@
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/QRotateTransform>
 #include <Qt3DCore/QTranslateTransform>
-#include <Qt3DRenderer/QMesh>
+#include <Qt3DRender/QMesh>
 
 class TrefoilKnot : public Qt3DCore::QEntity
 {

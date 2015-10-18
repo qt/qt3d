@@ -35,17 +35,17 @@
 ****************************************************************************/
 
 #include "entity_p.h"
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/qabstractlight.h>
-#include <Qt3DRenderer/qlayer.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/sphere.h>
-#include <Qt3DRenderer/qshaderdata.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/qshaderdata.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>

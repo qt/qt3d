@@ -49,8 +49,8 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qbufferfunctor.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qbufferfunctor.h>
 
 QT_BEGIN_NAMESPACE
 

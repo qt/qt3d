@@ -37,8 +37,8 @@
 #ifndef QT3DRENDER_QTECHNIQUEFILTER_H
 #define QT3DRENDER_QTECHNIQUEFILTER_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ class QTechniqueFilterPrivate;
 class QAnnotation;
 class QParameter;
 
-class QT3DRENDERERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
 {
     Q_OBJECT
 public:

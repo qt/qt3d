@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QALPHATEST_H
 #define QT3DRENDER_QALPHATEST_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QAlphaTestPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAlphaTest : public QRenderState
+class QT3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(AlphaFunc func READ func WRITE setFunc NOTIFY funcChanged)

@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "renderqueue_p.h"
-#include <Qt3DRenderer/private/renderview_p.h>
+#include <Qt3DRender/private/renderview_p.h>
 #include <QThread>
 
 QT_BEGIN_NAMESPACE

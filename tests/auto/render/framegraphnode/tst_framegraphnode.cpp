@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/private/managers_p.h>
 
 class MyFrameGraphNode : public Qt3DRender::Render::FrameGraphNode
 {

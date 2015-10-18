@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QSCISSORTEST_H
 #define QT3DRENDER_QSCISSORTEST_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QScissorTestPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QScissorTest  : public QRenderState
+class QT3DRENDERSHARED_EXPORT QScissorTest  : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(int left READ left WRITE setLeft NOTIFY leftChanged)

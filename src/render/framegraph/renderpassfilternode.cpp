@@ -38,7 +38,7 @@
 #include "qannotation.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 

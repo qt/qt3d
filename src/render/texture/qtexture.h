@@ -38,10 +38,10 @@
 #define QT3DRENDER_QTEXTURE_H
 
 #include <QOpenGLTexture>
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/qwrapmode.h>
-#include <Qt3DRenderer/qtextureproviders.h>
-#include <Qt3DRenderer/qtextureimage.h>
+#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/qwrapmode.h>
+#include <Qt3DRender/qtextureproviders.h>
+#include <Qt3DRender/qtextureimage.h>
 
 QT_BEGIN_NAMESPACE
 

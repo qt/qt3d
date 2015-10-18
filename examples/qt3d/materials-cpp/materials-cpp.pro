@@ -2,7 +2,7 @@
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += 3dcore 3drenderer 3dinput
+QT += 3dcore 3drender 3dinput
 
 HEADERS += \
     planeentity.h \

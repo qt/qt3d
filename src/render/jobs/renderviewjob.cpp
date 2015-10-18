@@ -36,10 +36,10 @@
 
 #include "renderviewjob_p.h"
 
-#include <Qt3DRenderer/private/renderview_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/renderviewjobutils_p.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderview_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

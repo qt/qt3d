@@ -35,17 +35,17 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/entity_p.h>
+#include <Qt3DRender/private/entity_p.h>
 
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QScenePropertyChange>
 #include <Qt3DCore/QTransform>
 
-#include <Qt3DRenderer/QMesh>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QLayer>
-#include <Qt3DRenderer/QShaderData>
-#include <Qt3DRenderer/QGeometryRenderer>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QShaderData>
+#include <Qt3DRender/QGeometryRenderer>
 
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
 typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);

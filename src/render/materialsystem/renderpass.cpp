@@ -36,14 +36,14 @@
 ****************************************************************************/
 
 #include "renderpass_p.h"
-#include <Qt3DRenderer/private/annotation_p.h>
-#include <Qt3DRenderer/qparametermapping.h>
-#include <Qt3DRenderer/qrenderstate.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/qparametermapping.h>
+#include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qparameter.h>
 
-#include <Qt3DRenderer/private/renderstates_p.h>
-#include <Qt3DRenderer/private/renderstateset_p.h>
+#include <Qt3DRender/private/renderstates_p.h>
+#include <Qt3DRender/private/renderstateset_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 

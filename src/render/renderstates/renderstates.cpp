@@ -37,7 +37,7 @@
 
 #include "renderstates_p.h"
 
-#include <Qt3DRenderer/private/graphicscontext_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
 
 #include <QOpenGLFunctions_3_2_Core>
 

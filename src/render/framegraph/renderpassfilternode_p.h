@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/parameterpack_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/private/parameterpack_p.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE

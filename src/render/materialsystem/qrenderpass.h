@@ -38,11 +38,11 @@
 #ifndef QT3DRENDER_QRENDERPASS_H
 #define QT3DRENDER_QRENDERPASS_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
-#include <Qt3DRenderer/qshaderprogram.h>
-#include <Qt3DRenderer/qrenderstate.h>
-#include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qrenderstate.h>
+#include <Qt3DRender/qannotation.h>
 
 #include <QHash>
 #include <QList>
@@ -58,7 +58,7 @@ typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)

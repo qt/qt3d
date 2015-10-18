@@ -50,8 +50,8 @@
 //
 
 #include <qglobal.h>
-#include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QMatrix4x4>

@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/private/parameterpack_p.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QList>

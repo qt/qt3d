@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/qnormaldiffusemapmaterial_p.h>
+#include <Qt3DRender/private/qnormaldiffusemapmaterial_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -48,10 +48,10 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRenderer/qabstracttextureprovider.h>
-#include <Qt3DRenderer/qwrapmode.h>
+#include <Qt3DRender/qabstracttextureprovider.h>
+#include <Qt3DRender/qwrapmode.h>
 
 QT_BEGIN_NAMESPACE
 

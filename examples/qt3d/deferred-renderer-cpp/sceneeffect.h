@@ -37,8 +37,8 @@
 #ifndef SCENEEFFECT_H
 #define SCENEEFFECT_H
 
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QTechnique>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
 
 class SceneEffect : public Qt3DRender::QEffect
 {

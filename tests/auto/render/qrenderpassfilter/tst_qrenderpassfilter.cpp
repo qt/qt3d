@@ -39,9 +39,9 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qannotation.h>
 
 #include "testpostmanarbiter.h"
 

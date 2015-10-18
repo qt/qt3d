@@ -49,10 +49,10 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qrenderaspect.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qaspectjob.h>
 
 #include <QHash>

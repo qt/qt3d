@@ -35,9 +35,9 @@
 ****************************************************************************/
 
 #include "loadbufferjob_p.h"
-#include <Qt3DRenderer/private/buffer_p.h>
-#include <Qt3DRenderer/private/buffermanager_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/renderer_p.h>
 
 QT_BEGIN_NAMESPACE
 

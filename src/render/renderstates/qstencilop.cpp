@@ -36,7 +36,7 @@
 
 #include "qstencilop.h"
 #include "qstencilopseparate.h"
-#include <Qt3DRenderer/private/qrenderstate_p.h>
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 

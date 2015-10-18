@@ -37,7 +37,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qboundingsphere.h>
 
@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT Sphere : public Qt3DCore::QBoundingSphere
+class QT3DRENDERSHARED_EXPORT Sphere : public Qt3DCore::QBoundingSphere
 {
 public:
     inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())

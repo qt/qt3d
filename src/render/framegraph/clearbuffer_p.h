@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/qclearbuffer.h>
 
 QT_BEGIN_NAMESPACE
 

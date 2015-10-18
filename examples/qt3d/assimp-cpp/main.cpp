@@ -42,10 +42,10 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DInput/QInputAspect>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QSceneLoader>
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QForwardRenderer>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QForwardRenderer>
 
 class SceneWalker : public QObject
 {

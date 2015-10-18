@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 

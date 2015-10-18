@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QANNOTATION_H
 #define QT3DRENDER_QANNOTATION_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 #include <QVariant>
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QAnnotationPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QAnnotation : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QAnnotation : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)

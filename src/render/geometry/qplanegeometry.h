@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QPLANEGEOMETRY_H
 #define QT3DRENDER_QPLANEGEOMETRY_H
 
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometry.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QPlaneGeometryPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QPlaneGeometry : public QGeometry
+class QT3DRENDERSHARED_EXPORT QPlaneGeometry : public QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)

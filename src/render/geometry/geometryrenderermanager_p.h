@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 

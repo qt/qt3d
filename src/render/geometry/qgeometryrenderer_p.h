@@ -49,8 +49,8 @@
 //
 
 #include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometryfunctor.h>
 
 QT_BEGIN_NAMESPACE
 

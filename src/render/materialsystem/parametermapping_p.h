@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qparametermapping.h>
+#include <Qt3DRender/qparametermapping.h>
 
 QT_BEGIN_NAMESPACE
 

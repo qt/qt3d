@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 class QLayerFilter;
 
-class QT3DRENDERERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphNodePrivate
+class QT3DRENDERSHARED_EXPORT QLayerFilterPrivate : public QFrameGraphNodePrivate
 {
 public:
     QLayerFilterPrivate();

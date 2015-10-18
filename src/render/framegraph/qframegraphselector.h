@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QFRAMEGRAPHSELECTOR_H
 #define QT3DRENDER_QFRAMEGRAPHSELECTOR_H
 
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QFrameGraphSelectorPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphSelectorFunctor
+class QT3DRENDERSHARED_EXPORT QFrameGraphSelectorFunctor
 {
 public:
     virtual QVector<int> operator()() = 0;
@@ -55,7 +55,7 @@ public:
 
 typedef QSharedPointer<QFrameGraphSelectorFunctor> QFrameGraphSelectorFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QFrameGraphSelector : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QFrameGraphSelector : public QFrameGraphNode
 {
     Q_OBJECT
 public:

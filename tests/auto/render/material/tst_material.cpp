@@ -35,11 +35,11 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/material_p.h>
+#include <Qt3DRender/private/material_p.h>
 
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QParameter>
-#include <Qt3DRenderer/QEffect>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QEffect>
 #include <Qt3DCore/QScenePropertyChange>
 
 

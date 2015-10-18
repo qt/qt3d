@@ -41,23 +41,23 @@
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qdiffusemapmaterial.h>
-#include <Qt3DRenderer/qdiffusespecularmapmaterial.h>
-#include <Qt3DRenderer/qphongmaterial.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qdiffusemapmaterial.h>
+#include <Qt3DRender/qdiffusespecularmapmaterial.h>
+#include <Qt3DRender/qphongmaterial.h>
 #include <QFileInfo>
 #include <QColor>
 #include <qmath.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/private/qurlhelper_p.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 

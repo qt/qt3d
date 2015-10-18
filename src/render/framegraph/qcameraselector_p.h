@@ -49,7 +49,7 @@
 //
 
 #include <private/qframegraphnode_p.h>
-#include <Qt3DRenderer/qcameraselector.h>
+#include <Qt3DRender/qcameraselector.h>
 
 QT_BEGIN_NAMESPACE
 

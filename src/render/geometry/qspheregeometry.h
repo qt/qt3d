@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSPHEREGEOMETRY_H
 #define QT3DRENDER_QSPHEREGEOMETRY_H
 
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometry.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QSphereGeometryPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSphereGeometry : public QGeometry
+class QT3DRENDERSHARED_EXPORT QSphereGeometry : public QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

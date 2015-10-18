@@ -35,14 +35,14 @@
 ****************************************************************************/
 
 #include "rendertargetselectornode_p.h"
-#include <Qt3DRenderer/private/renderer_p.h>
+#include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
-#include <Qt3DRenderer/qrendertargetselector.h>
-#include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/qrenderattachment.h>
 
 QT_BEGIN_NAMESPACE
 

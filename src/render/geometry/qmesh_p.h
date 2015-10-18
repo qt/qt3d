@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/private/qgeometryrenderer_p.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class QMesh;
 
-class QT3DRENDERERSHARED_EXPORT QMeshPrivate : public QGeometryRendererPrivate
+class QT3DRENDERSHARED_EXPORT QMeshPrivate : public QGeometryRendererPrivate
 {
 public:
     QMeshPrivate();
