@@ -38,7 +38,7 @@
 #include "renderlogging_p.h"
 
 #include <Qt3DRender/qopenglfilter.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qshaderdata.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>

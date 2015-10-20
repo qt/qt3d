@@ -37,11 +37,10 @@
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/qraycastingservice.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/qraycastingservice.h>
-#include <Qt3DRender/sphere.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DCore/qray3d.h>
 #include <Qt3DCore/qcamera.h>
@@ -325,7 +324,7 @@ void tst_RayCasting::mousePicking()
                                                                                       camera.matrix(),
                                                                                       camera.projectionMatrix(),
                                                                                       viewport.toRect());
-    Qt3DRender::Sphere s(QVector3D(0.0f, 0.5f, 0.0f), 1.0f);
+    Qt3DRender::Render::Sphere s(QVector3D(0.0f, 0.5f, 0.0f), 1.0f);
 
     // WHEN
     bool intersects = s.intersects(ray, Q_NULLPTR);

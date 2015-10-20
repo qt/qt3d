@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef QT3DRENDER_RENDER_SPHERE_H
+#define QT3DRENDER_RENDER_SPHERE_H
 
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qboundingsphere.h>
 
@@ -48,7 +48,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT Sphere : public Qt3DCore::QBoundingSphere
+namespace Render {
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public Qt3DCore::QBoundingSphere
 {
 public:
     inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
@@ -141,10 +143,12 @@ inline bool intersects(const Sphere &a, const Sphere &b)
     return distSq <= sumRadii * sumRadii;
 }
 
-}
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::Sphere)
+Q_DECLARE_METATYPE(Qt3DRender::Render::Sphere)
 
-#endif // SPHERE_H
+#endif // QT3DRENDER_RENDER_SPHERE_H

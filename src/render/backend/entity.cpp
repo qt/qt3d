@@ -42,7 +42,7 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>

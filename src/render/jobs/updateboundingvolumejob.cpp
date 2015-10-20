@@ -39,7 +39,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 
 #include <QElapsedTimer>
 #include <QStack>
@@ -69,14 +69,14 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 
         // Initialize parent bounding volume to be equal to that of the first child
         Qt3DRender::Render::Entity *parentNode = currentNode->parent();
-        Qt3DRender::Sphere *parentBoundingVolume = parentNode->worldBoundingVolumeWithChildren();
+        Qt3DRender::Render::Sphere *parentBoundingVolume = parentNode->worldBoundingVolumeWithChildren();
         *(parentBoundingVolume) = *(currentNode->worldBoundingVolumeWithChildren());
 
         // Expand the parent bounding volume by each of remaining the siblings
         QVector<Entity *> siblings = parentNode->children();
         const int siblingCount = siblings.count();
         for (int i = 1; i < siblingCount; ++i) {
-            Qt3DRender::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolumeWithChildren();
+            Qt3DRender::Render::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolumeWithChildren();
             parentBoundingVolume->expandToContain(*siblingBoundingVolume);
         }
 

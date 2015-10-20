@@ -39,7 +39,7 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>

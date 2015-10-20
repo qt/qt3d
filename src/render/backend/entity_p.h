@@ -69,10 +69,10 @@ class QComponent;
 namespace Qt3DRender {
 
 class QRenderAspect;
-class Sphere;
 
 namespace Render {
 
+class Sphere;
 class Renderer;
 
 class Q_AUTOTEST_EXPORT Entity : public Qt3DCore::QBackendNode

@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qraycastingservice.h>
 #include <Qt3DCore/qservicelocator.h>
 #include <Qt3DCore/qray3d.h>

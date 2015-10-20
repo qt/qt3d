@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qitemmodelbuffer.h \
-    $$PWD/sphere.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
     $$PWD/qrenderattachment.h \
@@ -14,7 +13,8 @@ HEADERS += \
     $$PWD/qwindow.h \
     $$PWD/qwindow_p.h \
     $$PWD/qobjectpicker.h \
-    $$PWD/qpickevent.h
+    $$PWD/qpickevent.h \
+    $$PWD/sphere_p.h
 
 SOURCES += \
     $$PWD/qrenderaspect.cpp \

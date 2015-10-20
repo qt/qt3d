@@ -38,7 +38,7 @@
 #include "qraycastingservice_p.h"
 
 #include <Qt3DCore/qray3d.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 
 #include <QMap>

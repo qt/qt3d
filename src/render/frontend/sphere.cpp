@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "sphere.h"
+#include "sphere_p.h"
 
 #include <Qt3DCore/qray3d.h>
 
@@ -50,7 +50,7 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Sphere &s, QVector3D *q = Q_NULLPTR)
+bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = Q_NULLPTR)
 {
     const QVector3D p = ray.origin();
     const QVector3D d = ray.direction();
@@ -121,7 +121,7 @@ inline QPair<int, int> findExtremePoints(const QVector<QVector3D> &points)
     return extremeIndices;
 }
 
-inline void sphereFromExtremePoints(Qt3DRender::Sphere &s, const QVector<QVector3D> &points)
+inline void sphereFromExtremePoints(Qt3DRender::Render::Sphere &s, const QVector<QVector3D> &points)
 {
     // Find two most separated points on any of the basis vectors
     QPair<int, int> extremeIndices = findExtremePoints(points);
@@ -134,7 +134,7 @@ inline void sphereFromExtremePoints(Qt3DRender::Sphere &s, const QVector<QVector
     s.setRadius((q - c).length());
 }
 
-inline void constructRitterSphere(Qt3DRender::Sphere &s, const QVector<QVector3D> &points)
+inline void constructRitterSphere(Qt3DRender::Render::Sphere &s, const QVector<QVector3D> &points)
 {
     // Calculate the sphere encompassing two axially extreme points
     sphereFromExtremePoints(s, points);
@@ -146,6 +146,8 @@ inline void constructRitterSphere(Qt3DRender::Sphere &s, const QVector<QVector3D
 } // anonymous namespace
 
 namespace Qt3DRender {
+
+namespace Render {
 
 const float Sphere::ms_epsilon = 1.0e-7f;
 
@@ -226,6 +228,8 @@ Qt3DCore::QBoundingVolume::Type Sphere::type() const
     return QBoundingVolume::Sphere;
 }
 
-}
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE

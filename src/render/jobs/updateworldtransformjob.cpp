@@ -38,7 +38,7 @@
 
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/entity_p.h>
-#include <sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QThread>
