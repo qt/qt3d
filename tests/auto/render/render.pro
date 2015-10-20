@@ -36,5 +36,6 @@ contains(QT_CONFIG, private_tests) {
         qviewport \
         framegraphnode \
         qobjectpicker \
-        objectpicker
+        objectpicker \
+        picking
 }
