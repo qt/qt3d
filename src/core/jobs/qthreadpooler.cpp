@@ -54,6 +54,7 @@ QThreadPooler::QThreadPooler(QObject *parent)
       m_mutex(new QMutex(QMutex::NonRecursive)),
       m_taskCount(0)
 {
+    QThreadPool::globalInstance()->setExpiryTimeout(-1);
 }
 
 QThreadPooler::~QThreadPooler()
