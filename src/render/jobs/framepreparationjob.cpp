@@ -39,14 +39,20 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/objectpicker_p.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob()
+FramePreparationJob::FramePreparationJob(Renderer *renderer)
     : m_root(Q_NULLPTR)
+    , m_renderer(renderer)
 {
 }
 
@@ -71,6 +77,16 @@ void FramePreparationJob::parseNodeTree(Entity *node)
     QList<ShaderData *> shadersData = node->renderComponents<ShaderData>();
     Q_FOREACH (ShaderData *r, shadersData) {
         r->updateTransformedProperties(*node->worldTransform());
+    }
+
+    ObjectPicker *pick = node->renderComponent<ObjectPicker>();
+    if (pick && !pick->isDirty()) {
+        const Attribute *pickAttribute = m_renderer->attributeManager()->lookupResource(pick->pickAttributeId());
+        if (pickAttribute) {
+            const Buffer *buffer = m_renderer->bufferManager()->lookupResource(pickAttribute->bufferId());
+            if (buffer && buffer->isDirty())
+                pick->makeDirty();
+        }
     }
 
     // Traverse children

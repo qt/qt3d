@@ -69,8 +69,6 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
         if (pickVolumeAttribute) {
             if (!pickVolumeAttribute
                     || pickVolumeAttribute->attributeType() != Qt3DCore::QAbstractAttribute::VertexAttribute
-                    || !pickVolumeAttribute->isDirty()
-                    || pickVolumeAttribute->name() != QAttribute::defaultPositionAttributeName()
                     || pickVolumeAttribute->dataType() != Qt3DCore::QAbstractAttribute::Float
                     || pickVolumeAttribute->dataSize() < 3) {
                 qWarning() << "ObjectPicker pickVolume Attribute not suited for bounding volume computation";
