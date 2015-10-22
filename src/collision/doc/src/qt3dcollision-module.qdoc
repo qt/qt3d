@@ -26,48 +26,47 @@
 ****************************************************************************/
 
 /*!
-    \module Qt3DInput
-    \title Qt3D Input C++ Classes
-    \brief The Qt3D Input module provides classes for handling user input in
-           applications using Qt3D.
-
+    \module Qt3DCollision
+    \title Qt3D Collision C++ Classes
+    \brief The Qt3D Collision module enables collision detection.
     \ingroup modules
     \ingroup qt3d-modules
-    \qtvariable 3dinput
+    \qtvariable 3dcollision
 
     To use classes from this module, add this directive into the C++ files:
 
     \code
-       #include <Qt3DInput>
+       #include <Qt3DCollision>
     \endcode
 
     To link against the corresponding C++ libraries, add the following to your qmake project file:
 
     \badcode
-       QT += 3dinput
+       QT += 3dcollision
     \endcode
+
 */
 
 /*!
-    \namespace Qt3DInput
-    \inmodule Qt3DInput
+    \namespace Qt3DCollision
+    \inmodule Qt3DCollision
     \ingroup qt3d-namespaces
 
-    \brief Contains classes that enable user input.
+    \brief Contains classes that enable collision detection.
 */
 
 /*!
-   \qmlmodule Qt3D.Input 2.0
-   \title Qt3D Input QML Types
+   \qmlmodule Qt3D.Collision 2.0
+   \title Qt3D Collision QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides QML types for Qt3D user input.
+   \brief Provides QML types to synchronize frames with the 3D backend.
 
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D.Input 2.0
+   import Qt3D.Collision 2.0
    \endcode
 
    \section1 QML Types

@@ -58,7 +58,7 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DCore::QSkyboxEntityPrivate
+ * \class Qt3DRender::QSkyboxEntityPrivate
  * \internal
  */
 QSkyboxEntityPrivate::QSkyboxEntityPrivate()
@@ -184,7 +184,7 @@ void QSkyboxEntityPrivate::reloadTexture()
 }
 
 /*!
- * \class Qt3DCore::QSkyboxEntity
+ * \class Qt3DRender::QSkyboxEntity
  * \inmodule Qt3DRenderer
  *
  * \brief Qt3DCore::QSkyboxEntity is a convenience Qt3DCore::QEntity subclass that can

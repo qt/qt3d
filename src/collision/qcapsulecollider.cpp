@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3DCore::QCapsuleColliderPrivate
+    \class Qt3DCollision::QCapsuleColliderPrivate
     \internal
 */
 QCapsuleColliderPrivate::QCapsuleColliderPrivate()
@@ -55,7 +55,7 @@ QCapsuleColliderPrivate::QCapsuleColliderPrivate()
 }
 
 /*!
-    \class Qt3DCore::QCapsuleCollider
+    \class Qt3DCollision::QCapsuleCollider
     \inmodule Qt3DCollision
     \since 5.5
     \brief Represents a capsule used for collision detection
@@ -64,7 +64,7 @@ QCapsuleColliderPrivate::QCapsuleColliderPrivate()
 /*!
     \qmltype CapsuleCollider
     \inqmlmodule Qt3D.Collision
-    \instantiates Qt3DCore::QCapsuleCollider
+    \instantiates Qt3DCollision::QCapsuleCollider
     \inherits Component3D
     \since 5.5
 */

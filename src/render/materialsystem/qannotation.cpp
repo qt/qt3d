@@ -64,7 +64,7 @@ QAnnotationPrivate::QAnnotationPrivate()
     \qmltype Annotation
     \instantiates Qt3DRender::QAnnotation
     \inherits Node
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For annotating ...
 */

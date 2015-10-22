@@ -27,7 +27,7 @@
 
 /*!
     \module Qt3DLogic
-    \title Qt3D Collision C++ Classes
+    \title Qt3D Logic C++ Classes
     \brief The Qt3D Logic module enables synchronizing frames with the Qt 3D
     backend.
     \ingroup modules
@@ -46,6 +46,14 @@
        QT += 3dLogic
     \endcode
 
+*/
+
+/*!
+    \namespace Qt3DLogic
+    \inmodule Qt3DLogic
+    \ingroup qt3d-namespaces
+
+    \brief Contains classes that enable frame synchronization.
 */
 
 /*!

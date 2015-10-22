@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::CameraSelector
+    \class Qt3DRender::CameraSelector
 */
 
 /*! \internal */

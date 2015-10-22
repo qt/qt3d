@@ -111,7 +111,7 @@ private:
     \qmltype TextureImage
     \instantiates Qt3DRender::QTextureImage
     \inherits AbstractTextureImage
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture
     image from an image source.

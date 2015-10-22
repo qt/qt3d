@@ -47,7 +47,7 @@ using namespace Qt3DCore;
 namespace Qt3DInput {
 
 /*!
-    \class Qt3DCore::QKeyboardControllerPrivate
+    \class Qt3DInput::QKeyboardControllerPrivate
     \internal
 */
 QKeyboardControllerPrivate::QKeyboardControllerPrivate()
@@ -56,7 +56,7 @@ QKeyboardControllerPrivate::QKeyboardControllerPrivate()
 }
 
 /*!
-    \class Qt3DCore::QKeyboardController
+    \class Qt3DInput::QKeyboardController
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -65,7 +65,7 @@ QKeyboardControllerPrivate::QKeyboardControllerPrivate()
     \qmltype KeyboardController
     \inqmlmodule Qt3D.Input
     \since 5.5
-    \instantiates Qt3DCore::QKeyboardController
+    \instantiates Qt3DInput::QKeyboardController
     \inherits Node
 */
 

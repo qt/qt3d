@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
- * \class Qt3DCore::QNoDraw::QNoDraw
+ * \class Qt3DRender::QNoDraw::QNoDraw
  *
  * \brief When a Qt3DCore::QNoDraw node is present in a FrameGraph branch, this
  * prevents the renderer from rendering any primitive.

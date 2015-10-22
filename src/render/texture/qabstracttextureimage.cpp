@@ -45,15 +45,15 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::QAbstractTextureImagePrivate
+    \class Qt3DRender::QAbstractTextureImagePrivate
     \internal
 */
 
 /*!
     \qmltype AbstractTextureImage
-    \instantiates Qt3DCore::QAbstractTextureImage
+    \instantiates Qt3DRender::QAbstractTextureImage
     \inherits Node
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \qmlabstract
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.

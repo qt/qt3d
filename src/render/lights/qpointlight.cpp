@@ -78,7 +78,7 @@ QPointLightPrivate::QPointLightPrivate()
     \qmltype PointLight
     \instantiates Qt3DRender::QPointLight
     \inherits AbstractLight
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For OpenGL ...
 */

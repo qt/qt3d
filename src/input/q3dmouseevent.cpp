@@ -48,7 +48,7 @@ namespace Qt3DInput {
 // These can always be added in follow up commits once the input API takes shape
 
 /*!
- * \class Qt3DCore::Q3DMouseEvent
+ * \class Qt3DInput::Q3DMouseEvent
  * \inmodule Qt3DInput
  *
  * \brief The Qt3DCore::Q3DMouseEvent contains parameters that describe a mouse event.
@@ -160,7 +160,7 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
 
 
 /*!
- * \class Qt3DCore::Q3DWheelEvent
+ * \class Qt3DInput::Q3DWheelEvent
  * \inmodule Qt3DInput
  *
  * \brief The Qt3DCore::Q3DWheelEvent contains parameters that describe a mouse wheel event.

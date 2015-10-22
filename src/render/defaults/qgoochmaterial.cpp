@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-   \class Qt3DCore::QGoochMaterialPrivate
+   \class Qt3DRender::QGoochMaterialPrivate
    \internal
 */
 QGoochMaterialPrivate::QGoochMaterialPrivate()
@@ -129,7 +129,7 @@ void QGoochMaterialPrivate::init()
 }
 
 /*!
-    \class Qt3DCore::QGoochMaterial
+    \class Qt3DRender::QGoochMaterial
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
     \inmodule Qt3DRenderer

@@ -61,7 +61,7 @@ using namespace Qt3DCore;
 namespace Qt3DLogic {
 
 /*!
-    \class Qt3DCore::QLogicAspectPrivate
+    \class Qt3DLogic::QLogicAspectPrivate
     \internal
 */
 QLogicAspectPrivate::QLogicAspectPrivate()

@@ -65,7 +65,7 @@ public:
 };
 
 /*!
-    \class Qt3DCore::QBlendState
+    \class Qt3DRender::QBlendState
     \inmodule Qt3DRenderer
     \since 5.5
     \brief Encapsulates blending information.
@@ -73,9 +73,9 @@ public:
 
 /*!
     \qmltype BlendState
-    \instantiates Qt3DCore::QBlendState
+    \instantiates Qt3DRender::QBlendState
     \inherits RenderState
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Encapsulates blending information
 */
@@ -244,9 +244,9 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
 
 /*!
     \qmltype BlendStateSeparate
-    \instantiates Qt3DCore::QBlendStateSeparate
+    \instantiates Qt3DRender::QBlendStateSeparate
     \inherits RenderState
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Encapsulates blending information
 */

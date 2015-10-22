@@ -51,7 +51,7 @@ namespace Qt3DRender
 
 
 /*!
-    \class Qt3DCore::QAbstractLightPrivate
+    \class Qt3DRender::QAbstractLightPrivate
     \internal
 */
 QAbstractLightPrivate::QAbstractLightPrivate()
@@ -71,7 +71,7 @@ void QAbstractLight::copy(const QNode *ref)
 }
 
 /*!
-    \class Qt3DCore::QAbstractLight
+    \class Qt3DRender::QAbstractLight
     \inmodule Qt3DRender
 */
 

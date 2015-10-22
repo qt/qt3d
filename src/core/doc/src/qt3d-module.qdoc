@@ -72,12 +72,12 @@
     \section2 Qt 3D Logic Module
     \generatelist {classesbymodule Qt3DLogic}
 
-    \section2 Qt 3D Renderer Module
-    \generatelist {classesbymodule Qt3DRenderer}
+    \section2 Qt 3D Render Module
+    \generatelist {classesbymodule Qt3DRender}
 */
 
 /*!
-    \namespace Qt3D
+    \namespace Qt3DCore
     \inmodule Qt3DCore
     \ingroup qt3d-namespaces
 
@@ -87,7 +87,7 @@
 */
 
 /*!
-   \qmlmodule Qt3D 2.0
+   \qmlmodule Qt3D.Core 2.0
    \title Qt 3D QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
@@ -97,7 +97,7 @@
    To import and use the module's QML types, use the following statement:
 
    \badcode
-   import Qt3D 2.0
+   import Qt3D.Core 2.0
    \endcode
 
    For collision detection, renderer, and input-related QML types, use the
@@ -105,7 +105,7 @@
 
    \badcode
    import Qt3D.Collision 2.0
-   import Qt3D.Renderer 2.0
+   import Qt3D.Render 2.0
    import Qt3D.Input 2.0
    import Qt3D.Logic 2.0
    \endcode
@@ -124,7 +124,7 @@
    \section2 Qt 3D Logic Module
    \generatelist {qmltypesbymodule Qt3D.Logic}
 
-   \section2 Qt 3D Renderer Module
-   \generatelist {qmltypesbymodule Qt3D.Renderer}
+   \section2 Qt 3D Render Module
+   \generatelist {qmltypesbymodule Qt3D.Render}
    \noautolist
 */

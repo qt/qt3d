@@ -61,7 +61,7 @@ public:
 };
 
 /*!
-    \class Qt3DCore::QColorMask
+    \class Qt3DRender::QColorMask
     \inmodule Qt3DRenderer
 
     \brief Allows specifying which color components should be written to the

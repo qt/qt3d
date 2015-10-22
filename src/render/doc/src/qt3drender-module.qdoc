@@ -73,6 +73,14 @@
 */
 
 /*!
+    \namespace Qt3DRender
+    \inmodule Qt3DRender
+    \ingroup qt3d-namespaces
+
+    \brief Contains classes that enable 2D and 3D rendering.
+*/
+
+/*!
    \qmlmodule Qt3D.Render 2.0
    \title Qt3D Render QML Types
    \ingroup qmlmodules

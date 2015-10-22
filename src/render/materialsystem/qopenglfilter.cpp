@@ -74,7 +74,7 @@ public:
     \qmltype OpenGLFilter
     \instantiates Qt3DRender::QOpenGLFilter
     \inherits QtObject
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For OpenGL ...
 */

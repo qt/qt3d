@@ -126,7 +126,7 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::QRenderAspectPrivate
+    \class Qt3DRender::QRenderAspectPrivate
     \internal
 */
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)

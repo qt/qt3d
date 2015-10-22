@@ -63,7 +63,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    \class Qt3DCore::QSpotLightPrivate
+    \class Qt3DRender::QSpotLightPrivate
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
@@ -81,9 +81,9 @@ QSpotLightPrivate::QSpotLightPrivate()
 
 /*!
     \qmltype SpotLight
-    \instantiates Qt3DCore::QSpotLight
+    \instantiates Qt3DRender::QSpotLight
     \inherits AbstractLight
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For OpenGL ...
 */

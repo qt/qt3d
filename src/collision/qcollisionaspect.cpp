@@ -54,7 +54,7 @@ using namespace Qt3DCore;
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3DCore::QCollisionAspectPrivate
+    \class Qt3DCollision::QCollisionAspectPrivate
     \internal
 */
 QCollisionAspectPrivate::QCollisionAspectPrivate()
