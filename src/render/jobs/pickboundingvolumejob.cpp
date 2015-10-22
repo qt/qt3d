@@ -266,7 +266,6 @@ QVector<Qt3DCore::QBoundingVolume *> PickBoundingVolumeJob::gatherBoundingVolume
 
     if (entity != Q_NULLPTR) {
         volumes.push_back(entity->worldBoundingVolume());
-
         // Traverse children
         Q_FOREACH (Entity *child, entity->children())
             volumes += gatherBoundingVolumes(child);
