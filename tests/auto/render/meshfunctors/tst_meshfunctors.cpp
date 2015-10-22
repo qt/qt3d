@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/qgeometryfunctor.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometry.h>
 
 class MeshFunctorA : public Qt3DRender::QGeometryFunctor
 {

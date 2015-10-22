@@ -38,8 +38,8 @@
 #define QT3DRENDER_QGEOMETRYRENDERER_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,7 +50,7 @@ class QGeometryFunctor;
 
 typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
@@ -82,7 +82,7 @@ public:
     };
     Q_ENUM(PrimitiveType)
 
-    // how to figure out index count, bounding boxes, and all the fancy stuff that QMeshData provides for us?
+    // how to figure out index count and all the fancy stuff that QMeshData provides for us?
     // also how to figure out which attribute(s?) hold the indices?
 
     int instanceCount() const;

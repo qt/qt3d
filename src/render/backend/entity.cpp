@@ -35,17 +35,17 @@
 ****************************************************************************/
 
 #include "entity_p.h"
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/qabstractlight.h>
-#include <Qt3DRenderer/qlayer.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/sphere.h>
-#include <Qt3DRenderer/qshaderdata.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/qshaderdata.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qentity.h>
@@ -67,6 +67,7 @@ Entity::Entity()
     , m_renderer(Q_NULLPTR)
     , m_localBoundingVolume(new Sphere)
     , m_worldBoundingVolume(new Sphere)
+    , m_worldBoundingVolumeWithChildren(new Sphere)
 {
 }
 
@@ -102,10 +103,10 @@ void Entity::cleanup()
     }
     delete m_localBoundingVolume;
     delete m_worldBoundingVolume;
+    delete m_worldBoundingVolumeWithChildren;
     m_localBoundingVolume = Q_NULLPTR;
     m_worldBoundingVolume = Q_NULLPTR;
-
-
+    m_worldBoundingVolumeWithChildren = Q_NULLPTR;
 }
 
 void Entity::setParentHandle(HEntity parentHandle)

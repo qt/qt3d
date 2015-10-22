@@ -38,7 +38,7 @@
 #define QT3DRENDER_QSORTCRITERION_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QSortCriterionPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QSortCriterion : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QSortCriterion : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QSortCriterion::SortType sort READ sort WRITE setSort NOTIFY sortChanged)

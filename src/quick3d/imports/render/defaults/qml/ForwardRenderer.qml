@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Renderer 2.0
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
 TechniqueFilter {
     // Expose camera to allow user to choose which camera to use for rendering

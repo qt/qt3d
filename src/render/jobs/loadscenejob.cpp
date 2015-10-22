@@ -38,7 +38,7 @@
 #include <private/renderer_p.h>
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/private/abstractsceneparser_p.h>
+#include <Qt3DRender/private/abstractsceneparser_p.h>
 
 QT_BEGIN_NAMESPACE
 

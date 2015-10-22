@@ -38,7 +38,7 @@
 #define QT3DRENDER_QTEXTUREIMAGE_H
 
 #include <QUrl>
-#include <Qt3DRenderer/qabstracttextureimage.h>
+#include <Qt3DRender/qabstracttextureimage.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QTextureImagePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
+class QT3DRENDERSHARED_EXPORT QTextureImage : public QAbstractTextureImage
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

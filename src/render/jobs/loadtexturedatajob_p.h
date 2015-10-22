@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRenderer/qtextureimage.h>
+#include <Qt3DRender/qtextureimage.h>
 
 QT_BEGIN_NAMESPACE
 

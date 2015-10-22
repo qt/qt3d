@@ -49,7 +49,7 @@
 //
 
 #include <private/qframegraphnode_p.h>
-#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffer.h>
 
 QT_BEGIN_NAMESPACE
 

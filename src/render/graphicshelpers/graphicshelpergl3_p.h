@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/graphicshelperinterface_p.h>
+#include <Qt3DRender/private/graphicshelperinterface_p.h>
 #include <QtCore/qscopedpointer.h>
 
 #ifndef QT_OPENGL_ES_2

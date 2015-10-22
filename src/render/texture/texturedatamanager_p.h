@@ -49,9 +49,9 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 #include <QPair>
 #include <Qt3DCore/qnodeid.h>

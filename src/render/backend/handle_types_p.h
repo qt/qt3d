@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qhandle.h>
 
 QT_BEGIN_NAMESPACE
@@ -94,7 +94,6 @@ typedef Qt3DCore::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
 typedef Qt3DCore::QHandle<Layer, 16> HLayer;
 typedef Qt3DCore::QHandle<Material, 16> HMaterial;
 typedef Qt3DCore::QHandle<QMatrix4x4, 16> HMatrix;
-typedef Qt3DCore::QHandle<Shader, 16> HShader;
 typedef Qt3DCore::QHandle<QOpenGLVertexArrayObject*, 16> HVao;
 typedef Qt3DCore::QHandle<Shader, 16> HShader;
 typedef Qt3DCore::QHandle<SortCriterion, 8> HSortCriterion;

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_RENDER_QFORWARDRENDERER_H
 #define QT3DRENDER_RENDER_QFORWARDRENDERER_H
 
-#include <Qt3DRenderer/qtechniquefilter.h>
+#include <Qt3DRender/qtechniquefilter.h>
 #include <QRectF>
 #include <QColor>
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QForwardRendererPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QForwardRenderer : public QTechniqueFilter
+class QT3DRENDERSHARED_EXPORT QForwardRenderer : public QTechniqueFilter
 {
     Q_OBJECT
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)

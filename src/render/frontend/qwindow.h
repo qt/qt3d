@@ -38,7 +38,7 @@
 #define QT3DRENDER_QWINDOW_H
 
 #include <QtGui/qwindow.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ namespace Qt3DRender {
 class QWindowPrivate;
 class QFrameGraph;
 
-class QT3DRENDERERSHARED_EXPORT QWindow : public ::QWindow
+class QT3DRENDERSHARED_EXPORT QWindow : public ::QWindow
 {
 public:
     explicit QWindow(::QWindow *parent = Q_NULLPTR);

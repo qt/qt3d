@@ -1,6 +1,6 @@
 CXX_MODULE = qml
 TARGET = quick3dcoreplugin
-TARGETPATH = Qt3D
+TARGETPATH = Qt3D/Core
 
 QT += qml 3dcore 3dcore-private 3dquick 3dquick-private
 

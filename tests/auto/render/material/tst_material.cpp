@@ -35,11 +35,11 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/material_p.h>
+#include <Qt3DRender/private/material_p.h>
 
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QParameter>
-#include <Qt3DRenderer/QEffect>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QEffect>
 #include <Qt3DCore/QScenePropertyChange>
 
 
@@ -59,6 +59,7 @@ private slots:
     void shouldHavePropertiesMirroringFromItsPeer();
     void shouldHandleParametersPropertyChange();
     void shouldHandleEnablePropertyChange();
+    void shouldHandleEffectPropertyChange();
 };
 
 
@@ -181,6 +182,23 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 
     // THEN
     QVERIFY(backend.isEnabled());
+
+}
+
+void tst_RenderMaterial::shouldHandleEffectPropertyChange()
+{
+    // GIVEN
+    Material backend;
+
+    // WHEN
+    QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+    Qt3DCore::QNodeId effectId = Qt3DCore::QNodeId::createId();
+    updateChange->setValue(QVariant::fromValue(effectId));
+    updateChange->setPropertyName("effect");
+    backend.sceneChangeEvent(updateChange);
+
+    // THEN
+    QCOMPARE(backend.effect(), effectId);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderMaterial)

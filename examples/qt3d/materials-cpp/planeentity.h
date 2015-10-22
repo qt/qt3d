@@ -41,7 +41,7 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/QTranslateTransform>
-#include <Qt3DRenderer/QPlaneMesh>
+#include <Qt3DRender/QPlaneMesh>
 
 class PlaneEntity : public Qt3DCore::QEntity
 {

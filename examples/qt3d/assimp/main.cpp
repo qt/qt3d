@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <window.h>
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QSceneLoader>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QSceneLoader>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>

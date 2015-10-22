@@ -49,18 +49,18 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qclearbuffer.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/cameralens_p.h>
-#include <Qt3DRenderer/private/attachmentpack_p.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DRenderer/qparameter.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/cameralens_p.h>
+#include <Qt3DRender/private/attachmentpack_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/qparameter.h>
 
 #include <Qt3DCore/qframeallocator.h>
 
 // TODO: Move out once this is all refactored
-#include <Qt3DRenderer/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
 
 #include <QVector>
 #include <QMutex>

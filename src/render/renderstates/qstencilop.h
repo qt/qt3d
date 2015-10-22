@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSTENCILOP_H
 #define QT3DRENDER_QSTENCILOP_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 class QStencilOpPrivate;
 class QStencilOpSeparate;
 
-class QT3DRENDERERSHARED_EXPORT QStencilOp : public QRenderState
+class QT3DRENDERSHARED_EXPORT QStencilOp : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QStencilOpSeparate *front READ front CONSTANT)

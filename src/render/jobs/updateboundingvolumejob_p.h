@@ -62,7 +62,9 @@ class Entity;
 class UpdateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit UpdateBoundingVolumeJob(Entity *m_node);
+    UpdateBoundingVolumeJob();
+
+    void setRoot(Entity *root);
 
 protected:
     void run() Q_DECL_OVERRIDE;

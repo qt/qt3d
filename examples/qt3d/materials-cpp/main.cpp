@@ -43,12 +43,12 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QPhongMaterial>
-#include <Qt3DRenderer/QDiffuseMapMaterial>
-#include <Qt3DRenderer/QForwardRenderer>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QTextureImage>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DRender/QDiffuseMapMaterial>
+#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QTextureImage>
 
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"

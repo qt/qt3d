@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QDEPTHMASK_H
 #define QT3DRENDER_QDEPTHMASK_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QDepthMaskPrivate;
 
-class QT3DRENDERERSHARED_EXPORT  QDepthMask : public QRenderState
+class QT3DRENDERSHARED_EXPORT  QDepthMask : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY (bool mask READ mask WRITE setMask NOTIFY maskChanged)

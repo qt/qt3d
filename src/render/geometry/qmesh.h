@@ -37,8 +37,8 @@
 #ifndef QT3DRENDER_QMESH_H
 #define QT3DRENDER_QMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -51,7 +51,7 @@ class QMeshPrivate;
 * @brief Simple static mesh
 *
 */
-class QT3DRENDERERSHARED_EXPORT QMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)

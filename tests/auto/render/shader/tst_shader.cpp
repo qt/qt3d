@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/shader_p.h>
-#include <Qt3DRenderer/qshaderprogram.h>
+#include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/qshaderprogram.h>
 
 class tst_RenderShader : public QObject
 {

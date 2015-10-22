@@ -41,16 +41,16 @@
 #include "qattribute.h"
 #include <Qt3DCore/qaxisalignedboundingbox.h>
 
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <QFile>
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QTextStream>
 #include <QVector>
 
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
 

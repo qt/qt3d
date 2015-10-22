@@ -42,27 +42,27 @@
 #include <QDebug>
 #include <QOpenGLContext>
 
-#include <Qt3DRenderer/private/graphicscontext_p.h>
-#include <Qt3DRenderer/private/renderstates_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/renderstates_p.h>
 
-#include <Qt3DRenderer/qalphacoverage.h>
-#include <Qt3DRenderer/qalphatest.h>
-#include <Qt3DRenderer/qblendequation.h>
-#include <Qt3DRenderer/qblendstate.h>
-#include <Qt3DRenderer/qcolormask.h>
-#include <Qt3DRenderer/qcullface.h>
-#include <Qt3DRenderer/qdepthmask.h>
-#include <Qt3DRenderer/qdepthtest.h>
-#include <Qt3DRenderer/qdithering.h>
-#include <Qt3DRenderer/qfrontface.h>
-#include <Qt3DRenderer/qpolygonoffset.h>
-#include <Qt3DRenderer/qscissortest.h>
-#include <Qt3DRenderer/qstenciltest.h>
-#include <Qt3DRenderer/qstenciltestseparate.h>
-#include <Qt3DRenderer/qclipplane.h>
-#include <Qt3DRenderer/qstencilop.h>
-#include <Qt3DRenderer/qstencilopseparate.h>
-#include <Qt3DRenderer/qstencilmask.h>
+#include <Qt3DRender/qalphacoverage.h>
+#include <Qt3DRender/qalphatest.h>
+#include <Qt3DRender/qblendequation.h>
+#include <Qt3DRender/qblendstate.h>
+#include <Qt3DRender/qcolormask.h>
+#include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/qdepthmask.h>
+#include <Qt3DRender/qdepthtest.h>
+#include <Qt3DRender/qdithering.h>
+#include <Qt3DRender/qfrontface.h>
+#include <Qt3DRender/qpolygonoffset.h>
+#include <Qt3DRender/qscissortest.h>
+#include <Qt3DRender/qstenciltest.h>
+#include <Qt3DRender/qstenciltestseparate.h>
+#include <Qt3DRender/qclipplane.h>
+#include <Qt3DRender/qstencilop.h>
+#include <Qt3DRender/qstencilopseparate.h>
+#include <Qt3DRender/qstencilmask.h>
 
 QT_BEGIN_NAMESPACE
 

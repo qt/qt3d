@@ -37,13 +37,13 @@
 #ifndef QT3DRENDER_QNODRAW_H
 #define QT3DRENDER_QNODRAW_H
 
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QNoDraw : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QNoDraw : public QFrameGraphNode
 {
     Q_OBJECT
 public:

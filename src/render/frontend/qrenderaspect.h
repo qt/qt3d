@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QRENDERASPECT_H
 #define QT3DRENDER_QRENDERASPECT_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qabstractaspect.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,7 +52,7 @@ class Renderer;
 
 class QRenderAspectPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
+class QT3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
 public:

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_RENDER_QNORMALDIFFUSESPECULARMAPMATERIAL_H
 #define QT3DRENDER_RENDER_QNORMALDIFFUSESPECULARMAPMATERIAL_H
 
-#include <Qt3DRenderer/qmaterial.h>
+#include <Qt3DRender/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QNormalDiffuseSpecularMapMaterialPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QNormalDiffuseSpecularMapMaterial : public QMaterial
+class QT3DRENDERSHARED_EXPORT QNormalDiffuseSpecularMapMaterial : public QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)

@@ -37,26 +37,26 @@
 #include "renderviewjobutils_p.h"
 #include "renderlogging_p.h"
 
-#include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/sphere.h>
-#include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/qshaderdata.h>
 
-#include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/clearbuffer_p.h>
-#include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderstateset_p.h>
-#include <Qt3DRenderer/private/rendertargetselectornode_p.h>
-#include <Qt3DRenderer/private/renderview_p.h>
-#include <Qt3DRenderer/private/sortmethod_p.h>
-#include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/viewportnode_p.h>
-#include <Qt3DRenderer/private/shadervariables_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/private/statesetnode_p.h>
+#include <Qt3DRender/private/cameraselectornode_p.h>
+#include <Qt3DRender/private/clearbuffer_p.h>
+#include <Qt3DRender/private/layerfilternode_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/effect_p.h>
+#include <Qt3DRender/private/renderpassfilternode_p.h>
+#include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/private/rendertargetselectornode_p.h>
+#include <Qt3DRender/private/renderview_p.h>
+#include <Qt3DRender/private/sortmethod_p.h>
+#include <Qt3DRender/private/techniquefilternode_p.h>
+#include <Qt3DRender/private/viewportnode_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/statesetnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -95,7 +95,12 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         if (lens && lens->isEnabled()) {
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());
-                            rv->setEyePosition(camNode->worldBoundingVolume()->center());
+
+                            //To get the eyePostion of the camera, we need to use the inverse of the
+                            //camera's worldTransform matrix.
+                            const QMatrix4x4 inverseWorldTransform = camNode->worldTransform()->inverted();
+                            const QVector3D eyePostion(inverseWorldTransform.column(3));
+                            rv->setEyePosition(eyePostion);
                         }
                     }
                     break;

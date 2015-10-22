@@ -37,8 +37,8 @@
 #ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
 #define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
 
-#include <Qt3DRenderer/texturedata.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,7 +49,7 @@ class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Target target READ target CONSTANT)

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QVIEWPORT_H
 #define QT3DRENDER_QVIEWPORT_H
 
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qframegraphnode.h>
 #include <QRectF>
 #include <QColor>
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QViewportPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QViewport : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QRectF rect READ rect WRITE setRect NOTIFY rectChanged)

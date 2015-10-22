@@ -38,7 +38,7 @@
 #define QT3DRENDER_QBUFFER_H
 
 #include <Qt3DCore/qabstractbuffer.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QSharedPointer>
 #include <QOpenGLBuffer>
 
@@ -54,11 +54,12 @@ class QBufferPrivate;
 class QBufferFunctor;
 typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-class QT3DRENDERERSHARED_EXPORT QBuffer : public Qt3DCore::QAbstractBuffer
+class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QAbstractBuffer
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
+    Q_PROPERTY(bool sync READ isSync WRITE setSync NOTIFY syncChanged)
 
 public:
     enum BufferType
@@ -84,7 +85,7 @@ public:
     };
     Q_ENUM(UsageType)
 
-    QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
+    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
     ~QBuffer();
 
     void setUsage(UsageType usage);
@@ -96,13 +97,18 @@ public:
     void setBufferFunctor(const QBufferFunctorPtr &functor);
     QBufferFunctorPtr bufferFunctor() const;
 
+    void setSync(bool sync);
+    bool isSync() const;
+
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void typeChanged();
     void usageChanged();
+    void syncChanged();
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

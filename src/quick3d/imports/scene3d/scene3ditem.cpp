@@ -38,7 +38,7 @@
 #include "scene3dlogging_p.h"
 
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DRenderer/QRenderAspect>
+#include <Qt3DRender/QRenderAspect>
 #include <Qt3DInput/QInputAspect>
 
 #include <QOpenGLContext>

@@ -49,8 +49,8 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometryfunctor.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -81,6 +81,7 @@ public:
     inline bool primitiveRestart() const { return m_primitiveRestart; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
+    inline bool isEnabled() const { return m_enabled; }
     inline QGeometryFunctorPtr geometryFunctor() const { return m_functor; }
     void unsetDirty();
 
@@ -94,6 +95,7 @@ private:
     bool m_primitiveRestart;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
+    bool m_enabled;
     QGeometryFunctorPtr m_functor;
     GeometryRendererManager *m_manager;
 };

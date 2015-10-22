@@ -36,9 +36,9 @@
 
 #include "tessellatedquadmesh.h"
 
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qgeometry.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qgeometry.h>
 
 class TessellatedGeometry : public Qt3DRender::QGeometry
 {

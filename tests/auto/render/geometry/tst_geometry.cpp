@@ -35,9 +35,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/geometry_p.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRender/private/geometry_p.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class tst_RenderGeometry : public QObject

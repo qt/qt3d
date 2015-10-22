@@ -51,27 +51,27 @@
 
 #include <Qt3DCore/private/qurlhelper_p.h>
 
-#include <Qt3DRenderer/QAlphaCoverage>
-#include <Qt3DRenderer/QBlendEquation>
-#include <Qt3DRenderer/QBlendStateSeparate>
-#include <Qt3DRenderer/QColorMask>
-#include <Qt3DRenderer/QCullFace>
-#include <Qt3DRenderer/QDepthMask>
-#include <Qt3DRenderer/QDepthTest>
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QFrontFace>
-#include <Qt3DRenderer/QGeometry>
-#include <Qt3DRenderer/QGeometryRenderer>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QOpenGLFilter>
-#include <Qt3DRenderer/QParameter>
-#include <Qt3DRenderer/QParameterMapping>
-#include <Qt3DRenderer/QPolygonOffset>
-#include <Qt3DRenderer/QRenderState>
-#include <Qt3DRenderer/QScissorTest>
-#include <Qt3DRenderer/QShaderProgram>
-#include <Qt3DRenderer/QTechnique>
-#include <Qt3DRenderer/QTexture>
+#include <Qt3DRender/QAlphaCoverage>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendStateSeparate>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QDepthMask>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QFrontFace>
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QOpenGLFilter>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QParameterMapping>
+#include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QScissorTest>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
 
 QT_BEGIN_NAMESPACE
 

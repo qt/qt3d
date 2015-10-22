@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "nodraw_p.h"
-#include <Qt3DRenderer/qnodraw.h>
+#include <Qt3DRender/qnodraw.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

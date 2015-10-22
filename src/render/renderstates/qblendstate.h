@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QBLENDSTATE_H
 #define QT3DRENDER_QBLENDSTATE_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QBlendStatePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QBlendState : public QRenderState
+class QT3DRENDERSHARED_EXPORT QBlendState : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(Blending srcRGB READ srcRGB WRITE setSrcRGB NOTIFY srcRGBChanged)
@@ -110,7 +110,7 @@ private:
     QT3D_CLONEABLE(QBlendState)
 };
 
-class QT3DRENDERERSHARED_EXPORT QBlendStateSeparate : public QBlendState
+class QT3DRENDERSHARED_EXPORT QBlendStateSeparate : public QBlendState
 {
     Q_OBJECT
 public:

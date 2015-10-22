@@ -70,6 +70,8 @@ public:
         m_radii = QVector3D();
     }
 
+    bool isNull() const { return m_center.isNull() && m_radii.isNull(); }
+
     void update(const QVector<QVector3D> &points);
 
     inline QVector3D center() const { return m_center; }

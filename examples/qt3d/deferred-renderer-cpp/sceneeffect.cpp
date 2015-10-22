@@ -36,8 +36,8 @@
 
 #include "sceneeffect.h"
 
-#include <Qt3DRenderer/QOpenGLFilter>
-#include <Qt3DRenderer/QShaderProgram>
+#include <Qt3DRender/QOpenGLFilter>
+#include <Qt3DRender/QShaderProgram>
 #include <QUrl>
 
 SceneEffect::SceneEffect(Qt3DCore::QNode *parent)

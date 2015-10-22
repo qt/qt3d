@@ -51,8 +51,8 @@
 
 #include <QVector>
 #include <QStringList>
-#include <Qt3DRenderer/private/parameterpack_p.h>
-#include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRender/private/parameterpack_p.h>
+#include <Qt3DRender/qannotation.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE

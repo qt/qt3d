@@ -37,8 +37,8 @@
 #ifndef FINALEFFECT_H
 #define FINALEFFECT_H
 
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QTechnique>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
 
 class FinalEffect : public Qt3DRender::QEffect
 {

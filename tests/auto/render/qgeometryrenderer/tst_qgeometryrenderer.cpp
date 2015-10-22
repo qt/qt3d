@@ -38,11 +38,11 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/qgeometryrenderer.h>
-#include <Qt3DRenderer/qgeometryfunctor.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 
 #include "testpostmanarbiter.h"
 

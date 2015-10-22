@@ -37,68 +37,68 @@
 #include "qrenderaspect.h"
 #include "qrenderaspect_p.h"
 
-#include <Qt3DRenderer/private/texturedatamanager_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/scenemanager_p.h>
-#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/scenemanager_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
-#include <Qt3DRenderer/qabstractsceneloader.h>
-#include <Qt3DRenderer/qcameraselector.h>
-#include <Qt3DRenderer/qframegraph.h>
-#include <Qt3DRenderer/qlayer.h>
-#include <Qt3DRenderer/qlayerfilter.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qparametermapping.h>
-#include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qrendertargetselector.h>
-#include <Qt3DRenderer/qtechniquefilter.h>
-#include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/qrendertarget.h>
-#include <Qt3DRenderer/qclearbuffer.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qshaderdata.h>
-#include <Qt3DRenderer/qstateset.h>
-#include <Qt3DRenderer/qnodraw.h>
+#include <Qt3DRender/qabstractsceneloader.h>
+#include <Qt3DRender/qcameraselector.h>
+#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qlayer.h>
+#include <Qt3DRender/qlayerfilter.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qparametermapping.h>
+#include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qshaderdata.h>
+#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qnodraw.h>
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
-#include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/annotation_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/rendertargetselectornode_p.h>
-#include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/viewportnode_p.h>
-#include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/scenemanager_p.h>
-#include <Qt3DRenderer/private/clearbuffer_p.h>
-#include <Qt3DRenderer/private/sortmethod_p.h>
-#include <Qt3DRenderer/private/sortcriterion_p.h>
-#include <Qt3DRenderer/private/framegraphsubtreeselector_p.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/nodefunctor_p.h>
-#include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/loadtexturedatajob_p.h>
-#include <Qt3DRenderer/private/updateboundingvolumejob_p.h>
-#include <Qt3DRenderer/private/updateworldtransformjob_p.h>
-#include <Qt3DRenderer/private/framecleanupjob_p.h>
-#include <Qt3DRenderer/private/textureimage_p.h>
-#include <Qt3DRenderer/private/statesetnode_p.h>
-#include <Qt3DRenderer/private/nodraw_p.h>
-#include <Qt3DRenderer/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/private/buffer_p.h>
-#include <Qt3DRenderer/private/geometry_p.h>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/cameraselectornode_p.h>
+#include <Qt3DRender/private/layerfilternode_p.h>
+#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/renderpassfilternode_p.h>
+#include <Qt3DRender/private/rendertargetselectornode_p.h>
+#include <Qt3DRender/private/techniquefilternode_p.h>
+#include <Qt3DRender/private/viewportnode_p.h>
+#include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/scenemanager_p.h>
+#include <Qt3DRender/private/clearbuffer_p.h>
+#include <Qt3DRender/private/sortmethod_p.h>
+#include <Qt3DRender/private/sortcriterion_p.h>
+#include <Qt3DRender/private/framegraphsubtreeselector_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/nodefunctor_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/private/loadtexturedatajob_p.h>
+#include <Qt3DRender/private/updateboundingvolumejob_p.h>
+#include <Qt3DRender/private/updateworldtransformjob_p.h>
+#include <Qt3DRender/private/framecleanupjob_p.h>
+#include <Qt3DRender/private/textureimage_p.h>
+#include <Qt3DRender/private/statesetnode_p.h>
+#include <Qt3DRender/private/nodraw_p.h>
+#include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/private/buffer_p.h>
+#include <Qt3DRender/private/geometry_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qnodevisitor.h>
@@ -136,6 +136,11 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_surface(Q_NULLPTR)
     , m_time(0)
     , m_initialized(false)
+    , m_framePreparationJob(new Render::FramePreparationJob())
+    , m_cleanupJob(new Render::FrameCleanupJob(m_renderer))
+    , m_worldTransformJob(new Render::UpdateWorldTransformJob())
+    , m_updateBoundingVolumeJob(new Render::UpdateBoundingVolumeJob())
+    , m_calculateBoundingVolumeJob(new Render::CalculateBoundingVolumeJob(m_renderer))
 {
     initResources();
     m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
@@ -270,10 +275,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
 
         // Create the jobs to build the frame
-        d->m_framePreparationJob.reset(new Render::FramePreparationJob(d->m_renderer->renderSceneRoot()));
-        d->m_cleanupJob.reset(new Render::FrameCleanupJob(d->m_renderer));
-        d->m_worldTransformJob.reset(new Render::UpdateWorldTransformJob(d->m_renderer->renderSceneRoot()));
-        d->m_boundingVolumeJob.reset(new Render::UpdateBoundingVolumeJob(d->m_renderer->renderSceneRoot()));
+        d->m_framePreparationJob->setRoot(d->m_renderer->renderSceneRoot());
+        d->m_worldTransformJob->setRoot(d->m_renderer->renderSceneRoot());
+        d->m_updateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
+        d->m_calculateBoundingVolumeJob->setRoot(d->m_renderer->renderSceneRoot());
 
         const QVector<QNodeId> texturesPending = d->m_renderer->textureDataManager()->texturesPending();
         Q_FOREACH (const QNodeId &textureId, texturesPending) {
@@ -298,13 +303,18 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         // Create jobs to update transforms and bounding volumes
         // We can only update bounding volumes once all world transforms are known
-        d->m_boundingVolumeJob->addDependency(d->m_worldTransformJob);
+        d->m_updateBoundingVolumeJob->addDependency(d->m_worldTransformJob);
         d->m_framePreparationJob->addDependency(d->m_worldTransformJob);
 
+        // All world stuff depends on the RenderEntity's localBoundingVolume
+        d->m_worldTransformJob->addDependency(d->m_calculateBoundingVolumeJob);
+
         // Add all jobs to queue
+        jobs.append(d->m_calculateBoundingVolumeJob);
         jobs.append(d->m_worldTransformJob);
-        jobs.append(d->m_boundingVolumeJob);
+        jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
+
 
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
@@ -312,7 +322,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-            renderBinJob->addDependency(d->m_boundingVolumeJob);
+            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
             jobs.append(renderBinJob);
             d->m_cleanupJob->addDependency(renderBinJob);
         }

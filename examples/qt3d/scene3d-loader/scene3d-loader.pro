@@ -2,7 +2,7 @@
     error( "Couldn't find the examples.pri file!" )
 }
 
-QT += qml quick 3dcore 3drenderer 3dinput
+QT += qml quick 3dcore 3drender 3dinput
 
 SOURCES += \
     main.cpp

@@ -50,7 +50,7 @@
 
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 

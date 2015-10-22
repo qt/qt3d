@@ -37,10 +37,10 @@
 #ifndef FORWARDRENDERER_H
 #define FORWARDRENDERER_H
 
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QViewport>
-#include <Qt3DRenderer/QCameraSelector>
-#include <Qt3DRenderer/QClearBuffer>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QClearBuffer>
 
 class ForwardRenderer : public Qt3DRender::QFrameGraph
 {

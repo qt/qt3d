@@ -38,19 +38,19 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/QEffect>
-#include <Qt3DRenderer/QMaterial>
-#include <Qt3DRenderer/QParameter>
-#include <Qt3DRenderer/QTechnique>
-#include <Qt3DRenderer/QRenderPass>
-#include <Qt3DRenderer/QPhongMaterial>
-#include <Qt3DRenderer/QParameterMapping>
-#include <Qt3DRenderer/QDiffuseMapMaterial>
-#include <Qt3DRenderer/QPerVertexColorMaterial>
-#include <Qt3DRenderer/QNormalDiffuseMapMaterial>
-#include <Qt3DRenderer/QDiffuseSpecularMapMaterial>
-#include <Qt3DRenderer/QNormalDiffuseMapAlphaMaterial>
-#include <Qt3DRenderer/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DRender/QParameterMapping>
+#include <Qt3DRender/QDiffuseMapMaterial>
+#include <Qt3DRender/QPerVertexColorMaterial>
+#include <Qt3DRender/QNormalDiffuseMapMaterial>
+#include <Qt3DRender/QDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
 
 #include "testpostmanarbiter.h"
 
@@ -87,6 +87,12 @@ class tst_QMaterial : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
+    tst_QMaterial()
+        : Qt3DCore::QNode()
+    {
+        qRegisterMetaType<Qt3DRender::QEffect*>("Qt3DRender::QEffect*");
+    }
+
     ~tst_QMaterial()
     {
         QNode::cleanup();
@@ -267,7 +273,7 @@ private Q_SLOTS:
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
@@ -276,21 +282,15 @@ private Q_SLOTS:
         TestArbiter arbiter2(material2.data());
 
         // WHEN
-        Qt3DRender::QEffect *oldEffect = material2->effect();
         material2->setEffect(&effect);
         QCoreApplication::processEvents();
 
         // THEN
-        QCOMPARE(arbiter2.events.size(), 2);
+        QCOMPARE(arbiter2.events.size(), 1);
         change = arbiter2.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "effect");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), oldEffect->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
-
-        change = arbiter2.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "effect");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), effect.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeAdded);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
     }
 
     void checkDynamicParametersAddedUpdates()

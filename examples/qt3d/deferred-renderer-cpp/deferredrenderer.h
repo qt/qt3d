@@ -37,13 +37,13 @@
 #ifndef DEFERREDRENDERER_H
 #define DEFERREDRENDERER_H
 
-#include <Qt3DRenderer/QViewport>
-#include <Qt3DRenderer/QClearBuffer>
-#include <Qt3DRenderer/QLayerFilter>
-#include <Qt3DRenderer/QRenderPassFilter>
-#include <Qt3DRenderer/QRenderTargetSelector>
-#include <Qt3DRenderer/QCameraSelector>
-#include <Qt3DRenderer/QAnnotation>
+#include <Qt3DRender/QViewport>
+#include <Qt3DRender/QClearBuffer>
+#include <Qt3DRender/QLayerFilter>
+#include <Qt3DRender/QRenderPassFilter>
+#include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QCameraSelector>
+#include <Qt3DRender/QAnnotation>
 
 class DeferredRenderer : public Qt3DRender::QViewport
 {

@@ -51,8 +51,8 @@
 #include <Qt3DCore/qhandle.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/qframegraphnode.h>
-#include <Qt3DRenderer/private/managers_p.h>
+#include <Qt3DRender/qframegraphnode.h>
+#include <Qt3DRender/private/managers_p.h>
 #include <qglobal.h>
 #include <QVector>
 

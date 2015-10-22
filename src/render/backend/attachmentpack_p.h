@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRender/qrenderattachment.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE

@@ -39,7 +39,7 @@
 
 #include <QObject>
 #include <QStringList>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QSurfaceFormat>
 
 QT_BEGIN_NAMESPACE
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 
 class QOpenGLFilterPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QOpenGLFilter : public QObject
+class QT3DRENDERSHARED_EXPORT QOpenGLFilter : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QOpenGLFilter::Api api READ api WRITE setApi NOTIFY apiChanged)

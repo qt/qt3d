@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include "loadgeometryjob_p.h"
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

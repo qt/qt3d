@@ -41,12 +41,12 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 #include <QOpenGLPixelTransferOptions>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/texturedata.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/texturedata.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/texturedatamanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

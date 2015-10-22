@@ -37,15 +37,15 @@
 #ifndef QT3DRENDER_CUBOIDMESH_H
 #define QT3DRENDER_CUBOIDMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <QSize>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QCuboidMesh : public QGeometryRenderer
 {
     Q_OBJECT
 

@@ -37,10 +37,10 @@
 #include "qforwardrenderer.h"
 #include "qforwardrenderer_p.h"
 
-#include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/qcameraselector.h>
-#include <Qt3DRenderer/qclearbuffer.h>
-#include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/qcameraselector.h>
+#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qannotation.h>
 
 QT_BEGIN_NAMESPACE
 

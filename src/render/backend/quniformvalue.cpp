@@ -36,8 +36,8 @@
 
 #include "quniformvalue_p.h"
 
-#include <Qt3DRenderer/private/graphicscontext_p.h>
-#include <Qt3DRenderer/private/texture_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/texture_p.h>
 
 #include <Qt3DCore/qframeallocator.h>
 
@@ -45,7 +45,7 @@
 #include <QDebug>
 #include <QColor>
 #include <QQuaternion>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 
 QT_BEGIN_NAMESPACE
 

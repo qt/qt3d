@@ -57,10 +57,10 @@
 #include <QColor>
 #include <QMatrix4x4>
 #include <QBitArray>
-#include <Qt3DRenderer/private/quniformvalue_p.h>
-#include <Qt3DRenderer/qclearbuffer.h>
-#include <Qt3DRenderer/private/shader_p.h>
-#include <Qt3DRenderer/qattribute.h>
+#include <Qt3DRender/private/quniformvalue_p.h>
+#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 

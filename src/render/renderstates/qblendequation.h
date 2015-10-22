@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QBLENDEQUATION_H
 #define QT3DRENDER_QBLENDEQUATION_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QBlendEquationPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QBlendEquation : public QRenderState
+class QT3DRENDERSHARED_EXPORT QBlendEquation : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(BlendMode mode READ mode WRITE setMode NOTIFY modeChanged)

@@ -36,10 +36,10 @@
 
 #include <QtTest/QTest>
 
-#include <Qt3DRenderer/private/renderviewjobutils_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/private/managers_p.h>
-#include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRender/private/renderviewjobutils_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/qshaderdata.h>
 
 
 class tst_RenderViewUtils : public QObject

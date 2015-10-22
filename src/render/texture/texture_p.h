@@ -50,10 +50,10 @@
 
 #include <QOpenGLContext>
 #include <QMutex>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/texturedata.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/texturedata.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 

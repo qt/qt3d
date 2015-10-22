@@ -40,7 +40,7 @@
 #include <QVariant>
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,7 +52,7 @@ class QMaterialPrivate;
 class QEffect;
 typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
-class QT3DRENDERERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
+class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QEffect *effect READ effect WRITE setEffect NOTIFY effectChanged)

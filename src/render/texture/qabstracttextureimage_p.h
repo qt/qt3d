@@ -49,8 +49,8 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRenderer/private/qt3drenderer_global_p.h>
-#include <Qt3DRenderer/qabstracttextureprovider.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 class QAbstractTextureImage;
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3DCore::QNodePrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAbstractTextureImagePrivate()

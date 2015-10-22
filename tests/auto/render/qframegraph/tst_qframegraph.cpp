@@ -39,8 +39,8 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRenderer/qframegraphnode.h>
-#include <Qt3DRenderer/qframegraph.h>
+#include <Qt3DRender/qframegraphnode.h>
+#include <Qt3DRender/qframegraph.h>
 
 #include "testpostmanarbiter.h"
 

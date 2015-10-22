@@ -44,14 +44,14 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRenderer/qtorusmesh.h>
-#include <Qt3DRenderer/qmesh.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qsceneloader.h>
+#include <Qt3DRender/qtorusmesh.h>
+#include <Qt3DRender/qmesh.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qsceneloader.h>
 
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qmatrixtransform.h>
@@ -59,13 +59,13 @@
 #include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 
-#include <Qt3DRenderer/qcameraselector.h>
-#include <Qt3DRenderer/qrenderpassfilter.h>
-#include <Qt3DRenderer/qtechniquefilter.h>
-#include <Qt3DRenderer/qviewport.h>
-#include <Qt3DRenderer/qrenderaspect.h>
-#include <Qt3DRenderer/qframegraph.h>
-#include <Qt3DRenderer/qclearbuffer.h>
+#include <Qt3DRender/qcameraselector.h>
+#include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qclearbuffer.h>
 
 int main(int ac, char **av)
 {

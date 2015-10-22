@@ -39,8 +39,8 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRenderer/qrendertargetselector.h>
-#include <Qt3DRenderer/qrendertarget.h>
+#include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/qrendertarget.h>
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected

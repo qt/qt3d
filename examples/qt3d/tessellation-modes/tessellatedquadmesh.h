@@ -37,7 +37,7 @@
 #ifndef TESSELLATEDQUAD_H
 #define TESSELLATEDQUAD_H
 
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 class TessellatedQuadMesh : public Qt3DRender::QGeometryRenderer
 {

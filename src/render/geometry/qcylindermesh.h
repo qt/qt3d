@@ -37,15 +37,15 @@
 #ifndef QT3DRENDER_QCYLINDERMESH_H
 #define QT3DRENDER_QCYLINDERMESH_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/qgeometryrenderer.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 
 QT_BEGIN_NAMESPACE
 
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
+class QT3DRENDERSHARED_EXPORT QCylinderMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(int rings READ rings WRITE setRings NOTIFY ringsChanged)

@@ -34,14 +34,6 @@
 **
 ****************************************************************************/
 
-#ifdef THREAD_WEAVER
-#include <threadweaver.h>
-#include <dependencypolicy.h>
-#include <thread.h>
-#include "job.h"
-#include "weaverjob_p.h"
-#endif
-
 #include "qaspectjobmanager_p.h"
 #include "task_p.h"
 #include "qthreadpooler_p.h"

@@ -49,27 +49,27 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRenderer/private/renderattachment_p.h>
-#include <Qt3DRenderer/private/cameralens_p.h>
-#include <Qt3DRenderer/private/annotation_p.h>
-#include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/layer_p.h>
-#include <Qt3DRenderer/private/material_p.h>
-#include <Qt3DRenderer/private/shader_p.h>
-#include <Qt3DRenderer/private/sortcriterion_p.h>
-#include <Qt3DRenderer/private/technique_p.h>
-#include <Qt3DRenderer/private/texture_p.h>
-#include <Qt3DRenderer/private/transform_p.h>
-#include <Qt3DRenderer/private/rendertarget_p.h>
-#include <Qt3DRenderer/private/renderpass_p.h>
-#include <Qt3DRenderer/private/parameter_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/private/handle_types_p.h>
-#include <Qt3DRenderer/private/uniformbuffer_p.h>
-#include <Qt3DRenderer/private/textureimage_p.h>
-#include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/private/geometry_p.h>
+#include <Qt3DRender/private/renderattachment_p.h>
+#include <Qt3DRender/private/cameralens_p.h>
+#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/effect_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/material_p.h>
+#include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/sortcriterion_p.h>
+#include <Qt3DRender/private/technique_p.h>
+#include <Qt3DRender/private/texture_p.h>
+#include <Qt3DRender/private/transform_p.h>
+#include <Qt3DRender/private/rendertarget_p.h>
+#include <Qt3DRender/private/renderpass_p.h>
+#include <Qt3DRender/private/parameter_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/uniformbuffer_p.h>
+#include <Qt3DRender/private/textureimage_p.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/private/geometry_p.h>
 
 QT_BEGIN_NAMESPACE
 

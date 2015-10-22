@@ -33,5 +33,6 @@ contains(QT_CONFIG, private_tests) {
         qsortmethod \
         qstateset \
         qtechniquefilter \
-        qviewport
+        qviewport \
+        framegraphnode
 }

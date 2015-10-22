@@ -49,7 +49,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/private/genericstate_p.h>
+#include <Qt3DRender/private/genericstate_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE

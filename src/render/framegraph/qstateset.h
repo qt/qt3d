@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSTATESET_H
 #define QT3DRENDER_QSTATESET_H
 
-#include <Qt3DRenderer/qframegraphnode.h>
+#include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 class QStateSetPrivate;
 class QRenderState;
 
-class QT3DRENDERERSHARED_EXPORT QStateSet : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QStateSet : public QFrameGraphNode
 {
     Q_OBJECT
 

@@ -36,7 +36,7 @@
 
 #include "attribute_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -126,21 +126,8 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("attributeType")) {
             m_attributeType = static_cast<QAbstractAttribute::AttributeType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
-        }
-        break;
-    }
-
-    case NodeAdded: {
-        if (propertyName == QByteArrayLiteral("buffer")) {
+        } else  if (propertyName == QByteArrayLiteral("buffer")) {
             m_bufferId = propertyChange->value().value<QNodeId>();
-            m_attributeDirty = true;
-        }
-        break;
-    }
-
-    case NodeRemoved: {
-        if (propertyName == QByteArrayLiteral("buffer")) {
-            m_bufferId = QNodeId();
             m_attributeDirty = true;
         }
         break;

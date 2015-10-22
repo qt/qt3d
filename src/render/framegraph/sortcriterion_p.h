@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE

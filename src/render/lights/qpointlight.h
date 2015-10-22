@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QPOINTLIGHT_H
 #define QT3DRENDER_QPOINTLIGHT_H
 
-#include <Qt3DRenderer/qabstractlight.h>
+#include <Qt3DRender/qabstractlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QPointLightPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QPointLight : public QAbstractLight
+class QT3DRENDERSHARED_EXPORT QPointLight : public QAbstractLight
 {
     Q_OBJECT
 

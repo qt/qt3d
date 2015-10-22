@@ -49,7 +49,7 @@
 //
 
 #include <private/qnode_p.h>
-#include <Qt3DRenderer/QParameterMapping>
+#include <Qt3DRender/QParameterMapping>
 
 QT_BEGIN_NAMESPACE
 

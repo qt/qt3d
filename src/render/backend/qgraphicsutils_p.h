@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
-#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 #include <QMatrix2x2>
 #include <QMatrix3x3>
 #include <QMatrix4x4>

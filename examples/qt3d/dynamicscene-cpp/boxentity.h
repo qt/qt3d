@@ -41,8 +41,8 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QTranslateTransform>
 #include <Qt3DCore/QScaleTransform>
-#include <Qt3DRenderer/QCuboidMesh>
-#include <Qt3DRenderer/QPhongMaterial>
+#include <Qt3DRender/QCuboidMesh>
+#include <Qt3DRender/QPhongMaterial>
 
 class BoxEntity : public Qt3DCore::QEntity
 {

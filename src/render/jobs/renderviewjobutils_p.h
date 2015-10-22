@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qvariant.h>

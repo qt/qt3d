@@ -40,9 +40,9 @@
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcamera.h>
-#include <Qt3DRenderer/qframegraph.h>
-#include <Qt3DRenderer/qrenderaspect.h>
-#include <Qt3DRenderer/qforwardrenderer.h>
+#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qforwardrenderer.h>
 #include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE

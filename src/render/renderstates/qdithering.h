@@ -38,7 +38,7 @@
 #ifndef QT3DRENDER_QDITHERING_H
 #define QT3DRENDER_QDITHERING_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QDitheringPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QDithering : public QRenderState
+class QT3DRENDERSHARED_EXPORT QDithering : public QRenderState
 {
     Q_OBJECT
 public:

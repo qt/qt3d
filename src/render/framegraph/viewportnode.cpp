@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "viewportnode_p.h"
-#include <Qt3DRenderer/qviewport.h>
+#include <Qt3DRender/qviewport.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

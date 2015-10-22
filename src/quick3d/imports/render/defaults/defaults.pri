@@ -3,7 +3,7 @@
 # resource file.
 #
 # To have the plugin register them as types, add an entries to the
-# qmldir array in qt3dquick3drendererplugin.cpp
+# qmldir array in qt3dquick3drenderplugin.cpp
 QML_FILES = \
     $$PWD/qml/PhongMaterial.qml \
     $$PWD/qml/DiffuseMapMaterial.qml \

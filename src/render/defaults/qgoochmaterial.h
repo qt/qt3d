@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_RENDER_QGOOCHMATERIAL_H
 #define QT3DRENDER_RENDER_QGOOCHMATERIAL_H
 
-#include <Qt3DRenderer/qmaterial.h>
+#include <Qt3DRender/qmaterial.h>
 #include <QColor>
 
 QT_BEGIN_NAMESPACE

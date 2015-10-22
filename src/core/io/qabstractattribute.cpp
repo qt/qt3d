@@ -177,13 +177,6 @@ void QAbstractAttribute::setBuffer(QAbstractBuffer *buffer)
     if (d->m_buffer == buffer)
         return;
 
-    if (d->m_buffer && d->m_changeArbiter) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("buffer");
-        change->setValue(QVariant::fromValue(d->m_buffer->id()));
-        d->notifyObservers(change);
-    }
-
     // We need to add it as a child of the current node if it has been declared inline
     // Or not previously added as a child of the current node so that
     // 1) The backend gets notified about it's creation
@@ -192,16 +185,7 @@ void QAbstractAttribute::setBuffer(QAbstractBuffer *buffer)
         buffer->setParent(this);
 
     d->m_buffer = buffer;
-    const bool blocked = blockNotifications(true);
     emit bufferChanged();
-    blockNotifications(blocked);
-
-    if (d->m_buffer && d->m_changeArbiter) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-        change->setPropertyName("buffer");
-        change->setValue(QVariant::fromValue(buffer->id()));
-        d->notifyObservers(change);
-    }
 }
 
 void QAbstractAttribute::setName(const QString &name)

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
 #define QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 #include <Qt3DCore/qabstractcollisionqueryservice.h>
 
@@ -51,7 +51,7 @@ namespace Qt3DRender {
 
 class QRayCastingServicePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRayCastingService : public Qt3DCore::QAbstractCollisionQueryService
+class QT3DRENDERSHARED_EXPORT QRayCastingService : public Qt3DCore::QAbstractCollisionQueryService
 {
 public:
     explicit QRayCastingService(Qt3DCore::QBoundingVolumeProvider *provider);

@@ -35,24 +35,29 @@
 ****************************************************************************/
 
 #include "framepreparationjob_p.h"
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/shaderdata_p.h>
-#include <Qt3DRenderer/sphere.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/sphere.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-FramePreparationJob::FramePreparationJob(Entity *root)
-    : m_root(root)
+FramePreparationJob::FramePreparationJob()
+    : m_root(Q_NULLPTR)
 {
 }
 
 FramePreparationJob::~FramePreparationJob()
 {
 
+}
+
+void FramePreparationJob::setRoot(Entity *root)
+{
+    m_root = root;
 }
 
 void FramePreparationJob::run()
@@ -62,22 +67,6 @@ void FramePreparationJob::run()
 
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
-    // Initialize worldBoundingVolume if Mesh associated
-    Qt3DRender::Render::GeometryRenderer *mesh = Q_NULLPTR;
-    if ((node->localBoundingVolume()->isNull())
-            && (mesh = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR) {
-        //        if (!mesh->meshDataHandle().isNull()) {
-        //            Qt3DRender::QMeshData *meshData = mesh->meshData();
-        //            if (meshData != Q_NULLPTR) {
-        //                const QAxisAlignedBoundingBox box = meshData->boundingBox();
-        //                node->localBoundingVolume()->setCenter(box.center());
-        //                const QVector3D &radii = box.radii();
-        //                node->localBoundingVolume()->setRadius(qMax(radii.x(), qMax(radii.y(), radii.z())));
-        //            }
-        //        }
-        // TO DO: Make that work with the GeometryRenderer
-    }
-
     // Update transform properties in ShaderData
     QList<ShaderData *> shadersData = node->renderComponents<ShaderData>();
     Q_FOREACH (ShaderData *r, shadersData) {

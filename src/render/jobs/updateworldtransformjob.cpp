@@ -36,11 +36,11 @@
 
 #include "updateworldtransformjob_p.h"
 
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/entity_p.h>
 #include <sphere.h>
-#include <Qt3DRenderer/private/transform_p.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/transform_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -59,6 +59,7 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 
     *(node->worldTransform()) = worldTransform;
     *(node->worldBoundingVolume()) = node->localBoundingVolume()->transformed(worldTransform);
+    *(node->worldBoundingVolumeWithChildren()) = *(node->worldBoundingVolume()); // expanded in UpdateBoundingVolumeJob
 
     Q_FOREACH (Qt3DRender::Render::Entity *child, node->children())
         updateWorldTransformAndBounds(child, worldTransform);
@@ -66,10 +67,15 @@ void updateWorldTransformAndBounds(Qt3DRender::Render::Entity *node, const QMatr
 
 }
 
-UpdateWorldTransformJob::UpdateWorldTransformJob(Entity *node)
+UpdateWorldTransformJob::UpdateWorldTransformJob()
     : Qt3DCore::QAspectJob()
-    , m_node(node)
+    , m_node(Q_NULLPTR)
 {
+}
+
+void UpdateWorldTransformJob::setRoot(Entity *root)
+{
+    m_node = root;
 }
 
 void UpdateWorldTransformJob::run()

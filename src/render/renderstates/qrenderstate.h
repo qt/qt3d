@@ -39,7 +39,7 @@
 #define QT3DRENDER_QRENDERSTATE_H
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QRenderStatePrivate;
 
-class QT3DRENDERERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
 {
     Q_OBJECT
 

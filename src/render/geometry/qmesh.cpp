@@ -40,9 +40,9 @@
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
-#include <Qt3DRenderer/private/objloader_p.h>
+#include <Qt3DRender/private/objloader_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE

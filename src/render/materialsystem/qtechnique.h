@@ -37,10 +37,10 @@
 #ifndef QT3DRENDER_QTECHNIQUE_H
 #define QT3DRENDER_QTECHNIQUE_H
 
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qannotation.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qannotation.h>
 #include <QList>
 #include <QSharedPointer>
 
@@ -52,7 +52,7 @@ class QParameter;
 class QTechniquePrivate;
 class QOpenGLFilter;
 
-class QT3DRENDERERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QOpenGLFilter *openGLFilter READ openGLFilter)

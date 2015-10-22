@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
 #define QT3DRENDER_RENDER_QNORMALDIFFUSEMAPALPHAMATERIAL_H
 
-#include <Qt3DRenderer/qnormaldiffusemapmaterial.h>
+#include <Qt3DRender/qnormaldiffusemapmaterial.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QNormalDiffuseMapAlphaMaterialPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QNormalDiffuseMapAlphaMaterial : public QNormalDiffuseMapMaterial
+class QT3DRENDERSHARED_EXPORT QNormalDiffuseMapAlphaMaterial : public QNormalDiffuseMapMaterial
 {
     Q_OBJECT
 public:

@@ -37,13 +37,13 @@
 #ifndef QT3DRENDER_QTEXTUREPROVIDERS_H
 #define QT3DRENDER_QTEXTUREPROVIDERS_H
 
-#include <Qt3DRenderer/qabstracttextureprovider.h>
+#include <Qt3DRender/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QTexture1D : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture1D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -51,7 +51,7 @@ public:
     ~QTexture1D();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture1DArray : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture1DArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -59,7 +59,7 @@ public:
     ~QTexture1DArray();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture2D : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture2D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -67,7 +67,7 @@ public:
     ~QTexture2D();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture2DArray : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture2DArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -75,7 +75,7 @@ public:
     ~QTexture2DArray();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture3D : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture3D : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -83,7 +83,7 @@ public:
     ~QTexture3D();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTextureCubeMap : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTextureCubeMap : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -91,7 +91,7 @@ public:
     ~QTextureCubeMap();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTextureCubeMapArray : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTextureCubeMapArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -99,7 +99,7 @@ public:
     ~QTextureCubeMapArray();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture2DMultisample : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture2DMultisample : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -107,7 +107,7 @@ public:
     ~QTexture2DMultisample();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTexture2DMultisampleArray : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTexture2DMultisampleArray : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -115,7 +115,7 @@ public:
     ~QTexture2DMultisampleArray();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTextureRectangle : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTextureRectangle : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:
@@ -123,7 +123,7 @@ public:
     ~QTextureRectangle();
 };
 
-class QT3DRENDERERSHARED_EXPORT QTextureBuffer : public QAbstractTextureProvider
+class QT3DRENDERSHARED_EXPORT QTextureBuffer : public QAbstractTextureProvider
 {
     Q_OBJECT
 public:

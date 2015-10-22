@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <private/shadervariables_p.h>
-#include <Qt3DRenderer/qshaderdata.h>
+#include <Qt3DRender/qshaderdata.h>
 #include <QMutex>
 #include <QMatrix4x4>
 

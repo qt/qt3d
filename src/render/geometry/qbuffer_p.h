@@ -49,16 +49,16 @@
 //
 
 #include <private/qabstractbuffer_p.h>
-#include <Qt3DRenderer/qbuffer.h>
-#include <Qt3DRenderer/qbufferfunctor.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qt3drender_global.h>
 #include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERERSHARED_EXPORT QBufferPrivate : public Qt3DCore::QAbstractBufferPrivate
+class QT3DRENDERSHARED_EXPORT QBufferPrivate : public Qt3DCore::QAbstractBufferPrivate
 {
 public:
     QBufferPrivate();
@@ -66,6 +66,7 @@ public:
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QBufferFunctorPtr m_functor;
+    bool m_sync;
 };
 
 } // namespace Qt3DRender

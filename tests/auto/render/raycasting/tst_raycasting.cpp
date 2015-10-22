@@ -35,9 +35,9 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/qraycastingservice.h>
-#include <Qt3DRenderer/sphere.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/qraycastingservice.h>
+#include <Qt3DRender/sphere.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DCore/qray3d.h>
 

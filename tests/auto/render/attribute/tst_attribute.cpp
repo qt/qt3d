@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/attribute_p.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/private/attribute_p.h>
+#include <Qt3DRender/qbuffer.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class tst_Attribute : public QObject
@@ -244,7 +244,7 @@ private Q_SLOTS:
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         Qt3DCore::QNodeId bufferId = Qt3DCore::QNodeId::createId();
         updateChange->setValue(QVariant::fromValue(bufferId));
         updateChange->setPropertyName("buffer");
@@ -252,19 +252,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderAttribute.bufferId(), bufferId);
-        QVERIFY(renderAttribute.isDirty());
-
-        renderAttribute.unsetDirty();
-        QVERIFY(!renderAttribute.isDirty());
-
-        // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(bufferId));
-        updateChange->setPropertyName("buffer");
-        renderAttribute.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(renderAttribute.bufferId(), Qt3DCore::QNodeId());
         QVERIFY(renderAttribute.isDirty());
 
         renderAttribute.unsetDirty();

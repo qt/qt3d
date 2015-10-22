@@ -37,15 +37,15 @@
 #include "qnormaldiffusemapalphamaterial.h"
 #include "qnormaldiffusemapalphamaterial_p.h"
 
-#include <Qt3DRenderer/qeffect.h>
-#include <Qt3DRenderer/qtexture.h>
-#include <Qt3DRenderer/qtechnique.h>
-#include <Qt3DRenderer/qparameter.h>
-#include <Qt3DRenderer/qshaderprogram.h>
-#include <Qt3DRenderer/qrenderpass.h>
-#include <Qt3DRenderer/qopenglfilter.h>
-#include <Qt3DRenderer/qalphacoverage.h>
-#include <Qt3DRenderer/qdepthtest.h>
+#include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qtexture.h>
+#include <Qt3DRender/qtechnique.h>
+#include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/qshaderprogram.h>
+#include <Qt3DRender/qrenderpass.h>
+#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qalphacoverage.h>
+#include <Qt3DRender/qdepthtest.h>
 
 #include <QUrl>
 #include <QVector3D>

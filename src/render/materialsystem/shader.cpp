@@ -42,8 +42,8 @@
 #include <QOpenGLShaderProgram>
 #include <QMutexLocker>
 #include <qshaderprogram.h>
-#include <Qt3DRenderer/private/graphicscontext_p.h>
-#include <Qt3DRenderer/private/attachmentpack_p.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

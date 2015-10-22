@@ -40,9 +40,9 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DQuick/QQmlAspectEngine>
 
-#include <Qt3DRenderer/QRenderAspect>
-#include <Qt3DRenderer/QFrameGraph>
-#include <Qt3DRenderer/QForwardRenderer>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QFrameGraph>
+#include <Qt3DRender/QForwardRenderer>
 
 int main(int argc, char *argv[])
 {

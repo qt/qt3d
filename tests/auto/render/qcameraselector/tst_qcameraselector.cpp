@@ -38,7 +38,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRenderer/qcameraselector.h>
+#include <Qt3DRender/qcameraselector.h>
 #include <Qt3DCore/qentity.h>
 
 #include "testpostmanarbiter.h"

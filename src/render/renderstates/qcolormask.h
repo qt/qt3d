@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QCOLORMASK_H
 #define QT3DRENDER_QCOLORMASK_H
 
-#include <Qt3DRenderer/qrenderstate.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QColorMaskPrivate;
 
-class QT3DRENDERERSHARED_EXPORT QColorMask : public QRenderState
+class QT3DRENDERSHARED_EXPORT QColorMask : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(bool red READ isRed WRITE setRed NOTIFY redChanged)

@@ -35,9 +35,9 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
-#include <Qt3DRenderer/qgeometry.h>
-#include <Qt3DRenderer/qgeometryfunctor.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 class TestFunctor : public Qt3DRender::QGeometryFunctor
@@ -88,6 +88,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setGeometryFunctor(functor);
+        geometryRenderer.setEnabled(false);
 
         // WHEN
         renderGeometryRenderer.setPeer(&geometryRenderer);
@@ -104,6 +105,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveType(), geometryRenderer.primitiveType());
         QCOMPARE(renderGeometryRenderer.geometryId(), geometry.id());
         QCOMPARE(renderGeometryRenderer.geometryFunctor(), functor);
+        QCOMPARE(renderGeometryRenderer.isEnabled(), false);
         QVERIFY(*renderGeometryRenderer.geometryFunctor() == *functor);
     }
 
@@ -124,6 +126,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
+        QVERIFY(renderGeometryRenderer.isEnabled());
 
         // GIVEN
         Qt3DRender::QGeometryRenderer geometryRenderer;
@@ -140,6 +143,7 @@ private Q_SLOTS:
         geometryRenderer.setPrimitiveType(Qt3DRender::QGeometryRenderer::Patches);
         geometryRenderer.setGeometry(&geometry);
         geometryRenderer.setGeometryFunctor(functor);
+        geometryRenderer.setEnabled(false);
 
         // WHEN
         renderGeometryRenderer.updateFromPeer(&geometryRenderer);
@@ -157,6 +161,7 @@ private Q_SLOTS:
         QCOMPARE(renderGeometryRenderer.primitiveRestart(), false);
         QCOMPARE(renderGeometryRenderer.primitiveType(), Qt3DRender::QGeometryRenderer::Triangles);
         QVERIFY(renderGeometryRenderer.geometryFunctor().isNull());
+        QVERIFY(renderGeometryRenderer.isEnabled());
     }
 
     void checkPropertyChanges()
@@ -296,6 +301,16 @@ private Q_SLOTS:
         QVERIFY(renderGeometryRenderer.isDirty());
 
         renderGeometryRenderer.unsetDirty();
+        QVERIFY(!renderGeometryRenderer.isDirty());
+
+        // WHEN
+        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        updateChange->setValue(QVariant::fromValue(false));
+        updateChange->setPropertyName("enabled");
+        renderGeometryRenderer.sceneChangeEvent(updateChange);
+
+        // THEN
+        QCOMPARE(renderGeometryRenderer.isEnabled(), false);
         QVERIFY(!renderGeometryRenderer.isDirty());
     }
 };

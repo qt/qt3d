@@ -1,10 +1,10 @@
-TARGET   = Qt3DRenderer
+TARGET   = Qt3DRender
 
 QT      += core-private gui-private 3dcore 3dcore-private openglextensions concurrent
 
-DEFINES += QT3DRENDERER_LIBRARY
+DEFINES += QT3DRENDER_LIBRARY
 
-MODULE   = 3drenderer
+MODULE   = 3drender
 
 MODULE_PLUGIN_TYPES = \
     sceneparsers
@@ -39,9 +39,9 @@ gcov {
 }
 
 HEADERS += \
-    qt3drenderer_global.h \
-    qt3drenderer_global_p.h \
-    renderlogging_p.h
+    renderlogging_p.h \
+    qt3drender_global.h \
+    qt3drender_global_p.h
 
 !contains(QT_CONFIG, egl):DEFINES += QT_NO_EGL
 

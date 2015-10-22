@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRenderer/qrenderattachment.h>
-#include <Qt3DRenderer/private/attachmentpack_p.h>
+#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/private/attachmentpack_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
 

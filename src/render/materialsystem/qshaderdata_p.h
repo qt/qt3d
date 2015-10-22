@@ -49,8 +49,8 @@
 //
 
 #include <private/qcomponent_p.h>
-#include <Qt3DRenderer/qshaderdata.h>
-#include <Qt3DRenderer/private/qt3drenderer_global_p.h>
+#include <Qt3DRender/qshaderdata.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,7 +83,7 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
     }
 };
 
-class QT3DRENDERERSHARED_PRIVATE_EXPORT QShaderDataPrivate : public Qt3DCore::QComponentPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QShaderDataPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QShaderDataPrivate();

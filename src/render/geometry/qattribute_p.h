@@ -49,7 +49,7 @@
 //
 
 #include <private/qabstractattribute_p.h>
-#include <Qt3DRenderer/qt3drenderer_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +57,7 @@ namespace Qt3DRender {
 
 class QAttribute;
 
-class QT3DRENDERERSHARED_EXPORT QAttributePrivate : public Qt3DCore::QAbstractAttributePrivate
+class QT3DRENDERSHARED_EXPORT QAttributePrivate : public Qt3DCore::QAbstractAttributePrivate
 {
 public:
     QAttributePrivate();

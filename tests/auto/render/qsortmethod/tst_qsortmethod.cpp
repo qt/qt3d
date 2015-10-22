@@ -39,8 +39,8 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRenderer/qsortmethod.h>
-#include <Qt3DRenderer/qsortcriterion.h>
+#include <Qt3DRender/qsortmethod.h>
+#include <Qt3DRender/qsortcriterion.h>
 
 #include "testpostmanarbiter.h"
 

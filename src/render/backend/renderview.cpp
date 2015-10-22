@@ -36,30 +36,30 @@
 ****************************************************************************/
 
 #include "renderview_p.h"
-#include <Qt3DRenderer/qmaterial.h>
-#include <Qt3DRenderer/qrenderaspect.h>
-#include <Qt3DRenderer/qrendertarget.h>
-#include <Qt3DRenderer/sphere.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/sphere.h>
 
-#include <Qt3DRenderer/private/cameraselectornode_p.h>
-#include <Qt3DRenderer/private/framegraphnode_p.h>
-#include <Qt3DRenderer/private/layerfilternode_p.h>
-#include <Qt3DRenderer/private/qparameter_p.h>
-#include <Qt3DRenderer/private/cameralens_p.h>
-#include <Qt3DRenderer/private/rendercommand_p.h>
-#include <Qt3DRenderer/private/effect_p.h>
-#include <Qt3DRenderer/private/entity_p.h>
-#include <Qt3DRenderer/private/renderer_p.h>
-#include <Qt3DRenderer/private/layer_p.h>
-#include <Qt3DRenderer/private/renderlogging_p.h>
-#include <Qt3DRenderer/private/renderpassfilternode_p.h>
-#include <Qt3DRenderer/private/renderpass_p.h>
-#include <Qt3DRenderer/private/geometryrenderer_p.h>
-#include <Qt3DRenderer/private/renderstateset_p.h>
-#include <Qt3DRenderer/private/techniquefilternode_p.h>
-#include <Qt3DRenderer/private/viewportnode_p.h>
+#include <Qt3DRender/private/cameraselectornode_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/private/layerfilternode_p.h>
+#include <Qt3DRender/private/qparameter_p.h>
+#include <Qt3DRender/private/cameralens_p.h>
+#include <Qt3DRender/private/rendercommand_p.h>
+#include <Qt3DRender/private/effect_p.h>
+#include <Qt3DRender/private/entity_p.h>
+#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/layer_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/renderpassfilternode_p.h>
+#include <Qt3DRender/private/renderpass_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/renderstateset_p.h>
+#include <Qt3DRender/private/techniquefilternode_p.h>
+#include <Qt3DRender/private/viewportnode_p.h>
 
-#include <Qt3DRenderer/qparametermapping.h>
+#include <Qt3DRender/qparametermapping.h>
 
 #include <Qt3DCore/qentity.h>
 
@@ -378,7 +378,8 @@ void RenderView::buildRenderCommands(Entity *node)
     if (isEntityInLayers(node, m_data->m_layers)) {
         GeometryRenderer *geometryRenderer = Q_NULLPTR;
         if (node->componentHandle<GeometryRenderer, 16>() != HGeometryRenderer()
-                && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR) {
+                && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR
+                && geometryRenderer->isEnabled()) {
 
             // There is a geometry renderer
             if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {

@@ -37,7 +37,7 @@
 #include "tessellatedquadmesh.h"
 
 #include <window.h>
-#include <Qt3DRenderer/qrenderaspect.h>
+#include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 

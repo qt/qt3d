@@ -37,8 +37,8 @@
 #include "qframegraph.h"
 #include "qframegraph_p.h"
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRenderer/qframegraphnode.h>
-#include <Qt3DRenderer/private/qframegraphnode_p.h>
+#include <Qt3DRender/qframegraphnode.h>
+#include <Qt3DRender/private/qframegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
 

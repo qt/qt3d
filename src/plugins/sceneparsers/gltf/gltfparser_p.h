@@ -52,10 +52,10 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QMultiHash>
 
-#include <Qt3DRenderer/qattribute.h>
-#include <Qt3DRenderer/qbuffer.h>
+#include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/qbuffer.h>
 
-#include <Qt3DRenderer/private/abstractsceneparser_p.h>
+#include <Qt3DRender/private/abstractsceneparser_p.h>
 
 QT_BEGIN_NAMESPACE
 

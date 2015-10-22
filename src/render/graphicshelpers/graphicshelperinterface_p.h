@@ -51,7 +51,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLTexture>
 #include <QVector>
-#include <Qt3DRenderer/private/shadervariables_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
 

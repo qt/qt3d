@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRenderer/qrenderattachment.h>
+#include <Qt3DRender/qrenderattachment.h>
 
 QT_BEGIN_NAMESPACE
 
