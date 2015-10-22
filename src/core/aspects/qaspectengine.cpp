@@ -52,6 +52,8 @@
 #include "qentity.h"
 #include "qcomponent.h"
 #include "qnodevisitor.h"
+#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/qservicelocator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -180,9 +182,22 @@ void QAspectEngine::shutdown()
     qCDebug(Aspects) << Q_FUNC_INFO << "Shutdown complete";
 }
 
+// Main thread
 void QAspectEngine::setData(const QVariantMap &data)
 {
     Q_D(QAspectEngine);
+
+    // We need to initialize the EventFilterService in the main thread
+    // as we can register event filters only on QObjects of the same thread
+    QObject *eventSource = Q_NULLPTR;
+    const QVariant &eventSourceVariant = data.value(QStringLiteral("eventSource"));
+    if (eventSourceVariant.isValid() &&
+            (eventSource = eventSourceVariant.value<QObject *>()) != Q_NULLPTR) {
+        QEventFilterService *eventFilterService = d->m_aspectThread->aspectManager()->serviceLocator()->eventFilterService();
+        if (eventFilterService != Q_NULLPTR)
+            eventFilterService->initialize(eventSource);
+    }
+
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setData",
                               Qt::BlockingQueuedConnection,
