@@ -78,6 +78,7 @@ class QMouseEvent;
 namespace Qt3DCore {
 class QEntity;
 class QFrameAllocator;
+class QEventFilterService;
 }
 
 namespace Qt3DRender {
@@ -216,7 +217,7 @@ public:
 
     void setSurface(QSurface *s);
     inline QSurface *surface() const { return m_surface; }
-    void setEventSource(QObject *eventSource);
+    void registerEventFilter(Qt3DCore::QEventFilterService *service);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool submitRenderViews();

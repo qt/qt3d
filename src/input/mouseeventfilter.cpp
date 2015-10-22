@@ -66,12 +66,11 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
         // Store event to be processed later on in an InputAspect job
         m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
         break;
-
     default:
         break;
     }
 
-    return QObject::eventFilter(obj, e);
+    return false;
 }
 
 } // namespace Input

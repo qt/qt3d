@@ -63,7 +63,7 @@ bool KeyboardEventFilter::eventFilter(QObject *obj, QEvent *e)
         // Store event to be processed later on in an InputAspect job
         m_inputHandler->appendKeyEvent(QKeyEvent(*static_cast<QKeyEvent *>(e)));
     }
-    return QObject::eventFilter(obj, e);
+    return false;
 }
 
 } // namespace Input

@@ -56,6 +56,10 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QEventFilterService;
+}
+
 namespace Qt3DInput {
 namespace Input {
 
@@ -71,8 +75,7 @@ class InputHandler
 public:
     InputHandler();
 
-    void setEventSource(QObject *object);
-    inline QObject *eventSource() const { return m_eventSource; }
+    void registerEventFilters(Qt3DCore::QEventFilterService *service);
 
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
@@ -103,7 +106,6 @@ private:
     MouseInputManager *m_mouseInputManager;
     QVector<HKeyboardController> m_activeKeyboardControllers;
     QVector<HMouseController> m_activeMouseControllers;
-    QObject *m_eventSource;
     KeyboardEventFilter *m_keyboardEventFilter;
     QList<QKeyEvent> m_pendingEvents;
     MouseEventFilter *m_mouseEventFilter;

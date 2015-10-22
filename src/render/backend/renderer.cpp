@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/pickeventfilter_p.h>
 
 #include <Qt3DCore/qcameralens.h>
+#include <Qt3DCore/qeventfilterservice.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
@@ -541,15 +542,10 @@ void Renderer::setSurface(QSurface* surface)
     }
 }
 
-void Renderer::setEventSource(QObject *eventSource)
+void Renderer::registerEventFilter(QEventFilterService *service)
 {
-    if (eventSource != m_eventSource) {
-        if (m_eventSource)
-            m_eventSource->removeEventFilter(m_pickEventFilter.data());
-        m_eventSource = eventSource;
-        if (m_eventSource)
-            m_eventSource->installEventFilter(m_pickEventFilter.data());
-    }
+    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
 void Renderer::render()

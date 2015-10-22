@@ -41,6 +41,7 @@
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
 #include "mouseeventdispatcherjob_p.h"
+#include <Qt3DCore/qeventfilterservice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,7 +55,6 @@ InputHandler::InputHandler()
     , m_keyboardInputManager(new KeyboardInputManager())
     , m_mouseControllerManager(new MouseControllerManager())
     , m_mouseInputManager(new MouseInputManager())
-    , m_eventSource(Q_NULLPTR)
     , m_keyboardEventFilter(new KeyboardEventFilter())
     , m_mouseEventFilter(new MouseEventFilter())
 {
@@ -63,23 +63,13 @@ InputHandler::InputHandler()
 }
 
 // Called in MainThread
-void InputHandler::setEventSource(QObject *object)
+void InputHandler::registerEventFilters(QEventFilterService *service)
 {
-    if (object != m_eventSource) {
-        if (m_eventSource) {
-            m_eventSource->removeEventFilter(m_keyboardEventFilter);
-            m_eventSource->removeEventFilter(m_mouseEventFilter);
-        }
+    clearPendingKeyEvents();
+    clearPendingMouseEvents();
 
-        clearPendingKeyEvents();
-        clearPendingMouseEvents();
-
-        m_eventSource = object;
-        if (m_eventSource) {
-            m_eventSource->installEventFilter(m_keyboardEventFilter);
-            m_eventSource->installEventFilter(m_mouseEventFilter);
-        }
-    }
+    service->registerEventFilter(m_keyboardEventFilter, 512);
+    service->registerEventFilter(m_mouseEventFilter, 512);
 }
 
 // Called by the keyboardEventFilter in the main thread

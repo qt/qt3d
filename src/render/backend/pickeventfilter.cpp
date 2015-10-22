@@ -66,12 +66,12 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
+    case Qt::TapGesture:
         m_pendingEvents.push_back(QMouseEvent(*static_cast<QMouseEvent *>(e)));
-        break;
     default:
         break;
     }
-    return QObject::eventFilter(obj, e);
+    return false;
 }
 
 } // Render

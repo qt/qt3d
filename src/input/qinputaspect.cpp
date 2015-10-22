@@ -49,6 +49,8 @@
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmouseinput.h>
+#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/qeventfilterservice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -130,16 +132,12 @@ void QInputAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
     visitor.traverse(rootObject, this, &QInputAspect::visitNode);
 }
 
-void QInputAspect::onInitialize(const QVariantMap &data)
+void QInputAspect::onInitialize(const QVariantMap &)
 {
-    QObject *object = Q_NULLPTR;
-    const QVariant &v = data.value(QStringLiteral("eventSource"));
-    if (v.isValid())
-        object = v.value<QObject *>();
     Q_D(QInputAspect);
-    if (object)
-        object->installEventFilter(d->m_cameraController.data());
-    d->m_inputHandler->setEventSource(object);
+    Qt3DCore::QEventFilterService *eventService = services()->eventFilterService();
+    eventService->registerEventFilter(d->m_cameraController.data(), 128);
+    d->m_inputHandler->registerEventFilters(eventService);
 }
 
 void QInputAspect::onStartup()
