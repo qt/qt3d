@@ -6,7 +6,8 @@ SOURCES += \
     $$PWD/qabstractcollisionqueryservice.cpp \
     $$PWD/qcollisionqueryresult.cpp \
     $$PWD/qtickclockservice.cpp \
-    $$PWD/qabstractframeadvanceservice.cpp
+    $$PWD/qabstractframeadvanceservice.cpp \
+    $$PWD/qeventfilterservice.cpp
 
 HEADERS += \
     $$PWD/qservicelocator.h \
@@ -23,6 +24,7 @@ HEADERS += \
     $$PWD/qcollisionqueryresult_p.h \
     $$PWD/qtickclockservice_p.h \
     $$PWD/qabstractframeadvanceservice.h \
-    $$PWD/qabstractframeadvanceservice_p.h
+    $$PWD/qabstractframeadvanceservice_p.h \
+    $$PWD/qeventfilterservice.h
 
 INCLUDEPATH += $$PWD
