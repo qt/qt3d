@@ -60,14 +60,21 @@ namespace Qt3DRender {
 
 namespace Quick {
 
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_initialize();
-QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRenderer_registerType(const char *className, const char *quickName, int major, int minor);
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRender_initialize();
+QT3DQUICKSHARED_PRIVATE_EXPORT void Quick3DRender_registerType(const char *className, const char *quickName, int major, int minor);
 
 template<class T, class E> void registerExtendedType(const char *className, const char *quickName,
                                                      const char *uri, int major, int minor, const char *name)
 {
     qmlRegisterExtendedType<T, E>(uri, major, minor, name);
-    Quick3DRenderer_registerType(className, quickName, major, minor);
+    Quick3DRender_registerType(className, quickName, major, minor);
+}
+
+template<class T> void registerType(const char *className, const char *quickName,
+                                    const char *uri, int major, int minor, const char *name)
+{
+    qmlRegisterType<T>(uri, major, minor, name);
+    Quick3DRender_registerType(className, quickName, major, minor);
 }
 
 } // Quick
