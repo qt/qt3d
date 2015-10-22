@@ -106,6 +106,11 @@ void ObjectPicker::unsetDirty()
     m_isDirty = false;
 }
 
+void ObjectPicker::makeDirty()
+{
+    m_isDirty = true;
+}
+
 bool ObjectPicker::hoverEnabled() const
 {
     return m_hoverEnabled;

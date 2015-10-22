@@ -68,6 +68,7 @@ public:
     Qt3DCore::QNodeId pickAttributeId() const;
     bool isDirty() const;
     void unsetDirty();
+    void makeDirty();
     bool hoverEnabled() const;
 
     void onClicked();
