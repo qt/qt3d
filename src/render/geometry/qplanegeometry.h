@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QPlaneGeometryPrivate;
+class QAttribute;
 
 class QT3DRENDERSHARED_EXPORT QPlaneGeometry : public QGeometry
 {
@@ -52,6 +53,12 @@ class QT3DRENDERSHARED_EXPORT QPlaneGeometry : public QGeometry
     Q_PROPERTY(float width READ width WRITE setWidth NOTIFY widthChanged)
     Q_PROPERTY(float height READ height WRITE setHeight NOTIFY heightChanged)
     Q_PROPERTY(QSize resolution READ resolution WRITE setResolution NOTIFY resolutionChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *tangentAttribute READ tangentAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+
 public:
     explicit QPlaneGeometry(QNode *parent = Q_NULLPTR);
     ~QPlaneGeometry();
@@ -66,6 +73,12 @@ public:
     QSize resolution() const;
     float width() const;
     float height() const;
+
+    QAttribute *positionAttribute() const;
+    QAttribute *normalAttribute() const;
+    QAttribute *texCoordAttribute() const;
+    QAttribute *tangentAttribute() const;
+    QAttribute *indexAttribute() const;
 
 Q_SIGNALS:
     void resolutionChanged();

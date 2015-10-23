@@ -291,6 +291,36 @@ float QPlaneGeometry::height() const
     return d->m_height;
 }
 
+QAttribute *QPlaneGeometry::positionAttribute() const
+{
+    Q_D(const QPlaneGeometry);
+    return d->m_positionAttribute;
+}
+
+QAttribute *QPlaneGeometry::normalAttribute() const
+{
+    Q_D(const QPlaneGeometry);
+    return d->m_normalAttribute;
+}
+
+QAttribute *QPlaneGeometry::texCoordAttribute() const
+{
+    Q_D(const QPlaneGeometry);
+    return d->m_texCoordAttribute;
+}
+
+QAttribute *QPlaneGeometry::tangentAttribute() const
+{
+    Q_D(const QPlaneGeometry);
+    return d->m_tangentAttribute;
+}
+
+QAttribute *QPlaneGeometry::indexAttribute() const
+{
+    Q_D(const QPlaneGeometry);
+    return d->m_indexAttribute;
+}
+
 QPlaneGeometryPrivate::QPlaneGeometryPrivate()
     : QGeometryPrivate()
     , m_width(1.0f)
