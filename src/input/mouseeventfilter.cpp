@@ -59,6 +59,7 @@ void MouseEventFilter::setInputHandler(InputHandler *handler)
 // Triggered in the view thread (usually the main thread)
 bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
+    Q_UNUSED(obj);
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
