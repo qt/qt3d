@@ -51,6 +51,7 @@
 #include <QObject>
 
 #include <QPoint>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,6 +76,9 @@ class CameraController : public QObject
     Q_PROPERTY( float orbitRate READ orbitRate WRITE setOrbitRate NOTIFY orbitRateChanged )
     Q_PROPERTY( float lookRate READ lookRate WRITE setLookRate NOTIFY lookRateChanged )
     Q_PROPERTY( bool multisampleEnabled READ isMultisampleEnabled NOTIFY multisampleEnabledChanged )
+
+    Q_PROPERTY( ControlMode controlMode READ controlMode WRITE setControlMode NOTIFY controlModeChanged )
+    Q_PROPERTY( QVector3D firstPersonUpVector READ firstPersonUpVector WRITE setFirstPersonUpVector NOTIFY firstPersonUpVectorChanged )
 
 public:
     explicit CameraController(QObject *parent = 0);
@@ -101,6 +105,19 @@ public:
     void update( double t );
 
     bool isMultisampleEnabled() const;
+
+    enum ControlMode {
+        FreeLook,
+        FirstPerson
+    };
+    Q_ENUM(ControlMode)
+
+    void setControlMode( ControlMode controlMode );
+    ControlMode controlMode() const;
+
+    void setFirstPersonUpVector( const QVector3D &up );
+    QVector3D firstPersonUpVector() const;
+
 public Q_SLOTS:
     void toggleMSAA();
 
@@ -113,6 +130,9 @@ Q_SIGNALS:
     void lookRateChanged();
 
     void multisampleEnabledChanged();
+
+    void controlModeChanged();
+    void firstPersonUpVectorChanged();
 
 private Q_SLOTS:
     void onUpdate();
@@ -140,6 +160,9 @@ private:
 
     bool m_translateFast;
     bool m_multisampleEnabled;
+
+    ControlMode m_controlMode;
+    QVector3D m_firstPersonUp;
 
     QTimer *m_updateTimer;
 };

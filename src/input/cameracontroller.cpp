@@ -69,6 +69,8 @@ CameraController::CameraController(QObject *parent) :
     m_lookRate( 0.1f ),
     m_translateFast( false ),
     m_multisampleEnabled( true ),
+    m_controlMode( FirstPerson ),
+    m_firstPersonUp( QVector3D( 0.0f, 1.0f, 0.0f ) ),
     m_updateTimer(new QTimer(this))
 {
     m_updateTimer->setInterval(16);
@@ -268,15 +270,30 @@ void CameraController::mouseMoveEvent( QMouseEvent* e )
     float dy = -(m_pos.y() - m_prevPos.y());
     m_prevPos = m_pos;
 
-    if ( m_leftButtonPressed )
-    {
-        m_camera->pan( dx * m_lookRate );
-        m_camera->tilt( dy * m_lookRate );
-    }
-    else if ( m_orbitMode )
-    {
-        m_camera->panAboutViewCenter( dx * m_orbitRate );
-        m_camera->tiltAboutViewCenter( dy * m_orbitRate );
+    if (m_leftButtonPressed) {
+        switch (m_controlMode) {
+        case FreeLook:
+            m_camera->pan(dx * m_lookRate);
+            break;
+
+        case FirstPerson:
+            m_camera->pan(dx * m_lookRate, m_firstPersonUp);
+            break;
+        }
+
+        m_camera->tilt(dy * m_lookRate);
+    } else if (m_orbitMode) {
+        switch (m_controlMode) {
+        case FreeLook:
+            m_camera->panAboutViewCenter(dx * m_orbitRate);
+            break;
+
+        case FirstPerson:
+            m_camera->panAboutViewCenter(dx * m_orbitRate, m_firstPersonUp);
+            break;
+        }
+
+        m_camera->tiltAboutViewCenter(dy * m_orbitRate);
     }
 }
 
@@ -289,6 +306,32 @@ void CameraController::toggleMSAA()
 {
     m_multisampleEnabled = !m_multisampleEnabled;
     emit multisampleEnabledChanged();
+}
+
+void CameraController::setControlMode(ControlMode controlMode)
+{
+    if (controlMode != m_controlMode) {
+        m_controlMode = controlMode;
+        emit controlModeChanged();
+    }
+}
+
+CameraController::ControlMode CameraController::controlMode() const
+{
+    return m_controlMode;
+}
+
+void CameraController::setFirstPersonUpVector(const QVector3D &up)
+{
+    if (m_firstPersonUp != up) {
+        m_firstPersonUp = up;
+        emit firstPersonUpVectorChanged();
+    }
+}
+
+QVector3D CameraController::firstPersonUpVector() const
+{
+    return m_firstPersonUp;
 }
 
 bool CameraController::eventFilter(QObject *receiver, QEvent *event)
