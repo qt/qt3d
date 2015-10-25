@@ -50,6 +50,7 @@
 
 #include <QObject>
 #include <QMouseEvent>
+#include <QtCore/qmutex.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,6 +72,7 @@ protected:
 
 private:
     QList<QMouseEvent> m_pendingEvents;
+    QMutex m_mutex;
 };
 
 } // Render

@@ -36,6 +36,8 @@
 
 #include "pickeventfilter_p.h"
 
+#include <QtCore/QMutexLocker>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -51,23 +53,33 @@ PickEventFilter::~PickEventFilter()
 {
 }
 
-// main thread (aspect->jobsToExecute)
+/*!
+    \internal
+    Called from a worker thread in the thread pool so be sure to
+    mutex protect the data.
+*/
 QList<QMouseEvent> PickEventFilter::pendingEvents()
 {
-    QList<QMouseEvent> cpy(m_pendingEvents);
+    QMutexLocker locker(&m_mutex);
+    QList<QMouseEvent> pendingEvents(m_pendingEvents);
     m_pendingEvents.clear();
-    return cpy;
+    return pendingEvents;
 }
 
-// main thread
+/*!
+    \internal
+    Called from the main thread.
+*/
 bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
-    case Qt::TapGesture:
+    case Qt::TapGesture: {
+        QMutexLocker locker(&m_mutex);
         m_pendingEvents.push_back(QMouseEvent(*static_cast<QMouseEvent *>(e)));
+    }
     default:
         break;
     }
