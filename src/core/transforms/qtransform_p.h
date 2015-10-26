@@ -70,6 +70,13 @@ public:
     QList<QAbstractTransform*> m_transforms;
 
     mutable QMatrix4x4 m_matrix;
+
+    // Stored in this order as QQuaternion is bigger than QVector3D
+    // Operations are applied in the order of:
+    // scale, rotation, translation
+    QQuaternion m_rotation;
+    QVector3D m_scale;
+    QVector3D m_translation;
 };
 
 } // namespace Qt3DCore

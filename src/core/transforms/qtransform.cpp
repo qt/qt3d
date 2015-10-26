@@ -49,8 +49,11 @@ namespace Qt3DCore {
     \internal
 */
 QTransformPrivate::QTransformPrivate()
-    : QComponentPrivate(),
-      m_transformsDirty(false)
+    : QComponentPrivate()
+    , m_transformsDirty(false)
+    , m_rotation()
+    , m_scale(1.0f, 1.0f, 1.0f)
+    , m_translation()
 {
 }
 
@@ -157,6 +160,51 @@ QMatrix4x4 QTransform::matrix() const
         d->m_transformsDirty = false;
     }
     return d->m_matrix;
+}
+
+void QTransform::setScale(const QVector3D &scale)
+{
+    Q_D(QTransform);
+    if (scale != d->m_scale) {
+        d->m_scale = scale;
+        emit scaleChanged();
+    }
+}
+
+QVector3D QTransform::scale() const
+{
+    Q_D(const QTransform);
+    return d->m_scale;
+}
+
+void QTransform::setRotation(const QQuaternion &rotation)
+{
+    Q_D(QTransform);
+    if (rotation != d->m_rotation) {
+        d->m_rotation = rotation;
+        emit rotationChanged();
+    }
+}
+
+QQuaternion QTransform::rotation() const
+{
+    Q_D(const QTransform);
+    return d->m_rotation;
+}
+
+void QTransform::setTranslation(const QVector3D &translation)
+{
+    Q_D(QTransform);
+    if (translation != d->m_translation) {
+        d->m_translation = translation;
+        emit translationChanged();
+    }
+}
+
+QVector3D QTransform::translation() const
+{
+    Q_D(const QTransform);
+    return d->m_translation;
 }
 
 } // namespace Qt3DCore
