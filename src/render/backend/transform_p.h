@@ -72,6 +72,8 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
+    void updateMatrix();
+
 private:
     QMatrix4x4 m_transformMatrix;
     QQuaternion m_rotation;

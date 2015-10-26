@@ -59,7 +59,10 @@ void Transform::updateFromPeer(Qt3DCore::QNode *peer)
 {
     Qt3DCore::QTransform *transform = static_cast<Qt3DCore::QTransform *>(peer);
 
-    m_transformMatrix = transform->matrix();
+    m_rotation = transform->rotation();
+    m_scale = transform->scale();
+    m_translation = transform->translation();
+    updateMatrix();
     m_enabled = transform->isEnabled();
 }
 
@@ -70,19 +73,31 @@ QMatrix4x4 Transform::transformMatrix() const
 
 void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
+    // TODO: Flag the matrix as dirty and update all matrices batched in a job
     if (e->type() == NodeUpdated) {
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("matrix"))
-            m_transformMatrix = propertyChange->value().value<QMatrix4x4>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("scale"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("scale")) {
             m_scale = propertyChange->value().value<QVector3D>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("rotation"))
+            updateMatrix();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("rotation")) {
             m_rotation = propertyChange->value().value<QQuaternion>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("translation"))
+            updateMatrix();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("translation")) {
             m_translation = propertyChange->value().value<QVector3D>();
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            updateMatrix();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
+        }
     }
+}
+
+void Transform::updateMatrix()
+{
+    QMatrix4x4 m;
+    m.translate(m_translation);
+    m.rotate(m_rotation);
+    m.scale(m_scale);
+    m_transformMatrix = m;
 }
 
 } // namespace Render
