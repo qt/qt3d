@@ -161,15 +161,15 @@ private Q_SLOTS:
         QTest::addColumn<QByteArray>("propertyName");
 
         QTest::newRow("clicked")
-                << QByteArray(SIGNAL(clicked(QPickEvent *)))
+                << QByteArray(SIGNAL(clicked(Qt3DRender::QPickEvent *)))
                 << QByteArrayLiteral("clicked");
 
         QTest::newRow("pressed")
-                << QByteArray(SIGNAL(pressed(QPickEvent *)))
+                << QByteArray(SIGNAL(pressed(Qt3DRender::QPickEvent *)))
                 << QByteArrayLiteral("pressed");
 
         QTest::newRow("released")
-                << QByteArray(SIGNAL(released(QPickEvent *)))
+                << QByteArray(SIGNAL(released(Qt3DRender::QPickEvent *)))
                 << QByteArrayLiteral("released");
 
         QTest::newRow("entered")

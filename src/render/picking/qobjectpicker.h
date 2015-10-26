@@ -70,9 +70,9 @@ public:
     bool isPressed() const;
 
 Q_SIGNALS:
-    void pressed(QPickEvent *event);
-    void released(QPickEvent *event);
-    void clicked(QPickEvent *event);
+    void pressed(Qt3DRender::QPickEvent *event);
+    void released(Qt3DRender::QPickEvent *event);
+    void clicked(Qt3DRender::QPickEvent *event);
     void entered();
     void exited();
     void pickAttributeChanged();
