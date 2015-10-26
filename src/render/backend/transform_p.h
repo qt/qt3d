@@ -50,6 +50,8 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <QMatrix4x4>
+#include <QtGui/qquaternion.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +74,9 @@ public:
 
 private:
     QMatrix4x4 m_transformMatrix;
+    QQuaternion m_rotation;
+    QVector3D m_scale;
+    QVector3D m_translation;
     bool m_enabled;
 };
 

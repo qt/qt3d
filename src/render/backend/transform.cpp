@@ -49,6 +49,9 @@ namespace Render {
 
 Transform::Transform()
     : QBackendNode()
+    , m_rotation()
+    , m_scale(1.0f, 1.0f, 1.0f)
+    , m_translation()
 {
 }
 
@@ -71,6 +74,12 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         const QScenePropertyChangePtr &propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("matrix"))
             m_transformMatrix = propertyChange->value().value<QMatrix4x4>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("scale"))
+            m_scale = propertyChange->value().value<QVector3D>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("rotation"))
+            m_rotation = propertyChange->value().value<QQuaternion>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("translation"))
+            m_translation = propertyChange->value().value<QVector3D>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             m_enabled = propertyChange->value().toBool();
     }

@@ -121,6 +121,9 @@ void QTransform::copy(const QNode *ref)
     // We need to copy the matrix with all the pending
     // transformations applied
     d_func()->m_matrix = transform->matrix();
+    d_func()->m_rotation = transform->rotation();
+    d_func()->m_scale = transform->scale();
+    d_func()->m_translation = transform->translation();
 }
 
 QList<QAbstractTransform *> QTransform::transforms() const
