@@ -54,7 +54,8 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
-    Q_PROPERTY(QVector3D scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
     Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
     Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
 
@@ -70,12 +71,14 @@ public:
 
     QMatrix4x4 matrix() const;
 
-    QVector3D scale() const;
+    float scale() const;
+    QVector3D scale3D() const;
     QQuaternion rotation() const;
     QVector3D translation() const;
 
 public Q_SLOTS:
-    void setScale(const QVector3D &scale);
+    void setScale(float scale);
+    void setScale3D(const QVector3D &scale);
     void setRotation(const QQuaternion &rotation);
     void setTranslation(const QVector3D &translation);
 
@@ -84,6 +87,7 @@ Q_SIGNALS:
     void transformsChanged();
 
     void scaleChanged();
+    void scale3DChanged();
     void rotationChanged();
     void translationChanged();
 

@@ -122,7 +122,7 @@ void QTransform::copy(const QNode *ref)
     // transformations applied
     d_func()->m_matrix = transform->matrix();
     d_func()->m_rotation = transform->rotation();
-    d_func()->m_scale = transform->scale();
+    d_func()->m_scale = transform->scale3D();
     d_func()->m_translation = transform->translation();
 }
 
@@ -165,19 +165,36 @@ QMatrix4x4 QTransform::matrix() const
     return d->m_matrix;
 }
 
-void QTransform::setScale(const QVector3D &scale)
+void QTransform::setScale3D(const QVector3D &scale)
 {
     Q_D(QTransform);
     if (scale != d->m_scale) {
         d->m_scale = scale;
-        emit scaleChanged();
+        emit scale3DChanged();
     }
 }
 
-QVector3D QTransform::scale() const
+QVector3D QTransform::scale3D() const
 {
     Q_D(const QTransform);
     return d->m_scale;
+}
+
+void QTransform::setScale(float scale)
+{
+    Q_D(QTransform);
+    if (scale != d->m_scale.x()) {
+        setScale3D(QVector3D(scale, scale, scale));
+        const bool wasBlocked = blockNotifications(true);
+        emit scaleChanged();
+        blockNotifications(wasBlocked);
+    }
+}
+
+float QTransform::scale() const
+{
+    Q_D(const QTransform);
+    return d->m_scale.x();
 }
 
 void QTransform::setRotation(const QQuaternion &rotation)
