@@ -34,25 +34,27 @@ tagfile                 = qt3d.tags
 
 depends                 += qtcore qtqml qtquick qtdoc
 
-headerdirs += .. \
-              ../../render \
-              ../../collision \
-              ../../logic \
-              ../../plugins \
-              ../../quick3d/quick3d \
-              ../../input
+headerdirs += . \
+              ../render \
+              ../core \
+              ../collision \
+              ../logic \
+              ../plugins \
+              ../quick3d/quick3d \
+              ../input
 
 
-sourcedirs += .. \
-              ../../render \
-              ../../collision \
-              ../../logic \
-              ../../plugins \
-              ../../quick3d/quick3d \
-              ../../input
+sourcedirs += . \
+              ../render \
+              ../core \
+              ../collision \
+              ../logic \
+              ../plugins \
+              ../quick3d/quick3d \
+              ../input
 
-exampledirs += ../../../examples/qt3d \
-               src/snippets
+exampledirs += ../../examples/qt3d \
+               snippets
 
 examplesinstallpath = qt3d
 
@@ -62,11 +64,10 @@ examples.imageextensions      += "*.png"
 #excludedirs +=
 
 imagedirs   += images \
-               ../../render/doc/images \
-               ../../../examples/qt3d/shadow-map-qml/doc/images \
-               ../../../examples/qt3d/basicshapes-cpp/doc/images \
-               ../../../examples/qt3d/planets-qml/doc/images \
-               ../../../examples/qt3d/wireframe/doc/images
+               ../../examples/qt3d/shadow-map-qml/doc/images \
+               ../../examples/qt3d/basicshapes-cpp/doc/images \
+               ../../examples/qt3d/planets-qml/doc/images \
+               ../../examples/qt3d/wireframe/doc/images
 
 Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
                         QT3DINPUTSHARED_EXPORT \

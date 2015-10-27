@@ -11,8 +11,6 @@ DEFINES += QT3DCORE_LIBRARY
 #    DEFINES += THREAD_WEAVER
 #}
 
-QMAKE_DOCS = $$PWD/doc/qt3d.qdocconf
-
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
