@@ -229,7 +229,8 @@ public Q_SLOTS:
 
         // Shutdown the Renderer Aspect while the OpenGL context
         // is still valid
-        m_renderAspect->renderShutdown();
+        if (m_renderAspect)
+            m_renderAspect->renderShutdown();
     }
 
     // SGThread
@@ -721,8 +722,9 @@ void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial 
 void Scene3DCleaner::cleanup()
 {
     Q_ASSERT(m_renderer);
-    delete m_renderer->m_aspectEngine;
+    delete m_renderer->m_aspectEngine; // also deletes m_renderer->m_renderAspect
     m_renderer->m_aspectEngine = Q_NULLPTR;
+    m_renderer->m_renderAspect = Q_NULLPTR;
     m_renderer->deleteLater();
     deleteLater();
 }
