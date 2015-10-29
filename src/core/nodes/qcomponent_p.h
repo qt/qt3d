@@ -48,14 +48,14 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qnode_p.h>
+#include <private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORESHARED_EXPORT QComponentPrivate : public QNodePrivate
+class QT3DCORE_PRIVATE_EXPORT QComponentPrivate : public QNodePrivate
 {
 public:
     QComponentPrivate();
