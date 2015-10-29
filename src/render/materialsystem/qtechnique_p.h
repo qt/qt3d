@@ -50,7 +50,6 @@
 
 #include <private/qnode_p.h>
 #include <Qt3DRender/qopenglfilter.h>
-#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +60,7 @@ class QAnnotation;
 class QParameter;
 class QRenderPass;
 
-class QT3DRENDERSHARED_EXPORT QTechniquePrivate : public Qt3DCore::QNodePrivate
+class QTechniquePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QTechniquePrivate();
