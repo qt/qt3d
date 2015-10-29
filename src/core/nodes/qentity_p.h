@@ -48,15 +48,15 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include "qentity.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORESHARED_EXPORT QEntityPrivate : public QNodePrivate
+class QT3DCORE_PRIVATE_EXPORT QEntityPrivate : public QNodePrivate
 {
 public :
     QEntityPrivate();
