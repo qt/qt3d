@@ -49,10 +49,10 @@
 //
 
 #include <private/qobject_p.h>
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qobservableinterface_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include "propertychangehandler_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ namespace Qt3DCore {
 class QNode;
 class QAspectEngine;
 
-class QT3DCORESHARED_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
+class QT3DCORE_PRIVATE_EXPORT QNodePrivate : public QObjectPrivate, public QObservableInterface
 {
 public:
     QNodePrivate();
