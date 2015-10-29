@@ -48,10 +48,10 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/QAbstractAttribute>
 #include <Qt3DCore/QAbstractBuffer>
 #include <private/qnode_p.h>
+#include <private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +59,7 @@ namespace Qt3DCore {
 
 class QAbstractAttribute;
 
-class QT3DCORESHARED_EXPORT QAbstractAttributePrivate : public QNodePrivate
+class QT3DCORE_PRIVATE_EXPORT QAbstractAttributePrivate : public QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QAbstractAttribute)
