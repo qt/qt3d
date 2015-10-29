@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/private/qobserverinterface_p.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +57,7 @@ namespace Qt3DCore {
 
 typedef std::vector<QSceneChangePtr> QSceneChangeList;
 
-class QT3DCORESHARED_EXPORT QLockableObserverInterface : public QObserverInterface
+class QT3DCORE_PRIVATE_EXPORT QLockableObserverInterface : public QObserverInterface
 {
 public:
     virtual ~QLockableObserverInterface();
