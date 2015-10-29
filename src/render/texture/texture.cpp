@@ -44,7 +44,6 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
 

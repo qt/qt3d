@@ -105,7 +105,6 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/qaspectfactory.h>
 #include <Qt3DCore/qservicelocator.h>
 

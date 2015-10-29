@@ -79,7 +79,6 @@
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qeventfilterservice.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
 #include <QStack>

@@ -37,7 +37,6 @@
 #include "cameraselectornode_p.h"
 #include <Qt3DRender/private/qcameraselector_p.h>
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
