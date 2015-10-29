@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QSpotLightPrivate : public QAbstractLightPrivate
+class QSpotLightPrivate : public QAbstractLightPrivate
 {
 public:
     QSpotLightPrivate();
