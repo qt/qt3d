@@ -1,5 +1,6 @@
 /****************************************************************************
 **
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
@@ -36,77 +37,26 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.0 as QQ2
 
 Entity {
-    id: sceneRoot
+    id: root
+
+    property vector3d lightPosition: Qt.vector3d(30.0, 30.0, 0.0)
+    property vector3d lightIntensity: Qt.vector3d(1.0, 1.0, 1.0)
+
+    readonly property Camera lightCamera: lightCamera
+    readonly property matrix4x4 lightViewProjection: lightCamera.projectionMatrix.times(lightCamera.matrix)
 
     Camera {
-        id: camera
+        id: lightCamera
+        objectName: "lightCameraLens"
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: 1280 / 768 //_window.width / _window.height
-        nearPlane: 0.01
-        farPlane: 1000.0
-        position: Qt.vector3d(0.0, 0.0, -100.0)
+        aspectRatio: 1280 / 768 //mainview.width / mainview.height
+        nearPlane: 0.1
+        farPlane: 200.0
+        position: root.lightPosition
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-    }
-
-    Configuration {
-        controlledCamera: camera
-    }
-
-    Light {
-        id: light
-    }
-
-    components: [
-        Qt3DBenchFrameGraph {
-            id: frameGraph
-            viewCamera: camera
-            lightCamera: light.lightCamera
-        }
-    ]
-
-    ShadowEffect {
-        id: shadowEffect
-
-        shadowTexture: frameGraph.shadowTexture
-        light: light
-    }
-
-    NodeInstantiator {
-        id: spheres
-        property int count: 100
-        property real spacing: 2
-        property int cols: 10
-        property int rows: 10
-        property int levelCount: cols * rows
-        property int levels: 1
-
-        model: count
-        delegate: SphereElement {
-            id: sphereEntity
-
-            xPos: spheres.spacing * (index % spheres.cols - 0.5 * (spheres.cols - 1))
-            yPos: spheres.spacing * (Math.floor(index / spheres.levelCount) - 0.5 * spheres.levels)
-            zPos: spheres.spacing * (Math.floor((index % spheres.levelCount) / spheres.cols) - 0.5 * spheres.rows)
-            material: ShadowMaterial {
-                effect: shadowEffect
-                diffuseColor: Qt.rgba(0.9, 0.5, 0.3, 1.0)
-                shininess: 75
-            }
-        }
-    }
-
-    // Ground plane
-    // Just for showing that shadows are really working
-    GroundPlane {
-        material: ShadowMaterial {
-            effect: shadowEffect
-            diffuseColor: Qt.rgba(0.2, 0.5, 0.3, 1.0)
-            specularColor: Qt.rgba(1.0, 0, 0, 1.0)
-        }
     }
 }

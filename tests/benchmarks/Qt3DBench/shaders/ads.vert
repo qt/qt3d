@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,35 +34,33 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#version 150 core
 
-Entity {
-    id: root
-    property real xPos: 0
-    property real yPos: 0
-    property real zPos: 0
-    property Material material
+in vec3 vertexPosition;
+in vec3 vertexNormal;
 
-    SphereMesh {
-        id: sphereMesh
-        rings: 15
-        slices: 16
-        radius: 0.5
-    }
+out vec4 positionInLightSpace;
+out vec3 position;
+out vec3 normal;
 
-    Transform {
-        id: sphereTransform
-        Translate {
-            dx: xPos
-            dy: yPos
-            dz: zPos
-        }
-    }
+uniform mat4 lightViewProjection;
+uniform mat4 modelMatrix;
+uniform mat4 modelView;
+uniform mat3 modelViewNormal;
+uniform mat4 mvp;
 
-    components: [
-        sphereMesh,
-        sphereTransform,
-        material
-    ]
+void main()
+{
+    // positionInLightSpace = lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
+    const mat4 shadowMatrix = mat4(0.5, 0.0, 0.0, 0.0,
+                                   0.0, 0.5, 0.0, 0.0,
+                                   0.0, 0.0, 0.5, 0.0,
+                                   0.5, 0.5, 0.5, 1.0);
+
+    positionInLightSpace = shadowMatrix * lightViewProjection * modelMatrix * vec4(vertexPosition, 1.0);
+
+    normal = normalize(modelViewNormal * vertexNormal);
+    position = vec3(modelView * vec4(vertexPosition, 1.0));
+
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
 }

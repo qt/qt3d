@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -36,33 +36,19 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import QtQuick 2.1
 
-Entity {
+Material {
     id: root
-    property real xPos: 0
-    property real yPos: 0
-    property real zPos: 0
-    property Material material
+    property color ambientColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+    property color diffuseColor: Qt.rgba(0.7, 0.7, 0.9, 1.0)
+    property color specularColor: Qt.rgba(0.1, 0.1, 0.1, 1.0)
+    property real shininess: 150.0
 
-    SphereMesh {
-        id: sphereMesh
-        rings: 15
-        slices: 16
-        radius: 0.5
-    }
-
-    Transform {
-        id: sphereTransform
-        Translate {
-            dx: xPos
-            dy: yPos
-            dz: zPos
-        }
-    }
-
-    components: [
-        sphereMesh,
-        sphereTransform,
-        material
+    parameters: [
+        Parameter { name: "ambient";   value: Qt.vector3d(root.ambientColor.r, root.ambientColor.g, root.ambientColor.b) },
+        Parameter { name: "diffuse";   value: Qt.vector3d(root.diffuseColor.r, root.diffuseColor.g, root.diffuseColor.b) },
+        Parameter { name: "specular";  value: Qt.vector3d(root.specularColor.r, root.specularColor.g, root.specularColor.b) },
+        Parameter { name: "shininess"; value: root.shininess }
     ]
 }
