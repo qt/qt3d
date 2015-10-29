@@ -6,11 +6,6 @@ load(qt_module)
 
 DEFINES += QT3DCORE_LIBRARY
 
-# TODO: Make tasking API configurable
-#use_thread_weaver {
-#    DEFINES += THREAD_WEAVER
-#}
-
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage

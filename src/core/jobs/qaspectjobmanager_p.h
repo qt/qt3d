@@ -55,12 +55,6 @@
 
 #include <QVector>
 
-#ifdef THREAD_WEAVER
-namespace ThreadWeaver {
-class Queue;
-}
-#endif
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
@@ -84,11 +78,6 @@ public:
     void waitForPerThreadFunction(JobFunction func, void *arg) Q_DECL_OVERRIDE;
 
 private:
-#ifdef THREAD_WEAVER
-    // Owned by QAspectJobManager via QObject parent-child
-    ThreadWeaver::Queue *m_weaver;
-#endif
-
     QThreadPooler *m_threadPooler;
     QScopedPointer<DependencyHandler> m_dependencyHandler;
 };
