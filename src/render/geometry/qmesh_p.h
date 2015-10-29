@@ -48,7 +48,6 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/qgeometryrenderer_p.h>
 #include <QUrl>
 
@@ -58,7 +57,7 @@ namespace Qt3DRender {
 
 class QMesh;
 
-class QT3DRENDERSHARED_EXPORT QMeshPrivate : public QGeometryRendererPrivate
+class QMeshPrivate : public QGeometryRendererPrivate
 {
 public:
     QMeshPrivate();
