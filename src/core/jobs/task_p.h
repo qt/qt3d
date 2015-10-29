@@ -89,7 +89,7 @@ public:
     AspectTaskRunnable();
     ~AspectTaskRunnable();
 
-    void run();
+    void run() Q_DECL_OVERRIDE;
 
     void setDependencyHandler(DependencyHandler *handler) Q_DECL_OVERRIDE;
     DependencyHandler *dependencyHandler() Q_DECL_OVERRIDE;
@@ -120,7 +120,7 @@ public:
                               QAtomicInt *atomicCount);
     ~SyncTaskRunnable();
 
-    void run();
+    void run() Q_DECL_OVERRIDE;
 
     void setDependencyHandler(DependencyHandler *handler) Q_DECL_OVERRIDE;
     DependencyHandler *dependencyHandler() Q_DECL_OVERRIDE;
