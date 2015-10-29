@@ -48,8 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
 #include <private/qnode_p.h>
+#include <private/qt3dcore_global_p.h>
 
 #include <QByteArray>
 
@@ -59,7 +59,7 @@ namespace Qt3DCore {
 
 class QAbstractBuffer;
 
-class QT3DCORESHARED_EXPORT QAbstractBufferPrivate : public QNodePrivate
+class QT3DCORE_PRIVATE_EXPORT QAbstractBufferPrivate : public QNodePrivate
 {
 public:
     Q_DECLARE_PUBLIC(QAbstractBuffer)
