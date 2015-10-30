@@ -223,7 +223,7 @@ void Quick3DNodeInstantiatorPrivate::makeModel()
 /*!
     \qmltype NodeInstantiator
     \instantiates Quick3DNodeInstantiator
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \brief Dynamically creates nodes.
     \since 5.5
 

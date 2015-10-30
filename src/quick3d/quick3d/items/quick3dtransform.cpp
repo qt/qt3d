@@ -44,7 +44,7 @@ namespace Quick {
 
 /*!
     \qmltype Transform
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 Quick3DTransform::Quick3DTransform(QObject *parent)

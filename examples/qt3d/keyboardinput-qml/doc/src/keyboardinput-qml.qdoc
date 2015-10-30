@@ -27,6 +27,6 @@
 
 /*!
     \example keyboardinput-qml
-    \title Qt3D: Keyboard Input QML Example
+    \title Qt 3D: Keyboard Input QML Example
     \ingroup qt3d-examples-qml
 */

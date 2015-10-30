@@ -27,6 +27,6 @@
 
 /*!
     \example deferred-renderer-qml
-    \title Qt3D: Deferred Renderer QML Example
+    \title Qt 3D: Deferred Renderer QML Example
     \ingroup qt3d-examples-qml
 */

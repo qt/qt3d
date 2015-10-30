@@ -422,7 +422,7 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
 /*!
     \qmltype CameraLens
     \instantiates Qt3DCore::QCameraLens
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \inherits Component3D
     \since 5.5
 */

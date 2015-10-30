@@ -93,7 +93,7 @@ QMatrix4x4 QMatrixTransform::transformMatrix() const
 
 /*!
     \qmltype MatrixTransform
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
     \instantiates Qt3DCore::QMatrixTransform
 */

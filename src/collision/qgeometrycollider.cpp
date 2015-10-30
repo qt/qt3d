@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3DRender::QGeometryColliderPrivate
+    \class Qt3DCollision::QGeometryColliderPrivate
     \internal
 */
 QGeometryColliderPrivate::QGeometryColliderPrivate()
@@ -51,7 +51,7 @@ QGeometryColliderPrivate::QGeometryColliderPrivate()
 }
 
 /*!
-    \class Qt3DRender::QGeometryCollider
+    \class Qt3DCollision::QGeometryCollider
     \inmodule Qt3DCollision
     \since 5.5
     \brief Represents a geometric mesh used for collision detection
@@ -60,7 +60,7 @@ QGeometryColliderPrivate::QGeometryColliderPrivate()
 /*!
     \qmltype GeometryCollider
     \inqmlmodule Qt3D.Collision
-    \instantiates Qt3DRender::QGeometryCollider
+    \instantiates Qt3DCollision::QGeometryCollider
     \inherits Component3D
     \since 5.5
 */

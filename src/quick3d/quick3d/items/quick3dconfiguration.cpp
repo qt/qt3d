@@ -51,7 +51,7 @@ namespace Quick {
 
 /*!
     \qmltype Configuration
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 Quick3DConfiguration::Quick3DConfiguration(QObject *parent)

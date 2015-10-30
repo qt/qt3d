@@ -39,17 +39,17 @@
     \page qt3d-index.html
     \title Qt 3D
 
-    \e Qt3D provides functionality for near-realtime simulation systems
+    \e{Qt 3D} provides functionality for near-realtime simulation systems
     with support for 2D and 3D rendering in both Qt C++ and Qt Quick
     applications.
 
-    The functionality in Qt3D is divided into the following C++ modules:
+    The functionality in Qt 3D is divided into the following C++ modules:
 
     \annotatedlist qt3d-modules
 
-    Classes, types and functions are declared under the \l [CPP] {Qt3D} namespace.
+    Classes, types and functions are declared under the \l[CPP]{Qt 3D} namespace.
 
-    For Qt Quick applications, Qt3D provides the following QML modules:
+    For Qt Quick applications, Qt 3D provides the following QML modules:
 
     \annotatedlist qt3d-qmlmodules
 
@@ -82,21 +82,21 @@
 
     \section1 Overview
 
-    The high level design and motivation for Qt3D is described in the \l {Qt3D
-    Overview}. The Qt3D Renderer aspect offers support for data-driven
-    configuration as described in \l {Qt3D Renderer Framegraph}.
+    The high level design and motivation for Qt3D is described in the \l {Qt 3D
+    Overview}. The Qt 3D Renderer aspect offers support for data-driven
+    configuration as described in \l {Qt 3D Renderer Framegraph}.
 
     \section1 Reference
     \list
-        \li \l {Qt3D Overview}
+        \li \l {Qt 3D Overview}
         \li \l {Qt 3D C++ Classes}
         \li \l {Qt 3D QML Types}
-        \li \l {Qt3D Examples}
+        \li \l {Qt 3D Examples}
     \endlist
 
-    \section1 Qt3D Platform Support
+    \section1 Qt 3D Platform Support
 
-    In this Technology Preview Qt3D has the following support for platforms:
+    In this Technology Preview Qt 3D has the following support for platforms:
 
     \list
         \li Microsoft Windows (win32) - Supported

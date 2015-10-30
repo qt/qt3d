@@ -45,7 +45,7 @@ namespace Quick {
 /*!
     \qmltype Entity
     \inherits Node
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 

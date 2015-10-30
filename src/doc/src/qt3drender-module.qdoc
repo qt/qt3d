@@ -36,14 +36,14 @@
 
 /*!
     \module Qt3DRender
-    \title Qt3D Render C++ Classes
-    \brief The Qt3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
+    \title Qt 3D Render C++ Classes
+    \brief The Qt 3D Render module contains functionality to support 2D and 3D rendering using Qt3D.
 
     \ingroup modules
     \ingroup qt3d-modules
     \qtvariable 3drender
 
-    The Qt3D Render module provides an aspect, components, and other supporting types necessary
+    The Qt 3D Render module provides an aspect, components, and other supporting types necessary
     to implement 2D and 3D rendering as part of the Qt3D framework.
 
     To use classes from this module, add this directive into the C++ files:
@@ -62,13 +62,13 @@
 
     \section1 Overview
 
-    The Qt3D Render aspect offers support for data-driven configuration as described
+    The Qt 3D Render aspect offers support for data-driven configuration as described
     in \l {Qt3D Render Framegraph}.
 
     \section1 Reference
     \list
-    \li \l {Qt3D Render C++ Classes}
-    \li \l {Qt3D Examples}
+    \li \l {Qt 3D Render C++ Classes}
+    \li \l {Qt 3D Examples}
     \endlist
 */
 
@@ -82,11 +82,11 @@
 
 /*!
    \qmlmodule Qt3D.Render 2.0
-   \title Qt3D Render QML Types
+   \title Qt 3D Render QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides Qt3D QML types for rendering.
+   \brief Provides Qt 3D QML types for rendering.
 
    To import and use the module's QML types, use the following statement:
 

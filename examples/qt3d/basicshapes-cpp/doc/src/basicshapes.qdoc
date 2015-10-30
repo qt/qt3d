@@ -27,7 +27,7 @@
 
 /*!
     \example basicshapes-cpp
-    \title Qt3D: Basic Shapes C++ Example
+    \title Qt 3D: Basic Shapes C++ Example
     \ingroup qt3d-examples-cpp
     \brief Shows four basic shapes that Qt3D offers and sets up a mesh for each of them.
 

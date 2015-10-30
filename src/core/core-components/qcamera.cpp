@@ -57,7 +57,7 @@ QCameraPrivate::QCameraPrivate()
     \qmltype Camera
     \instantiates Qt3DCore::QCamera
     \inherits Entity
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 
