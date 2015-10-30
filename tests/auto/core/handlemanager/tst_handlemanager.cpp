@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DCore/qhandlemanager.h>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandlemanager_p.h>
+#include <Qt3DCore/private/qhandle_p.h>
 
 class tst_HandleManager : public QObject
 {

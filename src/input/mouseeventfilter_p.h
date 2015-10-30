@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,56 +34,47 @@
 **
 ****************************************************************************/
 
-#include "qnodevisitor_p.h"
+#ifndef QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H
+#define QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DInput {
+namespace Input {
 
-QNodeVisitorPrivate::QNodeVisitorPrivate()
+class InputHandler;
+
+class MouseEventFilter : public QObject
 {
-}
+    Q_OBJECT
+public:
+    explicit MouseEventFilter(QObject *parent = 0);
+    void setInputHandler(InputHandler *handler);
+    inline InputHandler *inputHandler() const { return m_inputHandler; }
 
-QNodeVisitor::QNodeVisitor() :
-    d_ptr(new QNodeVisitorPrivate)
-{
-}
+protected:
+    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
 
-QNodeVisitor::~QNodeVisitor()
-{
-    delete d_ptr;
-}
+private:
+    InputHandler *m_inputHandler;
+};
 
-QNode* QNodeVisitor::rootNode() const
-{
-    return d_ptr->m_path.front();
-}
-
-QNode* QNodeVisitor::currentNode() const
-{
-    return d_ptr->m_path.back();
-}
-
-void QNodeVisitor::setPath(QNodeList path)
-{
-    d_ptr->m_path = path;
-}
-
-QNodeList QNodeVisitor::path() const
-{
-    return d_ptr->m_path;
-}
-
-void QNodeVisitor::append(QNode *n)
-{
-    d_ptr->m_path.append(n);
-}
-
-void QNodeVisitor::pop_back()
-{
-    d_ptr->m_path.pop_back();
-}
-
-} // namespace Qt3DCore
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
+
+#endif // QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H

@@ -274,7 +274,7 @@ private:
     public:
         explicit AssimpRawTextureImageFunctor(const QByteArray &data);
 
-        TexImageDataPtr operator()() Q_DECL_FINAL;
+        QTexImageDataPtr operator()() Q_DECL_FINAL;
         bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL;
 
         QT3D_FUNCTOR(AssimpRawTextureImageFunctor)
@@ -897,9 +897,9 @@ AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFuncto
 {
 }
 
-TexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
+QTexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
 {
-    TexImageDataPtr dataPtr;
+    QTexImageDataPtr dataPtr;
     dataPtr->setData(m_data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
     return dataPtr;
 }

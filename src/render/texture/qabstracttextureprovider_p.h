@@ -69,7 +69,7 @@ public :
     int m_width, m_height, m_depth;
     bool m_autoMipMap;
 
-    QList<TexImageDataPtr> m_data;
+    QList<QTexImageDataPtr> m_data;
 
     QAbstractTextureProvider::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction

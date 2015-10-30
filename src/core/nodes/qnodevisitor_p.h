@@ -34,66 +34,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_TEXTUREDATA_H
-#define QT3DRENDER_TEXTUREDATA_H
+#ifndef QT3DCORE_QNODEVISITOR_P_H
+#define QT3DCORE_QNODEVISITOR_P_H
 
-#include <QOpenGLTexture>
-#include <QImage>
-#include <QSharedPointer>
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/qnodevisitor.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore
+{
 
-class QT3DRENDERSHARED_EXPORT TexImageData
+class QNodeVisitorPrivate
 {
 public:
-    TexImageData();
-    ~TexImageData();
+    QNodeVisitorPrivate();
 
-    void cleanup();
-
-    bool isCompressed() const
-    { return m_isCompressed; }
-
-    inline int width() const { return m_width; }
-    inline int height() const { return m_height; }
-    inline int depth() const { return m_depth; }
-    inline QOpenGLTexture::TextureFormat format() const { return m_format; }
-
-    void setImage(const QImage &);
-
-    void setData(const QByteArray &data,
-                 QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype);
-
-    bool setCompressedFile(const QString &source);
-
-    QByteArray data() const
-    { return m_data; }
-
-    QOpenGLTexture::PixelFormat pixelFormat() const
-    { return m_pixelFormat; }
-
-    QOpenGLTexture::PixelType pixelType() const
-    { return m_pixelType; }
-
-private:
-    int m_width, m_height, m_depth;
-    QOpenGLTexture::PixelFormat m_pixelFormat;
-    QOpenGLTexture::PixelType m_pixelType;
-
-    bool m_isCompressed;
-    QByteArray m_data;
-    QOpenGLTexture::TextureFormat m_format;
+    QNodeList m_path;
 };
 
-typedef QSharedPointer<TexImageData> TexImageDataPtr;
-
-} // namespace Qt3DRender
-
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_TEXTUREDATA_H
+#endif // QT3DCORE_QNODEVISITOR_H

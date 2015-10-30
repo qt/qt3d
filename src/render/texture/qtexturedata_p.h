@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,36 +34,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H
-#define QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H
+#ifndef QT3DRENDER_TEXTUREDATA_P_H
+#define QT3DRENDER_TEXTUREDATA_P_H
 
-#include <QObject>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "qtexturedata.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DInput {
-namespace Input {
+namespace Qt3DRender {
 
-class InputHandler;
-
-class MouseEventFilter : public QObject
+class QTexImageDataPrivate
 {
-    Q_OBJECT
 public:
-    explicit MouseEventFilter(QObject *parent = 0);
-    void setInputHandler(InputHandler *handler);
-    inline InputHandler *inputHandler() const { return m_inputHandler; }
+    QTexImageDataPrivate();
 
-protected:
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
+    int m_width;
+    int m_height;
+    int m_depth;
+    QOpenGLTexture::PixelFormat m_pixelFormat;
+    QOpenGLTexture::PixelType m_pixelType;
 
-private:
-    InputHandler *m_inputHandler;
+    bool m_isCompressed;
+    QByteArray m_data;
+    QOpenGLTexture::TextureFormat m_format;
 };
 
-} // namespace Input
-} // namespace Qt3DInput
+} // namespace Qt3DRender
+
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_MOUSEEVENTFILTER_P_H
+#endif // QT3DRENDER_TEXTUREDATA_P_H

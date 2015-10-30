@@ -34,56 +34,73 @@
 **
 ****************************************************************************/
 
-#include "qnodevisitor_p.h"
+#ifndef QT3DRENDER_TEXTUREDATA_H
+#define QT3DRENDER_TEXTUREDATA_H
+
+#include <QtGui/QOpenGLTexture>
+#include <QtGui/QImage>
+#include <QtCore/QSharedPointer>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-QNodeVisitorPrivate::QNodeVisitorPrivate()
+class QTexImageDataPrivate;
+
+class QT3DRENDERSHARED_EXPORT QTexImageData
 {
-}
+public:
+    QTexImageData();
+    virtual ~QTexImageData();
 
-QNodeVisitor::QNodeVisitor() :
-    d_ptr(new QNodeVisitorPrivate)
-{
-}
+    QTexImageData &operator=(const QTexImageData &other);
 
-QNodeVisitor::~QNodeVisitor()
-{
-    delete d_ptr;
-}
+    void cleanup();
 
-QNode* QNodeVisitor::rootNode() const
-{
-    return d_ptr->m_path.front();
-}
+    bool isCompressed() const;
 
-QNode* QNodeVisitor::currentNode() const
-{
-    return d_ptr->m_path.back();
-}
+    int width() const;
+    int height() const;
+    int depth() const;
+    QOpenGLTexture::TextureFormat format() const;
 
-void QNodeVisitor::setPath(QNodeList path)
-{
-    d_ptr->m_path = path;
-}
+    void setImage(const QImage &);
 
-QNodeList QNodeVisitor::path() const
-{
-    return d_ptr->m_path;
-}
+    void setData(const QByteArray &data,
+                 QOpenGLTexture::PixelFormat fmt,
+                 QOpenGLTexture::PixelType ptype);
 
-void QNodeVisitor::append(QNode *n)
-{
-    d_ptr->m_path.append(n);
-}
+    bool setCompressedFile(const QString &source);
 
-void QNodeVisitor::pop_back()
-{
-    d_ptr->m_path.pop_back();
-}
+    QByteArray data() const;
 
-} // namespace Qt3DCore
+    QOpenGLTexture::PixelFormat pixelFormat() const;
+
+    QOpenGLTexture::PixelType pixelType() const;
+
+protected:
+    QTexImageData(QTexImageDataPrivate &dd);
+
+private:
+    Q_DECLARE_PRIVATE(QTexImageData)
+    QTexImageDataPrivate *d_ptr;
+
+//    int m_width, m_height, m_depth;
+//    QOpenGLTexture::PixelFormat m_pixelFormat;
+//    QOpenGLTexture::PixelType m_pixelType;
+
+//    bool m_isCompressed;
+//    QByteArray m_data;
+//    QOpenGLTexture::TextureFormat m_format;
+
+};
+
+typedef QSharedPointer<QTexImageData> QTexImageDataPtr;
+
+} // namespace Qt3DRender
+
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_TEXTUREDATA_H

@@ -37,7 +37,7 @@
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include "keyboardeventfilter_p.h"
-#include "mouseeventfilter.h"
+#include "mouseeventfilter_p.h"
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
 #include "mouseeventdispatcherjob_p.h"

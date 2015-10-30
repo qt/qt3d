@@ -50,7 +50,7 @@
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/private/handle_types_p.h>
 
 #include <QPair>
@@ -65,7 +65,7 @@ namespace Render {
 typedef QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > FunctorImageHandlesPair;
 typedef QPair<QTextureDataFunctorPtr, HTextureData> FunctorTextureDataPair;
 
-class TextureDataManager : public Qt3DCore::QResourceManager<TexImageData,
+class TextureDataManager : public Qt3DCore::QResourceManager<QTexImageData,
                                                          Qt3DCore::QNodeId,
                                                          16,
                                                          Qt3DCore::ArrayAllocatingPolicy,
@@ -97,7 +97,7 @@ private:
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::TexImageData, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::QTexImageData, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

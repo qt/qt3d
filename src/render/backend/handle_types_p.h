@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +58,7 @@ class QOpenGLVertexArrayObject;
 
 namespace Qt3DRender {
 
-class TexImageData;
+class QTexImageData;
 
 namespace Render {
 
@@ -103,7 +103,7 @@ typedef Qt3DCore::QHandle<Texture, 16> HTexture;
 typedef Qt3DCore::QHandle<Transform, 16> HTransform;
 typedef Qt3DCore::QHandle<RenderTarget, 8> HTarget;
 typedef Qt3DCore::QHandle<RenderPass, 16> HRenderPass;
-typedef Qt3DCore::QHandle<TexImageData, 16> HTextureData;
+typedef Qt3DCore::QHandle<QTexImageData, 16> HTextureData;
 typedef Qt3DCore::QHandle<Parameter, 16> HParameter;
 typedef Qt3DCore::QHandle<ShaderData, 16> HShaderData;
 typedef Qt3DCore::QHandle<TextureImage, 16> HTextureImage;

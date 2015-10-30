@@ -36,7 +36,7 @@
 
 #include <QtTest/QtTest>
 #include <QList>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 
 class tst_DynamicArrayPolicy : public QObject

@@ -36,7 +36,7 @@
 
 #include <QtTest/QtTest>
 #include <QMatrix4x4>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <ctime>
 #include <cstdlib>

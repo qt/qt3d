@@ -63,12 +63,12 @@ public:
     {}
 
     // Will be executed from within a QAspectJob
-    TexImageDataPtr operator ()() Q_DECL_FINAL
+    QTexImageDataPtr operator ()() Q_DECL_FINAL
     {
-        TexImageDataPtr dataPtr;
+        QTexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
             QString source = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_url);
-            dataPtr.reset(new TexImageData());
+            dataPtr.reset(new QTexImageData());
             if (dataPtr->setCompressedFile(source))
                 return dataPtr;
             QImage img;

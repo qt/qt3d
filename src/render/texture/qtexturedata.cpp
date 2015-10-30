@@ -34,10 +34,9 @@
 **
 ****************************************************************************/
 
-#include "texturedata.h"
+#include "qtexturedata_p.h"
 
 #include <QDebug>
-#include <QOpenGLTexture>
 #include <QFileInfo>
 #include <QFile>
 #include <qendian.h>
@@ -46,7 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-TexImageData::TexImageData()
+QTexImageDataPrivate::QTexImageDataPrivate()
     : m_width(-1)
     , m_height(-1)
     , m_depth(-1)
@@ -55,42 +54,104 @@ TexImageData::TexImageData()
 {
 }
 
-TexImageData::~TexImageData()
+QTexImageData::QTexImageData()
+    : d_ptr(new QTexImageDataPrivate())
 {
 }
 
-void TexImageData::cleanup()
+QTexImageData::QTexImageData(QTexImageDataPrivate &dd)
+    : d_ptr(&dd)
 {
-    m_width = -1;
-    m_height = -1;
-    m_depth = -1;
-    m_isCompressed = false;
-    m_data.clear();
 }
 
-void TexImageData::setImage(const QImage &image)
+QTexImageData::~QTexImageData()
 {
-    m_width = image.width();
-    m_height = image.height();
-    m_depth = 1;
+    cleanup();
+    delete d_ptr;
+}
+
+QTexImageData &QTexImageData::operator=(const QTexImageData &other)
+{
+    Q_D(QTexImageData);
+    d->m_width = other.d_ptr->m_width;
+    d->m_height = other.d_ptr->m_height;
+    d->m_depth = other.d_ptr->m_depth;
+    d->m_isCompressed = other.d_ptr->m_isCompressed;
+    d->m_pixelFormat = other.d_ptr->m_pixelFormat;
+    d->m_pixelType = other.d_ptr->m_pixelType;
+    d->m_data = other.d_ptr->m_data;
+
+    return *this;
+}
+
+void QTexImageData::cleanup()
+{
+    Q_D(QTexImageData);
+    d->m_width = -1;
+    d->m_height = -1;
+    d->m_depth = -1;
+    d->m_isCompressed = false;
+    d->m_data.clear();
+}
+
+bool QTexImageData::isCompressed() const
+{
+    Q_D(const QTexImageData);
+    return d->m_isCompressed;
+}
+
+int QTexImageData::width() const
+{
+    Q_D(const QTexImageData);
+    return d->m_width;
+}
+
+int QTexImageData::height() const
+{
+    Q_D(const QTexImageData);
+    return d->m_height;
+}
+
+int QTexImageData::depth() const
+{
+    Q_D(const QTexImageData);
+    return d->m_depth;
+}
+
+QOpenGLTexture::TextureFormat QTexImageData::format() const
+{
+    Q_D(const QTexImageData);
+    return d->m_format;
+}
+
+void QTexImageData::setImage(const QImage &image)
+{
+    Q_D(QTexImageData);
+    d->m_width = image.width();
+    d->m_height = image.height();
+    d->m_depth = 1;
 
     QImage glImage = image.convertToFormat(QImage::Format_RGBA8888);
-    Q_ASSERT_X(glImage.bytesPerLine() == (glImage.width() * glImage.depth() + 7) / 8, "TexImageData::setImage", "glImage is not packed"); // QTBUG-48330
+    Q_ASSERT_X(glImage.bytesPerLine() == (glImage.width() * glImage.depth() + 7) / 8,
+               "QTexImageData::setImage", "glImage is not packed"); // QTBUG-48330
     QByteArray imageBytes((const char*) glImage.constBits(), glImage.byteCount());
     setData(imageBytes, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
-    m_format = QOpenGLTexture::RGBA8_UNorm;
+    d->m_format = QOpenGLTexture::RGBA8_UNorm;
 }
 
-void TexImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt, QOpenGLTexture::PixelType ptype)
+void QTexImageData::setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
+                            QOpenGLTexture::PixelType ptype)
 {
-    m_isCompressed = false;
-    m_data = data;
-    m_pixelFormat = fmt;
-    m_pixelType = ptype;
+    Q_D(QTexImageData);
+    d->m_isCompressed = false;
+    d->m_data = data;
+    d->m_pixelFormat = fmt;
+    d->m_pixelType = ptype;
 }
 
-bool TexImageData::setCompressedFile(const QString &source)
+bool QTexImageData::setCompressedFile(const QString &source)
 {
+    Q_D(QTexImageData);
     const bool isPkm = QFileInfo(source).suffix() == QStringLiteral("pkm");
     if (!isPkm)
         return false;
@@ -106,20 +167,38 @@ bool TexImageData::setCompressedFile(const QString &source)
     const int pkmHeaderSize = 6 + 2 + 4 * 2;
     QByteArray header = f.read(pkmHeaderSize);
     if (header.size() >= pkmHeaderSize && !qstrncmp(header.constData(), pkmMagic, 6)) {
-        m_format = QOpenGLTexture::RGB8_ETC1; // may get changed to RGB8_ETC2 later on
+        d->m_format = QOpenGLTexture::RGB8_ETC1; // may get changed to RGB8_ETC2 later on
         // get the extended (multiple of 4) width and height
-        m_width = qFromBigEndian(*(reinterpret_cast<const quint16 *>(header.constData() + 6 + 2)));
-        m_height = qFromBigEndian(*(reinterpret_cast<const quint16 *>(header.constData() + 6 + 2 + 2)));
-        m_depth = 1;
+        d->m_width = qFromBigEndian(*(reinterpret_cast<const quint16 *>(header.constData() + 6 + 2)));
+        d->m_height = qFromBigEndian(*(reinterpret_cast<const quint16 *>(header.constData() + 6 + 2 + 2)));
+        d->m_depth = 1;
         QByteArray data = f.readAll();
-        if (data.size() < (m_width / 4) * (m_height / 4) * 8)
+        if (data.size() < (d->m_width / 4) * (d->m_height / 4) * 8)
             qWarning() << "Unexpected end of ETC1 data in" << source;
         setData(data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
-        m_isCompressed = true;
+        d->m_isCompressed = true;
         return true;
     }
 
     return false;
+}
+
+QByteArray QTexImageData::data() const
+{
+    Q_D(const QTexImageData);
+    return d->m_data;
+}
+
+QOpenGLTexture::PixelFormat QTexImageData::pixelFormat() const
+{
+    Q_D(const QTexImageData);
+    return d->m_pixelFormat;
+}
+
+QOpenGLTexture::PixelType QTexImageData::pixelType() const
+{
+    Q_D(const QTexImageData);
+    return d->m_pixelType;
 }
 
 } // namespace Qt3DRender

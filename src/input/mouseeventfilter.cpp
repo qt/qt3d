@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "mouseeventfilter.h"
+#include "mouseeventfilter_p.h"
 #include "inputhandler_p.h"
 #include <QEvent>
 #include <QKeyEvent>

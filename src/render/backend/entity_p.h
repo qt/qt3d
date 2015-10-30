@@ -53,7 +53,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE

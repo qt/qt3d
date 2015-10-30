@@ -52,7 +52,7 @@ class QT3DRENDERSHARED_EXPORT QTextureDataFunctor : public Qt3DCore::QAbstractFu
 {
 public:
     virtual ~QTextureDataFunctor() {}
-    virtual TexImageDataPtr operator()() = 0;
+    virtual QTexImageDataPtr operator()() = 0;
     virtual bool operator ==(const QTextureDataFunctor &other) const = 0;
 };
 

@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 
 QT_BEGIN_NAMESPACE
 
