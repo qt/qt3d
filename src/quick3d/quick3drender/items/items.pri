@@ -7,7 +7,6 @@ HEADERS += \
     $$PWD/quick3dtechnique.h \
     $$PWD/quick3deffect.h \
     $$PWD/quick3dscene.h \
-    $$PWD/shaderpropertyparser_p.h \
     $$PWD/quick3dtexture.h \
     $$PWD/quick3drenderpass.h \
     $$PWD/quick3dsortmethod.h \
@@ -29,7 +28,6 @@ SOURCES += \
     $$PWD/quick3dtechnique.cpp \
     $$PWD/quick3deffect.cpp \
     $$PWD/quick3dscene.cpp \
-    $$PWD/shaderpropertyparser.cpp \
     $$PWD/quick3dtexture.cpp \
     $$PWD/quick3drenderpass.cpp \
     $$PWD/quick3dsortmethod.cpp \
