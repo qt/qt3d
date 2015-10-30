@@ -87,9 +87,10 @@ protected:
 
     QBackendNode(QBackendNodePrivate &dd);
 
-private:
     Q_DECLARE_PRIVATE(QBackendNode)
     QBackendNodePrivate *d_ptr;
+
+private:
     friend class QBackendScenePropertyChange;
 };
 
