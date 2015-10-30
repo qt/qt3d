@@ -42,8 +42,6 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
-#include <QOpenGLContext>
-
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;

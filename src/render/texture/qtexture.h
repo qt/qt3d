@@ -37,7 +37,6 @@
 #ifndef QT3DRENDER_QTEXTURE_H
 #define QT3DRENDER_QTEXTURE_H
 
-#include <QOpenGLTexture>
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qwrapmode.h>
 #include <Qt3DRender/qtextureproviders.h>

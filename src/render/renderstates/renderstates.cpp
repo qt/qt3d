@@ -39,8 +39,6 @@
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 
-#include <QOpenGLFunctions_3_2_Core>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
