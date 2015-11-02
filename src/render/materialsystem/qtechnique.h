@@ -55,7 +55,7 @@ class QGraphicsApiFilter;
 class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter *graphicsApiFilter READ graphicsApiFilter)
+    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter *graphicsApiFilter READ graphicsApiFilter CONSTANT)
 
 public:
     explicit QTechnique(Qt3DCore::QNode *parent = 0);
