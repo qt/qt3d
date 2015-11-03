@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,12 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK3DGEOMETRY_H
-#define QT3D_QUICK3DGEOMETRY_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qtechniquefilter.h>
+#include <Qt3DRender/qannotation.h>
+#include <Qt3DQuick/private/quick3dnode_p.h>
 #include <QQmlListProperty>
-#include <Qt3DRender/QGeometry>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,25 +60,30 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DGeometry : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DCore::QAbstractAttribute> attributes READ attributeList)
-    Q_CLASSINFO("DefaultProperty", "attributes")
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
-    explicit Quick3DGeometry(QObject *parent = 0);
-    inline QGeometry *parentGeometry() const { return qobject_cast<QGeometry *>(parent()); }
+    explicit Quick3DTechniqueFilter(QObject *parent = 0);
 
-    QQmlListProperty<Qt3DCore::QAbstractAttribute> attributeList();
+    QQmlListProperty<QAnnotation> requireList();
+    QQmlListProperty<QParameter> parameterList();
+
+    inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }
 
 private:
-    static void appendAttribute(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list, Qt3DCore::QAbstractAttribute *provider);
-    static Qt3DCore::QAbstractAttribute *attributeAt(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list, int index);
-    static int attributesCount(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list);
-    static void clearAttributes(QQmlListProperty<Qt3DCore::QAbstractAttribute> *list);
+    static void appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *requireAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int requiresCount(QQmlListProperty<QAnnotation> *list);
+    static void clearRequires(QQmlListProperty<QAnnotation> *list);
 
-    QVector<Qt3DCore::QAbstractAttribute *> m_managedAttributes;
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // namespace Quick
@@ -74,4 +92,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK3DGEOMETRY_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_P_H

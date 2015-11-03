@@ -34,43 +34,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DTRANSFORM_H
-#define QT3D_QUICK_QUICK3DTRANSFORM_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_P_H
 
-#include <QtCore/QtGlobal>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuick/private/quick3dnode_p.h>
+#include <Qt3DRender/qrenderpassfilter.h>
+#include <Qt3DRender/qannotation.h>
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <QQmlListProperty>
-#include <Qt3DQuick/qt3dquick_global.h>
-#include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-
-class QTransform;
-
+namespace Qt3DRender {
+namespace Render {
 namespace Quick {
 
-class QT3DQUICKSHARED_EXPORT Quick3DTransform : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DCore::QAbstractTransform> transforms READ transformList)
-    Q_CLASSINFO("DefaultProperty", "transforms")
-public:
-    explicit Quick3DTransform(QObject *parent = 0);
-    QQmlListProperty<Qt3DCore::QAbstractTransform> transformList();
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> includes READ includeList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
-    inline QTransform *parentTransform() const { return qobject_cast<Qt3DCore::QTransform *>(parent()); }
+public:
+    explicit Quick3DRenderPassFilter(QObject *parent = 0);
+
+    QQmlListProperty<QAnnotation> includeList();
+    QQmlListProperty<QParameter> parameterList();
+
+    inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3DRender::QRenderPassFilter*>(parent()); }
 
 private:
-    static void qmlAppendTransform(QQmlListProperty<Qt3DCore::QAbstractTransform> *list, Qt3DCore::QAbstractTransform *bar);
-    static QAbstractTransform* transformAt(QQmlListProperty<Qt3DCore::QAbstractTransform> *list, int index);
-    static int transformCount(QQmlListProperty<Qt3DCore::QAbstractTransform> *list);
-    static void qmlClearTransforms(QQmlListProperty<Qt3DCore::QAbstractTransform> *list);
+    static void appendInclude(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *includeAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int includesCount(QQmlListProperty<QAnnotation> *list);
+    static void clearIncludes(QQmlListProperty<QAnnotation> *list);
+
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parametersCount(QQmlListProperty<QParameter> *list);
+    static void clearParameterList(QQmlListProperty<QParameter> *list);
 };
 
 } // namespace Quick
-} // namespace Qt3DCore
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DTRANSFORM_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASSFILTER_P_H

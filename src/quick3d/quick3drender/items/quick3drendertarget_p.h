@@ -34,10 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DRender/qrenderattachment.h>
 #include <QQmlListProperty>
@@ -48,7 +59,7 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DRenderTarget : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTarget : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderAttachment> attachments READ qmlAttachments)
@@ -71,4 +82,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGET_P_H

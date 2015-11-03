@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dgeometry.h"
+#include "quick3dgeometry_p.h"
 
 QT_BEGIN_NAMESPACE
 

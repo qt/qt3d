@@ -34,12 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DRender/qtechnique.h>
-#include <QQmlListProperty>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qshaderdata.h>
+
+#include <QJSValue>
+#include <QJSValueIterator>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,38 +60,14 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DTechnique : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DShaderData : public QShaderData
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> annotations READ annotationList)
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderPass> renderPasses READ renderPassList)
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 public:
-    explicit Quick3DTechnique(QObject *parent = 0);
-
-    QQmlListProperty<QAnnotation> annotationList();
-    QQmlListProperty<QRenderPass> renderPassList();
-    QQmlListProperty<QParameter> parameterList();
-
-    // Use QAbstractTechnique when it has been properly defined
-    inline QTechnique *parentTechnique() const { return qobject_cast<QTechnique*>(parent()); }
+    explicit Quick3DShaderData(QNode *parent = 0);
 
 private:
-
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parametersCount(QQmlListProperty<QParameter> *list);
-    static void clearParameterList(QQmlListProperty<QParameter> *list);
-
-    static void appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *Annotation);
-    static QAnnotation *annotationAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int annotationCount(QQmlListProperty<QAnnotation> *list);
-    static void clearAnnotationList(QQmlListProperty<QAnnotation> *list);
-
-    static void appendRenderPass(QQmlListProperty<QRenderPass> *list, QRenderPass* renderPass);
-    static QRenderPass *renderPassAt(QQmlListProperty<QRenderPass> *list, int index);
-    static int renderPassCount(QQmlListProperty<QRenderPass> *list);
-    static void clearRenderPasses( QQmlListProperty<QRenderPass> *list);
+    QT3D_CLONEABLE(Quick3DShaderData)
 };
 
 } // namespace Quick
@@ -87,4 +76,6 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUE_H
+Q_DECLARE_METATYPE(Qt3DRender::Render::Quick::Quick3DShaderData*)
+
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSHADERDATA_P_H

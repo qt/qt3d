@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dsortmethod.h"
+#include "quick3dsortmethod_p.h"
 
 QT_BEGIN_NAMESPACE
 

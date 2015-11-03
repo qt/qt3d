@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drendertarget.h"
+#include "quick3drendertarget_p.h"
 
 QT_BEGIN_NAMESPACE
 

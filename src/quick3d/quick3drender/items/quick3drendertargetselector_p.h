@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,15 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DRender/qtexture.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetselector.h>
 #include <QQmlListProperty>
-#include <QUrl>
+#include <QVariantList>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,23 +60,21 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DTextureExtension : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTargetSelector : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAbstractTextureImage> textureImages READ textureImages)
-    Q_CLASSINFO("DefaultProperty", "textureImages")
-
+    Q_PROPERTY(QVariantList drawBuffers READ drawBuffers WRITE setDrawBuffers NOTIFY drawBuffersChanged)
 public:
-    explicit Quick3DTextureExtension(QObject *parent = 0);
+    explicit Quick3DRenderTargetSelector(QObject *parent = 0);
+    ~Quick3DRenderTargetSelector();
 
-    QQmlListProperty<QAbstractTextureImage> textureImages();
-    inline QAbstractTextureProvider *parentTexture() const { return qobject_cast<QAbstractTextureProvider *>(parent()); }
+    inline QRenderTargetSelector *parentRenderTargetSelector() const { return qobject_cast<QRenderTargetSelector *>(parent()); }
 
-private:
-    static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);
-    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index);
-    static int textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
-    static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
+    QVariantList drawBuffers() const;
+    void setDrawBuffers(const QVariantList &drawBuffers);
+
+Q_SIGNALS:
+    void drawBuffersChanged();
 };
 
 } // namespace Quick
@@ -75,4 +83,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETSELECTOR_P_H

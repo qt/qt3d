@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dstateset.h"
+#include "quick3dstateset_p.h"
 
 QT_BEGIN_NAMESPACE
 

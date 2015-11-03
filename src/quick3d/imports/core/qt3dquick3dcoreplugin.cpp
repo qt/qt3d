@@ -43,10 +43,10 @@
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qrotatetransform.h>
 #include <Qt3DCore/qabstractattribute.h>
-#include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DQuick/quick3dentityloader.h>
-#include <Qt3DQuick/quick3dtransform.h>
-#include <Qt3DQuick/quick3dconfiguration.h>
+#include <private/quick3dentity_p.h>
+#include <private/quick3dentityloader_p.h>
+#include <private/quick3dtransform_p.h>
+#include <private/quick3dconfiguration_p.h>
 #include <private/quick3dnodeinstantiator_p.h>
 #include <private/qt3dquick_global_p.h>
 

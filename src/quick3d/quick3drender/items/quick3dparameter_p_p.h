@@ -34,12 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DQuick/quick3dentity.h>
-#include <Qt3DRender/qabstractsceneloader.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "quick3dparameter_p.h"
+
+#include <Qt3DRender/private/qparameter_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,13 +58,16 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DScene : public QObject
-{
-    Q_OBJECT
-public:
-    explicit Quick3DScene(QObject *parent = 0);
+class Quick3DParameter;
 
-    inline QAbstractSceneLoader *parentScene() const { return qobject_cast<QAbstractSceneLoader *>(parent()); }
+class Quick3DParameterPrivate : public QParameterPrivate
+{
+public:
+    Quick3DParameterPrivate();
+
+    Q_DECLARE_PUBLIC(Quick3DParameter)
+
+    void setValue(const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 } // namespace Quick
@@ -62,4 +76,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSCENE_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DPARAMETER_P_P_H

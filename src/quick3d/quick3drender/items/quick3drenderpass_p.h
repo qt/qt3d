@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,13 +35,22 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DRender/qtechniquefilter.h>
-#include <Qt3DRender/qannotation.h>
-#include <Qt3DQuick/quick3dnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qrenderpass.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -49,25 +59,38 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DTechniqueFilter : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> annotations READ annotationList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameterMapping> bindings READ bindingList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
-
 public:
-    explicit Quick3DTechniqueFilter(QObject *parent = 0);
+    explicit Quick3DRenderPass(QObject *parent = 0);
 
-    QQmlListProperty<QAnnotation> requireList();
+    QQmlListProperty<QAnnotation> annotationList();
+    QQmlListProperty<QParameterMapping> bindingList();
+    QQmlListProperty<QRenderState> renderStateList();
     QQmlListProperty<QParameter> parameterList();
 
-    inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }
+    inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
-    static void appendRequire(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *requireAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int requiresCount(QQmlListProperty<QAnnotation> *list);
-    static void clearRequires(QQmlListProperty<QAnnotation> *list);
+    static void appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
+    static QAnnotation *annotationAt(QQmlListProperty<QAnnotation> *list, int index);
+    static int annotationsCount(QQmlListProperty<QAnnotation> *list);
+    static void clearAnnotations(QQmlListProperty<QAnnotation> *list);
+
+    static void appendBinding(QQmlListProperty<QParameterMapping> *list, QParameterMapping *binding);
+    static QParameterMapping *bindingAt(QQmlListProperty<QParameterMapping> *list, int index);
+    static int bindingsCount(QQmlListProperty<QParameterMapping> *list);
+    static void clearBindings(QQmlListProperty<QParameterMapping> *list);
+
+    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
+    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
+    static int renderStateCount(QQmlListProperty<QRenderState> *list);
+    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
     static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
@@ -81,4 +104,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTECHNIQUEFILTER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERPASS_P_H

@@ -36,7 +36,6 @@
 ****************************************************************************/
 
 #include "quick3dnodeinstantiator_p.h"
-#include "quick3dnodeinstantiator_p_p.h"
 
 #include <QtQml/QQmlContext>
 #include <QtQml/QQmlComponent>
@@ -44,11 +43,39 @@
 #include <QtQml/QQmlError>
 #include <QtQml/private/qqmlobjectmodel_p.h>
 #include <QtQml/private/qqmldelegatemodel_p.h>
+#include <private/qnode_p.h>
+#include <private/qqmlchangeset_p.h>
+#include <private/qqmlobjectmodel_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 namespace Quick {
+
+class Quick3DNodeInstantiatorPrivate : public QNodePrivate
+{
+    Q_DECLARE_PUBLIC(Quick3DNodeInstantiator)
+
+public:
+    Quick3DNodeInstantiatorPrivate();
+    ~Quick3DNodeInstantiatorPrivate();
+
+    void clear();
+    void regenerate();
+    void makeModel();
+    void _q_createdItem(int, QObject *);
+    void _q_modelUpdated(const QQmlChangeSet &, bool);
+
+    bool m_componentComplete:1;
+    bool m_effectiveReset:1;
+    bool m_active:1;
+    bool m_async:1;
+    bool m_ownModel:1;
+    QVariant m_model;
+    QQmlInstanceModel *m_instanceModel;
+    QQmlComponent *m_delegate;
+    QVector<QPointer<QObject> > m_objects;
+};
 
 /*!
     \class Qt3DCore::Quick::Quick3DNodeInstantiatorPrivate

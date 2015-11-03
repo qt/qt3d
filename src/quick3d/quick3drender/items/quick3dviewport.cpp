@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dviewport.h"
+#include "quick3dviewport_p.h"
 
 QT_BEGIN_NAMESPACE
 

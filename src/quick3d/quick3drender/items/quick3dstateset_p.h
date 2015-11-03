@@ -1,6 +1,5 @@
 /****************************************************************************
 **
-** Copyright (C) 2013 Research In Motion.
 ** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
@@ -35,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
-#define QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_P_H
 
 //
 //  W A R N I N G
@@ -49,46 +48,38 @@
 // We mean it.
 //
 
-#include <private/qnode_p.h>
-#include <private/qqmlchangeset_p.h>
-#include <private/qqmlobjectmodel_p.h>
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qstateset.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
-class QQmlComponent;
-
-namespace Qt3DCore {
+namespace Qt3DRender {
+namespace Render {
 namespace Quick {
 
-class Quick3DNodeInstantiatorPrivate : public QNodePrivate
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DStateSet : public QObject
 {
-    Q_DECLARE_PUBLIC(Quick3DNodeInstantiator)
-
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList CONSTANT)
 public:
-    Quick3DNodeInstantiatorPrivate();
-    ~Quick3DNodeInstantiatorPrivate();
+    explicit Quick3DStateSet(QObject *parent = 0);
+    ~Quick3DStateSet();
 
-    void clear();
-    void regenerate();
-    void makeModel();
-    void _q_createdItem(int, QObject *);
-    void _q_modelUpdated(const QQmlChangeSet &, bool);
+    QQmlListProperty<QRenderState> renderStateList();
+    inline QStateSet *parentStateSet() const { return qobject_cast<QStateSet *>(parent()); }
 
-    bool m_componentComplete:1;
-    bool m_effectiveReset:1;
-    bool m_active:1;
-    bool m_async:1;
-    bool m_ownModel:1;
-    QVariant m_model;
-    QQmlInstanceModel *m_instanceModel;
-    QQmlComponent *m_delegate;
-    QVector<QPointer<QObject> > m_objects;
+private:
+    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
+    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
+    static int renderStateCount(QQmlListProperty<QRenderState> *list);
+    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
 };
 
 } // namespace Quick
-} // namespace Qt3DCore
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DNODEINSTANTIATOR_P_P_H
-
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_P_H

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dmaterial.h"
+#include "quick3dmaterial_p.h"
 #include <Qt3DRender/qtexture.h>
 
 QT_BEGIN_NAMESPACE

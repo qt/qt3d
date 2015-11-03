@@ -34,41 +34,65 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DRender/qstateset.h>
-#include <QQmlListProperty>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/QBuffer>
 
 QT_BEGIN_NAMESPACE
 
+class QQmlEngine;
+class QJSValue;
+
+namespace QV4 {
+struct ExecutionEngine;
+}
+
 namespace Qt3DRender {
+
 namespace Render {
+
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DStateSet : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DBuffer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList CONSTANT)
+    Q_PROPERTY(QVariant data READ bufferData WRITE setBufferData NOTIFY bufferDataChanged)
 public:
-    explicit Quick3DStateSet(QObject *parent = 0);
-    ~Quick3DStateSet();
+    explicit Quick3DBuffer(QObject *parent = Q_NULLPTR);
+    inline QBuffer *parentBuffer() const { return qobject_cast<QBuffer *>(parent()); }
 
-    QQmlListProperty<QRenderState> renderStateList();
-    inline QStateSet *parentStateSet() const { return qobject_cast<QStateSet *>(parent()); }
+    QVariant bufferData() const;
+    void setBufferData(const QVariant &bufferData);
+
+Q_SIGNALS:
+    void bufferDataChanged();
 
 private:
-    static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
-    static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);
-    static int renderStateCount(QQmlListProperty<QRenderState> *list);
-    static void clearRenderStates(QQmlListProperty<QRenderState> *list);
+    QQmlEngine *m_engine;
+    QV4::ExecutionEngine *m_v4engine;
+    void initEngines();
+    QByteArray convertToRawData(const QJSValue &jsValue);
 };
 
-} // namespace Quick
-} // namespace Render
-} // namespace Qt3DRender
+} // Quick
+
+} // Render
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSTATESET_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DBUFFER_P_H

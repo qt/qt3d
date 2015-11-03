@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drenderpass.h"
+#include "quick3drenderpass_p.h"
 #include <Qt3DRender/qparametermapping.h>
 
 QT_BEGIN_NAMESPACE

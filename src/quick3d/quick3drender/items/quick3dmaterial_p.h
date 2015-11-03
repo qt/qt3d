@@ -34,57 +34,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DENTITYLOADER_H
-#define QT3D_QUICK_QUICK3DENTITYLOADER_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_P_H
 
-#include <QObject>
-#include <QUrl>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <Qt3DCore/QEntity>
-
-#include <Qt3DQuick/qt3dquick_global.h>
-
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qparameter.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-
-class QEntity;
-
+namespace Qt3DRender {
+namespace Render {
 namespace Quick {
 
-class Quick3DEntityLoaderPrivate;
+// FIXME - write a custom QML parser and stop mis-using Tag
+// Tags could be replaced by Parameters directly
 
-class QT3DQUICKSHARED_EXPORT Quick3DEntityLoader : public QEntity
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DMaterial : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ qmlParameters)
+
 public:
-    explicit Quick3DEntityLoader(QNode *parent = 0);
-    ~Quick3DEntityLoader();
+    explicit Quick3DMaterial(QObject *parent = 0);
 
-    QObject *entity() const;
+    // TO DO : replace by QAbstractMaterial later on
+    inline QMaterial *parentMaterial() const { return qobject_cast<QMaterial*>(parent()); }
 
-    QUrl source() const;
-    void setSource(const QUrl &url);
+    QQmlListProperty<QParameter> qmlParameters();
 
-Q_SIGNALS:
-    void entityChanged();
-    void sourceChanged();
-
-protected:
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(Quick3DEntityLoader)
-    Q_PRIVATE_SLOT(d_func(), void _q_componentStatusChanged(QQmlComponent::Status))
-    QT3D_CLONEABLE(Quick3DEntityLoader)
+    // FIXME - remove when we have a custom QML parser
+    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *bar);
+    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
+    static int parameterCount(QQmlListProperty<QParameter> *list);
+    static void clearParameters(QQmlListProperty<QParameter> *list);
 };
 
 } // namespace Quick
-} // namespace Qt3DCore
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QUICK3DENTITYLOADER_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_P_H

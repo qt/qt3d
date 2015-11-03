@@ -34,14 +34,25 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <QQmlListProperty>
-#include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qtechnique.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DQuick/private/quick3dnode_p.h>
+#include <Qt3DRender/qtexture.h>
+
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,30 +60,23 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DEffect : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTextureExtension : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QTechnique> techniques READ techniqueList)
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAbstractTextureImage> textureImages READ textureImages)
+    Q_CLASSINFO("DefaultProperty", "textureImages")
 
 public:
-    explicit Quick3DEffect(QObject *parent = 0);
+    explicit Quick3DTextureExtension(QObject *parent = 0);
 
-    inline QEffect *parentEffect() const { return qobject_cast<QEffect*>(parent()); }
-
-    QQmlListProperty<QTechnique> techniqueList();
-    QQmlListProperty<QParameter> parameterList();
+    QQmlListProperty<QAbstractTextureImage> textureImages();
+    inline QAbstractTextureProvider *parentTexture() const { return qobject_cast<QAbstractTextureProvider *>(parent()); }
 
 private:
-    static void appendTechnique(QQmlListProperty<QTechnique> *list, QTechnique *bar);
-    static QTechnique *techniqueAt(QQmlListProperty<QTechnique> *list, int index);
-    static int techniqueCount(QQmlListProperty<QTechnique> *list);
-    static void clearTechniqueList(QQmlListProperty<QTechnique> *list);
-
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parametersCount(QQmlListProperty<QParameter> *list);
-    static void clearParameterList(QQmlListProperty<QParameter> *list);
+    static void appendTextureImage(QQmlListProperty<QAbstractTextureImage> *list, QAbstractTextureImage *textureImage);
+    static QAbstractTextureImage *textureImageAt(QQmlListProperty<QAbstractTextureImage> *list, int index);
+    static int textureImageCount(QQmlListProperty<QAbstractTextureImage> *list);
+    static void clearTextureImageList(QQmlListProperty<QAbstractTextureImage> *list);
 };
 
 } // namespace Quick
@@ -81,4 +85,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DEFFECT_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DTEXTURE_P_H

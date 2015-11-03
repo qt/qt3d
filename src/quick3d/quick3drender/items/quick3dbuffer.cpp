@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dbuffer.h"
+#include "quick3dbuffer_p.h"
 #include <QQmlEngine>
 #include <QJSValue>
 #include <QtQml/private/qqmlengine_p.h>

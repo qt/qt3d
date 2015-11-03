@@ -34,8 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dparameter.h"
-#include "quick3dparameter_p.h"
+#include "quick3dparameter_p_p.h"
 
 #include <QJSValue>
 #include <QJSValueIterator>

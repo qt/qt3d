@@ -34,8 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dentityloader.h"
-#include "quick3dentityloader_p.h"
+#include "quick3dentityloader_p_p.h"
 
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -240,4 +239,4 @@ void Quick3DEntityLoaderPrivate::_q_componentStatusChanged(QQmlComponent::Status
 
 QT_END_NAMESPACE
 
-#include "moc_quick3dentityloader.cpp"
+#include "moc_quick3dentityloader_p.cpp"

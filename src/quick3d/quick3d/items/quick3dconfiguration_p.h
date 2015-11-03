@@ -34,40 +34,49 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_QUICK3DENTITY_H
-#define QT3D_QUICK_QUICK3DENTITY_H
+#ifndef QT3D_QUICK_QUICK3DCONFIGURATION_P_H
+#define QT3D_QUICK_QUICK3DCONFIGURATION_P_H
 
-#include <QQmlListProperty>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DQuick/quick3dnode.h>
-#include <Qt3DQuick/qt3dquick_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QEntity;
-class QComponent;
+class QCamera;
 
 namespace Quick {
 
-class QT3DQUICKSHARED_EXPORT Quick3DEntity : public QObject
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DConfiguration : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DCore::QComponent> components READ componentList)
-
+    Q_PROPERTY(Qt3DCore::QCamera *controlledCamera READ controlledCamera WRITE setControlledCamera NOTIFY controlledCameraChanged)
 public:
-    explicit Quick3DEntity(QObject *parent = 0);
-    QQmlListProperty<Qt3DCore::QComponent> componentList();
+    explicit Quick3DConfiguration(QObject *parent = 0);
 
-    inline QEntity *parentEntity() const { return qobject_cast<QEntity*>(parent()); }
+    void setControlledCamera(QCamera *camera);
+    QCamera *controlledCamera() const;
+
+Q_SIGNALS:
+    void controlledCameraChanged();
+
+private Q_SLOTS:
+    void applyControlledCameraChange();
 
 private:
-
-    static void qmlAppendComponent(QQmlListProperty<Qt3DCore::QComponent> *list, Qt3DCore::QComponent *comp);
-    static QComponent *qmlComponentAt(QQmlListProperty<Qt3DCore::QComponent> *list, int index);
-    static int qmlComponentsCount(QQmlListProperty<Qt3DCore::QComponent> *list);
-    static void qmlClearComponents(QQmlListProperty<Qt3DCore::QComponent> *list);
+    QCamera *m_camera;
 };
 
 } // namespace Quick
@@ -75,4 +84,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_QUICK3DENTITY_H
+#endif // QT3D_QUICK_QUICK3DCONFIGURATION_P_H

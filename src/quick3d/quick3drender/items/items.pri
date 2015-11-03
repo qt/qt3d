@@ -1,23 +1,23 @@
 HEADERS += \
-    $$PWD/quick3drenderpassfilter.h \
-    $$PWD/quick3drendertarget.h \
-    $$PWD/quick3dtechniquefilter.h \
-    $$PWD/quick3dviewport.h \
-    $$PWD/quick3dmaterial.h \
-    $$PWD/quick3dtechnique.h \
-    $$PWD/quick3deffect.h \
-    $$PWD/quick3dscene.h \
-    $$PWD/quick3dtexture.h \
-    $$PWD/quick3drenderpass.h \
-    $$PWD/quick3dsortmethod.h \
-    $$PWD/quick3dparameter_p.h \
-    $$PWD/quick3dparameter.h \
-    $$PWD/quick3dshaderdata.h \
-    $$PWD/quick3dshaderdataarray.h \
-    $$PWD/quick3dstateset.h \
-    $$PWD/quick3drendertargetselector.h \
-    $$PWD/quick3dgeometry.h \
-    $$PWD/quick3dbuffer.h
+    $$PWD/quick3dtechniquefilter_p.h \
+    $$PWD/quick3dbuffer_p.h \
+    $$PWD/quick3deffect_p.h \
+    $$PWD/quick3dgeometry_p.h \
+    $$PWD/quick3dmaterial_p.h \
+    $$PWD/quick3drenderpass_p.h \
+    $$PWD/quick3drenderpassfilter_p.h \
+    $$PWD/quick3drendertarget_p.h \
+    $$PWD/quick3drendertargetselector_p.h \
+    $$PWD/quick3dscene_p.h \
+    $$PWD/quick3dshaderdata_p.h \
+    $$PWD/quick3dshaderdataarray_p.h \
+    $$PWD/quick3dsortmethod_p.h \
+    $$PWD/quick3dstateset_p.h \
+    $$PWD/quick3dtechnique_p.h \
+    $$PWD/quick3dtexture_p.h \
+    $$PWD/quick3dviewport_p.h \
+    $$PWD/quick3dparameter_p_p.h \
+    $$PWD/quick3dparameter_p.h
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \

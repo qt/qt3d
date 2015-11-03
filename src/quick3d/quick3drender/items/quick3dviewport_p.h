@@ -34,13 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H
-#define QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_P_H
 
-#include <Qt3DQuickRender/qt3dquickrender_global.h>
-#include <Qt3DRender/qmaterial.h>
-#include <Qt3DRender/qparameter.h>
-#include <QQmlListProperty>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DQuick/private/quick3dnode_p.h>
+#include <Qt3DRender/qviewport.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,29 +58,13 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-// FIXME - write a custom QML parser and stop mis-using Tag
-// Tags could be replaced by Parameters directly
+// TO DO : Check if this is required or if this might as well be removed
 
-class QT3DQUICKRENDERSHARED_EXPORT Quick3DMaterial : public QObject
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DViewport : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ qmlParameters)
-
 public:
-    explicit Quick3DMaterial(QObject *parent = 0);
-
-    // TO DO : replace by QAbstractMaterial later on
-    inline QMaterial *parentMaterial() const { return qobject_cast<QMaterial*>(parent()); }
-
-    QQmlListProperty<QParameter> qmlParameters();
-
-
-private:
-    // FIXME - remove when we have a custom QML parser
-    static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *bar);
-    static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);
-    static int parameterCount(QQmlListProperty<QParameter> *list);
-    static void clearParameters(QQmlListProperty<QParameter> *list);
+    explicit Quick3DViewport(QObject *parent = 0);
 };
 
 } // namespace Quick
@@ -79,4 +73,5 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QUICK_QUICK3DMATERIAL_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DVIEWPORT_P_H
+

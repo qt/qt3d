@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drenderpassfilter.h"
+#include "quick3drenderpassfilter_p.h"
 
 QT_BEGIN_NAMESPACE
 
