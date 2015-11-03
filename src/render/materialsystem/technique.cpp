@@ -57,18 +57,20 @@ namespace Render {
 
 Technique::Technique()
     : QBackendNode()
-    , m_graphicsApiFilter(new QGraphicsApiFilter())
+    , m_graphicsApiFilter(Q_NULLPTR)
 {
 }
 
 Technique::~Technique()
 {
     cleanup();
-    delete m_graphicsApiFilter;
 }
 
 void Technique::cleanup()
 {
+    if (m_graphicsApiFilter)
+        delete m_graphicsApiFilter;
+    m_graphicsApiFilter = Q_NULLPTR;
 }
 
 void Technique::updateFromPeer(Qt3DCore::QNode *peer)
@@ -76,6 +78,9 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
     m_parameterPack.clear();
     m_renderPasses.clear();
     m_annotationList.clear();
+
+    if (m_graphicsApiFilter == Q_NULLPTR)
+        m_graphicsApiFilter = new QGraphicsApiFilter();
 
     QTechnique *technique = static_cast<QTechnique *>(peer);
 
