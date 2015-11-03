@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "assimpparser_p.h"
+#include "assimpparser.h"
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -286,7 +286,7 @@ private:
 /*!
  *  Constructor. Initializes a new instance of AssimpParser.
  */
-AssimpParser::AssimpParser() : AbstractSceneParser(),
+AssimpParser::AssimpParser() : QAbstractSceneParser(),
     m_sceneParsed(false),
     m_scene(Q_NULLPTR)
 {

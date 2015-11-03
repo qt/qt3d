@@ -34,43 +34,67 @@
 **
 ****************************************************************************/
 
-#include "loadscenejob_p.h"
-#include <private/renderer_p.h>
-#include <private/scenemanager_p.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qabstractsceneparser.h>
+#ifndef ABSTRACTSCENEPARSER_H
+#define ABSTRACTSCENEPARSER_H
+
+#include <QObject>
+#include <QStringList>
+#include <QLoggingCategory>
+#include <QUrl>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
+namespace Qt3DCore {
+class QEntity;
+}
+
 namespace Qt3DRender {
-namespace Render {
 
-LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
-    : QAspectJob()
-    , m_renderer(Q_NULLPTR)
-    , m_source(source)
-    , m_sceneComponent(m_sceneComponent)
+Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
+
+class QT3DRENDERSHARED_EXPORT QAbstractSceneParser : public QObject
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
+    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
 
-void LoadSceneJob::run()
-{
-    Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
-    if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
-            if (parser->isExtensionSupported(m_source)) {
-                parser->setSource(m_source);
-                sceneTree = parser->scene();
-                m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
-            }
-        }
-    }
-    // set clone of sceneTree in sceneComponent
-    Scene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
-    scene->setSceneSubtree(sceneTree);
-}
+public:
+    enum ParserStatus {
+        Empty,
+        Loading,
+        Loaded,
+        Error
+    };
+    Q_ENUM(ParserStatus)
 
-} // namespace Render
+    QAbstractSceneParser();
+    virtual ~QAbstractSceneParser();
+
+    virtual void setSource(const QUrl &source) = 0;
+    virtual bool isExtensionSupported(const QUrl &source) const = 0;
+    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
+    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
+
+    ParserStatus parserStatus() const;
+    QStringList errors() const;
+
+Q_SIGNALS:
+    void parserStatusChanged();
+    void errorsChanged();
+
+protected:
+    void setParserStatus(ParserStatus parserStatus);
+    void logError(const QString &error);
+    void logInfo(const QString &info);
+
+private:
+    ParserStatus m_parserStatus;
+    QStringList m_errors;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // ABSTRACTSCENEPARSER_H

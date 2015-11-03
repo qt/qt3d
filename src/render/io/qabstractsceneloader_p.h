@@ -55,7 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class AbstractSceneParser;
+class QAbstractSceneParser;
 
 class QAbstractSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {

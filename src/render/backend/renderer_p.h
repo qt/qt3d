@@ -90,7 +90,7 @@ class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
 class QGraphicsApiFilter;
-class AbstractSceneParser;
+class QAbstractSceneParser;
 
 namespace Render {
 
@@ -208,7 +208,7 @@ public:
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
+    inline QList<QAbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
     inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
 
     QList<QMouseEvent> pendingPickingEvents() const;
@@ -310,7 +310,7 @@ private:
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QScopedPointer<PickEventFilter> m_pickEventFilter;
-    QList<AbstractSceneParser *> m_sceneParsers;
+    QList<QAbstractSceneParser *> m_sceneParsers;
     QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
     QVector<Attribute *> m_dirtyAttributes;

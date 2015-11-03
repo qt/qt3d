@@ -6,7 +6,11 @@ PLUGIN_CLASS_NAME = GLTFParser
 load(qt_plugin)
 
 HEADERS += \
-    gltfparser_p.h
+    gltfparser.h
 
 SOURCES += \
-    gltfparser.cpp
+    gltfparser.cpp \
+    main.cpp
+
+DISTFILES += \
+    gltf.json

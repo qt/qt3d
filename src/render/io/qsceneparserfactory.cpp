@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,77 +34,58 @@
 **
 ****************************************************************************/
 
-#include "qabstractsceneloader.h"
-#include "qabstractsceneloader_p.h"
+#include "qsceneparserfactory_p.h"
+#include "qsceneparserplugin.h"
 #include "qabstractsceneparser.h"
-#include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+
+#include <QtCore/private/qfactoryloader_p.h>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::Render::QAbstractSceneLoaderPrivate
-    \internal
-*/
-QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate()
-    : QComponentPrivate()
-    , m_status(QAbstractSceneLoader::Loading)
-{
-    m_shareable = false;
-}
+#ifndef QT_NO_LIBRARY
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneParserFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneParserFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
+#endif
 
-/*! \internal */
-QAbstractSceneLoader::QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
+QStringList QSceneParserFactory::keys(const QString &pluginPath)
 {
-}
-
-QAbstractSceneLoader::QAbstractSceneLoader(QNode *parent)
-    : QComponent(*new QAbstractSceneLoaderPrivate, parent)
-{
-}
-
-QAbstractSceneLoader::~QAbstractSceneLoader()
-{
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractSceneLoader subclass didn't call QNode::cleanup in its destructor");
-}
-
-void QAbstractSceneLoader::copy(const QNode *ref)
-{
-    const QAbstractSceneLoader *s = static_cast<const QAbstractSceneLoader*>(ref);
-    d_func()->m_source = s->d_func()->m_source;
-}
-
-QUrl QAbstractSceneLoader::source() const
-{
-    Q_D(const QAbstractSceneLoader);
-    return d->m_source;
-}
-
-void QAbstractSceneLoader::setSource(const QUrl &arg)
-{
-    Q_D(QAbstractSceneLoader);
-    if (d->m_source != arg) {
-        d->m_source = arg;
-        emit sourceChanged();
+#ifndef QT_NO_LIBRARY
+    QStringList list;
+    if (!pluginPath.isEmpty()) {
+        QCoreApplication::addLibraryPath(pluginPath);
+        list = directLoader()->keyMap().values();
+        if (!list.isEmpty()) {
+            const QString postFix = QStringLiteral(" (from ")
+                    + QDir::toNativeSeparators(pluginPath)
+                    + QLatin1Char(')');
+            const QStringList::iterator end = list.end();
+            for (QStringList::iterator it = list.begin(); it != end; ++it)
+                (*it).append(postFix);
+        }
     }
+    list.append(loader()->keyMap().values());
+    return list;
+#else
+    return QStringList();
+#endif
 }
 
-QAbstractSceneLoader::Status QAbstractSceneLoader::status() const
+QAbstractSceneParser *QSceneParserFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
-    Q_D(const QAbstractSceneLoader);
-    return d->m_status;
-}
-
-void QAbstractSceneLoader::setStatus(QAbstractSceneLoader::Status status)
-{
-    Q_D(QAbstractSceneLoader);
-    if (d->m_status != status) {
-        d->m_status = status;
-        emit statusChanged();
+#ifndef QT_NO_LIBRARY
+    if (!pluginPath.isEmpty()) {
+        QCoreApplication::addLibraryPath(pluginPath);
+        if (QAbstractSceneParser *ret = qLoadPlugin1<QAbstractSceneParser, QSceneParserPlugin>(directLoader(), name, args))
+            return ret;
     }
+    if (QAbstractSceneParser *ret = qLoadPlugin1<QAbstractSceneParser, QSceneParserPlugin>(loader(), name, args))
+        return ret;
+#endif
+    return Q_NULLPTR;
 }
 
 } // namespace Qt3DRender

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "abstractsceneparser_p.h"
+#include "qabstractsceneparser.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QStringList>
 
@@ -42,26 +42,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-AbstractSceneParser::AbstractSceneParser() : QObject(),
+QAbstractSceneParser::QAbstractSceneParser() : QObject(),
     m_parserStatus(Empty)
 {
 }
 
-AbstractSceneParser::~AbstractSceneParser()
+QAbstractSceneParser::~QAbstractSceneParser()
 {
 }
 
-AbstractSceneParser::ParserStatus AbstractSceneParser::parserStatus() const
+QAbstractSceneParser::ParserStatus QAbstractSceneParser::parserStatus() const
 {
     return m_parserStatus;
 }
 
-QStringList AbstractSceneParser::errors() const
+QStringList QAbstractSceneParser::errors() const
 {
     return m_errors;
 }
 
-void AbstractSceneParser::setParserStatus(ParserStatus parserStatus)
+void QAbstractSceneParser::setParserStatus(ParserStatus parserStatus)
 {
     if (parserStatus != m_parserStatus) {
         m_parserStatus = parserStatus;
@@ -69,13 +69,13 @@ void AbstractSceneParser::setParserStatus(ParserStatus parserStatus)
     }
 }
 
-void AbstractSceneParser::logError(const QString &error)
+void QAbstractSceneParser::logError(const QString &error)
 {
     m_errors.append(error);
     emit errorsChanged();
 }
 
-void AbstractSceneParser::logInfo(const QString &info)
+void QAbstractSceneParser::logInfo(const QString &info)
 {
     qCDebug(Render::Io) << info;
 }

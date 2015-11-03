@@ -1,6 +1,7 @@
+
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,43 +35,25 @@
 **
 ****************************************************************************/
 
-#include "loadscenejob_p.h"
-#include <private/renderer_p.h>
-#include <private/scenemanager_p.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qabstractsceneparser.h>
+#include "gltfparser.h"
+
+#include <Qt3DRender/QSceneParserPlugin>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
-namespace Render {
-
-LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
-    : QAspectJob()
-    , m_renderer(Q_NULLPTR)
-    , m_source(source)
-    , m_sceneComponent(m_sceneComponent)
+class GLTFSceneParserPlugin : public Qt3DRender::QSceneParserPlugin
 {
-}
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID QSceneParserFactoryInterface_iid FILE "gltf.json")
 
-void LoadSceneJob::run()
-{
-    Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
-    if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
-            if (parser->isExtensionSupported(m_source)) {
-                parser->setSource(m_source);
-                sceneTree = parser->scene();
-                m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
-            }
-        }
+    Qt3DRender::QAbstractSceneParser *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    {
+        Q_UNUSED(key)
+        Q_UNUSED(paramList)
+        return new Qt3DRender::GLTFParser();
     }
-    // set clone of sceneTree in sceneComponent
-    Scene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
-    scene->setSceneSubtree(sceneTree);
-}
-
-} // namespace Render
-} // namespace Qt3DRender
+};
 
 QT_END_NAMESPACE
+
+#include "main.moc"

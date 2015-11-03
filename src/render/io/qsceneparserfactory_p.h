@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,43 +34,38 @@
 **
 ****************************************************************************/
 
-#include "loadscenejob_p.h"
-#include <private/renderer_p.h>
-#include <private/scenemanager_p.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qabstractsceneparser.h>
+#ifndef QSCENEPARSERFACTORY_H
+#define QSCENEPARSERFACTORY_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qt3drender_global_p.h>
+#include <QtCore/QStringList>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
-    : QAspectJob()
-    , m_renderer(Q_NULLPTR)
-    , m_source(source)
-    , m_sceneComponent(m_sceneComponent)
+class QAbstractSceneParser;
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneParserFactory
 {
-}
+public:
+    static QStringList keys(const QString &pluginPath = QString());
+    static QAbstractSceneParser *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
+};
 
-void LoadSceneJob::run()
-{
-    Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
-    if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
-            if (parser->isExtensionSupported(m_source)) {
-                parser->setSource(m_source);
-                sceneTree = parser->scene();
-                m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
-            }
-        }
-    }
-    // set clone of sceneTree in sceneComponent
-    Scene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
-    scene->setSceneSubtree(sceneTree);
-}
-
-} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QSCENEPARSERFACTORY_H

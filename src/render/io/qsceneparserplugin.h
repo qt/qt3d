@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,78 +34,35 @@
 **
 ****************************************************************************/
 
-#ifndef ABSTRACTSCENEPARSER_H
-#define ABSTRACTSCENEPARSER_H
+#ifndef QSCENEPARSERPLUGIN_H
+#define QSCENEPARSERPLUGIN_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <QtCore/QObject>
+#include <QtCore/QtPlugin>
+#include <QtCore/QFactoryInterface>
 
-#include <QObject>
-#include <QStringList>
-#include <QLoggingCategory>
-#include <QUrl>
-#include <Qt3DRender/qt3drender_global.h>
+#include <qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QEntity;
-}
-
 namespace Qt3DRender {
 
-Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
+#define QSceneParserFactoryInterface_iid "org.qt-project.Qt3DRender.QSceneParserFactoryInterface 5.6"
 
-class QT3DRENDERSHARED_EXPORT AbstractSceneParser : public QObject
+class QAbstractSceneParser;
+
+class QT3DRENDERSHARED_EXPORT QSceneParserPlugin : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
-    Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
-
 public:
-    enum ParserStatus {
-        Empty,
-        Loading,
-        Loaded,
-        Error
-    };
-    Q_ENUM(ParserStatus)
+    explicit QSceneParserPlugin(QObject *parent = 0);
+    ~QSceneParserPlugin();
 
-    AbstractSceneParser();
-    virtual ~AbstractSceneParser();
-
-    virtual void setSource(const QUrl &source) = 0;
-    virtual bool isExtensionSupported(const QUrl &source) const = 0;
-    virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
-    virtual Qt3DCore::QEntity *node(const QString &id) = 0;
-
-    ParserStatus parserStatus() const;
-    QStringList errors() const;
-
-Q_SIGNALS:
-    void parserStatusChanged();
-    void errorsChanged();
-
-protected:
-    void setParserStatus(ParserStatus parserStatus);
-    void logError(const QString &error);
-    void logInfo(const QString &info);
-
-private:
-    ParserStatus m_parserStatus;
-    QStringList m_errors;
+    virtual QAbstractSceneParser *create(const QString &key, const QStringList &paramList);
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // ABSTRACTSCENEPARSER_H
+#endif // QSCENEPARSERPLUGIN_H

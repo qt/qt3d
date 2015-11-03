@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "gltfparser_p.h"
+#include "gltfparser.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -150,7 +150,7 @@ const QString KEY_TECHNIQUE_GL2   = QStringLiteral("techniqueGL2");
 
 } // of anonymous namespace
 
-GLTFParser::GLTFParser() : AbstractSceneParser(),
+GLTFParser::GLTFParser() : QAbstractSceneParser(),
     m_parseDone(false)
 {
 }
