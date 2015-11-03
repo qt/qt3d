@@ -1,4 +1,3 @@
 TEMPLATE = subdirs
-config_assimp|win32:!wince*|osx: SUBDIRS += assimp
+config_assimp|!cross_compile: SUBDIRS += assimp
 SUBDIRS += gltf
-
