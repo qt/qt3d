@@ -10,7 +10,7 @@ CONFIG -= precompile_header
 
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
-contains(QT_CONFIG, system-zlib) {
+!host_build:contains(QT_CONFIG, system-zlib) {
     if (unix|mingw):         LIBS += -lz
     else:                    LIBS += zdll.lib
 } else {
@@ -18,6 +18,10 @@ contains(QT_CONFIG, system-zlib) {
         INCLUDEPATH += $$[QT_INSTALL_HEADERS/get]/QtZlib
     else: \
         INCLUDEPATH += $$[QT_INSTALL_HEADERS/src]/QtZlib
+    # Needed to use the QtBootstrap's Zlib
+    if(contains(QT_CONFIG, zlib)|cross_compile) {
+        DEFINES += Z_PREFIX
+    }
 }
 
 DEFINES += ASSIMP_BUILD_NO_OWN_ZLIB ASSIMP_BUILD_NO_COMPRESSED_IFC ASSIMP_BUILD_NO_Q3BSP_IMPORTER
