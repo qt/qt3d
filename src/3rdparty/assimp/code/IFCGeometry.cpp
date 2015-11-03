@@ -250,17 +250,17 @@ void ProcessRevolvedAreaSolid(const IfcRevolvedAreaSolid& solid, TempMesh& resul
 	
 	bool has_area = solid.SweptArea->ProfileType == "AREA" && size>2;
 	const IfcFloat max_angle = solid.Angle*conv.angle_scale;
-	if(fabs(max_angle) < 1e-3) {
+	if(std::fabs(max_angle) < 1e-3) {
 		if(has_area) {
 			result = meshout;
 		}
 		return;
 	}
 
-	const unsigned int cnt_segments = std::max(2u,static_cast<unsigned int>(16 * fabs(max_angle)/AI_MATH_HALF_PI_F));
+	const unsigned int cnt_segments = std::max(2u,static_cast<unsigned int>(16 * std::fabs(max_angle)/AI_MATH_HALF_PI_F));
 	const IfcFloat delta = max_angle/cnt_segments;
 
-	has_area = has_area && fabs(max_angle) < AI_MATH_TWO_PI_F*0.99;
+	has_area = has_area && std::fabs(max_angle) < AI_MATH_TWO_PI_F*0.99;
 	
 	result.verts.reserve(size*((cnt_segments+1)*4+(has_area?2:0)));
 	result.vertcnt.reserve(size*cnt_segments+2);
@@ -375,21 +375,21 @@ void ProcessSweptDiskSolid(const IfcSweptDiskSolid solid, TempMesh& result, Conv
 		bool take_any = false;
 
 		for (unsigned int i = 0; i < 2; ++i, take_any = true) {
-			if ((last_dir == 0 || take_any) && abs(d.x) > 1e-6) {
+            if ((last_dir == 0 || take_any) && std::abs(d.x) > 1e-6) {
 				q.y = startvec.y;
 				q.z = startvec.z;
 				q.x = -(d.y * q.y + d.z * q.z) / d.x;
 				last_dir = 0;
 				break;
 			}
-			else if ((last_dir == 1 || take_any) && abs(d.y) > 1e-6) {
+            else if ((last_dir == 1 || take_any) && std::abs(d.y) > 1e-6) {
 				q.x = startvec.x;
 				q.z = startvec.z;
 				q.y = -(d.x * q.x + d.z * q.z) / d.y;
 				last_dir = 1;
 				break;
 			}
-			else if ((last_dir == 2 && abs(d.z) > 1e-6) || take_any) { 
+            else if ((last_dir == 2 && std::abs(d.z) > 1e-6) || take_any) {
 				q.y = startvec.y;
 				q.x = startvec.x;
 				q.z = -(d.y * q.y + d.x * q.x) / d.z;
@@ -480,7 +480,7 @@ IfcMatrix3 DerivePlaneCoordinateSpace(const TempMesh& curmesh, bool& ok, IfcVect
 	for (i = 0; !done && i < s-2; done || ++i) {
 		for (j = i+1; j < s-1; ++j) {
 			nor = -((out[i]-any_point)^(out[j]-any_point));
-			if(fabs(nor.Length()) > 1e-8f) {
+			if(std::fabs(nor.Length()) > 1e-8f) {
 				done = true;
 				break;
 			}
