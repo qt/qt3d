@@ -44,7 +44,7 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>
@@ -98,20 +98,20 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     m_diffuseSpecularMapGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/diffusespecularmap.vert"))));
     m_diffuseSpecularMapGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/diffusespecularmap.frag"))));
 
-    m_diffuseSpecularMapGL3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_diffuseSpecularMapGL3Technique->openGLFilter()->setMajorVersion(3);
-    m_diffuseSpecularMapGL3Technique->openGLFilter()->setMinorVersion(1);
-    m_diffuseSpecularMapGL3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_diffuseSpecularMapGL3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_diffuseSpecularMapGL2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_diffuseSpecularMapGL2Technique->openGLFilter()->setMajorVersion(2);
-    m_diffuseSpecularMapGL2Technique->openGLFilter()->setMinorVersion(0);
-    m_diffuseSpecularMapGL2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_diffuseSpecularMapGL2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_diffuseSpecularMapGL2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_diffuseSpecularMapGL2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_diffuseSpecularMapGL2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_diffuseSpecularMapES2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_diffuseSpecularMapES2Technique->openGLFilter()->setMajorVersion(2);
-    m_diffuseSpecularMapES2Technique->openGLFilter()->setMinorVersion(0);
-    m_diffuseSpecularMapES2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_diffuseSpecularMapES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_diffuseSpecularMapGL3RenderPass->setShaderProgram(m_diffuseSpecularMapGL3Shader);
     m_diffuseSpecularMapGL2RenderPass->setShaderProgram(m_diffuseSpecularMapGL2ES2Shader);

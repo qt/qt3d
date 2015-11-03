@@ -66,11 +66,11 @@ Entity {
                 effect: Effect {
                     techniques: Technique {
 
-                        openGLFilter {
+                        graphicsApiFilter {
                             minorVersion: 3
                             majorVersion: 2
-                            api: OpenGLFilter.Desktop
-                            profile: OpenGLFilter.Core
+                            api: GraphicsApiFilter.OpenGL
+                            profile: GraphicsApiFilter.CoreProfile
                         }
 
                         renderPasses: RenderPass {

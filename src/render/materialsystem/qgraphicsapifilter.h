@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QOPENGLFILTER_H
-#define QT3DRENDER_QOPENGLFILTER_H
+#ifndef QT3DRENDER_QGRAPHICSAPIFILTER_H
+#define QT3DRENDER_QGRAPHICSAPIFILTER_H
 
 #include <QObject>
 #include <QStringList>
@@ -46,13 +46,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QOpenGLFilterPrivate;
+class QGraphicsApiFilterPrivate;
 
-class QT3DRENDERSHARED_EXPORT QOpenGLFilter : public QObject
+class QT3DRENDERSHARED_EXPORT QGraphicsApiFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QOpenGLFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
-    Q_PROPERTY(Qt3DRender::QOpenGLFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
+    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter::Api api READ api WRITE setApi NOTIFY apiChanged)
+    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter::Profile profile READ profile WRITE setProfile NOTIFY profileChanged)
     Q_PROPERTY(int minorVersion READ minorVersion WRITE setMinorVersion NOTIFY minorVersionChanged)
     Q_PROPERTY(int majorVersion READ majorVersion WRITE setMajorVersion NOTIFY majorVersionChanged)
     Q_PROPERTY(QStringList extensions READ extensions WRITE setExtensions NOTIFY extensionsChanged)
@@ -62,22 +62,22 @@ public:
 
     enum Api
     {
-        ES = QSurfaceFormat::OpenGLES,
-        Desktop = QSurfaceFormat::OpenGL
+        OpenGLES = QSurfaceFormat::OpenGLES,
+        OpenGL = QSurfaceFormat::OpenGL
     };
     Q_ENUM(Api)
 
     enum Profile
     {
-        None = QSurfaceFormat::NoProfile,
-        Core = QSurfaceFormat::CoreProfile,
-        Compatibility = QSurfaceFormat::CompatibilityProfile
+        NoProfile = QSurfaceFormat::NoProfile,
+        CoreProfile = QSurfaceFormat::CoreProfile,
+        CompatibilityProfile = QSurfaceFormat::CompatibilityProfile
     };
     Q_ENUM(Profile)
 
-    explicit QOpenGLFilter(QObject *parent = 0);
+    explicit QGraphicsApiFilter(QObject *parent = 0);
 
-    void copy(const QOpenGLFilter &ref);
+    void copy(const QGraphicsApiFilter &ref);
 
     Api api() const;
     Profile profile() const;
@@ -100,17 +100,17 @@ Q_SIGNALS:
     void majorVersionChanged();
     void extensionsChanged();
     void vendorChanged();
-    void openGLFilterChanged();
+    void graphicsApiFilterChanged();
 
 private:
-    Q_DECLARE_PRIVATE(QOpenGLFilter)
+    Q_DECLARE_PRIVATE(QGraphicsApiFilter)
 };
 
-bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
-bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample);
+bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
+bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample);
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QOPENGLFILTER_H
+#endif // QT3DRENDER_QGRAPHICSAPIFILTER_H

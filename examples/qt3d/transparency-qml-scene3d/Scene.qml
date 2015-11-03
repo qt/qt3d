@@ -130,9 +130,9 @@ Entity {
             techniques: [
                 Technique
                 {
-                    openGLFilter {
-                        api: OpenGLFilter.Desktop
-                        profile: OpenGLFilter.None
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGL
+                        profile: GraphicsApiFilter.NoProfile
                         majorVersion: 2
                         minorVersion: 0
                     }
@@ -154,9 +154,9 @@ Entity {
                 },
                 Technique
                 {
-                    openGLFilter {
-                        api: OpenGLFilter.ES
-                        profile: OpenGLFilter.None
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGLES
+                        profile: GraphicsApiFilter.NoProfile
                         majorVersion: 2
                         minorVersion: 0
                     }

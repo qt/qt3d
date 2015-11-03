@@ -43,7 +43,7 @@
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qdepthtest.h>
 
@@ -74,20 +74,20 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemap.vert"))));
     m_normalDiffuseGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemapalpha.frag"))));
 
-    m_normalDiffuseGL3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_normalDiffuseGL3Technique->openGLFilter()->setMajorVersion(3);
-    m_normalDiffuseGL3Technique->openGLFilter()->setMinorVersion(1);
-    m_normalDiffuseGL3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_normalDiffuseGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_normalDiffuseGL3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_normalDiffuseGL3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_normalDiffuseGL3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_normalDiffuseGL2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_normalDiffuseGL2Technique->openGLFilter()->setMajorVersion(2);
-    m_normalDiffuseGL2Technique->openGLFilter()->setMinorVersion(0);
-    m_normalDiffuseGL2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_normalDiffuseGL2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_normalDiffuseGL2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_normalDiffuseGL2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_normalDiffuseGL2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_normalDiffuseES2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_normalDiffuseES2Technique->openGLFilter()->setMajorVersion(2);
-    m_normalDiffuseES2Technique->openGLFilter()->setMinorVersion(0);
-    m_normalDiffuseES2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_normalDiffuseES2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_normalDiffuseES2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_normalDiffuseES2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_normalDiffuseES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_depthTest->setFunc(QDepthTest::Less);
 

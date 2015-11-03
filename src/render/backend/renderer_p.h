@@ -89,7 +89,7 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QOpenGLFilter;
+class QGraphicsApiFilter;
 class AbstractSceneParser;
 
 namespace Render {
@@ -213,7 +213,7 @@ public:
 
     QList<QMouseEvent> pendingPickingEvents() const;
 
-    QOpenGLFilter *contextInfo() const;
+    QGraphicsApiFilter *contextInfo() const;
 
     void setSurface(QSurface *s);
     inline QSurface *surface() const { return m_surface; }

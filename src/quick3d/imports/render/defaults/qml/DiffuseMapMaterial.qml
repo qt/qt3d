@@ -90,9 +90,9 @@ Material {
         techniques: [
             // OpenGL 3.1
             Technique {
-                openGLFilter {
-                    api: OpenGLFilter.Desktop
-                    profile: OpenGLFilter.Core
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
                     majorVersion: 3
                     minorVersion: 1
                 }
@@ -101,9 +101,9 @@ Material {
 
             // OpenGL 2.1
             Technique {
-                openGLFilter {
-                    api: OpenGLFilter.Desktop
-                    profile: OpenGLFilter.None
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.NoProfile
                     majorVersion: 2
                     minorVersion: 0
                 }
@@ -112,9 +112,9 @@ Material {
 
             // OpenGL ES 2
             Technique {
-                openGLFilter {
-                    api: OpenGLFilter.ES
-                    profile: OpenGLFilter.None
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGLES
+                    profile: GraphicsApiFilter.NoProfile
                     majorVersion: 2
                     minorVersion: 0
                 }

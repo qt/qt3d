@@ -1079,7 +1079,7 @@ QList<QMouseEvent> Renderer::pendingPickingEvents() const
     return m_pickEventFilter->pendingEvents();
 }
 
-QOpenGLFilter *Renderer::contextInfo() const
+QGraphicsApiFilter *Renderer::contextInfo() const
 {
     return m_graphicsContext->contextInfo();
 }

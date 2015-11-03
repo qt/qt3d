@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 class QTechnique;
 class QParameter;
-class QOpenGLFilter;
+class QGraphicsApiFilter;
 class QAnnotation;
 class QRenderPass;
 
@@ -89,10 +89,10 @@ public:
 
     QList<Qt3DCore::QNodeId> annotations() const;
     QList<Qt3DCore::QNodeId> renderPasses() const;
-    QOpenGLFilter *openGLFilter() const;
+    QGraphicsApiFilter *graphicsApiFilter() const;
 
 private:
-    QOpenGLFilter *m_openglFilter;
+    QGraphicsApiFilter *m_graphicsApiFilter;
 
     ParameterPack m_parameterPack;
     QList<Qt3DCore::QNodeId> m_annotationList;

@@ -47,7 +47,7 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qcuboidmesh.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DCore/qtranslatetransform.h>
 
@@ -98,20 +98,20 @@ void QSkyboxEntityPrivate::init()
     m_gl2es2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/skybox.vert"))));
     m_gl2es2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/skybox.frag"))));
 
-    m_gl3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_gl3Technique->openGLFilter()->setMajorVersion(3);
-    m_gl3Technique->openGLFilter()->setMajorVersion(1);
-    m_gl3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_gl3Technique->graphicsApiFilter()->setMajorVersion(1);
+    m_gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_gl2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_gl2Technique->openGLFilter()->setMajorVersion(2);
-    m_gl2Technique->openGLFilter()->setMajorVersion(0);
-    m_gl2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_gl2Technique->graphicsApiFilter()->setMajorVersion(0);
+    m_gl2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_es2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_es2Technique->openGLFilter()->setMajorVersion(2);
-    m_es2Technique->openGLFilter()->setMajorVersion(0);
-    m_es2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_es2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_es2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_es2Technique->graphicsApiFilter()->setMajorVersion(0);
+    m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2es2Shader);

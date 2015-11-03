@@ -72,9 +72,9 @@ Entity {
         id: instancedPhongMaterial
         effect: Effect {
             techniques: Technique {
-                openGLFilter {
-                    api: OpenGLFilter.Desktop
-                    profile: OpenGLFilter.Core
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
                     minorVersion: 2
                     majorVersion: 3
                 }

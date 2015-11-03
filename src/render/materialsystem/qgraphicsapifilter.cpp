@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qopenglfilter.h"
+#include "qgraphicsapifilter.h"
 #include "private/qobject_p.h"
 #include <QOpenGLContext>
 
@@ -42,21 +42,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QOpenGLFilterPrivate : public QObjectPrivate
+class QGraphicsApiFilterPrivate : public QObjectPrivate
 {
 public:
-    QOpenGLFilterPrivate()
+    QGraphicsApiFilterPrivate()
         : QObjectPrivate()
-        , m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QOpenGLFilter::Desktop : QOpenGLFilter::ES)
-        , m_profile(QOpenGLFilter::None) // matches all (no profile, core, compat)
+        , m_api(QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL ? QGraphicsApiFilter::OpenGL : QGraphicsApiFilter::OpenGLES)
+        , m_profile(QGraphicsApiFilter::NoProfile) // matches all (no profile, core, compat)
         , m_minor(0)
         , m_major(0)
     {
     }
 
-    Q_DECLARE_PUBLIC(QOpenGLFilter)
-    QOpenGLFilter::Api m_api;
-    QOpenGLFilter::Profile m_profile;
+    Q_DECLARE_PUBLIC(QGraphicsApiFilter)
+    QGraphicsApiFilter::Api m_api;
+    QGraphicsApiFilter::Profile m_profile;
     int m_minor;
     int m_major;
     QStringList m_extensions;
@@ -64,35 +64,35 @@ public:
 };
 
 /*!
-    \class Qt3DRender::QOpenGLFilter
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QGraphicsApiFilter
+    \inmodule Qt3DRender
     \since 5.5
-    \brief The QOpenGLFilter class provides ...
+    \brief The QGraphicsApiFilter class provides ...
 */
 
 /*!
-    \qmltype OpenGLFilter
-    \instantiates Qt3DRender::QOpenGLFilter
+    \qmltype GraphicsApiFilter
+    \instantiates Qt3DRender::QGraphicsApiFilter
     \inherits QtObject
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For OpenGL ...
 */
 
-/*! \fn Qt3DRender::QOpenGLFilter::QOpenGLFilter(QObject *parent)
-  Constructs a new QOpenGLFilter with the specified \a parent.
+/*! \fn Qt3DRender::QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
+  Constructs a new QGraphicsApiFilter with the specified \a parent.
  */
-QOpenGLFilter::QOpenGLFilter(QObject *parent)
-    : QObject(*new QOpenGLFilterPrivate, parent)
+QGraphicsApiFilter::QGraphicsApiFilter(QObject *parent)
+    : QObject(*new QGraphicsApiFilterPrivate, parent)
 {
 }
 
-/*! \fn void Qt3DRender::QOpenGLFilter::copy(const QOpenGLFilter &ref)
+/*! \fn void Qt3DRender::QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
   Copies the \a ref instance into this one.
  */
-void QOpenGLFilter::copy(const QOpenGLFilter &ref)
+void QGraphicsApiFilter::copy(const QGraphicsApiFilter &ref)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     d->m_api = ref.api();
     d->m_profile = ref.profile();
     d->m_major = ref.majorVersion();
@@ -102,189 +102,189 @@ void QOpenGLFilter::copy(const QOpenGLFilter &ref)
 }
 
 /*!
-  \enum Qt3DRender::QOpenGLFilter::Api
+  \enum Qt3DRender::QGraphicsApiFilter::Api
 
-  \value ES QSurfaceFormat::OpenGLES
-  \value Desktop QSurfaceFormat::OpenGL
-
-*/
-
-/*!
-  \enum Qt3DRender::QOpenGLFilter::Profile
-
-  \value None QSurfaceFormat::NoProfile
-  \value Core QSurfaceFormat::CoreProfile
-  \value Compatibility QSurfaceFormat::CompatibilityProfile
+  \value OpenGLES QSurfaceFormat::OpenGLES
+  \value OpenGL QSurfaceFormat::OpenGL
 
 */
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::api
+  \enum Qt3DRender::QGraphicsApiFilter::Profile
+
+  \value NoProfile QSurfaceFormat::NoProfile
+  \value CoreProfile QSurfaceFormat::CoreProfile
+  \value CompatibilityProfile QSurfaceFormat::CompatibilityProfile
 
 */
 
 /*!
-  \qmlproperty enumeration Qt3D.Renderer::OpenGLFilter::api
+  \property Qt3DRender::QGraphicsApiFilter::api
 
-
-  \value ES QSurfaceFormat::OpenGLES
-  \value Desktop QSurfaceFormat::OpenGL
 */
 
-QOpenGLFilter::Api QOpenGLFilter::api() const
+/*!
+  \qmlproperty enumeration Qt3D.Render::GraphicsApiFilter::api
+
+
+  \value OpenGLES QSurfaceFormat::OpenGLES
+  \value OpenGL QSurfaceFormat::OpenGL
+*/
+
+QGraphicsApiFilter::Api QGraphicsApiFilter::api() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_api;
 }
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::profile
+  \property Qt3DRender::QGraphicsApiFilter::profile
 
 */
 
 /*!
-  \qmlproperty enumeration Qt3D.Renderer::OpenGLFilter::profile
+  \qmlproperty enumeration Qt3D.Render::GraphicsApiFilter::profile
 
-  \value None QSurfaceFormat::NoProfile
-  \value Core QSurfaceFormat::CoreProfile
-  \value Compatibility QSurfaceFormat::CompatibilityProfile
+  \value NoProfile QSurfaceFormat::NoProfile
+  \value CoreProfile QSurfaceFormat::CoreProfile
+  \value CompatibilityProfile QSurfaceFormat::CompatibilityProfile
 */
 
-QOpenGLFilter::Profile QOpenGLFilter::profile() const
+QGraphicsApiFilter::Profile QGraphicsApiFilter::profile() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_profile;
 }
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::minorVersion
+  \property Qt3DRender::QGraphicsApiFilter::minorVersion
 
  */
 
 /*!
-  \qmlproperty int Qt3D.Renderer::OpenGLFilter::minorVersion
+  \qmlproperty int Qt3D.Render::GraphicsApiFilter::minorVersion
 
 */
 
-int QOpenGLFilter::minorVersion() const
+int QGraphicsApiFilter::minorVersion() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_minor;
 }
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::majorVersion
+  \property Qt3DRender::QGraphicsApiFilter::majorVersion
 
  */
 
 /*!
-  \qmlproperty int Qt3D.Renderer::OpenGLFilter::majorVersion
+  \qmlproperty int Qt3D.Render::GraphicsApiFilter::majorVersion
 
 */
 
-int QOpenGLFilter::majorVersion() const
+int QGraphicsApiFilter::majorVersion() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_major;
 }
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::extensions
+  \property Qt3DRender::QGraphicsApiFilter::extensions
 
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Renderer::OpenGLFilter::extensions
+  \qmlproperty stringlist Qt3D.Render::GraphicsApiFilter::extensions
 
 */
 
-QStringList QOpenGLFilter::extensions() const
+QStringList QGraphicsApiFilter::extensions() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_extensions;
 }
 
 /*!
-  \property Qt3DRender::QOpenGLFilter::vendor
+  \property Qt3DRender::QGraphicsApiFilter::vendor
 
  */
 
 /*!
-  \qmlproperty string Qt3D.Renderer::OpenGLFilter::vendor
+  \qmlproperty string Qt3D.Render::GraphicsApiFilter::vendor
 
 */
 
-QString QOpenGLFilter::vendor() const
+QString QGraphicsApiFilter::vendor() const
 {
-    Q_D(const QOpenGLFilter);
+    Q_D(const QGraphicsApiFilter);
     return d->m_vendor;
 }
 
-void QOpenGLFilter::setApi(QOpenGLFilter::Api api)
+void QGraphicsApiFilter::setApi(QGraphicsApiFilter::Api api)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (d->m_api != api) {
         d->m_api = api;
         emit apiChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-void QOpenGLFilter::setProfile(QOpenGLFilter::Profile profile)
+void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::Profile profile)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (d->m_profile != profile) {
         d->m_profile = profile;
         emit profileChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-void QOpenGLFilter::setMinorVersion(int minorVersion)
+void QGraphicsApiFilter::setMinorVersion(int minorVersion)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (minorVersion != d->m_minor) {
         d->m_minor = minorVersion;
         emit minorVersionChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-void QOpenGLFilter::setMajorVersion(int majorVersion)
+void QGraphicsApiFilter::setMajorVersion(int majorVersion)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (d->m_major != majorVersion) {
         d->m_major = majorVersion;
         emit majorVersionChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-void QOpenGLFilter::setExtensions(const QStringList &extensions)
+void QGraphicsApiFilter::setExtensions(const QStringList &extensions)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (d->m_extensions != extensions) {
         d->m_extensions = extensions;
         emit extensionsChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-void QOpenGLFilter::setVendor(const QString &vendor)
+void QGraphicsApiFilter::setVendor(const QString &vendor)
 {
-    Q_D(QOpenGLFilter);
+    Q_D(QGraphicsApiFilter);
     if (d->m_vendor != vendor) {
         d->m_vendor = vendor;
         emit vendorChanged();
-        emit openGLFilterChanged();
+        emit graphicsApiFilterChanged();
     }
 }
 
-/*! \fn bool Qt3DCore::operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
-  \relates Qt3DRender::QOpenGLFilter
+/*! \fn bool Qt3DCore::operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
+  \relates Qt3DRender::QGraphicsApiFilter
   Returns true if \a reference and \a sample are equivalent.
  */
-bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {
     if (sample.api() == reference.api()
         && sample.profile() <= reference.profile()
@@ -302,16 +302,16 @@ bool operator ==(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
     return false;
 }
 
-/*! \fn bool Qt3DCore::operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
-  \relates Qt3DRender::QOpenGLFilter
+/*! \fn bool Qt3DCore::operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
+  \relates Qt3DRender::QGraphicsApiFilter
   Returns true if \a reference and \a sample are different.
  */
-bool operator !=(const QOpenGLFilter &reference, const QOpenGLFilter &sample)
+bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {
     return !(reference == sample);
 }
 
-/*! \fn void Qt3DRender::QOpenGLFilter::openGLFilterChanged()
+/*! \fn void Qt3DRender::QGraphicsApiFilter::graphicsApiFilterChanged()
   This signal is emitted when the value of any property is changed.
 */
 } // namespace Qt3DRender

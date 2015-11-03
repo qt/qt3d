@@ -39,7 +39,7 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qtechnique.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/annotation_p.h>
 #include <Qt3DRender/private/shader_p.h>
@@ -57,14 +57,14 @@ namespace Render {
 
 Technique::Technique()
     : QBackendNode()
-    , m_openglFilter(new QOpenGLFilter())
+    , m_graphicsApiFilter(new QGraphicsApiFilter())
 {
 }
 
 Technique::~Technique()
 {
     cleanup();
-    delete m_openglFilter;
+    delete m_graphicsApiFilter;
 }
 
 void Technique::cleanup()
@@ -87,9 +87,9 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
         Q_FOREACH (QAnnotation *annotation, technique->annotations())
             appendAnnotation(annotation->id());
 
-        // Copy OpenGLFilter info from frontend OpenGLFilter
-        QOpenGLFilter *peerFilter = technique->openGLFilter();
-        m_openglFilter->copy(*peerFilter);
+        // Copy GraphicsApiFilter info from frontend GraphicsApiFilter
+        QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
+        m_graphicsApiFilter->copy(*peerFilter);
     }
 }
 
@@ -99,10 +99,10 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     switch (e->type()) {
 
     case NodeUpdated: {
-        if (propertyChange->propertyName() == QByteArrayLiteral("openGLFilter")) {
-            QOpenGLFilter *filter = propertyChange->value().value<QOpenGLFilter *>();
+        if (propertyChange->propertyName() == QByteArrayLiteral("graphicsApiFilter")) {
+            QGraphicsApiFilter *filter = propertyChange->value().value<QGraphicsApiFilter *>();
             if (filter != Q_NULLPTR) {
-                m_openglFilter->copy(*filter);
+                m_graphicsApiFilter->copy(*filter);
                 delete filter;
             }
         }
@@ -166,9 +166,9 @@ QList<Qt3DCore::QNodeId> Technique::renderPasses() const
     return m_renderPasses;
 }
 
-QOpenGLFilter *Technique::openGLFilter() const
+QGraphicsApiFilter *Technique::graphicsApiFilter() const
 {
-    return m_openglFilter;
+    return m_graphicsApiFilter;
 }
 
 void Technique::appendAnnotation(const Qt3DCore::QNodeId &criterionId)

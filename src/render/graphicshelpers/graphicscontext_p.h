@@ -69,7 +69,7 @@ class QAbstractOpenGLFunctions;
 
 namespace Qt3DRender {
 
-class QOpenGLFilter;
+class QGraphicsApiFilter;
 
 namespace Render {
 
@@ -166,7 +166,7 @@ public:
 
     void setCurrentStateSet(RenderStateSet* ss);
     RenderStateSet *currentStateSet() const;
-    QOpenGLFilter *contextInfo() const;
+    QGraphicsApiFilter *contextInfo() const;
 
     // Wrapper methods
     void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
@@ -247,7 +247,7 @@ private:
     RenderStateSet* m_stateSet;
 
     Renderer *m_renderer;
-    QOpenGLFilter *m_contextInfo;
+    QGraphicsApiFilter *m_contextInfo;
 
     QByteArray m_uboTempArray;
 

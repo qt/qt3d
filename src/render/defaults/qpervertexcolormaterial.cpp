@@ -42,7 +42,7 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>
@@ -118,20 +118,20 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/pervertexcolor.vert"))));
     m_vertexGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/pervertexcolor.frag"))));
 
-    m_vertexGL3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_vertexGL3Technique->openGLFilter()->setMajorVersion(3);
-    m_vertexGL3Technique->openGLFilter()->setMinorVersion(1);
-    m_vertexGL3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_vertexGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_vertexGL3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_vertexGL3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_vertexGL3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_vertexGL2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_vertexGL2Technique->openGLFilter()->setMajorVersion(2);
-    m_vertexGL2Technique->openGLFilter()->setMinorVersion(0);
-    m_vertexGL2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_vertexGL2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_vertexGL2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_vertexGL2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_vertexGL2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_vertexES2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_vertexES2Technique->openGLFilter()->setMajorVersion(2);
-    m_vertexES2Technique->openGLFilter()->setMinorVersion(0);
-    m_vertexES2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_vertexES2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_vertexES2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_vertexES2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_vertexES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_vertexGL3RenderPass->setShaderProgram(m_vertexGL3Shader);
     m_vertexGL2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);
