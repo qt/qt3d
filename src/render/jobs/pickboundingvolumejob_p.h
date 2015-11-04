@@ -101,6 +101,7 @@ private:
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;
+    QVector<HObjectPicker> m_hoveredPickersToClear;
 };
 
 typedef QSharedPointer<PickBoundingVolumeJob> PickBoundingVolumeJobPtr;
