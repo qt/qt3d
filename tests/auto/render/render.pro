@@ -37,5 +37,6 @@ contains(QT_CONFIG, private_tests) {
         framegraphnode \
         qobjectpicker \
         objectpicker \
-        picking
+        picking \
+        qboundingvolumedebug
 }
