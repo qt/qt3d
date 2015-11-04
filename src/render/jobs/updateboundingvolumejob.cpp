@@ -41,8 +41,6 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 
-#include <QElapsedTimer>
-#include <QStack>
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -54,41 +52,17 @@ namespace {
 
 void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 {
-    Qt3DRender::Render::Entity *currentNode = node;
-    QStack<int> childIndexStack;
-    forever {
+    // Go to the nodes that have the most depth
+    Q_FOREACH (Entity *c, node->children())
+        expandWorldBoundingVolume(c);
 
-        // Find left most leaf node of currentNode
-        while (!currentNode && !currentNode->children().isEmpty()) {
-            childIndexStack.push(1);
-            currentNode = currentNode->children().first();
-        }
-
-        if (!currentNode || !currentNode->parent())
-            return;
-
-        // Initialize parent bounding volume to be equal to that of the first child
-        Qt3DRender::Render::Entity *parentNode = currentNode->parent();
+    // Then traverse to root
+    // Initialize parent bounding volume to be equal to that of the first child
+    Qt3DRender::Render::Entity *parentNode = node->parent();
+    if (parentNode) {
         Qt3DRender::Render::Sphere *parentBoundingVolume = parentNode->worldBoundingVolumeWithChildren();
-        *(parentBoundingVolume) = *(currentNode->worldBoundingVolumeWithChildren());
-
-        // Expand the parent bounding volume by each of remaining the siblings
-        QVector<Entity *> siblings = parentNode->children();
-        const int siblingCount = siblings.count();
-        for (int i = 1; i < siblingCount; ++i) {
-            Qt3DRender::Render::Sphere *siblingBoundingVolume = siblings.at(i)->worldBoundingVolumeWithChildren();
-            parentBoundingVolume->expandToContain(*siblingBoundingVolume);
-        }
-
-        // Move to parent's next sibling
-        childIndexStack.pop();
-        currentNode = Q_NULLPTR;
-        if (!childIndexStack.empty() && parentNode->parent()) {
-            const int nextSiblingIndex = childIndexStack.top()++;
-            QVector<Entity *> parentSiblings = parentNode->parent()->children();
-            if (nextSiblingIndex < parentSiblings.size())
-                currentNode = parentSiblings.at(nextSiblingIndex);
-        }
+        Qt3DRender::Render::Sphere *nodeBoundingVolume = node->worldBoundingVolumeWithChildren();
+        parentBoundingVolume->expandToContain(*nodeBoundingVolume);
     }
 }
 
