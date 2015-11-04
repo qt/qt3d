@@ -69,6 +69,7 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
         Geometry *geom = renderer->geometryManager()->lookupResource(gRenderer->geometryId());
 
         // TO DO: We must not recompute this every frame
+        // Find a way to detect that the bounding volume attribute or its buffer have changed
 
         if (geom) {
             Qt3DRender::Render::Attribute *pickVolumeAttribute = renderer->attributeManager()->lookupResource(geom->boundingPositionAttribute());
@@ -77,7 +78,8 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
             if (!pickVolumeAttribute) {
                 Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
                     pickVolumeAttribute = renderer->attributeManager()->lookupResource(attrId);
-                    if (pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
+                    if (pickVolumeAttribute &&
+                            pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
                         break;
                 }
             }
