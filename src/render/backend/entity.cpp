@@ -46,6 +46,7 @@
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -99,6 +100,7 @@ void Entity::cleanup()
     m_materialComponent = Qt3DCore::QNodeId();
     m_geometryRendererComponent = Qt3DCore::QNodeId();
     m_objectPickerComponent = QNodeId();
+    m_boundingVolumeDebugComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_localBoundingVolume.reset();
@@ -144,6 +146,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_cameraComponent = QNodeId();
     m_geometryRendererComponent = QNodeId();
     m_objectPickerComponent = QNodeId();
+    m_boundingVolumeDebugComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_localBoundingVolume.reset(new Sphere(peerUuid()));
@@ -267,6 +270,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_geometryRendererComponent = component->id();
     else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR)
         m_objectPickerComponent = component->id();
+    else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR)
+        m_boundingVolumeDebugComponent = component->id();
 }
 
 void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
@@ -285,6 +290,8 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_geometryRendererComponent = QNodeId();
     else if (m_objectPickerComponent == nodeId)
         m_objectPickerComponent = QNodeId();
+    else if (m_boundingVolumeDebugComponent == nodeId)
+        m_boundingVolumeDebugComponent = QNodeId();
 }
 
 bool Entity::isEnabled() const
@@ -347,6 +354,12 @@ QList<HShaderData> Entity::componentsHandle<ShaderData>() const
     return shaderDataHandles;
 }
 
+template<>
+HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
+{
+    return m_renderer->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
+}
+
 // Render components
 
 template<>
@@ -397,6 +410,12 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const
     return shaderDatas;
 }
 
+template<>
+BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
+{
+    return m_renderer->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
+}
+
 // Uuid
 
 template<>
@@ -420,6 +439,8 @@ Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geo
 template<>
 QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerComponent; }
 
+template<>
+QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVolumeDebugComponent; }
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)

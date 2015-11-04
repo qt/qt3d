@@ -178,6 +178,7 @@ private:
     QList<Qt3DCore::QNodeId> m_shaderDataComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
+    Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
 
     QString m_objectName;
     bool m_enabled;
@@ -205,6 +206,9 @@ QList<HLayer> Entity::componentsHandle<Layer>() const;
 template<>
 QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
 
+template<>
+Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
+
 // Render components
 template<>
 Material *Entity::renderComponent<Material>() const;
@@ -226,6 +230,9 @@ QList<Layer *> Entity::renderComponents<Layer>() const;
 
 template<>
 QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
+
+template<>
+Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
 
 // UUid
 template<>
@@ -249,6 +256,8 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() co
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
+template<>
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {
