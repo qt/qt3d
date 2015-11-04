@@ -183,36 +183,51 @@ private:
     bool m_enabled;
 };
 
+// Handles
 template<>
 HMaterial Entity::componentHandle<Material>() const;
-
-template<>
-Material *Entity::renderComponent<Material>() const;
 
 template<>
 HCamera Entity::componentHandle<CameraLens>() const;
 
 template<>
-CameraLens *Entity::renderComponent<CameraLens>() const;
-
-template<>
 HTransform Entity::componentHandle<Transform>() const;
-
-template<>
-Transform *Entity::renderComponent<Transform>() const;
 
 template<>
 Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
+Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
 
 template<>
-Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
+QList<HLayer> Entity::componentsHandle<Layer>() const;
+
+template<>
+QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
+
+// Render components
+template<>
+Material *Entity::renderComponent<Material>() const;
+
+template<>
+CameraLens *Entity::renderComponent<CameraLens>() const;
+
+template<>
+Transform *Entity::renderComponent<Transform>() const;
+
+template<>
+Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
 
 template<>
 Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
+template<>
+QList<Layer *> Entity::renderComponents<Layer>() const;
+
+template<>
+QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
+
+// UUid
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
 
@@ -223,19 +238,7 @@ template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Material>() const;
 
 template<>
-QList<HLayer> Entity::componentsHandle<Layer>() const;
-
-template<>
-QList<Layer *> Entity::renderComponents<Layer>() const;
-
-template<>
 Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
-
-template<>
-QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
-
-template<>
-QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
@@ -245,6 +248,7 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() co
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
+
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {

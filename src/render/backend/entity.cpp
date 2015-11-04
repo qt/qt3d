@@ -297,16 +297,12 @@ void Entity::setEnabled(bool isEnabled)
     m_enabled = isEnabled;
 }
 
+// Handles
+
 template<>
 HMaterial Entity::componentHandle<Material>() const
 {
     return m_renderer->materialManager()->lookupHandle(m_materialComponent);
-}
-
-template<>
-Material *Entity::renderComponent<Material>() const
-{
-    return m_renderer->materialManager()->lookupResource(m_materialComponent);
 }
 
 template<>
@@ -316,21 +312,9 @@ HCamera Entity::componentHandle<CameraLens>() const
 }
 
 template<>
-CameraLens *Entity::renderComponent<CameraLens>() const
-{
-    return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
-}
-
-template<>
 HTransform Entity::componentHandle<Transform>() const
 {
     return m_renderer->transformManager()->lookupHandle(m_transformComponent);
-}
-
-template<>
-Transform *Entity::renderComponent<Transform>() const
-{
-    return m_renderer->transformManager()->lookupResource(m_transformComponent);
 }
 
 template<>
@@ -340,31 +324,10 @@ HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const
 }
 
 template<>
-GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
-{
-    return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
-}
-
-template<>
 HObjectPicker Entity::componentHandle<ObjectPicker>() const
 {
     return m_renderer->objectPickerManager()->lookupHandle(m_objectPickerComponent);
 }
-
-template<>
-ObjectPicker *Entity::renderComponent<ObjectPicker>() const
-{
-    return m_renderer->objectPickerManager()->lookupResource(m_objectPickerComponent);
-}
-
-template<>
-Qt3DCore::QNodeId Entity::componentUuid<Transform>() const { return m_transformComponent; }
-
-template<>
-Qt3DCore::QNodeId Entity::componentUuid<CameraLens>() const { return m_cameraComponent; }
-
-template<>
-Qt3DCore::QNodeId Entity::componentUuid<Material>() const { return m_materialComponent; }
 
 template<>
 QList<HLayer> Entity::componentsHandle<Layer>() const
@@ -373,6 +336,47 @@ QList<HLayer> Entity::componentsHandle<Layer>() const
     Q_FOREACH (const QNodeId &id, m_layerComponents)
         layerHandles.append(m_renderer->layerManager()->lookupHandle(id));
     return layerHandles;
+}
+
+template<>
+QList<HShaderData> Entity::componentsHandle<ShaderData>() const
+{
+    QList<HShaderData> shaderDataHandles;
+    Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
+        shaderDataHandles.append(m_renderer->shaderDataManager()->lookupHandle(id));
+    return shaderDataHandles;
+}
+
+// Render components
+
+template<>
+Material *Entity::renderComponent<Material>() const
+{
+    return m_renderer->materialManager()->lookupResource(m_materialComponent);
+}
+
+template<>
+CameraLens *Entity::renderComponent<CameraLens>() const
+{
+    return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
+}
+
+template<>
+Transform *Entity::renderComponent<Transform>() const
+{
+    return m_renderer->transformManager()->lookupResource(m_transformComponent);
+}
+
+template<>
+GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
+{
+    return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
+}
+
+template<>
+ObjectPicker *Entity::renderComponent<ObjectPicker>() const
+{
+    return m_renderer->objectPickerManager()->lookupResource(m_objectPickerComponent);
 }
 
 template<>
@@ -385,18 +389,6 @@ QList<Layer *> Entity::renderComponents<Layer>() const
 }
 
 template<>
-QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
-
-template<>
-QList<HShaderData> Entity::componentsHandle<ShaderData>() const
-{
-    QList<HShaderData> shaderDataHandles;
-    Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
-        shaderDataHandles.append(m_renderer->shaderDataManager()->lookupHandle(id));
-    return shaderDataHandles;
-}
-
-template<>
 QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
     QList<ShaderData *> shaderDatas;
@@ -404,6 +396,20 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const
         shaderDatas.append(m_renderer->shaderDataManager()->lookupResource(id));
     return shaderDatas;
 }
+
+// Uuid
+
+template<>
+Qt3DCore::QNodeId Entity::componentUuid<Transform>() const { return m_transformComponent; }
+
+template<>
+Qt3DCore::QNodeId Entity::componentUuid<CameraLens>() const { return m_cameraComponent; }
+
+template<>
+Qt3DCore::QNodeId Entity::componentUuid<Material>() const { return m_materialComponent; }
+
+template<>
+QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
 
 template<>
 QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_shaderDataComponents; }
@@ -413,6 +419,7 @@ Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geo
 
 template<>
 QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerComponent; }
+
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)
