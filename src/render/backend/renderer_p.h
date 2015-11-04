@@ -139,6 +139,7 @@ class GeometryManager;
 class GeometryRendererManager;
 class ObjectPickerManager;
 class PickEventFilter;
+class BoundingVolumeDebugManager;
 
 class Renderer
 {
@@ -201,6 +202,7 @@ public:
     inline GeometryManager *geometryManager() const { return m_geometryManager; }
     inline GeometryRendererManager *geometryRendererManager() const { return m_geometryRendererManager; }
     inline ObjectPickerManager *objectPickerManager() const { return m_objectPickerManager; }
+    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const { return m_boundingVolumeDebugManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -288,6 +290,7 @@ private:
     GeometryManager *m_geometryManager;
     GeometryRendererManager *m_geometryRendererManager;
     ObjectPickerManager *m_objectPickerManager;
+    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
