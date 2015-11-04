@@ -65,7 +65,6 @@ public:
     void cleanup();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
-    Qt3DCore::QNodeId pickAttributeId() const;
     bool isDirty() const;
     void unsetDirty();
     void makeDirty();
@@ -78,7 +77,6 @@ public:
     void onExited();
 
 private:
-    Qt3DCore::QNodeId m_pickAttributeId;
     bool m_isDirty;
     bool m_hoverEnabled;
 };

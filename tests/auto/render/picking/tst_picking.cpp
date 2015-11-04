@@ -93,8 +93,6 @@ public:
         const QByteArray data = (*vertexBuffer->bufferFunctor())();
         vertexBuffer->setData(data);
 
-        picker->setPickAttribute(positionAttr);
-
         translate->setTranslation(position);
         transform->addTransform(translate);
 

@@ -38,7 +38,6 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
@@ -89,7 +88,6 @@ class QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
 public:
     QObjectPickerPrivate()
         : QComponentPrivate()
-        , m_pickAttribute(Q_NULLPTR)
         , m_hoverEnabled(false)
         , m_pressed(false)
         , m_containsMouse(false)
@@ -99,7 +97,6 @@ public:
     }
 
     Q_DECLARE_PUBLIC(QObjectPicker)
-    Qt3DRender::QAttribute *m_pickAttribute;
     bool m_hoverEnabled;
     bool m_pressed;
     bool m_containsMouse;
@@ -126,28 +123,6 @@ QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
 QObjectPicker::~QObjectPicker()
 {
     QComponent::cleanup();
-}
-
-void QObjectPicker::setPickAttribute(QAttribute *pickAttribute)
-{
-    Q_D(QObjectPicker);
-    if (pickAttribute != d->m_pickAttribute) {
-
-        if (pickAttribute && !pickAttribute->parent())
-            pickAttribute->setParent(this);
-
-        d->m_pickAttribute = pickAttribute;
-        emit pickAttributeChanged();
-    }
-}
-
-/*!
-    \qmlproperty Qt3D.Render.Attribute Qt3D.Render::ObjectPicker::pickAttribute
-*/
-QAttribute *QObjectPicker::pickAttribute() const
-{
-    Q_D(const QObjectPicker);
-    return d->m_pickAttribute;
 }
 
 void QObjectPicker::setHoverEnabled(bool hoverEnabled)
@@ -191,9 +166,6 @@ void QObjectPicker::copy(const QNode *ref)
     QComponent::copy(ref);
     const QObjectPicker *picker = static_cast<const QObjectPicker *>(ref);
     d_func()->m_hoverEnabled = picker->d_func()->m_hoverEnabled;
-    // Only clone the pickAttribute if we are it's parent, will be deleted by its parent otherwise
-    if (picker->d_func()->m_pickAttribute != Q_NULLPTR && picker->d_func()->m_pickAttribute->parent() == ref)
-        setPickAttribute(qobject_cast<QAttribute *>(QNode::clone(picker->d_func()->m_pickAttribute)));
 }
 
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
