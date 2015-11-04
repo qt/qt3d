@@ -59,18 +59,18 @@ QMouseInputPrivate::QMouseInputPrivate()
  * \inmodule Qt3DInput
  *
  * \brief Provides a mean of being notified about mouse events when attached to
- * a Qt3DCore::QMouseController instance.
+ * a QMouseController instance.
  *
  * \since 5.5
  *
- * \note Qt3DCore::QMouseInput components shouldn't be shared, not respecting that
+ * \note QMouseInput components shouldn't be shared, not respecting that
  * condition will most likely result in undefined behaviors.
  *
- * \sa Qt3DCore::QMouseController
+ * \sa QMouseController
  */
 
 /*!
- * Constructs a new Qt3DCore::QMouseInput instance with parent \a parent.
+ * Constructs a new QMouseInput instance with parent \a parent.
  */
 QMouseInput::QMouseInput(QNode *parent)
     : QComponent(*new QMouseInputPrivate, parent)
@@ -94,7 +94,7 @@ QMouseInput::~QMouseInput()
 }
 
 /*!
- * Sets the mouse controller of the Qt3DCore::QMouseInput instance to \a controller.
+ * Sets the mouse controller of the QMouseInput instance to \a controller.
  */
 void QMouseInput::setController(QMouseController *controller)
 {
@@ -115,11 +115,11 @@ QMouseController *QMouseInput::controller() const
 }
 
 /*!
- * Returns true if the QMouseInput currently contains the mouse.
+ * Returns \c true if the QMouseInput currently contains the mouse.
  *
- * \note: In this context, contains mean that the ray originating from the
+ * \note In this context, contains mean that the ray originating from the
  * mouse is intersecting with the Qt3DCore::QEntity that aggregates the current
- * Qt3DCore::QMouseInput instance component.
+ * QMouseInput instance component.
  */
 bool QMouseInput::containsMouse() const
 {

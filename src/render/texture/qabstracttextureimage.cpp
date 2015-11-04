@@ -60,8 +60,8 @@ namespace Qt3DRender {
 */
 
 /*!
-    \class QAbstractTextureImage
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QAbstractTextureImage
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
@@ -79,7 +79,7 @@ namespace Qt3DRender {
  */
 
 /*!
-    Constructs a new Qt3DCore::QAbstractTextureImage instance with \a parent as parent.
+    Constructs a new QAbstractTextureImage instance with \a parent as parent.
  */
 QAbstractTextureImage::QAbstractTextureImage(QNode *parent)
     : QNode(*new QAbstractTextureImagePrivate, parent)
@@ -96,13 +96,13 @@ QAbstractTextureImage::~QAbstractTextureImage()
 
 
 /*!
-    \qmlproperty int Qt3D.render::AbstractTextureImage::mipmapLevel
+    \qmlproperty int Qt3D.Render::AbstractTextureImage::mipmapLevel
 
     Holds the mipmap level of the texture image.
  */
 
 /*!
-    \property Qt3DCore::QAbstractTextureImage::mipmapLevel
+    \property Qt3DRender::QAbstractTextureImage::mipmapLevel
 
     Holds the mipmap level of the texture image.
  */
@@ -113,13 +113,13 @@ int QAbstractTextureImage::mipmapLevel() const
 }
 
 /*!
-    \qmlproperty int Qt3D.Renderer::AbstractTextureImage::layer
+    \qmlproperty int Qt3D.Render::AbstractTextureImage::layer
 
     Holds the layer of the texture image.
  */
 
 /*!
-    \property Qt3DCore::QAbstractTextureImage::layer
+    \property Qt3DRender::QAbstractTextureImage::layer
 
     Holds the layer of the texture image.
  */
@@ -130,7 +130,7 @@ int QAbstractTextureImage::layer() const
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Renderer::AbstractTextureImage::cubeMapFace
+    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::cubeMapFace
 
     Holds the cube map face of the texture image.
 
@@ -142,12 +142,12 @@ int QAbstractTextureImage::layer() const
     \value CubeMapNegativeZ 0x851A   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 
     \note The cube map face has a meaning only for
-    \l {QAbstractTextureProvider::}{TargetCubeMap} and
-    \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
+    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMap} and
+    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMapArray}.
  */
 
 /*!
-    \property Qt3DCore::QAbstractTextureImage::cubeMapFace
+    \property Qt3DRender::QAbstractTextureImage::cubeMapFace
 
     Holds the cube map face of the texture image.
 

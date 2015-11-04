@@ -145,7 +145,7 @@ void AssimpIOStream::Flush()
 }
 
 /*!
- * \class AssimpIOSystem
+ * \class Qt3DRender::AssimpHelper::AssimpIOSystem
  *
  * \internal
  *

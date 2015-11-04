@@ -68,8 +68,8 @@ QPointLightPrivate::QPointLightPrivate()
 }
 
 /*!
-  \class QPointLight
-  \inmodule Qt3DRenderer
+  \class Qt3DRender::QPointLight
+  \inmodule Qt3DRender
   \since 5.5
 
  */
@@ -84,7 +84,7 @@ QPointLightPrivate::QPointLightPrivate()
 */
 
 /*!
-  \fn Qt3DRender::QPointLight::QPointLight(QNode *parent)
+  \fn Qt3DRender::QPointLight::QPointLight(Qt3DCore::QNode *parent)
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)

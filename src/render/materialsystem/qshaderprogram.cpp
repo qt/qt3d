@@ -85,7 +85,7 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 }
 
 /*!
- * Sets the vertexShader from raw data in \a vertexShader.
+ * Sets the vertex shader from raw data in \a vertexShaderCode.
  */
 void QShaderProgram::setVertexShaderCode(const QByteArray &vertexShaderCode)
 {
@@ -148,7 +148,7 @@ QByteArray QShaderProgram::geometryShaderCode() const
 }
 
 /*!
- * Sets the fragmentShader from raw data in \a fragmentShader.
+ * Sets the fragment shader from raw data in \a fragmentShaderCode.
  */
 void QShaderProgram::setFragmentShaderCode(const QByteArray &fragmentShaderCode)
 {

@@ -45,7 +45,7 @@ namespace Qt3DRender
 /*!
  * \qmltype AbstractLight
  * \inqmlmodule Qt3D.Render
- * \instantiates QAbstractLight
+ * \instantiates Qt3DRender::QAbstractLight
  * \brief Encapsulate a QAbstractLight object in a Qt 3D scene.
  * \since 5.3
  */
@@ -92,7 +92,7 @@ QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
 
 
 /*!
- *  \property Qt3DCore::QAbstractLight::color
+ *  \property Qt3DRender::QAbstractLight::color
  *
  * Holds the current QAbstractLight color.
  */
@@ -112,7 +112,7 @@ void QAbstractLight::setColor(const QColor &color)
 }
 
 /*!
-    \property Qt3DCore::QAbstractLight::intensity
+    \property Qt3DRender::QAbstractLight::intensity
 
     Holds the current QAbstractLight intensity.
 */
@@ -132,7 +132,7 @@ void QAbstractLight::setIntensity(float intensity)
 }
 
 /*!
-    \property Qt3DCore::QAbstractLight::position
+    \property Qt3DRender::QAbstractLight::position
 
     Holds the current QAbstractLight position.
 */

@@ -110,7 +110,7 @@
     Another way to access the data stored in a QCircularBuffer is to call data(),
     or dataOne() and dataTwo() depending on if the buffer is linearized or not.
     See the discussion in isLinearised() for more information. The data() function
-    returns a Qt3DCore::QCircularBuffer::array_range object describing the array of items stored
+    returns an \l array_range object describing the array of items stored
     in the QCircularBuffer. You can use the pointer in the array_range to
     directly access and modify the elements stored in the circular buffer. The pointer is also
     useful if you need to pass a QCircularBuffer to a function that accepts a plain
@@ -170,7 +170,7 @@
     of the circular buffer in the constructor or immediately after construction,
     and then simply keep appending to the buffer. If you wish to reclaim any
     unused memory from the circular buffer, then call squeeze(). This is
-    equivalent to calling setCapacity( size() ).
+    equivalent to calling \l {setCapacity()}{setCapacity}( size() ).
 
     Note that using non-const operators and functions can cause
     QCircularBuffer to do a deep copy of the data. This is due to
@@ -184,16 +184,15 @@
     support \c operator==().  These requirements are documented on a
     per-function basis.
 
-    QCircularBuffer provides \l{STL-Style Iterators} (\l {Qt3DCore::QCircularBuffer::}{const_iterator})
-    and \l {Qt3DCore::QCircularBuffer::}{iterator}). In practice, these are rarely used,
-    because you can use indexes into the QCircularBuffer.
+    QCircularBuffer provides \l{STL-Style Iterators} (\l {const_iterator}
+    and \l {iterator}). In practice, these are rarely used,
+    because you can use indexes into the buffer.
 
     QCircularBuffer does \e not support inserting, prepending, appending, or
     replacing with references to its own values. Doing so will cause your
     application to abort with an error message.
 
-    \sa Qt3DCore::QCircularBuffer::iterator, Qt3DCore::QCircularBuffer::const_iterator,
-    QVector, QList, QLinkedList
+    \sa iterator, const_iterator, QVector, QList, QLinkedList
 */
 
 /*! \fn Qt3DCore::QCircularBuffer::QCircularBuffer()
@@ -462,7 +461,7 @@
 
 /*! \fn Qt3DCore::QCircularBuffer::array_range Qt3DCore::QCircularBuffer::data()
 
-    Returns a Qt3DCore::QCircularBuffer::array_range describing the internal array of data. If
+    Returns an \l array_range describing the internal array of data. If
     the circular buffer is non-linearized, then this function causes it to be
     linearized. If the cost of linearisation is too high for your use case, then
     you should consider using the dataOne() and dataTwo() functions instead.
@@ -484,7 +483,7 @@
 
 /*! \fn Qt3DCore::QCircularBuffer::const_array_range Qt3DCore::QCircularBuffer::constData() const
 
-    Returns a Qt3DCore::QCircularBuffer::const_array_range describing the internal array of
+    Returns a \l const_array_range describing the internal array of
     data.
 
     If the circular buffer is non-linearized then the pointer and array size
@@ -499,13 +498,13 @@
 
 /*! \fn Qt3DCore::QCircularBuffer::array_range Qt3DCore::QCircularBuffer::dataOne()
 
-    Returns a Qt3DCore::QCircularBuffer::array_range describing the first internal array of
+    Returns an \l array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then this function is
     equivalent to calling data(). If the circular buffer is non-linearized then
     the returned array range will describe a subset of the data contained in the
     circular buffer. This subset will consist of the earliest (lowest index) items
-    in the buffer. To obtain a Qt3DCore::QCircularBuffer::array_range for the remainder
-    of the data, use the dataTwo() function.
+    in the buffer. To obtain an \l array_range for the remainder of the data, use
+    the dataTwo() function.
 
     If the circular buffer is empty, then the pointer and array size returned
     will both be 0.
@@ -517,19 +516,19 @@
 
     \overload
 
-    Unlike data() this function always returns a valid Qt3DCore::QCircularBuffer::const_array_range
+    Unlike data(), this function always returns a valid \l const_array_range
     (unless the circular buffer is empty).
 */
 
 /*! \fn Qt3DCore::QCircularBuffer::const_array_range Qt3DCore::QCircularBuffer::constDataOne() const
 
-    Returns a Qt3DCore::QCircularBuffer::const_array_range describing the first internal array of
+    Returns a \l const_array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then this function is
     equivalent to calling constData(). If the circular buffer is non-linearized, then
     the returned array range will describe a subset of the data contained in the
     circular buffer. This subset will consist of the earliest (lowest index) items
-    in the buffer. To obtain a Qt3DCore::QCircularBuffer::const_array_range for the remainder
-    of the data, use the constDataTwo() function.
+    in the buffer. To obtain a \l const_array_range for the remainder of the data,
+    use the constDataTwo() function.
 
     If the circular buffer is empty, then the pointer and array size returned
     will both be 0.
@@ -539,7 +538,7 @@
 
 /*! \fn Qt3DCore::QCircularBuffer::array_range Qt3DCore::QCircularBuffer::dataTwo()
 
-    Returns a Qt3DCore::QCircularBuffer::array_range describing the first internal array of
+    Returns an \l array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then the pointer and array size
     returned will both be 0 since all the data will be contained in the array
     described by calling the dataOne() function.
@@ -554,7 +553,7 @@
 
 /*! \fn Qt3DCore::QCircularBuffer::const_array_range Qt3DCore::QCircularBuffer::constDataTwo() const
 
-    Returns a Qt3DCore::QCircularBuffer::const_array_range describing the first internal array of
+    Returns a \l const_array_range describing the first internal array of
     contiguous data. If the circular buffer is linearized, then the pointer and array size
     returned will both be 0 since all the data will be contained in the array
     described by calling the dataOne() function.
@@ -564,8 +563,8 @@
 
 /*! \fn bool Qt3DCore::QCircularBuffer::endsWith(const T &value) const
 
-    Returns true if this circular buffer is not empty and its last
-    item is equal to \a value; otherwise returns false.
+    Returns \c true if this circular buffer is not empty and its last
+    item is equal to \a value; otherwise returns \c false.
 
     \sa isEmpty(), last(), startsWith()
 */
@@ -655,9 +654,9 @@
     Using this function is equivalent to calling insert(i, 1, value). See the
     discussion there for more information.
 
-    Items at indexes i and higher are shifted along by one. If the circular
+    Items at indexes \a i and higher are shifted along by one. If the circular
     buffer is full then the earliest item will be overwritten. Note that this
-    has the non-obvious behavior that calling insert(0,value) on a circular
+    has the non-obvious behavior that calling \c {insert(0, value)} on a circular
     buffer that is already full will effectively do nothing since the newly
     prepended item will immediately be overwritten by the highest item as it
     is shifted along one position.
@@ -683,7 +682,7 @@
     is size(), the value is appended to the circular buffer. The capacity
     of the circular buffer is not changed.
 
-    Items at indexes i and higher are shifted along by one. If the circular
+    Items at indexes \a i and higher are shifted along by one. If the circular
     buffer has freeSize() < \a count, then the earliest items will be overwritten.
 
     The actual number of items that get inserted may not always be equal to
@@ -745,7 +744,8 @@
 
 /*! \fn bool Qt3DCore::QCircularBuffer::isLinearised() const
 
-    Returns true if the circular buffer is linearized; otherwise returns false.
+    Returns \c true if the circular buffer is linearized; otherwise returns
+    \c false.
 
     A circular buffer is said to be linearized if the position of the first
     item in the internal array occurs before the position of the last item. A
@@ -800,15 +800,15 @@
     If you need to directly access the items stored in a circular buffer,
     (perhaps for a plain C++ function call) then you can use the data()
     function. If the circular buffer is non-linearized, then the data()
-    function will linearize it for you before returning a
-    Qt3DCore::QCircularBuffer::array_range describing the array.
+    function will linearize it for you before returning an \l array_range
+    describing the array.
 
     To prevent the cost of the linearisation process, you can instead
     call the dataOne() and dataTwo() functions to obtain the two arrays
     used to represent a non-linearized circular buffer. After running the
     above sample code, calling the dataOne() function would return an
-    array_range object describing the values 2-6, and the dataTwo() function
-    would return an array_range object describing the value 7. Sometimes,
+    \l array_range object describing the values 2-6, and the dataTwo() function
+    would return an \l array_range object describing the value 7. Sometimes,
     accessing the items via the two arrays described by dataOne() and dataTwo(),
     can be quicker than calling data() and having the circular buffer
     linearized. The dataOne() and dataTwo() functions do not trigger a
@@ -949,8 +949,8 @@
 
 /*! \fn bool Qt3DCore::QCircularBuffer::startsWith(const T &value) const
 
-    Returns true if the circular buffer is not empty and its first
-    item is equal to \a value; otherwise returns false.
+    Returns \c true if the circular buffer is not empty and its first
+    item is equal to \a value; otherwise returns \c false.
 
     \sa isEmpty(), first(), endsWith()
 */
@@ -995,8 +995,8 @@
 
 /*! \fn bool Qt3DCore::operator==(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if the circular buffer \a lhs is equal to \a rhs; otherwise
-    returns false.
+    Returns \c true if the circular buffer \a lhs is equal to \a rhs; otherwise
+    returns \c false.
 
     Two circular buffers are considered equal if they contain the same values
     in the same order and have the same capacity.
@@ -1009,8 +1009,8 @@
 
 /*! \fn bool Qt3DCore::operator!=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if the circular buffer \a lhs is not equal to \a rhs; otherwise
-    returns false.
+    Returns \c true if the circular buffer \a lhs is not equal to \a rhs; otherwise
+    returns \c false.
 
     Two circular buffers are considered equal if they contain the same values
     in the same order and have the same capacity.
@@ -1078,11 +1078,12 @@
 */
 
 /*! \fn Qt3DCore::QCircularBuffer<T> Qt3DCore::operator+(const QCircularBuffer<T>& lhs, const QCircularBuffer<T>& rhs)
+    \relates Qt3DCore::QCircularBuffer
 
     Returns a circular buffer object with capacity of lhs.size() + rhs.size() containing
     the items from \a lhs followed by the items from \a rhs.
 
-    \sa Qt3DCore::QCircularBuffer::operator+=()
+    \sa {QCircularBuffer::}{operator+=()}
 */
 
 /*! \fn void Qt3DCore::swap(QCircularBuffer<T> &lhs, QCircularBuffer<T> &rhs)
@@ -1092,33 +1093,33 @@
 
 /*! \fn bool Qt3DCore::operator<(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a lhs is lexographically less than \a rhs. This is equivalent to calling
+    Returns \c true if \a lhs is lexographically less than \a rhs. This is equivalent to calling
     \c{return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end())}.
 */
 
 /*! \fn bool Qt3DCore::operator>(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a rhs is lexographically less than \a lhs.
+    Returns \c true if \a rhs is lexographically less than \a lhs.
 */
 
 /*! \fn bool Qt3DCore::operator>=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a lhs is lexographically less than or equal to \a rhs.
+    Returns \c true if \a lhs is lexographically less than or equal to \a rhs.
 */
 
 /*! \fn bool Qt3DCore::operator<=(const QCircularBuffer<T> &lhs, const QCircularBuffer<T> &rhs)
 
-    Returns true if \a lhs is lexographically less than or equal to \a rhs.
+    Returns \c true if \a lhs is lexographically less than or equal to \a rhs.
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::Iterator
 
-    Qt-style synonym for Qt3DCore::QCircularBuffer::iterator.
+    Qt-style synonym for \l iterator.
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::ConstIterator
 
-    Qt-style synonym for Qt3DCore::QCircularBuffer::const_iterator.
+    Qt-style synonym for \l const_iterator.
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::const_pointer
@@ -1174,12 +1175,12 @@
 
 /*! \typedef Qt3DCore::QCircularBuffer::ArrayRange
 
-    Qt-style synonym for Qt3DCore::QCircularBuffer::array_range.
+    Qt-style synonym for \l array_range.
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::ConstArrayRange
 
-    Qt-style synonym for Qt3DCore::QCircularBuffer::const_array_range.
+    Qt-style synonym for \l const_array_range.
 */
 
 
@@ -1190,8 +1191,7 @@
     QCircularBuffer provides both \l{STL-Style Iterators} and \l{Java-Style
     Iterators}.
 
-    \sa Qt3DCore::QCircularBuffer::begin(), Qt3DCore::QCircularBuffer::end(),
-    Qt3DCore::QCircularBuffer::const_iterator
+    \sa begin(), end(), const_iterator
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::iterator::iterator_category
@@ -1228,7 +1228,7 @@
     on an uninitialized iterator. Use operator=() to assign a value
     to it before using it.
 
-    \sa Qt3DCore::QCircularBuffer::begin() Qt3DCore::QCircularBuffer::end()
+    \sa begin(), end()
 */
 
 /*! \fn Qt3DCore::QCircularBuffer::iterator::iterator(QCircularBuffer<T> *buffer, int index)
@@ -1267,8 +1267,8 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator==(const iterator &other) const
 
-    Returns true if \a other points to the same item as this
-    iterator; otherwise returns false.
+    Returns \c true if \a other points to the same item as this
+    iterator; otherwise returns \c false.
 
     \sa operator!=()
 */
@@ -1276,8 +1276,8 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator!=(const iterator &other) const
 
-    Returns true if \a other points to a different item than this
-    iterator; otherwise returns false.
+    Returns \c true if \a other points to a different item than this
+    iterator; otherwise returns \c false.
 
     \sa operator==()
 */
@@ -1285,28 +1285,28 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator<(const iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs before
+    Returns \c true if the item pointed to by this iterator occurs before
     the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator<=(const iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs before
+    Returns \c true if the item pointed to by this iterator occurs before
     or at the same position as the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator>(const iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs after
+    Returns \c true if the item pointed to by this iterator occurs after
     the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::iterator::operator>=(const iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs after
+    Returns \c true if the item pointed to by this iterator occurs after
     or at the same position as the item pointed to by the \a other iterator.
 */
 
@@ -1316,7 +1316,7 @@
     next item in the circular buffer and returns an iterator to the new current
     item.
 
-    Calling this function on Qt3DCore::QCircularBuffer::end() leads to undefined results.
+    Calling this function on end() leads to undefined results.
 
     \sa operator--()
 */
@@ -1335,7 +1335,7 @@
     The prefix -- operator (\c{--it}) makes the preceding item
     the current item, and returns an iterator to the new current item.
 
-    Calling this function on Qt3DCore::QCircularBuffer::begin() leads to undefined results.
+    Calling this function on begin() leads to undefined results.
 
     \sa operator++()
 */
@@ -1394,8 +1394,7 @@
     QCircularBuffer provides both \l{STL-Style Iterators} and \l{Java-Style
     Iterators}.
 
-    \sa Qt3DCore::QCircularBuffer::constBegin(), Qt3DCore::QCircularBuffer::constEnd(),
-    Qt3DCore::QCircularBuffer::iterator
+    \sa constBegin(), constEnd(), iterator
 */
 
 /*! \typedef Qt3DCore::QCircularBuffer::const_iterator::iterator_category
@@ -1432,7 +1431,7 @@
     on an uninitialized iterator. Use operator=() to assign a value
     to it before using it.
 
-    \sa Qt3DCore::QCircularBuffer::begin() Qt3DCore::QCircularBuffer::end()
+    \sa begin(), end()
 */
 
 /*! \fn Qt3DCore::QCircularBuffer::const_iterator::const_iterator(const iterator &other)
@@ -1468,8 +1467,8 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator==(const const_iterator &other) const
 
-    Returns true if \a other points to the same item as this
-    iterator; otherwise returns false.
+    Returns \c true if \a other points to the same item as this
+    iterator; otherwise returns \c false.
 
     \sa operator!=()
 */
@@ -1477,8 +1476,8 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator!=(const const_iterator &other) const
 
-    Returns true if \a other points to a different item than this
-    iterator; otherwise returns false.
+    Returns \c true if \a other points to a different item than this
+    iterator; otherwise returns \c false.
 
     \sa operator==()
 */
@@ -1486,28 +1485,28 @@
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator<(const const_iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs before
+    Returns \c true if the item pointed to by this iterator occurs before
     the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator<=(const const_iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs before,
+    Returns \c true if the item pointed to by this iterator occurs before,
     or at the same position as the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator>(const const_iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs after
+    Returns \c true if the item pointed to by this iterator occurs after
     the item pointed to by the \a other iterator.
 */
 
 /*!
     \fn bool Qt3DCore::QCircularBuffer::const_iterator::operator>=(const const_iterator& other) const
 
-    Returns true if the item pointed to by this iterator occurs after,
+    Returns \c true if the item pointed to by this iterator occurs after,
     or at the same position as the item pointed to by the \a other iterator.
 */
 
@@ -1517,7 +1516,7 @@
     next item in the circular buffer and returns an iterator to the new current
     item.
 
-    Calling this function on Qt3DCore::QCircularBuffer::constEnd() leads to undefined results.
+    Calling this function on constEnd() leads to undefined results.
 
     \sa operator--()
 */
@@ -1536,7 +1535,7 @@
     The prefix -- operator (\c{--it}) makes the preceding item the
     current and returns an iterator to the new current item.
 
-    Calling this function on Qt3DCore::QCircularBuffer::constBegin() leads to undefined results.
+    Calling this function on constBegin() leads to undefined results.
 
     \sa operator++()
 */

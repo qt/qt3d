@@ -65,6 +65,7 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::AssimpParser
+    \inmodule Qt3DRender
     \since 5.5
 
     \brief Provides a generic way of loading various 3D assets

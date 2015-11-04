@@ -280,9 +280,10 @@ void QGraphicsApiFilter::setVendor(const QString &vendor)
     }
 }
 
-/*! \fn bool Qt3DCore::operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
+/*! \fn bool Qt3DRender::operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
   \relates Qt3DRender::QGraphicsApiFilter
-  Returns true if \a reference and \a sample are equivalent.
+
+  Returns \c true if \a reference and \a sample are equivalent.
  */
 bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {
@@ -302,9 +303,10 @@ bool operator ==(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &
     return false;
 }
 
-/*! \fn bool Qt3DCore::operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
+/*! \fn bool Qt3DRender::operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
   \relates Qt3DRender::QGraphicsApiFilter
-  Returns true if \a reference and \a sample are different.
+
+  Returns \c true if \a reference and \a sample are different.
  */
 bool operator !=(const QGraphicsApiFilter &reference, const QGraphicsApiFilter &sample)
 {

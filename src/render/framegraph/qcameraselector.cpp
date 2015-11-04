@@ -45,7 +45,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::CameraSelector
+    \class Qt3DRender::QCameraSelector
+    \inmodule Qt3DRender
 */
 
 /*! \internal */
@@ -81,6 +82,9 @@ QCameraSelector::~QCameraSelector()
     QNode::cleanup();
 }
 
+/*!
+    \property Qt3DRender::QCameraSelector::camera
+*/
 void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QCameraSelector);

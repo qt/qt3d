@@ -60,7 +60,7 @@
     all change which states a renderer needs to set over the course of a frame
     and when those state changes need to occur.
 
-    As a comparison, the \l {qtquick-visualcanvas-scenegraph}{Qt Quick 2
+    As a comparison, the \l {Qt Quick Scene Graph}{Qt Quick 2
     scenegraph renderer} responsible for drawing Qt Quick 2 scenes is
     hard-wired in C++ to do things like batching of primitives and rendering
     opaque items followed by rendering of transparent items. In the case of Qt
@@ -102,7 +102,9 @@
     best. For the sake of readability and conciseness, the QML API was chosen
     for this article.
 
-    // TODO: Add list of framegraph node types
+    \omit
+            TODO: Add list of framegraph node types
+    \endomit
 
     The beauty of the framegraph is that combining these simple node types, it
     is possible to configure the renderer to suit your specific needs without

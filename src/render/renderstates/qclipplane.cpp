@@ -54,7 +54,7 @@ public:
 
 /*!
     \class Qt3DRender::QClipPlane
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
     using gl_ClipDistance

@@ -41,10 +41,6 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-/*!
-    \class Qt3DCore::QTickClockServicePrivate
-    \internal
-*/
 
 class QTickClockServicePrivate : public QAbstractFrameAdvanceServicePrivate
 {
@@ -62,9 +58,9 @@ public:
 /*!
     \class Qt3DCore::QTickClockService
     \inmodule Qt3DCore
-    \brief Default Qt3DCore::QAbstractFrameAdvanceService implementation.
+    \brief Default QAbstractFrameAdvanceService implementation.
 
-    This default Qt3DCore::QAbstractFrameAdvanceService implementation has a frequency of 60 Hz.
+    This default QAbstractFrameAdvanceService implementation has a frequency of 60 Hz.
 */
 QTickClockService::QTickClockService()
     : QAbstractFrameAdvanceService(*new QTickClockServicePrivate())

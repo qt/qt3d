@@ -95,14 +95,13 @@ void QAbstractTextureProvider::copy(const QNode *ref)
     \since 5.5
     \brief A base class to be used to provide textures.
 
-    Qt3DRender::QAbstractTextureProvider shouldn't be used directly but rather
+    The QAbstractTextureProvider class shouldn't be used directly but rather
     through one of its subclasses. Each subclass implements a given texture
     target (2D, 2DArray, 3D, CubeMap ...) Each subclass provides a set of
     functors for each layer, cube map face and mipmap level. In turn the
     backend uses those functor to properly fill a corresponding OpenGL texture
     with data.
  */
-
 
 QAbstractTextureProvider::QAbstractTextureProvider(QNode *parent)
     : QNode(*new QAbstractTextureProviderPrivate, parent)
@@ -320,7 +319,7 @@ QAbstractTextureProvider::Target QAbstractTextureProvider::target() const
 /*!
     Adds a new Qt3DCore::QAbstractTextureImage \a textureImage to the texture provider.
 
-    \note Qt3DCore::QAbstractTextureImage should never be shared between multiple
+    \note Qt3DRender::QAbstractTextureImage should never be shared between multiple
     Qt3DRender::QAbstractTextureProvider instances.
  */
 void QAbstractTextureProvider::addTextureImage(QAbstractTextureImage *textureImage)

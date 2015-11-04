@@ -74,7 +74,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 /*!
     \class Qt3DRender::QPerVertexColorMaterial
     \brief The QPerVertexColorMaterial class provides a default implementation for rendering the color properties set for each vertex.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     This lighting effect is based on the combination of 2 lighting components ambient and diffuse. Ambient is set by the vertex color.
@@ -90,7 +90,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 */
 
 /*!
-    \fn Qt3DRender::QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
+    \fn Qt3DRender::QPerVertexColorMaterial::QPerVertexColorMaterial(Qt3DCore::QNode *parent)
 
     Constructs a new QPerVertexColorMaterial instance with parent object \a parent.
 */

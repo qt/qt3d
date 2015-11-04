@@ -52,7 +52,7 @@ QParameterMappingPrivate::QParameterMappingPrivate()
 }
 /*!
     \class Qt3DRender::QParameterMapping
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
     \brief The QParameterMapping class provides ...
 */
@@ -66,7 +66,7 @@ QParameterMappingPrivate::QParameterMappingPrivate()
     \brief For ...
 */
 
-/*! \fn void Qt3DRender::QParameterMapping::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QParameterMapping::copy(const Qt3DCore::QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QParameterMapping::copy(const QNode *ref)
@@ -78,7 +78,7 @@ void QParameterMapping::copy(const QNode *ref)
     d_func()->m_bindingType = mapper->d_func()->m_bindingType;
 }
 
-/*! \fn Qt3DRender::QParameterMapping::QParameterMapping(QNode *parent)
+/*! \fn Qt3DRender::QParameterMapping::QParameterMapping(Qt3DCore::QNode *parent)
   Constructs a new QParameterMapping with the specified \a parent.
  */
 QParameterMapping::QParameterMapping(QNode *parent)
@@ -126,7 +126,7 @@ QParameterMapping::~QParameterMapping()
 */
 
 /*!
-  \qmlproperty string Qt3D.Renderer::ParameterMapping::parameterName
+  \qmlproperty string Qt3D.Render::ParameterMapping::parameterName
 
 */
 
@@ -145,7 +145,7 @@ void QParameterMapping::setParameterName(const QString &name)
 */
 
 /*!
-  \qmlproperty string Qt3D.Renderer::ParameterMapping::shaderVariableName
+  \qmlproperty string Qt3D.Render::ParameterMapping::shaderVariableName
 
 */
 
@@ -164,7 +164,7 @@ void QParameterMapping::setShaderVariableName(const QString &name)
 */
 
 /*!
-  \qmlproperty  BindingType Qt3D.Renderer::ParameterMapping::bindingType
+  \qmlproperty  BindingType Qt3D.Render::ParameterMapping::bindingType
 
   \value Uniform
   \value Attribute

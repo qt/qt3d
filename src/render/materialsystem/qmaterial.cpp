@@ -44,7 +44,7 @@
 
 /*!
  * \class Qt3DRender::QMaterial
- * \inmodule Qt3DRenderer
+ * \inmodule Qt3DRender
  *
  * \inherits Component
  *

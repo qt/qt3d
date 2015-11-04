@@ -132,7 +132,7 @@ void QDiffuseMapMaterialPrivate::init()
     \class Qt3DRender::QDiffuseMapMaterial
     \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect where the diffuse light component
     is read from a texture map.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.

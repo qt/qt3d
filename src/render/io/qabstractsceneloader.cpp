@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DRender::Render::QAbstractSceneLoaderPrivate
+    \class Qt3DRender::QAbstractSceneLoaderPrivate
     \internal
 */
 QAbstractSceneLoaderPrivate::QAbstractSceneLoaderPrivate()

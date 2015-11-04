@@ -181,7 +181,7 @@
     \printuntil PauseAnimation
     \printuntil }
 
-    The property updates are noticed by the \l{Qt3D::}{QNode} base class
+    The property updates are noticed by the \l{Qt3DCore::}{QNode} base class
     and automatically sent through to the corresponding objects in the renderer
     aspect. The renderer then takes care of translating the property updates
     to new values for uniform variables in the GLSL shader programs.

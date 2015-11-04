@@ -96,7 +96,7 @@
 
     \quotefromfile shadow-map-qml/Light.qml
     \skipto import Qt3D
-    \printuntil Qt3D.Renderer
+    \printuntil Qt3D.Render
 
     We then use an \l Entity type as the root element of the custom QML type.
     The light is a directional spotlight that exposes as properties a position,
@@ -132,7 +132,7 @@
 
     In our case, the tree looks like this:
 
-    \code
+    \badcode
     Viewport
         RenderPassFilter
             RenderTargetSelector

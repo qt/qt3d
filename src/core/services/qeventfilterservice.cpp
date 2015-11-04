@@ -57,9 +57,6 @@ bool operator <(const FilterPriorityPair &a, const FilterPriorityPair &b)
     return a.priority < b.priority;
 }
 
-/*!
-    \internal
- */
 class InternalEventListener : public QObject
 {
     Q_OBJECT
@@ -111,9 +108,6 @@ private:
 
 } // anonymous
 
-/*!
-    \internal
- */
 class QEventFilterServicePrivate : public QAbstractServiceProviderPrivate
 {
 public:
@@ -125,13 +119,16 @@ public:
 };
 
 
-
 /*!
     \class Qt3DCore::QEventFilterService
+    \inmodule Qt3DCore
 
-    \brief Allows to register event filters with a priority. Events are dispatched
-    to the event filter with the highest priority first, and then propagates to
-    lower priority event filters if the event wasn't accepted.
+    \brief Allows to register event filters with a priority.
+
+    The QEventFilterService class allows registering prioritized event filters.
+    Events are dispatched to the event filter with the highest priority first,
+    and then propagates to lower priority event filters if the event wasn't
+    accepted.
  */
 
 QEventFilterService::QEventFilterService()

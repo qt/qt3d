@@ -105,7 +105,7 @@ ParameterList QRenderPass::uniforms() const
 /*!
  * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
  * QScenePropertyChange to the QChangeArbiter. The value is set to
- * the \a ShaderProgram and the property name to "shaderProgram".
+ * the \a shaderProgram and the property name to \c {"shaderProgram"}.
  */
 void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
 {

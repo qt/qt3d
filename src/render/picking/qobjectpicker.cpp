@@ -46,16 +46,17 @@ namespace Qt3DRender {
 
 /*!
     \class Qt3DRender::QObjectPicker
+    \inmodule Qt3DRender
 
-    \brief The Qt3DRender::QObjectPicker class instantiates a component that can
-    be used to interact with a Qt3DCore::QEntity by a process known as picking.
+    \brief The QObjectPicker class instantiates a component that can
+    be used to interact with a QEntity by a process known as picking.
 
-    The signals pressed(), released(), clicked(), entered(), exited() are
+    The signals pressed(), released(), clicked(), entered(), and exited() are
     emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray.
 
     \note Instances of this component shouldn't be shared, not respecting that
-    condition will most likely result in undefined behaviors.
+    condition will most likely result in undefined behavior.
 
     \since 5.6
 */
@@ -80,9 +81,6 @@ namespace Qt3DRender {
     \qmlsignal Qt3D.Render::ObjectPicker::exited()
 */
 
-/*!
-    \internal
-*/
 class QObjectPickerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
