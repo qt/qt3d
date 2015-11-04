@@ -68,6 +68,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/qboundingvolumedebug.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -98,6 +99,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
+#include <Qt3DRender/private/boundingvolumedebug_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -250,6 +252,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QGeometry>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Geometry, Render::GeometryManager>(d->m_renderer->geometryManager())));
     registerBackendType<QGeometryRenderer>(QBackendNodeFunctorPtr(new Render::GeometryRendererFunctor(d->m_renderer->geometryRendererManager())));
     registerBackendType<QObjectPicker>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(d->m_renderer->objectPickerManager())));
+    registerBackendType<QBoundingVolumeDebug>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(d->m_renderer->boundingVolumeDebugManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
