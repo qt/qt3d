@@ -196,6 +196,7 @@ void Sphere::expandToContain(const Sphere &sphere)
         const float newRadius = 0.5f * (dist + m_radius + sphere.m_radius);
         if (dist > ms_epsilon)
             m_center += d * (newRadius - m_radius) / dist;
+        m_radius = newRadius;
     }
 }
 
