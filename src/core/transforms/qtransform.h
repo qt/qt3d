@@ -53,7 +53,7 @@ class QTransformPrivate;
 class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
+    Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
     Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
@@ -64,12 +64,6 @@ public:
     QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
     QTransform(QAbstractTransform *transform, QNode *parent = 0);
     ~QTransform();
-
-    QList<QAbstractTransform *> transforms() const;
-    void addTransform(QAbstractTransform *xform);
-    void removeTransform(QAbstractTransform *xform);
-
-    QMatrix4x4 matrix() const;
 
     float scale() const;
     QVector3D scale3D() const;
@@ -88,11 +82,20 @@ public:
     Q_INVOKABLE static QQuaternion fromEulerAngles(const QVector3D &eulerAngles);
     Q_INVOKABLE static QQuaternion fromEulerAngles(float pitch, float yaw, float roll);
 
+    QMatrix4x4 matrix() const;
+
+    QList<QAbstractTransform *> transforms() const;
+    void addTransform(QAbstractTransform *xform);
+    void removeTransform(QAbstractTransform *xform);
+
+
 public Q_SLOTS:
     void setScale(float scale);
     void setScale3D(const QVector3D &scale);
     void setRotation(const QQuaternion &rotation);
     void setTranslation(const QVector3D &translation);
+
+    void setMatrix(const QMatrix4x4 &matrix);
 
 Q_SIGNALS:
     void matrixChanged();

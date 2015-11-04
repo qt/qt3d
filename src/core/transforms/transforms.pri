@@ -22,6 +22,7 @@ HEADERS += \
         $$PWD/qmatrixtransform_p.h \
         $$PWD/qrotatetransform_p.h \
         $$PWD/qscaletransform_p.h \
-        $$PWD/qtranslatetransform_p.h
+        $$PWD/qtranslatetransform_p.h \
+        $$PWD/qmath3d_p.h
 
 INCLUDEPATH += $$PWD

@@ -69,6 +69,7 @@ public:
     mutable bool m_transformsDirty;
     QList<QAbstractTransform*> m_transforms;
 
+    mutable bool m_matrixDirty;
     mutable QMatrix4x4 m_matrix;
 
     // Stored in this order as QQuaternion is bigger than QVector3D

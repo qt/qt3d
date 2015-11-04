@@ -37,6 +37,7 @@
 #include "qtransform.h"
 #include "qtransform_p.h"
 #include "qabstracttransform_p.h"
+#include "qmath3d_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -155,12 +156,36 @@ void QTransform::removeTransform(QAbstractTransform *transform)
     d->_q_update();
 }
 
+void QTransform::setMatrix(const QMatrix4x4 &m)
+{
+    Q_D(QTransform);
+    if (m != matrix()) {
+        d->m_matrix = m;
+        d->m_matrixDirty = false;
+
+        QVector3D s;
+        QVector3D t;
+        QQuaternion r;
+        decomposeQMatrix4x4(m, t, r, s);
+        d->m_scale = s;
+        d->m_rotation = r;
+        d->m_translation = t;
+        emit scale3DChanged();
+        emit rotationChanged();
+        emit translationChanged();
+
+        const bool wasBlocked = blockNotifications(true);
+        emit matrixChanged();
+        blockNotifications(wasBlocked);
+    }
+}
+
 QMatrix4x4 QTransform::matrix() const
 {
     Q_D(const QTransform);
-    if (d->m_transformsDirty) {
-        d->m_matrix = d->applyTransforms();
-        d->m_transformsDirty = false;
+    if (d->m_matrixDirty) {
+        composeQMatrix4x4(d->m_translation, d->m_rotation, d->m_scale, d->m_matrix);
+        d->m_matrixDirty = false;
     }
     return d->m_matrix;
 }
