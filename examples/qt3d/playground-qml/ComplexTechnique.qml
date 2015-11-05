@@ -42,7 +42,7 @@ Technique {
         Annotation { name : "RenderingStyle"; value : "forward"},
         Annotation { name : "Enabled"; value : true}
     ]
-    openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
+    graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
     renderPasses : [
         RenderPass {
             annotations : [Annotation {name : "Name"; value : "TextureLighting" }]

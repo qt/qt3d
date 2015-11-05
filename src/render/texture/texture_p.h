@@ -51,7 +51,7 @@
 #include <QOpenGLContext>
 #include <QMutex>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/qtexturedata.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRender/private/handle_types_p.h>
 
@@ -109,7 +109,7 @@ private:
     QOpenGLTexture *m_gl;
 
     QOpenGLTexture *buildGLTexture();
-    void setToGLTexture(TextureImage *rImg, TexImageData *imgData);
+    void setToGLTexture(TextureImage *rImg, QTexImageData *imgData);
     void updateWrapAndFilters();
 
     int m_width;

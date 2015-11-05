@@ -41,7 +41,6 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qaspectfactory.h>
@@ -54,7 +53,7 @@ using namespace Qt3DCore;
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3DCore::QCollisionAspectPrivate
+    \class Qt3DCollision::QCollisionAspectPrivate
     \internal
 */
 QCollisionAspectPrivate::QCollisionAspectPrivate()

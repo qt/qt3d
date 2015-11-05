@@ -74,7 +74,7 @@ QFrameGraphPrivate::QFrameGraphPrivate()
     \qmltype FrameGraph
     \instantiates Qt3DRender::QFrameGraph
     \inherits Component3D
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For OpenGL ...
 */

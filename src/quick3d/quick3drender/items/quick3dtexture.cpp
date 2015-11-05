@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dtexture.h"
+#include "quick3dtexture_p.h"
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE

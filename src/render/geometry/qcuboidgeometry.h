@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QCuboidGeometryPrivate;
+class QAttribute;
 
 class QT3DRENDERSHARED_EXPORT QCuboidGeometry : public QGeometry
 {
@@ -55,6 +56,12 @@ class QT3DRENDERSHARED_EXPORT QCuboidGeometry : public QGeometry
     Q_PROPERTY(QSize xyMeshResolution READ xyMeshResolution WRITE setXYMeshResolution NOTIFY xyMeshResolutionChanged)
     Q_PROPERTY(QSize yzMeshResolution READ yzMeshResolution WRITE setYZMeshResolution NOTIFY yzMeshResolutionChanged)
     Q_PROPERTY(QSize xzMeshResolution READ xzMeshResolution WRITE setXZMeshResolution NOTIFY xzMeshResolutionChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *tangentAttribute READ tangentAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+
 public:
     explicit QCuboidGeometry(QNode *parent = Q_NULLPTR);
     ~QCuboidGeometry();
@@ -74,6 +81,12 @@ public:
     QSize yzMeshResolution() const;
     QSize xyMeshResolution() const;
     QSize xzMeshResolution() const;
+
+    QAttribute *positionAttribute() const;
+    QAttribute *normalAttribute() const;
+    QAttribute *texCoordAttribute() const;
+    QAttribute *tangentAttribute() const;
+    QAttribute *indexAttribute() const;
 
 Q_SIGNALS:
     void xExtentChanged();

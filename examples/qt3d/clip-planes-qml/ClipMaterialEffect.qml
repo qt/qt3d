@@ -53,9 +53,9 @@ Effect {
     techniques: [
         Technique {
 
-            openGLFilter {
-                api: OpenGLFilter.Desktop
-                profile: OpenGLFilter.None
+            graphicsApiFilter {
+                api: GraphicsApiFilter.OpenGL
+                profile: GraphicsApiFilter.NoProfile
                 majorVersion: 3
                 minorVersion: 2
             }

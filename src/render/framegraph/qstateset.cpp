@@ -52,7 +52,7 @@ QStateSetPrivate::QStateSetPrivate()
 }
 
 /*!
- * \class Qt3DCore::QStateSet
+ * \class Qt3DRender::QStateSet
  * \inmodule Qt3DRender
  *
  * \brief The Qt3DCore::QStateSet FrameGraph node offers a way of specifying a set

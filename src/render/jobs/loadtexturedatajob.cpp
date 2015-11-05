@@ -67,7 +67,7 @@ void LoadTextureDataJob::run()
             if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataFunctor().isNull()) {
                 QTextureDataFunctorPtr functor = texImg->dataFunctor();
                 HTextureData textureDataHandle;
-                TexImageData *data = Q_NULLPTR;
+                QTexImageData *data = Q_NULLPTR;
 
                 // scoped for locker
                 {
@@ -80,11 +80,11 @@ void LoadTextureDataJob::run()
                     if (!textureDataHandle.isNull()) {
                         data = m_renderer->textureDataManager()->data(textureDataHandle);
                     } else {
-                        TexImageDataPtr dataPtr = functor->operator ()();
+                        QTexImageDataPtr dataPtr = functor->operator ()();
                         if (dataPtr.isNull()) {
                             qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
                         } else {
-                            // Save the TexImageDataPtr with it's functor as a key
+                            // Save the QTexImageDataPtr with it's functor as a key
                             textureDataHandle = m_renderer->textureDataManager()->acquire();
                             data = m_renderer->textureDataManager()->data(textureDataHandle);
                             *data = *(dataPtr.data());

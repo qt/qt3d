@@ -38,6 +38,7 @@
 #include "qabstractserviceprovider_p.h"
 #include "nullservices_p.h"
 #include "qtickclockservice_p.h"
+#include "qeventfilterservice.h"
 #include <QHash>
 
 QT_BEGIN_NAMESPACE
@@ -91,6 +92,7 @@ public:
     NullSystemInformationService m_nullSystemInfo;
     NullOpenGLInformationService m_nullOpenGLInfo;
     QTickClockService m_defaultFrameAdvanceService;
+    QEventFilterService m_eventFilterService;
     int m_nonNullDefaultServices;
 };
 
@@ -214,6 +216,17 @@ QAbstractFrameAdvanceService *QServiceLocator::frameAdvanceService()
 }
 
 /*!
+    Returns a pointer to a provider for the event filter service. If no
+    provider has been explicitly registered for this service type, then a
+    pointer to the default event filter service is returned.
+ */
+QEventFilterService *QServiceLocator::eventFilterService()
+{
+    Q_D(QServiceLocator);
+    return static_cast<QEventFilterService *>(d->m_services.value(EventFilterService, &d->m_eventFilterService));
+}
+
+/*!
     \internal
 */
 QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
@@ -226,6 +239,8 @@ QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)
         return openGLInformation();
     case FrameAdvanceService:
         return frameAdvanceService();
+    case EventFilterService:
+        return eventFilterService();
     default:
         return d->m_services.value(type, Q_NULLPTR);
     }

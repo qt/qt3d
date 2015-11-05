@@ -41,7 +41,8 @@ SUBDIRS += \
     custom-mesh-cpp \
     bigscene-instanced-qml \
     custom-mesh-qml \
-    instanced-arrays-qml
+    instanced-arrays-qml \
+    picking-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

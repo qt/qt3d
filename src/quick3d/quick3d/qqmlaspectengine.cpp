@@ -34,7 +34,6 @@
 **
 ****************************************************************************/
 
-#include "qqmlaspectengine.h"
 #include "qqmlaspectengine_p.h"
 #include <QQmlComponent>
 #include <QQmlContext>

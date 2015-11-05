@@ -73,10 +73,12 @@ QT_BEGIN_NAMESPACE
 
 class QSurface;
 class QOpenGLDebugLogger;
+class QMouseEvent;
 
 namespace Qt3DCore {
 class QEntity;
 class QFrameAllocator;
+class QEventFilterService;
 }
 
 namespace Qt3DRender {
@@ -87,8 +89,8 @@ class QShaderProgram;
 class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
-class QOpenGLFilter;
-class AbstractSceneParser;
+class QGraphicsApiFilter;
+class QAbstractSceneParser;
 
 namespace Render {
 
@@ -135,6 +137,8 @@ class BufferManager;
 class AttributeManager;
 class GeometryManager;
 class GeometryRendererManager;
+class ObjectPickerManager;
+class PickEventFilter;
 
 class Renderer
 {
@@ -196,6 +200,7 @@ public:
     inline AttributeManager *attributeManager() const { return m_attributeManager; }
     inline GeometryManager *geometryManager() const { return m_geometryManager; }
     inline GeometryRendererManager *geometryRendererManager() const { return m_geometryRendererManager; }
+    inline ObjectPickerManager *objectPickerManager() const { return m_objectPickerManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -203,12 +208,16 @@ public:
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    inline QList<AbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
+    inline QList<QAbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
     inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
 
-    QOpenGLFilter *contextInfo() const;
+    QList<QMouseEvent> pendingPickingEvents() const;
+
+    QGraphicsApiFilter *contextInfo() const;
 
     void setSurface(QSurface *s);
+    inline QSurface *surface() const { return m_surface; }
+    void registerEventFilter(Qt3DCore::QEventFilterService *service);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool submitRenderViews();
@@ -250,6 +259,7 @@ private:
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
+    QObject *m_eventSource;
     CameraManager *m_cameraManager;
     EntityManager *m_renderNodesManager;
     MaterialManager *m_materialManager;
@@ -277,6 +287,7 @@ private:
     AttributeManager *m_attributeManager;
     GeometryManager *m_geometryManager;
     GeometryRendererManager *m_geometryRendererManager;
+    ObjectPickerManager *m_objectPickerManager;
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
@@ -298,7 +309,8 @@ private:
     QAtomicInt m_running;
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
-    QList<AbstractSceneParser *> m_sceneParsers;
+    QScopedPointer<PickEventFilter> m_pickEventFilter;
+    QList<QAbstractSceneParser *> m_sceneParsers;
     QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
     QVector<Attribute *> m_dirtyAttributes;

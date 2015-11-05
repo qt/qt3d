@@ -44,7 +44,6 @@
 #include "qeffect.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
-#include <QOpenGLShaderProgram>
 
 using namespace Qt3DCore;
 

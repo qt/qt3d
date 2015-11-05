@@ -45,6 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QTorusGeometryPrivate;
+class QAttribute;
 
 class QT3DRENDERSHARED_EXPORT QTorusGeometry : public QGeometry
 {
@@ -53,6 +54,11 @@ class QT3DRENDERSHARED_EXPORT QTorusGeometry : public QGeometry
     Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(float minorRadius READ minorRadius WRITE setMinorRadius NOTIFY minorRadiusChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+
 public:
     explicit QTorusGeometry(QNode *parent = 0);
     ~QTorusGeometry();
@@ -68,6 +74,11 @@ public:
     int slices() const;
     float radius() const;
     float minorRadius() const;
+
+    QAttribute *positionAttribute() const;
+    QAttribute *normalAttribute() const;
+    QAttribute *texCoordAttribute() const;
+    QAttribute *indexAttribute() const;
 
 Q_SIGNALS:
     void radiusChanged();

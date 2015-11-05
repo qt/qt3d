@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DLogic {
 
 /*!
-    \class Qt3DCore::QLogicComponentPrivate
+    \class Qt3DLogic::QLogicComponentPrivate
     \internal
 */
 QLogicComponentPrivate::QLogicComponentPrivate()
@@ -51,7 +51,7 @@ QLogicComponentPrivate::QLogicComponentPrivate()
 }
 
 /*!
-    \class Qt3DCore::QLogicComponent
+    \class Qt3DLogic::QLogicComponent
     \inmodule Qt3DLogic
     \since 5.5
     \brief Provides a way to have a synchronous function executed each frame.
@@ -71,7 +71,7 @@ QLogicComponentPrivate::QLogicComponentPrivate()
 /*!
     \qmltype LogicComponent
     \inqmlmodule Qt3D.Logic
-    \instantiates Qt3DCore::QLogicComponent
+    \instantiates Qt3DLogic::QLogicComponent
     \inherits Component3D
     \since 5.5
 */

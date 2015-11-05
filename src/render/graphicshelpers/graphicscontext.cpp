@@ -37,7 +37,7 @@
 
 #include "graphicscontext_p.h"
 
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/shader_p.h>
@@ -131,7 +131,7 @@ GraphicsContext::GraphicsContext()
     , m_defaultFBO(0)
     , m_stateSet(Q_NULLPTR)
     , m_renderer(Q_NULLPTR)
-    , m_contextInfo(new QOpenGLFilter())
+    , m_contextInfo(new QGraphicsApiFilter())
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
 {
@@ -562,14 +562,14 @@ void GraphicsContext::resolveHighestOpenGLFunctions()
     }
 #endif
 
-    // Set Vendor and Extensions of reference OpenGLFilter
+    // Set Vendor and Extensions of reference GraphicsApiFilter
     QStringList extensions;
     Q_FOREACH (const QByteArray &ext, m_gl->extensions().values())
         extensions << QString::fromUtf8(ext);
     m_contextInfo->setMajorVersion(m_gl->format().version().first);
     m_contextInfo->setMinorVersion(m_gl->format().version().second);
-    m_contextInfo->setApi(m_gl->isOpenGLES() ? QOpenGLFilter::ES : QOpenGLFilter::Desktop);
-    m_contextInfo->setProfile(static_cast<QOpenGLFilter::Profile>(m_gl->format().profile()));
+    m_contextInfo->setApi(m_gl->isOpenGLES() ? QGraphicsApiFilter::OpenGLES : QGraphicsApiFilter::OpenGL);
+    m_contextInfo->setProfile(static_cast<QGraphicsApiFilter::Profile>(m_gl->format().profile()));
     m_contextInfo->setExtensions(extensions);
     m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
 }
@@ -601,7 +601,7 @@ RenderStateSet *GraphicsContext::currentStateSet() const
     return m_stateSet;
 }
 
-QOpenGLFilter *GraphicsContext::contextInfo() const
+QGraphicsApiFilter *GraphicsContext::contextInfo() const
 {
     return m_contextInfo;
 }

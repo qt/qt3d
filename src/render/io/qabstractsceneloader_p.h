@@ -49,16 +49,15 @@
 //
 
 #include <private/qcomponent_p.h>
-#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qabstractsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class AbstractSceneParser;
+class QAbstractSceneParser;
 
-class QT3DRENDERSHARED_EXPORT QAbstractSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
+class QAbstractSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QAbstractSceneLoaderPrivate();

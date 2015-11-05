@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCollision {
 
 /*!
-    \class Qt3DCore::QBoxColliderPrivate
+    \class Qt3DCollision::QBoxColliderPrivate
     \internal
 */
 QBoxColliderPrivate::QBoxColliderPrivate()
@@ -53,7 +53,7 @@ QBoxColliderPrivate::QBoxColliderPrivate()
 }
 
 /*!
-    \class Qt3DCore::QBoxCollider
+    \class Qt3DCollision::QBoxCollider
     \inmodule Qt3DCollision
     \since 5.5
     \brief Represents a box used for collision detection
@@ -62,7 +62,7 @@ QBoxColliderPrivate::QBoxColliderPrivate()
 /*!
     \qmltype BoxCollider
     \inqmlmodule Qt3D.Collision
-    \instantiates Qt3DCore::QBoxCollider
+    \instantiates Qt3DCollision::QBoxCollider
     \inherits Component3D
     \since 5.5
 */

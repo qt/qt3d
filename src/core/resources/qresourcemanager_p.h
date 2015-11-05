@@ -52,8 +52,8 @@
 #include <QMutex>
 #include <QHash>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qhandle.h>
-#include <Qt3DCore/qhandlemanager.h>
+#include "qhandle_p.h"
+#include "qhandlemanager_p.h"
 
 QT_BEGIN_NAMESPACE
 

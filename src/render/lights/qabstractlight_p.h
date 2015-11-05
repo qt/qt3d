@@ -48,7 +48,6 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qt3drender_global.h>
 #include <private/qshaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +56,7 @@ namespace Qt3DRender {
 
 class QAbstractLight;
 
-class QT3DRENDERSHARED_EXPORT QAbstractLightPrivate : public QShaderDataPrivate
+class QAbstractLightPrivate : public QShaderDataPrivate
 {
 public:
     QAbstractLightPrivate();

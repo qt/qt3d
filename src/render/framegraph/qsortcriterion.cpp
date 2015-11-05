@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::QSortCriterionPrivate
+    \class Qt3DRender::QSortCriterionPrivate
     \internal
 */
 QSortCriterionPrivate::QSortCriterionPrivate()

@@ -196,6 +196,11 @@ QQuaternion QCamera::rollRotation(float angle) const
     return QQuaternion::fromAxisAndAngle(viewVector, -angle);
 }
 
+QQuaternion QCamera::rotation(float angle, const QVector3D &axis) const
+{
+    return QQuaternion::fromAxisAndAngle(axis, angle);
+}
+
 void QCamera::tilt(float angle)
 {
     QQuaternion q = tiltRotation(angle);
@@ -205,6 +210,12 @@ void QCamera::tilt(float angle)
 void QCamera::pan(float angle)
 {
     QQuaternion q = panRotation(-angle);
+    rotate(q);
+}
+
+void QCamera::pan(float angle, const QVector3D &axis)
+{
+    QQuaternion q = rotation(-angle, axis);
     rotate(q);
 }
 
@@ -223,6 +234,12 @@ void QCamera::tiltAboutViewCenter(float angle)
 void QCamera::panAboutViewCenter(float angle)
 {
     QQuaternion q = panRotation(angle);
+    rotateAboutViewCenter(q);
+}
+
+void QCamera::panAboutViewCenter(float angle, const QVector3D &axis)
+{
+    QQuaternion q = rotation(angle, axis);
     rotateAboutViewCenter(q);
 }
 

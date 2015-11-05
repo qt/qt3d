@@ -42,9 +42,10 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -65,9 +66,7 @@ namespace Render {
 Entity::Entity()
     : QBackendNode()
     , m_renderer(Q_NULLPTR)
-    , m_localBoundingVolume(new Sphere)
-    , m_worldBoundingVolume(new Sphere)
-    , m_worldBoundingVolumeWithChildren(new Sphere)
+    , m_enabled(true)
 {
 }
 
@@ -87,26 +86,25 @@ void Entity::cleanup()
         // We need to release using peerUuid otherwise the handle will be cleared
         // but would still remain in the Id to Handle table
         m_renderer->worldMatrixManager()->releaseResource(peerUuid());
-        m_worldTransform = HMatrix();
 
-        // Release all component will have to perform their own release when they receive the
-        // NodeDeleted/NodeAboutToBeDeleted notification
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
-        // Clear components
-        m_transformComponent = Qt3DCore::QNodeId();
-        m_cameraComponent = Qt3DCore::QNodeId();
-        m_materialComponent = Qt3DCore::QNodeId();
-        m_geometryRendererComponent = Qt3DCore::QNodeId();
-        m_layerComponents.clear();
-        m_shaderDataComponents.clear();
     }
-    delete m_localBoundingVolume;
-    delete m_worldBoundingVolume;
-    delete m_worldBoundingVolumeWithChildren;
-    m_localBoundingVolume = Q_NULLPTR;
-    m_worldBoundingVolume = Q_NULLPTR;
-    m_worldBoundingVolumeWithChildren = Q_NULLPTR;
+    m_worldTransform = HMatrix();
+    // Release all component will have to perform their own release when they receive the
+    // NodeDeleted/NodeAboutToBeDeleted notification
+    // Clear components
+    m_transformComponent = Qt3DCore::QNodeId();
+    m_cameraComponent = Qt3DCore::QNodeId();
+    m_materialComponent = Qt3DCore::QNodeId();
+    m_geometryRendererComponent = Qt3DCore::QNodeId();
+    m_objectPickerComponent = QNodeId();
+    m_layerComponents.clear();
+    m_shaderDataComponents.clear();
+    m_localBoundingVolume.reset();
+    m_worldBoundingVolume.reset();
+    m_worldBoundingVolumeWithChildren.reset();
+    m_enabled = true;
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
@@ -145,8 +143,12 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_materialComponent = QNodeId();
     m_cameraComponent = QNodeId();
     m_geometryRendererComponent = QNodeId();
+    m_objectPickerComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
+    m_localBoundingVolume.reset(new Sphere(peerUuid()));
+    m_worldBoundingVolume.reset(new Sphere(peerUuid()));
+    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerUuid()));
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
@@ -156,6 +158,8 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     } else {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerUuid();
     }
+
+    m_enabled = entity->isEnabled();
 }
 
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -175,6 +179,12 @@ void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QNodeId nodeId = propertyChange->value().value<QNodeId>();
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "Component Removed";
         removeComponent(nodeId);
+        break;
+    }
+
+    case NodeUpdated: {
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().value<bool>();
         break;
     }
 
@@ -255,6 +265,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_shaderDataComponents.append(component->id());
     else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR)
         m_geometryRendererComponent = component->id();
+    else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR)
+        m_objectPickerComponent = component->id();
 }
 
 void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
@@ -271,6 +283,18 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_shaderDataComponents.removeAll(nodeId);
     else if (m_geometryRendererComponent == nodeId)
         m_geometryRendererComponent = QNodeId();
+    else if (m_objectPickerComponent == nodeId)
+        m_objectPickerComponent = QNodeId();
+}
+
+bool Entity::isEnabled() const
+{
+    return m_enabled;
+}
+
+void Entity::setEnabled(bool isEnabled)
+{
+    m_enabled = isEnabled;
 }
 
 template<>
@@ -319,6 +343,18 @@ template<>
 GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
 {
     return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
+}
+
+template<>
+HObjectPicker Entity::componentHandle<ObjectPicker>() const
+{
+    return m_renderer->objectPickerManager()->lookupHandle(m_objectPickerComponent);
+}
+
+template<>
+ObjectPicker *Entity::renderComponent<ObjectPicker>() const
+{
+    return m_renderer->objectPickerManager()->lookupResource(m_objectPickerComponent);
 }
 
 template<>
@@ -375,6 +411,8 @@ QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_s
 template<>
 Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geometryRendererComponent; }
 
+template<>
+QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerComponent; }
 
 RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
     : m_renderer(renderer)

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dtransform.h"
+#include "quick3dtransform_p.h"
 #include <Qt3DCore/qabstracttransform.h>
 
 QT_BEGIN_NAMESPACE

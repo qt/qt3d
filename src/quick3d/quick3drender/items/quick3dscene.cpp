@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dscene.h"
+#include "quick3dscene_p.h"
 
 QT_BEGIN_NAMESPACE
 

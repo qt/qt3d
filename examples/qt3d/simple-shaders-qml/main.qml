@@ -93,11 +93,11 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
-                        openGLFilter {
-                            api: OpenGLFilter.Desktop
+                        graphicsApiFilter {
+                            api: GraphicsApiFilter.OpenGL
                             majorVersion: 3
                             minorVersion: 2
-                            profile: OpenGLFilter.Core
+                            profile: GraphicsApiFilter.CoreProfile
                         }
 
                         renderPasses: RenderPass {
@@ -173,11 +173,11 @@ Entity {
             effect: Effect {
                 techniques: [
                     Technique {
-                        openGLFilter {
-                            api: OpenGLFilter.Desktop
+                        graphicsApiFilter {
+                            api: GraphicsApiFilter.OpenGL
                             majorVersion: 3
                             minorVersion: 2
-                            profile: OpenGLFilter.Core
+                            profile: GraphicsApiFilter.CoreProfile
                         }
 
                         renderPasses: RenderPass {

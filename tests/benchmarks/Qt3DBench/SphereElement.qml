@@ -34,14 +34,15 @@
 **
 ****************************************************************************/
 
-import Qt3D 2.0
-import Qt3D.Renderer 2.0
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
 Entity {
     id: root
     property real xPos: 0
     property real yPos: 0
     property real zPos: 0
+    property Material material
 
     SphereMesh {
         id: sphereMesh
@@ -61,6 +62,7 @@ Entity {
 
     components: [
         sphereMesh,
-        sphereTransform
+        sphereTransform,
+        material
     ]
 }

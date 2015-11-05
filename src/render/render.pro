@@ -22,6 +22,7 @@ include (materialsystem/materialsystem.pri)
 include (renderstates/renderstates.pri)
 include (io/io.pri)
 include (defaults/defaults.pri)
+include (picking/picking.pri)
 include (services/services.pri)
 include (texture/texture.pri)
 

@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/qbackendnode.h \
     $$PWD/qnodeid.h \
     $$PWD/qnodevisitor.h \
+    $$PWD/qnodevisitor_p.h \
     $$PWD/qabstractnodefactory.h \
     $$PWD/propertychangehandler_p.h
 

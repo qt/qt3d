@@ -34,33 +34,54 @@
 **
 ****************************************************************************/
 
-#include "qnodevisitor.h"
+#include "qnodevisitor_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QNodeVisitor::QNodeVisitor()
+QNodeVisitorPrivate::QNodeVisitorPrivate()
+{
+}
+
+QNodeVisitor::QNodeVisitor() :
+    d_ptr(new QNodeVisitorPrivate)
 {
 }
 
 QNodeVisitor::~QNodeVisitor()
 {
+    delete d_ptr;
 }
 
 QNode* QNodeVisitor::rootNode() const
 {
-    return m_path.front();
+    return d_ptr->m_path.front();
 }
 
 QNode* QNodeVisitor::currentNode() const
 {
-    return m_path.back();
+    return d_ptr->m_path.back();
+}
+
+void QNodeVisitor::setPath(QNodeList path)
+{
+    d_ptr->m_path = path;
 }
 
 QNodeList QNodeVisitor::path() const
 {
-    return m_path;
+    return d_ptr->m_path;
+}
+
+void QNodeVisitor::append(QNode *n)
+{
+    d_ptr->m_path.append(n);
+}
+
+void QNodeVisitor::pop_back()
+{
+    d_ptr->m_path.pop_back();
 }
 
 } // namespace Qt3DCore

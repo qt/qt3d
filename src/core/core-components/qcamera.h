@@ -88,6 +88,7 @@ public:
     QQuaternion tiltRotation(float angle) const;
     QQuaternion panRotation(float angle) const;
     QQuaternion rollRotation(float angle) const;
+    QQuaternion rotation(float angle, const QVector3D &axis) const;
 
     // Translate relative to camera orientation axes
     Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
@@ -97,10 +98,12 @@ public:
 
     Q_INVOKABLE void tilt(float angle);
     Q_INVOKABLE void pan(float angle);
+    Q_INVOKABLE void pan(float angle, const QVector3D &axis);
     Q_INVOKABLE void roll(float angle);
 
     Q_INVOKABLE void tiltAboutViewCenter(float angle);
     Q_INVOKABLE void panAboutViewCenter(float angle);
+    Q_INVOKABLE void panAboutViewCenter(float angle, const QVector3D &axis);
     Q_INVOKABLE void rollAboutViewCenter(float angle);
 
     Q_INVOKABLE void rotate(const QQuaternion& q);

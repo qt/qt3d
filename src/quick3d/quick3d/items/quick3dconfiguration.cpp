@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dconfiguration.h"
+#include "quick3dconfiguration_p.h"
 #include <QDebug>
 
 #include <Qt3DCore/QAspectEngine>

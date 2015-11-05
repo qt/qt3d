@@ -53,7 +53,7 @@ public:
 };
 
 /*!
-    \class Qt3DCore::QClipPlane
+    \class Qt3DRender::QClipPlane
     \inmodule Qt3DRenderer
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
@@ -67,9 +67,9 @@ public:
 
 /*!
     \qmltype ClipPlane
-    \instantiates Qt3DCore::QClipPlane
+    \instantiates Qt3DRender::QClipPlane
     \inherits RenderState
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Enables an additional OpenGL clipping plane that can be in shaders
     using gl_ClipDistance

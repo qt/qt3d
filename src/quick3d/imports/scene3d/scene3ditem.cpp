@@ -169,7 +169,6 @@ public:
 
         QVariantMap data;
         data.insert(QStringLiteral("surface"), QVariant::fromValue(saver.surface()));
-        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(m_item));
         m_aspectEngine->setData(data);
 
         m_renderAspect->renderInitialize(saver.context());
@@ -230,7 +229,8 @@ public Q_SLOTS:
 
         // Shutdown the Renderer Aspect while the OpenGL context
         // is still valid
-        m_renderAspect->renderShutdown();
+        if (m_renderAspect)
+            m_renderAspect->renderShutdown();
     }
 
     // SGThread
@@ -472,6 +472,11 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
     setAcceptHoverEvents(true);
+
+    // We need to register the event source in the main thread
+    QVariantMap data;
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
+    m_aspectEngine->setData(data);
 
     m_aspectEngine->registerAspect(m_renderAspect);
     m_aspectEngine->initialize();
@@ -717,8 +722,9 @@ void Scene3DSGMaterialShader::updateState(const RenderState &state, QSGMaterial 
 void Scene3DCleaner::cleanup()
 {
     Q_ASSERT(m_renderer);
-    delete m_renderer->m_aspectEngine;
+    delete m_renderer->m_aspectEngine; // also deletes m_renderer->m_renderAspect
     m_renderer->m_aspectEngine = Q_NULLPTR;
+    m_renderer->m_renderAspect = Q_NULLPTR;
     m_renderer->deleteLater();
     deleteLater();
 }

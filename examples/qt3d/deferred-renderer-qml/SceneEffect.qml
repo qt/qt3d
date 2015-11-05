@@ -42,7 +42,7 @@ Effect {
     techniques : [
         // OpenGL 3.1
         Technique {
-            openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 1; majorVersion : 3 }
+            graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
             renderPasses : RenderPass {
                 annotations : Annotation { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
@@ -93,7 +93,7 @@ Effect {
         },
         // OpenGL 2.0
         Technique {
-            openGLFilter {api : OpenGLFilter.Desktop; profile : OpenGLFilter.Core; minorVersion : 0; majorVersion : 2 }
+            graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 0; majorVersion : 2 }
             renderPasses : RenderPass {
                 annotations : Annotation { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {

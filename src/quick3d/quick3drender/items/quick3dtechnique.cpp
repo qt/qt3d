@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dtechnique.h"
+#include "quick3dtechnique_p.h"
 
 QT_BEGIN_NAMESPACE
 

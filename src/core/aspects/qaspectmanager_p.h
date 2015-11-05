@@ -49,7 +49,7 @@
 //
 
 #include <QObject>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QList>
 #include <QScopedPointer>
 #include <QVariant>
@@ -70,7 +70,7 @@ class QAbstractAspectJobManager;
 class QSceneObserverInterface;
 class QServiceLocator;
 
-class QT3DCORESHARED_EXPORT QAspectManager : public QObject
+class QT3DCORE_PRIVATE_EXPORT QAspectManager : public QObject
 {
     Q_OBJECT
 public:

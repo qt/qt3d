@@ -81,7 +81,7 @@ public:
     size_t Write(const void *pvBuffer, size_t pSize, size_t pCount) Q_DECL_OVERRIDE;
     aiReturn Seek(size_t pOffset, aiOrigin pOrigin) Q_DECL_OVERRIDE;
     size_t Tell() const Q_DECL_OVERRIDE;
-    size_t FileSize() const ;
+    size_t FileSize() const Q_DECL_OVERRIDE;
     void Flush() Q_DECL_OVERRIDE;
 
 private:

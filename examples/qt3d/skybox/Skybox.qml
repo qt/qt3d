@@ -91,9 +91,9 @@ Entity {
             techniques: [
                 // GL3 Technique
                 Technique {
-                    openGLFilter {
-                        api: OpenGLFilter.Desktop
-                        profile: OpenGLFilter.Core
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGL
+                        profile: GraphicsApiFilter.CoreProfile
                         majorVersion: 3
                         minorVersion: 1
                     }
@@ -107,9 +107,9 @@ Entity {
                     }
                 },
                 Technique {
-                    openGLFilter {
-                        api: OpenGLFilter.Desktop
-                        profile: OpenGLFilter.None
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGL
+                        profile: GraphicsApiFilter.NoProfile
                         majorVersion: 2
                         minorVersion: 0
                     }
@@ -122,9 +122,9 @@ Entity {
                     }
                 },
                 Technique {
-                    openGLFilter {
-                        api: OpenGLFilter.ES
-                        profile: OpenGLFilter.None
+                    graphicsApiFilter {
+                        api: GraphicsApiFilter.OpenGLES
+                        profile: GraphicsApiFilter.NoProfile
                         majorVersion: 2
                         minorVersion: 0
                     }

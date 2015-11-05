@@ -37,7 +37,6 @@
 #include "qthreadpooler_p.h"
 #include "dependencyhandler_p.h"
 
-#include <QtCore/QThreadPool>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -54,6 +53,8 @@ QThreadPooler::QThreadPooler(QObject *parent)
       m_mutex(new QMutex(QMutex::NonRecursive)),
       m_taskCount(0)
 {
+    // Ensures that threads will never be recycled
+    m_threadPool.setExpiryTimeout(-1);
 }
 
 QThreadPooler::~QThreadPooler()
@@ -80,7 +81,7 @@ void QThreadPooler::enqueueTasks(QVector<RunnableInterface *> &tasks)
         if (!m_dependencyHandler->hasDependency((*it)) && !(*it)->reserved()) {
             (*it)->setReserved(true);
             (*it)->setPooler(this);
-            QThreadPool::globalInstance()->start((*it));
+            m_threadPool.start((*it));
         }
     }
 }
@@ -166,7 +167,7 @@ int QThreadPooler::currentCount()
 
 int QThreadPooler::maxThreadCount() const
 {
-    return QThreadPool::globalInstance()->maxThreadCount();
+    return m_threadPool.maxThreadCount();
 }
 
 } // namespace Qt3DCore

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3deffect.h"
+#include "quick3deffect_p.h"
 #include <Qt3DRender/qeffect.h>
 
 QT_BEGIN_NAMESPACE

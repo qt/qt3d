@@ -35,7 +35,7 @@
 **
 ****************************************************************************/
 
-#include "gltfparser_p.h"
+#include "gltfparser.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
@@ -63,7 +63,7 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QOpenGLFilter>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QParameterMapping>
 #include <Qt3DRender/QPolygonOffset>
@@ -150,7 +150,7 @@ const QString KEY_TECHNIQUE_GL2   = QStringLiteral("techniqueGL2");
 
 } // of anonymous namespace
 
-GLTFParser::GLTFParser() : AbstractSceneParser(),
+GLTFParser::GLTFParser() : QAbstractSceneParser(),
     m_parseDone(false)
 {
 }
@@ -492,10 +492,10 @@ QMaterial* GLTFParser::material(const QString &id)
         return NULL;
     }
     QTechnique *technique = m_techniques.value(techniqueName);
-    technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    technique->openGLFilter()->setMajorVersion(2);
-    technique->openGLFilter()->setMinorVersion(0);
-    technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    technique->graphicsApiFilter()->setMajorVersion(2);
+    technique->graphicsApiFilter()->setMinorVersion(0);
+    technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
 
     //Optional Core technique
@@ -508,10 +508,10 @@ QMaterial* GLTFParser::material(const QString &id)
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
             coreTechnique = m_techniques.value(coreTechniqueName);
-            coreTechnique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-            coreTechnique->openGLFilter()->setMajorVersion(3);
-            coreTechnique->openGLFilter()->setMinorVersion(1);
-            coreTechnique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+            coreTechnique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+            coreTechnique->graphicsApiFilter()->setMajorVersion(3);
+            coreTechnique->graphicsApiFilter()->setMinorVersion(1);
+            coreTechnique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
         }
     }
     //Optional GL2 technique
@@ -522,10 +522,10 @@ QMaterial* GLTFParser::material(const QString &id)
                                      << "for material" << id << "in GLTF file" << m_basePath;
         } else {
             gl2Technique = m_techniques.value(gl2TechniqueName);
-            gl2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-            gl2Technique->openGLFilter()->setMajorVersion(2);
-            gl2Technique->openGLFilter()->setMinorVersion(0);
-            gl2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+            gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+            gl2Technique->graphicsApiFilter()->setMajorVersion(2);
+            gl2Technique->graphicsApiFilter()->setMinorVersion(0);
+            gl2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
         }
     }
 

@@ -35,7 +35,6 @@
 ****************************************************************************/
 
 #include "parameterpack_p.h"
-#include <Qt3DCore/private/qaspectmanager_p.h>
 
 QT_BEGIN_NAMESPACE
 

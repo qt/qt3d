@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "quick3dentity.h"
+#include "quick3dentity_p.h"
 #include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE

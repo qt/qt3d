@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "mouseeventfilter.h"
+#include "mouseeventfilter_p.h"
 #include "inputhandler_p.h"
 #include <QEvent>
 #include <QKeyEvent>
@@ -59,6 +59,7 @@ void MouseEventFilter::setInputHandler(InputHandler *handler)
 // Triggered in the view thread (usually the main thread)
 bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
 {
+    Q_UNUSED(obj);
     switch (e->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
@@ -66,12 +67,11 @@ bool MouseEventFilter::eventFilter(QObject *obj, QEvent *e)
         // Store event to be processed later on in an InputAspect job
         m_inputHandler->appendMouseEvent(QMouseEvent(*static_cast<QMouseEvent *>(e)));
         break;
-
     default:
         break;
     }
 
-    return QObject::eventFilter(obj, e);
+    return false;
 }
 
 } // namespace Input

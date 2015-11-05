@@ -74,6 +74,7 @@ class QT3DCORESHARED_EXPORT QNode : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QNode *parent READ parentNode WRITE setParent NOTIFY parentChanged)
+    Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
     explicit QNode(QNode *parent = 0);
     virtual ~QNode();
@@ -86,6 +87,9 @@ public:
 
     virtual void setParent(QNode *parent);
     QNodeList childrenNodes() const;
+
+    void setEnabled(bool isEnabled);
+    bool isEnabled() const;
 
 protected:
     // Clone should only be made in the main thread
@@ -114,6 +118,7 @@ private:
 
 Q_SIGNALS:
     void parentChanged();
+    void enabledChanged(bool enabled);
 };
 
 } // namespace Qt3DCore

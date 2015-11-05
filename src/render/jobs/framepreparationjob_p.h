@@ -62,7 +62,7 @@ class Entity;
 class FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob();
+    FramePreparationJob(Renderer *renderer);
     ~FramePreparationJob();
 
     void setRoot(Entity *root);
@@ -74,6 +74,7 @@ private:
     void parseNodeTree(Entity *node);
 
     Entity *m_root;
+    Renderer *m_renderer;
 };
 
 typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;

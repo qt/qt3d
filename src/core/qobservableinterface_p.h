@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/qscenechange.h>
+#include <private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +57,7 @@ namespace Qt3DCore {
 
 class QLockableObserverInterface;
 
-class QT3DCORESHARED_EXPORT QObservableInterface
+class QT3DCORE_PRIVATE_EXPORT QObservableInterface
 {
 public:
     virtual ~QObservableInterface();

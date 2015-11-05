@@ -58,13 +58,12 @@ Item {
         }
     }
 
-    // FPS thing
     property int frames: 0
 
     Timer {
         interval: 1000
         repeat: true
-        running: true//!fpsDisplay.hidden
+        running: true
         onTriggered: {
             console.log("Frames done :" + frames)
             frames = 0

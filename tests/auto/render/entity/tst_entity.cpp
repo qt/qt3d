@@ -46,6 +46,7 @@
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QShaderData>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QObjectPicker>
 
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
 typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
@@ -61,6 +62,7 @@ QNodeId transformUuid(Entity *entity) { return entity->componentUuid<Transform>(
 QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens>(); }
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>(); }
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
+QNodeId objectPickerUuid(Entity *entity) { return entity->componentUuid<ObjectPicker>(); }
 
 QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
@@ -73,6 +75,68 @@ public:
     ~tst_RenderEntity() {}
 
 private slots:
+
+    void checkInitialAndCleanUpState_data()
+    {
+        QTest::addColumn< QList<QComponent*> >("components");
+
+        QList<QComponent *> components = QList<QComponent *>()
+                << new Qt3DCore::QTransform
+                << new QGeometryRenderer
+                << new QCameraLens
+                << new QMaterial
+                << new QObjectPicker
+                << new QLayer
+                << new QShaderData;
+
+        QTest::newRow("all components") << components;
+    }
+
+    void checkInitialAndCleanUpState()
+    {
+        // GIVEN
+        QFETCH(QList<QComponent*>, components);
+        Qt3DRender::Render::Entity entity;
+
+        // THEN
+        QVERIFY(entity.componentUuid<Transform>().isNull());
+        QVERIFY(entity.componentUuid<CameraLens>().isNull());
+        QVERIFY(entity.componentUuid<Material>().isNull());
+        QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
+        QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(entity.componentsUuid<Layer>().isEmpty());
+        QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+
+        // WHEN
+        Q_FOREACH (QComponent *component, components) {
+            QScenePropertyChangePtr addChange(new QScenePropertyChange(ComponentAdded, QSceneChange::Node, component->id()));
+            addChange->setPropertyName("component");
+            addChange->setValue(QVariant::fromValue(QNodePtr(component, noopDeleter)));
+            entity.sceneChangeEvent(addChange);
+        }
+
+        // THEN
+        QVERIFY(!entity.componentUuid<Transform>().isNull());
+        QVERIFY(!entity.componentUuid<CameraLens>().isNull());
+        QVERIFY(!entity.componentUuid<Material>().isNull());
+        QVERIFY(!entity.componentUuid<GeometryRenderer>().isNull());
+        QVERIFY(!entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
+        QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
+
+        // WHEN
+        entity.cleanup();
+
+        // THEN
+        QVERIFY(entity.componentUuid<Transform>().isNull());
+        QVERIFY(entity.componentUuid<CameraLens>().isNull());
+        QVERIFY(entity.componentUuid<Material>().isNull());
+        QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
+        QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(entity.componentsUuid<Layer>().isEmpty());
+        QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+    }
+
     void shouldHandleSingleComponentEvents_data()
     {
         QTest::addColumn<QComponent*>("component");
@@ -89,6 +153,9 @@ private slots:
 
         component = new QMaterial;
         QTest::newRow("material") << component << reinterpret_cast<void*>(materialUuid);
+
+        component = new QObjectPicker;
+        QTest::newRow("objectPicker") << component << reinterpret_cast<void*>(objectPickerUuid);
     }
 
     void shouldHandleSingleComponentEvents()

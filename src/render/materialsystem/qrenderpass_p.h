@@ -51,7 +51,6 @@
 
 #include <private/qnode_p.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,7 +67,7 @@ namespace Render
 class RenderStateSet;
 }
 
-class QT3DRENDERSHARED_EXPORT QRenderPassPrivate : public Qt3DCore::QNodePrivate
+class QRenderPassPrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QRenderPassPrivate();

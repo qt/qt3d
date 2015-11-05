@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORESHARED_EXPORT QCameraPrivate : public QEntityPrivate
+class QCameraPrivate : public QEntityPrivate
 {
 public:
     QCameraPrivate();

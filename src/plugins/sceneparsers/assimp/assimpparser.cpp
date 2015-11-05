@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "assimpparser_p.h"
+#include "assimpparser.h"
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -274,7 +274,7 @@ private:
     public:
         explicit AssimpRawTextureImageFunctor(const QByteArray &data);
 
-        TexImageDataPtr operator()() Q_DECL_FINAL;
+        QTexImageDataPtr operator()() Q_DECL_FINAL;
         bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL;
 
         QT3D_FUNCTOR(AssimpRawTextureImageFunctor)
@@ -286,7 +286,7 @@ private:
 /*!
  *  Constructor. Initializes a new instance of AssimpParser.
  */
-AssimpParser::AssimpParser() : AbstractSceneParser(),
+AssimpParser::AssimpParser() : QAbstractSceneParser(),
     m_sceneParsed(false),
     m_scene(Q_NULLPTR)
 {
@@ -897,9 +897,9 @@ AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFuncto
 {
 }
 
-TexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
+QTexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()()
 {
-    TexImageDataPtr dataPtr;
+    QTexImageDataPtr dataPtr;
     dataPtr->setData(m_data, QOpenGLTexture::RGBA, QOpenGLTexture::UInt8);
     return dataPtr;
 }

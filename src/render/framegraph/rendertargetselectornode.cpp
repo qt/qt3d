@@ -36,7 +36,6 @@
 
 #include "rendertargetselectornode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/qrendertarget.h>

@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
 #define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
 
-#include <Qt3DRender/texturedata.h>
+#include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 

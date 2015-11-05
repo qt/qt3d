@@ -416,6 +416,36 @@ float QSphereGeometry::radius() const
     return d->m_radius;
 }
 
+QAttribute *QSphereGeometry::positionAttribute() const
+{
+    Q_D(const QSphereGeometry);
+    return d->m_positionAttribute;
+}
+
+QAttribute *QSphereGeometry::normalAttribute() const
+{
+    Q_D(const QSphereGeometry);
+    return d->m_normalAttribute;
+}
+
+QAttribute *QSphereGeometry::texCoordAttribute() const
+{
+    Q_D(const QSphereGeometry);
+    return d->m_texCoordAttribute;
+}
+
+QAttribute *QSphereGeometry::tangentAttribute() const
+{
+    Q_D(const QSphereGeometry);
+    return d->m_tangentAttribute;
+}
+
+QAttribute *QSphereGeometry::indexAttribute() const
+{
+    Q_D(const QSphereGeometry);
+    return d->m_indexAttribute;
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRender/qframegraphnode.h>

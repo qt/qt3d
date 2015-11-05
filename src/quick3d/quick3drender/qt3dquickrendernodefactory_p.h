@@ -57,14 +57,14 @@ class QQmlType;
 
 namespace Qt3DRender {
 
-class QuickRendererNodeFactory : public Qt3DCore::QAbstractNodeFactory
+class QuickRenderNodeFactory : public Qt3DCore::QAbstractNodeFactory
 {
 public:
     Qt3DCore::QNode *createNode(const char *type) Q_DECL_OVERRIDE;
 
     void registerType(const char *className, const char *quickName, int major, int minor);
 
-    static QuickRendererNodeFactory *instance();
+    static QuickRenderNodeFactory *instance();
 
 private:
     struct Type {

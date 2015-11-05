@@ -48,16 +48,15 @@
 // We mean it.
 //
 
-#include "quick3dentityloader.h"
+#include <QObject>
+#include <QUrl>
 
-#include <QQmlComponent>
+#include <Qt3DCore/QEntity>
 
-#include <Qt3DCore/private/qentity_p.h>
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
+
 
 QT_BEGIN_NAMESPACE
-
-class QQmlIncubator;
-class QQmlContext;
 
 namespace Qt3DCore {
 
@@ -65,28 +64,33 @@ class QEntity;
 
 namespace Quick {
 
-class Quick3DEntityLoaderIncubator;
+class Quick3DEntityLoaderPrivate;
 
-class Quick3DEntityLoaderPrivate : public QEntityPrivate
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DEntityLoader : public QEntity
 {
+    Q_OBJECT
+    Q_PROPERTY(QObject *entity READ entity NOTIFY entityChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 public:
-    Quick3DEntityLoaderPrivate();
+    explicit Quick3DEntityLoader(QNode *parent = 0);
+    ~Quick3DEntityLoader();
 
-    Q_DECLARE_PUBLIC(Quick3DEntityLoader)
+    QObject *entity() const;
 
-    void clear();
-    void loadFromSource();
-    void loadComponent(const QUrl &source);
+    QUrl source() const;
+    void setSource(const QUrl &url);
 
-    void _q_componentStatusChanged(QQmlComponent::Status status);
+Q_SIGNALS:
+    void entityChanged();
+    void sourceChanged();
 
-    static inline Quick3DEntityLoaderPrivate *get(Quick3DEntityLoader *q) { return q->d_func(); }
+protected:
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
-    QUrl m_source;
-    Quick3DEntityLoaderIncubator *m_incubator;
-    QQmlContext *m_context;
-    QQmlComponent *m_component;
-    QEntity *m_entity;
+private:
+    Q_DECLARE_PRIVATE(Quick3DEntityLoader)
+    Q_PRIVATE_SLOT(d_func(), void _q_componentStatusChanged(QQmlComponent::Status))
+    QT3D_CLONEABLE(Quick3DEntityLoader)
 };
 
 } // namespace Quick

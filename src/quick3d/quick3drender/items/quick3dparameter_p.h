@@ -48,7 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/qparameter_p.h>
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,16 +57,20 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-class Quick3DParameter;
+class Quick3DParameterPrivate;
 
-class Quick3DParameterPrivate : public QParameterPrivate
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DParameter : public QParameter
 {
+    Q_OBJECT
 public:
-    Quick3DParameterPrivate();
+    explicit Quick3DParameter(QNode *parent = 0);
 
-    Q_DECLARE_PUBLIC(Quick3DParameter)
+private:
+    Q_DECLARE_PRIVATE(Quick3DParameter)
 
-    void setValue(const QVariant &value) Q_DECL_OVERRIDE;
+protected:
+    Quick3DParameter(Quick3DParameterPrivate &dd, QNode *parent = 0);
+    QT3D_CLONEABLE(Quick3DParameter)
 };
 
 } // namespace Quick

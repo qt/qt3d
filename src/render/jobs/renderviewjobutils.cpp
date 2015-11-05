@@ -37,8 +37,8 @@
 #include "renderviewjobutils_p.h"
 #include "renderlogging_p.h"
 
-#include <Qt3DRender/qopenglfilter.h>
-#include <Qt3DRender/sphere.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
+#include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/qshaderdata.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -230,7 +230,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
             continue;
 
         // We need to be sure the renderer is still running <=> still has a GraphicsContext
-        if (renderer->isRunning() && *renderer->contextInfo() == *technique->openGLFilter()) {
+        if (renderer->isRunning() && *renderer->contextInfo() == *technique->graphicsApiFilter()) {
 
             // If no techniqueFilter is present, we return the technique as it satisfies OpenGL version
             const TechniqueFilter *techniqueFilter = renderView->techniqueFilter();

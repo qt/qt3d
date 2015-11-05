@@ -38,7 +38,7 @@
 #include "qgoochmaterial_p.h"
 
 #include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qtechnique.h>
@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 /*!
-   \class Qt3DCore::QGoochMaterialPrivate
+   \class Qt3DRender::QGoochMaterialPrivate
    \internal
 */
 QGoochMaterialPrivate::QGoochMaterialPrivate()
@@ -90,20 +90,20 @@ void QGoochMaterialPrivate::init()
     m_gl2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.vert"))));
     m_gl2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/gooch.frag"))));
 
-    m_gl3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_gl3Technique->openGLFilter()->setMajorVersion(3);
-    m_gl3Technique->openGLFilter()->setMinorVersion(1);
-    m_gl3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_gl3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_gl3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_gl2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_gl2Technique->openGLFilter()->setMajorVersion(2);
-    m_gl2Technique->openGLFilter()->setMinorVersion(0);
-    m_gl2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_gl2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_gl2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_gl2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_es2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_es2Technique->openGLFilter()->setMajorVersion(2);
-    m_es2Technique->openGLFilter()->setMinorVersion(0);
-    m_es2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_es2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_es2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2ES2Shader);
@@ -129,7 +129,7 @@ void QGoochMaterialPrivate::init()
 }
 
 /*!
-    \class Qt3DCore::QGoochMaterial
+    \class Qt3DRender::QGoochMaterial
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
     \inmodule Qt3DRenderer

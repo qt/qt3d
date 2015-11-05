@@ -61,7 +61,7 @@ QParameterMappingPrivate::QParameterMappingPrivate()
     \qmltype ParameterMapping
     \instantiates Qt3DRender::QParameterMapping
     \inherits Node
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For ...
 */

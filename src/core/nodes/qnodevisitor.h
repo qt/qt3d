@@ -46,6 +46,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore
 {
 
+class QNodeVisitorPrivate;
+
 class QT3DCORESHARED_EXPORT QNodeVisitor
 {
 public:
@@ -78,15 +80,18 @@ public:
 
     QNode *rootNode() const;
     QNode *currentNode() const;
+    void setPath(QNodeList path);
     QNodeList path() const;
+    void append(QNode *n);
+    void pop_back();
 
 private:
-    QNodeList m_path;
+    QNodeVisitorPrivate *d_ptr;
 
     template<typename NodeVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN)
     {
-        m_path = QNodeList() << rootNode_;
+        setPath(QNodeList() << rootNode_);
         if (rootNode_)
             visitNode(rootNode_, fN);
     }
@@ -94,7 +99,7 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
     {
-        m_path = QNodeList() << rootNode_;
+        setPath(QNodeList() << rootNode_);
         QEntity* rootEntity = qobject_cast<QEntity *>(rootNode_);
 
         if (rootEntity)
@@ -147,22 +152,22 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void outerVisitNode(QNode *n, NodeVisitorFunctor &fN, EntityVisitorFunctor &fE)
     {
-        m_path.append(n);
+        append(n);
         QEntity* e = qobject_cast<QEntity *>(n);
         if (e) {
             visitEntity(e, fN, fE);
         } else {
             visitNode(n, fN, fE);
         }
-        m_path.pop_back();
+        pop_back();
     }
 
     template<typename NodeVisitorFunctor>
     void outerVisitNode(QNode *n, NodeVisitorFunctor &fN)
     {
-        m_path.append(n);
+        append(n);
         visitNode(n, fN);
-        m_path.pop_back();
+        pop_back();
     }
 
     template <typename NodeType>

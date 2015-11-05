@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
-#include "quick3dshaderdata.h"
+#include "quick3dshaderdata_p.h"
 #include <private/qshaderdata_p.h>
 
-#include <Qt3DQuickRender/quick3dshaderdataarray.h>
+#include <Qt3DQuickRender/private/quick3dshaderdataarray_p.h>
 #include <QMetaProperty>
 
 QT_BEGIN_NAMESPACE

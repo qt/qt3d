@@ -73,6 +73,7 @@ SUBDIRS += \
     src_quick3d_imports_input \
     src_quick3d_imports_logic \
     src_quick3d_imports_collision \
-    src_plugins_sceneparsers
+    src_plugins_sceneparsers \
+    doc
 
 

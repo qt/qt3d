@@ -35,8 +35,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_QUICK_NODEINSTANTIATOR_H
-#define QT3D_QUICK_NODEINSTANTIATOR_H
+#ifndef QT3D_QUICK_NODEINSTANTIATOR_P_H
+#define QT3D_QUICK_NODEINSTANTIATOR_P_H
 
 //
 //  W A R N I N G
@@ -49,7 +49,7 @@
 // We mean it.
 //
 
-#include <Qt3DQuick/qt3dquick_global.h>
+#include <Qt3DQuick/private/qt3dquick_global_p.h>
 #include <Qt3DCore/qnode.h>
 #include <QtQml/qqmlcomponent.h>
 #include <QtQml/qqmlparserstatus.h>
@@ -61,7 +61,7 @@ namespace Quick {
 
 class Quick3DNodeInstantiatorPrivate;
 
-class QT3DQUICKSHARED_EXPORT Quick3DNodeInstantiator : public QNode, public QQmlParserStatus
+class QT3DQUICKSHARED_PRIVATE_EXPORT Quick3DNodeInstantiator : public QNode, public QQmlParserStatus
 {
     Q_OBJECT
 
@@ -126,4 +126,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_QUICK_NODEINSTANTIATOR_H
+#endif // QT3D_QUICK_NODEINSTANTIATOR_P_H

@@ -36,7 +36,7 @@
 
 #include "finaleffect.h"
 
-#include <Qt3DRender/QOpenGLFilter>
+#include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QShaderProgram>
 #include <QUrl>
 
@@ -48,15 +48,15 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
     , m_gl3Pass(new Qt3DRender::QRenderPass())
     , m_passCriterion(new Qt3DRender::QAnnotation(this))
 {
-    m_gl3Technique->openGLFilter()->setApi(Qt3DRender::QOpenGLFilter::Desktop);
-    m_gl3Technique->openGLFilter()->setMajorVersion(3);
-    m_gl3Technique->openGLFilter()->setMinorVersion(1);
-    m_gl3Technique->openGLFilter()->setProfile(Qt3DRender::QOpenGLFilter::Core);
+    m_gl3Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+    m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_gl3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_gl3Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::CoreProfile);
 
-    m_gl2Technique->openGLFilter()->setApi(Qt3DRender::QOpenGLFilter::Desktop);
-    m_gl2Technique->openGLFilter()->setMajorVersion(2);
-    m_gl2Technique->openGLFilter()->setMinorVersion(0);
-    m_gl2Technique->openGLFilter()->setProfile(Qt3DRender::QOpenGLFilter::None);
+    m_gl2Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+    m_gl2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_gl2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_gl2Technique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
 
     m_passCriterion->setName(QStringLiteral("pass"));
     m_passCriterion->setValue(QStringLiteral("final"));

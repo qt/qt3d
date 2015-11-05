@@ -50,12 +50,12 @@ namespace Qt3DRender {
 
 class QParameter;
 class QTechniquePrivate;
-class QOpenGLFilter;
+class QGraphicsApiFilter;
 
 class QT3DRENDERSHARED_EXPORT QTechnique : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QOpenGLFilter *openGLFilter READ openGLFilter)
+    Q_PROPERTY(Qt3DRender::QGraphicsApiFilter *graphicsApiFilter READ graphicsApiFilter)
 
 public:
     explicit QTechnique(Qt3DCore::QNode *parent = 0);
@@ -73,7 +73,7 @@ public:
     void removePass(QRenderPass *pass);
     QList<QRenderPass *> renderPasses() const;
 
-    QOpenGLFilter *openGLFilter();
+    QGraphicsApiFilter *graphicsApiFilter();
 
 protected:
     QTechnique(QTechniquePrivate &dd, Qt3DCore::QNode *parent = 0);
@@ -82,7 +82,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTechnique)
     QT3D_CLONEABLE(QTechnique)
-    Q_PRIVATE_SLOT(d_func(), void _q_openGLFilterChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_graphicsApiFilterChanged())
 };
 
 }

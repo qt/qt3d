@@ -2,7 +2,7 @@ CXX_MODULE = qml
 TARGET = quick3drenderplugin
 TARGETPATH = Qt3D/Render
 
-QT += core-private qml qml-private 3dcore 3drender 3dquick 3dquickrender-private
+QT += core-private qml qml-private 3dcore 3drender 3dquick 3dquick-private 3dquickrender-private
 
 HEADERS += \
     qt3dquick3drenderplugin.h

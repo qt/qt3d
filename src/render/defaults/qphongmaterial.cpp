@@ -42,7 +42,7 @@
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qopenglfilter.h>
+#include <Qt3DRender/qgraphicsapifilter.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>
@@ -196,20 +196,20 @@ void QPhongMaterialPrivate::init()
     m_phongGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phong.vert"))));
     m_phongGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/phong.frag"))));
 
-    m_phongGL3Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_phongGL3Technique->openGLFilter()->setMajorVersion(3);
-    m_phongGL3Technique->openGLFilter()->setMinorVersion(1);
-    m_phongGL3Technique->openGLFilter()->setProfile(QOpenGLFilter::Core);
+    m_phongGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_phongGL3Technique->graphicsApiFilter()->setMajorVersion(3);
+    m_phongGL3Technique->graphicsApiFilter()->setMinorVersion(1);
+    m_phongGL3Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::CoreProfile);
 
-    m_phongGL2Technique->openGLFilter()->setApi(QOpenGLFilter::Desktop);
-    m_phongGL2Technique->openGLFilter()->setMajorVersion(2);
-    m_phongGL2Technique->openGLFilter()->setMinorVersion(0);
-    m_phongGL2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_phongGL2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
+    m_phongGL2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_phongGL2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_phongGL2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_phongES2Technique->openGLFilter()->setApi(QOpenGLFilter::ES);
-    m_phongES2Technique->openGLFilter()->setMajorVersion(2);
-    m_phongES2Technique->openGLFilter()->setMinorVersion(0);
-    m_phongES2Technique->openGLFilter()->setProfile(QOpenGLFilter::None);
+    m_phongES2Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGLES);
+    m_phongES2Technique->graphicsApiFilter()->setMajorVersion(2);
+    m_phongES2Technique->graphicsApiFilter()->setMinorVersion(0);
+    m_phongES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     m_phongGL3RenderPass->setShaderProgram(m_phongGL3Shader);
     m_phongGL2RenderPass->setShaderProgram(m_phongGL2ES2Shader);

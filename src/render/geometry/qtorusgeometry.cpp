@@ -361,6 +361,30 @@ float QTorusGeometry::minorRadius() const
     return d->m_minorRadius;
 }
 
+QAttribute *QTorusGeometry::positionAttribute() const
+{
+    Q_D(const QTorusGeometry);
+    return d->m_positionAttribute;
+}
+
+QAttribute *QTorusGeometry::normalAttribute() const
+{
+    Q_D(const QTorusGeometry);
+    return d->m_normalAttribute;
+}
+
+QAttribute *QTorusGeometry::texCoordAttribute() const
+{
+    Q_D(const QTorusGeometry);
+    return d->m_texCoordAttribute;
+}
+
+QAttribute *QTorusGeometry::indexAttribute() const
+{
+    Q_D(const QTorusGeometry);
+    return d->m_indexAttribute;
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

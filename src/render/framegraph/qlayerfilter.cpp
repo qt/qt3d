@@ -62,7 +62,7 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \qmltype LayerFilter
     \instantiates Qt3DRender::QLayerFilter
     \inherits FrameGraphNode
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \since 5.5
     \brief For ...
 */

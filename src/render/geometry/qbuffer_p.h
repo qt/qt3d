@@ -52,7 +52,6 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferfunctor.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 

@@ -37,7 +37,7 @@
 #include "qtechnique.h"
 #include "qtechnique_p.h"
 #include "qparameter.h"
-#include "qopenglfilter.h"
+#include "qgraphicsapifilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDebug>
 
@@ -64,7 +64,7 @@ QTechnique::QTechnique(QNode *parent)
     : QNode(*new QTechniquePrivate, parent)
 {
     Q_D(QTechnique);
-    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));
+    QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
 QTechnique::~QTechnique()
@@ -77,14 +77,14 @@ QTechnique::QTechnique(QTechniquePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QTechnique);
-    QObject::connect(&d->m_openGLFilter, SIGNAL(openGLFilterChanged()), this, SLOT(_q_openGLFilterChanged()));
+    QObject::connect(&d->m_graphicsApiFilter, SIGNAL(graphicsApiFilterChanged()), this, SLOT(_q_graphicsApiFilterChanged()));
 }
 
 void QTechnique::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
-    d_func()->m_openGLFilter.copy(tech->d_func()->m_openGLFilter);
+    d_func()->m_graphicsApiFilter.copy(tech->d_func()->m_graphicsApiFilter);
 
     Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
         addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(annotation)));
@@ -94,13 +94,13 @@ void QTechnique::copy(const QNode *ref)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
-void QTechniquePrivate::_q_openGLFilterChanged()
+void QTechniquePrivate::_q_graphicsApiFilterChanged()
 {
     if (m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
-        change->setPropertyName("openGLFilter");
-        QOpenGLFilter *clone = new QOpenGLFilter();
-        clone->copy(m_openGLFilter);
+        change->setPropertyName("graphicsApiFilter");
+        QGraphicsApiFilter *clone = new QGraphicsApiFilter();
+        clone->copy(m_graphicsApiFilter);
         change->setValue(QVariant::fromValue(clone));
         notifyObservers(change);
     }
@@ -240,10 +240,10 @@ QList<QParameter *> QTechnique::parameters() const
     return d->m_parameters;
 }
 
-QOpenGLFilter *QTechnique::openGLFilter()
+QGraphicsApiFilter *QTechnique::graphicsApiFilter()
 {
     Q_D(QTechnique);
-    return &d->m_openGLFilter;
+    return &d->m_graphicsApiFilter;
 }
 
 } // of namespace Qt3DRender

@@ -53,7 +53,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qhandle.h>
+#include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -69,10 +69,10 @@ class QComponent;
 namespace Qt3DRender {
 
 class QRenderAspect;
-class Sphere;
 
 namespace Render {
 
+class Sphere;
 class Renderer;
 
 class Q_AUTOTEST_EXPORT Entity : public Qt3DCore::QBackendNode
@@ -101,12 +101,15 @@ public:
 
     QMatrix4x4 *worldTransform();
     const QMatrix4x4 *worldTransform() const;
-    Sphere *localBoundingVolume() { return m_localBoundingVolume; }
-    Sphere *worldBoundingVolume() { return m_worldBoundingVolume; }
-    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren; }
+    Sphere *localBoundingVolume() { return m_localBoundingVolume.data(); }
+    Sphere *worldBoundingVolume() { return m_worldBoundingVolume.data(); }
+    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
     void removeComponent(const Qt3DCore::QNodeId &nodeId);
+
+    bool isEnabled() const;
+    void setEnabled(bool isEnabled);
 
     template<class Backend, uint INDEXBITS>
     Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
@@ -163,9 +166,9 @@ private:
     QVector<HEntity > m_childrenHandles;
 
     HMatrix m_worldTransform;
-    Sphere *m_localBoundingVolume;
-    Sphere *m_worldBoundingVolume;
-    Sphere *m_worldBoundingVolumeWithChildren;
+    QSharedPointer<Sphere> m_localBoundingVolume;
+    QSharedPointer<Sphere> m_worldBoundingVolume;
+    QSharedPointer<Sphere> m_worldBoundingVolumeWithChildren;
 
     // Handles to Components
     Qt3DCore::QNodeId m_transformComponent;
@@ -174,8 +177,10 @@ private:
     QList<Qt3DCore::QNodeId> m_layerComponents;
     QList<Qt3DCore::QNodeId> m_shaderDataComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
+    Qt3DCore::QNodeId m_objectPickerComponent;
 
     QString m_objectName;
+    bool m_enabled;
 };
 
 template<>
@@ -201,6 +206,12 @@ Q_AUTOTEST_EXPORT HGeometryRenderer Entity::componentHandle<GeometryRenderer>() 
 
 template<>
 Q_AUTOTEST_EXPORT GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const;
+
+template<>
+Q_AUTOTEST_EXPORT HObjectPicker Entity::componentHandle<ObjectPicker>() const;
+
+template<>
+Q_AUTOTEST_EXPORT ObjectPicker *Entity::renderComponent<ObjectPicker>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
@@ -231,6 +242,9 @@ Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() 
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
+
+template<>
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {

@@ -352,7 +352,8 @@ SOURCES += code/3DSConverter.cpp \
            code/IFCLoader.cpp \
            code/IFCMaterial.cpp \
            code/IFCProfile.cpp \
-           code/IFCReaderGen.cpp \
+           code/IFCReaderGen1.cpp \
+           code/IFCReaderGen2.cpp \
            code/IFCUtil.cpp \
            code/Importer.cpp \
            code/ImporterRegistry.cpp \

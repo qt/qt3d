@@ -38,7 +38,7 @@
 #include <private/renderer_p.h>
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/private/abstractsceneparser_p.h>
+#include <Qt3DRender/qabstractsceneparser.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +57,7 @@ void LoadSceneJob::run()
 {
     Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (AbstractSceneParser *parser, m_renderer->sceneParsers()) {
+        Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
             if (parser->isExtensionSupported(m_source)) {
                 parser->setSource(m_source);
                 sceneTree = parser->scene();

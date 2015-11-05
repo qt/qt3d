@@ -44,6 +44,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QSphereGeometryPrivate;
+class QAttribute;
 
 class QT3DRENDERSHARED_EXPORT QSphereGeometry : public QGeometry
 {
@@ -52,6 +53,12 @@ class QT3DRENDERSHARED_EXPORT QSphereGeometry : public QGeometry
     Q_PROPERTY(int slices READ slices WRITE setSlices NOTIFY slicesChanged)
     Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(bool generateTangents READ generateTangents WRITE setGenerateTangents NOTIFY generateTangentsChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *normalAttribute READ normalAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *texCoordAttribute READ texCoordAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *tangentAttribute READ tangentAttribute CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
+
 public:
     explicit QSphereGeometry(QNode *parent = Q_NULLPTR);
     ~QSphereGeometry();
@@ -67,6 +74,12 @@ public:
     int rings() const;
     int slices() const;
     float radius() const;
+
+    QAttribute *positionAttribute() const;
+    QAttribute *normalAttribute() const;
+    QAttribute *texCoordAttribute() const;
+    QAttribute *tangentAttribute() const;
+    QAttribute *indexAttribute() const;
 
 Q_SIGNALS:
     void radiusChanged();

@@ -22,8 +22,8 @@ HEADERS += \
     $$PWD/q3dmouseevent.h \
     $$PWD/mousecontroller_p.h \
     $$PWD/mouseinput_p.h \
-    $$PWD/mouseeventfilter.h \
-    $$PWD/mouseeventdispatcherjob_p.h
+    $$PWD/mouseeventdispatcherjob_p.h \
+    $$PWD/mouseeventfilter_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \

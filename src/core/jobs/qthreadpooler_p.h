@@ -55,6 +55,7 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QFutureInterface>
 #include <QtCore/QFuture>
+#include <QThreadPool>
 
 QT_BEGIN_NAMESPACE
 
@@ -87,6 +88,7 @@ private:
     QMutex *m_mutex;
     DependencyHandler *m_dependencyHandler;
     QAtomicInt m_taskCount;
+    QThreadPool m_threadPool;
 };
 
 } // namespace Qt3DCore

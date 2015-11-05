@@ -12,7 +12,6 @@ HEADERS += \
     $$PWD/qeffect_p.h \
     $$PWD/qmaterial.h \
     $$PWD/qmaterial_p.h \
-    $$PWD/qopenglfilter.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
     $$PWD/qparametermapping.h \
@@ -28,7 +27,8 @@ HEADERS += \
     $$PWD/renderpass_p.h \
     $$PWD/shader_p.h \
     $$PWD/shaderdata_p.h \
-    $$PWD/technique_p.h
+    $$PWD/technique_p.h \
+    $$PWD/qgraphicsapifilter.h
 
 SOURCES += \
     $$PWD/annotation.cpp \
@@ -39,7 +39,6 @@ SOURCES += \
     $$PWD/qannotation.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qmaterial.cpp \
-    $$PWD/qopenglfilter.cpp \
     $$PWD/qparameter.cpp \
     $$PWD/qparametermapping.cpp \
     $$PWD/qrenderpass.cpp \
@@ -49,4 +48,5 @@ SOURCES += \
     $$PWD/renderpass.cpp \
     $$PWD/shader.cpp \
     $$PWD/shaderdata.cpp \
-    $$PWD/technique.cpp
+    $$PWD/technique.cpp \
+    $$PWD/qgraphicsapifilter.cpp

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "assimphelpers_p.h"
+#include "assimphelpers.h"
 
 #include <QFileDevice>
 #include <QFileInfo>

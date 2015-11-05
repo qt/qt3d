@@ -447,6 +447,30 @@ float QCylinderGeometry::length() const
     return d->m_length;
 }
 
+QAttribute *QCylinderGeometry::positionAttribute() const
+{
+    Q_D(const QCylinderGeometry);
+    return d->m_positionAttribute;
+}
+
+QAttribute *QCylinderGeometry::normalAttribute() const
+{
+    Q_D(const QCylinderGeometry);
+    return d->m_normalAttribute;
+}
+
+QAttribute *QCylinderGeometry::texCoordAttribute() const
+{
+    Q_D(const QCylinderGeometry);
+    return d->m_texCoordAttribute;
+}
+
+QAttribute *QCylinderGeometry::indexAttribute() const
+{
+    Q_D(const QCylinderGeometry);
+    return d->m_indexAttribute;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

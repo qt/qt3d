@@ -40,15 +40,10 @@
 #include <Qt3DCore/qabstractbuffer.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <QSharedPointer>
-#include <QOpenGLBuffer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-GLint elementType(GLint type);
-GLint tupleSizeFromType(GLint type);
-GLuint byteSizeFromType(GLint type);
 
 class QBufferPrivate;
 class QBufferFunctor;

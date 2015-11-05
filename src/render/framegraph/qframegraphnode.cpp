@@ -65,7 +65,7 @@ QFrameGraphNodePrivate::QFrameGraphNodePrivate()
 
 /*!
     \qmltype FrameGraphNode
-    \inqmlmodule Qt3D.Renderer
+    \inqmlmodule Qt3D.Render
     \instantiates QFrameGraphNode
     \inherits Node
     \since 5.5

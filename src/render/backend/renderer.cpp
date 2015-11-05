@@ -39,7 +39,6 @@
 
 #include <Qt3DCore/qentity.h>
 
-
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparametermapping.h>
@@ -48,6 +47,7 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qeffect.h>
+#include <Qt3DRender/qabstractsceneparser.h>
 
 #include <Qt3DRender/private/renderviewjob_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
@@ -70,15 +70,16 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
-#include <Qt3DRender/private/abstractsceneparser_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/pickeventfilter_p.h>
+#include <Qt3DRender/private/qsceneparserfactory_p.h>
 
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/private/qaspectmanager_p.h>
+#include <Qt3DCore/qeventfilterservice.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
 #include <QStack>
@@ -134,6 +135,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
+    , m_eventSource(Q_NULLPTR)
     , m_cameraManager(new CameraManager())
     , m_renderNodesManager(new EntityManager())
     , m_materialManager(new MaterialManager())
@@ -161,10 +163,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_attributeManager(new AttributeManager())
     , m_geometryManager(new GeometryManager())
     , m_geometryRendererManager(new GeometryRendererManager)
+    , m_objectPickerManager(new ObjectPickerManager())
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
     , m_debugLogger(Q_NULLPTR)
+    , m_pickEventFilter(new PickEventFilter())
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -240,24 +244,11 @@ void Renderer::buildDefaultTechnique()
 
 void Renderer::loadSceneParsers()
 {
-    QString pluginsPath = QLibraryInfo::location(QLibraryInfo::PluginsPath) + SCENE_PARSERS_PATH;
-    QDir sceneParsersPluginDir(pluginsPath);
-
-    const QStringList plugins =
-#ifndef Q_OS_WIN
-        sceneParsersPluginDir.entryList(QDir::Files);
-#else
-        sceneParsersPluginDir.entryList(QStringList(QStringLiteral("*.dll")), QDir::Files);
-#endif
-    Q_FOREACH (const QString &plugin, plugins) {
-        QPluginLoader loader(sceneParsersPluginDir.absoluteFilePath(plugin));
-        AbstractSceneParser *parser = qobject_cast<AbstractSceneParser *>(loader.instance());
-        if (parser != Q_NULLPTR) {
-            m_sceneParsers.append(parser);
-        } else {
-            qWarning().noquote().nospace() << "Failed to load scene parser plugin \""
-                << QDir::toNativeSeparators(loader.fileName()) << "\": " << loader.errorString();
-        }
+    QStringList keys = QSceneParserFactory::keys();
+    Q_FOREACH (QString key, keys) {
+        QAbstractSceneParser *sceneParser = QSceneParserFactory::create(key, QStringList());
+        if (sceneParser != Q_NULLPTR)
+            m_sceneParsers.append(sceneParser);
     }
 }
 
@@ -536,6 +527,12 @@ void Renderer::setSurface(QSurface* surface)
         m_surface = surface;
         m_waitForWindowToBeSetCondition.wakeOne();
     }
+}
+
+void Renderer::registerEventFilter(QEventFilterService *service)
+{
+    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
 void Renderer::render()
@@ -1065,7 +1062,12 @@ void Renderer::addAllocator(Qt3DCore::QFrameAllocator *allocator)
     m_allocators.append(allocator);
 }
 
-QOpenGLFilter *Renderer::contextInfo() const
+QList<QMouseEvent> Renderer::pendingPickingEvents() const
+{
+    return m_pickEventFilter->pendingEvents();
+}
+
+QGraphicsApiFilter *Renderer::contextInfo() const
 {
     return m_graphicsContext->contextInfo();
 }

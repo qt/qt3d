@@ -50,67 +50,16 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-#ifdef THREAD_WEAVER
-namespace {
-
-class SynchronizedJob : public ThreadWeaver::Job
-{
-public:
-    SynchronizedJob(QAbstractAspectJobManager::JobFunction func, void *arg, QAtomicInt *atomicCount)
-        : m_func(func)
-        , m_arg(arg)
-        , m_atomicCount(atomicCount)
-    {}
-
-protected:
-    void run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread) Q_DECL_OVERRIDE;
-
-private:
-    QAbstractAspectJobManager::JobFunction m_func;
-    void *m_arg;
-    QAtomicInt *m_atomicCount;
-};
-
-typedef QSharedPointer<SynchronizedJob> SynchronizedJobPtr;
-
-void SynchronizedJob::run(ThreadWeaver::JobPointer self, ThreadWeaver::Thread *thread)
-{
-    Q_UNUSED(self);
-    Q_CHECK_PTR(m_func);
-    Q_CHECK_PTR(thread);
-
-    // Call the function
-    m_func(m_arg);
-
-    // Decrement the atomic counter to let others know we've done our bit
-    m_atomicCount->deref();
-
-    // Wait for the other worker threads to be done
-    while (m_atomicCount->load() > 0)
-        thread->yieldCurrentThread();
-}
-
-} // anonymous
-#endif
-
 /*!
     \class Qt3DCore::QAspectJobManager
     \internal
 */
 QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAbstractAspectJobManager(parent)
-#ifdef THREAD_WEAVER
-    , m_weaver(Q_NULLPTR)
-#endif
     , m_threadPooler(new QThreadPooler(this))
     , m_dependencyHandler(new DependencyHandler)
 {
-#ifdef THREAD_WEAVER
-    m_weaver = new ThreadWeaver::Queue(this);
-    m_weaver->setMaximumNumberOfThreads(QThread::idealThreadCount());
-#else
     m_threadPooler->setDependencyHandler(m_dependencyHandler.data());
-#endif
 }
 
 QAspectJobManager::~QAspectJobManager()
@@ -123,35 +72,6 @@ void QAspectJobManager::initialize()
 
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
-#ifdef THREAD_WEAVER
-    // Convert QJobs to ThreadWeaver::Jobs
-    QHash<QAspectJob *, QSharedPointer<WeaverJob> > jobsMap;
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
-        QSharedPointer<WeaverJob> weaverJob(new WeaverJob);
-        weaverJob->m_job = job;
-        jobsMap.insert(job.data(), weaverJob);
-    }
-
-    // Resolve dependencies
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
-        const QVector<QWeakPointer<QAspectJob> > &deps = job->dependencies();
-
-        Q_FOREACH (const QWeakPointer<QAspectJob> &dep, deps) {
-            QSharedPointer<WeaverJob> weaverDep = jobsMap.value(dep.data());
-
-            if (weaverDep) {
-                ThreadWeaver::DependencyPolicy &dependencyPolicy = ThreadWeaver::DependencyPolicy::instance();
-                QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
-                dependencyPolicy.addDependency(weaverJob, weaverDep);
-            }
-        }
-    }
-
-    Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
-        QSharedPointer<WeaverJob> weaverJob = jobsMap.value(job.data());
-        m_weaver->enqueue(weaverJob);
-    }
-#else
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
     QVector<RunnableInterface *> taskList;
@@ -183,33 +103,17 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     m_dependencyHandler->addDependencies(qMove(dependencyList));
 
     m_threadPooler->mapDependables(taskList);
-#endif
 }
 
 void QAspectJobManager::waitForAllJobs()
 {
-#ifdef THREAD_WEAVER
-    m_weaver->finish();
-#else
     QFutureWatcher<void> futureWatcher;
     futureWatcher.setFuture(m_threadPooler->future());
     futureWatcher.waitForFinished();
-#endif
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
 {
-#ifdef THREAD_WEAVER
-    const int threadCount = m_weaver->maximumNumberOfThreads();
-    QAtomicInt atomicCount(threadCount);
-
-    for (int i = 0; i < threadCount; ++i) {
-        SynchronizedJobPtr syncJob(new SynchronizedJob(func, arg, &atomicCount));
-        m_weaver->enqueue(syncJob);
-    }
-
-    m_weaver->finish();
-#else
     const int threadCount = m_threadPooler->maxThreadCount();
     QAtomicInt atomicCount(threadCount);
 
@@ -223,7 +127,6 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
     QFutureWatcher<void> futureWatcher;
     futureWatcher.setFuture(future);
     futureWatcher.waitForFinished();
-#endif
 }
 
 } // namespace Qt3DCore

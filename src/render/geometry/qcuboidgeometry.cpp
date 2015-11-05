@@ -637,6 +637,36 @@ QSize QCuboidGeometry::xzMeshResolution() const
     return d->m_xzFaceResolution;
 }
 
+QAttribute *QCuboidGeometry::positionAttribute() const
+{
+    Q_D(const QCuboidGeometry);
+    return d->m_positionAttribute;
+}
+
+QAttribute *QCuboidGeometry::normalAttribute() const
+{
+    Q_D(const QCuboidGeometry);
+    return d->m_normalAttribute;
+}
+
+QAttribute *QCuboidGeometry::texCoordAttribute() const
+{
+    Q_D(const QCuboidGeometry);
+    return d->m_texCoordAttribute;
+}
+
+QAttribute *QCuboidGeometry::tangentAttribute() const
+{
+    Q_D(const QCuboidGeometry);
+    return d->m_tangentAttribute;
+}
+
+QAttribute *QCuboidGeometry::indexAttribute() const
+{
+    Q_D(const QCuboidGeometry);
+    return d->m_indexAttribute;
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE
