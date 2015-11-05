@@ -90,7 +90,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QPlaneGeometry)
-    QT3D_CLONEABLE(QPlaneGeometry)
 };
 
 } // Qt3DRender
