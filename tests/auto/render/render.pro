@@ -39,5 +39,6 @@ contains(QT_CONFIG, private_tests) {
         objectpicker \
         picking \
         qboundingvolumedebug \
-        boundingvolumedebug
+        boundingvolumedebug \
+        qdefaultmeshes
 }
