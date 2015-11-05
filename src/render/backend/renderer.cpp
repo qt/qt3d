@@ -874,6 +874,12 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
                 vao = *(m_vaoManager->data(command->m_vao));
             }
             Q_ASSERT(vao);
+            // If the VAO hasn't been created, we create it
+            if (!vao->isCreated()) {
+                vao->create();
+                needsToBindVAO = true;
+                qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
+            }
         }
 
         //// We activate the shader here
@@ -899,13 +905,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
             specified = true;
             if (needsToBindVAO && vao) {
-                if (!vao->isCreated()) {
-                    qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
-                    vao->create();
-                }
+                Q_ASSERT(vao->isCreated());
                 vao->bind();
             }
-
             // Update or set Attributes and Buffers for the given rGeometry and Command
             indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
         }
@@ -983,7 +985,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     // We cache the VAO and release it only at the end of the exectute frame
     // We try to minimize VAO binding between RenderCommands
-    if (vao && vao->isCreated())
+    if (vao)
         vao->release();
 
     // Reset to the state we were in before executing the render commands
