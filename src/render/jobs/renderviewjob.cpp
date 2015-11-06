@@ -60,6 +60,7 @@ void RenderViewJob::run()
     renderView->setAllocator(currentFrameAllocator);
     renderView->setRenderer(m_renderer);
     renderView->setSurfaceSize(m_surfaceSize);
+    renderView->setDevicePixelRatio(m_devicePixelRatio);
 
     // Populate the renderview's configuration from the framegraph
     setRenderViewConfigFromFrameGraphLeafNode(renderView, m_fgLeaf);

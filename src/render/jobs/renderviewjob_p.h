@@ -67,12 +67,14 @@ class Q_AUTOTEST_EXPORT RenderViewJob : public Qt3DCore::QAspectJob
 public:
     RenderViewJob()
         : m_renderer(0)
+        , m_devicePixelRatio(1.)
         , m_fgLeaf(0)
         , m_index(0)
     {}
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
+    inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
 
     inline void setFrameGraphLeafNode(FrameGraphNode *fgLeaf)
     {
@@ -92,6 +94,7 @@ protected:
 private:
     Renderer *m_renderer;
     QSize m_surfaceSize;
+    qreal m_devicePixelRatio;
     FrameGraphNode *m_fgLeaf;
     int m_index;
 };

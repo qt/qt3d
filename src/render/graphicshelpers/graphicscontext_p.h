@@ -106,7 +106,7 @@ public:
     void clearBackBuffer(QClearBuffer::BufferType buffers);
     void endDrawing(bool swapBuffers);
 
-    void setViewport(const QRectF &viewport);
+    void setViewport(const QRectF &viewport, const QSize &surfaceSize);
     QRectF viewport() const { return m_viewport; }
 
     /**

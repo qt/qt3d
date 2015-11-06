@@ -230,7 +230,7 @@ void GraphicsContext::endDrawing(bool swapBuffers)
     decayTextureScores();
 }
 
-void GraphicsContext::setViewport(const QRectF &viewport)
+void GraphicsContext::setViewport(const QRectF &viewport, const QSize &surfaceSize)
 {
     m_viewport = viewport;
     QSize renderTargetSize;
@@ -238,6 +238,8 @@ void GraphicsContext::setViewport(const QRectF &viewport)
         // For external FBOs we may not have a m_renderTargets entry.
         if (m_renderTargetsSize.contains(m_activeFBO)) {
             renderTargetSize = m_renderTargetsSize[m_activeFBO];
+        } else if (surfaceSize.isValid()) {
+            renderTargetSize = surfaceSize;
         } else {
             // External FBO (when used with QtQuick2 Scene3D)
 

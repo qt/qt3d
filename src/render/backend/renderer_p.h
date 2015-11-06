@@ -128,11 +128,15 @@ public:
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
     void setSurface(QSurface *s) Q_DECL_OVERRIDE;
+    void setSurfaceSize(const QSize& s) Q_DECL_OVERRIDE;
+    void setDevicePixelRatio(qreal s) Q_DECL_OVERRIDE;
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     QSurface *surface() const Q_DECL_OVERRIDE { return m_surface; }
+    const QSize &surfaceSize() const Q_DECL_OVERRIDE { return m_surfaceSize; }
+    qreal devicePixelRatio() const Q_DECL_OVERRIDE { return m_devicePixelRatio; }
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
     Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return m_services; }
 
@@ -227,6 +231,8 @@ private:
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
+    QSize m_surfaceSize;
+    qreal m_devicePixelRatio;
 
 
     RenderQueue *m_renderQueue;

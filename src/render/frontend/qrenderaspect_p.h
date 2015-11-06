@@ -87,6 +87,8 @@ public:
     // via QScopedPointerDeleteLater
     QScopedPointer<Render::PlatformSurfaceFilter, QScopedPointerDeleteLater> m_surfaceEventFilter;
     QSurface *m_surface;
+    QSize m_surfaceSize;
+    qreal m_devicePixelRatio;
 
     bool m_initialized;
     Render::FramePreparationJobPtr m_framePreparationJob;

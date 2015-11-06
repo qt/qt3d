@@ -118,6 +118,9 @@ public:
     inline void setSurfaceSize(const QSize &size) Q_DECL_NOEXCEPT { m_surfaceSize = size; }
     inline Renderer *renderer() const Q_DECL_NOEXCEPT { return m_renderer; }
     inline NodeManagers *nodeManagers() const Q_DECL_NOEXCEPT { return m_manager; }
+    inline const QSize &surfaceSize() const { return m_surfaceSize; }
+    inline void setDevicePixelRatio(qreal r) { m_devicePixelRatio = r; }
+    inline qreal devicePixelRatio() const { return m_devicePixelRatio; }
 
     inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
     {
@@ -270,6 +273,7 @@ private:
     Renderer *m_renderer;
     NodeManagers *m_manager;
     QSize m_surfaceSize;
+    qreal m_devicePixelRatio;
     Qt3DCore::QFrameAllocator *m_allocator;
 
     InnerData *m_data;

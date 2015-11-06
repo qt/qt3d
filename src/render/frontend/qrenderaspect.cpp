@@ -200,6 +200,7 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
             QWindow *window = static_cast<QWindow *>(m_surface);
             m_surfaceEventFilter->setWindow(window);
             hasPlatformSurface = (window->handle() != Q_NULLPTR);
+            m_devicePixelRatio = window->devicePixelRatio();
             break;
         }
 
@@ -211,9 +212,15 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
         }
         }
 
+        if (!m_surfaceSize.isValid())
+            m_surfaceSize = surface->size();
+
         // If the window/offscreen surface has a native surface, tell the renderer
-        if (hasPlatformSurface)
+        if (hasPlatformSurface) {
             m_renderer->setSurface(surface);
+            m_renderer->setSurfaceSize(m_surfaceSize);
+            m_renderer->setDevicePixelRatio(m_devicePixelRatio);
+        }
     }
 }
 
@@ -407,6 +414,34 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(d->m_cleanupJob);
     }
     return jobs;
+}
+
+const QSize &QRenderAspect::surfaceSize() const
+{
+    Q_D(const QRenderAspect);
+    return d->m_surfaceSize;
+}
+
+void QRenderAspect::setSurfaceSize(const QSize &s)
+{
+    Q_D(QRenderAspect);
+    d->m_surfaceSize = s;
+    if (d->m_renderer)
+        d->m_renderer->setSurfaceSize(s);
+}
+
+qreal QRenderAspect::devicePixelRatio() const
+{
+    Q_D(const QRenderAspect);
+    return d->m_devicePixelRatio;
+}
+
+void QRenderAspect::setDevicePixelRatio(qreal r)
+{
+    Q_D(QRenderAspect);
+    d->m_devicePixelRatio = r;
+    if (d->m_renderer)
+        d->m_renderer->setDevicePixelRatio(r);
 }
 
 void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)

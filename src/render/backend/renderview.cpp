@@ -270,6 +270,7 @@ QUniformValue *RenderView::eyePosition(const QMatrix4x4 &model) const
 
 RenderView::RenderView()
     : m_renderer(Q_NULLPTR)
+    , m_devicePixelRatio(1.)
     , m_allocator(Q_NULLPTR)
     , m_data(Q_NULLPTR)
     , m_clearColor(Q_NULLPTR)
@@ -393,6 +394,7 @@ void RenderView::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
     m_manager = renderer->nodeManagers();
+    m_surface = renderer->surface();
     m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,65 +34,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERASPECT_H
-#define QT3DRENDER_QRENDERASPECT_H
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qabstractaspect.h>
+Entity {
+    id: root
+    signal pressed(var event)
+    signal clicked(var event)
+    signal released(var event)
+    signal entered()
+    signal exited()
 
-QT_BEGIN_NAMESPACE
+    property real x: 0
+    property real y: 0
+    property real z: 0
+    property alias scale: transform.scale
+    property alias hoverEnabled: objectPicker.hoverEnabled
+    property alias recursive: debugVolume.recursive
+    property alias diffuseColor: material.diffuse
+    property alias ambientColor: material.ambient
+    readonly property bool containsMouse: objectPicker.containsMouse
+    readonly property bool isPressed: objectPicker.pressed
 
-class QOpenGLContext;
+    property GeometryRenderer mesh;
 
-namespace Qt3DRender {
+    ObjectPicker {
+        id: objectPicker
+        onClicked: root.clicked(event)
+        onPressed: root.pressed(event)
+        onReleased: root.released(event)
+        onEntered: root.entered()
+        onExited: root.exited();
+    }
 
-namespace Render {
-class Renderer;
+    BoundingVolumeDebug { id: debugVolume }
+    PhongMaterial { id: material }
+
+    Transform {
+        id: transform
+        translation: Qt.vector3d(x, y, z)
+    }
+
+    Layer {
+        id: layer
+        names: "content"
+    }
+
+    components: [mesh, material, transform, debugVolume, objectPicker, layer]
 }
 
-class QRenderAspectPrivate;
-
-class QT3DRENDERSHARED_EXPORT QRenderAspect : public Qt3DCore::QAbstractAspect
-{
-    Q_OBJECT
-public:
-    enum RenderType {
-        Synchronous,
-        Threaded
-    };
-
-    explicit QRenderAspect(QObject *parent = 0);
-    explicit QRenderAspect(RenderType type, QObject *parent = 0);
-
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
-
-    const QSize &surfaceSize() const;
-    void setSurfaceSize(const QSize &s);
-    qreal devicePixelRatio() const;
-    void setDevicePixelRatio(qreal r);
-
-protected:
-    void registerBackendTypes();
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-    Q_DECLARE_PRIVATE(QRenderAspect)
-
-    void onRootEntityChanged(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
-
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
-
-private:
-    friend class Render::Renderer;
-};
-
-}
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QRENDERASPECT_H

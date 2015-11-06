@@ -136,6 +136,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
+    , m_devicePixelRatio(1.)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
@@ -508,6 +509,16 @@ void Renderer::setSurface(QSurface* surface)
     }
 }
 
+void Renderer::setSurfaceSize(const QSize &s)
+{
+    m_surfaceSize = s;
+}
+
+void Renderer::setDevicePixelRatio(qreal s)
+{
+    m_devicePixelRatio = s;
+}
+
 void Renderer::registerEventFilter(QEventFilterService *service)
 {
     qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
@@ -742,7 +753,7 @@ bool Renderer::submitRenderViews()
         m_graphicsContext->clearBackBuffer(renderView->clearBuffer());
 
         // Set the Viewport
-        m_graphicsContext->setViewport(renderView->viewport());
+        m_graphicsContext->setViewport(renderView->viewport(), renderView->surfaceSize() * renderView->devicePixelRatio());
 
         // Execute the render commands
         executeCommands(renderView);
@@ -810,7 +821,8 @@ Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int 
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
     if (m_surface)
-        job->setSurfaceSize(m_surface->size());
+        job->setSurfaceSize(m_surfaceSize.isValid() ? m_surfaceSize : m_surface->size());
+    job->setDevicePixelRatio(m_devicePixelRatio);
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
     return job;
