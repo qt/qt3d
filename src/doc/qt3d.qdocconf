@@ -71,7 +71,8 @@ imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
                ../../examples/qt3d/planets-qml/doc/images \
-               ../../examples/qt3d/wireframe/doc/images
+               ../../examples/qt3d/wireframe/doc/images \
+               ../../examples/qt3d/audio-visualizer-qml/doc/images
 
 Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
                         QT3DINPUTSHARED_EXPORT \

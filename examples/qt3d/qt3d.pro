@@ -46,6 +46,8 @@ SUBDIRS += \
     transforms-qml \
     lights
 
+qtHaveModule(multimedia): SUBDIRS += audio-visualizer-qml
+
 # qmake seems to break in some CI configurations, disable this for now
 #SUBDIRS += qgltf
 
