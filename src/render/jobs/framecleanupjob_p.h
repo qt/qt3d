@@ -71,6 +71,7 @@ protected:
 
 private:
     Renderer *m_renderer;
+    void updateBoundingVolumesDebug(Entity *node);
 };
 
 typedef QSharedPointer<FrameCleanupJob> FrameCleanupJobPtr;

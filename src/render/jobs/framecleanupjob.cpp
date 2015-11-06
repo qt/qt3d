@@ -40,6 +40,7 @@
 #include <private/shaderdata_p.h>
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
+#include <private/sphere_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,27 @@ void FrameCleanupJob::run()
     // Cleanup texture handles
     TextureDataManager *textureDataManager = m_renderer->textureDataManager();
     textureDataManager->cleanup();
+
+    // Debug bounding volume debug
+    updateBoundingVolumesDebug(m_renderer->renderSceneRoot());
+}
+
+void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
+{
+    BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
+    if (debugBV) {
+        Qt3DRender::Render::Sphere s;
+        if (!debugBV->isRecursive()) {
+            s = *node->worldBoundingVolume();
+        } else {
+            s = *node->worldBoundingVolumeWithChildren();
+        }
+        debugBV->setRadius(s.radius());
+        debugBV->setCenter(s.center());
+    }
+
+    Q_FOREACH (Entity *c, node->children())
+        updateBoundingVolumesDebug(c);
 }
 
 } // namespace Render
