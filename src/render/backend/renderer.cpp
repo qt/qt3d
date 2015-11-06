@@ -994,8 +994,7 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
             // Reupload buffer data
             m_graphicsContext->updateBuffer(buffer);
 
-            // Append buffer to temporary vector so that its dirtiness
-            // can be cleared at the end of the frame
+            // Clear dirtiness of buffer so that it is not reuploaded every frame
             buffer->unsetDirty();
         }
 
