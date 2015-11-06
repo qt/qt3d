@@ -100,16 +100,12 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
                     return;
                 }
 
-                Qt3DCore::QAxisAlignedBoundingBox bbox;
                 const QByteArray buffer = buf->data();
                 const char *rawBuffer = buffer.constData();
                 rawBuffer += pickVolumeAttribute->byteOffset();
                 const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
                 QVector<QVector3D> vertices(pickVolumeAttribute->count());
 
-                // TO DO: We don't need to create a vector of QVector3D
-                // to build bbox used to then build a sphere, we could build the sphere
-                // by just looking at the vertices using more efficient algorithms (EPOS, Ritters)
                 for (int c = 0, vC = vertices.size(); c < vC; ++c) {
                     QVector3D v;
                     const float *fptr = reinterpret_cast<const float*>(rawBuffer);
@@ -118,12 +114,8 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
                     vertices[c] = v;
                     rawBuffer += stride;
                 }
-                //Phase 1
-                bbox.update(vertices);
 
-                //Phase 2
-                node->localBoundingVolume()->setCenter(bbox.center());
-                node->localBoundingVolume()->setRadius(bbox.maxExtent() * 0.5f);
+                node->localBoundingVolume()->initializeFromPoints(vertices);
             }
         }
     }
