@@ -40,12 +40,10 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property alias x: translateTransform.dx
-    property alias y: translateTransform.dy
-    property alias z: translateTransform.dz
-    property alias scale: scaleTransform.scale
-    property alias rotationAngle: rotateTransform.angle
-    property alias rotationAxis: rotateTransform.axis
+    property vector3d position: Qt.vector3d(0, 0, 0)
+    property real scale: 1.0
+    property real rotationAngle: 0.0
+    property vector3d rotationAxis: Qt.vector3d(1, 0, 0)
     property alias source: mesh.source
     property Material material
 
@@ -53,9 +51,16 @@ Entity {
 
     Transform {
         id: transform
-        Rotate { id: rotateTransform }
-        Scale { id: scaleTransform }
-        Translate { id: translateTransform }
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.translate(root.position);
+            m.rotate(root.rotationAngle, root.rotationAxis);
+            m.scale(root.scale);
+            return m;
+        }
     }
 
     Mesh {

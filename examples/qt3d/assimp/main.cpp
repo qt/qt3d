@@ -50,6 +50,7 @@ class SceneHelper : public QObject
 
 public:
     Q_INVOKABLE QObject *findEntity(Qt3DRender::QSceneLoader *loader, const QString &name);
+    Q_INVOKABLE QObject *findComponent(Qt3DCore::QEntity *entity, const QString &componentMetatype);
     Q_INVOKABLE void addListEntry(const QVariant &list, QObject *entry);
 };
 
@@ -68,6 +69,19 @@ QObject *SceneHelper::findEntity(Qt3DRender::QSceneLoader *loader, const QString
 
     // The scene structure and names always depend on the asset.
     return root->findChild<Qt3DCore::QEntity *>(name);
+}
+
+QObject *SceneHelper::findComponent(Qt3DCore::QEntity *entity, const QString &componentMetatype)
+{
+    Q_ASSERT(entity);
+    Qt3DCore::QComponentList components = entity->components();
+    Q_FOREACH (Qt3DCore::QComponent *component, components) {
+        qDebug() << component->metaObject()->className();
+        if (component->metaObject()->className() == componentMetatype) {
+            return component;
+        }
+    }
+    return Q_NULLPTR;
 }
 
 void SceneHelper::addListEntry(const QVariant &list, QObject *entry)

@@ -76,8 +76,9 @@ Entity {
             id: myEntity
             property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
             property real _hue: (index % collection.cols) / collection.cols
-            x: collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1))
-            z: collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows)
+            position: Qt.vector3d(collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1)),
+                                  0.0,
+                                  collection.spacing * (Math.floor(index / collection.cols) - 0.5 * collection._rows));
             diffuse: Qt.hsla( _hue, 0.5, _lightness, 1.0 )
         }
     }

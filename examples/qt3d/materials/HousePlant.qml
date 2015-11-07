@@ -43,15 +43,16 @@ Entity {
     property string potShape: "cross"
     property string plantType: "bamboo"
 
-    property alias x: pot.x
-    property alias y: pot.y
-    property alias z: pot.z
+    property real x: 0
+    property real y: 0
+    property real z: 0
     property real scale: 1.0
 
     RenderableEntity {
         id: pot
         source: "assets/houseplants/" + root.potShape + "-pot.obj"
         scale: 0.03 * root.scale
+        position: Qt.vector3d(root.x, root.y, root.z)
 
         material: NormalDiffuseMapMaterial {
             diffuse: "assets/houseplants/pot.webp"

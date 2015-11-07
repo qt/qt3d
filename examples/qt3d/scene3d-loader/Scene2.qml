@@ -82,10 +82,14 @@ Scene3D {
 
         Transform {
             id: transform
-            Scale { scale3D: Qt.vector3d(1.5, 1, 0.5) }
-            Rotate {
-                angle: 45
-                axis: Qt.vector3d(1, 0, 0)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.rotate(45, Qt.vector3d(1, 0, 0))
+                m.scale(Qt.vector3d(1.5, 1, 0.5));
+                return m;
             }
         }
 

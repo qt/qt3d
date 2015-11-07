@@ -54,7 +54,7 @@ Entity {
             }
 
             CameraSelector {
-                camera: basicCamera
+                camera: camera
                 enabled: counter !== 7
 
                 LayerFilter {
@@ -76,28 +76,17 @@ Entity {
         }
     }
 
-    Entity {
-        id: basicCamera
-
-        Transform {
-            id: basicCameraTransform
-            LookAt {
-                upVector: Qt.vector3d(0, 1, 0)
-                viewCenter: Qt.vector3d(0, 0, 0)
-                position: Qt.vector3d(0, 10, -10)
-            }
-        }
-        components: [basicCameraTransform, cameraLens]
-    }
-
-    CameraLens {
-        id: cameraLens
+    Camera {
+        id: camera
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
         aspectRatio: 16/9
         nearPlane : 0.1
         farPlane : 1000.0
         enabled: counter !== 4
+        position: Qt.vector3d(0, 10, -10)
+        viewCenter: Qt.vector3d(0, 0, 0)
+        upVector: Qt.vector3d(0, 1, 0)
     }
 
     // Sphere
@@ -123,48 +112,48 @@ Entity {
 
         Transform {
             id: transform
+            property real x: 0.0
+            property real y: 0.0
+            property real z: 0.0
+            translation: Qt.vector3d(x, y, z)
             enabled: counter !== 3
-
-            Translate {
-                id: translate
-            }
         }
 
         QQ2.SequentialAnimation {
             running: true
             loops: QQ2.Animation.Infinite
             QQ2.NumberAnimation {
-                target: translate; property: "dx"
+                target: transform; property: "x"
                 from: 0; to: 5;
                 duration: 550
                 easing.type: QQ2.Easing.InOutQuad
             }
             QQ2.NumberAnimation {
-                target: translate; property: "dy"
+                target: transform; property: "y"
                 from: 0; to: 5;
                 duration: 650
                 easing.type: QQ2.Easing.InOutQuad
             }
             QQ2.NumberAnimation {
-                target: translate; property: "dz"
+                target: transform; property: "z"
                 from: 0; to: 5;
                 duration: 350
                 easing.type: QQ2.Easing.InOutQuad
             }
             QQ2.NumberAnimation {
-                target: translate; property: "dx"
+                target: transform; property: "x"
                 from: 5; to: 0;
                 duration: 550
                 easing.type: QQ2.Easing.InOutQuad
             }
             QQ2.NumberAnimation {
-                target: translate; property: "dy"
+                target: transform; property: "y"
                 from: 5; to: 0;
                 duration: 350
                 easing.type: QQ2.Easing.InOutQuad
             }
             QQ2.NumberAnimation {
-                target: translate; property: "dz"
+                target: transform; property: "z"
                 from: 5; to: 0;
                 duration: 650
                 easing.type: QQ2.Easing.InOutQuad

@@ -40,20 +40,10 @@ TrefoilKnot::TrefoilKnot(Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent)
     , m_mesh(new Qt3DRender::QMesh())
     , m_transform(new Qt3DCore::QTransform())
-    , m_scaleTransform(new Qt3DCore::QScaleTransform())
-    , m_xaxisRotation(new Qt3DCore::QRotateTransform())
-    , m_yaxisRotation(new Qt3DCore::QRotateTransform())
-    , m_translateTransform(new Qt3DCore::QTranslateTransform())
+    , m_position()
+    , m_scale(1.0f)
 {
     m_mesh->setSource(QUrl("qrc:/assets/obj/trefoil.obj"));
-    m_xaxisRotation->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
-    m_yaxisRotation->setAxis(QVector3D(0.0f, 1.0f, 0.0f));
-
-    m_transform->addTransform(m_scaleTransform);
-    m_transform->addTransform(m_xaxisRotation);
-    m_transform->addTransform(m_yaxisRotation);
-    m_transform->addTransform(m_translateTransform);
-
     addComponent(m_mesh);
     addComponent(m_transform);
 }
@@ -62,22 +52,72 @@ TrefoilKnot::~TrefoilKnot()
 {
 }
 
-Qt3DCore::QScaleTransform *TrefoilKnot::scaleTransform() const
+void TrefoilKnot::updateTransform()
 {
-    return m_scaleTransform;
+    QMatrix4x4 m;
+    m.translate(m_position);
+    m.rotate(m_phi, QVector3D(1.0f, 0.0f, 0.0f));
+    m.rotate(m_phi, QVector3D(0.0f, 1.0f, 0.0f));
+    m.scale(m_scale);
+    m_transform->setMatrix(m);
 }
 
-Qt3DCore::QRotateTransform *TrefoilKnot::xaxisRotateTransform() const
+float TrefoilKnot::theta() const
 {
-    return m_xaxisRotation;
+    return m_theta;
 }
 
-Qt3DCore::QRotateTransform *TrefoilKnot::yaxisRotateTransform() const
+float TrefoilKnot::phi() const
 {
-    return m_yaxisRotation;
+    return m_phi;
 }
 
-Qt3DCore::QTranslateTransform *TrefoilKnot::translateTransform() const
+QVector3D TrefoilKnot::position() const
 {
-    return m_translateTransform;
+    return m_position;
+}
+
+float TrefoilKnot::scale() const
+{
+    return m_scale;
+}
+
+void TrefoilKnot::setTheta(float theta)
+{
+    if (m_theta == theta)
+        return;
+
+    m_theta = theta;
+    emit thetaChanged(theta);
+    updateTransform();
+}
+
+void TrefoilKnot::setPhi(float phi)
+{
+    if (m_phi == phi)
+        return;
+
+    m_phi = phi;
+    emit phiChanged(phi);
+    updateTransform();
+}
+
+void TrefoilKnot::setPosition(QVector3D position)
+{
+    if (m_position == position)
+        return;
+
+    m_position = position;
+    emit positionChanged(position);
+    updateTransform();
+}
+
+void TrefoilKnot::setScale(float scale)
+{
+    if (m_scale == scale)
+        return;
+
+    m_scale = scale;
+    emit scaleChanged(scale);
+    updateTransform();
 }

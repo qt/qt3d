@@ -51,16 +51,11 @@ public:
     ~RenderableEntity();
 
     Qt3DRender::QMesh *mesh() const;
-    Qt3DCore::QScaleTransform *scaleTransform() const;
-    Qt3DCore::QTranslateTransform *translateTransform() const;
-    Qt3DCore::QRotateTransform *rotateTransform() const;
+    Qt3DCore::QTransform *transform() const;
 
 private:
     Qt3DRender::QMesh *m_mesh;
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QRotateTransform *m_rotateTransform;
-    Qt3DCore::QScaleTransform *m_scaleTransform;
-    Qt3DCore::QTranslateTransform *m_translateTransform;
 };
 
 #endif // RENDERABLEENTITY_H

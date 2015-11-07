@@ -39,8 +39,6 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRender/QPlaneMesh>
 
 class PlaneEntity : public Qt3DCore::QEntity
@@ -49,15 +47,11 @@ public:
     PlaneEntity(Qt3DCore::QNode *parent = 0);
     ~PlaneEntity();
 
-    Qt3DCore::QScaleTransform *scaleTransform() const;
-    Qt3DCore::QTranslateTransform *translateTransform() const;
     Qt3DRender::QPlaneMesh *mesh() const;
 
 private:
     Qt3DRender::QPlaneMesh *m_mesh;
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QScaleTransform *m_scaleTransform;
-    Qt3DCore::QTranslateTransform *m_translateTransform;
 };
 
 #endif // PLANEENTITY_H

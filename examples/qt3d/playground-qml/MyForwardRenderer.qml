@@ -49,8 +49,8 @@ TechniqueFilter {
     // Using this as a building block for a larger framegraph would
     // allow a scene to be rendered multiple times to different
     // viewports using different cameras for e.g.
-    property alias mainCameraViewport: mainCamera.camera
-    property alias detailCameraViewport: detailCamera.camera
+    property alias mainCamera: mainCameraSelector.camera
+    property alias detailCamera: detailCameraSelector.camera
     property alias layerFilters: layerFilter.layers
     property alias clearColor: viewport.clearColor
 
@@ -68,7 +68,7 @@ TechniqueFilter {
             rect: Qt.rect(0.0, 0, 1.0, 1.0)
 
             CameraSelector {
-                id : mainCamera
+                id: mainCameraSelector
 
                 LayerFilter {
                     id: layerFilter
@@ -81,12 +81,14 @@ TechniqueFilter {
     }
 
     Viewport {
-        id : detailViewport
+        id: detailViewport
         rect: Qt.rect(0.75, 0.0, 0.25, 0.25)
 
         CameraSelector {
-            id: detailCamera
-                RenderPassFilter { includes : [Annotation {name : "Name"; value : "ColorMaterial";}] }
+            id: detailCameraSelector
+            RenderPassFilter {
+                includes: [ Annotation { name: "Name"; value: "ColorMaterial"; } ]
+            }
         }
     }
 }

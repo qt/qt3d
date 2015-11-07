@@ -38,150 +38,98 @@ import QtQuick 2.0
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-
 Entity {
-    id : rootNode
+    id: rootNode
+    components: [quadViewportFrameGraph]
 
-    CameraLens {
-        id : cameraLens
-        projectionType: CameraLens.PerspectiveProjection
-        fieldOfView: 45
-        aspectRatio: 16/9
-        nearPlane : 0.01
-        farPlane : 1000.0
-    } // cameraLens
+    QuadViewportFrameGraph {
+        id: quadViewportFrameGraph
+        topLeftCamera: cameraSet.cameras[0]
+        topRightCamera: cameraSet.cameras[1]
+        bottomLeftCamera: cameraSet.cameras[2]
+        bottomRightCamera: cameraSet.cameras[3]
+    }
 
     Entity {
-        id : sceneRoot
-        components: [frameGraph]
-        property real rotationAngle : 0
-
-        SequentialAnimation {
-            running : true
-            loops: Animation.Infinite
-            NumberAnimation {target : sceneRoot; property : "rotationAngle"; to : 360; duration : 2000;}
-        }
-
-        property var cameras : [cameraViewport1, cameraViewport2, cameraViewport3, cameraViewport4]
+        id: cameraSet
+        property var cameras: [camera1, camera2, camera3, camera4]
 
         Timer {
-            running : true
-            interval : 10000
-            repeat : true
-            property int count : 0
-            onTriggered:
-            {
-                cameraSelectorTopLeftViewport.camera = sceneRoot.cameras[count++ % 4];
-                cameraSelectorTopRightViewport.camera = sceneRoot.cameras[count % 4];
-                cameraSelectorBottomLeftViewport.camera = sceneRoot.cameras[(count + 1) % 4];
-                cameraSelectorBottomRightViewport.camera = sceneRoot.cameras[(count + 2) % 4];
+            running: true
+            interval: 10000
+            repeat: true
+            property int count: 0
+            onTriggered: {
+                quadViewportFrameGraph.topLeftCamera = cameraSet.cameras[count++ % 4];
+                quadViewportFrameGraph.topRightCamera = cameraSet.cameras[count % 4];
+                quadViewportFrameGraph.bottomLeftCamera = cameraSet.cameras[(count + 1) % 4];
+                quadViewportFrameGraph.bottomRightCamera = cameraSet.cameras[(count + 2) % 4];
             }
         }
 
-        FrameGraph {
-            id : frameGraph
+        CameraLens {
+            id : cameraLens
+            projectionType: CameraLens.PerspectiveProjection
+            fieldOfView: 45
+            aspectRatio: 16/9
+            nearPlane : 0.01
+            farPlane : 1000.0
+        }
 
-            Viewport {
-                id : mainViewport
-                rect: Qt.rect(0, 0, 1, 1)
+        SimpleCamera {
+            id: camera1
+            lens: cameraLens
+            position: Qt.vector3d( 0.0, 0.0, -20.0 )
+        }
 
-                ClearBuffer {
-                    buffers : ClearBuffer.ColorDepthBuffer
-                }
+        SimpleCamera {
+            id: camera2
+            lens: cameraLens
+            position: Qt.vector3d( 0.0, 0.0, 20.0 )
+            viewCenter: Qt.vector3d( -3.0, 0.0, 10.0 )
+        }
 
-                Viewport {
-                    id : topLeftViewport
-                    rect : Qt.rect(0, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopLeftViewport; camera : sceneRoot.cameras[0]}
-                }
+        SimpleCamera {
+            id: camera3
+            lens: cameraLens
+            position: Qt.vector3d( 0.0, 30.0, 30.0 )
+            viewCenter: Qt.vector3d( -5.0, -20.0, -10.0 )
+        }
 
-                Viewport {
-                    id : topRightViewport
-                    rect : Qt.rect(0.5, 0, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorTopRightViewport; camera : sceneRoot.cameras[1]}
-                }
+        SimpleCamera {
+            id: camera4
+            lens: cameraLens
+            position: Qt.vector3d( 0.0, 15.0, 20.0 )
+            viewCenter: Qt.vector3d( 0.0, -15.0, -20.0 )
+        }
+    }
 
-                Viewport {
-                    id : bottomLeftViewport
-                    rect : Qt.rect(0, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomLeftViewport; camera : sceneRoot.cameras[2]}
-                }
+    Entity {
+        id: sceneRoot
+        property real rotationAngle: 0
 
-                Viewport {
-                    id : bottomRightViewport
-                    rect : Qt.rect(0.5, 0.5, 0.5, 0.5)
-                    CameraSelector {id : cameraSelectorBottomRightViewport; camera : sceneRoot.cameras[3]}
-                }
-
-            } // mainViewport
-        } // frameGraph
-
-        Entity {
-            id : cameraViewport1
-            property Transform transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, -20.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
-                }
-            }
-            components : [cameraLens, transform]
+        SequentialAnimation {
+            running: true
+            loops: Animation.Infinite
+            NumberAnimation { target: sceneRoot; property: "rotationAngle"; to: 360; duration: 2000; }
         }
 
         Entity {
-            id : cameraViewport2
-            property Transform transform : Transform {
-                Rotate {
-                    angle : sceneRoot.rotationAngle
-                    axis : Qt.vector3d(0, 1, 0)
-                }
-                LookAt {
-                    position: Qt.vector3d( 0.0, 0.0, 20.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( -3.0, 0.0, 10.0 )
-                }
-            }
-            components : [cameraLens, transform]
-        }
-
-        Entity {
-            id : cameraViewport3
-            property Transform transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 0.0, 30.0, 30.0 )
-                    upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-                    viewCenter: Qt.vector3d( -5.0, -20.0, -10.0 )
-                }
-            }
-            components : [cameraLens, transform]
-        }
-
-        Entity {
-            components : [
+            components: [
                 Transform {
-                    Rotate {
-                        angle : -sceneRoot.rotationAngle
-                        axis : Qt.vector3d(0, 0, 1)
+                    matrix: {
+                        var m = Qt.matrix4x4(1, 0, 0, 0,
+                                             0, 1, 0, 0,
+                                             0, 0, 1, 0,
+                                             0, 0, 0, 1);
+                        m.rotate(-sceneRoot.rotationAngle, Qt.vector3d(0, 0, 1));
+                        return m;
                     }
                 },
                 SceneLoader {
                     source: "qrc:/assets/test_scene.dae"
-                }]
-        }
-
-        Entity {
-            id : cameraViewport4
-            property Transform transform : Transform {
-                LookAt {
-                    position: Qt.vector3d( 0.0, 15.0, 20.0 )
-                    upVector: Qt.vector3d( 0.0, 0.0, 1.0 )
-                    viewCenter: Qt.vector3d( 0.0, -15.0, -20.0 )
                 }
-            }
-            components : [cameraLens, transform]
+            ]
         }
-
-
     } // sceneRoot
-
 } // rootNode

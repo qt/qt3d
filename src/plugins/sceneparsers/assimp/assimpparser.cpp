@@ -415,7 +415,8 @@ Qt3DCore::QEntity *AssimpParser::node(aiNode *node)
 
     // Add Transformations
     const QMatrix4x4 qTransformMatrix = aiMatrix4x4ToQMatrix4x4(node->mTransformation);
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(new QMatrixTransform(qTransformMatrix));
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
+    transform->setMatrix(qTransformMatrix);
     entityNode->addComponent(transform);
 
     // Add Camera
@@ -724,12 +725,12 @@ void AssimpParser::loadCamera(uint cameraIndex)
                                    assimpCamera->mClipPlaneFar);
     camera->addComponent(lens);
 
+    QMatrix4x4 m;
+    m.lookAt(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z),
+             QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z),
+             QVector3D(assimpCamera->mUp.x, assimpCamera->mUp.y, assimpCamera->mUp.z));
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-    QLookAtTransform *lookAt = new QLookAtTransform();
-    lookAt->setPosition(QVector3D(assimpCamera->mPosition.x, assimpCamera->mPosition.y, assimpCamera->mPosition.z));
-    lookAt->setViewCenter(QVector3D(assimpCamera->mLookAt.x, assimpCamera->mLookAt.y, assimpCamera->mLookAt.z));
-    lookAt->setUpVector(QVector3D(assimpCamera->mUp.x, assimpCamera->mUp.y, assimpCamera->mUp.z));
-    transform->addTransform(lookAt);
+    transform->setMatrix(m);
     camera->addComponent(transform);
 
     m_scene->m_cameras[cameraNode] = camera;

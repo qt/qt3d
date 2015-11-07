@@ -53,19 +53,10 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
 
     // TorusMesh Transform
     //! [1]
-    Qt3DCore::QScaleTransform *torusScale = new Qt3DCore::QScaleTransform();
-    Qt3DCore::QTranslateTransform *torusTranslation = new Qt3DCore::QTranslateTransform();
-    Qt3DCore::QRotateTransform *torusRotation = new Qt3DCore::QRotateTransform();
-    Qt3DCore::QTransform *torusTransforms = new Qt3DCore::QTransform();
-
-    torusScale->setScale3D(QVector3D(2.0f, 2.0f, 2.0f));
-    torusTranslation->setTranslation(QVector3D(1.7f, 1.7f, 0.0f));
-    torusRotation->setAngleDeg(25.0f);
-    torusRotation->setAxis(QVector3D(0, 1, 0));
-
-    torusTransforms->addTransform(torusRotation);
-    torusTransforms->addTransform(torusTranslation);
-    torusTransforms->addTransform(torusScale);
+    Qt3DCore::QTransform *torusTransform = new Qt3DCore::QTransform();
+    torusTransform->setScale(2.0f);
+    torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 1.0f, 0.0f), 25.0f));
+    torusTransform->setTranslation(QVector3D(4.0f, 4.0f, 0.0f));
     //! [1]
 
     //! [2]
@@ -78,7 +69,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     m_torusEntity = new Qt3DCore::QEntity(m_rootEntity);
     m_torusEntity->addComponent(m_torus);
     m_torusEntity->addComponent(torusMaterial);
-    m_torusEntity->addComponent(torusTransforms);
+    m_torusEntity->addComponent(torusTransform);
     //! [3]
 
     // Cylinder shape data
@@ -89,19 +80,10 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     cylinder->setSlices(20);
 
     // CylinderMesh Transform
-    Qt3DCore::QScaleTransform *cylinderScale = new Qt3DCore::QScaleTransform();
-    Qt3DCore::QRotateTransform *cylinderRotation = new Qt3DCore::QRotateTransform();
-    Qt3DCore::QTranslateTransform *cylinderTranslation = new Qt3DCore::QTranslateTransform();
-    Qt3DCore::QTransform *cylinderTransforms = new Qt3DCore::QTransform();
-
-    cylinderScale->setScale3D(QVector3D(1.5f, 1.5f, 1.5f));
-    cylinderTranslation->setTranslation(QVector3D(-2.6f, 2.4f, -1.5));
-    cylinderRotation->setAngleDeg(45.0f);
-    cylinderRotation->setAxis(QVector3D(1, 0, 0));
-
-    cylinderTransforms->addTransform(cylinderTranslation);
-    cylinderTransforms->addTransform(cylinderRotation);
-    cylinderTransforms->addTransform(cylinderScale);
+    Qt3DCore::QTransform *cylinderTransform = new Qt3DCore::QTransform();
+    cylinderTransform->setScale(1.5f);
+    cylinderTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 45.0f));
+    cylinderTransform->setTranslation(QVector3D(-4.0f, 4.0f, -1.5));
 
     Qt3DRender::QPhongMaterial *cylinderMaterial = new Qt3DRender::QPhongMaterial();
     cylinderMaterial->setDiffuse(QColor(QRgb(0x928327)));
@@ -110,21 +92,15 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     m_cylinderEntity = new Qt3DCore::QEntity(m_rootEntity);
     m_cylinderEntity->addComponent(cylinder);
     m_cylinderEntity->addComponent(cylinderMaterial);
-    m_cylinderEntity->addComponent(cylinderTransforms);
+    m_cylinderEntity->addComponent(cylinderTransform);
 
     // Cuboid shape data
     Qt3DRender::QCuboidMesh *cuboid = new Qt3DRender::QCuboidMesh();
 
     // CuboidMesh Transform
-    Qt3DCore::QScaleTransform *cuboidScale = new Qt3DCore::QScaleTransform();
-    Qt3DCore::QTranslateTransform *cuboidTranslation = new Qt3DCore::QTranslateTransform();
-    Qt3DCore::QTransform *cuboidTransforms = new Qt3DCore::QTransform();
-
-    cuboidScale->setScale3D(QVector3D(4.0f, 4.0f, 4.0f));
-    cuboidTranslation->setTranslation(QVector3D(0.9f, -0.9f, 0.0f));
-
-    cuboidTransforms->addTransform(cuboidTranslation);
-    cuboidTransforms->addTransform(cuboidScale);
+    Qt3DCore::QTransform *cuboidTransform = new Qt3DCore::QTransform();
+    cuboidTransform->setScale(4.0f);
+    cuboidTransform->setTranslation(QVector3D(4.0f, -4.0f, 0.0f));
 
     Qt3DRender::QPhongMaterial *cuboidMaterial = new Qt3DRender::QPhongMaterial();
     cuboidMaterial->setDiffuse(QColor(QRgb(0x665423)));
@@ -133,7 +109,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     m_cuboidEntity = new Qt3DCore::QEntity(m_rootEntity);
     m_cuboidEntity->addComponent(cuboid);
     m_cuboidEntity->addComponent(cuboidMaterial);
-    m_cuboidEntity->addComponent(cuboidTransforms);
+    m_cuboidEntity->addComponent(cuboidTransform);
 
     // Sphere shape data
     Qt3DRender::QSphereMesh *sphereMesh = new Qt3DRender::QSphereMesh();
@@ -142,15 +118,10 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     sphereMesh->setRadius(2);
 
     // Sphere mesh transform
-    Qt3DCore::QScaleTransform *sphereScale = new Qt3DCore::QScaleTransform();
-    Qt3DCore::QTranslateTransform *sphereTranslation = new Qt3DCore::QTranslateTransform();
-    Qt3DCore::QTransform *sphereTransforms = new Qt3DCore::QTransform();
+    Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform();
 
-    sphereScale->setScale3D(QVector3D(1.3f, 1.3f, 1.3f));
-    sphereTranslation->setTranslation(QVector3D(-2.9f, -2.9f, 0.0f));
-
-    sphereTransforms->addTransform(sphereTranslation);
-    sphereTransforms->addTransform(sphereScale);
+    sphereTransform->setScale(1.3f);
+    sphereTransform->setTranslation(QVector3D(-4.0f, -4.0f, 0.0f));
 
     Qt3DRender::QPhongMaterial *sphereMaterial = new Qt3DRender::QPhongMaterial();
     sphereMaterial->setDiffuse(QColor(QRgb(0xa69929)));
@@ -159,7 +130,7 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     m_sphereEntity = new Qt3DCore::QEntity(m_rootEntity);
     m_sphereEntity->addComponent(sphereMesh);
     m_sphereEntity->addComponent(sphereMaterial);
-    m_sphereEntity->addComponent(sphereTransforms);
+    m_sphereEntity->addComponent(sphereTransform);
 }
 
 SceneModifier::~SceneModifier()

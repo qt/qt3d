@@ -34,72 +34,97 @@
 **
 ****************************************************************************/
 
-#include "boxentity.h"
+#include "entity.h"
 
-#include <qmath.h>
+#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DCore/QTransform>
+#include <QMatrix4x4>
 
-BoxEntity::BoxEntity(QNode *parent)
-    : Qt3DCore::QEntity(parent)
+Entity::Entity(Qt3DCore::QNode *parent)
+    : QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_mesh(new Qt3DRender::QCuboidMesh())
+    , m_mesh(new Qt3DRender::QCylinderMesh())
     , m_material(new Qt3DRender::QPhongMaterial())
-    , m_angle(0.0f)
-    , m_radius(1.0f)
 {
-    connect(m_material, SIGNAL(diffuseChanged()), this, SIGNAL(diffuseColorChanged()));
-    m_material->setAmbient(Qt::gray);
+    m_mesh->setRings(50.0f);
+    m_mesh->setSlices(30.0f);
+    m_mesh->setRadius(2.5f);
+    m_mesh->setLength(5.0f);
+
+    m_material->setAmbient(Qt::black);
     m_material->setSpecular(Qt::white);
     m_material->setShininess(150.0f);
 
-    addComponent(m_transform);
     addComponent(m_mesh);
+    addComponent(m_transform);
     addComponent(m_material);
 }
 
-void BoxEntity::setDiffuseColor(const QColor &diffuseColor)
+void Entity::updateTransform()
 {
-    m_material->setDiffuse(diffuseColor);
+    QMatrix4x4 m;
+    m.translate(m_position);
+    m.rotate(m_phi, QVector3D(1.0f, 0.0f, 0.0f));
+    m.rotate(m_theta, QVector3D(0.0f, 0.0f, 1.0f));
+    m_transform->setMatrix(m);
 }
 
-void BoxEntity::setAngle(float arg)
+float Entity::theta() const
 {
-    if (m_angle == arg)
-        return;
-
-    m_angle = arg;
-    emit angleChanged();
-    updateTransformation();
+    return m_theta;
 }
 
-void BoxEntity::setRadius(float arg)
+float Entity::phi() const
 {
-    if (m_radius == arg)
-        return;
-
-    m_radius = arg;
-    emit radiusChanged();
-    updateTransformation();
+    return m_phi;
 }
 
-QColor BoxEntity::diffuseColor()
+QVector3D Entity::position() const
+{
+    return m_position;
+}
+
+QColor Entity::diffuseColor() const
 {
     return m_material->diffuse();
 }
 
-float BoxEntity::angle() const
+void Entity::setTheta(float theta)
 {
-    return m_angle;
+    if (m_theta == theta)
+        return;
+
+    m_theta = theta;
+    emit thetaChanged(theta);
+    updateTransform();
 }
 
-float BoxEntity::radius() const
+void Entity::setPhi(float phi)
 {
-    return m_radius;
+    if (m_phi == phi)
+        return;
+
+    m_phi = phi;
+    emit phiChanged(phi);
+    updateTransform();
 }
 
-void BoxEntity::updateTransformation()
+void Entity::setPosition(QVector3D position)
 {
-    m_transform->setTranslation(QVector3D(qCos(m_angle) * m_radius,
-                                          1.0f,
-                                          qSin(m_angle) * m_radius));
+    if (m_position == position)
+        return;
+
+    m_position = position;
+    emit positionChanged(position);
+    updateTransform();
 }
 
+void Entity::setDiffuseColor(QColor diffuseColor)
+{
+    if (m_material->diffuse() == diffuseColor)
+        return;
+
+    m_material->setDiffuse(diffuseColor);
+    emit diffuseColorChanged(diffuseColor);
+}

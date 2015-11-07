@@ -40,20 +40,14 @@ RenderableEntity::RenderableEntity(Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent)
     , m_mesh(new Qt3DRender::QMesh())
     , m_transform(new Qt3DCore::QTransform())
-    , m_rotateTransform(new Qt3DCore::QRotateTransform())
-    , m_scaleTransform(new Qt3DCore::QScaleTransform())
-    , m_translateTransform(new Qt3DCore::QTranslateTransform())
 {
-    m_transform->addTransform(m_rotateTransform);
-    m_transform->addTransform(m_scaleTransform);
-    m_transform->addTransform(m_translateTransform);
     addComponent(m_mesh);
     addComponent(m_transform);
 }
 
 RenderableEntity::~RenderableEntity()
 {
-
+    QNode::cleanup();
 }
 
 Qt3DRender::QMesh *RenderableEntity::mesh() const
@@ -61,17 +55,7 @@ Qt3DRender::QMesh *RenderableEntity::mesh() const
     return m_mesh;
 }
 
-Qt3DCore::QScaleTransform *RenderableEntity::scaleTransform() const
+Qt3DCore::QTransform *RenderableEntity::transform() const
 {
-    return m_scaleTransform;
-}
-
-Qt3DCore::QTranslateTransform *RenderableEntity::translateTransform() const
-{
-    return m_translateTransform;
-}
-
-Qt3DCore::QRotateTransform *RenderableEntity::rotateTransform() const
-{
-    return m_rotateTransform;
+    return m_transform;
 }

@@ -40,37 +40,28 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property alias x: wineTranslate.dx
-    property alias y: wineTranslate.dy
-    property alias z: wineTranslate.dz
-    property alias angleX: rotateX.angle
-    property alias angleY: rotateY.angle
-    property alias angleZ: rotateZ.angle
-    property alias scale: wineScale.scale
+    property vector3d position: Qt.vector3d(0, 0, 0)
+    property real angleX: 0
+    property real angleY: 0
+    property real angleZ: 0
+    property real scale: 1
 
     components: [
         Transform {
-            Rotate {
-                id: rotateX
-                axis: Qt.vector3d(1, 0, 0)
-            }
-            Rotate {
-                id: rotateY
-                axis: Qt.vector3d(0, 1, 0)
-            }
-            Rotate {
-                id: rotateZ
-                axis: Qt.vector3d(0, 0, 1)
-            }
-            Translate {
-                id: wineTranslate
-            }
-            Scale {
-                id: wineScale
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(root.position);
+                m.rotate(root.angleX, Qt.vector3d(1, 0, 0))
+                m.rotate(root.angleY, Qt.vector3d(0, 1, 0))
+                m.rotate(root.angleZ, Qt.vector3d(0, 0, 1))
+                m.scale(root.scale);
+                return m;
             }
         },
-        SceneLoader
-        {
+        SceneLoader {
             source: "qrc:/assets/gltf/wine/wine.gltf"
         }
     ]

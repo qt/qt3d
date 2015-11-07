@@ -50,7 +50,7 @@ Entity {
         farPlane : 1000.0
         position: Qt.vector3d( 0.0, 20.0, -120.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 10.0, 0.0 )
     }
 
     Configuration  {
@@ -79,11 +79,7 @@ Entity {
 
     Wine {
         id: wineRack
-        scale: 1
-        x: -60.0
-        y: -20.0
-        z: 0.0
+        position: Qt.vector3d(-60.0, 0.0, 50.0)
         angleX: 180
     }
-
 }

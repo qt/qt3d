@@ -40,22 +40,29 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property alias x: translation.dx
-    property alias y: translation.dy
-    property alias z: translation.dz
-    property alias scale: scaleTransform.scale
-    property alias theta: thetaRotation.angle
-    property alias phi: phiRotation.angle
+    property real x: 0.0
+    property real y: 0.0
+    property real z: 0.0
+    property real scale: 1.0
+    property real theta: 0.0
+    property real phi: 0.0
     property Material material
 
     components: [ transform, mesh, root.material ]
 
     Transform {
         id: transform
-        Translate { id: translation }
-        Scale { id: scaleTransform }
-        Rotate{ id: thetaRotation; axis: Qt.vector3d( 1.0, 0.0, 0.0 ) }
-        Rotate{ id: phiRotation;   axis: Qt.vector3d( 0.0, 1.0, 0.0 ) }
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.translate(Qt.vector3d(root.x, root.y, root.z));
+            m.rotate(root.phi, Qt.vector3d(0, 1, 0));
+            m.rotate(root.theta, Qt.vector3d(1, 0, 0));
+            m.scale(root.scale);
+            return m;
+        }
     }
 
     Mesh {

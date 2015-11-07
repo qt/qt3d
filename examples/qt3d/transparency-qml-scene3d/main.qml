@@ -38,8 +38,7 @@ import QtQuick 2.4
 import QtQuick.Window 2.2
 import QtQuick.Scene3D 2.0
 
-Window
-{
+Window {
     visible: true
     width: 800
     height: 600

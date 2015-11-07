@@ -43,9 +43,9 @@
 #include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qrotatetransform.h>
 #include <Qt3DCore/qabstractattribute.h>
+#include <Qt3DCore/qtransform.h>
 #include <private/quick3dentity_p.h>
 #include <private/quick3dentityloader_p.h>
-#include <private/quick3dtransform_p.h>
 #include <private/quick3dconfiguration_p.h>
 #include <private/quick3dnodeinstantiator_p.h>
 #include <private/qt3dquick_global_p.h>
@@ -63,7 +63,8 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D.Core/Entity", uri, 2, 0, "Entity");
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
     qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
-    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QTransform, Qt3DCore::Quick::Quick3DTransform>("QTransform", "Qt3D.Core/Transform", uri, 2, 0, "Transform");
+    qmlRegisterType<Qt3DCore::QTransform>(uri, 2, 0, "Transform");
+
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));

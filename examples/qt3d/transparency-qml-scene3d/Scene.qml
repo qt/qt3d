@@ -72,12 +72,12 @@ Entity {
 
     Transform {
         id: sphereTransform
-        Translate { dx: 10 }
+        translation: Qt.vector3d(10, 0, 0)
     }
 
     Transform {
         id: cylinderTransform
-        Translate { dx: -10 }
+        translation: Qt.vector3d(-10, 0, 0)
     }
 
     Entity {

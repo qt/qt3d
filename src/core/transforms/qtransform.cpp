@@ -51,54 +51,16 @@ namespace Qt3DCore {
 */
 QTransformPrivate::QTransformPrivate()
     : QComponentPrivate()
-    , m_transformsDirty(false)
     , m_rotation()
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_translation()
+    , m_matrixDirty(false)
 {
 }
-
-void QTransformPrivate::_q_transformDestroyed(QObject *obj)
-{
-    QAbstractTransform *transform = static_cast<QAbstractTransform *>(obj);
-    if (m_transforms.removeOne(transform)) {
-        emit q_func()->transformsChanged();
-        _q_update();
-    }
-}
-
-void QTransformPrivate::_q_update()
-{
-    if (!m_transformsDirty)
-        m_transformsDirty = true;
-    emit q_func()->matrixChanged();
-}
-
-QMatrix4x4 QTransformPrivate::applyTransforms() const
-{
-    QMatrix4x4 matrix;
-    Q_FOREACH (const QAbstractTransform *t, m_transforms)
-        matrix = t->transformMatrix() * matrix;
-    return matrix;
-}
-
 
 QTransform::QTransform(QNode *parent)
     : QComponent(*new QTransformPrivate, parent)
 {
-}
-
-QTransform::QTransform(QList<QAbstractTransform *> transforms, QNode *parent)
-    : QComponent(*new QTransformPrivate, parent)
-{
-    Q_FOREACH (QAbstractTransform *t, transforms)
-        addTransform(t);
-}
-
-QTransform::QTransform(QAbstractTransform *transform, QNode *parent)
-    : QComponent(*new QTransformPrivate, parent)
-{
-    addTransform(transform);
 }
 
 /*! \internal */
@@ -110,9 +72,6 @@ QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
 QTransform::~QTransform()
 {
     QNode::cleanup();
-    Q_D(QTransform);
-    // boost destruction by avoiding _q_update()-s
-    d->m_transforms.clear();
 }
 
 void QTransform::copy(const QNode *ref)
@@ -125,35 +84,6 @@ void QTransform::copy(const QNode *ref)
     d_func()->m_rotation = transform->rotation();
     d_func()->m_scale = transform->scale3D();
     d_func()->m_translation = transform->translation();
-}
-
-QList<QAbstractTransform *> QTransform::transforms() const
-{
-    Q_D(const QTransform);
-    return d->m_transforms;
-}
-
-void QTransform::addTransform(QAbstractTransform *transform)
-{
-    Q_D(QTransform);
-    if (transform == Q_NULLPTR || d->m_transforms.contains(transform))
-        return;
-    d->m_transforms.append(transform);
-    QObject::connect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
-    QObject::connect(transform, SIGNAL(destroyed(QObject*)), this, SLOT(_q_transformDestroyed(QObject*)));
-    emit transformsChanged();
-    d->_q_update();
-}
-
-void QTransform::removeTransform(QAbstractTransform *transform)
-{
-    Q_D(QTransform);
-    if (!d->m_transforms.removeOne(transform))
-        return;
-    QObject::disconnect(transform, SIGNAL(transformMatrixChanged()), this, SLOT(_q_update()));
-    QObject::disconnect(transform, SIGNAL(destroyed(QObject*)), this, SLOT(_q_transformDestroyed(QObject*)));
-    emit transformsChanged();
-    d->_q_update();
 }
 
 void QTransform::setMatrix(const QMatrix4x4 &m)

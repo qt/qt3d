@@ -104,9 +104,7 @@ int main(int argc, char* argv[])
 
     // Transform
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
-    Qt3DCore::QScaleTransform *scaleTransform = new Qt3DCore::QScaleTransform;
-    scaleTransform->setScale(8.0f);
-    transform->addTransform(scaleTransform);
+    transform->setScale(8.0f);
 
     // Custom Mesh (TetraHedron)
     Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;

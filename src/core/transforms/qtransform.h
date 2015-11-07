@@ -47,8 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractTransform;
-
 class QTransformPrivate;
 class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
@@ -61,8 +59,6 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
 
 public:
     explicit QTransform(QNode *parent = 0);
-    QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
-    QTransform(QAbstractTransform *transform, QNode *parent = 0);
     ~QTransform();
 
     float scale() const;
@@ -84,27 +80,19 @@ public:
 
     QMatrix4x4 matrix() const;
 
-    QList<QAbstractTransform *> transforms() const;
-    void addTransform(QAbstractTransform *xform);
-    void removeTransform(QAbstractTransform *xform);
-
-
 public Q_SLOTS:
     void setScale(float scale);
     void setScale3D(const QVector3D &scale);
     void setRotation(const QQuaternion &rotation);
     void setTranslation(const QVector3D &translation);
-
     void setMatrix(const QMatrix4x4 &matrix);
 
 Q_SIGNALS:
-    void matrixChanged();
-    void transformsChanged();
-
     void scaleChanged();
     void scale3DChanged();
     void rotationChanged();
     void translationChanged();
+    void matrixChanged();
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
@@ -113,8 +101,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
-    Q_PRIVATE_SLOT(d_func(), void _q_transformDestroyed(QObject *obj))
-    Q_PRIVATE_SLOT(d_func(), void _q_update())
 };
 
 } // namespace Qt3DCore

@@ -40,9 +40,8 @@ import Qt3D.Render 2.0
 Entity {
     id: root
     property Material visualMaterial;
-    property alias rotateAngle: _rotate.angle
-    property alias rotateAxis: _rotate.axis
-
+    property real rotateAngle: 0.0
+    property vector3d rotateAxis: Qt.vector3d(1.0, 0.0, 0.0)
     property vector3d center;
     property vector3d normal;
     readonly property vector4d equation: Qt.vector4d(normal.x,
@@ -61,8 +60,15 @@ Entity {
 
     Transform {
         id: transform
-        Rotate { id: _rotate }
-        Translate { translation: root.center }
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.translate(root.center);
+            m.rotate(root.rotateAngle, root.rotateAxis);
+            return m;
+        }
     }
 
     property Layer layer: Layer {

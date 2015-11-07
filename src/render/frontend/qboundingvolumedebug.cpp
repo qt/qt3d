@@ -40,8 +40,6 @@
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/qspheremesh.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/qtranslatetransform.h>
-#include <Qt3DCore/qscaletransform.h>
 #include <Qt3DRender/qphongalphamaterial.h>
 #include <Qt3DRender/qlayer.h>
 
@@ -60,7 +58,6 @@ public:
         , m_debugSubtree(Q_NULLPTR)
         , m_sphereMesh(Q_NULLPTR)
         , m_transform(Q_NULLPTR)
-        , m_translate(Q_NULLPTR)
         , m_material(Q_NULLPTR)
         , m_layer(Q_NULLPTR)
         , m_bvRadius(0.0f)
@@ -74,8 +71,6 @@ public:
     Qt3DCore::QEntity *m_debugSubtree;
     Qt3DRender::QSphereMesh *m_sphereMesh;
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QTranslateTransform *m_translate;
-    Qt3DCore::QScaleTransform *m_scale;
     Qt3DRender::QMaterial *m_material;
     Qt3DRender::QLayer *m_layer;
 
@@ -152,9 +147,7 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
         m_debugSubtree = new Qt3DCore::QEntity();
         m_sphereMesh = new Qt3DRender::QSphereMesh();
         m_transform = new Qt3DCore::QTransform();
-        m_translate = new Qt3DCore::QTranslateTransform();
         m_material = new Qt3DRender::QPhongAlphaMaterial();
-        m_scale = new Qt3DCore::QScaleTransform();
         m_layer = new Qt3DRender::QLayer();
 
         static_cast<QPhongAlphaMaterial *>(m_material)->setAlpha(0.3);
@@ -162,15 +155,13 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
 
         m_layer->setNames(QStringList() << QStringLiteral("debug"));
 
-        m_transform->addTransform(m_scale);
-        m_transform->addTransform(m_translate);
         m_debugSubtree->addComponent(m_sphereMesh);
         m_debugSubtree->addComponent(m_transform);
         m_debugSubtree->addComponent(m_material);
         m_debugSubtree->addComponent(m_layer);
 
-        m_translate->setTranslation(m_bvCenter);
-        m_scale->setScale(m_bvRadius * 2.0f);
+        m_transform->setTranslation(m_bvCenter);
+        m_transform->setScale(m_bvRadius * 2.0f);
         m_sphereMesh->setRadius(0.5f);
         m_sphereMesh->setRings(100);
         m_sphereMesh->setSlices(100);
@@ -182,8 +173,8 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
         }
     } else {
         // Just update the mesh
-        m_translate->setTranslation(m_bvCenter);
-        m_scale->setScale(m_bvRadius * 2.0f);
+        m_transform->setTranslation(m_bvCenter);
+        m_transform->setScale(m_bvRadius * 2.0f);
     }
 }
 

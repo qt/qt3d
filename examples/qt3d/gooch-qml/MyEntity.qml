@@ -39,18 +39,13 @@ import Qt3D.Render 2.0
 
 Entity {
     id: root
-    property alias x: translation.dx
-    property alias y: translation.dy
-    property alias z: translation.dz
-    property alias scale: scaleTransform.scale
+    property alias position: transform.translation
+    property alias scale: transform.scale
     property alias material: gooch
     property alias source: mesh.source
 
     components: [
-        Transform {
-            Translate { id: translation }
-            Scale{ id: scaleTransform }
-        },
+        Transform { id: transform },
         Mesh { id: mesh },
         GoochMaterial { id: gooch }
     ]

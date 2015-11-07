@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.0 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.0 as QQ2
 
 import "planets.js" as Planets
 
@@ -467,12 +467,8 @@ Entity {
         }
 
         property Transform transformStarfield: Transform {
-            Scale {
-                scale: 8500000
-            }
-            Translate {
-                translation: Qt.vector3d(0, 0, 0)
-            }
+            scale: 8500000
+            translation: Qt.vector3d(0, 0, 0)
         }
 
         components: [ starfield, materialStarfield, transformStarfield ]
@@ -499,19 +495,16 @@ Entity {
         }
 
         property Transform transformSun: Transform {
-            Scale {
-                scale: sun.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: sun.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: sun.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(sun.x, sun.y, sun.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(sun.x, sun.y, sun.z));
+                m.rotate(sun.tilt, tiltAxis);
+                m.rotate(sun.roll, rollAxis);
+                m.scale(sun.r);
+                return m;
             }
         }
 
@@ -542,19 +535,16 @@ Entity {
         }
 
         property Transform transformMercury: Transform {
-            Scale {
-                scale: mercury.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: mercury.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: mercury.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(mercury.x, mercury.y, mercury.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(mercury.x, mercury.y, mercury.z));
+                m.rotate(mercury.tilt, tiltAxis);
+                m.rotate(mercury.roll, rollAxis);
+                m.scale(mercury.r);
+                return m;
             }
         }
 
@@ -581,19 +571,16 @@ Entity {
         }
 
         property Transform transformVenus: Transform {
-            Scale {
-                scale: venus.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: venus.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: venus.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(venus.x, venus.y, venus.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(venus.x, venus.y, venus.z));
+                m.rotate(venus.tilt, tiltAxis);
+                m.rotate(venus.roll, rollAxis);
+                m.scale(venus.r);
+                return m;
             }
         }
 
@@ -621,20 +608,16 @@ Entity {
         }
 
         property Transform transformEarth: Transform {
-            Scale {
-                scale: earth.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: earth.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: earth.tilt
-            }
-            Translate {
-                id: translationEarth
-                translation: Qt.vector3d(earth.x, earth.y, earth.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(earth.x, earth.y, earth.z));
+                m.rotate(earth.tilt, tiltAxis);
+                m.rotate(earth.roll, rollAxis);
+                m.scale(earth.r);
+                return m;
             }
         }
 
@@ -662,19 +645,16 @@ Entity {
         }
 
         property Transform transformEarthClouds: Transform {
-            Scale {
-                scale: earthClouds.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: earth.roll / 1.2
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: earth.tilt
-            }
-            Translate {
-                translation: translationEarth.translation
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(earthClouds.x, earthClouds.y, earthClouds.z));
+                m.rotate(earthClouds.tilt, tiltAxis);
+                m.rotate(earthClouds.roll / 1.2, rollAxis);
+                m.scale(earthClouds.r);
+                return m;
             }
         }
 
@@ -701,19 +681,16 @@ Entity {
         }
 
         property Transform transformMoon: Transform {
-            Scale {
-                scale: moon.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: moon.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: moon.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(moon.x, moon.y, moon.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(moon.x, moon.y, moon.z));
+                m.rotate(moon.tilt, tiltAxis);
+                m.rotate(moon.roll, rollAxis);
+                m.scale(moon.r);
+                return m;
             }
         }
 
@@ -740,19 +717,16 @@ Entity {
         }
 
         property Transform transformMars: Transform {
-            Scale {
-                scale: mars.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: mars.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: mars.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(mars.x, mars.y, mars.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(mars.x, mars.y, mars.z));
+                m.rotate(mars.tilt, tiltAxis);
+                m.rotate(mars.roll, rollAxis);
+                m.scale(mars.r);
+                return m;
             }
         }
 
@@ -778,19 +752,16 @@ Entity {
         }
 
         property Transform transformJupiter: Transform {
-            Scale {
-                scale: jupiter.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: jupiter.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: jupiter.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(jupiter.x, jupiter.y, jupiter.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(jupiter.x, jupiter.y, jupiter.z));
+                m.rotate(jupiter.tilt, tiltAxis);
+                m.rotate(jupiter.roll, rollAxis);
+                m.scale(jupiter.r);
+                return m;
             }
         }
 
@@ -816,20 +787,16 @@ Entity {
         }
 
         property Transform transformSaturn: Transform {
-            Scale {
-                scale: saturn.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: saturn.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: saturn.tilt
-            }
-            Translate {
-                id: translationSaturn
-                translation: Qt.vector3d(saturn.x, saturn.y, saturn.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(saturn.x, saturn.y, saturn.z));
+                m.rotate(saturn.tilt, tiltAxis);
+                m.rotate(saturn.roll, rollAxis);
+                m.scale(saturn.r);
+                return m;
             }
         }
 
@@ -857,19 +824,16 @@ Entity {
         }
 
         property Transform transformSaturnRing: Transform {
-            Scale {
-                scale: (saturnRing.innerRadius + saturnRing.outerRadius) / 1.75
-            }
-            Rotate {
-                axis: rollAxis
-                angle: saturn.roll / 10
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: saturn.tilt
-            }
-            Translate {
-                translation: translationSaturn.translation
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(saturn.x, saturn.y, saturn.z));
+                m.rotate(saturn.tilt, tiltAxis);
+                m.rotate(saturn.roll / 10, rollAxis);
+                m.scale((saturnRing.innerRadius + saturnRing.outerRadius) / 1.75);
+                return m;
             }
         }
 
@@ -895,20 +859,16 @@ Entity {
         }
 
         property Transform transformUranus: Transform {
-            Scale {
-                scale: uranus.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: uranus.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: uranus.tilt
-            }
-            Translate {
-                id: translationUranus
-                translation: Qt.vector3d(uranus.x, uranus.y, uranus.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(uranus.x, uranus.y, uranus.z));
+                m.rotate(uranus.tilt, tiltAxis);
+                m.rotate(uranus.roll, rollAxis);
+                m.scale(uranus.r);
+                return m;
             }
         }
 
@@ -936,19 +896,16 @@ Entity {
         }
 
         property Transform transformUranusRing: Transform {
-            Scale {
-                scale: (uranusRing.innerRadius + uranusRing.outerRadius) / 1.75
-            }
-            Rotate {
-                axis: rollAxis
-                angle: uranus.roll / 10
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: uranus.tilt
-            }
-            Translate {
-                translation: translationUranus.translation
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(uranus.x, uranus.y, uranus.z));
+                m.rotate(uranus.tilt, tiltAxis);
+                m.rotate(uranus.roll / 10, rollAxis);
+                m.scale((uranusRing.innerRadius + uranusRing.outerRadius) / 1.75);
+                return m;
             }
         }
 
@@ -974,19 +931,16 @@ Entity {
         }
 
         property Transform transformNeptune: Transform {
-            Scale {
-                scale: neptune.r
-            }
-            Rotate {
-                axis: rollAxis
-                angle: neptune.roll
-            }
-            Rotate {
-                axis: tiltAxis
-                angle: neptune.tilt
-            }
-            Translate {
-                translation: Qt.vector3d(neptune.x, neptune.y, neptune.z)
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.translate(Qt.vector3d(neptune.x, neptune.y, neptune.z));
+                m.rotate(neptune.tilt, tiltAxis);
+                m.rotate(neptune.roll, rollAxis);
+                m.scale(neptune.r);
+                return m;
             }
         }
 

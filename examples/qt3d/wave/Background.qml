@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1 as QQ2
 
 Entity {
     id: root
@@ -72,9 +72,13 @@ Entity {
 
         Transform {
             // Rotate the plane so that it faces us
-            Rotate {
-                axis: Qt.vector3d( 1.0, 0.0, 0.0 )
-                angle: 90
+            matrix: {
+                var m = Qt.matrix4x4(1, 0, 0, 0,
+                                     0, 1, 0, 0,
+                                     0, 0, 1, 0,
+                                     0, 0, 0, 1);
+                m.rotate(90, Qt.vector3d(1, 0, 0));
+                return m;
             }
         },
 

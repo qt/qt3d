@@ -50,9 +50,7 @@ Entity {
 
     Transform {
         id: groundTransform
-        Translate {
-            dy: -5
-        }
+        translation: Qt.vector3d(0, -5, 0)
     }
 
     components: [

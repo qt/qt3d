@@ -34,6 +34,8 @@
 **
 ****************************************************************************/
 
+#include "entity.h"
+
 #include <QGuiApplication>
 #include <window.h>
 
@@ -93,57 +95,34 @@ int main(int ac, char **av)
     frameGraph->setActiveFrameGraph(forwardRenderer);
     root->addComponent(frameGraph);
 
-
     const float radius = 100.0f;
     const int max = 1000;
     const float det = 1.0f / max;
+
     // Scene
     for (int i = 0; i < max; i++) {
-        QEntity *e = new QEntity();
-        Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-        QTranslateTransform *translation = new QTranslateTransform();
-        QRotateTransform *rotateX = new QRotateTransform();
-        QRotateTransform *rotateZ = new QRotateTransform();
-        QCylinderMesh *mesh = new QCylinderMesh();
-        QPhongMaterial *material = new QPhongMaterial();
-        mesh->setRings(50.0f);
-        mesh->setSlices(30.0f);
-        mesh->setRadius(2.5f);
-        mesh->setLength(5.0f);
-
+        Entity *e = new Entity();
         const float angle = M_PI * 2.0f * i * det * 10.;
 
-        material->setDiffuse(QColor(qFabs(qCos(angle)) * 255, 204, 75));
-        material->setAmbient(Qt::black);
-        material->setSpecular(Qt::white);
-        material->setShininess(150.0f);
+        e->setDiffuseColor(QColor(qFabs(qCos(angle)) * 255, 204, 75));
+        e->setPosition(QVector3D(radius * qCos(angle), 200.* i * det, radius * qSin(angle)));
+        e->setTheta(30.0f * i);
+        e->setPhi(45.0f * i);
 
-        translation->setTranslation(QVector3D(radius * qCos(angle), 200.* i * det, radius * qSin(angle)));
-        rotateX->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
-        rotateZ->setAxis(QVector3D(0.0f, 0.0f, 1.0f));
-        rotateX->setAngleDeg(30.0f * i);
-        rotateZ->setAngleDeg(45.0f * i);
-
-        QPropertyAnimation *animX = new QPropertyAnimation(rotateX, QByteArrayLiteral("angle"));
-        animX->setDuration(2400 * i);
+        QPropertyAnimation *animX = new QPropertyAnimation(e, QByteArrayLiteral("theta"));
+        animX->setDuration(2400 * (i + 1));
         animX->setStartValue(QVariant::fromValue(i * 30.0f));
         animX->setEndValue(QVariant::fromValue((i + 1) * 390.0f));
         animX->setLoopCount(-1);
         animX->start();
 
-        QPropertyAnimation *animZ = new QPropertyAnimation(rotateZ, QByteArrayLiteral("angle"));
-        animZ->setDuration(2400 * i);
+        QPropertyAnimation *animZ = new QPropertyAnimation(e, QByteArrayLiteral("phi"));
+        animZ->setDuration(2400 * (i + 1));
         animZ->setStartValue(QVariant::fromValue(i * 20.0f));
         animZ->setEndValue(QVariant::fromValue((i + 1) * 380.0f));
         animZ->setLoopCount(-1);
         animZ->start();
 
-        transform->addTransform(rotateX);
-        transform->addTransform(rotateZ);
-        transform->addTransform(translation);
-        e->addComponent(transform);
-        e->addComponent(mesh);
-        e->addComponent(material);
         e->setParent(root);
     }
 

@@ -39,7 +39,7 @@ import Qt3D.Render 2.0
 
 Entity {
 
-    property alias cameraPosition: cameraTranslate.translation;
+    property alias cameraPosition: transform.translation;
     property string baseName: "";
     property string extension: ".png"
 
@@ -80,7 +80,6 @@ Entity {
 
     Transform {
         id: transform
-        Translate { id: cameraTranslate }
     }
 
     Material {

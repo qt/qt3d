@@ -293,15 +293,14 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
         }
 
         // ADD MATRIX TRANSFORM COMPONENT TO ENTITY
-        if ( trans == Q_NULLPTR)
+        if (trans == Q_NULLPTR)
             trans = new Qt3DCore::QTransform;
-        trans->addTransform(new QMatrixTransform(m));
-
+        trans->setMatrix(m);
     }
 
     // Rotation quaternion
     if (jsonObj.contains(KEY_ROTATION)) {
-        if ( trans == Q_NULLPTR)
+        if (trans == Q_NULLPTR)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray quaternionValues = jsonObj.value(KEY_ROTATION).toArray();
@@ -309,41 +308,29 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
                                quaternionValues[1].toDouble(),
                                quaternionValues[2].toDouble(),
                                quaternionValues[3].toDouble());
-
-        QVector3D axis;
-        float angle;
-        quaternion.getAxisAndAngle(&axis, &angle);
-
-        Qt3DCore::QRotateTransform *rotateTransform = new Qt3DCore::QRotateTransform;
-        rotateTransform->setAxis(axis);
-        rotateTransform->setAngleDeg(angle);
-        trans->addTransform(rotateTransform);
+        trans->setRotation(quaternion);
     }
 
     // Translation
     if (jsonObj.contains(KEY_TRANSLATION)) {
-        if ( trans == Q_NULLPTR)
+        if (trans == Q_NULLPTR)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray translationValues = jsonObj.value(KEY_TRANSLATION).toArray();
-        Qt3DCore::QTranslateTransform *translateTransform = new Qt3DCore::QTranslateTransform;
-        translateTransform->setDx(translationValues[0].toDouble());
-        translateTransform->setDy(translationValues[1].toDouble());
-        translateTransform->setDz(translationValues[2].toDouble());
-        trans->addTransform(translateTransform);
+        trans->setTranslation(QVector3D(translationValues[0].toDouble(),
+                                        translationValues[1].toDouble(),
+                                        translationValues[2].toDouble()));
     }
 
     // Scale
     if (jsonObj.contains(KEY_SCALE)) {
-        if ( trans == Q_NULLPTR)
+        if (trans == Q_NULLPTR)
             trans = new Qt3DCore::QTransform;
 
         QJsonArray scaleValues = jsonObj.value(KEY_SCALE).toArray();
-        Qt3DCore::QScaleTransform *scaleTransform = new Qt3DCore::QScaleTransform;
-        scaleTransform->setScale3D(QVector3D(scaleValues[0].toDouble(),
-                                             scaleValues[1].toDouble(),
-                                             scaleValues[2].toDouble()));
-        trans->addTransform(scaleTransform);
+        trans->setScale3D(QVector3D(scaleValues[0].toDouble(),
+                                    scaleValues[1].toDouble(),
+                                    scaleValues[2].toDouble()));
     }
 
     // Add the Transform component

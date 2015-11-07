@@ -138,16 +138,14 @@ int main(int ac, char **av)
     sphereOneMaterial->setEffect(sceneEffect);
     sphereOneMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("meshColor"), QColor(Qt::blue)));
 
-    Qt3DCore::QTranslateTransform *sphereOneTranslate = new Qt3DCore::QTranslateTransform();
-    sphereOneTranslate->setDx(-10.0f);
-    sphereOneTranslate->setDy(0.0f);
-    sphereOneTranslate->setDz(25.0f);
+    Qt3DCore::QTransform *sphereOneTransform = new Qt3DCore::QTransform;
+    sphereOneTransform->setTranslation(QVector3D(-10.0f, 0.0f, 25.0f));
 
     Qt3DRender::QPointLight *light2 = new Qt3DRender::QPointLight();
     light2->setColor(Qt::white);
     light2->setIntensity(1.5f);
 
-    sphereOne->addComponent(new Qt3DCore::QTransform(sphereOneTranslate));
+    sphereOne->addComponent(sphereOneTransform);
     sphereOne->addComponent(sphereOneMaterial);
     sphereOne->addComponent(sphereMesh);
     sphereOne->addComponent(sceneLayer);
@@ -183,12 +181,11 @@ int main(int ac, char **av)
     finalEffect->gl2Technique()->addParameter(new Qt3DRender::QParameter(QStringLiteral("pointLights"), QVariant::fromValue(lightsData)));
     screenQuadMaterial->setEffect(finalEffect);
 
-    Qt3DCore::QRotateTransform *screenPlaneRotation = new Qt3DCore::QRotateTransform();
-    screenPlaneRotation->setAngleDeg(90);
-    screenPlaneRotation->setAxis(QVector3D(1.0f, 0.0f, 0.0f));
+    Qt3DCore::QTransform *screenPlaneTransform = new Qt3DCore::QTransform;
+    screenPlaneTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f, 0.0f, 0.0f), 90.0f));
 
     screenQuad->addComponent(quadLayer);
-    screenQuad->addComponent(new Qt3DCore::QTransform(screenPlaneRotation));
+    screenQuad->addComponent(screenPlaneTransform);
     screenQuad->addComponent(screenQuadMaterial);
     screenQuad->addComponent(planeMesh);
 

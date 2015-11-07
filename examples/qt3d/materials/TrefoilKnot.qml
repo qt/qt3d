@@ -52,10 +52,17 @@ Entity {
 
     Transform {
         id: transform
-        Scale { scale: root.scale }
-        Rotate{ angle: root.theta; axis: Qt.vector3d(1.0, 0.0, 0.0) }
-        Rotate{ angle: root.phi; axis: Qt.vector3d(0.0, 1.0, 0.0) }
-        Translate { dx: root.x; dy: root.y; dz: root.z }
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.translate(Qt.vector3d(root.x, root.y, root.z));
+            m.rotate(phi, Qt.vector3d(0, 1, 0));
+            m.rotate(theta, Qt.vector3d(1, 0, 0));
+            m.scale(root.scale);
+            return m;
+        }
     }
 
     Mesh {

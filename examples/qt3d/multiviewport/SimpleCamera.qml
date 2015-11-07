@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -40,34 +40,22 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property string diffuseColor: "red"
-    property string bump: "no_bumps"
-    property string specular: ""
+    property vector3d position: Qt.vector3d(0.0, 0.0, 10.0)
+    property vector3d viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
+    property vector3d upVector: Qt.vector3d(0.0, 1.0, 0.0)
+    property CameraLens lens: null
 
-    property real x: 0
-    property real y: 0
-    property real z: 0
-    property alias shininess: material.shininess
-    property real scale: 1.0
+    components: [lens, transform]
 
-    RenderableEntity {
-        id: barrel
-        source: "assets/metalbarrel/metal_barrel.obj"
-        scale: 0.03 * root.scale
-        position: Qt.vector3d(root.x, root.y, root.z)
-
-        material: NormalDiffuseSpecularMapMaterial {
-            id: material
-            diffuse: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp"
-            normal: "assets/metalbarrel/normal_" + root.bump + ".webp"
-            specular: {
-                if (root.specular !== "" )
-                    return "assets/metalbarrel/specular_" + root.specular + ".webp"
-                else
-                    return "assets/metalbarrel/specular.webp"
-            }
-
-            shininess: 10.0
+    Transform {
+        id: transform
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.lookAt(root.position, root.viewCenter, root.upVector);
+            return m;
         }
     }
 }

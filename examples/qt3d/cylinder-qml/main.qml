@@ -76,17 +76,20 @@ Entity {
 
     Transform {
         id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1.5, 1.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
+        matrix: {
+            var m = Qt.matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 0, 0, 1);
+            m.rotate(45, Qt.vector3d(1, 0, 0));
+            m.scale(1.5);
+            return m;
         }
     }
 
     Material {
         id: material
-        effect : Effect {
-        }
+        effect: Effect {}
     }
 
     Entity {

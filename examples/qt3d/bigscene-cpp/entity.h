@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,40 +34,64 @@
 **
 ****************************************************************************/
 
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
+#ifndef ENTITY_H
+#define ENTITY_H
 
-Entity {
-    id: root
+#include <Qt3DCore/QEntity>
+#include <QtGui/QColor>
+#include <QtGui/QVector3D>
 
-    property string diffuseColor: "red"
-    property string bump: "no_bumps"
-    property string specular: ""
+QT_BEGIN_NAMESPACE
 
-    property real x: 0
-    property real y: 0
-    property real z: 0
-    property alias shininess: material.shininess
-    property real scale: 1.0
-
-    RenderableEntity {
-        id: barrel
-        source: "assets/metalbarrel/metal_barrel.obj"
-        scale: 0.03 * root.scale
-        position: Qt.vector3d(root.x, root.y, root.z)
-
-        material: NormalDiffuseSpecularMapMaterial {
-            id: material
-            diffuse: "assets/metalbarrel/diffus_" + root.diffuseColor + ".webp"
-            normal: "assets/metalbarrel/normal_" + root.bump + ".webp"
-            specular: {
-                if (root.specular !== "" )
-                    return "assets/metalbarrel/specular_" + root.specular + ".webp"
-                else
-                    return "assets/metalbarrel/specular.webp"
-            }
-
-            shininess: 10.0
-        }
-    }
+namespace Qt3DCore {
+class QTransform;
 }
+
+namespace Qt3DRender {
+class QCylinderMesh;
+class QPhongMaterial;
+}
+
+QT_END_NAMESPACE
+
+class Entity : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+    Q_PROPERTY(float theta READ theta WRITE setTheta NOTIFY thetaChanged)
+    Q_PROPERTY(float phi READ phi WRITE setPhi NOTIFY phiChanged)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(QColor diffuseColor READ diffuseColor WRITE setDiffuseColor NOTIFY diffuseColorChanged)
+
+public:
+    Entity(Qt3DCore::QNode *parent = 0);
+
+    float theta() const;
+    float phi() const;
+    QVector3D position() const;
+    QColor diffuseColor() const;
+
+public slots:
+    void setTheta(float theta);
+    void setPhi(float phi);
+    void setPosition(QVector3D position);
+    void setDiffuseColor(QColor diffuseColor);
+
+signals:
+    void thetaChanged(float theta);
+    void phiChanged(float phi);
+    void positionChanged(QVector3D position);
+    void diffuseColorChanged(QColor diffuseColor);
+
+private:
+    void updateTransform();
+
+private:
+    Qt3DCore::QTransform *m_transform;
+    Qt3DRender::QCylinderMesh *m_mesh;
+    Qt3DRender::QPhongMaterial *m_material;
+    float m_theta;
+    float m_phi;
+    QVector3D m_position;
+};
+
+#endif // ENTITY_H

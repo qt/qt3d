@@ -38,14 +38,12 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Entity {
-
     components: FrameGraph {
         ForwardRenderer {}
     }
 
-
     Entity {
-        components : [
+        components: [
             PlaneMesh {
                 width: 2.0
                 height: 2.0
@@ -53,14 +51,17 @@ Entity {
             },
 
             Transform { // Rotate the plane so that it faces us
-                Rotate {
-                    axis: Qt.vector3d(1.0, 0.0, 0.0)
-                    angle: 90
+                matrix: {
+                    var m = Qt.matrix4x4(1, 0, 0, 0,
+                                         0, 1, 0, 0,
+                                         0, 0, 1, 0,
+                                         0, 0, 0, 1);
+                    m.rotate(90, Qt.vector3d(1.0, 0.0, 0.0));
+                    return m;
                 }
             },
 
-            Material
-            {
+            Material {
                 parameters: Parameter { name: "winsize"; value: Qt.vector2d(_window.width, _window.height) }
 
                 effect: Effect {
@@ -77,7 +78,6 @@ Entity {
                             shaderProgram: ShaderProgram {
                                 vertexShaderCode: loadSource("qrc:/plasma.vert")
                                 fragmentShaderCode: loadSource("qrc:/plasma.frag")
-
                             }
                         }
                     }
