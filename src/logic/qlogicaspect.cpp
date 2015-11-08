@@ -71,7 +71,6 @@ QLogicAspectPrivate::QLogicAspectPrivate()
     , m_executor(new Logic::Executor)
     , m_callbackJob(new Logic::CallbackJob)
 {
-    m_aspectType = QAbstractAspect::AspectOther;
     m_callbackJob->setManager(m_manager.data());
     m_manager->setExecutor(m_executor.data());
 }

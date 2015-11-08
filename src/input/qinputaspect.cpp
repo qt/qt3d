@@ -73,7 +73,6 @@ QInputAspectPrivate::QInputAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
     , m_cameraController(new Input::CameraController())
 {
-    m_aspectType = QAbstractAspect::AspectOther;
 }
 
 /*!

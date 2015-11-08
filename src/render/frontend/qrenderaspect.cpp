@@ -147,7 +147,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_pickBoundingVolumeJob(new Render::PickBoundingVolumeJob(m_renderer))
 {
     initResources();
-    m_aspectType = Qt3DCore::QAbstractAspect::AspectRenderer;
 
     // Create jobs to update transforms and bounding volumes
     // We can only update bounding volumes once all world transforms are known

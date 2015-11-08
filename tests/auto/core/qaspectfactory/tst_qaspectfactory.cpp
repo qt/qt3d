@@ -46,7 +46,7 @@ class ClassName : public QAbstractAspect \
     Q_OBJECT \
 public: \
     explicit ClassName(QObject *parent = 0) \
-        : QAbstractAspect(QAbstractAspect::AspectOther, parent) {} \
+        : QAbstractAspect(parent) {} \
 \
 private: \
     void setRootEntity(QEntity *) Q_DECL_OVERRIDE {} \

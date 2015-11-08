@@ -75,11 +75,9 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
     \inmodule Qt3DCore
     \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
-QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
+QAbstractAspect::QAbstractAspect(QObject *parent)
     : QObject(*new QAbstractAspectPrivate, parent)
 {
-    Q_D(QAbstractAspect);
-    d->m_aspectType = aspectType;
 }
 
 /*! \internal */
@@ -161,12 +159,6 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
             functor->destroy(frontend->id());
         }
     }
-}
-
-QAbstractAspect::AspectType QAbstractAspect::aspectType() const
-{
-    Q_D(const QAbstractAspect);
-    return d->m_aspectType;
 }
 
 void QAbstractAspect::registerAspect(QEntity *rootObject)

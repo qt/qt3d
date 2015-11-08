@@ -79,9 +79,7 @@ public:
         AspectOther
     };
 
-    explicit QAbstractAspect(AspectType aspectType, QObject *parent = 0);
-
-    AspectType aspectType() const;
+    explicit QAbstractAspect(QObject *parent = 0);
 
     void registerAspect(QEntity *rootObject);
 
