@@ -45,9 +45,6 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QTranslateTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DRender/QParameter>

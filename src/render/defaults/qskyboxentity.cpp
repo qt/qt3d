@@ -49,7 +49,6 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qshaderprogram.h>
-#include <Qt3DCore/qtranslatetransform.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -46,11 +46,7 @@
 
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QMatrixTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QScaleTransform>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QTranslateTransform>
 
 #include <Qt3DCore/private/qurlhelper_p.h>
 

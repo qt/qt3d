@@ -49,7 +49,6 @@
 //
 
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 #include <private/qentity_p.h>
 

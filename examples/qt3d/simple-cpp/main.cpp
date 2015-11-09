@@ -40,10 +40,6 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QLookAtTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DCore/QAspectEngine>
 
 #include <Qt3DInput/QInputAspect>
@@ -52,7 +48,6 @@
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QPhongMaterial>
-
 #include <Qt3DRender/QCylinderMesh>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>

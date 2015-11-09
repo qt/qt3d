@@ -41,6 +41,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qtransform.h>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -52,13 +53,6 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qsceneloader.h>
-
-#include <Qt3DCore/qtranslatetransform.h>
-#include <Qt3DCore/qmatrixtransform.h>
-#include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DCore/qlookattransform.h>
-#include <Qt3DCore/qtransform.h>
-
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/qtechniquefilter.h>

@@ -38,8 +38,6 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/qlookattransform.h>
-#include <Qt3DCore/qmatrixtransform.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DRender/qeffect.h>

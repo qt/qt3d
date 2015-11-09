@@ -36,7 +36,6 @@
 
 #include "qtransform.h"
 #include "qtransform_p.h"
-#include "qabstracttransform_p.h"
 #include "qmath3d_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>

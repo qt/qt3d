@@ -40,10 +40,7 @@
 #include <QtCore/QObject>
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscaletransform.h>
-#include <Qt3DCore/qrotatetransform.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/QTranslateTransform>
 
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QCylinderMesh>

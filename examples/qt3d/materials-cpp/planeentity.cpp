@@ -38,8 +38,6 @@
 
 #include <Qt3DRender/QPlaneMesh>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QTranslateTransform>
 
 PlaneEntity::PlaneEntity(Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(new Qt3DCore::QEntity(parent))

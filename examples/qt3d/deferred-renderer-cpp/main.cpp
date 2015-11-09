@@ -49,9 +49,6 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QLookAtTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QWindow>
 #include <Qt3DCore/qaspectengine.h>
