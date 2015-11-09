@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -112,7 +113,7 @@ class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Renderer
+class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer
 {
 public:
     explicit Renderer(QRenderAspect::RenderType type);

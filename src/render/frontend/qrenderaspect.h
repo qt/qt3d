@@ -77,8 +77,9 @@ public:
 
 protected:
     void registerBackendTypes();
+    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
+    Q_DECLARE_PRIVATE(QRenderAspect)
 
-private:
     void setRootEntity(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
@@ -87,9 +88,7 @@ private:
 
     void visitNode(Qt3DCore::QNode *node);
 
-    Q_DECLARE_PRIVATE(QRenderAspect)
-    QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
-
+private:
     friend class Render::Renderer;
 };
 

@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,7 +122,7 @@ class GeometryRenderer;
 class ObjectPicker;
 class BoundingVolumeDebug;
 
-class Q_AUTOTEST_EXPORT NodeManagers
+class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
 public:
     NodeManagers();
@@ -225,91 +226,91 @@ private:
 // Specializations
 
 template<>
-CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT CameraManager *NodeManagers::manager<CameraLens>() const Q_DECL_NOEXCEPT;
 
 template<>
-EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT EntityManager *NodeManagers::manager<Entity>() const Q_DECL_NOEXCEPT;
 
 template<>
-MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT MaterialManager *NodeManagers::manager<Material>() const Q_DECL_NOEXCEPT;
 
 template<>
-MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT MatrixManager *NodeManagers::manager<QMatrix4x4*>() const Q_DECL_NOEXCEPT;
 
 template<>
-VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT VAOManager *NodeManagers::manager<QOpenGLVertexArrayObject*>() const Q_DECL_NOEXCEPT;
 
 template<>
-ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT ShaderManager *NodeManagers::manager<Shader>() const Q_DECL_NOEXCEPT;
 
 template<>
-TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TechniqueManager *NodeManagers::manager<Technique>() const Q_DECL_NOEXCEPT;
 
 template<>
-EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT EffectManager *NodeManagers::manager<Effect>() const Q_DECL_NOEXCEPT;
 
 template<>
-RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT RenderPassManager *NodeManagers::manager<RenderPass>() const Q_DECL_NOEXCEPT;
 
 template<>
-TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TextureManager *NodeManagers::manager<Texture>() const Q_DECL_NOEXCEPT;
 
 template<>
-TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TextureDataManager *NodeManagers::manager<QTexImageData>() const Q_DECL_NOEXCEPT;
 
 template<>
-LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
 
 template<>
-CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT;
 
 template<>
-FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT;
 
 template<>
-TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TransformManager *NodeManagers::manager<Transform>() const Q_DECL_NOEXCEPT;
 
 template<>
-RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT RenderTargetManager *NodeManagers::manager<RenderTarget>() const Q_DECL_NOEXCEPT;
 
 template<>
-SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT;
 
 template<>
-AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT;
 
 template<>
-SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT;
 
 template<>
-ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT ParameterManager *NodeManagers::manager<Parameter>() const Q_DECL_NOEXCEPT;
 
 template<>
-ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT;
 
 template<>
-UBOManager *NodeManagers::manager<UniformBuffer>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT UBOManager *NodeManagers::manager<UniformBuffer>() const Q_DECL_NOEXCEPT;
 
 template<>
-TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOEXCEPT;
 
 template<>
-BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT BufferManager *NodeManagers::manager<Buffer>() const Q_DECL_NOEXCEPT;
 
 template<>
-AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT AttributeManager *NodeManagers::manager<Attribute>() const Q_DECL_NOEXCEPT;
 
 template<>
-GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT GeometryManager *NodeManagers::manager<Geometry>() const Q_DECL_NOEXCEPT;
 
 template<>
-GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT GeometryRendererManager *NodeManagers::manager<GeometryRenderer>() const Q_DECL_NOEXCEPT;
 
 template<>
-ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<ObjectPicker>() const Q_DECL_NOEXCEPT;
 
 template<>
-BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
 
 } // Render
 

@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ namespace Render {
 class Renderer;
 class Entity;
 
-class Q_AUTOTEST_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
     FramePreparationJob(Renderer *renderer);

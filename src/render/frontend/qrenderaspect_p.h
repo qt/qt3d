@@ -70,6 +70,7 @@ class Renderer;
 
 class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
+public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);
 
     Q_DECLARE_PUBLIC(QRenderAspect)
