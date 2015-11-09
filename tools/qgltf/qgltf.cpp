@@ -1195,10 +1195,10 @@ void Exporter::copyExternalTextures(const QString &inputFilename)
         foreach (const QString &textureFilename, m_importer->externalTextures()) {
             QString dst = opts.outDir + textureFilename;
             QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
+            m_files.insert(QFileInfo(dst).fileName());
             if (QFileInfo(src).absolutePath() != QFileInfo(dst).absolutePath()) {
                 if (opts.showLog)
                     qDebug().noquote() << "Copying" << src << "to" << dst;
-                m_files.insert(QFileInfo(dst).fileName());
                 QFile(src).copy(dst);
             }
         }
