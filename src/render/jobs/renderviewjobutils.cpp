@@ -96,11 +96,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());
 
-                            //To get the eyePostion of the camera, we need to use the inverse of the
+                            //To get the eyePosition of the camera, we need to use the inverse of the
                             //camera's worldTransform matrix.
                             const QMatrix4x4 inverseWorldTransform = camNode->worldTransform()->inverted();
-                            const QVector3D eyePostion(inverseWorldTransform.column(3));
-                            rv->setEyePosition(eyePostion);
+                            const QVector3D eyePosition(inverseWorldTransform.column(3));
+                            rv->setEyePosition(eyePosition);
                         }
                     }
                     break;
