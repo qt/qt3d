@@ -65,8 +65,9 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
-            QEntity *scene = e->value().value<QEntity *>();
-            // TO DO: We should send a QNodePtr so that it is release automatically
+            // We receive a QNodePtr so that it is released automatically
+            QNodePtr nodePtr = e->value().value<QNodePtr>();
+            QEntity *scene = static_cast<QEntity *>(nodePtr.data());
             if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
                 QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
                 if (entities.size() > 1) // TO DO: QComponent shareable property
