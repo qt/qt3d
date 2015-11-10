@@ -5,7 +5,7 @@ SOURCES = qgltf.cpp
 config_assimp:!cross_compile {
     !contains(QT_CONFIG, no-pkg-config) {
         CONFIG += link_pkgconfig
-        PKGCONFIG += assimp
+        PKGCONFIG_PRIVATE += assimp
     } else {
         LIBS += -lassimp
     }
