@@ -50,6 +50,7 @@
 #include <Qt3DCore/qaxisalignedboundingbox.h>
 
 #include <QtCore/qmath.h>
+#include <QtConcurrent/QtConcurrent>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,18 +59,25 @@ namespace Render {
 
 namespace {
 
+void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node);
+
+struct UpdateBoundFunctor {
+    NodeManagers *manager;
+
+    void operator ()(Qt3DRender::Render::Entity *node)
+    {
+        calculateLocalBoundingVolume(manager, node);
+    }
+};
+
 void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 {
-    // TO DO: How do we set the object picker to dirty when the buffer
-    // referenced by the pickVolumeAttribute changes or has its internal buffer
-    // data changed
+    // The Bounding volume will only be computed if the position Buffer
+    // isDirty
 
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
     if (gRenderer) {
         Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
-
-        // TO DO: We must not recompute this every frame
-        // Find a way to detect that the bounding volume attribute or its buffer have changed
 
         if (geom) {
             Qt3DRender::Render::Attribute *pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
@@ -100,28 +108,47 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     return;
                 }
 
-                const QByteArray buffer = buf->data();
-                const char *rawBuffer = buffer.constData();
-                rawBuffer += pickVolumeAttribute->byteOffset();
-                const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
-                QVector<QVector3D> vertices(pickVolumeAttribute->count());
+                // Buf will be set to not dirty once it's loaded
+                // in a job executed after this one
+                // We need to recompute the bounding volume
+                // If anything in the GeometryRenderer has changed
+                if (buf->isDirty() ||
+                        node->isBoundingVolumeDirty() ||
+                        pickVolumeAttribute->isDirty() ||
+                        geom->isDirty() ||
+                        gRenderer->isDirty()) {
 
-                for (int c = 0, vC = vertices.size(); c < vC; ++c) {
-                    QVector3D v;
-                    const float *fptr = reinterpret_cast<const float*>(rawBuffer);
-                    for (uint i = 0, m = qMin(pickVolumeAttribute->dataSize(), 3U); i < m; ++i)
-                        v[i] = fptr[i];
-                    vertices[c] = v;
-                    rawBuffer += stride;
+                    const QByteArray buffer = buf->data();
+                    const char *rawBuffer = buffer.constData();
+                    rawBuffer += pickVolumeAttribute->byteOffset();
+                    const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
+                    QVector<QVector3D> vertices(pickVolumeAttribute->count());
+
+                    for (int c = 0, vC = vertices.size(); c < vC; ++c) {
+                        QVector3D v;
+                        const float *fptr = reinterpret_cast<const float*>(rawBuffer);
+                        for (uint i = 0, m = qMin(pickVolumeAttribute->dataSize(), 3U); i < m; ++i)
+                            v[i] = fptr[i];
+                        vertices[c] = v;
+                        rawBuffer += stride;
+                    }
+
+                    node->localBoundingVolume()->initializeFromPoints(vertices);
+                    node->unsetBoundingVolumeDirty();
                 }
-
-                node->localBoundingVolume()->initializeFromPoints(vertices);
             }
         }
     }
 
-    Q_FOREACH (Entity *child, node->children())
-        calculateLocalBoundingVolume(manager, child);
+    const QVector<Qt3DRender::Render::Entity *> children = node->children();
+    if (children.size() > 1) {
+        UpdateBoundFunctor functor;
+        functor.manager = manager;
+        QtConcurrent::blockingMap(children, functor);
+    } else {
+        Q_FOREACH (Entity *child, node->children())
+            calculateLocalBoundingVolume(manager, child);
+    }
 }
 
 } // anonymous
