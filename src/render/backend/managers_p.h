@@ -123,7 +123,10 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public Qt3DCore::QResourceManager<Entity, Qt3DCore::QNodeId, 16>
+class Q_AUTOTEST_EXPORT EntityManager : public Qt3DCore::QResourceManager<
+        Entity,
+        Qt3DCore::QNodeId,
+        16>
 {
 public:
     EntityManager() {}
