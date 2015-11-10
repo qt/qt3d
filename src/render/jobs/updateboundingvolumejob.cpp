@@ -56,13 +56,12 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
     Q_FOREACH (Entity *c, node->children())
         expandWorldBoundingVolume(c);
 
-    // Then traverse to root
+    // Then traverse back from leaf to root
     // Initialize parent bounding volume to be equal to that of the first child
-    Qt3DRender::Render::Entity *parentNode = node->parent();
-    if (parentNode) {
-        Qt3DRender::Render::Sphere *parentBoundingVolume = parentNode->worldBoundingVolumeWithChildren();
-        Qt3DRender::Render::Sphere *nodeBoundingVolume = node->worldBoundingVolumeWithChildren();
-        parentBoundingVolume->expandToContain(*nodeBoundingVolume);
+    if (node->hasChildren()) {
+        Qt3DRender::Render::Sphere *parentBoundingVolume = node->worldBoundingVolumeWithChildren();
+        Q_FOREACH (Entity *c, node->children())
+            parentBoundingVolume->expandToContain(*c->worldBoundingVolumeWithChildren());
     }
 }
 
