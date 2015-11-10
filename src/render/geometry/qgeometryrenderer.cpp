@@ -261,7 +261,8 @@ void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     Q_D(QGeometryRenderer);
     QScenePropertyChangePtr change = qSharedPointerCast<QScenePropertyChange>(e);
     if (change->type() == NodeUpdated && change->propertyName() == QByteArrayLiteral("geometry")) {
-        QGeometry *backendGeometry = change->value().value<QGeometry *>();
+        QNodePtr nodePtr = change->value().value<QNodePtr>();
+        QGeometry *backendGeometry = static_cast<QGeometry *>(nodePtr.data());
         QGeometry *frontendGeometry = static_cast<QGeometry *>(QNode::clone(backendGeometry));
         if (frontendGeometry != Q_NULLPTR)
             d->insertTree(frontendGeometry);
