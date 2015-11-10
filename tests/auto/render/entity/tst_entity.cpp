@@ -110,6 +110,7 @@ private slots:
         QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(!entity.isBoundingVolumeDirty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
@@ -128,6 +129,7 @@ private slots:
         QVERIFY(!entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(entity.isBoundingVolumeDirty());
 
         // WHEN
         entity.cleanup();
@@ -141,6 +143,7 @@ private slots:
         QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(!entity.isBoundingVolumeDirty());
     }
 
     void shouldHandleSingleComponentEvents_data()
