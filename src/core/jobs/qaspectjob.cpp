@@ -41,6 +41,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+namespace {
+
+bool isDependencyNull(const QWeakPointer<QAspectJob> &dep)
+{
+    return dep.isNull();
+}
+
+} // anonymous
+
 /*!
     \class Qt3DCore::QAspectJobPrivate
     \internal
@@ -76,6 +85,17 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
     Q_D(const QAspectJob);
     return d->m_dependencies;
 }
+
+void QAspectJob::clearNullDependencies()
+{
+    Q_D(QAspectJob);
+    d->m_dependencies.erase(std::remove_if(d->m_dependencies.begin(),
+                                           d->m_dependencies.end(),
+                                           isDependencyNull),
+                            d->m_dependencies.end());
+}
+
+
 
 } // namespace Qt3DCore
 
