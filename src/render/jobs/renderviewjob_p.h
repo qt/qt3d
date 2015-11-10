@@ -62,7 +62,7 @@ namespace Render {
 class Renderer;
 class FrameGraphNode;
 
-class RenderViewJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT RenderViewJob : public Qt3DCore::QAspectJob
 {
 public:
     RenderViewJob()
