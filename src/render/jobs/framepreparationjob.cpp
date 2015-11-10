@@ -79,6 +79,10 @@ void FramePreparationJob::parseNodeTree(Entity *node)
     Q_FOREACH (ShaderData *r, shadersData) {
         r->updateTransformedProperties(*node->worldTransform());
     }
+
+    const QVector<Entity *> children = node->children();
+    Q_FOREACH (Entity *c, children)
+        parseNodeTree(c);
 }
 
 } // namespace Render
