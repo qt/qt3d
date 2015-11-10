@@ -3,6 +3,7 @@
 }
 
 QT += qml quick
+CONFIG += resources_big
 
 SOURCES += \
     main.cpp
