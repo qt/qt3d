@@ -99,6 +99,7 @@ public:
     void removeChildHandle(HEntity childHandle);
     QVector<HEntity> childrenHandles() const { return m_childrenHandles; }
     QVector<Entity *> children() const;
+    bool hasChildren() const { return !m_childrenHandles.empty(); }
 
     QMatrix4x4 *worldTransform();
     const QMatrix4x4 *worldTransform() const;
