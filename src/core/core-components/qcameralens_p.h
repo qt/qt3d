@@ -67,8 +67,8 @@ public:
     inline void updateProjectionMatrix()
     {
         switch (m_projectionType) {
-        case QCameraLens::OrthogonalProjection:
-            updateOrthogonalProjection();
+        case QCameraLens::OrthographicProjection:
+            updateOrthographicProjection();
             break;
         case QCameraLens::PerspectiveProjection:
             updatePerpectiveProjection();
@@ -105,7 +105,7 @@ private:
         Q_EMIT q->projectionMatrixChanged();
     }
 
-    inline void updateOrthogonalProjection()
+    inline void updateOrthographicProjection()
     {
         Q_Q(QCameraLens);
         m_projectionMatrix.setToIdentity();

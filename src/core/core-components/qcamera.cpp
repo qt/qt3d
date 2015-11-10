@@ -277,7 +277,7 @@ void QCamera::setProjectionType(QCameraLens::ProjectionType type)
 
     Holds the type of the camera projection (orthogonal or perspective).
 
-    \value CameraLens.OrthogonalProjection Orthogonal projection
+    \value CameraLens.OrthographicProjection Orthographic projection
     \value CameraLens.PerspectiveProjection Perspective projection
 */
 
