@@ -49,7 +49,7 @@ namespace Render {
 LoadBufferJob::LoadBufferJob(const HBuffer &handle)
     : QAspectJob()
     , m_handle(handle)
-    , m_renderer(Q_NULLPTR)
+    , m_nodeManagers(Q_NULLPTR)
 {
 }
 
@@ -61,7 +61,7 @@ void LoadBufferJob::run()
 {
     // Let's leave it for the moment until this has been properly tested
     qDebug() << Q_FUNC_INFO;
-    Buffer *buffer = m_renderer->bufferManager()->data(m_handle);
+    Buffer *buffer = m_nodeManagers->data<Buffer, BufferManager>(m_handle);
     buffer->executeFunctor();
 }
 

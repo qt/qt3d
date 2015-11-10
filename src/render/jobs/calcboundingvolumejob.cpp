@@ -37,7 +37,7 @@
 
 #include "calcboundingvolumejob_p.h"
 
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -58,7 +58,7 @@ namespace Render {
 
 namespace {
 
-void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
+void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 {
     // TO DO: How do we set the object picker to dirty when the buffer
     // referenced by the pickVolumeAttribute changes or has its internal buffer
@@ -66,18 +66,18 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
 
     GeometryRenderer *gRenderer = node->renderComponent<GeometryRenderer>();
     if (gRenderer) {
-        Geometry *geom = renderer->geometryManager()->lookupResource(gRenderer->geometryId());
+        Geometry *geom = manager->lookupResource<Geometry, GeometryManager>(gRenderer->geometryId());
 
         // TO DO: We must not recompute this every frame
         // Find a way to detect that the bounding volume attribute or its buffer have changed
 
         if (geom) {
-            Qt3DRender::Render::Attribute *pickVolumeAttribute = renderer->attributeManager()->lookupResource(geom->boundingPositionAttribute());
+            Qt3DRender::Render::Attribute *pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(geom->boundingPositionAttribute());
 
             // Use the default position attribute if attribute is null
             if (!pickVolumeAttribute) {
                 Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
-                    pickVolumeAttribute = renderer->attributeManager()->lookupResource(attrId);
+                    pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
                     if (pickVolumeAttribute &&
                             pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
                         break;
@@ -93,7 +93,7 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
                     return;
                 }
 
-                Buffer *buf = renderer->bufferManager()->lookupResource(pickVolumeAttribute->bufferId());
+                Buffer *buf = manager->lookupResource<Buffer, BufferManager>(pickVolumeAttribute->bufferId());
                 // No point in continuing if the positionAttribute doesn't have a suitable buffer
                 if (!buf) {
                     qWarning() << "ObjectPicker pickVolume Attribute not referencing a valid buffer";
@@ -121,20 +121,20 @@ void calculateLocalBoundingVolume(Renderer *renderer, Entity *node)
     }
 
     Q_FOREACH (Entity *child, node->children())
-        calculateLocalBoundingVolume(renderer, child);
+        calculateLocalBoundingVolume(manager, child);
 }
 
 } // anonymous
 
-CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(Renderer *renderer)
-    : m_renderer(renderer),
+CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(NodeManagers *manager)
+    : m_manager(manager),
       m_node(Q_NULLPTR)
 {
 }
 
 void CalculateBoundingVolumeJob::run()
 {
-    calculateLocalBoundingVolume(m_renderer, m_node);
+    calculateLocalBoundingVolume(m_manager, m_node);
 }
 
 void CalculateBoundingVolumeJob::setRoot(Entity *node)

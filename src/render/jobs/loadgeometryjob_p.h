@@ -58,7 +58,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 
 class LoadGeometryJob : public Qt3DCore::QAspectJob
 {
@@ -66,12 +66,12 @@ public:
     explicit LoadGeometryJob(const HGeometryRenderer &handle);
     ~LoadGeometryJob();
 
-    void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    void setNodeManagers(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
 protected:
     void run() Q_DECL_OVERRIDE;
     HGeometryRenderer m_handle;
-    Renderer *m_renderer;
+    NodeManagers *m_nodeManagers;
 };
 
 typedef QSharedPointer<LoadGeometryJob> LoadGeometryJobPtr;

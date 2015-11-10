@@ -68,6 +68,7 @@ namespace Render {
 
 class Entity;
 class Renderer;
+class NodeManagers;
 
 class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public Qt3DCore::QAspectJob, public Qt3DCore::QBoundingVolumeProvider
 {
@@ -86,6 +87,7 @@ protected:
 
 private:
     Renderer *m_renderer;
+    NodeManagers *m_manager;
     Entity *m_node;
     QList<QMouseEvent> m_mouseEvents;
 

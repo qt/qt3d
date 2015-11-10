@@ -74,6 +74,7 @@ namespace Render {
 
 class Sphere;
 class Renderer;
+class NodeManagers;
 
 class Q_AUTOTEST_EXPORT Entity : public Qt3DCore::QBackendNode
 {
@@ -83,7 +84,7 @@ public:
     void cleanup();
 
     void setParentHandle(HEntity parentHandle);
-    void setRenderer(Renderer *renderer);
+    void setNodeManagers(NodeManagers *manager);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
@@ -148,19 +149,7 @@ public:
     }
 
 private:
-
-    template<class Frontend, class Backend, class Manager>
-    void createRenderComponentHelper(Frontend *frontend, Manager *manager)
-    {
-        // We index using the Frontend id
-        if (!manager->contains(frontend->id())) {
-            Backend *backend = manager->getOrCreateResource(frontend->id());
-            backend->setRenderer(m_renderer);
-            backend->setPeer(frontend);
-        }
-    }
-
-    Renderer *m_renderer;
+    NodeManagers *m_nodeManagers;
     HEntity m_handle;
     HEntity m_parentHandle;
     QVector<HEntity > m_childrenHandles;
@@ -262,13 +251,13 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>()
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
-    explicit RenderEntityFunctor(Renderer *renderer);
+    explicit RenderEntityFunctor(NodeManagers *manager);
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
+    NodeManagers *m_nodeManagers;
 };
 
 } // namespace Render

@@ -36,7 +36,7 @@
 
 #include "entity_p.h"
 #include <Qt3DRender/private/managers_p.h>
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qabstractlight.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qmaterial.h>
@@ -66,7 +66,7 @@ namespace Render {
 
 Entity::Entity()
     : QBackendNode()
-    , m_renderer(Q_NULLPTR)
+    , m_nodeManagers(Q_NULLPTR)
     , m_enabled(true)
 {
 }
@@ -78,15 +78,15 @@ Entity::~Entity()
 
 void Entity::cleanup()
 {
-    if (m_renderer != Q_NULLPTR) {
+    if (m_nodeManagers != Q_NULLPTR) {
         Entity *parentEntity = parent();
         if (parentEntity != Q_NULLPTR)
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
-            m_renderer->renderNodesManager()->release(m_childrenHandles[i]);
+            m_nodeManagers->renderNodesManager()->release(m_childrenHandles[i]);
         // We need to release using peerUuid otherwise the handle will be cleared
         // but would still remain in the Id to Handle table
-        m_renderer->worldMatrixManager()->releaseResource(peerUuid());
+        m_nodeManagers->worldMatrixManager()->releaseResource(peerUuid());
 
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
@@ -111,20 +111,20 @@ void Entity::cleanup()
 
 void Entity::setParentHandle(HEntity parentHandle)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(m_nodeManagers);
     // Remove ourselves from previous parent children list
-    Entity *parent = m_renderer->renderNodesManager()->data(parentHandle);
+    Entity *parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != Q_NULLPTR && parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.remove(m_handle);
     m_parentHandle = parentHandle;
-    parent = m_renderer->renderNodesManager()->data(parentHandle);
+    parent = m_nodeManagers->renderNodesManager()->data(parentHandle);
     if (parent != Q_NULLPTR && !parent->m_childrenHandles.contains(m_handle))
         parent->m_childrenHandles.append(m_handle);
 }
 
-void Entity::setRenderer(Renderer *renderer)
+void Entity::setNodeManagers(NodeManagers *manager)
 {
-    m_renderer = renderer;
+    m_nodeManagers = manager;
 }
 
 void Entity::setHandle(HEntity handle)
@@ -138,7 +138,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     const QNodeId parentEntityId = entity->parentEntityId();
 
     m_objectName = peer->objectName();
-    m_worldTransform = m_renderer->worldMatrixManager()->getOrAcquireHandle(peerUuid());
+    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerUuid());
 
     // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
     m_transformComponent = QNodeId();
@@ -157,7 +157,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
         addComponent(comp);
 
     if (!parentEntityId.isNull()) {
-        setParentHandle(m_renderer->renderNodesManager()->lookupHandle(parentEntityId));
+        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
     } else {
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerUuid();
     }
@@ -208,14 +208,14 @@ void Entity::dump() const
 
 Entity *Entity::parent() const
 {
-    return m_renderer->renderNodesManager()->data(m_parentHandle);
+    return m_nodeManagers->renderNodesManager()->data(m_parentHandle);
 }
 
 void Entity::appendChildHandle(HEntity childHandle)
 {
     if (!m_childrenHandles.contains(childHandle)) {
         m_childrenHandles.append(childHandle);
-        Entity *child = m_renderer->renderNodesManager()->data(childHandle);
+        Entity *child = m_nodeManagers->renderNodesManager()->data(childHandle);
         if (child != Q_NULLPTR)
             child->m_parentHandle = m_handle;
     }
@@ -234,7 +234,7 @@ QVector<Entity *> Entity::children() const
     QVector<Entity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
     foreach (HEntity handle, m_childrenHandles) {
-        Entity *child = m_renderer->renderNodesManager()->data(handle);
+        Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
         if (child != Q_NULLPTR)
             childrenVector.append(child);
     }
@@ -243,12 +243,12 @@ QVector<Entity *> Entity::children() const
 
 QMatrix4x4 *Entity::worldTransform()
 {
-    return m_renderer->worldMatrixManager()->data(m_worldTransform);
+    return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);
 }
 
 const QMatrix4x4 *Entity::worldTransform() const
 {
-    return m_renderer->worldMatrixManager()->data(m_worldTransform);
+    return m_nodeManagers->worldMatrixManager()->data(m_worldTransform);
 }
 
 void Entity::addComponent(Qt3DCore::QComponent *component)
@@ -309,31 +309,31 @@ void Entity::setEnabled(bool isEnabled)
 template<>
 HMaterial Entity::componentHandle<Material>() const
 {
-    return m_renderer->materialManager()->lookupHandle(m_materialComponent);
+    return m_nodeManagers->materialManager()->lookupHandle(m_materialComponent);
 }
 
 template<>
 HCamera Entity::componentHandle<CameraLens>() const
 {
-    return m_renderer->cameraManager()->lookupHandle(m_cameraComponent);
+    return m_nodeManagers->cameraManager()->lookupHandle(m_cameraComponent);
 }
 
 template<>
 HTransform Entity::componentHandle<Transform>() const
 {
-    return m_renderer->transformManager()->lookupHandle(m_transformComponent);
+    return m_nodeManagers->transformManager()->lookupHandle(m_transformComponent);
 }
 
 template<>
 HGeometryRenderer Entity::componentHandle<GeometryRenderer>() const
 {
-    return m_renderer->geometryRendererManager()->lookupHandle(m_geometryRendererComponent);
+    return m_nodeManagers->geometryRendererManager()->lookupHandle(m_geometryRendererComponent);
 }
 
 template<>
 HObjectPicker Entity::componentHandle<ObjectPicker>() const
 {
-    return m_renderer->objectPickerManager()->lookupHandle(m_objectPickerComponent);
+    return m_nodeManagers->objectPickerManager()->lookupHandle(m_objectPickerComponent);
 }
 
 template<>
@@ -341,7 +341,7 @@ QList<HLayer> Entity::componentsHandle<Layer>() const
 {
     QList<HLayer> layerHandles;
     Q_FOREACH (const QNodeId &id, m_layerComponents)
-        layerHandles.append(m_renderer->layerManager()->lookupHandle(id));
+        layerHandles.append(m_nodeManagers->layerManager()->lookupHandle(id));
     return layerHandles;
 }
 
@@ -350,14 +350,14 @@ QList<HShaderData> Entity::componentsHandle<ShaderData>() const
 {
     QList<HShaderData> shaderDataHandles;
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
-        shaderDataHandles.append(m_renderer->shaderDataManager()->lookupHandle(id));
+        shaderDataHandles.append(m_nodeManagers->shaderDataManager()->lookupHandle(id));
     return shaderDataHandles;
 }
 
 template<>
 HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
 {
-    return m_renderer->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
+    return m_nodeManagers->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
 }
 
 // Render components
@@ -365,31 +365,31 @@ HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
 template<>
 Material *Entity::renderComponent<Material>() const
 {
-    return m_renderer->materialManager()->lookupResource(m_materialComponent);
+    return m_nodeManagers->materialManager()->lookupResource(m_materialComponent);
 }
 
 template<>
 CameraLens *Entity::renderComponent<CameraLens>() const
 {
-    return m_renderer->cameraManager()->lookupResource(m_cameraComponent);
+    return m_nodeManagers->cameraManager()->lookupResource(m_cameraComponent);
 }
 
 template<>
 Transform *Entity::renderComponent<Transform>() const
 {
-    return m_renderer->transformManager()->lookupResource(m_transformComponent);
+    return m_nodeManagers->transformManager()->lookupResource(m_transformComponent);
 }
 
 template<>
 GeometryRenderer *Entity::renderComponent<GeometryRenderer>() const
 {
-    return m_renderer->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
+    return m_nodeManagers->geometryRendererManager()->lookupResource(m_geometryRendererComponent);
 }
 
 template<>
 ObjectPicker *Entity::renderComponent<ObjectPicker>() const
 {
-    return m_renderer->objectPickerManager()->lookupResource(m_objectPickerComponent);
+    return m_nodeManagers->objectPickerManager()->lookupResource(m_objectPickerComponent);
 }
 
 template<>
@@ -397,7 +397,7 @@ QList<Layer *> Entity::renderComponents<Layer>() const
 {
     QList<Layer *> layers;
     Q_FOREACH (const QNodeId &id, m_layerComponents)
-        layers.append(m_renderer->layerManager()->lookupResource(id));
+        layers.append(m_nodeManagers->layerManager()->lookupResource(id));
     return layers;
 }
 
@@ -406,14 +406,14 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
     QList<ShaderData *> shaderDatas;
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
-        shaderDatas.append(m_renderer->shaderDataManager()->lookupResource(id));
+        shaderDatas.append(m_nodeManagers->shaderDataManager()->lookupResource(id));
     return shaderDatas;
 }
 
 template<>
 BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
 {
-    return m_renderer->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
+    return m_nodeManagers->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
 }
 
 // Uuid
@@ -442,17 +442,17 @@ QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerCompo
 template<>
 QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVolumeDebugComponent; }
 
-RenderEntityFunctor::RenderEntityFunctor(Renderer *renderer)
-    : m_renderer(renderer)
+RenderEntityFunctor::RenderEntityFunctor(NodeManagers *manager)
+    : m_nodeManagers(manager)
 {
 }
 
 Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
 {
-    HEntity renderNodeHandle = m_renderer->renderNodesManager()->getOrAcquireHandle(frontend->id());
-    Entity *entity = m_renderer->renderNodesManager()->data(renderNodeHandle);
+    HEntity renderNodeHandle = m_nodeManagers->renderNodesManager()->getOrAcquireHandle(frontend->id());
+    Entity *entity = m_nodeManagers->renderNodesManager()->data(renderNodeHandle);
     entity->setFactory(factory);
-    entity->setRenderer(m_renderer);
+    entity->setNodeManagers(m_nodeManagers);
     entity->setHandle(renderNodeHandle);
     entity->setPeer(frontend);
     return entity;
@@ -460,12 +460,12 @@ Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend, c
 
 Qt3DCore::QBackendNode *RenderEntityFunctor::get(const Qt3DCore::QNodeId &id) const
 {
-    return m_renderer->renderNodesManager()->lookupResource(id);
+    return m_nodeManagers->renderNodesManager()->lookupResource(id);
 }
 
 void RenderEntityFunctor::destroy(const Qt3DCore::QNodeId &id) const
 {
-    m_renderer->renderNodesManager()->releaseResource(id);
+    m_nodeManagers->renderNodesManager()->releaseResource(id);
 }
 
 } // namespace Render

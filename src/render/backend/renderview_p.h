@@ -75,6 +75,7 @@ class QRenderPass;
 namespace Render {
 
 class Renderer;
+class NodeManagers;
 class RenderCommand;
 class RenderPassFilter;
 class TechniqueFilter;
@@ -103,6 +104,7 @@ public:
     void setRenderer(Renderer *renderer);
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
     inline Renderer *renderer() const { return m_renderer; }
+    inline NodeManagers *nodeManagers() const { return m_manager; }
 
     inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
     {
@@ -223,6 +225,7 @@ private:
     void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
 
     Renderer *m_renderer;
+    NodeManagers *m_manager;
     QSize m_surfaceSize;
     Qt3DCore::QFrameAllocator *m_allocator;
 

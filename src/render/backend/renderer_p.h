@@ -102,46 +102,17 @@ class Technique;
 class Shader;
 class Entity;
 class RenderCommand;
-class CameraManager;
-class EntityManager;
 class RenderQueue;
 class RenderView;
-class MaterialManager;
-class MatrixManager;
-class VAOManager;
-class ShaderManager;
-class TechniqueManager;
-class EffectManager;
-class RenderPassManager;
 class Effect;
 class RenderPass;
-class TextureManager;
-class TextureDataManager;
-class LayerManager;
-class LightManager;
 class RenderThread;
-class CriterionManager;
-class FrameGraphManager;
-class TransformManager;
 class RenderStateSet;
-class RenderTargetManager;
-class SceneManager;
-class AttachmentManager;
-class SortCriterionManager;
-class ParameterManager;
-class ShaderDataManager;
-class UBOManager;
-class TextureImageManager;
 class VSyncFrameAdvanceService;
-class BufferManager;
-class AttributeManager;
-class GeometryManager;
-class GeometryRendererManager;
-class ObjectPickerManager;
 class PickEventFilter;
-class BoundingVolumeDebugManager;
+class NodeManagers;
 
-class Renderer
+class Q_AUTOTEST_EXPORT Renderer
 {
 public:
     explicit Renderer(QRenderAspect::RenderType type);
@@ -150,8 +121,10 @@ public:
     void setQRenderAspect(QRenderAspect *aspect) { m_rendererAspect = aspect; }
     QRenderAspect *rendererAspect() const { return m_rendererAspect; }
 
-    void createAllocators();
-    void destroyAllocators();
+    NodeManagers *nodeManagers() const;
+
+    void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
+    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
 
     Qt3DCore::QFrameAllocator *currentFrameAllocator();
 
@@ -174,35 +147,6 @@ public:
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
-    inline CameraManager *cameraManager() const { return m_cameraManager; }
-    inline EntityManager *renderNodesManager() const { return m_renderNodesManager; }
-    inline MaterialManager *materialManager() const { return m_materialManager; }
-    inline MatrixManager *worldMatrixManager() const { return m_worldMatrixManager; }
-    inline VAOManager *vaoManager() const { return m_vaoManager; }
-    inline ShaderManager *shaderManager() const { return m_shaderManager; }
-    inline TechniqueManager *techniqueManager() const { return m_techniqueManager; }
-    inline EffectManager *effectManager() const { return m_effectManager; }
-    inline RenderPassManager *renderPassManager() const { return m_renderPassManager; }
-    inline TextureManager *textureManager() const { return m_textureManager; }
-    inline TextureDataManager *textureDataManager() const { return m_textureDataManager; }
-    inline LayerManager *layerManager() const { return m_layerManager; }
-    inline CriterionManager *criterionManager() const { return m_criterionManager; }
-    inline FrameGraphManager *frameGraphManager() const { return m_frameGraphManager; }
-    inline TransformManager *transformManager() const { return m_transformManager; }
-    inline RenderTargetManager *renderTargetManager() const { return m_renderTargetManager; }
-    inline SceneManager *sceneManager() const { return m_sceneManager; }
-    inline AttachmentManager *attachmentManager() const { return m_attachmentManager; }
-    inline SortCriterionManager *sortCriterionManager() const { return m_sortCriterionManager; }
-    inline ParameterManager *parameterManager() const { return m_parameterManager; }
-    inline ShaderDataManager *shaderDataManager() const { return m_shaderDataManager; }
-    inline UBOManager *uboManager() const { return m_uboManager; }
-    inline TextureImageManager *textureImageManager() const { return m_textureImageManager; }
-    inline BufferManager *bufferManager() const { return m_bufferManager; }
-    inline AttributeManager *attributeManager() const { return m_attributeManager; }
-    inline GeometryManager *geometryManager() const { return m_geometryManager; }
-    inline GeometryRendererManager *geometryRendererManager() const { return m_geometryRendererManager; }
-    inline ObjectPickerManager *objectPickerManager() const { return m_objectPickerManager; }
-    inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const { return m_boundingVolumeDebugManager; }
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -230,10 +174,15 @@ public:
     QMutex* mutex() { return &m_mutex; }
     bool isRunning() const { return m_running.load(); }
 
+#ifdef QT3D_RENDER_UNIT_TESTS
+public:
+#else
 private:
+#endif
     bool canRender() const;
 
     QRenderAspect *m_rendererAspect;
+    NodeManagers *m_nodesManager;
 
     // Frame graph root
     Qt3DCore::QNodeId m_frameGraphRootUuid;
@@ -262,35 +211,7 @@ private:
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
     QObject *m_eventSource;
-    CameraManager *m_cameraManager;
-    EntityManager *m_renderNodesManager;
-    MaterialManager *m_materialManager;
-    MatrixManager *m_worldMatrixManager;
-    VAOManager *m_vaoManager;
-    ShaderManager *m_shaderManager;
-    TechniqueManager *m_techniqueManager;
-    EffectManager *m_effectManager;
-    RenderPassManager *m_renderPassManager;
-    TextureManager *m_textureManager;
-    TextureDataManager *m_textureDataManager;
-    LayerManager *m_layerManager;
-    CriterionManager *m_criterionManager;
-    FrameGraphManager *m_frameGraphManager;
-    TransformManager *m_transformManager;
-    RenderTargetManager *m_renderTargetManager;
-    SceneManager *m_sceneManager;
-    AttachmentManager *m_attachmentManager;
-    SortCriterionManager *m_sortCriterionManager;
-    ParameterManager *m_parameterManager;
-    ShaderDataManager *m_shaderDataManager;
-    UBOManager *m_uboManager;
-    TextureImageManager *m_textureImageManager;
-    BufferManager *m_bufferManager;
-    AttributeManager *m_attributeManager;
-    GeometryManager *m_geometryManager;
-    GeometryRendererManager *m_geometryRendererManager;
-    ObjectPickerManager *m_objectPickerManager;
-    BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
+
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;

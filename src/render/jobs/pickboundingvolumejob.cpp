@@ -36,6 +36,7 @@
 
 #include "pickboundingvolumejob_p.h"
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -123,6 +124,7 @@ public:
 
 PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
     : m_renderer(renderer)
+    , m_manager(renderer->nodeManagers())
     , m_node(Q_NULLPTR)
 {
 }
@@ -173,7 +175,7 @@ void PickBoundingVolumeJob::run()
         if (!vcPairs.empty()) {
             Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
                 m_hoveredPickersToClear = m_hoveredPickers;
-                ObjectPicker *lastCurrentPicker = m_renderer->objectPickerManager()->data(m_currentPicker);
+                ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
                 Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
                     const QVector<Qt3DCore::QNodeId> hits = hitsForViewportAndCamera(event.pos(),
                                                                                      vc.viewport,
@@ -183,7 +185,7 @@ void PickBoundingVolumeJob::run()
                     // If we have hits
                     if (!hits.isEmpty()) {
                         Q_FOREACH (const Qt3DCore::QNodeId &entityId, hits) {
-                            Entity *entity = m_renderer->renderNodesManager()->lookupResource(entityId);
+                            Entity *entity = m_manager->renderNodesManager()->lookupResource(entityId);
                             HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
 
                             // If the Entity which actually received the hit doesn't have
@@ -194,7 +196,7 @@ void PickBoundingVolumeJob::run()
                                     objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
                             }
 
-                            ObjectPicker *objectPicker = m_renderer->objectPickerManager()->data(objectPickerHandle);
+                            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
 
                             if (objectPicker != Q_NULLPTR) {
                                 // Send the corresponding event
@@ -242,7 +244,7 @@ void PickBoundingVolumeJob::run()
                             // The ObjectPicker was hit -> it is still being hovered
                             m_hoveredPickersToClear.removeAll(objectPickerHandle);
 
-                            lastCurrentPicker = m_renderer->objectPickerManager()->data(m_currentPicker);
+                            lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
                         }
 
                         // Otherwise no hits
@@ -292,7 +294,7 @@ void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraI
                                                 QMatrix4x4 &projectionMatrix) const
 {
     Render::CameraLens *lens = Q_NULLPTR;
-    Entity *camNode = m_renderer->renderNodesManager()->lookupResource(cameraId);
+    Entity *camNode = m_manager->renderNodesManager()->lookupResource(cameraId);
     if (camNode != Q_NULLPTR &&
             (lens = camNode->renderComponent<CameraLens>()) != Q_NULLPTR &&
             lens->isEnabled()) {
@@ -340,7 +342,7 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::hitsForViewportAndCamera(const
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
     Q_FOREACH (const HObjectPicker &pickHandle, m_hoveredPickersToClear) {
-        ObjectPicker *pick = m_renderer->objectPickerManager()->data(pickHandle);
+        ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             pick->onExited();
         m_hoveredPickers.removeAll(pickHandle);

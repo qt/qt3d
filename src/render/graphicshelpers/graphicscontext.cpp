@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/graphicshelperinterface_p.h>
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <QOpenGLShaderProgram>
@@ -400,9 +401,10 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
             fboId = m_renderTargets.value(renderTarget->peerUuid());
 
             // We need to check if  one of the attachment was resized
+            TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
             bool needsResize = false;
             Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
-                Texture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+                Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
                 if (rTex != Q_NULLPTR)
                     needsResize |= rTex->isTextureReset();
             }
@@ -423,8 +425,9 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
     // Set FBO attachments
 
     QSize fboSize;
+    TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
     Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
-        Texture *rTex = m_renderer->textureManager()->lookupResource(attachment.m_textureUuid);
+        Texture *rTex =textureManager->lookupResource(attachment.m_textureUuid);
         if (rTex != Q_NULLPTR) {
             QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
             if (glTex != Q_NULLPTR) {
@@ -612,12 +615,12 @@ QGraphicsApiFilter *GraphicsContext::contextInfo() const
  * it is simulated with a loop.
  */
 void GraphicsContext::drawElementsInstanced(GLenum primitiveType,
-                                             GLsizei primitiveCount,
-                                             GLint indexType,
-                                             void *indices,
-                                             GLsizei instances,
-                                             GLint baseVertex,
-                                             GLint baseInstance)
+                                            GLsizei primitiveCount,
+                                            GLint indexType,
+                                            void *indices,
+                                            GLsizei instances,
+                                            GLint baseVertex,
+                                            GLint baseInstance)
 {
     m_glHelper->drawElementsInstanced(primitiveType,
                                       primitiveCount,
@@ -632,9 +635,9 @@ void GraphicsContext::drawElementsInstanced(GLenum primitiveType,
  * Wraps an OpenGL call to glDrawArraysInstanced.
  */
 void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
-                                           GLint first,
-                                           GLsizei count,
-                                           GLsizei instances)
+                                          GLint first,
+                                          GLsizei count,
+                                          GLsizei instances)
 {
     m_glHelper->drawArraysInstanced(primitiveType,
                                     first,
@@ -646,10 +649,10 @@ void GraphicsContext::drawArraysInstanced(GLenum primitiveType,
  * Wraps an OpenGL call to glDrawElements.
  */
 void GraphicsContext::drawElements(GLenum primitiveType,
-                                    GLsizei primitiveCount,
-                                    GLint indexType,
-                                    void *indices,
-                                    GLint baseVertex)
+                                   GLsizei primitiveCount,
+                                   GLint indexType,
+                                   void *indices,
+                                   GLint baseVertex)
 {
     m_glHelper->drawElements(primitiveType,
                              primitiveCount,
@@ -662,8 +665,8 @@ void GraphicsContext::drawElements(GLenum primitiveType,
  * Wraps an OpenGL call to glDrawArrays.
  */
 void GraphicsContext::drawArrays(GLenum primitiveType,
-                                  GLint first,
-                                  GLsizei count)
+                                 GLint first,
+                                 GLsizei count)
 {
     m_glHelper->drawArrays(primitiveType,
                            first,
@@ -848,12 +851,14 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
 
     // Set the pinned texture of the previous material texture
     // to pinable so that we should easily find an available texture unit
+    NodeManagers *manager = m_renderer->nodeManagers();
+
     deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
     const QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
     for (int i = 0; i < uniforms.textures().size(); ++i) {
         const QUniformPack::NamedTexture &namedTex = uniforms.textures().at(i);
-        Texture *t = m_renderer->textureManager()->lookupResource(namedTex.texId);
+        Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
         const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded
         if (t != Q_NULLPTR) {
@@ -873,8 +878,8 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
     for (int i = 0; i < blockToUbos.length(); ++i) {
         const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
         if (block.m_index != -1 && block.m_size > 0) {
-            ubo = m_renderer->uboManager()->lookupResource(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
-                                                                                                 m_activeShader->peerUuid()));
+            ubo = manager->lookupResource<UniformBuffer, UBOManager>(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
+                                                                                            m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
             bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
             // bind the UBO to the binding point i

@@ -36,6 +36,7 @@
 
 #include "loadscenejob_p.h"
 #include <private/renderer_p.h>
+#include <private/nodemanagers_p.h>
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qabstractsceneparser.h>
@@ -55,18 +56,18 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneC
 
 void LoadSceneJob::run()
 {
-    Qt3DCore::QEntity *sceneTree = m_renderer->sceneManager()->sceneTreeFromSource(m_source);
+    Qt3DCore::QEntity *sceneTree = m_renderer->nodeManagers()->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
         Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
             if (parser->isExtensionSupported(m_source)) {
                 parser->setSource(m_source);
                 sceneTree = parser->scene();
-                m_renderer->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
+                m_renderer->nodeManagers()->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
             }
         }
     }
     // set clone of sceneTree in sceneComponent
-    Scene *scene = m_renderer->sceneManager()->lookupResource(m_sceneComponent);
+    Scene *scene = m_renderer->nodeManagers()->sceneManager()->lookupResource(m_sceneComponent);
     scene->setSceneSubtree(sceneTree);
 }
 

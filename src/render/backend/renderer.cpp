@@ -62,21 +62,22 @@
 #include <Qt3DRender/private/renderpassfilternode_p.h>
 #include <Qt3DRender/private/renderqueue_p.h>
 #include <Qt3DRender/private/shader_p.h>
+#include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/technique_p.h>
 #include <Qt3DRender/private/renderthread_p.h>
 #include <Qt3DRender/private/renderview_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
-#include <Qt3DRender/private/texturedatamanager_p.h>
-#include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
-#include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/pickeventfilter_p.h>
 #include <Qt3DRender/private/qsceneparserfactory_p.h>
+#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qeventfilterservice.h>
@@ -133,38 +134,10 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
+    , m_nodesManager(new NodeManagers())
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_eventSource(Q_NULLPTR)
-    , m_cameraManager(new CameraManager())
-    , m_renderNodesManager(new EntityManager())
-    , m_materialManager(new MaterialManager())
-    , m_worldMatrixManager(new MatrixManager())
-    , m_vaoManager(new VAOManager())
-    , m_shaderManager(new ShaderManager())
-    , m_techniqueManager(new TechniqueManager())
-    , m_effectManager(new EffectManager())
-    , m_renderPassManager(new RenderPassManager())
-    , m_textureManager(new TextureManager())
-    , m_textureDataManager(new TextureDataManager())
-    , m_layerManager(new LayerManager())
-    , m_criterionManager(new CriterionManager())
-    , m_frameGraphManager(new FrameGraphManager())
-    , m_transformManager(new TransformManager())
-    , m_renderTargetManager(new RenderTargetManager())
-    , m_sceneManager(new SceneManager())
-    , m_attachmentManager(new AttachmentManager())
-    , m_sortCriterionManager(new SortCriterionManager())
-    , m_parameterManager(new ParameterManager())
-    , m_shaderDataManager(new ShaderDataManager())
-    , m_uboManager(new UBOManager())
-    , m_textureImageManager(new TextureImageManager())
-    , m_bufferManager(new BufferManager())
-    , m_attributeManager(new AttributeManager())
-    , m_geometryManager(new GeometryManager())
-    , m_geometryRendererManager(new GeometryRendererManager)
-    , m_objectPickerManager(new ObjectPickerManager())
-    , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
@@ -183,7 +156,12 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 Renderer::~Renderer()
 {
     // Clean up the TLS allocators
-    destroyAllocators();
+    destroyAllocators(rendererAspect()->jobManager());
+}
+
+NodeManagers *Renderer::nodeManagers() const
+{
+    return m_nodesManager;
 }
 
 void Renderer::buildDefaultTechnique()
@@ -268,20 +246,16 @@ void Renderer::buildDefaultMaterial()
 
 }
 
-void Renderer::createAllocators()
+void Renderer::createAllocators(QAbstractAspectJobManager *jobManager)
 {
     // Issue a set of jobs to create an allocator in TLS for each worker thread
-    Q_ASSERT(m_rendererAspect);
-    QAbstractAspectJobManager *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::createThreadLocalAllocator, this);
 }
 
-void Renderer::destroyAllocators()
+void Renderer::destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager)
 {
     // Issue a set of jobs to destroy the allocator in TLS for each worker thread
-    Q_ASSERT(m_rendererAspect);
-    QAbstractAspectJobManager *jobManager = rendererAspect()->jobManager();
     Q_ASSERT(jobManager);
     jobManager->waitForPerThreadFunction(Renderer::destroyThreadLocalAllocator, this);
 }
@@ -429,7 +403,7 @@ void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId &frameGraphRootUuid)
 
 Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
-    FrameGraphNode **fgRoot = m_frameGraphManager->lookupResource(m_frameGraphRootUuid);
+    FrameGraphNode **fgRoot = m_nodesManager->lookupResource<FrameGraphNode*, FrameGraphManager>(m_frameGraphRootUuid);
     if (fgRoot != Q_NULLPTR)
         return *fgRoot;
     return Q_NULLPTR;
@@ -448,7 +422,6 @@ void Renderer::setSceneGraphRoot(Entity *sgRoot)
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
     if (m_graphicsContext == Q_NULLPTR) // If initialization hasn't been completed we must wait
         m_waitForInitializationToBeCompleted.wait(&m_mutex);
-
     m_renderSceneRoot = sgRoot;
     if (!m_renderSceneRoot)
         qCWarning(Backend) << "Failed to build render scene";
@@ -475,11 +448,11 @@ void Renderer::setSceneGraphRoot(Entity *sgRoot)
         m_rendererAspect->createBackendNode(p);
 
 
-    m_defaultMaterialHandle = m_materialManager->lookupHandle(m_defaultMaterial->id());
-    m_defaultEffectHandle = m_effectManager->lookupHandle(m_defaultMaterial->effect()->id());
-    m_defaultTechniqueHandle = m_techniqueManager->lookupHandle(m_defaultTechnique->id());
-    m_defaultRenderPassHandle = m_renderPassManager->lookupHandle(m_defaultTechnique->renderPasses().first()->id());
-    m_defaultRenderShader = m_shaderManager->lookupResource(m_defaultTechnique->renderPasses().first()->shaderProgram()->id());
+    m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
+    m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());
+    m_defaultTechniqueHandle = nodeManagers()->lookupHandle<Technique, TechniqueManager, HTechnique>(m_defaultTechnique->id());
+    m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().first()->id());
+    m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().first()->shaderProgram()->id());
 }
 
 // Called in RenderAspect Thread context
@@ -710,7 +683,7 @@ bool Renderer::submitRenderViews()
 
         // Set RenderTarget ...
         // Activate RenderTarget
-        m_graphicsContext->activateRenderTarget(m_renderTargetManager->data(renderView->renderTargetHandle()),
+        m_graphicsContext->activateRenderTarget(nodeManagers()->data<RenderTarget, RenderTargetManager>(renderView->renderTargetHandle()),
                                                 renderView->attachmentPack(), boundFboId);
 
         // Set clear color if different
@@ -763,17 +736,13 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
     // populate the RenderView with a set of RenderCommands that get
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
-
     QVector<QAspectJobPtr> renderBinJobs;
 
-    // Do not create any more jobs when the platform surface is gone.
-    if (m_surface) {
-        FrameGraphVisitor visitor;
-        visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
+    FrameGraphVisitor visitor;
+    visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
 
-        // Set target number of RenderViews
-        m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
-    }
+    // Set target number of RenderViews
+    m_renderQueue->setTargetRenderViewCount(renderBinJobs.size());
     return renderBinJobs;
 }
 
@@ -781,15 +750,15 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
 // 1 dirty buffer == 1 job, all job can be performed in parallel
 QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs()
 {
-    const QVector<QNodeId> dirtyBuffers = m_bufferManager->dirtyBuffers();
+    const QVector<QNodeId> dirtyBuffers = nodeManagers()->bufferManager()->dirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
 
     Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
-        HBuffer bufferHandle = m_bufferManager->lookupHandle(bufId);
+        HBuffer bufferHandle = m_nodesManager->lookupHandle<Buffer, BufferManager, HBuffer>(bufId);
         if (!bufferHandle.isNull()) {
             // Create new buffer job
             LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
-            job->setRenderer(this);
+            job->setNodeManager(m_nodesManager);
             dirtyBuffersJobs.push_back(job);
         }
     }
@@ -799,14 +768,15 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs()
 
 QVector<Qt3DCore::QAspectJobPtr> Renderer::createGeometryRendererJobs()
 {
-    const QVector<QNodeId> dirtyGeometryRenderers = m_geometryRendererManager->dirtyGeometryRenderers();
+    GeometryRendererManager *geomRendererManager = m_nodesManager->geometryRendererManager();
+    const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
 
     Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
-        HGeometryRenderer geometryRendererHandle = m_geometryRendererManager->lookupHandle(geoRendererId);
+        HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
         if (!geometryRendererHandle.isNull()) {
             LoadGeometryJobPtr job(new LoadGeometryJob(geometryRendererHandle));
-            job->setRenderer(this);
+            job->setNodeManagers(m_nodesManager);
             dirtyGeometryRendererJobs.push_back(job);
         }
     }
@@ -819,7 +789,8 @@ Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int 
 {
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
-    job->setSurfaceSize(m_surface->size());
+    if (m_surface)
+        job->setSurfaceSize(m_surface->size());
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
     return job;
@@ -841,8 +812,8 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
     Q_FOREACH (RenderCommand *command, commands) {
 
         // Check if we have a valid GeometryRenderer + Geometry
-        Geometry *rGeometry = m_geometryManager->data(command->m_geometry);
-        GeometryRenderer *rGeometryRenderer = m_geometryRendererManager->data(command->m_geometryRenderer);
+        Geometry *rGeometry = m_nodesManager->data<Geometry, GeometryManager>(command->m_geometry);
+        GeometryRenderer *rGeometryRenderer = m_nodesManager->data<GeometryRenderer, GeometryRendererManager>(command->m_geometryRenderer);
         const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
 
         if (!hasGeometryRenderer) {
@@ -850,7 +821,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             continue;
         }
 
-        Shader *shader = m_shaderManager->data(command->m_shader);
+        Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
         if (shader == Q_NULLPTR) {
             shader = m_defaultRenderShader;
             command->m_parameterAttributeToShaderNames = m_defaultParameterToGLSLAttributeNames;
@@ -861,17 +832,18 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Manager should have a VAO Manager that are indexed by QMeshData and Shader
         // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
         bool needsToBindVAO = false;
+        VAOManager *vaoManager = m_nodesManager->vaoManager();
         if (m_graphicsContext->supportsVAO()) {
-            command->m_vao = m_vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+            command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-                command->m_vao = m_vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-                *(m_vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+                command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+                *(vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
             }
             if (previousVaoHandle != command->m_vao) {
                 needsToBindVAO = true;
                 previousVaoHandle = command->m_vao;
-                vao = *(m_vaoManager->data(command->m_vao));
+                vao = *(vaoManager->data(command->m_vao));
             }
             Q_ASSERT(vao);
             // If the VAO hasn't been created, we create it
@@ -1008,12 +980,12 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
 
     Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
-        Attribute *attribute = attributeManager()->lookupResource(attributeId);
+        Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 
         if (attribute == Q_NULLPTR)
             continue;
 
-        Buffer *buffer = bufferManager()->lookupResource(attribute->bufferId());
+        Buffer *buffer = m_nodesManager->bufferManager()->lookupResource(attribute->bufferId());
 
         if (buffer == Q_NULLPTR)
             continue;
