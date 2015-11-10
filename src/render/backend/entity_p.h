@@ -113,6 +113,9 @@ public:
     bool isEnabled() const;
     void setEnabled(bool isEnabled);
 
+    bool isBoundingVolumeDirty() const;
+    void unsetBoundingVolumeDirty();
+
     template<class Backend, uint INDEXBITS>
     Qt3DCore::QHandle<Backend, INDEXBITS> componentHandle() const
     {
@@ -172,6 +175,7 @@ private:
 
     QString m_objectName;
     bool m_enabled;
+    bool m_boundingDirty;
 };
 
 // Handles

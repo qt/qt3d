@@ -68,6 +68,7 @@ Entity::Entity()
     : QBackendNode()
     , m_nodeManagers(Q_NULLPTR)
     , m_enabled(true)
+    , m_boundingDirty(false)
 {
 }
 
@@ -107,6 +108,7 @@ void Entity::cleanup()
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
     m_enabled = true;
+    m_boundingDirty = false;
 }
 
 void Entity::setParentHandle(HEntity parentHandle)
@@ -256,42 +258,46 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
     // The backend element is always created when this method is called
     // If that's not the case something has gone wrong
 
-    if (qobject_cast<Qt3DCore::QTransform*>(component) != Q_NULLPTR)
+    if (qobject_cast<Qt3DCore::QTransform*>(component) != Q_NULLPTR) {
         m_transformComponent = component->id();
-    else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QCameraLens *>(component) != Q_NULLPTR) {
         m_cameraComponent = component->id();
-    else if (qobject_cast<QLayer *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QLayer *>(component) != Q_NULLPTR) {
         m_layerComponents.append(component->id());
-    else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR) {
         m_materialComponent = component->id();
-    else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR) {
         m_shaderDataComponents.append(component->id());
-    else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR) {
         m_geometryRendererComponent = component->id();
-    else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR)
+        m_boundingDirty = true;
+    } else if (qobject_cast<QObjectPicker *>(component) != Q_NULLPTR) {
         m_objectPickerComponent = component->id();
-    else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR)
+    } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
         m_boundingVolumeDebugComponent = component->id();
+    }
 }
 
 void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
 {
-    if (m_transformComponent == nodeId)
+    if (m_transformComponent == nodeId) {
         m_transformComponent = QNodeId();
-    else if (m_cameraComponent == nodeId)
+    } else if (m_cameraComponent == nodeId) {
         m_cameraComponent = QNodeId();
-    else if (m_layerComponents.contains(nodeId))
+    } else if (m_layerComponents.contains(nodeId)) {
         m_layerComponents.removeAll(nodeId);
-    else if (m_materialComponent == nodeId)
+    } else if (m_materialComponent == nodeId) {
         m_materialComponent = QNodeId();
-    else if (m_shaderDataComponents.contains(nodeId))
+    } else if (m_shaderDataComponents.contains(nodeId)) {
         m_shaderDataComponents.removeAll(nodeId);
-    else if (m_geometryRendererComponent == nodeId)
+    } else if (m_geometryRendererComponent == nodeId) {
         m_geometryRendererComponent = QNodeId();
-    else if (m_objectPickerComponent == nodeId)
+        m_boundingDirty = true;
+    } else if (m_objectPickerComponent == nodeId) {
         m_objectPickerComponent = QNodeId();
-    else if (m_boundingVolumeDebugComponent == nodeId)
+    } else if (m_boundingVolumeDebugComponent == nodeId) {
         m_boundingVolumeDebugComponent = QNodeId();
+    }
 }
 
 bool Entity::isEnabled() const
@@ -302,6 +308,16 @@ bool Entity::isEnabled() const
 void Entity::setEnabled(bool isEnabled)
 {
     m_enabled = isEnabled;
+}
+
+bool Entity::isBoundingVolumeDirty() const
+{
+    return m_boundingDirty;
+}
+
+void Entity::unsetBoundingVolumeDirty()
+{
+    m_boundingDirty = false;
 }
 
 // Handles
