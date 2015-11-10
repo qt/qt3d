@@ -174,6 +174,8 @@ public:
     QMutex* mutex() { return &m_mutex; }
     bool isRunning() const { return m_running.load(); }
 
+    void setSurfaceExposed(bool exposed);
+
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
 #else
@@ -239,6 +241,7 @@ private:
 
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
+    QAtomicInt m_exposed;
 };
 
 } // namespace Render

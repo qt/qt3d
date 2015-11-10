@@ -143,6 +143,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
     , m_debugLogger(Q_NULLPTR)
     , m_pickEventFilter(new PickEventFilter())
+    , m_exposed(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -332,7 +333,6 @@ void Renderer::initialize(QOpenGLContext *context)
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
 
-
     QOpenGLContext* ctx = context ? context : new QOpenGLContext;
     if (!context) {
         qCDebug(Backend) << "Creating OpenGL context with format" << sf;
@@ -393,6 +393,12 @@ void Renderer::shutdown()
         m_surface = Q_NULLPTR;
         qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
     }
+}
+
+void Renderer::setSurfaceExposed(bool exposed)
+{
+    qCDebug(Backend) << "Window exposed: " << exposed;
+    m_exposed.fetchAndStoreOrdered(exposed);
 }
 
 void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId &frameGraphRootUuid)
@@ -526,7 +532,10 @@ void Renderer::render()
     // One framegraph description
 
     while (m_running.load() > 0) {
-        doRender();
+        if (m_exposed.load() > 0)
+            doRender();
+        else
+            QThread::msleep(250);
     }
 }
 
