@@ -1751,7 +1751,6 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
         material["name"] = matInfo.originalName;
 
         bool opaque = true;
-        QJsonObject tech;
         QJsonObject vals;
         for (QHash<QByteArray, QString>::const_iterator it = matInfo.m_textures.constBegin(); it != matInfo.m_textures.constEnd(); ++it) {
             if (!textureNameMap->contains(it.value()))
@@ -1802,7 +1801,7 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 opaque = false;
             vals[it.key()] = col2jsvec(it.value(), alpha);
         }
-        tech["values"] = vals;
+        material["values"] = vals;
 
         ProgramInfo *prog = chooseProgram(i);
         TechniqueInfo techniqueInfo;
@@ -1825,13 +1824,12 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
         if (opts.showLog)
             qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
 
-        tech["technique"] = techniqueInfo.name;
+        material["technique"] = techniqueInfo.name;
         if (opts.genCore) {
-            tech["techniqueCore"] = techniqueInfo.coreName;
-            tech["techniqueGL2"] = techniqueInfo.gl2Name;
+            material["techniqueCore"] = techniqueInfo.coreName;
+            material["techniqueGL2"] = techniqueInfo.gl2Name;
         }
 
-        material["instanceTechnique"] = tech;
         materials[matInfo.name] = material;
     }
 }
@@ -1969,42 +1967,15 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         exportParameter(parameters, prog->attributes);
         exportParameter(parameters, prog->uniforms);
         technique["parameters"] = parameters;
-        technique["pass"] = QStringLiteral("defaultPass");
-        QJsonObject passes;
-        QJsonObject dp;
-        QJsonObject details;
-        details["type"] = QStringLiteral("COLLADA-1.4.1/commonProfile"); // ??
-        QJsonObject commonProfile;
-        QJsonObject extras;
-        extras["doubleSided"] = false;
-        commonProfile["extras"] = extras;
-        commonProfile["lightingModel"] = QStringLiteral("Phong");
-        QJsonArray paramList;
-        foreach (const ProgramInfo::Param &param, prog->attributes)
-            paramList << param.name;
-        foreach (const ProgramInfo::Param &param, prog->uniforms)
-            paramList << param.name;
-        commonProfile["parameters"] = paramList;
-        QJsonObject texcoordBindings;
-        foreach (const ProgramInfo::Param &param, prog->uniforms) {
-            if (param.type == GLT_SAMPLER_2D)
-                texcoordBindings[param.name] = QStringLiteral("TEXCOORD_0");
-        }
-        if (!texcoordBindings.isEmpty())
-            commonProfile["texcoordBindings"] = texcoordBindings;
-        details["commonProfile"] = commonProfile;
-        dp["details"] = details;
-        QJsonObject instanceProgram;
-        instanceProgram["program"] = programMap[prog].name;
+        technique["program"] = programMap[prog].name;
         QJsonObject progAttrs;
         foreach (const ProgramInfo::Param &param, prog->attributes)
             progAttrs[param.nameInShader] = param.name;
-        instanceProgram["attributes"] = progAttrs;
+        technique["attributes"] = progAttrs;
         QJsonObject progUniforms;
         foreach (const ProgramInfo::Param &param, prog->uniforms)
             progUniforms[param.nameInShader] = param.name;
-        instanceProgram["uniforms"] = progUniforms;
-        dp["instanceProgram"] = instanceProgram;
+        technique["uniforms"] = progUniforms;
         QJsonObject states;
         QJsonArray enabledStates;
         enabledStates << GLT_DEPTH_TEST << GLT_CULL_FACE;
@@ -2016,9 +1987,7 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             states["functions"] = funcs;
         }
         states["enable"] = enabledStates;
-        dp["states"] = states;
-        passes["defaultPass"] = dp;
-        technique["passes"] = passes;
+        technique["states"] = states;
         techniques[techniqueInfo.name] = technique;
 
         if (opts.genCore) {
@@ -2026,10 +1995,7 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             techniques[techniqueInfo.gl2Name] = technique;
 
             //Core
-            instanceProgram["program"] = programMap[prog].coreName;
-            dp["instanceProgram"] = instanceProgram;
-            passes["defaultPass"] = dp;
-            technique["passes"] = passes;
+            technique["program"] = programMap[prog].coreName;
             techniques[techniqueInfo.coreName] = technique;
         }
     }
@@ -2237,7 +2203,7 @@ void GltfExporter::save(const QString &inputFilename)
 
     QJsonObject asset;
     asset["generator"] = QString(QStringLiteral("qgltf %1")).arg(QCoreApplication::applicationVersion());
-    asset["version"] = QStringLiteral("0.8");
+    asset["version"] = QStringLiteral("1.0");
     asset["premultipliedAlpha"] = true;
     m_obj["asset"] = asset;
 
@@ -2304,7 +2270,7 @@ void GltfExporter::save(const QString &inputFilename)
         mesh["name"] = meshInfo.originalName;
         QJsonArray prims;
         QJsonObject prim;
-        prim["primitive"] = 4; // triangles
+        prim["mode"] = 4; // triangles
         QJsonObject attrs;
         foreach (const Importer::MeshInfo::Accessor &acc, meshInfo.accessors) {
             if (acc.usage != QStringLiteral("INDEX"))
@@ -2452,7 +2418,7 @@ void GltfExporter::save(const QString &inputFilename)
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationVersion(QStringLiteral("0.1"));
+    app.setApplicationVersion(QStringLiteral("0.2"));
     app.setApplicationName(QStringLiteral("Qt glTF converter"));
 
     QCommandLineParser cmdLine;
