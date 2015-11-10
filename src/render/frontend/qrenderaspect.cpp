@@ -288,6 +288,13 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
 
+    // 1 LoadBufferJobs, GeometryJobs, SceneLoaderJobs
+    // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
+    // 3 WorldTransformJob
+    // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)
+    // 5 PickBoundingVolume Job, RenderViewJobs
+    // 6 Cleanup Job (depends on RV)
+
     // Create jobs to load in any meshes that are pending
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
 
@@ -316,6 +323,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         const QVector<QAspectJobPtr> bufferJobs = d->m_renderer->createRenderBufferJobs();
+        Q_FOREACH (const QAspectJobPtr bufferJob, bufferJobs)
+            d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
         jobs.append(bufferJobs);
 
         const QVector<QAspectJobPtr> geometryJobs = d->m_renderer->createGeometryRendererJobs();
@@ -328,7 +337,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(d->m_framePreparationJob);
         jobs.append(d->m_pickBoundingVolumeJob);
 
-        // Do not create any more jobs when the platform surface is gone.
+        // Do not create any more RenderView jobs when the platform surface is gone.
         if (d->m_renderer->surface()) {
             // Traverse the current framegraph and create jobs to populate
             // RenderBins with RenderCommands
