@@ -64,7 +64,7 @@ struct NonLockingPolicy
 {
     struct Locker
     {
-        Locker(NonLockingPolicy*) {}
+        Locker(const NonLockingPolicy*) {}
         void unlock() {}
         void relock() {}
     };
