@@ -204,17 +204,10 @@ Entity {
                 Transform {
                     id: transform
                     readonly property real angle: Math.PI * 2.0 * index * obstaclesRepeater.det
-                    matrix: {
-                        var m = Qt.matrix4x4(1, 0, 0, 0,
-                                             0, 1, 0, 0,
-                                             0, 0, 1, 0,
-                                             0, 0, 0, 1);
-                        m.translate(Qt.vector3d(obstaclesRepeater.radius * Math.cos(transform.angle),
-                                                0.0,
-                                                obstaclesRepeater.radius * Math.sin(transform.angle)))
-                        m.rotate(transform.angle * 180 / Math.PI, Qt.vector3d(0.0, 1.0, 0.0));
-                        return m;
-                    }
+                    translation: Qt.vector3d(obstaclesRepeater.radius * Math.cos(transform.angle),
+                                             0.0,
+                                             obstaclesRepeater.radius * Math.sin(transform.angle))
+                    rotation: fromAxisAndAngle(Qt.vector3d(0.0, 1.0, 0.0), transform.angle * 180 / Math.PI)
                 },
                 PhongMaterial {
                     diffuse: Qt.rgba(Math.abs(Math.cos(transform.angle)), 204 / 255, 75 / 255, 1)

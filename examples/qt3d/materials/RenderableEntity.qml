@@ -51,16 +51,9 @@ Entity {
 
     Transform {
         id: transform
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.translate(root.position);
-            m.rotate(root.rotationAngle, root.rotationAxis);
-            m.scale(root.scale);
-            return m;
-        }
+        scale: root.scale
+        rotation: fromAxisAndAngle(root.rotationAxis, root.rotationAngle)
+        translation: root.position
     }
 
     Mesh {

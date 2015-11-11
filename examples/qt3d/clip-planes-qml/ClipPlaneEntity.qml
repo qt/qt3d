@@ -60,15 +60,8 @@ Entity {
 
     Transform {
         id: transform
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.translate(root.center);
-            m.rotate(root.rotateAngle, root.rotateAxis);
-            return m;
-        }
+        translation: root.center
+        rotation: fromAxisAndAngle(root.rotateAxis, root.rotateAngle)
     }
 
     property Layer layer: Layer {

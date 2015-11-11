@@ -50,14 +50,7 @@ Entity {
     Transform {
         id: trefoilMeshTransform
         property real userAngle: 0.0
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.rotate(userAngle, Qt.vector3d(0, 1, 0));
-            return m;
-        }
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.NumberAnimation {

@@ -69,14 +69,7 @@ Entity {
                 meshResolution: Qt.size(2, 2)
             },
             Transform { // We rotate the plane so that it faces us
-                matrix: {
-                    var m = Qt.matrix4x4(1, 0, 0, 0,
-                                         0, 1, 0, 0,
-                                         0, 0, 1, 0,
-                                         0, 0, 0, 1);
-                    m.rotate(90, Qt.vector3d(1, 0, 0));
-                    return m;
-                }
+                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
             },
             Material {
                 parameters : [

@@ -208,15 +208,8 @@ Entity {
     Transform {
         id: meshTransform
         property real userAngle: 0.0
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.rotate(userAngle, Qt.vector3d(0, 1, 0));
-            m.scale(10);
-            return m;
-        }
+        scale: 10
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.NumberAnimation {

@@ -53,16 +53,9 @@ Entity {
 
     Transform {
         id: transform
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.translate(Qt.vector3d(root.x, root.y, root.z));
-            m.rotate(root.theta, Qt.vector3d(0, 1, 0));
-            m.scale(root.scale)
-            return m;
-        }
+        translation: Qt.vector3d(root.x, root.y, root.z)
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), root.theta)
+        scale: root.scale
     }
 
     TessellatedQuadMesh {

@@ -55,15 +55,8 @@ Entity {
     Transform {
         id: transform
         property real userAngle: 0.0
-        matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
-            m.rotate(userAngle, Qt.vector3d(0, 1, 0));
-            m.scale(4);
-            return m;
-        }
+        scale: 4
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.ColorAnimation {

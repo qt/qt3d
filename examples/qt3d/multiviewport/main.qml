@@ -117,14 +117,7 @@ Entity {
         Entity {
             components: [
                 Transform {
-                    matrix: {
-                        var m = Qt.matrix4x4(1, 0, 0, 0,
-                                             0, 1, 0, 0,
-                                             0, 0, 1, 0,
-                                             0, 0, 0, 1);
-                        m.rotate(-sceneRoot.rotationAngle, Qt.vector3d(0, 0, 1));
-                        return m;
-                    }
+                    rotation: fromAxisAndAngle(Qt.vector3d(0, 0, 1), -sceneRoot.rotationAngle)
                 },
                 SceneLoader {
                     source: "qrc:/assets/test_scene.dae"
