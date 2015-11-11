@@ -237,6 +237,34 @@ QQuaternion QTransform::fromAxisAndAngle(float x, float y, float z, float angle)
     return QQuaternion::fromAxisAndAngle(x, y, z, angle);
 }
 
+QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                          const QVector3D &axis2, float angle2)
+{
+    const QQuaternion q1 = QQuaternion::fromAxisAndAngle(axis1, angle1);
+    const QQuaternion q2 = QQuaternion::fromAxisAndAngle(axis2, angle2);
+    return q2 * q1;
+}
+
+QQuaternion QTransform::fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                          const QVector3D &axis2, float angle2,
+                                          const QVector3D &axis3, float angle3)
+{
+    const QQuaternion q1 = QQuaternion::fromAxisAndAngle(axis1, angle1);
+    const QQuaternion q2 = QQuaternion::fromAxisAndAngle(axis2, angle2);
+    const QQuaternion q3 = QQuaternion::fromAxisAndAngle(axis3, angle3);
+    return q3 * q2 * q1;
+}
+
+QQuaternion QTransform::fromEulerAngles(const QVector3D &eulerAngles)
+{
+    return QQuaternion::fromEulerAngles(eulerAngles);
+}
+
+QQuaternion QTransform::fromEulerAngles(float pitch, float yaw, float roll)
+{
+    return QQuaternion::fromEulerAngles(pitch, yaw, roll);
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

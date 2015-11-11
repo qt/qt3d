@@ -79,6 +79,15 @@ public:
     Q_INVOKABLE static QQuaternion fromAxisAndAngle(const QVector3D &axis, float angle);
     Q_INVOKABLE static QQuaternion fromAxisAndAngle(float x, float y, float z, float angle);
 
+    Q_INVOKABLE static QQuaternion fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                                     const QVector3D &axis2, float angle2);
+    Q_INVOKABLE static QQuaternion fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                                     const QVector3D &axis2, float angle2,
+                                                     const QVector3D &axis3, float angle3);
+
+    Q_INVOKABLE static QQuaternion fromEulerAngles(const QVector3D &eulerAngles);
+    Q_INVOKABLE static QQuaternion fromEulerAngles(float pitch, float yaw, float roll);
+
 public Q_SLOTS:
     void setScale(float scale);
     void setScale3D(const QVector3D &scale);
