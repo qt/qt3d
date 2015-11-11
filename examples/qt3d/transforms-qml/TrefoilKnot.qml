@@ -50,15 +50,9 @@ Entity {
 
     Transform {
         id: transform
-
-        matrix: {
-            var m = Qt.matrix4x4();
-            m.translate( root.translation );
-            m.rotate( root.theta, Qt.vector3d( 1.0, 0.0, 0.0 ) );
-            m.rotate( root.phi, Qt.vector3d( 0.0, 1.0, 0.0 ) );
-            m.scale( root.scale );
-            return m;
-        }
+        translation: root.translation
+        rotation: fromEulerAngles(theta, phi, 0)
+        scale: root.scale
     }
 
     Mesh {

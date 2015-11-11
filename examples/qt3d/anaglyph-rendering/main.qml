@@ -88,15 +88,7 @@ Entity {
             id: cylinderTransform
             property real theta: 0.0
             property real phi: 0.0
-            property real userScale: 1.0
-
-            matrix: {
-                var m = Qt.matrix4x4();
-                m.rotate(phi, Qt.vector3d(0.0, 1.0, 0.0));
-                m.rotate(theta, Qt.vector3d(1.0, 0.0, 0.0));
-                m.scale(userScale);
-                return m;
-            }
+            rotation: fromEulerAngles(theta, phi, 0)
         }
         property Material phong: PhongMaterial {}
 
@@ -106,14 +98,14 @@ Entity {
             QQ2.SequentialAnimation {
                 QQ2.NumberAnimation {
                     target: cylinderTransform
-                    property: "userScale"
+                    property: "scale"
                     from: 5; to: 45
                     duration: 2000
                     easing.type: QQ2.Easing.OutInQuad
                 }
                 QQ2.NumberAnimation {
                     target: cylinderTransform
-                    property: "userScale"
+                    property: "scale"
                     from: 45; to: 5
                     duration: 2000
                     easing.type: QQ2.Easing.InOutQuart
@@ -145,16 +137,11 @@ Entity {
             Transform {
                 id: planeTransform
                 property real rollAngle: 0.0
-
-                matrix: {
-                    var m = Qt.matrix4x4();
-                    m.translate(Qt.vector3d(Math.sin(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius,
-                                            0.0,
-                                            Math.cos(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius))
-                    m.rotate(stereoCamera.circleRotation * -2 * 180 / Math.PI + 180, Qt.vector3d(0.0, 1.0, 0.0));
-                    m.rotate(planeTransform.rollAngle, Qt.vector3d(1.0, 0.0, 0.0));
-                    return m;
-                }
+                translation: Qt.vector3d(Math.sin(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius,
+                                         0.0,
+                                         Math.cos(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius)
+                rotation: fromAxesAndAngles(Qt.vector3d(1.0, 0.0, 0.0), planeTransform.rollAngle,
+                                            Qt.vector3d(0.0, 1.0, 0.0), stereoCamera.circleRotation * -2 * 180 / Math.PI + 180)
             },
             PhongMaterial {
                 shininess: 20.0

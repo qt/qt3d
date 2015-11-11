@@ -48,15 +48,9 @@ Entity {
 
     components: [
         Transform {
-            matrix: {
-                var m = Qt.matrix4x4();
-                m.translate(root.position);
-                m.rotate(root.angleX, Qt.vector3d(1, 0, 0))
-                m.rotate(root.angleY, Qt.vector3d(0, 1, 0))
-                m.rotate(root.angleZ, Qt.vector3d(0, 0, 1))
-                m.scale(root.scale);
-                return m;
-            }
+            translation: root.position
+            rotation: fromEulerAngles(root.angleX, root.angleY, root.angleZ)
+            scale: root.scale
         },
         SceneLoader {
             source: "qrc:/assets/gltf/wine/wine.gltf"

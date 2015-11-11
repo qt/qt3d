@@ -59,14 +59,9 @@ Entity {
 
     Transform {
         id: transform
-        matrix: {
-            var m = Qt.matrix4x4();
-            m.translate(Qt.vector3d(root.x, root.y, root.z));
-            m.rotate(root.phi, Qt.vector3d(0, 1, 0));
-            m.rotate(root.theta, Qt.vector3d(1, 0, 0));
-            m.scale(root.scale);
-            return m;
-        }
+        translation: Qt.vector3d(root.x, root.y, root.z);
+        rotation: fromEulerAngles(root.theta, root.phi)
+        scale: root.scale
     }
 
     WaveMaterial {

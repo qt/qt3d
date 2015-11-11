@@ -81,12 +81,8 @@ Entity {
 
     Transform {
         id: torusTransform
-        matrix: {
-            var m = Qt.matrix4x4();
-            m.rotate(45, Qt.vector3d(1, 0, 0));
-            m.scale(Qt.vector3d(1.5, 1, 0.5));
-            return m;
-        }
+        scale3D: Qt.vector3d(1.5, 1, 0.5)
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
     }
 
     Entity {
