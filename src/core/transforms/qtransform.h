@@ -76,6 +76,9 @@ public:
     QQuaternion rotation() const;
     QVector3D translation() const;
 
+    Q_INVOKABLE static QQuaternion fromAxisAndAngle(const QVector3D &axis, float angle);
+    Q_INVOKABLE static QQuaternion fromAxisAndAngle(float x, float y, float z, float angle);
+
 public Q_SLOTS:
     void setScale(float scale);
     void setScale3D(const QVector3D &scale);

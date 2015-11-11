@@ -227,6 +227,16 @@ QVector3D QTransform::translation() const
     return d->m_translation;
 }
 
+QQuaternion QTransform::fromAxisAndAngle(const QVector3D &axis, float angle)
+{
+    return QQuaternion::fromAxisAndAngle(axis, angle);
+}
+
+QQuaternion QTransform::fromAxisAndAngle(float x, float y, float z, float angle)
+{
+    return QQuaternion::fromAxisAndAngle(x, y, z, angle);
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
