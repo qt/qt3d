@@ -111,7 +111,11 @@ Entity
     Entity {
         components: [
             Transform {
-                Rotate {angle : 90; axis : Qt.vector3d(0, 1, 0)}
+                matrix: {
+                    var m = Qt.matrix4x4();
+                    m.rotate(90, Qt.vector3d(0, 1, 0));
+                    return m;
+                }
             },
             SceneLoader {
                 id: sceneLoader
@@ -163,10 +167,7 @@ Entity
                         var constantTranslation = Qt.vector3d(origTranslation.x, origTranslation.y, origTranslation.z);
 
                         t.matrix = Qt.binding(function() {
-                            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                                 0, 1, 0, 0,
-                                                 0, 0, 1, 0,
-                                                 0, 0, 0, 1);
+                            var m = Qt.matrix4x4();
                             m.rotate(suzanneAnim.userAngle, suzanneAnim.axis);
                             m.translate(constantTranslation);
                             m.rotate(90, Qt.vector3d(1, 0, 0));

@@ -52,12 +52,7 @@ Entity {
         id: transform
 
         matrix: {
-            // TODO: Adapt QtObject::method_matrix4x4() in qqmlbuiltinfunctions.cpp to
-            // work with 0 arguments such that it creates an identity matrix
-            var m = Qt.matrix4x4(1,0,0,0,
-                                 0,1,0,0,
-                                 0,0,1,0,
-                                 0,0,0,1);
+            var m = Qt.matrix4x4();
             m.translate( root.translation );
             m.rotate( root.theta, Qt.vector3d( 1.0, 0.0, 0.0 ) );
             m.rotate( root.phi, Qt.vector3d( 0.0, 1.0, 0.0 ) );

@@ -496,10 +496,7 @@ Entity {
 
         property Transform transformSun: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(sun.x, sun.y, sun.z));
                 m.rotate(sun.tilt, tiltAxis);
                 m.rotate(sun.roll, rollAxis);
@@ -536,10 +533,7 @@ Entity {
 
         property Transform transformMercury: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(mercury.x, mercury.y, mercury.z));
                 m.rotate(mercury.tilt, tiltAxis);
                 m.rotate(mercury.roll, rollAxis);
@@ -572,10 +566,7 @@ Entity {
 
         property Transform transformVenus: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(venus.x, venus.y, venus.z));
                 m.rotate(venus.tilt, tiltAxis);
                 m.rotate(venus.roll, rollAxis);
@@ -609,10 +600,7 @@ Entity {
 
         property Transform transformEarth: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(earth.x, earth.y, earth.z));
                 m.rotate(earth.tilt, tiltAxis);
                 m.rotate(earth.roll, rollAxis);
@@ -646,10 +634,7 @@ Entity {
 
         property Transform transformEarthClouds: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(earthClouds.x, earthClouds.y, earthClouds.z));
                 m.rotate(earthClouds.tilt, tiltAxis);
                 m.rotate(earthClouds.roll / 1.2, rollAxis);
@@ -682,10 +667,7 @@ Entity {
 
         property Transform transformMoon: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(moon.x, moon.y, moon.z));
                 m.rotate(moon.tilt, tiltAxis);
                 m.rotate(moon.roll, rollAxis);
@@ -718,10 +700,7 @@ Entity {
 
         property Transform transformMars: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(mars.x, mars.y, mars.z));
                 m.rotate(mars.tilt, tiltAxis);
                 m.rotate(mars.roll, rollAxis);
@@ -753,10 +732,7 @@ Entity {
 
         property Transform transformJupiter: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(jupiter.x, jupiter.y, jupiter.z));
                 m.rotate(jupiter.tilt, tiltAxis);
                 m.rotate(jupiter.roll, rollAxis);
@@ -788,10 +764,7 @@ Entity {
 
         property Transform transformSaturn: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(saturn.x, saturn.y, saturn.z));
                 m.rotate(saturn.tilt, tiltAxis);
                 m.rotate(saturn.roll, rollAxis);
@@ -825,10 +798,7 @@ Entity {
 
         property Transform transformSaturnRing: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(saturn.x, saturn.y, saturn.z));
                 m.rotate(saturn.tilt, tiltAxis);
                 m.rotate(saturn.roll / 10, rollAxis);
@@ -860,10 +830,7 @@ Entity {
 
         property Transform transformUranus: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(uranus.x, uranus.y, uranus.z));
                 m.rotate(uranus.tilt, tiltAxis);
                 m.rotate(uranus.roll, rollAxis);
@@ -897,10 +864,7 @@ Entity {
 
         property Transform transformUranusRing: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(uranus.x, uranus.y, uranus.z));
                 m.rotate(uranus.tilt, tiltAxis);
                 m.rotate(uranus.roll / 10, rollAxis);
@@ -932,10 +896,7 @@ Entity {
 
         property Transform transformNeptune: Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(Qt.vector3d(neptune.x, neptune.y, neptune.z));
                 m.rotate(neptune.tilt, tiltAxis);
                 m.rotate(neptune.roll, rollAxis);

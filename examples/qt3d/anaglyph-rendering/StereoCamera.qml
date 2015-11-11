@@ -79,10 +79,7 @@ Entity {
         id: eyeTransform
 
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.lookAt(root.position, root.viewCenter, Qt.vector3d(0.0, 1.0, 0.0));
             return m;
         }

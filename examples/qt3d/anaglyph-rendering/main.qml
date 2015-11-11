@@ -91,10 +91,7 @@ Entity {
             property real userScale: 1.0
 
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.rotate(phi, Qt.vector3d(0.0, 1.0, 0.0));
                 m.rotate(theta, Qt.vector3d(1.0, 0.0, 0.0));
                 m.scale(userScale);
@@ -150,10 +147,7 @@ Entity {
                 property real rollAngle: 0.0
 
                 matrix: {
-                    var m = Qt.matrix4x4(1, 0, 0, 0,
-                                         0, 1, 0, 0,
-                                         0, 0, 1, 0,
-                                         0, 0, 0, 1);
+                    var m = Qt.matrix4x4();
                     m.translate(Qt.vector3d(Math.sin(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius,
                                             0.0,
                                             Math.cos(stereoCamera.circleRotation * -2) * obstaclesRepeater.radius))

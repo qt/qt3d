@@ -53,10 +53,7 @@ Entity {
     Transform {
         id: transform
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.translate(Qt.vector3d(root.x, root.y, root.z));
             m.rotate(phi, Qt.vector3d(0, 1, 0));
             m.rotate(theta, Qt.vector3d(1, 0, 0));

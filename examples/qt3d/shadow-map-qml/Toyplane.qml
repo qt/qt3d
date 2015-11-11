@@ -59,10 +59,7 @@ Entity {
         QQ2.Behavior on rollAngle { QQ2.SpringAnimation { spring: 2; damping: 0.2} }
 
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.translate(Qt.vector3d(Math.sin(angle * Math.PI / 180) * scaleFactor,
                                     altitude,
                                     Math.cos(angle * Math.PI / 180) * scaleFactor));

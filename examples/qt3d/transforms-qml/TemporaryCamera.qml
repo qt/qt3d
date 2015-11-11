@@ -50,10 +50,7 @@ Entity {
         id: transform
 
         matrix: {
-            var m = Qt.matrix4x4(1,0,0,0,
-                                 0,1,0,0,
-                                 0,0,1,0,
-                                 0,0,0,1);
+            var m = Qt.matrix4x4();
             m.lookAt( root.pos, root.viewCenter, root.up );
             return m;
         }

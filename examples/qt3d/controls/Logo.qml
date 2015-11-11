@@ -77,10 +77,7 @@ Entity {
         id: logoTransform
 
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.rotate(rotation_z.value, Qt.vector3d(0, 0, 1));
             m.rotate(rotation_y.value, Qt.vector3d(0, 1, 0));
             m.rotate(rotation_x.value, Qt.vector3d(1, 0, 0));

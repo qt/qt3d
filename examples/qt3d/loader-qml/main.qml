@@ -82,10 +82,7 @@ Entity {
     Transform {
         id: torusTransform
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.rotate(45, Qt.vector3d(1, 0, 0));
             m.scale(Qt.vector3d(1.5, 1, 0.5));
             return m;
@@ -118,10 +115,7 @@ Entity {
         id: revolutionTransform
         property real userAngle: 0.0
         matrix: {
-            var m = Qt.matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, 1, 0,
-                                 0, 0, 0, 1);
+            var m = Qt.matrix4x4();
             m.rotate(userAngle, Qt.vector3d(0, 1, 0));
             m.translate(Qt.vector3d(20, 0, 0));
             return m;

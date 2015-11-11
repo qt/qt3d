@@ -68,7 +68,7 @@ Entity {
             id: trefoil
 
             translation: Qt.vector3d( 0.0, 20.0, 0.0 )
-            scale: Qt.vector3d(4, 4, 4)
+            scale: 4
 
             meshSource: "assets/obj/trefoil.obj"
             material: PhongMaterial {
@@ -79,7 +79,7 @@ Entity {
                 id: ball
 
                 translation: Qt.vector3d( 0.0, 5.0, 0.0 )
-                scale: Qt.vector3d(0.2, 0.2, 0.2)
+                scale: 0.2
 
                 meshSource: "assets/obj/ball.obj"
                 material: PhongMaterial {

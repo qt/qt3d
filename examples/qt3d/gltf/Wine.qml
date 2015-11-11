@@ -49,10 +49,7 @@ Entity {
     components: [
         Transform {
             matrix: {
-                var m = Qt.matrix4x4(1, 0, 0, 0,
-                                     0, 1, 0, 0,
-                                     0, 0, 1, 0,
-                                     0, 0, 0, 1);
+                var m = Qt.matrix4x4();
                 m.translate(root.position);
                 m.rotate(root.angleX, Qt.vector3d(1, 0, 0))
                 m.rotate(root.angleY, Qt.vector3d(0, 1, 0))
