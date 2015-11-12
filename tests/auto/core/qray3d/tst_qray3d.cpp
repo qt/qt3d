@@ -475,11 +475,11 @@ void tst_QRay3D::transform()
     ray1.transform(m);
     ray3 = ray2.transformed(m);
 
-    QCOMPARE(ray1.origin(), ray3.origin());
-    QCOMPARE(ray1.direction(), ray3.direction());
+    QVERIFY(fuzzyCompare(ray1.origin(), ray3.origin()));
+    QVERIFY(fuzzyCompare(ray1.direction(), ray3.direction()));
 
-    QCOMPARE(ray1.origin(), m * point);
-    QCOMPARE(ray1.direction(), m.mapVector(direction));
+    QVERIFY(fuzzyCompare(ray1.origin(), m * point));
+    QVERIFY(fuzzyCompare(ray1.direction(), m.mapVector(direction)));
 }
 
 class tst_QRay3DProperties : public QObject
