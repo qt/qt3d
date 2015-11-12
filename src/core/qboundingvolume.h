@@ -53,7 +53,8 @@ public:
     virtual ~QBoundingVolume();
 
     enum Type {
-        Sphere = 0
+        Sphere = 0,
+        Triangle
     };
 
     virtual QNodeId id() const = 0;
