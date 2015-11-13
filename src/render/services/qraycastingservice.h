@@ -54,9 +54,9 @@ class QRayCastingServicePrivate;
 class QT3DRENDERSHARED_EXPORT QRayCastingService : public Qt3DCore::QAbstractCollisionQueryService
 {
 public:
-    explicit QRayCastingService(Qt3DCore::QBoundingVolumeProvider *provider);
+    QRayCastingService();
 
-    Qt3DCore::QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode) Q_DECL_OVERRIDE;
+    Qt3DCore::QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, Qt3DCore::QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
 
     Qt3DCore::QCollisionQueryResult fetchResult(const Qt3DCore::QQueryHandle &handle) Q_DECL_OVERRIDE;
     QVector<Qt3DCore::QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;

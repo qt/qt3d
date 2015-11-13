@@ -71,7 +71,7 @@ typedef QFuture<Qt3DCore::QCollisionQueryResult> FutureQueryResult;
 class QRayCastingServicePrivate : public Qt3DCore::QAbstractCollisionQueryServicePrivate
 {
 public:
-    QRayCastingServicePrivate(const QString &description, Qt3DCore::QBoundingVolumeProvider *provider);
+    QRayCastingServicePrivate(const QString &description);
 
     Qt3DCore::QCollisionQueryResult collides(const Qt3DCore::QRay3D &ray,
                                          Qt3DCore::QBoundingVolumeProvider *provider,
@@ -89,8 +89,6 @@ public:
 
     QHash<Qt3DCore::QQueryHandle, FutureQueryResult> m_results;
     QAtomicInt m_handlesCount;
-
-    Qt3DCore::QBoundingVolumeProvider *m_boundingProvider;
 };
 
 } // namespace Qt3DRender

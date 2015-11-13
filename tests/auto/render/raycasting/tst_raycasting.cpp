@@ -133,10 +133,12 @@ void tst_RayCasting::shouldReturnValidHandle()
     Sphere v1;
     MyBoudingVolumesProvider provider = QVector<QBoundingVolume *>() << &v1;
 
-    QRayCastingService service(&provider);
+    QRayCastingService service;
 
     // WHEN
-    QQueryHandle handle = service.query(ray, QAbstractCollisionQueryService::AllHits);
+    QQueryHandle handle = service.query(ray,
+                                        QAbstractCollisionQueryService::AllHits,
+                                        &provider);
 
     // THEN
     QVERIFY(handle >= 0);
@@ -152,10 +154,14 @@ void tst_RayCasting::shouldReturnResultForEachHandle()
     QVector<QBoundingVolume *> volumes;
     MyBoudingVolumesProvider provider(volumes);
 
-    QRayCastingService service(&provider);
+    QRayCastingService service;
 
-    QQueryHandle handle1 = service.query(ray, QAbstractCollisionQueryService::AllHits);
-    QQueryHandle handle2 = service.query(ray, QAbstractCollisionQueryService::FirstHit);
+    QQueryHandle handle1 = service.query(ray,
+                                         QAbstractCollisionQueryService::AllHits,
+                                         &provider);
+    QQueryHandle handle2 = service.query(ray,
+                                         QAbstractCollisionQueryService::FirstHit,
+                                         &provider);
 
     // WHEN
     QCollisionQueryResult result2 = service.fetchResult(handle2);
@@ -173,11 +179,15 @@ void tst_RayCasting::shouldReturnAllResults()
     QVector<QBoundingVolume *> volumes;
     MyBoudingVolumesProvider provider(volumes);
 
-    QRayCastingService service(&provider);
+    QRayCastingService service;
 
     QVector<QQueryHandle> handles;
-    handles.append(service.query(ray, QAbstractCollisionQueryService::AllHits));
-    handles.append(service.query(ray, QAbstractCollisionQueryService::FirstHit));
+    handles.append(service.query(ray,
+                                 QAbstractCollisionQueryService::AllHits,
+                                 &provider));
+    handles.append(service.query(ray,
+                                 QAbstractCollisionQueryService::FirstHit,
+                                 &provider));
 
     // WHEN
     QVector<QCollisionQueryResult> results = service.fetchAllResults();
@@ -222,7 +232,7 @@ void tst_RayCasting::shouldReturnHits_data()
 
     QTest::newRow("All hits, Three sphere intersect") << ray
                                                       << (QVector<QBoundingVolume *> () << volumeAt(0) << volumeAt(3) << volumeAt(6) << volumeAt(2))
-                                                      << (QVector<QNodeId>() << volumeAt(0)->id() << volumeAt(6)->id() << volumeAt(2)->id())
+                                                      << (QVector<QNodeId>() << volumeAt(0)->id() << volumeAt(2)->id() << volumeAt(6)->id())
                                                       << QAbstractCollisionQueryService::AllHits;
 
     QTest::newRow("All hits, No sphere intersect") << ray
@@ -231,7 +241,7 @@ void tst_RayCasting::shouldReturnHits_data()
                                                    << QAbstractCollisionQueryService::AllHits;
 
     QTest::newRow("Sphere 1 intersect, returns First Hit") << ray
-                                                           << (QVector<QBoundingVolume *> () << volumeAt(0) << volumeAt(3) << volumeAt(1))
+                                                           << (QVector<QBoundingVolume *> () << volumeAt(0) << volumeAt(3) << volumeAt(6))
                                                            << (QVector<QNodeId>() << volumeAt(0)->id())
                                                            << QAbstractCollisionQueryService::FirstHit;
 
@@ -260,10 +270,10 @@ void tst_RayCasting::shouldReturnHits()
     QFETCH(QAbstractCollisionQueryService::QueryMode, queryMode);
 
     MyBoudingVolumesProvider provider(volumes);
-    QRayCastingService service(&provider);
+    QRayCastingService service;
 
     // WHEN
-    QQueryHandle handle = service.query(ray, queryMode);
+    QQueryHandle handle = service.query(ray, queryMode, &provider);
     QCollisionQueryResult result = service.fetchResult(handle);
 
     // THEN
@@ -283,10 +293,12 @@ void tst_RayCasting::shouldUseProvidedBoudingVolumes()
     MyBoudingVolumesProvider provider(QVector<QBoundingVolume *>() << &sphere1 << &sphere4 << &sphere3);
     QVector<QNodeId> hits(QVector<QNodeId>() << sphere1.id() << sphere3.id());
 
-    QRayCastingService service(&provider);
+    QRayCastingService service;
 
     // WHEN
-    QQueryHandle handle = service.query(ray, QAbstractCollisionQueryService::AllHits);
+    QQueryHandle handle = service.query(ray,
+                                        QAbstractCollisionQueryService::AllHits,
+                                        &provider);
     QCollisionQueryResult result = service.fetchResult(handle);
 
     // THEN

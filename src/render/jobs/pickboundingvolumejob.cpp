@@ -45,7 +45,9 @@
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
 #include <Qt3DRender/qraycastingservice.h>
+#include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DCore/qservicelocator.h>
 #include <Qt3DCore/qray3d.h>
 #include <Qt3DCore/qabstractcollisionqueryservice.h>
@@ -65,8 +67,8 @@ struct ViewportCameraPair
     QRectF viewport;
 };
 
-class ViewportCameraGatherer {
-
+class ViewportCameraGatherer
+{
 private:
     QVector<FrameGraphNode *> m_leaves;
 
@@ -120,6 +122,44 @@ public:
 
 };
 
+QVector<Qt3DCore::QBoundingVolume *> gatherBoundingVolumes(Entity *entity)
+{
+    QVector<Qt3DCore::QBoundingVolume *> volumes;
+
+    if (entity != Q_NULLPTR) {
+        volumes.push_back(entity->worldBoundingVolume());
+        // Traverse children
+        Q_FOREACH (Entity *child, entity->children())
+            volumes += gatherBoundingVolumes(child);
+    }
+    return volumes;
+}
+
+class SphereBoundingVolumesGatherer : public Qt3DCore::QBoundingVolumeProvider
+{
+public:
+    explicit SphereBoundingVolumesGatherer(Entity *root)
+        : Qt3DCore::QBoundingVolumeProvider()
+        , m_root(root)
+        , m_needsRefresh(true)
+    {
+    }
+
+    QVector<Qt3DCore::QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL
+    {
+        if (m_needsRefresh) {
+            m_volumes = gatherBoundingVolumes(m_root);
+            m_needsRefresh = false;
+        }
+        return m_volumes;
+    }
+
+private:
+    Entity *m_root;
+    mutable QVector<Qt3DCore::QBoundingVolume *> m_volumes;
+    mutable bool m_needsRefresh;
+};
+
 } // anonymous
 
 PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
@@ -134,14 +174,8 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
     m_node = root;
 }
 
-QVector<Qt3DCore::QBoundingVolume *> PickBoundingVolumeJob::boundingVolumes() const
-{
-    return gatherBoundingVolumes(m_node);
-}
-
 Qt3DCore::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
 {
-    // TO DO: We may need to invert the y pos (Qt vs GL coordinates)
     QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
     QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
@@ -163,7 +197,7 @@ void PickBoundingVolumeJob::run()
             (Qt3DCore::QServiceLocator::CollisionService);
 
     if (rayCasting == Q_NULLPTR) {
-        Qt3DRender::QRayCastingService *rayCastingService = new QRayCastingService(this);
+        Qt3DRender::QRayCastingService *rayCastingService = new QRayCastingService();
         m_renderer->rendererAspect()->services()->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
         rayCasting = rayCastingService;
     }
@@ -171,6 +205,8 @@ void PickBoundingVolumeJob::run()
     if (rayCasting != Q_NULLPTR) {
         ViewportCameraGatherer vcGatherer;
         const QVector<ViewportCameraPair> vcPairs = vcGatherer.gather(m_renderer->frameGraphRoot());
+
+        SphereBoundingVolumesGatherer sphereGatherer(m_node);
 
         if (!vcPairs.empty()) {
             Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
@@ -180,10 +216,22 @@ void PickBoundingVolumeJob::run()
                     const QVector<Qt3DCore::QNodeId> hits = hitsForViewportAndCamera(event.pos(),
                                                                                      vc.viewport,
                                                                                      vc.cameraId,
-                                                                                     rayCasting);
+                                                                                     rayCasting,
+                                                                                     &sphereGatherer);
 
                     // If we have hits
                     if (!hits.isEmpty()) {
+                        // Note: how can we control that we want the first/last/all elements along the ray to be picked
+
+                        // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
+                        // an ObjectPicker component when it comes
+
+                        // We want to gather hits against triangles
+                        // build a triangle based bounding volume
+
+
+
+
                         Q_FOREACH (const Qt3DCore::QNodeId &entityId, hits) {
                             Entity *entity = m_manager->renderNodesManager()->lookupResource(entityId);
                             HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
@@ -276,19 +324,6 @@ void PickBoundingVolumeJob::run()
     m_mouseEvents.clear();
 }
 
-QVector<Qt3DCore::QBoundingVolume *> PickBoundingVolumeJob::gatherBoundingVolumes(Entity *entity) const
-{
-    QVector<Qt3DCore::QBoundingVolume *> volumes;
-
-    if (entity != Q_NULLPTR) {
-        volumes.push_back(entity->worldBoundingVolume());
-        // Traverse children
-        Q_FOREACH (Entity *child, entity->children())
-            volumes += gatherBoundingVolumes(child);
-    }
-    return volumes;
-}
-
 void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId,
                                                 QMatrix4x4 &viewMatrix,
                                                 QMatrix4x4 &projectionMatrix) const
@@ -322,7 +357,8 @@ QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) cons
 QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::hitsForViewportAndCamera(const QPoint &pos,
                                                                            const QRectF &relativeViewport,
                                                                            const Qt3DCore::QNodeId &cameraId,
-                                                                           Qt3DCore::QAbstractCollisionQueryService *rayCasting) const
+                                                                           Qt3DCore::QAbstractCollisionQueryService *rayCasting,
+                                                                           Qt3DCore::QBoundingVolumeProvider *volumeProvider) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -334,7 +370,7 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::hitsForViewportAndCamera(const
     // In GL the y is inverted compared to Qt
     const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
     const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
-    const Qt3DCore::QQueryHandle rayCastingHandle = rayCasting->query(ray, Qt3DCore::QAbstractCollisionQueryService::AllHits);
+    const Qt3DCore::QQueryHandle rayCastingHandle = rayCasting->query(ray, Qt3DCore::QAbstractCollisionQueryService::AllHits, volumeProvider);
     const Qt3DCore::QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
     return queryResult.entitiesHit();
 }
