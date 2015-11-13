@@ -23,7 +23,8 @@ HEADERS += \
     $$PWD/nodefunctor_p.h \
     $$PWD/transform_p.h \
     $$PWD/boundingvolumedebug_p.h \
-    $$PWD/nodemanagers_p.h
+    $$PWD/nodemanagers_p.h \
+    $$PWD/triangleboundingvolume_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -43,4 +44,5 @@ SOURCES += \
     $$PWD/layer.cpp \
     $$PWD/transform.cpp \
     $$PWD/boundingvolumedebug.cpp \
-    $$PWD/nodemanagers.cpp
+    $$PWD/nodemanagers.cpp \
+    $$PWD/triangleboundingvolume.cpp
