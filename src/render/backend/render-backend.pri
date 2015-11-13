@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/boundingvolumedebug_p.h \
     $$PWD/nodemanagers_p.h \
     $$PWD/triangleboundingvolume_p.h \
-    $$PWD/openglvertexarrayobject_p.h
+    $$PWD/openglvertexarrayobject_p.h \
+    $$PWD/trianglesextractor_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -46,4 +47,5 @@ SOURCES += \
     $$PWD/transform.cpp \
     $$PWD/boundingvolumedebug.cpp \
     $$PWD/nodemanagers.cpp \
-    $$PWD/triangleboundingvolume.cpp
+    $$PWD/triangleboundingvolume.cpp \
+    $$PWD/trianglesextractor.cpp
