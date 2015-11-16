@@ -67,19 +67,20 @@ namespace Qt3DCore {
 /*!
     \fn QRay3D::QRay3D()
 
-    Construct a default ray with an origin() of (0, 0, 0) and a
-    direction() of (0, 0, 1).
+    Construct a default ray with an origin() of (0, 0, 0), a
+    direction() of (0, 0, 1) and a distance of 1.
 */
 QRay3D::QRay3D()
     : m_direction(0.0f, 0.0f, 1.0f)
+    , m_distance(1.0f)
 {
 }
 
 /*!
-    \fn QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction)
+    \fn QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
 
-    Construct a ray given its defining \a origin and \a direction.  The
-    \a direction does not need to be normalized.
+    Construct a ray given its defining \a origin, \a direction and \a distance.
+    The \a direction does not need to be normalized.
 
     To construct a ray that passes through two points, use the following:
 
@@ -87,9 +88,10 @@ QRay3D::QRay3D()
     QRay3D thruAB(pointA, pointB - pointA);
     \endcode
 */
-QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction)
+QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
     : m_origin(origin)
     , m_direction(direction)
+    , m_distance(distance)
 {}
 
 QRay3D::~QRay3D()
@@ -145,6 +147,16 @@ void QRay3D::setDirection(const QVector3D &value)
         return;
 
     m_direction = value;
+}
+
+float QRay3D::distance() const
+{
+    return m_distance;
+}
+
+void QRay3D::setDistance(float distance)
+{
+    m_distance = distance;
 }
 
 QVector3D QRay3D::point(float t) const
