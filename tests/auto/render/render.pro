@@ -41,5 +41,6 @@ contains(QT_CONFIG, private_tests) {
         qboundingvolumedebug \
         boundingvolumedebug \
         qdefaultmeshes \
-        trianglesextractor
+        trianglesextractor \
+        triangleboundingvolume
 }
