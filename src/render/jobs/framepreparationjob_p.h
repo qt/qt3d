@@ -57,13 +57,13 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 class Entity;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob(Renderer *renderer);
+    FramePreparationJob(NodeManagers *manager);
     ~FramePreparationJob();
 
     void setRoot(Entity *root);
@@ -75,7 +75,7 @@ private:
     void parseNodeTree(Entity *node);
 
     Entity *m_root;
-    Renderer *m_renderer;
+    NodeManagers *m_manager;
 };
 
 typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;
