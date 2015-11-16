@@ -94,11 +94,16 @@ private:
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QRectF &relativeViewport) const;
-    QVector<Qt3DCore::QNodeId> hitsForViewportAndCamera(const QPoint &pos,
-                                                        const QRectF &relativeViewport,
-                                                        const Qt3DCore::QNodeId &cameraId,
-                                                        Qt3DCore::QAbstractCollisionQueryService *rayCasting,
-                                                        Qt3DCore::QBoundingVolumeProvider *volumeProvider) const;
+    QVector<Qt3DCore::QNodeId> sphereHitsForViewportAndCamera(const QPoint &pos,
+                                                              const QRectF &relativeViewport,
+                                                              const Qt3DCore::QNodeId &cameraId,
+                                                              Qt3DCore::QAbstractCollisionQueryService *rayCasting,
+                                                              Qt3DCore::QBoundingVolumeProvider *volumeProvider) const;
+    QVector<Qt3DCore::QNodeId> triangleHitsForViewportAndCamera(const QPoint &pos,
+                                                                const QRectF &relativeViewport,
+                                                                const Qt3DCore::QNodeId &cameraId,
+                                                                const Qt3DCore::QNodeId &entityId,
+                                                                Qt3DCore::QAbstractCollisionQueryService *rayCasting) const;
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;
