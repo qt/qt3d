@@ -39,6 +39,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qboundingvolume.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -79,6 +80,7 @@ void GeometryRenderer::cleanup()
     m_dirty = false;
     m_enabled = true;
     m_functor.reset();
+    m_triangleVolumes.clear();
 }
 
 void GeometryRenderer::setManager(GeometryRendererManager *manager)
@@ -189,6 +191,17 @@ void GeometryRenderer::executeFunctor()
 void GeometryRenderer::unsetDirty()
 {
     m_dirty = false;
+}
+
+
+void GeometryRenderer::setTriangleVolumes(const QVector<QBoundingVolume *> &volumes)
+{
+    m_triangleVolumes = volumes;
+}
+
+QVector<QBoundingVolume *> GeometryRenderer::triangleData() const
+{
+    return m_triangleVolumes;
 }
 
 GeometryRendererFunctor::GeometryRendererFunctor(GeometryRendererManager *manager)
