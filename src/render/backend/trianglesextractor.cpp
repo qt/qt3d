@@ -109,7 +109,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTrianglesIndexed(index *indices,
                 abc[u][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 3;
     }
 
@@ -136,7 +136,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangles(vertex *vertices,
                 abc[u][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 3;
     }
     return tris;
@@ -163,7 +163,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStripIndexed(index *indices
                 abc[u][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         ++i;
     }
 
@@ -190,7 +190,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStrip(vertex *vertices,
                 abc[u][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         ++i;
     }
     return tris;
@@ -222,7 +222,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFanIndexed(index *indices,
                 abc[u + 1][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 2;
     }
 
@@ -254,7 +254,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFan(vertex *vertices,
                 abc[u + 1][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 2;
     }
     return tris;
@@ -281,7 +281,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleAdjacencyIndexed(index *ind
                 abc[u / 2][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 6;
     }
 
@@ -308,7 +308,7 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleAdjacency(vertex *vertices,
                 abc[u / 2][j] = vertices[idx + j];
             }
         }
-        tris.push_back(new TriangleBoundingVolume(id, abc[0], abc[1], abc[2]));
+        tris.push_back(new TriangleBoundingVolume(id, abc[2], abc[1], abc[0]));
         i += 6;
     }
     return tris;
