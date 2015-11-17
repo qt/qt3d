@@ -91,7 +91,16 @@ bool isEntityInLayers(const Entity *entity, const QStringList &layers)
                 if (layers.contains(layerName))
                     return true;
     }
+    return false;
+}
 
+bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
+{
+    const Sphere *s = entity->worldBoundingVolumeWithChildren();
+    for (int i = 0; i < 6; ++i) {
+        if (QVector3D::dotProduct(s->center(), planes[i].normal) + planes[i].d < -s->radius())
+            return true;
+    }
     return false;
 }
 
@@ -168,10 +177,7 @@ QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 
 QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    QMatrix4x4 projection;
-    if (m_data->m_renderCamera)
-        projection = m_data->m_renderCamera->projection();
-    return QUniformValue::fromVariant(projection * *m_data->m_viewMatrix * model, m_allocator);
+    return QUniformValue::fromVariant(*m_data->m_viewProjectionMatrix * model, m_allocator);
 }
 
 QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
@@ -199,10 +205,7 @@ QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 
 QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    QMatrix4x4 projection;
-    if (m_data->m_renderCamera)
-        projection = m_data->m_renderCamera->projection();
-    return QUniformValue::fromVariant((projection * *m_data->m_viewMatrix * model).inverted(0), m_allocator);
+    return QUniformValue::fromVariant((*m_data->m_viewProjectionMatrix * model).inverted(0), m_allocator);
 }
 
 QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
@@ -285,8 +288,9 @@ RenderView::~RenderView()
         m_allocator->deallocate<RenderCommand>(command);
     }
 
-    // Deallocate viewMatrix
+    // Deallocate viewMatrix/viewProjectionMatrix
     m_allocator->deallocate<QMatrix4x4>(m_data->m_viewMatrix);
+    m_allocator->deallocate<QMatrix4x4>(m_data->m_viewProjectionMatrix);
     // Deallocate viewport rect
     m_allocator->deallocate<QRectF>(m_viewport);
     // Deallocate clearColor
@@ -374,10 +378,13 @@ void RenderView::setRenderer(Renderer *renderer)
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(Entity *node)
+void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
 {
     // Skip branches that are not enabled
     if (!node->isEnabled())
+        return;
+
+    if (isEntityFrustumCulled(node, planes))
         return;
 
     // Build renderCommand for current node
@@ -469,7 +476,7 @@ void RenderView::buildRenderCommands(Entity *node)
 
     // Traverse children
     Q_FOREACH (Entity *child, node->children())
-        buildRenderCommands(child);
+        buildRenderCommands(child, planes);
 }
 
 const AttachmentPack &RenderView::attachmentPack() const
