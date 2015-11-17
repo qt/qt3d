@@ -318,7 +318,6 @@ Sphere *tst_RayCasting::volumeAt(int index)
 
 void tst_RayCasting::mousePicking()
 {
-    QSKIP("Temporary skip to get all the transform patches merged in");
     // GIVEN
     Qt3DCore::QCamera camera;
     camera.setProjectionType(QCameraLens::PerspectiveProjection);
