@@ -72,8 +72,14 @@ public:
     void addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId);
     QVector<Qt3DCore::QNodeId> dirtyGeometryRenderers();
 
+    void requestTriangleDataRefreshForGeometryRenderer(const Qt3DCore::QNodeId geometryRenderer);
+    bool isGeometryRendererScheduledForTriangleDataRefresh(const Qt3DCore::QNodeId geometryRenderer);
+    QVector<Qt3DCore::QNodeId> geometryRenderersRequiringTriangleDataRefresh();
+
+
 private:
     QVector<Qt3DCore::QNodeId> m_dirtyGeometryRenderers;
+    QVector<Qt3DCore::QNodeId> m_geometryRenderersRequiringTriangleRefresh;
 };
 
 } // namespace Render
