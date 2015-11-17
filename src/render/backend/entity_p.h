@@ -103,9 +103,9 @@ public:
 
     QMatrix4x4 *worldTransform();
     const QMatrix4x4 *worldTransform() const;
-    Sphere *localBoundingVolume() { return m_localBoundingVolume.data(); }
-    Sphere *worldBoundingVolume() { return m_worldBoundingVolume.data(); }
-    Sphere *worldBoundingVolumeWithChildren() { return m_worldBoundingVolumeWithChildren.data(); }
+    Sphere *localBoundingVolume() const { return m_localBoundingVolume.data(); }
+    Sphere *worldBoundingVolume() const { return m_worldBoundingVolume.data(); }
+    Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
     void removeComponent(const Qt3DCore::QNodeId &nodeId);
