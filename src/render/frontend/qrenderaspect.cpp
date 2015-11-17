@@ -102,6 +102,7 @@
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/calcgeometrytrianglevolumes_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -291,8 +292,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     // 2 CalculateBoundingVolumeJob (depends on LoadBuffer)
     // 3 WorldTransformJob
     // 4 UpdateBoundingVolume, FramePreparationJob (depend on WorlTransformJob)
-    // 5 PickBoundingVolume Job, RenderViewJobs
-    // 6 Cleanup Job (depends on RV)
+    // 5 CalcGeometryTriangleVolumes (frame preparation job), RenderViewJobs
+    // 6 PickBoundingVolumeJob
+    // 7 Cleanup Job (depends on RV)
 
     // Create jobs to load in any meshes that are pending
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
@@ -330,6 +332,17 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
         const QVector<QAspectJobPtr> geometryJobs = d->m_renderer->createGeometryRendererJobs();
         jobs.append(geometryJobs);
+
+        // Clear any previous dependency not valid anymore
+        d->m_pickBoundingVolumeJob->clearNullDependencies();
+
+        const QVector<QNodeId> geometryRendererTriangleUpdates = manager->geometryRendererManager()->geometryRenderersRequiringTriangleDataRefresh();
+        Q_FOREACH (const QNodeId geomRendererId, geometryRendererTriangleUpdates) {
+            Render::CalcGeometryTriangleVolumesPtr triangleComputeJob(new Render::CalcGeometryTriangleVolumes(geomRendererId, manager));
+            triangleComputeJob->addDependency(d->m_framePreparationJob);
+            d->m_pickBoundingVolumeJob->addDependency(triangleComputeJob);
+            jobs.append(triangleComputeJob);
+        }
 
         // Add all jobs to queue
         jobs.append(d->m_calculateBoundingVolumeJob);
