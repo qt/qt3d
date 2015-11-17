@@ -186,11 +186,13 @@ private:
         if (m_root) {
             GeometryRenderer *gRenderer = m_root->renderComponent<GeometryRenderer>();
             if (gRenderer) {
-                TrianglesExtractor extractor(gRenderer, m_manager);
-                volumes = extractor.extract(m_root->peerUuid());
-
-                Q_FOREACH (Qt3DCore::QBoundingVolume *v, volumes)
-                    static_cast<TriangleBoundingVolume *>(v)->transform(*m_root->worldTransform());
+                const QVector<Qt3DCore::QBoundingVolume *> localVolumes = gRenderer->triangleData();
+                volumes.reserve(localVolumes.size());
+                Q_FOREACH (const Qt3DCore::QBoundingVolume *v, localVolumes) {
+                    TriangleBoundingVolume *worldVolume = new TriangleBoundingVolume();
+                    *worldVolume = static_cast<const TriangleBoundingVolume *>(v)->transformed(*m_root->worldTransform());
+                    volumes.push_back(worldVolume);
+                }
             }
         }
         return volumes;
