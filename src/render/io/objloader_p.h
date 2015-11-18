@@ -108,8 +108,8 @@ public:
     bool hasTextureCoordinates() const { return !m_texCoords.isEmpty(); }
     bool hasTangents() const { return !m_tangents.isEmpty(); }
 
-    bool load( const QString& fileName );
-    bool load( ::QIODevice* ioDev );
+    bool load( const QString& fileName, const QString& subMesh = QString() );
+    bool load( ::QIODevice* ioDev, const QString& subMesh = QString() );
 
     QVector<QVector3D> vertices() const { return m_points; }
     QVector<QVector3D> normals() const { return m_normals; }

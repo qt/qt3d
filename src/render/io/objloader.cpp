@@ -45,6 +45,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QVector>
+#include <QRegExp>
 
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
@@ -68,7 +69,7 @@ ObjLoader::ObjLoader()
 {
 }
 
-bool ObjLoader::load( const QString& fileName )
+bool ObjLoader::load(const QString& fileName , const QString &subMesh)
 {
     QFile file(fileName);
     if (!file.open(::QIODevice::ReadOnly|::QIODevice::Text)) {
@@ -76,7 +77,7 @@ bool ObjLoader::load( const QString& fileName )
         return false;
     }
 
-    return load(&file);
+    return load(&file, subMesh);
 }
 
 static void addFaceVertex(const FaceIndices &faceIndices,
@@ -92,7 +93,7 @@ static void addFaceVertex(const FaceIndices &faceIndices,
     }
 }
 
-bool ObjLoader::load(::QIODevice *ioDev)
+bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 {
     Q_CHECK_PTR(ioDev);
     if (!ioDev->isOpen()) {
@@ -112,6 +113,16 @@ bool ObjLoader::load(::QIODevice *ioDev)
     QHash<FaceIndices, unsigned int> faceIndexMap;
     QVector<FaceIndices> faceIndexVector;
 
+    bool skipping = false;
+    int positionsOffset = 0;
+    int normalsOffset = 0;
+    int texCoordsOffset = 0;
+
+    QRegExp subMeshMatch(subMesh);
+    if (!subMeshMatch.isValid())
+        subMeshMatch.setPattern(QString(QStringLiteral("^(%1)$")).arg(subMesh));
+    Q_ASSERT(subMeshMatch.isValid());
+
     QTextStream stream(ioDev);
     while (!stream.atEnd()) {
         QString line = stream.readLine();
@@ -123,21 +134,33 @@ bool ObjLoader::load(::QIODevice *ioDev)
             lineStream >> token;
 
             if (token == QStringLiteral("v")) {
-                float x, y, z;
-                lineStream >> x >> y >> z;
-                positions.append(QVector3D( x, y, z ));
+                if (!skipping) {
+                    float x, y, z;
+                    lineStream >> x >> y >> z;
+                    positions.append(QVector3D( x, y, z ));
+                } else {
+                    positionsOffset++;
+                }
             } else if (token == QStringLiteral("vt") && m_loadTextureCoords) {
-                // Process texture coordinate
-                float s,t;
-                lineStream >> s >> t;
-                //FlipUVs
-                t = 1.0f - t;
-                texCoords.append(QVector2D(s, t));
+                if (!skipping) {
+                    // Process texture coordinate
+                    float s,t;
+                    lineStream >> s >> t;
+                    //FlipUVs
+                    t = 1.0f - t;
+                    texCoords.append(QVector2D(s, t));
+                } else {
+                    texCoordsOffset++;
+                }
             } else if (token == QStringLiteral("vn")) {
-                float x, y, z;
-                lineStream >> x >> y >> z;
-                normals.append(QVector3D( x, y, z ));
-            } else if (token == QStringLiteral("f")) {
+                if (!skipping) {
+                    float x, y, z;
+                    lineStream >> x >> y >> z;
+                    normals.append(QVector3D( x, y, z ));
+                } else {
+                    normalsOffset++;
+                }
+            } else if (!skipping && token == QStringLiteral("f")) {
                 // Process face
                 ++faceCount;
                 QVector<FaceIndices> face;
@@ -150,11 +173,11 @@ bool ObjLoader::load(::QIODevice *ioDev)
                     QStringList indices = faceString.split(QChar::fromLatin1('/'));
                     switch (indices.size()) {
                     case 3:
-                        faceIndices.normalIndex = indices.at(2).toInt() - 1;  // fall through
+                        faceIndices.normalIndex = indices.at(2).toInt() - 1 - normalsOffset;  // fall through
                     case 2:
-                        faceIndices.texCoordIndex = indices.at(1).toInt() - 1; // fall through
+                        faceIndices.texCoordIndex = indices.at(1).toInt() - 1 - texCoordsOffset; // fall through
                     case 1:
-                        faceIndices.positionIndex = indices.at(0).toInt() - 1;
+                        faceIndices.positionIndex = indices.at(0).toInt() - 1 - positionsOffset;
                         break;
                     default:
                         qCWarning(Render::Io) << "Unsupported number of indices in face element";
@@ -182,7 +205,15 @@ bool ObjLoader::load(::QIODevice *ioDev)
                     addFaceVertex(v1, faceIndexVector, faceIndexMap);
                     addFaceVertex(v2, faceIndexVector, faceIndexMap);
                 }
-            } // end of face
+
+                // end of face
+            } else if ( token == QStringLiteral("o") ) {
+                if (!subMesh.isEmpty() ) {
+                    QString objName;
+                    lineStream >> objName;
+                    skipping = subMeshMatch.indexIn(objName) < 0;
+                }
+            }
         } // end of input line
     } // while (!stream.atEnd())
 
