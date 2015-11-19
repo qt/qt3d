@@ -1071,15 +1071,15 @@ GLuint GraphicsContext::byteSizeFromType(GLint type)
 GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dataType)
 {
     switch (dataType) {
-    case QAttribute::DataType::Byte:
+    case QAttribute::Byte:
         return GL_BYTE;
-    case QAttribute::DataType::UnsignedByte:
+    case QAttribute::UnsignedByte:
         return GL_UNSIGNED_BYTE;
-    case QAttribute::DataType::Short:
+    case QAttribute::Short:
         return GL_SHORT;
-    case QAttribute::DataType::UnsignedShort:
+    case QAttribute::UnsignedShort:
         return GL_UNSIGNED_SHORT;
-    case QAttribute::DataType::Int:
+    case QAttribute::Int:
         return GL_INT;
     case QAttribute::UnsignedInt:
         return GL_UNSIGNED_INT;
