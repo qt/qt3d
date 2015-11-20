@@ -150,7 +150,7 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
         m_material = new Qt3DRender::QPhongAlphaMaterial();
         m_layer = new Qt3DRender::QLayer();
 
-        static_cast<QPhongAlphaMaterial *>(m_material)->setAlpha(0.3);
+        static_cast<QPhongAlphaMaterial *>(m_material)->setAlpha(0.3f);
         static_cast<QPhongAlphaMaterial *>(m_material)->setDiffuse(QColor::fromRgb(255, 153, 0));
 
         m_layer->setNames(QStringList() << QStringLiteral("debug"));
