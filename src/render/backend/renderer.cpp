@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/openglvertexarrayobject_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qeventfilterservice.h>
@@ -815,7 +816,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     // Save the RenderView base stateset
     RenderStateSet *globalState = m_graphicsContext->currentStateSet();
-    QOpenGLVertexArrayObject *vao = Q_NULLPTR;
+    OpenGLVertexArrayObject *vao = Q_NULLPTR;
     HVao previousVaoHandle;
 
     Q_FOREACH (RenderCommand *command, commands) {
@@ -844,23 +845,20 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         VAOManager *vaoManager = m_nodesManager->vaoManager();
         if (m_graphicsContext->supportsVAO()) {
             command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
                 command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-                *(vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+                vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
+                vaoManager->data(command->m_vao)->create();
             }
+
             if (previousVaoHandle != command->m_vao) {
                 needsToBindVAO = true;
                 previousVaoHandle = command->m_vao;
-                vao = *(vaoManager->data(command->m_vao));
+                vao = vaoManager->data(command->m_vao);
             }
             Q_ASSERT(vao);
-            // If the VAO hasn't been created, we create it
-            if (!vao->isCreated()) {
-                vao->create();
-                needsToBindVAO = true;
-                qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
-            }
         }
 
         //// We activate the shader here
@@ -875,7 +873,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Before the shader was loader
         Attribute *indexAttribute = Q_NULLPTR;
         bool specified = false;
-        const bool requiresVAOUpdate = (!vao || !vao->isCreated()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
+        const bool requiresVAOUpdate = (!vao || !vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
         GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
 
         // Append dirty Geometry to temporary vector
@@ -883,14 +881,15 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (rGeometry->isDirty())
             m_dirtyGeometry.push_back(rGeometry);
 
+        if (needsToBindVAO && vao) {
+            vao->bind();
+        }
+
         if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
-            specified = true;
-            if (needsToBindVAO && vao) {
-                Q_ASSERT(vao->isCreated());
-                vao->bind();
-            }
             // Update or set Attributes and Buffers for the given rGeometry and Command
             indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
+            specified = true;
+            vao->setSpecified(true);
         }
 
         //// Update program uniforms
@@ -911,7 +910,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        if (specified || (vao && vao->isCreated())) {
+        if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
             const GLint primType = rGeometryRenderer->primitiveType();
             const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
             const bool drawIndexed = indexAttribute != Q_NULLPTR;

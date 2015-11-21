@@ -72,6 +72,7 @@
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
+#include <Qt3DRender/private/openglvertexarrayobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -226,7 +227,7 @@ public:
 };
 
 class VAOManager : public Qt3DCore::QResourceManager<
-        QOpenGLVertexArrayObject *,
+        OpenGLVertexArrayObject,
         QPair<HGeometry, HShader>,
         16>
 {

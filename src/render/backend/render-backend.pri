@@ -24,7 +24,8 @@ HEADERS += \
     $$PWD/transform_p.h \
     $$PWD/boundingvolumedebug_p.h \
     $$PWD/nodemanagers_p.h \
-    $$PWD/triangleboundingvolume_p.h
+    $$PWD/triangleboundingvolume_p.h \
+    $$PWD/openglvertexarrayobject_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
