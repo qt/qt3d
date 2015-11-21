@@ -85,9 +85,7 @@ Entity {
         property real scaleFactor: 1.0
 
         property Transform transform: Transform {
-            Scale {
-                scale: sphere1.scaleFactor
-            }
+            scale: sphere1.scaleFactor
         }
 
         property MouseInput mouseInput : MouseInput {

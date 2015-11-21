@@ -1,6 +1,5 @@
 HEADERS += \
     $$PWD/quick3dnodeinstantiator_p.h \
-    $$PWD/quick3dtransform_p.h \
     $$PWD/quick3dconfiguration_p.h \
     $$PWD/quick3dentity_p.h \
     $$PWD/quick3dentityloader_p_p.h \
@@ -11,7 +10,6 @@ SOURCES += \
     $$PWD/quick3dnode.cpp \
     $$PWD/quick3dentity.cpp \
     $$PWD/quick3dentityloader.cpp \
-    $$PWD/quick3dtransform.cpp \
     $$PWD/quick3dconfiguration.cpp \
     $$PWD/quick3dnodeinstantiator.cpp
 

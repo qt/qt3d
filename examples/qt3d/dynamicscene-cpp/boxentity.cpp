@@ -41,14 +41,11 @@
 BoxEntity::BoxEntity(QNode *parent)
     : Qt3DCore::QEntity(parent)
     , m_transform(new Qt3DCore::QTransform())
-    , m_translate(new Qt3DCore::QTranslateTransform())
     , m_mesh(new Qt3DRender::QCuboidMesh())
     , m_material(new Qt3DRender::QPhongMaterial())
     , m_angle(0.0f)
     , m_radius(1.0f)
 {
-    m_transform->addTransform(m_translate);
-
     connect(m_material, SIGNAL(diffuseChanged()), this, SIGNAL(diffuseColorChanged()));
     m_material->setAmbient(Qt::gray);
     m_material->setSpecular(Qt::white);
@@ -101,7 +98,7 @@ float BoxEntity::radius() const
 
 void BoxEntity::updateTransformation()
 {
-    m_translate->setTranslation(QVector3D(qCos(m_angle) * m_radius,
+    m_transform->setTranslation(QVector3D(qCos(m_angle) * m_radius,
                                           1.0f,
                                           qSin(m_angle) * m_radius));
 }

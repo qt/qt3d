@@ -39,8 +39,6 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QTranslateTransform>
-#include <Qt3DCore/QScaleTransform>
 #include <Qt3DRender/QCuboidMesh>
 #include <Qt3DRender/QPhongMaterial>
 
@@ -73,8 +71,6 @@ private:
     void updateTransformation();
 
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QTranslateTransform *m_translate;
-    Qt3DCore::QScaleTransform *m_scale;
     Qt3DRender::QCuboidMesh *m_mesh;
     Qt3DRender::QPhongMaterial *m_material;
     float m_angle;

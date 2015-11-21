@@ -72,6 +72,7 @@ class RenderStateSet;
 class Technique;
 class RenderView;
 class Renderer;
+class NodeManagers;
 class ShaderDataManager;
 struct ShaderUniform;
 class ShaderData;
@@ -81,11 +82,11 @@ Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
 
 Q_AUTOTEST_EXPORT Technique *findTechniqueForEffect(Renderer *renderer,
-                                                          RenderView *renderView,
-                                                          Effect *effect);
+                                                    RenderView *renderView,
+                                                    Effect *effect);
 
 typedef QVarLengthArray<RenderPass*, 4> RenderRenderPassList;
-Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
+Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
                                                                     RenderView *renderView,
                                                                     Technique *technique);
 

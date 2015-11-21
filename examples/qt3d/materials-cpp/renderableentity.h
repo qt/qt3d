@@ -39,9 +39,6 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DRender/QMesh>
 
 class RenderableEntity : public Qt3DCore::QEntity
@@ -51,16 +48,11 @@ public:
     ~RenderableEntity();
 
     Qt3DRender::QMesh *mesh() const;
-    Qt3DCore::QScaleTransform *scaleTransform() const;
-    Qt3DCore::QTranslateTransform *translateTransform() const;
-    Qt3DCore::QRotateTransform *rotateTransform() const;
+    Qt3DCore::QTransform *transform() const;
 
 private:
     Qt3DRender::QMesh *m_mesh;
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QRotateTransform *m_rotateTransform;
-    Qt3DCore::QScaleTransform *m_scaleTransform;
-    Qt3DCore::QTranslateTransform *m_translateTransform;
 };
 
 #endif // RENDERABLEENTITY_H

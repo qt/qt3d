@@ -92,7 +92,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QSphereGeometry)
-    QT3D_CLONEABLE(QSphereGeometry)
 };
 
 } // Qt3DRender

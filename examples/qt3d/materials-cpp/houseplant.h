@@ -71,14 +71,10 @@ public:
     PotShape potShape() const;
     Plant plantType() const;
 
-    void setX(float x);
-    void setY(float y);
-    void setZ(float z);
+    void setPosition(const QVector3D &pos);
     void setScale(float scale);
 
-    float x() const;
-    float y() const;
-    float z() const;
+    QVector3D position() const;
     float scale() const;
 
 private:

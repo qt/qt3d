@@ -40,7 +40,6 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/QObjectPicker>
-#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QPickEvent>
 
 #include "testpostmanarbiter.h"
@@ -71,7 +70,6 @@ class tst_QObjectPicker : public Qt3DCore::QNode
 public:
     tst_QObjectPicker()
     {
-        qRegisterMetaType<Qt3DRender::QAttribute*>("Qt3DRender::QAttribute*");
         qRegisterMetaType<Qt3DRender::QPickEvent*>("Qt3DRender::QPickEvent*");
     }
 
@@ -91,11 +89,6 @@ private Q_SLOTS:
         objectPicker = new Qt3DRender::QObjectPicker();
         objectPicker->setHoverEnabled(true);
         QTest::newRow("objectPicker_all_true") << objectPicker;
-        objectPicker = new Qt3DRender::QObjectPicker();
-        Qt3DRender::QAttribute *attr = new Qt3DRender::QAttribute();
-        objectPicker->setPickAttribute(attr);
-        QTest::newRow("objectPicker_withAttribute") << objectPicker;
-
     }
 
     void checkCloning()
@@ -113,11 +106,6 @@ private Q_SLOTS:
         QCOMPARE(objectPicker->hoverEnabled(), clone->hoverEnabled());
         QCOMPARE(objectPicker->isPressed(), clone->isPressed());
         QCOMPARE(objectPicker->containsMouse(), clone->containsMouse());
-
-        if (objectPicker->pickAttribute()) {
-            QVERIFY(clone->pickAttribute());
-            QCOMPARE(clone->pickAttribute()->id(), objectPicker->pickAttribute()->id());
-        }
     }
 
     void checkPropertyUpdates()
@@ -127,32 +115,17 @@ private Q_SLOTS:
         TestArbiter arbiter(objectPicker.data());
 
         // WHEN
-        Qt3DRender::QAttribute *attr = new Qt3DRender::QAttribute();
-        objectPicker->setPickAttribute(attr);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "pickAttribute");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr->id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
         objectPicker->setHoverEnabled(true);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.last().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "hoverEnabled");
         QCOMPARE(change->value().toBool(), true);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
-
     }
 
     void checkBackendUpdates_data()

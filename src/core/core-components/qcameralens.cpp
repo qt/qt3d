@@ -47,7 +47,7 @@ namespace Qt3DCore {
 */
 QCameraLensPrivate::QCameraLensPrivate()
     : QComponentPrivate()
-    , m_projectionType(QCameraLens::OrthogonalProjection)
+    , m_projectionType(QCameraLens::OrthographicProjection)
     , m_nearPlane(0.1f)
     , m_farPlane(1024.0f)
     , m_fieldOfView(25.0f)
@@ -99,7 +99,7 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
     Q_D(QCameraLens);
-    d->updateOrthogonalProjection();
+    d->updateOrthographicProjection();
 }
 
 /*!
@@ -144,7 +144,7 @@ void QCameraLens::setOrthographicProjection(float left, float right,
     setTop(top);
     setNearPlane(nearPlane);
     setFarPlane(farPlane);
-    setProjectionType(OrthogonalProjection);
+    setProjectionType(OrthographicProjection);
     blockNotifications(block);
     d->updateProjectionMatrix();
 }
@@ -422,7 +422,7 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
 /*!
     \qmltype CameraLens
     \instantiates Qt3DCore::QCameraLens
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \inherits Component3D
     \since 5.5
 */
@@ -432,7 +432,7 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
 
     Holds the type of the camera projection (orthogonal or perspective).
 
-    \value CameraLens.OrthogonalProjection Orthogonal projection
+    \value CameraLens.OrthographicProjection Orthogonal projection
     \value CameraLens.PerspectiveProjection Perspective projection
 */
 

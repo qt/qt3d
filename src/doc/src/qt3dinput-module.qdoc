@@ -27,8 +27,8 @@
 
 /*!
     \module Qt3DInput
-    \title Qt3D Input C++ Classes
-    \brief The Qt3D Input module provides classes for handling user input in
+    \title Qt 3D Input C++ Classes
+    \brief The Qt 3D Input module provides classes for handling user input in
            applications using Qt3D.
 
     \ingroup modules
@@ -58,11 +58,11 @@
 
 /*!
    \qmlmodule Qt3D.Input 2.0
-   \title Qt3D Input QML Types
+   \title Qt 3D Input QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 
-   \brief Provides QML types for Qt3D user input.
+   \brief Provides QML types for Qt 3D user input.
 
    To import and use the module's QML types, use the following statement:
 

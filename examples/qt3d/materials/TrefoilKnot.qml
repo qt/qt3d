@@ -52,10 +52,9 @@ Entity {
 
     Transform {
         id: transform
-        Scale { scale: root.scale }
-        Rotate{ angle: root.theta; axis: Qt.vector3d(1.0, 0.0, 0.0) }
-        Rotate{ angle: root.phi; axis: Qt.vector3d(0.0, 1.0, 0.0) }
-        Translate { dx: root.x; dy: root.y; dz: root.z }
+        translation: Qt.vector3d(root.x, root.y, root.z)
+        rotation: fromEulerAngles(theta, phi, 0)
+        scale: root.scale
     }
 
     Mesh {

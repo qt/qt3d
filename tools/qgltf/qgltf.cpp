@@ -1195,10 +1195,10 @@ void Exporter::copyExternalTextures(const QString &inputFilename)
         foreach (const QString &textureFilename, m_importer->externalTextures()) {
             QString dst = opts.outDir + textureFilename;
             QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
+            m_files.insert(QFileInfo(dst).fileName());
             if (QFileInfo(src).absolutePath() != QFileInfo(dst).absolutePath()) {
                 if (opts.showLog)
                     qDebug().noquote() << "Copying" << src << "to" << dst;
-                m_files.insert(QFileInfo(dst).fileName());
                 QFile(src).copy(dst);
             }
         }
@@ -1326,15 +1326,15 @@ struct Shader {
 "$VERSION\n"
 "$ATTRIBUTE vec3 vertexPosition;\n"
 "$ATTRIBUTE vec3 vertexNormal;\n"
-"$VVARYING vec3 position;\n"
-"$VVARYING vec3 normal;\n"
+"$VVARYING vec3 vPosition;\n"
+"$VVARYING vec3 vNormal;\n"
 "uniform mat4 projection;\n"
 "uniform mat4 modelView;\n"
 "uniform mat3 modelViewNormal;\n"
 "void main()\n"
 "{\n"
-"    normal = normalize( modelViewNormal * vertexNormal );\n"
-"    position = vec3( modelView * vec4( vertexPosition, 1.0 ) );\n"
+"    vNormal = normalize( modelViewNormal * vertexNormal );\n"
+"    vPosition = vec3( modelView * vec4( vertexPosition, 1.0 ) );\n"
 "    gl_Position = projection * modelView * vec4( vertexPosition, 1.0 );\n"
 "}\n"
     },
@@ -1347,8 +1347,8 @@ struct Shader {
 "uniform $HIGHP vec4 kd;\n"
 "uniform $HIGHP vec3 ks;\n"
 "uniform $HIGHP float shininess;\n"
-"$FVARYING $HIGHP vec3 position;\n"
-"$FVARYING $HIGHP vec3 normal;\n"
+"$FVARYING $HIGHP vec3 vPosition;\n"
+"$FVARYING $HIGHP vec3 vNormal;\n"
 "$DECL_FRAGCOLOR\n"
 "$HIGHP vec3 adsModel( const $HIGHP vec3 pos, const $HIGHP vec3 n )\n"
 "{\n"
@@ -1363,7 +1363,7 @@ struct Shader {
 "}\n"
 "void main()\n"
 "{\n"
-"    $FRAGCOLOR = vec4( adsModel( position, normalize( normal ) ) * kd.a, kd.a );\n"
+"    $FRAGCOLOR = vec4( adsModel( vPosition, normalize( vNormal ) ) * kd.a, kd.a );\n"
 "}\n"
     },
     {
@@ -1372,17 +1372,17 @@ struct Shader {
 "$ATTRIBUTE vec3 vertexPosition;\n"
 "$ATTRIBUTE vec3 vertexNormal;\n"
 "$ATTRIBUTE vec2 vertexTexCoord;\n"
-"$VVARYING vec3 position;\n"
-"$VVARYING vec3 normal;\n"
-"$VVARYING vec2 texCoord;\n"
+"$VVARYING vec3 vPosition;\n"
+"$VVARYING vec3 vNormal;\n"
+"$VVARYING vec2 vTexCoord;\n"
 "uniform mat4 projection;\n"
 "uniform mat4 modelView;\n"
 "uniform mat3 modelViewNormal;\n"
 "void main()\n"
 "{\n"
-"    texCoord = vertexTexCoord;\n"
-"    normal = normalize( modelViewNormal * vertexNormal );\n"
-"    position = vec3( modelView * vec4( vertexPosition, 1.0 ) );\n"
+"    vTexCoord = vertexTexCoord;\n"
+"    vNormal = normalize( modelViewNormal * vertexNormal );\n"
+"    vPosition = vec3( modelView * vec4( vertexPosition, 1.0 ) );\n"
 "    gl_Position = projection * modelView * vec4( vertexPosition, 1.0 );\n"
 "}\n"
     },
@@ -1395,9 +1395,9 @@ struct Shader {
 "uniform $HIGHP vec3 ks;\n"
 "uniform $HIGHP float shininess;\n"
 "uniform sampler2D diffuseTexture;\n"
-"$FVARYING $HIGHP vec3 position;\n"
-"$FVARYING $HIGHP vec3 normal;\n"
-"$FVARYING $HIGHP vec2 texCoord;\n"
+"$FVARYING $HIGHP vec3 vPosition;\n"
+"$FVARYING $HIGHP vec3 vNormal;\n"
+"$FVARYING $HIGHP vec2 vTexCoord;\n"
 "$DECL_FRAGCOLOR\n"
 "$HIGHP vec4 adsModel( const $HIGHP vec3 pos, const $HIGHP vec3 n )\n"
 "{\n"
@@ -1408,12 +1408,12 @@ struct Shader {
 "    $HIGHP float specular = 0.0;\n"
 "    if ( dot( s, n ) > 0.0 )\n"
 "        specular = pow( max( dot( r, v ), 0.0 ), shininess );\n"
-"    $HIGHP vec4 kd = $TEXTURE2D( diffuseTexture, texCoord );\n"
+"    $HIGHP vec4 kd = $TEXTURE2D( diffuseTexture, vTexCoord );\n"
 "    return vec4( lightIntensity * ( ka + kd.rgb * diffuse + ks * specular ) * kd.a, kd.a );\n"
 "}\n"
 "void main()\n"
 "{\n"
-"    $FRAGCOLOR = adsModel( position, normalize( normal ) );\n"
+"    $FRAGCOLOR = adsModel( vPosition, normalize( vNormal ) );\n"
 "}\n"
     },
     {
@@ -1425,9 +1425,9 @@ struct Shader {
 "uniform $HIGHP float shininess;\n"
 "uniform sampler2D diffuseTexture;\n"
 "uniform sampler2D specularTexture;\n"
-"$FVARYING $HIGHP vec3 position;\n"
-"$FVARYING $HIGHP vec3 normal;\n"
-"$FVARYING $HIGHP vec2 texCoord;\n"
+"$FVARYING $HIGHP vec3 vPosition;\n"
+"$FVARYING $HIGHP vec3 vNormal;\n"
+"$FVARYING $HIGHP vec2 vTexCoord;\n"
 "$DECL_FRAGCOLOR\n"
 "$HIGHP vec4 adsModel( const in $HIGHP vec3 pos, const in $HIGHP vec3 n )\n"
 "{\n"
@@ -1438,13 +1438,13 @@ struct Shader {
 "    $HIGHP float specular = 0.0;\n"
 "    if ( dot( s, n ) > 0.0 )\n"
 "        specular = ( shininess / ( 8.0 * 3.14 ) ) * pow( max( dot( r, v ), 0.0 ), shininess );\n"
-"    $HIGHP vec4 kd = $TEXTURE2D( diffuseTexture, texCoord );\n"
-"    $HIGHP vec3 ks = $TEXTURE2D( specularTexture, texCoord );\n"
+"    $HIGHP vec4 kd = $TEXTURE2D( diffuseTexture, vTexCoord );\n"
+"    $HIGHP vec3 ks = $TEXTURE2D( specularTexture, vTexCoord );\n"
 "    return vec4( lightIntensity * ( ka + kd.rgb * diffuse + ks * specular ) * kd.a, kd.a );\n"
 "}\n"
 "void main()\n"
 "{\n"
-"    $FRAGCOLOR = vec4( adsModel( position, normalize( normal ) ), 1.0 );\n"
+"    $FRAGCOLOR = vec4( adsModel( vPosition, normalize( vNormal ) ), 1.0 );\n"
 "}\n"
     },
     {
@@ -1751,7 +1751,6 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
         material["name"] = matInfo.originalName;
 
         bool opaque = true;
-        QJsonObject tech;
         QJsonObject vals;
         for (QHash<QByteArray, QString>::const_iterator it = matInfo.m_textures.constBegin(); it != matInfo.m_textures.constEnd(); ++it) {
             if (!textureNameMap->contains(it.value()))
@@ -1802,7 +1801,7 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 opaque = false;
             vals[it.key()] = col2jsvec(it.value(), alpha);
         }
-        tech["values"] = vals;
+        material["values"] = vals;
 
         ProgramInfo *prog = chooseProgram(i);
         TechniqueInfo techniqueInfo;
@@ -1825,13 +1824,12 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
         if (opts.showLog)
             qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
 
-        tech["technique"] = techniqueInfo.name;
+        material["technique"] = techniqueInfo.name;
         if (opts.genCore) {
-            tech["techniqueCore"] = techniqueInfo.coreName;
-            tech["techniqueGL2"] = techniqueInfo.gl2Name;
+            material["techniqueCore"] = techniqueInfo.coreName;
+            material["techniqueGL2"] = techniqueInfo.gl2Name;
         }
 
-        material["instanceTechnique"] = tech;
         materials[matInfo.name] = material;
     }
 }
@@ -1969,42 +1967,15 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
         exportParameter(parameters, prog->attributes);
         exportParameter(parameters, prog->uniforms);
         technique["parameters"] = parameters;
-        technique["pass"] = QStringLiteral("defaultPass");
-        QJsonObject passes;
-        QJsonObject dp;
-        QJsonObject details;
-        details["type"] = QStringLiteral("COLLADA-1.4.1/commonProfile"); // ??
-        QJsonObject commonProfile;
-        QJsonObject extras;
-        extras["doubleSided"] = false;
-        commonProfile["extras"] = extras;
-        commonProfile["lightingModel"] = QStringLiteral("Phong");
-        QJsonArray paramList;
-        foreach (const ProgramInfo::Param &param, prog->attributes)
-            paramList << param.name;
-        foreach (const ProgramInfo::Param &param, prog->uniforms)
-            paramList << param.name;
-        commonProfile["parameters"] = paramList;
-        QJsonObject texcoordBindings;
-        foreach (const ProgramInfo::Param &param, prog->uniforms) {
-            if (param.type == GLT_SAMPLER_2D)
-                texcoordBindings[param.name] = QStringLiteral("TEXCOORD_0");
-        }
-        if (!texcoordBindings.isEmpty())
-            commonProfile["texcoordBindings"] = texcoordBindings;
-        details["commonProfile"] = commonProfile;
-        dp["details"] = details;
-        QJsonObject instanceProgram;
-        instanceProgram["program"] = programMap[prog].name;
+        technique["program"] = programMap[prog].name;
         QJsonObject progAttrs;
         foreach (const ProgramInfo::Param &param, prog->attributes)
             progAttrs[param.nameInShader] = param.name;
-        instanceProgram["attributes"] = progAttrs;
+        technique["attributes"] = progAttrs;
         QJsonObject progUniforms;
         foreach (const ProgramInfo::Param &param, prog->uniforms)
             progUniforms[param.nameInShader] = param.name;
-        instanceProgram["uniforms"] = progUniforms;
-        dp["instanceProgram"] = instanceProgram;
+        technique["uniforms"] = progUniforms;
         QJsonObject states;
         QJsonArray enabledStates;
         enabledStates << GLT_DEPTH_TEST << GLT_CULL_FACE;
@@ -2016,9 +1987,7 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             states["functions"] = funcs;
         }
         states["enable"] = enabledStates;
-        dp["states"] = states;
-        passes["defaultPass"] = dp;
-        technique["passes"] = passes;
+        technique["states"] = states;
         techniques[techniqueInfo.name] = technique;
 
         if (opts.genCore) {
@@ -2026,10 +1995,7 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
             techniques[techniqueInfo.gl2Name] = technique;
 
             //Core
-            instanceProgram["program"] = programMap[prog].coreName;
-            dp["instanceProgram"] = instanceProgram;
-            passes["defaultPass"] = dp;
-            technique["passes"] = passes;
+            technique["program"] = programMap[prog].coreName;
             techniques[techniqueInfo.coreName] = technique;
         }
     }
@@ -2237,7 +2203,7 @@ void GltfExporter::save(const QString &inputFilename)
 
     QJsonObject asset;
     asset["generator"] = QString(QStringLiteral("qgltf %1")).arg(QCoreApplication::applicationVersion());
-    asset["version"] = QStringLiteral("0.8");
+    asset["version"] = QStringLiteral("1.0");
     asset["premultipliedAlpha"] = true;
     m_obj["asset"] = asset;
 
@@ -2304,7 +2270,7 @@ void GltfExporter::save(const QString &inputFilename)
         mesh["name"] = meshInfo.originalName;
         QJsonArray prims;
         QJsonObject prim;
-        prim["primitive"] = 4; // triangles
+        prim["mode"] = 4; // triangles
         QJsonObject attrs;
         foreach (const Importer::MeshInfo::Accessor &acc, meshInfo.accessors) {
             if (acc.usage != QStringLiteral("INDEX"))
@@ -2452,7 +2418,7 @@ void GltfExporter::save(const QString &inputFilename)
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationVersion(QStringLiteral("0.1"));
+    app.setApplicationVersion(QStringLiteral("0.2"));
     app.setApplicationName(QStringLiteral("Qt glTF converter"));
 
     QCommandLineParser cmdLine;

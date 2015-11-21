@@ -37,6 +37,7 @@
 #include "scene_p.h"
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/qabstractsceneloader.h>
@@ -83,7 +84,7 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     e->setPropertyName("scene");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
-    e->setValue(QVariant::fromValue(subTree));
+    e->setValue(QVariant::fromValue(QNodePtr(subTree, &QNodePrivate::nodePtrDeleter)));
     e->setTargetNode(peerUuid());
     notifyObservers(e);
     QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));

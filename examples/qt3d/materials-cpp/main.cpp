@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
 
     // Chest
     RenderableEntity *chest = new RenderableEntity(sceneRoot);
-    chest->scaleTransform()->setScale(0.03f);
+    chest->transform()->setScale(0.03f);
     chest->mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/chest/Chest.obj")));
     Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
     diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
@@ -132,8 +132,8 @@ int main(int argc, char* argv[])
 
     // TrefoilKnot
     RotatingTrefoilKnot *trefoil = new RotatingTrefoilKnot(sceneRoot);
-    trefoil->translateTransform()->setDy(3.5);
-    trefoil->scaleTransform()->setScale(0.5f);
+    trefoil->setPosition(QVector3D(0.0f, 3.5f, 0.0f));
+    trefoil->setScale(0.5f);
     Qt3DRender::QPhongMaterial *phongMaterial = new Qt3DRender::QPhongMaterial();
     phongMaterial->setDiffuse(QColor(204, 205, 75)); // Safari Yellow #cccd4b
     phongMaterial->setSpecular(Qt::white);
@@ -141,58 +141,58 @@ int main(int argc, char* argv[])
 
     // Barrels
     Barrel *basicBarrel = new Barrel(sceneRoot);
-    basicBarrel->translateTransform()->setDx(8.0f);
+    basicBarrel->transform()->setTranslation(QVector3D(8.0f, 0.0f, 0.0f));
 
     Barrel *rustyBarrel = new Barrel(sceneRoot);
     rustyBarrel->setDiffuse(Barrel::RustDiffuse);
     rustyBarrel->setSpecular(Barrel::RustSpecular);
     rustyBarrel->setBumps(Barrel::HardBumps);
-    rustyBarrel->translateTransform()->setDx(10.0f);
+    rustyBarrel->transform()->setTranslation(QVector3D(10.0f, 0.0f, 0.0f));
 
     Barrel *blueBarrel = new Barrel(sceneRoot);
     blueBarrel->setDiffuse(Barrel::Blue);
     blueBarrel->setBumps(Barrel::MiddleBumps);
-    blueBarrel->translateTransform()->setDx(12.0f);
+    blueBarrel->transform()->setTranslation(QVector3D(12.0f, 0.0f, 0.0f));
 
     Barrel *greenBarrel = new Barrel(sceneRoot);
     greenBarrel->setDiffuse(Barrel::Green);
     greenBarrel->setBumps(Barrel::SoftBumps);
-    greenBarrel->translateTransform()->setDx(14.0f);
+    greenBarrel->transform()->setTranslation(QVector3D(14.0f, 0.0f, 0.0f));
 
     Barrel *stainlessBarrel = new Barrel(sceneRoot);
     stainlessBarrel->setDiffuse(Barrel::StainlessSteelDiffuse);
     stainlessBarrel->setBumps(Barrel::NoBumps);
     stainlessBarrel->setSpecular(Barrel::StainlessSteelSpecular);
     stainlessBarrel->setShininess(150.0f);
-    stainlessBarrel->translateTransform()->setDx(16);
+    stainlessBarrel->transform()->setTranslation(QVector3D(16.0f, 0.0f, 0.0f));
 
     // Plants
     HousePlant *squareBamboo = new HousePlant(sceneRoot);
     squareBamboo->setPotShape(HousePlant::Square);
-    squareBamboo->setX(4.0f);
+    squareBamboo->setPosition(QVector3D(4.0f, 0.0f, 0.0f));
 
     HousePlant *trianglePalm = new HousePlant(sceneRoot);
     trianglePalm->setPlantType(HousePlant::Palm);
     trianglePalm->setPotShape(HousePlant::Triangle);
-    trianglePalm->setZ(4.0f);
+    trianglePalm->setPosition(QVector3D(0.0f, 0.0f, 4.0f));
 
     HousePlant *spherePine = new HousePlant(sceneRoot);
     spherePine->setPlantType(HousePlant::Pine);
     spherePine->setPotShape(HousePlant::Sphere);
-    spherePine->setX(-4.0f);
+    spherePine->setPosition(QVector3D(-4.0f, 0.0f, 0.0f));
 
     HousePlant *crossSpikes = new HousePlant(sceneRoot);
     crossSpikes->setPlantType(HousePlant::Spikes);
-    crossSpikes->setZ(-4.0f);
+    crossSpikes->setPosition(QVector3D(0.0f, 0.0f, -4.0f));
 
     HousePlant *crossPalm = new HousePlant(sceneRoot);
     crossPalm->setPlantType(HousePlant::Palm);
-    crossPalm->setZ(-8.0f);
+    crossPalm->setPosition(QVector3D(0.0f, 0.0f, -8.0f));
     crossPalm->setScale(0.05f);
 
     HousePlant *crossShrub = new HousePlant(sceneRoot);
     crossShrub->setPlantType(HousePlant::Shrub);
-    crossShrub->setZ(8.0f);
+    crossShrub->setPosition(QVector3D(0.0f, 0.0f, 8.0f));
     crossShrub->setScale(0.05f);
 
     engine.setRootEntity(sceneRoot);

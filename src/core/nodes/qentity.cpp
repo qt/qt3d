@@ -38,8 +38,6 @@
 #include "qentity_p.h"
 #include "qcomponent.h"
 #include "qcomponent_p.h"
-#include "qabstracttransform.h"
-#include "qmatrixtransform.h"
 
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>

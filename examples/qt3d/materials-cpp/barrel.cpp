@@ -71,7 +71,7 @@ Barrel::Barrel(Qt3DCore::QNode *parent)
     , m_specularTextureImage(new Qt3DRender::QTextureImage())
 {
     mesh()->setSource(QUrl(QStringLiteral("qrc:/assets/metalbarrel/metal_barrel.obj")));
-    scaleTransform()->setScale(0.03f);
+    transform()->setScale(0.03f);
 
     m_diffuseTexture->addTextureImage(m_diffuseTextureImage);
     m_normalTexture->addTextureImage(m_normalTextureImage);

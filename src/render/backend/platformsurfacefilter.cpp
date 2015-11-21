@@ -95,6 +95,11 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
             Q_UNREACHABLE();
         }
     }
+
+    if (obj == m_obj && e->type() == QEvent::Expose) {
+        QExposeEvent *ev = static_cast<QExposeEvent *>(e);
+        m_renderer->setSurfaceExposed(!ev->region().isEmpty());
+    }
     return false;
 }
 

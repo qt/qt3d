@@ -49,6 +49,7 @@ class QAbstractAttribute;
 namespace Qt3DRender {
 
 class QGeometryPrivate;
+class QBoundingVolumeSpecifier;
 
 typedef QVector<Qt3DCore::QAbstractAttribute *> QAttributeList;
 
@@ -56,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
-
+    Q_PROPERTY(Qt3DRender::QBoundingVolumeSpecifier *boundingVolumeSpecifier READ boundingVolumeSpecifier CONSTANT)
 public:
     explicit QGeometry(Qt3DCore::QNode *parent = 0);
     ~QGeometry();
@@ -68,6 +69,8 @@ public:
     void setVerticesPerPatch(int verticesPerPatch);
     int verticesPerPatch() const;
 
+    QBoundingVolumeSpecifier *boundingVolumeSpecifier();
+
 Q_SIGNALS:
     void verticesPerPatchChanged();
 
@@ -78,6 +81,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGeometry)
     QT3D_CLONEABLE(QGeometry)
+    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged())
 };
 
 } // namespace Qt3DRender

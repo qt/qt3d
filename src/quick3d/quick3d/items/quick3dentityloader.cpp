@@ -89,7 +89,7 @@ private:
 
 /*!
     \qmltype EntityLoader
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 Quick3DEntityLoader::Quick3DEntityLoader(QNode *parent)

@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.2 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.2 as QQ2
 
 Entity {
     id: sceneRoot
@@ -207,16 +207,14 @@ Entity {
 
     Transform {
         id: meshTransform
-        Scale { scale: 10 }
-        Rotate {
-            id: meshRotation
-            axis: Qt.vector3d(0, 1, 0)
-        }
+        property real userAngle: 0.0
+        scale: 10
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.NumberAnimation {
-        target: meshRotation
-        property: "angle"
+        target: meshTransform
+        property: "userAngle"
         duration: 10000
         from: 0
         to: 360

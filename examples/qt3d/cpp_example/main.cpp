@@ -41,6 +41,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/qtransform.h>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -52,13 +53,6 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qsceneloader.h>
-
-#include <Qt3DCore/qtranslatetransform.h>
-#include <Qt3DCore/qmatrixtransform.h>
-#include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DCore/qlookattransform.h>
-#include <Qt3DCore/qtransform.h>
-
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/qtechniquefilter.h>
@@ -96,36 +90,24 @@ int main(int ac, char **av)
     torusEntity->addComponent(torus);
 
     // TorusMesh Transform
-    Qt3DCore::QTranslateTransform *torusTranslation = new Qt3DCore::QTranslateTransform();
-    Qt3DCore::QRotateTransform *torusRotation = new Qt3DCore::QRotateTransform();
     Qt3DCore::QTransform *torusTransforms = new Qt3DCore::QTransform();
-
-    torusTranslation->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
-    torusRotation->setAxis(QVector3D(1, 0, 0));
-    torusRotation->setAngleDeg(35.0f);
-    torusTransforms->addTransform(torusTranslation);
-    torusTransforms->addTransform(torusRotation);
+    torusTransforms->setTranslation(QVector3D(-5.0f, 3.5f, 2.0f));
+    torusTransforms->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 35.0f));
     torusEntity->addComponent(torusTransforms);
 
     // Scene file
     Qt3DCore::QEntity *sceneEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QSceneLoader  *scene = new Qt3DRender::QSceneLoader();
+    Qt3DRender::QSceneLoader *scene = new Qt3DRender::QSceneLoader();
     scene->setObjectName(QStringLiteral("scene"));
     Qt3DCore::QTransform *sceneTransform = new Qt3DCore::QTransform();
-    Qt3DCore::QTranslateTransform *sceneTranslateTransform = new Qt3DCore::QTranslateTransform();
-    sceneTranslateTransform->setDx(2.5);
-    sceneTranslateTransform->setDy(0.5);
-    sceneTranslateTransform->setDz(-10);
-    sceneTransform->addTransform(sceneTranslateTransform);
+    sceneTransform->setTranslation(QVector3D(2.5f, 0.5f, -10.0f));
     sceneEntity->addComponent(sceneTransform);
-//    scene->setSource(":/assets/gltf/wine/wine.json");
     scene->setSource(QUrl("qrc:/assets/test_scene.dae"));
     sceneEntity->addComponent(scene);
 
     // Camera
     Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
-
     cameraEntity->lens()->setPerspectiveProjection(60.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(-5, 0, -20.0f));
     cameraEntity->setViewCenter(QVector3D(11, 0, 5));

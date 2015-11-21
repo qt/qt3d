@@ -55,7 +55,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 class QTransform;
-class QTranslateTransform;
 }
 
 namespace Qt3DRender {
@@ -93,7 +92,6 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     QRenderPass *m_gl3RenderPass;
     QCuboidMesh *m_mesh;
     Qt3DCore::QTransform *m_transform;
-    Qt3DCore::QTranslateTransform *m_translate;
     QParameter *m_textureParameter;
     QTextureImage *m_posXImage;
     QTextureImage *m_posYImage;

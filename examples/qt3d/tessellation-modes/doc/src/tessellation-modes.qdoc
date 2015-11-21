@@ -27,6 +27,6 @@
 
 /*!
     \example tessellation-modes
-    \title Qt3D: Tessellation Modes QML Example
+    \title Qt 3D: Tessellation Modes QML Example
     \ingroup qt3d-examples-qml
 */

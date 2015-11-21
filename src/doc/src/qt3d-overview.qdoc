@@ -36,16 +36,16 @@
 
 /*!
     \page qt3d-overview.html
-    \title Qt3D Overview
+    \title Qt 3D Overview
 
-    \brief Qt3D provides C++ and QML APIs to incorporate 3D content into Qt
+    \brief Qt 3D provides C++ and QML APIs to incorporate 3D content into Qt
     applications.
 
-    Qt3D provides a fully configurable renderer that enables developers to
+    Qt 3D provides a fully configurable renderer that enables developers to
     quickly implement any rendering pipeline that they need. Further, Qt3D
     provides a generic framework for near-realtime simulations beyond rendering.
 
-    Qt3D is cleanly separated into a core and any number of \e aspects that can
+    Qt 3D is cleanly separated into a core and any number of \e aspects that can
     implement any functionality they wish. The aspects interact with
     \e components and \e entities to provide some slice of functionality.
     Examples of aspects include physics, audio, collision, artificial
@@ -53,7 +53,7 @@
 
     \section1 Basic 3D Features
 
-    Qt3D is a 3D framework that enables the drawing of 3D shapes and moving
+    Qt 3D is a 3D framework that enables the drawing of 3D shapes and moving
     them around, as well as moving the camera. It supports the following basic
     features:
 
@@ -73,7 +73,7 @@
 
     \section2 Materials
 
-    Qt3D has a robust and very flexible material system that allows multiple
+    Qt 3D has a robust and very flexible material system that allows multiple
     levels of customization. It caters for different rendering approaches on
     different platforms or OpenGL versions, enables multiple rendering passes
     with different state sets, provides mechanisms for overriding of parameters
@@ -84,19 +84,19 @@
     variables in a GLSL shader program that is itself specified in the
     referenced effect property.
 
-    For examples of using materials, see the \l {Qt3D: Materials C++ Example}
-    and \l {Qt3D: Materials QML Example}.
+    For examples of using materials, see the \l {Qt 3D: Materials C++ Example}
+    and \l {Qt 3D: Materials QML Example}.
 
     \section2 Shaders
 
-    Qt3D supports all of the OpenGL programmable rendering pipeline stages:
+    Qt 3D supports all of the OpenGL programmable rendering pipeline stages:
     vertex, tessellation control, tessellation evaluation, geometry, and
     fragment shaders. Compute shaders are planned for a future release.
 
     For examples of using shaders, see the Simple Shaders QML Example,
-    \l {Qt3D: Tessellation Modes QML Example},
-    \l {Qt3D: Shadow Map QML Example}, \l{Qt3D: Wireframe QML Example}, and
-    \l {Qt3D: Wave QML Example}.
+    \l {Qt 3D: Tessellation Modes QML Example},
+    \l {Qt 3D: Shadow Map QML Example}, \l{Qt 3D: Wireframe QML Example}, and
+    \l {Qt 3D: Wave QML Example}.
 
     \section2 Shadow Mapping
 
@@ -183,7 +183,7 @@
     To combine support for both C++ and QML APIs with having a fully
     configurable renderer, the concept of a \e framegraph was introduced. While
     a \e scenegraph is a data-driven description of \e what to render, a \l
-    {Qt3D Renderer Framegraph}{framegraph} is a data-driven description of \e
+    {Qt 3D Renderer Framegraph}{framegraph} is a data-driven description of \e
     how to render it.
 
     A framegraph enables developers to choose between a simple forward renderer,
@@ -191,7 +191,7 @@
     gives them control over when to render any transparent objects, and so on.
     Since this is all configured purely from data, it is very easy to modify even
     dynamically at runtime without touching any C++ code. It is possible to
-    extend Qt3D by creating your own framegraphs that implement custom
+    extend Qt 3D by creating your own framegraphs that implement custom
     rendering algorithms.
 
     \section1 3D Extensions
@@ -213,7 +213,7 @@
 
     \section1 Performance
 
-    Qt3D is designed to perform well and scale up with the number of available
+    Qt 3D is designed to perform well and scale up with the number of available
     CPU cores, because modern hardware improves performance by increasing the
     numbers of cores rather than base clock speed. Using multiple cores works
     well, because many tasks are independent of each other. For example, the
@@ -221,9 +221,9 @@
     the tasks performed by a renderer, except maybe when rendering debug
     information or statistics.
 
-    \section1 Qt3D Architecture
+    \section1 Qt 3D Architecture
 
-    The main use cases of Qt3D are simulating objects in near-realtime and
+    The main use cases of Qt 3D are simulating objects in near-realtime and
     rendering the state of those objects onto the screen. The Space Invaders
     example contains the following objects:
 
@@ -271,8 +271,8 @@
 
     Extending deep and wide inheritance trees usually requires understanding,
     and agreeing with, the taxonomy used by the original author. Therefore,
-    Qt3D places focus on aggregation instead of inheritance as the means of
-    imparting functionality onto an instance of an object. Specifically, Qt3D
+    Qt 3D places focus on aggregation instead of inheritance as the means of
+    imparting functionality onto an instance of an object. Specifically, Qt 3D
     implements an Entity Component System (ECS).
 
     \section2 Using an ECS
@@ -299,7 +299,7 @@
 
     \image ecs-2.png
 
-    The backend of Qt3D implements the \e system part of the ECS paradigm in
+    The backend of Qt 3D implements the \e system part of the ECS paradigm in
     the form of \e aspects. An aspect implements the particular vertical slice
     of the functionality provided to entities by a combination of one or more
     of their aggregated components.
@@ -310,7 +310,7 @@
     from it. If an entity does not have those components, the renderer aspect
     ignores it.
 
-    Qt3D builds custom entities by aggregating components that provide
+    Qt 3D builds custom entities by aggregating components that provide
     additional capabilities. The Qt3D engine uses aspects to process and
     update entities with specific components.
 
@@ -329,32 +329,32 @@
     temporarily, until the power-up times out. There is no need to create a
     special one-off subclass for \c PlayerWhoRunsThroughWalls.
 
-    \section2 Qt3D ECS Implementation
+    \section2 Qt 3D ECS Implementation
 
-    Qt3D implements ECS as a simple class hierarchy. The Qt3D base class is
-    Qt3D::QNode, which is a subclass of QObject. Qt3D::QNode adds to QObject the ability to
+    Qt 3D implements ECS as a simple class hierarchy. The Qt 3D base class is
+    Qt3DCore::QNode, which is a subclass of QObject. Qt3DCore::QNode adds to QObject the ability to
     automatically communicate property changes to aspects and an ID that is
     unique throughout an application. The aspects exist in additional threads
-    and Qt3D::QNode simplifies the data transfer between the user-facing objects and
+    and Qt3DCore::QNode simplifies the data transfer between the user-facing objects and
     the aspects.
 
-    Typically, subclasses of Qt3D::QNode provide additional supporting data that is
+    Typically, subclasses of Qt3DCore::QNode provide additional supporting data that is
     referenced by components. For example, the QShaderProgram class specifies
     the GLSL code to be used when rendering a set of entities.
 
     \image ecs-1.png
 
-    Components in Qt3D are implemented by subclassing Qt3D::QComponent and adding the
+    Components in Qt 3D are implemented by subclassing Qt3DCore::QComponent and adding the
     data necessary for the corresponding aspect to do its work. For example, the
     mesh component is used by the renderer aspect to retrieve the per-vertex
     data that should be sent down the OpenGL pipeline.
 
-    Finally, Qt3D::QEntity is simply an object that can aggregate zero or more
-    Qt3D::QComponent instances.
+    Finally, Qt3DCore::QEntity is simply an object that can aggregate zero or more
+    Qt3DCore::QComponent instances.
 
-    \section1 Extending Qt3D
+    \section1 Extending Qt 3D
 
-    Adding functionality to Qt3D, either as part of Qt or specific to your
+    Adding functionality to Qt 3D, either as part of Qt or specific to your
     own applications to benefit from the multi-threaded back-end consists of the
     following tasks:
 
@@ -365,17 +365,18 @@
         \li Subclass QAbstractAspect and implement the subsystem functionality.
     \endlist
 
-    \section1 Qt3D Task-Based Engine
+    \section1 Qt 3D Task-Based Engine
 
-    In Qt3D, aspects are asked in each frame for a set of \e tasks to execute
+    In Qt 3D, aspects are asked in each frame for a set of \e tasks to execute
     along with the \e dependencies between them. The tasks are distributed
     across all the configured cores by a scheduler to improve performance.
 
-    \section1 Qt3D's Aspects
+    \section1 Qt 3D's Aspects
 
-    By default Qt3D provides the Qt3DRenderer and Qt3DInput aspects. The
+    By default Qt 3D provides the Qt3DRender and Qt3DInput aspects. The
     components and other supporting classes provided by these aspects are
     discussed in the documentation for those modules.
 
     Additional aspects providing more capabilities will be added in future
-    versions of Qt3D.
+    versions of Qt 3D.
+*/

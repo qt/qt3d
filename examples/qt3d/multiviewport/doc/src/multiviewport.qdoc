@@ -27,6 +27,6 @@
 
 /*!
     \example multiviewport
-    \title Qt3D: Multi Viewport QML Example
+    \title Qt 3D: Multi Viewport QML Example
     \ingroup qt3d-examples-qml
 */

@@ -69,7 +69,7 @@ public:
     ~QCameraLens();
 
     enum ProjectionType {
-        OrthogonalProjection,
+        OrthographicProjection,
         PerspectiveProjection,
         FrustumProjection
     };

@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,10 @@ public:
 
     QAttributeList m_attributes;
     int m_verticesPerPatch;
+    QBoundingVolumeSpecifier m_boundingVolumeSpecifier;
+
+private:
+    void _q_boundingVolumeSpecifierChanged();
 };
 
 } // namespace Qt3DRender

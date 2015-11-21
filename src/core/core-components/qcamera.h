@@ -69,7 +69,8 @@ class QT3DCORESHARED_EXPORT QCamera : public QEntity
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
     Q_PROPERTY(QVector3D upVector READ upVector WRITE setUpVector NOTIFY upVectorChanged)
     Q_PROPERTY(QVector3D viewCenter READ viewCenter WRITE setViewCenter NOTIFY viewCenterChanged)
-    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
+    Q_PROPERTY(QVector3D viewVector READ viewVector NOTIFY viewVectorChanged)
+    Q_PROPERTY(QMatrix4x4 viewMatrix READ viewMatrix NOTIFY viewMatrixChanged)
 
 public:
     explicit QCamera(QNode *parent = 0);
@@ -83,7 +84,6 @@ public:
 
     QCameraLens *lens() const;
     QTransform *transform() const;
-    QLookAtTransform *lookAt() const;
 
     QQuaternion tiltRotation(float angle) const;
     QQuaternion panRotation(float angle) const;
@@ -91,10 +91,10 @@ public:
     QQuaternion rotation(float angle, const QVector3D &axis) const;
 
     // Translate relative to camera orientation axes
-    Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter);
 
     // Translate relative to world axes
-    Q_INVOKABLE void translateWorld(const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter );
+    Q_INVOKABLE void translateWorld(const QVector3D& vWorld, CameraTranslationOption option = TranslateViewCenter);
 
     Q_INVOKABLE void tilt(float angle);
     Q_INVOKABLE void pan(float angle);
@@ -147,7 +147,8 @@ public:
     void setViewCenter(const QVector3D &viewCenter);
     QVector3D viewCenter() const;
 
-    QMatrix4x4 matrix() const;
+    QVector3D viewVector() const;
+    QMatrix4x4 viewMatrix() const;
 
 Q_SIGNALS:
     void projectionTypeChanged();
@@ -163,7 +164,8 @@ Q_SIGNALS:
     void positionChanged();
     void upVectorChanged();
     void viewCenterChanged();
-    void matrixChanged();
+    void viewVectorChanged();
+    void viewMatrixChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QCamera)

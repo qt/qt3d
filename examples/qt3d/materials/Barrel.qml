@@ -44,9 +44,9 @@ Entity {
     property string bump: "no_bumps"
     property string specular: ""
 
-    property alias x: barrel.x
-    property alias y: barrel.y
-    property alias z: barrel.z
+    property real x: 0
+    property real y: 0
+    property real z: 0
     property alias shininess: material.shininess
     property real scale: 1.0
 
@@ -54,6 +54,7 @@ Entity {
         id: barrel
         source: "assets/metalbarrel/metal_barrel.obj"
         scale: 0.03 * root.scale
+        position: Qt.vector3d(root.x, root.y, root.z)
 
         material: NormalDiffuseSpecularMapMaterial {
             id: material

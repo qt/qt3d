@@ -71,6 +71,7 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
+#include <Qt3DRender/private/boundingvolumedebug_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -122,7 +123,10 @@ public:
     EffectManager() {}
 };
 
-class EntityManager : public Qt3DCore::QResourceManager<Entity, Qt3DCore::QNodeId, 16>
+class Q_AUTOTEST_EXPORT EntityManager : public Qt3DCore::QResourceManager<
+        Entity,
+        Qt3DCore::QNodeId,
+        16>
 {
 public:
     EntityManager() {}
@@ -320,6 +324,15 @@ class ObjectPickerManager : public Qt3DCore::QResourceManager<
 {
 };
 
+class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
+        BoundingVolumeDebug,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
+{
+};
+
 } // namespace Render
 } // namespace Qt3DRender
 
@@ -338,6 +351,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::TextureImage, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ObjectPicker, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

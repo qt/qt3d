@@ -61,15 +61,12 @@ void ObjectPicker::cleanup()
 {
     m_isDirty = false;
     m_hoverEnabled = false;
-    m_pickAttributeId = Qt3DCore::QNodeId();
 }
 
 void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QObjectPicker *picker = static_cast<QObjectPicker *>(peer);
     if (picker) {
-        if (picker->pickAttribute())
-            m_pickAttributeId = picker->pickAttribute()->id();
         m_hoverEnabled = picker->hoverEnabled();
         m_isDirty = true;
     }
@@ -81,19 +78,11 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     const QByteArray propertyName = propertyChange->propertyName();
 
     if (propertyChange->type() == Qt3DCore::NodeUpdated) {
-        if (propertyName == QByteArrayLiteral("pickAttribute")) {
-            m_pickAttributeId = propertyChange->value().value<Qt3DCore::QNodeId>();
-            m_isDirty = true;
-        } else if (propertyName == QByteArrayLiteral("hoverEnabled")) {
+        if (propertyName == QByteArrayLiteral("hoverEnabled")) {
             m_hoverEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }
     }
-}
-
-Qt3DCore::QNodeId ObjectPicker::pickAttributeId() const
-{
-    return m_pickAttributeId;
 }
 
 bool ObjectPicker::isDirty() const

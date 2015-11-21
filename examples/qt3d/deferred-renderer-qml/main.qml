@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.0 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.0 as QQ2
 
 Entity {
     id : root
@@ -69,10 +69,7 @@ Entity {
                 meshResolution: Qt.size(2, 2)
             },
             Transform { // We rotate the plane so that it faces us
-                Rotate {
-                    axis : Qt.vector3d(1.0, 0.0, 0.0)
-                    angle : 90
-                }
+                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 90)
             },
             Material {
                 parameters : [
@@ -135,16 +132,17 @@ Entity {
                 parameters : Parameter { name : "meshColor"; value : "dodgerblue" }
             }
 
-            property Transform transform : Transform {
-                Translate{ dx: -10; dy: 0; dz : 5
-                    id: sphere1Translate
-                }
+            property Transform transform: Transform {
+                id: sphere1Transform
+                property real x: -10.0
+                translation: Qt.vector3d(x, 0, 5)
             }
+
             QQ2.SequentialAnimation {
                 loops: QQ2.Animation.Infinite
                 running: false
-                QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: 6; duration: 2000 }
-                QQ2.NumberAnimation {target: sphere1Translate; property: "dx"; to: -10; duration: 2000 }
+                QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: 6; duration: 2000 }
+                QQ2.NumberAnimation { target: sphere1Transform; property: "x"; to: -10; duration: 2000 }
             }
 
             property PointLight light : PointLight {
@@ -174,8 +172,8 @@ Entity {
                 intensity : 2.0
             }
 
-            property Transform transform : Transform {
-                Translate{ dx: 5; dy: 0; dz : 5}
+            property Transform transform: Transform {
+                translation: Qt.vector3d(5, 0, 5)
             }
 
             components : [
@@ -199,15 +197,17 @@ Entity {
                 parameters : Parameter { name : "meshColor"; value : "red" }
             }
 
-            property Transform transform : Transform {
-                Translate{ id: light3Translate; dx: 2; dy: 2; dz : 7
-                }
+            property Transform transform: Transform {
+                id: light3Transform
+                property real y: 2.0
+                translation: Qt.vector3d(2, y, 7)
             }
+
             QQ2.SequentialAnimation {
                 loops: QQ2.Animation.Infinite
                 running: true
-                QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
-                QQ2.NumberAnimation {target: light3Translate; property: "dy"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
+                QQ2.NumberAnimation { target: light3Transform; property: "y"; to: 6; duration: 1000; easing.type: QQ2.Easing.InOutQuad }
+                QQ2.NumberAnimation { target: light3Transform; property: "y"; to: -6; duration: 1000; easing.type: QQ2.Easing.InOutQuint }
             }
 
             components: [
@@ -225,8 +225,8 @@ Entity {
                 color : "white"
                 intensity : 3.0
             }
-            property Transform transform : Transform {
-                Translate{ dx: 5; dy: 2; dz : 7}
+            property Transform transform: Transform {
+                translation: Qt.vector3d(5, 2, 7)
             }
 
             components: [

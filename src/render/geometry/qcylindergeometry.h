@@ -91,7 +91,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QCylinderGeometry)
-    QT3D_CLONEABLE(QCylinderGeometry)
 };
 
 } // namespace Qt3DRender

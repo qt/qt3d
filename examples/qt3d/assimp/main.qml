@@ -34,10 +34,10 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.0 as Quick
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Examples 2.0
-import QtQuick 2.0 as Quick
 
 Entity
 {
@@ -94,15 +94,12 @@ Entity
     }
 
     Quick.Component {
-        id: rot90Comp
-        Rotate { axis: Qt.vector3d(1, 0, 0); angle: 90 }
-    }
-
-    Quick.Component {
         id: animRotComp
-        Rotate {
-            axis: Qt.vector3d(0, 0, 1)
-            Quick.NumberAnimation on angle {
+        Quick.QtObject {
+            id: rotationData
+            property real userAngle: 0.0
+            property vector3d axis: Qt.vector3d(0, 0, 1)
+            Quick.NumberAnimation on userAngle {
                 from: 0
                 to: 360
                 duration: 5000
@@ -112,12 +109,15 @@ Entity
     }
 
     Entity {
-        components : [
+        components: [
             Transform {
-                Rotate {angle : 90; axis : Qt.vector3d(0, 1, 0)}
+                matrix: {
+                    var m = Qt.matrix4x4();
+                    m.rotate(90, Qt.vector3d(0, 1, 0));
+                    return m;
+                }
             },
-            SceneLoader
-            {
+            SceneLoader {
                 id: sceneLoader
                 source: "qrc:/assets/test_scene.dae"
                 onStatusChanged: {
@@ -144,30 +144,51 @@ Entity
                             }
                         }
 
-                        // Add an animated rotation transform.
+                        // Add an animated rotation transform to make Suzanne orbit around.
                         e = sceneHelper.findEntity(sceneLoader, "Suzanne");
-                        for (var i = 0; i < e.components.length; ++i) {
-                            if (e.components[i].transforms !== undefined) {
-                                var t = e.components[i].transforms;
-                                sceneHelper.addListEntry(t, rot90Comp.createObject());
-                                sceneHelper.addListEntry(t, animRotComp.createObject());
-                                break;
-                            }
-                        }
+                        var t = sceneHelper.findComponent(e, "Qt3DCore::QTransform");
+                        if (!t)
+                            return;
+
+                        // Add object with animation data as a child
+                        var suzanneAnim = animRotComp.createObject(t);
+
+                        // Query the existing transformation. We will use parts of this in
+                        // the replacement animation
+                        var origTranslation = t.translation;
+                        var origRotation = t.rotation;
+                        var origScale = t.scale;
+                        console.log("origTranslation = " + origTranslation);
+                        console.log("origRotation    = " + origRotation);
+                        console.log("origScale       = " + origScale);
+
+                        // Make a deep copy of the original translation. This will not be updated when the
+                        // transformation's translation property gets updated due to the animation.
+                        var constantTranslation = Qt.vector3d(origTranslation.x, origTranslation.y, origTranslation.z);
+
+                        t.matrix = Qt.binding(function() {
+                            var m = Qt.matrix4x4();
+                            m.rotate(suzanneAnim.userAngle, suzanneAnim.axis);
+                            m.translate(constantTranslation);
+                            m.rotate(90, Qt.vector3d(1, 0, 0));
+                            m.scale(origScale);
+                            return m;
+                        })
                     }
                 }
-            }]
+            }
+        ]
     }
 
     Entity {
-        components : [
+        components: [
             Transform {
-                Scale { scale: 0.2 }
-                Translate { dy: -15 }
+                scale: 0.2
+                translation: Qt.vector3d(0.0, -15.0, 0.0)
             },
-            SceneLoader
-            {
+            SceneLoader {
                 source: "qrc:/assets/chest/Chest.obj"
-            }]
+            }
+        ]
     }
 }

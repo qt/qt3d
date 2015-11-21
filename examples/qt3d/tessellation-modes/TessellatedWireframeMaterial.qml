@@ -36,7 +36,6 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1 as QQ2
 
 Material {
     id: root
@@ -49,7 +48,6 @@ Material {
     property color lineColor: Qt.rgba( 1.0, 1.0, 1.0, 1.0 )
     property var innerTessLevel: [1.0, 1.0 ]
     property var outerTessLevel: [1.0, 1.0, 1.0, 1.0]
-
 
     parameters: [
         Parameter { name: "ambient"; value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },

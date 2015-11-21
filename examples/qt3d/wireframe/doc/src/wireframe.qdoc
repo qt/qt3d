@@ -27,7 +27,7 @@
 
 /*!
     \example wireframe
-    \title Qt3D: Wireframe QML Example
+    \title Qt 3D: Wireframe QML Example
     \ingroup qt3d-examples-qml
 
     \brief A Qt3D QML application that implements a single-pass wireframe
@@ -56,7 +56,7 @@
 
     \quotefromfile wireframe/TrefoilKnot.qml
     \skipto import Qt3D
-    \printuntil Renderer
+    \printuntil Render
 
     To use components from other aspects, we would need to import the
     corresponding QML module, too.

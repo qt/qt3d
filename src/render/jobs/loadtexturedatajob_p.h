@@ -58,21 +58,21 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 
 class LoadTextureDataJob : public Qt3DCore::QAspectJob
 {
 public:
     LoadTextureDataJob(const Qt3DCore::QNodeId &textureId);
     ~LoadTextureDataJob();
-    inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
 
 protected:
     void run() Q_DECL_FINAL;
 
 private:
     Qt3DCore::QNodeId m_textureId;
-    Renderer *m_renderer;
+    NodeManagers *m_manager;
 };
 
 typedef QSharedPointer<LoadTextureDataJob> LoadTextureDataJobPtr;

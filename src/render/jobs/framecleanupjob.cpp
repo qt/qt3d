@@ -36,10 +36,12 @@
 
 #include "framecleanupjob_p.h"
 #include <private/renderer_p.h>
+#include <private/nodemanagers_p.h>
 #include <private/entity_p.h>
 #include <private/shaderdata_p.h>
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
+#include <private/sphere_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,15 +61,36 @@ void FrameCleanupJob::run()
 {
     // set each ShaderData to not need an update
     Q_FOREACH (const Qt3DCore::QNodeId &id, ShaderData::updatedShaderDataList()) {
-        ShaderData *shaderData = m_renderer->shaderDataManager()->lookupResource(id);
+        ShaderData *shaderData = m_renderer->nodeManagers()->shaderDataManager()->lookupResource(id);
         if (shaderData != Q_NULLPTR)
             shaderData->clearUpdate();
     }
     ShaderData::clearShaderDataList();
 
     // Cleanup texture handles
-    TextureDataManager *textureDataManager = m_renderer->textureDataManager();
+    TextureDataManager *textureDataManager = m_renderer->nodeManagers()->textureDataManager();
     textureDataManager->cleanup();
+
+    // Debug bounding volume debug
+    updateBoundingVolumesDebug(m_renderer->renderSceneRoot());
+}
+
+void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
+{
+    BoundingVolumeDebug *debugBV = node->renderComponent<BoundingVolumeDebug>();
+    if (debugBV) {
+        Qt3DRender::Render::Sphere s;
+        if (!debugBV->isRecursive()) {
+            s = *node->worldBoundingVolume();
+        } else {
+            s = *node->worldBoundingVolumeWithChildren();
+        }
+        debugBV->setRadius(s.radius());
+        debugBV->setCenter(s.center());
+    }
+
+    Q_FOREACH (Entity *c, node->children())
+        updateBoundingVolumesDebug(c);
 }
 
 } // namespace Render

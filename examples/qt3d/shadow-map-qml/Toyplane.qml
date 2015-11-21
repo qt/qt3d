@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1 as QQ2
 
 Entity {
     id: root
@@ -50,40 +50,24 @@ Entity {
     Transform {
         id: toyplaneTransform
 
-        property real rollAngle : 0
-        property real pitchAngle : 15
-        property real altitude : 5
+        property real rollAngle: 0
+        property real pitchAngle: 15
+        property real altitude: 5
         property real angle: 0
         property real scaleFactor: 10
 
         QQ2.Behavior on rollAngle { QQ2.SpringAnimation { spring: 2; damping: 0.2} }
 
-        Scale {
-            scale: 1.0 / toyplaneTransform.scaleFactor
-        }
-
-        Rotate { // roll
-            axis : Qt.vector3d(1, 0, 0)
-            angle : toyplaneTransform.rollAngle
-        }
-
-        Rotate { // pitch
-            axis : Qt.vector3d(0, 0, 1)
-            angle : toyplaneTransform.pitchAngle
-        }
-
-        Rotate {
-            id: toyplaneRotation
-            axis: Qt.vector3d(0, 1, 0)
-            angle: toyplaneTransform.angle
-        }
-
-        Translate {
-            property real translation: 1
-
-            dx: Math.sin(toyplaneTransform.angle * Math.PI / 180) * translation * toyplaneTransform.scaleFactor
-            dy: toyplaneTransform.altitude
-            dz: Math.cos(toyplaneTransform.angle * Math.PI / 180) * translation * toyplaneTransform.scaleFactor
+        matrix: {
+            var m = Qt.matrix4x4();
+            m.translate(Qt.vector3d(Math.sin(angle * Math.PI / 180) * scaleFactor,
+                                    altitude,
+                                    Math.cos(angle * Math.PI / 180) * scaleFactor));
+            m.rotate(angle, Qt.vector3d(0, 1, 0));
+            m.rotate(pitchAngle, Qt.vector3d(0, 0, 1));
+            m.rotate(rollAngle, Qt.vector3d(1, 0, 0));
+            m.scale(1.0 / toyplaneTransform.scaleFactor);
+            return m;
         }
     }
 

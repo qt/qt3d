@@ -36,6 +36,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+
 import QtQuick 2.0 as QQ2
 
 
@@ -63,7 +64,7 @@ Entity {
             activeFrameGraph: Viewport {
                 id: viewport
                 rect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
-                clearColor: Qt.rgba(0, 0.5, 1, 1)
+                clearColor: "transparent"
 
                 CameraSelector {
                     id : cameraSelector
@@ -91,11 +92,8 @@ Entity {
 
     Transform {
         id: torusTransform
-        Scale { scale3D: Qt.vector3d(1.5, 1, 0.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
+        scale3D: Qt.vector3d(1.5, 1, 0.5)
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
     }
 
     Entity {
@@ -110,19 +108,14 @@ Entity {
 
     Transform {
         id: sphereTransform
-        Translate {
-            translation: Qt.vector3d(20, 0, 0)
-        }
-
-        Rotate {
-            id: sphereRotation
-            axis: Qt.vector3d(0, 1, 0)
-        }
+        property real userAngle: 0.0
+        translation: Qt.vector3d(20, 0, 0)
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.NumberAnimation {
-        target: sphereRotation
-        property: "angle"
+        target: sphereTransform
+        property: "userAngle"
         duration: 10000
         from: 0
         to: 360

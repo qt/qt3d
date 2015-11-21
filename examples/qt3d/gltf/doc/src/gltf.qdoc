@@ -27,6 +27,6 @@
 
 /*!
     \example gltf
-    \title Qt3D: glTF Assets Example
+    \title Qt 3D: glTF Assets Example
     \ingroup qt3d-examples-qml
 */

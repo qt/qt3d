@@ -41,10 +41,6 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QLookAtTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DCore/QAspectEngine>
 
 #include <Qt3DInput/QInputAspect>
@@ -104,9 +100,7 @@ int main(int argc, char* argv[])
 
     // Transform
     Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
-    Qt3DCore::QScaleTransform *scaleTransform = new Qt3DCore::QScaleTransform;
-    scaleTransform->setScale(8.0f);
-    transform->addTransform(scaleTransform);
+    transform->setScale(8.0f);
 
     // Custom Mesh (TetraHedron)
     Qt3DRender::QGeometryRenderer *customMeshRenderer = new Qt3DRender::QGeometryRenderer;

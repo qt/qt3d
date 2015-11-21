@@ -39,6 +39,7 @@
 #include <private/qnode_p.h>
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,14 +47,33 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+void QGeometryPrivate::_q_boundingVolumeSpecifierChanged()
+{
+    if (m_changeArbiter != Q_NULLPTR) {
+        QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
+        change->setPropertyName("boundingVolumeSpecifierPositionAttribute");
+        Qt3DCore::QNodeId positionAttributeId;
+        if (m_boundingVolumeSpecifier.positionAttribute())
+            positionAttributeId = m_boundingVolumeSpecifier.positionAttribute()->id();
+        change->setValue(QVariant::fromValue(positionAttributeId));
+        notifyObservers(change);
+    }
+}
+
 QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
 {
+    Q_D(QGeometry);
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged()),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged()));
 }
 
 QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
+    Q_D(QGeometry);
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged()),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged()));
 }
 
 QGeometry::~QGeometry()
@@ -110,6 +130,12 @@ int QGeometry::verticesPerPatch() const
     return d->m_verticesPerPatch;
 }
 
+QBoundingVolumeSpecifier *QGeometry::boundingVolumeSpecifier()
+{
+    Q_D(QGeometry);
+    return &d->m_boundingVolumeSpecifier;
+}
+
 QAttributeList QGeometry::attributes() const
 {
     Q_D(const QGeometry);
@@ -123,8 +149,13 @@ void QGeometry::copy(const QNode *ref)
     d_func()->m_verticesPerPatch = geometry->d_func()->m_verticesPerPatch;
     Q_FOREACH (QAbstractAttribute *attribute, geometry->d_func()->m_attributes)
         d_func()->m_attributes.append(qobject_cast<QAbstractAttribute *>(QNode::clone(attribute)));
+    // Copy bounding volume specifier attribute
+    if (geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute() != Q_NULLPTR)
+        d_func()->m_boundingVolumeSpecifier.setPositionAttribute(qobject_cast<QAbstractAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute())));
 }
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#include "moc_qgeometry.cpp"

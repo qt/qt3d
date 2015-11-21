@@ -113,12 +113,14 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         // return a QBackendNode pointer.
         if (backend == Q_NULLPTR)
             return Q_NULLPTR;
-        // Register backendNode with QChangeArbiter
         QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
         // TO DO: Find a way to specify the changes to observe
-        d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
-        if (backend->mode() == QBackendNode::ReadWrite)
-            d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+        // Register backendNode with QChangeArbiter
+        if (d->m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+            d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
+            if (backend->mode() == QBackendNode::ReadWrite)
+                d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+        }
         return backend;
     }
     return Q_NULLPTR;

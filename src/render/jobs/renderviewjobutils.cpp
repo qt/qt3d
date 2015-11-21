@@ -44,7 +44,7 @@
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/clearbuffer_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
-#include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/renderpassfilternode_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
@@ -78,7 +78,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
     // which is referenced by the Material which is referenced by the RenderMesh. So we can
     // only store the filter info in the RenderView structure and use it to do the resolving
     // when we build the RenderCommand list.
-    const Renderer *renderer = rv->renderer();
+    const NodeManagers *manager = rv->nodeManagers();
     const FrameGraphNode *node = fgLeaf;
 
     while (node) {
@@ -89,18 +89,18 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Can be set only once and we take camera nearest to the leaf node
                 if (!rv->renderCamera()) {
                     const CameraSelector *cameraSelector = static_cast<const CameraSelector *>(node);
-                    Entity *camNode = renderer->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
+                    Entity *camNode = manager->renderNodesManager()->lookupResource(cameraSelector->cameraUuid());
                     if (camNode) {
                         CameraLens *lens = camNode->renderComponent<CameraLens>();
                         if (lens && lens->isEnabled()) {
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());
 
-                            //To get the eyePostion of the camera, we need to use the inverse of the
+                            //To get the eyePosition of the camera, we need to use the inverse of the
                             //camera's worldTransform matrix.
                             const QMatrix4x4 inverseWorldTransform = camNode->worldTransform()->inverted();
-                            const QVector3D eyePostion(inverseWorldTransform.column(3));
-                            rv->setEyePosition(eyePostion);
+                            const QVector3D eyePosition(inverseWorldTransform.column(3));
+                            rv->setEyePosition(eyePosition);
                         }
                     }
                     break;
@@ -121,11 +121,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Can be set once and we take render target nearest to the leaf node
                 const RenderTargetSelector *targetSelector = static_cast<const RenderTargetSelector *>(node);
                 QNodeId renderTargetUid = targetSelector->renderTargetUuid();
-                HTarget renderTargetHandle = renderer->renderTargetManager()->lookupHandle(renderTargetUid);
+                HTarget renderTargetHandle = manager->renderTargetManager()->lookupHandle(renderTargetUid);
                 if (rv->renderTargetHandle().isNull()) {
                     rv->setRenderTargetHandle(renderTargetHandle);
 
-                    RenderTarget *renderTarget = renderer->renderTargetManager()->data(renderTargetHandle);
+                    RenderTarget *renderTarget = manager->renderTargetManager()->data(renderTargetHandle);
                     if (renderTarget) {
                         // Add renderTarget Handle and build renderCommand AttachmentPack
 
@@ -134,7 +134,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
                         // Copy attachments
                         Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
-                            RenderAttachment *attachment = renderer->attachmentManager()->lookupResource(attachmentId);
+                            RenderAttachment *attachment = manager->attachmentManager()->lookupResource(attachmentId);
                             if (attachment)
                                 rv->addRenderAttachment(attachment->attachment());
                         }
@@ -216,15 +216,17 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
     \a effect specified by the \a renderView.
 */
 Technique *findTechniqueForEffect(Renderer *renderer,
-                                        RenderView *renderView,
-                                        Effect *effect)
+                                  RenderView *renderView,
+                                  Effect *effect)
 {
     if (!effect)
         return Q_NULLPTR;
 
+    NodeManagers *manager = renderer->nodeManagers();
+
     // Iterate through the techniques in the effect
     Q_FOREACH (const QNodeId &techniqueId, effect->techniques()) {
-        Technique *technique = renderer->techniqueManager()->lookupResource(techniqueId);
+        Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
             continue;
@@ -248,10 +250,10 @@ Technique *findTechniqueForEffect(Renderer *renderer,
             // technique that satisfies it
             Q_FOREACH (const QNodeId &filterAnnotationId, techniqueFilter->filters()) {
                 foundMatch = false;
-                Annotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
+                Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
 
                 Q_FOREACH (const QNodeId &techniqueAnnotationId, technique->annotations()) {
-                    Annotation *techniqueAnnotation = renderer->criterionManager()->lookupResource(techniqueAnnotationId);
+                    Annotation *techniqueAnnotation = manager->criterionManager()->lookupResource(techniqueAnnotationId);
                     if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
                         break;
                 }
@@ -273,16 +275,16 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 }
 
 
-RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
+RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
                                                   RenderView *renderView,
                                                   Technique *technique)
 {
-    Q_ASSERT(renderer);
+    Q_ASSERT(manager);
     Q_ASSERT(technique);
 
     RenderRenderPassList passes;
     Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
-        RenderPass *renderPass = renderer->renderPassManager()->lookupResource(passId);
+        RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
         if (renderPass) {
             const RenderPassFilter *passFilter = renderView->renderPassFilter();
@@ -294,10 +296,10 @@ RenderRenderPassList findRenderPassesForTechnique(Renderer *renderer,
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
                 Q_FOREACH (const QNodeId &filterAnnotationId, passFilter->filters()) {
                     foundMatch = false;
-                    Annotation *filterAnnotation = renderer->criterionManager()->lookupResource(filterAnnotationId);
+                    Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
 
                     Q_FOREACH (const QNodeId &passAnnotationId, renderPass->annotations()) {
-                        Annotation *passAnnotation = renderer->criterionManager()->lookupResource(passAnnotationId);
+                        Annotation *passAnnotation = manager->criterionManager()->lookupResource(passAnnotationId);
                         if ((foundMatch = (*passAnnotation == *filterAnnotation)))
                             break;
                     }
@@ -329,7 +331,7 @@ ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QStri
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                                const QList<Qt3DCore::QNodeId> &parameterIds)
+                         const QList<Qt3DCore::QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
         Parameter *param = manager->lookupResource(paramId);

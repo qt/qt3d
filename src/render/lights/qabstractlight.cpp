@@ -43,9 +43,10 @@ namespace Qt3DRender
 {
 
 /*!
- * \qmltype QAbstractLight
+ * \qmltype AbstractLight
+ * \inqmlmodule Qt3D.Render
  * \instantiates QAbstractLight
- * \brief Encapsulate a QAbstractLight object in a Qt3D scene.
+ * \brief Encapsulate a QAbstractLight object in a Qt 3D scene.
  * \since 5.3
  */
 

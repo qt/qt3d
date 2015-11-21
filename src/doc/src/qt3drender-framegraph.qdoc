@@ -36,14 +36,14 @@
 
 /*!
     \page qt3drender-framegraph.html
-    \title Qt3D Render Framegraph
+    \title Qt 3D Render Framegraph
 
     \brief A framegraph is the data structure that controls how a scene is
     rendered.
 
-    The Qt3D Render aspect allows for the rendering algorithm to be entirely
+    The Qt 3D Render aspect allows for the rendering algorithm to be entirely
     data-driven. The controlling data structure is known as the \e framegraph.
-    Similar to how the Qt3D ECS (entity component system) allows you to define
+    Similar to how the Qt 3D ECS (entity component system) allows you to define
     a so-called Scenegraph by building a scene from a tree of Entities and
     Components, the framegraph is also a tree structure but one used for a
     different purpose. Namely, controlling \e how the scene is rendered.
@@ -83,7 +83,7 @@
 
     Obviously if you just want to render a simple cube onscreen you may think
     this is overkill. However, as soon as you want to start doing slightly more
-    complex scenes this comes in handy. For the common cases, Qt3D provides
+    complex scenes this comes in handy. For the common cases, Qt 3D provides
     some example framegraphs that are ready to use out of the box.
 
     We will demonstrate the flexibility of the framegraph concept by presenting a few
@@ -91,7 +91,7 @@
 
     Please note that unlike the Scenegraph which is composed of Entities and
     Components, the framegraph is only composed of nested nodes which are all
-    subclasses of Qt3D::QFrameGraphNode. This is because the framegraph nodes
+    subclasses of Qt3DRender::QFrameGraphNode. This is because the framegraph nodes
     are not simulated objects in our virtual world, but rather supporting
     information.
 
@@ -112,13 +112,13 @@
 
     In order to construct a correctly functioning framegraph tree,
     you should know a few rules about how it is traversed and how to feed it to
-    the Qt3D renderer.
+    the Qt 3D renderer.
 
     \section2 Setting the Framegraph
 
     The FrameGraph tree should be assigned to the activeFrameGraph property of
     a QFrameGraph component, itself being a component of the root entity in the
-    Qt3D scene. This is what makes it the active framegraph for the renderer.
+    Qt 3D scene. This is what makes it the active framegraph for the renderer.
     Of course, since this is a QML property binding, the active framegraph (or
     parts of it) can be changed on the fly at runtime. For example, if you want
     to use different rendering approaches for indoor and outdoor scenes or to
@@ -148,14 +148,14 @@
     \section2 How the Framegraph Is Used
 
     \list
-        \li The Qt3D renderer performs a \e{depth first traversal} of the
+        \li The Qt 3D renderer performs a \e{depth first traversal} of the
             framegraph tree. Note that, because the traversal is depth first,
             the \e {order in which you define nodes is important}.
         \li When the renderer reaches a leaf node of the framegraph, it
             collects together all of the state specified by the path from the
             leaf node to the root node. This defines the state used to render
             a section of the frame. If you are interested in the internals of
-            Qt3D, this collection of state is called a \e RenderView.
+            Qt 3D, this collection of state is called a \e RenderView.
         \li Given the configuration contained in a RenderView, the renderer
             collects together all of the Entities in the Scenegraph to be
             rendered, and from them builds a set of \e RenderCommands and
@@ -168,7 +168,7 @@
     \endlist
 
     At its heart, the framegraph is a data-driven method for configuring the
-    Qt3D renderer. Due to its data-driven nature, we can change configuration
+    Qt 3D renderer. Due to its data-driven nature, we can change configuration
     at runtime, allow non-C++ developers or designers to change the structure
     of a frame, and try out new rendering approaches without having to write
     thousands of lines of boiler plate code.
@@ -357,12 +357,12 @@
     used as the root of the FrameGraph as that would result in a call to clear
     the whole screen for each of our viewports.
 
-    Although the declaration order of the FrameGraph is important, Qt3D is able
+    Although the declaration order of the FrameGraph is important, Qt 3D is able
     to process each RenderView in parallel as each RenderView is independent of
     the others for the purposes of generating a set of RenderCommands to be
     submitted whilst the RenderView's state is in effect.
 
-    Qt3D uses a task-based approach to parallelism which naturally scales up
+    Qt 3D uses a task-based approach to parallelism which naturally scales up
     with the number of available cores. This is shown in the following diagram
     for the previous example.
 
@@ -497,17 +497,17 @@
         \li Use different FrameGraph trees depending on the nature of what
             you need to render for a particular region of the scene
         \li Implement a new rendering technique without having to
-            modify Qt3D's internals
+            modify Qt 3D's internals
     \endlist
 
     \section1 Conclusion
 
     We have introduced the FrameGraph and the node types that compose it. We
     then went on to discuss a few examples to illustrate the framegraph
-    building rules and how the Qt3D engine uses the framegraph behind the
+    building rules and how the Qt 3D engine uses the framegraph behind the
     scenes. By now you should have a pretty good overview of the FrameGraph and
     how it can be used (perhaps to add an \l {early z-fill pass} to a
     forward renderer). Also you should always keep in mind that the FrameGraph
     is a tool for you to use so that you are not tied down to the provided
-    renderer and materials that Qt3D provides out of the box.
+    renderer and materials that Qt 3D provides out of the box.
 */

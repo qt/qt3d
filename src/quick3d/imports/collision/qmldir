@@ -1,3 +1,0 @@
-module Qt3D.Collision
-plugin quick3dcolisionplugin
-classname Qt3DQuick3DCollisionPlugin

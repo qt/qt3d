@@ -46,8 +46,8 @@ Entity {
     property real nearPlane: 10.0
     property real farPlane: 10000.0
 
-    property alias viewCenter: eyeLookAt.viewCenter
-    property alias position: eyeLookAt.position
+    property vector3d viewCenter: Qt.vector3d(0.0, 0.0, 0.0)
+    property vector3d position: Qt.vector3d(0.0, 0.0, 1.0)
 
     readonly property real _fov2: Math.tan(fieldOfView * Math.PI / 180 * 0.5)
     readonly property real top: nearPlane * _fov2
@@ -77,11 +77,11 @@ Entity {
 
     Transform {
         id: eyeTransform
-        LookAt {
-            id: eyeLookAt
-            upVector: Qt.vector3d(0.0, 1.0, 0.0)
-            viewCenter: root.viewCenter
-            position: root.position
+
+        matrix: {
+            var m = Qt.matrix4x4();
+            m.lookAt(root.position, root.viewCenter, Qt.vector3d(0.0, 1.0, 0.0));
+            return m;
         }
     }
 

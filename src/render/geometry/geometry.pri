@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/qcuboidgeometry.h \
     $$PWD/qcuboidgeometry_p.h \
     $$PWD/qplanegeometry.h \
-    $$PWD/qplanegeometry_p.h
+    $$PWD/qplanegeometry_p.h \
+    $$PWD/qboundingvolumespecifier.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -56,5 +57,6 @@ SOURCES += \
     $$PWD/qtorusgeometry.cpp \
     $$PWD/qspheregeometry.cpp \
     $$PWD/qcuboidgeometry.cpp \
-    $$PWD/qplanegeometry.cpp
+    $$PWD/qplanegeometry.cpp \
+    $$PWD/qboundingvolumespecifier.cpp
 

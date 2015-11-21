@@ -60,7 +60,7 @@ namespace Render {
 class Renderer;
 class Entity;
 
-class FrameCleanupJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT FrameCleanupJob : public Qt3DCore::QAspectJob
 {
 public:
     explicit FrameCleanupJob(Renderer *renderer);
@@ -71,6 +71,7 @@ protected:
 
 private:
     Renderer *m_renderer;
+    void updateBoundingVolumesDebug(Entity *node);
 };
 
 typedef QSharedPointer<FrameCleanupJob> FrameCleanupJobPtr;

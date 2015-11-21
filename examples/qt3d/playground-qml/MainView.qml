@@ -85,16 +85,15 @@ Entity {
         mesh: ballMesh
         material: animatedMaterial
         transform: Transform {
-            Translate {
-                dx: 0; dy: -10; dz : 25
-                QQ2.SequentialAnimation on dz {
-                    running : true
-                    loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { to : -1000; duration : 5000 }
-                    QQ2.NumberAnimation { to : 1000; duration : 3000 }
-                }
+            property real z: 25
+            translation: Qt.vector3d( 0, -10, z )
+            scale: 0.3
+            QQ2.SequentialAnimation on z {
+                running: true
+                loops: QQ2.Animation.Infinite
+                QQ2.NumberAnimation { to: -1000; duration: 5000 }
+                QQ2.NumberAnimation { to: 1000; duration: 3000 }
             }
-            Scale {scale : 0.3}
         }
     }
 
@@ -102,16 +101,15 @@ Entity {
         mesh: cubeMesh
         material: animatedMaterial
         transform: Transform {
-            Translate {
-                dx: 0; dy: -10; dz : 25
-                QQ2.SequentialAnimation on dx {
-                    running : true
-                    loops: QQ2.Animation.Infinite
-                    QQ2.NumberAnimation { to : -100; duration : 10000 }
-                    QQ2.NumberAnimation { to : 100; duration : 5000 }
-                }
+            property real x: 0
+            translation: Qt.vector3d( x, -10, 25 )
+            scale: 0.3
+            QQ2.SequentialAnimation on x {
+                running : true
+                loops: QQ2.Animation.Infinite
+                QQ2.NumberAnimation { to : -100; duration : 10000 }
+                QQ2.NumberAnimation { to : 100; duration : 5000 }
             }
-            Scale {scale : 0.3}
         }
     }
 }

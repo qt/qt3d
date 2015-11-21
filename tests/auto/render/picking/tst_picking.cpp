@@ -38,7 +38,6 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/QScenePropertyChange>
-#include <Qt3DCore/qtranslatetransform.h>
 #include <Qt3DCore/qboundingvolumeprovider.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/objectpicker_p.h>
@@ -78,7 +77,6 @@ public:
         , picker(new MyObjectPicker(this))
         , mesh(new QSphereMesh(this))
         , transform(new Qt3DCore::QTransform(this))
-        , translate(new QTranslateTransform(transform))
         , acceptsEvents(true)
         , pressedCalled(0)
         , releasedCalled(0)
@@ -93,10 +91,7 @@ public:
         const QByteArray data = (*vertexBuffer->bufferFunctor())();
         vertexBuffer->setData(data);
 
-        picker->setPickAttribute(positionAttr);
-
-        translate->setTranslation(position);
-        transform->addTransform(translate);
+        transform->setTranslation(position);
 
         addComponent(picker);
         addComponent(mesh);
@@ -110,7 +105,6 @@ public:
     MyObjectPicker *picker;
     QSphereMesh *mesh;
     Qt3DCore::QTransform *transform;
-    QTranslateTransform *translate;
 
     bool acceptsEvents;
     int pressedCalled;

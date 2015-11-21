@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.1 as QQ2
 
 Entity {
     id: root
@@ -49,20 +49,17 @@ Entity {
 
     Transform {
         id: trefoilMeshTransform
-
-        Rotate {
-            id: trefoilMeshRotation
-            axis: Qt.vector3d(0, 1, 0)
-        }
+        property real userAngle: 0.0
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.NumberAnimation {
-        target: trefoilMeshRotation
+        target: trefoilMeshTransform
 
         running: true
         loops: QQ2.Animation.Infinite
 
-        property: "angle"
+        property: "userAngle"
         duration: 5000
         from: 360
         to: 0

@@ -76,6 +76,7 @@ private:
     void onCleanup() Q_DECL_OVERRIDE;
 
     void visitNode(Qt3DCore::QNode *node);
+    void loadInputDevicePlugins();
 
     Q_DECLARE_PRIVATE(QInputAspect)
 };

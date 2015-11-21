@@ -40,14 +40,15 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    property alias x: chest.x
-    property alias y: chest.y
-    property alias z: chest.z
+    property real x: 0
+    property real y: 0
+    property real z: 0
     property real scale: 1.0
 
     RenderableEntity {
         id: chest
         source: "assets/chest/Chest.obj"
+        position: Qt.vector3d(root.x, root.y, root.z)
         scale: 0.03 * root.scale
 
         material: DiffuseMapMaterial {

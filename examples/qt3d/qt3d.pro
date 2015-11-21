@@ -42,7 +42,8 @@ SUBDIRS += \
     bigscene-instanced-qml \
     custom-mesh-qml \
     instanced-arrays-qml \
-    picking-qml
+    picking-qml \
+    transforms-qml
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

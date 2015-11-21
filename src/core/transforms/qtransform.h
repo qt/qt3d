@@ -40,34 +40,59 @@
 #include <Qt3DCore/qcomponent.h>
 
 #include <QtGui/qmatrix4x4.h>
+#include <QtGui/qquaternion.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractTransform;
-
 class QTransformPrivate;
 class QT3DCORESHARED_EXPORT QTransform : public QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(QMatrix4x4 matrix READ matrix NOTIFY matrixChanged)
+    Q_PROPERTY(QMatrix4x4 matrix READ matrix WRITE setMatrix NOTIFY matrixChanged)
+    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(QVector3D scale3D READ scale3D WRITE setScale3D NOTIFY scale3DChanged)
+    Q_PROPERTY(QQuaternion rotation READ rotation WRITE setRotation NOTIFY rotationChanged)
+    Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
 
 public:
     explicit QTransform(QNode *parent = 0);
-    QTransform(QList<QAbstractTransform *> transforms, QNode *parent = 0);
-    QTransform(QAbstractTransform *transform, QNode *parent = 0);
     ~QTransform();
 
-    QList<QAbstractTransform *> transforms() const;
-    void addTransform(QAbstractTransform *xform);
-    void removeTransform(QAbstractTransform *xform);
+    float scale() const;
+    QVector3D scale3D() const;
+    QQuaternion rotation() const;
+    QVector3D translation() const;
+
+    Q_INVOKABLE static QQuaternion fromAxisAndAngle(const QVector3D &axis, float angle);
+    Q_INVOKABLE static QQuaternion fromAxisAndAngle(float x, float y, float z, float angle);
+
+    Q_INVOKABLE static QQuaternion fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                                     const QVector3D &axis2, float angle2);
+    Q_INVOKABLE static QQuaternion fromAxesAndAngles(const QVector3D &axis1, float angle1,
+                                                     const QVector3D &axis2, float angle2,
+                                                     const QVector3D &axis3, float angle3);
+
+    Q_INVOKABLE static QQuaternion fromEulerAngles(const QVector3D &eulerAngles);
+    Q_INVOKABLE static QQuaternion fromEulerAngles(float pitch, float yaw, float roll);
 
     QMatrix4x4 matrix() const;
 
+public Q_SLOTS:
+    void setScale(float scale);
+    void setScale3D(const QVector3D &scale);
+    void setRotation(const QQuaternion &rotation);
+    void setTranslation(const QVector3D &translation);
+    void setMatrix(const QMatrix4x4 &matrix);
+
 Q_SIGNALS:
+    void scaleChanged();
+    void scale3DChanged();
+    void rotationChanged();
+    void translationChanged();
     void matrixChanged();
-    void transformsChanged();
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
@@ -76,8 +101,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
-    Q_PRIVATE_SLOT(d_func(), void _q_transformDestroyed(QObject *obj))
-    Q_PRIVATE_SLOT(d_func(), void _q_update())
 };
 
 } // namespace Qt3DCore

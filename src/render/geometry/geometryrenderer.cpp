@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "geometryrenderer_p.h"
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -179,7 +180,7 @@ void GeometryRenderer::executeFunctor()
     e->setPropertyName("geometry");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
-    e->setValue(QVariant::fromValue(geometry));
+    e->setValue(QVariant::fromValue(QNodePtr(geometry, &QNodePrivate::nodePtrDeleter)));
     e->setTargetNode(peerUuid());
     notifyObservers(e);
     // Maybe we could also send a status to help troubleshoot errors

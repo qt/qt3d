@@ -27,6 +27,6 @@
 
 /*!
     \example dynamicscene-cpp
-    \title Qt3D: Dynamic Scene C++ Example
+    \title Qt 3D: Dynamic Scene C++ Example
     \ingroup qt3d-examples-cpp
 */

@@ -36,7 +36,7 @@
 
 /*!
     \example planets-qml
-    \title Qt3D: Planets QML Example
+    \title Qt 3D: Planets QML Example
     \ingroup qt3d-examples-qml
     \brief Demonstrates combining Qt 3D rendering and Qt Quick 2 elements.
 

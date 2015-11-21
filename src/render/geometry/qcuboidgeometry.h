@@ -102,7 +102,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QCuboidGeometry)
-    QT3D_CLONEABLE(QCuboidGeometry)
 };
 
 } // Qt3DRender

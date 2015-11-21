@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include "loadgeometryjob_p.h"
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -56,7 +56,7 @@ LoadGeometryJob::~LoadGeometryJob()
 
 void LoadGeometryJob::run()
 {
-    GeometryRenderer *geometryRenderer = m_renderer->geometryRendererManager()->data(m_handle);
+    GeometryRenderer *geometryRenderer = m_nodeManagers->geometryRendererManager()->data(m_handle);
     if (geometryRenderer != Q_NULLPTR)
         geometryRenderer->executeFunctor();
 }

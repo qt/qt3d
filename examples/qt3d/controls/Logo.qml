@@ -75,22 +75,7 @@ Entity {
 
     Transform {
         id: logoTransform
-
-        Rotate {
-            id: rotate_x
-            angle: rotation_x.value
-            axis: Qt.vector3d(1, 0, 0)
-        }
-        Rotate {
-            id: rotate_y
-            angle: rotation_y.value
-            axis: Qt.vector3d(0, 1, 0)
-        }
-        Rotate {
-            id: rotate_z
-            angle: rotation_z.value
-            axis: Qt.vector3d(0, 0, 1)
-        }
+        rotation: fromEulerAngles( rotation_x.value, rotation_y.value, rotation_z.value )
     }
 
     Mesh {

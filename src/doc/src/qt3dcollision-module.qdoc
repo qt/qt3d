@@ -27,8 +27,8 @@
 
 /*!
     \module Qt3DCollision
-    \title Qt3D Collision C++ Classes
-    \brief The Qt3D Collision module enables collision detection.
+    \title Qt 3D Collision C++ Classes
+    \brief The Qt 3D Collision module enables collision detection.
     \ingroup modules
     \ingroup qt3d-modules
     \qtvariable 3dcollision
@@ -57,7 +57,7 @@
 
 /*!
    \qmlmodule Qt3D.Collision 2.0
-   \title Qt3D Collision QML Types
+   \title Qt 3D Collision QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 

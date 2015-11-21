@@ -27,8 +27,8 @@
 
 /*!
     \module Qt3DLogic
-    \title Qt3D Logic C++ Classes
-    \brief The Qt3D Logic module enables synchronizing frames with the Qt 3D
+    \title Qt 3D Logic C++ Classes
+    \brief The Qt 3D Logic module enables synchronizing frames with the Qt 3D
     backend.
     \ingroup modules
     \ingroup qt3d-modules
@@ -58,7 +58,7 @@
 
 /*!
    \qmlmodule Qt3D.Logic 2.0
-   \title Qt3D Logic QML Types
+   \title Qt 3D Logic QML Types
    \ingroup qmlmodules
    \ingroup qt3d-qmlmodules
 

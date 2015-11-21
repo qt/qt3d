@@ -27,15 +27,15 @@
 
 /*!
     \example shadow-map-qml
-    \title Qt3D: Shadow Map QML Example
+    \title Qt 3D: Shadow Map QML Example
     \ingroup qt3d-examples-qml
 
-    \brief A Qt3D QML application that illustrates how to render a scene in Qt3D
+    \brief A Qt 3D QML application that illustrates how to render a scene in Qt 3D
     with shadows.
 
     \image shadowmapping-qt3d.png
 
-    \e {Qt3D Shadow Map} illustrates how to configure the renderer in order to
+    \e {Qt 3D Shadow Map} illustrates how to configure the renderer in order to
     accommodate custom rendering techniques. The example application displays a
     self-shadowed plane and trefoil knot.
 
@@ -59,7 +59,7 @@
 
     \quotefromfile shadow-map-qml/main.qml
     \skipto import Qt3D
-    \printuntil Renderer
+    \printuntil Render
 
     The first entities we create are a \l Camera, which represents the camera
     used for the final rendering, and a \l Configuration, which allows us to

@@ -113,7 +113,7 @@
    \section1 QML Types
 
    \section2 Qt 3D Core Module
-   \generatelist {qmltypesbymodule Qt3D}
+   \generatelist {qmltypesbymodule Qt3D.Core}
 
    \section2 Qt 3D Collision Module
    \generatelist {qmltypesbymodule Qt3D.Collision}

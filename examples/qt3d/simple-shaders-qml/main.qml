@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.2 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.2 as QQ2
 
 Entity {
     id: sceneRoot
@@ -78,10 +78,11 @@ Entity {
         id: torusEntityInlineShader
 
         property Transform transform:  Transform {
-            Translate { translation: Qt.vector3d(-2.0, 0.0, 0.0) }
-            Rotate {
-                angle: 45
-                axis: Qt.vector3d(1, 0, 0)
+            matrix: {
+                var m = Qt.matrix4x4();
+                m.rotate(45, Qt.vector3d(1, 0, 0));
+                m.translate(Qt.vector3d(-2.0, 0.0, 0.0));
+                return m;
             }
         }
 
@@ -157,11 +158,12 @@ Entity {
     Entity {
         id: torusEntitySeparateShader
 
-        property Transform transform:  Transform {
-            Translate { translation: Qt.vector3d(2.0, 0.0, 0.0) }
-            Rotate {
-                angle: 15
-                axis: Qt.vector3d(1, 0, 0)
+        property Transform transform: Transform {
+            matrix: {
+                var m = Qt.matrix4x4();
+                m.rotate(15, Qt.vector3d(1, 0, 0));
+                m.translate(Qt.vector3d(2.0, 0.0, 0.0));
+                return m;
             }
         }
 

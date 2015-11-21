@@ -38,6 +38,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,6 +63,7 @@ void Geometry::cleanup()
     m_verticesPerPatch = 0;
     m_attributes.clear();
     m_geometryDirty = false;
+    m_boundingPositionAttribute = Qt3DCore::QNodeId();
 }
 
 void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
@@ -73,6 +75,8 @@ void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
             m_attributes.push_back(attribute->id());
         m_verticesPerPatch = geometry->verticesPerPatch();
         m_geometryDirty = true;
+        if (geometry->boundingVolumeSpecifier()->positionAttribute() != Q_NULLPTR)
+            m_boundingPositionAttribute = geometry->boundingVolumeSpecifier()->positionAttribute()->id();
     }
 }
 
@@ -105,6 +109,9 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
             // Note: doesn't set dirtyness as this parameter changing doesn't need
             // a new VAO update.
+        } else if (propertyName == QByteArrayLiteral("boundingVolumeSpecifierPositionAttribute")) {
+            m_boundingPositionAttribute = propertyChange->value().value<Qt3DCore::QNodeId>();
+            break;
         }
 
     default:

@@ -27,6 +27,6 @@
 
 /*!
     \example deferred-renderer-cpp
-    \title Qt3D: Deferred Renderer C++ Example
+    \title Qt 3D: Deferred Renderer C++ Example
     \ingroup qt3d-examples-cpp
 */

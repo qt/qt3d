@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/layer_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/renderpassfilternode_p.h>
@@ -368,7 +369,8 @@ void RenderView::sort()
 void RenderView::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
-    m_data->m_uniformBlockBuilder.shaderDataManager = m_renderer->shaderDataManager();
+    m_manager = renderer->nodeManagers();
+    m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
 // Tries to order renderCommand by shader so as to minimize shader changes
@@ -395,7 +397,7 @@ void RenderView::buildRenderCommands(Entity *node)
                 Material *material = Q_NULLPTR;
                 Effect *effect = Q_NULLPTR;
                 if ((material = node->renderComponent<Material>()) != Q_NULLPTR && material->isEnabled())
-                    effect = m_renderer->effectManager()->lookupResource(material->effect());
+                    effect = m_renderer->nodeManagers()->effectManager()->lookupResource(material->effect());
                 Technique *technique = findTechniqueForEffect(m_renderer, this, effect);
 
                 ParameterInfoList parameters;
@@ -410,36 +412,36 @@ void RenderView::buildRenderCommands(Entity *node)
                 // Add Parameters define in techniqueFilter and passFilter
                 // passFilter have priority over techniqueFilter
                 if (m_data->m_passFilter)
-                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                    parametersFromParametersProvider(&parameters, m_renderer->nodeManagers()->parameterManager(),
                                                      m_data->m_passFilter);
                 if (m_data->m_techniqueFilter)
-                    parametersFromParametersProvider(&parameters, m_renderer->parameterManager(),
+                    parametersFromParametersProvider(&parameters, m_renderer->nodeManagers()->parameterManager(),
                                                      m_data->m_techniqueFilter);
 
                 RenderRenderPassList passes;
                 if (technique) {
-                    passes = findRenderPassesForTechnique(m_renderer, this, technique);
+                    passes = findRenderPassesForTechnique(m_manager, this, technique);
                 } else {
-                    material = m_renderer->materialManager()->data(m_renderer->defaultMaterialHandle());
-                    effect = m_renderer->effectManager()->data(m_renderer->defaultEffectHandle());
-                    technique = m_renderer->techniqueManager()->data(m_renderer->defaultTechniqueHandle());
-                    passes << m_renderer->renderPassManager()->data(m_renderer->defaultRenderPassHandle());
+                    material = m_manager->data<Material, MaterialManager>(m_renderer->defaultMaterialHandle());
+                    effect = m_manager->data<Effect, EffectManager>(m_renderer->defaultEffectHandle());
+                    technique = m_manager->data<Technique, TechniqueManager>(m_renderer->defaultTechniqueHandle());
+                    passes << m_manager->data<RenderPass, RenderPassManager>(m_renderer->defaultRenderPassHandle());
                 }
 
                 // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
-                parametersFromMaterialEffectTechnique(&parameters, m_renderer->parameterManager(), material, effect, technique);
+                parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
                 Q_FOREACH (RenderPass *pass, passes) {
 
                     // Add the RenderPass Parameters
                     ParameterInfoList globalParameters = parameters;
-                    parametersFromParametersProvider(&globalParameters, m_renderer->parameterManager(), pass);
+                    parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
 
                     RenderCommand *command = m_allocator->allocate<RenderCommand>();
                     command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
 
-                    command->m_geometry = m_renderer->geometryManager()->lookupHandle(geometryRenderer->geometryId());
+                    command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
                     command->m_geometryRenderer = node->componentHandle<GeometryRenderer, 16>();
                     command->m_instancesCount = 0;
                     command->m_stateSet = Q_NULLPTR;
@@ -522,8 +524,8 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
         bool uboNeedsUpdate = false;
 
         // build UBO at uboId if not created before
-        if (!m_renderer->uboManager()->contains(uboKey)) {
-            m_renderer->uboManager()->getOrCreateResource(uboKey);
+        if (!m_manager->uboManager()->contains(uboKey)) {
+            m_manager->uboManager()->getOrCreateResource(uboKey);
             uboNeedsUpdate = true;
         }
 
@@ -582,14 +584,14 @@ void RenderView::buildSortingKey(RenderCommand *command)
 
     // Handle at most 4 filters at once
     for (int i = 0; i < sortCount && i < 4; i++) {
-        SortCriterion *sC = m_renderer->sortCriterionManager()->lookupResource(m_data->m_sortingCriteria[i]);
+        SortCriterion *sC = m_manager->lookupResource<SortCriterion, SortCriterionManager>(m_data->m_sortingCriteria[i]);
 
         switch (sC->sortType()) {
         case QSortCriterion::StateChangeCost:
             command->m_sortingType.sorts[i] = command->m_changeCost; // State change cost
             break;
         case QSortCriterion::BackToFront:
-            command->m_sortingType.sorts[i] = 0; // Depth value (not implemented yet)
+            command->m_sortBackToFront = true; // Depth value
             break;
         case QSortCriterion::Material:
             command->m_sortingType.sorts[i] = command->m_shaderDna; // Material
@@ -614,10 +616,9 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
 
     if (rPass != Q_NULLPTR) {
         // Index Shader by Shader UUID
-        command->m_shader = m_renderer->shaderManager()->lookupHandle(rPass->shaderProgram());
+        command->m_shader = m_manager->lookupHandle<Shader, ShaderManager, HShader>(rPass->shaderProgram());
         Shader *shader = Q_NULLPTR;
-        if ((shader = m_renderer->shaderManager()->data(command->m_shader)) != Q_NULLPTR) {
-
+        if ((shader = m_manager->data<Shader, ShaderManager>(command->m_shader)) != Q_NULLPTR) {
             command->m_shaderDna = shader->dna();
 
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings

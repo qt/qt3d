@@ -94,6 +94,7 @@ public:
         int  global;
     } m_sortingType;
 
+    bool m_sortBackToFront;
 };
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2);

@@ -37,7 +37,6 @@
 #include <QtTest/QTest>
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/qobjectpicker.h>
-#include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include "testpostmanarbiter.h"
@@ -52,16 +51,13 @@ private Q_SLOTS:
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DRender::QObjectPicker picker;
-        Qt3DRender::QAttribute attr;
         picker.setHoverEnabled(true);
-        picker.setPickAttribute(&attr);
 
         // WHEN
         objectPicker.setPeer(&picker);
 
         // THEN
         QVERIFY(!objectPicker.peerUuid().isNull());
-        QVERIFY(!objectPicker.pickAttributeId().isNull());
         QCOMPARE(objectPicker.hoverEnabled(), true);
         QCOMPARE(objectPicker.isDirty(), true);
     }
@@ -73,15 +69,12 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(objectPicker.peerUuid().isNull());
-        QVERIFY(objectPicker.pickAttributeId().isNull());
         QCOMPARE(objectPicker.hoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
 
         // GIVEN
         Qt3DRender::QObjectPicker picker;
-        Qt3DRender::QAttribute attr;
         picker.setHoverEnabled(true);
-        picker.setPickAttribute(&attr);
 
         // WHEN
         objectPicker.updateFromPeer(&picker);
@@ -89,7 +82,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(objectPicker.peerUuid().isNull());
-        QVERIFY(objectPicker.pickAttributeId().isNull());
         QCOMPARE(objectPicker.hoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
     }
@@ -109,20 +101,6 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(objectPicker.hoverEnabled(), true);
-        QVERIFY(objectPicker.isDirty());
-
-        objectPicker.unsetDirty();
-        QVERIFY(!objectPicker.isDirty());
-
-        // WHEN
-        Qt3DRender::QAttribute attr;
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(attr.id()));
-        updateChange->setPropertyName("pickAttribute");
-        objectPicker.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(objectPicker.pickAttributeId(), attr.id());
         QVERIFY(objectPicker.isDirty());
 
         objectPicker.unsetDirty();

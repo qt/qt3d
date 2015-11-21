@@ -47,6 +47,7 @@
 #include <Qt3DRender/QShaderData>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QBoundingVolumeDebug>
 
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
 typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
@@ -63,6 +64,7 @@ QNodeId cameraLensUuid(Entity *entity) { return entity->componentUuid<CameraLens
 QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>(); }
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 QNodeId objectPickerUuid(Entity *entity) { return entity->componentUuid<ObjectPicker>(); }
+QNodeId boundingVolumeDebugUuid(Entity *entity) { return entity->componentUuid<BoundingVolumeDebug>(); }
 
 QList<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QList<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
@@ -87,7 +89,8 @@ private slots:
                 << new QMaterial
                 << new QObjectPicker
                 << new QLayer
-                << new QShaderData;
+                << new QShaderData
+                << new QBoundingVolumeDebug;
 
         QTest::newRow("all components") << components;
     }
@@ -104,8 +107,10 @@ private slots:
         QVERIFY(entity.componentUuid<Material>().isNull());
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(!entity.isBoundingVolumeDirty());
 
         // WHEN
         Q_FOREACH (QComponent *component, components) {
@@ -121,8 +126,10 @@ private slots:
         QVERIFY(!entity.componentUuid<Material>().isNull());
         QVERIFY(!entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(!entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(!entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(entity.isBoundingVolumeDirty());
 
         // WHEN
         entity.cleanup();
@@ -133,8 +140,10 @@ private slots:
         QVERIFY(entity.componentUuid<Material>().isNull());
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
+        QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
+        QVERIFY(!entity.isBoundingVolumeDirty());
     }
 
     void shouldHandleSingleComponentEvents_data()
@@ -156,6 +165,9 @@ private slots:
 
         component = new QObjectPicker;
         QTest::newRow("objectPicker") << component << reinterpret_cast<void*>(objectPickerUuid);
+
+        component = new QBoundingVolumeDebug;
+        QTest::newRow("boundingVolumeDebug") << component << reinterpret_cast<void*>(boundingVolumeDebugUuid);
     }
 
     void shouldHandleSingleComponentEvents()

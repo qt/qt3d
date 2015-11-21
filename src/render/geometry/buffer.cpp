@@ -135,6 +135,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
+// Called by Renderer once the buffer has been uploaded to OpenGL
 void Buffer::unsetDirty()
 {
     m_bufferDirty = false;

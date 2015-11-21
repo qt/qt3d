@@ -51,7 +51,6 @@ class QPickEvent;
 class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAttribute *pickAttribute READ pickAttribute WRITE setPickAttribute NOTIFY pickAttributeChanged)
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
@@ -59,9 +58,6 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 public:
     explicit QObjectPicker(QNode *parent = Q_NULLPTR);
     ~QObjectPicker();
-
-    void setPickAttribute(QAttribute *pickAttribute);
-    QAttribute *pickAttribute() const;
 
     void setHoverEnabled(bool hoverEnabled);
     bool hoverEnabled() const;
@@ -75,7 +71,6 @@ Q_SIGNALS:
     void clicked(Qt3DRender::QPickEvent *event);
     void entered();
     void exited();
-    void pickAttributeChanged();
     void hoverEnabledChanged();
     void pressedChanged();
     void containsMouseChanged();

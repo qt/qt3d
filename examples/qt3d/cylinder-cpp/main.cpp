@@ -51,9 +51,6 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 
-#include <Qt3DCore/qscaletransform.h>
-#include <Qt3DCore/qrotatetransform.h>
-#include <Qt3DCore/qlookattransform.h>
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qaspectengine.h>
 
@@ -108,21 +105,14 @@ int main(int argc, char **argv)
     cylinder->setSlices(20);
 
     // CylinderMesh Transform
-    Qt3DCore::QScaleTransform *cylinderScale = new Qt3DCore::QScaleTransform();
-    Qt3DCore::QRotateTransform *cylinderRotation = new Qt3DCore::QRotateTransform();
-    Qt3DCore::QTransform *cylinderTransforms = new Qt3DCore::QTransform();
-
-    cylinderScale->setScale3D(QVector3D(1.5f, 1.5f, 1.5f));
-    cylinderRotation->setAngleDeg(45.0f);
-    cylinderRotation->setAxis(QVector3D(1, 0, 0));
-
-    cylinderTransforms->addTransform(cylinderScale);
-    cylinderTransforms->addTransform(cylinderRotation);
+    Qt3DCore::QTransform *cylinderTransform = new Qt3DCore::QTransform;
+    cylinderTransform->setScale(1.5f);
+    cylinderTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
     // Cylinder
     Qt3DCore::QEntity *cylinderEntity = new Qt3DCore::QEntity(rootEntity);
     cylinderEntity->addComponent(cylinder);
-    cylinderEntity->addComponent(cylinderTransforms);
+    cylinderEntity->addComponent(cylinderTransform);
 
     // Setting the FrameGraph
     rootEntity->addComponent(frameGraph);

@@ -27,6 +27,6 @@
 
 /*!
     \example skybox
-    \title Qt3D: Skybox QML Example
+    \title Qt 3D: Skybox QML Example
     \ingroup qt3d-examples-qml
 */

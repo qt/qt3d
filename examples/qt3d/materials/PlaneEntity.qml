@@ -39,11 +39,8 @@ import Qt3D.Render 2.0
 
 Entity {
     id: root
-
-    property alias x: translateTransform.dx
-    property alias y: translateTransform.dy
-    property alias z: translateTransform.dz
-    property alias scale: scaleTransform.scale
+    property alias position: transform.translation
+    property alias scale: transform.scale
     property alias width: mesh.width
     property alias height: mesh.height
     property alias resolution: mesh.meshResolution
@@ -51,11 +48,7 @@ Entity {
 
     components: [ transform, mesh, root.material ]
 
-    Transform {
-        id: transform
-        Translate { id: translateTransform }
-        Scale { id: scaleTransform }
-    }
+    Transform { id: transform }
 
     PlaneMesh {
         id: mesh

@@ -47,9 +47,13 @@ namespace Qt3DCore {
 */
 QCameraPrivate::QCameraPrivate()
     : QEntityPrivate()
+    , m_position(0.0f, 0.0f, 0.0f)
+    , m_viewCenter(0.0f, 0.0f, -100.0f)
+    , m_upVector(0.0f, 1.0f, 0.0f)
+    , m_cameraToCenter(m_viewCenter - m_position)
+    , m_viewMatrixDirty(false)
     , m_lens(new QCameraLens())
     , m_transform(new QTransform())
-    , m_lookAt(new QLookAtTransform())
 {
 }
 
@@ -57,12 +61,12 @@ QCameraPrivate::QCameraPrivate()
     \qmltype Camera
     \instantiates Qt3DCore::QCamera
     \inherits Entity
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 */
 
-QCamera::QCamera(QNode *parent) :
-    QEntity(*new QCameraPrivate, parent)
+QCamera::QCamera(QNode *parent)
+    : QEntity(*new QCameraPrivate, parent)
 {
     QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionMatrixChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));
@@ -74,11 +78,7 @@ QCamera::QCamera(QNode *parent) :
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged()), this, SIGNAL(bottomChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged()), this, SIGNAL(topChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
-    d_func()->m_transform->addTransform(d_func()->m_lookAt);
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -102,11 +102,7 @@ QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged()), this, SIGNAL(bottomChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(topChanged()), this, SIGNAL(topChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(positionChanged()), this, SIGNAL(positionChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(upVectorChanged()), this, SIGNAL(upVectorChanged()));
-    QObject::connect(d_func()->m_lookAt, SIGNAL(viewCenterChanged()), this, SIGNAL(viewCenterChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(matrixChanged()));
-    d_func()->m_transform->addTransform(d_func()->m_lookAt);
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -123,20 +119,13 @@ QTransform *QCamera::transform() const
     return d->m_transform;
 }
 
-QLookAtTransform *QCamera::lookAt() const
-{
-    Q_D(const QCamera);
-    return d->m_lookAt;
-}
-
-void QCamera::translate( const QVector3D& vLocal, CameraTranslationOption option )
+void QCamera::translate(const QVector3D &vLocal, CameraTranslationOption option)
 {
     QVector3D viewVector = viewCenter() - position(); // From "camera" position to view center
 
     // Calculate the amount to move by in world coordinates
     QVector3D vWorld;
-    if (!qFuzzyIsNull(vLocal.x()))
-    {
+    if (!qFuzzyIsNull(vLocal.x())) {
         // Calculate the vector for the local x axis
         const QVector3D x = QVector3D::crossProduct(viewVector, upVector()).normalized();
         vWorld += vLocal.x() * x;
@@ -168,19 +157,19 @@ void QCamera::translate( const QVector3D& vLocal, CameraTranslationOption option
     setUpVector(QVector3D::crossProduct(x, viewVector).normalized());
 }
 
-void QCamera::translateWorld(const QVector3D& vWorld , CameraTranslationOption option )
+void QCamera::translateWorld(const QVector3D &vWorld, CameraTranslationOption option)
 {
     // Update the camera position using the calculated world vector
     setPosition(position() + vWorld);
 
     // May be also update the view center coordinates
-    if ( option == TranslateViewCenter )
+    if (option == TranslateViewCenter)
         setViewCenter(viewCenter() + vWorld);
 }
 
 QQuaternion QCamera::tiltRotation(float angle) const
 {
-    const  QVector3D viewVector = viewCenter() - position();
+    const QVector3D viewVector = viewCenter() - position();
     const QVector3D xBasis = QVector3D::crossProduct(upVector(), viewVector.normalized()).normalized();
     return QQuaternion::fromAxisAndAngle(xBasis, -angle);
 }
@@ -277,10 +266,9 @@ void QCamera::setProjectionType(QCameraLens::ProjectionType type)
 
     Holds the type of the camera projection (orthogonal or perspective).
 
-    \value CameraLens.OrthogonalProjection Orthogonal projection
+    \value CameraLens.OrthographicProjection Orthographic projection
     \value CameraLens.PerspectiveProjection Perspective projection
 */
-
 QCameraLens::ProjectionType QCamera::projectionType() const
 {
     Q_D(const QCamera);
@@ -296,7 +284,6 @@ void QCamera::setNearPlane(float nearPlane)
 /*!
     \qmlproperty float Qt3DCore::Camera::nearPlane
 */
-
 float QCamera::nearPlane() const
 {
     Q_D(const QCamera);
@@ -312,7 +299,6 @@ void QCamera::setFarPlane(float farPlane)
 /*!
     \qmlproperty float Qt3DCore::Camera::farPlane
 */
-
 float QCamera::farPlane() const
 {
     Q_D(const QCamera);
@@ -328,7 +314,6 @@ void QCamera::setFieldOfView(float fieldOfView)
 /*!
     \qmlproperty float Qt3DCore::Camera::fieldOfView
 */
-
 float QCamera::fieldOfView() const
 {
     Q_D(const QCamera);
@@ -344,7 +329,6 @@ void QCamera::setAspectRatio(float aspectRatio)
 /*!
     \qmlproperty float Qt3DCore::Camera::aspectRatio
 */
-
 float QCamera::aspectRatio() const
 {
     Q_D(const QCamera);
@@ -360,7 +344,6 @@ void QCamera::setLeft(float left)
 /*!
     \qmlproperty float Qt3DCore::Camera::left
 */
-
 float QCamera::left() const
 {
     Q_D(const QCamera);
@@ -376,7 +359,6 @@ void QCamera::setRight(float right)
 /*!
     \qmlproperty float Qt3DCore::Camera::right
 */
-
 float QCamera::right() const
 {
     Q_D(const QCamera);
@@ -392,7 +374,6 @@ void QCamera::setBottom(float bottom)
 /*!
     \qmlproperty float Qt3DCore::Camera::bottom
 */
-
 float QCamera::bottom() const
 {
     Q_D(const QCamera);
@@ -408,7 +389,6 @@ void QCamera::setTop(float top)
 /*!
     \qmlproperty float Qt3DCore::Camera::top
 */
-
 float QCamera::top() const
 {
     Q_D(const QCamera);
@@ -419,7 +399,6 @@ float QCamera::top() const
     \qmlproperty matrix4x4 Qt3DCore::Camera::projectionMatrix
     \readonly
 */
-
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
@@ -429,56 +408,74 @@ QMatrix4x4 QCamera::projectionMatrix() const
 void QCamera::setPosition(const QVector3D &position)
 {
     Q_D(QCamera);
-    d->m_lookAt->setPosition(position);
+    d->m_position = position;
+    d->m_cameraToCenter = d->m_viewCenter - position;
+    d->m_viewMatrixDirty = true;
+    emit positionChanged();
+    emit viewVectorChanged();
+    d->updateViewMatrix();
 }
 
 /*!
     \qmlproperty vector3d Qt3DCore::Camera::position
 */
-
 QVector3D QCamera::position() const
 {
     Q_D(const QCamera);
-    return d->m_lookAt->position();
-
+    return d->m_position;
 }
 
 void QCamera::setUpVector(const QVector3D &upVector)
 {
     Q_D(QCamera);
-    d->m_lookAt->setUpVector(upVector);
+    d->m_upVector = upVector;
+    d->m_viewMatrixDirty = true;
+    emit upVectorChanged();
+    d->updateViewMatrix();
 }
 
 /*!
     \qmlproperty vector3d Qt3DCore::Camera::upVector
 */
-
 QVector3D QCamera::upVector() const
 {
     Q_D(const QCamera);
-    return d->m_lookAt->upVector();
+    return d->m_upVector;
 }
 
 void QCamera::setViewCenter(const QVector3D &viewCenter)
 {
     Q_D(QCamera);
-    d->m_lookAt->setViewCenter(viewCenter);
+    d->m_viewCenter = viewCenter;
+    d->m_cameraToCenter = viewCenter - d->m_position;
+    d->m_viewMatrixDirty = true;
+    emit viewCenterChanged();
+    emit viewVectorChanged();
+    d->updateViewMatrix();
 }
 
 /*!
     \qmlproperty vector3d Qt3DCore::Camera::viewCenter
 */
-
 QVector3D QCamera::viewCenter() const
 {
     Q_D(const QCamera);
-    return d->m_lookAt->viewCenter();
+    return d->m_viewCenter;
 }
 
 /*!
-    \qmlproperty matrix4x4 Qt3DCore::Camera::matrix
+    \qmlproperty vector3d Qt3DCore::Camera::viewVector
 */
-QMatrix4x4 QCamera::matrix() const
+QVector3D QCamera::viewVector() const
+{
+    Q_D(const QCamera);
+    return d->m_cameraToCenter;
+}
+
+/*!
+    \qmlproperty matrix4x4 Qt3DCore::Camera::viewMatrix
+*/
+QMatrix4x4 QCamera::viewMatrix() const
 {
     Q_D(const QCamera);
     return d->m_transform->matrix();

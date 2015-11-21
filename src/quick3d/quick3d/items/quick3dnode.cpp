@@ -44,7 +44,7 @@ namespace Quick {
 
 /*!
     \qmltype Node
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.5
 
     \brief A base QML type that other types inherit. It cannot be directly

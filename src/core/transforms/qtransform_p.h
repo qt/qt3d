@@ -54,7 +54,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QTransform;
 class QTransformPrivate : public QComponentPrivate
 {
     Q_DECLARE_PUBLIC(QTransform)
@@ -62,14 +61,15 @@ class QTransformPrivate : public QComponentPrivate
 public:
     QTransformPrivate();
 
-    void _q_transformDestroyed(QObject *obj);
-    void _q_update();
-    QMatrix4x4 applyTransforms() const;
-
-    mutable bool m_transformsDirty;
-    QList<QAbstractTransform*> m_transforms;
+    // Stored in this order as QQuaternion is bigger than QVector3D
+    // Operations are applied in the order of:
+    // scale, rotation, translation
+    QQuaternion m_rotation;
+    QVector3D m_scale;
+    QVector3D m_translation;
 
     mutable QMatrix4x4 m_matrix;
+    mutable bool m_matrixDirty;
 };
 
 } // namespace Qt3DCore

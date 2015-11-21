@@ -50,7 +50,7 @@ class QT3DCORESHARED_EXPORT QRay3D
 {
 public:
     QRay3D();
-    explicit QRay3D(const QVector3D &origin, const QVector3D &direction = QVector3D(0.0f, 0.0f, 1.0f));
+    explicit QRay3D(const QVector3D &origin, const QVector3D &direction = QVector3D(0.0f, 0.0f, 1.0f), float distance = 1.0f);
     ~QRay3D();
 
     QVector3D origin() const;
@@ -58,6 +58,9 @@ public:
 
     QVector3D direction() const;
     void setDirection(const QVector3D &value);
+
+    float distance() const;
+    void setDistance(float distance);
 
     bool contains(const QVector3D &point) const;
     bool contains(const QRay3D &ray) const;
@@ -78,6 +81,7 @@ public:
 private:
     QVector3D m_origin;
     QVector3D m_direction;
+    float m_distance;
 };
 
 #ifndef QT_NO_DEBUG_STREAM

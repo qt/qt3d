@@ -39,7 +39,8 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/sphere_p.h>
-#include <Qt3DRender/private/objectpicker_p.h>
+#include <Qt3DRender/private/geometryrenderer_p.h>
+#include <Qt3DRender/private/geometry_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/managers_p.h>
@@ -79,19 +80,9 @@ void FramePreparationJob::parseNodeTree(Entity *node)
         r->updateTransformedProperties(*node->worldTransform());
     }
 
-    ObjectPicker *pick = node->renderComponent<ObjectPicker>();
-    if (pick && !pick->isDirty()) {
-        const Attribute *pickAttribute = m_renderer->attributeManager()->lookupResource(pick->pickAttributeId());
-        if (pickAttribute) {
-            const Buffer *buffer = m_renderer->bufferManager()->lookupResource(pickAttribute->bufferId());
-            if (buffer && buffer->isDirty())
-                pick->makeDirty();
-        }
-    }
-
-    // Traverse children
-    Q_FOREACH (Entity *child, node->children())
-        parseNodeTree(child);
+    const QVector<Entity *> children = node->children();
+    Q_FOREACH (Entity *c, children)
+        parseNodeTree(c);
 }
 
 } // namespace Render

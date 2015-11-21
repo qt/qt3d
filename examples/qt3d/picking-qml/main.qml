@@ -76,12 +76,8 @@ Entity {
         QQ2.Behavior on scaleFactor { QQ2.NumberAnimation { duration: 150; easing.type: QQ2.Easing.InQuad } }
 
         property Transform transform: Transform {
-            Scale {
-                scale: sphere1.scaleFactor
-            }
-            Translate {
-                dx: -8
-            }
+            scale: sphere1.scaleFactor
+            translation: Qt.vector3d(-8, 0, 0)
         }
 
         property Material material: PhongMaterial {
@@ -99,8 +95,6 @@ Entity {
             onExited: sphere1.material.ambient = "green"
 
             onClicked: console.log("Clicked Sphere 1")
-
-            pickAttribute: sphereMesh.geometry.positionAttribute
         }
 
         components: [sphereMesh, material, transform, objectPicker]
@@ -114,9 +108,7 @@ Entity {
         }
 
         property Transform transform: Transform {
-            Scale {
-                scale: 1.5
-            }
+            scale: 1.5
         }
 
         property ObjectPicker objectPicker: ObjectPicker {
@@ -126,8 +118,6 @@ Entity {
             onReleased: sphere2.material.diffuse = "red"
 
             onClicked: console.log("Clicked Sphere 2")
-
-            pickAttribute: sphereMesh.geometry.positionAttribute
         }
 
         components: [sphereMesh, material, transform, objectPicker]
@@ -145,12 +135,8 @@ Entity {
         QQ2.Behavior on scaleFactor { QQ2.NumberAnimation { duration: 200; easing.type: QQ2.Easing.InQuad } }
 
         property Transform transform: Transform {
-            Scale {
-                scale: sphere3.scaleFactor
-            }
-            Translate {
-                dx: 8
-            }
+            scale: sphere3.scaleFactor
+            translation: Qt.vector3d(8, 0, 0)
         }
 
         property ObjectPicker objectPicker: ObjectPicker {
@@ -162,8 +148,6 @@ Entity {
             onExited: sphere3.material.ambient = "white"
 
             onClicked: console.log("Clicked Sphere 3")
-
-            pickAttribute: sphereMesh.geometry.positionAttribute
         }
 
         components: [sphereMesh, material, transform, objectPicker]

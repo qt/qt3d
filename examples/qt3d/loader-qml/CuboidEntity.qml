@@ -34,9 +34,9 @@
 **
 ****************************************************************************/
 
+import QtQuick 2.4 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
-import QtQuick 2.4 as QQ2
 
 Entity {
     components: [ mesh, phongMaterial, transform ]
@@ -54,11 +54,9 @@ Entity {
 
     Transform {
         id: transform
-        Scale { scale: 4 }
-        Rotate {
-            id: _rotate
-            axis: Qt.vector3d(0.0, 1.0, 0.0)
-        }
+        property real userAngle: 0.0
+        scale: 4
+        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
     }
 
     QQ2.ColorAnimation {
@@ -72,8 +70,8 @@ Entity {
     }
 
     QQ2.NumberAnimation {
-        target: _rotate
-        property: "angle"
+        target: transform
+        property: "userAngle"
         duration: 750
         loops: QQ2.Animation.Infinite
         running: true

@@ -51,6 +51,7 @@
 #include <QSharedPointer>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -58,7 +59,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 
 class LoadBufferJob : public Qt3DCore::QAspectJob
 {
@@ -66,12 +67,12 @@ public:
     explicit LoadBufferJob(const HBuffer &handle);
     ~LoadBufferJob();
 
-    void setRenderer(Renderer *renderer) { m_renderer = renderer; }
+    void setNodeManager(NodeManagers *nodeManagers) { m_nodeManagers = nodeManagers; }
 
 protected:
     void run() Q_DECL_OVERRIDE;
     HBuffer m_handle;
-    Renderer *m_renderer;
+    NodeManagers *m_nodeManagers;
 };
 
 typedef QSharedPointer<LoadBufferJob> LoadBufferJobPtr;

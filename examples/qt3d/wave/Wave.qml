@@ -59,10 +59,9 @@ Entity {
 
     Transform {
         id: transform
-        Translate { dx: root.x; dy: root.y; dz: root.z }
-        Scale { scale: root.scale }
-        Rotate{ angle: root.theta; axis: Qt.vector3d(1.0, 0.0, 0.0) }
-        Rotate{ angle: root.phi; axis: Qt.vector3d(0.0, 1.0, 0.0) }
+        translation: Qt.vector3d(root.x, root.y, root.z);
+        rotation: fromEulerAngles(root.theta, root.phi)
+        scale: root.scale
     }
 
     WaveMaterial {

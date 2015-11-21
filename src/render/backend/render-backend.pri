@@ -21,7 +21,10 @@ HEADERS += \
     $$PWD/entity_p.h \
     $$PWD/layer_p.h \
     $$PWD/nodefunctor_p.h \
-    $$PWD/transform_p.h
+    $$PWD/transform_p.h \
+    $$PWD/boundingvolumedebug_p.h \
+    $$PWD/nodemanagers_p.h \
+    $$PWD/triangleboundingvolume_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -39,4 +42,7 @@ SOURCES += \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \
     $$PWD/layer.cpp \
-    $$PWD/transform.cpp
+    $$PWD/transform.cpp \
+    $$PWD/boundingvolumedebug.cpp \
+    $$PWD/nodemanagers.cpp \
+    $$PWD/triangleboundingvolume.cpp

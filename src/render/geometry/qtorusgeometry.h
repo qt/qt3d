@@ -92,7 +92,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QTorusGeometry)
-    QT3D_CLONEABLE(QTorusGeometry)
 };
 
 } // Qt3D

@@ -58,13 +58,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 class Entity;
 
-class CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
+class Q_AUTOTEST_EXPORT CalculateBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit CalculateBoundingVolumeJob(Renderer *renderer);
+    explicit CalculateBoundingVolumeJob(NodeManagers *manager);
 
     void setRoot(Entity *node);
 
@@ -72,7 +72,7 @@ protected:
     void run() Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
+    NodeManagers *m_manager;
     Entity *m_node;
 };
 

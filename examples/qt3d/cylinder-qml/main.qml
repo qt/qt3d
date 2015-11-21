@@ -76,17 +76,13 @@ Entity {
 
     Transform {
         id: transform
-        Scale { scale3D: Qt.vector3d(1.5, 1.5, 1.5) }
-        Rotate {
-            angle: 45
-            axis: Qt.vector3d(1, 0, 0)
-        }
+        scale: 1.5
+        rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
     }
 
     Material {
         id: material
-        effect : Effect {
-        }
+        effect: Effect {}
     }
 
     Entity {

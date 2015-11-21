@@ -49,7 +49,6 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qshaderprogram.h>
-#include <Qt3DCore/qtranslatetransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -76,7 +75,6 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_gl3RenderPass(new QRenderPass())
     , m_mesh(new QCuboidMesh())
     , m_transform(new Qt3DCore::QTransform())
-    , m_translate(new QTranslateTransform())
     , m_textureParameter(new QParameter(QStringLiteral("skyboxTexture"), m_skyboxTexture))
     , m_posXImage(new QTextureImage())
     , m_posYImage(new QTextureImage())
@@ -139,8 +137,6 @@ void QSkyboxEntityPrivate::init()
 
     m_material->setEffect(m_effect);
     m_material->addParameter(m_textureParameter);
-
-    m_transform->addTransform(m_translate);
 
     m_mesh->setXYMeshResolution(QSize(2, 2));
     m_mesh->setXZMeshResolution(QSize(2, 2));
@@ -268,7 +264,7 @@ void QSkyboxEntity::setCameraPosition(const QVector3D &cameraPosition)
     Q_D(QSkyboxEntity);
     if (cameraPosition != d->m_position) {
         d->m_position = cameraPosition;
-        d->m_translate->setTranslation(d->m_position);
+        d->m_transform->setTranslation(d->m_position);
         emit cameraPositionChanged();
     }
 }

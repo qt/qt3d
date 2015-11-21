@@ -49,8 +49,14 @@
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmouseinput.h>
+#include <Qt3DInput/qabstractinputdevice.h>
+#include <Qt3DInput/private/qinputdevicefactory_p.h>
 #include <Qt3DCore/qservicelocator.h>
 #include <Qt3DCore/qeventfilterservice.h>
+#include <QDir>
+#include <QLibrary>
+#include <QLibraryInfo>
+#include <QPluginLoader>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,6 +89,21 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseController>(QBackendNodeFunctorPtr(new Input::MouseControllerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseInput>(QBackendNodeFunctorPtr(new Input::MouseInputFunctor(d_func()->m_inputHandler.data())));
+
+    loadInputDevicePlugins();
+}
+
+void QInputAspect::loadInputDevicePlugins()
+{
+    Q_D(QInputAspect);
+    QStringList keys = QInputDeviceFactory::keys();
+    Q_FOREACH (QString key, keys) {
+        Qt3DInput::QAbstractInputDevice *inputDevice = QInputDeviceFactory::create(key, QStringList());
+        if (inputDevice != Q_NULLPTR) {
+            d->m_inputDevices.push_back(inputDevice);
+            inputDevice->initialize(this);
+        }
+    }
 }
 
 Qt3DCore::QCamera *QInputAspect::camera() const
@@ -105,6 +126,9 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
     jobs.append(d->m_inputHandler->keyboardJobs());
     jobs.append(d->m_inputHandler->mouseJobs());
+
+    Q_FOREACH (QAbstractInputDevice *inputDevice, d->m_inputDevices)
+        jobs += inputDevice->jobsToExecute(time);
 
     return jobs;
 }

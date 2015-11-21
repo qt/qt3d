@@ -40,10 +40,6 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QLookAtTransform>
-#include <Qt3DCore/QScaleTransform>
-#include <Qt3DCore/QRotateTransform>
-#include <Qt3DCore/QTranslateTransform>
 #include <Qt3DCore/QAspectEngine>
 
 #include <Qt3DInput/QInputAspect>
@@ -52,13 +48,82 @@
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QPhongMaterial>
-
 #include <Qt3DRender/QCylinderMesh>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QWindow>
 
 #include <QPropertyAnimation>
+
+class OrbitTransformController : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QTransform* target READ target WRITE setTarget NOTIFY targetChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float angle READ angle WRITE setAngle NOTIFY angleChanged)
+
+public:
+    OrbitTransformController(QObject *parent = 0)
+        : QObject(parent)
+        , m_target(Q_NULLPTR)
+        , m_matrix()
+        , m_radius(1.0f)
+        , m_angle(0.0f)
+    {
+    }
+
+    void setTarget(Qt3DCore::QTransform *target)
+    {
+        if (m_target != target) {
+            m_target = target;
+            emit targetChanged();
+        }
+    }
+
+    Qt3DCore::QTransform *target() const { return m_target; }
+
+    void setRadius(float radius)
+    {
+        if (!qFuzzyCompare(radius, m_radius)) {
+            m_radius = radius;
+            updateMatrix();
+            emit radiusChanged();
+        }
+    }
+
+    float radius() const { return m_radius; }
+
+    void setAngle(float angle)
+    {
+        if (!qFuzzyCompare(angle, m_angle)) {
+            m_angle = angle;
+            updateMatrix();
+            emit angleChanged();
+        }
+    }
+
+    float angle() const { return m_angle; }
+
+signals:
+    void targetChanged();
+    void radiusChanged();
+    void angleChanged();
+
+protected:
+    void updateMatrix()
+    {
+        m_matrix.setToIdentity();
+        m_matrix.rotate(m_angle, QVector3D(0.0f, 1.0f, 0.0f));
+        m_matrix.translate(m_radius, 0.0f, 0.0f);
+        m_target->setMatrix(m_matrix);
+    }
+
+private:
+    Qt3DCore::QTransform *m_target;
+    QMatrix4x4 m_matrix;
+    float m_radius;
+    float m_angle;
+};
 
 int main(int argc, char* argv[])
 {
@@ -91,16 +156,8 @@ int main(int argc, char* argv[])
     torusMesh->setSlices(20);
 
     Qt3DCore::QTransform *torusTransform = new Qt3DCore::QTransform;
-    Qt3DCore::QScaleTransform *torusScaleTransform = new Qt3DCore::QScaleTransform;
-    torusScaleTransform->setScale3D(QVector3D(1.5, 1, 0.5));
-
-    Qt3DCore::QRotateTransform *torusRotateTransform = new Qt3DCore::QRotateTransform;
-    torusRotateTransform->setAxis(QVector3D(1, 0, 0));
-    torusRotateTransform->setAngleDeg(45);
-
-    torusTransform->addTransform(torusScaleTransform);
-    torusTransform->addTransform(torusRotateTransform);
-
+    torusTransform->setScale3D(QVector3D(1.5, 1, 0.5));
+    torusTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
 
     torusEntity->addComponent(torusMesh);
     torusEntity->addComponent(torusTransform);
@@ -112,24 +169,18 @@ int main(int argc, char* argv[])
     sphereMesh->setRadius(3);
 
     Qt3DCore::QTransform *sphereTransform = new Qt3DCore::QTransform;
-    Qt3DCore::QTranslateTransform *sphereTranslateTransform = new Qt3DCore::QTranslateTransform;
-    sphereTranslateTransform->setTranslation(QVector3D(20, 0, 0));
+    OrbitTransformController *controller = new OrbitTransformController(sphereTransform);
+    controller->setTarget(sphereTransform);
+    controller->setRadius(20.0f);
 
-    Qt3DCore::QRotateTransform *sphereRotateTransform = new Qt3DCore::QRotateTransform;
-    QPropertyAnimation *sphereRotateTransformAnimation = new QPropertyAnimation(sphereRotateTransform);
-    sphereRotateTransformAnimation->setTargetObject(sphereRotateTransform);
+    QPropertyAnimation *sphereRotateTransformAnimation = new QPropertyAnimation(sphereTransform);
+    sphereRotateTransformAnimation->setTargetObject(controller);
     sphereRotateTransformAnimation->setPropertyName("angle");
     sphereRotateTransformAnimation->setStartValue(QVariant::fromValue(0));
     sphereRotateTransformAnimation->setEndValue(QVariant::fromValue(360));
     sphereRotateTransformAnimation->setDuration(10000);
     sphereRotateTransformAnimation->setLoopCount(-1);
     sphereRotateTransformAnimation->start();
-
-    sphereRotateTransform->setAxis(QVector3D(0, 1, 0));
-    sphereRotateTransform->setAngleDeg(0);
-
-    sphereTransform->addTransform(sphereTranslateTransform);
-    sphereTransform->addTransform(sphereRotateTransform);
 
     sphereEntity->addComponent(sphereMesh);
     sphereEntity->addComponent(sphereTransform);
@@ -140,3 +191,5 @@ int main(int argc, char* argv[])
 
     return app.exec();
 }
+
+#include "main.moc"
