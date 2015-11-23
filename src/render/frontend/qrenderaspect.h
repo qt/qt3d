@@ -88,6 +88,9 @@ protected:
 
     void visitNode(Qt3DCore::QNode *node);
 
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+
 private:
     friend class Render::Renderer;
 };

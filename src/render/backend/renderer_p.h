@@ -53,8 +53,10 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
+#include <Qt3DRender/private/pickboundingvolumejob_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -113,41 +115,58 @@ class VSyncFrameAdvanceService;
 class PickEventFilter;
 class NodeManagers;
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer
+class QT3DRENDERSHARED_PRIVATE_EXPORT Renderer : public AbstractRenderer
 {
 public:
     explicit Renderer(QRenderAspect::RenderType type);
     ~Renderer();
 
-    void setQRenderAspect(QRenderAspect *aspect) { m_rendererAspect = aspect; }
-    QRenderAspect *rendererAspect() const { return m_rendererAspect; }
+    API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
 
-    NodeManagers *nodeManagers() const;
+    void setSurface(QSurface *s) Q_DECL_OVERRIDE;
+    void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
+    void setQRenderAspect(QRenderAspect *aspect) Q_DECL_OVERRIDE { m_rendererAspect = aspect; }
+    void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
-    void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
-    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
+    QSurface *surface() const Q_DECL_OVERRIDE { return m_surface; }
+    NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
+    QRenderAspect *renderAspect() const Q_DECL_OVERRIDE { return m_rendererAspect; }
 
-    Qt3DCore::QFrameAllocator *currentFrameAllocator();
+    void initialize() Q_DECL_OVERRIDE;
+    void shutdown() Q_DECL_OVERRIDE;
+    void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 
-    QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
+    void render() Q_DECL_OVERRIDE;
+    void doRender() Q_DECL_OVERRIDE;
 
-    void setFrameGraphRoot(const Qt3DCore::QNodeId &fgRoot);
-    Render::FrameGraphNode *frameGraphRoot() const;
+    bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }
 
-    void setSceneGraphRoot(Entity *sgRoot);
-    Entity *renderSceneRoot() const { return m_renderSceneRoot; }
+    void setSceneRoot(Entity *sgRoot) Q_DECL_OVERRIDE;
+    Entity *sceneRoot() const Q_DECL_OVERRIDE { return m_renderSceneRoot; }
 
-    void render();
-    void doRender();
+    void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
+    FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE;
 
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBinJobs();
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
+    QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
+    Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
+
     Qt3DCore::QAspectJobPtr createRenderViewJob(FrameGraphNode *node, int submitOrderIndex);
+
+    Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE;
+
+    void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE;
+
     void executeCommands(const QVector<RenderCommand *> &commands);
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
+
+    void setOpenGLContext(QOpenGLContext *context);
+    QGraphicsApiFilter *contextInfo() const;
+
+    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
+    Qt3DCore::QFrameAllocator *currentFrameAllocator();
+    QThreadStorage<Qt3DCore::QFrameAllocator *> *tlsAllocators();
 
     inline HMaterial defaultMaterialHandle() const { return m_defaultMaterialHandle; }
     inline HEffect defaultEffectHandle() const { return m_defaultEffectHandle; }
@@ -155,27 +174,15 @@ public:
     inline HRenderPass defaultRenderPassHandle() const { return m_defaultRenderPassHandle; }
     inline RenderStateSet *defaultRenderState() const { return m_defaultRenderStateSet; }
 
-    inline QList<QAbstractSceneParser *> sceneParsers() const { return m_sceneParsers; }
-    inline VSyncFrameAdvanceService *vsyncFrameAdvanceService() const { return m_vsyncFrameAdvanceService.data(); }
 
     QList<QMouseEvent> pendingPickingEvents() const;
 
-    QGraphicsApiFilter *contextInfo() const;
-
-    void setSurface(QSurface *s);
-    inline QSurface *surface() const { return m_surface; }
-    void registerEventFilter(Qt3DCore::QEventFilterService *service);
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool submitRenderViews();
 
-    void initialize(QOpenGLContext *context = Q_NULLPTR);
-    void shutdown();
-
     QMutex* mutex() { return &m_mutex; }
-    bool isRunning() const { return m_running.load(); }
 
-    void setSurfaceExposed(bool exposed);
 
 #ifdef QT3D_RENDER_UNIT_TESTS
 public:
@@ -222,7 +229,6 @@ private:
 
     void buildDefaultMaterial();
     void buildDefaultTechnique();
-    void loadSceneParsers();
 
     QMutex m_mutex;
     QSemaphore m_submitRenderViewsSemaphore;
@@ -237,12 +243,13 @@ private:
 
     QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QScopedPointer<PickEventFilter> m_pickEventFilter;
-    QList<QAbstractSceneParser *> m_sceneParsers;
     QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
+    QOpenGLContext *m_glContext;
+    PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 };
 
 } // namespace Render

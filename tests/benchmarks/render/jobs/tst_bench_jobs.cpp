@@ -96,36 +96,37 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> worldTransformJob()
     {
-        d_func()->m_worldTransformJob->setRoot(d_func()->m_renderer->renderSceneRoot());
+        d_func()->m_worldTransformJob->setRoot(d_func()->m_renderer->sceneRoot());
         return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_worldTransformJob;
     }
 
     QVector<Qt3DCore::QAspectJobPtr> updateBoundingJob()
     {
-        d_func()->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->renderSceneRoot());
+        d_func()->m_updateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
         return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_updateBoundingVolumeJob;
     }
 
     QVector<Qt3DCore::QAspectJobPtr> calculateBoundingVolumeJob()
     {
-        d_func()->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->renderSceneRoot());
+        d_func()->m_calculateBoundingVolumeJob->setRoot(d_func()->m_renderer->sceneRoot());
         return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_calculateBoundingVolumeJob;
     }
 
     QVector<Qt3DCore::QAspectJobPtr> framePreparationJob()
     {
-        d_func()->m_framePreparationJob->setRoot(d_func()->m_renderer->renderSceneRoot());
+        d_func()->m_framePreparationJob->setRoot(d_func()->m_renderer->sceneRoot());
         return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_framePreparationJob;
     }
 
     QVector<Qt3DCore::QAspectJobPtr> frameCleanupJob()
     {
+        d_func()->m_cleanupJob->setRoot(d_func()->m_renderer->sceneRoot());
         return QVector<Qt3DCore::QAspectJobPtr>() << d_func()->m_cleanupJob;
     }
 
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs()
     {
-        return d_func()->m_renderer->createRenderBinJobs();
+        return d_func()->m_renderer->renderBinJobs();
     }
 
     void setRootEntity(Qt3DCore::QEntity *root)
@@ -133,7 +134,7 @@ public:
         if (!m_window) {
             Qt3DCore::QNodeVisitor visitor;
             visitor.traverse(root, this, &TestAspect::visitNode);
-            d_func()->m_renderer->m_renderSceneRoot =
+            static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
                     d_func()->m_renderer->nodeManagers()
                     ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
         } else {

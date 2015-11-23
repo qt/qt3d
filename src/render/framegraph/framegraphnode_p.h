@@ -174,13 +174,13 @@ private:
 class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
-    explicit FrameGraphComponentFunctor(Renderer *renderer);
+    explicit FrameGraphComponentFunctor(AbstractRenderer *renderer);
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
-    Renderer *m_renderer;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

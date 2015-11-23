@@ -48,26 +48,26 @@ namespace Render {
 
 LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
     : QAspectJob()
-    , m_renderer(Q_NULLPTR)
     , m_source(source)
     , m_sceneComponent(m_sceneComponent)
+    , m_managers(Q_NULLPTR)
 {
 }
 
 void LoadSceneJob::run()
 {
-    Qt3DCore::QEntity *sceneTree = m_renderer->nodeManagers()->sceneManager()->sceneTreeFromSource(m_source);
+    Qt3DCore::QEntity *sceneTree = m_managers->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QAbstractSceneParser *parser, m_renderer->sceneParsers()) {
+        Q_FOREACH (QAbstractSceneParser *parser, m_parsers) {
             if (parser->isExtensionSupported(m_source)) {
                 parser->setSource(m_source);
                 sceneTree = parser->scene();
-                m_renderer->nodeManagers()->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
+                m_managers->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
             }
         }
     }
     // set clone of sceneTree in sceneComponent
-    Scene *scene = m_renderer->nodeManagers()->sceneManager()->lookupResource(m_sceneComponent);
+    Scene *scene = m_managers->sceneManager()->lookupResource(m_sceneComponent);
     scene->setSceneSubtree(sceneTree);
 }
 

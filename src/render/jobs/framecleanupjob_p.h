@@ -58,20 +58,23 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 class Entity;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT FrameCleanupJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit FrameCleanupJob(Renderer *renderer);
+    explicit FrameCleanupJob(NodeManagers *managers);
     ~FrameCleanupJob();
+
+    void setRoot(Entity *root);
 
 protected:
     void run() Q_DECL_FINAL;
 
 private:
-    Renderer *m_renderer;
+    NodeManagers *m_managers;
+    Entity *m_root;
     void updateBoundingVolumesDebug(Entity *node);
 };
 

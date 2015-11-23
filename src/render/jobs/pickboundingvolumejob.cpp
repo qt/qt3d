@@ -235,12 +235,12 @@ void PickBoundingVolumeJob::run()
     if (m_mouseEvents.empty())
         return;
 
-    Qt3DCore::QAbstractCollisionQueryService *rayCasting = m_renderer->rendererAspect()->services()->service<Qt3DCore::QAbstractCollisionQueryService>
+    Qt3DCore::QAbstractCollisionQueryService *rayCasting = m_renderer->renderAspect()->services()->service<Qt3DCore::QAbstractCollisionQueryService>
             (Qt3DCore::QServiceLocator::CollisionService);
 
     if (rayCasting == Q_NULLPTR) {
         Qt3DRender::QRayCastingService *rayCastingService = new QRayCastingService();
-        m_renderer->rendererAspect()->services()->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
+        m_renderer->renderAspect()->services()->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
         rayCasting = rayCastingService;
     }
 

@@ -247,7 +247,7 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::time(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    qint64 time = m_renderer->rendererAspect()->time();
+    qint64 time = m_renderer->renderAspect()->time();
     float t = time / 1000000000.0f;
     return QUniformValue::fromVariant(QVariant(t), m_allocator);
 }

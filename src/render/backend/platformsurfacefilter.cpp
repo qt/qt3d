@@ -48,14 +48,12 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-PlatformSurfaceFilter::PlatformSurfaceFilter(Renderer *renderer,
-                                             QObject *parent)
+PlatformSurfaceFilter::PlatformSurfaceFilter(QObject *parent)
     : QObject(parent)
     , m_obj(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_renderer(renderer)
+    , m_renderer(Q_NULLPTR)
 {
-    Q_ASSERT(m_renderer);
     qRegisterMetaType<QSurface *>("QSurface*");
 }
 
@@ -73,6 +71,11 @@ void PlatformSurfaceFilter::setWindow(QWindow *window)
 void PlatformSurfaceFilter::setOffscreenSurface(QOffscreenSurface *offscreen)
 {
     setSurface(offscreen);
+}
+
+void PlatformSurfaceFilter::setRenderer(AbstractRenderer *renderer)
+{
+    m_renderer = renderer;
 }
 
 bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
@@ -114,7 +117,8 @@ void PlatformSurfaceFilter::setRendererSurface(QSurface *surface)
     // draw calls. Only when the frame finishes and the mutex is unlocked does
     // this call to Renderer::setSurface continue. Thereby blocking the main
     // thread from destroying the platform surface before we are ready.
-    m_renderer->setSurface(surface);
+    if (m_renderer != Q_NULLPTR)
+        m_renderer->setSurface(surface);
 }
 
 } // namespace Render

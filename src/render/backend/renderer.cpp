@@ -70,10 +70,7 @@
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
-#include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/pickeventfilter_p.h>
-#include <Qt3DRender/private/qsceneparserfactory_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
@@ -135,7 +132,7 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
-    , m_nodesManager(new NodeManagers())
+    , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_eventSource(Q_NULLPTR)
@@ -145,25 +142,30 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_debugLogger(Q_NULLPTR)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
+    , m_glContext(Q_NULLPTR)
+    , m_pickBoundingVolumeJob(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
     m_running.fetchAndStoreOrdered(1);
     if (m_renderThread)
         m_renderThread->waitForStart();
-
-    loadSceneParsers();
 }
 
 Renderer::~Renderer()
 {
     // Clean up the TLS allocators
-    destroyAllocators(rendererAspect()->jobManager());
+    destroyAllocators(m_rendererAspect->jobManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const
 {
     return m_nodesManager;
+}
+
+void Renderer::setOpenGLContext(QOpenGLContext *context)
+{
+    m_glContext = context;
 }
 
 void Renderer::buildDefaultTechnique()
@@ -223,16 +225,6 @@ void Renderer::buildDefaultTechnique()
 
 }
 
-void Renderer::loadSceneParsers()
-{
-    QStringList keys = QSceneParserFactory::keys();
-    Q_FOREACH (QString key, keys) {
-        QAbstractSceneParser *sceneParser = QSceneParserFactory::create(key, QStringList());
-        if (sceneParser != Q_NULLPTR)
-            m_sceneParsers.append(sceneParser);
-    }
-}
-
 void Renderer::buildDefaultMaterial()
 {
     m_defaultMaterial = new QMaterial();
@@ -245,7 +237,6 @@ void Renderer::buildDefaultMaterial()
     QEffect* defEff = new QEffect;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
-
 }
 
 void Renderer::createAllocators(QAbstractAspectJobManager *jobManager)
@@ -319,7 +310,7 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
-void Renderer::initialize(QOpenGLContext *context)
+void Renderer::initialize()
 {
     if (m_renderThread)
         m_waitForWindowToBeSetCondition.wait(mutex());
@@ -334,8 +325,8 @@ void Renderer::initialize(QOpenGLContext *context)
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
 
-    QOpenGLContext* ctx = context ? context : new QOpenGLContext;
-    if (!context) {
+    QOpenGLContext* ctx = m_glContext ? m_glContext : new QOpenGLContext;
+    if (!m_glContext) {
         qCDebug(Backend) << "Creating OpenGL context with format" << sf;
         ctx->setFormat(sf);
         if (ctx->create())
@@ -402,9 +393,9 @@ void Renderer::setSurfaceExposed(bool exposed)
     m_exposed.fetchAndStoreOrdered(exposed);
 }
 
-void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId &frameGraphRootUuid)
+void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId)
 {
-    m_frameGraphRootUuid = frameGraphRootUuid;
+    m_frameGraphRootUuid = fgRootId;
     qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
 }
 
@@ -423,7 +414,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
 // 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
 // 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
-void Renderer::setSceneGraphRoot(Entity *sgRoot)
+void Renderer::setSceneRoot(Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
@@ -739,7 +730,7 @@ bool Renderer::submitRenderViews()
 
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
+QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
@@ -756,42 +747,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
     return renderBinJobs;
 }
 
-// Returns a vector of jobs to be performed for dirty buffers
-// 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs()
+QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
-    const QVector<QNodeId> dirtyBuffers = nodeManagers()->bufferManager()->dirtyBuffers();
-    QVector<QAspectJobPtr> dirtyBuffersJobs;
-
-    Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
-        HBuffer bufferHandle = m_nodesManager->lookupHandle<Buffer, BufferManager, HBuffer>(bufId);
-        if (!bufferHandle.isNull()) {
-            // Create new buffer job
-            LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
-            job->setNodeManager(m_nodesManager);
-            dirtyBuffersJobs.push_back(job);
-        }
-    }
-
-    return dirtyBuffersJobs;
-}
-
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createGeometryRendererJobs()
-{
-    GeometryRendererManager *geomRendererManager = m_nodesManager->geometryRendererManager();
-    const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
-    QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
-
-    Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
-        HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
-        if (!geometryRendererHandle.isNull()) {
-            LoadGeometryJobPtr job(new LoadGeometryJob(geometryRendererHandle));
-            job->setNodeManagers(m_nodesManager);
-            dirtyGeometryRendererJobs.push_back(job);
-        }
-    }
-
-    return dirtyGeometryRendererJobs;
+    // Clear any previous dependency not valid anymore
+    if (!m_pickBoundingVolumeJob)
+        m_pickBoundingVolumeJob.reset(new PickBoundingVolumeJob(this));
+    m_pickBoundingVolumeJob->clearNullDependencies();
+    m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    return m_pickBoundingVolumeJob;
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
@@ -804,6 +767,11 @@ Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int 
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
     return job;
+}
+
+QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
+{
+    return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
 }
 
 // Called by RenderView->submit() in RenderThread context

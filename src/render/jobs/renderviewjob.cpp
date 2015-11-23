@@ -67,7 +67,7 @@ void RenderViewJob::run()
     // Build RenderCommand should perform the culling as we have no way to determine
     // if a child has a mesh in the view frustum while its parent isn't contained in it.
     if (!renderView->noDraw())
-        renderView->buildRenderCommands(m_renderer->renderSceneRoot());
+        renderView->buildRenderCommands(m_renderer->sceneRoot());
 
     // Sorts RenderCommand
     renderView->sort();
