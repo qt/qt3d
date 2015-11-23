@@ -18,7 +18,6 @@ config_assimp:!cross_compile {
         # Extend framework search path to make #include <QtCore/*> work
         QMAKE_CXXFLAGS += -F$$QT.core.libs
     }
-    CONFIG += force_bootstrap
 
     include(../../src/3rdparty/assimp/assimp.pri)
 }

@@ -10,7 +10,7 @@ CONFIG -= precompile_header
 
 win32:DEFINES+=_CRT_SECURE_NO_WARNINGS
 
-!host_build:contains(QT_CONFIG, system-zlib) {
+contains(QT_CONFIG, system-zlib):!if(cross_compile:host_build) {
     if (unix|mingw):         LIBS += -lz
     else:                    LIBS += zdll.lib
 } else {
