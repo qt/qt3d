@@ -512,7 +512,7 @@ void Renderer::setSurface(QSurface* surface)
 
 void Renderer::registerEventFilter(QEventFilterService *service)
 {
-    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
     service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
