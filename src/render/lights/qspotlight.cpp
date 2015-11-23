@@ -67,8 +67,7 @@ namespace Qt3DRender {
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
-    : QAbstractLightPrivate()
-    , m_cutOffAngle(45.0f)
+    : m_cutOffAngle(45.0f)
 {
 }
 
@@ -97,9 +96,7 @@ void QSpotLight::copy(const QNode *ref)
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
     d_func()->m_direction = light->d_func()->m_direction;
     d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
-    // This needs to be last otherwise, properties value won't be copied
-    // as we use shader introspection in QShaderData::copy
-    QAbstractLight::copy(ref);
+    QLight::copy(ref);
 }
 
 
@@ -108,13 +105,13 @@ void QSpotLight::copy(const QNode *ref)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QAbstractLight(*new QSpotLightPrivate, parent)
+    : QLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QAbstractLight(dd, parent)
+    : QLight(dd, parent)
 {
 }
 

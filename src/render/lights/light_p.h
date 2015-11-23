@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,58 +34,55 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTLIGHT_H
-#define QT3DRENDER_QABSTRACTLIGHT_H
+#ifndef QT3DRENDER_RENDER_LIGHT_P_H
+#define QT3DRENDER_RENDER_LIGHT_P_H
 
-#include <Qt3DRender/qshaderdata.h>
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <QVector3D>
-#include <QColor>
+#include <private/shaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractLightPrivate;
+namespace Render {
 
-class QT3DRENDERSHARED_EXPORT QAbstractLight : public QShaderData
+class NodeManagers;
+
+class Q_AUTOTEST_EXPORT Light : public ShaderData
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
-    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(TransformType positionTransformed READ positionTransformed CONSTANT)
+public:
 
-public :
-    explicit QAbstractLight(Qt3DCore::QNode *parent = 0);
+};
 
-    QColor color() const;
-    void setColor(const QColor &color);
+class RenderLightFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit RenderLightFunctor(NodeManagers *managers);
 
-    float intensity() const;
-    void setIntensity(float intensity);
-
-    void setPosition(const QVector3D &position);
-    QVector3D position() const;
-
-    TransformType positionTransformed() const;
-
-protected :
-    QAbstractLight(QAbstractLightPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-Q_SIGNALS:
-    void colorChanged();
-    void intensityChanged();
-    void positionChanged();
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
 
 private:
-    Q_DECLARE_PRIVATE(QAbstractLight)
+    NodeManagers *m_managers;
 };
+
+} // namespace Render
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_LIGHT_H
+Q_DECLARE_METATYPE(Qt3DRender::Render::Light*)
+
+#endif // QT3DRENDER_RENDER_LIGHT_P_H

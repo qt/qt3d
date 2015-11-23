@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qabstractlight.h"
-#include "qabstractlight_p.h"
+#include "qlight.h"
+#include "qlight_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -43,68 +43,70 @@ namespace Qt3DRender
 {
 
 /*!
- * \qmltype AbstractLight
+ * \qmltype Light
  * \inqmlmodule Qt3D.Render
- * \instantiates Qt3DRender::QAbstractLight
- * \brief Encapsulate a QAbstractLight object in a Qt 3D scene.
- * \since 5.3
+ * \instantiates QLight
+ * \brief Encapsulate a QLight object in a Qt 3D scene.
+ * \since 5.6
  */
 
 
 /*!
-    \class Qt3DRender::QAbstractLightPrivate
+    \class Qt3DRender::QLightPrivate
     \internal
 */
-QAbstractLightPrivate::QAbstractLightPrivate()
-        : QShaderDataPrivate()
-        , m_color(QColor(255, 255, 255))
+QLightPrivate::QLightPrivate()
+        : m_color(QColor(255, 255, 255))
         , m_intensity(1.0f)
-{}
-
-void QAbstractLight::copy(const QNode *ref)
 {
-    const QAbstractLight *light = static_cast<const QAbstractLight*>(ref);
+}
+
+void QLight::copy(const QNode *ref)
+{
+    const QLight *light = static_cast<const QLight*>(ref);
     d_func()->m_color = light->d_func()->m_color;
     d_func()->m_intensity = light->d_func()->m_intensity;
-    // This needs to be last otherwise, properties value won't be copied
-    // as we use shader introspection in QShaderData::copy
     QShaderData::copy(ref);
 }
 
 /*!
-    \class Qt3DRender::QAbstractLight
+    \class Qt3DRender::QLight
     \inmodule Qt3DRender
 */
 
 /*!
- * Constructs a new QAbstractLight with the given \a parent.
+ * Constructs a new QLight with the given \a parent.
  */
-QAbstractLight::QAbstractLight(Qt3DCore::QNode *parent) :
-    QShaderData(*new QAbstractLightPrivate, parent)
+QLight::QLight(Qt3DCore::QNode *parent) :
+    QShaderData(*new QLightPrivate, parent)
 {
 }
 
 /*! \internal */
-QAbstractLight::QAbstractLight(QAbstractLightPrivate &dd, QNode *parent)
+QLight::QLight(QLightPrivate &dd, QNode *parent)
     : QShaderData(dd, parent)
 {
 }
 
+QLight::~QLight()
+{
+    cleanup();
+}
 
 /*!
- *  \property Qt3DRender::QAbstractLight::color
+ *  \property Qt3DRender::QLight::color
  *
- * Holds the current QAbstractLight color.
+ * Holds the current QLight color.
  */
-QColor QAbstractLight::color() const
+QColor QLight::color() const
 {
-    Q_D(const QAbstractLight);
+    Q_D(const QLight);
     return d->m_color;
 }
 
-void QAbstractLight::setColor(const QColor &color)
+void QLight::setColor(const QColor &color)
 {
-    Q_D(QAbstractLight);
+    Q_D(QLight);
     if (d->m_color != color) {
         d->m_color = color;
         emit colorChanged();
@@ -112,48 +114,23 @@ void QAbstractLight::setColor(const QColor &color)
 }
 
 /*!
-    \property Qt3DRender::QAbstractLight::intensity
+    \property Qt3DRender::QLight::intensity
 
-    Holds the current QAbstractLight intensity.
+    Holds the current QLight intensity.
 */
-float QAbstractLight::intensity() const
+float QLight::intensity() const
 {
-    Q_D(const QAbstractLight);
+    Q_D(const QLight);
     return d->m_intensity;
 }
 
-void QAbstractLight::setIntensity(float intensity)
+void QLight::setIntensity(float intensity)
 {
-    Q_D(QAbstractLight);
+    Q_D(QLight);
     if (d->m_intensity != intensity) {
         d->m_intensity = intensity;
         emit intensityChanged();
     }
-}
-
-/*!
-    \property Qt3DRender::QAbstractLight::position
-
-    Holds the current QAbstractLight position.
-*/
-void QAbstractLight::setPosition(const QVector3D &position)
-{
-    Q_D(QAbstractLight);
-    if (d->m_position != position) {
-        d->m_position = position;
-        emit positionChanged();
-    }
-}
-
-QVector3D QAbstractLight::position() const
-{
-    Q_D(const QAbstractLight);
-    return d->m_position;
-}
-
-QShaderData::TransformType QAbstractLight::positionTransformed() const
-{
-    return QShaderData::ModelToEye;
 }
 
 } // namespace Qt3DRender

@@ -34,41 +34,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTLIGHT_P_H
-#define QT3DRENDER_QABSTRACTLIGHT_P_H
+#ifndef QT3DRENDER_QLIGHT_H
+#define QT3DRENDER_QLIGHT_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qshaderdata.h>
 
-#include <private/qshaderdata_p.h>
+#include <QVector3D>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractLight;
+class QLightPrivate;
 
-class QAbstractLightPrivate : public QShaderDataPrivate
+class QT3DRENDERSHARED_EXPORT QLight : public QShaderData
 {
-public:
-    QAbstractLightPrivate();
+    Q_OBJECT
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
 
-    Q_DECLARE_PUBLIC(QAbstractLight)
-    QColor m_color;
-    float m_intensity;
-    QVector3D m_position;
+public :
+    explicit QLight(Qt3DCore::QNode *parent = 0);
+    ~QLight();
+
+    QColor color() const;
+    void setColor(const QColor &color);
+
+    float intensity() const;
+    void setIntensity(float intensity);
+
+protected :
+    QLight(QLightPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void colorChanged();
+    void intensityChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QLight)
+    QT3D_CLONEABLE(QLight)
 };
 
-}
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QABSTRACTLIGHT_P_H
+#endif // QT3DRENDER_QLIGHT_H

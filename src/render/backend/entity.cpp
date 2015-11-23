@@ -37,7 +37,7 @@
 #include "entity_p.h"
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
@@ -104,6 +104,7 @@ void Entity::cleanup()
     m_boundingVolumeDebugComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
+    m_lightComponents.clear();
     m_localBoundingVolume.reset();
     m_worldBoundingVolume.reset();
     m_worldBoundingVolumeWithChildren.reset();
@@ -151,6 +152,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_boundingVolumeDebugComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
+    m_lightComponents.clear();
     m_localBoundingVolume.reset(new Sphere(peerUuid()));
     m_worldBoundingVolume.reset(new Sphere(peerUuid()));
     m_worldBoundingVolumeWithChildren.reset(new Sphere(peerUuid()));
@@ -266,6 +268,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_layerComponents.append(component->id());
     } else if (qobject_cast<QMaterial *>(component) != Q_NULLPTR) {
         m_materialComponent = component->id();
+    } else if (qobject_cast<QLight *>(component) != Q_NULLPTR) { // QLight subclasses QShaderData
+        m_lightComponents.append(component->id());
     } else if (qobject_cast<QShaderData *>(component) != Q_NULLPTR) {
         m_shaderDataComponents.append(component->id());
     } else if (qobject_cast<QGeometryRenderer *>(component) != Q_NULLPTR) {
@@ -297,6 +301,8 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_objectPickerComponent = QNodeId();
     } else if (m_boundingVolumeDebugComponent == nodeId) {
         m_boundingVolumeDebugComponent = QNodeId();
+    } else if (m_lightComponents.contains(nodeId)) {
+        m_lightComponents.removeAll(nodeId);
     }
 }
 
@@ -376,6 +382,15 @@ HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const
     return m_nodeManagers->boundingVolumeDebugManager()->lookupHandle(m_boundingVolumeDebugComponent);
 }
 
+template<>
+QList<HLight> Entity::componentsHandle<Light>() const
+{
+    QList<HLight> lightHandles;
+    Q_FOREACH (const QNodeId &id, m_lightComponents)
+        lightHandles.append(m_nodeManagers->lightManager()->lookupHandle(id));
+    return lightHandles;
+}
+
 // Render components
 
 template<>
@@ -427,6 +442,15 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 }
 
 template<>
+QList<Light *> Entity::renderComponents<Light>() const
+{
+    QList<Light *> lights;
+    Q_FOREACH (const QNodeId &id, m_lightComponents)
+        lights.append(m_nodeManagers->lightManager()->lookupResource(id));
+    return lights;
+}
+
+template<>
 BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
 {
     return m_nodeManagers->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
@@ -457,6 +481,9 @@ QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerCompo
 
 template<>
 QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVolumeDebugComponent; }
+
+template<>
+QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }
 
 RenderEntityFunctor::RenderEntityFunctor(NodeManagers *manager)
     : m_nodeManagers(manager)

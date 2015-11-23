@@ -48,13 +48,13 @@
 // We mean it.
 //
 
-#include <private/qabstractlight_p.h>
+#include <private/qlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSpotLightPrivate : public QAbstractLightPrivate
+class QSpotLightPrivate : public QLightPrivate
 {
 public:
     QSpotLightPrivate();

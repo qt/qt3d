@@ -71,6 +71,7 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
+#include <Qt3DRender/qlight.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -262,7 +263,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrameGraphSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeFunctorPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_nodeManagers->parameterManager())));
-    registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_nodeManagers->shaderDataManager())));
+    registerBackendType<QShaderData>(QBackendNodeFunctorPtr(new Render::RenderShaderDataFunctor(d->m_nodeManagers)));
     registerBackendType<QAbstractTextureImage>(QBackendNodeFunctorPtr(new Render::TextureImageFunctor(d->m_nodeManagers->textureManager(), d->m_nodeManagers->textureImageManager(), d->m_nodeManagers->textureDataManager())));
     registerBackendType<QStateSet>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_nodeManagers->frameGraphManager())));
@@ -273,6 +274,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QObjectPicker>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(d->m_nodeManagers->objectPickerManager())));
     registerBackendType<QBoundingVolumeDebug>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(d->m_nodeManagers->boundingVolumeDebugManager())));
     registerBackendType<QFrustumCulling>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(d->m_nodeManagers->frameGraphManager())));
+    registerBackendType<QLight>(QBackendNodeFunctorPtr(new Render::RenderLightFunctor(d->m_nodeManagers)));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

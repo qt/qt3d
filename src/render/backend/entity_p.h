@@ -169,6 +169,7 @@ private:
     Qt3DCore::QNodeId m_cameraComponent;
     QList<Qt3DCore::QNodeId> m_layerComponents;
     QList<Qt3DCore::QNodeId> m_shaderDataComponents;
+    QList<Qt3DCore::QNodeId> m_lightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
@@ -203,6 +204,9 @@ QList<HShaderData> Entity::componentsHandle<ShaderData>() const;
 template<>
 Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDebug>() const;
 
+template<>
+QList<HLight> Entity::componentsHandle<Light>() const;
+
 // Render components
 template<>
 Material *Entity::renderComponent<Material>() const;
@@ -228,6 +232,9 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const;
 template<>
 Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const;
 
+template<>
+QList<Light *> Entity::renderComponents<Light>() const;
+
 // UUid
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
@@ -252,6 +259,9 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
+
+template<>
+Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 {

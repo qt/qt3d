@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,38 +34,58 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QPOINTLIGHT_P_H
-#define QT3DRENDER_QPOINTLIGHT_P_H
+import QtQuick 2.0 as Quick
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qlight_p.h>
-
-QT_BEGIN_NAMESPACE
-
-namespace Qt3DRender {
-
-class QPointLight;
-
-class QPointLightPrivate : public QLightPrivate
+Entity
 {
-public:
-    QPointLightPrivate();
+    components: FrameGraph {
+        activeFrameGraph: ForwardRenderer {
+            clearColor: Qt.rgba(0, 0, 0, 1)
+            camera: camera
+        }
+    }
 
-    Q_DECLARE_PUBLIC(QPointLight)
-};
+    Camera {
+        id: camera
+        projectionType: CameraLens.PerspectiveProjection
+        fieldOfView: 45
+        aspectRatio: 16/9
+        nearPlane : 0.1
+        farPlane : 1000.0
+        position: Qt.vector3d( 0.0, 0.0, 50.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
+        viewCenter: Qt.vector3d( 0.0, 0.0, -1.0 )
+    }
 
-} // namespace Qt3DRender
+    Configuration  {
+        controlledCamera: camera
+    }
 
-QT_END_NAMESPACE
+    Entity {
+        components: [
+            Transform { translation: Qt.vector3d(2.0, 1.0, 1.0); },
+            PointLight {
+                color: Qt.rgba(1, 0, 0, 1)
+            }
+        ]
+    }
 
-#endif // QPOINTLIGHT_P_H
+    Entity {
+        components: [
+            Transform { translation: Qt.vector3d(2.0, 3.0, 4.0); },
+            PointLight {
+                color: Qt.rgba(1, 0, 0, 1)
+            }
+        ]
+    }
+
+    Entity {
+        components: [
+            Mesh {
+                source: "assets/obj/toyplane.obj"
+            }
+        ]
+    }
+}

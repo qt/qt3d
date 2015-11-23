@@ -210,6 +210,7 @@ public:
 
     void buildRenderCommands(Entity *preprocessedTreeRoot, const Plane *planes);
     QVector<RenderCommand *> commands() const { return m_commands; }
+    void gatherLights(Entity *preprocessedTreeRoot);
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
     void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
@@ -242,8 +243,17 @@ public:
         UniformBlockValueBuilder m_uniformBlockBuilder;
     };
 
+    struct LightSource {
+        LightSource() : entity(Q_NULLPTR), light(Q_NULLPTR) { }
+        LightSource(Entity *entity, Light *light)
+            : entity(entity), light(light) { }
+        Entity *entity;
+        Light *light;
+    };
+
 private:
-    void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform);
+    void setShaderAndUniforms(RenderCommand *command, RenderPass *pass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
+                              const QVector<LightSource> &activeLightSources);
 
     Renderer *m_renderer;
     NodeManagers *m_manager;
@@ -265,6 +275,8 @@ private:
     // render aspect is free to change the drawables on the next frame whilst
     // the render thread is submitting these commands.
     QVector<RenderCommand *> m_commands;
+
+    QVector<LightSource> m_lightSources;
 
     typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;

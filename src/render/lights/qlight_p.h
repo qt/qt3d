@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QPOINTLIGHT_P_H
-#define QT3DRENDER_QPOINTLIGHT_P_H
+#ifndef QT3DRENDER_QLIGHT_P_H
+#define QT3DRENDER_QLIGHT_P_H
 
 //
 //  W A R N I N G
@@ -48,24 +48,26 @@
 // We mean it.
 //
 
-#include <private/qlight_p.h>
+#include <private/qshaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QPointLight;
+class QLight;
 
-class QPointLightPrivate : public QLightPrivate
+class QLightPrivate : public QShaderDataPrivate
 {
 public:
-    QPointLightPrivate();
+    QLightPrivate();
 
-    Q_DECLARE_PUBLIC(QPointLight)
+    Q_DECLARE_PUBLIC(QLight)
+    QColor m_color;
+    float m_intensity;
 };
 
-} // namespace Qt3DRender
+}
 
 QT_END_NAMESPACE
 
-#endif // QPOINTLIGHT_P_H
+#endif // QT3DRENDER_QLIGHT_P_H

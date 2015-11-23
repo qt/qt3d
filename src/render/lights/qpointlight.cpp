@@ -63,7 +63,6 @@ namespace Qt3DRender {
     \internal
 */
 QPointLightPrivate::QPointLightPrivate()
-    : QAbstractLightPrivate()
 {
 }
 
@@ -88,13 +87,13 @@ QPointLightPrivate::QPointLightPrivate()
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)
-    : QAbstractLight(*new QPointLightPrivate, parent)
+    : QLight(*new QPointLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
-    : QAbstractLight(dd, parent)
+    : QLight(dd, parent)
 {
 }
 

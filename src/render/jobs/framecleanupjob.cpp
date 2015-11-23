@@ -65,13 +65,8 @@ void FrameCleanupJob::setRoot(Entity *root)
 
 void FrameCleanupJob::run()
 {
-    // set each ShaderData to not need an update
-    Q_FOREACH (const Qt3DCore::QNodeId &id, ShaderData::updatedShaderDataList()) {
-        ShaderData *shaderData = m_managers->shaderDataManager()->lookupResource(id);
-        if (shaderData != Q_NULLPTR)
-            shaderData->clearUpdate();
-    }
-    ShaderData::clearShaderDataList();
+    // mark each ShaderData clean
+    ShaderData::cleanup(m_managers);
 
     // Cleanup texture handles
     TextureDataManager *textureDataManager = m_managers->textureDataManager();

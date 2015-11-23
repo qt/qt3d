@@ -38,6 +38,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
+#include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
@@ -75,11 +76,14 @@ void FramePreparationJob::run()
 
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
-    // Update transform properties in ShaderData
-    QList<ShaderData *> shadersData = node->renderComponents<ShaderData>();
-    Q_FOREACH (ShaderData *r, shadersData) {
-        r->updateTransformedProperties(*node->worldTransform());
-    }
+    // Update transform properties in ShaderDatas and Lights
+    QList<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
+    Q_FOREACH (ShaderData *r, shaderDatas)
+        r->updateWorldTransform(*node->worldTransform());
+
+    QList<Light *> lights = node->renderComponents<Light>();
+    Q_FOREACH (Light *light, lights)
+        light->updateWorldTransform(*node->worldTransform());
 
     // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
     // in which case we need to recompute the triangle list

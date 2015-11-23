@@ -75,6 +75,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+static const int MAX_LIGHTS = 8;
+
 namespace  {
 
 // TODO: Should we treat lack of layer data as implicitly meaning that an
@@ -378,6 +380,35 @@ void RenderView::setRenderer(Renderer *renderer)
     m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
+void RenderView::gatherLights(Entity *node)
+{
+    QList<Light *> lights = node->renderComponents<Light>();
+    if (!lights.isEmpty()) {
+        if (lights.count() == 1)
+            m_lightSources.append(LightSource(node, lights.first()));
+        else
+            qWarning("Light source entity with more than one lights found. Only the first light component is used.");
+    }
+
+    // Traverse children
+    Q_FOREACH (Entity *child, node->children())
+        gatherLights(child);
+}
+
+class LightSourceCompare
+{
+public:
+    LightSourceCompare(Entity *node) { p = node->worldBoundingVolume()->center(); }
+    bool operator()(const RenderView::LightSource &a, const RenderView::LightSource &b) const {
+        const float distA = p.distanceToPoint(a.entity->worldBoundingVolume()->center());
+        const float distB = p.distanceToPoint(b.entity->worldBoundingVolume()->center());
+        return distA < distB;
+    }
+
+private:
+    QVector3D p;
+};
+
 // Tries to order renderCommand by shader so as to minimize shader changes
 void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
 {
@@ -467,7 +498,17 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                             command->m_stateSet->merge(m_stateSet);
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     }
-                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()));
+
+                    // Pick which lights to take in to account.
+                    // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
+                    // Replace with more sophisticated mechanisms later.
+                    std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
+                    QVector<LightSource> activeLightSources;
+                    for (int i = 0; i < m_lightSources.count() && i < MAX_LIGHTS; ++i)
+                        activeLightSources.append(m_lightSources[i]);
+
+                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
+
                     buildSortingKey(command);
                     m_commands.append(command);
                 }
@@ -540,7 +581,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
         // If shaderData  has been updated (property has changed or one of the nested properties has changed)
         // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
         // for all the updated properties (all the properties if the UBO was just created)
-        if (shaderData->needsUpdate(*m_data->m_viewMatrix) || uboNeedsUpdate) {
+        if (shaderData->updateViewTransform(*m_data->m_viewMatrix) || uboNeedsUpdate) {
             // Clear previous values remaining in the hash
             m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
             // Update only update properties if uboNeedsUpdate is true, otherwise update the whole block
@@ -550,7 +591,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
             // Builds the name-value map for the block
             m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, block.m_name);
             if (!uboNeedsUpdate)
-                shaderData->addToClearUpdateList();
+                shaderData->markDirty();
             // copy the name-value map into the BlockToUBO
             uniformBlockUBO.m_updatedProperties = m_data->m_uniformBlockBuilder.activeUniformNamesToValue;
             uboNeedsUpdate = true;
@@ -566,7 +607,7 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
     // updates transformed properties;
-    shaderData->needsUpdate(*m_data->m_viewMatrix);
+    shaderData->updateViewTransform(*m_data->m_viewMatrix);
     // Force to update the whole block
     m_data->m_uniformBlockBuilder.updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
@@ -610,7 +651,8 @@ void RenderView::buildSortingKey(RenderCommand *command)
     }
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
+                                      const QVector<LightSource> &activeLightSources)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -713,6 +755,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         }
                     }
                 }
+
+                // TODO
+                Q_UNUSED(activeLightSources);
+
             }
             // Set frag outputs in the shaders if hash not empty
             if (!fragOutputs.isEmpty())

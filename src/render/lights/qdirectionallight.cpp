@@ -66,7 +66,6 @@ namespace Qt3DRender {
     \internal
 */
 QDirectionalLightPrivate::QDirectionalLightPrivate()
-    : QAbstractLightPrivate()
 {
 }
 
@@ -76,17 +75,17 @@ void QDirectionalLight::copy(const QNode *ref)
     d_func()->m_direction = light->d_func()->m_direction;
     // This needs to be last otherwise, properties value won't be copied
     // as we use shader introspection in QShaderData::copy
-    QAbstractLight::copy(ref);
+    QLight::copy(ref);
 }
 
 QDirectionalLight::QDirectionalLight(QNode *parent)
-    : QAbstractLight(*new QDirectionalLightPrivate, parent)
+    : QLight(*new QDirectionalLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QDirectionalLight::QDirectionalLight(QDirectionalLightPrivate &dd, QNode *parent)
-    : QAbstractLight(dd, parent)
+    : QLight(dd, parent)
 {
 }
 

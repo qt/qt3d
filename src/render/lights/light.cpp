@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,38 +34,46 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QPOINTLIGHT_P_H
-#define QT3DRENDER_QPOINTLIGHT_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qlight_p.h>
+#include "light_p.h"
+#include "qlight.h"
+#include <Qt3DCore/qscenepropertychange.h>
+#include <private/abstractrenderer_p.h>
+#include <private/nodemanagers_p.h>
+#include <private/qbackendnode_p.h>
+#include <private/managers_p.h>
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
+
 namespace Qt3DRender {
+namespace Render {
 
-class QPointLight;
-
-class QPointLightPrivate : public QLightPrivate
+RenderLightFunctor::RenderLightFunctor(NodeManagers *managers)
+    : m_managers(managers)
 {
-public:
-    QPointLightPrivate();
+}
 
-    Q_DECLARE_PUBLIC(QPointLight)
-};
+Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+{
+    Light *backend = m_managers->lightManager()->getOrCreateResource(frontend->id());
+    backend->setFactory(factory);
+    backend->setManagers(m_managers);
+    backend->setPeer(frontend);
+    return backend;
+}
 
+Qt3DCore::QBackendNode *RenderLightFunctor::get(const Qt3DCore::QNodeId &id) const
+{
+    return m_managers->lightManager()->lookupResource(id);
+}
+
+void RenderLightFunctor::destroy(const Qt3DCore::QNodeId &id) const
+{
+    m_managers->lightManager()->releaseResource(id);
+}
+
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QPOINTLIGHT_P_H

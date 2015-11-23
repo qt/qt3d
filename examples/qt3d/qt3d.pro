@@ -44,7 +44,8 @@ SUBDIRS += \
     instanced-arrays-qml \
     picking-qml \
     transforms-qml \
-    qgltf
+    qgltf \
+    lights
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

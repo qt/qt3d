@@ -78,6 +78,7 @@ void RenderViewJob::run()
             Plane(viewProjectionMatrix.row(3) - viewProjectionMatrix.row(2)), // Back
         };
 
+        renderView->gatherLights(m_renderer->sceneRoot());
         renderView->buildRenderCommands(m_renderer->sceneRoot(), planes);
     }
 

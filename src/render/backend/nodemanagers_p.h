@@ -121,6 +121,7 @@ class Geometry;
 class GeometryRenderer;
 class ObjectPicker;
 class BoundingVolumeDebug;
+class Light;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -190,6 +191,7 @@ public:
     inline GeometryRendererManager *geometryRendererManager() const Q_DECL_NOEXCEPT { return m_geometryRendererManager; }
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
     inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
+    inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
 
 private:
     CameraManager *m_cameraManager;
@@ -221,6 +223,7 @@ private:
     GeometryRendererManager *m_geometryRendererManager;
     ObjectPickerManager *m_objectPickerManager;
     BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
+    LightManager *m_lightManager;
 };
 
 // Specializations
@@ -311,6 +314,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT ObjectPickerManager *NodeManagers::manager<Objec
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT;
+
+template<>
+LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
 
 } // Render
 

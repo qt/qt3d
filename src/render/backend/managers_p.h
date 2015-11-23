@@ -73,6 +73,7 @@
 #include <Qt3DRender/private/objectpicker_p.h>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
+#include <Qt3DRender/private/light_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -332,6 +333,17 @@ class BoundingVolumeDebugManager : public Qt3DCore::QResourceManager<
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>
 {
+};
+
+class LightManager : public Qt3DCore::QResourceManager<
+        Light,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
+{
+public:
+    LightManager() {}
 };
 
 } // namespace Render

@@ -80,6 +80,7 @@ NodeManagers::NodeManagers()
     , m_geometryRendererManager(new GeometryRendererManager)
     , m_objectPickerManager(new ObjectPickerManager())
     , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
+    , m_lightManager(new LightManager())
 {
 }
 
@@ -255,6 +256,12 @@ template<>
 BoundingVolumeDebugManager *NodeManagers::manager<BoundingVolumeDebug>() const Q_DECL_NOEXCEPT
 {
     return m_boundingVolumeDebugManager;
+}
+
+template<>
+LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT
+{
+    return m_lightManager;
 }
 
 } // Render

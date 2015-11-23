@@ -60,7 +60,7 @@
 #include <Qt3DRender/qtorusmesh.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
-#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qpointlight.h>
@@ -237,7 +237,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
     // Lights
-    qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
+    qmlRegisterType<Qt3DRender::QLight>(uri, 2, 0, "Light");
     qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
