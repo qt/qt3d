@@ -194,17 +194,23 @@ void QAspectManager::exec()
         }
 
         // Only enter main render loop once the renderer and other aspects are initialized
-        while (m_runMainLoop.load())
-        {
+        while (m_runMainLoop.load()) {
             qint64 t = frameAdvanceService->waitForNextFrame();
+
+            // Distribute accumulated changes. This includes changes sent from the frontend
+            // to the backend nodes. We call this before the call to m_scheduler->update() to ensure
+            // that any property changes do not set dirty flags in a data race with the renderer's
+            // submission thread which may be looking for dirty flags, acting upon them and then
+            // clearing the dirty flags.
+            //
+            // Doing this as the first call in the new frame ensures the lock free approach works
+            // without any such data race.
+            m_changeArbiter->syncChanges();
 
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
             m_scheduler->update(t);
-
-            // Distribute accumulated changes
-            m_changeArbiter->syncChanges();
 
             // Process any pending events
             eventLoop.processEvents();
