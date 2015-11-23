@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/nodemanagers_p.h \
     $$PWD/triangleboundingvolume_p.h \
     $$PWD/openglvertexarrayobject_p.h \
-    $$PWD/trianglesextractor_p.h
+    $$PWD/trianglesextractor_p.h \
+    $$PWD/abstractrenderer_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
