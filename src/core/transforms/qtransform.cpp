@@ -83,6 +83,7 @@ void QTransform::copy(const QNode *ref)
     d_func()->m_rotation = transform->rotation();
     d_func()->m_scale = transform->scale3D();
     d_func()->m_translation = transform->translation();
+    d_func()->m_matrixDirty = transform->d_func()->m_matrixDirty;
 }
 
 void QTransform::setMatrix(const QMatrix4x4 &m)
@@ -217,6 +218,15 @@ QQuaternion QTransform::fromEulerAngles(const QVector3D &eulerAngles)
 QQuaternion QTransform::fromEulerAngles(float pitch, float yaw, float roll)
 {
     return QQuaternion::fromEulerAngles(pitch, yaw, roll);
+}
+
+QMatrix4x4 QTransform::rotateAround(const QVector3D &point, float angle, const QVector3D &axis)
+{
+    QMatrix4x4 m;
+    m.translate(point);
+    m.rotate(angle, axis);
+    m.translate(-point);
+    return m;
 }
 
 } // namespace Qt3DCore
