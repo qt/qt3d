@@ -60,7 +60,7 @@ LoadBufferJob::~LoadBufferJob()
 void LoadBufferJob::run()
 {
     // Let's leave it for the moment until this has been properly tested
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(Jobs) << Q_FUNC_INFO;
     Buffer *buffer = m_nodeManagers->data<Buffer, BufferManager>(m_handle);
     buffer->executeFunctor();
 }
