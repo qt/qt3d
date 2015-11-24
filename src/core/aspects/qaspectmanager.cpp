@@ -210,7 +210,7 @@ void QAspectManager::exec()
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
-            m_scheduler->update(t);
+            m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
 
             // Process any pending events
             eventLoop.processEvents();

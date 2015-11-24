@@ -59,7 +59,7 @@ QAspectManager *QScheduler::aspectManager() const
     return m_aspectManager;
 }
 
-void QScheduler::update(qint64 time)
+void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 {
     QVector<QAspectJobPtr> jobQueue;
 
