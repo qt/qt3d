@@ -91,18 +91,18 @@ QOpenGLBuffer createGLBufferFor(Buffer *buffer)
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
 
     b.allocate(buffer->data().constData(), buffer->data().size());
-    b.release();
     return b;
 }
 
-void uploadDataToGLBuffer(Buffer *buffer, QOpenGLBuffer &b)
+void uploadDataToGLBuffer(Buffer *buffer, QOpenGLBuffer &b, bool releaseBuffer = false)
 {
     if (!b.bind())
         qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
     const int bufferSize = buffer->data().size();
     b.allocate(NULL, bufferSize); // orphan the buffer
     b.allocate(buffer->data().constData(), bufferSize);
-    b.release();
+    if (releaseBuffer)
+        b.release();
     qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
 }
 
@@ -950,8 +950,6 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
         // Done by the helper if it supports it
         m_glHelper->vertexAttribDivisor(location, attribute->divisor());
     }
-
-    buf.release();
 }
 
 void GraphicsContext::specifyIndices(Buffer *buffer)
@@ -962,7 +960,7 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
     if (!buf.bind())
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
-    // bind within the current VAO
+    // bound within the current VAO
 }
 
 void GraphicsContext::updateBuffer(Buffer *buffer)
