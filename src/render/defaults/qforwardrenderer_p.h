@@ -58,6 +58,7 @@ class QForwardRenderer;
 class QViewport;
 class QClearBuffer;
 class QCameraSelector;
+class QFrustumCulling;
 
 class QForwardRendererPrivate: public QTechniqueFilterPrivate
 {
@@ -67,6 +68,7 @@ public:
     QViewport *m_viewport;
     QCameraSelector *m_cameraSelector;
     QClearBuffer *m_clearBuffer;
+    QFrustumCulling *m_frustumCulling;
 
     void init();
 
