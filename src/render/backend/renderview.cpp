@@ -264,6 +264,7 @@ RenderView::RenderView()
     , m_clearBuffer(QClearBuffer::None)
     , m_stateSet(Q_NULLPTR)
     , m_noDraw(false)
+    , m_frustumCulling(false)
 {
 }
 
@@ -384,7 +385,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
     if (!node->isEnabled())
         return;
 
-    if (isEntityFrustumCulled(node, planes))
+    if (m_frustumCulling && isEntityFrustumCulled(node, planes))
         return;
 
     // Build renderCommand for current node

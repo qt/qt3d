@@ -161,6 +161,9 @@ public:
     inline bool noDraw() const { return m_noDraw; }
     void setNoDraw(bool noDraw) { m_noDraw = noDraw; }
 
+    inline bool frustumCulling() const { return m_frustumCulling; }
+    void setFrustumCulling(bool frustumCulling) { m_frustumCulling = frustumCulling; }
+
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
     // and passed along with the RenderView to the functions that populate the renderview
@@ -256,6 +259,7 @@ private:
     QClearBuffer::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;
     bool m_noDraw;
+    bool m_frustumCulling;
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst

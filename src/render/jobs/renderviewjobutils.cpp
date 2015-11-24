@@ -202,6 +202,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
+            case FrameGraphNode::FrustumCulling: {
+                rv->setFrustumCulling(true);
+                break;
+            }
+
             default:
                 // Should never get here
                 qCWarning(Backend) << "Unhandled FrameGraphNode type";
