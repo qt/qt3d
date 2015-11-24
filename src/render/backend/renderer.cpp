@@ -857,7 +857,8 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
             // Update or set Attributes and Buffers for the given rGeometry and Command
             indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
             specified = true;
-            vao->setSpecified(true);
+            if (vao)
+                vao->setSpecified(true);
         }
 
         //// Update program uniforms
