@@ -80,7 +80,8 @@ public:
         SortMethod,
         SubtreeSelector,
         StateSet,
-        NoDraw
+        NoDraw,
+        FrustumCulling
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

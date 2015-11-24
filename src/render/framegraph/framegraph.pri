@@ -42,7 +42,8 @@ HEADERS += \
     $$PWD/statesetnode_p.h \
     $$PWD/techniquefilternode_p.h \
     $$PWD/viewportnode_p.h \
-    $$PWD/qfrustumculling.h
+    $$PWD/qfrustumculling.h \
+    $$PWD/frustumculling_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -73,4 +74,5 @@ SOURCES += \
     $$PWD/statesetnode.cpp \
     $$PWD/techniquefilternode.cpp \
     $$PWD/viewportnode.cpp \
-    $$PWD/qfrustumculling.cpp
+    $$PWD/qfrustumculling.cpp \
+    $$PWD/frustumculling.cpp
