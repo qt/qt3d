@@ -125,6 +125,7 @@ void QTransform::setScale3D(const QVector3D &scale)
     Q_D(QTransform);
     if (scale != d->m_scale) {
         d->m_scale = scale;
+        d->m_matrixDirty = true;
         emit scale3DChanged();
     }
 }
@@ -157,6 +158,7 @@ void QTransform::setRotation(const QQuaternion &rotation)
     Q_D(QTransform);
     if (rotation != d->m_rotation) {
         d->m_rotation = rotation;
+        d->m_matrixDirty = true;
         emit rotationChanged();
     }
 }
@@ -172,6 +174,7 @@ void QTransform::setTranslation(const QVector3D &translation)
     Q_D(QTransform);
     if (translation != d->m_translation) {
         d->m_translation = translation;
+        d->m_matrixDirty = true;
         emit translationChanged();
     }
 }
