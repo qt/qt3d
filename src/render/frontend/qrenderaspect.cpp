@@ -72,6 +72,7 @@
 #include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qlighting.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -112,6 +113,8 @@
 #include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/qsceneparserfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
+#include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/lighting_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -275,6 +278,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QBoundingVolumeDebug>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(d->m_nodeManagers->boundingVolumeDebugManager())));
     registerBackendType<QFrustumCulling>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QLight>(QBackendNodeFunctorPtr(new Render::RenderLightFunctor(d->m_nodeManagers)));
+    registerBackendType<QLighting>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::Lighting, QLighting>(d->m_nodeManagers->frameGraphManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

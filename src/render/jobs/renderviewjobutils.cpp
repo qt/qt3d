@@ -207,6 +207,11 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
+            case FrameGraphNode::Lighting: {
+                // TODO
+                break;
+            }
+
             default:
                 // Should never get here
                 qCWarning(Backend) << "Unhandled FrameGraphNode type";

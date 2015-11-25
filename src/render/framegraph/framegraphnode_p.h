@@ -81,7 +81,8 @@ public:
         SubtreeSelector,
         StateSet,
         NoDraw,
-        FrustumCulling
+        FrustumCulling,
+        Lighting
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
