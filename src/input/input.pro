@@ -8,7 +8,8 @@ MODULE = 3dinput
 
 load(qt_module)
 
-include(input.pri)
+include(frontend/frontend.pri)
+include(backend/backend.pri)
 
 HEADERS += \
     qt3dinput_global.h
