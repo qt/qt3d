@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/qinputdeviceplugin.h \
     $$PWD/qactioninput.h \
     $$PWD/qaction.h \
-    $$PWD/qaxisinput.h
+    $$PWD/qaxisinput.h \
+    $$PWD/qaxis.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
     $$PWD/qinputdeviceplugin.cpp \
     $$PWD/qactioninput.cpp \
     $$PWD/qaction.cpp \
-    $$PWD/qaxisinput.cpp
+    $$PWD/qaxisinput.cpp \
+    $$PWD/qaxis.cpp
 
 INCLUDEPATH += $$PWD
