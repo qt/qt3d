@@ -78,10 +78,10 @@ public:
     int maxThreadCount() const;
 
 private:
-    void enqueueTasks(QVector<RunnableInterface *> &tasks);
+    void enqueueTasks(const QVector<RunnableInterface *> &tasks);
     void acquire(int add);
     void release();
-    int currentCount();
+    int currentCount() const;
 
 private:
     QFutureInterface<void> *m_futureInterface;
