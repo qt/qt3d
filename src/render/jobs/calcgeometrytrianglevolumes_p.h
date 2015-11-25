@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_ALCGEOMETRYTRIANGLEVOLUMES_P_H
+#ifndef QT3DRENDER_RENDER_CALCGEOMETRYTRIANGLEVOLUMES_P_H
 #define QT3DRENDER_RENDER_CALCGEOMETRYTRIANGLEVOLUMES_P_H
 
 //
