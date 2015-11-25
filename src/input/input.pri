@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/mouseeventfilter_p.h \
     $$PWD/qabstractinputdevice.h \
     $$PWD/qinputdevicefactory_p.h \
-    $$PWD/qinputdeviceplugin.h
+    $$PWD/qinputdeviceplugin.h \
+    $$PWD/qactioninput.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/mouseeventfilter.cpp \
     $$PWD/mouseeventdispatcherjob.cpp \
     $$PWD/qinputdevicefactory.cpp \
-    $$PWD/qinputdeviceplugin.cpp
+    $$PWD/qinputdeviceplugin.cpp \
+    $$PWD/qactioninput.cpp
 
 INCLUDEPATH += $$PWD
