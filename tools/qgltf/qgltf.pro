@@ -1,4 +1,5 @@
 option(host_build)
+!cross_compile:load(qt_build_paths)
 
 SOURCES = qgltf.cpp
 
