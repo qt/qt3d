@@ -174,6 +174,11 @@ public:
         m_volumes = buildTriangleBoundingVolumes();
     }
 
+    ~TriangleVolumeGatherer()
+    {
+        qDeleteAll(m_volumes);
+    }
+
     QVector<Qt3DCore::QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL
     {
         return m_volumes;

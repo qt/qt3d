@@ -80,6 +80,7 @@ void GeometryRenderer::cleanup()
     m_dirty = false;
     m_enabled = true;
     m_functor.reset();
+    qDeleteAll(m_triangleVolumes);
     m_triangleVolumes.clear();
 }
 
@@ -196,6 +197,7 @@ void GeometryRenderer::unsetDirty()
 
 void GeometryRenderer::setTriangleVolumes(const QVector<QBoundingVolume *> &volumes)
 {
+    qDeleteAll(m_triangleVolumes);
     m_triangleVolumes = volumes;
 }
 
