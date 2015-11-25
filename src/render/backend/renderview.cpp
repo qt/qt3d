@@ -763,9 +763,24 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     }
                 }
 
-                // TODO
-                Q_UNUSED(activeLightSources);
+                // Lights
+                const QString LIGHT_ARRAY_NAME = QStringLiteral("lights");
+                const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
+                const QString LIGHT_POSITION_NAME = QStringLiteral("position");
 
+                // Shaders without dynamic indexing will not have lightCount
+                if (uniformNames.contains(LIGHT_COUNT_NAME))
+                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, activeLightSources.count());
+
+                for (int lightIdx = 0; lightIdx < activeLightSources.count(); ++lightIdx) {
+                    Entity *lightEntity = activeLightSources[lightIdx].entity;
+                    Light *light = activeLightSources[lightIdx].light;
+                    const QVector3D pos = *m_data->m_viewMatrix * lightEntity->worldBoundingVolume()->center();
+                    QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
+
+                    setUniformValue(command->m_uniforms, structName + QChar('.') + LIGHT_POSITION_NAME, pos);
+                    setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
+                }
             }
             // Set frag outputs in the shaders if hash not empty
             if (!fragOutputs.isEmpty())
