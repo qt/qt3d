@@ -781,6 +781,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     setUniformValue(command->m_uniforms, structName + QChar('.') + LIGHT_POSITION_NAME, pos);
                     setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                 }
+
+                if (activeLightSources.isEmpty()) {
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 0.5f, 0.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
+                }
             }
             // Set frag outputs in the shaders if hash not empty
             if (!fragOutputs.isEmpty())
