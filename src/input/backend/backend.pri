@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/mouseeventdispatcherjob_p.h \
     $$PWD/mouseeventfilter_p.h \
     $$PWD/axisinput_p.h \
-    $$PWD/actioninput_p.h
+    $$PWD/actioninput_p.h \
+    $$PWD/axis_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -28,6 +29,7 @@ SOURCES += \
     $$PWD/mouseeventfilter.cpp \
     $$PWD/mouseeventdispatcherjob.cpp \
     $$PWD/axisinput.cpp \
-    $$PWD/actioninput.cpp
+    $$PWD/actioninput.cpp \
+    $$PWD/axis.cpp
 
 INCLUDEPATH += $$PWD
