@@ -244,11 +244,11 @@ public:
     };
 
     struct LightSource {
-        LightSource() : entity(Q_NULLPTR), light(Q_NULLPTR) { }
-        LightSource(Entity *entity, Light *light)
-            : entity(entity), light(light) { }
+        LightSource() : entity(Q_NULLPTR) { }
+        LightSource(Entity *entity, const QList<Light *> &lights)
+            : entity(entity), lights(lights) { }
         Entity *entity;
-        Light *light;
+        QList<Light *> lights;
     };
 
 private:

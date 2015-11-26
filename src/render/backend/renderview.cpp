@@ -389,13 +389,9 @@ void RenderView::setRenderer(Renderer *renderer)
 
 void RenderView::gatherLights(Entity *node)
 {
-    QList<Light *> lights = node->renderComponents<Light>();
-    if (!lights.isEmpty()) {
-        if (lights.count() == 1)
-            m_lightSources.append(LightSource(node, lights.first()));
-        else
-            qWarning("Light source entity with more than one lights found. Only the first light component is used.");
-    }
+    const QList<Light *> lights = node->renderComponents<Light>();
+    if (!lights.isEmpty())
+        m_lightSources.append(LightSource(node, lights));
 
     // Traverse children
     Q_FOREACH (Entity *child, node->children())
@@ -510,9 +506,12 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                     // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
                     // Replace with more sophisticated mechanisms later.
                     std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
-                    QVector<LightSource> activeLightSources;
-                    for (int i = 0; i < m_lightSources.count() && i < MAX_LIGHTS; ++i)
+                    QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+                    int lightCount = 0;
+                    for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
                         activeLightSources.append(m_lightSources[i]);
+                        lightCount += m_lightSources[i].lights.count();
+                    }
 
                     setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
 
@@ -772,14 +771,20 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 if (uniformNames.contains(LIGHT_COUNT_NAME))
                     setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, activeLightSources.count());
 
-                for (int lightIdx = 0; lightIdx < activeLightSources.count(); ++lightIdx) {
-                    Entity *lightEntity = activeLightSources[lightIdx].entity;
-                    Light *light = activeLightSources[lightIdx].light;
+                int lightIdx = 0;
+                Q_FOREACH (const LightSource &lightSource, activeLightSources) {
+                    if (lightIdx == MAX_LIGHTS)
+                        break;
+                    Entity *lightEntity = lightSource.entity;
                     const QVector3D pos = *m_data->m_viewMatrix * lightEntity->worldBoundingVolume()->center();
-                    QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-
-                    setUniformValue(command->m_uniforms, structName + QChar('.') + LIGHT_POSITION_NAME, pos);
-                    setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
+                    Q_FOREACH (Light *light, lightSource.lights) {
+                        if (lightIdx == MAX_LIGHTS)
+                            break;
+                        QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
+                        setUniformValue(command->m_uniforms, structName + QChar('.') + LIGHT_POSITION_NAME, pos);
+                        setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
+                        ++lightIdx;
+                    }
                 }
 
                 if (activeLightSources.isEmpty()) {
