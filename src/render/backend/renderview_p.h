@@ -299,6 +299,7 @@ private:
     QUniformValue *viewportMatrix(const QMatrix4x4 &model) const;
     QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
     QUniformValue *time(const QMatrix4x4 &model) const;
+    QUniformValue *eyePosition(const QMatrix4x4 &model) const;
 
     void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
     void setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);

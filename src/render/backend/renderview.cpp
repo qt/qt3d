@@ -140,6 +140,7 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(QStringLiteral("viewportMatrix"), &RenderView::viewportMatrix);
     setters.insert(QStringLiteral("inverseViewportMatrix"), &RenderView::inverseViewportMatrix);
     setters.insert(QStringLiteral("time"), &RenderView::time);
+    setters.insert(QStringLiteral("eyePosition"), &RenderView::eyePosition);
 
     return setters;
 }
@@ -255,6 +256,12 @@ QUniformValue *RenderView::time(const QMatrix4x4 &model) const
     qint64 time = m_renderer->renderAspect()->time();
     float t = time / 1000000000.0f;
     return QUniformValue::fromVariant(QVariant(t), m_allocator);
+}
+
+QUniformValue *RenderView::eyePosition(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    return QUniformValue::fromVariant(QVariant::fromValue(m_data->m_eyePos), m_allocator);
 }
 
 RenderView::RenderView()
