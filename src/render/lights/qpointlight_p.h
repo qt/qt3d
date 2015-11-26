@@ -61,6 +61,8 @@ class QPointLightPrivate : public QLightPrivate
 public:
     QPointLightPrivate();
 
+    QVector3D m_attenuation;
+
     Q_DECLARE_PUBLIC(QPointLight)
 };
 
