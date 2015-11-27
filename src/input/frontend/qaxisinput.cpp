@@ -51,7 +51,7 @@ public:
         , m_axis(-1)
     {}
 
-    QVector<int> m_keys;
+    QVariantList m_keys;
     QAbstractPhysicalDevice *m_sourceDevice;
     float m_scale;
     int m_axis;
@@ -116,32 +116,19 @@ int QAxisInput::axis() const
     return d->m_axis;
 }
 
-void QAxisInput::addKey(int key)
+void QAxisInput::setKeys(const QVariantList &keys)
 {
     Q_D(QAxisInput);
-    if (!d->m_keys.contains(key))
-        d->m_keys.push_back(key);
-    // TO DO: add notifications
+    if (keys != d->m_keys) {
+        d->m_keys = keys;
+        emit keysChanged();
+    }
 }
 
-void QAxisInput::removeKey(int key)
-{
-    Q_D(QAxisInput);
-    if (!d->m_keys.contains(key))
-        d->m_keys.removeOne(key);
-    // TO DO: add notifications
-}
-
-QVector<int> QAxisInput::keys() const
+QVariantList QAxisInput::keys() const
 {
     Q_D(const QAxisInput);
     return d->m_keys;
-}
-
-QBitArray QAxisInput::keysBitArray() const
-{
-    return QBitArray();
-    // TO DO: complete
 }
 
 void QAxisInput::copy(const Qt3DCore::QNode *ref)

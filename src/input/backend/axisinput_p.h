@@ -50,7 +50,6 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QBitArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +66,7 @@ public:
 
     int axis() const;
     float scale() const;
-    QBitArray keys() const;
+    qint64 keys() const;
 
     inline bool isEnabled() const { return m_enabled; }
 
@@ -76,7 +75,7 @@ protected:
 
 private:
     int m_axis;
-    QBitArray m_keys;
+    qint64 m_keys;
     Qt3DCore::QNodeId m_sourceDevice;
     float m_scale;
     bool m_enabled;

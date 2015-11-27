@@ -40,7 +40,6 @@
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
 #include <QVector3D>
-#include <QBitArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +54,7 @@ class QAxisInput : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
+    Q_PROPERTY(QVariantList keys READ keys WRITE setKeys NOTIFY keysChanged)
 
 public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
@@ -69,15 +69,14 @@ public:
     void setAxis(int axis);
     int axis() const;
 
-    void addKey(int key);
-    void removeKey(int key);
-    QVector<int> keys() const;
-    QBitArray keysBitArray() const;
+    void setKeys(const QVariantList &keys);
+    QVariantList keys() const;
 
 Q_SIGNALS:
     void sourceDeviceChanged();
     void scaleChanged();
     void axisChanged();
+    void keysChanged();
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

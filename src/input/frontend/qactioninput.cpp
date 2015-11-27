@@ -48,7 +48,7 @@ public:
         , m_sourceDevice(Q_NULLPTR)
     {}
 
-    QVector<int> m_keys;
+    QVariantList m_keys;
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
@@ -62,32 +62,13 @@ QActionInput::~QActionInput()
     QNode::cleanup();
 }
 
-void QActionInput::addKey(int key)
-{
-    Q_D(QActionInput);
-    if (!d->m_keys.contains(key))
-        d->m_keys.push_back(key);
-    // TO DO: add notifications
-}
-
-void QActionInput::removeKey(int key)
-{
-    Q_D(QActionInput);
-    d->m_keys.removeOne(key);
-    // TO DO: add notifications
-}
-
-QVector<int> QActionInput::keys() const
+QVariantList QActionInput::keys() const
 {
     Q_D(const QActionInput);
     return d->m_keys;
 }
 
-QBitArray QActionInput::keysBitArray() const
-{
-    // TO DO: complete
-    return QBitArray();
-}
+
 
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
@@ -105,6 +86,15 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 {
     Q_D(const QActionInput);
     return d->m_sourceDevice;
+}
+
+void QActionInput::setKeys(const QVariantList &keys)
+{
+    Q_D(QActionInput);
+    if (d->m_keys != keys) {
+        d->m_keys = keys;
+        emit keysChanged();
+    }
 }
 
 void QActionInput::copy(const Qt3DCore::QNode *ref)

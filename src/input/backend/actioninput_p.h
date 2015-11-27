@@ -50,7 +50,6 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QBitArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +64,7 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    QBitArray keys() const;
+    qint64 keys() const;
 
     inline bool isEnabled() const { return m_enabled; }
 
@@ -73,7 +72,7 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QBitArray m_keys;
+    qint64 m_keys;
     Qt3DCore::QNodeId m_sourceDevice;
     bool m_enabled;
 };
