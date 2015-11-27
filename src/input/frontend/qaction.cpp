@@ -81,17 +81,35 @@ QString QAction::name() const
 void QAction::addInput(QActionInput *input)
 {
     Q_D(QAction);
-    if (!d->m_inputs.contains(input))
+    if (!d->m_inputs.contains(input)) {
         d->m_inputs.push_back(input);
-    // TO DO: needs to be completed to set the parent and send a proper notification
+
+        if (!input->parent())
+            input->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("input");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+    }
 }
 
 void QAction::removeInput(QActionInput *input)
 {
     Q_D(QAction);
-    d->m_inputs.removeOne(input);
-    // TO DO: needs to be completed to set the parent and send a proper notification
-}
+    if (d->m_inputs.contains(input)) {
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("input");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+
+        d->m_inputs.removeOne(input);
+    }}
 
 QVector<QActionInput *> QAction::inputs() const
 {
