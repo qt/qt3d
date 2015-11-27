@@ -55,6 +55,10 @@
 #include <Qt3DInput/private/mousecontroller_p.h>
 #include <Qt3DInput/private/mouseinput_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DInput/private/actioninput_p.h>
+#include <Qt3DInput/private/axisinput_p.h>
+#include <Qt3DInput/private/action_p.h>
+#include <Qt3DInput/private/axis_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -99,6 +103,46 @@ class MouseInputManager : public Qt3DCore::QResourceManager<
 {
 public:
     MouseInputManager() {}
+};
+
+class AxisManager : public Qt3DCore::QResourceManager<
+        Axis,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    AxisManager() {}
+};
+
+class AxisInputManager : public Qt3DCore::QResourceManager<
+        AxisInput,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    AxisInputManager() {}
+};
+
+class ActionManager : public Qt3DCore::QResourceManager<
+        Action,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ActionManager() {}
+};
+
+class ActionInputManager : public Qt3DCore::QResourceManager<
+        ActionInput,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    ActionInputManager() {}
 };
 
 } // namespace Input
