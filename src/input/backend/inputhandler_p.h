@@ -69,6 +69,11 @@ class KeyboardEventFilter;
 class MouseControllerManager;
 class MouseInputManager;
 class MouseEventFilter;
+class AxisManager;
+class ActionManager;
+class AxisInputManager;
+class ActionInputManager;
+class LogicalDeviceManager;
 
 class InputHandler
 {
@@ -81,6 +86,11 @@ public:
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
     inline MouseControllerManager *mouseControllerManager() const { return m_mouseControllerManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
+    inline AxisManager *axisManager() const { return m_axisManager; }
+    inline ActionManager *actionManager() const { return m_actionManager; }
+    inline AxisInputManager *axisInputManager() const { return m_axisInputManager; }
+    inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
+    inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
 
     void appendKeyEvent(const QKeyEvent &event);
     QList<QKeyEvent> pendingKeyEvents();
@@ -104,6 +114,7 @@ private:
     KeyboardInputManager *m_keyboardInputManager;
     MouseControllerManager *m_mouseControllerManager;
     MouseInputManager *m_mouseInputManager;
+
     QVector<HKeyboardController> m_activeKeyboardControllers;
     QVector<HMouseController> m_activeMouseControllers;
     KeyboardEventFilter *m_keyboardEventFilter;
@@ -111,6 +122,12 @@ private:
     MouseEventFilter *m_mouseEventFilter;
     QList<QMouseEvent> m_pendingMouseEvents;
     mutable QMutex m_mutex;
+
+    AxisManager *m_axisManager;
+    ActionManager *m_actionManager;
+    AxisInputManager *m_axisInputManager;
+    ActionInputManager *m_actionInputManager;
+    LogicalDeviceManager *m_logicalDeviceManager;
 };
 
 } // namespace Input

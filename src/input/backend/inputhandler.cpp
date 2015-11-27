@@ -57,6 +57,11 @@ InputHandler::InputHandler()
     , m_mouseInputManager(new MouseInputManager())
     , m_keyboardEventFilter(new KeyboardEventFilter())
     , m_mouseEventFilter(new MouseEventFilter())
+    , m_axisManager(new AxisManager())
+    , m_actionManager(new ActionManager())
+    , m_axisInputManager(new AxisInputManager())
+    , m_actionInputManager(new ActionInputManager())
+    , m_logicalDeviceManager(new LogicalDeviceManager())
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);

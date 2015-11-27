@@ -16,7 +16,8 @@ HEADERS += \
     $$PWD/actioninput_p.h \
     $$PWD/axis_p.h \
     $$PWD/action_p.h \
-    $$PWD/logicaldevice_p.h
+    $$PWD/logicaldevice_p.h \
+    $$PWD/inputbackendnodefunctor_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \

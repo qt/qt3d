@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_HANDLE_TYPES_P_H
-#define QT3DINPUT_INPUT_HANDLE_TYPES_P_H
+#ifndef QT3DINPUT_INPUT_INPUTBACKENDNODEFUNCTOR_P_H
+#define QT3DINPUT_INPUT_INPUTBACKENDNODEFUNCTOR_P_H
 
 //
 //  W A R N I N G
@@ -48,36 +48,51 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qhandle_p.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/qnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
 namespace Input {
 
-class KeyboardController;
-class KeyboardInput;
-class MouseController;
-class MouseInput;
-class Axis;
-class AxisInput;
-class Action;
-class ActionInput;
-class LogicalDevice;
+template<class Backend, class Manager>
+class InputNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit InputNodeFunctor(Manager *manager)
+        : m_manager(manager)
+    {
+    }
 
-typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
-typedef Qt3DCore::QHandle<KeyboardInput, 16> HKeyboardInput;
-typedef Qt3DCore::QHandle<MouseController, 8> HMouseController;
-typedef Qt3DCore::QHandle<MouseInput, 16> HMouseInput;
-typedef Qt3DCore::QHandle<Axis, 16> HAxis;
-typedef Qt3DCore::QHandle<Action, 16> HAction;
-typedef Qt3DCore::QHandle<AxisInput, 16> HAxisInput;
-typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
-typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL
+    {
+        Backend *backend = m_manager->getOrCreateResource(frontend->id());
+        backend->setFactory(factory);
+        backend->setPeer(frontend);
+        return backend;
+    }
 
-} // namespace Input
-} // namespace Qt3DInput
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    {
+        return m_manager->lookupResource(id);
+    }
+
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    {
+        m_manager->releaseResource(id);
+    }
+
+private:
+    Manager *m_manager;
+};
+
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_HANDLE_TYPES_P_H
+#endif // QT3DINPUT_INPUT_INPUTBACKENDNODEFUNCTOR_P_H
+
