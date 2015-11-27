@@ -49,7 +49,7 @@ public:
     {}
 
     QVector<int> m_keys;
-    QAbstractInputDevice *m_sourceDevice;
+    QAbstractPhysicalDevice *m_sourceDevice;
 };
 
 QActionInput::QActionInput(Qt3DCore::QNode *parent)
@@ -89,7 +89,7 @@ QBitArray QActionInput::keysBitArray() const
     return QBitArray();
 }
 
-void QActionInput::setSourceDevice(QAbstractInputDevice *sourceDevice)
+void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QActionInput);
     if (d->m_sourceDevice != sourceDevice) {
@@ -101,7 +101,7 @@ void QActionInput::setSourceDevice(QAbstractInputDevice *sourceDevice)
     }
 }
 
-QAbstractInputDevice *QActionInput::sourceDevice() const
+QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 {
     Q_D(const QActionInput);
     return d->m_sourceDevice;
@@ -111,8 +111,8 @@ void QActionInput::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QActionInput *input = static_cast<const QActionInput *>(ref);
-    // TO DO: Convert QAbstractInputDevice to a QNode
-    // d_func()->m_sourceDevice = qobject_cast<QAbstractInputDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
+    // TO DO: Convert QAbstractPhysicalDevice to a QNode
+    // d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
     d_func()->m_keys = input->d_func()->m_keys;
 
 }

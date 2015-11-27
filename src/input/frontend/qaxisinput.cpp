@@ -52,7 +52,7 @@ public:
     {}
 
     QVector<int> m_keys;
-    QAbstractInputDevice *m_sourceDevice;
+    QAbstractPhysicalDevice *m_sourceDevice;
     float m_scale;
     int m_axis;
 };
@@ -68,7 +68,7 @@ QAxisInput::~QAxisInput()
     QNode::cleanup();
 }
 
-void QAxisInput::setSourceDevice(QAbstractInputDevice *sourceDevice)
+void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QAxisInput);
     if (d->m_sourceDevice != sourceDevice) {
@@ -80,7 +80,7 @@ void QAxisInput::setSourceDevice(QAbstractInputDevice *sourceDevice)
     }
 }
 
-QAbstractInputDevice *QAxisInput::sourceDevice() const
+QAbstractPhysicalDevice *QAxisInput::sourceDevice() const
 {
     Q_D(const QAxisInput);
     return d->m_sourceDevice;
@@ -148,8 +148,8 @@ void QAxisInput::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QAxisInput *input = static_cast<const QAxisInput *>(ref);
-    // TO DO: Convert QAbstractInputDevice to a QNode
-    // d_func()->m_sourceDevice = qobject_cast<QAbstractInputDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
+    // TO DO: Convert QAbstractPhysicalDevice to a QNode
+    // d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
     d_func()->m_keys = input->d_func()->m_keys;
     d_func()->m_scale = input->d_func()->m_scale;
     d_func()->m_axis = input->d_func()->m_axis;

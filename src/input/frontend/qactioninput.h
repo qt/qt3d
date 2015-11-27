@@ -44,13 +44,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractInputDevice;
+class QAbstractPhysicalDevice;
 class QActionInputPrivate;
 
 class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QAbstractInputDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
+    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
 
 public:
     explicit QActionInput(Qt3DCore::QNode *parent = Q_NULLPTR);
@@ -61,8 +61,8 @@ public:
     QVector<int> keys() const;
     QBitArray keysBitArray() const;
 
-    void setSourceDevice(QAbstractInputDevice *sourceDevice);
-    QAbstractInputDevice *sourceDevice() const;
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+    QAbstractPhysicalDevice *sourceDevice() const;
 
 Q_SIGNALS:
     void sourceDeviceChanged();

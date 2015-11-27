@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTDEVICEFACTORY_P_H
-#define QT3DINPUT_QINPUTDEVICEFACTORY_P_H
+#ifndef QT3DINPUT_QINPUTDEVICEINTEGRATIONFACTORY_P_H
+#define QT3DINPUT_QINPUTDEVICEINTEGRATIONFACTORY_P_H
 
 //
 //  W A R N I N G
@@ -55,17 +55,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractInputDevice;
+class QInputDeviceIntegration;
 
-class QInputDeviceFactory
+class QInputDeviceIntegrationFactory
 {
 public:
     static QStringList keys(const QString &pluginPath = QString());
-    static QAbstractInputDevice *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
+    static QInputDeviceIntegration *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
 };
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTDEVICEFACTORY_P_H
+#endif // QT3DINPUT_QINPUTDEVICEINTEGRATIONFACTORY_P_H

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qinputdevicefactory_p.h"
-#include <Qt3DInput/qabstractinputdevice.h>
+#include "qinputdeviceintegrationfactory_p.h"
+#include <Qt3DInput/qinputdeviceintegration.h>
 #include <Qt3DInput/qinputdeviceplugin.h>
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
@@ -46,11 +46,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 #ifndef QT_NO_LIBRARY
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QInputDevice_iid, QLatin1String("/inputdevices"), Qt::CaseInsensitive))
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QInputDevice_iid, QLatin1String(""), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QInputDevicePlugin_iid, QLatin1String("/inputdevices"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QInputDevicePlugin_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
-QStringList QInputDeviceFactory::keys(const QString &pluginPath)
+QStringList QInputDeviceIntegrationFactory::keys(const QString &pluginPath)
 {
 #ifndef QT_NO_LIBRARY
     QStringList list;
@@ -73,15 +73,15 @@ QStringList QInputDeviceFactory::keys(const QString &pluginPath)
 #endif
 }
 
-QAbstractInputDevice *QInputDeviceFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
+QInputDeviceIntegration *QInputDeviceIntegrationFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
 #ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
-        if (QAbstractInputDevice *ret = qLoadPlugin1<QAbstractInputDevice, QInputDevicePlugin>(directLoader(), name, args))
+        if (QInputDeviceIntegration *ret = qLoadPlugin1<QInputDeviceIntegration, QInputDevicePlugin>(directLoader(), name, args))
             return ret;
     }
-    if (QAbstractInputDevice *ret = qLoadPlugin1<QAbstractInputDevice, QInputDevicePlugin>(loader(), name, args))
+    if (QInputDeviceIntegration *ret = qLoadPlugin1<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
         return ret;
 #endif
     return Q_NULLPTR;

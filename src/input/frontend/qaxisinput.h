@@ -46,13 +46,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractInputDevice;
+class QAbstractPhysicalDevice;
 class QAxisInputPrivate;
 
 class QAxisInput : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QAbstractInputDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
+    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
 
@@ -60,8 +60,8 @@ public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxisInput();
 
-    void setSourceDevice(QAbstractInputDevice *sourceDevice);
-    QAbstractInputDevice *sourceDevice() const;
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+    QAbstractPhysicalDevice *sourceDevice() const;
 
     void setScale(float scale);
     float scale() const;

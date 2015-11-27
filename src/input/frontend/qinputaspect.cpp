@@ -49,8 +49,8 @@
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmouseinput.h>
-#include <Qt3DInput/qabstractinputdevice.h>
-#include <Qt3DInput/private/qinputdevicefactory_p.h>
+#include <Qt3DInput/qinputdeviceintegration.h>
+#include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>
 #include <Qt3DCore/qservicelocator.h>
 #include <Qt3DCore/qeventfilterservice.h>
 #include <QDir>
@@ -95,12 +95,12 @@ QInputAspect::QInputAspect(QObject *parent)
 void QInputAspect::loadInputDevicePlugins()
 {
     Q_D(QInputAspect);
-    QStringList keys = QInputDeviceFactory::keys();
+    QStringList keys = QInputDeviceIntegrationFactory::keys();
     Q_FOREACH (QString key, keys) {
-        Qt3DInput::QAbstractInputDevice *inputDevice = QInputDeviceFactory::create(key, QStringList());
-        if (inputDevice != Q_NULLPTR) {
-            d->m_inputDevices.push_back(inputDevice);
-            inputDevice->initialize(this);
+        Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
+        if (integration != Q_NULLPTR) {
+            d->m_inputDeviceIntegrations.push_back(integration);
+            integration->initialize(this);
         }
     }
 }
@@ -126,8 +126,8 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     jobs.append(d->m_inputHandler->keyboardJobs());
     jobs.append(d->m_inputHandler->mouseJobs());
 
-    Q_FOREACH (QAbstractInputDevice *inputDevice, d->m_inputDevices)
-        jobs += inputDevice->jobsToExecute(time);
+    Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputDeviceIntegrations)
+        jobs += integration->jobsToExecute(time);
 
     return jobs;
 }

@@ -34,11 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTINPUTDEVICE
-#define QT3DINPUT_QABSTRACTINPUTDEVICE
+#ifndef QT3DINPUT_QAbstractPhysicalDevice
+#define QT3DINPUT_QAbstractPhysicalDevice
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnode.h>
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -47,20 +47,20 @@ namespace Qt3DInput {
 
 class QInputAspect;
 
-class QT3DINPUTSHARED_EXPORT QAbstractInputDevice
+class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : Qt3DCore::QNode
 {
 public:
-    virtual ~QAbstractInputDevice() {}
-    virtual void initialize(Qt3DInput::QInputAspect *aspect) = 0;
-    virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
+    virtual ~QAbstractPhysicalDevice() {}
+
+    // TODO: Add API to introspect buttons and axes
+    // TODO: Add API to support AxisSettings
 };
 
 } // Qt3DInput
 
-Q_DECLARE_INTERFACE(Qt3DInput::QAbstractInputDevice, "Qt3DInput.QAbstractInputDevice/1.0")
-
 QT_END_NAMESPACE
 
 
-#endif // QT3DINPUT_QABSTRACTINPUTDEVICE
+#endif // QT3DINPUT_QAbstractPhysicalDevice
 

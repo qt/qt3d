@@ -34,37 +34,18 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTDEVICEPLUGIN_H
-#define QT3DINPUT_QINPUTDEVICEPLUGIN_H
-
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <QtCore/QFactoryInterface>
-
-#include <Qt3DInput/qt3dinput_global.h>
+#include "qinputdeviceintegration.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QInputDeviceIntegration;
-
-class QT3DINPUTSHARED_EXPORT QInputDevicePlugin : public QObject
+QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
-public:
-    explicit QInputDevicePlugin(QObject *parent = Q_NULLPTR);
-    ~QInputDevicePlugin();
 
-    virtual QInputDeviceIntegration *create(const QString &key, const QStringList &paramList);
-};
+}
 
-} // Qt3DInput
-
-#define QInputDevicePlugin_iid "org.qt-project.Qt3DInput.QInputDevicePlugin 5.6"
-
-Q_DECLARE_INTERFACE(Qt3DInput::QInputDevicePlugin, QInputDevicePlugin_iid)
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_QINPUTDEVICEPLUGIN_H
