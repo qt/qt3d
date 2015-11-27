@@ -38,6 +38,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,17 +68,34 @@ QLogicalDevice::~QLogicalDevice()
 void QLogicalDevice::addAction(QAction *action)
 {
     Q_D(QLogicalDevice);
-    if (!d->m_actions.contains(action))
+    if (!d->m_actions.contains(action)) {
         d->m_actions.push_back(action);
-    // TO DO: needs to be completed to set the parent and send a proper notification
+        // Force creation in backend by setting parent
+        if (!action->parent())
+            action->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("action");
+            change->setValue(QVariant::fromValue(action->id()));
+            d->notifyObservers(change);
+        }
+    }
 }
 
 void QLogicalDevice::removeAction(QAction *action)
 {
     Q_D(QLogicalDevice);
     if (d->m_actions.contains(action)) {
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("action");
+            change->setValue(QVariant::fromValue(action->id()));
+            d->notifyObservers(change);
+        }
+
         d->m_actions.removeOne(action);
-        // TO DO: needs to be completed to send a proper notification
     }
 }
 
@@ -92,7 +110,17 @@ void QLogicalDevice::addAxis(QAxis *axis)
     Q_D(QLogicalDevice);
     if (!d->m_axes.contains(axis)) {
         d->m_axes.push_back(axis);
-        // TO DO: needs to be completed to set the parent and send a proper notification
+
+        // Force creation in backend by setting parent
+        if (!axis->parent())
+            axis->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("axis");
+            change->setValue(QVariant::fromValue(axis->id()));
+            d->notifyObservers(change);
+        }
     }
 }
 
@@ -100,8 +128,14 @@ void QLogicalDevice::removeAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
     if (d->m_axes.contains(axis)) {
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("axis");
+            change->setValue(QVariant::fromValue(axis->id()));
+            d->notifyObservers(change);
+        }
+
         d->m_axes.removeOne(axis);
-        // TO DO: needs to be completed to send a proper notification
     }
 }
 
@@ -117,6 +151,8 @@ void QLogicalDevice::copy(const Qt3DCore::QNode *ref)
     const QLogicalDevice *device = static_cast<const QLogicalDevice *>(ref);
     Q_FOREACH (QAction *action, device->actions())
         d_func()->m_actions.push_back(qobject_cast<QAction *>(QNode::clone(action)));
+    Q_FOREACH (QAxis *axis, device->axes())
+        d_func()->m_axes.push_back(qobject_cast<QAxis *>(QNode::clone(axis)));
 }
 
 } // Qt3DInput
