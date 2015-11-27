@@ -19,7 +19,8 @@ HEADERS += \
     $$PWD/qlogicaldevice.h \
     $$PWD/qinputdeviceintegration.h \
     $$PWD/qabstractphysicaldevice.h \
-    $$PWD/qinputdeviceintegrationfactory_p.h
+    $$PWD/qinputdeviceintegrationfactory_p.h \
+    $$PWD/qaxissetting.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
     $$PWD/qlogicaldevice.cpp \
     $$PWD/qinputdeviceintegration.cpp \
     $$PWD/qabstractphysicaldevice.cpp \
-    $$PWD/qinputdeviceintegrationfactory.cpp
+    $$PWD/qinputdeviceintegrationfactory.cpp \
+    $$PWD/qaxissetting.cpp
 
 INCLUDEPATH += $$PWD
