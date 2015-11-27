@@ -36,6 +36,7 @@
 #include "qaxis.h"
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DInput/qaxisinput.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,16 +81,35 @@ QString QAxis::name() const
 void QAxis::addInput(QAxisInput *input)
 {
     Q_D(QAxis);
-    if (!d->m_inputs.contains(input))
+    if (!d->m_inputs.contains(input)) {
         d->m_inputs.push_back(input);
-    // TO DO: needs to be completed to set the parent and send a proper notification
+
+        if (!input->parent())
+            input->setParent(this);
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeAdded, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("input");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+    }
 }
 
 void QAxis::removeInput(QAxisInput *input)
 {
     Q_D(QAxis);
-    d->m_inputs.removeOne(input);
-    // TO DO: needs to be completed to send a proper notification
+    if (d->m_inputs.contains(input)) {
+
+        if (d->m_changeArbiter != Q_NULLPTR) {
+            Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeRemoved, Qt3DCore::QSceneChange::Node, id()));
+            change->setPropertyName("input");
+            change->setValue(QVariant::fromValue(input->id()));
+            d->notifyObservers(change);
+        }
+
+        d->m_inputs.removeOne(input);
+    }
 }
 
 QVector<QAxisInput *> QAxis::inputs() const
