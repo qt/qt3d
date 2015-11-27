@@ -1,0 +1,5 @@
+SOURCES +=
+
+HEADERS +=
+
+INCLUDEPATH += $$PWD
