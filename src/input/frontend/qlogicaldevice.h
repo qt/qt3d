@@ -48,7 +48,7 @@ class QLogicalDevicePrivate;
 class QAction;
 class QAxis;
 
-class QLogicalDevice : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
