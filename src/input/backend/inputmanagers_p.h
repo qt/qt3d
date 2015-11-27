@@ -59,6 +59,7 @@
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/logicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -143,6 +144,16 @@ class ActionInputManager : public Qt3DCore::QResourceManager<
 {
 public:
     ActionInputManager() {}
+};
+
+class LogicalDeviceManager : public Qt3DCore::QResourceManager<
+        LogicalDevice,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    LogicalDeviceManager() {}
 };
 
 } // namespace Input
