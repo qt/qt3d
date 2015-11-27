@@ -36,6 +36,7 @@
 
 #include "actioninput_p.h"
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 

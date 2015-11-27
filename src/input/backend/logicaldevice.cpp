@@ -38,6 +38,7 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaction.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
