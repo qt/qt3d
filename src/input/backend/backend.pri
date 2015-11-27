@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/axisinput_p.h \
     $$PWD/actioninput_p.h \
     $$PWD/axis_p.h \
-    $$PWD/action_p.h
+    $$PWD/action_p.h \
+    $$PWD/logicaldevice_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
     $$PWD/axisinput.cpp \
     $$PWD/actioninput.cpp \
     $$PWD/axis.cpp \
-    $$PWD/action.cpp
+    $$PWD/action.cpp \
+    $$PWD/logicaldevice.cpp
 
 INCLUDEPATH += $$PWD
