@@ -1,5 +1,7 @@
-SOURCES +=
+SOURCES += \
+    $$PWD/quick3daxis.cpp
 
-HEADERS +=
+HEADERS += \
+    $$PWD/quick3daxis_p.h
 
 INCLUDEPATH += $$PWD
