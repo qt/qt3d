@@ -45,21 +45,10 @@ namespace Qt3DInput {
 
 namespace Input {
 
-namespace {
-
-qint64 keysToBitArray(const QVariantList &keys)
-{
-    qint64 keyBits;
-    Q_FOREACH (const QVariant &key, keys)
-        keyBits |= key.toInt();
-    return keyBits;
-}
-
-} // anonymous
-
 AxisInput::AxisInput()
     : Qt3DCore::QBackendNode()
     , m_axis(-1)
+    , m_keys(0)
     , m_scale(0.0f)
     , m_enabled(false)
 {
@@ -74,7 +63,7 @@ void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
     m_axis = input->axis();
     m_scale = input->scale();
     m_enabled = input->isEnabled();
-    m_keys = keysToBitArray(input->keys());
+    m_keys = input->keys();
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
 }
@@ -101,7 +90,7 @@ void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("keys")) {
-            m_keys = keysToBitArray(propertyChange->value().value<QVariantList>());
+            m_keys = propertyChange->value().toInt();
         }
     }
 }
