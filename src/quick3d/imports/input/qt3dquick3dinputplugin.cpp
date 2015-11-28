@@ -51,6 +51,7 @@
 #include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3daction_p.h>
 #include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
+#include <Qt3DQuickInput/private/quick3dphysicaldevice_p.h>
 
 #include "qt3dquick3dinputplugin.h"
 
@@ -72,7 +73,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
     qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
-    qmlRegisterUncreatableType<Qt3DInput::QAbstractPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
+    qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
 }
 
 QT_END_NAMESPACE
