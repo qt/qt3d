@@ -63,8 +63,6 @@ public:
 
 #define QInputDevicePlugin_iid "org.qt-project.Qt3DInput.QInputDevicePlugin 5.6"
 
-Q_DECLARE_INTERFACE(Qt3DInput::QInputDevicePlugin, QInputDevicePlugin_iid)
-
 QT_END_NAMESPACE
 
 #endif // QT3DINPUT_QINPUTDEVICEPLUGIN_H
