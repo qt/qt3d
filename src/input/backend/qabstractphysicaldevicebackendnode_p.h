@@ -34,34 +34,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
-#define QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
+#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_H
+#define QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_H
 
-#include <Qt3DCore/qbackendnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDeviceBackendNodePrivate;
-
-class QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
+class QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
 {
 public:
-    QAbstractPhysicalDeviceBackendNode();
+    QAbstractPhysicalDeviceBackendNodePrivate();
 
-    // TODO: Add backend API to be used by the integration and jobs
-
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
-
-protected:
-    Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QVector<Qt3DCore::QNodeId> m_axisSettings;
+    bool m_enabled;
 };
 
-} // Qt3DInput
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
+#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_P_H
+

@@ -35,14 +35,60 @@
 ****************************************************************************/
 
 #include "qabstractphysicaldevicebackendnode.h"
+#include "qabstractphysicaldevicebackendnode_p.h"
+#include "qabstractphysicaldevice.h"
+#include "qaxissetting.h"
+
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode()
-    : Qt3DCore::QBackendNode()
+QAbstractPhysicalDeviceBackendNodePrivate::QAbstractPhysicalDeviceBackendNodePrivate()
+    : Qt3DCore::QBackendNodePrivate(Qt3DCore::QBackendNode::ReadOnly)
+    , m_axisSettings()
+    , m_enabled(false)
 {
+
+}
+
+QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode()
+    : Qt3DCore::QBackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate)
+{
+}
+
+void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    Q_D(QAbstractPhysicalDeviceBackendNode);
+    QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
+    d->m_enabled = physicalDevice->isEnabled();
+    Q_FOREACH (QAxisSetting *axisSetting, physicalDevice->axisSettings())
+        d->m_axisSettings.push_back(axisSetting->id());
+}
+
+void QAbstractPhysicalDeviceBackendNode::cleanup()
+{
+    Q_D(QAbstractPhysicalDeviceBackendNode);
+    d->m_enabled = false;
+    d->m_axisSettings.clear();
+}
+
+void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    Q_D(QAbstractPhysicalDeviceBackendNode);
+    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            d->m_enabled = propertyChange->value().toBool();
+        }
+    } else if (e->type() == Qt3DCore::NodeAdded) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings"))
+            d->m_axisSettings.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+    } else if (e->type() == Qt3DCore::NodeRemoved) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings"))
+            d->m_axisSettings.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+    }
 }
 
 } // Qt3DInput

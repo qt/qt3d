@@ -20,7 +20,8 @@ HEADERS += \
     $$PWD/inputbackendnodefunctor_p.h \
     $$PWD/qabstractphysicaldevicebackendnode.h \
     $$PWD/movingaverage_p.h \
-    $$PWD/axissetting_p.h
+    $$PWD/axissetting_p.h \
+    $$PWD/qabstractphysicaldevicebackendnode_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
