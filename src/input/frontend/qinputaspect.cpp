@@ -63,6 +63,7 @@
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qlogicaldevice.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axisinput_p.h>
@@ -127,6 +128,18 @@ Qt3DCore::QCamera *QInputAspect::camera() const
 {
     Q_D(const QInputAspect);
     return d->m_cameraController->camera();
+}
+
+// Note: caller is responsible for ownership
+QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
+{
+    Q_D(QInputAspect);
+    QAbstractPhysicalDevice *device = Q_NULLPTR;
+    Q_FOREACH (Qt3DInput::QInputDeviceIntegration *integration, d->m_inputDeviceIntegrations) {
+        if ((device = integration->createPhysicalDevice(name)) != Q_NULLPTR)
+            break;
+    }
+    return device;
 }
 
 void QInputAspect::setCamera(Qt3DCore::QCamera *camera)

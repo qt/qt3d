@@ -47,6 +47,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QInputAspect;
+class QAbstractPhysicalDevice;
 
 class QInputDeviceIntegration : public QObject
 {
@@ -56,6 +57,7 @@ public:
 
     virtual void initialize(Qt3DInput::QInputAspect *aspect) = 0;
     virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
 };
 
 } // namespace Qt3DInput

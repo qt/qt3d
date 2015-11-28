@@ -48,6 +48,7 @@ class QCamera;
 
 namespace Qt3DInput {
 
+class QAbstractPhysicalDevice;
 class QInputAspectPrivate;
 
 class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
@@ -58,15 +59,15 @@ public:
     explicit QInputAspect(QObject *parent = 0);
 
     Qt3DCore::QCamera *camera() const;
+    QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
 
-public Q_SLOTS:
-    void setCamera(Qt3DCore::QCamera *camera);
-
-public:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+public Q_SLOTS:
+    void setCamera(Qt3DCore::QCamera *camera);
 
 private:
     void setRootEntity(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
