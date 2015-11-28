@@ -54,7 +54,16 @@ public:
     explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
     ~QAbstractPhysicalDevice();
 
-    // TODO: Add API to introspect buttons and axes
+    virtual int axisCount() const = 0;
+    virtual int buttonCount() const = 0;
+    virtual QStringList axisNames() const = 0;
+    virtual QStringList buttonNames() = 0;
+
+    virtual int axisIdentifier(const QString &name) = 0;
+    virtual int buttonIdentifier(const QString &name) = 0;
+
+    virtual float axis(int axisIdentifier) const = 0;
+    virtual bool button(int buttonIdentifier) const = 0;
     // TODO: Add API to support AxisSettings
 };
 
