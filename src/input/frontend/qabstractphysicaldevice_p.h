@@ -34,61 +34,41 @@
 **
 ****************************************************************************/
 
-#include "qabstractphysicaldevice.h"
-#include "qabstractphysicaldevice_p.h"
+#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
+#define QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <Qt3DCore/private/qnode_p.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-QAbstractPhysicalDevicePrivate::QAbstractPhysicalDevicePrivate()
-    : m_axisSettings()
-{
-}
+class QAxisSetting;
 
-QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QAbstractPhysicalDevicePrivate, parent)
+class QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
 {
-}
+public:
+    QAbstractPhysicalDevicePrivate();
 
-QAbstractPhysicalDevice::QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(dd, parent)
-{
-}
-
-QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
-{
-    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DInput::QAbstractPhysicalDevice subclass didn't call QNode::cleanup in its destructor");
-}
-
-void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
-{
-    Q_D(QAbstractPhysicalDevice);
-    if (!d->m_axisSettings.contains(axisSetting))
-        d->m_axisSettings.push_back(axisSetting);
-}
-
-void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
-{
-    Q_D(QAbstractPhysicalDevice);
-    if (d->m_axisSettings.contains(axisSetting))
-        d->m_axisSettings.removeOne(axisSetting);
-}
-
-QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
-{
-    Q_D(const QAbstractPhysicalDevice);
-    return d->m_axisSettings;
-}
-
-void QAbstractPhysicalDevice::copy(const QNode *ref)
-{
-    QNode::copy(ref);
-    const QAbstractPhysicalDevice *physicalDevice = static_cast<const QAbstractPhysicalDevice *>(ref);
-    d_func()->m_axisSettings = physicalDevice->axisSettings();
-}
+    Q_DECLARE_PUBLIC(QAbstractPhysicalDevice)
+    QVector<QAxisSetting *> m_axisSettings;
+};
 
 }
 
 QT_END_NAMESPACE
+
+#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
+

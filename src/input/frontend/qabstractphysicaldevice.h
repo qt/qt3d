@@ -34,18 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAbstractPhysicalDevice
-#define QT3DINPUT_QAbstractPhysicalDevice
+#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICE
+#define QT3DINPUT_QABSTRACTPHYSICALDEVICE
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
-#include <QObject>
+#include <QtCore/qobject.h>
+#include <QtCore/qvector.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QAxisSetting;
 class QInputAspect;
+class QAbstractPhysicalDevicePrivate;
 
 class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
 {
@@ -64,7 +67,15 @@ public:
 
     virtual float axis(int axisIdentifier) const = 0;
     virtual bool button(int buttonIdentifier) const = 0;
-    // TODO: Add API to support AxisSettings
+
+    void addAxisSetting(QAxisSetting *axisSetting);
+    void removeAxisSetting(QAxisSetting *axisSetting);
+    QVector<QAxisSetting *> axisSettings() const;
+
+protected:
+    QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
+    Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput
@@ -72,5 +83,5 @@ public:
 QT_END_NAMESPACE
 
 
-#endif // QT3DINPUT_QAbstractPhysicalDevice
+#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICE
 
