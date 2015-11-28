@@ -49,7 +49,7 @@ namespace Qt3DInput {
 class QInputAspect;
 class QAbstractPhysicalDevice;
 
-class QInputDeviceIntegration : public QObject
+class QT3DINPUTSHARED_EXPORT QInputDeviceIntegration : public QObject
 {
     Q_OBJECT
 public:
