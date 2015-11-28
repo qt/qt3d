@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "qaxisinput.h"
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -73,7 +74,8 @@ void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     Q_D(QAxisInput);
     if (d->m_sourceDevice != sourceDevice) {
 
-        // TO DO: check and set parent if needed once QAbstactInputDevice is a QNode subclass
+        if (sourceDevice && !sourceDevice->parent())
+            sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
         emit sourceDeviceChanged();
@@ -135,8 +137,7 @@ void QAxisInput::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QAxisInput *input = static_cast<const QAxisInput *>(ref);
-    // TO DO: Convert QAbstractPhysicalDevice to a QNode
-    // d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
+    d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
     d_func()->m_keys = input->d_func()->m_keys;
     d_func()->m_scale = input->d_func()->m_scale;
     d_func()->m_axis = input->d_func()->m_axis;

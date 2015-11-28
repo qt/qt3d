@@ -64,10 +64,10 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    int axis() const;
-    float scale() const;
-    qint64 keys() const;
-
+    inline int axis() const { return m_axis; }
+    inline float scale() const { return m_scale; }
+    inline qint64 keys() const { return m_keys; }
+    inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     inline bool isEnabled() const { return m_enabled; }
 
 protected:

@@ -36,6 +36,7 @@
 
 #include "axisinput_p.h"
 #include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,9 +75,8 @@ void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
     m_scale = input->scale();
     m_enabled = input->isEnabled();
     m_keys = keysToBitArray(input->keys());
-    // TO DO: sourceDevice should be a QNode
-    //    if (input->sourceDevice())
-    //        m_sourceDevice = input->sourceDevice()->id();
+    if (input->sourceDevice())
+        m_sourceDevice = input->sourceDevice()->id();
 }
 
 void AxisInput::cleanup()
@@ -86,21 +86,6 @@ void AxisInput::cleanup()
     m_scale = 0.0f;
     m_keys = 0;
     m_sourceDevice = Qt3DCore::QNodeId();
-}
-
-int AxisInput::axis() const
-{
-    return m_axis;
-}
-
-float AxisInput::scale() const
-{
-    return m_scale;
-}
-
-qint64 AxisInput::keys() const
-{
-    return m_keys;
 }
 
 void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
