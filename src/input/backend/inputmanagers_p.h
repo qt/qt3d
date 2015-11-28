@@ -59,6 +59,7 @@
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -114,6 +115,16 @@ class AxisManager : public Qt3DCore::QResourceManager<
 {
 public:
     AxisManager() {}
+};
+
+class AxisSettingManager : public Qt3DCore::QResourceManager<
+        AxisSetting,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    AxisSettingManager() {}
 };
 
 class AxisInputManager : public Qt3DCore::QResourceManager<

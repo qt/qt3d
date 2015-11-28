@@ -72,6 +72,7 @@ class MouseEventFilter;
 class AxisManager;
 class ActionManager;
 class AxisInputManager;
+class AxisSettingManager;
 class ActionInputManager;
 class LogicalDeviceManager;
 
@@ -89,6 +90,7 @@ public:
     inline AxisManager *axisManager() const { return m_axisManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
     inline AxisInputManager *axisInputManager() const { return m_axisInputManager; }
+    inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
 
@@ -126,6 +128,7 @@ private:
     AxisManager *m_axisManager;
     ActionManager *m_actionManager;
     AxisInputManager *m_axisInputManager;
+    AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
     LogicalDeviceManager *m_logicalDeviceManager;
 };
