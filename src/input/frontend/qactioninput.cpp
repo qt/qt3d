@@ -46,10 +46,11 @@ class QActionInputPrivate : public Qt3DCore::QNodePrivate
 public:
     QActionInputPrivate()
         : Qt3DCore::QNodePrivate()
+        , m_keys(0)
         , m_sourceDevice(Q_NULLPTR)
     {}
 
-    QVariantList m_keys;
+    int m_keys;
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
@@ -63,13 +64,11 @@ QActionInput::~QActionInput()
     QNode::cleanup();
 }
 
-QVariantList QActionInput::keys() const
+int QActionInput::keys() const
 {
     Q_D(const QActionInput);
     return d->m_keys;
 }
-
-
 
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
@@ -92,7 +91,7 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
     return d->m_sourceDevice;
 }
 
-void QActionInput::setKeys(const QVariantList &keys)
+void QActionInput::setKeys(int keys)
 {
     Q_D(QActionInput);
     if (d->m_keys != keys) {
