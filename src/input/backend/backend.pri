@@ -17,7 +17,10 @@ HEADERS += \
     $$PWD/axis_p.h \
     $$PWD/action_p.h \
     $$PWD/logicaldevice_p.h \
-    $$PWD/inputbackendnodefunctor_p.h
+    $$PWD/inputbackendnodefunctor_p.h \
+    $$PWD/movingaverage_p.h \
+    $$PWD/axissetting_p.h \
+    $$PWD/qabstractphysicaldevicebackendnode.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -35,6 +38,10 @@ SOURCES += \
     $$PWD/actioninput.cpp \
     $$PWD/axis.cpp \
     $$PWD/action.cpp \
-    $$PWD/logicaldevice.cpp
+    $$PWD/logicaldevice.cpp \
+    $$PWD/logicaldevice.cpp \
+    $$PWD/movingaverage.cpp \
+    $$PWD/axissetting.cpp \
+    $$PWD/qabstractphysicaldevicebackendnode.cpp
 
 INCLUDEPATH += $$PWD
