@@ -36,6 +36,7 @@
 
 #include "actioninput_p.h"
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -68,9 +69,8 @@ void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
     QActionInput *input = static_cast<QActionInput *>(peer);
     m_enabled = input->isEnabled();
     m_keys = keysToBitArray(input->keys());
-    // TO DO: sourceDevice should be a QNode
-    //    if (input->sourceDevice())
-    //        m_sourceDevice = input->sourceDevice()->id();
+    if (input->sourceDevice())
+        m_sourceDevice = input->sourceDevice()->id();
 }
 
 void ActionInput::cleanup()
@@ -78,11 +78,6 @@ void ActionInput::cleanup()
     m_enabled = false;
     m_sourceDevice = Qt3DCore::QNodeId();
     m_keys = 0;
-}
-
-qint64 ActionInput::keys() const
-{
-    return m_keys;
 }
 
 void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

@@ -64,8 +64,8 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    qint64 keys() const;
-
+    inline qint64 keys() const { return m_keys; }
+    inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     inline bool isEnabled() const { return m_enabled; }
 
 protected:

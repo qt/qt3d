@@ -35,6 +35,7 @@
 
 #include "qactioninput.h"
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,7 +76,10 @@ void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     Q_D(QActionInput);
     if (d->m_sourceDevice != sourceDevice) {
 
-        // TO DO: check and set parent if needed once QAbstactInputDevice is a QNode subclass
+        // Check and set parent if needed
+        // to force creation in the backend
+        if (sourceDevice && !sourceDevice->parent())
+            sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
         emit sourceDeviceChanged();
@@ -101,10 +105,8 @@ void QActionInput::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QActionInput *input = static_cast<const QActionInput *>(ref);
-    // TO DO: Convert QAbstractPhysicalDevice to a QNode
-    // d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
+    d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
     d_func()->m_keys = input->d_func()->m_keys;
-
 }
 
 } // Qt3DInput
