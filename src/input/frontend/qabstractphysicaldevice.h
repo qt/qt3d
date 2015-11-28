@@ -47,11 +47,12 @@ namespace Qt3DInput {
 
 class QInputAspect;
 
-class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
 {
+    Q_OBJECT
 public:
-    QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
-    virtual ~QAbstractPhysicalDevice() {}
+    explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
+    ~QAbstractPhysicalDevice();
 
     // TODO: Add API to introspect buttons and axes
     // TODO: Add API to support AxisSettings

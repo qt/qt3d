@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "qabstractphysicaldevice.h"
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -43,6 +44,11 @@ namespace Qt3DInput {
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(parent)
 {
+}
+
+QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
+{
+    Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DInput::QAbstractPhysicalDevice subclass didn't call QNode::cleanup in its destructor");
 }
 
 }
