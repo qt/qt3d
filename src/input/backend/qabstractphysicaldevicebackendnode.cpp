@@ -45,16 +45,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-QAbstractPhysicalDeviceBackendNodePrivate::QAbstractPhysicalDeviceBackendNodePrivate()
-    : Qt3DCore::QBackendNodePrivate(Qt3DCore::QBackendNode::ReadOnly)
+QAbstractPhysicalDeviceBackendNodePrivate::QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode)
+    : Qt3DCore::QBackendNodePrivate(mode)
     , m_axisSettings()
     , m_enabled(false)
 {
-
 }
 
-QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode()
-    : Qt3DCore::QBackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate)
+QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode)
+    : Qt3DCore::QBackendNode(*new QAbstractPhysicalDeviceBackendNodePrivate(mode))
 {
 }
 
@@ -89,6 +88,11 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
         if (propertyChange->propertyName() == QByteArrayLiteral("axisSettings"))
             d->m_axisSettings.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
+}
+
+QAbstractPhysicalDeviceBackendNode::QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd)
+    : Qt3DCore::QBackendNode(dd)
+{
 }
 
 } // Qt3DInput

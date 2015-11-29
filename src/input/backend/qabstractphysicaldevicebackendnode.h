@@ -38,26 +38,34 @@
 #define QT3DINPUT_QABSTRACTPHYSICALDEVICEBACKENDNODE_H
 
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/qt3dinput_global.h>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+
+class QBackendNodePrivate;
+
+}
 
 namespace Qt3DInput {
 
 class QAbstractPhysicalDeviceBackendNodePrivate;
 
-class QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
+class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
 {
 public:
-    QAbstractPhysicalDeviceBackendNode();
+    explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void cleanup();
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+protected:
+    QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
 
     // TODO: Add backend API to be used by the integration and jobs
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
-
-protected:
     Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput

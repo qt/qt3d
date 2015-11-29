@@ -59,7 +59,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
 {
 public:
-    QAbstractPhysicalDeviceBackendNodePrivate();
+    explicit QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode = Qt3DCore::QBackendNode::ReadOnly);
 
     QVector<Qt3DCore::QNodeId> m_axisSettings;
     bool m_enabled;
