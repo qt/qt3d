@@ -39,8 +39,10 @@
 
 #include <QObject>
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,8 +58,11 @@ public:
     explicit QInputDeviceIntegration(QObject *parent = 0);
 
     virtual void initialize(Qt3DInput::QInputAspect *aspect) = 0;
+
     virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
     virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
+    virtual QVector<Qt3DCore::QNodeId> physicalDevices() const = 0;
+    virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;
 };
 
 } // namespace Qt3DInput
