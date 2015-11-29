@@ -43,9 +43,7 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
 class QBackendNodePrivate;
-
 }
 
 namespace Qt3DInput {
@@ -60,11 +58,11 @@ public:
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    virtual float axisValue(int axisIdentifier) const = 0;
+    virtual bool isButtonPressed(int buttonIdentifier) const = 0;
+
 protected:
     QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
-
-    // TODO: Add backend API to be used by the integration and jobs
-
     Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
 };
 
