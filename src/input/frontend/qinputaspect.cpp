@@ -122,6 +122,10 @@ void QInputAspect::loadInputDevicePlugins()
         Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
         if (integration != Q_NULLPTR) {
             d->m_inputDeviceIntegrations.push_back(integration);
+            // Initialize will allow the InputDeviceIntegration to
+            // register their frontend / backend types,
+            // create their managers
+            // launch a thread to listen to the actual physical device....
             integration->initialize(this);
         }
     }
