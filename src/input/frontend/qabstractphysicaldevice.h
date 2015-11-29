@@ -60,7 +60,7 @@ public:
     virtual int axisCount() const = 0;
     virtual int buttonCount() const = 0;
     virtual QStringList axisNames() const = 0;
-    virtual QStringList buttonNames() = 0;
+    virtual QStringList buttonNames() const = 0;
 
     virtual int axisIdentifier(const QString &name) = 0;
     virtual int buttonIdentifier(const QString &name) = 0;
