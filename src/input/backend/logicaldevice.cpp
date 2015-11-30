@@ -39,6 +39,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,6 +90,32 @@ void LogicalDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
+LogicalDeviceNodeFunctor::LogicalDeviceNodeFunctor(LogicalDeviceManager *manager)
+    : m_manager(manager)
+{
+}
+
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+{
+    HLogicalDevice handle = m_manager->getOrAcquireHandle(frontend->id());
+    LogicalDevice *backend = m_manager->data(handle);
+    m_manager->addActiveDevice(handle);
+    backend->setFactory(factory);
+    backend->setPeer(frontend);
+    return backend;
+}
+
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(const Qt3DCore::QNodeId &id) const
+{
+    return m_manager->lookupResource(id);
+}
+
+void LogicalDeviceNodeFunctor::destroy(const Qt3DCore::QNodeId &id) const
+{
+    HLogicalDevice handle = m_manager->lookupHandle(id);
+    m_manager->releaseResource(id);
+    m_manager->removeActiveDevice(handle);
+}
 
 } // namespace Input
 

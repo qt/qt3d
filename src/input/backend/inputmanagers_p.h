@@ -165,6 +165,13 @@ class LogicalDeviceManager : public Qt3DCore::QResourceManager<
 {
 public:
     LogicalDeviceManager() {}
+
+    QVector<HLogicalDevice> activeDevices() const { return m_activeDevices; }
+    void addActiveDevice(HLogicalDevice device) { m_activeDevices.push_back(device); }
+    void removeActiveDevice(HLogicalDevice device) { m_activeDevices.removeOne(device); }
+
+private:
+    QVector<HLogicalDevice> m_activeDevices;
 };
 
 } // namespace Input

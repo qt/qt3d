@@ -109,7 +109,7 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QAxisSetting>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
     registerBackendType<Qt3DInput::QAction>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
     registerBackendType<QActionInput>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
-    registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::LogicalDevice, Input::LogicalDeviceManager>(d_func()->m_inputHandler->logicalDeviceManager())));
+    registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
 
     loadInputDevicePlugins();
 }
@@ -166,6 +166,11 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 
     Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputDeviceIntegrations)
         jobs += integration->jobsToExecute(time);
+
+    // TO DO:
+    // Have Jobs that update Axis/Action (store combined axis/action value)
+    // Have Jobs that update the LogicalDevice
+    // Have Jobs that update the AxisHandlers/ActionHandlers
 
     return jobs;
 }

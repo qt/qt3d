@@ -57,6 +57,8 @@ namespace Qt3DInput {
 
 namespace Input {
 
+class LogicalDeviceManager;
+
 class LogicalDevice : public Qt3DCore::QBackendNode
 {
 public:
@@ -75,6 +77,21 @@ private:
     QVector<Qt3DCore::QNodeId> m_actions;
     bool m_enabled;
 };
+
+
+class LogicalDeviceNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit LogicalDeviceNodeFunctor(LogicalDeviceManager *manager);
+
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+
+private:
+    LogicalDeviceManager *m_manager;
+};
+
 
 } // namespace Input
 
