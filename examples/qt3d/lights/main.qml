@@ -65,7 +65,17 @@ Entity
 
     Entity {
         components: [
-            Transform { translation: Qt.vector3d(2.0, 1.0, 1.0); },
+            SphereMesh {
+                radius: 2
+            },
+            Transform {
+                translation: Qt.vector3d(2.0, 8.0, -2.0)
+                Quick.SequentialAnimation on translation.y {
+                    loops: Quick.Animation.Infinite
+                    Quick.NumberAnimation { from: 8.0; to: 40.0; duration: 3000 }
+                    Quick.NumberAnimation { from: 40.0; to: 8.0; duration: 3000 }
+                }
+            },
             PointLight {
                 color: Qt.rgba(1, 0, 0, 1)
             }
@@ -74,9 +84,19 @@ Entity
 
     Entity {
         components: [
-            Transform { translation: Qt.vector3d(2.0, 3.0, 4.0); },
+            SphereMesh {
+                radius: 2
+            },
+            Transform {
+                translation: Qt.vector3d(0.0, 3.0, 4.0)
+                Quick.SequentialAnimation on translation.z {
+                    loops: Quick.Animation.Infinite
+                    Quick.NumberAnimation { from: 4.0; to: 40.0; duration: 5000 }
+                    Quick.NumberAnimation { from: 40.0; to: 4.0; duration: 5000 }
+                }
+            },
             PointLight {
-                color: Qt.rgba(1, 0, 0, 1)
+                color: Qt.rgba(0, 1, 0, 1)
             }
         ]
     }
