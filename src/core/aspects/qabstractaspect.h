@@ -68,17 +68,6 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
     Q_OBJECT
 
 public:
-    enum AspectType {
-        AspectRenderer,
-        AspectAnimation,
-        AspectCollision,
-        AspectPhysics,
-        AspectPhysicsAndCollision,
-        AspectAI,
-        AspectAudio,
-        AspectOther
-    };
-
     explicit QAbstractAspect(QObject *parent = 0);
 
     void registerAspect(QEntity *rootObject);
