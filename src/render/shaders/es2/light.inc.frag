@@ -10,7 +10,7 @@ struct Light {
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
 
-void calculateLightColors(FP vec3 vpos, FP vec3 vnormal, FP vec3 eye, FP float shininess, out FP vec3 diffuseColor, out FP vec3 specularColor)
+void adsModel(FP vec3 vpos, FP vec3 vnormal, FP vec3 eye, FP float shininess, out FP vec3 diffuseColor, out FP vec3 specularColor)
 {
     diffuseColor = vec3(0.0);
     specularColor = vec3(0.0);

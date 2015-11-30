@@ -15,6 +15,6 @@ varying FP vec3 normal;
 void main()
 {
     FP vec3 diffuseColor, specularColor;
-    calculateLightColors(position, normal, eyePosition, shininess, diffuseColor, specularColor);
+    adsModel(position, normal, eyePosition, shininess, diffuseColor, specularColor);
     gl_FragColor = vec4( ka + kd * diffuseColor + ks * specularColor, 1.0 );
 }

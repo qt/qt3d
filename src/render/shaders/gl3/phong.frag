@@ -17,6 +17,6 @@ out vec4 fragColor;
 void main()
 {
     vec3 diffuseColor, specularColor;
-    calculateLightColors(position, normal, eyePosition, shininess, diffuseColor, specularColor);
+    adsModel(position, normal, eyePosition, shininess, diffuseColor, specularColor);
     fragColor = vec4( ka + kd * diffuseColor + ks * specularColor, 1.0 );
 }
