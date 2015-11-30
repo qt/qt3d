@@ -48,8 +48,10 @@
 // We mean it.
 //
 
+#include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <QtCore/qvector.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +59,7 @@ namespace Qt3DInput {
 
 class QAxisSetting;
 
-class QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
+class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
 {
 public:
     QAbstractPhysicalDevicePrivate();
