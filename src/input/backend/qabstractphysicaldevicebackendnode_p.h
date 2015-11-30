@@ -51,12 +51,13 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qvector.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
+class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
 {
 public:
     explicit QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode = Qt3DCore::QBackendNode::ReadOnly);
