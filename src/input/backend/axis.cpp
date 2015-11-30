@@ -48,6 +48,7 @@ namespace Input {
 Axis::Axis()
     : Qt3DCore::QBackendNode()
     , m_enabled(false)
+    , m_axisValue(0.0f)
 {
 }
 
@@ -65,6 +66,12 @@ void Axis::cleanup()
     m_enabled = false;
     m_inputs.clear();
     m_name.clear();
+    m_axisValue = 0.0f;
+}
+
+void Axis::setAxisValue(float axisValue)
+{
+    m_axisValue = axisValue;
 }
 
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
