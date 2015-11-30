@@ -243,7 +243,7 @@ static QByteArray deincludify(const QString &filePath)
         if (lines[i].startsWith(includeDirective)) {
             QByteArray includeFileName = lines[i].mid(includeDirective.count() + 1);
             lines.removeAt(i);
-            QByteArray includedContents = deincludify(QFileInfo(filePath).absolutePath() + QChar('/') + includeFileName);
+            QByteArray includedContents = deincludify(QFileInfo(filePath).absolutePath() + QStringLiteral("/") + QString::fromUtf8(includeFileName));
             lines.insert(i, includedContents);
             QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
             lines.insert(i + 1, lineDirective.toUtf8());
