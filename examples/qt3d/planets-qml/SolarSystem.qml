@@ -107,7 +107,7 @@ Entity {
         }
     }
 
-    Light {
+    PlanetsLight {
         id: light
         ratio: width / height
     }

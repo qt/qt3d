@@ -41,7 +41,7 @@ Effect {
     id: root
 
     property Texture2D shadowTexture
-    property Light light
+    property ShadowMapLight light
 
     // These parameters act as default values for the effect. They take
     // priority over any parameters specified in the RenderPasses below

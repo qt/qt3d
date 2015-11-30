@@ -11,7 +11,7 @@ OTHER_FILES += \
     main.qml \
     AdsMaterial.qml \
     AdsEffect.qml \
-    Light.qml \
+    ShadowMapLight.qml \
     ShadowMapFrameGraph.qml \
     Trefoil.qml \
     Toyplane.qml \

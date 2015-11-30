@@ -57,7 +57,7 @@ Entity {
         controlledCamera: camera
     }
 
-    Light {
+    ShadowMapLight {
         id: light
     }
 

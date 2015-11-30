@@ -3,7 +3,7 @@
         <file>main.qml</file>
         <file>AdsMaterial.qml</file>
         <file>AdsEffect.qml</file>
-        <file>Light.qml</file>
+        <file>ShadowMapLight.qml</file>
         <file>ShadowMapFrameGraph.qml</file>
 
         <file>Trefoil.qml</file>

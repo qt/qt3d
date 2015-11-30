@@ -42,7 +42,7 @@ Effect {
     id: root
 
     property Texture2D shadowTexture
-    property Light light
+    property PlanetsLight light
 
     parameters: [
         Parameter { name: "lightViewProjection"; value: root.light.lightViewProjection },
