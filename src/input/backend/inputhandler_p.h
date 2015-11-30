@@ -61,6 +61,9 @@ class QEventFilterService;
 }
 
 namespace Qt3DInput {
+
+class QInputDeviceIntegration;
+
 namespace Input {
 
 class KeyboardInputManager;
@@ -111,6 +114,9 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> keyboardJobs();
     QVector<Qt3DCore::QAspectJobPtr> mouseJobs();
 
+    QVector<Qt3DInput::QInputDeviceIntegration *> inputDeviceIntegrations() const;
+    void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
+
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
@@ -131,6 +137,7 @@ private:
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
     LogicalDeviceManager *m_logicalDeviceManager;
+    QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
 };
 
 } // namespace Input

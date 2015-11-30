@@ -73,6 +73,7 @@
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/updateaxisactionjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,7 +122,7 @@ void QInputAspect::loadInputDevicePlugins()
     Q_FOREACH (QString key, keys) {
         Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
         if (integration != Q_NULLPTR) {
-            d->m_inputDeviceIntegrations.push_back(integration);
+            d->m_inputHandler->addInputDeviceIntegration(integration);
             // Initialize will allow the InputDeviceIntegration to
             // register their frontend / backend types,
             // create their managers
@@ -142,7 +143,7 @@ QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
     QAbstractPhysicalDevice *device = Q_NULLPTR;
-    Q_FOREACH (Qt3DInput::QInputDeviceIntegration *integration, d->m_inputDeviceIntegrations) {
+    Q_FOREACH (Qt3DInput::QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations()) {
         if ((device = integration->createPhysicalDevice(name)) != Q_NULLPTR)
             break;
     }
@@ -164,11 +165,21 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     jobs.append(d->m_inputHandler->keyboardJobs());
     jobs.append(d->m_inputHandler->mouseJobs());
 
-    Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputDeviceIntegrations)
+    Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations())
         jobs += integration->jobsToExecute(time);
 
+    // Jobs that update Axis/Action (store combined axis/action value)
+    QVector<QAspectJobPtr> axisActionJobs;
+    Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
+        QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(d->m_inputHandler.data(), devHandle));
+        Q_FOREACH (const QAspectJobPtr job, jobs)
+            updateAxisActionJob->addDependency(job);
+        axisActionJobs.push_back(updateAxisActionJob);
+    }
+
+    jobs += axisActionJobs;
+
     // TO DO:
-    // Have Jobs that update Axis/Action (store combined axis/action value)
     // Have Jobs that update the LogicalDevice
     // Have Jobs that update the AxisHandlers/ActionHandlers
 

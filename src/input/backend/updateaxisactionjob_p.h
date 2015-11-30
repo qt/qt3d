@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTASPECT_P_H
-#define QT3DINPUT_QINPUTASPECT_P_H
+#ifndef QT3DINPUT_INPUT_UPDATEAXISACTIONJOB_H
+#define QT3DINPUT_INPUT_UPDATEAXISACTIONJOB_H
 
 //
 //  W A R N I N G
@@ -48,31 +48,37 @@
 // We mean it.
 //
 
-#include <private/qabstractaspect_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QInputAspect;
-
 namespace Input {
-class CameraController;
-class InputHandler;
-}
 
-class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class InputHandler;
+
+class UpdateAxisActionJob : public Qt3DCore::QAspectJob
 {
 public:
-    QInputAspectPrivate();
+    explicit UpdateAxisActionJob(InputHandler *handler, HLogicalDevice handle);
+    void run() Q_DECL_FINAL;
 
-    Q_DECLARE_PUBLIC(QInputAspect)
-    QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::CameraController> m_cameraController;
+private:
+    void updateAction(LogicalDevice *device);
+    void updateAxis(LogicalDevice *device);
+
+    InputHandler *m_handler;
+    HLogicalDevice m_handle;
 };
 
-} // namespace Qt3DInput
+typedef QScopedPointer<UpdateAxisActionJob> UpdateAxisActionJobPtr;
+
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTASPECT_P_H
+#endif // QT3DINPUT_INPUT_UPDATEAXISACTIONJOB_H

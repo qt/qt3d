@@ -194,6 +194,16 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
     return jobs;
 }
 
+QVector<QInputDeviceIntegration *> InputHandler::inputDeviceIntegrations() const
+{
+    return m_inputDeviceIntegrations;
+}
+
+void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration)
+{
+    m_inputDeviceIntegrations.push_back(inputIntegration);
+}
+
 } // namespace Input
 } // namespace Qt3DInput
 
