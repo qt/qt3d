@@ -1,4 +1,4 @@
-#version 150
+#version 150 core
 
 uniform vec3 ka;            // Ambient reflectivity
 uniform vec3 kd;            // Diffuse reflectivity
