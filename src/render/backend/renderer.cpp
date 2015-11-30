@@ -181,15 +181,15 @@ void Renderer::buildDefaultTechnique()
     QString vertexFileName;
     QString fragmentFileName;
     if (m_graphicsContext->openGLContext()->isOpenGLES()) {
-        vertexFileName = QStringLiteral("qrc:/shaders/es2/default.vert");
-        fragmentFileName = QStringLiteral("qrc:/shaders/es2/default.frag");
+        vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
+        fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
     } else {
         if (m_graphicsContext->openGLContext()->format().profile() == QSurfaceFormat::CoreProfile) {
-            vertexFileName = QStringLiteral("qrc:/shaders/gl3/default.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/gl3/default.frag");
+            vertexFileName = QStringLiteral("qrc:/shaders/gl3/phong.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/gl3/phong.frag");
         } else {
-            vertexFileName = QStringLiteral("qrc:/shaders/es2/default.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/es2/default.frag");
+            vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
         }
     }
     defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(vertexFileName)));
