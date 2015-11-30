@@ -4,6 +4,7 @@
         <file>shaders/basic.vert</file>
         <file>shaders/diffuse.frag</file>
         <file>shaders/diffuse.vert</file>
+        <file>shaders/light.inc.frag</file>
         <file>shaders/es2/diffuse.frag</file>
         <file>shaders/es2/diffuse.vert</file>
         <file>shaders/phong.frag</file>
