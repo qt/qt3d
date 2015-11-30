@@ -48,6 +48,7 @@ namespace Input {
 Action::Action()
     : Qt3DCore::QBackendNode()
     , m_enabled(false)
+    , m_actionTriggered(false)
 {
 }
 
@@ -65,6 +66,12 @@ void Action::cleanup()
     m_enabled = false;
     m_inputs.clear();
     m_name.clear();
+    m_actionTriggered = false;
+}
+
+void Action::setActionTriggered(bool actionTriggered)
+{
+    m_actionTriggered = actionTriggered;
 }
 
 void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

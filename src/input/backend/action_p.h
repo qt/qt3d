@@ -65,6 +65,8 @@ public:
     void cleanup();
     inline bool isEnabled() const { return m_enabled; }
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
+    inline bool actionTriggered() const { return m_actionTriggered; }
+    void setActionTriggered(bool actionTriggered);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -73,6 +75,7 @@ private:
     QVector<Qt3DCore::QNodeId> m_inputs;
     QString m_name;
     bool m_enabled;
+    bool m_actionTriggered;
 };
 
 } // Input
