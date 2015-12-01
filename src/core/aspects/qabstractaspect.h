@@ -81,6 +81,8 @@ public:
     void registerBackendType(const QBackendNodeFunctorPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
+    virtual QVariant executeCommand(const QStringList &args);
+
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 

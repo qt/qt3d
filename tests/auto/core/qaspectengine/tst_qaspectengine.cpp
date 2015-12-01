@@ -42,29 +42,46 @@
 
 using namespace Qt3DCore;
 
-class FakeAspect : public QAbstractAspect
-{
-    Q_OBJECT
-public:
-    explicit FakeAspect(QObject *parent = 0)
-        : QAbstractAspect(parent) {}
-
-private:
-    void setRootEntity(QEntity *) Q_DECL_OVERRIDE {}
-    void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE {}
-    void onStartup() Q_DECL_OVERRIDE {}
-    void onShutdown() Q_DECL_OVERRIDE {}
-    void onCleanup() Q_DECL_OVERRIDE {}
-    void sceneNodeAdded(QSceneChangePtr &) Q_DECL_OVERRIDE {}
-    void sceneNodeRemoved(QSceneChangePtr &) Q_DECL_OVERRIDE {}
-
-    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE
-    {
-        return QVector<QAspectJobPtr>();
-    }
+#define FAKE_ASPECT(ClassName) \
+class ClassName : public QAbstractAspect \
+{ \
+    Q_OBJECT \
+public: \
+    explicit ClassName(QObject *parent = 0) \
+        : QAbstractAspect(parent) {} \
+\
+private: \
+    void setRootEntity(QEntity *) Q_DECL_OVERRIDE {} \
+    void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE {} \
+    void onStartup() Q_DECL_OVERRIDE {} \
+    void onShutdown() Q_DECL_OVERRIDE {} \
+    void onCleanup() Q_DECL_OVERRIDE {} \
+    void sceneNodeAdded(QSceneChangePtr &) Q_DECL_OVERRIDE {} \
+    void sceneNodeRemoved(QSceneChangePtr &) Q_DECL_OVERRIDE {} \
+\
+    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
+    { \
+        return QVector<QAspectJobPtr>(); \
+    } \
+    \
+    QVariant executeCommand(const QStringList &args) Q_DECL_OVERRIDE \
+    { \
+        if (args.size() >= 2 && args.first() == QLatin1Literal("echo")) { \
+            QStringList list = args; \
+            list.removeFirst(); \
+            return QString("%1 said '%2'").arg(metaObject()->className()).arg(list.join(QLatin1Char(' '))); \
+        } \
+        \
+        return QVariant(); \
+    }\
 };
 
+FAKE_ASPECT(FakeAspect)
+FAKE_ASPECT(FakeAspect2)
+FAKE_ASPECT(FakeAspect3)
+
 QT3D_REGISTER_ASPECT("fake", FakeAspect)
+QT3D_REGISTER_ASPECT("otherfake", FakeAspect2)
 
 
 class tst_QAspectEngine : public QObject
@@ -136,6 +153,72 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(engine.aspects().size(), 1);
         QVERIFY(qobject_cast<FakeAspect*>(engine.aspects().first()));
+    }
+
+    void shouldListLoadedAspects()
+    {
+        // GIVEN
+        QAspectEngine engine;
+
+        // THEN
+        QCOMPARE(engine.executeCommand("list aspects").toString(),
+                 QString("No loaded aspect"));
+
+        // WHEN
+        engine.registerAspect("fake");
+
+        // THEN
+        QCOMPARE(engine.executeCommand("list aspects").toString(),
+                 QString("Loaded aspects:\n * fake"));
+
+        // WHEN
+        engine.registerAspect("otherfake");
+
+        // THEN
+        QCOMPARE(engine.executeCommand("list aspects").toString(),
+                 QString("Loaded aspects:\n * fake\n * otherfake"));
+
+        // WHEN
+        engine.registerAspect(new FakeAspect3);
+
+        // THEN
+        QCOMPARE(engine.executeCommand("list aspects").toString(),
+                 QString("Loaded aspects:\n * fake\n * otherfake\n * <unnamed>"));
+    }
+
+    void shouldDelegateCommandsToAspects()
+    {
+        // GIVEN
+        QAspectEngine engine;
+        engine.registerAspect("fake");
+        engine.registerAspect("otherfake");
+        engine.registerAspect(new FakeAspect3);
+
+        // WHEN
+        QVariant output = engine.executeCommand("fake echo foo bar");
+
+        // THEN
+        QVERIFY(output.isValid());
+        QCOMPARE(output.toString(), QString("FakeAspect said 'foo bar'"));
+
+        // WHEN
+        output = engine.executeCommand("otherfake echo fizz buzz");
+
+        // THEN
+        QVERIFY(output.isValid());
+        QCOMPARE(output.toString(), QString("FakeAspect2 said 'fizz buzz'"));
+
+        // WHEN
+        output = engine.executeCommand("mehfake echo fizz buzz");
+
+        // THEN
+        QVERIFY(!output.isValid());
+
+        // WHEN
+        output = engine.executeCommand("fake mooh fizz buzz");
+
+        // THEN
+        QVERIFY(!output.isValid());
     }
 };
 

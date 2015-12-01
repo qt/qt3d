@@ -92,6 +92,12 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(className(obj), functor);
 }
 
+QVariant QAbstractAspect::executeCommand(const QStringList &args)
+{
+    Q_UNUSED(args);
+    return QVariant();
+}
+
 QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
 {
     Q_D(const QAbstractAspect);

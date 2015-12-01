@@ -71,6 +71,8 @@ public:
 
     QList<QAbstractAspect*> aspects() const;
 
+    QVariant executeCommand(const QString &command);
+
 protected:
     Q_DECLARE_PRIVATE(QAspectEngine)
     QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
