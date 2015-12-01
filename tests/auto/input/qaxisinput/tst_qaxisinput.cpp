@@ -42,38 +42,7 @@
 #include <Qt3DInput/QAbstractPhysicalDevice>
 
 #include "testpostmanarbiter.h"
-
-class TestDevice : public Qt3DInput::QAbstractPhysicalDevice
-{
-    Q_OBJECT
-public:
-    explicit TestDevice(Qt3DCore::QNode *parent = Q_NULLPTR)
-        : Qt3DInput::QAbstractPhysicalDevice(parent)
-    {}
-
-    ~TestDevice()
-    {
-        QNode::cleanup();
-    }
-
-    int axisCount() const Q_DECL_FINAL { return 0; }
-    int buttonCount() const Q_DECL_FINAL { return 0; }
-    QStringList axisNames() const Q_DECL_FINAL { return QStringList(); }
-    QStringList buttonNames() const Q_DECL_FINAL { return QStringList(); }
-    int axisIdentifier(const QString &name) Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-    int buttonIdentifier(const QString &name) Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-    float axis(int axisIdentifier) const Q_DECL_FINAL { Q_UNUSED(axisIdentifier) return 0.0f; }
-    bool button(int buttonIdentifier) const Q_DECL_FINAL { Q_UNUSED(buttonIdentifier) return false; }
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL
-    {
-        QAbstractPhysicalDevice::copy(ref);
-    }
-
-private:
-    QT3D_CLONEABLE(TestDevice)
-};
+#include "testdevice.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
@@ -102,6 +71,7 @@ private Q_SLOTS:
         Qt3DInput::QAxisInput *axisInputWithKeysAndAxis = new Qt3DInput::QAxisInput();
         axisInputWithKeysAndAxis->setKeys((1 << 1) | (1 << 5));
         axisInputWithKeysAndAxis->setAxis(383);
+        axisInputWithKeysAndAxis->setScale(327.0f);
         QTest::newRow("axisInputWithKeys") << axisInputWithKeysAndAxis;
 
         Qt3DInput::QAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QAxisInput();
@@ -109,6 +79,7 @@ private Q_SLOTS:
         axisInputWithKeysAndSourceDevice->setKeys((1 << 1) | (1 << 5));
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
         axisInputWithKeysAndSourceDevice->setAxis(427);
+        axisInputWithKeysAndAxis->setScale(355.0f);
         QTest::newRow("axisInputWithKeysAndSourceDevice") << axisInputWithKeysAndSourceDevice;
     }
 
@@ -126,6 +97,7 @@ private Q_SLOTS:
         QCOMPARE(axisInput->id(), clone->id());
         QCOMPARE(axisInput->keys(), clone->keys());
         QCOMPARE(axisInput->axis(), clone->axis());
+        QCOMPARE(axisInput->scale(), clone->scale());
 
         if (axisInput->sourceDevice() != Q_NULLPTR) {
             QVERIFY(clone->sourceDevice() != Q_NULLPTR);
@@ -148,6 +120,19 @@ private Q_SLOTS:
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "keys");
         QCOMPARE(change->value().toInt(), 555);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        axisInput->setScale(1340.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "scale");
+        QCOMPARE(change->value().toFloat(), 1340.0f);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

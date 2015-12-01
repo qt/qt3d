@@ -47,7 +47,7 @@ namespace Input {
 
 AxisInput::AxisInput()
     : Qt3DCore::QBackendNode()
-    , m_axis(-1)
+    , m_axis(0)
     , m_keys(0)
     , m_scale(0.0f)
     , m_enabled(false)
@@ -70,7 +70,7 @@ void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
 
 void AxisInput::cleanup()
 {
-    m_axis = -1;
+    m_axis = 0;
     m_enabled = false;
     m_scale = 0.0f;
     m_keys = 0;

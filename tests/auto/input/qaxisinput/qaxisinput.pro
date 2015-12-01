@@ -9,3 +9,4 @@ CONFIG += testcase
 SOURCES += tst_qaxisinput.cpp
 
 include(../../render/commons/commons.pri)
+include(../commons/commons.pri)

@@ -42,38 +42,7 @@
 #include <Qt3DInput/QAbstractPhysicalDevice>
 
 #include "testpostmanarbiter.h"
-
-class TestDevice : public Qt3DInput::QAbstractPhysicalDevice
-{
-    Q_OBJECT
-public:
-    explicit TestDevice(Qt3DCore::QNode *parent = Q_NULLPTR)
-        : Qt3DInput::QAbstractPhysicalDevice(parent)
-    {}
-
-    ~TestDevice()
-    {
-        QNode::cleanup();
-    }
-
-    int axisCount() const Q_DECL_FINAL { return 0; }
-    int buttonCount() const Q_DECL_FINAL { return 0; }
-    QStringList axisNames() const Q_DECL_FINAL { return QStringList(); }
-    QStringList buttonNames() const Q_DECL_FINAL { return QStringList(); }
-    int axisIdentifier(const QString &name) Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-    int buttonIdentifier(const QString &name) Q_DECL_FINAL { Q_UNUSED(name) return 0; }
-    float axis(int axisIdentifier) const Q_DECL_FINAL { Q_UNUSED(axisIdentifier) return 0.0f; }
-    bool button(int buttonIdentifier) const Q_DECL_FINAL { Q_UNUSED(buttonIdentifier) return false; }
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL
-    {
-        QAbstractPhysicalDevice::copy(ref);
-    }
-
-private:
-    QT3D_CLONEABLE(TestDevice)
-};
+#include "testdevice.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
