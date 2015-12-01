@@ -65,6 +65,9 @@ public:
 Q_SIGNALS:
     void nameChanged();
 
+    void started(const QString &name);
+    void finished(const QString &name);
+
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
