@@ -49,57 +49,53 @@ public:
     ~tst_QAspectEngine() {}
 
 private Q_SLOTS:
-    void constructionDestruction();
-    void setRootEntity();
-    void shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity();
-
     // TODO: Add more QAspectEngine tests
+
+    void constructionDestruction()
+    {
+        QAspectEngine *engine = new QAspectEngine;
+        QVERIFY(engine->rootEntity() == Q_NULLPTR);
+        delete engine;
+    }
+
+    void setRootEntity()
+    {
+        QAspectEngine *engine = new QAspectEngine;
+
+        QEntity *e = new QEntity;
+        e->setObjectName("root");
+        engine->setRootEntity(e);
+
+        QSharedPointer<QEntity> root = engine->rootEntity();
+        QVERIFY(root == e);
+        QVERIFY(root->objectName() == "root");
+        root = QSharedPointer<QEntity>();
+        QVERIFY(engine->rootEntity()->objectName() == "root");
+
+        delete engine;
+    }
+
+    void shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity()
+    {
+        // GIVEN
+        QEntity *root = new QEntity;
+        // A component parented to an entity...
+        QComponent *component = new Qt3DCore::QTransform(root);
+        // ... created *before* the entity it will be added to.
+        QEntity *entity = new QEntity(root);
+        entity->addComponent(component);
+
+        // An initialized engine (so that the arbiter has been fed)
+        QAspectEngine engine;
+        engine.initialize();
+
+        // WHEN
+        engine.setRootEntity(root);
+
+        // THEN
+        // Nothing particular happen on exit, especially no crash
+    }
 };
-
-void tst_QAspectEngine::constructionDestruction()
-{
-    QAspectEngine *engine = new QAspectEngine;
-    QVERIFY(engine->rootEntity() == Q_NULLPTR);
-    delete engine;
-}
-
-void tst_QAspectEngine::setRootEntity()
-{
-    QAspectEngine *engine = new QAspectEngine;
-
-    QEntity *e = new QEntity;
-    e->setObjectName("root");
-    engine->setRootEntity(e);
-
-    QSharedPointer<QEntity> root = engine->rootEntity();
-    QVERIFY(root == e);
-    QVERIFY(root->objectName() == "root");
-    root = QSharedPointer<QEntity>();
-    QVERIFY(engine->rootEntity()->objectName() == "root");
-
-    delete engine;
-}
-
-void tst_QAspectEngine::shouldNotCrashOnShutdownWhenComponentIsCreatedWithParentBeforeItsEntity()
-{
-    // GIVEN
-    QEntity *root = new QEntity;
-    // A component parented to an entity...
-    QComponent *component = new Qt3DCore::QTransform(root);
-    // ... created *before* the entity it will be added to.
-    QEntity *entity = new QEntity(root);
-    entity->addComponent(component);
-
-    // An initialized engine (so that the arbiter has been fed)
-    QAspectEngine engine;
-    engine.initialize();
-
-    // WHEN
-    engine.setRootEntity(root);
-
-    // THEN
-    // Nothing particular happen on exit, especially no crash
-}
 
 QTEST_MAIN(tst_QAspectEngine)
 
