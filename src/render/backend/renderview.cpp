@@ -781,7 +781,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         if (lightIdx == MAX_LIGHTS)
                             break;
                         QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-                        setUniformValue(command->m_uniforms, structName + QChar('.') + LIGHT_POSITION_NAME, pos);
+                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, pos);
                         setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                         ++lightIdx;
                     }
