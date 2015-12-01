@@ -57,7 +57,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class Axis : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Axis : public Qt3DCore::QBackendNode
 {
 public:
     Axis();
@@ -66,9 +66,8 @@ public:
     inline bool isEnabled() const { return m_enabled; }
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline float axisValue() const { return m_axisValue; }
+    inline QString name() const { return m_name; }
     void setAxisValue(float axisValue);
-
-protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
