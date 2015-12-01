@@ -34,40 +34,61 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QACTIONHANDLER_P_H
-#define QT3DINPUT_QACTIONHANDLER_P_H
+#include "qaxisactionhandler.h"
+#include "qaxisactionhandler_p.h"
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DInput/qlogicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QLogicalDevice;
-
-class QActionHandlerPrivate : public Qt3DCore::QComponentPrivate
+QAxisActionHandlerPrivate::QAxisActionHandlerPrivate()
+    : Qt3DCore::QComponentPrivate()
+    , m_logicalDevice(Q_NULLPTR)
 {
-public:
-    QActionHandlerPrivate();
+}
 
-    QLogicalDevice *m_logicalDevice;
-};
+QAxisActionHandler::QAxisActionHandler(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QAxisActionHandlerPrivate, parent)
+{
+}
+
+QAxisActionHandler::QAxisActionHandler(QAxisActionHandlerPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
+{
 
 }
 
+QAxisActionHandler::~QAxisActionHandler()
+{
+    QNode::cleanup();
+}
+
+Qt3DInput::QLogicalDevice *QAxisActionHandler::logicalDevice() const
+{
+    Q_D(const QAxisActionHandler);
+    return d->m_logicalDevice;
+}
+
+void QAxisActionHandler::setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice)
+{
+    Q_D(QAxisActionHandler);
+    if (d->m_logicalDevice == logicalDevice)
+        return;
+
+    d->m_logicalDevice = logicalDevice;
+    emit logicalDeviceChanged(logicalDevice);
+}
+
+void QAxisActionHandler::copy(const QNode *ref)
+{
+    QComponent::copy(ref);
+    const QAxisActionHandler *component = static_cast<const QAxisActionHandler *>(ref);
+    d_func()->m_logicalDevice = qobject_cast<QLogicalDevice *>(QNode::clone(component->d_func()->m_logicalDevice));
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QACTIONHANDLER_P_H
+} // namespace Qt3DInput
 

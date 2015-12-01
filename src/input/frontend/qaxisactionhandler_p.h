@@ -34,50 +34,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QACTIONHANDLER_H
-#define QT3DINPUT_QACTIONHANDLER_H
+#ifndef QT3DINPUT_QACTIONHANDLER_P_H
+#define QT3DINPUT_QACTIONHANDLER_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qcomponent.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QActionHandlerPrivate;
 class QLogicalDevice;
 
-class QT3DINPUTSHARED_EXPORT QActionHandler : public Qt3DCore::QComponent
+class QAxisActionHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QLogicalDevice* logicalDevice READ logicalDevice WRITE setLogicalDevice NOTIFY logicalDeviceChanged)
-
 public:
-    QActionHandler(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QActionHandler();
+    QAxisActionHandlerPrivate();
 
-    Qt3DInput::QLogicalDevice *logicalDevice() const;
-
-public Q_SLOTS:
-    void setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice);
-
-Q_SIGNALS:
-    void logicalDeviceChanged(Qt3DInput::QLogicalDevice *logicalDevice);
-
-    void actionStarted(const QString &name);
-    void actionFinished(const QString &name);
-
-protected:
-    Q_DECLARE_PRIVATE(QActionHandler)
-    QActionHandler(QActionHandlerPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    QT3D_CLONEABLE(QActionHandler)
+    QLogicalDevice *m_logicalDevice;
 };
 
-} // namespace Qt3DInput
+}
+
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QACTIONHANDLER_H
+#endif // QT3DINPUT_QACTIONHANDLER_P_H
+

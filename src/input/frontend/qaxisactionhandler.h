@@ -34,61 +34,50 @@
 **
 ****************************************************************************/
 
-#include "qactionhandler.h"
-#include "qactionhandler_p.h"
+#ifndef QT3DINPUT_QAXISACTIONHANDLER_H
+#define QT3DINPUT_QAXISACTIONHANDLER_H
 
-#include <Qt3DInput/qlogicaldevice.h>
+#include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-QActionHandlerPrivate::QActionHandlerPrivate()
-    : Qt3DCore::QComponentPrivate()
-    , m_logicalDevice(Q_NULLPTR)
+class QAxisActionHandlerPrivate;
+class QLogicalDevice;
+
+class QT3DINPUTSHARED_EXPORT QAxisActionHandler : public Qt3DCore::QComponent
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(Qt3DInput::QLogicalDevice* logicalDevice READ logicalDevice WRITE setLogicalDevice NOTIFY logicalDeviceChanged)
 
-QActionHandler::QActionHandler(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QActionHandlerPrivate, parent)
-{
-}
+public:
+    QAxisActionHandler(Qt3DCore::QNode *parent = Q_NULLPTR);
+    ~QAxisActionHandler();
 
-QActionHandler::QActionHandler(QActionHandlerPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
-{
+    Qt3DInput::QLogicalDevice *logicalDevice() const;
 
-}
+public Q_SLOTS:
+    void setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice);
 
-QActionHandler::~QActionHandler()
-{
-    QNode::cleanup();
-}
+Q_SIGNALS:
+    void logicalDeviceChanged(Qt3DInput::QLogicalDevice *logicalDevice);
 
-Qt3DInput::QLogicalDevice *QActionHandler::logicalDevice() const
-{
-    Q_D(const QActionHandler);
-    return d->m_logicalDevice;
-}
+    void actionStarted(const QString &name);
+    void actionFinished(const QString &name);
 
-void QActionHandler::setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice)
-{
-    Q_D(QActionHandler);
-    if (d->m_logicalDevice == logicalDevice)
-        return;
+protected:
+    Q_DECLARE_PRIVATE(QAxisActionHandler)
+    QAxisActionHandler(QAxisActionHandlerPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
-    d->m_logicalDevice = logicalDevice;
-    emit logicalDeviceChanged(logicalDevice);
-}
-
-void QActionHandler::copy(const QNode *ref)
-{
-    QComponent::copy(ref);
-    const QActionHandler *component = static_cast<const QActionHandler *>(ref);
-    d_func()->m_logicalDevice = qobject_cast<QLogicalDevice *>(QNode::clone(component->d_func()->m_logicalDevice));
-}
-
-QT_END_NAMESPACE
+private:
+    QT3D_CLONEABLE(QAxisActionHandler)
+};
 
 } // namespace Qt3DInput
 
+QT_END_NAMESPACE
+
+#endif // QT3DINPUT_QAXISACTIONHANDLER_H
