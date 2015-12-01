@@ -64,8 +64,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void logicalDeviceChanged(Qt3DInput::QLogicalDevice *logicalDevice);
 
-    void actionStarted(const QString &name);
-    void actionFinished(const QString &name);
+    void actionStarted(QString name);
+    void actionFinished(QString name);
+    void axisValueChanged(QString name, float axisValue);
 
 protected:
     Q_DECLARE_PRIVATE(QAxisActionHandler)
