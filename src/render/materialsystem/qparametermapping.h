@@ -58,7 +58,9 @@ public:
         Uniform = 0,
         Attribute,
         StandardUniform,
-        FragmentOutput
+        FragmentOutput,
+        UniformBufferObject,
+        ShaderStorageBufferObject
     };
     Q_ENUM(Binding)
 
