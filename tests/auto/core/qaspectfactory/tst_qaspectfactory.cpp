@@ -89,6 +89,20 @@ private Q_SLOTS:
         QVERIFY(aspect->parent() == Q_NULLPTR);
     }
 
+    void shouldKnowAspectNames()
+    {
+        // GIVEN
+        QAspectFactory factory;
+
+        // WHEN
+        DefaultFakeAspect fake;
+        AnotherFakeAspect missing;
+
+        // THEN
+        QCOMPARE(factory.aspectName(&fake), QString("default"));
+        QCOMPARE(factory.aspectName(&missing), QString());
+    }
+
     void shouldGracefulyHandleMissingFactories()
     {
         // GIVEN

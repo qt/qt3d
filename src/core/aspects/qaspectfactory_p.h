@@ -55,6 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
+class QMetaObject;
 class QObject;
 
 namespace Qt3DCore {
@@ -74,17 +75,24 @@ public:
     QAspectFactory &operator=(QAspectFactory &&other) Q_DECL_NOTHROW
     {
         m_factories.swap(other.m_factories);
+        m_aspectNames.swap(other.m_aspectNames);
         return *this;
     }
 #endif
 
-    inline void swap(QAspectFactory &other) Q_DECL_NOTHROW { m_factories.swap(other.m_factories); }
+    inline void swap(QAspectFactory &other) Q_DECL_NOTHROW
+    {
+        m_factories.swap(other.m_factories);
+        m_aspectNames.swap(other.m_aspectNames);
+    }
 
     QStringList availableFactories() const;
     QAbstractAspect *createAspect(const QString &aspect, QObject *parent = 0) const;
+    QString aspectName(QAbstractAspect *aspect) const;
 
 private:
     QHash<QString, QAspectFactory::CreateFunction> m_factories;
+    QHash<const QMetaObject*, QString> m_aspectNames;
 };
 
 } // namespace Qt3DCore

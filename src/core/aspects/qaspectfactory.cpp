@@ -40,26 +40,34 @@
 
 #include <QDebug>
 
+#include <Qt3DCore/QAbstractAspect>
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
 Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
+typedef QHash<const QMetaObject*, QString> defaultAspectNames_t;
+Q_GLOBAL_STATIC(defaultAspectNames_t, defaultAspectNames)
 
 QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+                                                                 const QMetaObject *metaObject,
                                                                  QAspectFactory::CreateFunction factory)
 {
     defaultFactories->insert(name, factory);
+    defaultAspectNames->insert(metaObject, name);
 }
 
 QAspectFactory::QAspectFactory()
-    : m_factories(*defaultFactories)
+    : m_factories(*defaultFactories),
+      m_aspectNames(*defaultAspectNames)
 {
 }
 
 QAspectFactory::QAspectFactory(const QAspectFactory &other)
-    : m_factories(other.m_factories)
+    : m_factories(other.m_factories),
+      m_aspectNames(other.m_aspectNames)
 {
 }
 
@@ -70,6 +78,7 @@ QAspectFactory::~QAspectFactory()
 QAspectFactory &QAspectFactory::operator=(const QAspectFactory &other)
 {
     m_factories = other.m_factories;
+    m_aspectNames = other.m_aspectNames;
     return *this;
 }
 
@@ -86,6 +95,11 @@ QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *pa
         qWarning() << "Unsupported aspect name:" << aspect << "please check registrations";
         return Q_NULLPTR;
     }
+}
+
+QString QAspectFactory::aspectName(QAbstractAspect *aspect) const
+{
+    return m_aspectNames.value(aspect->metaObject());
 }
 
 } // namespace Qt3DCore
