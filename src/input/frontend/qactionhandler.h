@@ -64,6 +64,9 @@ public Q_SLOTS:
 Q_SIGNALS:
     void logicalDeviceChanged(Qt3DInput::QLogicalDevice *logicalDevice);
 
+    void actionStarted(const QString &name);
+    void actionFinished(const QString &name);
+
 protected:
     Q_DECLARE_PRIVATE(QActionHandler)
     QActionHandler(QActionHandlerPrivate &dd, Qt3DCore::QNode *parent = 0);
