@@ -89,27 +89,6 @@ private Q_SLOTS:
         QVERIFY(aspect->parent() == Q_NULLPTR);
     }
 
-    void shouldRegisterFactories()
-    {
-        // GIVEN
-        QAspectFactory factory;
-
-        // WHEN
-        factory.addFactory(QStringLiteral("another"),
-                           QAspectFactory::functionHelper<AnotherFakeAspect>);
-
-        // THEN
-        QCOMPARE(factory.availableFactories().size(), 2);
-        QVERIFY(factory.availableFactories().contains(QStringLiteral("another")));
-
-        // WHEN
-        QAbstractAspect *aspect = factory.createAspect(QStringLiteral("another"), this);
-
-        // THEN
-        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) != Q_NULLPTR);
-        QCOMPARE(aspect->parent(), this);
-    }
-
     void shouldGracefulyHandleMissingFactories()
     {
         // GIVEN

@@ -66,12 +66,6 @@ class QT3DCORE_PRIVATE_EXPORT QAspectFactory
 public:
     typedef QAbstractAspect *(*CreateFunction)(QObject *);
 
-    template<class AspectType>
-    static QAbstractAspect *functionHelper(QObject *parent)
-    {
-        return new AspectType(parent);
-    }
-
     QAspectFactory();
     QAspectFactory(const QAspectFactory &other);
     ~QAspectFactory();
@@ -86,9 +80,7 @@ public:
 
     inline void swap(QAspectFactory &other) Q_DECL_NOTHROW { m_factories.swap(other.m_factories); }
 
-    void addFactory(const QString &name, CreateFunction factory);
     QStringList availableFactories() const;
-
     QAbstractAspect *createAspect(const QString &aspect, QObject *parent = 0) const;
 
 private:

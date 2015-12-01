@@ -73,11 +73,6 @@ QAspectFactory &QAspectFactory::operator=(const QAspectFactory &other)
     return *this;
 }
 
-void QAspectFactory::addFactory(const QString &name, QAspectFactory::CreateFunction factory)
-{
-    m_factories.insert(name, factory);
-}
-
 QStringList QAspectFactory::availableFactories() const
 {
     return m_factories.keys();
