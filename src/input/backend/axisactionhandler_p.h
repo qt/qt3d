@@ -56,6 +56,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
+class AxisActionHandlerManager;
+
 class AxisActionHandler : public Qt3DCore::QBackendNode
 {
 public:
@@ -68,6 +70,19 @@ protected:
 
 private:
     Qt3DCore::QNodeId m_logicalDevice;
+};
+
+class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit AxisActionHandlerNodeFunctor(AxisActionHandlerManager *manager);
+
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+
+private:
+    AxisActionHandlerManager *m_manager;
 };
 
 } // namespace Input

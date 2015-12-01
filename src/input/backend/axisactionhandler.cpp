@@ -38,6 +38,7 @@
 #include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,6 +72,33 @@ void AxisActionHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_logicalDevice = propertyChange->value().value<Qt3DCore::QNodeId>();
         }
     }
+}
+
+AxisActionHandlerNodeFunctor::AxisActionHandlerNodeFunctor(AxisActionHandlerManager *manager)
+    : m_manager(manager)
+{
+}
+
+Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+{
+    HAxisActionHandler handle = m_manager->getOrAcquireHandle(frontend->id());
+    AxisActionHandler *backend = m_manager->data(handle);
+    m_manager->addActiveAxisActionHandler(handle);
+    backend->setFactory(factory);
+    backend->setPeer(frontend);
+    return backend;
+}
+
+Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::get(const Qt3DCore::QNodeId &id) const
+{
+    return m_manager->lookupResource(id);
+}
+
+void AxisActionHandlerNodeFunctor::destroy(const Qt3DCore::QNodeId &id) const
+{
+    HAxisActionHandler handle = m_manager->lookupHandle(id);
+    m_manager->releaseResource(id);
+    m_manager->removeActiveAxisActionHandler(handle);
 }
 
 } // namespace Input

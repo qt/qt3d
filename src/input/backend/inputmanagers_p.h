@@ -126,6 +126,13 @@ class AxisActionHandlerManager : public Qt3DCore::QResourceManager<
 {
 public:
     AxisActionHandlerManager() {}
+
+    void addActiveAxisActionHandler(HAxisActionHandler handle) { m_activeAxisActionHandlers.push_back(handle); }
+    void removeActiveAxisActionHandler(HAxisActionHandler handle) { m_activeAxisActionHandlers.removeOne(handle); }
+    QVector<HAxisActionHandler> activeAxisActionHandlers() const { return m_activeAxisActionHandlers; }
+
+private:
+    QVector<HAxisActionHandler> m_activeAxisActionHandlers;
 };
 
 class AxisSettingManager : public Qt3DCore::QResourceManager<
