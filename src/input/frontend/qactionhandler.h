@@ -45,19 +45,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QActionHandlerPrivate;
+class QLogicalDevice;
 
 class QT3DINPUTSHARED_EXPORT QActionHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    // TODO: Add properties
+    Q_PROPERTY(Qt3DInput::QLogicalDevice* logicalDevice READ logicalDevice WRITE setLogicalDevice NOTIFY logicalDeviceChanged)
 
 public:
-    QActionHandler(Qt3DCore::QNode *parent = 0);
+    QActionHandler(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QActionHandler();
 
+    Qt3DInput::QLogicalDevice *logicalDevice() const;
+
 public Q_SLOTS:
+    void setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice);
 
 Q_SIGNALS:
+    void logicalDeviceChanged(Qt3DInput::QLogicalDevice *logicalDevice);
 
 protected:
     Q_DECLARE_PRIVATE(QActionHandler)

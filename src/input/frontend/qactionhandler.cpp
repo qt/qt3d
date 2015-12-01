@@ -43,7 +43,18 @@ namespace Qt3DInput {
 
 QActionHandlerPrivate::QActionHandlerPrivate()
     : Qt3DCore::QComponentPrivate()
+    , m_logicalDevice(Q_NULLPTR)
 {
+}
+
+void QActionHandlerPrivate::setupConnections()
+{
+    // TODO: Make connections to Actions contained in the logical device
+}
+
+void QActionHandlerPrivate::removeConnections()
+{
+    // TODO: Tear down any old connections to the existing logical device
 }
 
 QActionHandler::QActionHandler(Qt3DCore::QNode *parent)
@@ -62,12 +73,31 @@ QActionHandler::~QActionHandler()
     QNode::cleanup();
 }
 
+Qt3DInput::QLogicalDevice *QActionHandler::logicalDevice() const
+{
+    Q_D(const QActionHandler);
+    return d->m_logicalDevice;
+}
+
+void QActionHandler::setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice)
+{
+    Q_D(QActionHandler);
+    if (d->m_logicalDevice == logicalDevice)
+        return;
+
+    if (d->m_logicalDevice)
+        d->removeConnections();
+    d->m_logicalDevice = logicalDevice;
+    if (d->m_logicalDevice)
+        d->setupConnections();
+    emit logicalDeviceChanged(logicalDevice);
+}
+
 void QActionHandler::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QActionHandler *component = static_cast<const QActionHandler *>(ref);
-
-    // TODO: Copy the component's members
+    d_func()->m_logicalDevice = qobject_cast<QLogicalDevice *>(QNode::clone(component->d_func()->m_logicalDevice));
 }
 
 QT_END_NAMESPACE

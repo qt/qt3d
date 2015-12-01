@@ -54,12 +54,19 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QLogicalDevice;
+
 class QActionHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QActionHandlerPrivate();
 
+    Q_DECLARE_PUBLIC(QActionHandler)
 
+    void setupConnections();
+    void removeConnections();
+
+    QLogicalDevice *m_logicalDevice;
 };
 
 }
