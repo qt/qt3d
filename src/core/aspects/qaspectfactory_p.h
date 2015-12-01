@@ -49,26 +49,53 @@
 //
 
 #include <QHash>
-#include <QSharedData>
-#include <QString>
+#include <QStringList>
 
-#include "qaspectfactory.h"
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
+class QObject;
+
 namespace Qt3DCore {
 
-class QAspectFactory;
+class QAbstractAspect;
 
-class QAspectFactoryPrivate : public QSharedData
+class QT3DCORE_PRIVATE_EXPORT QAspectFactory
 {
 public:
-    QAspectFactoryPrivate();
+    typedef QAbstractAspect *(*CreateFunction)(QObject *);
 
+    template<class AspectType>
+    static QAbstractAspect *functionHelper(QObject *parent)
+    {
+        return new AspectType(parent);
+    }
+
+    QAspectFactory();
+    QAspectFactory(const QAspectFactory &other);
+    ~QAspectFactory();
+    QAspectFactory &operator=(const QAspectFactory &other);
+#ifdef Q_COMPILER_RVALUE_REFS
+    QAspectFactory &operator=(QAspectFactory &&other) Q_DECL_NOTHROW
+    {
+        m_factories.swap(other.m_factories);
+        return *this;
+    }
+#endif
+
+    inline void swap(QAspectFactory &other) Q_DECL_NOTHROW { m_factories.swap(other.m_factories); }
+
+    void addFactory(const QString &name, CreateFunction factory);
+    QStringList availableFactories() const;
+
+    QAbstractAspect *createAspect(const QString &aspect, QObject *parent = 0) const;
+
+private:
     QHash<QString, QAspectFactory::CreateFunction> m_factories;
 };
 
-} // Qt3D
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 

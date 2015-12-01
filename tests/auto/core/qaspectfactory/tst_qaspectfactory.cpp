@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DCore/QAspectFactory>
+#include <Qt3DCore/private/qaspectfactory_p.h>
 #include <Qt3DCore/QAbstractAspect>
 
 using namespace QT_PREPEND_NAMESPACE(Qt3DCore);

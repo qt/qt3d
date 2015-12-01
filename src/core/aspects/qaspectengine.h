@@ -38,8 +38,9 @@
 #define QT3DCORE_QASPECTENGINE_H
 
 #include <QObject>
-#include <Qt3DCore/QAspectFactory>
 #include <QList>
+
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,9 +64,6 @@ public:
 
     void setRootEntity(QEntity *root);
     QSharedPointer<QEntity> rootEntity() const;
-
-    QAspectFactory aspectFactory() const;
-    void setAspectFactory(const QAspectFactory &factory);
 
     void setData(const QVariantMap &data);
     void registerAspect(QAbstractAspect *aspect);

@@ -34,7 +34,6 @@
 **
 ****************************************************************************/
 
-#include "qaspectfactory.h"
 #include "qaspectfactory_p.h"
 
 #include <QtGlobal>
@@ -54,22 +53,13 @@ QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &
     defaultFactories->insert(name, factory);
 }
 
-/*!
-    \class Qt3DCore::QAspectFactoryPrivate
-    \internal
-*/
-QAspectFactoryPrivate::QAspectFactoryPrivate()
+QAspectFactory::QAspectFactory()
     : m_factories(*defaultFactories)
 {
 }
 
-QAspectFactory::QAspectFactory()
-    : d(new QAspectFactoryPrivate)
-{
-}
-
 QAspectFactory::QAspectFactory(const QAspectFactory &other)
-    : d(other.d)
+    : m_factories(other.m_factories)
 {
 }
 
@@ -79,24 +69,24 @@ QAspectFactory::~QAspectFactory()
 
 QAspectFactory &QAspectFactory::operator=(const QAspectFactory &other)
 {
-    d = other.d;
+    m_factories = other.m_factories;
     return *this;
 }
 
 void QAspectFactory::addFactory(const QString &name, QAspectFactory::CreateFunction factory)
 {
-    d->m_factories.insert(name, factory);
+    m_factories.insert(name, factory);
 }
 
 QStringList QAspectFactory::availableFactories() const
 {
-    return d->m_factories.keys();
+    return m_factories.keys();
 }
 
 QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *parent) const
 {
-    if (d->m_factories.contains(aspect)) {
-        return d->m_factories.value(aspect)(parent);
+    if (m_factories.contains(aspect)) {
+        return m_factories.value(aspect)(parent);
     } else {
         qWarning() << "Unsupported aspect name:" << aspect << "please check registrations";
         return Q_NULLPTR;

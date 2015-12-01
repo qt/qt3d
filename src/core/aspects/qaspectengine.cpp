@@ -281,18 +281,6 @@ QSharedPointer<QEntity> QAspectEngine::rootEntity() const
     return d->m_root;
 }
 
-QAspectFactory QAspectEngine::aspectFactory() const
-{
-    Q_D(const QAspectEngine);
-    return d->m_factory;
-}
-
-void QAspectEngine::setAspectFactory(const QAspectFactory &factory)
-{
-    Q_D(QAspectEngine);
-    d->m_factory = factory;
-}
-
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
