@@ -35,11 +35,37 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
+#include <Qt3DCore/QAbstractAspect>
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
 using namespace Qt3DCore;
+
+class FakeAspect : public QAbstractAspect
+{
+    Q_OBJECT
+public:
+    explicit FakeAspect(QObject *parent = 0)
+        : QAbstractAspect(parent) {}
+
+private:
+    void setRootEntity(QEntity *) Q_DECL_OVERRIDE {}
+    void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE {}
+    void onStartup() Q_DECL_OVERRIDE {}
+    void onShutdown() Q_DECL_OVERRIDE {}
+    void onCleanup() Q_DECL_OVERRIDE {}
+    void sceneNodeAdded(QSceneChangePtr &) Q_DECL_OVERRIDE {}
+    void sceneNodeRemoved(QSceneChangePtr &) Q_DECL_OVERRIDE {}
+
+    QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE
+    {
+        return QVector<QAspectJobPtr>();
+    }
+};
+
+QT3D_REGISTER_ASPECT("fake", FakeAspect)
+
 
 class tst_QAspectEngine : public QObject
 {
@@ -94,6 +120,22 @@ private Q_SLOTS:
 
         // THEN
         // Nothing particular happen on exit, especially no crash
+    };
+
+    void shouldRegisterAspectsByName()
+    {
+        // GIVEN
+        QAspectEngine engine;
+
+        // THEN
+        QVERIFY(engine.aspects().isEmpty());
+
+        // WHEN
+        engine.registerAspect("fake");
+
+        // THEN
+        QCOMPARE(engine.aspects().size(), 1);
+        QVERIFY(qobject_cast<FakeAspect*>(engine.aspects().first()));
     }
 };
 
