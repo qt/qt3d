@@ -57,7 +57,7 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class ActionInput : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ActionInput : public Qt3DCore::QBackendNode
 {
 public:
     ActionInput();
@@ -67,8 +67,6 @@ public:
     inline qint64 keys() const { return m_keys; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     inline bool isEnabled() const { return m_enabled; }
-
-protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
