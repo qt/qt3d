@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
-#define QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
+#ifndef QINPUTASPECT_INPUT_UPDATEHANDLERSJOBS_H
+#define QINPUTASPECT_INPUT_UPDATEHANDLERSJOBS_H
 
 //
 //  W A R N I N G
@@ -48,51 +48,38 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DInput/private/axisactionpayload_p.h>
+#include <Qt3DCore/qaspectjob.h>
+#include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
 namespace Input {
 
-class AxisActionHandlerManager;
+class InputHandler;
 
-class AxisActionHandler : public Qt3DCore::QBackendNode
+class UpdateHandlerJob : public Qt3DCore::QAspectJob
 {
 public:
-    AxisActionHandler();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
-    inline Qt3DCore::QNodeId logicalDevice() const { return m_logicalDevice; }
-    void setAndTransmitPayload(const AxisActionPayload &payload);
-    inline AxisActionPayload lastPayload() const { return m_lastPayload; }
+    explicit UpdateHandlerJob(AxisActionHandler *axisActionHandler,
+                              HLogicalDevice logicalDeviceHandler,
+                              InputHandler *handler);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void run() Q_DECL_FINAL;
 
 private:
-    Qt3DCore::QNodeId m_logicalDevice;
-    AxisActionPayload m_lastPayload;
+    AxisActionHandler *m_axisActionHandler;
+    HLogicalDevice m_logicalDeviceHandle;
+    InputHandler *m_handler;
 };
 
-class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeFunctor
-{
-public:
-    explicit AxisActionHandlerNodeFunctor(AxisActionHandlerManager *manager);
+typedef QScopedPointer<UpdateHandlerJob> UpdateHandlerJobPtr;
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+} // Input
 
-private:
-    AxisActionHandlerManager *m_manager;
-};
-
-} // namespace Input
-} // namespace Qt3DInput
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
+#endif // QINPUTASPECT_INPUT_UPDATEHANDLERSJOBS_H

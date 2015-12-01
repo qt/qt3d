@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
-#define QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
+#ifndef QT3DINPUT_INPUT_AXISACTIONPAYLOAD_P_H
+#define QT3DINPUT_INPUT_AXISACTIONPAYLOAD_P_H
 
 //
 //  W A R N I N G
@@ -48,51 +48,39 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DInput/private/axisactionpayload_p.h>
+#include <Qt3DInput/qt3dinput_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
 namespace Input {
 
-class AxisActionHandlerManager;
-
-class AxisActionHandler : public Qt3DCore::QBackendNode
+struct AxisUpdate
 {
-public:
-    AxisActionHandler();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
-    inline Qt3DCore::QNodeId logicalDevice() const { return m_logicalDevice; }
-    void setAndTransmitPayload(const AxisActionPayload &payload);
-    inline AxisActionPayload lastPayload() const { return m_lastPayload; }
-
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    Qt3DCore::QNodeId m_logicalDevice;
-    AxisActionPayload m_lastPayload;
+    QString name;
+    float value;
 };
 
-class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+struct ActionUpdate
 {
-public:
-    explicit AxisActionHandlerNodeFunctor(AxisActionHandlerManager *manager);
-
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-
-private:
-    AxisActionHandlerManager *m_manager;
+    QString name;
+    bool triggered;
 };
 
-} // namespace Input
-} // namespace Qt3DInput
+struct AxisActionPayload
+{
+    QVector<AxisUpdate> axes;
+    QVector<ActionUpdate> actions;
+};
+
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QINPUTASPECT_INPUT_AXISACTIONHANDLER_P_H
+Q_DECLARE_METATYPE(Qt3DInput::Input::AxisActionPayload);
+
+#endif // QT3DINPUT_INPUT_AXISACTIONPAYLOAD_P_H
+

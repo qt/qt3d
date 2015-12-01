@@ -39,6 +39,8 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,7 +48,7 @@ namespace Qt3DInput {
 namespace Input {
 
 AxisActionHandler::AxisActionHandler()
-    : Qt3DCore::QBackendNode()
+    : Qt3DCore::QBackendNode(ReadWrite)
     , m_logicalDevice()
 {
 
@@ -62,6 +64,16 @@ void AxisActionHandler::updateFromPeer(Qt3DCore::QNode *peer)
 void AxisActionHandler::cleanup()
 {
     m_logicalDevice = Qt3DCore::QNodeId();
+}
+
+void AxisActionHandler::setAndTransmitPayload(const AxisActionPayload &payload)
+{
+    m_lastPayload = payload;
+
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("payload");
+    e->setValue(QVariant::fromValue(payload));
+    notifyObservers(e);
 }
 
 void AxisActionHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

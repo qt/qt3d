@@ -72,6 +72,7 @@ protected:
     Q_DECLARE_PRIVATE(QAxisActionHandler)
     QAxisActionHandler(QAxisActionHandlerPrivate &dd, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     QT3D_CLONEABLE(QAxisActionHandler)

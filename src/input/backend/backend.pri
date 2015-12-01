@@ -23,7 +23,9 @@ HEADERS += \
     $$PWD/axissetting_p.h \
     $$PWD/qabstractphysicaldevicebackendnode_p.h \
     $$PWD/updateaxisactionjob_p.h \
-    $$PWD/axisactionhandler_p.h
+    $$PWD/axisactionhandler_p.h \
+    $$PWD/updatehandlerjob_p.h \
+    $$PWD/axisactionpayload_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -46,6 +48,7 @@ SOURCES += \
     $$PWD/movingaverage.cpp \
     $$PWD/axissetting.cpp \
     $$PWD/updateaxisactionjob.cpp \
-    $$PWD/axisactionhandler.cpp
+    $$PWD/axisactionhandler.cpp \
+    $$PWD/updatehandlerjob.cpp
 
 INCLUDEPATH += $$PWD

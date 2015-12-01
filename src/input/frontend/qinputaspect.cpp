@@ -73,6 +73,7 @@
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/updateaxisactionjob_p.h>
+#include <Qt3DInput/private/updatehandlerjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -169,24 +170,31 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
         jobs += integration->jobsToExecute(time);
 
     // Jobs that update Axis/Action (store combined axis/action value)
-    QVector<QAspectJobPtr> axisActionJobs;
+    QHash<Input::HLogicalDevice, QAspectJobPtr> logicalDeviceJobs;
+
     Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(d->m_inputHandler.data(), devHandle));
+        logicalDeviceJobs.insert(devHandle, updateAxisActionJob);
+
         Q_FOREACH (const QAspectJobPtr job, jobs)
             updateAxisActionJob->addDependency(job);
-        axisActionJobs.push_back(updateAxisActionJob);
     }
 
-    jobs += axisActionJobs;
+    // Jobs that update the axisactionhandlers
+    Q_FOREACH (Input::HAxisActionHandler handlerHandle, d->m_inputHandler->axisActionHandlerManager()->activeAxisActionHandlers()) {
+        Input::AxisActionHandler *axisActionHandler = d->m_inputHandler->axisActionHandlerManager()->data(handlerHandle);
+        Input::HLogicalDevice logicalDeviceHandle = d->m_inputHandler->logicalDeviceManager()->lookupHandle(axisActionHandler->logicalDevice());
+        QAspectJobPtr updateHandlerJob(new Input::UpdateHandlerJob(axisActionHandler, logicalDeviceHandle, d->m_inputHandler.data()));
 
-    // For each AxisActionInputHandler
-    // Find the LogicalDevice
-    //   Find each Axis
-    //      Check if their values have changed since the last time
-    //          If so -> add to notification payload
-    //   Find each Action
-    //      Check if action state has changed since last frame
-    //          If so -> add to notification payload
+        // Create AxisActionHandler Job
+        jobs += updateHandlerJob;
+
+        QAspectJobPtr logicalDeviceJob = logicalDeviceJobs.value(logicalDeviceHandle);
+        if (logicalDeviceJob) {
+            updateHandlerJob->addDependency(logicalDeviceJob);
+            jobs += logicalDeviceJob;
+        }
+    }
 
     return jobs;
 }
