@@ -10,7 +10,8 @@ struct Light {
 uniform Light lights[MAX_LIGHTS];
 uniform int lightCount;
 
-void adsModel(vec3 vpos, vec3 vnormal, vec3 eye, float shininess, out vec3 diffuseColor, out vec3 specularColor)
+void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, const in float shininess,
+              out vec3 diffuseColor, out vec3 specularColor)
 {
     diffuseColor = vec3(0.0);
     specularColor = vec3(0.0);
@@ -36,7 +37,8 @@ void adsModel(vec3 vpos, vec3 vnormal, vec3 eye, float shininess, out vec3 diffu
         if (diffuse > 0.0 && shininess > 0.0) {
             vec3 r = reflect( -s, n );
             vec3 v = normalize( eye - vpos );
-            specular = ( shininess / ( 8.0 * 3.14 ) ) * pow( max( dot( r, v ), 0.0 ), shininess );
+            float normFactor = ( shininess + 2.0 ) / 2.0;
+            specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
         }
 
         diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
