@@ -67,8 +67,7 @@ Material {
             Parameter { name: "kyellow";        value: root.warmColor },
             Parameter { name: "alpha";          value: root.alpha },
             Parameter { name: "beta";           value: root.beta },
-            Parameter { name: "shininess";      value: root.shininess },
-            Parameter { name: "lightPosition";  value: Qt.vector4d(10.0, 10.0, -10.0, 1.0) }
+            Parameter { name: "shininess";      value: root.shininess }
         ]
 
         techniques: [
