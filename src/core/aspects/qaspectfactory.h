@@ -89,23 +89,4 @@ private:
 
 QT_END_NAMESPACE
 
-#define QT3D_REGISTER_NAMESPACED_ASPECT(name, AspectNamespace, AspectType) \
-    QT_BEGIN_NAMESPACE \
-    namespace Qt3DCore { \
-        QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &, QAspectFactory::CreateFunction); \
-    } \
-    QT_END_NAMESPACE \
-    namespace { \
-    void qt3d_ ## AspectType ## _registerFunction() \
-    { \
-        using namespace QT_PREPEND_NAMESPACE(Qt3DCore); \
-        qt3d_QAspectFactoryPrivate_addDefaultFactory(QStringLiteral(name), &QAspectFactory::functionHelper<AspectNamespace::AspectType>); \
-    } \
-    \
-    Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
-    }
-
-#define QT3D_REGISTER_ASPECT(name, AspectType) \
-    QT3D_REGISTER_NAMESPACED_ASPECT(name, , AspectType)
-
 #endif // QT3DCORE_QASPECTFACTORY_H

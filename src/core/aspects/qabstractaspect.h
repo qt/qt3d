@@ -109,4 +109,30 @@ void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
 
 QT_END_NAMESPACE
 
+#define QT3D_REGISTER_NAMESPACED_ASPECT(name, AspectNamespace, AspectType) \
+    QT_BEGIN_NAMESPACE \
+    namespace Qt3DCore { \
+        typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
+        QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, AspectCreateFunction); \
+    } \
+    QT_END_NAMESPACE \
+    namespace { \
+    QAbstractAspect *qt3d_ ## AspectType ## _createFunction(QObject *parent) \
+    { \
+        using namespace AspectNamespace; \
+        return new AspectType(parent); \
+    } \
+    \
+    void qt3d_ ## AspectType ## _registerFunction() \
+    { \
+        using namespace AspectNamespace; \
+        qt3d_QAspectFactory_addDefaultFactory(QStringLiteral(name), qt3d_ ## AspectType ## _createFunction); \
+    } \
+    \
+    Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
+    }
+
+#define QT3D_REGISTER_ASPECT(name, AspectType) \
+    QT3D_REGISTER_NAMESPACED_ASPECT(name, QT_PREPEND_NAMESPACE(Qt3DCore), AspectType)
+
 #endif // QT3DCORE_ABSTRACTASPECT_H

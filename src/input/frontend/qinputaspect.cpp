@@ -42,7 +42,6 @@
 #include "keyboardinput_p.h"
 #include "mousecontroller_p.h"
 #include "mouseinput_p.h"
-#include <Qt3DCore/qaspectfactory.h>
 #include <Qt3DCore/qnodevisitor.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>

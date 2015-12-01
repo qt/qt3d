@@ -48,8 +48,8 @@ namespace Qt3DCore {
 typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
 Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
 
-QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &name,
-                                                                        QAspectFactory::CreateFunction factory)
+QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+                                                                 QAspectFactory::CreateFunction factory)
 {
     defaultFactories->insert(name, factory);
 }
