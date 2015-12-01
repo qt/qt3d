@@ -4,6 +4,7 @@ SUBDIRS = \
     core \
     render \
     quick3d \
-    cmake
+    cmake \
+    input
 
 installed_cmake.depends = cmake
