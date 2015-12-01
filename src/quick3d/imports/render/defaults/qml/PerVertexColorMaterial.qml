@@ -40,11 +40,6 @@ import Qt3D.Render 2.0
 Material {
     id:root
 
-    parameters: [
-        Parameter { name: "lightPosition"; value: Qt.vector4d(1.0, 1.0, 0.0, 1.0) },
-        Parameter { name: "lightIntensity"; value: Qt.vector3d(1.0, 1.0, 1.0) }
-    ]
-
     ShaderProgram {
         id: gl3PerVertexColorShader
         vertexShaderCode: loadSource("qrc:/shaders/gl3/pervertexcolor.vert")

@@ -43,3 +43,9 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     diffuseColor += att * lights[0].intensity * diffuse * lights[0].color;
     specularColor += specular;
 }
+
+void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffuseColor)
+{
+    FP vec3 tmp;
+    adsModel(vpos, vnormal, vec3(0.0), 0.0, diffuseColor, tmp);
+}

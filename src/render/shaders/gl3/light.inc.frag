@@ -45,3 +45,9 @@ void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, cons
         specularColor += specular;
     }
 }
+
+void adModel(const in vec3 vpos, const in vec3 vnormal, out vec3 diffuseColor)
+{
+    vec3 tmp;
+    adsModel(vpos, vnormal, vec3(0.0), 0.0, diffuseColor, tmp);
+}

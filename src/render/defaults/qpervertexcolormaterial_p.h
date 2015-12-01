@@ -71,8 +71,6 @@ public:
     void init();
 
     QEffect *m_vertexEffect;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QTechnique *m_vertexGL3Technique;
     QTechnique *m_vertexGL2Technique;
     QTechnique *m_vertexES2Technique;
