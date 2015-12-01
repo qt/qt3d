@@ -7,5 +7,6 @@ contains(QT_CONFIG, private_tests) {
         qaxisinput \
         qactioninput \
         qlogicaldevice \
-        axis
+        axis \
+        action
 }
