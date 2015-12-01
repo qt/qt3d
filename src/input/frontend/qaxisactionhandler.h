@@ -53,7 +53,7 @@ class QT3DINPUTSHARED_EXPORT QAxisActionHandler : public Qt3DCore::QComponent
     Q_PROPERTY(Qt3DInput::QLogicalDevice* logicalDevice READ logicalDevice WRITE setLogicalDevice NOTIFY logicalDeviceChanged)
 
 public:
-    QAxisActionHandler(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAxisActionHandler(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxisActionHandler();
 
     Qt3DInput::QLogicalDevice *logicalDevice() const;
