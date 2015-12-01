@@ -56,6 +56,7 @@
 #include <QPluginLoader>
 
 #include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
@@ -63,6 +64,7 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/axisactionhandler_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -107,6 +109,7 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QAxisSetting>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
     registerBackendType<Qt3DInput::QAction>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
     registerBackendType<QActionInput>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
+    registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisActionHandler, Input::AxisActionHandlerManager>(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
 
     loadInputDevicePlugins();
