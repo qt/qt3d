@@ -265,7 +265,7 @@ void PickBoundingVolumeJob::run()
                                                                                            vc.cameraId,
                                                                                            rayCasting,
                                                                                            &sphereGatherer);
-
+#if 0
                     Q_FOREACH (const Qt3DCore::QNodeId sphereEntityId, sphereHits) {
                         if (triangleHitsForViewportAndCamera(event.pos(),
                                                              vc.viewport,
@@ -274,6 +274,7 @@ void PickBoundingVolumeJob::run()
                                                              rayCasting).isEmpty())
                             sphereHits.removeAll(sphereEntityId);
                     }
+#endif
 
                     // If we have hits
                     if (!sphereHits.isEmpty()) {
