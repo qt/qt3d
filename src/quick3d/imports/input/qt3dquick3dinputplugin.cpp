@@ -45,6 +45,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaction.h>
+#include <Qt3DInput/qactionhandler.h>
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
@@ -69,6 +70,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
+    qmlRegisterType<Qt3DInput::QActionHandler>(uri, 2, 0, "ActionHandler");
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
