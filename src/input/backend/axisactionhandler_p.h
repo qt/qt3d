@@ -66,10 +66,10 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
     inline Qt3DCore::QNodeId logicalDevice() const { return m_logicalDevice; }
-    void setAndTransmitActionPayload(const ActionPayload &payloadState, const ActionPayload &deltaPayload);
+    void setAndTransmitActionPayload(const ActionStates &actionStates, const ActionPayload &deltaPayload);
     void setAndTransmitAxisPayload(const AxisPayload &payload);
     inline AxisPayload lastAxisPayload() const { return m_lastAxisPayload; }
-    inline ActionPayload lastActionPayload() const { return m_lastActionPayload; }
+    inline ActionPayload lastActionStates() const { return m_lastActionStates; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -77,7 +77,7 @@ protected:
 private:
     Qt3DCore::QNodeId m_logicalDevice;
     AxisPayload m_lastAxisPayload;
-    ActionPayload m_lastActionPayload;
+    ActionPayload m_lastActionStates;
 };
 
 class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeFunctor

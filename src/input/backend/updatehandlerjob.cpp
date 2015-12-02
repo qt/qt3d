@@ -117,34 +117,34 @@ void UpdateHandlerJob::updateAxes(LogicalDevice *device)
 
 void UpdateHandlerJob::updateActions(LogicalDevice *device)
 {
-    ActionPayload payload;
+    ActionStates actionStates;
 
     // Push each action into the payload to build the current action state for the frame
     Q_FOREACH (const Qt3DCore::QNodeId actionId, device->actions()) {
         const Action *action = m_handler->actionManager()->lookupResource(actionId);
-        ActionUpdate actionUpdate;
-        actionUpdate.name = action->name();
-        actionUpdate.id = actionId;
-        actionUpdate.triggered = action->actionTriggered();
-        payload.actions.push_back(actionUpdate);
+        ActionUpdate actionState;
+        actionState.id = actionId;
+        actionState.name = action->name();
+        actionState.triggered = action->actionTriggered();
+        actionStates.actions.push_back(actionState);
     }
 
     // Compare the action state against the previous payload state
-    ActionPayload oldPayload = m_axisActionHandler->lastActionPayload();
-    ActionPayload deltaPayload;
+    ActionStates oldActionStates = m_axisActionHandler->lastActionStates();
+    ActionPayload updatePayload;
 
     // Build up a delta payload
-    Q_FOREACH (const ActionUpdate &actionUpdate, payload.actions) {
-        const int posOfActionInOldPayload = containsAction(actionUpdate.id, oldPayload);
+    Q_FOREACH (const ActionUpdate &actionUpdate, actionStates.actions) {
+        const int posOfActionInOldPayload = containsAction(actionUpdate.id, oldActionStates);
         // If the action is not in the old payload or
         // is in the old payload state but has a different value
         // we add it to the delta payload
         if (posOfActionInOldPayload < 0 ||
-                oldPayload.actions.at(posOfActionInOldPayload).triggered != actionUpdate.triggered)
-            deltaPayload.actions.push_back(actionUpdate);
+                oldActionStates.actions.at(posOfActionInOldPayload).triggered != actionUpdate.triggered)
+            updatePayload.actions.push_back(actionUpdate);
     }
 
-    m_axisActionHandler->setAndTransmitActionPayload(payload, deltaPayload);
+    m_axisActionHandler->setAndTransmitActionPayload(actionStates, updatePayload);
 }
 
 } // Input

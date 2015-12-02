@@ -50,7 +50,6 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnodeid.h>
-#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,6 +95,8 @@ struct ActionPayload
         return !(*this == other);
     }
 };
+
+typedef ActionPayload ActionStates;
 
 struct AxisPayload
 {

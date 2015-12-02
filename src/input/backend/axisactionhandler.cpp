@@ -67,10 +67,10 @@ void AxisActionHandler::cleanup()
     m_logicalDevice = Qt3DCore::QNodeId();
 }
 
-void AxisActionHandler::setAndTransmitActionPayload(const ActionPayload &payloadState, const ActionPayload &deltaPayload)
+void AxisActionHandler::setAndTransmitActionPayload(const ActionStates &actionStates, const ActionPayload &deltaPayload)
 {
-    if (m_lastActionPayload != payloadState) {
-        m_lastActionPayload = payloadState;
+    if (m_lastActionStates != actionStates) {
+        m_lastActionStates = actionStates;
 
         Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
         e->setTargetNode(peerUuid());
