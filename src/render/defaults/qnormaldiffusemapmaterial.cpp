@@ -67,8 +67,6 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
     , m_normalParameter(new QParameter(QStringLiteral("normalTexture"), m_normalTexture))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(0.0f, 0.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_normalDiffuseGL3Technique(new QTechnique())
     , m_normalDiffuseGL2Technique(new QTechnique())
@@ -130,8 +128,6 @@ void QNormalDiffuseMapMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_normalParameter);
     m_normalDiffuseEffect->addParameter(m_specularParameter);
     m_normalDiffuseEffect->addParameter(m_shininessParameter);
-    m_normalDiffuseEffect->addParameter(m_lightPositionParameter);
-    m_normalDiffuseEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_normalDiffuseEffect);

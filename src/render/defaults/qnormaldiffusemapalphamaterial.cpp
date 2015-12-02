@@ -116,8 +116,6 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_normalParameter);
     m_normalDiffuseEffect->addParameter(m_specularParameter);
     m_normalDiffuseEffect->addParameter(m_shininessParameter);
-    m_normalDiffuseEffect->addParameter(m_lightPositionParameter);
-    m_normalDiffuseEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_normalDiffuseEffect);
