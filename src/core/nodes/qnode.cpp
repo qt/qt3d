@@ -48,7 +48,7 @@
 #include <QMetaProperty>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/private/corelogging_p.h>
-#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 

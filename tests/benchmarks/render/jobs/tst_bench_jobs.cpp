@@ -39,7 +39,6 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QTransform>
-#include <Qt3DCore/QNodeVisitor>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
@@ -58,6 +57,7 @@
 #include <Qt3DCore/private/qaspectengine_p.h>
 #include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DCore/private/qaspectthread_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 #include <QQmlComponent>
 #include <QScopedPointer>
 

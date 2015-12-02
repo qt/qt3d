@@ -48,10 +48,10 @@
 #include <private/qscene_p.h>
 #include <private/qaspectengine_p.h>
 #include <private/qnode_p.h>
+#include <private/qnodevisitor_p.h>
 #include <private/qscene_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
-#include "qnodevisitor.h"
 #include <Qt3DCore/qeventfilterservice.h>
 #include <Qt3DCore/qservicelocator.h>
 

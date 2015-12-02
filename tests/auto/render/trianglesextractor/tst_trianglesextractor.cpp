@@ -53,7 +53,7 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 
 Qt3DRender::QGeometryRenderer *customIndexedGeometryRenderer()
 {

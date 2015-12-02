@@ -41,7 +41,7 @@
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
-#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
