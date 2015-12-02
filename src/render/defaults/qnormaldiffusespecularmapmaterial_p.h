@@ -80,8 +80,6 @@ public:
     QParameter *m_normalParameter;
     QParameter *m_specularParameter;
     QParameter *m_shininessParameter;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QParameter *m_textureScaleParameter;
     QTechnique *m_normalDiffuseSpecularGL3Technique;
     QTechnique *m_normalDiffuseSpecularGL2Technique;

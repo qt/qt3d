@@ -97,21 +97,15 @@ Material {
     ]
 
     effect: Effect {
-
-        parameters: [
-            Parameter { name: "lightPosition";  value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
-            Parameter { name: "lightIntensity"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) }
-        ]
-
         ShaderProgram {
             id: gl2Es2Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusespecularmap.vert")
+            vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusemap.vert")
             fragmentShaderCode: loadSource("qrc:/shaders/es2/normaldiffusespecularmap.frag")
         }
 
         ShaderProgram {
             id: gl3Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/normaldiffusespecularmap.vert")
+            vertexShaderCode:   loadSource("qrc:/shaders/gl3/normaldiffusemap.vert")
             fragmentShaderCode: loadSource("qrc:/shaders/gl3/normaldiffusespecularmap.frag")
         }
 

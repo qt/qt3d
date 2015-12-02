@@ -67,8 +67,6 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
     , m_normalParameter(new QParameter(QStringLiteral("normalTexture"), m_normalTexture))
     , m_specularParameter(new QParameter(QStringLiteral("specularTexture"), m_specularTexture))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(0.0f, 0.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_normalDiffuseSpecularGL3Technique(new QTechnique())
     , m_normalDiffuseSpecularGL2Technique(new QTechnique())
@@ -99,9 +97,9 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
 
 void QNormalDiffuseSpecularMapMaterialPrivate::init()
 {
-    m_normalDiffuseSpecularGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusespecularmap.vert"))));
+    m_normalDiffuseSpecularGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemap.vert"))));
     m_normalDiffuseSpecularGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusespecularmap.frag"))));
-    m_normalDiffuseSpecularGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusespecularmap.vert"))));
+    m_normalDiffuseSpecularGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemap.vert"))));
     m_normalDiffuseSpecularGL2ES2Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusespecularmap.frag"))));
 
     m_normalDiffuseSpecularGL3Technique->graphicsApiFilter()->setApi(QGraphicsApiFilter::OpenGL);
@@ -136,8 +134,6 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     m_normalDiffuseSpecularEffect->addParameter(m_normalParameter);
     m_normalDiffuseSpecularEffect->addParameter(m_specularParameter);
     m_normalDiffuseSpecularEffect->addParameter(m_shininessParameter);
-    m_normalDiffuseSpecularEffect->addParameter(m_lightPositionParameter);
-    m_normalDiffuseSpecularEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseSpecularEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_normalDiffuseSpecularEffect);

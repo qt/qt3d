@@ -84,13 +84,13 @@ Material {
     effect: Effect {
         ShaderProgram {
             id: gl2Es2Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/es2/diffusespecularmap.vert")
+            vertexShaderCode:   loadSource("qrc:/shaders/es2/diffusemap.vert")
             fragmentShaderCode: loadSource("qrc:/shaders/es2/diffusespecularmap.frag")
         }
 
         ShaderProgram {
             id: gl3Shader
-            vertexShaderCode:   loadSource("qrc:/shaders/gl3/diffusespecularmap.vert")
+            vertexShaderCode:   loadSource("qrc:/shaders/gl3/diffusemap.vert")
             fragmentShaderCode: loadSource("qrc:/shaders/gl3/diffusespecularmap.frag")
         }
 
