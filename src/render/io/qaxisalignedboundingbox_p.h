@@ -34,10 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H
-#define QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H
-
-#include <Qt3DCore/qt3dcore_global.h>
+#ifndef QT3DRENDER_QAXISALIGNEDBOUNDINGBOX_P_H
+#define QT3DRENDER_QAXISALIGNEDBOUNDINGBOX_P_H
 
 #include <QMatrix4x4>
 #include <QVector>
@@ -47,9 +45,9 @@ QT_BEGIN_NAMESPACE
 
 class QDebug;
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QT3DCORESHARED_EXPORT QAxisAlignedBoundingBox
+class QAxisAlignedBoundingBox
 {
 public:
     inline QAxisAlignedBoundingBox()
@@ -134,7 +132,7 @@ private:
                            const QAxisAlignedBoundingBox &b);
 };
 
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c);
+QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c);
 
 inline bool intersects(const QAxisAlignedBoundingBox &a,
                        const QAxisAlignedBoundingBox &b)
@@ -150,8 +148,8 @@ inline bool intersects(const QAxisAlignedBoundingBox &a,
     return true;
 }
 
-} // namespace Qt3DCore
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QAXISALIGNEDBOUNDINGBOX_H
+#endif // QT3DRENDER_QAXISALIGNEDBOUNDINGBOX_P_H

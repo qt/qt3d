@@ -47,7 +47,6 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
-#include <Qt3DCore/qaxisalignedboundingbox.h>
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>

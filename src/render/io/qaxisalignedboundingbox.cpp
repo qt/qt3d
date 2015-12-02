@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#include "qaxisalignedboundingbox.h"
+#include "qaxisalignedboundingbox_p.h"
 
 #include <QDebug>
 #include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 void QAxisAlignedBoundingBox::update(const QVector<QVector3D> &points)
 {
@@ -89,6 +89,6 @@ QDebug operator<<(QDebug dbg, const QAxisAlignedBoundingBox &c)
     return dbg;
 }
 
-} //namespace Qt3DCore
+} //namespace Qt3DRender
 
 QT_END_NAMESPACE

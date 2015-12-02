@@ -8,8 +8,6 @@ include (./jobs/jobs.pri)
 include (./nodes/nodes.pri)
 # Qml Components
 include (./core-components/core-components.pri)
-# Bounds
-include (./bounds/bounds.pri)
 #Transformations
 include (./transforms/transforms.pri)
 # Resources Management

@@ -39,7 +39,7 @@
 #include "qmesh.h"
 #include "qbuffer.h"
 #include "qattribute.h"
-#include <Qt3DCore/qaxisalignedboundingbox.h>
+#include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
 
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QFile>
@@ -458,7 +458,7 @@ void ObjLoader::center( QVector<QVector3D>& points )
     if ( points.isEmpty() )
         return;
 
-    Qt3DCore::QAxisAlignedBoundingBox bb(points);
+    QAxisAlignedBoundingBox bb(points);
     QVector3D center = bb.center();
 
     // Translate center of the AABB to the origin
