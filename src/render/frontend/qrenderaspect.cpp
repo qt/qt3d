@@ -118,8 +118,6 @@
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DCore/qnodevisitor.h>
-#include <Qt3DCore/qscenepropertychange.h>
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qservicelocator.h>
@@ -394,23 +392,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QRenderAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QNodeVisitor visitor;
-    visitor.traverse(n, this, &QRenderAspect::visitNode);
-}
-
-void QRenderAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QAbstractAspect::clearBackendNode(n);
-}
-
 qint64 QRenderAspect::time() const
 {
     Q_D(const QRenderAspect);
@@ -419,10 +400,9 @@ qint64 QRenderAspect::time() const
 
 void QRenderAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
 {
-    // setSceneGraphRoot is synchronized using the Renderer's mutex
+    QAbstractAspect::setRootEntity(rootObject);
+
     Q_D(QRenderAspect);
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QRenderAspect::visitNode);
     d->m_renderer->setSceneRoot(d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootObject->id()));
 }
 
@@ -472,11 +452,6 @@ void QRenderAspect::onCleanup()
     Q_D(QRenderAspect);
     delete d->m_renderer;
     d->m_renderer = Q_NULLPTR;
-}
-
-void QRenderAspect::visitNode(Qt3DCore::QNode *node)
-{
-    QAbstractAspect::createBackendNode(node);
 }
 
 // Returns a vector of jobs to be performed for dirty buffers

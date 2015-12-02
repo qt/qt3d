@@ -42,8 +42,6 @@
 #include "keyboardinput_p.h"
 #include "mousecontroller_p.h"
 #include "mouseinput_p.h"
-#include <Qt3DCore/qnodevisitor.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/qmousecontroller.h>
@@ -185,29 +183,6 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QInputAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QNodeVisitor visitor;
-    visitor.traverse(n, this, &QInputAspect::visitNode);
-}
-
-void QInputAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QAbstractAspect::clearBackendNode(n);
-}
-
-void QInputAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
-{
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QInputAspect::visitNode);
-}
-
 void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
@@ -230,11 +205,6 @@ void QInputAspect::onCleanup()
     // At this point it is too late to call removeEventFilter as the eventSource (Window)
     // may already be destroyed
     d->m_inputHandler.reset(Q_NULLPTR);
-}
-
-void QInputAspect::visitNode(Qt3DCore::QNode *node)
-{
-    QAbstractAspect::createBackendNode(node);
 }
 
 } // namespace Qt3DInput

@@ -81,6 +81,9 @@ public:
     void registerBackendType(const QBackendNodeFunctorPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     virtual QVariant executeCommand(const QStringList &args);
 
 protected:
@@ -90,12 +93,15 @@ protected:
     QBackendNode *getBackendNode(QNode *frontend) const;
     void clearBackendNode(QNode *frontend) const;
 
+    virtual void setRootEntity(QEntity *rootObject);
+
 private:
-    virtual void setRootEntity(QEntity *rootObject) = 0;
     virtual void onInitialize(const QVariantMap &data) = 0;
     virtual void onStartup();
     virtual void onShutdown();
     virtual void onCleanup() = 0;
+
+    virtual void visitNode(QNode *node);
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectManager;

@@ -70,9 +70,6 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
     qint64 time() const;
 
 protected:
@@ -85,8 +82,6 @@ protected:
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
-
-    void visitNode(Qt3DCore::QNode *node);
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
     QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();

@@ -41,6 +41,8 @@
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -90,6 +92,23 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 {
     Q_D(QAbstractAspect);
     d->m_backendCreatorFunctors.insert(className(obj), functor);
+}
+
+void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QNodeVisitor visitor;
+    visitor.traverse(n, this, &QAbstractAspect::visitNode);
+}
+
+void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QAbstractAspect::clearBackendNode(n);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
@@ -167,6 +186,12 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
     }
 }
 
+void QAbstractAspect::setRootEntity(QEntity *rootObject)
+{
+    QNodeVisitor visitor;
+    visitor.traverse(rootObject, this, &QAbstractAspect::visitNode);
+}
+
 void QAbstractAspect::registerAspect(QEntity *rootObject)
 {
     Q_D(QAbstractAspect);
@@ -201,6 +226,11 @@ void QAbstractAspect::onStartup()
 
 void QAbstractAspect::onShutdown()
 {
+}
+
+void QAbstractAspect::visitNode(QNode *node)
+{
+    createBackendNode(node);
 }
 
 } // of namespace Qt3DCore

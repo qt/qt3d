@@ -41,9 +41,6 @@
 #include "manager_p.h"
 #include "qlogiccomponent.h"
 
-#include <Qt3DCore/qnodevisitor.h>
-#include <Qt3DCore/qscenepropertychange.h>
-
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
@@ -106,29 +103,6 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QLogicAspect::sceneNodeAdded(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QNodeVisitor visitor;
-    visitor.traverse(n, this, &QLogicAspect::visitNode);
-}
-
-void QLogicAspect::sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QAbstractAspect::clearBackendNode(n);
-}
-
-void QLogicAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
-{
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QLogicAspect::visitNode);
-}
-
 void QLogicAspect::onInitialize(const QVariantMap &data)
 {
     Q_UNUSED(data);
@@ -150,11 +124,6 @@ void QLogicAspect::onShutdown()
     // Throw away any pending work that may deadlock during the shutdown procedure
     // when the main thread waits for any queued jobs to finish.
     d->m_executor->clearQueueAndProceed();
-}
-
-void QLogicAspect::visitNode(Qt3DCore::QNode *node)
-{
-    QAbstractAspect::createBackendNode(node);
 }
 
 } // namespace Qt3DLogic
