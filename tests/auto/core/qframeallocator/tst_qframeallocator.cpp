@@ -35,8 +35,8 @@
 ****************************************************************************/
 
 #include <QtTest/QtTest>
-#include <Qt3DCore/QFrameAllocator>
 #include <private/qframeallocator_p.h>
+#include <private/qframeallocator_p_p.h>
 
 class tst_QFrameAllocator : public QObject
 {

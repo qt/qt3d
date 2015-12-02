@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qframeallocator.h>
+#include <Qt3DCore/private/qframeallocator_p.h>
 #include <QThreadStorage>
 #include <QSize>
 

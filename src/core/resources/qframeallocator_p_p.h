@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QFRAMEALLOCATOR_P_H
-#define QT3DCORE_QFRAMEALLOCATOR_P_H
+#ifndef QT3DCORE_QFRAMEALLOCATOR_P_P_H
+#define QT3DCORE_QFRAMEALLOCATOR_P_P_H
 
 //
 //  W A R N I N G
@@ -48,61 +48,85 @@
 // We mean it.
 //
 
-#ifdef QFRAMEALLOCATOR_DEBUG
-#include <valgrind/valgrind.h>
-#include <valgrind/memcheck.h>
-#endif
-
-#include <QDebug>
-#include <QScopedPointer>
-#include <QVector>
-#include <Qt3DCore/private/qt3dcore_global_p.h>
+#include <Qt3DCore/qt3dcore_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QFrameAllocatorPrivate;
+class QFrameAllocator;
 
-class QT3DCORE_PRIVATE_EXPORT QFrameAllocator
+struct Q_AUTOTEST_EXPORT QFrameChunk
+{
+    void init(uint blockSize, uchar blocks);
+    void *allocate(uint blockSize);
+
+    void deallocate(void *p, uint blockSize);
+    bool contains(void *p, uint blockSize);
+    void clear(uint blockSize, uchar blocks);
+    void release();
+
+    inline bool isEmpty() const { return m_blocksAvailable == m_maxBlocksAvailable; }
+
+    uchar *m_data;
+    uchar  m_firstAvailableBlock;
+    uchar  m_blocksAvailable;
+    uchar  m_maxBlocksAvailable;
+};
+
+class Q_AUTOTEST_EXPORT QFixedFrameAllocator
 {
 public:
-    explicit QFrameAllocator(uint maxObjectSize, uint alignment = 16, uint pageSize = 128);
-    ~QFrameAllocator();
+    QFixedFrameAllocator();
+    ~QFixedFrameAllocator();
 
-    template<typename T>
-    T* allocate()
-    {
-        void* ptr = allocateRawMemory(sizeof(T));
-        new (ptr) T(); // Don't forget to call the constructor of the object using the placement new operator
-        return static_cast<T*>(ptr);
-    }
-
-    template<typename T>
-    void deallocate(T *ptr)
-    {
-        ptr->~T(); // Call destructor
-        deallocateRawMemory(ptr, sizeof(T));
-    }
-
-    void* allocateRawMemory(size_t size);
-
-    void deallocateRawMemory(void *ptr, size_t size);
-
-    void clear();
+    void init(uint blockSize, uchar pageSize = 128);
+    void *allocate();
+    void  deallocate(void *ptr);
     void trim();
-    uint maxObjectSize() const;
-    uint totalChunkCount() const;
-    int allocatorPoolSize() const;
+    void release();
+    void clear();
     bool isEmpty() const;
 
+    inline int chunkCount() const { return m_chunks.size(); }
+    inline uchar pageSize() const { return m_nbrBlock; }
+    inline uint blockSize() const { return m_blockSize; }
+
 private:
-    Q_DECLARE_PRIVATE(QFrameAllocator)
-    const QScopedPointer<QFrameAllocatorPrivate> d_ptr;
+    uint m_blockSize;
+    uchar m_nbrBlock;
+    QVector<QFrameChunk> m_chunks;
+    QFrameChunk *m_lastAllocatedChunck;
+    QFrameChunk *m_lastFreedChunck;
+};
+
+class QFrameAllocatorPrivate
+{
+public:
+    QFrameAllocatorPrivate();
+
+    inline void *allocateAtChunk(uint allocatorIndex)
+    {
+        return m_allocatorPool[allocatorIndex].allocate();
+    }
+
+    inline void deallocateAtChunck(void *ptr, uint allocatorIndex)
+    {
+        m_allocatorPool[allocatorIndex].deallocate(ptr);
+    }
+
+    inline uint allocatorIndexFromSize(uint targetSize) const
+    {
+        return (targetSize + m_alignment - 1) / m_alignment - 1;
+    }
+
+    uint m_maxObjectSize;
+    uint m_alignment;
+    QVector<QFixedFrameAllocator> m_allocatorPool;
 };
 
 } // Qt3D
 
 QT_END_NAMESPACE
 
-#endif // QFRAMEALLOCATOR_P_H
+#endif // QT3DCORE_QFRAMEALLOCATOR_P_P_H

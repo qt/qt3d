@@ -46,8 +46,8 @@
     memory.
 */
 
-#include "qframeallocator.h"
 #include "qframeallocator_p.h"
+#include "qframeallocator_p_p.h"
 
 QT_BEGIN_NAMESPACE
 

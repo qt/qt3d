@@ -57,7 +57,7 @@
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qparameter.h>
 
-#include <Qt3DCore/qframeallocator.h>
+#include <Qt3DCore/private/qframeallocator_p.h>
 
 // TODO: Move out once this is all refactored
 #include <Qt3DRender/private/renderviewjobutils_p.h>
