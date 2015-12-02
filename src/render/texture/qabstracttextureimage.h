@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 #define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 
-#include <Qt3DCore/qabstractfunctor.h>
+#include <Qt3DRender/qabstractfunctor.h>
 #include <Qt3DRender/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
@@ -48,7 +48,7 @@ namespace Qt3DRender {
 // We might also get rid of the layer, face, mipmap level from
 // TexImageDataPtr and store that in the functor directly
 // or use the QTextureImage instead
-class QT3DRENDERSHARED_EXPORT QTextureDataFunctor : public Qt3DCore::QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QTextureDataFunctor : public QAbstractFunctor
 {
 public:
     virtual ~QTextureDataFunctor() {}

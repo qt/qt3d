@@ -38,7 +38,7 @@
 #define QT3DRENDER_QGEOMETRYFUNCTOR
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qabstractfunctor.h>
+#include <Qt3DRender/qabstractfunctor.h>
 #include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
@@ -47,7 +47,7 @@ namespace Qt3DRender {
 
 class QGeometry;
 
-class QT3DRENDERSHARED_EXPORT QGeometryFunctor : public Qt3DCore::QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QGeometryFunctor : public QAbstractFunctor
 {
 public:
     virtual ~QGeometryFunctor() {}

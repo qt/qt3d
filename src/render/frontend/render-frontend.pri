@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
+    $$PWD/qabstractfunctor.h \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
     $$PWD/qitemmodelbuffer.h \
@@ -16,6 +17,7 @@ HEADERS += \
     $$PWD/qboundingvolumedebug.h
 
 SOURCES += \
+    $$PWD/qabstractfunctor.cpp \
     $$PWD/qrenderaspect.cpp \
     $$PWD/qitemmodelbuffer.cpp \
     $$PWD/sphere.cpp \

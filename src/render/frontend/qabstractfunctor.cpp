@@ -38,7 +38,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 QAbstractFunctor::~QAbstractFunctor()
 {

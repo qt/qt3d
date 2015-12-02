@@ -34,14 +34,14 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTFUNCTOR_H
-#define QT3DCORE_QABSTRACTFUNCTOR_H
+#ifndef QT3DRENDER_QABSTRACTFUNCTOR_H
+#define QT3DRENDER_QABSTRACTFUNCTOR_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 // This will generate a unique id() function per type
 // <=> 1 unique function address per type
@@ -66,11 +66,11 @@ qintptr functorTypeId()
 
 #define QT3D_FUNCTOR(Class)                     \
    qintptr id() const Q_DECL_OVERRIDE {         \
-        return Qt3DCore::functorTypeId<Class>();    \
+        return Qt3DRender::functorTypeId<Class>();    \
    }
 
 
-class QT3DCORESHARED_EXPORT QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QAbstractFunctor
 {
 public:
     virtual ~QAbstractFunctor();
@@ -89,4 +89,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QABSTRACTFUNCTOR_H
+#endif // QT3DRENDER_QABSTRACTFUNCTOR_H
