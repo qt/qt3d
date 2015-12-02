@@ -37,8 +37,8 @@
 #include "qgeometry.h"
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
-#include <Qt3DCore/qabstractattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/qabstractattribute.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
@@ -81,7 +81,7 @@ QGeometry::~QGeometry()
     QNode::cleanup();
 }
 
-void QGeometry::addAttribute(Qt3DCore::QAbstractAttribute *attribute)
+void QGeometry::addAttribute(QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
@@ -103,7 +103,7 @@ void QGeometry::addAttribute(Qt3DCore::QAbstractAttribute *attribute)
     }
 }
 
-void QGeometry::removeAttribute(Qt3DCore::QAbstractAttribute *attribute)
+void QGeometry::removeAttribute(QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {

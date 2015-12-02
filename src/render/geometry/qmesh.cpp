@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/objloader_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -144,7 +144,7 @@ QGeometry *MeshFunctor::operator()()
 
 
     // TO DO: Handle file download if remote url
-    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
 
     if (loader.load(filePath, m_subMesh))
         return loader.geometry();

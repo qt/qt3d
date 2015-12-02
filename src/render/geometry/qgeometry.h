@@ -42,16 +42,13 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QAbstractAttribute;
-}
-
 namespace Qt3DRender {
 
+class QAbstractAttribute;
 class QGeometryPrivate;
 class QBoundingVolumeSpecifier;
 
-typedef QVector<Qt3DCore::QAbstractAttribute *> QAttributeList;
+typedef QVector<QAbstractAttribute *> QAttributeList;
 
 class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
@@ -63,8 +60,8 @@ public:
     ~QGeometry();
 
     QAttributeList attributes() const;
-    void addAttribute(Qt3DCore::QAbstractAttribute *attribute);
-    void removeAttribute(Qt3DCore::QAbstractAttribute *attribute);
+    void addAttribute(QAbstractAttribute *attribute);
+    void removeAttribute(QAbstractAttribute *attribute);
 
     void setVerticesPerPatch(int verticesPerPatch);
     int verticesPerPatch() const;

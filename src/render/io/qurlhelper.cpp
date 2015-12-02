@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,42 +34,32 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTBUFFER_H
-#define QT3DCORE_QABSTRACTBUFFER_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/QNode>
-#include <QtCore/QSharedPointer>
+#include "qurlhelper_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QAbstractBufferPrivate;
-
-class QT3DCORESHARED_EXPORT QAbstractBuffer : public QNode
+QString QUrlHelper::urlToLocalFileOrQrc(const QUrl &url)
 {
-    Q_OBJECT
-public:
-    QAbstractBuffer(QNode *parent = 0);
-    virtual ~QAbstractBuffer();
+    const QString scheme(url.scheme().toLower());
+    if (scheme == QLatin1String("qrc")) {
+        if (url.authority().isEmpty())
+            return QLatin1Char(':') + url.path();
+        return QString();
+    }
 
-    void setData(const QByteArray &bytes);
-    QByteArray data() const;
+#if defined(Q_OS_ANDROID)
+    if (scheme == QLatin1String("assets")) {
+        if (url.authority().isEmpty())
+            return url.toString();
+        return QString();
+    }
+#endif
 
-protected:
-    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+    return url.toLocalFile();
+}
 
-Q_SIGNALS:
-    void dataChanged();
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractBuffer)
-};
-
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QABSTRACTBUFFER_H

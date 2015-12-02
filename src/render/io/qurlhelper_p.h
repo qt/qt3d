@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTBUFFER_P_H
-#define QT3DCORE_QABSTRACTBUFFER_P_H
+#ifndef QT3DRENDER_QURLHELPER_P_H
+#define QT3DRENDER_QURLHELPER_P_H
 
 //
 //  W A R N I N G
@@ -48,28 +48,21 @@
 // We mean it.
 //
 
-#include <private/qnode_p.h>
-#include <private/qt3dcore_global_p.h>
-
-#include <QByteArray>
+#include <Qt3DRender/qt3drender_global.h>
+#include <QUrl>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QAbstractBuffer;
-
-class QT3DCORE_PRIVATE_EXPORT QAbstractBufferPrivate : public QNodePrivate
+class QT3DRENDERSHARED_EXPORT QUrlHelper
 {
 public:
-    Q_DECLARE_PUBLIC(QAbstractBuffer)
-
-    QAbstractBufferPrivate();
-    QByteArray m_data;
+    static QString urlToLocalFileOrQrc(const QUrl &url);
 };
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QABSTRACTBUFFER_P_H
+#endif // QT3DRENDER_QURLHELPER_P_H

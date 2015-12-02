@@ -70,26 +70,26 @@ public:
 
     inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
-    inline Qt3DCore::QAbstractAttribute::DataType dataType() const { return m_dataType; }
+    inline QAbstractAttribute::DataType dataType() const { return m_dataType; }
     inline uint dataSize() const { return m_dataSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
     inline uint divisor() const { return m_divisor; }
-    inline Qt3DCore::QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
+    inline QAbstractAttribute::AttributeType attributeType() const { return m_attributeType; }
     inline bool isDirty() const { return m_attributeDirty; }
     void unsetDirty();
 
 private:
     Qt3DCore::QNodeId m_bufferId;
     QString m_name;
-    Qt3DCore::QAbstractAttribute::DataType m_dataType;
+    QAbstractAttribute::DataType m_dataType;
     uint m_dataSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;
     uint m_divisor;
-    Qt3DCore::QAbstractAttribute::AttributeType m_attributeType;
+    QAbstractAttribute::AttributeType m_attributeType;
     bool m_attributeDirty;
 };
 

@@ -47,13 +47,13 @@ namespace Render {
 
 Attribute::Attribute()
     : QBackendNode(ReadOnly)
-    , m_dataType(Qt3DCore::QAbstractAttribute::Float)
+    , m_dataType(QAbstractAttribute::Float)
     , m_dataSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
     , m_divisor(0)
-    , m_attributeType(Qt3DCore::QAbstractAttribute::VertexAttribute)
+    , m_attributeType(QAbstractAttribute::VertexAttribute)
     , m_attributeDirty(false)
 {
 }
@@ -64,13 +64,13 @@ Attribute::~Attribute()
 
 void Attribute::cleanup()
 {
-    m_dataType = Qt3DCore::QAbstractAttribute::Float;
+    m_dataType = QAbstractAttribute::Float;
     m_dataSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
     m_divisor = 0;
-    m_attributeType = Qt3DCore::QAbstractAttribute::VertexAttribute;
+    m_attributeType = QAbstractAttribute::VertexAttribute;
     m_bufferId = Qt3DCore::QNodeId();
     m_name.clear();
     m_attributeDirty = false;

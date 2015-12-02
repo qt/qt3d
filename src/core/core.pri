@@ -12,8 +12,6 @@ include (./core-components/core-components.pri)
 include (./transforms/transforms.pri)
 # Resources Management
 include (./resources/resources.pri)
-# IO
-include (./io/io.pri)
 # Services
 include (./services/services.pri)
 

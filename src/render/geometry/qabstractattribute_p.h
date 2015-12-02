@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
 **
@@ -34,32 +34,51 @@
 **
 ****************************************************************************/
 
-#include "qurlhelper_p.h"
+#ifndef QT3DRENDER_QABSTRACTATTRIBUTE_P_H
+#define QT3DRENDER_QABSTRACTATTRIBUTE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/QAbstractAttribute>
+#include <Qt3DRender/QAbstractBuffer>
+#include <private/qnode_p.h>
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-QString QUrlHelper::urlToLocalFileOrQrc(const QUrl &url)
+class QAbstractAttribute;
+
+class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractAttributePrivate : public Qt3DCore::QNodePrivate
 {
-    const QString scheme(url.scheme().toLower());
-    if (scheme == QLatin1String("qrc")) {
-        if (url.authority().isEmpty())
-            return QLatin1Char(':') + url.path();
-        return QString();
-    }
+public:
+    Q_DECLARE_PUBLIC(QAbstractAttribute)
 
-#if defined(Q_OS_ANDROID)
-    if (scheme == QLatin1String("assets")) {
-        if (url.authority().isEmpty())
-            return url.toString();
-        return QString();
-    }
-#endif
+    QAbstractAttributePrivate();
 
-    return url.toLocalFile();
-}
+    QAbstractBuffer *m_buffer;
+    QString m_name;
+    QAbstractAttribute::DataType m_dataType;
+    uint m_dataSize;
+    uint m_count;
+    uint m_byteStride;
+    uint m_byteOffset;
+    uint m_divisor;
+    QAbstractAttribute::AttributeType m_attributeType;
+};
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QABSTRACTATTRIBUTE_P_H

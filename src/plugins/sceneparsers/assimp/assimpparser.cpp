@@ -53,7 +53,7 @@
 #include <QColor>
 #include <qmath.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometry.h>
 
@@ -319,7 +319,7 @@ bool AssimpParser::isAssimpPath(const QString &path)
  */
 void AssimpParser::setSource(const QUrl &source)
 {
-    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo file(path);
     m_sceneDir = file.absoluteDir();
     if (!file.exists()) {
@@ -335,7 +335,7 @@ void AssimpParser::setSource(const QUrl &source)
  */
 bool AssimpParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);
 }
 

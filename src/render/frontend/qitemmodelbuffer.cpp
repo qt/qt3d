@@ -111,7 +111,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-Qt3DCore::QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 

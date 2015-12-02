@@ -34,51 +34,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTATTRIBUTE_P_H
-#define QT3DCORE_QABSTRACTATTRIBUTE_P_H
+#ifndef QT3DRENDER_QABSTRACTBUFFER_H
+#define QT3DRENDER_QABSTRACTBUFFER_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/QAbstractAttribute>
-#include <Qt3DCore/QAbstractBuffer>
-#include <private/qnode_p.h>
-#include <private/qt3dcore_global_p.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/QNode>
+#include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QAbstractAttribute;
+class QAbstractBufferPrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAttributePrivate : public QNodePrivate
+class QT3DRENDERSHARED_EXPORT QAbstractBuffer : public Qt3DCore::QNode
 {
+    Q_OBJECT
 public:
-    Q_DECLARE_PUBLIC(QAbstractAttribute)
+    QAbstractBuffer(QNode *parent = 0);
+    virtual ~QAbstractBuffer();
 
-    QAbstractAttributePrivate();
+    void setData(const QByteArray &bytes);
+    QByteArray data() const;
 
-    QAbstractBuffer *m_buffer;
-    QString m_name;
-    QAbstractAttribute::DataType m_dataType;
-    uint m_dataSize;
-    uint m_count;
-    uint m_byteStride;
-    uint m_byteOffset;
-    uint m_divisor;
-    QAbstractAttribute::AttributeType m_attributeType;
+protected:
+    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
+
+Q_SIGNALS:
+    void dataChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractBuffer)
 };
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QABSTRACTATTRIBUTE_P_H
+#endif // QT3DRENDER_QABSTRACTBUFFER_H
