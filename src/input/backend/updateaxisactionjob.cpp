@@ -53,9 +53,10 @@ bool anyOfRequiredKeysPressed(qint64 keys, QAbstractPhysicalDeviceBackendNode *p
     bool validKeyWasPressed = false;
     for (int i = 0; i < 64; ++i) {
         const int individualBit = (1 << i);
-        if ((individualBit & keys) && physicalDeviceBackend->isButtonPressed(individualBit))
+        if ((individualBit & keys) && physicalDeviceBackend->isButtonPressed(individualBit)) {
             validKeyWasPressed = true;
-        break;
+            break;
+        }
     }
     return validKeyWasPressed;
 }

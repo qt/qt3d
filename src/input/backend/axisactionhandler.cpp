@@ -68,9 +68,13 @@ void AxisActionHandler::cleanup()
 
 void AxisActionHandler::setAndTransmitPayload(const AxisActionPayload &payload)
 {
+    if (m_lastPayload == payload)
+        return;
+
     m_lastPayload = payload;
 
     Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setTargetNode(peerUuid());
     e->setPropertyName("payload");
     e->setValue(QVariant::fromValue(payload));
     notifyObservers(e);

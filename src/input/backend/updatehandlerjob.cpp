@@ -84,7 +84,7 @@ void UpdateHandlerJob::run()
     //      Check if action state has changed since last frame
     //          If so -> add to notification payload
 
-    AxisActionPayload payload = m_axisActionHandler->lastPayload();
+    AxisActionPayload payload; // = m_axisActionHandler->lastPayload();
     LogicalDevice *logicalDevice = m_handler->logicalDeviceManager()->data(m_logicalDeviceHandle);
 
     Q_FOREACH (const Qt3DCore::QNodeId axesId, logicalDevice->axes()) {

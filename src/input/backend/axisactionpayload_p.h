@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,18 +61,33 @@ struct AxisUpdate
 {
     QString name;
     float value;
+
+    bool operator ==(const AxisUpdate &other) const
+    {
+        return (name == other.name) && qFuzzyCompare(value, other.value);
+    }
 };
 
 struct ActionUpdate
 {
     QString name;
     bool triggered;
+
+    bool operator ==(const ActionUpdate &other) const
+    {
+        return (name == other.name) && (triggered == other.triggered);
+    }
 };
 
 struct AxisActionPayload
 {
     QVector<AxisUpdate> axes;
     QVector<ActionUpdate> actions;
+
+    bool operator ==(const AxisActionPayload &other) const
+    {
+        return /*(axes == other.axes) &&*/ (actions == other.actions);
+    }
 };
 
 } // Input
