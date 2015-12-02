@@ -93,20 +93,22 @@ void QAxisActionHandler::copy(const QNode *ref)
 void QAxisActionHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
-    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("payload")) {
-        Qt3DInput::Input::AxisActionPayload payload = e->value().value<Qt3DInput::Input::AxisActionPayload>();
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        if (e->propertyName() == QByteArrayLiteral("axisPayload")) {
+            Qt3DInput::Input::AxisPayload payload = e->value().value<Qt3DInput::Input::AxisPayload>();
+            Q_FOREACH (const Qt3DInput::Input::AxisUpdate &axisUpdate, payload.axes)
+                axisValueChanged(axisUpdate.name, axisUpdate.value);
 
-        Q_FOREACH (const Qt3DInput::Input::AxisUpdate &axisUpdate, payload.axes)
-            axisValueChanged(axisUpdate.name, axisUpdate.value);
-
-        Q_FOREACH (const Qt3DInput::Input::ActionUpdate &actionUpdate, payload.actions) {
-            if (actionUpdate.triggered)
-                actionStarted(actionUpdate.name);
-            else
-                actionFinished(actionUpdate.name);
+        } else  if (e->propertyName() == QByteArrayLiteral("actionPayload")) {
+            Qt3DInput::Input::ActionPayload payload = e->value().value<Qt3DInput::Input::ActionPayload>();
+            Q_FOREACH (const Qt3DInput::Input::ActionUpdate &actionUpdate, payload.actions) {
+                if (actionUpdate.triggered)
+                    actionStarted(actionUpdate.name);
+                else
+                    actionFinished(actionUpdate.name);
+            }
         }
     }
-
 }
 
 QT_END_NAMESPACE

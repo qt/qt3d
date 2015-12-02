@@ -72,6 +72,9 @@ private:
     AxisActionHandler *m_axisActionHandler;
     HLogicalDevice m_logicalDeviceHandle;
     InputHandler *m_handler;
+
+    void updateAxes(LogicalDevice *device);
+    void updateActions(LogicalDevice *device);
 };
 
 typedef QScopedPointer<UpdateHandlerJob> UpdateHandlerJobPtr;

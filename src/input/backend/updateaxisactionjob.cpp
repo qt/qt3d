@@ -99,7 +99,6 @@ void UpdateAxisActionJob::updateAction(LogicalDevice *device)
                 actionTriggered |= anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
             }
         }
-
         action->setActionTriggered(actionTriggered);
     }
 }

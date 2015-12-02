@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -59,34 +60,55 @@ namespace Input {
 
 struct AxisUpdate
 {
+    Qt3DCore::QNodeId id;
     QString name;
     float value;
 
     bool operator ==(const AxisUpdate &other) const
     {
-        return (name == other.name) && qFuzzyCompare(value, other.value);
+        return (id == other.id) && qFuzzyCompare(value, other.value);
     }
 };
 
 struct ActionUpdate
 {
+    Qt3DCore::QNodeId id;
     QString name;
     bool triggered;
 
     bool operator ==(const ActionUpdate &other) const
     {
-        return (name == other.name) && (triggered == other.triggered);
+        return (id == other.id) && (triggered == other.triggered);
     }
 };
 
-struct AxisActionPayload
+struct ActionPayload
 {
-    QVector<AxisUpdate> axes;
     QVector<ActionUpdate> actions;
 
-    bool operator ==(const AxisActionPayload &other) const
+    bool operator ==(const ActionPayload &other) const
     {
-        return /*(axes == other.axes) &&*/ (actions == other.actions);
+        return actions == other.actions;
+    }
+
+    bool operator !=(const ActionPayload &other) const
+    {
+        return !(*this == other);
+    }
+};
+
+struct AxisPayload
+{
+    QVector<AxisUpdate> axes;
+
+    bool operator ==(const AxisPayload &other) const
+    {
+        return axes == other.axes;
+    }
+
+    bool operator !=(const AxisPayload &other) const
+    {
+        return !(*this == other);
     }
 };
 
@@ -96,7 +118,8 @@ struct AxisActionPayload
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DInput::Input::AxisActionPayload);
+Q_DECLARE_METATYPE(Qt3DInput::Input::AxisPayload);
+Q_DECLARE_METATYPE(Qt3DInput::Input::ActionPayload);
 
 #endif // QT3DINPUT_INPUT_AXISACTIONPAYLOAD_P_H
 

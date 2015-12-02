@@ -49,18 +49,18 @@ namespace Input
 
 namespace {
 
-int containsAxis(const QString &axisName, const AxisActionPayload &payload)
+int containsAxis(const Qt3DCore::QNodeId axisId, const AxisPayload &payload)
 {
     for (int i = 0, m = payload.axes.size(); i < m; ++i)
-        if (payload.axes.at(i).name == axisName)
+        if (payload.axes.at(i).id == axisId)
             return i;
     return -1;
 }
 
-int containsAction(const QString &actionName, const AxisActionPayload &payload)
+int containsAction(const Qt3DCore::QNodeId actionId, const ActionPayload &payload)
 {
     for (int i = 0, m = payload.actions.size(); i < m; ++i)
-        if (payload.actions.at(i).name == actionName)
+        if (payload.actions.at(i).id == actionId)
             return i;
     return -1;
 }
@@ -80,52 +80,71 @@ void UpdateHandlerJob::run()
     //   Find each Axis
     //      Check if their values have changed since the last time
     //          If so -> add to notification payload
+
     //   Find each Action
     //      Check if action state has changed since last frame
     //          If so -> add to notification payload
 
-    AxisActionPayload payload; // = m_axisActionHandler->lastPayload();
     LogicalDevice *logicalDevice = m_handler->logicalDeviceManager()->data(m_logicalDeviceHandle);
+    updateActions(logicalDevice);
+    updateAxes(logicalDevice);
+}
 
-    Q_FOREACH (const Qt3DCore::QNodeId axesId, logicalDevice->axes()) {
-        const Axis *axis = m_handler->axisManager()->lookupResource(axesId);
-        const int axisPositionInPayload = containsAxis(axis->name(), payload);
+void UpdateHandlerJob::updateAxes(LogicalDevice *device)
+{
+    AxisPayload payload = m_axisActionHandler->lastAxisPayload();
+
+    Q_FOREACH (const Qt3DCore::QNodeId axisId, device->axes()) {
+        const Axis *axis = m_handler->axisManager()->lookupResource(axisId);
+        const int axisPositionInPayload = containsAxis(axisId, payload);
 
         if (axisPositionInPayload < 0) {
             // Not contained in the payload
             AxisUpdate axisUpdate;
             axisUpdate.name = axis->name();
+            axisUpdate.id = axisId;
             axisUpdate.value = axis->axisValue();
             payload.axes.push_back(axisUpdate);
         } else {
             // The axis has the same value as before -> remove from the payload
-            if (payload.axes.at(axisPositionInPayload).value == axis->axisValue())
-                payload.axes.removeAt(axisPositionInPayload);
-            else
+            if (payload.axes.at(axisPositionInPayload).value != axis->axisValue())
                 payload.axes[axisPositionInPayload].value = axis->axisValue();
         }
     }
 
-    Q_FOREACH (const Qt3DCore::QNodeId actionId, logicalDevice->actions()) {
-        const Action *action = m_handler->actionManager()->lookupResource(actionId);
-        const int actionPositionInPayload = containsAction(action->name(), payload);
+    m_axisActionHandler->setAndTransmitAxisPayload(payload);
+}
 
-        if (actionPositionInPayload < 0) {
-            // Not contained in the payload
-            ActionUpdate actionUpdate;
-            actionUpdate.name = action->name();
-            actionUpdate.triggered = action->actionTriggered();
-            payload.actions.push_back(actionUpdate);
-        } else {
-            // The stored action has the same triggered flas as the current action -> no change
-            if (payload.actions.at(actionPositionInPayload).triggered == action->actionTriggered())
-                payload.actions.removeAt(actionPositionInPayload);
-            else
-                payload.actions[actionPositionInPayload].triggered = action->actionTriggered();
-        }
+void UpdateHandlerJob::updateActions(LogicalDevice *device)
+{
+    ActionPayload payload;
+
+    // Push each action into the payload to build the current action state for the frame
+    Q_FOREACH (const Qt3DCore::QNodeId actionId, device->actions()) {
+        const Action *action = m_handler->actionManager()->lookupResource(actionId);
+        ActionUpdate actionUpdate;
+        actionUpdate.name = action->name();
+        actionUpdate.id = actionId;
+        actionUpdate.triggered = action->actionTriggered();
+        payload.actions.push_back(actionUpdate);
     }
 
-    m_axisActionHandler->setAndTransmitPayload(payload);
+    // Compare the action state against the previous payload state
+    ActionPayload oldPayload = m_axisActionHandler->lastActionPayload();
+    ActionPayload deltaPayload;
+
+    // Build up a delta payload
+    Q_FOREACH (const ActionUpdate &actionUpdate, payload.actions) {
+        const int posOfActionInOldPayload = containsAction(actionUpdate.id, oldPayload);
+        // If the action is not in the old payload or
+        // is in the old payload state but has a different value
+        // we add it to the delta payload
+        if (posOfActionInOldPayload < 0 ||
+                oldPayload.actions.at(posOfActionInOldPayload).triggered != actionUpdate.triggered)
+            deltaPayload.actions.push_back(actionUpdate);
+    }
+
+    m_axisActionHandler->setAndTransmitActionPayload(payload, deltaPayload);
 }
 
 } // Input

@@ -59,6 +59,7 @@ void AxisActionHandler::updateFromPeer(Qt3DCore::QNode *peer)
     Qt3DInput::QAxisActionHandler *handler = static_cast<Qt3DInput::QAxisActionHandler *>(peer);
     if (handler->logicalDevice())
         m_logicalDevice = handler->logicalDevice()->id();
+    // TO DO: Store the state of the actions
 }
 
 void AxisActionHandler::cleanup()
@@ -66,18 +67,30 @@ void AxisActionHandler::cleanup()
     m_logicalDevice = Qt3DCore::QNodeId();
 }
 
-void AxisActionHandler::setAndTransmitPayload(const AxisActionPayload &payload)
+void AxisActionHandler::setAndTransmitActionPayload(const ActionPayload &payloadState, const ActionPayload &deltaPayload)
 {
-    if (m_lastPayload == payload)
-        return;
+    if (m_lastActionPayload != payloadState) {
+        m_lastActionPayload = payloadState;
 
-    m_lastPayload = payload;
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        e->setTargetNode(peerUuid());
+        e->setPropertyName("actionPayload");
+        e->setValue(QVariant::fromValue(deltaPayload));
+        notifyObservers(e);
+    }
+}
 
-    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
-    e->setTargetNode(peerUuid());
-    e->setPropertyName("payload");
-    e->setValue(QVariant::fromValue(payload));
-    notifyObservers(e);
+void AxisActionHandler::setAndTransmitAxisPayload(const AxisPayload &payload)
+{
+    if (m_lastAxisPayload != payload) {
+        m_lastAxisPayload = payload;
+
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        e->setTargetNode(peerUuid());
+        e->setPropertyName("axisPayload");
+        e->setValue(QVariant::fromValue(payload));
+        notifyObservers(e);
+    }
 }
 
 void AxisActionHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
