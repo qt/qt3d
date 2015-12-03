@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/updateaxisactionjob_p.h \
     $$PWD/axisactionhandler_p.h \
     $$PWD/updatehandlerjob_p.h \
-    $$PWD/axisactionpayload_p.h
+    $$PWD/axisactionpayload_p.h \
+    $$PWD/keyboardmousedeviceintegration_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -49,6 +50,7 @@ SOURCES += \
     $$PWD/axissetting.cpp \
     $$PWD/updateaxisactionjob.cpp \
     $$PWD/axisactionhandler.cpp \
-    $$PWD/updatehandlerjob.cpp
+    $$PWD/updatehandlerjob.cpp \
+    $$PWD/keyboardmousedeviceintegration.cpp
 
 INCLUDEPATH += $$PWD

@@ -152,6 +152,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 
     Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
         KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
+        controller->updateKeyEvents(events);
         if (controller) {
             QAspectJobPtr focusChangeJob;
             if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,44 +34,57 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
-#define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qabstractphysicaldevice_p.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qstring.h>
+#include "keyboardmousedeviceintegration_p.h"
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QKeyboardController;
-class QKeyboardInput;
+namespace Input {
 
-class QKeyboardControllerPrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
+KeyboardMouseDeviceIntegration::KeyboardMouseDeviceIntegration(InputHandler *handler)
+    : Qt3DInput::QInputDeviceIntegration()
+    , m_handler(handler)
 {
-public:
-    QKeyboardControllerPrivate();
+}
 
-    Q_DECLARE_PUBLIC(QKeyboardController)
-    QKeyboardInput *m_activeInput;
-    QHash<QString, int> m_keyMap;
-    QStringList m_keyNames;
-};
+KeyboardMouseDeviceIntegration::~KeyboardMouseDeviceIntegration()
+{
+}
 
-} // namespace Qt3DInput
+void KeyboardMouseDeviceIntegration::initialize(QInputAspect *aspect)
+{
+    Q_UNUSED(aspect)
+}
+
+QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseDeviceIntegration::jobsToExecute(qint64 time)
+{
+    Q_UNUSED(time)
+    return QVector<Qt3DCore::QAspectJobPtr>();
+}
+
+QAbstractPhysicalDevice *KeyboardMouseDeviceIntegration::createPhysicalDevice(const QString &name)
+{
+    Q_UNUSED(name)
+    return Q_NULLPTR;
+}
+
+QVector<Qt3DCore::QNodeId> KeyboardMouseDeviceIntegration::physicalDevices() const
+{
+    // TO DO: could return the ids of active KeyboardController/MouseController
+    return QVector<Qt3DCore::QNodeId>();
+}
+
+QAbstractPhysicalDeviceBackendNode *KeyboardMouseDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
+{
+    return m_handler->keyboardControllerManager()->lookupResource(id);
+    // TO DO: When mouse is in it should also be checked as well
+}
+
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,44 +34,40 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
-#define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
+#ifndef QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H
+#define QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qabstractphysicaldevice_p.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qstring.h>
+#include <Qt3DInput/qinputdeviceintegration.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QKeyboardController;
-class QKeyboardInput;
+namespace Input {
 
-class QKeyboardControllerPrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
+class InputHandler;
+
+class KeyboardMouseDeviceIntegration : public Qt3DInput::QInputDeviceIntegration
 {
+    Q_OBJECT
 public:
-    QKeyboardControllerPrivate();
+    explicit KeyboardMouseDeviceIntegration(InputHandler *handleer);
+    ~KeyboardMouseDeviceIntegration();
 
-    Q_DECLARE_PUBLIC(QKeyboardController)
-    QKeyboardInput *m_activeInput;
-    QHash<QString, int> m_keyMap;
-    QStringList m_keyNames;
+    void initialize(QInputAspect *aspect) Q_DECL_FINAL;
+    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_FINAL;
+    QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) Q_DECL_FINAL;
+    QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_FINAL;
+    QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+
+private:
+    InputHandler *m_handler;
 };
 
-} // namespace Qt3DInput
+} // Input
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_P_H
+#endif // QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H

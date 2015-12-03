@@ -74,6 +74,7 @@
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/updateaxisactionjob_p.h>
 #include <Qt3DInput/private/updatehandlerjob_p.h>
+#include <Qt3DInput/private/keyboardmousedeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,6 +90,7 @@ QInputAspectPrivate::QInputAspectPrivate()
     : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
     , m_cameraController(new Input::CameraController())
+    , m_keyboardMouseIntegration(new Input::KeyboardMouseDeviceIntegration(m_inputHandler.data()))
 {
 }
 
@@ -113,7 +115,12 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeFunctorPtr(new Input::AxisActionHandlerNodeFunctor(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
 
+    // Plugins are QInputDeviceIntegration instances
     loadInputDevicePlugins();
+
+    // KeyboardController and MouseController also provide their own QInputDeviceIntegration
+    Q_D(QInputAspect);
+    d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
 }
 
 void QInputAspect::loadInputDevicePlugins()
