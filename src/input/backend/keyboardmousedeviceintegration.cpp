@@ -79,8 +79,10 @@ QVector<Qt3DCore::QNodeId> KeyboardMouseDeviceIntegration::physicalDevices() con
 
 QAbstractPhysicalDeviceBackendNode *KeyboardMouseDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
 {
-    return m_handler->keyboardControllerManager()->lookupResource(id);
-    // TO DO: When mouse is in it should also be checked as well
+    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardControllerManager()->lookupResource(id);
+    if (!device)
+        device = m_handler->mouseControllerManager()->lookupResource(id);
+    return device;
 }
 
 } // Input

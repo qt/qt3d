@@ -49,7 +49,7 @@ namespace Qt3DInput {
 namespace Input {
 
 MouseController::MouseController()
-    : QBackendNode()
+    : QAbstractPhysicalDeviceBackendNode(ReadOnly)
 {
 }
 
@@ -59,7 +59,7 @@ MouseController::~MouseController()
 
 void MouseController::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    Q_UNUSED(peer);
+    QAbstractPhysicalDeviceBackendNode::updateFromPeer(peer);
 }
 
 void MouseController::setInputHandler(InputHandler *handler)
@@ -78,9 +78,49 @@ void MouseController::removeMouseInput(const Qt3DCore::QNodeId &input)
     m_mouseInputs.removeOne(input);
 }
 
+float MouseController::axisValue(int axisIdentifier) const
+{
+    switch (axisIdentifier) {
+    case QMouseController::X:
+        return m_mouseState.xAxis;
+    case QMouseController::Y:
+        return m_mouseState.yAxis;
+        break;
+    default:
+        break;
+    }
+    return 0.0f;
+}
+
+bool MouseController::isButtonPressed(int buttonIdentifier) const
+{
+    switch (buttonIdentifier) {
+    case QMouseController::Left:
+        return m_mouseState.leftPressed;
+    case QMouseController::Center:
+        return m_mouseState.rightPressed;
+    case QMouseController::Right:
+        return m_mouseState.centerPressed;
+    default:
+        break;
+    }
+    return false;
+}
+
 QVector<Qt3DCore::QNodeId> MouseController::mouseInputs() const
 {
     return m_mouseInputs;
+}
+
+void MouseController::updateMouseEvents(const QList<QMouseEvent> &events)
+{
+    Q_FOREACH (const QMouseEvent &e, events) {
+        m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
+        m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
+        m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
+        m_mouseState.xAxis = m_previousPos.x() - e.screenPos().x();
+        m_mouseState.yAxis = m_previousPos.y() - e.screenPos().y();
+    }
 }
 
 void MouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

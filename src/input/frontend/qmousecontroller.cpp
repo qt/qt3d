@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 QMouseControllerPrivate::QMouseControllerPrivate()
-    : QNodePrivate()
+    : QAbstractPhysicalDevicePrivate()
 {
 }
 
@@ -60,7 +60,7 @@ QMouseControllerPrivate::QMouseControllerPrivate()
  * \sa QMouseInput
  */
 QMouseController::QMouseController(QNode *parent)
-    : QNode(*new QMouseControllerPrivate, parent)
+    : QAbstractPhysicalDevice(*new QMouseControllerPrivate, parent)
 {
 }
 
@@ -68,7 +68,7 @@ QMouseController::QMouseController(QNode *parent)
     \internal
 */
 QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
-    : QNode(dd, parent)
+    : QAbstractPhysicalDevice(dd, parent)
 {
 }
 
@@ -78,6 +78,52 @@ QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
 QMouseController::~QMouseController()
 {
     QNode::cleanup();
+}
+
+int QMouseController::axisCount() const
+{
+    // TO DO: we could have mouse wheel later on
+    return 2;
+}
+
+int QMouseController::buttonCount() const
+{
+    return 3;
+}
+
+QStringList QMouseController::axisNames() const
+{
+    return QStringList()
+            << QStringLiteral("X")
+            << QStringLiteral("Y");
+}
+
+QStringList QMouseController::buttonNames() const
+{
+    return QStringList()
+            << QStringLiteral("Left")
+            << QStringLiteral("Right")
+            << QStringLiteral("Center");
+}
+
+int QMouseController::axisIdentifier(const QString &name)
+{
+    if (name == QStringLiteral("X"))
+        return X;
+    else if (name == QStringLiteral("Y"))
+        return Y;
+    return -1;
+}
+
+int QMouseController::buttonIdentifier(const QString &name)
+{
+    if (name == QStringLiteral("Left"))
+        return Left;
+    else if (name == QStringLiteral("Right"))
+        return Right;
+    else if (name == QStringLiteral("Center"))
+        return Center;
+    return -1;
 }
 
 void QMouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)

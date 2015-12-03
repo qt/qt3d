@@ -48,7 +48,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,7 +58,7 @@ namespace Input {
 
 class InputHandler;
 
-class MouseController : public Qt3DCore::QBackendNode
+class MouseController : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
     MouseController();
@@ -69,7 +70,12 @@ public:
     void addMouseInput(const Qt3DCore::QNodeId &input);
     void removeMouseInput(const Qt3DCore::QNodeId &input);
 
+    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
+    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QNodeId> mouseInputs() const;
+
+    void updateMouseEvents(const QList<QMouseEvent> &events);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -77,6 +83,17 @@ protected:
 private:
     QVector<Qt3DCore::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
+
+    struct MouseState {
+        float xAxis;
+        float yAxis;
+        bool leftPressed;
+        bool rightPressed;
+        bool centerPressed;
+    };
+
+    MouseState m_mouseState;
+    QPoint m_previousPos;
 };
 
 class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor

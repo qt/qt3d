@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <private/qnode_p.h>
+#include <private/qabstractphysicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ namespace Qt3DInput {
 
 class QMouseController;
 
-class QMouseControllerPrivate : public Qt3DCore::QNodePrivate
+class QMouseControllerPrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
 {
 public:
     QMouseControllerPrivate();

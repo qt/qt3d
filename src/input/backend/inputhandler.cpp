@@ -182,6 +182,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 
     Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
         MouseController *controller = m_mouseControllerManager->data(cHandle);
+        controller->updateMouseEvents(events);
 
         // Event dispacthing job
         if (!events.isEmpty()) {
