@@ -34,28 +34,82 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QBOUDINGSPHERE_H
-#define QT3DCORE_QBOUDINGSPHERE_H
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qboundingvolume.h>
+#include "qcollisionqueryresult_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QT3DCORESHARED_EXPORT QBoundingSphere : public QBoundingVolume
+QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
+    : QSharedData()
 {
-public:
-    QBoundingSphere();
-    ~QBoundingSphere();
+}
 
-    virtual QVector3D center() const = 0;
-    virtual float radius() const = 0;
-};
+QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy)
+    : QSharedData(copy)
+    , m_handle(copy.m_handle)
+    , m_entitiesHit(copy.m_entitiesHit)
+{
+}
 
-} // namespace Qt3DCore
+void QCollisionQueryResultPrivate::addEntityHit(const Qt3DCore::QNodeId &entity)
+{
+    m_entitiesHit.append(entity);
+}
+
+void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)
+{
+    m_handle = handle;
+}
+
+QCollisionQueryResult::QCollisionQueryResult()
+    : d_ptr(new QCollisionQueryResultPrivate())
+{
+}
+
+QCollisionQueryResult::QCollisionQueryResult(const QCollisionQueryResult &result)
+    : d_ptr(result.d_ptr)
+{
+}
+
+QCollisionQueryResult::~QCollisionQueryResult()
+{
+}
+
+QCollisionQueryResult &QCollisionQueryResult::operator=(const QCollisionQueryResult &result)
+{
+    d_ptr = result.d_ptr;
+    return *this;
+}
+
+QVector<Qt3DCore::QNodeId> QCollisionQueryResult::entitiesHit() const
+{
+    Q_D(const QCollisionQueryResult);
+    return d->m_entitiesHit;
+}
+
+/*!
+    \internal
+*/
+QCollisionQueryResult::QCollisionQueryResult(QCollisionQueryResultPrivate &p)
+    : d_ptr(&p)
+{
+}
+
+/*!
+    \internal
+*/
+QCollisionQueryResultPrivate *QCollisionQueryResult::d_func()
+{
+    return d_ptr.data();
+}
+
+QQueryHandle QCollisionQueryResult::handle() const
+{
+    Q_D(const QCollisionQueryResult);
+    return d->m_handle;
+}
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QBOUDINGSPHERE_H

@@ -34,23 +34,45 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QCOLLISIONQUERYRESULT_H
-#define QT3DCORE_QCOLLISIONQUERYRESULT_H
+#ifndef QT3DRENDER_QCOLLISIONQUERYRESULT_P_H
+#define QT3DRENDER_QCOLLISIONQUERYRESULT_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QVector>
 #include <QSharedData>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 typedef int QQueryHandle;
 
-class QCollisionQueryResultPrivate;
+class QCollisionQueryResultPrivate : public QSharedData
+{
+public:
+    explicit QCollisionQueryResultPrivate();
+    explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
 
-class QT3DCORESHARED_EXPORT QCollisionQueryResult
+    void setHandle(const QQueryHandle &handle);
+    void addEntityHit(const Qt3DCore::QNodeId &entity);
+
+    QQueryHandle m_handle;
+    QVector<Qt3DCore::QNodeId> m_entitiesHit;
+};
+
+class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 {
 public:
     QCollisionQueryResult();
@@ -72,7 +94,7 @@ public:
     }
 
     QQueryHandle handle() const;
-    QVector<QNodeId> entitiesHit() const;
+    QVector<Qt3DCore::QNodeId> entitiesHit() const;
 
 private:
     friend class QAbstractCollisionQueryService;
@@ -88,11 +110,10 @@ private:
     }
 };
 
-} // Qt3D
+} // Qt3DRender
 
-Q_DECLARE_SHARED(Qt3DCore::QCollisionQueryResult)
+Q_DECLARE_SHARED(Qt3DRender::QCollisionQueryResult)
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QCOLLISIONQUERYRESULT_H
-
+#endif // QT3DRENDER_QCOLLISIONQUERYRESULT_P_H

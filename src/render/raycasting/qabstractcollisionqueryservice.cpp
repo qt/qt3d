@@ -34,83 +34,34 @@
 **
 ****************************************************************************/
 
-#include "qcollisionqueryresult.h"
+#include "qabstractcollisionqueryservice_p.h"
+
 #include "qcollisionqueryresult_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
-    : QSharedData()
+QAbstractCollisionQueryService::QAbstractCollisionQueryService(const QString &description)
+    : QAbstractServiceProvider(*new QAbstractCollisionQueryServicePrivate(description))
 {
 }
 
-QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy)
-    : QSharedData(copy)
-    , m_handle(copy.m_handle)
-    , m_entitiesHit(copy.m_entitiesHit)
+QAbstractCollisionQueryService::QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd)
+    : QAbstractServiceProvider(dd)
 {
 }
 
-void QCollisionQueryResultPrivate::addEntityHit(const QNodeId &entity)
+void QAbstractCollisionQueryService::setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle)
 {
-    m_entitiesHit.append(entity);
+    result.d_func()->setHandle(handle);
 }
 
-void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)
+void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result, const Qt3DCore::QNodeId &entity)
 {
-    m_handle = handle;
+    result.d_func()->addEntityHit(entity);
 }
 
-QCollisionQueryResult::QCollisionQueryResult()
-    : d_ptr(new QCollisionQueryResultPrivate())
-{
-}
-
-QCollisionQueryResult::QCollisionQueryResult(const QCollisionQueryResult &result)
-    : d_ptr(result.d_ptr)
-{
-}
-
-QCollisionQueryResult::~QCollisionQueryResult()
-{
-}
-
-QCollisionQueryResult &QCollisionQueryResult::operator=(const QCollisionQueryResult &result)
-{
-    d_ptr = result.d_ptr;
-    return *this;
-}
-
-QVector<QNodeId> QCollisionQueryResult::entitiesHit() const
-{
-    Q_D(const QCollisionQueryResult);
-    return d->m_entitiesHit;
-}
-
-/*!
-    \internal
-*/
-QCollisionQueryResult::QCollisionQueryResult(QCollisionQueryResultPrivate &p)
-    : d_ptr(&p)
-{
-}
-
-/*!
-    \internal
-*/
-QCollisionQueryResultPrivate *QCollisionQueryResult::d_func()
-{
-    return d_ptr.data();
-}
-
-QQueryHandle QCollisionQueryResult::handle() const
-{
-    Q_D(const QCollisionQueryResult);
-    return d->m_handle;
-}
-
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE

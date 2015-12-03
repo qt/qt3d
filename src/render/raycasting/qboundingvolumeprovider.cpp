@@ -34,35 +34,19 @@
 **
 ****************************************************************************/
 
-#include "qabstractcollisionqueryservice.h"
-#include "qabstractcollisionqueryservice_p.h"
+#include "qboundingvolumeprovider_p.h"
 
-#include "qcollisionqueryresult_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-QAbstractCollisionQueryService::QAbstractCollisionQueryService(const QString &description)
-    : QAbstractServiceProvider(*new QAbstractCollisionQueryServicePrivate(description))
+QBoundingVolumeProvider::~QBoundingVolumeProvider()
 {
+
 }
 
-QAbstractCollisionQueryService::QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd)
-    : QAbstractServiceProvider(dd)
-{
-}
 
-void QAbstractCollisionQueryService::setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle)
-{
-    result.d_func()->setHandle(handle);
-}
-
-void QAbstractCollisionQueryService::addEntityHit(QCollisionQueryResult &result, const QNodeId &entity)
-{
-    result.d_func()->addEntityHit(entity);
-}
-
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE

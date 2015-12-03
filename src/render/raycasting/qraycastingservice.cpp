@@ -34,12 +34,11 @@
 **
 ****************************************************************************/
 
-#include "qraycastingservice.h"
 #include "qraycastingservice_p.h"
 
 #include <Qt3DCore/qray3d.h>
 #include <Qt3DRender/private/sphere_p.h>
-#include <Qt3DCore/qboundingvolumeprovider.h>
+#include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 
 #include <QMap>
 #include <QtConcurrent>
@@ -116,8 +115,8 @@ struct CollisionGathererFunctor
 } // anonymous
 
 
-QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, Qt3DCore::QBoundingVolumeProvider *provider,
-                                                          Qt3DCore::QAbstractCollisionQueryService::QueryMode mode, const Qt3DCore::QQueryHandle &handle)
+QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, QBoundingVolumeProvider *provider,
+                                                          QAbstractCollisionQueryService::QueryMode mode, const QQueryHandle &handle)
 {
     Q_Q(QRayCastingService);
 
@@ -153,9 +152,9 @@ QRayCastingService::QRayCastingService()
 {
 }
 
-Qt3DCore::QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
-                                                 QAbstractCollisionQueryService::QueryMode mode,
-                                                 Qt3DCore::QBoundingVolumeProvider *provider)
+QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
+                                       QAbstractCollisionQueryService::QueryMode mode,
+                                       QBoundingVolumeProvider *provider)
 {
     Q_D(QRayCastingService);
 
@@ -171,14 +170,14 @@ Qt3DCore::QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
     return handle;
 }
 
-Qt3DCore::QCollisionQueryResult QRayCastingService::fetchResult(const Qt3DCore::QQueryHandle &handle)
+QCollisionQueryResult QRayCastingService::fetchResult(const QQueryHandle &handle)
 {
     Q_D(QRayCastingService);
 
     return d->m_results.value(handle).result();
 }
 
-QVector<Qt3DCore::QCollisionQueryResult> QRayCastingService::fetchAllResults() const
+QVector<QCollisionQueryResult> QRayCastingService::fetchAllResults() const
 {
     Q_D(const QRayCastingService);
 

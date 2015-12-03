@@ -34,42 +34,20 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QCOLLISIONQUERYRESULT_P_H
-#define QT3DCORE_QCOLLISIONQUERYRESULT_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qcollisionqueryresult.h>
+#include "qboundingsphere_p.h"
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QCollisionQueryResultPrivate : public QSharedData
+QBoundingSphere::QBoundingSphere()
 {
-public:
-    explicit QCollisionQueryResultPrivate();
-    explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
+}
 
-    void setHandle(const QQueryHandle &handle);
-    void addEntityHit(const QNodeId &entity);
+QBoundingSphere::~QBoundingSphere()
+{
+}
 
-    QQueryHandle m_handle;
-    QVector<QNodeId> m_entitiesHit;
-};
-
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DCORE_QCOLLISIONQUERYRESULT_P_H

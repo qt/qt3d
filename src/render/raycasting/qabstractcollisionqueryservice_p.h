@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRAYCASTINGSERVICE_P_H
-#define QT3DRENDER_QRAYCASTINGSERVICE_P_H
+#ifndef QT3DRENDER_QABSTRACTCOLLISIONQUERYSERVICE_P_H
+#define QT3DRENDER_QABSTRACTCOLLISIONQUERYSERVICE_P_H
 
 //
 //  W A R N I N G
@@ -48,51 +48,60 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qabstractcollisionqueryservice.h>
-#include <Qt3DCore/private/qabstractcollisionqueryservice_p.h>
-#include <Qt3DCore/qray3d.h>
+#include <QVector>
 
-#include <QHash>
-#include <QtConcurrent>
-#include <QAtomicInt>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/qnodeid.h>
+#include <Qt3DCore/private/qabstractserviceprovider_p.h>
+#include <Qt3DRender/private/qcollisionqueryresult_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-class QBoundingVolume;
-class QBoundingVolumeProvider;
+class QRay3D;
 }
 
 namespace Qt3DRender {
 
-typedef QFuture<Qt3DCore::QCollisionQueryResult> FutureQueryResult;
+class QBoundingVolumeProvider;
 
-class QRayCastingServicePrivate : public Qt3DCore::QAbstractCollisionQueryServicePrivate
+class QAbstractCollisionQueryServicePrivate : public Qt3DCore::QAbstractServiceProviderPrivate
 {
 public:
-    QRayCastingServicePrivate(const QString &description);
-
-    Qt3DCore::QCollisionQueryResult collides(const Qt3DCore::QRay3D &ray,
-                                         Qt3DCore::QBoundingVolumeProvider *provider,
-                                         Qt3DCore::QAbstractCollisionQueryService::QueryMode mode,
-                                         const Qt3DCore::QQueryHandle &handle);
-
-    Q_DECLARE_PUBLIC(QRayCastingService)
-
-    struct Query
-    {
-        Qt3DCore::QQueryHandle handle;
-        Qt3DCore::QRay3D ray;
-        QRayCastingService::QueryMode mode;
-    };
-
-    QHash<Qt3DCore::QQueryHandle, FutureQueryResult> m_results;
-    QAtomicInt m_handlesCount;
+    QAbstractCollisionQueryServicePrivate(const QString &description)
+        : QAbstractServiceProviderPrivate(Qt3DCore::QServiceLocator::CollisionService, description)
+    {}
 };
 
-} // namespace Qt3DRender
+class QT3DRENDERSHARED_EXPORT QAbstractCollisionQueryService : public Qt3DCore::QAbstractServiceProvider
+{
+public:
+    enum QueryMode {
+        FirstHit,
+        AllHits
+    };
+
+    virtual QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) = 0;
+
+    virtual QCollisionQueryResult fetchResult(const QQueryHandle &handle) = 0;
+    virtual QVector<QCollisionQueryResult> fetchAllResults() const = 0;
+
+protected:
+    QAbstractCollisionQueryService(const QString &description = QString());
+    QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd);
+
+    void setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle);
+    void addEntityHit(QCollisionQueryResult &result, const Qt3DCore::QNodeId &entity);
+
+private:
+    Q_DECLARE_PRIVATE(QAbstractCollisionQueryService)
+};
+
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRAYCASTINGSERVICE_P_H
+Q_DECLARE_METATYPE(Qt3DRender::QAbstractCollisionQueryService::QueryMode)
+
+#endif // QT3DRENDER_QABSTRACTCOLLISIONQUERYSERVICE_P_H

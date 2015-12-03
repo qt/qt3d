@@ -34,43 +34,37 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
-#define QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
+#ifndef QT3DRENDER_QBOUNDINGVOLUMEPROVIDER_P_H
+#define QT3DRENDER_QBOUNDINGVOLUMEPROVIDER_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DRender/qt3drender_global.h>
 
-#include <Qt3DCore/qabstractcollisionqueryservice.h>
-
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DCore {
-class QBoundingVolumeProvider;
-}
 
 namespace Qt3DRender {
 
-class QRayCastingServicePrivate;
+class QBoundingVolume;
 
-class QT3DRENDERSHARED_EXPORT QRayCastingService : public Qt3DCore::QAbstractCollisionQueryService
+class QT3DRENDERSHARED_EXPORT QBoundingVolumeProvider
 {
 public:
-    QRayCastingService();
-
-    Qt3DCore::QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, Qt3DCore::QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
-
-    Qt3DCore::QCollisionQueryResult fetchResult(const Qt3DCore::QQueryHandle &handle) Q_DECL_OVERRIDE;
-    QVector<Qt3DCore::QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
-
-protected:
-    QRayCastingService(QRayCastingServicePrivate &dd);
-
-private:
-    Q_DISABLE_COPY(QRayCastingService)
-    Q_DECLARE_PRIVATE(QRayCastingService)
+    virtual ~QBoundingVolumeProvider();
+    virtual QVector<QBoundingVolume *> boundingVolumes() const = 0;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_QRAYCASTINGSERVICE_H
+#endif // QT3DRENDER_QBOUNDINGVOLUMEPROVIDER_P_H

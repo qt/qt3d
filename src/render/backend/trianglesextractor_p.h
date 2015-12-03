@@ -52,11 +52,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QBoundingVolume;
-}
-
 namespace Qt3DRender {
+
+class QBoundingVolume;
 
 namespace Render {
 
@@ -69,7 +67,7 @@ public:
     explicit TrianglesExtractor(GeometryRenderer *renderer,
                                 NodeManagers *manager);
 
-    QVector<Qt3DCore::QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
+    QVector<QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
 
 private:
     GeometryRenderer *m_renderer;

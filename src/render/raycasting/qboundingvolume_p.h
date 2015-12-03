@@ -34,19 +34,52 @@
 **
 ****************************************************************************/
 
-#include "qboundingvolumeprovider.h"
+#ifndef QT3DRENDER_QBOUNDINGVOLUME_P_H
+#define QT3DRENDER_QBOUNDINGVOLUME_P_H
 
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-QBoundingVolumeProvider::~QBoundingVolumeProvider()
-{
-
+class QRay3D;
 }
 
+namespace Qt3DRender {
 
-} // Qt3D
+class QT3DRENDERSHARED_EXPORT QBoundingVolume
+{
+public:
+    QBoundingVolume();
+    virtual ~QBoundingVolume();
+
+    enum Type {
+        Sphere = 0,
+        Triangle
+    };
+
+    virtual Qt3DCore::QNodeId id() const = 0;
+    virtual bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q = Q_NULLPTR) const = 0;
+
+    virtual Type type() const = 0;
+};
+
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::QBoundingVolume*)
+
+#endif // QT3DRENDER_QBOUNDINGVOLUME_P_H

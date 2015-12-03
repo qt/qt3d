@@ -36,12 +36,11 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
-#include <Qt3DRender/qraycastingservice.h>
+#include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
-#include <Qt3DRender/qraycastingservice.h>
-#include <Qt3DCore/qboundingvolumeprovider.h>
+#include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DCore/qray3d.h>
 #include <Qt3DCore/qcamera.h>
 

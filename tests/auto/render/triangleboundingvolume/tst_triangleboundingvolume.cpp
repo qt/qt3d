@@ -37,11 +37,11 @@
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
-#include <Qt3DRender/qraycastingservice.h>
+#include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DCore/qray3d.h>
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qcamera.h>
-#include <Qt3DCore/qboundingvolume.h>
+#include <Qt3DRender/private/qboundingvolume_p.h>
 
 class tst_TriangleBoundingVolume : public QObject
 {
@@ -64,7 +64,7 @@ private Q_SLOTS:
         QCOMPARE(volume.a(), QVector3D());
         QCOMPARE(volume.b(), QVector3D());
         QCOMPARE(volume.c(), QVector3D());
-        QCOMPARE(volume.type(), Qt3DCore::QBoundingVolume::Triangle);
+        QCOMPARE(volume.type(), Qt3DRender::QBoundingVolume::Triangle);
     }
 
     void transformed_data()

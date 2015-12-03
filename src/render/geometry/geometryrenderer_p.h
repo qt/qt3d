@@ -54,11 +54,9 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QBoundingVolume;
-}
-
 namespace Qt3DRender {
+
+class QBoundingVolume;
 
 namespace Render {
 
@@ -90,9 +88,9 @@ public:
     void unsetDirty();
 
     // Build triangle data Job thread
-    void setTriangleVolumes(const  QVector<Qt3DCore::QBoundingVolume *> &volumes);
+    void setTriangleVolumes(const  QVector<QBoundingVolume *> &volumes);
     // Pick volumes job
-    QVector<Qt3DCore::QBoundingVolume *> triangleData() const;
+    QVector<QBoundingVolume *> triangleData() const;
 
 private:
     Qt3DCore::QNodeId m_geometryId;
@@ -107,7 +105,7 @@ private:
     bool m_enabled;
     QGeometryFunctorPtr m_functor;
     GeometryRendererManager *m_manager;
-    QVector<Qt3DCore::QBoundingVolume *> m_triangleVolumes;
+    QVector<QBoundingVolume *> m_triangleVolumes;
 };
 
 class GeometryRendererFunctor : public Qt3DCore::QBackendNodeFunctor

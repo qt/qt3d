@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qboundingvolume.h>
+#include <Qt3DRender/private/qboundingvolume_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QVector3D>
 
@@ -65,7 +65,7 @@ Q_AUTOTEST_EXPORT bool intersectsSegmentTriangle(const Qt3DCore::QRay3D &ray,
                                                  QVector3D &uvw,
                                                  float &t);
 
-class Q_AUTOTEST_EXPORT TriangleBoundingVolume : public Qt3DCore::QBoundingVolume
+class Q_AUTOTEST_EXPORT TriangleBoundingVolume : public QBoundingVolume
 {
 public:
     TriangleBoundingVolume();

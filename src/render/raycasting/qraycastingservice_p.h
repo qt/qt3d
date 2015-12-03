@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_NULLSERVICES_P_H
-#define QT3DCORE_NULLSERVICES_P_H
+#ifndef QT3DRENDER_QRAYCASTINGSERVICE_P_H
+#define QT3DRENDER_QRAYCASTINGSERVICE_P_H
 
 //
 //  W A R N I N G
@@ -49,41 +49,66 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRender/private/qabstractcollisionqueryservice_p.h>
 #include <Qt3DCore/qray3d.h>
-#include "qopenglinformationservice.h"
-#include "qsysteminformationservice.h"
+
+#include <QHash>
+#include <QtConcurrent>
+#include <QAtomicInt>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class NullSystemInformationService : public QSystemInformationService
+class QBoundingVolume;
+class QBoundingVolumeProvider;
+class QRayCastingServicePrivate;
+
+typedef QFuture<QCollisionQueryResult> FutureQueryResult;
+
+class QT3DRENDERSHARED_EXPORT QRayCastingService : public QAbstractCollisionQueryService
 {
 public:
-    NullSystemInformationService()
-        : QSystemInformationService(QStringLiteral("Null System Information Service"))
-    {}
-    ~NullSystemInformationService() {}
+    QRayCastingService();
 
-    QStringList aspectNames() const Q_DECL_FINAL { return QStringList(); }
-    int threadPoolThreadCount() const Q_DECL_FINAL { return 0; }
+    QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
+
+    QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE;
+    QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
+
+protected:
+    QRayCastingService(QRayCastingServicePrivate &dd);
+
+private:
+    Q_DISABLE_COPY(QRayCastingService)
+    Q_DECLARE_PRIVATE(QRayCastingService)
 };
 
-
-class NullOpenGLInformationService : public QOpenGLInformationService
+class QRayCastingServicePrivate : public QAbstractCollisionQueryServicePrivate
 {
 public:
-    NullOpenGLInformationService()
-        : QOpenGLInformationService(QStringLiteral("Null OpenGL Information Service"))
-    {}
-    ~NullOpenGLInformationService() {}
+    QRayCastingServicePrivate(const QString &description);
 
-    QSurfaceFormat format() const Q_DECL_FINAL { return QSurfaceFormat(); }
+    QCollisionQueryResult collides(const Qt3DCore::QRay3D &ray,
+                                   QBoundingVolumeProvider *provider,
+                                   QAbstractCollisionQueryService::QueryMode mode,
+                                   const QQueryHandle &handle);
+
+    Q_DECLARE_PUBLIC(QRayCastingService)
+
+    struct Query
+    {
+        QQueryHandle handle;
+        Qt3DCore::QRay3D ray;
+        QRayCastingService::QueryMode mode;
+    };
+
+    QHash<QQueryHandle, FutureQueryResult> m_results;
+    QAtomicInt m_handlesCount;
 };
 
-} // namespace Qt3DCore
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_NULLSERVICES_P_H
-
+#endif // QT3DRENDER_QRAYCASTINGSERVICE_P_H

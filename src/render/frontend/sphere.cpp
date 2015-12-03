@@ -224,7 +224,7 @@ bool Sphere::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
     return intersectRaySphere(ray, *this, q);
 }
 
-Qt3DCore::QBoundingVolume::Type Sphere::type() const
+QBoundingVolume::Type Sphere::type() const
 {
     return QBoundingVolume::Sphere;
 }

@@ -34,52 +34,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H
-#define QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H
+#ifndef QT3DRENDER_QBOUNDINGSPHERE_P_H
+#define QT3DRENDER_QBOUNDINGSPHERE_P_H
 
-#include <QVector>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qservicelocator.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qcollisionqueryresult.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/private/qboundingvolume_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QRay3D;
-class QAbstractCollisionQueryServicePrivate;
-class QBoundingVolumeProvider;
-
-class QT3DCORESHARED_EXPORT QAbstractCollisionQueryService : public QAbstractServiceProvider
+class QT3DRENDERSHARED_EXPORT QBoundingSphere : public QBoundingVolume
 {
 public:
-    enum QueryMode {
-        FirstHit,
-        AllHits
-    };
+    QBoundingSphere();
+    ~QBoundingSphere();
 
-    virtual QQueryHandle query(const QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) = 0;
-
-    virtual QCollisionQueryResult fetchResult(const QQueryHandle &handle) = 0;
-    virtual QVector<QCollisionQueryResult> fetchAllResults() const = 0;
-
-protected:
-    QAbstractCollisionQueryService(const QString &description = QString());
-    QAbstractCollisionQueryService(QAbstractCollisionQueryServicePrivate &dd);
-
-    void setResultHandle(QCollisionQueryResult &result, const QQueryHandle &handle);
-    void addEntityHit(QCollisionQueryResult &result, const QNodeId &entity);
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractCollisionQueryService)
+    virtual QVector3D center() const = 0;
+    virtual float radius() const = 0;
 };
 
-} // Qt3D
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DCore::QAbstractCollisionQueryService::QueryMode)
-
-#endif // QT3DCORE_QABSTRACTCOLLISIONQUERYSERVICE_H
+#endif // QT3DRENDER_QBOUNDINGSPHERE_P_H

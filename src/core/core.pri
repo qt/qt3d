@@ -35,10 +35,7 @@ HEADERS += \
     $$PWD/qbackendnodefactory.h \
     $$PWD/qray3d.h \
     $$PWD/qt3dcore_global_p.h \
-    $$PWD/qscene_p.h \
-    $$PWD/qboundingvolume.h \
-    $$PWD/qboundingsphere.h \
-    $$PWD/qboundingvolumeprovider.h
+    $$PWD/qscene_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -55,7 +52,4 @@ SOURCES += \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
     $$PWD/qbackendnodefactory.cpp \
-    $$PWD/qray3d.cpp \
-    $$PWD/qboundingvolume.cpp \
-    $$PWD/qboundingsphere.cpp \
-    $$PWD/qboundingvolumeprovider.cpp
+    $$PWD/qray3d.cpp
