@@ -134,10 +134,10 @@ QAspectEngine::~QAspectEngine()
     delete d->m_scene;
 }
 
-void QAspectEngine::initNodeTree(QNode *node)
+void QAspectEnginePrivate::initNodeTree(QNode *node)
 {
     QNodeVisitor visitor;
-    visitor.traverse(node, d_func(), &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
+    visitor.traverse(node, this, &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
 }
 
 void QAspectEngine::initialize()
@@ -294,7 +294,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     // scene object and adding each node to the scene
     // TODO: We probably need a call symmetric to this one above in order to
     // deregister the nodes from the scene
-    initNodeTree(root);
+    d->initNodeTree(root);
 
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the backends to get synchronized before the

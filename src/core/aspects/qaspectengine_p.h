@@ -77,6 +77,7 @@ public:
     QSharedPointer<QEntity> m_root;
     QList<QAbstractAspect*> m_aspects;
 
+    void initNodeTree(QNode *node);
     void initNode(QNode *node);
     void initEntity(QEntity *entity);
 };
