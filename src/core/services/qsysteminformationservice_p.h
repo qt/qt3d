@@ -49,24 +49,28 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/private/qabstractserviceprovider_p.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <QtCore/qstringlist.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QSystemInformationServicePrivate : public QAbstractServiceProviderPrivate
+class QSystemInformationServicePrivate;
+
+class QT3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
 {
 public:
-    QSystemInformationServicePrivate(const QString &description)
-        : QAbstractServiceProviderPrivate(QServiceLocator::SystemInformation, description)
-    {}
+    virtual QStringList aspectNames() const = 0;
+    virtual int threadPoolThreadCount() const = 0;
+
+protected:
+    QSystemInformationService(const QString &description = QString());
+    QSystemInformationService(QSystemInformationServicePrivate &dd);
 };
 
-}
+} // namespace Qt3DCore
 
 QT_END_NAMESPACE
 
 #endif // QT3DCORE_QSYSTEMINFORMATIONSERVICE_P_H
-

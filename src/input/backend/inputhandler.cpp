@@ -41,7 +41,7 @@
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
 #include "mouseeventdispatcherjob_p.h"
-#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 
 QT_BEGIN_NAMESPACE
 

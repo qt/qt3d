@@ -51,7 +51,7 @@
 #include <QVector>
 
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qabstractserviceprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>

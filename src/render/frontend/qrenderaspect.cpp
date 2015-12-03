@@ -122,7 +122,7 @@
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <QDebug>
 #include <QOffscreenSurface>

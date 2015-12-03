@@ -43,13 +43,13 @@
 #include "qabstractaspectjobmanager_p.h"
 #include "qentity.h"
 
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
-#include <Qt3DCore/qabstractframeadvanceservice.h>
+#include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>

@@ -48,8 +48,8 @@
 #include <Qt3DInput/qmouseinput.h>
 #include <Qt3DInput/qinputdeviceintegration.h>
 #include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>
-#include <Qt3DCore/qservicelocator.h>
-#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <QDir>
 #include <QLibrary>
 #include <QLibraryInfo>

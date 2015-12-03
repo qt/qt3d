@@ -52,8 +52,8 @@
 #include <private/qscene_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
-#include <Qt3DCore/qeventfilterservice.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 

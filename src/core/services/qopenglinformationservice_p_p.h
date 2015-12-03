@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Paul Lemire (paul.lemire350@gmail.com)
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,34 +34,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QEVENTFILTERSERVICE_H
-#define QT3DCORE_QEVENTFILTERSERVICE_H
+#ifndef QT3DCORE_QOPENGLINFORMATIONSERVICE_P_P_H
+#define QT3DCORE_QOPENGLINFORMATIONSERVICE_P_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qabstractserviceprovider_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QEventFilterServicePrivate;
-
-class QT3DCORESHARED_EXPORT QEventFilterService : public QAbstractServiceProvider
+class QOpenGLInformationServicePrivate : public QAbstractServiceProviderPrivate
 {
 public:
-    QEventFilterService();
-    ~QEventFilterService();
-
-    void initialize(QObject *eventSource);
-    void registerEventFilter(QObject *eventFilter, int priority);
-    void unregisterEventFilter(QObject *eventFilter);
-
-private:
-    Q_DECLARE_PRIVATE(QEventFilterService)
+    QOpenGLInformationServicePrivate(const QString &description)
+        : QAbstractServiceProviderPrivate(QServiceLocator::OpenGLInformation, description)
+    {}
 };
 
-} // Qt3DCore
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QEVENTFILTERSERVICE_H
+#endif // QT3DCORE_QOPENGLINFORMATIONSERVICE_P_P_H
+

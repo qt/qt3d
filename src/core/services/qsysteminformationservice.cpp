@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qsysteminformationservice.h"
 #include "qsysteminformationservice_p.h"
+#include "qsysteminformationservice_p_p.h"
 
 QT_BEGIN_NAMESPACE
 

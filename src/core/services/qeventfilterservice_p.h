@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire (paul.lemire350@gmail.com)
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,32 +34,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSYSTEMINFORMATIONSERVICE_H
-#define QT3DCORE_QSYSTEMINFORMATIONSERVICE_H
+#ifndef QT3DCORE_QEVENTFILTERSERVICE_H
+#define QT3DCORE_QEVENTFILTERSERVICE_H
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qservicelocator.h>
-#include <QtCore/qstringlist.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QSystemInformationServicePrivate;
+class QEventFilterServicePrivate;
 
-class QT3DCORESHARED_EXPORT QSystemInformationService : public QAbstractServiceProvider
+class QT3DCORESHARED_EXPORT QEventFilterService : public QAbstractServiceProvider
 {
 public:
-    virtual QStringList aspectNames() const = 0;
-    virtual int threadPoolThreadCount() const = 0;
+    QEventFilterService();
+    ~QEventFilterService();
 
-protected:
-    QSystemInformationService(const QString &description = QString());
-    QSystemInformationService(QSystemInformationServicePrivate &dd);
+    void initialize(QObject *eventSource);
+    void registerEventFilter(QObject *eventFilter, int priority);
+    void unregisterEventFilter(QObject *eventFilter);
+
+private:
+    Q_DECLARE_PRIVATE(QEventFilterService)
 };
 
-} // namespace Qt3DCore
+} // Qt3DCore
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QSYSTEMINFORMATIONSERVICE_H
+#endif // QT3DCORE_QEVENTFILTERSERVICE_H

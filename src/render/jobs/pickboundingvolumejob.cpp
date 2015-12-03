@@ -50,7 +50,7 @@
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/qray3d.h>
 #include <QSurface>
 
