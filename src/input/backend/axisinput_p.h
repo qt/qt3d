@@ -66,14 +66,14 @@ public:
 
     inline int axis() const { return m_axis; }
     inline float scale() const { return m_scale; }
-    inline qint64 keys() const { return m_keys; }
+    inline QVector<int> keys() const { return m_keys; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     inline bool isEnabled() const { return m_enabled; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     int m_axis;
-    qint64 m_keys;
+    QVector<int> m_keys;
     Qt3DCore::QNodeId m_sourceDevice;
     float m_scale;
     bool m_enabled;

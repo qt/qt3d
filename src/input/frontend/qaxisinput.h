@@ -54,7 +54,7 @@ class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
-    Q_PROPERTY(int keys READ keys WRITE setKeys NOTIFY keysChanged)
+    Q_PROPERTY(QVariantList keys READ keys WRITE setKeys NOTIFY keysChanged)
 
 public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
@@ -69,8 +69,8 @@ public:
     void setAxis(int axis);
     int axis() const;
 
-    void setKeys(int keys);
-    int keys() const;
+    void setKeys(const QVariantList &keys);
+    QVariantList keys() const;
 
 Q_SIGNALS:
     void sourceDeviceChanged();

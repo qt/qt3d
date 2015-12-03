@@ -69,14 +69,14 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QAxisInput *axisInputWithKeysAndAxis = new Qt3DInput::QAxisInput();
-        axisInputWithKeysAndAxis->setKeys((1 << 1) | (1 << 5));
+        axisInputWithKeysAndAxis->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         axisInputWithKeysAndAxis->setAxis(383);
         axisInputWithKeysAndAxis->setScale(327.0f);
         QTest::newRow("axisInputWithKeys") << axisInputWithKeysAndAxis;
 
         Qt3DInput::QAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QAxisInput();
         TestDevice *device = new TestDevice();
-        axisInputWithKeysAndSourceDevice->setKeys((1 << 1) | (1 << 5));
+        axisInputWithKeysAndSourceDevice->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
         axisInputWithKeysAndSourceDevice->setAxis(427);
         axisInputWithKeysAndAxis->setScale(355.0f);
@@ -112,14 +112,15 @@ private Q_SLOTS:
         TestArbiter arbiter(axisInput.data());
 
         // WHEN
-        axisInput->setKeys(555);
+        QVariantList keys = QVariantList() << QVariant(555);
+        axisInput->setKeys(keys);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "keys");
-        QCOMPARE(change->value().toInt(), 555);
+        QCOMPARE(change->value().toList(), keys);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

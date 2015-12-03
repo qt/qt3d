@@ -69,12 +69,12 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QActionInput *actionInputWithKeys = new Qt3DInput::QActionInput();
-        actionInputWithKeys->setKeys((1 << 1) | (1 << 5));
+        actionInputWithKeys->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         QTest::newRow("actionInputWithKeys") << actionInputWithKeys;
 
         Qt3DInput::QActionInput *actionInputWithKeysAndSourceDevice = new Qt3DInput::QActionInput();
         TestDevice *device = new TestDevice();
-        actionInputWithKeysAndSourceDevice->setKeys((1 << 1) | (1 << 5));
+        actionInputWithKeysAndSourceDevice->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         actionInputWithKeysAndSourceDevice->setSourceDevice(device);
         QTest::newRow("actionInputWithKeysAndSourceDevice") << actionInputWithKeysAndSourceDevice;
     }
@@ -106,14 +106,15 @@ private Q_SLOTS:
         TestArbiter arbiter(actionInput.data());
 
         // WHEN
-        actionInput->setKeys(555);
+        QVariantList keys = QVariantList() << QVariant(555);
+        actionInput->setKeys(keys);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "keys");
-        QCOMPARE(change->value().toInt(), 555);
+        QCOMPARE(change->value().toList(), keys);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

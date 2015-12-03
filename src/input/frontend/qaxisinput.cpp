@@ -47,13 +47,12 @@ class QAxisInputPrivate : public Qt3DCore::QNodePrivate
 public:
     QAxisInputPrivate()
         : Qt3DCore::QNodePrivate()
-        , m_keys(0)
         , m_sourceDevice(Q_NULLPTR)
         , m_scale(0.0f)
         , m_axis(-1)
     {}
 
-    int m_keys;
+    QVariantList m_keys;
     QAbstractPhysicalDevice *m_sourceDevice;
     float m_scale;
     int m_axis;
@@ -119,7 +118,7 @@ int QAxisInput::axis() const
     return d->m_axis;
 }
 
-void QAxisInput::setKeys(int keys)
+void QAxisInput::setKeys(const QVariantList &keys)
 {
     Q_D(QAxisInput);
     if (keys != d->m_keys) {
@@ -128,7 +127,7 @@ void QAxisInput::setKeys(int keys)
     }
 }
 
-int QAxisInput::keys() const
+QVariantList QAxisInput::keys() const
 {
     Q_D(const QAxisInput);
     return d->m_keys;
