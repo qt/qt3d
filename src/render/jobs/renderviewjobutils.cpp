@@ -57,6 +57,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/statesetnode_p.h>
+#include <Qt3DRender/private/dispatchcompute_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -204,6 +205,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::FrustumCulling: {
                 rv->setFrustumCulling(true);
+                break;
+            }
+
+            case FrameGraphNode::ComputeDispatch: {
+                const Render::DispatchCompute *dispatchCompute = static_cast<const Render::DispatchCompute *>(node);
+                rv->setCompute(true);
+                rv->setComputeWorkgroups(dispatchCompute->x(),
+                                        dispatchCompute->y(),
+                                        dispatchCompute->z());
                 break;
             }
 

@@ -115,9 +115,9 @@ public:
     void sort();
 
     void setRenderer(Renderer *renderer);
-    inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }
-    inline Renderer *renderer() const { return m_renderer; }
-    inline NodeManagers *nodeManagers() const { return m_manager; }
+    inline void setSurfaceSize(const QSize &size) Q_DECL_NOEXCEPT { m_surfaceSize = size; }
+    inline Renderer *renderer() const Q_DECL_NOEXCEPT { return m_renderer; }
+    inline NodeManagers *nodeManagers() const Q_DECL_NOEXCEPT { return m_manager; }
 
     inline void setAllocator(Qt3DCore::QFrameAllocator *allocator)
     {
@@ -155,14 +155,19 @@ public:
     inline void setTechniqueFilter(const TechniqueFilter *filter) { m_data->m_techniqueFilter = filter; }
     inline const TechniqueFilter *techniqueFilter() const { return m_data->m_techniqueFilter; }
 
-    inline RenderStateSet *stateSet() const { return m_stateSet; }
-    void setStateSet(RenderStateSet *stateSet) { m_stateSet = stateSet; }
+    inline RenderStateSet *stateSet() const Q_DECL_NOEXCEPT { return m_stateSet; }
+    void setStateSet(RenderStateSet *stateSet) Q_DECL_NOEXCEPT { m_stateSet = stateSet; }
 
-    inline bool noDraw() const { return m_noDraw; }
-    void setNoDraw(bool noDraw) { m_noDraw = noDraw; }
+    inline bool noDraw() const Q_DECL_NOEXCEPT { return m_noDraw; }
+    void setNoDraw(bool noDraw) Q_DECL_NOEXCEPT { m_noDraw = noDraw; }
 
-    inline bool frustumCulling() const { return m_frustumCulling; }
-    void setFrustumCulling(bool frustumCulling) { m_frustumCulling = frustumCulling; }
+    inline bool isCompute() const Q_DECL_NOEXCEPT { return m_compute; }
+    void setCompute(bool compute) Q_DECL_NOEXCEPT { m_compute = compute; }
+
+    void setComputeWorkgroups(int x, int y, int z) Q_DECL_NOEXCEPT { m_workGroups[0] = x; m_workGroups[1] = y; m_workGroups[2] = z; }
+
+    inline bool frustumCulling() const Q_DECL_NOEXCEPT { return m_frustumCulling; }
+    void setFrustumCulling(bool frustumCulling) Q_DECL_NOEXCEPT { m_frustumCulling = frustumCulling; }
 
     // TODO: Get rid of this overly complex memory management by splitting out the
     // InnerData as a RenderViewConfig struct. This can be created by setRenderViewConfigFromFrameGraphLeafNode
@@ -205,8 +210,8 @@ public:
         return *m_clearColor;
     }
 
-    inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) { m_clearBuffer = clearBuffer; }
-    inline QClearBuffer::BufferType clearBuffer() const { return m_clearBuffer; }
+    inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
+    inline QClearBuffer::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
 
     void buildRenderCommands(Entity *preprocessedTreeRoot, const Plane *planes);
     QVector<RenderCommand *> commands() const { return m_commands; }
@@ -216,8 +221,8 @@ public:
     void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
     const AttachmentPack &attachmentPack() const;
 
-    void setRenderTargetHandle(HTarget renderTargetHandle) { m_renderTarget = renderTargetHandle; }
-    HTarget renderTargetHandle() const { return m_renderTarget; }
+    void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }
+    HTarget renderTargetHandle() const Q_DECL_NOEXCEPT { return m_renderTarget; }
 
     void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
@@ -268,8 +273,10 @@ private:
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;
-    bool m_noDraw;
-    bool m_frustumCulling;
+    bool m_noDraw:1;
+    bool m_compute:1;
+    bool m_frustumCulling:1;
+    int m_workGroups[3];
 
     // We do not use pointers to RenderNodes or Drawable's here so that the
     // render aspect is free to change the drawables on the next frame whilst
