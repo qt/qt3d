@@ -767,10 +767,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
                 const QString LIGHT_POSITION_NAME = QStringLiteral("position");
 
-                // Shaders without dynamic indexing will not have lightCount
-                if (uniformNames.contains(LIGHT_COUNT_NAME))
-                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, activeLightSources.count());
-
                 int lightIdx = 0;
                 Q_FOREACH (const LightSource &lightSource, activeLightSources) {
                     if (lightIdx == MAX_LIGHTS)
@@ -787,8 +783,11 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     }
                 }
 
+                // Shaders without dynamic indexing will not have lightCount
+                if (uniformNames.contains(LIGHT_COUNT_NAME))
+                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, qMax(1, lightIdx));
+
                 if (activeLightSources.isEmpty()) {
-                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, 1);
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
