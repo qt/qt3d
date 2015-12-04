@@ -173,7 +173,6 @@ void QWindow::show()
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
     d->m_engine->setData(data);
 
-    d->m_engine->initialize();
     d->m_root->addComponent(d->m_frameGraph);
     d->m_engine->setRootEntity(d->m_root);
 

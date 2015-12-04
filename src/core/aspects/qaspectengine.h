@@ -59,9 +59,6 @@ public:
     explicit QAspectEngine(QObject *parent = 0);
     ~QAspectEngine();
 
-    void initialize();
-    void shutdown();
-
     void setRootEntity(QEntity *root);
     QSharedPointer<QEntity> rootEntity() const;
 

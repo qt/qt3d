@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
     engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
     engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
     engine.aspectEngine()->registerAspect(new Qt3DLogic::QLogicAspect());
-    engine.aspectEngine()->initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));

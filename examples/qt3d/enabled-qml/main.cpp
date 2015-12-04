@@ -51,7 +51,6 @@ int main(int argc, char *argv[])
     Window view;
     Qt3DCore::Quick::QQmlAspectEngine engine;
     engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));

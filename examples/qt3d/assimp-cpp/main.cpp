@@ -110,7 +110,6 @@ int main(int ac, char **av)
     Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
     engine.registerAspect(new Qt3DRender::QRenderAspect());
     engine.registerAspect(inputAspect);
-    engine.initialize();
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));

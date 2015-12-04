@@ -77,7 +77,6 @@ void QQmlAspectEngine::setSource(const QUrl &source)
     Q_D(QQmlAspectEngine);
 
     if (d->m_component) {
-        d->m_aspectEngine->shutdown();
         d->m_aspectEngine->setRootEntity(Q_NULLPTR);
         d->m_component = Q_NULLPTR;
     }

@@ -130,7 +130,6 @@ private Q_SLOTS:
 
         // An initialized engine (so that the arbiter has been fed)
         QAspectEngine engine;
-        engine.initialize();
 
         // WHEN
         engine.setRootEntity(root);
