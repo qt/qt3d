@@ -113,18 +113,6 @@ QAspectEngine::QAspectEngine(QObject *parent)
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
-/*! \internal */
-QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-    Q_D(QAspectEngine);
-    d->m_scene = new QScene(this);
-    d->m_postman = new QPostman(this);
-    d->m_postman->setScene(d->m_scene);
-    d->m_aspectThread = new QAspectThread(this);
-    d->m_aspectThread->waitForStart(QThread::HighestPriority);
-}
-
 QAspectEngine::~QAspectEngine()
 {
     Q_D(QAspectEngine);

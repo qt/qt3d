@@ -73,9 +73,8 @@ public:
 
     QVariant executeCommand(const QString &command);
 
-protected:
+private:
     Q_DECLARE_PRIVATE(QAspectEngine)
-    QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
 };
 
 } // namespace Qt3DCore
