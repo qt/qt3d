@@ -20,18 +20,19 @@ void adsModelNormalMapped(const in vec3 vpos, const in vec3 vnormal, const in ve
     vec3 n = normalize( vnormal );
 
     int i;
+    vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        vec3 lightDir = lights[i].direction;
+        s = -lights[i].direction;
         float att = 1.0;
-        if (length( lightDir ) == 0.0) {
-            lightDir = lights[i].position - vpos;
+        if (length( s ) == 0.0) {
+            s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
-                float dist = length(lightDir);
+                float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
         }
 
-        vec3 s = normalize( tangentMatrix * lightDir );
+        s = normalize( tangentMatrix * s );
         float diffuse = max( dot( s, n ), 0.0 );
 
         float specular = 0.0;
@@ -56,18 +57,19 @@ void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, cons
     vec3 n = normalize( vnormal );
 
     int i;
+    vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        vec3 lightDir = lights[i].direction;
+        s = -lights[i].direction;
         float att = 1.0;
-        if (length( lightDir ) == 0.0) {
-            lightDir = lights[i].position - vpos;
+        if (length( s ) == 0.0) {
+            s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
-                float dist = length(lightDir);
+                float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
         }
 
-        vec3 s = normalize( lightDir );
+        s = normalize( s );
         float diffuse = max( dot( s, n ), 0.0 );
 
         float specular = 0.0;
@@ -90,18 +92,19 @@ void adModel(const in vec3 vpos, const in vec3 vnormal, out vec3 diffuseColor)
     vec3 n = normalize( vnormal );
 
     int i;
+    vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        vec3 lightDir = lights[i].direction;
+        s = -lights[i].direction;
         float att = 1.0;
-        if (length( lightDir ) == 0.0) {
-            lightDir = lights[i].position - vpos;
+        if (length( s ) == 0.0) {
+            s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
-                float dist = length(lightDir);
+                float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
         }
 
-        vec3 s = normalize( lightDir );
+        s = normalize( s );
         float diffuse = max( dot( s, n ), 0.0 );
 
         diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;

@@ -20,17 +20,17 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
     FP vec3 n = normalize( vnormal );
 
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 lightDir = lights[0].direction;
+    FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( lightDir ) == 0.0) {
-        lightDir = lights[0].position - vpos;
+    if (length( s ) == 0.0) {
+        s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(lightDir);
+            FP float dist = length(s);
             att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
         }
     }
 
-    FP vec3 s = normalize( tangentMatrix * lightDir );
+    s = normalize( tangentMatrix * s );
     FP float diffuse = max( dot( s, n ), 0.0 );
 
     FP float specular = 0.0;
@@ -54,17 +54,17 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     FP vec3 n = normalize( vnormal );
 
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 lightDir = lights[0].direction;
+    FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( lightDir ) == 0.0) {
-        lightDir = lights[0].position - vpos;
+    if (length( s ) == 0.0) {
+        s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(lightDir);
+            FP float dist = length(s);
             att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
         }
     }
 
-    FP vec3 s = normalize( lightDir );
+    s = normalize( s );
     FP float diffuse = max( dot( s, n ), 0.0 );
 
     FP float specular = 0.0;
@@ -86,17 +86,17 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
     FP vec3 n = normalize( vnormal );
 
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 lightDir = lights[0].direction;
+    FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( lightDir ) == 0.0) {
-        lightDir = lights[0].position - vpos;
+    if (length( s ) == 0.0) {
+        s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(lightDir);
+            FP float dist = length(s);
             att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
         }
     }
 
-    FP vec3 s = normalize( lightDir );
+    s = normalize( s );
     FP float diffuse = max( dot( s, n ), 0.0 );
 
     diffuseColor += att * lights[0].intensity * diffuse * lights[0].color;
