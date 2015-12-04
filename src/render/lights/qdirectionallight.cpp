@@ -66,7 +66,8 @@ namespace Qt3DRender {
     \internal
 */
 QDirectionalLightPrivate::QDirectionalLightPrivate()
-    : m_direction(0.0f, -1.0f, 0.0f)
+    : QLightPrivate(QLight::DirectionalLight)
+    , m_direction(0.0f, -1.0f, 0.0f)
 {
 }
 

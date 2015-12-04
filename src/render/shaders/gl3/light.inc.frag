@@ -1,5 +1,6 @@
 const int MAX_LIGHTS = 8;
 struct Light {
+    int type;
     vec3 position;
     vec3 color;
     float intensity;

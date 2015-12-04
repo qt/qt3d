@@ -39,6 +39,7 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/qlight.h>
 #include <Qt3DRender/private/sphere_p.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -788,6 +789,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, qMax(1, lightIdx));
 
                 if (activeLightSources.isEmpty()) {
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].type"), int(QLight::PointLight));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
