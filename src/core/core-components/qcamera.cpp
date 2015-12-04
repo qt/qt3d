@@ -68,7 +68,7 @@ QCameraPrivate::QCameraPrivate()
 QCamera::QCamera(QNode *parent)
     : QEntity(*new QCameraPrivate, parent)
 {
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionMatrixChanged()));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionTypeChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged()), this, SIGNAL(farPlaneChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged()), this, SIGNAL(fieldOfViewChanged()));
@@ -92,7 +92,7 @@ QCamera::~QCamera()
 QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     : QEntity(dd, parent)
 {
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionMatrixChanged()));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionTypeChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged()), this, SIGNAL(farPlaneChanged()));
     QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged()), this, SIGNAL(fieldOfViewChanged()));
