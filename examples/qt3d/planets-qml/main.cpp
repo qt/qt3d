@@ -54,6 +54,7 @@ int main(int argc, char **argv)
     view.setFormat(format);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setSource(QUrl("qrc:/PlanetsMain.qml"));
+    view.setColor("#000000");
     view.show();
 
     return app.exec();

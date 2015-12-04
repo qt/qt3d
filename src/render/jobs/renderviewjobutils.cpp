@@ -95,6 +95,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         if (lens && lens->isEnabled()) {
                             rv->setRenderCamera(lens);
                             rv->setViewMatrix(*camNode->worldTransform());
+                            rv->setViewProjectionMatrix(lens->projection() * *camNode->worldTransform());
 
                             //To get the eyePosition of the camera, we need to use the inverse of the
                             //camera's worldTransform matrix.
@@ -198,6 +199,16 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::NoDraw: {
                 rv->setNoDraw(true);
+                break;
+            }
+
+            case FrameGraphNode::FrustumCulling: {
+                rv->setFrustumCulling(true);
+                break;
+            }
+
+            case FrameGraphNode::Lighting: {
+                // TODO
                 break;
             }
 

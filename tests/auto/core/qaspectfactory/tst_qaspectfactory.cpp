@@ -35,7 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
-#include <Qt3DCore/QAspectFactory>
+#include <Qt3DCore/private/qaspectfactory_p.h>
 #include <Qt3DCore/QAbstractAspect>
 
 using namespace QT_PREPEND_NAMESPACE(Qt3DCore);
@@ -46,7 +46,7 @@ class ClassName : public QAbstractAspect \
     Q_OBJECT \
 public: \
     explicit ClassName(QObject *parent = 0) \
-        : QAbstractAspect(QAbstractAspect::AspectOther, parent) {} \
+        : QAbstractAspect(parent) {} \
 \
 private: \
     void setRootEntity(QEntity *) Q_DECL_OVERRIDE {} \
@@ -89,25 +89,18 @@ private Q_SLOTS:
         QVERIFY(aspect->parent() == Q_NULLPTR);
     }
 
-    void shouldRegisterFactories()
+    void shouldKnowAspectNames()
     {
         // GIVEN
         QAspectFactory factory;
 
         // WHEN
-        factory.addFactory(QStringLiteral("another"),
-                           QAspectFactory::functionHelper<AnotherFakeAspect>);
+        DefaultFakeAspect fake;
+        AnotherFakeAspect missing;
 
         // THEN
-        QCOMPARE(factory.availableFactories().size(), 2);
-        QVERIFY(factory.availableFactories().contains(QStringLiteral("another")));
-
-        // WHEN
-        QAbstractAspect *aspect = factory.createAspect(QStringLiteral("another"), this);
-
-        // THEN
-        QVERIFY(qobject_cast<AnotherFakeAspect*>(aspect) != Q_NULLPTR);
-        QCOMPARE(aspect->parent(), this);
+        QCOMPARE(factory.aspectName(&fake), QString("default"));
+        QCOMPARE(factory.aspectName(&missing), QString());
     }
 
     void shouldGracefulyHandleMissingFactories()

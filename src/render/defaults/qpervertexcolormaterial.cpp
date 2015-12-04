@@ -58,8 +58,6 @@ namespace Qt3DRender {
 QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
     : QMaterialPrivate()
     , m_vertexEffect(new QEffect())
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(1.0f, 1.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_vertexGL3Technique(new QTechnique())
     , m_vertexGL2Technique(new QTechnique())
     , m_vertexES2Technique(new QTechnique())
@@ -74,7 +72,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 /*!
     \class Qt3DRender::QPerVertexColorMaterial
     \brief The QPerVertexColorMaterial class provides a default implementation for rendering the color properties set for each vertex.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     This lighting effect is based on the combination of 2 lighting components ambient and diffuse. Ambient is set by the vertex color.
@@ -90,7 +88,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
 */
 
 /*!
-    \fn Qt3DRender::QPerVertexColorMaterial::QPerVertexColorMaterial(QNode *parent)
+    \fn Qt3DRender::QPerVertexColorMaterial::QPerVertexColorMaterial(Qt3DCore::QNode *parent)
 
     Constructs a new QPerVertexColorMaterial instance with parent object \a parent.
 */
@@ -144,9 +142,6 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexEffect->addTechnique(m_vertexGL3Technique);
     m_vertexEffect->addTechnique(m_vertexGL2Technique);
     m_vertexEffect->addTechnique(m_vertexES2Technique);
-
-    m_vertexEffect->addParameter(m_lightPositionParameter);
-    m_vertexEffect->addParameter(m_lightIntensityParameter);
 
     q_func()->setEffect(m_vertexEffect);
 }

@@ -59,19 +59,20 @@ class QWindow;
 namespace Qt3DRender {
 namespace Render {
 
-class Renderer;
+class AbstractRenderer;
 
 class PlatformSurfaceFilter : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PlatformSurfaceFilter(Renderer *renderAspect,
-                                   QObject *parent = 0);
+    explicit PlatformSurfaceFilter(QObject *parent = 0);
     ~PlatformSurfaceFilter();
 
     void setWindow(QWindow *window);
     void setOffscreenSurface(QOffscreenSurface *offscreen);
+
+    void setRenderer(AbstractRenderer *renderer);
 
     bool eventFilter(QObject *obj, QEvent *e) Q_DECL_OVERRIDE;
 
@@ -96,7 +97,7 @@ private:
 
     QObject *m_obj;
     QSurface *m_surface;
-    Renderer *m_renderer;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

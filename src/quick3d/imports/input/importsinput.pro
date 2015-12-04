@@ -2,7 +2,7 @@ CXX_MODULE = qml
 TARGET = quick3dinputplugin
 TARGETPATH = Qt3D/Input
 
-QT += core-private qml 3dcore 3dinput
+QT += core-private qml 3dcore 3dinput 3dinput-private 3dquickinput-private
 
 OTHER_FILES += qmldir
 

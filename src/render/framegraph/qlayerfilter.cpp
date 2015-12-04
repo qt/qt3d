@@ -52,8 +52,8 @@ QLayerFilterPrivate::QLayerFilterPrivate()
 }
 
 /*!
-    \class QLayerFilter
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QLayerFilter
+    \inmodule Qt3DRender
     \since 5.5
     \brief The QLayerFilter class provides ...
 */
@@ -67,7 +67,7 @@ QLayerFilterPrivate::QLayerFilterPrivate()
     \brief For ...
 */
 
-/*! \fn void Qt3DRender::QLayerFilter::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QLayerFilter::copy(const Qt3DCore::QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QLayerFilter::copy(const QNode *ref)
@@ -78,7 +78,7 @@ void QLayerFilter::copy(const QNode *ref)
 }
 
 
-/*! \fn Qt3DRender::QLayerFilter::QLayerFilter(QNode *parent)
+/*! \fn Qt3DRender::QLayerFilter::QLayerFilter(Qt3DCore::QNode *parent)
   Constructs a new QLayerFilter with the specified \a parent.
  */
 QLayerFilter::QLayerFilter(QNode *parent)
@@ -103,7 +103,7 @@ QLayerFilter::QLayerFilter(QLayerFilterPrivate &dd, QNode *parent)
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Renderer::LayerFilter::layers
+  \qmlproperty stringlist Qt3D.Render::LayerFilter::layers
 
 */
 

@@ -46,7 +46,7 @@ namespace Qt3DRender {
 
 class QGoochMaterialPrivate;
 
-class QGoochMaterial : public QMaterial
+class QT3DRENDERSHARED_EXPORT QGoochMaterial : public QMaterial
 {
     Q_OBJECT
     Q_PROPERTY(QColor diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)

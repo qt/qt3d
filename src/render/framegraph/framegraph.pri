@@ -41,7 +41,12 @@ HEADERS += \
     $$PWD/sortmethod_p.h \
     $$PWD/statesetnode_p.h \
     $$PWD/techniquefilternode_p.h \
-    $$PWD/viewportnode_p.h
+    $$PWD/viewportnode_p.h \
+    $$PWD/qfrustumculling.h \
+    $$PWD/frustumculling_p.h \
+    $$PWD/qlighting.h \
+    $$PWD/qlighting_p.h \
+    $$PWD/lighting_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -71,4 +76,8 @@ SOURCES += \
     $$PWD/sortmethod.cpp \
     $$PWD/statesetnode.cpp \
     $$PWD/techniquefilternode.cpp \
-    $$PWD/viewportnode.cpp
+    $$PWD/viewportnode.cpp \
+    $$PWD/qfrustumculling.cpp \
+    $$PWD/frustumculling.cpp \
+    $$PWD/qlighting.cpp \
+    $$PWD/lighting.cpp

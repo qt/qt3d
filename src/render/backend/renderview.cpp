@@ -75,6 +75,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+static const int MAX_LIGHTS = 8;
+
 namespace  {
 
 // TODO: Should we treat lack of layer data as implicitly meaning that an
@@ -91,7 +93,16 @@ bool isEntityInLayers(const Entity *entity, const QStringList &layers)
                 if (layers.contains(layerName))
                     return true;
     }
+    return false;
+}
 
+bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
+{
+    const Sphere *s = entity->worldBoundingVolumeWithChildren();
+    for (int i = 0; i < 6; ++i) {
+        if (QVector3D::dotProduct(s->center(), planes[i].normal) + planes[i].d < -s->radius())
+            return true;
+    }
     return false;
 }
 
@@ -129,6 +140,7 @@ RenderView::StandardUniformsPFuncsHash RenderView::initializeStandardUniformSett
     setters.insert(QStringLiteral("viewportMatrix"), &RenderView::viewportMatrix);
     setters.insert(QStringLiteral("inverseViewportMatrix"), &RenderView::inverseViewportMatrix);
     setters.insert(QStringLiteral("time"), &RenderView::time);
+    setters.insert(QStringLiteral("eyePosition"), &RenderView::eyePosition);
 
     return setters;
 }
@@ -168,10 +180,7 @@ QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 
 QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    QMatrix4x4 projection;
-    if (m_data->m_renderCamera)
-        projection = m_data->m_renderCamera->projection();
-    return QUniformValue::fromVariant(projection * *m_data->m_viewMatrix * model, m_allocator);
+    return QUniformValue::fromVariant(*m_data->m_viewProjectionMatrix * model, m_allocator);
 }
 
 QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
@@ -199,10 +208,7 @@ QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 
 QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    QMatrix4x4 projection;
-    if (m_data->m_renderCamera)
-        projection = m_data->m_renderCamera->projection();
-    return QUniformValue::fromVariant((projection * *m_data->m_viewMatrix * model).inverted(0), m_allocator);
+    return QUniformValue::fromVariant((*m_data->m_viewProjectionMatrix * model).inverted(0), m_allocator);
 }
 
 QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
@@ -247,9 +253,15 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::time(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    qint64 time = m_renderer->rendererAspect()->time();
+    qint64 time = m_renderer->renderAspect()->time();
     float t = time / 1000000000.0f;
     return QUniformValue::fromVariant(QVariant(t), m_allocator);
+}
+
+QUniformValue *RenderView::eyePosition(const QMatrix4x4 &model) const
+{
+    Q_UNUSED(model);
+    return QUniformValue::fromVariant(QVariant::fromValue(m_data->m_eyePos), m_allocator);
 }
 
 RenderView::RenderView()
@@ -261,6 +273,7 @@ RenderView::RenderView()
     , m_clearBuffer(QClearBuffer::None)
     , m_stateSet(Q_NULLPTR)
     , m_noDraw(false)
+    , m_frustumCulling(false)
 {
 }
 
@@ -285,8 +298,9 @@ RenderView::~RenderView()
         m_allocator->deallocate<RenderCommand>(command);
     }
 
-    // Deallocate viewMatrix
+    // Deallocate viewMatrix/viewProjectionMatrix
     m_allocator->deallocate<QMatrix4x4>(m_data->m_viewMatrix);
+    m_allocator->deallocate<QMatrix4x4>(m_data->m_viewProjectionMatrix);
     // Deallocate viewport rect
     m_allocator->deallocate<QRectF>(m_viewport);
     // Deallocate clearColor
@@ -373,11 +387,39 @@ void RenderView::setRenderer(Renderer *renderer)
     m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
+void RenderView::gatherLights(Entity *node)
+{
+    const QList<Light *> lights = node->renderComponents<Light>();
+    if (!lights.isEmpty())
+        m_lightSources.append(LightSource(node, lights));
+
+    // Traverse children
+    Q_FOREACH (Entity *child, node->children())
+        gatherLights(child);
+}
+
+class LightSourceCompare
+{
+public:
+    LightSourceCompare(Entity *node) { p = node->worldBoundingVolume()->center(); }
+    bool operator()(const RenderView::LightSource &a, const RenderView::LightSource &b) const {
+        const float distA = p.distanceToPoint(a.entity->worldBoundingVolume()->center());
+        const float distB = p.distanceToPoint(b.entity->worldBoundingVolume()->center());
+        return distA < distB;
+    }
+
+private:
+    QVector3D p;
+};
+
 // Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(Entity *node)
+void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
 {
     // Skip branches that are not enabled
     if (!node->isEnabled())
+        return;
+
+    if (m_frustumCulling && isEntityFrustumCulled(node, planes))
         return;
 
     // Build renderCommand for current node
@@ -459,7 +501,20 @@ void RenderView::buildRenderCommands(Entity *node)
                             command->m_stateSet->merge(m_stateSet);
                         command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
                     }
-                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()));
+
+                    // Pick which lights to take in to account.
+                    // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
+                    // Replace with more sophisticated mechanisms later.
+                    std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
+                    QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+                    int lightCount = 0;
+                    for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
+                        activeLightSources.append(m_lightSources[i]);
+                        lightCount += m_lightSources[i].lights.count();
+                    }
+
+                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
+
                     buildSortingKey(command);
                     m_commands.append(command);
                 }
@@ -469,7 +524,7 @@ void RenderView::buildRenderCommands(Entity *node)
 
     // Traverse children
     Q_FOREACH (Entity *child, node->children())
-        buildRenderCommands(child);
+        buildRenderCommands(child, planes);
 }
 
 const AttachmentPack &RenderView::attachmentPack() const
@@ -532,7 +587,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
         // If shaderData  has been updated (property has changed or one of the nested properties has changed)
         // foreach property defined in the QShaderData, we try to fill the value of the corresponding active uniform(s)
         // for all the updated properties (all the properties if the UBO was just created)
-        if (shaderData->needsUpdate(*m_data->m_viewMatrix) || uboNeedsUpdate) {
+        if (shaderData->updateViewTransform(*m_data->m_viewMatrix) || uboNeedsUpdate) {
             // Clear previous values remaining in the hash
             m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
             // Update only update properties if uboNeedsUpdate is true, otherwise update the whole block
@@ -542,7 +597,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
             // Builds the name-value map for the block
             m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, block.m_name);
             if (!uboNeedsUpdate)
-                shaderData->addToClearUpdateList();
+                shaderData->markDirty();
             // copy the name-value map into the BlockToUBO
             uniformBlockUBO.m_updatedProperties = m_data->m_uniformBlockBuilder.activeUniformNamesToValue;
             uboNeedsUpdate = true;
@@ -558,7 +613,7 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
     // updates transformed properties;
-    shaderData->needsUpdate(*m_data->m_viewMatrix);
+    shaderData->updateViewTransform(*m_data->m_viewMatrix);
     // Force to update the whole block
     m_data->m_uniformBlockBuilder.updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
@@ -602,7 +657,8 @@ void RenderView::buildSortingKey(RenderCommand *command)
     }
 }
 
-void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform)
+void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass, ParameterInfoList &parameters, const QMatrix4x4 &worldTransform,
+                                      const QVector<LightSource> &activeLightSources)
 {
     // The VAO Handle is set directly in the renderer thread so as to avoid having to use a mutex here
     // Set shader, technique, and effect by basically doing :
@@ -704,6 +760,38 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                             }
                         }
                     }
+                }
+
+                // Lights
+                const QString LIGHT_ARRAY_NAME = QStringLiteral("lights");
+                const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
+                const QString LIGHT_POSITION_NAME = QStringLiteral("position");
+
+                // Shaders without dynamic indexing will not have lightCount
+                if (uniformNames.contains(LIGHT_COUNT_NAME))
+                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, activeLightSources.count());
+
+                int lightIdx = 0;
+                Q_FOREACH (const LightSource &lightSource, activeLightSources) {
+                    if (lightIdx == MAX_LIGHTS)
+                        break;
+                    Entity *lightEntity = lightSource.entity;
+                    const QVector3D pos = *m_data->m_viewMatrix * lightEntity->worldBoundingVolume()->center();
+                    Q_FOREACH (Light *light, lightSource.lights) {
+                        if (lightIdx == MAX_LIGHTS)
+                            break;
+                        QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
+                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, pos);
+                        setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
+                        ++lightIdx;
+                    }
+                }
+
+                if (activeLightSources.isEmpty()) {
+                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, 1);
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
                 }
             }
             // Set frag outputs in the shaders if hash not empty

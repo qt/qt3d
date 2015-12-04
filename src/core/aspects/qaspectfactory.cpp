@@ -34,12 +34,13 @@
 **
 ****************************************************************************/
 
-#include "qaspectfactory.h"
 #include "qaspectfactory_p.h"
 
 #include <QtGlobal>
 
 #include <QDebug>
+
+#include <Qt3DCore/QAbstractAspect>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,29 +48,26 @@ namespace Qt3DCore {
 
 typedef QHash<QString, QAspectFactory::CreateFunction> defaultFactories_t;
 Q_GLOBAL_STATIC(defaultFactories_t, defaultFactories)
+typedef QHash<const QMetaObject*, QString> defaultAspectNames_t;
+Q_GLOBAL_STATIC(defaultAspectNames_t, defaultAspectNames)
 
-QT3DCORESHARED_EXPORT void qt3d_QAspectFactoryPrivate_addDefaultFactory(const QString &name,
-                                                                        QAspectFactory::CreateFunction factory)
+QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &name,
+                                                                 const QMetaObject *metaObject,
+                                                                 QAspectFactory::CreateFunction factory)
 {
     defaultFactories->insert(name, factory);
-}
-
-/*!
-    \class Qt3DCore::QAspectFactoryPrivate
-    \internal
-*/
-QAspectFactoryPrivate::QAspectFactoryPrivate()
-    : m_factories(*defaultFactories)
-{
+    defaultAspectNames->insert(metaObject, name);
 }
 
 QAspectFactory::QAspectFactory()
-    : d(new QAspectFactoryPrivate)
+    : m_factories(*defaultFactories),
+      m_aspectNames(*defaultAspectNames)
 {
 }
 
 QAspectFactory::QAspectFactory(const QAspectFactory &other)
-    : d(other.d)
+    : m_factories(other.m_factories),
+      m_aspectNames(other.m_aspectNames)
 {
 }
 
@@ -79,28 +77,29 @@ QAspectFactory::~QAspectFactory()
 
 QAspectFactory &QAspectFactory::operator=(const QAspectFactory &other)
 {
-    d = other.d;
+    m_factories = other.m_factories;
+    m_aspectNames = other.m_aspectNames;
     return *this;
-}
-
-void QAspectFactory::addFactory(const QString &name, QAspectFactory::CreateFunction factory)
-{
-    d->m_factories.insert(name, factory);
 }
 
 QStringList QAspectFactory::availableFactories() const
 {
-    return d->m_factories.keys();
+    return m_factories.keys();
 }
 
 QAbstractAspect *QAspectFactory::createAspect(const QString &aspect, QObject *parent) const
 {
-    if (d->m_factories.contains(aspect)) {
-        return d->m_factories.value(aspect)(parent);
+    if (m_factories.contains(aspect)) {
+        return m_factories.value(aspect)(parent);
     } else {
         qWarning() << "Unsupported aspect name:" << aspect << "please check registrations";
         return Q_NULLPTR;
     }
+}
+
+QString QAspectFactory::aspectName(QAbstractAspect *aspect) const
+{
+    return m_aspectNames.value(aspect->metaObject());
 }
 
 } // namespace Qt3DCore

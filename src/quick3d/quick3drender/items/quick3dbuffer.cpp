@@ -55,7 +55,7 @@ Quick3DBuffer::Quick3DBuffer(QObject *parent)
     , m_engine(Q_NULLPTR)
     , m_v4engine(Q_NULLPTR)
 {
-    QObject::connect(parentBuffer(), &Qt3DCore::QAbstractBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
+    QObject::connect(parentBuffer(), &Qt3DRender::QAbstractBuffer::dataChanged, this, &Quick3DBuffer::bufferDataChanged);
 }
 
 QByteArray Quick3DBuffer::convertToRawData(const QJSValue &jsValue)

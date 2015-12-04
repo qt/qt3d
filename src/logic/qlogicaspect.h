@@ -54,20 +54,14 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
 protected:
     void registerBackendTypes();
 
 private:
-    void setRootEntity(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
-
-    void visitNode(Qt3DCore::QNode *node);
 
     Q_DECLARE_PRIVATE(QLogicAspect)
     QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);

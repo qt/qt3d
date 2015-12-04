@@ -1,9 +1,5 @@
 #define FP highp
 
-// TODO: Replace with a uniform block
-uniform FP vec4 lightPosition;
-uniform FP vec3 lightIntensity;
-
 // TODO: Replace with a struct
 uniform FP vec3 kd;            // Diffuse reflectivity
 uniform FP vec3 ks;            // Specular reflectivity
@@ -13,8 +9,12 @@ uniform FP float alpha;        // Fraction of diffuse added to kblue
 uniform FP float beta;         // Fraction of diffuse added to kyellow
 uniform FP float shininess;    // Specular shininess factor
 
+uniform FP vec3 eyePosition;
+
 varying FP vec3 position;
 varying FP vec3 normal;
+
+#pragma include light.inc.frag
 
 FP vec3 goochModel( const in FP vec3 pos, const in FP vec3 n )
 {
@@ -26,7 +26,7 @@ FP vec3 goochModel( const in FP vec3 pos, const in FP vec3 n )
     FP vec3 kwarm = clamp(kyellow + beta * kd, 0.0, 1.0);
 
     // Calculate the vector from the light to the fragment
-    FP vec3 s = normalize( vec3( lightPosition ) - pos );
+    FP vec3 s = normalize( vec3( lights[0].position ) - pos );
 
     // Calculate the cos theta factor mapped onto the range [0,1]
     FP float sDotNFactor = ( 1.0 + dot( s, n ) ) / 2.0;
@@ -36,8 +36,7 @@ FP vec3 goochModel( const in FP vec3 pos, const in FP vec3 n )
     FP vec3 intensity = mix( kcool, kwarm, sDotNFactor );
 
     // Calculate the vector from the fragment to the eye position
-    // (origin since this is in "eye" or "camera" space)
-    FP vec3 v = normalize( -pos );
+    FP vec3 v = normalize( eyePosition - pos );
 
     // Reflect the light beam using the normal at this fragment
     FP vec3 r = reflect( -s, n );

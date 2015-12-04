@@ -27,6 +27,7 @@ contains(QT_CONFIG, private_tests) {
         qframegraphnode \
         qframegraph \
         qlayerfilter \
+        qlight \
         qrenderpassfilter \
         qrendertargetselector \
         qsortcriterion \
@@ -40,5 +41,7 @@ contains(QT_CONFIG, private_tests) {
         picking \
         qboundingvolumedebug \
         boundingvolumedebug \
-        qdefaultmeshes
+        qdefaultmeshes \
+        trianglesextractor \
+        triangleboundingvolume
 }

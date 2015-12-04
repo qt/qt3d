@@ -79,14 +79,14 @@ QSystemInformationService::QSystemInformationService(QSystemInformationServicePr
 }
 
 /*!
-    \fn QStringList Qt3DCore::QSystemInformationService::aspectNames()
+    \fn QStringList Qt3DCore::QSystemInformationService::aspectNames() const
 
     Subclasses should override this function and return a string list containing the
     names of all registered aspects.
 */
 
 /*!
-    \fn int threadPoolThreadCount() const
+    \fn int Qt3DCore::QSystemInformationService::threadPoolThreadCount() const
 
     Subclasses should override this function and return the number of threads in the
     Qt3D task manager's threadpool.

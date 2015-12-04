@@ -66,8 +66,6 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
     , m_alphaParameter(new QParameter(QStringLiteral("alpha"), 0.5f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(1.0f, 1.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_phongAlphaGL3Technique(new QTechnique())
     , m_phongAlphaGL2Technique(new QTechnique())
     , m_phongAlphaES2Technique(new QTechnique())
@@ -276,8 +274,6 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongEffect->addParameter(m_specularParameter);
     m_phongEffect->addParameter(m_shininessParameter);
     m_phongEffect->addParameter(m_alphaParameter);
-    m_phongEffect->addParameter(m_lightPositionParameter);
-    m_phongEffect->addParameter(m_lightIntensityParameter);
 
     q_func()->setEffect(m_phongEffect);
 }

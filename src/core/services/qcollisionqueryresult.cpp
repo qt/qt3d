@@ -41,8 +41,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(QCollisionQueryResult *qq)
-    : q_ptr(qq)
+QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
+    : QSharedData()
+{
+}
+
+QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy)
+    : QSharedData(copy)
+    , m_handle(copy.m_handle)
+    , m_entitiesHit(copy.m_entitiesHit)
 {
 }
 
@@ -57,14 +64,45 @@ void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)
 }
 
 QCollisionQueryResult::QCollisionQueryResult()
-    : d_ptr(new QCollisionQueryResultPrivate(this))
+    : d_ptr(new QCollisionQueryResultPrivate())
 {
+}
+
+QCollisionQueryResult::QCollisionQueryResult(const QCollisionQueryResult &result)
+    : d_ptr(result.d_ptr)
+{
+}
+
+QCollisionQueryResult::~QCollisionQueryResult()
+{
+}
+
+QCollisionQueryResult &QCollisionQueryResult::operator=(const QCollisionQueryResult &result)
+{
+    d_ptr = result.d_ptr;
+    return *this;
 }
 
 QVector<QNodeId> QCollisionQueryResult::entitiesHit() const
 {
     Q_D(const QCollisionQueryResult);
     return d->m_entitiesHit;
+}
+
+/*!
+    \internal
+*/
+QCollisionQueryResult::QCollisionQueryResult(QCollisionQueryResultPrivate &p)
+    : d_ptr(&p)
+{
+}
+
+/*!
+    \internal
+*/
+QCollisionQueryResultPrivate *QCollisionQueryResult::d_func()
+{
+    return d_ptr.data();
 }
 
 QQueryHandle QCollisionQueryResult::handle() const

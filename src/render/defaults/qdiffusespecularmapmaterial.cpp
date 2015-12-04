@@ -66,8 +66,6 @@ QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate()
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_specularParameter(new QParameter(QStringLiteral("specularTexture"), m_specularTexture))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(1.0f, 1.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_diffuseSpecularMapGL3Technique(new QTechnique())
     , m_diffuseSpecularMapGL2Technique(new QTechnique())
@@ -129,8 +127,6 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     m_diffuseSpecularMapEffect->addParameter(m_diffuseParameter);
     m_diffuseSpecularMapEffect->addParameter(m_specularParameter);
     m_diffuseSpecularMapEffect->addParameter(m_shininessParameter);
-    m_diffuseSpecularMapEffect->addParameter(m_lightPositionParameter);
-    m_diffuseSpecularMapEffect->addParameter(m_lightIntensityParameter);
     m_diffuseSpecularMapEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_diffuseSpecularMapEffect);
@@ -140,7 +136,7 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     \class Qt3DRender::QDiffuseSpecularMapMaterial
     \brief The QDiffuseSpecularMapMaterial provides a default implementation of the phong lighting and bump effect where the diffuse and specular light components
     are read from texture maps.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.

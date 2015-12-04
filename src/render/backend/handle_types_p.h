@@ -54,7 +54,6 @@
 QT_BEGIN_NAMESPACE
 
 class QMatrix4x4;
-class QOpenGLVertexArrayObject;
 
 namespace Qt3DRender {
 
@@ -86,6 +85,8 @@ class Geometry;
 class GeometryRenderer;
 class ObjectPicker;
 class BoundingVolumeDebug;
+class OpenGLVertexArrayObject;
+class Light;
 
 typedef Qt3DCore::QHandle<RenderAttachment, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
@@ -96,7 +97,7 @@ typedef Qt3DCore::QHandle<FrameGraphNode *, 8> HFrameGraphNode;
 typedef Qt3DCore::QHandle<Layer, 16> HLayer;
 typedef Qt3DCore::QHandle<Material, 16> HMaterial;
 typedef Qt3DCore::QHandle<QMatrix4x4, 16> HMatrix;
-typedef Qt3DCore::QHandle<QOpenGLVertexArrayObject*, 16> HVao;
+typedef Qt3DCore::QHandle<OpenGLVertexArrayObject, 16> HVao;
 typedef Qt3DCore::QHandle<Shader, 16> HShader;
 typedef Qt3DCore::QHandle<SortCriterion, 8> HSortCriterion;
 typedef Qt3DCore::QHandle<Technique, 16> HTechnique;
@@ -114,6 +115,7 @@ typedef Qt3DCore::QHandle<Geometry, 16> HGeometry;
 typedef Qt3DCore::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 typedef Qt3DCore::QHandle<ObjectPicker, 16> HObjectPicker;
 typedef Qt3DCore::QHandle<BoundingVolumeDebug, 16> HBoundingVolumeDebug;
+typedef Qt3DCore::QHandle<Light, 16> HLight;
 
 } // namespace Render
 

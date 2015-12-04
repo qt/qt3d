@@ -24,6 +24,9 @@ src_quick3d_render.subdir = $$PWD/quick3d/quick3drender
 src_quick3d_render.target = sub-quick3d-render
 src_quick3d_render.depends = src_render src_quick3d_core
 
+src_quick3d_input.subdir = $$PWD/quick3d/quick3dinput
+src_quick3d_input.target = sub-quick3d-input
+src_quick3d_input.depends = src_input src_quick3d_core
 
 # Quick3D imports
 src_quick3d_core_imports.file = $$PWD/quick3d/imports/core/importscore.pro
@@ -40,7 +43,7 @@ src_quick3d_imports_scene3d.depends = src_quick3d_render src_input
 
 src_quick3d_imports_input.file = $$PWD/quick3d/imports/input/importsinput.pro
 src_quick3d_imports_input.target = sub-quick3d-imports-input
-src_quick3d_imports_input.depends = src_input
+src_quick3d_imports_input.depends = src_input src_quick3d_input
 
 src_quick3d_imports_logic.file = $$PWD/quick3d/imports/logic/importslogic.pro
 src_quick3d_imports_logic.target = sub-quick3d-imports-logic
@@ -59,6 +62,7 @@ SUBDIRS += \
     src_quick3d_core \
     src_quick3d_core_imports \
     src_quick3d_render \
+    src_quick3d_input \
     src_quick3d_imports_render \
     src_quick3d_imports_scene3d \
     src_quick3d_imports_input \

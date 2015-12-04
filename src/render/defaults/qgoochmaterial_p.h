@@ -73,8 +73,6 @@ public:
     QParameter *m_alphaParameter;
     QParameter *m_betaParameter;
     QParameter *m_shininessParameter;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QTechnique *m_gl3Technique;
     QTechnique *m_gl2Technique;
     QTechnique *m_es2Technique;

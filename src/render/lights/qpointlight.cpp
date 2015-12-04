@@ -63,13 +63,13 @@ namespace Qt3DRender {
     \internal
 */
 QPointLightPrivate::QPointLightPrivate()
-    : QAbstractLightPrivate()
+    : m_attenuation(0.0f, 0.0f, 0.002f)
 {
 }
 
 /*!
-  \class QPointLight
-  \inmodule Qt3DRenderer
+  \class Qt3DRender::QPointLight
+  \inmodule Qt3DRender
   \since 5.5
 
  */
@@ -84,18 +84,78 @@ QPointLightPrivate::QPointLightPrivate()
 */
 
 /*!
-  \fn Qt3DRender::QPointLight::QPointLight(QNode *parent)
+  \fn Qt3DRender::QPointLight::QPointLight(Qt3DCore::QNode *parent)
   Constructs a new QPointLight with the specified \a parent.
  */
 QPointLight::QPointLight(QNode *parent)
-    : QAbstractLight(*new QPointLightPrivate, parent)
+    : QLight(*new QPointLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
-    : QAbstractLight(dd, parent)
+    : QLight(dd, parent)
 {
+}
+
+QVector3D QPointLight::attenuation() const
+{
+    Q_D(const QPointLight);
+    return d->m_attenuation;
+}
+
+void QPointLight::setAttenuation(const QVector3D &value)
+{
+    Q_D(QPointLight);
+    if (d->m_attenuation != value) {
+        d->m_attenuation = value;
+        emit attenuationChanged();
+    }
+}
+
+float QPointLight::constantAttenuation() const
+{
+    Q_D(const QPointLight);
+    return d->m_attenuation.x();
+}
+
+void QPointLight::setConstantAttenuation(float value)
+{
+    Q_D(QPointLight);
+    if (d->m_attenuation.x() != value) {
+        d->m_attenuation.setX(value);
+        emit attenuationChanged();
+    }
+}
+
+float QPointLight::linearAttenuation() const
+{
+    Q_D(const QPointLight);
+    return d->m_attenuation.y();
+}
+
+void QPointLight::setLinearAttenuation(float value)
+{
+    Q_D(QPointLight);
+    if (d->m_attenuation.y() != value) {
+        d->m_attenuation.setY(value);
+        emit attenuationChanged();
+    }
+}
+
+float QPointLight::quadraticAttenuation() const
+{
+    Q_D(const QPointLight);
+    return d->m_attenuation.z();
+}
+
+void QPointLight::setQuadraticAttenuation(float value)
+{
+    Q_D(QPointLight);
+    if (d->m_attenuation.z() != value) {
+        d->m_attenuation.setZ(value);
+        emit attenuationChanged();
+    }
 }
 
 } // namespace Qt3DRender

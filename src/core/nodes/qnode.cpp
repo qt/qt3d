@@ -48,7 +48,7 @@
 #include <QMetaProperty>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/private/corelogging_p.h>
-#include <Qt3DCore/qnodevisitor.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -391,40 +391,39 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
     \inmodule Qt3DCore
     \since 5.5
 
-    \brief Qt3DCore::QNode is the base class of all Qt3D node classes used to build a
+    \brief QNode is the base class of all Qt3D node classes used to build a
     Qt3D scene.
 
-    The owernship of Qt3DCore::QNode is determined by the QObject parent/child
-    relationship between nodes. By itself a Qt3DCore::QNode has no visual appearance
+    The owernship of QNode is determined by the QObject parent/child
+    relationship between nodes. By itself, a QNode has no visual appearance
     and no particular meaning, it is there as a way of building a node based tree
     structure.
 
-    The parent of a Qt3DCore::QNode instance can only be another Qt3DCore::QNode
-    instance.
+    The parent of a QNode instance can only be another QNode instance.
 
-    Each Qt3DCore::QNode instance has a unique id that allows it to be recognizable
+    Each QNode instance has a unique id that allows it to be recognizable
     from other instances.
 
-    When properties are defined on a Qt3DCore::QNode subclass, their NOTIFY signal
+    When properties are defined on a QNode subclass, their NOTIFY signal
     will automatically generate notifications that the Qt3D backend aspects will
     receive.
 
-    When subclassing Qt3DCore::QNode make sure to call QNode::cleanup() from your
+    When subclassing QNode, make sure to call QNode::cleanup() from your
     subclass's destructor to ensure proper notification to backend aspects.
-    Faiure to do so will result in crashes when one of your Qt3DCore::QNode
-    subclass instance is eventually destroyed.
+    Faiure to do so will result in crashes when one of your QNode subclass
+    instance is eventually destroyed.
 
-    \sa Qt3DCore::QEntity, Qt3DCore::QComponent
+    \sa QEntity, QComponent
 */
 
 /*!
-     Creates a new Qt3DCore::QNode instance with parent \a parent.
+     Creates a new QNode instance with parent \a parent.
 
-     \note The backend aspects will be notified that a Qt3DCore::QNode instance is
+     \note The backend aspects will be notified that a QNode instance is
      part of the scene only if it has a parent; unless this is the root node of
      the Qt3D scene.
 
-     \sa setParent(Qt3DCore::QNode *)
+     \sa setParent()
 */
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate, parent)
@@ -454,9 +453,9 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 /*!
     Copies all the attributes from \a ref to the current Qt3DCore::QNode instance.
 
-    \note When subclassing Qt3DCore::QNode you should reimplement this method and
+    \note When subclassing QNode, you should reimplement this method and
     always call the copy method on the base class. This will ensure that when cloned,
-    the Qt3DCore::QNode is properly initialized.
+    the QNode is properly initialized.
 */
 void QNode::copy(const QNode *ref)
 {
@@ -473,7 +472,7 @@ QNode::~QNode()
 }
 
 /*!
-    Returns the id that uniquely identifies the Qt3DCore::QNode instance.
+    Returns the id that uniquely identifies the QNode instance.
 */
 const QNodeId QNode::id() const
 {
@@ -482,7 +481,7 @@ const QNodeId QNode::id() const
 }
 
 /*!
-    Returns the immediate Qt3DCore::QNode parent, null if the node has no parent.
+    Returns the immediate QNode parent, or null if the node has no parent.
 */
 QNode *QNode::parentNode() const
 {
@@ -491,7 +490,7 @@ QNode *QNode::parentNode() const
 
 /*!
     Returns \c true if aspect notifications are blocked; otherwise returns \c false.
-    Notifications are not blocked by default.
+    By default, notifications are \e not blocked.
 
     \sa blockNotifications()
 */
@@ -502,8 +501,8 @@ bool QNode::notificationsBlocked() const
 }
 
 /*!
-    If \a block is true, property change notifications sent by this object
-    to aspects are blocked. If \a block is false, no such blocking will occur.
+    If \a block is \c true, property change notifications sent by this object
+    to aspects are blocked. If \a block is \c false, no such blocking will occur.
 
     The return value is the previous value of notificationsBlocked().
 
@@ -521,12 +520,12 @@ bool QNode::blockNotifications(bool block)
 }
 
 /*!
- * Sets the parent node of the current Qt3DCore::QNode instance to \a parent.
- * Setting the parent will notify the backend aspects about current Qt3DCore::QNode
+ * Sets the parent node of the current QNode instance to \a parent.
+ * Setting the parent will notify the backend aspects about current QNode
  * instance's parent change.
  *
  * \note if \a parent happens to be null, this will actually notify that the
- * current Qt3DCore::QNode instance was removed from the scene.
+ * current QNode instance was removed from the scene.
  */
 void QNode::setParent(QNode *parent)
 {
@@ -539,8 +538,8 @@ void QNode::setParent(QNode *parent)
 }
 
 /*!
- * Returns a list filled with the Qt3DCore::QNode children of the current
- * Qt3DCore::QNode instance.
+ * Returns a list filled with the QNode children of the current
+ * QNode instance.
  */
 QNodeList QNode::childrenNodes() const
 {
@@ -556,11 +555,11 @@ QNodeList QNode::childrenNodes() const
     return nodeChildrenList;
 }
 /*!
-    Set the QNode to enabled if \a enabled is true.
-    By default a Qt3DCore::QNode is always enabled.
+    Set the QNode to enabled if \a isEnabled is \c true.
+    By default a QNode is always enabled.
 
     \note the interpretation of what enabled means is aspect-dependent. Even if
-    enabled is set to false, some aspects may still consider the node in
+    enabled is set to \c false, some aspects may still consider the node in
     some manner. This is documented on a class by class basis.
 */
 void QNode::setEnabled(bool isEnabled)
@@ -628,7 +627,7 @@ QNode *QNode::clone(QNode *node)
  * aspects that the current Qt3DCore::QNode instance is about to be destroyed.
  *
  * \note It must be called by the destructor of every class subclassing
- * Qt3DCore::QNode that is clonable (using the QT3D_CLONEABLE macro).
+ * QNode that is clonable (using the QT3D_CLONEABLE macro).
  */
 void QNode::cleanup()
 {

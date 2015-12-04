@@ -62,8 +62,6 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
     , m_diffuseParameter(new QParameter(QStringLiteral("kd"), QColor::fromRgbF(0.7f, 0.7f, 0.7f, 1.0f)))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(1.0f, 1.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_phongGL3Technique(new QTechnique())
     , m_phongGL2Technique(new QTechnique())
     , m_phongES2Technique(new QTechnique())
@@ -78,7 +76,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 /*!
     \class Qt3DRender::QPhongMaterial
     \brief The QPhongMaterial class provides a default implementation of the phong lighting effect.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The phong lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.
@@ -96,7 +94,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 */
 
 /*!
-    \fn Qt3DRender::QPhongMaterial::QPhongMaterial(QNode *parent)
+    \fn Qt3DRender::QPhongMaterial::QPhongMaterial(Qt3DCore::QNode *parent)
 
     Constructs a new QPhongMaterial instance with parent object \a parent.
 */
@@ -143,7 +141,7 @@ QColor QPhongMaterial::diffuse() const
 }
 
 /*!
-    \property QColor Qt3DRender::QPhongMaterial::specular
+    \property Qt3DRender::QPhongMaterial::specular
 
     Holds the specular color.
 */
@@ -227,8 +225,6 @@ void QPhongMaterialPrivate::init()
     m_phongEffect->addParameter(m_diffuseParameter);
     m_phongEffect->addParameter(m_specularParameter);
     m_phongEffect->addParameter(m_shininessParameter);
-    m_phongEffect->addParameter(m_lightPositionParameter);
-    m_phongEffect->addParameter(m_lightIntensityParameter);
 
     q_func()->setEffect(m_phongEffect);
 }

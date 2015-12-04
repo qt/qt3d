@@ -4,7 +4,9 @@ HEADERS += \
     $$PWD/objloader_p.h \
     $$PWD/qabstractsceneloader.h \
     $$PWD/qabstractsceneloader_p.h \
+    $$PWD/qaxisalignedboundingbox_p.h \
     $$PWD/qsceneloader.h \
+    $$PWD/qurlhelper_p.h \
     $$PWD/scene_p.h \
     $$PWD/scenemanager_p.h \
     $$PWD/uniformbuffer_p.h \
@@ -15,7 +17,9 @@ HEADERS += \
 SOURCES += \
     $$PWD/objloader.cpp \
     $$PWD/qabstractsceneloader.cpp \
+    $$PWD/qaxisalignedboundingbox.cpp \
     $$PWD/qsceneloader.cpp \
+    $$PWD/qurlhelper.cpp \
     $$PWD/scene.cpp \
     $$PWD/scenemanager.cpp \
     $$PWD/uniformbuffer.cpp \

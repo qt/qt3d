@@ -41,6 +41,18 @@
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmouseinput.h>
 #include <Qt3DInput/q3dmouseevent.h>
+
+#include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/qaction.h>
+#include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qlogicaldevice.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DQuickInput/private/quick3daxis_p.h>
+#include <Qt3DQuickInput/private/quick3daction_p.h>
+#include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
+#include <Qt3DQuickInput/private/quick3dphysicaldevice_p.h>
+
 #include "qt3dquick3dinputplugin.h"
 
 QT_BEGIN_NAMESPACE
@@ -55,6 +67,13 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DInput::Q3DWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DInput::QMouseInput>(uri, 2, 0, "MouseInput");
     qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
+
+    qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
+    qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
+    qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
+    qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
+    qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
+    qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
 }
 
 QT_END_NAMESPACE

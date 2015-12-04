@@ -1,22 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>shaders/basic.frag</file>
-        <file>shaders/basic.vert</file>
-        <file>shaders/diffuse.frag</file>
-        <file>shaders/diffuse.vert</file>
-        <file>shaders/es2/diffuse.frag</file>
-        <file>shaders/es2/diffuse.vert</file>
-        <file>shaders/phong.frag</file>
-        <file>shaders/phong.vert</file>
-        <file>shaders/diffusemap.frag</file>
-        <file>shaders/diffusemap.vert</file>
-        <file>shaders/diffusespecularmap.frag</file>
-        <file>shaders/diffusespecularmap.vert</file>
-        <file>shaders/normaldiffusespecularmap.frag</file>
-        <file>shaders/normaldiffusespecularmap.vert</file>
-        <file>shaders/normaldiffusemap.vert</file>
-        <file>shaders/normaldiffusemap.frag</file>
-        <file>shaders/normaldiffusemapalpha.frag</file>
+        <file>shaders/gl3/light.inc.frag</file>
+        <file>shaders/es2/light.inc.frag</file>
         <file>shaders/gl3/phong.vert</file>
         <file>shaders/gl3/phong.frag</file>
         <file>shaders/es2/phong.vert</file>
@@ -39,8 +24,6 @@
         <file>shaders/es2/diffusespecularmap.frag</file>
         <file>shaders/gl3/diffusespecularmap.vert</file>
         <file>shaders/gl3/diffusespecularmap.frag</file>
-        <file>shaders/pervertexcolor.frag</file>
-        <file>shaders/pervertexcolor.vert</file>
         <file>shaders/gl3/pervertexcolor.frag</file>
         <file>shaders/gl3/pervertexcolor.vert</file>
         <file>shaders/es2/pervertexcolor.frag</file>

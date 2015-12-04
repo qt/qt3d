@@ -67,14 +67,13 @@ namespace Qt3DRender {
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
-    : QAbstractLightPrivate()
-    , m_cutOffAngle(45.0f)
+    : m_cutOffAngle(45.0f)
 {
 }
 
 /*!
-  \class QSpotLight
-  \inmodule Qt3DRenderer
+  \class Qt3DRender::QSpotLight
+  \inmodule Qt3DRender
   \since 5.5
 
  */
@@ -88,7 +87,7 @@ QSpotLightPrivate::QSpotLightPrivate()
     \brief For OpenGL ...
 */
 
-/*! \fn void Qt3DCore::QSpotLight::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QSpotLight::copy(const Qt3DCore::QNode *ref)
   Copies the \a ref instance into this one.
  */
 
@@ -97,34 +96,32 @@ void QSpotLight::copy(const QNode *ref)
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
     d_func()->m_direction = light->d_func()->m_direction;
     d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
-    // This needs to be last otherwise, properties value won't be copied
-    // as we use shader introspection in QShaderData::copy
-    QAbstractLight::copy(ref);
+    QLight::copy(ref);
 }
 
 
 /*!
-  \fn Qt3DCore::QSpotLight::QSpotLight(QNode *parent)
+  \fn Qt3DRender::QSpotLight::QSpotLight(Qt3DCore::QNode *parent)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QAbstractLight(*new QSpotLightPrivate, parent)
+    : QLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QAbstractLight(dd, parent)
+    : QLight(dd, parent)
 {
 }
 
 /*!
-  \qmlproperty vector3d Qt3D.Renderer::SpotLight::direction
+  \qmlproperty vector3d Qt3D.Render::SpotLight::direction
 
 */
 
 /*!
-  \property Qt3DCore::QSpotLight::direction
+  \property Qt3DRender::QSpotLight::direction
 
  */
 
@@ -136,12 +133,12 @@ QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
 
 
 /*!
-  \qmlproperty float Qt3D.Renderer::SpotLight::cutOffAngle
+  \qmlproperty float Qt3D.Render::SpotLight::cutOffAngle
 
 */
 
 /*!
-  \property Qt3DCore::QSpotLight::cutOffAngle
+  \property Qt3DRender::QSpotLight::cutOffAngle
 
  */
 float QSpotLight::cutOffAngle() const

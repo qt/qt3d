@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QMesh : public QGeometryRenderer
 {
     Q_OBJECT
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString subMesh READ subMesh WRITE setSubMesh NOTIFY subMeshChanged)
 
 public:
     explicit QMesh(Qt3DCore::QNode *parent = 0);
@@ -63,8 +64,12 @@ public:
     void setSource(const QUrl &source);
     QUrl source() const;
 
+    void setSubMesh(const QString &subMesh);
+    QString subMesh() const;
+
 Q_SIGNALS:
     void sourceChanged();
+    void subMeshChanged();
 
 protected:
     QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = 0);

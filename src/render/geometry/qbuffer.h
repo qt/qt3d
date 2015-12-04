@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QBUFFER_H
 #define QT3DRENDER_QBUFFER_H
 
-#include <Qt3DCore/qabstractbuffer.h>
+#include <Qt3DRender/qabstractbuffer.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <QSharedPointer>
 
@@ -49,7 +49,7 @@ class QBufferPrivate;
 class QBufferFunctor;
 typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
 
-class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QAbstractBuffer
+class QT3DRENDERSHARED_EXPORT QBuffer : public QAbstractBuffer
 {
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)

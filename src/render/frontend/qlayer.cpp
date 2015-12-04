@@ -51,8 +51,8 @@ QLayerPrivate::QLayerPrivate()
 }
 
 /*!
-    \class QLayer
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QLayer
+    \inmodule Qt3DRender
     \since 5.5
     \brief The QLayer class provides ...
 */
@@ -67,7 +67,7 @@ QLayerPrivate::QLayerPrivate()
 */
 
 
-/*! \fn void Qt3DRender::QLayer::copy(const QNode *ref)
+/*! \fn void Qt3DRender::QLayer::copy(const Qt3DCore::QNode *ref)
   Copies the \a ref instance into this one.
  */
 void QLayer::copy(const QNode *ref)
@@ -77,7 +77,7 @@ void QLayer::copy(const QNode *ref)
     d_func()->m_names = layer->d_func()->m_names;
 }
 
-/*! \fn Qt3DRender::QLayer::QLayer(QObject *parent)
+/*! \fn Qt3DRender::QLayer::QLayer(Qt3DCore::QNode *parent)
   Constructs a new QLayer with the specified \a parent.
  */
 
@@ -103,7 +103,7 @@ QLayer::QLayer(QLayerPrivate &dd, QNode *parent)
  */
 
 /*!
-  \qmlproperty stringlist Qt3D.Renderer::Layer::names
+  \qmlproperty stringlist Qt3D.Render::Layer::names
 
 */
 

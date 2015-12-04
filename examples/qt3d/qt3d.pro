@@ -43,7 +43,9 @@ SUBDIRS += \
     custom-mesh-qml \
     instanced-arrays-qml \
     picking-qml \
-    transforms-qml
+    transforms-qml \
+    qgltf \
+    lights
 
 # TODO Port the old examples to new APIs
 #SUBDIRS += qt3d

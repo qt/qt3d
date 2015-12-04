@@ -91,10 +91,11 @@ public:
     {}
     ~NullCollisionQueryService() {}
 
-    QQueryHandle query(const QRay3D &ray, QueryMode mode) Q_DECL_OVERRIDE
+    QQueryHandle query(const QRay3D &ray, QueryMode mode, Qt3DCore::QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE
     {
         Q_UNUSED(ray);
         Q_UNUSED(mode);
+        Q_UNUSED(provider);
 
         return 0;
     }

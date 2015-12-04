@@ -64,8 +64,6 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(0.0f, 0.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_diffuseMapGL3Technique(new QTechnique())
     , m_diffuseMapGL2Technique(new QTechnique())
@@ -121,8 +119,6 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapEffect->addParameter(m_diffuseParameter);
     m_diffuseMapEffect->addParameter(m_specularParameter);
     m_diffuseMapEffect->addParameter(m_shininessParameter);
-    m_diffuseMapEffect->addParameter(m_lightPositionParameter);
-    m_diffuseMapEffect->addParameter(m_lightIntensityParameter);
     m_diffuseMapEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_diffuseMapEffect);
@@ -132,7 +128,7 @@ void QDiffuseMapMaterialPrivate::init()
     \class Qt3DRender::QDiffuseMapMaterial
     \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect where the diffuse light component
     is read from a texture map.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.

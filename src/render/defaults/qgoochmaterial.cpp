@@ -132,7 +132,7 @@ void QGoochMaterialPrivate::init()
     \class Qt3DRender::QGoochMaterial
     \brief The QGoochMaterial provides a material that implements the Gooch
     shading model, popular in CAD and CAM applications.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The Gooch lighting model uses both color and brightness to help show the
@@ -174,7 +174,7 @@ QGoochMaterial::QGoochMaterial(QGoochMaterialPrivate &dd, QNode *parent)
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::diffuse
+    \property Qt3DRender::QGoochMaterial::diffuse
 
     Holds the current diffuse color.
 */
@@ -185,7 +185,7 @@ QColor QGoochMaterial::diffuse() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::specular
+    \property Qt3DRender::QGoochMaterial::specular
 
     Holds the current specular color.
 */
@@ -196,7 +196,7 @@ QColor QGoochMaterial::specular() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::cool
+    \property Qt3DRender::QGoochMaterial::cool
 
     Holds the current cool color.
 */
@@ -207,7 +207,7 @@ QColor QGoochMaterial::cool() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::warm
+    \property Qt3DRender::QGoochMaterial::warm
 
     Holds the current warm color.
 */
@@ -218,7 +218,7 @@ QColor QGoochMaterial::warm() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::alpha
+    \property Qt3DRender::QGoochMaterial::alpha
 
     Holds the current alpha value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = cool + alpha * diffuse}.
@@ -230,7 +230,7 @@ float QGoochMaterial::alpha() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::beta
+    \property Qt3DRender::QGoochMaterial::beta
 
     Holds the current beta value. The start point of the color ramp
     used by the Gooch shader is calculated as {c = warm + beta * diffuse}.
@@ -242,7 +242,7 @@ float QGoochMaterial::beta() const
 }
 
 /*!
-    \property Qt3DCore::QGoochMaterial::shininess
+    \property Qt3DRender::QGoochMaterial::shininess
 
     Holds the current shininess value. Higher values of shininess result in
     a smaller and brighter highlight.

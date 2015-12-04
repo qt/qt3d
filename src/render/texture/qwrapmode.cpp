@@ -60,7 +60,7 @@ public:
 
 /*!
     \class Qt3DRender::QTextureWrapMode
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     \brief Defines the wrap mode a Qt3DRender::QAbstractTextureProvider

@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 SUBDIRS = \
-    core
+    core \
+    render

@@ -47,7 +47,6 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/sphere_p.h>
-#include <Qt3DCore/qaxisalignedboundingbox.h>
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>
@@ -94,8 +93,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
             if (pickVolumeAttribute) {
                 if (!pickVolumeAttribute
-                        || pickVolumeAttribute->attributeType() != Qt3DCore::QAbstractAttribute::VertexAttribute
-                        || pickVolumeAttribute->dataType() != Qt3DCore::QAbstractAttribute::Float
+                        || pickVolumeAttribute->attributeType() != QAbstractAttribute::VertexAttribute
+                        || pickVolumeAttribute->dataType() != QAbstractAttribute::Float
                         || pickVolumeAttribute->dataSize() < 3) {
                     qWarning() << "QBoundingVolumeSpecifier pickVolume Attribute not suited for bounding volume computation";
                     return;

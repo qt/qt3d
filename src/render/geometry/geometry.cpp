@@ -36,7 +36,7 @@
 
 #include "geometry_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/qabstractattribute.h>
+#include <Qt3DRender/qabstractattribute.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 

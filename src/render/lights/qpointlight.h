@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QPOINTLIGHT_H
 #define QT3DRENDER_QPOINTLIGHT_H
 
-#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,12 +45,28 @@ namespace Qt3DRender {
 
 class QPointLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QPointLight : public QAbstractLight
+class QT3DRENDERSHARED_EXPORT QPointLight : public QLight
 {
     Q_OBJECT
+    Q_PROPERTY(QVector3D attenuation READ attenuation WRITE setAttenuation NOTIFY attenuationChanged)
 
 public:
     explicit QPointLight(Qt3DCore::QNode *parent = 0);
+
+    QVector3D attenuation() const;
+    void setAttenuation(const QVector3D &value);
+
+    float constantAttenuation() const;
+    void setConstantAttenuation(float value);
+
+    float linearAttenuation() const;
+    void setLinearAttenuation(float value);
+
+    float quadraticAttenuation() const;
+    void setQuadraticAttenuation(float value);
+
+Q_SIGNALS:
+    void attenuationChanged();
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)

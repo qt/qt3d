@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DRender/private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,13 +57,13 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Renderer;
+class NodeManagers;
 class Entity;
 
-class Q_AUTOTEST_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
+class QT3DRENDERSHARED_PRIVATE_EXPORT FramePreparationJob : public Qt3DCore::QAspectJob
 {
 public:
-    FramePreparationJob(Renderer *renderer);
+    FramePreparationJob(NodeManagers *manager);
     ~FramePreparationJob();
 
     void setRoot(Entity *root);
@@ -74,7 +75,7 @@ private:
     void parseNodeTree(Entity *node);
 
     Entity *m_root;
-    Renderer *m_renderer;
+    NodeManagers *m_manager;
 };
 
 typedef QSharedPointer<FramePreparationJob> FramePreparationJobPtr;

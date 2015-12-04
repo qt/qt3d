@@ -95,7 +95,7 @@ public:
 
     void expandToContain(const Sphere &sphere);
 
-    Sphere transformed(const QMatrix4x4 &mat);
+    Sphere transformed(const QMatrix4x4 &mat) const;
     inline Sphere &transform(const QMatrix4x4 &mat)
     {
         *this = transformed(mat);

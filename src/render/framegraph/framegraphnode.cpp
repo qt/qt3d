@@ -36,6 +36,7 @@
 
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/qframegraph.h>
 
 QT_BEGIN_NAMESPACE
@@ -146,7 +147,7 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
 }
 
 // TO DO: We need to rework that and probably add a RenderFrameGraph element
-FrameGraphComponentFunctor::FrameGraphComponentFunctor(Renderer *renderer)
+FrameGraphComponentFunctor::FrameGraphComponentFunctor(AbstractRenderer *renderer)
     : m_renderer(renderer)
 {
 }

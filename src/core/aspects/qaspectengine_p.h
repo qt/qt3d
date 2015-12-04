@@ -49,7 +49,7 @@
 //
 
 #include <private/qobject_p.h>
-#include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/private/qaspectfactory_p.h>
 #include <QtCore/qsharedpointer.h>
 
 QT_BEGIN_NAMESPACE

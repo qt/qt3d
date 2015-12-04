@@ -56,13 +56,13 @@ QFrameGraphPrivate::QFrameGraphPrivate()
 }
 
 /*!
-  \class FrameGraph
-  \inmodule Qt3DRenderer
+  \class Qt3DRender::QFrameGraph
+  \inmodule Qt3DRender
   \since 5.3
 
-  \brief Defines the rendering method to be used by the renderer
+  \brief Defines the rendering method to be used by the renderer.
 
-  FrameGraph is the Component that has an activeFrameGraph property
+  QFrameGraph is the Component that has an activeFrameGraph property
   that should reference the root FrameGraphItem of a frame graph
   tree. The Entity that contains a FrameGraph property defines the
   rendering method to be used by the renderer.
@@ -79,7 +79,9 @@ QFrameGraphPrivate::QFrameGraphPrivate()
     \brief For OpenGL ...
 */
 
-/*! \fn void Qt3DRender::QFrameGraph::copy(const QNode *ref)
+/*!
+  \fn void Qt3DRender::QFrameGraph::copy(const Qt3DCore::QNode *ref)
+
   Copies the \a ref instance into this one.
  */
 void QFrameGraph::copy(const QNode *ref)
@@ -90,7 +92,8 @@ void QFrameGraph::copy(const QNode *ref)
 }
 
 /*!
-  \fn Qt3DRender::QFrameGraph::QFrameGraph(QNode *parent)
+  \fn Qt3DRender::QFrameGraph::QFrameGraph(Qt3DCore::QNode *parent)
+
   Constructs a new QFrameGraph with the specified \a parent.
 */
 QFrameGraph::QFrameGraph(QNode *parent)
@@ -110,7 +113,7 @@ QFrameGraph::QFrameGraph(QFrameGraphPrivate &dd, QNode *parent)
 }
 
 /*!
-  \qmlproperty Qt3D.Renderer::FrameGraphNode Qt3D.Renderer::FrameGraph::activeFrameGraph
+  \qmlproperty FrameGraphNode Qt3D.Render::FrameGraph::activeFrameGraph
 
   Holds the current activeFrameGraph root node.
 */

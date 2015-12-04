@@ -132,7 +132,7 @@ public:
 
     // QNode interface
 protected:
-    Qt3DCore::QNode *doClone() const
+    Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE
     {
         tst_Node *clone = new tst_Node();
         clone->copy(this);

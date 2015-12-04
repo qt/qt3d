@@ -75,8 +75,6 @@ public:
     QParameter *m_diffuseParameter;
     QParameter *m_specularParameter;
     QParameter *m_shininessParameter;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QTechnique *m_phongGL3Technique;
     QTechnique *m_phongGL2Technique;
     QTechnique *m_phongES2Technique;

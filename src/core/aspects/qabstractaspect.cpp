@@ -41,6 +41,8 @@
 #include <Qt3DCore/private/qaspectjobmanager_p.h>
 #include <private/qchangearbiter_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DCore/private/qnodevisitor_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,11 +77,9 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
     \inmodule Qt3DCore
     \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.
 */
-QAbstractAspect::QAbstractAspect(AspectType aspectType, QObject *parent)
+QAbstractAspect::QAbstractAspect(QObject *parent)
     : QObject(*new QAbstractAspectPrivate, parent)
 {
-    Q_D(QAbstractAspect);
-    d->m_aspectType = aspectType;
 }
 
 /*! \internal */
@@ -92,6 +92,29 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
 {
     Q_D(QAbstractAspect);
     d->m_backendCreatorFunctors.insert(className(obj), functor);
+}
+
+void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QNodeVisitor visitor;
+    visitor.traverse(n, this, &QAbstractAspect::visitNode);
+}
+
+void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
+    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+    QNode *n = nodePtr.data();
+    QAbstractAspect::clearBackendNode(n);
+}
+
+QVariant QAbstractAspect::executeCommand(const QStringList &args)
+{
+    Q_UNUSED(args);
+    return QVariant();
 }
 
 QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
@@ -163,10 +186,10 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
     }
 }
 
-QAbstractAspect::AspectType QAbstractAspect::aspectType() const
+void QAbstractAspect::setRootEntity(QEntity *rootObject)
 {
-    Q_D(const QAbstractAspect);
-    return d->m_aspectType;
+    QNodeVisitor visitor;
+    visitor.traverse(rootObject, this, &QAbstractAspect::visitNode);
 }
 
 void QAbstractAspect::registerAspect(QEntity *rootObject)
@@ -203,6 +226,11 @@ void QAbstractAspect::onStartup()
 
 void QAbstractAspect::onShutdown()
 {
+}
+
+void QAbstractAspect::visitNode(QNode *node)
+{
+    createBackendNode(node);
 }
 
 } // of namespace Qt3DCore

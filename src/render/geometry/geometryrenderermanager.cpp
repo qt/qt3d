@@ -62,6 +62,24 @@ QVector<Qt3DCore::QNodeId> GeometryRendererManager::dirtyGeometryRenderers()
     return vector;
 }
 
+void GeometryRendererManager::requestTriangleDataRefreshForGeometryRenderer(const Qt3DCore::QNodeId geometryRenderer)
+{
+    if (!m_geometryRenderersRequiringTriangleRefresh.contains(geometryRenderer))
+        m_geometryRenderersRequiringTriangleRefresh.push_back(geometryRenderer);
+}
+
+bool GeometryRendererManager::isGeometryRendererScheduledForTriangleDataRefresh(const Qt3DCore::QNodeId geometryRenderer)
+{
+    return m_geometryRenderersRequiringTriangleRefresh.contains(geometryRenderer);
+}
+
+QVector<Qt3DCore::QNodeId> GeometryRendererManager::geometryRenderersRequiringTriangleDataRefresh()
+{
+    QVector<Qt3DCore::QNodeId> vector(m_geometryRenderersRequiringTriangleRefresh);
+    m_geometryRenderersRequiringTriangleRefresh.clear();
+    return vector;
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

@@ -66,7 +66,7 @@ public:
     void setAspectManager(QAspectManager *aspectManager);
     QAspectManager *aspectManager() const;
 
-    virtual void update(qint64 time);
+    virtual void scheduleAndWaitForFrameAspectJobs(qint64 time);
 
 private:
     QAspectManager *m_aspectManager;

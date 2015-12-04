@@ -49,7 +49,7 @@ namespace Qt3DCore {
 /*!
     \class Qt3DCore::QAbstractFrameAdvanceService
     \inmodule Qt3DCore
-    \brief Interface for a Qt3D frame advance service
+    \brief Interface for a Qt3D frame advance service.
 
     This is an interface class that should be subclassed by providers of the
     frame advance service. When used with the Renderer aspect, the aspect needs to
@@ -72,7 +72,7 @@ QAbstractFrameAdvanceService::QAbstractFrameAdvanceService(QAbstractFrameAdvance
 }
 
 /*!
-    \fn qint64 Qt3DCore::QAbstractFrameAdvanceService::waitForNextTick()
+    \fn qint64 Qt3DCore::QAbstractFrameAdvanceService::waitForNextFrame()
 
     Returns the current time, the call may be blocking if waiting for a tick.
 */

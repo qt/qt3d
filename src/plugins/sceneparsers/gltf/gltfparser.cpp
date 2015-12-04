@@ -48,7 +48,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 #include <Qt3DRender/QAlphaCoverage>
 #include <Qt3DRender/QBlendEquation>
@@ -187,7 +187,7 @@ bool GLTFParser::setJSON(const QJsonDocument &json )
  */
 void GLTFParser::setSource(const QUrl &source)
 {
-    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     QFileInfo finfo(path);
     if (!finfo.exists()) {
         qCWarning(GLTFParserLog) << "missing file:" << path;
@@ -215,7 +215,7 @@ void GLTFParser::setSource(const QUrl &source)
  */
 bool GLTFParser::isExtensionSupported(const QUrl &source) const
 {
-    const QString path = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(source);
+    const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);
 }
 

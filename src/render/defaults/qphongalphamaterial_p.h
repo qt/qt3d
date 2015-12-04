@@ -79,8 +79,6 @@ public:
     QParameter *m_specularParameter;
     QParameter *m_shininessParameter;
     QParameter *m_alphaParameter;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QTechnique *m_phongAlphaGL3Technique;
     QTechnique *m_phongAlphaGL2Technique;
     QTechnique *m_phongAlphaES2Technique;

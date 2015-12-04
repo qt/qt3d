@@ -50,6 +50,7 @@ namespace Qt3DCore {
 
 class QRay3D;
 class QAbstractCollisionQueryServicePrivate;
+class QBoundingVolumeProvider;
 
 class QT3DCORESHARED_EXPORT QAbstractCollisionQueryService : public QAbstractServiceProvider
 {
@@ -59,7 +60,7 @@ public:
         AllHits
     };
 
-    virtual QQueryHandle query(const QRay3D &ray, QueryMode mode) = 0;
+    virtual QQueryHandle query(const QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) = 0;
 
     virtual QCollisionQueryResult fetchResult(const QQueryHandle &handle) = 0;
     virtual QVector<QCollisionQueryResult> fetchAllResults() const = 0;

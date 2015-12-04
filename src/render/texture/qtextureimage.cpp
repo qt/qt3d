@@ -36,7 +36,7 @@
 
 #include "qtextureimage.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,7 +67,7 @@ public:
     {
         QTexImageDataPtr dataPtr;
         if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
-            QString source = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_url);
+            QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
             dataPtr.reset(new QTexImageData());
             if (dataPtr->setCompressedFile(source))
                 return dataPtr;
@@ -97,8 +97,8 @@ private:
 };
 
 /*!
-    \class QTextureImage
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QTextureImage
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates the necessary information to create an OpenGL texture
     image from an image source.
@@ -150,7 +150,7 @@ QUrl QTextureImage::source() const
 */
 
 /*!
-  \qmlproperty url Qt3D.Renderer::TextureImage::source
+  \qmlproperty url Qt3D.Render::TextureImage::source
 
   This property holdsthe source url from which data for the texture
   image will be loaded.
@@ -180,7 +180,7 @@ QTextureDataFunctorPtr QTextureImage::dataFunctor() const
 }
 
 /*!
-  Copies \ref into this texture image.
+  Copies \a ref into this texture image.
  */
 void QTextureImage::copy(const QNode *ref)
 {

@@ -9,7 +9,6 @@ SOURCES += \
 HEADERS += \
         $$PWD/qabstractaspect.h \
         $$PWD/qaspectengine.h \
-        $$PWD/qaspectfactory.h \
         $$PWD/qabstractaspect_p.h \
         $$PWD/qaspectengine_p.h \
         $$PWD/qaspectfactory_p.h \

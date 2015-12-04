@@ -147,7 +147,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     \class Qt3DRender::QNormalDiffuseSpecularMapMaterial
     \brief The QNormalDiffuseSpecularMapMaterial provides a default implementation of the phong lighting and bump effect where the diffuse and specular light components
     are read from texture maps and the normals of the mesh being rendered from a normal texture map.
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
 
     The specular lighting effect is based on the combination of 3 lighting components ambient, diffuse and specular.

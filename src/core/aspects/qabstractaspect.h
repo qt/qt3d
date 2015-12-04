@@ -68,20 +68,7 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
     Q_OBJECT
 
 public:
-    enum AspectType {
-        AspectRenderer,
-        AspectAnimation,
-        AspectCollision,
-        AspectPhysics,
-        AspectPhysicsAndCollision,
-        AspectAI,
-        AspectAudio,
-        AspectOther
-    };
-
-    explicit QAbstractAspect(AspectType aspectType, QObject *parent = 0);
-
-    AspectType aspectType() const;
+    explicit QAbstractAspect(QObject *parent = 0);
 
     void registerAspect(QEntity *rootObject);
 
@@ -94,6 +81,11 @@ public:
     void registerBackendType(const QBackendNodeFunctorPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    virtual QVariant executeCommand(const QStringList &args);
+
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
@@ -101,12 +93,15 @@ protected:
     QBackendNode *getBackendNode(QNode *frontend) const;
     void clearBackendNode(QNode *frontend) const;
 
+    virtual void setRootEntity(QEntity *rootObject);
+
 private:
-    virtual void setRootEntity(QEntity *rootObject) = 0;
     virtual void onInitialize(const QVariantMap &data) = 0;
     virtual void onStartup();
     virtual void onShutdown();
     virtual void onCleanup() = 0;
+
+    virtual void visitNode(QNode *node);
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectManager;
@@ -121,5 +116,31 @@ void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#define QT3D_REGISTER_NAMESPACED_ASPECT(name, AspectNamespace, AspectType) \
+    QT_BEGIN_NAMESPACE \
+    namespace Qt3DCore { \
+        typedef QAbstractAspect *(*AspectCreateFunction)(QObject *); \
+        QT3DCORESHARED_EXPORT void qt3d_QAspectFactory_addDefaultFactory(const QString &, const QMetaObject *, AspectCreateFunction); \
+    } \
+    QT_END_NAMESPACE \
+    namespace { \
+    QAbstractAspect *qt3d_ ## AspectType ## _createFunction(QObject *parent) \
+    { \
+        using namespace AspectNamespace; \
+        return new AspectType(parent); \
+    } \
+    \
+    void qt3d_ ## AspectType ## _registerFunction() \
+    { \
+        using namespace AspectNamespace; \
+        qt3d_QAspectFactory_addDefaultFactory(QStringLiteral(name), &AspectType::staticMetaObject, qt3d_ ## AspectType ## _createFunction); \
+    } \
+    \
+    Q_CONSTRUCTOR_FUNCTION(qt3d_ ## AspectType ## _registerFunction) \
+    }
+
+#define QT3D_REGISTER_ASPECT(name, AspectType) \
+    QT3D_REGISTER_NAMESPACED_ASPECT(name, QT_PREPEND_NAMESPACE(Qt3DCore), AspectType)
 
 #endif // QT3DCORE_ABSTRACTASPECT_H

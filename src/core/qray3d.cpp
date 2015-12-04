@@ -43,7 +43,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 /*!
-    \class QRay3D
+    \class Qt3DCore::QRay3D
+    \inmodule Qt3DCore
     \brief The QRay3D class defines a directional line in 3D space extending through an origin point.
     \since 5.5
     \ingroup qt3d
@@ -65,7 +66,7 @@ namespace Qt3DCore {
 */
 
 /*!
-    \fn QRay3D::QRay3D()
+    \fn Qt3DCore::QRay3D::QRay3D()
 
     Construct a default ray with an origin() of (0, 0, 0), a
     direction() of (0, 0, 1) and a distance of 1.
@@ -77,7 +78,7 @@ QRay3D::QRay3D()
 }
 
 /*!
-    \fn QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
+    \fn Qt3DCore::QRay3D::QRay3D(const QVector3D &origin, const QVector3D &direction, float distance)
 
     Construct a ray given its defining \a origin, \a direction and \a distance.
     The \a direction does not need to be normalized.
@@ -99,7 +100,7 @@ QRay3D::~QRay3D()
 }
 
 /*!
-    \fn QVector3D QRay3D::origin() const
+    \fn QVector3D Qt3DCore::QRay3D::origin() const
 
     Returns the origin of this ray.  The default value is (0, 0, 0).
 
@@ -111,7 +112,7 @@ QVector3D QRay3D::origin() const
 }
 
 /*!
-    \fn void QRay3D::setOrigin(const QVector3D &value)
+    \fn void Qt3DCore::QRay3D::setOrigin(const QVector3D &value)
 
     Sets the origin point of this ray to \a value.
 
@@ -123,7 +124,7 @@ void QRay3D::setOrigin(const QVector3D &value)
 }
 
 /*!
-    \fn QVector3D QRay3D::direction() const
+    \fn QVector3D Qt3DCore::QRay3D::direction() const
 
     Returns the direction vector of this ray.  The default value is (0, 0, 1).
 
@@ -135,7 +136,7 @@ QVector3D QRay3D::direction() const
 }
 
 /*!
-    \fn void QRay3D::setDirection(const QVector3D &direction)
+    \fn void Qt3DCore::QRay3D::setDirection(const QVector3D &direction)
 
     Sets the direction vector of this ray to \a direction.
 
@@ -215,7 +216,7 @@ bool QRay3D::contains(const QRay3D &ray) const
 }
 
 /*!
-    \fn QVector3D QRay3D::point(float t) const
+    \fn QVector3D Qt3DCore::QRay3D::point(float t) const
 
     Returns the point on the ray defined by moving \a t units
     along the ray in the direction of the direction() vector.
@@ -279,7 +280,7 @@ float QRay3D::distance(const QVector3D &point) const
 }
 
 /*!
-    \fn QRay3D &QRay3D::transform(const QMatrix4x4 &matrix)
+    \fn QRay3D &Qt3DCore::QRay3D::transform(const QMatrix4x4 &matrix)
 
     Transforms this ray using \a matrix, replacing origin() and
     direction() with the transformed versions.
@@ -288,7 +289,7 @@ float QRay3D::distance(const QVector3D &point) const
 */
 
 /*!
-    \fn QRay3D QRay3D::transformed(const QMatrix4x4 &matrix) const
+    \fn QRay3D Qt3DCore::QRay3D::transformed(const QMatrix4x4 &matrix) const
 
     Returns a new ray that is formed by transforming origin()
     and direction() using \a matrix.
@@ -297,26 +298,27 @@ float QRay3D::distance(const QVector3D &point) const
 */
 
 /*!
-    \fn bool QRay3D::operator==(const QRay3D &other)
+    \fn bool Qt3DCore::QRay3D::operator==(const QRay3D &other) const
 
-    Returns true if this ray is the same as \a other; false otherwise.
+    Returns \c true if this ray is the same as \a other; \c false otherwise.
 
     \sa operator!=()
 */
 
 /*!
-    \fn bool QRay3D::operator!=(const QRay3D &other)
+    \fn bool Qt3DCore::QRay3D::operator!=(const QRay3D &other) const
 
-    Returns true if this ray is not the same as \a other; false otherwise.
+    Returns \c true if this ray is not the same as \a other; \c false otherwise.
 
     \sa operator==()
 */
 
 /*!
-    \fn bool qFuzzyCompare(const QRay3D &ray1, const QRay3D &ray2)
-    \relates QRay3D
+    \fn bool qFuzzyCompare(const Qt3DCore::QRay3D &ray1, const Qt3DCore::QRay3D &ray2)
+    \relates Qt3DCore::QRay3D
 
-    Returns true if \a ray1 and \a ray2 are almost equal; false otherwise.
+    Returns \c true if \a ray1 and \a ray2 are almost equal; \c false
+    otherwise.
 */
 
 #ifndef QT_NO_DEBUG_STREAM
@@ -337,7 +339,7 @@ QDebug operator<<(QDebug dbg, const QRay3D &ray)
 #ifndef QT_NO_DATASTREAM
 
 /*!
-    \relates QRay3D
+    \relates Qt3DCore::QRay3D
 
     Writes the given \a ray to the given \a stream and returns a
     reference to the stream.
@@ -350,7 +352,7 @@ QDataStream &operator<<(QDataStream &stream, const QRay3D &ray)
 }
 
 /*!
-    \relates QRay3D
+    \relates Qt3DCore::QRay3D
 
     Reads a 3D ray from the given \a stream into the given \a ray
     and returns a reference to the stream.

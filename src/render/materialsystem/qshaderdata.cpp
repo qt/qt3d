@@ -51,10 +51,6 @@ QShaderDataPrivate::QShaderDataPrivate()
 {
 }
 
-/*!
-    \class Qt3DRender::QShaderDataPrivate
-    \internal
-*/
 QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
     : QComponentPrivate()
     , m_propertyReader(reader)
@@ -63,14 +59,15 @@ QShaderDataPrivate::QShaderDataPrivate(PropertyReaderInterfacePtr reader)
 
 /*!
  * \class Qt3DRender::QShaderData
- * \inmodule Qt3DRenderer
+ * \inmodule Qt3DRender
  *
  * \brief Provides a way of specifying values of a Uniform Block or a shader
  * structure.
  *
- * \note When subclassing and adding properties to Qt3DRender::QShaderData, please note
- * that if you need to nest an inner Qt3DRender::QShaderData, the data type of the
- * property should be Qt3DRender::QShaderData* instead of the name of your subclass.
+ * \note When subclassing and adding properties to QShaderData, note that if
+ * you need to nest an inner Qt3DRender::QShaderData, the data type of the
+ * property should be Qt3DRender::QShaderData* instead of the name of your
+ * subclass.
  *
  * \since 5.5
  */

@@ -56,7 +56,6 @@
 #include <Qt3DRender/private/framepreparationjob_p.h>
 #include <Qt3DRender/private/framecleanupjob_p.h>
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
-#include <Qt3DRender/private/pickboundingvolumejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,19 +63,25 @@ class QSurface;
 
 namespace Qt3DRender {
 
+class QAbstractSceneParser;
+
 namespace Render {
-class Renderer;
+class AbstractRenderer;
+class NodeManagers;
 }
 
 class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
+public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 
     void setSurface(QSurface *surface);
+    void loadSceneParsers();
 
-    Render::Renderer *m_renderer;
+    Render::NodeManagers *m_nodeManagers;
+    Render::AbstractRenderer *m_renderer;
 
     // The filter has affinity with the main thread so we have to delete it there
     // via QScopedPointerDeleteLater
@@ -90,7 +95,7 @@ class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
     Render::UpdateWorldTransformJobPtr m_worldTransformJob;
     Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
     Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
-    Render::PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
+    QList<QAbstractSceneParser *> m_sceneParsers;
 };
 
 }

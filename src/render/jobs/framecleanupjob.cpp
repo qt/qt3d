@@ -48,8 +48,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-FrameCleanupJob::FrameCleanupJob(Renderer *renderer)
-    : m_renderer(renderer)
+FrameCleanupJob::FrameCleanupJob(NodeManagers *managers)
+    : m_managers(managers)
+    , m_root(Q_NULLPTR)
 {
 }
 
@@ -57,22 +58,22 @@ FrameCleanupJob::~FrameCleanupJob()
 {
 }
 
+void FrameCleanupJob::setRoot(Entity *root)
+{
+    m_root = root;
+}
+
 void FrameCleanupJob::run()
 {
-    // set each ShaderData to not need an update
-    Q_FOREACH (const Qt3DCore::QNodeId &id, ShaderData::updatedShaderDataList()) {
-        ShaderData *shaderData = m_renderer->nodeManagers()->shaderDataManager()->lookupResource(id);
-        if (shaderData != Q_NULLPTR)
-            shaderData->clearUpdate();
-    }
-    ShaderData::clearShaderDataList();
+    // mark each ShaderData clean
+    ShaderData::cleanup(m_managers);
 
     // Cleanup texture handles
-    TextureDataManager *textureDataManager = m_renderer->nodeManagers()->textureDataManager();
+    TextureDataManager *textureDataManager = m_managers->textureDataManager();
     textureDataManager->cleanup();
 
     // Debug bounding volume debug
-    updateBoundingVolumesDebug(m_renderer->renderSceneRoot());
+    updateBoundingVolumesDebug(m_root);
 }
 
 void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)

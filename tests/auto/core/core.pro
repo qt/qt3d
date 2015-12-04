@@ -14,7 +14,8 @@ SUBDIRS = \
     qchangearbiter \
     qscene \
     qservicelocator \
-    qray3d
+    qray3d \
+    qtransform
 
 contains(QT_CONFIG, private_tests) {
     SUBDIRS += \

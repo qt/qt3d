@@ -52,66 +52,120 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+namespace {
+
+struct Hit
+{
+    Hit()
+        : intersects(false)
+        , distance(-1.0f)
+    {}
+
+    bool intersects;
+    float distance;
+    Qt3DCore::QNodeId id;
+    QVector3D intersection;
+};
+
+bool compareHitsDistance(const Hit &a, const Hit &b)
+{
+    return a.distance < b.distance;
+}
+
+Hit volumeRayIntersection(const QBoundingVolume *volume, const Qt3DCore::QRay3D &ray)
+{
+    Hit hit;
+    if ((hit.intersects = volume->intersects(ray, &hit.intersection))) {
+        hit.distance = ray.projectedDistance(hit.intersection);
+        hit.id = volume->id();
+    }
+    return hit;
+}
+
+Hit reduceToFirstHit(Hit &result, const Hit &intermediate)
+{
+    if (intermediate.intersects) {
+        if (result.distance == -1.0f ||
+                (intermediate.distance >= 0.0f &&
+                 intermediate.distance < result.distance))
+            result = intermediate;
+    }
+    return result;
+}
+
+// Unordered
+QVector<Hit> reduceToAllHits(QVector<Hit> &results, const Hit &intermediate)
+{
+    if (intermediate.intersects)
+        results.push_back(intermediate);
+    return results;
+}
+
+struct CollisionGathererFunctor
+{
+    Qt3DCore::QRay3D ray;
+
+    typedef Hit result_type;
+
+    Hit operator ()(const QBoundingVolume *volume) const
+    {
+        return volumeRayIntersection(volume, ray);
+    }
+};
+
+} // anonymous
+
+
 QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, Qt3DCore::QBoundingVolumeProvider *provider,
                                                           Qt3DCore::QAbstractCollisionQueryService::QueryMode mode, const Qt3DCore::QQueryHandle &handle)
 {
     Q_Q(QRayCastingService);
 
-    const QVector<QBoundingVolume *> spheres(provider->boundingVolumes());
+    const QVector<QBoundingVolume *> volumes(provider->boundingVolumes());
     QCollisionQueryResult result;
     q->setResultHandle(result, handle);
 
+    CollisionGathererFunctor gathererFunctor;
+    gathererFunctor.ray = ray;
+
     if (mode == QAbstractCollisionQueryService::FirstHit) {
-        QVector3D intersection;
-        float collidingPointDistance = -1.0f;
-        QNodeId collidingSphere;
-
-        Q_FOREACH (QBoundingVolume *bs, spheres) {
-            if (bs->intersects(ray, &intersection)) {
-                const float distanceFromRay = ray.projectedDistance(intersection);
-
-                if (collidingPointDistance == -1.0f || (distanceFromRay >= 0.0f && distanceFromRay < collidingPointDistance)) {
-                    collidingPointDistance = distanceFromRay;
-                    collidingSphere = bs->id();
-                }
-            }
-        }
-
-        if (!collidingSphere.isNull()) {
-            q->addEntityHit(result, collidingSphere);
-        }
-
-    } else if (mode == QAbstractCollisionQueryService::AllHits) {
-        Q_FOREACH (QBoundingVolume *bs, spheres) {
-            if (bs->intersects(ray))
-                q->addEntityHit(result, bs->id());
-        }
+        Hit firstHit = QtConcurrent::blockingMappedReduced<Hit>(volumes, gathererFunctor, reduceToFirstHit);
+        if (firstHit.intersects)
+            q->addEntityHit(result, firstHit.id);
+    } else {
+        QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
+        std::sort(hits.begin(), hits.end(), compareHitsDistance);
+        Q_FOREACH (const Hit &hit, hits)
+            q->addEntityHit(result, hit.id);
     }
+
     return result;
 }
 
-QRayCastingServicePrivate::QRayCastingServicePrivate(const QString &description, QBoundingVolumeProvider *provider)
+QRayCastingServicePrivate::QRayCastingServicePrivate(const QString &description)
     : QAbstractCollisionQueryServicePrivate(description)
     , m_handlesCount(0)
-    , m_boundingProvider(provider)
 {
 }
 
-QRayCastingService::QRayCastingService(Qt3DCore::QBoundingVolumeProvider *provider)
-    : QAbstractCollisionQueryService(*new QRayCastingServicePrivate(QStringLiteral("Collision detection service using Ray Casting"),
-                                                                    provider))
+QRayCastingService::QRayCastingService()
+    : QAbstractCollisionQueryService(*new QRayCastingServicePrivate(QStringLiteral("Collision detection service using Ray Casting")))
 {
 }
 
-Qt3DCore::QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray, QAbstractCollisionQueryService::QueryMode mode)
+Qt3DCore::QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
+                                                 QAbstractCollisionQueryService::QueryMode mode,
+                                                 Qt3DCore::QBoundingVolumeProvider *provider)
 {
     Q_D(QRayCastingService);
 
     QQueryHandle handle = d->m_handlesCount.fetchAndStoreOrdered(1);
 
-    // TODO: Implement run using jobs to avoid multiple threadpool
+
+    // Blocking mapReduce
+
     FutureQueryResult future = QtConcurrent::run(d, &QRayCastingServicePrivate::collides,
-                                                 ray, d->m_boundingProvider, mode, handle);
+                                                 ray, provider, mode, handle);
     d->m_results.insert(handle, future);
 
     return handle;

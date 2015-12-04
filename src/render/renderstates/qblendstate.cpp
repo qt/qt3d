@@ -66,7 +66,7 @@ public:
 
 /*!
     \class Qt3DRender::QBlendState
-    \inmodule Qt3DRenderer
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates blending information.
  */
@@ -77,7 +77,7 @@ public:
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief Encapsulates blending information
+    \brief Encapsulates blending information.
 */
 
 /*!
@@ -93,7 +93,7 @@ QBlendState::~QBlendState()
     QNode::cleanup();
 }
 
-/*! \fn void QBlendState::copy(const QNode *ref)
+/*! \fn void QBlendState::copy(const Qt3DCore::QNode *ref)
   \internal
   Copies \a ref into this object.
  */
@@ -116,7 +116,7 @@ QBlendState::QBlendState(QRenderState::Type type, QNode *parent)
 }
 
 /*!
-  \enum Qt3DCore::QBlendState::Blending
+  \enum Qt3DRender::QBlendState::Blending
 
   \value Zero 0
   \value One 1
@@ -140,12 +140,12 @@ QBlendState::QBlendState(QRenderState::Type type, QNode *parent)
 */
 
 /*!
-    \qmlproperty enumeration Qt3D.render::BlendState::srcRGB
+    \qmlproperty enumeration Qt3D.Render::BlendState::srcRGB
 
  */
 
 /*!
-    \property Qt3DCore::QBlendState::srcRGB
+    \property Qt3DRender::QBlendState::srcRGB
 
  */
 QBlendState::Blending QBlendState::srcRGB() const
@@ -164,12 +164,12 @@ void QBlendState::setSrcRGB(QBlendState::Blending srcRGB)
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.render::BlendState::dstRGB
+    \qmlproperty enumeration Qt3D.Render::BlendState::dstRGB
 
  */
 
 /*!
-    \property Qt3DCore::QBlendState::dstRGB
+    \property Qt3DRender::QBlendState::dstRGB
 
  */
 QBlendState::Blending QBlendState::dstRGB() const
@@ -188,12 +188,12 @@ void QBlendState::setDstRGB(QBlendState::Blending dstRGB)
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.render::BlendState::srcAlpha
+    \qmlproperty enumeration Qt3D.Render::BlendState::srcAlpha
 
  */
 
 /*!
-    \property Qt3DCore::QBlendState::srcAlpha
+    \property Qt3DRender::QBlendState::srcAlpha
 
  */
 QBlendState::Blending QBlendState::srcAlpha() const
@@ -212,12 +212,12 @@ void QBlendState::setSrcAlpha(QBlendState::Blending srcAlpha)
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.render::BlendState::dstAlpha
+    \qmlproperty enumeration Qt3D.Render::BlendState::dstAlpha
 
  */
 
 /*!
-    \property Qt3DCore::QBlendState::dstAlpha
+    \property Qt3DRender::QBlendState::dstAlpha
 
  */
 QBlendState::Blending QBlendState::dstAlpha() const
@@ -236,8 +236,8 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
 }
 
 /*!
-    \class QBlendStateSeparate
-    \inmodule Qt3DRenderer
+    \class Qt3DRender::QBlendStateSeparate
+    \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates blending information.
  */
@@ -248,11 +248,11 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     \inherits RenderState
     \inqmlmodule Qt3D.Render
     \since 5.5
-    \brief Encapsulates blending information
+    \brief Encapsulates blending information.
 */
 
 /*!
-  The constructor creates a QBlendStateSeparate with the
+  The constructor creates a QBlendStateSeparate instance with the
   specified \a parent.
  */
 QBlendStateSeparate::QBlendStateSeparate(QNode *parent)

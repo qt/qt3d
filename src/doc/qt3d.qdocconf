@@ -74,8 +74,8 @@ Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
                         QT3DCORESHARED_EXPORT \
                         QT3DLOGIC_PRIVATE_EXPORT \
                         QT3DLOGICSHARED_EXPORT \
-                        QT3DRENDERERSHARED_EXPORT \
-                        QT3DRENDERERSHARED_PRIVATE_EXPORT
+                        QT3DRENDERSHARED_EXPORT \
+                        QT3DRENDERSHARED_PRIVATE_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 

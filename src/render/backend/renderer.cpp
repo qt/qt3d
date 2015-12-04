@@ -70,14 +70,12 @@
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/vsyncframeadvanceservice_p.h>
-#include <Qt3DRender/private/loadbufferjob_p.h>
-#include <Qt3DRender/private/loadgeometryjob_p.h>
 #include <Qt3DRender/private/pickeventfilter_p.h>
-#include <Qt3DRender/private/qsceneparserfactory_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/openglvertexarrayobject_p.h>
 
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/qeventfilterservice.h>
@@ -134,7 +132,7 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
 Renderer::Renderer(QRenderAspect::RenderType type)
     : m_rendererAspect(Q_NULLPTR)
-    , m_nodesManager(new NodeManagers())
+    , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
     , m_eventSource(Q_NULLPTR)
@@ -144,25 +142,30 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_debugLogger(Q_NULLPTR)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
+    , m_glContext(Q_NULLPTR)
+    , m_pickBoundingVolumeJob(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
     m_running.fetchAndStoreOrdered(1);
     if (m_renderThread)
         m_renderThread->waitForStart();
-
-    loadSceneParsers();
 }
 
 Renderer::~Renderer()
 {
     // Clean up the TLS allocators
-    destroyAllocators(rendererAspect()->jobManager());
+    destroyAllocators(m_rendererAspect->jobManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const
 {
     return m_nodesManager;
+}
+
+void Renderer::setOpenGLContext(QOpenGLContext *context)
+{
+    m_glContext = context;
 }
 
 void Renderer::buildDefaultTechnique()
@@ -178,15 +181,15 @@ void Renderer::buildDefaultTechnique()
     QString vertexFileName;
     QString fragmentFileName;
     if (m_graphicsContext->openGLContext()->isOpenGLES()) {
-        vertexFileName = QStringLiteral("qrc:/shaders/es2/diffuse.vert");
-        fragmentFileName = QStringLiteral("qrc:/shaders/es2/diffuse.frag");
+        vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
+        fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
     } else {
         if (m_graphicsContext->openGLContext()->format().profile() == QSurfaceFormat::CoreProfile) {
-            vertexFileName = QStringLiteral("qrc:/shaders/diffuse.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/diffuse.frag");
+            vertexFileName = QStringLiteral("qrc:/shaders/gl3/phong.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/gl3/phong.frag");
         } else {
-            vertexFileName = QStringLiteral("qrc:/shaders/es2/diffuse.vert");
-            fragmentFileName = QStringLiteral("qrc:/shaders/es2/diffuse.frag");
+            vertexFileName = QStringLiteral("qrc:/shaders/es2/phong.vert");
+            fragmentFileName = QStringLiteral("qrc:/shaders/es2/phong.frag");
         }
     }
     defaultShader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(vertexFileName)));
@@ -204,47 +207,33 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    // diffuse lighting uniforms
-    QParameter* lightPos = new QParameter(QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f));
-    m_defaultTechnique->addParameter(lightPos);
-    basicPass->addBinding(new QParameterMapping(QStringLiteral("lightPos"), QStringLiteral("lightPosition"), QParameterMapping::Uniform));
-
-    QParameter* lightIntensity = new QParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f));
-    m_defaultTechnique->addParameter(lightIntensity);
+    QParameter* ka = new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f));
+    m_defaultTechnique->addParameter(ka);
+    basicPass->addBinding(new QParameterMapping(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapping::Uniform));
 
     QParameter* kd = new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
     basicPass->addBinding(new QParameterMapping(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapping::Uniform));
 
-    QParameter* ka = new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f));
-    m_defaultTechnique->addParameter(ka);
-    basicPass->addBinding(new QParameterMapping(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapping::Uniform));
+    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f));
+    m_defaultTechnique->addParameter(ks);
+    basicPass->addBinding(new QParameterMapping(QStringLiteral("specular"), QStringLiteral("ks"), QParameterMapping::Uniform));
 
-}
-
-void Renderer::loadSceneParsers()
-{
-    QStringList keys = QSceneParserFactory::keys();
-    Q_FOREACH (QString key, keys) {
-        QAbstractSceneParser *sceneParser = QSceneParserFactory::create(key, QStringList());
-        if (sceneParser != Q_NULLPTR)
-            m_sceneParsers.append(sceneParser);
-    }
+    m_defaultTechnique->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
 }
 
 void Renderer::buildDefaultMaterial()
 {
     m_defaultMaterial = new QMaterial();
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("lightPos"), QVector4D(10.0f, 10.0f, 0.0f, 1.0f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(0.5f, 0.5f, 0.5f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
+    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f)));
+    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
 
     QEffect* defEff = new QEffect;
     defEff->addTechnique(m_defaultTechnique);
     m_defaultMaterial->setEffect(defEff);
-
 }
 
 void Renderer::createAllocators(QAbstractAspectJobManager *jobManager)
@@ -318,7 +307,7 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
 // Called in RenderThread context by the run method of RenderThread
 // RenderThread has locked the mutex already and unlocks it when this
 // method termintates
-void Renderer::initialize(QOpenGLContext *context)
+void Renderer::initialize()
 {
     if (m_renderThread)
         m_waitForWindowToBeSetCondition.wait(mutex());
@@ -333,8 +322,8 @@ void Renderer::initialize(QOpenGLContext *context)
     if (enableDebugLogging)
         sf.setOption(QSurfaceFormat::DebugContext);
 
-    QOpenGLContext* ctx = context ? context : new QOpenGLContext;
-    if (!context) {
+    QOpenGLContext* ctx = m_glContext ? m_glContext : new QOpenGLContext;
+    if (!m_glContext) {
         qCDebug(Backend) << "Creating OpenGL context with format" << sf;
         ctx->setFormat(sf);
         if (ctx->create())
@@ -401,9 +390,9 @@ void Renderer::setSurfaceExposed(bool exposed)
     m_exposed.fetchAndStoreOrdered(exposed);
 }
 
-void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId &frameGraphRootUuid)
+void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId)
 {
-    m_frameGraphRootUuid = frameGraphRootUuid;
+    m_frameGraphRootUuid = fgRootId;
     qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
 }
 
@@ -422,7 +411,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
 // 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
 // 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
-void Renderer::setSceneGraphRoot(Entity *sgRoot)
+void Renderer::setSceneRoot(Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
@@ -511,7 +500,7 @@ void Renderer::setSurface(QSurface* surface)
 
 void Renderer::registerEventFilter(QEventFilterService *service)
 {
-    qDebug() << Q_FUNC_INFO << QThread::currentThread();
+    qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
     service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
@@ -738,7 +727,7 @@ bool Renderer::submitRenderViews()
 
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
+QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
@@ -755,42 +744,14 @@ QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBinJobs()
     return renderBinJobs;
 }
 
-// Returns a vector of jobs to be performed for dirty buffers
-// 1 dirty buffer == 1 job, all job can be performed in parallel
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createRenderBufferJobs()
+QAspectJobPtr Renderer::pickBoundingVolumeJob()
 {
-    const QVector<QNodeId> dirtyBuffers = nodeManagers()->bufferManager()->dirtyBuffers();
-    QVector<QAspectJobPtr> dirtyBuffersJobs;
-
-    Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
-        HBuffer bufferHandle = m_nodesManager->lookupHandle<Buffer, BufferManager, HBuffer>(bufId);
-        if (!bufferHandle.isNull()) {
-            // Create new buffer job
-            LoadBufferJobPtr job(new LoadBufferJob(bufferHandle));
-            job->setNodeManager(m_nodesManager);
-            dirtyBuffersJobs.push_back(job);
-        }
-    }
-
-    return dirtyBuffersJobs;
-}
-
-QVector<Qt3DCore::QAspectJobPtr> Renderer::createGeometryRendererJobs()
-{
-    GeometryRendererManager *geomRendererManager = m_nodesManager->geometryRendererManager();
-    const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
-    QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
-
-    Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
-        HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
-        if (!geometryRendererHandle.isNull()) {
-            LoadGeometryJobPtr job(new LoadGeometryJob(geometryRendererHandle));
-            job->setNodeManagers(m_nodesManager);
-            dirtyGeometryRendererJobs.push_back(job);
-        }
-    }
-
-    return dirtyGeometryRendererJobs;
+    // Clear any previous dependency not valid anymore
+    if (!m_pickBoundingVolumeJob)
+        m_pickBoundingVolumeJob.reset(new PickBoundingVolumeJob(this));
+    m_pickBoundingVolumeJob->clearNullDependencies();
+    m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
+    return m_pickBoundingVolumeJob;
 }
 
 // Called during while traversing the FrameGraph for each leaf node context of QAspectThread
@@ -805,6 +766,11 @@ Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int 
     return job;
 }
 
+QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
+{
+    return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
+}
+
 // Called by RenderView->submit() in RenderThread context
 void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 {
@@ -815,7 +781,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
     // Save the RenderView base stateset
     RenderStateSet *globalState = m_graphicsContext->currentStateSet();
-    QOpenGLVertexArrayObject *vao = Q_NULLPTR;
+    OpenGLVertexArrayObject *vao = Q_NULLPTR;
     HVao previousVaoHandle;
 
     Q_FOREACH (RenderCommand *command, commands) {
@@ -844,23 +810,20 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         VAOManager *vaoManager = m_nodesManager->vaoManager();
         if (m_graphicsContext->supportsVAO()) {
             command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+
             if (command->m_vao.isNull()) {
                 qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
                 command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-                *(vaoManager->data(command->m_vao)) = new QOpenGLVertexArrayObject();
+                vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
+                vaoManager->data(command->m_vao)->create();
             }
+
             if (previousVaoHandle != command->m_vao) {
                 needsToBindVAO = true;
                 previousVaoHandle = command->m_vao;
-                vao = *(vaoManager->data(command->m_vao));
+                vao = vaoManager->data(command->m_vao);
             }
             Q_ASSERT(vao);
-            // If the VAO hasn't been created, we create it
-            if (!vao->isCreated()) {
-                vao->create();
-                needsToBindVAO = true;
-                qCDebug(Rendering) << Q_FUNC_INFO << "Creating new VAO";
-            }
         }
 
         //// We activate the shader here
@@ -875,7 +838,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // Before the shader was loader
         Attribute *indexAttribute = Q_NULLPTR;
         bool specified = false;
-        const bool requiresVAOUpdate = (!vao || !vao->isCreated()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
+        const bool requiresVAOUpdate = (!vao || !vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
         GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
 
         // Append dirty Geometry to temporary vector
@@ -883,14 +846,16 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (rGeometry->isDirty())
             m_dirtyGeometry.push_back(rGeometry);
 
+        if (needsToBindVAO && vao) {
+            vao->bind();
+        }
+
         if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
-            specified = true;
-            if (needsToBindVAO && vao) {
-                Q_ASSERT(vao->isCreated());
-                vao->bind();
-            }
             // Update or set Attributes and Buffers for the given rGeometry and Command
             indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
+            specified = true;
+            if (vao)
+                vao->setSpecified(true);
         }
 
         //// Update program uniforms
@@ -911,7 +876,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         // All Uniforms for a pass are stored in the QUniformPack of the command
         // Uniforms for Effect, Material and Technique should already have been correctly resolved
         // at that point
-        if (specified || (vao && vao->isCreated())) {
+        if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
             const GLint primType = rGeometryRenderer->primitiveType();
             const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
             const bool drawIndexed = indexAttribute != Q_NULLPTR;

@@ -55,8 +55,10 @@ TechniqueFilter {
         // Use the specified camera
         CameraSelector {
             id : cameraSelector
-            ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
+            FrustumCulling {
+                ClearBuffer {
+                    buffers : ClearBuffer.ColorDepthBuffer
+                }
             }
         }
     }

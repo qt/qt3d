@@ -43,7 +43,7 @@
 #include <Qt3DRender/private/objloader_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,13 +52,14 @@ namespace Qt3DRender {
 class MeshFunctor : public QGeometryFunctor
 {
 public :
-    MeshFunctor(const QUrl &sourcePath);
+    MeshFunctor(const QUrl &sourcePath, const QString &subMesh = QString());
     QGeometry *operator()() Q_DECL_OVERRIDE;
     bool operator ==(const QGeometryFunctor &other) const Q_DECL_OVERRIDE;
     QT3D_FUNCTOR(MeshFunctor)
 
 private:
     QUrl m_sourcePath;
+    QString m_subMesh;
 };
 
 
@@ -94,7 +95,7 @@ void QMesh::setSource(const QUrl& source)
         return;
     d->m_source = source;
     // update the functor
-    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source)));
+    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_subMesh)));
     emit sourceChanged();
 }
 
@@ -104,9 +105,27 @@ QUrl QMesh::source() const
     return d->m_source;
 }
 
-MeshFunctor::MeshFunctor(const QUrl &sourcePath)
+void QMesh::setSubMesh(const QString &subMesh)
+{
+    Q_D(QMesh);
+    if (d->m_subMesh == subMesh)
+        return;
+    d->m_subMesh = subMesh;
+    // update the functor
+    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_subMesh)));
+    emit subMeshChanged();
+}
+
+QString QMesh::subMesh() const
+{
+    Q_D(const QMesh);
+    return d->m_subMesh;
+}
+
+MeshFunctor::MeshFunctor(const QUrl &sourcePath, const QString& subMesh)
     : QGeometryFunctor()
     , m_sourcePath(sourcePath)
+    , m_subMesh(subMesh)
 {
 }
 
@@ -121,12 +140,13 @@ QGeometry *MeshFunctor::operator()()
     ObjLoader loader;
     loader.setLoadTextureCoordinatesEnabled(true);
     loader.setTangentGenerationEnabled(true);
-    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath;
+    qCDebug(Render::Jobs) << Q_FUNC_INFO << "Loading mesh from" << m_sourcePath << " part:" << m_subMesh;
 
 
     // TO DO: Handle file download if remote url
-    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
-    if (loader.load(filePath))
+    QString filePath = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_sourcePath);
+
+    if (loader.load(filePath, m_subMesh))
         return loader.geometry();
 
     qCWarning(Render::Jobs) << Q_FUNC_INFO << "OBJ load failure for:" << filePath;

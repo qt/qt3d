@@ -200,7 +200,7 @@ void Sphere::expandToContain(const Sphere &sphere)
     }
 }
 
-Sphere Sphere::transformed(const QMatrix4x4 &mat)
+Sphere Sphere::transformed(const QMatrix4x4 &mat) const
 {
     // Transform extremities in x, y, and z directions to find extremities
     // of the resulting ellipsoid

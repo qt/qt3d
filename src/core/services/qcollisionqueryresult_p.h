@@ -55,16 +55,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QCollisionQueryResultPrivate
+class QCollisionQueryResultPrivate : public QSharedData
 {
 public:
-    QCollisionQueryResultPrivate(QCollisionQueryResult *qq);
+    explicit QCollisionQueryResultPrivate();
+    explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
 
     void setHandle(const QQueryHandle &handle);
     void addEntityHit(const QNodeId &entity);
-
-    Q_DECLARE_PUBLIC(QCollisionQueryResult)
-    QCollisionQueryResult *q_ptr;
 
     QQueryHandle m_handle;
     QVector<QNodeId> m_entitiesHit;

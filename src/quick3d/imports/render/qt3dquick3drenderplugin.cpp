@@ -60,7 +60,7 @@
 #include <Qt3DRender/qtorusmesh.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
-#include <Qt3DRender/qabstractlight.h>
+#include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qspotlight.h>
 #include <Qt3DRender/qdirectionallight.h>
 #include <Qt3DRender/qpointlight.h>
@@ -101,6 +101,8 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 #include <Qt3DRender/qboundingvolumedebug.h>
+#include <Qt3DRender/qfrustumculling.h>
+#include <Qt3DRender/qlighting.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -204,8 +206,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
 
     // Geometry
-    qmlRegisterUncreatableType<Qt3DCore::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
-    qmlRegisterUncreatableType<Qt3DCore::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractAttribute>(uri, 2, 0, "QAbstractAttribute", QStringLiteral("QAbstractAttribute is abstract"));
+    qmlRegisterUncreatableType<Qt3DRender::QAbstractBuffer>(uri, 2, 0, "QAbstractBuffer", QStringLiteral("QAbstractBuffer is abstract"));
     qmlRegisterType<Qt3DRender::QAttribute>(uri, 2, 0, "Attribute");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QBuffer, Qt3DRender::Render::Quick::Quick3DBuffer>("QBuffer", "Qt3D.Render/Buffer", uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
@@ -236,7 +238,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QLayerFilter>(uri, 2, 0, "LayerFilter");
 
     // Lights
-    qmlRegisterUncreatableType<Qt3DRender::QAbstractLight>(uri, 2, 0, "QAbstractLight", QStringLiteral("QAbstractLight is abstract"));
+    qmlRegisterType<Qt3DRender::QLight>(uri, 2, 0, "Light");
     qmlRegisterType<Qt3DRender::QPointLight>(uri, 2, 0, "PointLight");
     qmlRegisterType<Qt3DRender::QDirectionalLight>(uri, 2, 0, "DirectionalLight");
     qmlRegisterType<Qt3DRender::QSpotLight>(uri, 2, 0, "SpotLight");
@@ -252,6 +254,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QStateSet", "Qt3D.Render/StateSet", uri, 2, 0, "StateSet");
     qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3DRender::QFrameGraph>(uri, 2, 0, "FrameGraph");
+    qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
+    qmlRegisterType<Qt3DRender::QLighting>(uri, 2, 0, "Lighting");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderAttachment>(uri, 2, 0, "RenderAttachment");

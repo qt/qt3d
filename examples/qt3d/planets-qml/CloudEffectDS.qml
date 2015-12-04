@@ -42,7 +42,7 @@ Effect {
     id: root
 
     property Texture2D shadowTexture
-    property Light light
+    property PlanetsLight light
 
     parameters: [
         Parameter { name: "lightPosition";  value: root.light.lightPosition },

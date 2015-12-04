@@ -40,6 +40,7 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QVector>
+#include <QSharedData>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,17 +54,43 @@ class QT3DCORESHARED_EXPORT QCollisionQueryResult
 {
 public:
     QCollisionQueryResult();
+    QCollisionQueryResult(const QCollisionQueryResult &);
+    ~QCollisionQueryResult();
+
+    QCollisionQueryResult &operator=(const QCollisionQueryResult &);
+#ifdef Q_COMPILER_RVALUE_REFS
+    QCollisionQueryResult &operator=(QCollisionQueryResult &&other) Q_DECL_NOTHROW
+    {
+        swap(other);
+        return *this;
+    }
+#endif
+
+    void swap(QCollisionQueryResult &other) Q_DECL_NOTHROW
+    {
+        qSwap(d_ptr, other.d_ptr);
+    }
 
     QQueryHandle handle() const;
     QVector<QNodeId> entitiesHit() const;
 
 private:
-    Q_DECLARE_PRIVATE(QCollisionQueryResult)
-    QCollisionQueryResultPrivate *d_ptr;
     friend class QAbstractCollisionQueryService;
+
+    explicit QCollisionQueryResult(QCollisionQueryResultPrivate &p);
+
+    QSharedDataPointer<QCollisionQueryResultPrivate> d_ptr;
+    // Q_DECLARE_PRIVATE equivalent for shared data pointers
+    QCollisionQueryResultPrivate *d_func();
+    inline const QCollisionQueryResultPrivate *d_func() const
+    {
+        return d_ptr.constData();
+    }
 };
 
 } // Qt3D
+
+Q_DECLARE_SHARED(Qt3DCore::QCollisionQueryResult)
 
 QT_END_NAMESPACE
 

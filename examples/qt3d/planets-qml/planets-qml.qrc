@@ -8,7 +8,7 @@
         <file>FpsDisplay.qml</file>
         <file>Planet.qml</file>
         <file>Ring.qml</file>
-        <file>Light.qml</file>
+        <file>PlanetsLight.qml</file>
         <file>CloudEffectDS.qml</file>
         <file>PlanetEffectD.qml</file>
         <file>PlanetEffectDB.qml</file>

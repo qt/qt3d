@@ -78,6 +78,8 @@ public:
     Q_INVOKABLE static QQuaternion fromEulerAngles(const QVector3D &eulerAngles);
     Q_INVOKABLE static QQuaternion fromEulerAngles(float pitch, float yaw, float roll);
 
+    Q_INVOKABLE static QMatrix4x4 rotateAround(const QVector3D &point, float angle, const QVector3D &axis);
+
     QMatrix4x4 matrix() const;
 
 public Q_SLOTS:

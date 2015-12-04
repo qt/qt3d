@@ -51,7 +51,7 @@ class tst_QAttribute: public Qt3DCore::QNode
 public:
     tst_QAttribute()
     {
-        qRegisterMetaType<Qt3DCore::QAbstractBuffer*>("Qt3DCore::QAbstractBuffer*");
+        qRegisterMetaType<Qt3DRender::QAbstractBuffer*>("Qt3DCore::QAbstractBuffer*");
     }
 
     ~tst_QAttribute()
@@ -71,7 +71,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute *customVertex = new Qt3DRender::QAttribute();
         Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
         customVertex->setBuffer(buffer);
-        customVertex->setAttributeType(Qt3DCore::QAbstractAttribute::VertexAttribute);
+        customVertex->setAttributeType(Qt3DRender::QAbstractAttribute::VertexAttribute);
         customVertex->setCount(454);
         customVertex->setByteStride(427);
         customVertex->setByteOffset(305);
@@ -84,7 +84,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
         Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
         customIndex->setBuffer(indexBuffer);
-        customIndex->setAttributeType(Qt3DCore::QAbstractAttribute::IndexAttribute);
+        customIndex->setAttributeType(Qt3DRender::QAbstractAttribute::IndexAttribute);
         customIndex->setCount(383);
         customIndex->setByteStride(350);
         customIndex->setByteOffset(327);
@@ -222,14 +222,14 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        attribute->setAttributeType(Qt3DCore::QAbstractAttribute::IndexAttribute);
+        attribute->setAttributeType(Qt3DRender::QAbstractAttribute::IndexAttribute);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "attributeType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DCore::QAbstractAttribute::IndexAttribute));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAbstractAttribute::IndexAttribute));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

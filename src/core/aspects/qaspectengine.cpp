@@ -48,10 +48,10 @@
 #include <private/qscene_p.h>
 #include <private/qaspectengine_p.h>
 #include <private/qnode_p.h>
+#include <private/qnodevisitor_p.h>
 #include <private/qscene_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
-#include "qnodevisitor.h"
 #include <Qt3DCore/qeventfilterservice.h>
 #include <Qt3DCore/qservicelocator.h>
 
@@ -239,6 +239,37 @@ QList<QAbstractAspect *> QAspectEngine::aspects() const
     return d->m_aspects;
 }
 
+QVariant QAspectEngine::executeCommand(const QString &command)
+{
+    Q_D(QAspectEngine);
+
+    if (command == QLatin1Literal("list aspects")) {
+        if (d->m_aspects.isEmpty())
+            return QLatin1Literal("No loaded aspect");
+
+        QStringList reply;
+        reply << QLatin1Literal("Loaded aspects:");
+        foreach (QAbstractAspect *aspect, d->m_aspects) {
+            const QString name = d->m_factory.aspectName(aspect);
+            if (!name.isEmpty())
+                reply << (QLatin1Literal(" * ") + name);
+            else
+                reply << QLatin1Literal(" * <unnamed>");
+        }
+        return reply.join(QLatin1Char('\n'));
+    }
+
+    QStringList args = command.split(QLatin1Char(' '));
+    QString aspectName = args.takeFirst();
+
+    foreach (QAbstractAspect *aspect, d->m_aspects) {
+        if (aspectName == d->m_factory.aspectName(aspect))
+            return aspect->executeCommand(args);
+    }
+
+    return QVariant();
+}
+
 void QAspectEngine::setRootEntity(QEntity *root)
 {
     qCDebug(Aspects) << "Setting scene root on aspect manager";
@@ -279,18 +310,6 @@ QSharedPointer<QEntity> QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);
     return d->m_root;
-}
-
-QAspectFactory QAspectEngine::aspectFactory() const
-{
-    Q_D(const QAspectEngine);
-    return d->m_factory;
-}
-
-void QAspectEngine::setAspectFactory(const QAspectFactory &factory)
-{
-    Q_D(QAspectEngine);
-    d->m_factory = factory;
 }
 
 } // namespace Qt3DCore

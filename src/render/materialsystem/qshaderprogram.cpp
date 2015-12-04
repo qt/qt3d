@@ -37,9 +37,10 @@
 #include "qshaderprogram.h"
 #include "qshaderprogram_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DCore/private/qurlhelper_p.h>
+#include <Qt3DRender/private/qurlhelper_p.h>
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -85,7 +86,7 @@ QShaderProgram::QShaderProgram(QShaderProgramPrivate &dd, QNode *parent)
 }
 
 /*!
- * Sets the vertexShader from raw data in \a vertexShader.
+ * Sets the vertex shader from raw data in \a vertexShaderCode.
  */
 void QShaderProgram::setVertexShaderCode(const QByteArray &vertexShaderCode)
 {
@@ -148,7 +149,7 @@ QByteArray QShaderProgram::geometryShaderCode() const
 }
 
 /*!
- * Sets the fragmentShader from raw data in \a fragmentShader.
+ * Sets the fragment shader from raw data in \a fragmentShaderCode.
  */
 void QShaderProgram::setFragmentShaderCode(const QByteArray &fragmentShaderCode)
 {
@@ -227,17 +228,35 @@ QByteArray QShaderProgram::shaderCode(ShaderType type) const
     }
 }
 
+static QByteArray deincludify(const QString &filePath)
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Could not read shader source file:" << f.fileName();
+        return QByteArray();
+    }
+
+    QByteArray contents = f.readAll();
+    QByteArrayList lines = contents.split('\n');
+    const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
+    for (int i = 0; i < lines.count(); ++i) {
+        if (lines[i].startsWith(includeDirective)) {
+            QByteArray includeFileName = lines[i].mid(includeDirective.count() + 1);
+            lines.removeAt(i);
+            QByteArray includedContents = deincludify(QFileInfo(filePath).absolutePath() + QStringLiteral("/") + QString::fromUtf8(includeFileName));
+            lines.insert(i, includedContents);
+            QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
+            lines.insert(i + 1, lineDirective.toUtf8());
+        }
+    }
+
+    return lines.join('\n');
+}
+
 QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
 {
     // TO DO: Handle remote path
-    QString filePath = Qt3DCore::QUrlHelper::urlToLocalFileOrQrc(sourceUrl);
-
-    QFile f(filePath);
-    if (!f.exists())
-        qWarning() << "Couldn't read shader source file:" << sourceUrl;
-    else
-        f.open(QIODevice::ReadOnly | QIODevice::Text);
-    return f.readAll();
+    return deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
 }
 
 } // of namespace Qt3DRender

@@ -41,6 +41,7 @@
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qclearbuffer.h>
 #include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfrustumculling.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,7 @@ QForwardRendererPrivate::QForwardRendererPrivate()
     , m_viewport(new QViewport())
     , m_cameraSelector(new QCameraSelector())
     , m_clearBuffer(new QClearBuffer())
+    , m_frustumCulling(new QFrustumCulling())
 {
 }
 
@@ -62,6 +64,7 @@ void QForwardRendererPrivate::init()
 {
     Q_Q(QForwardRenderer);
 
+    m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
     m_cameraSelector->setParent(m_viewport);
     m_viewport->setParent(q);
@@ -91,7 +94,7 @@ void QForwardRendererPrivate::init()
     The Qt3DRender::QForwardRenderer has a default requirement annotation whose name is "renderingStyle" and value "forward".
     If you need to filter out your techniques, you should do so based on that annotation.
 
-    By default the viewport occupies the whole screen and the clear color is white.
+    By default the viewport occupies the whole screen and the clear color is white. Frustum culling is also enabled.
 */
 
 /*!

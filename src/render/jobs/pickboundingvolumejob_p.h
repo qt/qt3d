@@ -70,13 +70,12 @@ class Entity;
 class Renderer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public Qt3DCore::QAspectJob, public Qt3DCore::QBoundingVolumeProvider
+class Q_AUTOTEST_EXPORT PickBoundingVolumeJob : public Qt3DCore::QAspectJob
 {
 public:
     PickBoundingVolumeJob(Renderer *renderer);
 
     void setRoot(Entity *root);
-    QVector<Qt3DCore::QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL;
 
     static Qt3DCore::QRay3D intersectionRay(const QPoint &pos,
                                             const QMatrix4x4 &viewMatrix,
@@ -91,15 +90,20 @@ private:
     Entity *m_node;
     QList<QMouseEvent> m_mouseEvents;
 
-    QVector<Qt3DCore::QBoundingVolume *> gatherBoundingVolumes(Entity *entity) const;
     void viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId,
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QRectF &relativeViewport) const;
-    QVector<Qt3DCore::QNodeId> hitsForViewportAndCamera(const QPoint &pos,
-                                                        const QRectF &relativeViewport,
-                                                        const Qt3DCore::QNodeId &cameraId,
-                                                        Qt3DCore::QAbstractCollisionQueryService *rayCasting) const;
+    QVector<Qt3DCore::QNodeId> sphereHitsForViewportAndCamera(const QPoint &pos,
+                                                              const QRectF &relativeViewport,
+                                                              const Qt3DCore::QNodeId &cameraId,
+                                                              Qt3DCore::QAbstractCollisionQueryService *rayCasting,
+                                                              Qt3DCore::QBoundingVolumeProvider *volumeProvider) const;
+    QVector<Qt3DCore::QNodeId> triangleHitsForViewportAndCamera(const QPoint &pos,
+                                                                const QRectF &relativeViewport,
+                                                                const Qt3DCore::QNodeId &cameraId,
+                                                                const Qt3DCore::QNodeId &entityId,
+                                                                Qt3DCore::QAbstractCollisionQueryService *rayCasting) const;
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;

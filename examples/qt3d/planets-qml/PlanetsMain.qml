@@ -49,26 +49,21 @@ Item {
     property real textSize: sliderLength / 20
     property real planetButtonSize: (height < 2200) ? (height / 11) : 200
 
-    Rectangle {
+    //! [0]
+    Scene3D {
         anchors.fill: parent
-        color: "black"
+        aspects: ["render", "logic"]
+        focus: true
 
-        //! [0]
-        Scene3D {
-            anchors.fill: parent
-            anchors.margins: 10
-            focus: true
+        SolarSystem { id: solarsystem }
+    }
+    //! [0]
 
-            SolarSystem { id: solarsystem }
-        }
-        //! [0]
-
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.LeftButton
-            onClicked:
-                focusedPlanet = 100
-        }
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton
+        onClicked:
+            focusedPlanet = 100
     }
 
     //! [1]
@@ -326,26 +321,5 @@ Item {
             frames = 0
         }
         onRunningChanged: frames = 0
-    }
-
-    // Animate solar system with a "beautiful" hack
-    Rectangle {
-        id: dummyAnimator
-        width: 0
-        height: 0
-        visible: false
-        onRotationChanged: {
-            solarsystem.animate(focusedPlanet)
-            frames++
-        }
-    }
-
-    NumberAnimation {
-        target: dummyAnimator
-        property: "rotation"
-        from: 0
-        to: 360
-        loops: Animation.Infinite
-        running: true
     }
 }

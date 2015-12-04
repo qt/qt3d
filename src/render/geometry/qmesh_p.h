@@ -65,6 +65,7 @@ public:
     Q_DECLARE_PUBLIC(QMesh)
 
     QUrl m_source;
+    QString m_subMesh;
 };
 
 } // namespace Qt3DRender
