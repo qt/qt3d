@@ -76,7 +76,7 @@ void InputHandler::registerEventFilters(QEventFilterService *service)
     clearPendingMouseEvents();
 
     service->registerEventFilter(m_keyboardEventFilter, 512);
-    service->registerEventFilter(m_mouseEventFilter, 512);
+    service->registerEventFilter(m_mouseEventFilter, 513);
 }
 
 // Called by the keyboardEventFilter in the main thread
@@ -182,10 +182,10 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 
     Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
         MouseController *controller = m_mouseControllerManager->data(cHandle);
-        controller->updateMouseEvents(events);
 
         // Event dispacthing job
         if (!events.isEmpty()) {
+            controller->updateMouseEvents(events);
             Q_FOREACH (const QNodeId &input, controller->mouseInputs()) {
                 MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input, events);
                 job->setInputHandler(this);
