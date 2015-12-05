@@ -85,6 +85,15 @@ private:
     InputHandler *m_inputHandler;
 
     struct MouseState {
+
+        MouseState()
+            : xAxis(0.0f)
+            , yAxis(0.0f)
+            , leftPressed(false)
+            , rightPressed(false)
+            , centerPressed(false)
+        {}
+
         float xAxis;
         float yAxis;
         bool leftPressed;
@@ -93,7 +102,7 @@ private:
     };
 
     MouseState m_mouseState;
-    QPoint m_previousPos;
+    QPointF m_previousPos;
 };
 
 class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor

@@ -98,9 +98,9 @@ bool MouseController::isButtonPressed(int buttonIdentifier) const
     case QMouseController::Left:
         return m_mouseState.leftPressed;
     case QMouseController::Center:
-        return m_mouseState.rightPressed;
-    case QMouseController::Right:
         return m_mouseState.centerPressed;
+    case QMouseController::Right:
+        return m_mouseState.rightPressed;
     default:
         break;
     }
@@ -114,12 +114,17 @@ QVector<Qt3DCore::QNodeId> MouseController::mouseInputs() const
 
 void MouseController::updateMouseEvents(const QList<QMouseEvent> &events)
 {
-    Q_FOREACH (const QMouseEvent &e, events) {
-        m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
-        m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
-        m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
-        m_mouseState.xAxis = m_previousPos.x() - e.screenPos().x();
-        m_mouseState.yAxis = m_previousPos.y() - e.screenPos().y();
+    if (!events.isEmpty()) {
+        Q_FOREACH (const QMouseEvent &e, events) {
+            m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
+            m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
+            m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
+            m_mouseState.xAxis =  0.1 * (e.screenPos().x() - m_previousPos.x());
+            m_mouseState.yAxis = 0.1 * (m_previousPos.y() - e.screenPos().y());
+            m_previousPos = e.screenPos();
+        }
+    } else {
+        m_mouseState = MouseState();
     }
 }
 

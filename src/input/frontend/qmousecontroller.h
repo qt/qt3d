@@ -58,12 +58,14 @@ public:
         X,
         Y
     };
+    Q_ENUM(Axis)
 
     enum Button {
         Left,
         Center,
         Right
     };
+    Q_ENUM(Button)
 
     int axisCount() const Q_DECL_FINAL;
     int buttonCount() const Q_DECL_FINAL;
