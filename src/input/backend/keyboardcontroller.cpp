@@ -90,7 +90,7 @@ QPair<int, int> getKeyPosition(int key)
     case Qt::Key_Down:
         return QPair<int, int>(0, 17);
     case Qt::Key_PageUp:
-        return QPair<int, int>(0, 17);
+        return QPair<int, int>(0, 18);
     case Qt::Key_PageDown:
         return QPair<int, int>(0, 19);
     case Qt::Key_Shift:
