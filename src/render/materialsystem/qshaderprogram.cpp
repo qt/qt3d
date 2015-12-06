@@ -241,9 +241,16 @@ static QByteArray deincludify(const QString &filePath)
     const QByteArray includeDirective = QByteArrayLiteral("#pragma include");
     for (int i = 0; i < lines.count(); ++i) {
         if (lines[i].startsWith(includeDirective)) {
-            QByteArray includeFileName = lines[i].mid(includeDirective.count() + 1);
+            QString includeFileName = QFileInfo(filePath).absolutePath()
+                + QStringLiteral("/")
+                + QString::fromUtf8(lines[i].mid(includeDirective.count() + 1));
+            if (qEnvironmentVariableIsSet("QT3D_GLSL100_WORKAROUND")) {
+                QString candidate = includeFileName + QStringLiteral("100");
+                if (QFile::exists(candidate))
+                    includeFileName = candidate;
+            }
             lines.removeAt(i);
-            QByteArray includedContents = deincludify(QFileInfo(filePath).absolutePath() + QStringLiteral("/") + QString::fromUtf8(includeFileName));
+            QByteArray includedContents = deincludify(includeFileName);
             lines.insert(i, includedContents);
             QString lineDirective = QString(QStringLiteral("#line %1")).arg(i + 2);
             lines.insert(i + 1, lineDirective.toUtf8());

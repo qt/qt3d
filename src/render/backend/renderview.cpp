@@ -784,7 +784,6 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     }
                 }
 
-                // Shaders without dynamic indexing will not have lightCount
                 if (uniformNames.contains(LIGHT_COUNT_NAME))
                     setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, qMax(1, lightIdx));
 

@@ -23,30 +23,34 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
 
     FP vec3 n = normalize( vnormal );
 
-    // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 s = -lights[0].direction;
-    FP float att = 1.0;
-    if ( lights[0].type != TYPE_DIRECTIONAL ) {
-        s = lights[0].position - vpos;
-        if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(s);
-            att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
+    int i;
+    FP vec3 s;
+    for (i = 0; i < lightCount; ++i) {
+        FP float att = 1.0;
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
+            s = lights[i].position - vpos;
+            if (length( lights[i].attenuation ) != 0.0) {
+                FP float dist = length(s);
+                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+            }
+        } else {
+            s = -lights[i].direction;
         }
+
+        s = normalize( tangentMatrix * s );
+        FP float diffuse = max( dot( s, n ), 0.0 );
+
+        FP float specular = 0.0;
+        if (diffuse > 0.0 && shininess > 0.0) {
+            FP vec3 r = reflect( -s, n );
+            FP vec3 v = normalize( tangentMatrix * ( eye - vpos ) );
+            FP float normFactor = ( shininess + 2.0 ) / 2.0;
+            specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
+        }
+
+        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
+        specularColor += specular;
     }
-
-    s = normalize( tangentMatrix * s );
-    FP float diffuse = max( dot( s, n ), 0.0 );
-
-    FP float specular = 0.0;
-    if (diffuse > 0.0 && shininess > 0.0) {
-        FP vec3 r = reflect( -s, n );
-        FP vec3 v = normalize( tangentMatrix * ( eye - vpos ) );
-        FP float normFactor = ( shininess + 2.0 ) / 2.0;
-        specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
-    }
-
-    diffuseColor += att * lights[0].intensity * diffuse * lights[0].color;
-    specularColor += specular;
 }
 
 void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 eye, const in FP float shininess,
@@ -57,30 +61,34 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
 
     FP vec3 n = normalize( vnormal );
 
-    // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 s = -lights[0].direction;
-    FP float att = 1.0;
-    if ( lights[0].type != TYPE_DIRECTIONAL ) {
-        s = lights[0].position - vpos;
-        if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(s);
-            att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
+    int i;
+    FP vec3 s;
+    for (i = 0; i < lightCount; ++i) {
+        FP float att = 1.0;
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
+            s = lights[i].position - vpos;
+            if (length( lights[i].attenuation ) != 0.0) {
+                FP float dist = length(s);
+                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+            }
+        } else {
+            s = -lights[i].direction;
         }
+
+        s = normalize( s );
+        FP float diffuse = max( dot( s, n ), 0.0 );
+
+        FP float specular = 0.0;
+        if (diffuse > 0.0 && shininess > 0.0) {
+            FP vec3 r = reflect( -s, n );
+            FP vec3 v = normalize( eye - vpos );
+            FP float normFactor = ( shininess + 2.0 ) / 2.0;
+            specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
+        }
+
+        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
+        specularColor += specular;
     }
-
-    s = normalize( s );
-    FP float diffuse = max( dot( s, n ), 0.0 );
-
-    FP float specular = 0.0;
-    if (diffuse > 0.0 && shininess > 0.0) {
-        FP vec3 r = reflect( -s, n );
-        FP vec3 v = normalize( eye - vpos );
-        FP float normFactor = ( shininess + 2.0 ) / 2.0;
-        specular = normFactor * pow( max( dot( r, v ), 0.0 ), shininess );
-    }
-
-    diffuseColor += att * lights[0].intensity * diffuse * lights[0].color;
-    specularColor += specular;
 }
 
 void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffuseColor)
@@ -89,19 +97,23 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
 
     FP vec3 n = normalize( vnormal );
 
-    // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
-    FP vec3 s = -lights[0].direction;
-    FP float att = 1.0;
-    if ( lights[0].type != TYPE_DIRECTIONAL ) {
-        s = lights[0].position - vpos;
-        if (length( lights[0].attenuation ) != 0.0) {
-            FP float dist = length(s);
-            att = 1.0 / (lights[0].attenuation.x + lights[0].attenuation.y * dist + lights[0].attenuation.z * dist * dist);
+    int i;
+    FP vec3 s;
+    for (i = 0; i < lightCount; ++i) {
+        FP float att = 1.0;
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
+            s = lights[i].position - vpos;
+            if (length( lights[i].attenuation ) != 0.0) {
+                FP float dist = length(s);
+                att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
+            }
+        } else {
+            s = -lights[i].direction;
         }
+
+        s = normalize( s );
+        FP float diffuse = max( dot( s, n ), 0.0 );
+
+        diffuseColor += att * lights[i].intensity * diffuse * lights[i].color;
     }
-
-    s = normalize( s );
-    FP float diffuse = max( dot( s, n ), 0.0 );
-
-    diffuseColor += att * lights[0].intensity * diffuse * lights[0].color;
 }

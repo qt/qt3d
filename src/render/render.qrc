@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>shaders/gl3/light.inc.frag</file>
         <file>shaders/es2/light.inc.frag</file>
+        <file>shaders/es2/light.inc.frag100</file>
         <file>shaders/gl3/phong.vert</file>
         <file>shaders/gl3/phong.frag</file>
         <file>shaders/es2/phong.vert</file>
