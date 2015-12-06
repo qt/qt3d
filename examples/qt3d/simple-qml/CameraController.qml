@@ -43,9 +43,9 @@ import QtQml 2.2
 Entity {
     id: root
     property Camera camera
-    property real linearSpeed: 5.0
-    property real orbitSpeed: -2.0
-    property real lookSpeed: 2.0
+    property real linearSpeed: 10.0
+    property real orbitSpeed: -180.0
+    property real lookSpeed: 180.0
     property bool firstPersonMode: true
 
     QtObject {
@@ -259,14 +259,11 @@ Entity {
         },
 
         LogicComponent {
-
             onFrameUpdate: {
-
-                // TO DO: We would need the time delta since the last call
-                var dt = 0.1
+                // The time difference since the last frame is passed in as the
+                // argument dt. It is a floating point value in units of seconds.
                 root.camera.translate(Qt.vector3d(d.vx, d.vy, d.vz).times(dt))
 
-                dt = 2
                 if (d.leftMouseButtonPressed) {
                     if (root.firstPersonMode)
                         root.camera.pan(root.lookSpeed * d.dx * dt, d.firstPersonUp)
@@ -280,8 +277,6 @@ Entity {
                         root.camera.panAboutViewCenter(root.lookSpeed * d.dx * dt)
                     root.camera.tiltAboutViewCenter(root.orbitSpeed * d.dy * dt)
                 }
-
-
             }
         }
     ] // components
