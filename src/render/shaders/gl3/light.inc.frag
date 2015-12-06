@@ -1,4 +1,7 @@
 const int MAX_LIGHTS = 8;
+const int TYPE_POINT = 0;
+const int TYPE_DIRECTIONAL = 1;
+const int TYPE_SPOT = 2;
 struct Light {
     int type;
     vec3 position;
@@ -23,14 +26,15 @@ void adsModelNormalMapped(const in vec3 vpos, const in vec3 vnormal, const in ve
     int i;
     vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        s = -lights[i].direction;
         float att = 1.0;
-        if (length( s ) == 0.0) {
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
                 float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
+        } else {
+            s = -lights[i].direction;
         }
 
         s = normalize( tangentMatrix * s );
@@ -60,14 +64,15 @@ void adsModel(const in vec3 vpos, const in vec3 vnormal, const in vec3 eye, cons
     int i;
     vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        s = -lights[i].direction;
         float att = 1.0;
-        if (length( s ) == 0.0) {
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
                 float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
+        } else {
+            s = -lights[i].direction;
         }
 
         s = normalize( s );
@@ -95,14 +100,15 @@ void adModel(const in vec3 vpos, const in vec3 vnormal, out vec3 diffuseColor)
     int i;
     vec3 s;
     for (i = 0; i < lightCount; ++i) {
-        s = -lights[i].direction;
         float att = 1.0;
-        if (length( s ) == 0.0) {
+        if ( lights[i].type != TYPE_DIRECTIONAL ) {
             s = lights[i].position - vpos;
             if (length( lights[i].attenuation ) != 0.0) {
                 float dist = length(s);
                 att = 1.0 / (lights[i].attenuation.x + lights[i].attenuation.y * dist + lights[i].attenuation.z * dist * dist);
             }
+        } else {
+            s = -lights[i].direction;
         }
 
         s = normalize( s );

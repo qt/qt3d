@@ -1,5 +1,9 @@
 const int MAX_LIGHTS = 8;
+const int TYPE_POINT = 0;
+const int TYPE_DIRECTIONAL = 1;
+const int TYPE_SPOT = 2;
 struct Light {
+    int type;
     FP vec3 position;
     FP vec3 color;
     FP float intensity;
@@ -22,7 +26,7 @@ void adsModelNormalMapped(const in FP vec3 vpos, const in FP vec3 vnormal, const
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
     FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( s ) == 0.0) {
+    if ( lights[0].type != TYPE_DIRECTIONAL ) {
         s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
             FP float dist = length(s);
@@ -56,7 +60,7 @@ void adsModel(const in FP vec3 vpos, const in FP vec3 vnormal, const in FP vec3 
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
     FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( s ) == 0.0) {
+    if ( lights[0].type != TYPE_DIRECTIONAL ) {
         s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
             FP float dist = length(s);
@@ -88,7 +92,7 @@ void adModel(const in FP vec3 vpos, const in FP vec3 vnormal, out FP vec3 diffus
     // TODO dynamic indexing may not be supported with GLSL 1.00 so take only the first light into account
     FP vec3 s = -lights[0].direction;
     FP float att = 1.0;
-    if (length( s ) == 0.0) {
+    if ( lights[0].type != TYPE_DIRECTIONAL ) {
         s = lights[0].position - vpos;
         if (length( lights[0].attenuation ) != 0.0) {
             FP float dist = length(s);
