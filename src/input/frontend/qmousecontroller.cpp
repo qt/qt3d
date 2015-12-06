@@ -46,6 +46,7 @@ namespace Qt3DInput {
 
 QMouseControllerPrivate::QMouseControllerPrivate()
     : QAbstractPhysicalDevicePrivate()
+    , m_sensitivity(0.1f)
 {
 }
 
@@ -124,6 +125,29 @@ int QMouseController::buttonIdentifier(const QString &name)
     else if (name == QStringLiteral("Center"))
         return Center;
     return -1;
+}
+
+float QMouseController::sensitivity() const
+{
+    Q_D(const QMouseController);
+    return d->m_sensitivity;
+}
+
+void QMouseController::setSensitivity(float value)
+{
+    Q_D(QMouseController);
+    if (qFuzzyCompare(value, d->m_sensitivity))
+        return;
+
+    d->m_sensitivity = value;
+    emit sensitivityChanged(value);
+}
+
+void QMouseController::copy(const Qt3DCore::QNode *ref)
+{
+    QNode::copy(ref);
+    const QMouseController *object = static_cast<const QMouseController *>(ref);
+    d_func()->m_sensitivity = object->d_func()->m_sensitivity;
 }
 
 void QMouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)

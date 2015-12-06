@@ -58,6 +58,7 @@ Entity {
         property real vz: 0;
         property real dx: 0
         property real dy: 0
+        property bool fineMotion: false
     }
 
     KeyboardController {
@@ -66,6 +67,7 @@ Entity {
 
     MouseController {
         id: mouseSourceDevice
+        sensitivity: d.fineMotion ? 0.01 : 0.1
     }
 
     LogicalDevice {
@@ -89,7 +91,17 @@ Entity {
                         keys: [MouseController.Right]
                     }
                 ]
+            },
+            Action {
+                name: "fineMotion"
+                inputs: [
+                    ActionInput {
+                        sourceDevice: keyboardSourceDevice
+                        keys: [Qt.Key_Shift]
+                    }
+                ]
             }
+
         ] // actions
 
         axes: [
@@ -204,10 +216,18 @@ Entity {
 
                 case "LMB": {
                     d.leftMouseButtonPressed = true;
+                    break;
                 }
 
                 case "RMB": {
                     d.rightMouseButtonPressed = true;
+                    break;
+                }
+
+                case "fineMotion": {
+                    console.log("fineMotion started")
+                    d.fineMotion = true;
+                    break;
                 }
 
                 }
@@ -220,10 +240,18 @@ Entity {
 
                 case "LMB": {
                     d.leftMouseButtonPressed = false;
+                    break;
                 }
 
                 case "RMB": {
                     d.rightMouseButtonPressed = false;
+                    break;
+                }
+
+                case "fineMotion": {
+                    console.log("fineMotion finished")
+                    d.fineMotion = false;
+                    break;
                 }
 
                 }

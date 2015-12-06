@@ -103,6 +103,7 @@ private:
 
     MouseState m_mouseState;
     QPointF m_previousPos;
+    float m_sensitivity;
 };
 
 class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor

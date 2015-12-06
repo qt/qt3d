@@ -62,6 +62,8 @@ public:
     QMouseControllerPrivate();
 
     Q_DECLARE_PUBLIC(QMouseController)
+
+    float m_sensitivity;
 };
 
 } // namespace Qt3DInput
