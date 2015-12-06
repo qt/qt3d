@@ -64,6 +64,18 @@ Entity
     }
 
     Entity {
+        id: sun
+        components: [
+            DirectionalLight {
+                color: Qt.rgba(0.9, 0.9, 0.0, 1.0)
+                direction: Qt.vector3d(-1, -1, 0)
+                intensity: 0.5
+            }
+        ]
+    }
+
+    Entity {
+        id: redLight
         components: [
             SphereMesh {
                 radius: 2
@@ -83,6 +95,7 @@ Entity
     }
 
     Entity {
+        id: greenLight
         components: [
             SphereMesh {
                 radius: 2
