@@ -63,6 +63,10 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 {
     QVector<QAspectJobPtr> jobQueue;
 
+    // TODO: Allow clocks with custom scale factors and independent control
+    //       over running / paused / stopped status
+    // TODO: Advance all clocks registered with the engine
+
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are
     const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();

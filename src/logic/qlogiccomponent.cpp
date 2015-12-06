@@ -99,11 +99,11 @@ QLogicComponent::~QLogicComponent()
     This virtual function will be called in a synchronous manner once each frame by
     the Logic aspect.
 */
-void QLogicComponent::onFrameUpdate()
+void QLogicComponent::onFrameUpdate(float dt)
 {
     // Emit signal so that QML instances get the onFrameUpdate() signal
     // handler called
-    emit frameUpdate();
+    emit frameUpdate(dt);
 }
 
 } // namespace Qt3DLogic

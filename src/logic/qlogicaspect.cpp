@@ -94,8 +94,10 @@ void QLogicAspect::registerBackendTypes()
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
 {
     Q_D(QLogicAspect);
+    const qint64 deltaTime = time - d->m_time;
+    const float dt = static_cast<const float>(deltaTime) / 1.0e9;
+    d->m_manager->setDeltaTime(dt);
     d->m_time = time;
-    // TODO: Ensure arbiter and postman are setup prior to invoking QAspectManager::initialize()
 
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;

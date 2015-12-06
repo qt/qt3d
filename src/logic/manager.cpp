@@ -51,6 +51,7 @@ namespace Logic {
 Manager::Manager()
     : m_logicHandlerManager(new HandlerManager)
     , m_semaphore(1)
+    , m_dt(0.0f)
 {
     m_semaphore.acquire();
 }
@@ -94,7 +95,7 @@ void Manager::triggerLogicFrameUpdates()
     // logic component and then wait until done. The Executor will
     // release the semaphore when it has completed its work.
     m_executor->enqueueLogicFrameUpdates(m_logicComponentIds);
-    qApp->postEvent(m_executor, new FrameUpdateEvent);
+    qApp->postEvent(m_executor, new FrameUpdateEvent(m_dt));
     m_semaphore.acquire();
 }
 

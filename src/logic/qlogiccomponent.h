@@ -63,13 +63,13 @@ protected:
     QLogicComponent(QLogicComponentPrivate &dd, QNode *parent = 0);
 
 Q_SIGNALS:
-    void frameUpdate();
+    void frameUpdate(float dt);
 
 private:
     Q_DECLARE_PRIVATE(QLogicComponent)
     QT3D_CLONEABLE(QLogicComponent)
 
-    virtual void onFrameUpdate();
+    virtual void onFrameUpdate(float dt);
 
     friend class Logic::Executor;
 };
