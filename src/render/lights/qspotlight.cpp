@@ -67,8 +67,9 @@ namespace Qt3DRender {
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
-    : QLightPrivate(QLight::SpotLight)
+    : QPointLightPrivate(QLight::SpotLight)
     , m_cutOffAngle(45.0f)
+    , m_direction(0.0f, -1.0f, 0.0f)
 {
 }
 
@@ -106,13 +107,13 @@ void QSpotLight::copy(const QNode *ref)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QLight(*new QSpotLightPrivate, parent)
+    : QPointLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QPointLight(dd, parent)
 {
 }
 

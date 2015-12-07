@@ -62,8 +62,8 @@ namespace Qt3DRender {
     \class Qt3DRender::QPointLightPrivate
     \internal
 */
-QPointLightPrivate::QPointLightPrivate()
-    : QLightPrivate(QLight::PointLight)
+QPointLightPrivate::QPointLightPrivate(QLight::Type type)
+    : QLightPrivate(type)
     , m_attenuation(0.0f, 0.0f, 0.002f)
 {
 }

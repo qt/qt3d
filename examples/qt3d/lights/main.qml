@@ -54,9 +54,9 @@ Entity
         aspectRatio: 16/9
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, 50.0 )
+        position: Qt.vector3d( 0.0, 40.0, 300.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
-        viewCenter: Qt.vector3d( 0.0, 0.0, -1.0 )
+        viewCenter: Qt.vector3d( 0.0, -10.0, -1.0 )
     }
 
     Configuration  {
@@ -69,7 +69,6 @@ Entity
             DirectionalLight {
                 color: Qt.rgba(0.9, 0.9, 0.0, 1.0)
                 direction: Qt.vector3d(-1, -1, 0)
-                intensity: 0.5
             }
         ]
     }
@@ -112,6 +111,46 @@ Entity
                 color: Qt.rgba(0, 1, 0, 1)
             }
         ]
+    }
+
+    Entity {
+        id: spotLight
+        components: [
+            SphereMesh {
+                radius: 1
+            },
+            Transform {
+                translation: Qt.vector3d(-5.0, 40.0, -5.0)
+            },
+            SpotLight {
+                direction: Qt.vector3d(1.0, -4.0, 0.0)
+                Quick.SequentialAnimation on direction.x {
+                    Quick.NumberAnimation { from: -4.0; to: 4.0; duration: 5000 }
+                    Quick.NumberAnimation { from: 4.0; to: -4.0; duration: 5000 }
+                    loops: Quick.Animation.Infinite
+                }
+                cutOffAngle: 30
+                attenuation: Qt.vector3d(1, 0, 0)
+                intensity: 4
+            }
+        ]
+    }
+
+    PlaneEntity {
+        id: floor
+
+        width: 600
+        height: 600
+        resolution: Qt.size(20, 20)
+        position: Qt.vector3d(0, -30, 0)
+
+        material: NormalDiffuseMapMaterial {
+            ambient: Qt.rgba( 0.2, 0.2, 0.2, 1.0 )
+            diffuse: "assets/textures/pattern_09/diffuse.webp"
+            normal: "assets/textures/pattern_09/normal.webp"
+            textureScale: 10
+            shininess: 10
+        }
     }
 
     Entity {

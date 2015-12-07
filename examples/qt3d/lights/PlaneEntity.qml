@@ -34,38 +34,26 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSPOTLIGHT_P_H
-#define QT3DRENDER_QSPOTLIGHT_P_H
+import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
+Entity {
+    id: root
+    property alias position: transform.translation
+    property alias scale: transform.scale
+    property alias width: mesh.width
+    property alias height: mesh.height
+    property alias resolution: mesh.meshResolution
+    property Material material
 
-#include <private/qpointlight_p.h>
+    components: [ transform, mesh, root.material ]
 
-QT_BEGIN_NAMESPACE
+    Transform { id: transform }
 
-namespace Qt3DRender {
-
-class QSpotLightPrivate : public QPointLightPrivate
-{
-public:
-    QSpotLightPrivate();
-
-    Q_DECLARE_PUBLIC(QSpotLight)
-    float m_cutOffAngle;
-    QVector3D m_direction;
-};
-
-} // namespace Qt3DRender
-
-QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QSPOTLIGHT_P_H
+    PlaneMesh {
+        id: mesh
+        width: 1.0
+        height: 1.0
+        meshResolution: Qt.size(2, 2)
+    }
+}

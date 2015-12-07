@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSPOTLIGHT_H
 #define QT3DRENDER_QSPOTLIGHT_H
 
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qpointlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QSpotLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSpotLight : public QLight
+class QT3DRENDERSHARED_EXPORT QSpotLight : public QPointLight
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)

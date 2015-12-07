@@ -6,11 +6,13 @@ SOURCE += main.cpp
 
 QT += qml quick 3dcore 3drender 3dinput 3dquick
 
-OTHER_FILES += main.qml
+OTHER_FILES += main.qml \
+               PlaneEntity.qml
 
 SOURCES += \
     main.cpp
 
 RESOURCES += \
     lights.qrc \
-    ../exampleresources/obj.qrc
+    ../exampleresources/obj.qrc \
+    ../exampleresources/textures.qrc
