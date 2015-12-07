@@ -56,8 +56,6 @@ sourcedirs += . \
 exampledirs += ../../examples/qt3d \
                snippets
 
-examplesinstallpath = qt3d
-
 examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
