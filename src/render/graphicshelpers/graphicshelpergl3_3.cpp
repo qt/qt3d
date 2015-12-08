@@ -43,6 +43,25 @@
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
 
+# ifndef QT_OPENGL_3_2
+#  define GL_PATCH_VERTICES 36466
+#  define GL_ACTIVE_RESOURCES 0x92F5
+#  define GL_ACTIVE_UNIFORM_BLOCKS 0x8A36
+#  define GL_BUFFER_BINDING 0x9302
+#  define GL_BUFFER_DATA_SIZE 0x9303
+#  define GL_NUM_ACTIVE_VARIABLES 0x9304
+#  define GL_SHADER_STORAGE_BLOCK 0x92E6
+#  define GL_UNIFORM 0x92E1
+#  define GL_UNIFORM_BLOCK 0x92E2
+#  define GL_UNIFORM_BLOCK_INDEX 0x8A3A
+#  define GL_UNIFORM_OFFSET 0x8A3B
+#  define GL_UNIFORM_ARRAY_STRIDE 0x8A3C
+#  define GL_UNIFORM_MATRIX_STRIDE 0x8A3D
+#  define GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS 0x8A42
+#  define GL_UNIFORM_BLOCK_BINDING 0x8A3F
+#  define GL_UNIFORM_BLOCK_DATA_SIZE 0x8A40
+# endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
@@ -214,6 +233,14 @@ QVector<ShaderUniformBlock> GraphicsHelperGL3_3::programUniformBlocks(GLuint pro
         m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock.m_size);
         blocks.append(uniformBlock);
     }
+    return blocks;
+}
+
+QVector<ShaderStorageBlock> GraphicsHelperGL3_3::programShaderStorageBlocks(GLuint programId)
+{
+    Q_UNUSED(programId);
+    QVector<ShaderStorageBlock> blocks;
+    qWarning() << "SSBO are not supported by OpenGL 3.3 (since OpenGL 4.3)";
     return blocks;
 }
 

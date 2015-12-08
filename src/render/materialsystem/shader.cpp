@@ -117,6 +117,11 @@ QVector<QString> Shader::uniformBlockNames() const
     return m_uniformBlockNames;
 }
 
+QVector<QString> Shader::storageBlockNames() const
+{
+    return m_shaderStorageBlockNames;
+}
+
 QVector<QByteArray> Shader::shaderCode() const
 {
     return m_shaderCode;
@@ -177,14 +182,14 @@ QVector<ShaderUniformBlock> Shader::uniformBlocks() const
     return m_uniformBlocks;
 }
 
-QHash<QString, ShaderUniform> Shader::activeUniformsForBlock(int blockIndex) const
+QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockIndex) const
 {
-    return m_blockIndexToShaderUniforms.value(blockIndex);
+    return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
 }
 
 ShaderUniformBlock Shader::uniformBlock(int blockIndex)
 {
-    for (int i = 0; i < m_uniformBlocks.size(); ++i) {
+    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_index == blockIndex) {
             return m_uniformBlocks[i];
         }
@@ -194,12 +199,30 @@ ShaderUniformBlock Shader::uniformBlock(int blockIndex)
 
 ShaderUniformBlock Shader::uniformBlock(const QString &blockName)
 {
-    for (int i = 0; i < m_uniformBlocks.size(); ++i) {
+    for (int i = 0, m = m_uniformBlocks.size(); i < m; ++i) {
         if (m_uniformBlocks[i].m_name == blockName) {
             return m_uniformBlocks[i];
         }
     }
     return ShaderUniformBlock();
+}
+
+ShaderStorageBlock Shader::storageBlock(int blockIndex)
+{
+    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+        if (m_shaderStorageBlocks[i].m_index == blockIndex)
+            return m_shaderStorageBlocks[i];
+    }
+    return ShaderStorageBlock();
+}
+
+ShaderStorageBlock Shader::storageBlock(const QString &blockName)
+{
+    for (int i = 0, m = m_shaderStorageBlockNames.size(); i < m; ++i) {
+        if (m_shaderStorageBlocks[i].m_name == blockName)
+            return m_shaderStorageBlocks[i];
+    }
+    return ShaderStorageBlock();
 }
 
 /*!
@@ -325,21 +348,21 @@ void Shader::initializeUniforms(const QVector<ShaderUniform> &uniformsDescriptio
     m_uniformsNames.resize(uniformsDescription.size());
     QHash<QString, ShaderUniform> activeUniformsInDefaultBlock;
 
-    for (int i = 0; i < uniformsDescription.size(); i++) {
+    for (int i = 0, m = uniformsDescription.size(); i < m; i++) {
         m_uniformsNames[i] = uniformsDescription[i].m_name;
         if (uniformsDescription[i].m_blockIndex == -1) { // Uniform is in default block
             qCDebug(Shaders) << "Active Uniform in Default Block " << uniformsDescription[i].m_name << uniformsDescription[i].m_blockIndex;
             activeUniformsInDefaultBlock.insert(uniformsDescription[i].m_name, uniformsDescription[i]);
         }
     }
-    m_blockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
+    m_uniformBlockIndexToShaderUniforms.insert(-1, activeUniformsInDefaultBlock);
 }
 
 void Shader::initializeAttributes(const QVector<ShaderAttribute> &attributesDescription)
 {
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
-    for (int i = 0; i < attributesDescription.size(); i++) {
+    for (int i = 0, m = attributesDescription.size(); i < m; i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
@@ -349,7 +372,7 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
 {
     m_uniformBlocks = uniformBlockDescription;
     m_uniformBlockNames.resize(uniformBlockDescription.size());
-    for (int i = 0; i < uniformBlockDescription.size(); ++i) {
+    for (int i = 0, m = uniformBlockDescription.size(); i < m; ++i) {
         m_uniformBlockNames[i] = uniformBlockDescription[i].m_name;
         qCDebug(Shaders) << "Initializing Uniform Block {" << m_uniformBlockNames[i] << "}";
 
@@ -373,7 +396,18 @@ void Shader::initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformB
             ++uniformsIt;
             ++uniformNamesIt;
         }
-        m_blockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
+        m_uniformBlockIndexToShaderUniforms.insert(uniformBlockDescription[i].m_index, activeUniformsInBlock);
+    }
+}
+
+void Shader::initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription)
+{
+    m_shaderStorageBlocks = shaderStorageBlockDescription;
+    m_shaderStorageBlockNames.resize(shaderStorageBlockDescription.size());
+
+    for (int i = 0, m = shaderStorageBlockDescription.size(); i < m; ++i) {
+        m_shaderStorageBlockNames[i] = shaderStorageBlockDescription[i].m_name;
+        qCDebug(Shaders) << "Initializing Shader Storage Block {" << m_shaderStorageBlockNames[i] << "}";
     }
 }
 
@@ -392,7 +426,7 @@ void Shader::initialize(const Shader &other)
     m_attributes = other.m_attributes;
     m_uniformBlockNames = other.m_uniformBlockNames;
     m_uniformBlocks = other.m_uniformBlocks;
-    m_blockIndexToShaderUniforms = other.m_blockIndexToShaderUniforms;
+    m_uniformBlockIndexToShaderUniforms = other.m_uniformBlockIndexToShaderUniforms;
     m_fragOutputs = other.m_fragOutputs;
     m_isLoaded = other.m_isLoaded;
 }

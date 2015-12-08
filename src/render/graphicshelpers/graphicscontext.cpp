@@ -348,6 +348,8 @@ void GraphicsContext::activateShader(Shader *shader)
         shader->initializeAttributes(m_glHelper->programAttributesAndLocations(prog->programId()));
         if (m_glHelper->supportsFeature(GraphicsHelperInterface::UniformBufferObject))
             shader->initializeUniformBlocks(m_glHelper->programUniformBlocks(prog->programId()));
+        if (m_glHelper->supportsFeature(GraphicsHelperInterface::ShaderStorageObject))
+            shader->initializeShaderStorageBlocks(m_glHelper->programShaderStorageBlocks(prog->programId()));
         m_activeShader = Q_NULLPTR;
     } else if (!shader->isLoaded()) {
         // Shader program is already in the m_shaderHash but we still need to
@@ -911,7 +913,7 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
                 if (!ubo->isBound())
                     ubo->bind(this);
                 needsToUnbindUBO |= true;
-                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForBlock(block.m_index);
+                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForUniformBlock(block.m_index);
                 const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
                 QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
 

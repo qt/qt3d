@@ -84,6 +84,7 @@ public:
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
     QVector<QString> uniformBlockNames() const;
+    QVector<QString> storageBlockNames() const;
     QVector<QByteArray> shaderCode() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -93,10 +94,14 @@ public:
     QVector<ShaderUniform> uniforms() const;
     QVector<ShaderAttribute> attributes() const;
     QVector<ShaderUniformBlock> uniformBlocks() const;
+    QVector<ShaderStorageBlock> storageBlocks() const;
 
-    QHash<QString, ShaderUniform> activeUniformsForBlock(int blockIndex) const;
+    QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
     ShaderUniformBlock uniformBlock(int blockIndex);
     ShaderUniformBlock uniformBlock(const QString &blockName);
+
+    ShaderStorageBlock storageBlock(int blockIndex);
+    ShaderStorageBlock storageBlock(const QString &blockName);
 
 private:
     QOpenGLShaderProgram *m_program;
@@ -112,7 +117,10 @@ private:
 
     QVector<QString> m_uniformBlockNames;
     QVector<ShaderUniformBlock> m_uniformBlocks;
-    QHash<int, QHash<QString, ShaderUniform> > m_blockIndexToShaderUniforms;
+    QHash<int, QHash<QString, ShaderUniform> > m_uniformBlockIndexToShaderUniforms;
+
+    QVector<QString> m_shaderStorageBlockNames;
+    QVector<ShaderStorageBlock> m_shaderStorageBlocks;
 
     QHash<QString, int> m_fragOutputs;
 
@@ -128,6 +136,7 @@ private:
     void initializeUniforms(const QVector<ShaderUniform> &uniformsDescription);
     void initializeAttributes(const QVector<ShaderAttribute> &attributesDescription);
     void initializeUniformBlocks(const QVector<ShaderUniformBlock> &uniformBlockDescription);
+    void initializeShaderStorageBlocks(const QVector<ShaderStorageBlock> &shaderStorageBlockDescription);
 
     void initialize(const Shader &other);
 

@@ -43,8 +43,22 @@
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
 
-# ifndef QT_OPENGL_4
+# ifndef QT_OPENGL_4_3
 #  define GL_PATCH_VERTICES 36466
+#  define GL_ACTIVE_RESOURCES 0x92F5
+#  define GL_BUFFER_BINDING 0x9302
+#  define GL_BUFFER_DATA_SIZE 0x9303
+#  define GL_NUM_ACTIVE_VARIABLES 0x9304
+#  define GL_SHADER_STORAGE_BLOCK 0x92E6
+#  define GL_UNIFORM 0x92E1
+#  define GL_UNIFORM_BLOCK 0x92E2
+#  define GL_UNIFORM_BLOCK_INDEX 0x8A3A
+#  define GL_UNIFORM_OFFSET 0x8A3B
+#  define GL_UNIFORM_ARRAY_STRIDE 0x8A3C
+#  define GL_UNIFORM_MATRIX_STRIDE 0x8A3D
+#  define GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS 0x8A42
+#  define GL_UNIFORM_BLOCK_BINDING 0x8A3F
+#  define GL_UNIFORM_BLOCK_DATA_SIZE 0x8A40
 # endif
 
 QT_BEGIN_NAMESPACE
@@ -58,7 +72,7 @@ GraphicsHelperGL4::GraphicsHelperGL4()
 }
 
 void GraphicsHelperGL4::initializeHelper(QOpenGLContext *context,
-                                          QAbstractOpenGLFunctions *functions)
+                                         QAbstractOpenGLFunctions *functions)
 {
     Q_UNUSED(context);
     m_funcs = static_cast<QOpenGLFunctions_4_3_Core*>(functions);
@@ -68,12 +82,12 @@ void GraphicsHelperGL4::initializeHelper(QOpenGLContext *context,
 }
 
 void GraphicsHelperGL4::drawElementsInstanced(GLenum primitiveType,
-                                               GLsizei primitiveCount,
-                                               GLint indexType,
-                                               void *indices,
-                                               GLsizei instances,
-                                               GLint baseVertex,
-                                               GLint baseInstance)
+                                              GLsizei primitiveCount,
+                                              GLint indexType,
+                                              void *indices,
+                                              GLsizei instances,
+                                              GLint baseVertex,
+                                              GLint baseInstance)
 {
     if (baseInstance != 0)
         qWarning() << "glDrawElementsInstancedBaseVertexBaseInstance is not supported with OpenGL ES 2";
@@ -88,9 +102,9 @@ void GraphicsHelperGL4::drawElementsInstanced(GLenum primitiveType,
 }
 
 void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,
-                                             GLint first,
-                                             GLsizei count,
-                                             GLsizei instances)
+                                            GLint first,
+                                            GLsizei count,
+                                            GLsizei instances)
 {
     // glDrawArraysInstanced OpenGL 3.1 or greater
     m_funcs->glDrawArraysInstanced(primitiveType,
@@ -100,10 +114,10 @@ void GraphicsHelperGL4::drawArraysInstanced(GLenum primitiveType,
 }
 
 void GraphicsHelperGL4::drawElements(GLenum primitiveType,
-                                      GLsizei primitiveCount,
-                                      GLint indexType,
-                                      void *indices,
-                                      GLint baseVertex)
+                                     GLsizei primitiveCount,
+                                     GLint indexType,
+                                     void *indices,
+                                     GLint baseVertex)
 {
     m_funcs->glDrawElementsBaseVertex(primitiveType,
                                       primitiveCount,
@@ -113,8 +127,8 @@ void GraphicsHelperGL4::drawElements(GLenum primitiveType,
 }
 
 void GraphicsHelperGL4::drawArrays(GLenum primitiveType,
-                                    GLint first,
-                                    GLsizei count)
+                                   GLint first,
+                                   GLsizei count)
 {
     m_funcs->glDrawArrays(primitiveType,
                           first,
@@ -136,10 +150,10 @@ QVector<ShaderUniform> GraphicsHelperGL4::programUniformsAndLocations(GLuint pro
     QVector<ShaderUniform> uniforms;
 
     GLint nbrActiveUniforms = 0;
-    m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORMS, &nbrActiveUniforms);
+    m_funcs->glGetProgramInterfaceiv(programId, GL_UNIFORM, GL_ACTIVE_RESOURCES, &nbrActiveUniforms);
     uniforms.reserve(nbrActiveUniforms);
     char uniformName[256];
-    for (GLint i = 0; i < nbrActiveUniforms; i++) {
+    for (GLint i = 0; i < nbrActiveUniforms; ++i) {
         ShaderUniform uniform;
         GLsizei uniformNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
@@ -170,7 +184,7 @@ QVector<ShaderAttribute> GraphicsHelperGL4::programAttributesAndLocations(GLuint
     m_funcs->glGetProgramiv(programId, GL_ACTIVE_ATTRIBUTES, &nbrActiveAttributes);
     attributes.reserve(nbrActiveAttributes);
     char attributeName[256];
-    for (GLint i = 0; i < nbrActiveAttributes; i++) {
+    for (GLint i = 0; i < nbrActiveAttributes; ++i) {
         ShaderAttribute attribute;
         GLsizei attributeNameLength = 0;
         // Size is 1 for scalar and more for struct or arrays
@@ -189,19 +203,46 @@ QVector<ShaderUniformBlock> GraphicsHelperGL4::programUniformBlocks(GLuint progr
 {
     QVector<ShaderUniformBlock> blocks;
     GLint nbrActiveUniformsBlocks = 0;
-    m_funcs->glGetProgramiv(programId, GL_ACTIVE_UNIFORM_BLOCKS, &nbrActiveUniformsBlocks);
+    m_funcs->glGetProgramInterfaceiv(programId, GL_UNIFORM_BLOCK, GL_ACTIVE_RESOURCES, &nbrActiveUniformsBlocks);
     blocks.reserve(nbrActiveUniformsBlocks);
-    for (GLint i = 0; i < nbrActiveUniformsBlocks; i++) {
+    for (GLint i = 0; i < nbrActiveUniformsBlocks; ++i) {
         QByteArray uniformBlockName(256, '\0');
         GLsizei length = 0;
         ShaderUniformBlock uniformBlock;
-        m_funcs->glGetActiveUniformBlockName(programId, i, 256, &length, uniformBlockName.data());
+        m_funcs->glGetProgramResourceName(programId, GL_UNIFORM_BLOCK, i, 256, &length, uniformBlockName.data());
         uniformBlock.m_name = QString::fromUtf8(uniformBlockName.left(length));
         uniformBlock.m_index = i;
-        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, &uniformBlock.m_activeUniformsCount);
-        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_BINDING, &uniformBlock.m_binding);
-        m_funcs->glGetActiveUniformBlockiv(programId, i, GL_UNIFORM_BLOCK_DATA_SIZE, &uniformBlock.m_size);
+        GLenum prop = GL_BUFFER_BINDING;
+        m_funcs->glGetProgramResourceiv(programId, GL_UNIFORM_BLOCK, i, 1, &prop, 4, NULL, &uniformBlock.m_binding);
+        prop = GL_BUFFER_DATA_SIZE;
+        m_funcs->glGetProgramResourceiv(programId, GL_UNIFORM_BLOCK, i, 1, &prop, 4, NULL, &uniformBlock.m_size);
+        prop = GL_NUM_ACTIVE_VARIABLES;
+        m_funcs->glGetProgramResourceiv(programId, GL_UNIFORM_BLOCK, i, 1, &prop, 4, NULL, &uniformBlock.m_activeUniformsCount);
         blocks.append(uniformBlock);
+    }
+    return blocks;
+}
+
+QVector<ShaderStorageBlock> GraphicsHelperGL4::programShaderStorageBlocks(GLuint programId)
+{
+    QVector<ShaderStorageBlock> blocks;
+    GLint nbrActiveShaderStorageBlocks = 0;
+    m_funcs->glGetProgramInterfaceiv(programId, GL_SHADER_STORAGE_BLOCK, GL_ACTIVE_RESOURCES, &nbrActiveShaderStorageBlocks);
+    blocks.reserve(nbrActiveShaderStorageBlocks);
+    for (GLint i = 0; i < nbrActiveShaderStorageBlocks; ++i) {
+        QByteArray storageBlockName(256, '\0');
+        GLsizei length = 0;
+        ShaderStorageBlock storageBlock;
+        m_funcs->glGetProgramResourceName(programId, GL_SHADER_STORAGE_BLOCK, i, 256, &length, storageBlockName.data());
+        storageBlock.m_index = i;
+        storageBlock.m_name = QString::fromUtf8(storageBlockName.left(length));
+        GLenum prop = GL_BUFFER_BINDING;
+        m_funcs->glGetProgramResourceiv(programId, GL_SHADER_STORAGE_BLOCK, i, 1, &prop, 4, NULL, &storageBlock.m_binding);
+        prop = GL_BUFFER_DATA_SIZE;
+        m_funcs->glGetProgramResourceiv(programId, GL_SHADER_STORAGE_BLOCK, i, 1, &prop, 4, NULL, &storageBlock.m_size);
+        prop = GL_NUM_ACTIVE_VARIABLES;
+        m_funcs->glGetProgramResourceiv(programId, GL_SHADER_STORAGE_BLOCK, i, 1, &prop, 4, NULL, &storageBlock.m_activeVariablesCount);
+        blocks.push_back(storageBlock);
     }
     return blocks;
 }
@@ -321,6 +362,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case UniformBufferObject:
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
+    case ShaderStorageObject:
         return true;
     default:
         return false;

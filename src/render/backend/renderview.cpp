@@ -596,7 +596,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
             // Update only update properties if uboNeedsUpdate is true, otherwise update the whole block
             m_data->m_uniformBlockBuilder.updatedPropertiesOnly = uboNeedsUpdate;
             // Retrieve names and description of each active uniforms in the uniform block
-            m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForBlock(block.m_index);
+            m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForUniformBlock(block.m_index);
             // Builds the name-value map for the block
             m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, block.m_name);
             if (!uboNeedsUpdate)
@@ -620,7 +620,7 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     // Force to update the whole block
     m_data->m_uniformBlockBuilder.updatedPropertiesOnly = false;
     // Retrieve names and description of each active uniforms in the uniform block
-    m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForBlock(-1);
+    m_data->m_uniformBlockBuilder.uniforms = shader->activeUniformsForUniformBlock(-1);
     // Build name-value map for the block
     m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map

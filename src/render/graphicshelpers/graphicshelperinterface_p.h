@@ -70,7 +70,8 @@ public:
         BindableFragmentOutputs,
         PrimitiveRestart,
         RenderBufferDimensionRetrieval,
-        TextureDimensionRetrieval
+        TextureDimensionRetrieval,
+        ShaderStorageObject
     };
 
     virtual ~GraphicsHelperInterface() {}
@@ -110,6 +111,7 @@ public:
     virtual QVector<ShaderAttribute> programAttributesAndLocations(GLuint programId) = 0;
     virtual QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) = 0;
     virtual QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
+    virtual QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual bool    supportsFeature(Feature feature) const = 0;

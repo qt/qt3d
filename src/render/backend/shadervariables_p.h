@@ -102,6 +102,22 @@ struct ShaderUniformBlock
     int m_size;
 };
 
+struct ShaderStorageBlock
+{
+    ShaderStorageBlock()
+        : m_index(-1)
+        , m_binding(-1)
+        , m_size(0)
+        , m_activeVariablesCount(0)
+    {}
+
+    QString m_name;
+    int m_index;
+    int m_binding;
+    int m_size;
+    int m_activeVariablesCount;
+};
+
 } // namespace Render
 
 } // namespace Qt3DRender

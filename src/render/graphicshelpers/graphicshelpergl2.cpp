@@ -190,6 +190,13 @@ QVector<ShaderUniformBlock> GraphicsHelperGL2::programUniformBlocks(GLuint progr
     return blocks;
 }
 
+QVector<ShaderStorageBlock> GraphicsHelperGL2::programShaderStorageBlocks(GLuint programId)
+{
+    Q_UNUSED(programId);
+    qWarning() << "SSBO are not supported by OpenGL 2.0 (since OpenGL 4.3)";
+    return QVector<ShaderStorageBlock>();
+}
+
 void GraphicsHelperGL2::vertexAttribDivisor(GLuint index,
                                              GLuint divisor)
 {
