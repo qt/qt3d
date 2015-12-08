@@ -582,8 +582,8 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
         bool uboNeedsUpdate = false;
 
         // build UBO at uboId if not created before
-        if (!m_manager->uboManager()->contains(uboKey)) {
-            m_manager->uboManager()->getOrCreateResource(uboKey);
+        if (!m_manager->glBufferManager()->contains(uboKey)) {
+            m_manager->glBufferManager()->getOrCreateResource(uboKey);
             uboNeedsUpdate = true;
         }
 

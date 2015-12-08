@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "uniformbuffer_p.h"
+#include "glbuffer_p.h"
 #include <private/graphicscontext_p.h>
 
 #if !defined(GL_UNIFORM_BUFFER)
@@ -50,50 +50,50 @@ namespace Render {
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
 
-UniformBuffer::UniformBuffer()
+GLBuffer::GLBuffer()
     : m_bufferId(~0)
     , m_isCreated(false)
     , m_bound(false)
 {
 }
 
-void UniformBuffer::bind(GraphicsContext *ctx)
+void GLBuffer::bind(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
     m_bound = true;
 }
 
-void UniformBuffer::release(GraphicsContext *ctx)
+void GLBuffer::release(GraphicsContext *ctx)
 {
     m_bound = false;
     ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::create(GraphicsContext *ctx)
+void GLBuffer::create(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glGenBuffers(1, &m_bufferId);
     m_isCreated = true;
 }
 
-void UniformBuffer::destroy(GraphicsContext *ctx)
+void GLBuffer::destroy(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glDeleteBuffers(1, &m_bufferId);
     m_isCreated = false;
 }
 
-void UniformBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
+void GLBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
 {
     // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
     // TO DO: find a way to know how a buffer/QShaderData will be used to use the right usage
     ctx->openGLContext()->functions()->glBufferData(GL_UNIFORM_BUFFER, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 }
 
-void UniformBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
+void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
 {
     ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 }
 
-void UniformBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)
+void GLBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)
 {
     ctx->bindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_bufferId);
 }

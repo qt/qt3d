@@ -72,7 +72,7 @@ NodeManagers::NodeManagers()
     , m_sortCriterionManager(new SortCriterionManager())
     , m_parameterManager(new ParameterManager())
     , m_shaderDataManager(new ShaderDataManager())
-    , m_uboManager(new UBOManager())
+    , m_glBufferManager(new GLBufferManager())
     , m_textureImageManager(new TextureImageManager())
     , m_bufferManager(new BufferManager())
     , m_attributeManager(new AttributeManager())
@@ -211,9 +211,9 @@ ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-UBOManager *NodeManagers::manager<UniformBuffer>() const Q_DECL_NOEXCEPT
+GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOEXCEPT
 {
-    return m_uboManager;
+    return m_glBufferManager;
 }
 
 template<>

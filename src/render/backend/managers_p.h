@@ -66,7 +66,7 @@
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/private/uniformbuffer_p.h>
+#include <Qt3DRender/private/glbuffer_p.h>
 #include <Qt3DRender/private/textureimage_p.h>
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/private/geometry_p.h>
@@ -281,8 +281,8 @@ public:
     ShaderDataManager() {}
 };
 
-class UBOManager : public Qt3DCore::QResourceManager<
-        UniformBuffer,
+class GLBufferManager : public Qt3DCore::QResourceManager<
+        GLBuffer,
         ShaderDataShaderUboKey,
         16,
         Qt3DCore::ArrayAllocatingPolicy,

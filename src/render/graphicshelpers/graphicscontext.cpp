@@ -889,12 +889,12 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
 
     // Bind UniformBlocks to UBO and update UBO from ShaderData
     const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
-    UniformBuffer *ubo = Q_NULLPTR;
+    GLBuffer *ubo = Q_NULLPTR;
     bool needsToUnbindUBO = false;
     for (int i = 0; i < blockToUbos.length(); ++i) {
         const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
         if (block.m_index != -1 && block.m_size > 0) {
-            ubo = manager->lookupResource<UniformBuffer, UBOManager>(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
+            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
                                                                                             m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
             bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);

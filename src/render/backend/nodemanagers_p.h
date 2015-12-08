@@ -83,7 +83,7 @@ class AttachmentManager;
 class SortCriterionManager;
 class ParameterManager;
 class ShaderDataManager;
-class UBOManager;
+class GLBufferManager;
 class TextureImageManager;
 class CriterionManager;
 class FrameGraphManager;
@@ -113,7 +113,7 @@ class RenderTarget;
 class ShaderData;
 class SortCriterion;
 class Parameter;
-class UniformBuffer;
+class GLBuffer;
 class TextureImage;
 class Buffer;
 class Attribute;
@@ -183,7 +183,7 @@ public:
     inline SortCriterionManager *sortCriterionManager() const Q_DECL_NOEXCEPT { return m_sortCriterionManager; }
     inline ParameterManager *parameterManager() const Q_DECL_NOEXCEPT { return m_parameterManager; }
     inline ShaderDataManager *shaderDataManager() const Q_DECL_NOEXCEPT { return m_shaderDataManager; }
-    inline UBOManager *uboManager() const Q_DECL_NOEXCEPT { return m_uboManager; }
+    inline GLBufferManager *glBufferManager() const Q_DECL_NOEXCEPT { return m_glBufferManager; }
     inline TextureImageManager *textureImageManager() const Q_DECL_NOEXCEPT { return m_textureImageManager; }
     inline BufferManager *bufferManager() const Q_DECL_NOEXCEPT { return m_bufferManager; }
     inline AttributeManager *attributeManager() const Q_DECL_NOEXCEPT { return m_attributeManager; }
@@ -215,7 +215,7 @@ private:
     SortCriterionManager *m_sortCriterionManager;
     ParameterManager *m_parameterManager;
     ShaderDataManager *m_shaderDataManager;
-    UBOManager *m_uboManager;
+    GLBufferManager *m_glBufferManager;
     TextureImageManager *m_textureImageManager;
     BufferManager *m_bufferManager;
     AttributeManager *m_attributeManager;
@@ -292,7 +292,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT ShaderDataManager *NodeManagers::manager<ShaderData>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT UBOManager *NodeManagers::manager<UniformBuffer>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT GLBufferManager *NodeManagers::manager<GLBuffer>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT TextureImageManager *NodeManagers::manager<TextureImage>() const Q_DECL_NOEXCEPT;

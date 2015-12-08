@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_UNIFORMBUFFER_P_H
-#define QT3DRENDER_RENDER_UNIFORMBUFFER_P_H
+#ifndef QT3DRENDER_RENDER_GLBUFFER_P_H
+#define QT3DRENDER_RENDER_GLBUFFER_P_H
 
 //
 //  W A R N I N G
@@ -61,10 +61,10 @@ class GraphicsContext;
 
 typedef QPair<Qt3DCore::QNodeId, Qt3DCore::QNodeId> ShaderDataShaderUboKey;
 
-class UniformBuffer
+class GLBuffer
 {
 public:
-    UniformBuffer();
+    GLBuffer();
 
     void bind(GraphicsContext *ctx);
     void release(GraphicsContext *ctx);
@@ -90,4 +90,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_UNIFORMBUFFER_P_H
+#endif // QT3DRENDER_RENDER_GLBUFFER_P_H

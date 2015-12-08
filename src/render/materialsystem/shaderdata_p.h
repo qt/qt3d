@@ -61,7 +61,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class GraphicsContext;
-class UniformBuffer;
+class GLBuffer;
 class NodeManagers;
 
 class Q_AUTOTEST_EXPORT ShaderData : public Qt3DCore::QBackendNode

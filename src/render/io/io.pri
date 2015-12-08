@@ -9,10 +9,10 @@ HEADERS += \
     $$PWD/qurlhelper_p.h \
     $$PWD/scene_p.h \
     $$PWD/scenemanager_p.h \
-    $$PWD/uniformbuffer_p.h \
     $$PWD/qsceneparserfactory_p.h \
     $$PWD/qabstractsceneparser.h \
-    $$PWD/qsceneparserplugin.h
+    $$PWD/qsceneparserplugin.h \
+    $$PWD/glbuffer_p.h
 
 SOURCES += \
     $$PWD/objloader.cpp \
@@ -22,7 +22,7 @@ SOURCES += \
     $$PWD/qurlhelper.cpp \
     $$PWD/scene.cpp \
     $$PWD/scenemanager.cpp \
-    $$PWD/uniformbuffer.cpp \
     $$PWD/qabstractsceneparser.cpp \
     $$PWD/qsceneparserplugin.cpp \
-    $$PWD/qsceneparserfactory.cpp
+    $$PWD/qsceneparserfactory.cpp \
+    $$PWD/glbuffer.cpp
