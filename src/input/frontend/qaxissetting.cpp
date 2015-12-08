@@ -47,12 +47,12 @@ public:
     QAxisSettingPrivate()
         : Qt3DCore::QNodePrivate()
         , m_deadZone(0.0f)
-        , m_axes(0)
+        , m_axes()
         , m_filter(false)
     {}
 
     float m_deadZone;
-    int m_axes;
+    QVariantList m_axes;
     bool m_filter;
 };
 
@@ -66,7 +66,7 @@ QAxisSetting::~QAxisSetting()
     QNode::cleanup();
 }
 
-int QAxisSetting::axes() const
+QVariantList QAxisSetting::axes() const
 {
     Q_D(const QAxisSetting);
     return d->m_axes;
@@ -94,7 +94,7 @@ void QAxisSetting::setDeadZone(float deadZone)
     emit deadZoneChanged(deadZone);
 }
 
-void QAxisSetting::setAxes(int axes)
+void QAxisSetting::setAxes(const QVariantList &axes)
 {
     Q_D(QAxisSetting);
     if (d->m_axes == axes)
