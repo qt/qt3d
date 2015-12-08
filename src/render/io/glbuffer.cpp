@@ -40,6 +40,21 @@
 #if !defined(GL_UNIFORM_BUFFER)
 #define GL_UNIFORM_BUFFER 0x8A11
 #endif
+#if !defined(GL_ARRAY_BUFFER)
+#define GL_ARRAY_BUFFER 0x8892
+#endif
+#if !defined(GL_ELEMENT_ARRAY_BUFFER)
+#define GL_ELEMENT_ARRAY_BUFFER 0x8893
+#endif
+#if !defined(GL_SHADER_STORAGE_BUFFER)
+#define GL_SHADER_STORAGE_BUFFER 0x90D2
+#endif
+#if !defined(GL_PIXEL_PACK_BUFFER)
+#define GL_PIXEL_PACK_BUFFER 0x88EB
+#endif
+#if !defined(GL_PIXEL_UNPACK_BUFFER)
+#define GL_PIXEL_UNPACK_BUFFER 0x88EC
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -50,23 +65,38 @@ namespace Render {
 // A UBO is created for each ShaderData Shader Pair
 // That means a UBO is unique to a shader/shaderdata
 
+namespace {
+
+GLenum glBufferTypes[] = {
+    GL_ARRAY_BUFFER,
+    GL_UNIFORM_BUFFER,
+    GL_ELEMENT_ARRAY_BUFFER,
+    GL_SHADER_STORAGE_BUFFER,
+    GL_PIXEL_PACK_BUFFER,
+    GL_PIXEL_UNPACK_BUFFER
+};
+
+} // anonymous
+
 GLBuffer::GLBuffer()
     : m_bufferId(~0)
     , m_isCreated(false)
     , m_bound(false)
+    , m_lastTarget(GL_ARRAY_BUFFER)
 {
 }
 
-void GLBuffer::bind(GraphicsContext *ctx)
+void GLBuffer::bind(GraphicsContext *ctx, Type t)
 {
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, m_bufferId);
+    m_lastTarget = glBufferTypes[t];
+    ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, m_bufferId);
     m_bound = true;
 }
 
 void GLBuffer::release(GraphicsContext *ctx)
 {
     m_bound = false;
-    ctx->openGLContext()->functions()->glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, 0);
 }
 
 void GLBuffer::create(GraphicsContext *ctx)
@@ -85,17 +115,17 @@ void GLBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
 {
     // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
     // TO DO: find a way to know how a buffer/QShaderData will be used to use the right usage
-    ctx->openGLContext()->functions()->glBufferData(GL_UNIFORM_BUFFER, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    ctx->openGLContext()->functions()->glBufferData(m_lastTarget, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 }
 
 void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)
 {
-    ctx->openGLContext()->functions()->glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
+    ctx->openGLContext()->functions()->glBufferSubData(m_lastTarget, offset, size, data);
 }
 
 void GLBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)
 {
-    ctx->bindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_bufferId);
+    ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
 }
 
 } // namespace Render

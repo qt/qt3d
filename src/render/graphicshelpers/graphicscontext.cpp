@@ -904,14 +904,14 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
             // Allocate ubo if not allocated previously
             if (!ubo->isCreated()) {
                 ubo->create(this);
-                ubo->bind(this);
+                ubo->bind(this, GLBuffer::UniformBuffer);
                 ubo->allocate(this, block.m_size);
             }
 
             // update the ubo if needed
             if (blockToUbos[i].m_needsUpdate) {
                 if (!ubo->isBound())
-                    ubo->bind(this);
+                    ubo->bind(this, GLBuffer::UniformBuffer);
                 needsToUnbindUBO |= true;
                 const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForUniformBlock(block.m_index);
                 const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();

@@ -66,7 +66,17 @@ class GLBuffer
 public:
     GLBuffer();
 
-    void bind(GraphicsContext *ctx);
+    enum Type
+    {
+        ArrayBuffer = 0,
+        UniformBuffer,
+        IndexBuffer,
+        ShaderStorageBuffer,
+        PixelPackBuffer,
+        PixelUnpackBuffer
+    };
+
+    void bind(GraphicsContext *ctx, Type t);
     void release(GraphicsContext *ctx);
     void create(GraphicsContext *ctx);
     void destroy(GraphicsContext *ctx);
@@ -82,6 +92,7 @@ private:
     GLuint m_bufferId;
     bool m_isCreated;
     bool m_bound;
+    GLenum m_lastTarget;
 };
 
 } // namespace Render
