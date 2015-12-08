@@ -50,13 +50,11 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DInput/q3dkeyevent.h>
+#include <Qt3DInput/qkeyevent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class Q3DKeyEvent;
 
 namespace Input {
 
@@ -70,7 +68,7 @@ public:
     Qt3DCore::QNodeId keyboardController() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
-    void keyEvent(const Q3DKeyEventPtr &event);
+    void keyEvent(const QKeyEventPtr &event);
 
     inline bool isEnabled() const { return m_enabled; }
 

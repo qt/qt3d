@@ -220,7 +220,6 @@ private:
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
-    QObject *m_eventSource;
 
 
     RenderQueue *m_renderQueue;

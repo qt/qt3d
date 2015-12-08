@@ -34,23 +34,23 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_Q3DKEYEVENT_H
-#define QT3DINPUT_Q3DKEYEVENT_H
+#ifndef QT3DINPUT_QKEYEVENT_H
+#define QT3DINPUT_QKEYEVENT_H
 
 #include <QObject>
-#include <QKeyEvent>
+#include <QtGui/QKeyEvent>
 #include <Qt3DInput/qt3dinput_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class Q3DKeyEventPrivate;
-class Q3DKeyEvent;
+class QKeyEventPrivate;
+class QKeyEvent;
 
-typedef QSharedPointer<Q3DKeyEvent> Q3DKeyEventPtr;
+typedef QSharedPointer<QKeyEvent> QKeyEventPtr;
 
-class QT3DINPUTSHARED_EXPORT Q3DKeyEvent : public QObject
+class QT3DINPUTSHARED_EXPORT QKeyEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int key READ key CONSTANT)
@@ -62,8 +62,8 @@ class QT3DINPUTSHARED_EXPORT Q3DKeyEvent : public QObject
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
-    Q3DKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text=QString(), bool autorep=false, ushort count=1);
-    Q3DKeyEvent(const QKeyEvent &ke);
+    QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text=QString(), bool autorep=false, ushort count=1);
+    QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke);
 
     inline int key() const { return m_event.key(); }
     inline QString text() const { return m_event.text(); }
@@ -77,11 +77,11 @@ public:
     Q_INVOKABLE bool matches(QKeySequence::StandardKey key_) const { return m_event.matches(key_); }
 
 private:
-    QKeyEvent m_event;
+    QT_PREPEND_NAMESPACE(QKeyEvent) m_event;
 };
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_Q3DKEYEVENT_H
+#endif // QT3DINPUT_QKEYEVENT_H

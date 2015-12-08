@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "q3dmouseevent.h"
+#include "qmouseevent.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -48,10 +48,10 @@ namespace Qt3DInput {
 // These can always be added in follow up commits once the input API takes shape
 
 /*!
- * \class Qt3DInput::Q3DMouseEvent
+ * \class Qt3DInput::QMouseEvent
  * \inmodule Qt3DInput
  *
- * \brief The Qt3DCore::Q3DMouseEvent contains parameters that describe a mouse event.
+ * \brief The Qt3DCore::QMouseEvent contains parameters that describe a mouse event.
  *
  * Mouse events occur when a mouse button is pressed and the ray
  * traversing the view, originating from the mouse position intersects with one
@@ -59,30 +59,30 @@ namespace Qt3DInput {
  *
  * \since 5.5
  *
- * \sa Q3DKeyEvent, Q3DWheelEvent, QMouseInput
+ * \sa QKeyEvent, QWheelEvent, QMouseInput
  *
  */
 
 /*!
- * \fn int Qt3DInput::Q3DMouseEvent::x() const
+ * \fn int Qt3DInput::QMouseEvent::x() const
  *
  *  Returns the x position of the mouse event.
  */
 
 /*!
- * \fn int Qt3DInput::Q3DMouseEvent::y() const
+ * \fn int Qt3DInput::QMouseEvent::y() const
  *
  *  Returns the y position of the mouse event.
  */
 
 /*!
- * \fn bool Qt3DInput::Q3DMouseEvent::isAccepted() const
+ * \fn bool Qt3DInput::QMouseEvent::isAccepted() const
  *
  *  Returns whether the event was accepted.
  */
 
 /*!
- * \fn void Qt3DInput::Q3DMouseEvent::setAccepted(bool accepted)
+ * \fn void Qt3DInput::QMouseEvent::setAccepted(bool accepted)
  *
  *  Sets the event as accepted if \a accepted is true.
  *
@@ -91,40 +91,40 @@ namespace Qt3DInput {
  */
 
 /*!
- * \fn QEvent::Type Qt3DInput::Q3DMouseEvent::type() const
+ * \fn QEvent::Type Qt3DInput::QMouseEvent::type() const
  *
  *  Returns the QEvent::Type of the event.
  */
 
 /*!
- * Constructs a new Q3DMouseEvent instance for the QMouseEvent \a e.
+ * Constructs a new QMouseEvent instance for the QMouseEvent \a e.
  */
-Q3DMouseEvent::Q3DMouseEvent(const QMouseEvent &e)
+QMouseEvent::QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e)
     : QObject()
     , m_event(e)
 {
 }
 
-Q3DMouseEvent::~Q3DMouseEvent()
+QMouseEvent::~QMouseEvent()
 {
 }
 
 /*!
  * Returns the mouse button of the mouse event.
  */
-Q3DMouseEvent::Buttons Q3DMouseEvent::button() const
+QMouseEvent::Buttons QMouseEvent::button() const
 {
     switch (m_event.button()) {
     case Qt::MouseButton::LeftButton:
-        return Q3DMouseEvent::Buttons::LeftButton;
+        return QMouseEvent::Buttons::LeftButton;
     case Qt::MouseButton::RightButton:
-        return Q3DMouseEvent::Buttons::RightButton;
+        return QMouseEvent::Buttons::RightButton;
     case Qt::MouseButton::MiddleButton:
-        return Q3DMouseEvent::Buttons::MiddleButton;
+        return QMouseEvent::Buttons::MiddleButton;
     case Qt::MouseButton::BackButton:
-        return Q3DMouseEvent::Buttons::BackButton;
+        return QMouseEvent::Buttons::BackButton;
     default:
-        return Q3DMouseEvent::Buttons::NoButton;
+        return QMouseEvent::Buttons::NoButton;
     }
 }
 
@@ -132,7 +132,7 @@ Q3DMouseEvent::Buttons Q3DMouseEvent::button() const
  * Returns a bitfield to be used to check for mouse buttons that may be
  * accompanying the mouse event.
  */
-int Q3DMouseEvent::buttons() const
+int QMouseEvent::buttons() const
 {
    return m_event.buttons();
 }
@@ -140,53 +140,53 @@ int Q3DMouseEvent::buttons() const
 /*!
  * Returns the keyboard modifier that may be accompanying the mouse event.
  */
-Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
+QMouseEvent::Modifiers QMouseEvent::modifier() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
-        return Q3DMouseEvent::Modifiers::ShiftModifier;
+        return QMouseEvent::Modifiers::ShiftModifier;
     case Qt::ControlModifier:
-        return Q3DMouseEvent::Modifiers::ControlModifier;
+        return QMouseEvent::Modifiers::ControlModifier;
     case Qt::AltModifier:
-        return Q3DMouseEvent::Modifiers::AltModifier;
+        return QMouseEvent::Modifiers::AltModifier;
     case Qt::MetaModifier:
-        return Q3DMouseEvent::Modifiers::MetaModifier;
+        return QMouseEvent::Modifiers::MetaModifier;
     case Qt::KeypadModifier:
-        return Q3DMouseEvent::Modifiers::KeypadModifier;
+        return QMouseEvent::Modifiers::KeypadModifier;
     default:
-        return Q3DMouseEvent::Modifiers::NoModifier;
+        return QMouseEvent::Modifiers::NoModifier;
     }
 }
 
 
 /*!
- * \class Qt3DInput::Q3DWheelEvent
+ * \class Qt3DInput::QWheelEvent
  * \inmodule Qt3DInput
  *
- * \brief The Q3DWheelEvent class contains parameters that describe a mouse wheel event.
+ * \brief The QWheelEvent class contains parameters that describe a mouse wheel event.
  *
  * Mouse wheel events occur when the mouse is rotated.
  *
  * \since 5.5
  *
- * \sa Q3DKeyEvent, Q3DMouseEvent, QMouseInput
+ * \sa QKeyEvent, QMouseEvent, QMouseInput
  *
  */
 
 /*!
- * \fn int Qt3DInput::Q3DWheelEvent::x() const
- *
- *  Returns the x position of the mouse event.
- */
-
-/*!
- * \fn int Qt3DInput::Q3DWheelEvent::y() const
+ * \fn int Qt3DInput::QWheelEvent::x() const
  *
  *  Returns the x position of the mouse event.
  */
 
 /*!
- * \fn QPoint Qt3DInput::Q3DWheelEvent::angleDelta() const
+ * \fn int Qt3DInput::QWheelEvent::y() const
+ *
+ *  Returns the x position of the mouse event.
+ */
+
+/*!
+ * \fn QPoint Qt3DInput::QWheelEvent::angleDelta() const
  *
  * Returns the distance that the wheel is rotated, in eighths of a degree. A
  * positive value indicates that the wheel was rotated forward (away from the
@@ -195,13 +195,13 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
  */
 
 /*!
- * \fn bool Qt3DInput::Q3DWheelEvent::isAccepted() const
+ * \fn bool Qt3DInput::QWheelEvent::isAccepted() const
  *
  *  Returns whether the event was accepted.
  */
 
 /*!
- * \fn void Qt3DInput::Q3DWheelEvent::setAccepted(bool accepted)
+ * \fn void Qt3DInput::QWheelEvent::setAccepted(bool accepted)
  *
  *  Sets the event as accepted if \a accepted is true.
  *
@@ -210,21 +210,21 @@ Q3DMouseEvent::Modifiers Q3DMouseEvent::modifier() const
  */
 
 /*!
- * \fn QEvent::Type Qt3DInput::Q3DWheelEvent::type() const
+ * \fn QEvent::Type Qt3DInput::QWheelEvent::type() const
  *
  *  Returns the QEvent::Type of the event.
  */
 
 /*!
- * Constructs a new Q3DWheelEvent instance from the QWheelEvent \a e.
+ * Constructs a new QWheelEvent instance from the QWheelEvent \a e.
  */
-Q3DWheelEvent::Q3DWheelEvent(const QWheelEvent &e)
+QWheelEvent::QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e)
     : QObject()
     , m_event(e)
 {
 }
 
-Q3DWheelEvent::~Q3DWheelEvent()
+QWheelEvent::~QWheelEvent()
 {
 }
 
@@ -232,7 +232,7 @@ Q3DWheelEvent::~Q3DWheelEvent()
  * Returns a bitfield to be used to check for mouse buttons that may be
  * accompanying the wheel event.
  */
-int Q3DWheelEvent::buttons() const
+int QWheelEvent::buttons() const
 {
     return m_event.buttons();
 }
@@ -240,21 +240,21 @@ int Q3DWheelEvent::buttons() const
 /*!
  * Returns the keyboard modifier that may be accompanying the wheel event.
  */
-Q3DWheelEvent::Modifiers Q3DWheelEvent::modifier() const
+QWheelEvent::Modifiers QWheelEvent::modifier() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
-        return Q3DWheelEvent::Modifiers::ShiftModifier;
+        return QWheelEvent::Modifiers::ShiftModifier;
     case Qt::ControlModifier:
-        return Q3DWheelEvent::Modifiers::ControlModifier;
+        return QWheelEvent::Modifiers::ControlModifier;
     case Qt::AltModifier:
-        return Q3DWheelEvent::Modifiers::AltModifier;
+        return QWheelEvent::Modifiers::AltModifier;
     case Qt::MetaModifier:
-        return Q3DWheelEvent::Modifiers::MetaModifier;
+        return QWheelEvent::Modifiers::MetaModifier;
     case Qt::KeypadModifier:
-        return Q3DWheelEvent::Modifiers::KeypadModifier;
+        return QWheelEvent::Modifiers::KeypadModifier;
     default:
-        return Q3DWheelEvent::Modifiers::NoModifier;
+        return QWheelEvent::Modifiers::NoModifier;
     }
 }
 

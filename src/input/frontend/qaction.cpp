@@ -110,7 +110,8 @@ void QAction::removeInput(QActionInput *input)
         }
 
         d->m_inputs.removeOne(input);
-    }}
+    }
+}
 
 QVector<QActionInput *> QAction::inputs() const
 {

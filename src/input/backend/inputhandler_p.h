@@ -99,8 +99,8 @@ public:
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
 
-    void appendKeyEvent(const QKeyEvent &event);
-    QList<QKeyEvent> pendingKeyEvents();
+    void appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event);
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
     void clearPendingKeyEvents();
 
     void appendMouseEvent(const QMouseEvent &event);
@@ -128,7 +128,7 @@ private:
     QVector<HKeyboardController> m_activeKeyboardControllers;
     QVector<HMouseController> m_activeMouseControllers;
     KeyboardEventFilter *m_keyboardEventFilter;
-    QList<QKeyEvent> m_pendingEvents;
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingEvents;
     MouseEventFilter *m_mouseEventFilter;
     QList<QMouseEvent> m_pendingMouseEvents;
     mutable QMutex m_mutex;

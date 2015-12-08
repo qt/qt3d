@@ -34,27 +34,27 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_Q3DMOUSEEVENT_H
-#define QT3DINPUT_Q3DMOUSEEVENT_H
+#ifndef QT3DINPUT_QMOUSEEVENT_H
+#define QT3DINPUT_QMOUSEEVENT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <QObject>
-#include <QMouseEvent>
+#include <QtGui/QMouseEvent>
 #include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QT3DINPUTSHARED_EXPORT Q3DMouseEvent : public QObject
+class QT3DINPUTSHARED_EXPORT QMouseEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int x READ x CONSTANT)
     Q_PROPERTY(int y READ y CONSTANT)
     Q_PROPERTY(bool wasHeld READ wasHeld CONSTANT)
-    Q_PROPERTY(Qt3DInput::Q3DMouseEvent::Buttons button READ button CONSTANT)
+    Q_PROPERTY(Qt3DInput::QMouseEvent::Buttons button READ button CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
-    Q_PROPERTY(Qt3DInput::Q3DMouseEvent::Modifiers modifier READ modifier CONSTANT)
+    Q_PROPERTY(Qt3DInput::QMouseEvent::Modifiers modifier READ modifier CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
@@ -77,8 +77,8 @@ public:
     };
     Q_ENUM(Modifiers)
 
-    explicit Q3DMouseEvent(const QMouseEvent &e);
-    ~Q3DMouseEvent();
+    explicit QMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &e);
+    ~QMouseEvent();
 
     inline int x() const { return m_event.x(); }
     inline int y() const { return m_event.y(); }
@@ -92,19 +92,19 @@ public:
     inline QEvent::Type type() const { return m_event.type(); }
 
 private:
-    QMouseEvent m_event;
+    QT_PREPEND_NAMESPACE(QMouseEvent) m_event;
 };
 
-typedef QSharedPointer<Q3DMouseEvent> Q3DMouseEventPtr;
+typedef QSharedPointer<QMouseEvent> QMouseEventPtr;
 
-class QT3DINPUTSHARED_EXPORT Q3DWheelEvent : public QObject
+class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int x READ x CONSTANT)
     Q_PROPERTY(int y READ y CONSTANT)
     Q_PROPERTY(QPoint angleDelta READ angleDelta CONSTANT)
     Q_PROPERTY(int buttons READ buttons CONSTANT)
-    Q_PROPERTY(Qt3DInput::Q3DWheelEvent::Modifiers modifier READ modifier CONSTANT)
+    Q_PROPERTY(Qt3DInput::QWheelEvent::Modifiers modifier READ modifier CONSTANT)
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted)
 
 public:
@@ -127,8 +127,8 @@ public:
     };
     Q_ENUM(Modifiers)
 
-    explicit Q3DWheelEvent(const QWheelEvent &e);
-    ~Q3DWheelEvent();
+    explicit QWheelEvent(const QT_PREPEND_NAMESPACE(QWheelEvent) &e);
+    ~QWheelEvent();
 
     inline int x() const { return m_event.x(); }
     inline int y() const { return m_event.y(); }
@@ -141,16 +141,16 @@ public:
     inline QEvent::Type type() const { return m_event.type(); }
 
 private:
-    QWheelEvent m_event;
+    QT_PREPEND_NAMESPACE(QWheelEvent) m_event;
 };
 
-typedef QSharedPointer<Q3DWheelEvent> Q3DWheelEventPtr;
+typedef QSharedPointer<QWheelEvent> QWheelEventPtr;
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DInput::Q3DMouseEvent*)
-Q_DECLARE_METATYPE(Qt3DInput::Q3DWheelEvent*)
+Q_DECLARE_METATYPE(Qt3DInput::QMouseEvent*)
+Q_DECLARE_METATYPE(Qt3DInput::QWheelEvent*)
 
-#endif // QT3DINPUT_Q3DMOUSEEVENT_H
+#endif // QT3DINPUT_QMOUSEEVENT_H

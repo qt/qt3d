@@ -49,7 +49,7 @@
 //
 
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DInput/q3dmouseevent.h>
+#include <Qt3DInput/qmouseevent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,8 +67,8 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     Qt3DCore::QNodeId mouseController() const;
     void setInputHandler(InputHandler *handler);
-    void mouseEvent(const Q3DMouseEventPtr &event);
-    void wheelEvent(const Q3DWheelEventPtr &event);
+    void mouseEvent(const QMouseEventPtr &event);
+    void wheelEvent(const QWheelEventPtr &event);
 
     inline bool isEnabled() const { return m_enabled; }
 

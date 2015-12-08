@@ -62,14 +62,14 @@ class InputHandler;
 class KeyEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit KeyEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QKeyEvent> &events);
+    explicit KeyEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_OVERRIDE;
 
 private:
     InputHandler *m_inputHandler;
     const Qt3DCore::QNodeId m_keyboardInput;
-    const QList<QKeyEvent> m_events;
+    const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_events;
 };
 
 } // namespace Input

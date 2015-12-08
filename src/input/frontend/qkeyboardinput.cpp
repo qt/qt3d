@@ -163,26 +163,26 @@ void QKeyboardInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             setFocus(e->value().toBool());
             blockNotifications(block);
         } else if (e->propertyName() == QByteArrayLiteral("event")) {
-            Q3DKeyEventPtr ev = e->value().value<Q3DKeyEventPtr>();
+            QKeyEventPtr ev = e->value().value<QKeyEventPtr>();
             keyEvent(ev.data());
         }
     }
 }
 
-void QKeyboardInput::keyEvent(Q3DKeyEvent *event)
+void QKeyboardInput::keyEvent(QKeyEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
         emit pressed(event);
 
         QByteArray keySignal = keyToSignal(event->key());
         if (!keySignal.isEmpty()) {
-            keySignal += "(Qt3DInput::Q3DKeyEvent*)";
+            keySignal += "(Qt3DInput::QKeyEvent*)";
             // TO DO: Finding if the signal is connected to anything before doing the invocation
             // could be an improvement
             // That's what QQ2 does but since it accesses QML private classes to do so, that may not be
             // applicable in our case
             int idx = QKeyboardInput::staticMetaObject.indexOfSignal(keySignal);
-            metaObject()->method(idx).invoke(this, Qt::DirectConnection, Q_ARG(Q3DKeyEvent *, event));
+            metaObject()->method(idx).invoke(this, Qt::DirectConnection, Q_ARG(QKeyEvent *, event));
         }
     } else if (event->type() == QEvent::KeyRelease) {
         emit released(event);

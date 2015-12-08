@@ -75,7 +75,7 @@ public:
 
     QVector<Qt3DCore::QNodeId> mouseInputs() const;
 
-    void updateMouseEvents(const QList<QMouseEvent> &events);
+    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

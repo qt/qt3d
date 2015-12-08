@@ -79,7 +79,7 @@ public:
     float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
 
-    void updateKeyEvents(const QList<QKeyEvent> &events);
+    void updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events);
 
     inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
     inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }

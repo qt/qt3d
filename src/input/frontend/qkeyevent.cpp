@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "q3dkeyevent.h"
+#include "qkeyevent.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -43,7 +43,7 @@ namespace Qt3DInput {
 //Qt6: Move this into a QtQmlGui module and merge it with QQuickKeyEvent
 
 /*!
-    \class Qt3DInput::Q3DKeyEvent
+    \class Qt3DInput::QKeyEvent
     \inmodule Qt3DInput
     \since 5.5
 */
@@ -51,21 +51,21 @@ namespace Qt3DInput {
 /*!
     \qmltype KeyEvent
     \inqmlmodule Qt3D.Input
-    \instantiates Qt3DInput::Q3DKeyEvent
+    \instantiates Qt3DInput::QKeyEvent
     \since 5.5
 
     The KeyEvent QML type cannot be directly created. Objects of this type
     are used as signal parameters in KeyboardInput.
 */
 
-Q3DKeyEvent::Q3DKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text, bool autorep, ushort count)
+QKeyEvent::QKeyEvent(QEvent::Type type, int key, Qt::KeyboardModifiers modifiers, const QString &text, bool autorep, ushort count)
     : QObject()
     , m_event(type, key, modifiers, text, autorep, count)
 {
     m_event.setAccepted(false);
 }
 
-Q3DKeyEvent::Q3DKeyEvent(const QKeyEvent &ke)
+QKeyEvent::QKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &ke)
     : QObject()
     , m_event(ke)
 {

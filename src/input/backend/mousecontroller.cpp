@@ -115,10 +115,10 @@ QVector<Qt3DCore::QNodeId> MouseController::mouseInputs() const
     return m_mouseInputs;
 }
 
-void MouseController::updateMouseEvents(const QList<QMouseEvent> &events)
+void MouseController::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
     if (!events.isEmpty()) {
-        Q_FOREACH (const QMouseEvent &e, events) {
+        Q_FOREACH (const QT_PREPEND_NAMESPACE(QMouseEvent) &e, events) {
             m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
             m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
             m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);

@@ -162,7 +162,7 @@ void CameraController::update(double dt)
     }
 }
 
-bool CameraController::keyPressEvent( QKeyEvent* e )
+bool CameraController::keyPressEvent( QT_PREPEND_NAMESPACE(QKeyEvent*) e )
 {
     m_translateFast = e->modifiers().testFlag(Qt::AltModifier);
     m_viewCenterFixed = e->modifiers().testFlag(Qt::ShiftModifier);
@@ -204,7 +204,7 @@ bool CameraController::keyPressEvent( QKeyEvent* e )
     return true;
 }
 
-bool CameraController::keyReleaseEvent( QKeyEvent* e )
+bool CameraController::keyReleaseEvent( QT_PREPEND_NAMESPACE(QKeyEvent*) e )
 {
     switch ( e->key() )
     {
@@ -230,7 +230,7 @@ bool CameraController::keyReleaseEvent( QKeyEvent* e )
     return true;
 }
 
-void CameraController::mousePressEvent( QMouseEvent* e )
+void CameraController::mousePressEvent( QT_PREPEND_NAMESPACE(QMouseEvent*) e )
 {
     if ( e->button() == Qt::LeftButton )
     {
@@ -244,7 +244,7 @@ void CameraController::mousePressEvent( QMouseEvent* e )
     }
 }
 
-void CameraController::mouseReleaseEvent( QMouseEvent* e )
+void CameraController::mouseReleaseEvent( QT_PREPEND_NAMESPACE(QMouseEvent*) e )
 {
     if ( e->button() == Qt::LeftButton )
     {
@@ -256,7 +256,7 @@ void CameraController::mouseReleaseEvent( QMouseEvent* e )
     }
 }
 
-void CameraController::mouseMoveEvent( QMouseEvent* e )
+void CameraController::mouseMoveEvent( QT_PREPEND_NAMESPACE(QMouseEvent*) e )
 {
     if (!m_camera )
       return;
@@ -337,18 +337,18 @@ bool CameraController::eventFilter(QObject *receiver, QEvent *event)
 {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
-        mousePressEvent(static_cast<QMouseEvent*>(event));
+        mousePressEvent(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent*)>(event));
         return true;
     case QEvent::MouseButtonRelease:
-        mouseReleaseEvent(static_cast<QMouseEvent*>(event));
+        mouseReleaseEvent(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent*)>(event));
         return true;
     case QEvent::MouseMove:
-        mouseMoveEvent(static_cast<QMouseEvent*>(event));
+        mouseMoveEvent(static_cast<QT_PREPEND_NAMESPACE(QMouseEvent*)>(event));
         return true;
     case QEvent::KeyPress:
-        return keyPressEvent(static_cast<QKeyEvent*>(event));
+        return keyPressEvent(static_cast<QT_PREPEND_NAMESPACE(QKeyEvent)*>(event));
     case QEvent::KeyRelease:
-        return keyReleaseEvent(static_cast<QKeyEvent*>(event));
+        return keyReleaseEvent(static_cast<QT_PREPEND_NAMESPACE(QKeyEvent)*>(event));
     default:
         return QObject::eventFilter(receiver, event);
     }
