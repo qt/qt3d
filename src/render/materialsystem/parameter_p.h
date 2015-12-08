@@ -72,15 +72,7 @@ public:
     QString name() const;
     QVariant value() const;
 
-    void setShaderDataManager(ShaderDataManager *shaderDataManager);
-    void setTextureManager(TextureManager *textureManager);
-
 private:
-    QVariant toBackendValue(const QVariant &value);
-
-    ShaderDataManager *m_shaderDataManager;
-    TextureManager *m_textureManager;
-
     QString m_name;
     QVariant m_value;
 };

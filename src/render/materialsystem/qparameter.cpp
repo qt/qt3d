@@ -57,6 +57,11 @@ QParameterPrivate::QParameterPrivate()
 
 void QParameterPrivate::setValue(const QVariant &v)
 {
+    Qt3DCore::QNode *nodeValue = v.value<Qt3DCore::QNode *>();
+    if (nodeValue != Q_NULLPTR)
+        m_backendValue = QVariant::fromValue(nodeValue->id());
+    else
+        m_backendValue = v;
     m_value = v;
 }
 
@@ -66,6 +71,7 @@ void QParameter::copy(const QNode *ref)
     const QParameter *param = static_cast<const QParameter*>(ref);
     d_func()->m_name = param->d_func()->m_name;
     d_func()->m_value = param->d_func()->m_value;
+    d_func()->m_backendValue = param->d_func()->m_backendValue;
 }
 
 /*! \internal */
@@ -123,17 +129,14 @@ void QParameter::setValue(const QVariant &dv)
         d->setValue(dv);
         emit valueChanged(dv);
 
-        // In case texture are declared inline
-        QNode *txt = dv.value<QNode *>();
-        if (txt != Q_NULLPTR && !txt->parent())
-           txt->setParent(this);
+        // In case node values are declared inline
+        QNode *nodeValue = dv.value<QNode *>();
+        if (nodeValue != Q_NULLPTR && !nodeValue->parent())
+            nodeValue->setParent(this);
 
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName(d->m_name.toUtf8().data());
-        if (txt != Q_NULLPTR)
-            change->setValue(QVariant::fromValue(QNode::clone(txt)));
-        else
-            change->setValue(d->m_value);
+        change->setValue(d->m_backendValue);
 
         d->notifyObservers(change);
     }

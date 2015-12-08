@@ -80,6 +80,8 @@ static const int MAX_LIGHTS = 8;
 
 namespace  {
 
+const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+
 // TODO: Should we treat lack of layer data as implicitly meaning that an
 // entity is in all layers?
 bool isEntityInLayers(const Entity *entity, const QStringList &layers)
@@ -545,12 +547,18 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
         destroyUniformValue(val, m_allocator);
 
     Texture *tex = Q_NULLPTR;
-
-    if ((tex = value.value<Texture *>()) != Q_NULLPTR) {
-        uniformPack.setTexture(name, tex->peerUuid());
-        TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-        texUniform->setTextureId(tex->peerUuid());
-        uniformPack.setUniform(name, texUniform);
+    // At this point a uniform value can only be a scalar type
+    // or a Qt3DCore::QNodeId corresponding to a Texture
+    // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
+    // not be in the default uniform block
+    if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId) {
+        if ((tex = m_manager->textureManager()->lookupResource(value.value<Qt3DCore::QNodeId>()))
+                != Q_NULLPTR) {
+            uniformPack.setTexture(name, tex->peerUuid());
+            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+            texUniform->setTextureId(tex->peerUuid());
+            uniformPack.setUniform(name, texUniform);
+        }
     } else {
         uniformPack.setUniform(name, QUniformValue::fromVariant(value, m_allocator));
     }
@@ -567,7 +575,9 @@ void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QStrin
 void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
     ShaderData *shaderData = Q_NULLPTR;
-    if ((shaderData = value.value<ShaderData *>())) {
+
+    if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId &&
+        (shaderData = m_manager->shaderDataManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
         // UBO are indexed by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
         // while still making sure that if they have a different layout everything will still work
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
@@ -754,10 +764,11 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                             const ShaderUniformBlock &block = shader->uniformBlock(it->name);
                             setUniformBlockValue(command->m_uniforms, shader, block, it->value);
                             it = parameters.erase(it);
-                        } else {
+                        } else { // Parameter is a struct
                             const QVariant &v = it->value;
                             ShaderData *shaderData = Q_NULLPTR;
-                            if ((shaderData = v.value<ShaderData *>()) != Q_NULLPTR) {
+                            if (static_cast<QMetaType::Type>(v.type()) == qNodeIdTypeId &&
+                                (shaderData = m_manager->shaderDataManager()->lookupResource(v.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
                                 // Try to check if we have a struct or array matching a QShaderData parameter
                                 setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, shaderData, it->name);
                                 it = parameters.erase(it);

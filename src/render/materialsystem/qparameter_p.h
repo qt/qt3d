@@ -68,7 +68,7 @@ public:
 
     QString m_name;
     QVariant m_value;
-    QString m_meshName;
+    QVariant m_backendValue;
 };
 
 } // namespace Qt3DRender

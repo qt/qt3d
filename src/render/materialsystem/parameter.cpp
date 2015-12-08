@@ -37,8 +37,11 @@
 #include "parameter_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/private/qparameter_p.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qshaderdata.h>
+#include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/buffer_p.h>
 
 #include <Qt3DRender/private/managers_p.h>
 
@@ -51,16 +54,14 @@ namespace Render {
 
 Parameter::Parameter()
     : QBackendNode()
-    , m_shaderDataManager(Q_NULLPTR)
-    , m_textureManager(Q_NULLPTR)
 {
 }
 
-void Parameter::updateFromPeer(Qt3DCore::QNode *mat)
+void Parameter::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QParameter *param = static_cast<QParameter *>(mat);
+    QParameter *param = static_cast<QParameter *>(peer);
     m_name = param->name();
-    m_value = toBackendValue(param->value());
+    m_value = static_cast<QParameterPrivate *>(QNodePrivate::get(param))->m_backendValue;
 }
 
 void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -71,7 +72,7 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("name"))
             m_name = propertyChange->value().toString();
         else if (propertyChange->propertyName() == QByteArrayLiteral("value"))
-            m_value = toBackendValue(propertyChange->value());
+            m_value = propertyChange->value();
     }
 }
 
@@ -83,32 +84,6 @@ QString Parameter::name() const
 QVariant Parameter::value() const
 {
     return m_value;
-}
-
-void Parameter::setShaderDataManager(ShaderDataManager *shaderDataManager)
-{
-    m_shaderDataManager = shaderDataManager;
-}
-
-void Parameter::setTextureManager(TextureManager *textureManager)
-{
-    m_textureManager = textureManager;
-}
-
-QVariant Parameter::toBackendValue(const QVariant &value)
-{
-    QNode *node = value.value<QNode *>();
-
-    if (node == Q_NULLPTR) {
-        return value;
-    } else if (qobject_cast<QAbstractTextureProvider*>(node)) {
-        return QVariant::fromValue(static_cast<Texture*>(createBackendNode(node)));
-    } else if (qobject_cast<QShaderData*>(node)) {
-        return QVariant::fromValue(static_cast<ShaderData*>(createBackendNode(node)));
-    } else {
-        qFatal("Texture and ShaderData are the only types of Node allowed as parameters");
-        return QVariant();
-    }
 }
 
 } // namespace Render
