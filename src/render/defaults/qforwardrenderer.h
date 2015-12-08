@@ -57,18 +57,19 @@ public:
     explicit QForwardRenderer(Qt3DCore::QNode *parent = 0);
     ~QForwardRenderer();
 
-    void setViewportRect(const QRectF &viewportRect);
-    void setClearColor(const QColor &clearColor);
-    void setCamera(Qt3DCore::QEntity *camera);
-
     QRectF viewportRect() const;
     QColor clearColor() const;
     Qt3DCore::QEntity *camera() const;
 
+public Q_SLOTS:
+    void setViewportRect(const QRectF &viewportRect);
+    void setClearColor(const QColor &clearColor);
+    void setCamera(Qt3DCore::QEntity *camera);
+
 Q_SIGNALS:
-    void viewportRectChanged();
-    void clearColorChanged();
-    void cameraChanged();
+    void viewportRectChanged(const QRectF &viewportRect);
+    void clearColorChanged(const QColor &clearColor);
+    void cameraChanged(Qt3DCore::QEntity *camera);
 
 private:
     Q_DECLARE_PRIVATE(QForwardRenderer)

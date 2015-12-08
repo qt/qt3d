@@ -58,14 +58,15 @@ public:
     explicit QMouseInput(QNode *parent = 0);
     ~QMouseInput();
 
-    void setController(QMouseController *controller);
     QMouseController *controller() const;
-
     bool containsMouse() const;
 
+public Q_SLOTS:
+    void setController(QMouseController *controller);
+
 Q_SIGNALS:
-    void controllerChanged();
-    void containsMouseChanged();
+    void controllerChanged(QMouseController *controller);
+    void containsMouseChanged(bool containsMouse);
 
     void clicked(Qt3DInput::Q3DMouseEvent *mouse);
     void doubleClicked(Qt3DInput::Q3DMouseEvent *mouse);

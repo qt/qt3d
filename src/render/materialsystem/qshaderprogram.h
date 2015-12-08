@@ -71,22 +71,11 @@ public:
     Q_ENUM(ShaderType)
 
     // Source code in-line
-    void setVertexShaderCode(const QByteArray &vertexShaderCode);
     QByteArray vertexShaderCode() const;
-
-    void setTessellationControlShaderCode(const QByteArray &tessellationControlShaderCode);
     QByteArray tessellationControlShaderCode() const;
-
-    void setTessellationEvaluationShaderCode(const QByteArray &tessellationEvaluationShaderCode);
     QByteArray tessellationEvaluationShaderCode() const;
-
-    void setGeometryShaderCode(const QByteArray &geometryShaderCode);
     QByteArray geometryShaderCode() const;
-
-    void setFragmentShaderCode(const QByteArray &fragmentShaderCode);
     QByteArray fragmentShaderCode() const;
-
-    void setComputeShaderCode(const QByteArray &computeShaderCode);
     QByteArray computeShaderCode() const;
 
     void setShaderCode(ShaderType type, const QByteArray &shaderCode);
@@ -94,13 +83,21 @@ public:
 
     Q_INVOKABLE static QByteArray loadSource(const QUrl &sourceUrl);
 
+public Q_SLOTS:
+    void setVertexShaderCode(const QByteArray &vertexShaderCode);
+    void setTessellationControlShaderCode(const QByteArray &tessellationControlShaderCode);
+    void setTessellationEvaluationShaderCode(const QByteArray &tessellationEvaluationShaderCode);
+    void setGeometryShaderCode(const QByteArray &geometryShaderCode);
+    void setFragmentShaderCode(const QByteArray &fragmentShaderCode);
+    void setComputeShaderCode(const QByteArray &computeShaderCode);
+
 Q_SIGNALS:
-    void vertexShaderCodeChanged();
-    void tessellationControlShaderCodeChanged();
-    void tessellationEvaluationShaderCodeChanged();
-    void geometryShaderCodeChanged();
-    void fragmentShaderCodeChanged();
-    void computeShaderCodeChanged();
+    void vertexShaderCodeChanged(const QByteArray &vertexShaderCode);
+    void tessellationControlShaderCodeChanged(const QByteArray &tessellationControlShaderCode);
+    void tessellationEvaluationShaderCodeChanged(const QByteArray &tessellationEvaluationShaderCode);
+    void geometryShaderCodeChanged(const QByteArray &geometryShaderCode);
+    void fragmentShaderCodeChanged(const QByteArray &fragmentShaderCode);
+    void computeShaderCodeChanged(const QByteArray &computeShaderCode);
 
 protected:
     QShaderProgram(QShaderProgramPrivate &dd, Qt3DCore::QNode *parent = 0);

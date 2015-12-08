@@ -80,7 +80,7 @@ void QStencilOpSeparate::setStencilFail(QStencilOpSeparate::StencilOp op)
     Q_D(QStencilOpSeparate);
     if (d->m_stencilFailOp != op) {
         d->m_stencilFailOp = op;
-        Q_EMIT stencilFailChanged();
+        Q_EMIT stencilFailChanged(op);
     }
 }
 
@@ -95,7 +95,7 @@ void QStencilOpSeparate::setDepthFail(QStencilOpSeparate::StencilOp op)
     Q_D(QStencilOpSeparate);
     if (d->m_depthFailOp != op) {
         d->m_depthFailOp = op;
-        Q_EMIT depthFailChanged();
+        Q_EMIT depthFailChanged(op);
     }
 }
 
@@ -110,7 +110,7 @@ void QStencilOpSeparate::setStencilDepthPass(QStencilOpSeparate::StencilOp op)
     Q_D(QStencilOpSeparate);
     if (d->m_stencilDepthPassOp != op) {
         d->m_stencilDepthPassOp = op;
-        Q_EMIT stencilDepthPassChanged();
+        Q_EMIT stencilDepthPassChanged(op);
     }
 }
 

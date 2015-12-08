@@ -138,7 +138,7 @@ void QFrameGraph::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
             activeFrameGraph->setParent(this);
 
         d->m_activeFrameGraph = activeFrameGraph;
-        emit activeFrameGraphChanged();
+        emit activeFrameGraphChanged(activeFrameGraph);
     }
 }
 

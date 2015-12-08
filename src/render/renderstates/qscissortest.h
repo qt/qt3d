@@ -59,22 +59,21 @@ public:
     ~QScissorTest();
 
     int left() const;
-    void setLeft(int left);
-
     int bottom() const;
-    void setBottom(int bottom);
-
     int width() const;
-    void setWidth(int width);
-
     int height() const;
+
+public Q_SLOTS:
+    void setLeft(int left);
+    void setBottom(int bottom);
+    void setWidth(int width);
     void setHeight(int height);
 
 Q_SIGNALS:
-    void leftChanged();
-    void bottomChanged();
-    void widthChanged();
-    void heightChanged();
+    void leftChanged(int left);
+    void bottomChanged(int bottom);
+    void widthChanged(int width);
+    void heightChanged(int height);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

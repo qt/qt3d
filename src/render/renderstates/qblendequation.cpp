@@ -85,7 +85,7 @@ void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
     Q_D(QBlendEquation);
     if (d->m_mode != mode) {
         d->m_mode = mode;
-        emit modeChanged();
+        emit modeChanged(mode);
     }
 }
 

@@ -85,7 +85,7 @@ void QRenderAttachment::setType(QRenderAttachment::RenderAttachmentType type)
     Q_D(QRenderAttachment);
     if (type != d->m_type) {
         d->m_type = type;
-        emit typeChanged();
+        emit typeChanged(type);
     }
 }
 
@@ -104,7 +104,7 @@ void QRenderAttachment::setTexture(QAbstractTextureProvider *texture)
         // Handle inline declaration
         if (!texture->parent())
             texture->setParent(this);
-        emit textureChanged();
+        emit textureChanged(texture);
     }
 }
 
@@ -119,7 +119,7 @@ void QRenderAttachment::setMipLevel(int level)
     Q_D(QRenderAttachment);
     if (d->m_mipLevel != level) {
         d->m_mipLevel = level;
-        emit mipLevelChanged();
+        emit mipLevelChanged(level);
     }
 }
 
@@ -134,7 +134,7 @@ void QRenderAttachment::setLayer(int layer)
     Q_D(QRenderAttachment);
     if (d->m_layer != layer) {
         d->m_layer = layer;
-        emit layerChanged();
+        emit layerChanged(layer);
     }
 }
 
@@ -149,7 +149,7 @@ void QRenderAttachment::setFace(QRenderAttachment::CubeMapFace face)
     Q_D(QRenderAttachment);
     if (d->m_face != face) {
         d->m_face = face;
-        emit faceChanged();
+        emit faceChanged(face);
     }
 }
 
@@ -164,7 +164,7 @@ void QRenderAttachment::setName(const QString &name)
     Q_D(QRenderAttachment);
     if (d->m_name != name) {
         d->m_name = name;
-        emit nameChanged();
+        emit nameChanged(name);
     }
 }
 

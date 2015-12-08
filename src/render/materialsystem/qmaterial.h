@@ -61,7 +61,6 @@ public:
     explicit QMaterial(Qt3DCore::QNode *parent = 0);
     ~QMaterial();
 
-    void setEffect(QEffect *effect);
     QEffect *effect() const;
 
     void addParameter(QParameter *parameter);
@@ -72,8 +71,11 @@ public:
 
     void setTextureParameter(QString name, QAbstractTextureProvider* tex);
 
+public Q_SLOTS:
+    void setEffect(QEffect *effect);
+
 Q_SIGNALS:
-    void effectChanged();
+    void effectChanged(QEffect *effect);
 
 protected:
     QMaterial(QMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);

@@ -57,12 +57,13 @@ public:
     QVector3D direction() const;
     float cutOffAngle() const;
 
+public Q_SLOTS:
     void setDirection(const QVector3D &direction);
     void setCutOffAngle(float cutOffAngle);
 
 Q_SIGNALS:
-    void directionChanged();
-    void cutOffAngleChanged();
+    void directionChanged(const QVector3D &direction);
+    void cutOffAngleChanged(float cutOffAngle);
 
 protected:
     QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = 0);

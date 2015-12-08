@@ -114,7 +114,7 @@ void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
     Q_D(QCameraLens);
     if (d->m_projectionType != projectionType) {
         d->m_projectionType = projectionType;
-        emit projectionTypeChanged();
+        emit projectionTypeChanged(projectionType);
         d->updateProjectionMatrix();
     }
 }
@@ -198,7 +198,7 @@ void QCameraLens::setNearPlane(float nearPlane)
     if (qFuzzyCompare(d->m_nearPlane, nearPlane))
         return;
     d->m_nearPlane = nearPlane;
-    emit nearPlaneChanged();
+    emit nearPlaneChanged(nearPlane);
     d->updateProjectionMatrix();
 }
 
@@ -221,7 +221,7 @@ void QCameraLens::setFarPlane(float farPlane)
     if (qFuzzyCompare(d->m_farPlane, farPlane))
         return;
     d->m_farPlane = farPlane;
-    emit farPlaneChanged();
+    emit farPlaneChanged(farPlane);
     d->updateProjectionMatrix();
 }
 
@@ -247,7 +247,7 @@ void QCameraLens::setFieldOfView(float fieldOfView)
     if (qFuzzyCompare(d->m_fieldOfView, fieldOfView))
         return;
     d->m_fieldOfView = fieldOfView;
-    emit fieldOfViewChanged();
+    emit fieldOfViewChanged(fieldOfView);
     d->updateProjectionMatrix();
 }
 
@@ -276,7 +276,7 @@ void QCameraLens::setAspectRatio(float aspectRatio)
     if (qFuzzyCompare(d->m_aspectRatio, aspectRatio))
         return;
     d->m_aspectRatio = aspectRatio;
-    emit aspectRatioChanged();
+    emit aspectRatioChanged(aspectRatio);
     d->updateProjectionMatrix();
 }
 
@@ -305,7 +305,7 @@ void QCameraLens::setLeft(float left)
     if (qFuzzyCompare(d->m_left, left))
         return;
     d->m_left = left;
-    emit leftChanged();
+    emit leftChanged(left);
     d->updateProjectionMatrix();
 }
 
@@ -334,7 +334,7 @@ void QCameraLens::setRight(float right)
     if (qFuzzyCompare(d->m_right, right))
         return;
     d->m_right = right;
-    emit rightChanged();
+    emit rightChanged(right);
     d->updateProjectionMatrix();
 }
 
@@ -363,7 +363,7 @@ void QCameraLens::setBottom(float bottom)
     if (qFuzzyCompare(d->m_bottom, bottom))
         return;
     d->m_bottom = bottom;
-    emit bottomChanged();
+    emit bottomChanged(bottom);
     d->updateProjectionMatrix();
 }
 
@@ -392,7 +392,7 @@ void QCameraLens::setTop(float top)
     if (qFuzzyCompare(d->m_top, top))
         return;
     d->m_top = top;
-    emit topChanged();
+    emit topChanged(top);
     d->updateProjectionMatrix();
 }
 

@@ -65,10 +65,6 @@ public:
 
     void updateVertices();
     void updateIndices();
-    void setRings(int rings);
-    void setSlices(int slices);
-    void setRadius(float radius);
-    void setLength(float length);
 
     int rings() const;
     int slices() const;
@@ -80,11 +76,17 @@ public:
     QAttribute *texCoordAttribute() const;
     QAttribute *indexAttribute() const;
 
+public Q_SLOTS:
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setLength(float length);
+
 Q_SIGNALS:
-    void radiusChanged();
-    void ringsChanged();
-    void slicesChanged();
-    void lengthChanged();
+    void radiusChanged(float radius);
+    void ringsChanged(int rings);
+    void slicesChanged(int slices);
+    void lengthChanged(float length);
 
 protected:
     QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent = 0);

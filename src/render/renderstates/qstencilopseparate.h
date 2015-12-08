@@ -81,20 +81,20 @@ public:
 
     StencilFaceMode faceMode() const;
 
-    void setStencilFail(StencilOp op);
     StencilOp stencilFail() const;
-
-    void setDepthFail(StencilOp op);
     StencilOp depthFail() const;
-
-    void setStencilDepthPass(StencilOp op);
     StencilOp stencilDepthPass() const;
 
+public Q_SLOTS:
+    void setStencilFail(StencilOp op);
+    void setDepthFail(StencilOp op);
+    void setStencilDepthPass(StencilOp op);
+
 Q_SIGNALS:
-    void stencilFailChanged();
-    void depthFailChanged();
-    void stencilDepthPassChanged();
-    void faceModeChanged();
+    void stencilFailChanged(StencilOp stencilFail);
+    void depthFailChanged(StencilOp depthFail);
+    void stencilDepthPassChanged(StencilOp stencilDepthPass);
+    void faceModeChanged(StencilFaceMode faceMode);
 
 private:
     explicit QStencilOpSeparate(StencilFaceMode mode, QObject *parent = 0);

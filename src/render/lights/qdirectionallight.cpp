@@ -96,7 +96,7 @@ void QDirectionalLight::setDirection(const QVector3D &direction)
     Q_D(QDirectionalLight);
     if (direction != d->m_direction) {
         d->m_direction = direction;
-        emit directionChanged();
+        emit directionChanged(direction);
     }
 }
 

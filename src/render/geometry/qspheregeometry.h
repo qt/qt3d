@@ -65,10 +65,6 @@ public:
 
     void updateVertices();
     void updateIndices();
-    void setRings(int rings);
-    void setSlices(int slices);
-    void setRadius(float radius);
-    void setGenerateTangents(bool gen);
 
     bool generateTangents() const;
     int rings() const;
@@ -81,11 +77,17 @@ public:
     QAttribute *tangentAttribute() const;
     QAttribute *indexAttribute() const;
 
+public Q_SLOTS:
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setGenerateTangents(bool gen);
+
 Q_SIGNALS:
-    void radiusChanged();
-    void ringsChanged();
-    void slicesChanged();
-    void generateTangentsChanged();
+    void radiusChanged(float radius);
+    void ringsChanged(int rings);
+    void slicesChanged(int slices);
+    void generateTangentsChanged(bool generateTangents);
 
 protected:
     QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent = Q_NULLPTR);

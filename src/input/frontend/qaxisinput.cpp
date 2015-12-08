@@ -78,7 +78,7 @@ void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged();
+        emit sourceDeviceChanged(sourceDevice);
     }
 }
 
@@ -93,7 +93,7 @@ void QAxisInput::setScale(float scale)
     Q_D(QAxisInput);
     if (d->m_scale != scale) {
         d->m_scale = scale;
-        emit scaleChanged();
+        emit scaleChanged(scale);
     }
 }
 
@@ -108,7 +108,7 @@ void QAxisInput::setAxis(int axis)
     Q_D(QAxisInput);
     if (d->m_axis != axis) {
         d->m_axis = axis;
-        emit axisChanged();
+        emit axisChanged(axis);
     }
 }
 
@@ -123,7 +123,7 @@ void QAxisInput::setKeys(const QVariantList &keys)
     Q_D(QAxisInput);
     if (keys != d->m_keys) {
         d->m_keys = keys;
-        emit keysChanged();
+        emit keysChanged(keys);
     }
 }
 

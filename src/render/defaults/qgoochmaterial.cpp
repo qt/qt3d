@@ -77,13 +77,21 @@ QGoochMaterialPrivate::QGoochMaterialPrivate()
 void QGoochMaterialPrivate::init()
 {
     Q_Q(QGoochMaterial);
-    QObject::connect(m_diffuseParameter, SIGNAL(valueChanged()), q, SIGNAL(diffuseChanged()));
-    QObject::connect(m_specularParameter, SIGNAL(valueChanged()), q, SIGNAL(specularChanged()));
-    QObject::connect(m_coolParameter, SIGNAL(valueChanged()), q, SIGNAL(coolChanged()));
-    QObject::connect(m_warmParameter, SIGNAL(valueChanged()), q, SIGNAL(warmChanged()));
-    QObject::connect(m_alphaParameter, SIGNAL(valueChanged()), q, SIGNAL(alphaChanged()));
-    QObject::connect(m_betaParameter, SIGNAL(valueChanged()), q, SIGNAL(betaChanged()));
-    QObject::connect(m_shininessParameter, SIGNAL(valueChanged()), q, SIGNAL(shininessChanged()));
+
+    connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleDiffuseChanged);
+    connect(m_specularParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleSpecularChanged);
+    connect(m_coolParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleCoolChanged);
+    connect(m_warmParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleWarmChanged);
+    connect(m_alphaParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleAlphaChanged);
+    connect(m_betaParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleBetaChanged);
+    connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QGoochMaterialPrivate::handleShininessChanged);
 
     m_gl3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.vert"))));
     m_gl3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/gooch.frag"))));
@@ -126,6 +134,48 @@ void QGoochMaterialPrivate::init()
     m_effect->addParameter(m_shininessParameter);
 
     q->setEffect(m_effect);
+}
+
+void QGoochMaterialPrivate::handleDiffuseChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->diffuseChanged(var.value<QColor>());
+}
+
+void QGoochMaterialPrivate::handleSpecularChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->specularChanged(var.value<QColor>());
+}
+
+void QGoochMaterialPrivate::handleCoolChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->coolChanged(var.value<QColor>());
+}
+
+void QGoochMaterialPrivate::handleWarmChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->warmChanged(var.value<QColor>());
+}
+
+void QGoochMaterialPrivate::handleAlphaChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->alphaChanged(var.toFloat());
+}
+
+void QGoochMaterialPrivate::handleBetaChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->betaChanged(var.toFloat());
+}
+
+void QGoochMaterialPrivate::handleShininessChanged(const QVariant &var)
+{
+    Q_Q(QGoochMaterial);
+    emit q->shininessChanged(var.toFloat());
 }
 
 /*!

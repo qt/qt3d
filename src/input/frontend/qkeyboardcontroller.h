@@ -70,7 +70,7 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void activeInputChanged();
+    void activeInputChanged(QKeyboardInput *activeInput);
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardController)

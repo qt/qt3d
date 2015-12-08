@@ -108,7 +108,7 @@ void QBuffer::setUsage(QBuffer::UsageType usage)
     Q_D(QBuffer);
     if (usage != d->m_usage) {
         d->m_usage = usage;
-        emit usageChanged();
+        emit usageChanged(usage);
     }
 }
 
@@ -151,7 +151,7 @@ void QBuffer::setSync(bool sync)
     Q_D(QBuffer);
     if (d->m_sync != sync) {
         d->m_sync = sync;
-        emit syncChanged();
+        emit syncChanged(sync);
     }
 }
 
@@ -170,7 +170,7 @@ void QBuffer::setType(QBuffer::BufferType type)
     Q_D(QBuffer);
     if (type != d->m_type) {
         d->m_type = type;
-        emit typeChanged();
+        emit typeChanged(type);
     }
 }
 

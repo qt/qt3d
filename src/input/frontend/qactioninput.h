@@ -57,15 +57,16 @@ public:
     explicit QActionInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QActionInput();
 
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
     QAbstractPhysicalDevice *sourceDevice() const;
-
-    void setKeys(const QVariantList &keys);
     QVariantList keys() const;
 
+public Q_SLOTS:
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+    void setKeys(const QVariantList &keys);
+
 Q_SIGNALS:
-    void sourceDeviceChanged();
-    void keysChanged();
+    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
+    void keysChanged(const QVariantList &keys);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

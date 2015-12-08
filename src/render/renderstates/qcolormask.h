@@ -62,16 +62,17 @@ public:
     bool isBlue() const;
     bool isAlpha() const;
 
+public Q_SLOTS:
     void setRed(bool red);
     void setGreen(bool green);
     void setBlue(bool blue);
     void setAlpha(bool alpha);
 
 Q_SIGNALS:
-    void redChanged();
-    void greenChanged();
-    void blueChanged();
-    void alphaChanged();
+    void redChanged(bool red);
+    void greenChanged(bool green);
+    void blueChanged(bool blue);
+    void alphaChanged(bool alpha);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;

@@ -95,7 +95,7 @@ void QScissorTest::setLeft(int left)
     Q_D(QScissorTest);
     if (d->m_left != left) {
         d->m_left = left;
-        emit leftChanged();
+        emit leftChanged(left);
     }
 }
 
@@ -110,7 +110,7 @@ void QScissorTest::setBottom(int bottom)
     Q_D(QScissorTest);
     if (d->m_bottom != bottom) {
         d->m_bottom = bottom;
-        emit bottomChanged();
+        emit bottomChanged(bottom);
     }
 }
 
@@ -125,7 +125,7 @@ void QScissorTest::setWidth(int width)
     Q_D(QScissorTest);
     if (d->m_width != width) {
         d->m_width = width;
-        emit widthChanged();
+        emit widthChanged(width);
     }
 }
 
@@ -140,7 +140,7 @@ void QScissorTest::setHeight(int height)
     Q_D(QScissorTest);
     if (d->m_height != height) {
         d->m_height = height;
-        emit heightChanged();
+        emit heightChanged(height);
     }
 }
 

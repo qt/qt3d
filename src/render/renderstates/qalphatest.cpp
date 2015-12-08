@@ -88,7 +88,7 @@ void QAlphaTest::setFunc(QAlphaTest::AlphaFunc func)
     Q_D(QAlphaTest);
     if (d->m_func != func) {
         d->m_func = func;
-        emit funcChanged();
+        emit funcChanged(func);
     }
 }
 
@@ -103,7 +103,7 @@ void QAlphaTest::setClamp(float clamp)
     Q_D(QAlphaTest);
     if (d->m_clamp != clamp) {
         d->m_clamp = clamp;
-        emit clampChanged();
+        emit clampChanged(clamp);
     }
 }
 

@@ -90,11 +90,11 @@ public Q_SLOTS:
     void setMatrix(const QMatrix4x4 &matrix);
 
 Q_SIGNALS:
-    void scaleChanged();
-    void scale3DChanged();
-    void rotationChanged();
-    void translationChanged();
-    void matrixChanged();
+    void scaleChanged(float scale);
+    void scale3DChanged(const QVector3D &scale);
+    void rotationChanged(const QQuaternion &rotation);
+    void translationChanged(const QVector3D &translation);
+    void matrixChanged(const QMatrix4x4 &matrix);
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);

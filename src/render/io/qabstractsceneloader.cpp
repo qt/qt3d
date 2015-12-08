@@ -88,7 +88,7 @@ void QAbstractSceneLoader::setSource(const QUrl &arg)
     Q_D(QAbstractSceneLoader);
     if (d->m_source != arg) {
         d->m_source = arg;
-        emit sourceChanged();
+        emit sourceChanged(arg);
     }
 }
 
@@ -103,7 +103,7 @@ void QAbstractSceneLoader::setStatus(QAbstractSceneLoader::Status status)
     Q_D(QAbstractSceneLoader);
     if (d->m_status != status) {
         d->m_status = status;
-        emit statusChanged();
+        emit statusChanged(status);
     }
 }
 

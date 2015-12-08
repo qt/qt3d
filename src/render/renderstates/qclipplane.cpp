@@ -109,7 +109,7 @@ void QClipPlane::setPlane(int plane)
     Q_D(QClipPlane);
     if (plane != d->m_plane) {
         d->m_plane = plane;
-        Q_EMIT planeChanged();
+        Q_EMIT planeChanged(plane);
     }
 }
 

@@ -93,7 +93,7 @@ void QShaderProgram::setVertexShaderCode(const QByteArray &vertexShaderCode)
     Q_D(QShaderProgram);
     if (vertexShaderCode != d->m_vertexShaderCode) {
         d->m_vertexShaderCode = vertexShaderCode;
-        emit vertexShaderCodeChanged();
+        emit vertexShaderCodeChanged(vertexShaderCode);
     }
 }
 
@@ -108,7 +108,7 @@ void QShaderProgram::setTessellationControlShaderCode(const QByteArray &tessella
     Q_D(QShaderProgram);
     if (tessellationControlShaderCode != d->m_tessControlShaderCode) {
         d->m_tessControlShaderCode = tessellationControlShaderCode;
-        emit tessellationControlShaderCodeChanged();
+        emit tessellationControlShaderCodeChanged(tessellationControlShaderCode);
     }
 }
 
@@ -123,7 +123,7 @@ void QShaderProgram::setTessellationEvaluationShaderCode(const QByteArray &tesse
     Q_D(QShaderProgram);
     if (tessellationEvaluationShaderCode != d->m_tessEvalShaderCode) {
         d->m_tessEvalShaderCode = tessellationEvaluationShaderCode;
-        emit tessellationEvaluationShaderCodeChanged();
+        emit tessellationEvaluationShaderCodeChanged(tessellationEvaluationShaderCode);
     }
 }
 
@@ -138,7 +138,7 @@ void QShaderProgram::setGeometryShaderCode(const QByteArray &geometryShaderCode)
     Q_D(QShaderProgram);
     if (geometryShaderCode != d->m_geometryShaderCode) {
         d->m_geometryShaderCode = geometryShaderCode;
-        emit geometryShaderCodeChanged();
+        emit geometryShaderCodeChanged(geometryShaderCode);
     }
 }
 
@@ -156,7 +156,7 @@ void QShaderProgram::setFragmentShaderCode(const QByteArray &fragmentShaderCode)
     Q_D(QShaderProgram);
     if (fragmentShaderCode != d->m_fragmentShaderCode) {
         d->m_fragmentShaderCode = fragmentShaderCode;
-        emit fragmentShaderCodeChanged();
+        emit fragmentShaderCodeChanged(fragmentShaderCode);
     }
 }
 
@@ -171,7 +171,7 @@ void QShaderProgram::setComputeShaderCode(const QByteArray &computeShaderCode)
     Q_D(QShaderProgram);
     if (computeShaderCode != d->m_computeShaderCode) {
         d->m_computeShaderCode = computeShaderCode;
-        emit computeShaderCodeChanged();
+        emit computeShaderCodeChanged(computeShaderCode);
     }
 }
 

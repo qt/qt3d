@@ -60,23 +60,22 @@ public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxisInput();
 
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
     QAbstractPhysicalDevice *sourceDevice() const;
-
-    void setScale(float scale);
     float scale() const;
-
-    void setAxis(int axis);
     int axis() const;
-
-    void setKeys(const QVariantList &keys);
     QVariantList keys() const;
 
+public Q_SLOTS:
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+    void setScale(float scale);
+    void setAxis(int axis);
+    void setKeys(const QVariantList &keys);
+
 Q_SIGNALS:
-    void sourceDeviceChanged();
-    void scaleChanged();
-    void axisChanged();
-    void keysChanged();
+    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
+    void scaleChanged(float scale);
+    void axisChanged(int axis);
+    void keysChanged(const QVariantList &keys);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

@@ -93,8 +93,11 @@ public:
     bool primitiveRestart() const;
     QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
-    QGeometryFunctorPtr geometryFunctor() const;
 
+    QGeometryFunctorPtr geometryFunctor() const;
+    void setGeometryFunctor(const QGeometryFunctorPtr &functor);
+
+public Q_SLOTS:
     void setInstanceCount(int instanceCount);
     void setPrimitiveCount(int primitiveCount);
     void setBaseVertex(int baseVertex);
@@ -103,17 +106,16 @@ public:
     void setPrimitiveRestart(bool enabled);
     void setGeometry(QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
-    void setGeometryFunctor(const QGeometryFunctorPtr &functor);
 
 Q_SIGNALS:
-    void instanceCountChanged();
-    void primitiveCountChanged();
-    void baseVertexChanged();
-    void baseInstanceChanged();
-    void restartIndexChanged();
-    void primitiveRestartChanged();
-    void geometryChanged();
-    void primitiveTypeChanged();
+    void instanceCountChanged(int instanceCount);
+    void primitiveCountChanged(int primitiveCount);
+    void baseVertexChanged(int baseVertex);
+    void baseInstanceChanged(int baseInstance);
+    void restartIndexChanged(int restartIndex);
+    void primitiveRestartChanged(bool primitiveRestart);
+    void geometryChanged(QGeometry *geometry);
+    void primitiveTypeChanged(PrimitiveType primitiveType);
 
 protected:
     QGeometryRenderer(QGeometryRendererPrivate &dd, Qt3DCore::QNode *parent = 0);

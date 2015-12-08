@@ -96,7 +96,7 @@ void QMesh::setSource(const QUrl& source)
     d->m_source = source;
     // update the functor
     QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_subMesh)));
-    emit sourceChanged();
+    emit sourceChanged(source);
 }
 
 QUrl QMesh::source() const
@@ -113,7 +113,7 @@ void QMesh::setSubMesh(const QString &subMesh)
     d->m_subMesh = subMesh;
     // update the functor
     QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_subMesh)));
-    emit subMeshChanged();
+    emit subMeshChanged(subMesh);
 }
 
 QString QMesh::subMesh() const

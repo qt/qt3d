@@ -153,7 +153,7 @@ void QSpotLight::setDirection(const QVector3D &direction)
     Q_D(QSpotLight);
     if (direction != d->m_direction) {
         d->m_direction = direction;
-        emit directionChanged();
+        emit directionChanged(direction);
     }
 }
 
@@ -162,7 +162,7 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
     Q_D(QSpotLight);
     if (d->m_cutOffAngle != cutOffAngle) {
         d->m_cutOffAngle = cutOffAngle;
-        emit cutOffAngleChanged();
+        emit cutOffAngleChanged(cutOffAngle);
     }
 }
 

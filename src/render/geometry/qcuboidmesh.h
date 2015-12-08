@@ -60,34 +60,29 @@ public:
     explicit QCuboidMesh(Qt3DCore::QNode *parent = 0);
     ~QCuboidMesh();
 
-    void setXExtent(float xExtent);
     float xExtent() const;
-
-    void setYExtent(float yExtent);
     float yExtent() const;
-
-    void setZExtent(float zExtent);
     float zExtent() const;
-
-    void setYZMeshResolution(const QSize &resolution);
     QSize yzMeshResolution() const;
-
-    void setXZMeshResolution(const QSize &resolution);
     QSize xzMeshResolution() const;
-
-    void setXYMeshResolution(const QSize &resolution);
     QSize xyMeshResolution() const;
 
+public Q_SLOTS:
+    void setXExtent(float xExtent);
+    void setYExtent(float yExtent);
+    void setZExtent(float zExtent);
+    void setYZMeshResolution(const QSize &resolution);
+    void setXZMeshResolution(const QSize &resolution);
+    void setXYMeshResolution(const QSize &resolution);
+
 Q_SIGNALS:
-    void xExtentChanged();
-    void yExtentChanged();
-    void zExtentChanged();
+    void xExtentChanged(float xExtent);
+    void yExtentChanged(float yExtent);
+    void zExtentChanged(float zExtent);
 
-    void yzMeshResolutionChanged();
-    void xzMeshResolutionChanged();
-    void xyMeshResolutionChanged();
-
-
+    void yzMeshResolutionChanged(const QSize &yzMeshResolution);
+    void xzMeshResolutionChanged(const QSize &xzMeshResolution);
+    void xyMeshResolutionChanged(const QSize &xyMeshResolution);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

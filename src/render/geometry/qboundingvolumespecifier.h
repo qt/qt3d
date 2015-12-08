@@ -55,10 +55,12 @@ public:
     explicit QBoundingVolumeSpecifier(QObject *parent = 0);
 
     QAbstractAttribute *positionAttribute() const;
+
+public Q_SLOTS:
     void setPositionAttribute(QAbstractAttribute *positionAttribute);
 
 Q_SIGNALS:
-    void positionAttributeChanged();
+    void positionAttributeChanged(QAbstractAttribute *positionAttribute);
 
 private:
     Q_DECLARE_PRIVATE(QBoundingVolumeSpecifier)

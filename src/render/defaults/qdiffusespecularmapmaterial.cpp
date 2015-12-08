@@ -91,6 +91,17 @@ QDiffuseSpecularMapMaterialPrivate::QDiffuseSpecularMapMaterialPrivate()
 
 void QDiffuseSpecularMapMaterialPrivate::init()
 {
+    connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseSpecularMapMaterialPrivate::handleAmbientChanged);
+    connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseSpecularMapMaterialPrivate::handleDiffuseChanged);
+    connect(m_specularParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseSpecularMapMaterialPrivate::handleSpecularChanged);
+    connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseSpecularMapMaterialPrivate::handleShininessChanged);
+    connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseSpecularMapMaterialPrivate::handleTextureScaleChanged);
+
     m_diffuseSpecularMapGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/diffusemap.vert"))));
     m_diffuseSpecularMapGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/diffusespecularmap.frag"))));
     m_diffuseSpecularMapGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/diffusemap.vert"))));
@@ -132,6 +143,36 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     q_func()->setEffect(m_diffuseSpecularMapEffect);
 }
 
+void QDiffuseSpecularMapMaterialPrivate::handleAmbientChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseSpecularMapMaterial);
+    emit q->ambientChanged(var.value<QColor>());
+}
+
+void QDiffuseSpecularMapMaterialPrivate::handleDiffuseChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseSpecularMapMaterial);
+    emit q->diffuseChanged(var.value<QAbstractTextureProvider *>());
+}
+
+void QDiffuseSpecularMapMaterialPrivate::handleSpecularChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseSpecularMapMaterial);
+    emit q->specularChanged(var.value<QAbstractTextureProvider *>());
+}
+
+void QDiffuseSpecularMapMaterialPrivate::handleShininessChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseSpecularMapMaterial);
+    emit q->shininessChanged(var.toFloat());
+}
+
+void QDiffuseSpecularMapMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseSpecularMapMaterial);
+    emit q->textureScaleChanged(var.toFloat());
+}
+
 /*!
     \class Qt3DRender::QDiffuseSpecularMapMaterial
     \brief The QDiffuseSpecularMapMaterial provides a default implementation of the phong lighting and bump effect where the diffuse and specular light components
@@ -160,11 +201,6 @@ QDiffuseSpecularMapMaterial::QDiffuseSpecularMapMaterial(QNode *parent)
     : QMaterial(*new QDiffuseSpecularMapMaterialPrivate, parent)
 {
     Q_D(QDiffuseSpecularMapMaterial);
-    QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
-    QObject::connect(d->m_diffuseParameter, SIGNAL(valueChanged()), this, SIGNAL(diffuseChanged()));
-    QObject::connect(d->m_specularParameter, SIGNAL(valueChanged()), this, SIGNAL(specularChanged()));
-    QObject::connect(d->m_shininessParameter, SIGNAL(valueChanged()), this, SIGNAL(shininessChanged()));
-    QObject::connect(d->m_textureScaleParameter, SIGNAL(valueChanged()), this, SIGNAL(textureScaleChanged()));
     d->init();
 }
 

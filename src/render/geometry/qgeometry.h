@@ -63,13 +63,15 @@ public:
     void addAttribute(QAbstractAttribute *attribute);
     void removeAttribute(QAbstractAttribute *attribute);
 
-    void setVerticesPerPatch(int verticesPerPatch);
     int verticesPerPatch() const;
 
     QBoundingVolumeSpecifier *boundingVolumeSpecifier();
 
+public Q_SLOTS:
+    void setVerticesPerPatch(int verticesPerPatch);
+
 Q_SIGNALS:
-    void verticesPerPatchChanged();
+    void verticesPerPatchChanged(int verticesPerPatch);
 
 protected:
     QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = 0);
@@ -78,7 +80,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGeometry)
     QT3D_CLONEABLE(QGeometry)
-    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged(QAbstractAttribute *))
 };
 
 } // namespace Qt3DRender

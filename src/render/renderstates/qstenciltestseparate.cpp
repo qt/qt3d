@@ -81,7 +81,7 @@ void QStencilTestSeparate::setMask(uint mask)
     Q_D(QStencilTestSeparate);
     if (d->m_mask != mask) {
         d->m_mask = mask;
-        emit maskChanged();
+        emit maskChanged(mask);
     }
 }
 
@@ -96,7 +96,7 @@ void QStencilTestSeparate::setRef(int ref)
     Q_D(QStencilTestSeparate);
     if (d->m_ref != ref) {
         d->m_ref = ref;
-        emit refChanged();
+        emit refChanged(ref);
     }
 }
 
@@ -111,7 +111,7 @@ void QStencilTestSeparate::setFunc(QStencilTestSeparate::StencilFunc func)
     Q_D(QStencilTestSeparate);
     if (d->m_func != func) {
         d->m_func = func;
-        emit funcChanged();
+        emit funcChanged(func);
     }
 }
 

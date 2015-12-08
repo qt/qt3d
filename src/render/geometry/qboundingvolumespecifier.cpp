@@ -69,7 +69,7 @@ void QBoundingVolumeSpecifier::setPositionAttribute(QAbstractAttribute *position
     Q_D(QBoundingVolumeSpecifier);
     if (positionAttribute != d->m_positionAttribute) {
         d->m_positionAttribute = positionAttribute;
-        emit positionAttributeChanged();
+        emit positionAttributeChanged(positionAttribute);
     }
 }
 

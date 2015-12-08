@@ -135,7 +135,7 @@ void QParameterMapping::setParameterName(const QString &name)
     Q_D(QParameterMapping);
     if (d->m_parameterName != name) {
         d->m_parameterName = name;
-        emit parameterNameChanged();
+        emit parameterNameChanged(name);
     }
 }
 
@@ -154,7 +154,7 @@ void QParameterMapping::setShaderVariableName(const QString &name)
     Q_D(QParameterMapping);
     if (d->m_shaderVariableName != name) {
         d->m_shaderVariableName = name;
-        emit shaderVariableNameChanged();
+        emit shaderVariableNameChanged(name);
     }
 }
 
@@ -176,7 +176,7 @@ void QParameterMapping::setBindingType(QParameterMapping::Binding type)
     Q_D(QParameterMapping);
     if (d->m_bindingType != type) {
         d->m_bindingType = type;
-        emit bindingTypeChanged();
+        emit bindingTypeChanged(type);
     }
 }
 

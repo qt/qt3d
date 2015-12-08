@@ -65,19 +65,19 @@ public:
     explicit QTextureWrapMode(WrapMode wrapMode = ClampToEdge, QObject *parent = 0);
     explicit QTextureWrapMode(WrapMode x, WrapMode y, WrapMode z, QObject *parent = 0);
 
-    void setX(WrapMode x);
     WrapMode x() const;
-
-    void setY(WrapMode y);
     WrapMode y() const;
-
-    void setZ(WrapMode z);
     WrapMode z() const;
 
+public Q_SLOTS:
+    void setX(WrapMode x);
+    void setY(WrapMode y);
+    void setZ(WrapMode z);
+
 Q_SIGNALS:
-    void xChanged();
-    void yChanged();
-    void zChanged();
+    void xChanged(WrapMode x);
+    void yChanged(WrapMode y);
+    void zChanged(WrapMode z);
 
 private:
     Q_DECLARE_PRIVATE(QTextureWrapMode)

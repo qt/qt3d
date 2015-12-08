@@ -68,18 +68,19 @@ public:
     QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3DCore::QNode *parent = 0);
     ~QParameterMapping();
 
-    void setParameterName(const QString &name);
-    void setShaderVariableName(const QString &name);
-    void setBindingType(Binding type);
-
     QString parameterName() const;
     QString shaderVariableName() const;
     Binding bindingType() const;
 
+public Q_SLOTS:
+    void setParameterName(const QString &name);
+    void setShaderVariableName(const QString &name);
+    void setBindingType(Binding type);
+
 Q_SIGNALS:
-    void parameterNameChanged();
-    void shaderVariableNameChanged();
-    void bindingTypeChanged();
+    void parameterNameChanged(const QString &parameterName);
+    void shaderVariableNameChanged(const QString &shaderVariableName);
+    void bindingTypeChanged(Binding bindingType);
 
 protected:
     QParameterMapping(QParameterMappingPrivate &dd, Qt3DCore::QNode *parent = 0);

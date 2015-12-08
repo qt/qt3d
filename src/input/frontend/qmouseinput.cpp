@@ -101,7 +101,7 @@ void QMouseInput::setController(QMouseController *controller)
     Q_D(QMouseInput);
     if (d->m_controller != controller) {
         d->m_controller = controller;
-        emit controllerChanged();
+        emit controllerChanged(controller);
     }
 }
 
@@ -186,7 +186,7 @@ void QMouseInput::setContainsMouse(bool contains)
     Q_D(QMouseInput);
     if (contains != d->m_containsMouse) {
         d->m_containsMouse = contains;
-        emit containsMouseChanged();
+        emit containsMouseChanged(contains);
     }
 }
 

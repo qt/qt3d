@@ -68,12 +68,12 @@ public :
     ~QLight();
 
     Type type() const;
-    void setType(Type type);
-
     QColor color() const;
-    void setColor(const QColor &color);
-
     float intensity() const;
+
+public Q_SLOTS:
+    void setType(Type type);
+    void setColor(const QColor &color);
     void setIntensity(float intensity);
 
 protected :
@@ -81,9 +81,9 @@ protected :
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void typeChanged();
-    void colorChanged();
-    void intensityChanged();
+    void typeChanged(Type type);
+    void colorChanged(const QColor &color);
+    void intensityChanged(float intensity);
 
 private:
     Q_DECLARE_PRIVATE(QLight)

@@ -70,6 +70,11 @@ public:
 
     void init();
 
+    void handleAmbientChanged(const QVariant &var);
+    void handleDiffuseChanged(const QVariant &var);
+    void handleSpecularChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
+
     QEffect *m_phongEffect;
     QParameter *m_ambientParameter;
     QParameter *m_diffuseParameter;

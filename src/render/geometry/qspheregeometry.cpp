@@ -354,7 +354,7 @@ void QSphereGeometry::setRings(int rings)
         d->m_rings = rings;
         updateVertices();
         updateIndices();
-        emit ringsChanged();
+        emit ringsChanged(rings);
     }
 }
 
@@ -365,7 +365,7 @@ void QSphereGeometry::setSlices(int slices)
         d->m_slices = slices;
         updateVertices();
         updateIndices();
-        emit slicesChanged();
+        emit slicesChanged(slices);
     }
 }
 
@@ -375,7 +375,7 @@ void QSphereGeometry::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         updateVertices();
-        emit radiusChanged();
+        emit radiusChanged(radius);
     }
 }
 
@@ -388,7 +388,7 @@ void QSphereGeometry::setGenerateTangents(bool gen)
         d->m_generateTangents = gen;
         if (d->m_generateTangents)
             addAttribute(d->m_tangentAttribute);
-        emit generateTangentsChanged();
+        emit generateTangentsChanged(gen);
     }
 }
 

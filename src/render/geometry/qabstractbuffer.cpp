@@ -80,7 +80,7 @@ void QAbstractBuffer::setData(const QByteArray &bytes)
     if (bytes != d->m_data) {
         d->m_data = bytes;
         Qt3DCore::QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
-        emit dataChanged();
+        emit dataChanged(bytes);
     }
 }
 

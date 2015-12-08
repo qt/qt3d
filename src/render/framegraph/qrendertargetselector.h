@@ -57,14 +57,16 @@ public:
     explicit QRenderTargetSelector(Qt3DCore::QNode *parent = 0);
     ~QRenderTargetSelector();
 
-    void setTarget(QRenderTarget *target);
     QRenderTarget *target() const;
 
     void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers);
     QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
 
+public Q_SLOTS:
+    void setTarget(QRenderTarget *target);
+
 Q_SIGNALS:
-    void targetChanged();
+    void targetChanged(QRenderTarget *target);
 
 protected:
     QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);

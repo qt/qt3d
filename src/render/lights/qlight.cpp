@@ -106,7 +106,7 @@ void QLight::setType(Type type)
     Q_D(QLight);
     if (d->m_type != type) {
         d->m_type = type;
-        emit typeChanged();
+        emit typeChanged(type);
     }
 }
 
@@ -126,7 +126,7 @@ void QLight::setColor(const QColor &color)
     Q_D(QLight);
     if (d->m_color != color) {
         d->m_color = color;
-        emit colorChanged();
+        emit colorChanged(color);
     }
 }
 
@@ -146,7 +146,7 @@ void QLight::setIntensity(float intensity)
     Q_D(QLight);
     if (d->m_intensity != intensity) {
         d->m_intensity = intensity;
-        emit intensityChanged();
+        emit intensityChanged(intensity);
     }
 }
 

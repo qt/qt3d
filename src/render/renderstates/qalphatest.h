@@ -69,14 +69,15 @@ public:
     ~QAlphaTest();
 
     AlphaFunc func() const;
-    void setFunc(AlphaFunc func);
-
     float clamp() const;
+
+public Q_SLOTS:
+    void setFunc(AlphaFunc func);
     void setClamp(float clamp);
 
 Q_SIGNALS:
-    void funcChanged();
-    void clampChanged();
+    void funcChanged(AlphaFunc func);
+    void clampChanged(float clamp);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

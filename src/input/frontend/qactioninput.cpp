@@ -80,7 +80,7 @@ void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged();
+        emit sourceDeviceChanged(sourceDevice);
     }
 }
 
@@ -95,7 +95,7 @@ void QActionInput::setKeys(const QVariantList &keys)
     Q_D(QActionInput);
     if (d->m_keys != keys) {
         d->m_keys = keys;
-        emit keysChanged();
+        emit keysChanged(keys);
     }
 }
 

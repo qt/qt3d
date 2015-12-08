@@ -58,14 +58,15 @@ public:
     ~QViewport();
 
     QRectF rect() const;
-    void setRect(const QRectF& rect);
-
     QColor clearColor() const;
+
+public Q_SLOTS:
+    void setRect(const QRectF& rect);
     void setClearColor(const QColor &color);
 
 Q_SIGNALS:
-    void rectChanged();
-    void clearColorChanged();
+    void rectChanged(const QRectF& rect);
+    void clearColorChanged(const QColor &clearColor);
 
 protected:
     QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = 0);

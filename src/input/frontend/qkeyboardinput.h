@@ -57,14 +57,16 @@ public:
     explicit QKeyboardInput(QNode *parent = 0);
     ~QKeyboardInput();
 
-    void setController(QKeyboardController *controller);
     QKeyboardController *controller() const;
     bool focus() const;
+
+public Q_SLOTS:
+    void setController(QKeyboardController *controller);
     void setFocus(bool focus);
 
 Q_SIGNALS:
-    void controllerChanged();
-    void focusChanged();
+    void controllerChanged(QKeyboardController *controller);
+    void focusChanged(bool focus);
 
     void digit0Pressed(Qt3DInput::Q3DKeyEvent *event);
     void digit1Pressed(Qt3DInput::Q3DKeyEvent *event);

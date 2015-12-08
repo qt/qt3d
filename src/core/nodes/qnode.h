@@ -85,11 +85,13 @@ public:
     bool notificationsBlocked() const;
     bool blockNotifications(bool block);
 
-    virtual void setParent(QNode *parent);
     QNodeList childrenNodes() const;
 
-    void setEnabled(bool isEnabled);
     bool isEnabled() const;
+
+public Q_SLOTS:
+    virtual void setParent(QNode *parent);
+    void setEnabled(bool isEnabled);
 
 protected:
     // Clone should only be made in the main thread
@@ -117,7 +119,7 @@ private:
     friend class QScene;
 
 Q_SIGNALS:
-    void parentChanged();
+    void parentChanged(QObject *parent);
     void enabledChanged(bool enabled);
 };
 

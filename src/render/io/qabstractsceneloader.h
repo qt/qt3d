@@ -66,14 +66,15 @@ public:
     Q_ENUM(Status)
 
     QUrl source() const;
-    void setSource(const QUrl &arg);
-
     Status status() const;
+
+public Q_SLOTS:
+    void setSource(const QUrl &arg);
     void setStatus(Status status);
 
 Q_SIGNALS:
-    void sourceChanged();
-    void statusChanged();
+    void sourceChanged(const QUrl &source);
+    void statusChanged(Status status);
 
 protected:
     QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = 0);

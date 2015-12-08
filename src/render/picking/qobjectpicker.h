@@ -59,11 +59,13 @@ public:
     explicit QObjectPicker(QNode *parent = Q_NULLPTR);
     ~QObjectPicker();
 
-    void setHoverEnabled(bool hoverEnabled);
     bool hoverEnabled() const;
 
     bool containsMouse() const;
     bool isPressed() const;
+
+public Q_SLOTS:
+    void setHoverEnabled(bool hoverEnabled);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *event);
@@ -71,9 +73,9 @@ Q_SIGNALS:
     void clicked(Qt3DRender::QPickEvent *event);
     void entered();
     void exited();
-    void hoverEnabledChanged();
-    void pressedChanged();
-    void containsMouseChanged();
+    void hoverEnabledChanged(bool hoverEnabled);
+    void pressedChanged(bool pressed);
+    void containsMouseChanged(bool containsMouse);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

@@ -62,10 +62,12 @@ public:
     Q_ENUM(SortType)
 
     SortType sort() const;
+
+public Q_SLOTS:
     void setSort(SortType sort);
 
 Q_SIGNALS:
-    void sortChanged();
+    void sortChanged(SortType sort);
 
 protected:
     QSortCriterion(QSortCriterionPrivate &dd, Qt3DCore::QNode *parent = 0);

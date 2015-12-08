@@ -57,22 +57,24 @@ class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 public:
     explicit QParameter(Qt3DCore::QNode *parent = 0);
     ~QParameter();
-    QParameter(const QString& name, const QVariant& value, Qt3DCore::QNode* parent = 0);
+    QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = 0);
     QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = 0);
 
-    void setName(const QString &name);
     QString name() const;
 
     /**
      * @brief setDefaultValue - for non-texture uniform parameters
      * @param dv
      */
-    void setValue(const QVariant& dv);
     QVariant value() const;
 
+public Q_SLOTS:
+    void setName(const QString &name);
+    void setValue(const QVariant &dv);
+
 Q_SIGNALS:
-    void valueChanged();
-    void nameChanged();
+    void valueChanged(const QVariant &value);
+    void nameChanged(const QString &name);
 
 protected:
     QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = 0);

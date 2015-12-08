@@ -102,7 +102,7 @@ private:
         Q_Q(QCameraLens);
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged();
+        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
     }
 
     inline void updateOrthographicProjection()
@@ -110,7 +110,7 @@ private:
         Q_Q(QCameraLens);
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged();
+        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
     }
 
     inline void updateFrustumProjection()
@@ -118,7 +118,7 @@ private:
         Q_Q(QCameraLens);
         m_projectionMatrix.setToIdentity();
         m_projectionMatrix.frustum(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged();
+        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
     }
 };
 

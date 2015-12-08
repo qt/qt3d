@@ -74,17 +74,18 @@ public:
     int layer() const;
     QAbstractTextureProvider::CubeMapFace cubeMapFace() const;
 
+    void update();
+    virtual QTextureDataFunctorPtr dataFunctor() const = 0;
+
+public Q_SLOTS:
     void setMipmapLevel(int level);
     void setLayer(int layer);
     void setCubeMapFace(QAbstractTextureProvider::CubeMapFace face);
 
-    void update();
-    virtual QTextureDataFunctorPtr dataFunctor() const = 0;
-
 Q_SIGNALS:
-    void mipmapLevelChanged();
-    void layerChanged();
-    void cubeMapFaceChanged();
+    void mipmapLevelChanged(int mipmapLevel);
+    void layerChanged(int layer);
+    void cubeMapFaceChanged(QAbstractTextureProvider::CubeMapFace cubeMapFace);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

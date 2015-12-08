@@ -56,11 +56,13 @@ public:
     explicit QBoundingVolumeDebug(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QBoundingVolumeDebug();
 
-    void setRecursive(bool recursive);
     bool recursive() const;
 
+public Q_SLOTS:
+    void setRecursive(bool recursive);
+
 Q_SIGNALS:
-    void recursiveChanged();
+    void recursiveChanged(bool recursive);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

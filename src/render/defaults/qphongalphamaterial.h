@@ -65,6 +65,7 @@ public:
     float shininess() const;
     float alpha() const;
 
+public Q_SLOTS:
     void setAmbient(const QColor &ambient);
     void setDiffuse(const QColor &diffuse);
     void setSpecular(const QColor &specular);
@@ -72,11 +73,11 @@ public:
     void setAlpha(float alpha);
 
 Q_SIGNALS:
-    void ambientChanged();
-    void diffuseChanged();
-    void specularChanged();
-    void shininessChanged();
-    void alphaChanged();
+    void ambientChanged(const QColor &ambient);
+    void diffuseChanged(const QColor &diffuse);
+    void specularChanged(const QColor &specular);
+    void shininessChanged(float shininess);
+    void alphaChanged(float alpha);
 
 private:
     Q_DECLARE_PRIVATE(QPhongAlphaMaterial)

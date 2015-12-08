@@ -58,21 +58,22 @@ public:
     explicit QSphereMesh(Qt3DCore::QNode *parent = 0);
     ~QSphereMesh();
 
-    void setRings(int rings);
-    void setSlices(int slices);
-    void setRadius(float radius);
-    void setGenerateTangents(bool gen);
-
     int rings() const;
     int slices() const;
     float radius() const;
     bool generateTangents() const;
 
+public Q_SLOTS:
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setGenerateTangents(bool gen);
+
 Q_SIGNALS:
-    void radiusChanged();
-    void ringsChanged();
-    void slicesChanged();
-    void generateTangentsChanged();
+    void radiusChanged(float radius);
+    void ringsChanged(int rings);
+    void slicesChanged(int slices);
+    void generateTangentsChanged(bool generateTangents);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

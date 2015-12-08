@@ -56,21 +56,22 @@ public:
     explicit QCylinderMesh(Qt3DCore::QNode *parent = 0);
     ~QCylinderMesh();
 
-    void setRings(int rings);
-    void setSlices(int slices);
-    void setRadius(float radius);
-    void setLength(float length);
-
     int rings() const;
     int slices() const;
     float radius() const;
     float length() const;
 
+public Q_SLOTS:
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setLength(float length);
+
 Q_SIGNALS:
-    void ringsChanged();
-    void slicesChanged();
-    void radiusChanged();
-    void lengthChanged();
+    void radiusChanged(float radius);
+    void ringsChanged(int rings);
+    void slicesChanged(int slices);
+    void lengthChanged(float length);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

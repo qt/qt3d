@@ -66,6 +66,7 @@ public:
     float shininess() const;
     float textureScale() const;
 
+public Q_SLOTS:
     void setAmbient(const QColor &ambient);
     void setDiffuse(QAbstractTextureProvider *diffuse);
     void setSpecular(QAbstractTextureProvider *specular);
@@ -73,11 +74,11 @@ public:
     void setTextureScale(float textureScale);
 
 Q_SIGNALS:
-    void ambientChanged();
-    void diffuseChanged();
-    void specularChanged();
-    void shininessChanged();
-    void textureScaleChanged();
+    void ambientChanged(const QColor &ambient);
+    void diffuseChanged(QAbstractTextureProvider *diffuse);
+    void specularChanged(QAbstractTextureProvider *specular);
+    void shininessChanged(float shininess);
+    void textureScaleChanged(float textureScale);
 
 private:
     Q_DECLARE_PRIVATE(QDiffuseSpecularMapMaterial)

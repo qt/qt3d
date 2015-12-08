@@ -71,6 +71,12 @@ public:
 
     void init();
 
+    void handleAmbientChanged(const QVariant &var);
+    void handleDiffuseChanged(const QVariant &var);
+    void handleSpecularChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
+    void handleTextureScaleChanged(const QVariant &var);
+
     QEffect *m_diffuseSpecularMapEffect;
     QAbstractTextureProvider *m_diffuseTexture;
     QAbstractTextureProvider *m_specularTexture;

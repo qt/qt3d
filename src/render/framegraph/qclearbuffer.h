@@ -65,11 +65,13 @@ public:
     };
     Q_ENUM(BufferType)
 
-    void setBuffers(BufferType buffers);
     BufferType buffers() const;
 
+public Q_SLOTS:
+    void setBuffers(BufferType buffers);
+
 Q_SIGNALS:
-    void buffersChanged();
+    void buffersChanged(BufferType buffers);
 
 protected:
     QClearBuffer(QClearBufferPrivate &dd, Qt3DCore::QNode *parent = 0);

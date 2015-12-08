@@ -54,7 +54,6 @@ public:
     explicit QPointLight(Qt3DCore::QNode *parent = 0);
 
     QVector3D attenuation() const;
-    void setAttenuation(const QVector3D &value);
 
     float constantAttenuation() const;
     void setConstantAttenuation(float value);
@@ -65,8 +64,11 @@ public:
     float quadraticAttenuation() const;
     void setQuadraticAttenuation(float value);
 
+public Q_SLOTS:
+    void setAttenuation(const QVector3D &value);
+
 Q_SIGNALS:
-    void attenuationChanged();
+    void attenuationChanged(const QVector3D &attenuation);
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)

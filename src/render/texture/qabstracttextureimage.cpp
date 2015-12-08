@@ -166,7 +166,7 @@ void QAbstractTextureImage::setMipmapLevel(int level)
     Q_D(QAbstractTextureImage);
     if (level != d->m_mipmapLevel) {
         d->m_mipmapLevel = level;
-        emit mipmapLevelChanged();
+        emit mipmapLevelChanged(level);
     }
 }
 
@@ -175,7 +175,7 @@ void QAbstractTextureImage::setLayer(int layer)
     Q_D(QAbstractTextureImage);
     if (layer != d->m_layer) {
         d->m_layer = layer;
-        emit layerChanged();
+        emit layerChanged(layer);
     }
 }
 
@@ -184,7 +184,7 @@ void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace
     Q_D(QAbstractTextureImage);
     if (face != d->m_face) {
         d->m_face = face;
-        emit cubeMapFaceChanged();
+        emit cubeMapFaceChanged(face);
     }
 }
 

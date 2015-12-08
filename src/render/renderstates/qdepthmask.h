@@ -55,10 +55,12 @@ public:
     ~QDepthMask();
 
     bool mask() const;
+
+public Q_SLOTS:
     void setMask(bool mask);
 
 Q_SIGNALS:
-    void maskChanged();
+    void maskChanged(bool mask);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

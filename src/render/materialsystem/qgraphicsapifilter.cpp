@@ -225,7 +225,7 @@ void QGraphicsApiFilter::setApi(QGraphicsApiFilter::Api api)
     Q_D(QGraphicsApiFilter);
     if (d->m_api != api) {
         d->m_api = api;
-        emit apiChanged();
+        emit apiChanged(api);
         emit graphicsApiFilterChanged();
     }
 }
@@ -235,7 +235,7 @@ void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::Profile profile)
     Q_D(QGraphicsApiFilter);
     if (d->m_profile != profile) {
         d->m_profile = profile;
-        emit profileChanged();
+        emit profileChanged(profile);
         emit graphicsApiFilterChanged();
     }
 }
@@ -245,7 +245,7 @@ void QGraphicsApiFilter::setMinorVersion(int minorVersion)
     Q_D(QGraphicsApiFilter);
     if (minorVersion != d->m_minor) {
         d->m_minor = minorVersion;
-        emit minorVersionChanged();
+        emit minorVersionChanged(minorVersion);
         emit graphicsApiFilterChanged();
     }
 }
@@ -255,7 +255,7 @@ void QGraphicsApiFilter::setMajorVersion(int majorVersion)
     Q_D(QGraphicsApiFilter);
     if (d->m_major != majorVersion) {
         d->m_major = majorVersion;
-        emit majorVersionChanged();
+        emit majorVersionChanged(majorVersion);
         emit graphicsApiFilterChanged();
     }
 }
@@ -265,7 +265,7 @@ void QGraphicsApiFilter::setExtensions(const QStringList &extensions)
     Q_D(QGraphicsApiFilter);
     if (d->m_extensions != extensions) {
         d->m_extensions = extensions;
-        emit extensionsChanged();
+        emit extensionsChanged(extensions);
         emit graphicsApiFilterChanged();
     }
 }
@@ -275,7 +275,7 @@ void QGraphicsApiFilter::setVendor(const QString &vendor)
     Q_D(QGraphicsApiFilter);
     if (d->m_vendor != vendor) {
         d->m_vendor = vendor;
-        emit vendorChanged();
+        emit vendorChanged(vendor);
         emit graphicsApiFilterChanged();
     }
 }

@@ -68,17 +68,17 @@ QCameraPrivate::QCameraPrivate()
 QCamera::QCamera(QNode *parent)
     : QEntity(*new QCameraPrivate, parent)
 {
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionTypeChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged()), this, SIGNAL(farPlaneChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged()), this, SIGNAL(fieldOfViewChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(aspectRatioChanged()), this, SIGNAL(aspectRatioChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(leftChanged()), this, SIGNAL(leftChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(rightChanged()), this, SIGNAL(rightChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged()), this, SIGNAL(bottomChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(topChanged()), this, SIGNAL(topChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)), this, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)));
+    QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged(float)), this, SIGNAL(nearPlaneChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged(float)), this, SIGNAL(farPlaneChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged(float)), this, SIGNAL(fieldOfViewChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(aspectRatioChanged(float)), this, SIGNAL(aspectRatioChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(leftChanged(float)), this, SIGNAL(leftChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(rightChanged(float)), this, SIGNAL(rightChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged(const QMatrix4x4 &)), this, SIGNAL(viewMatrixChanged(const QMatrix4x4 &)));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -92,17 +92,17 @@ QCamera::~QCamera()
 QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
     : QEntity(dd, parent)
 {
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged()), this, SIGNAL(projectionTypeChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged()), this, SIGNAL(nearPlaneChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged()), this, SIGNAL(farPlaneChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged()), this, SIGNAL(fieldOfViewChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(aspectRatioChanged()), this, SIGNAL(aspectRatioChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(leftChanged()), this, SIGNAL(leftChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(rightChanged()), this, SIGNAL(rightChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged()), this, SIGNAL(bottomChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(topChanged()), this, SIGNAL(topChanged()));
-    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged()), this, SIGNAL(projectionMatrixChanged()));
-    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged()), this, SIGNAL(viewMatrixChanged()));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)), this, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)));
+    QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged(float)), this, SIGNAL(nearPlaneChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(farPlaneChanged(float)), this, SIGNAL(farPlaneChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(fieldOfViewChanged(float)), this, SIGNAL(fieldOfViewChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(aspectRatioChanged(float)), this, SIGNAL(aspectRatioChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(leftChanged(float)), this, SIGNAL(leftChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(rightChanged(float)), this, SIGNAL(rightChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(bottomChanged(float)), this, SIGNAL(bottomChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(topChanged(float)), this, SIGNAL(topChanged(float)));
+    QObject::connect(d_func()->m_lens, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)), this, SIGNAL(projectionMatrixChanged(const QMatrix4x4 &)));
+    QObject::connect(d_func()->m_transform, SIGNAL(matrixChanged(const QMatrix4x4 &)), this, SIGNAL(viewMatrixChanged(const QMatrix4x4 &)));
     addComponent(d_func()->m_lens);
     addComponent(d_func()->m_transform);
 }
@@ -411,8 +411,8 @@ void QCamera::setPosition(const QVector3D &position)
     d->m_position = position;
     d->m_cameraToCenter = d->m_viewCenter - position;
     d->m_viewMatrixDirty = true;
-    emit positionChanged();
-    emit viewVectorChanged();
+    emit positionChanged(position);
+    emit viewVectorChanged(d->m_cameraToCenter);
     d->updateViewMatrix();
 }
 
@@ -430,7 +430,7 @@ void QCamera::setUpVector(const QVector3D &upVector)
     Q_D(QCamera);
     d->m_upVector = upVector;
     d->m_viewMatrixDirty = true;
-    emit upVectorChanged();
+    emit upVectorChanged(upVector);
     d->updateViewMatrix();
 }
 
@@ -449,8 +449,8 @@ void QCamera::setViewCenter(const QVector3D &viewCenter)
     d->m_viewCenter = viewCenter;
     d->m_cameraToCenter = viewCenter - d->m_position;
     d->m_viewMatrixDirty = true;
-    emit viewCenterChanged();
-    emit viewVectorChanged();
+    emit viewCenterChanged(viewCenter);
+    emit viewVectorChanged(d->m_cameraToCenter);
     d->updateViewMatrix();
 }
 

@@ -54,15 +54,17 @@ public:
     explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxis();
 
-    void setName(const QString &name);
     QString name() const;
 
     void addInput(QAxisInput *input);
     void removeInput(QAxisInput *input);
     QVector<QAxisInput *> inputs() const;
 
+public Q_SLOTS:
+    void setName(const QString &name);
+
 Q_SIGNALS:
-    void nameChanged();
+    void nameChanged(const QString &name);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

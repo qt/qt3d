@@ -66,10 +66,12 @@ public:
     ~QBlendEquation();
 
     BlendMode mode() const;
+
+public Q_SLOTS:
     void setMode(BlendMode mode);
 
 Q_SIGNALS:
-    void modeChanged();
+    void modeChanged(BlendMode mode);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

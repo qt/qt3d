@@ -206,7 +206,7 @@ void QKeyboardInput::setController(QKeyboardController *controller)
             controller->setParent(this);
 
         d->m_controller = controller;
-        emit controllerChanged();
+        emit controllerChanged(controller);
     }
 }
 
@@ -241,7 +241,7 @@ void QKeyboardInput::setFocus(bool focus)
     Q_D(QKeyboardInput);
     if (d->m_focus != focus) {
         d->m_focus = focus;
-        emit focusChanged();
+        emit focusChanged(focus);
     }
 }
 

@@ -110,7 +110,7 @@ void QPointLight::setAttenuation(const QVector3D &value)
     Q_D(QPointLight);
     if (d->m_attenuation != value) {
         d->m_attenuation = value;
-        emit attenuationChanged();
+        emit attenuationChanged(value);
     }
 }
 
@@ -125,7 +125,7 @@ void QPointLight::setConstantAttenuation(float value)
     Q_D(QPointLight);
     if (d->m_attenuation.x() != value) {
         d->m_attenuation.setX(value);
-        emit attenuationChanged();
+        emit attenuationChanged(d->m_attenuation);
     }
 }
 
@@ -140,7 +140,7 @@ void QPointLight::setLinearAttenuation(float value)
     Q_D(QPointLight);
     if (d->m_attenuation.y() != value) {
         d->m_attenuation.setY(value);
-        emit attenuationChanged();
+        emit attenuationChanged(d->m_attenuation);
     }
 }
 
@@ -155,7 +155,7 @@ void QPointLight::setQuadraticAttenuation(float value)
     Q_D(QPointLight);
     if (d->m_attenuation.z() != value) {
         d->m_attenuation.setZ(value);
-        emit attenuationChanged();
+        emit attenuationChanged(d->m_attenuation);
     }
 }
 

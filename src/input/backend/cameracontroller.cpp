@@ -103,7 +103,7 @@ void CameraController::setLinearSpeed( float speed )
     if ( qFuzzyCompare( m_linearSpeed, speed ) )
         return;
     m_linearSpeed = speed;
-    emit linearSpeedChanged();
+    emit linearSpeedChanged(speed);
 }
 
 float CameraController::linearSpeed() const
@@ -121,7 +121,7 @@ void CameraController::setOrbitRate( float rate )
     if ( qFuzzyCompare( m_orbitRate, rate ) )
         return;
     m_orbitRate = rate;
-    emit orbitRateChanged();
+    emit orbitRateChanged(rate);
 }
 
 float CameraController::lookRate() const
@@ -134,7 +134,7 @@ void CameraController::setLookRate( float rate )
     if ( qFuzzyCompare( m_lookRate, rate ) )
         return;
     m_lookRate = rate;
-    emit lookRateChanged();
+    emit lookRateChanged(rate);
 }
 
 void CameraController::update(double dt)
@@ -304,14 +304,14 @@ bool CameraController::isMultisampleEnabled() const
 void CameraController::toggleMSAA()
 {
     m_multisampleEnabled = !m_multisampleEnabled;
-    emit multisampleEnabledChanged();
+    emit multisampleEnabledChanged(m_multisampleEnabled);
 }
 
 void CameraController::setControlMode(ControlMode controlMode)
 {
     if (controlMode != m_controlMode) {
         m_controlMode = controlMode;
-        emit controlModeChanged();
+        emit controlModeChanged(controlMode);
     }
 }
 
@@ -324,7 +324,7 @@ void CameraController::setFirstPersonUpVector(const QVector3D &up)
 {
     if (m_firstPersonUp != up) {
         m_firstPersonUp = up;
-        emit firstPersonUpVectorChanged();
+        emit firstPersonUpVectorChanged(up);
     }
 }
 

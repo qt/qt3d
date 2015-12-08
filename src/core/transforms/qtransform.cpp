@@ -100,12 +100,12 @@ void QTransform::setMatrix(const QMatrix4x4 &m)
         d->m_scale = s;
         d->m_rotation = r;
         d->m_translation = t;
-        emit scale3DChanged();
-        emit rotationChanged();
-        emit translationChanged();
+        emit scale3DChanged(s);
+        emit rotationChanged(r);
+        emit translationChanged(t);
 
         const bool wasBlocked = blockNotifications(true);
-        emit matrixChanged();
+        emit matrixChanged(m);
         blockNotifications(wasBlocked);
     }
 }
@@ -126,7 +126,7 @@ void QTransform::setScale3D(const QVector3D &scale)
     if (scale != d->m_scale) {
         d->m_scale = scale;
         d->m_matrixDirty = true;
-        emit scale3DChanged();
+        emit scale3DChanged(scale);
     }
 }
 
@@ -142,7 +142,7 @@ void QTransform::setScale(float scale)
     if (scale != d->m_scale.x()) {
         setScale3D(QVector3D(scale, scale, scale));
         const bool wasBlocked = blockNotifications(true);
-        emit scaleChanged();
+        emit scaleChanged(scale);
         blockNotifications(wasBlocked);
     }
 }
@@ -159,7 +159,7 @@ void QTransform::setRotation(const QQuaternion &rotation)
     if (rotation != d->m_rotation) {
         d->m_rotation = rotation;
         d->m_matrixDirty = true;
-        emit rotationChanged();
+        emit rotationChanged(rotation);
     }
 }
 
@@ -175,7 +175,7 @@ void QTransform::setTranslation(const QVector3D &translation)
     if (translation != d->m_translation) {
         d->m_translation = translation;
         d->m_matrixDirty = true;
-        emit translationChanged();
+        emit translationChanged(translation);
     }
 }
 

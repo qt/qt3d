@@ -94,31 +94,28 @@ public:
     explicit QRenderAttachment(Qt3DCore::QNode *parent = 0);
     ~QRenderAttachment();
 
-    void setType(RenderAttachmentType type);
     RenderAttachmentType type() const;
-
-    void setTexture(QAbstractTextureProvider *texture);
     QAbstractTextureProvider *texture() const;
-
-    void setMipLevel(int level);
     int mipLevel() const;
-
-    void setLayer(int layer);
     int layer() const;
-
-    void setFace(CubeMapFace face);
     CubeMapFace face() const;
-
-    void setName(const QString &name);
     QString name() const;
 
+public Q_SLOTS:
+    void setType(RenderAttachmentType type);
+    void setTexture(QAbstractTextureProvider *texture);
+    void setMipLevel(int level);
+    void setLayer(int layer);
+    void setFace(CubeMapFace face);
+    void setName(const QString &name);
+
 Q_SIGNALS:
-    void typeChanged();
-    void textureChanged();
-    void mipLevelChanged();
-    void layerChanged();
-    void faceChanged();
-    void nameChanged();
+    void typeChanged(RenderAttachmentType type);
+    void textureChanged(QAbstractTextureProvider *texture);
+    void mipLevelChanged(int mipLevel);
+    void layerChanged(int layer);
+    void faceChanged(CubeMapFace face);
+    void nameChanged(const QString &name);
 
 protected:
     QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = 0);

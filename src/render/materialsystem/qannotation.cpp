@@ -98,7 +98,7 @@ void QAnnotation::setValue(const QVariant &value)
     Q_D(QAnnotation);
     if (value != d->m_value) {
         d->m_value = value;
-        emit valueChanged();
+        emit valueChanged(value);
     }
 }
 
@@ -107,7 +107,7 @@ void QAnnotation::setName(const QString &name)
     Q_D(QAnnotation);
     if (name != d->m_name) {
         d->m_name = name;
-        emit nameChanged();
+        emit nameChanged(name);
     }
 }
 

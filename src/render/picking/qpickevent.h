@@ -55,10 +55,12 @@ public:
     ~QPickEvent();
 
     bool isAccepted() const;
+
+public Q_SLOTS:
     void setAccepted(bool accepted);
 
 Q_SIGNALS:
-    void acceptedChanged();
+    void acceptedChanged(bool accepted);
 
 private:
     Q_DECLARE_PRIVATE(QPickEvent)

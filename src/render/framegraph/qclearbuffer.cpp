@@ -87,7 +87,7 @@ void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)
     Q_D(QClearBuffer);
     if (d->m_buffersType != buffers) {
         d->m_buffersType = buffers;
-        emit buffersChanged();
+        emit buffersChanged(buffers);
     }
 }
 

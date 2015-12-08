@@ -120,7 +120,7 @@ void QRenderPass::setShaderProgram(QShaderProgram *shaderProgram)
         }
 
         d->m_shader = shaderProgram;
-        emit shaderProgramChanged();
+        emit shaderProgramChanged(shaderProgram);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that

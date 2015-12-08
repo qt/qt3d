@@ -56,15 +56,16 @@ public:
     explicit QAnnotation(Qt3DCore::QNode *parent = 0);
     ~QAnnotation();
 
-    void setValue(const QVariant &value);
-    void setName(const QString &customType);
-
     QVariant value() const;
     QString name() const;
 
+public Q_SLOTS:
+    void setValue(const QVariant &value);
+    void setName(const QString &customType);
+
 Q_SIGNALS:
-    void nameChanged();
-    void valueChanged();
+    void nameChanged(const QString &name);
+    void valueChanged(const QVariant &value);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

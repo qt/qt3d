@@ -84,22 +84,21 @@ public:
     ~QBlendState();
 
     Blending srcRGB() const;
-    void setSrcRGB(Blending srcRGB);
-
     Blending dstRGB() const;
-    void setDstRGB(Blending dstRGB);
-
     Blending srcAlpha() const;
-    void setSrcAlpha(Blending srcAlpha);
-
     Blending dstAlpha() const;
+
+public Q_SLOTS:
+    void setSrcRGB(Blending srcRGB);
+    void setDstRGB(Blending dstRGB);
+    void setSrcAlpha(Blending srcAlpha);
     void setDstAlpha(Blending dstAlpha);
 
 Q_SIGNALS:
-    void srcRGBChanged();
-    void srcAlphaChanged();
-    void dstRGBChanged();
-    void dstAlphaChanged();
+    void srcRGBChanged(Blending srcRGB);
+    void srcAlphaChanged(Blending srcAlpha);
+    void dstRGBChanged(Blending dstRGB);
+    void dstAlphaChanged(Blending dstAlpha);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

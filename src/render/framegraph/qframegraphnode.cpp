@@ -130,7 +130,7 @@ void QFrameGraphNode::setEnabled(bool enabled)
     Q_D(QFrameGraphNode);
     if (d->m_enabled != enabled) {
         d->m_enabled = enabled;
-        emit enabledChanged();
+        emit enabledChanged(enabled);
     }
 }
 

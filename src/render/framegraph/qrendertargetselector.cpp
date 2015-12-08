@@ -86,7 +86,7 @@ void QRenderTargetSelector::setTarget(QRenderTarget *target)
         // For inline declaration cases
         if (target != Q_NULLPTR && !target->parent())
             target->setParent(this);
-        emit targetChanged();
+        emit targetChanged(target);
     }
 }
 

@@ -291,7 +291,7 @@ void QKeyboardController::setActiveInput(QKeyboardInput *activeInput)
     Q_D(QKeyboardController);
     if (d->m_activeInput != activeInput) {
         d->m_activeInput = activeInput;
-        emit activeInputChanged();
+        emit activeInputChanged(activeInput);
     }
 }
 
