@@ -44,7 +44,8 @@ SUBDIRS += \
     instanced-arrays-qml \
     picking-qml \
     transforms-qml \
-    lights
+    lights \
+    compute-particles
 
 # qmake seems to break in some CI configurations, disable this for now
 #SUBDIRS += qgltf
