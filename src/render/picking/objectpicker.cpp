@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "objectpicker_p.h"
+#include "qpickevent.h"
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -105,27 +106,30 @@ bool ObjectPicker::hoverEnabled() const
     return m_hoverEnabled;
 }
 
-void ObjectPicker::onClicked()
+void ObjectPicker::onClicked(QPickEventPtr event)
 {
     Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
     e->setPropertyName("clicked");
     e->setTargetNode(peerUuid());
+    e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
 
-void ObjectPicker::onPressed()
+void ObjectPicker::onPressed(QPickEventPtr event)
 {
     Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
     e->setPropertyName("pressed");
     e->setTargetNode(peerUuid());
+    e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
 
-void ObjectPicker::onReleased()
+void ObjectPicker::onReleased(QPickEventPtr event)
 {
     Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
     e->setPropertyName("released");
     e->setTargetNode(peerUuid());
+    e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
 }
 

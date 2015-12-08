@@ -103,6 +103,7 @@
 #include <Qt3DRender/qconegeometry.h>
 #include <Qt3DRender/qcylindergeometry.h>
 #include <Qt3DRender/qobjectpicker.h>
+#include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 #include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
@@ -240,6 +241,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Picking
     qmlRegisterType<Qt3DRender::QObjectPicker>(uri, 2, 0, "ObjectPicker");
+    qmlRegisterUncreatableType<Qt3DRender::QPickEvent>(uri, 2, 0, "PickEvent", QStringLiteral("Events cannot be created"));
 
     // Meshes
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");

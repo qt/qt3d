@@ -149,8 +149,12 @@ private Q_SLOTS:
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
         // WHEN
+        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
+        QVariant v;
+        v.setValue<Qt3DRender::QPickEventPtr>(event);
         Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
         e->setPropertyName("pressed");
+        e->setValue(v);
         child11.picker->sceneChangeEvent(e);
 
         // THEN
@@ -193,8 +197,12 @@ private Q_SLOTS:
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
         // WHEN
+        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
+        QVariant v;
+        v.setValue<Qt3DRender::QPickEventPtr>(event);
         Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
         e->setPropertyName("pressed");
+        e->setValue(v);
         child11.picker->sceneChangeEvent(e);
         e->setPropertyName("released");
         child11.picker->sceneChangeEvent(e);
@@ -233,8 +241,12 @@ private Q_SLOTS:
         PickableEntity child11(QVector3D(), 5.0f, &child1);
 
         // WHEN
+        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
+        QVariant v;
+        v.setValue<Qt3DRender::QPickEventPtr>(event);
         Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, child11.id()));
         e->setPropertyName("clicked");
+        e->setValue(v);
         child11.picker->sceneChangeEvent(e);
 
         // THEN

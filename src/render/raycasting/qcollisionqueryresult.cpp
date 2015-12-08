@@ -48,13 +48,13 @@ QCollisionQueryResultPrivate::QCollisionQueryResultPrivate()
 QCollisionQueryResultPrivate::QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy)
     : QSharedData(copy)
     , m_handle(copy.m_handle)
-    , m_entitiesHit(copy.m_entitiesHit)
+    , m_hits(copy.m_hits)
 {
 }
 
-void QCollisionQueryResultPrivate::addEntityHit(const Qt3DCore::QNodeId &entity)
+void QCollisionQueryResultPrivate::addEntityHit(const Qt3DCore::QNodeId &entity, const QVector3D& intersection, float distance)
 {
-    m_entitiesHit.append(entity);
+    m_hits.append(QCollisionQueryResult::Hit(entity, intersection, distance));
 }
 
 void QCollisionQueryResultPrivate::setHandle(const QQueryHandle &handle)
@@ -82,10 +82,19 @@ QCollisionQueryResult &QCollisionQueryResult::operator=(const QCollisionQueryRes
     return *this;
 }
 
+QVector<QCollisionQueryResult::Hit> QCollisionQueryResult::hits() const
+{
+    Q_D(const QCollisionQueryResult);
+    return d->m_hits;
+}
+
 QVector<Qt3DCore::QNodeId> QCollisionQueryResult::entitiesHit() const
 {
     Q_D(const QCollisionQueryResult);
-    return d->m_entitiesHit;
+    QVector<Qt3DCore::QNodeId> result;
+    Q_FOREACH (const Hit& hit, d->m_hits)
+        result << hit.m_entityId;
+    return result;
 }
 
 /*!

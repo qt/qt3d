@@ -51,6 +51,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <QVector>
+#include <QVector3D>
 #include <QSharedData>
 
 QT_BEGIN_NAMESPACE
@@ -58,23 +59,19 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 typedef int QQueryHandle;
-
-class QCollisionQueryResultPrivate : public QSharedData
-{
-public:
-    explicit QCollisionQueryResultPrivate();
-    explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
-
-    void setHandle(const QQueryHandle &handle);
-    void addEntityHit(const Qt3DCore::QNodeId &entity);
-
-    QQueryHandle m_handle;
-    QVector<Qt3DCore::QNodeId> m_entitiesHit;
-};
+class QCollisionQueryResultPrivate;
 
 class QT3DRENDERSHARED_EXPORT QCollisionQueryResult
 {
 public:
+    struct Hit {
+        Hit() : m_distance(-1.f) { }
+        Hit(const Qt3DCore::QNodeId &entity, const QVector3D &intersection, float distance) : m_entityId(entity), m_intersection(intersection), m_distance(distance) { }
+        Qt3DCore::QNodeId m_entityId;
+        QVector3D m_intersection;
+        float m_distance;
+    };
+
     QCollisionQueryResult();
     QCollisionQueryResult(const QCollisionQueryResult &);
     ~QCollisionQueryResult();
@@ -94,6 +91,7 @@ public:
     }
 
     QQueryHandle handle() const;
+    QVector<Hit> hits() const;
     QVector<Qt3DCore::QNodeId> entitiesHit() const;
 
 private:
@@ -109,6 +107,24 @@ private:
         return d_ptr.constData();
     }
 };
+
+class QCollisionQueryResultPrivate : public QSharedData
+{
+public:
+    explicit QCollisionQueryResultPrivate();
+    explicit QCollisionQueryResultPrivate(const QCollisionQueryResultPrivate &copy);
+
+    void setHandle(const QQueryHandle &handle);
+    void addEntityHit(const Qt3DCore::QNodeId &entity, const QVector3D& intersection, float distance);
+
+    QQueryHandle m_handle;
+    QVector<QCollisionQueryResult::Hit> m_hits;
+};
+
+inline bool operator==(const QCollisionQueryResult::Hit& left, const QCollisionQueryResult::Hit& right)
+{
+    return left.m_entityId == right.m_entityId;
+}
 
 } // Qt3DRender
 

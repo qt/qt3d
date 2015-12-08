@@ -175,14 +175,14 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         // to emit the correct signals
         const QByteArray propertyName = e->propertyName();
         if (propertyName == QByteArrayLiteral("pressed")) {
-            QPickEvent e;
-            d->pressedEvent(&e);
+            QPickEventPtr ev = e->value().value<QPickEventPtr>();
+            d->pressedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("released")) {
-            QPickEvent e;
-            d->releasedEvent(&e);
+            QPickEventPtr ev = e->value().value<QPickEventPtr>();
+            d->releasedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("clicked")) {
-            QPickEvent e;
-            d->clickedEvent(&e);
+            QPickEventPtr ev = e->value().value<QPickEventPtr>();
+            d->clickedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
             setContainsMouse(true);

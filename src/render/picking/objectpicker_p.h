@@ -54,6 +54,9 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QPickEvent;
+typedef QSharedPointer<QPickEvent> QPickEventPtr;
+
 namespace Render {
 
 class Q_AUTOTEST_EXPORT ObjectPicker : public Qt3DCore::QBackendNode
@@ -70,9 +73,9 @@ public:
     void makeDirty();
     bool hoverEnabled() const;
 
-    void onClicked();
-    void onPressed();
-    void onReleased();
+    void onClicked(QPickEventPtr event);
+    void onPressed(QPickEventPtr event);
+    void onReleased(QPickEventPtr event);
     void onEntered();
     void onExited();
 

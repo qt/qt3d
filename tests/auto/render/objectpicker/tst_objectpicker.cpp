@@ -36,6 +36,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DRender/private/objectpicker_p.h>
+#include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -113,10 +114,11 @@ private Q_SLOTS:
         TestArbiter arbiter;
         Qt3DRender::Render::ObjectPicker objectPicker;
         Qt3DCore::QBackendNodePrivate::get(&objectPicker)->setArbiter(&arbiter);
+        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent);
         QVERIFY(!objectPicker.isDirty());
 
         // WHEN
-        objectPicker.onPressed();
+        objectPicker.onPressed(event);
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
@@ -126,7 +128,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        objectPicker.onReleased();
+        objectPicker.onReleased(event);
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);
@@ -136,7 +138,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        objectPicker.onClicked();
+        objectPicker.onClicked(event);
 
         // THEN
         QCOMPARE(arbiter.events.count(), 1);

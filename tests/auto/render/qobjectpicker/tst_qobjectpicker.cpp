@@ -132,26 +132,32 @@ private Q_SLOTS:
     {
         QTest::addColumn<QByteArray>("signalPrototype");
         QTest::addColumn<QByteArray>("propertyName");
+        QTest::addColumn<bool>("requiresEvent");
 
         QTest::newRow("clicked")
                 << QByteArray(SIGNAL(clicked(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("clicked");
+                << QByteArrayLiteral("clicked")
+                << true;
 
         QTest::newRow("pressed")
                 << QByteArray(SIGNAL(pressed(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("pressed");
+                << QByteArrayLiteral("pressed")
+                << true;
 
         QTest::newRow("released")
                 << QByteArray(SIGNAL(released(Qt3DRender::QPickEvent *)))
-                << QByteArrayLiteral("released");
+                << QByteArrayLiteral("released")
+                << true;
 
         QTest::newRow("entered")
                 << QByteArray(SIGNAL(entered()))
-                << QByteArrayLiteral("entered");
+                << QByteArrayLiteral("entered")
+                << false;
 
         QTest::newRow("exited")
                 << QByteArray(SIGNAL(exited()))
-                << QByteArrayLiteral("exited");
+                << QByteArrayLiteral("exited")
+                << false;
     }
 
     void checkBackendUpdates()
@@ -159,13 +165,21 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(QByteArray, signalPrototype);
         QFETCH(QByteArray, propertyName);
+        QFETCH(bool, requiresEvent);
         QScopedPointer<MyObjectPicker> objectPicker(new MyObjectPicker());
         QSignalSpy spy(objectPicker.data(), signalPrototype.constData());
+        Qt3DRender::QPickEventPtr event(new Qt3DRender::QPickEvent());
 
         // WHEN
         // Create Backend Change and distribute it to frontend node
         Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, objectPicker->id()));
         e->setPropertyName(propertyName.constData());
+        if (requiresEvent)
+        {
+            QVariant v;
+            v.setValue<Qt3DRender::QPickEventPtr>(event);
+            e->setValue(v);
+        }
         objectPicker->sceneChangeEvent(e);
 
         // THEN

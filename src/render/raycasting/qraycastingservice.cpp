@@ -130,12 +130,12 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D
     if (mode == QAbstractCollisionQueryService::FirstHit) {
         Hit firstHit = QtConcurrent::blockingMappedReduced<Hit>(volumes, gathererFunctor, reduceToFirstHit);
         if (firstHit.intersects)
-            q->addEntityHit(result, firstHit.id);
+            q->addEntityHit(result, firstHit.id, firstHit.intersection, firstHit.distance);
     } else {
         QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
         std::sort(hits.begin(), hits.end(), compareHitsDistance);
         Q_FOREACH (const Hit &hit, hits)
-            q->addEntityHit(result, hit.id);
+            q->addEntityHit(result, hit.id, hit.intersection, hit.distance);
     }
 
     return result;

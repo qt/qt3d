@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include "pickboundingvolumejob_p.h"
+#include "qpickevent.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
@@ -260,19 +261,19 @@ void PickBoundingVolumeJob::run()
                 m_hoveredPickersToClear = m_hoveredPickers;
                 ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
                 Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
-                    QVector<Qt3DCore::QNodeId> sphereHits = sphereHitsForViewportAndCamera(event.pos(),
-                                                                                           vc.viewport,
-                                                                                           vc.cameraId,
-                                                                                           rayCasting,
-                                                                                           &sphereGatherer);
+                    QVector<QCollisionQueryResult::Hit> sphereHits = sphereHitsForViewportAndCamera(event.pos(),
+                                                                                                    vc.viewport,
+                                                                                                    vc.cameraId,
+                                                                                                    rayCasting,
+                                                                                                    &sphereGatherer);
 #if 0
-                    Q_FOREACH (const Qt3DCore::QNodeId sphereEntityId, sphereHits) {
+                    Q_FOREACH (const Qt3DCore::QCollisionQueryResult::Hit sphereHit, sphereHits) {
                         if (triangleHitsForViewportAndCamera(event.pos(),
                                                              vc.viewport,
                                                              vc.cameraId,
-                                                             sphereEntityId,
+                                                             sphereHit.m_entityId,
                                                              rayCasting).isEmpty())
-                            sphereHits.removeAll(sphereEntityId);
+                            sphereHits.removeAll(sphereHit);
                     }
 #endif
 
@@ -286,8 +287,8 @@ void PickBoundingVolumeJob::run()
                         // We want to gather hits against triangles
                         // build a triangle based bounding volume
 
-                        Q_FOREACH (const Qt3DCore::QNodeId &entityId, sphereHits) {
-                            Entity *entity = m_manager->renderNodesManager()->lookupResource(entityId);
+                        Q_FOREACH (const QCollisionQueryResult::Hit &hit, sphereHits) {
+                            Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
                             HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
 
                             // If the Entity which actually received the hit doesn't have
@@ -302,26 +303,31 @@ void PickBoundingVolumeJob::run()
 
                             if (objectPicker != Q_NULLPTR) {
                                 // Send the corresponding event
+                                QVector3D localIntersection = hit.m_intersection;
+                                if (entity && entity->worldTransform())
+                                    localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
+                                QPickEventPtr pickEvent(new QPickEvent(hit.m_intersection, localIntersection, hit.m_distance));
+
                                 switch (event.type()) {
                                 case QEvent::MouseButtonPress: {
                                     // Store pressed object handle
                                     m_currentPicker = objectPickerHandle;
                                     // Send pressed event to m_currentPicker
-                                    objectPicker->onPressed();
+                                    objectPicker->onPressed(pickEvent);
                                 }
                                     break;
 
                                 case QEvent::MouseButtonRelease: {
                                     // Send release event to m_currentPicker
                                     if (lastCurrentPicker != Q_NULLPTR) {
-                                        lastCurrentPicker->onClicked();
-                                        lastCurrentPicker->onReleased();
+                                        lastCurrentPicker->onClicked(pickEvent);
+                                        lastCurrentPicker->onReleased(pickEvent);
                                     }
                                     break;
                                 }
 
                                 case Qt::TapGesture: {
-                                    objectPicker->onClicked();
+                                    objectPicker->onClicked(pickEvent);
                                     break;
                                 }
 
@@ -354,8 +360,10 @@ void PickBoundingVolumeJob::run()
                         switch (event.type()) {
                         case QEvent::MouseButtonRelease: {
                             // Send release event to m_currentPicker
-                            if (lastCurrentPicker != Q_NULLPTR)
-                                lastCurrentPicker->onReleased();
+                            if (lastCurrentPicker != Q_NULLPTR) {
+                                QPickEventPtr pickEvent(new QPickEvent);
+                                lastCurrentPicker->onReleased(pickEvent);
+                            }
                             break;
                         }
                         default:
@@ -409,11 +417,11 @@ QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) cons
 }
 
 
-QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::sphereHitsForViewportAndCamera(const QPoint &pos,
-                                                                                 const QRectF &relativeViewport,
-                                                                                 const Qt3DCore::QNodeId &cameraId,
-                                                                                 QAbstractCollisionQueryService *rayCasting,
-                                                                                 QBoundingVolumeProvider *volumeProvider) const
+QVector<QCollisionQueryResult::Hit> PickBoundingVolumeJob::sphereHitsForViewportAndCamera(const QPoint &pos,
+                                                                                          const QRectF &relativeViewport,
+                                                                                          const Qt3DCore::QNodeId &cameraId,
+                                                                                          QAbstractCollisionQueryService *rayCasting,
+                                                                                          QBoundingVolumeProvider *volumeProvider) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -428,14 +436,14 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::sphereHitsForViewportAndCamera
     const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     const QQueryHandle rayCastingHandle = rayCasting->query(ray, QAbstractCollisionQueryService::AllHits, volumeProvider);
     const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
-    return queryResult.entitiesHit();
+    return queryResult.hits();
 }
 
-QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::triangleHitsForViewportAndCamera(const QPoint &pos,
-                                                                                   const QRectF &relativeViewport,
-                                                                                   const Qt3DCore::QNodeId &cameraId,
-                                                                                   const Qt3DCore::QNodeId &entityId,
-                                                                                   QAbstractCollisionQueryService *rayCasting) const
+QVector<QCollisionQueryResult::Hit> PickBoundingVolumeJob::triangleHitsForViewportAndCamera(const QPoint &pos,
+                                                                                            const QRectF &relativeViewport,
+                                                                                            const Qt3DCore::QNodeId &cameraId,
+                                                                                            const Qt3DCore::QNodeId &entityId,
+                                                                                            QAbstractCollisionQueryService *rayCasting) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -457,7 +465,7 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::triangleHitsForViewportAndCame
                                                             QAbstractCollisionQueryService::AllHits,
                                                             &boundingVolumeProvider);
     const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
-    return queryResult.entitiesHit();
+    return queryResult.hits();
 }
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()

@@ -38,6 +38,7 @@
 #define QT3DRENDER_QPICKEVENT_H
 
 #include <QObject>
+#include <QVector3D>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,18 +47,29 @@ namespace Qt3DRender {
 
 class QPickEventPrivate;
 
+class QPickEvent;
+typedef QSharedPointer<QPickEvent> QPickEventPtr;
+
 class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted NOTIFY acceptedChanged)
+    Q_PROPERTY(float distance READ distance CONSTANT)
+    Q_PROPERTY(QVector3D localIntersection READ localIntersection CONSTANT)
+    Q_PROPERTY(QVector3D worldIntersection READ worldIntersection CONSTANT)
 public:
     QPickEvent();
+    QPickEvent(const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance);
     ~QPickEvent();
 
     bool isAccepted() const;
 
 public Q_SLOTS:
     void setAccepted(bool accepted);
+
+    float distance() const;
+    const QVector3D &worldIntersection() const;
+    const QVector3D &localIntersection() const;
 
 Q_SIGNALS:
     void acceptedChanged(bool accepted);
@@ -69,5 +81,7 @@ private:
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+Q_DECLARE_METATYPE(Qt3DRender::QPickEvent*)
 
 #endif // QT3DRENDER_QPICKEVENT_H

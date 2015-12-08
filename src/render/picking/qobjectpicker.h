@@ -68,9 +68,9 @@ public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
 
 Q_SIGNALS:
-    void pressed(Qt3DRender::QPickEvent *event);
-    void released(Qt3DRender::QPickEvent *event);
-    void clicked(Qt3DRender::QPickEvent *event);
+    void pressed(Qt3DRender::QPickEvent *pick);
+    void released(Qt3DRender::QPickEvent *pick);
+    void clicked(Qt3DRender::QPickEvent *pick);
     void entered();
     void exited();
     void hoverEnabledChanged(bool hoverEnabled);
