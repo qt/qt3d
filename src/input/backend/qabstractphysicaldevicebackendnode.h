@@ -48,6 +48,7 @@ class QBackendNodePrivate;
 
 namespace Qt3DInput {
 
+class QInputAspect;
 class QAbstractPhysicalDeviceBackendNodePrivate;
 
 class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCore::QBackendNode
@@ -58,6 +59,10 @@ public:
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    void setInputAspect(QInputAspect *aspect);
+    QInputAspect *inputAspect() const;
+
+    float processedAxisValue(int axisIdentifier) const;
     virtual float axisValue(int axisIdentifier) const = 0;
     virtual bool isButtonPressed(int buttonIdentifier) const = 0;
 

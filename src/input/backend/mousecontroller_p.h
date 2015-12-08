@@ -54,6 +54,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
+class QInputAspect;
+
 namespace Input {
 
 class InputHandler;
@@ -109,13 +112,14 @@ private:
 class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
-    explicit MouseControllerFunctor(InputHandler *handler);
+    explicit MouseControllerFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
+    QInputAspect *m_inputAspect;
     InputHandler *m_handler;
 };
 

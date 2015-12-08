@@ -122,7 +122,7 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
                 const QVector<int> keys = axisInput->keys();
                 // Axis was specified -> we take this as the base value
                 if (axisInput->axis() != -1)
-                    axisValue += physicalDeviceBackend->axisValue(axisInput->axis());
+                    axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
                 else if (!keys.isEmpty()) {
                     // TO DO: Linear Curver for the progression of the scale value
                     if (anyOfRequiredKeysPressed(keys, physicalDeviceBackend))

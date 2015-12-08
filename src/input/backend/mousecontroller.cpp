@@ -140,8 +140,9 @@ void MouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-MouseControllerFunctor::MouseControllerFunctor(InputHandler *handler)
-    : m_handler(handler)
+MouseControllerFunctor::MouseControllerFunctor(QInputAspect *inputAspect, InputHandler *handler)
+    : m_inputAspect(inputAspect)
+    , m_handler(handler)
 {
 }
 
@@ -149,6 +150,7 @@ Qt3DCore::QBackendNode *MouseControllerFunctor::create(Qt3DCore::QNode *frontend
 {
     MouseController *controller = m_handler->mouseControllerManager()->getOrCreateResource(frontend->id());
     controller->setFactory(factory);
+    controller->setInputAspect(m_inputAspect);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
     m_handler->appendMouseController(m_handler->mouseControllerManager()->lookupHandle(frontend->id()));

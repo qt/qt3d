@@ -446,8 +446,9 @@ void KeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 
-KeyboardControllerFunctor::KeyboardControllerFunctor(InputHandler *handler)
-    : m_handler(handler)
+KeyboardControllerFunctor::KeyboardControllerFunctor(QInputAspect *inputaspect, InputHandler *handler)
+    : m_inputAspect(inputaspect)
+    , m_handler(handler)
 {
 }
 
@@ -455,6 +456,7 @@ Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *front
 {
     KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
     controller->setFactory(factory);
+    controller->setInputAspect(m_inputAspect);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
     m_handler->appendKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));
