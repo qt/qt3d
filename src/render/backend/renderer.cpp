@@ -700,6 +700,7 @@ bool Renderer::submitRenderViews()
 
         // Clear BackBuffer
         m_graphicsContext->clearBackBuffer(renderView->clearBuffer());
+
         // Set the Viewport
         m_graphicsContext->setViewport(renderView->viewport());
 
@@ -868,6 +869,9 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
 
         //// Update program uniforms
         m_graphicsContext->setUniforms(command->m_uniforms);
+
+        //// Bind SSBO Buffers
+        // Note: how does that behave regarding VAO
 
         //// Draw Calls
         // Set state

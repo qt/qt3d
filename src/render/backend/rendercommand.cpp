@@ -43,7 +43,11 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderCommand::RenderCommand()
-    : m_sortBackToFront(false)
+    : m_instancesCount(0)
+    , m_stateSet(Q_NULLPTR)
+    , m_depth(0.0f)
+    , m_changeCost(0)
+    , m_sortBackToFront(false)
 {
    m_sortingType.global = 0;
 }

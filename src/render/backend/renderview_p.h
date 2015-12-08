@@ -213,7 +213,11 @@ public:
     inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
     inline QClearBuffer::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
 
+    RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
+
     void buildRenderCommands(Entity *preprocessedTreeRoot, const Plane *planes);
+    void buildDrawRenderCommands(Entity *node, const Plane *planes);
+    void buildComputeRenderCommands(Entity *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
     void gatherLights(Entity *preprocessedTreeRoot);
 

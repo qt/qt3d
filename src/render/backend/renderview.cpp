@@ -394,6 +394,47 @@ void RenderView::setRenderer(Renderer *renderer)
     m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 
+// Returns an array of Passes with the accompanying Parameter list
+RenderRenderPassList RenderView::passesAndParameters(ParameterInfoList *parameters, Entity *node, bool useDefaultMaterial)
+{
+    // Find the material, effect, technique and set of render passes to use
+    Material *material = Q_NULLPTR;
+    Effect *effect = Q_NULLPTR;
+    if ((material = node->renderComponent<Material>()) != Q_NULLPTR && material->isEnabled())
+        effect = m_renderer->nodeManagers()->effectManager()->lookupResource(material->effect());
+    Technique *technique = findTechniqueForEffect(m_renderer, this, effect);
+
+    // Order set:
+    // 1 Pass Filter
+    // 2 Technique Filter
+    // 3 Material
+    // 4 Effect
+    // 5 Technique
+    // 6 RenderPass
+
+    // Add Parameters define in techniqueFilter and passFilter
+    // passFilter have priority over techniqueFilter
+    if (m_data->m_passFilter)
+        parametersFromParametersProvider(parameters, m_renderer->nodeManagers()->parameterManager(),
+                                         m_data->m_passFilter);
+    if (m_data->m_techniqueFilter)
+        parametersFromParametersProvider(parameters, m_renderer->nodeManagers()->parameterManager(),
+                                         m_data->m_techniqueFilter);
+    // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
+    parametersFromMaterialEffectTechnique(parameters, m_manager->parameterManager(), material, effect, technique);
+
+    RenderRenderPassList passes;
+    if (technique) {
+        passes = findRenderPassesForTechnique(m_manager, this, technique);
+    } else if (useDefaultMaterial) {
+        material = m_manager->data<Material, MaterialManager>(m_renderer->defaultMaterialHandle());
+        effect = m_manager->data<Effect, EffectManager>(m_renderer->defaultEffectHandle());
+        technique = m_manager->data<Technique, TechniqueManager>(m_renderer->defaultTechniqueHandle());
+        passes << m_manager->data<RenderPass, RenderPassManager>(m_renderer->defaultRenderPassHandle());
+    }
+    return passes;
+}
+
 void RenderView::gatherLights(Entity *node)
 {
     const QList<Light *> lights = node->renderComponents<Light>();
@@ -426,114 +467,93 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
     if (!node->isEnabled())
         return;
 
-    if (m_frustumCulling && isEntityFrustumCulled(node, planes))
-        return;
-
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
-        GeometryRenderer *geometryRenderer = Q_NULLPTR;
-        if (node->componentHandle<GeometryRenderer, 16>() != HGeometryRenderer()
-                && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR
-                && geometryRenderer->isEnabled()) {
+        // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
+        // when the RenderView is part of a DispatchCompute branch
+        buildComputeRenderCommands(node);
 
-            // There is a geometry renderer
-            if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
-                // TO DO: Perform culling here
-                // As shaders may be deforming, transforming the mesh
-                // We might want to make that optional or dependent on an explicit bounding box item
+        // 2) Look for Drawable  Entities if Entity -> components [ GeometryRenderer, Material ]
+        // when the RenderView is not part of a DispatchCompute branch
+        // Investigate if it's worth doing as separate jobs
+        buildDrawRenderCommands(node, planes);
 
-                // Find the material, effect, technique and set of render passes to use
-                Material *material = Q_NULLPTR;
-                Effect *effect = Q_NULLPTR;
-                if ((material = node->renderComponent<Material>()) != Q_NULLPTR && material->isEnabled())
-                    effect = m_renderer->nodeManagers()->effectManager()->lookupResource(material->effect());
-                Technique *technique = findTechniqueForEffect(m_renderer, this, effect);
-
-                ParameterInfoList parameters;
-                // Order set:
-                // 1 Pass Filter
-                // 2 Technique Filter
-                // 3 Material
-                // 4 Effect
-                // 5 Technique
-                // 6 RenderPass
-
-                // Add Parameters define in techniqueFilter and passFilter
-                // passFilter have priority over techniqueFilter
-                if (m_data->m_passFilter)
-                    parametersFromParametersProvider(&parameters, m_renderer->nodeManagers()->parameterManager(),
-                                                     m_data->m_passFilter);
-                if (m_data->m_techniqueFilter)
-                    parametersFromParametersProvider(&parameters, m_renderer->nodeManagers()->parameterManager(),
-                                                     m_data->m_techniqueFilter);
-
-                RenderRenderPassList passes;
-                if (technique) {
-                    passes = findRenderPassesForTechnique(m_manager, this, technique);
-                } else {
-                    material = m_manager->data<Material, MaterialManager>(m_renderer->defaultMaterialHandle());
-                    effect = m_manager->data<Effect, EffectManager>(m_renderer->defaultEffectHandle());
-                    technique = m_manager->data<Technique, TechniqueManager>(m_renderer->defaultTechniqueHandle());
-                    passes << m_manager->data<RenderPass, RenderPassManager>(m_renderer->defaultRenderPassHandle());
-                }
-
-                // Get the parameters for our selected rendering setup (override what was defined in the technique/pass filter)
-                parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(), material, effect, technique);
-
-                // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
-                m_commands.reserve(m_commands.size() + passes.size());
-                Q_FOREACH (RenderPass *pass, passes) {
-
-                    // Add the RenderPass Parameters
-                    ParameterInfoList globalParameters = parameters;
-                    parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
-
-                    RenderCommand *command = m_allocator->allocate<RenderCommand>();
-                    command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-
-                    command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
-                    command->m_geometryRenderer = node->componentHandle<GeometryRenderer, 16>();
-                    command->m_instancesCount = 0;
-                    command->m_stateSet = Q_NULLPTR;
-                    command->m_changeCost = 0;
-                    // For RenderPass based states we use the globally set RenderState
-                    // if no renderstates are defined as part of the pass. That means:
-                    // RenderPass { renderStates: [] } will use the states defined by
-                    // StateSet in the FrameGraph
-                    if (!pass->renderStates().isEmpty())
-                        command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
-                    if (command->m_stateSet != Q_NULLPTR) {
-                        // Merge per pass stateset with global stateset
-                        // so that the local stateset only overrides
-                        if (m_stateSet != Q_NULLPTR)
-                            command->m_stateSet->merge(m_stateSet);
-                        command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
-                    }
-
-                    // Pick which lights to take in to account.
-                    // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
-                    // Replace with more sophisticated mechanisms later.
-                    std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
-                    QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
-                    activeLightSources.reserve(m_lightSources.count());
-                    int lightCount = 0;
-                    for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
-                        activeLightSources.append(m_lightSources[i]);
-                        lightCount += m_lightSources[i].lights.count();
-                    }
-
-                    setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
-
-                    buildSortingKey(command);
-                    m_commands.append(command);
-                }
-            }
-        }
+        // Note: in theory going to both code paths is possible but
+        // would most likely be the result of the user not knowing what he's doing
     }
 
     // Traverse children
     Q_FOREACH (Entity *child, node->children())
         buildRenderCommands(child, planes);
+}
+
+void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
+{
+    if (m_frustumCulling && isEntityFrustumCulled(node, planes))
+        return;
+
+    GeometryRenderer *geometryRenderer = Q_NULLPTR;
+    if (node->componentHandle<GeometryRenderer, 16>() != HGeometryRenderer()
+            && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR
+            && geometryRenderer->isEnabled()) {
+
+        ParameterInfoList parameters;
+        RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+        // There is a geometry renderer
+        if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
+
+            // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
+            Q_FOREACH (RenderPass *pass, passes) {
+                // Add the RenderPass Parameters
+                ParameterInfoList globalParameters = parameters;
+                parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
+
+                RenderCommand *command = m_allocator->allocate<RenderCommand>();
+                command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
+                command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+                command->m_geometryRenderer = node->componentHandle<GeometryRenderer, 16>();
+                // For RenderPass based states we use the globally set RenderState
+                // if no renderstates are defined as part of the pass. That means:
+                // RenderPass { renderStates: [] } will use the states defined by
+                // StateSet in the FrameGraph
+                if (!pass->renderStates().isEmpty()) {
+                    command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
+                    // Merge per pass stateset with global stateset
+                    // so that the local stateset only overrides
+                    if (m_stateSet != Q_NULLPTR)
+                        command->m_stateSet->merge(m_stateSet);
+                    command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
+                }
+
+                // Pick which lights to take in to account.
+                // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
+                // Replace with more sophisticated mechanisms later.
+                std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
+                QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+                int lightCount = 0;
+                for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
+                    activeLightSources.append(m_lightSources[i]);
+                    lightCount += m_lightSources[i].lights.count();
+                }
+
+                setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
+
+                buildSortingKey(command);
+                m_commands.append(command);
+            }
+        }
+    }
+}
+
+void RenderView::buildComputeRenderCommands(Entity *node)
+{
+    // TO DO: Complete
+    Q_UNUSED(node)
+    // If the RenderView contains only a ComputeDispatch then it cares about
+    // A ComputeDispatch is also implicitely a NoDraw operation
+    // enabled flag
+    // layer component
+    // material/effect/technique/parameters/filters/
 }
 
 const AttachmentPack &RenderView::attachmentPack() const
@@ -577,18 +597,16 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
     ShaderData *shaderData = Q_NULLPTR;
 
     if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId &&
-        (shaderData = m_manager->shaderDataManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
+            (shaderData = m_manager->shaderDataManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
         // UBO are indexed by <ShaderId, ShaderDataId> so that a same QShaderData can be used among different shaders
         // while still making sure that if they have a different layout everything will still work
         // If two shaders define the same block with the exact same layout, in that case the UBO could be shared
         // but how do we know that ? We'll need to compare ShaderUniformBlocks
 
-        // For now a UBO is unique to a Shader and a ShaderData
-        // later we might want to make them shareable across Shaders but
-        // that will require checking that all Shaders have the same layout for a given
-        // uniform block
-        ShaderDataShaderUboKey uboKey(shaderData->peerUuid(),
-                                      shader->peerUuid());
+        // Note: we assume that if a buffer is shared accross multiple shaders
+        // then it implies that they share the same layout
+        BufferShaderKey uboKey(shaderData->peerUuid(),
+                               shader->peerUuid());
 
         BlockToUBO uniformBlockUBO;
         uniformBlockUBO.m_blockIndex = block.m_index;
@@ -697,9 +715,10 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
             // Builds the QUniformPack, sets shader standard uniforms and store attributes name / glname bindings
             // If a parameter is defined and not found in the bindings it is assumed to be a binding of Uniform type with the glsl name
             // equals to the parameter name
-            const QVector<QString> &uniformNames = shader->uniformsNames();
-            const QVector<QString> &attributeNames = shader->attributesNames();
-            const QVector<QString> &uniformBlockNames = shader->uniformBlockNames();
+            const QVector<QString> uniformNames = shader->uniformsNames();
+            const QVector<QString> attributeNames = shader->attributesNames();
+            const QVector<QString> uniformBlockNames = shader->uniformBlockNames();
+            const QVector<QString> shaderStorageBlockNames = shader->storageBlockNames();
 
             // Set fragData Name and index
             // Later on we might want to relink the shader if attachments have changed
@@ -712,7 +731,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
             }
 
-            if (!uniformNames.isEmpty() || !attributeNames.isEmpty()) {
+            if (!uniformNames.isEmpty() || !attributeNames.isEmpty() || !shaderStorageBlockNames.isEmpty()) {
 
                 // Set default standard uniforms without bindings
                 Q_FOREACH (const QString &uniformName, uniformNames) {
@@ -764,11 +783,16 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                             const ShaderUniformBlock &block = shader->uniformBlock(it->name);
                             setUniformBlockValue(command->m_uniforms, shader, block, it->value);
                             it = parameters.erase(it);
+                        } else if (shaderStorageBlockNames.indexOf(it->name) != -1) { // Parameters is a SSBO
+                            const ShaderStorageBlock block = shader->storageBlock(it->name);
+                            // TO DO: Do whatever is needed
+                            Q_UNUSED(block)
+                            it = parameters.erase(it);
                         } else { // Parameter is a struct
                             const QVariant &v = it->value;
                             ShaderData *shaderData = Q_NULLPTR;
                             if (static_cast<QMetaType::Type>(v.type()) == qNodeIdTypeId &&
-                                (shaderData = m_manager->shaderDataManager()->lookupResource(v.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
+                                    (shaderData = m_manager->shaderDataManager()->lookupResource(v.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
                                 // Try to check if we have a struct or array matching a QShaderData parameter
                                 setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, shaderData, it->name);
                                 it = parameters.erase(it);

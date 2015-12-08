@@ -359,7 +359,6 @@ void GraphicsContext::activateShader(Shader *shader)
     }
 
     if (m_activeShader != Q_NULLPTR && m_activeShader->dna() == shader->dna()) {
-
         // no op
     } else {
         m_activeShader = shader;
@@ -894,8 +893,8 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
     for (int i = 0; i < blockToUbos.length(); ++i) {
         const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
         if (block.m_index != -1 && block.m_size > 0) {
-            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(ShaderDataShaderUboKey(blockToUbos[i].m_shaderDataID,
-                                                                                            m_activeShader->peerUuid()));
+            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(BufferShaderKey(blockToUbos[i].m_shaderDataID,
+                                                                                     m_activeShader->peerUuid()));
             // bind Uniform Block of index ubos[i].m_index to binding point i
             bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
             // bind the UBO to the binding point i
@@ -909,6 +908,11 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
             }
 
             // update the ubo if needed
+
+            // TO DO: Maybe QShaderData should act as a QBuffer data provider
+            // and internally update a QBuffer which we would then reupload
+            // and the ShaderData updates could then be done in some jobs
+            // rather than at render time ?
             if (blockToUbos[i].m_needsUpdate) {
                 if (!ubo->isBound())
                     ubo->bind(this, GLBuffer::UniformBuffer);
