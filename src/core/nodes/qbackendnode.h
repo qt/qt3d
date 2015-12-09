@@ -75,9 +75,9 @@ public:
     void setFactory(const QBackendNodeFactory *factory);
 
     void setPeer(QNode *peer);
-    QNodeId peerUuid() const;
+    QNodeId peerUuid() const Q_DECL_NOEXCEPT;
 
-    Mode mode() const;
+    Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
