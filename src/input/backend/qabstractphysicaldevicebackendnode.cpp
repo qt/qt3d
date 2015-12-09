@@ -106,6 +106,21 @@ void QAbstractPhysicalDeviceBackendNodePrivate::removeAxisSetting(Qt3DCore::QNod
     }
 }
 
+Input::MovingAverage &QAbstractPhysicalDeviceBackendNodePrivate::getOrCreateFilter(int axisIdentifier)
+{
+    QVector<Input::AxisIdFilter>::iterator it;
+    QVector<Input::AxisIdFilter>::iterator end = m_axisFilters.end();
+    for (it = m_axisFilters.begin(); it != end; ++it) {
+        if (it->m_axisIdentifier == axisIdentifier)
+            return it->m_filter;
+    }
+
+    Input::AxisIdFilter axisIdFilter;
+    axisIdFilter.m_axisIdentifier = axisIdentifier;
+    m_axisFilters.push_back(axisIdFilter);
+    return m_axisFilters.last().m_filter;
+}
+
 Input::AxisSetting *QAbstractPhysicalDeviceBackendNodePrivate::getAxisSetting(Qt3DCore::QNodeId axisSettingId) const
 {
     Q_Q(const QAbstractPhysicalDeviceBackendNode);
@@ -143,6 +158,7 @@ void QAbstractPhysicalDeviceBackendNode::cleanup()
     Q_D(QAbstractPhysicalDeviceBackendNode);
     d->m_enabled = false;
     d->m_axisSettings.clear();
+    d->m_axisFilters.clear();
     d->m_inputAspect = Q_NULLPTR;
 }
 
@@ -180,10 +196,10 @@ QInputAspect *QAbstractPhysicalDeviceBackendNode::inputAspect() const
     return d->m_inputAspect;
 }
 
-float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier) const
+float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
 {
     // Find axis settings for this axis (if any)
-    Q_D(const QAbstractPhysicalDeviceBackendNode);
+    Q_D(QAbstractPhysicalDeviceBackendNode);
     Qt3DCore::QNodeId axisSettingId;
     QVector<Input::AxisIdSetting>::const_iterator it;
     QVector<Input::AxisIdSetting>::const_iterator end = d->m_axisSettings.cend();
@@ -204,14 +220,19 @@ float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
         Q_ASSERT(axisSetting);
         float val = rawAxisValue;
 
+        // Low pass filtering
+        if (axisSetting->isFilterEnabled()) {
+            // Get the filter corresponding to this axis
+            Input::MovingAverage &filter = d->getOrCreateFilter(axisIdentifier);
+            filter.addSample(val);
+            val = filter.average();
+        }
+
         // Deadzone handling
         if (!qFuzzyIsNull(axisSetting->deadZone())) {
             if (std::abs(val) <= axisSetting->deadZone())
                 val = 0.0f;
         }
-        qDebug() << "Using axis settings. rawValue =" << rawAxisValue << "processedValue =" << val;
-
-        // TODO: Low pass filtering
 
         return val;
     }

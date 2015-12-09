@@ -62,7 +62,7 @@ public:
     void setInputAspect(QInputAspect *aspect);
     QInputAspect *inputAspect() const;
 
-    float processedAxisValue(int axisIdentifier) const;
+    float processedAxisValue(int axisIdentifier);
     virtual float axisValue(int axisIdentifier) const = 0;
     virtual bool isButtonPressed(int buttonIdentifier) const = 0;
 
