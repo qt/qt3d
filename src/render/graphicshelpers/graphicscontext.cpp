@@ -274,6 +274,10 @@ void GraphicsContext::setViewport(const QRectF &viewport)
         }
     }
 
+    // Check that the returned size is before calling glViewport
+    if (renderTargetSize.isEmpty())
+        return;
+
     // Qt3D 0------------------> 1  OpenGL  1^
     //      |                                |
     //      |                                |
