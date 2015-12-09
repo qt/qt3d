@@ -47,6 +47,7 @@
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qboundingvolumedebug.h>
+#include <Qt3DRender/qcomputejob.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DCore/qcameralens.h>
@@ -103,6 +104,7 @@ void Entity::cleanup()
     m_geometryRendererComponent = Qt3DCore::QNodeId();
     m_objectPickerComponent = QNodeId();
     m_boundingVolumeDebugComponent = QNodeId();
+    m_computeComponent = QNodeId();
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
@@ -281,6 +283,8 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_objectPickerComponent = component->id();
     } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
         m_boundingVolumeDebugComponent = component->id();
+    } else if (qobject_cast<QComputeJob *>(component) != Q_NULLPTR) {
+        m_computeComponent = component->id();
     }
 }
 
@@ -305,6 +309,8 @@ void Entity::removeComponent(const Qt3DCore::QNodeId &nodeId)
         m_boundingVolumeDebugComponent = QNodeId();
     } else if (m_lightComponents.contains(nodeId)) {
         m_lightComponents.removeAll(nodeId);
+    } else if (m_computeComponent == nodeId) {
+        m_computeComponent = QNodeId();
     }
 }
 
@@ -396,6 +402,12 @@ QList<HLight> Entity::componentsHandle<Light>() const
     return lightHandles;
 }
 
+template<>
+HComputeJob Entity::componentHandle<ComputeJob>() const
+{
+    return m_nodeManagers->computeJobManager()->lookupHandle(m_computeComponent);
+}
+
 // Render components
 
 template<>
@@ -464,6 +476,12 @@ BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
     return m_nodeManagers->boundingVolumeDebugManager()->lookupResource(m_boundingVolumeDebugComponent);
 }
 
+template<>
+ComputeJob *Entity::renderComponent<ComputeJob>() const
+{
+    return m_nodeManagers->computeJobManager()->lookupResource(m_computeComponent);
+}
+
 // Uuid
 
 template<>
@@ -489,6 +507,9 @@ QNodeId Entity::componentUuid<ObjectPicker>() const { return m_objectPickerCompo
 
 template<>
 QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVolumeDebugComponent; }
+
+template<>
+QNodeId Entity::componentUuid<ComputeJob>() const { return m_computeComponent; }
 
 template<>
 QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }

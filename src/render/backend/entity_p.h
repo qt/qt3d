@@ -173,6 +173,7 @@ private:
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
+    Qt3DCore::QNodeId m_computeComponent;
 
     QString m_objectName;
     bool m_enabled;
@@ -207,6 +208,9 @@ Q_AUTOTEST_EXPORT HBoundingVolumeDebug Entity::componentHandle<BoundingVolumeDeb
 template<>
 QList<HLight> Entity::componentsHandle<Light>() const;
 
+template<>
+Q_AUTOTEST_EXPORT HComputeJob Entity::componentHandle<ComputeJob>() const;
+
 // Render components
 template<>
 Material *Entity::renderComponent<Material>() const;
@@ -235,6 +239,9 @@ Q_AUTOTEST_EXPORT BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDeb
 template<>
 QList<Light *> Entity::renderComponents<Light>() const;
 
+template<>
+Q_AUTOTEST_EXPORT ComputeJob *Entity::renderComponent<ComputeJob>() const;
+
 // UUid
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Transform>() const;
@@ -259,6 +266,9 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ObjectPicker>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
+
+template<>
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeJob>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
