@@ -78,17 +78,17 @@ void QUniformValue::apply(GraphicsContext *ctx, const ShaderUniform &shaderDescr
     ctx->bindUniform(m_var, shaderDescription);
 }
 
-QUniformPack::~QUniformPack()
+ShaderParameterPack::~ShaderParameterPack()
 {
     m_uniforms.clear();
 }
 
-void QUniformPack::setUniform(const QString &glslName, const QUniformValue *val)
+void ShaderParameterPack::setUniform(const QString &glslName, const QUniformValue *val)
 {
     m_uniforms.insert(glslName, val);
 }
 
-void QUniformPack::setTexture(const QString &glslName, const Qt3DCore::QNodeId &texId)
+void ShaderParameterPack::setTexture(const QString &glslName, const Qt3DCore::QNodeId &texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslName != glslName) {
@@ -103,7 +103,7 @@ void QUniformPack::setTexture(const QString &glslName, const Qt3DCore::QNodeId &
 }
 
 // Contains Uniform Block Index and QNodeId of the ShaderData (UBO)
-void QUniformPack::setUniformBuffer(const BlockToUBO &blockToUBO)
+void ShaderParameterPack::setUniformBuffer(const BlockToUBO &blockToUBO)
 {
     m_uniformBuffers.append(blockToUBO);
 }

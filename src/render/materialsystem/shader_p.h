@@ -78,7 +78,7 @@ public:
     void cleanup();
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void updateUniforms(GraphicsContext *ctx, const QUniformPack &pack);
+    void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
     QVector<QString> uniformsNames() const;

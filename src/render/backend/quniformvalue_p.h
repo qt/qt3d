@@ -142,10 +142,10 @@ struct BlockToUBO {
     QHash<QString, QVariant> m_updatedProperties;
 };
 
-class QUniformPack
+class ShaderParameterPack
 {
 public:
-    ~QUniformPack();
+    ~ShaderParameterPack();
 
     void setUniform(const QString &glslName, const QUniformValue *val);
     void setTexture(const QString &glslName, const Qt3DCore::QNodeId &id);

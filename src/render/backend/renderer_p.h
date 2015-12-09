@@ -219,7 +219,7 @@ private:
     Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
     QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
-    QUniformPack m_defaultUniformPack;
+    ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;

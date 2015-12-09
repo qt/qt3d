@@ -844,7 +844,7 @@ void GraphicsContext::setRenderer(Renderer *renderer)
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-void GraphicsContext::setUniforms(QUniformPack &uniforms)
+void GraphicsContext::setUniforms(ShaderParameterPack &uniforms)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
@@ -857,7 +857,7 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
     // Update the uniforms with the correct texture unit id's
     const QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
     for (int i = 0; i < uniforms.textures().size(); ++i) {
-        const QUniformPack::NamedTexture &namedTex = uniforms.textures().at(i);
+        const ShaderParameterPack::NamedTexture &namedTex = uniforms.textures().at(i);
         Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
         const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded

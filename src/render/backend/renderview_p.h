@@ -312,13 +312,13 @@ private:
     QUniformValue *time(const QMatrix4x4 &model) const;
     QUniformValue *eyePosition(const QMatrix4x4 &model) const;
 
-    void setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value);
-    void setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
-    void setUniformBlockValue(QUniformPack &uniformPack,
+    void setUniformValue(ShaderParameterPack &uniformPack, const QString &name, const QVariant &value);
+    void setStandardUniformValue(ShaderParameterPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
+    void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,
                               const QVariant &value);
-    void setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack,
+    void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                Shader *shader,
                                                ShaderData *shaderData,
                                                const QString &structName);

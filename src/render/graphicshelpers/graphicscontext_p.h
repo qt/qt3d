@@ -144,7 +144,7 @@ public:
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
 
-    void setUniforms(QUniformPack &uniforms);
+    void setUniforms(ShaderParameterPack &uniforms);
 
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the

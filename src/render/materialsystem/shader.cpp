@@ -240,7 +240,7 @@ QOpenGLShaderProgram *Shader::getOrCreateProgram(GraphicsContext *ctx)
     return m_program;
 }
 
-void Shader::updateUniforms(GraphicsContext *ctx, const QUniformPack &pack)
+void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack)
 {
     const QHash<QString, const QUniformValue* > &values = pack.uniforms();
     const QHash<QString, const QUniformValue* >::const_iterator valueEnd = values.constEnd();

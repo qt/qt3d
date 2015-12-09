@@ -577,7 +577,7 @@ const AttachmentPack &RenderView::attachmentPack() const
     return m_attachmentPack;
 }
 
-void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name, const QVariant &value)
+void RenderView::setUniformValue(ShaderParameterPack &uniformPack, const QString &name, const QVariant &value)
 {
     if (const QUniformValue *val = uniformPack.uniform(name))
         destroyUniformValue(val, m_allocator);
@@ -600,7 +600,7 @@ void RenderView::setUniformValue(QUniformPack &uniformPack, const QString &name,
     }
 }
 
-void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform)
+void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform)
 {
     if (const QUniformValue *val = uniformPack.uniform(glslName))
         destroyUniformValue(val, m_allocator);
@@ -608,7 +608,7 @@ void RenderView::setStandardUniformValue(QUniformPack &uniformPack, const QStrin
     uniformPack.setUniform(glslName, (this->*ms_standardUniformSetters[name])(worldTransform));
 }
 
-void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader, const ShaderUniformBlock &block, const QVariant &value)
+void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack, Shader *shader, const ShaderUniformBlock &block, const QVariant &value)
 {
     ShaderData *shaderData = Q_NULLPTR;
 
@@ -662,7 +662,7 @@ void RenderView::setUniformBlockValue(QUniformPack &uniformPack, Shader *shader,
     }
 }
 
-void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName)
+void RenderView::setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack, Shader *shader, ShaderData *shaderData, const QString &structName)
 {
     m_data->m_uniformBlockBuilder.activeUniformNamesToValue.clear();
 
