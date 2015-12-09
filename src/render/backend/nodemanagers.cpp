@@ -81,6 +81,7 @@ NodeManagers::NodeManagers()
     , m_objectPickerManager(new ObjectPickerManager())
     , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
+    , m_computeJobManager(new ComputeJobManager())
 {
 }
 
@@ -262,6 +263,12 @@ template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT
 {
     return m_lightManager;
+}
+
+template<>
+ComputeJobManager *NodeManagers::manager<ComputeJob>() const Q_DECL_NOEXCEPT
+{
+    return m_computeJobManager;
 }
 
 } // Render

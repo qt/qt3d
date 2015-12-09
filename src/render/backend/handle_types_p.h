@@ -87,6 +87,7 @@ class ObjectPicker;
 class BoundingVolumeDebug;
 class OpenGLVertexArrayObject;
 class Light;
+class ComputeJob;
 
 typedef Qt3DCore::QHandle<RenderAttachment, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
@@ -116,6 +117,7 @@ typedef Qt3DCore::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 typedef Qt3DCore::QHandle<ObjectPicker, 16> HObjectPicker;
 typedef Qt3DCore::QHandle<BoundingVolumeDebug, 16> HBoundingVolumeDebug;
 typedef Qt3DCore::QHandle<Light, 16> HLight;
+typedef Qt3DCore::QHandle<ComputeJob, 16> HComputeJob;
 
 } // namespace Render
 

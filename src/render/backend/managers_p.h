@@ -74,6 +74,7 @@
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 #include <Qt3DRender/private/light_p.h>
+#include <Qt3DRender/private/computejob_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -346,6 +347,17 @@ public:
     LightManager() {}
 };
 
+class ComputeJobManager : public Qt3DCore::QResourceManager<
+        ComputeJob,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
+{
+public:
+    ComputeJobManager() {}
+};
+
 } // namespace Render
 } // namespace Qt3DRender
 
@@ -365,6 +377,7 @@ Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Attribute, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Geometry, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ObjectPicker, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::BoundingVolumeDebug, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::ComputeJob, Q_REQUIRES_CLEANUP)
 
 QT_END_NAMESPACE
 

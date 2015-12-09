@@ -92,6 +92,7 @@ class TextureManager;
 class TextureDataManager;
 class LayerManager;
 class LightManager;
+class ComputeJobManager;
 
 class FrameGraphNode;
 class Annotation;
@@ -122,6 +123,7 @@ class GeometryRenderer;
 class ObjectPicker;
 class BoundingVolumeDebug;
 class Light;
+class ComputeJob;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT NodeManagers
 {
@@ -192,6 +194,7 @@ public:
     inline ObjectPickerManager *objectPickerManager() const Q_DECL_NOEXCEPT { return m_objectPickerManager; }
     inline BoundingVolumeDebugManager *boundingVolumeDebugManager() const Q_DECL_NOEXCEPT { return m_boundingVolumeDebugManager; }
     inline LightManager *lightManager() const Q_DECL_NOEXCEPT { return m_lightManager; }
+    inline ComputeJobManager *computeJobManager() const Q_DECL_NOEXCEPT { return m_computeJobManager; }
 
 private:
     CameraManager *m_cameraManager;
@@ -224,6 +227,7 @@ private:
     ObjectPickerManager *m_objectPickerManager;
     BoundingVolumeDebugManager *m_boundingVolumeDebugManager;
     LightManager *m_lightManager;
+    ComputeJobManager *m_computeJobManager;
 };
 
 // Specializations
@@ -317,6 +321,9 @@ QT3DRENDERSHARED_PRIVATE_EXPORT BoundingVolumeDebugManager *NodeManagers::manage
 
 template<>
 LightManager *NodeManagers::manager<Light>() const Q_DECL_NOEXCEPT;
+
+template<>
+QT3DRENDERSHARED_PRIVATE_EXPORT ComputeJobManager *NodeManagers::manager<ComputeJob>() const Q_DECL_NOEXCEPT;
 
 } // Render
 
