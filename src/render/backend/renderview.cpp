@@ -469,17 +469,20 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
 
     // Build renderCommand for current node
     if (isEntityInLayers(node, m_data->m_layers)) {
-        // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
-        // when the RenderView is part of a DispatchCompute branch
-        buildComputeRenderCommands(node);
-
-        // 2) Look for Drawable  Entities if Entity -> components [ GeometryRenderer, Material ]
-        // when the RenderView is not part of a DispatchCompute branch
-        // Investigate if it's worth doing as separate jobs
-        buildDrawRenderCommands(node, planes);
 
         // Note: in theory going to both code paths is possible but
         // would most likely be the result of the user not knowing what he's doing
+        // so we don't handle that case
+        if (m_compute) {
+            // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
+            // when the RenderView is part of a DispatchCompute branch
+            buildComputeRenderCommands(node);
+        } else {
+            // 2) Look for Drawable  Entities if Entity -> components [ GeometryRenderer, Material ]
+            // when the RenderView is not part of a DispatchCompute branch
+            // Investigate if it's worth doing as separate jobs
+            buildDrawRenderCommands(node, planes);
+        }
     }
 
     // Traverse children
@@ -547,13 +550,26 @@ void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
 
 void RenderView::buildComputeRenderCommands(Entity *node)
 {
-    // TO DO: Complete
-    Q_UNUSED(node)
     // If the RenderView contains only a ComputeDispatch then it cares about
     // A ComputeDispatch is also implicitely a NoDraw operation
     // enabled flag
     // layer component
     // material/effect/technique/parameters/filters/
+    ComputeJob *computeJob = Q_NULLPTR;
+    if (node->componentHandle<ComputeJob, 16>() != HComputeJob()
+            && (computeJob = node->renderComponent<ComputeJob>()) != Q_NULLPTR
+            && computeJob->isEnabled()) {
+
+        ParameterInfoList parameters;
+        RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+
+        Q_FOREACH (RenderPass *pass, passes) {
+            // Add the RenderPass Parameters
+            ParameterInfoList globalParameters = parameters;
+            parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
+            // TO DO: Build appropriate Render Commands
+        }
+    }
 }
 
 const AttachmentPack &RenderView::attachmentPack() const
