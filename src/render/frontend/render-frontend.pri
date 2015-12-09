@@ -14,7 +14,9 @@ HEADERS += \
     $$PWD/qwindow.h \
     $$PWD/qwindow_p.h \
     $$PWD/sphere_p.h \
-    $$PWD/qboundingvolumedebug.h
+    $$PWD/qboundingvolumedebug.h \
+    $$PWD/qcomputejob.h \
+    $$PWD/qcomputejob_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
@@ -25,4 +27,5 @@ SOURCES += \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
     $$PWD/qwindow.cpp \
-    $$PWD/qboundingvolumedebug.cpp
+    $$PWD/qboundingvolumedebug.cpp \
+    $$PWD/qcomputejob.cpp
