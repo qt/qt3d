@@ -105,6 +105,7 @@
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
+#include <Qt3DRender/qcomputejob.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -234,6 +235,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QTorusGeometry>(uri, 2, 0, "TorusGeometry");
     qmlRegisterType<Qt3DRender::QSphereMesh>(uri, 2, 0, "SphereMesh");
     qmlRegisterType<Qt3DRender::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
+
+    // Compute Job
+    qmlRegisterType<Qt3DRender::QComputeJob>(uri, 2, 0, "ComputeJob");
 
     // Layers
     qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");
