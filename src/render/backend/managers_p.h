@@ -284,7 +284,7 @@ public:
 
 class GLBufferManager : public Qt3DCore::QResourceManager<
         GLBuffer,
-        BufferShaderKey,
+        Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
         Qt3DCore::ObjectLevelLockingPolicy>

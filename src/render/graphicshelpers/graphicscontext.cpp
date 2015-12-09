@@ -80,30 +80,20 @@ static QHash<unsigned int, GraphicsContext*> static_contexts;
 
 namespace {
 
-QOpenGLBuffer createGLBufferFor(Buffer *buffer)
+GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
 {
-    QOpenGLBuffer b(static_cast<QOpenGLBuffer::Type>(buffer->type()));
-    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
-    if (!b.create())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
-
-    if (!b.bind())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
-
-    b.allocate(buffer->data().constData(), buffer->data().size());
-    return b;
-}
-
-void uploadDataToGLBuffer(Buffer *buffer, QOpenGLBuffer &b, bool releaseBuffer = false)
-{
-    if (!b.bind())
-        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
-    const int bufferSize = buffer->data().size();
-    b.allocate(NULL, bufferSize); // orphan the buffer
-    b.allocate(buffer->data().constData(), bufferSize);
-    if (releaseBuffer)
-        b.release();
-    qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
+    switch (type) {
+    case QBuffer::VertexBuffer:
+        return GLBuffer::ArrayBuffer;
+    case QBuffer::IndexBuffer:
+        return GLBuffer::IndexBuffer;
+    case QBuffer::PixelPackBuffer:
+        return GLBuffer::PixelPackBuffer;
+    case QBuffer::PixelUnpackBuffer:
+        return GLBuffer::PixelUnpackBuffer;
+    default:
+        Q_UNREACHABLE();
+    }
 }
 
 } // anonymous
@@ -485,11 +475,6 @@ void GraphicsContext::setActiveMaterial(Material *rmat)
 
     deactivateTexturesWithScope(TextureScopeMaterial);
     m_material = rmat;
-}
-
-// TO DO : Try to move what's in Renderer here
-void GraphicsContext::executeCommand(const RenderCommand *)
-{
 }
 
 int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUnit)
@@ -890,53 +875,56 @@ void GraphicsContext::setUniforms(QUniformPack &uniforms)
     const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
     GLBuffer *ubo = Q_NULLPTR;
     bool needsToUnbindUBO = false;
-    for (int i = 0; i < blockToUbos.length(); ++i) {
-        const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
-        if (block.m_index != -1 && block.m_size > 0) {
-            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(BufferShaderKey(blockToUbos[i].m_shaderDataID,
-                                                                                     m_activeShader->peerUuid()));
-            // bind Uniform Block of index ubos[i].m_index to binding point i
-            bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
-            // bind the UBO to the binding point i
-            // Specs specify that there are at least 14 binding points
 
-            // Allocate ubo if not allocated previously
-            if (!ubo->isCreated()) {
-                ubo->create(this);
-                ubo->bind(this, GLBuffer::UniformBuffer);
-                ubo->allocate(this, block.m_size);
-            }
+    // TEMPORARLY Disabled
 
-            // update the ubo if needed
+    //    for (int i = 0; i < blockToUbos.length(); ++i) {
+    //        const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
+    //        if (block.m_index != -1 && block.m_size > 0) {
+    //            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(BufferShaderKey(blockToUbos[i].m_shaderDataID,
+    //                                                                                     m_activeShader->peerUuid()));
+    //            // bind Uniform Block of index ubos[i].m_index to binding point i
+    //            bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
+    //            // bind the UBO to the binding point i
+    //            // Specs specify that there are at least 14 binding points
 
-            // TO DO: Maybe QShaderData should act as a QBuffer data provider
-            // and internally update a QBuffer which we would then reupload
-            // and the ShaderData updates could then be done in some jobs
-            // rather than at render time ?
-            if (blockToUbos[i].m_needsUpdate) {
-                if (!ubo->isBound())
-                    ubo->bind(this, GLBuffer::UniformBuffer);
-                needsToUnbindUBO |= true;
-                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForUniformBlock(block.m_index);
-                const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
-                QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
+    //            // Allocate ubo if not allocated previously
+    //            if (!ubo->isCreated()) {
+    //                ubo->create(this);
+    //                ubo->bind(this, GLBuffer::UniformBuffer);
+    //                ubo->allocate(this, block.m_size);
+    //            }
 
-                while (uniformsIt != uniformsEnd) {
-                    if (blockToUbos[i].m_updatedProperties.contains(uniformsIt.key())) {
-                        buildUniformBuffer(blockToUbos[i].m_updatedProperties.value(uniformsIt.key()),
-                                           uniformsIt.value(),
-                                           m_uboTempArray);
-                        ubo->update(this, m_uboTempArray.constData() + uniformsIt.value().m_offset,
-                                    uniformsIt.value().m_rawByteSize,
-                                    uniformsIt.value().m_offset);
-                    }
-                    ++uniformsIt;
-                }
-            }
-            // bind UBO to binding point
-            ubo->bindToUniformBlock(this, i);
-        }
-    }
+    //            // update the ubo if needed
+
+    //            // TO DO: Maybe QShaderData should act as a QBuffer data provider
+    //            // and internally update a QBuffer which we would then reupload
+    //            // and the ShaderData updates could then be done in some jobs
+    //            // rather than at render time ?
+    //            if (blockToUbos[i].m_needsUpdate) {
+    //                if (!ubo->isBound())
+    //                    ubo->bind(this, GLBuffer::UniformBuffer);
+    //                needsToUnbindUBO |= true;
+    //                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForUniformBlock(block.m_index);
+    //                const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
+    //                QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
+
+    //                while (uniformsIt != uniformsEnd) {
+    //                    if (blockToUbos[i].m_updatedProperties.contains(uniformsIt.key())) {
+    //                        buildUniformBuffer(blockToUbos[i].m_updatedProperties.value(uniformsIt.key()),
+    //                                           uniformsIt.value(),
+    //                                           m_uboTempArray);
+    //                        ubo->update(this, m_uboTempArray.constData() + uniformsIt.value().m_offset,
+    //                                    uniformsIt.value().m_rawByteSize,
+    //                                    uniformsIt.value().m_offset);
+    //                    }
+    //                    ++uniformsIt;
+    //                }
+    //            }
+    //            // bind UBO to binding point
+    //            ubo->bindToUniformBlock(this, i);
+    //        }
+    //    }
 
     if (needsToUnbindUBO)
         ubo->release(this);
@@ -950,8 +938,9 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
     if (attribute == Q_NULLPTR || buffer == Q_NULLPTR)
         return;
 
-    QOpenGLBuffer buf = glBufferForRenderBuffer(buffer);
-    buf.bind();
+    GLBuffer *buf = glBufferForRenderBuffer(buffer);
+    buf->bind(this, bufferTypeToGLBufferType(buffer->type()));
+    // bound within the current VAO
 
     QOpenGLShaderProgram* prog = activeShader();
     int location = prog->attributeLocation(shaderName);
@@ -976,8 +965,8 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
 {
     Q_ASSERT(buffer->type() == QBuffer::IndexBuffer);
 
-    QOpenGLBuffer buf = glBufferForRenderBuffer(buffer);
-    if (!buf.bind())
+    GLBuffer *buf = glBufferForRenderBuffer(buffer);
+    if (!buf->bind(this, GLBuffer::IndexBuffer))
         qCWarning(Backend) << Q_FUNC_INFO << "binding index buffer failed";
 
     // bound within the current VAO
@@ -985,19 +974,45 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
 
 void GraphicsContext::updateBuffer(Buffer *buffer)
 {
-    const QHash<Buffer *, QOpenGLBuffer>::iterator it = m_renderBufferHash.find(buffer);
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerUuid());
     if (it != m_renderBufferHash.end())
-        uploadDataToGLBuffer(buffer, it.value());
+        uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
-QOpenGLBuffer GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
+GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
 {
-    if (m_renderBufferHash.contains(buf))
-        return m_renderBufferHash.value(buf);
+    if (!m_renderBufferHash.contains(buf->peerUuid()))
+        m_renderBufferHash.insert(buf->peerUuid(), createGLBufferFor(buf));
+    return m_renderer->nodeManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerUuid()));
+}
 
-    QOpenGLBuffer glbuf = createGLBufferFor(buf);
-    m_renderBufferHash.insert(buf, glbuf);
-    return glbuf;
+HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
+{
+    GLBuffer *b = m_renderer->nodeManagers()->glBufferManager()->getOrCreateResource(buffer->peerUuid());
+    //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
+    Q_ASSERT(b);
+    if (!b->create(this))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer creation failed";
+
+    if (!b->bind(this, bufferTypeToGLBufferType(buffer->type())))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer binding failed";
+
+    // TO DO: Handle usage pattern
+    b->allocate(this, buffer->data().constData(), buffer->data().size(), false);
+    return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerUuid());
+}
+
+void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)
+{
+    if (!b->isBound() && !b->bind(this, bufferTypeToGLBufferType(buffer->type())))
+        qCWarning(Render::Io) << Q_FUNC_INFO << "buffer bind failed";
+    const int bufferSize = buffer->data().size();
+    // TO DO: Handle usage pattern and sub data updates
+    b->allocate(this, bufferSize, false); // orphan the buffer
+    b->allocate(this, buffer->data().constData(), bufferSize, false);
+    if (releaseBuffer)
+        b->release(this);
+    qCDebug(Render::Io) << "uploaded buffer size=" << buffer->data().size();
 }
 
 GLint GraphicsContext::elementType(GLint type)

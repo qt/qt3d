@@ -86,23 +86,28 @@ GLBuffer::GLBuffer()
 {
 }
 
-void GLBuffer::bind(GraphicsContext *ctx, Type t)
+bool GLBuffer::bind(GraphicsContext *ctx, Type t)
 {
+    if (m_bufferId == 0)
+        return false;
     m_lastTarget = glBufferTypes[t];
     ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, m_bufferId);
     m_bound = true;
+    return true;
 }
 
-void GLBuffer::release(GraphicsContext *ctx)
+bool GLBuffer::release(GraphicsContext *ctx)
 {
     m_bound = false;
     ctx->openGLContext()->functions()->glBindBuffer(m_lastTarget, 0);
+    return true;
 }
 
-void GLBuffer::create(GraphicsContext *ctx)
+bool GLBuffer::create(GraphicsContext *ctx)
 {
     ctx->openGLContext()->functions()->glGenBuffers(1, &m_bufferId);
     m_isCreated = true;
+    return m_bufferId != 0;
 }
 
 void GLBuffer::destroy(GraphicsContext *ctx)
@@ -116,6 +121,11 @@ void GLBuffer::allocate(GraphicsContext *ctx, uint size, bool dynamic)
     // Either GL_STATIC_DRAW OR GL_DYNAMIC_DRAW depending on  the use case
     // TO DO: find a way to know how a buffer/QShaderData will be used to use the right usage
     ctx->openGLContext()->functions()->glBufferData(m_lastTarget, size, NULL, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+}
+
+void GLBuffer::allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic)
+{
+    ctx->openGLContext()->functions()->glBufferData(m_lastTarget, size, data, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
 }
 
 void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int offset)

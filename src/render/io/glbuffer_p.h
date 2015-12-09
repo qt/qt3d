@@ -59,8 +59,6 @@ namespace Render {
 
 class GraphicsContext;
 
-typedef QPair<Qt3DCore::QNodeId, Qt3DCore::QNodeId> BufferShaderKey;
-
 class GLBuffer
 {
 public:
@@ -76,11 +74,12 @@ public:
         PixelUnpackBuffer
     };
 
-    void bind(GraphicsContext *ctx, Type t);
-    void release(GraphicsContext *ctx);
-    void create(GraphicsContext *ctx);
+    bool bind(GraphicsContext *ctx, Type t);
+    bool release(GraphicsContext *ctx);
+    bool create(GraphicsContext *ctx);
     void destroy(GraphicsContext *ctx);
     void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
+    void allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic = true);
     void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
     void bindToUniformBlock(GraphicsContext *ctx, int bindingPoint);
 

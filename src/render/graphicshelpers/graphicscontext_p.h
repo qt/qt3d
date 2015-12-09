@@ -51,7 +51,6 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
-#include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QHash>
 #include <QColor>
@@ -61,6 +60,7 @@
 #include <Qt3DRender/qclearbuffer.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/qattribute.h>
+#include <Qt3DRender/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -83,6 +83,7 @@ class RenderTarget;
 class AttachmentPack;
 class Attribute;
 class Buffer;
+class GLBuffer;
 
 enum TextureScope
 {
@@ -151,8 +152,7 @@ public:
      * @param buf
      * @return
      */
-    QOpenGLBuffer glBufferForRenderBuffer(Buffer *buf);
-
+    GLBuffer *glBufferForRenderBuffer(Buffer *buf);
 
     /**
      * @brief activateTexture - make a texture active on a hardware unit
@@ -218,6 +218,8 @@ private:
 
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
+    HGLBuffer createGLBufferFor(Buffer *buffer);
+    void uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer = false);
 
     bool m_initialized;
     const unsigned int m_id;
@@ -228,7 +230,7 @@ private:
 
     Shader *m_activeShader;
     QHash<ProgramDNA, Shader *> m_renderShaderHash;
-    QHash<Buffer *, QOpenGLBuffer> m_renderBufferHash;
+    QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
 
