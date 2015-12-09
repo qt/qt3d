@@ -8,8 +8,8 @@ uniform vec3 eyePosition;
 
 uniform sampler2D diffuseTexture;
 
-in vec3 position;
-in vec3 normal;
+in vec3 worldPosition;
+in vec3 worldNormal;
 in vec2 texCoord;
 
 out vec4 fragColor;
@@ -21,7 +21,7 @@ void main()
     vec3 diffuseTextureColor = texture( diffuseTexture, texCoord ).rgb;
 
     vec3 diffuseColor, specularColor;
-    adsModel(position, normal, eyePosition, shininess, diffuseColor, specularColor);
+    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
 
     fragColor = vec4( diffuseTextureColor * ( ka + diffuseColor ) + ks * specularColor, 1.0 );
 }

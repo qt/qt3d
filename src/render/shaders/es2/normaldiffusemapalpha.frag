@@ -1,6 +1,6 @@
 #define FP highp
 
-varying FP vec3 position;
+varying FP vec3 worldPosition;
 varying FP vec2 texCoord;
 varying FP mat3 tangentMatrix;
 
@@ -24,7 +24,7 @@ void main()
 
     // Calculate the lighting model, keeping the specular component separate
     FP vec3 diffuseColor, specularColor;
-    adsModelNormalMapped(position, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
+    adsModelNormalMapped(worldPosition, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
 
     // Combine spec with ambient+diffuse for final fragment color
     // Use the alpha from the diffuse texture (for alpha to coverage)

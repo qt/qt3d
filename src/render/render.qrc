@@ -34,9 +34,7 @@
         <file>shaders/es2/gooch.frag</file>
         <file>shaders/es2/gooch.vert</file>
         <file>shaders/gl3/phongalpha.frag</file>
-        <file>shaders/gl3/phongalpha.vert</file>
         <file>shaders/es2/phongalpha.frag</file>
-        <file>shaders/es2/phongalpha.vert</file>
         <file>shaders/gl3/unlittexture.vert</file>
         <file>shaders/gl3/unlittexture.frag</file>
         <file>shaders/es2/unlittexture.frag</file>

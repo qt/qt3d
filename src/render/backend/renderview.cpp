@@ -773,12 +773,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     if (lightIdx == MAX_LIGHTS)
                         break;
                     Entity *lightEntity = lightSource.entity;
-                    const QVector3D pos = *m_data->m_viewMatrix * lightEntity->worldBoundingVolume()->center();
+                    const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     Q_FOREACH (Light *light, lightSource.lights) {
                         if (lightIdx == MAX_LIGHTS)
                             break;
                         QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, pos);
+                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, worldPos);
                         setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                         ++lightIdx;
                     }
@@ -788,8 +788,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, qMax(1, lightIdx));
 
                 if (activeLightSources.isEmpty()) {
-                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].type"), int(QLight::PointLight));
-                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].type"), int(QLight::DirectionalLight));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].direction"), QVector3D(0.0f, -1.0f, -1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
                 }

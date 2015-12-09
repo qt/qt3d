@@ -1,6 +1,6 @@
 #version 150 core
 
-in vec3 position;
+in vec3 worldPosition;
 in vec2 texCoord;
 in mat3 tangentMatrix;
 
@@ -27,7 +27,7 @@ void main()
 
     // Calculate the lighting model, keeping the specular component separate
     vec3 diffuseColor, specularColor;
-    adsModelNormalMapped(position, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
+    adsModelNormalMapped(worldPosition, normal, eyePosition, shininess, tangentMatrix, diffuseColor, specularColor);
 
     // Combine spec with ambient+diffuse for final fragment color
     fragColor = vec4( ka + diffuseTextureColor.rgb * diffuseColor + specularTextureColor.rgb * specularColor, 1.0 );

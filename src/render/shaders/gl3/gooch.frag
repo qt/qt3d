@@ -11,8 +11,8 @@ uniform float shininess;    // Specular shininess factor
 
 uniform vec3 eyePosition;
 
-in vec3 position;
-in vec3 normal;
+in vec3 worldPosition;
+in vec3 worldNormal;
 
 out vec4 fragColor;
 
@@ -60,5 +60,5 @@ vec3 goochModel( const in vec3 pos, const in vec3 n )
 
 void main()
 {
-    fragColor = vec4( goochModel( position, normalize( normal ) ), 1.0 );
+    fragColor = vec4( goochModel( worldPosition, normalize( worldNormal ) ), 1.0 );
 }

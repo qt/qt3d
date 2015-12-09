@@ -1,7 +1,7 @@
 #version 150 core
 
-in vec3 position;
-in vec3 normal;
+in vec3 worldPosition;
+in vec3 worldNormal;
 in vec3 color;
 
 out vec4 fragColor;
@@ -11,6 +11,6 @@ out vec4 fragColor;
 void main()
 {
     vec3 diffuseColor;
-    adModel(position, normal, diffuseColor);
+    adModel(worldPosition, worldNormal, diffuseColor);
     fragColor = vec4( color + color * diffuseColor, 1.0 );
 }

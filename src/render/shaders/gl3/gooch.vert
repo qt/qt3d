@@ -3,17 +3,17 @@
 in vec3 vertexPosition;
 in vec3 vertexNormal;
 
-out vec3 position;
-out vec3 normal;
+out vec3 worldPosition;
+out vec3 worldNormal;
 
-uniform mat4 modelView;
-uniform mat3 modelViewNormal;
+uniform mat4 modelMatrix;
+uniform mat3 modelNormalMatrix;
 uniform mat4 mvp;
 
 void main()
 {
-    normal = normalize( modelViewNormal * vertexNormal );
-    position = vec3( modelView * vec4( vertexPosition, 1.0 ) );
+    worldNormal = normalize( modelNormalMatrix * vertexNormal );
+    worldPosition = vec3( modelMatrix * vec4( vertexPosition, 1.0 ) );
 
     gl_Position = mvp * vec4( vertexPosition, 1.0 );
 }

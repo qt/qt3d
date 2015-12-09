@@ -11,8 +11,8 @@ uniform FP float shininess;    // Specular shininess factor
 
 uniform FP vec3 eyePosition;
 
-varying FP vec3 position;
-varying FP vec3 normal;
+varying FP vec3 worldPosition;
+varying FP vec3 worldNormal;
 
 #pragma include light.inc.frag
 
@@ -52,5 +52,5 @@ FP vec3 goochModel( const in FP vec3 pos, const in FP vec3 n )
 
 void main()
 {
-    gl_FragColor = vec4( goochModel( position, normalize( normal ) ), 1.0 );
+    gl_FragColor = vec4( goochModel( worldPosition, normalize( worldNormal ) ), 1.0 );
 }
