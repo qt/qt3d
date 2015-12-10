@@ -63,6 +63,11 @@ QVector<int> variantListToVector(const QVariantList &list)
     return v;
 }
 
+Q_DECL_CONSTEXPR int signum(float v)
+{
+    return (v > 0.0f) - (v < 0.0f);
+}
+
 }
 
 namespace Qt3DInput {
@@ -229,9 +234,27 @@ float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
         }
 
         // Deadzone handling
-        if (!qFuzzyIsNull(axisSetting->deadZone())) {
-            if (std::abs(val) <= axisSetting->deadZone())
+        const float d = axisSetting->deadZone();
+        if (!qFuzzyIsNull(d)) {
+            if (std::abs(val) <= d) {
                 val = 0.0f;
+            } else {
+                // Calculate value that goes from 0 to 1 linearly from the boundary of
+                // the dead zone up to 1. That is we with a dead zone value of d, we do not
+                // want a step change from 0 to d when the axis leaves the deadzone. Instead
+                // we want to increase the gradient of the line so that it goes from 0 to 1
+                // over the range d to 1. So instead of having y = x, the equation of the
+                // line becomes
+                //
+                // y = x / (1-d) - d / (1-d) = (x - d) / (1 - d)
+                //
+                // for positive values, and
+                //
+                // y = x / (1-d) + d / (1-d) = (x + d) / (1 - d)
+                //
+                // for negative values.
+                val = (val - signum(val) * d) / (1.0f - d);
+            }
         }
 
         return val;
