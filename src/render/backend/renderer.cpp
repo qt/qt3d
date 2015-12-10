@@ -215,7 +215,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addParameter(kd);
     basicPass->addBinding(new QParameterMapping(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapping::Uniform));
 
-    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f));
+    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f));
     m_defaultTechnique->addParameter(ks);
     basicPass->addBinding(new QParameterMapping(QStringLiteral("specular"), QStringLiteral("ks"), QParameterMapping::Uniform));
 
@@ -228,7 +228,7 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f)));
+    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
 
     QEffect* defEff = new QEffect;

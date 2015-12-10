@@ -157,6 +157,7 @@ Entity
         components: [
             PhongMaterial {
                 diffuse: "white"
+                shininess: 50
             },
             Mesh {
                 source: "assets/obj/toyplane.obj"

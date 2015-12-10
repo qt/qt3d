@@ -791,7 +791,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].type"), int(QLight::DirectionalLight));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].direction"), QVector3D(0.0f, -1.0f, -1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), 1.0f);
                 }
             }
             // Set frag outputs in the shaders if hash not empty
