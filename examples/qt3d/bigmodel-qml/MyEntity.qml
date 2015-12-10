@@ -36,15 +36,20 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id: root
+    property string name: "Entity"
     property alias position: transform.translation
     property alias diffuse: material.diffuse
 
     components: [
         Transform { id: transform },
         SphereMesh { radius: 2 },
-        PhongMaterial { id: material }
+        PhongMaterial { id: material },
+        ObjectPicker {
+                onClicked: console.log("Clicked", root.name, pick.distance, pick.triangleIndex)
+            }
     ]
 }

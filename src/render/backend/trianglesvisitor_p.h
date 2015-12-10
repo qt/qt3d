@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_TRIANGLESEXTRACTOR_P_H
-#define QT3DRENDER_RENDER_TRIANGLESEXTRACTOR_P_H
+#ifndef QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H
+#define QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H
 
 //
 //  W A R N I N G
@@ -48,31 +48,37 @@
 // We mean it.
 //
 
-#include "trianglesvisitor_p.h"
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DRender {
+namespace Qt3DCore {
+class QEntity;
+}
 
-class QBoundingVolume;
+namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT TrianglesExtractor : private TrianglesVisitor
+class GeometryRenderer;
+class NodeManagers;
+
+class Q_AUTOTEST_EXPORT TrianglesVisitor
 {
 public:
-    explicit TrianglesExtractor(GeometryRenderer *renderer,
-                                NodeManagers *manager);
+    explicit TrianglesVisitor(NodeManagers *manager) : m_manager(manager) { }
+    virtual ~TrianglesVisitor();
 
-    QVector<QBoundingVolume *> extract(const Qt3DCore::QNodeId id);
+    void apply(const Qt3DCore::QEntity *entity);
+    void apply(const GeometryRenderer *renderer, const Qt3DCore::QNodeId id);
 
-private:
-    void visit(uint andx, const QVector3D &a,
-               uint bndx, const QVector3D &b,
-               uint cndx, const QVector3D &c) Q_DECL_OVERRIDE;
+    virtual void visit(uint andx, const QVector3D &a,
+                       uint bndx, const QVector3D &b,
+                       uint cndx, const QVector3D &c) = 0;
 
-    GeometryRenderer *m_renderer;
-    QVector<QBoundingVolume *> m_volumes;
+protected:
+    NodeManagers *m_manager;
+    Qt3DCore::QNodeId m_nodeId;
 };
 
 } // namespace Render
@@ -82,4 +88,4 @@ private:
 QT_END_NAMESPACE
 
 
-#endif // QT3DRENDER_RENDER_TRIANGLESEXTRACTOR_P_H
+#endif // QT3DRENDER_RENDER_TRIANGLESVISITOR_P_H

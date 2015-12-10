@@ -55,6 +55,10 @@ public:
     QVector3D m_worldIntersection;
     QVector3D m_localIntersection;
     float m_distance;
+    uint m_triangleIndex;
+    uint m_vertex1Index;
+    uint m_vertex2Index;
+    uint m_vertex3Index;
 };
 
 QPickEvent::QPickEvent()
@@ -62,13 +66,18 @@ QPickEvent::QPickEvent()
 {
 }
 
-QPickEvent::QPickEvent(const QVector3D &intersection, const QVector3D &localIntersection, float distance)
+QPickEvent::QPickEvent(const QVector3D &intersection, const QVector3D &localIntersection, float distance,
+                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)
     : QObject(*new QPickEventPrivate())
 {
     Q_D(QPickEvent);
     d->m_distance = distance;
     d->m_worldIntersection = intersection;
     d->m_localIntersection = localIntersection;
+    d->m_triangleIndex = triangleIndex;
+    d->m_vertex1Index = vertex1Index;
+    d->m_vertex2Index = vertex2Index;
+    d->m_vertex3Index = vertex3Index;
 }
 
 QPickEvent::~QPickEvent()
@@ -106,6 +115,30 @@ const QVector3D &QPickEvent::localIntersection() const
 {
     Q_D(const QPickEvent);
     return d->m_localIntersection;
+}
+
+uint QPickEvent::triangleIndex() const
+{
+    Q_D(const QPickEvent);
+    return d->m_triangleIndex;
+}
+
+uint QPickEvent::vertex1Index() const
+{
+    Q_D(const QPickEvent);
+    return d->m_vertex1Index;
+}
+
+uint QPickEvent::vertex2Index() const
+{
+    Q_D(const QPickEvent);
+    return d->m_vertex2Index;
+}
+
+uint QPickEvent::vertex3Index() const
+{
+    Q_D(const QPickEvent);
+    return d->m_vertex3Index;
 }
 
 } // Qt3DRender

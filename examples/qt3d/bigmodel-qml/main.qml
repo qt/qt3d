@@ -81,6 +81,7 @@ Entity {
         model: entityModel
         delegate: MyEntity {
             id: myEntity
+            name: "E" + index
             property real _lightness: 0.2 + 0.7 / collection._rows * Math.floor(index / collection.cols)
             property real _hue: (index % collection.cols) / collection.cols
             position: Qt.vector3d(collection.spacing * (index % collection.cols - 0.5 * (collection.cols - 1)),

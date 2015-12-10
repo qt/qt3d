@@ -47,7 +47,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/geometryrenderer_p.h>
-#include <Qt3DRender/private/trianglesextractor_p.h>
+#include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
@@ -124,89 +124,159 @@ public:
 
 };
 
-QVector<QBoundingVolume *> gatherBoundingVolumes(Entity *entity)
+QVector<Entity *> gatherEntities(Entity *entity)
 {
-    QVector<QBoundingVolume *> volumes;
+    QVector<Entity *> entities;
 
     if (entity != Q_NULLPTR) {
-        volumes.push_back(entity->worldBoundingVolume());
+        entities.push_back(entity);
         // Traverse children
         Q_FOREACH (Entity *child, entity->children())
-            volumes += gatherBoundingVolumes(child);
+            entities += gatherEntities(child);
     }
-    return volumes;
+    return entities;
 }
 
-class SphereBoundingVolumesGatherer : public QBoundingVolumeProvider
+class EntityGatherer
 {
 public:
-    explicit SphereBoundingVolumesGatherer(Entity *root)
-        : QBoundingVolumeProvider()
-        , m_root(root)
+    explicit EntityGatherer(Entity *root)
+        : m_root(root)
         , m_needsRefresh(true)
     {
     }
 
-    QVector<QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL
+    QVector<Entity *> entities() const
     {
         if (m_needsRefresh) {
-            m_volumes = gatherBoundingVolumes(m_root);
+            m_entities = gatherEntities(m_root);
             m_needsRefresh = false;
         }
-        return m_volumes;
+        return m_entities;
     }
 
 private:
     Entity *m_root;
-    mutable QVector<QBoundingVolume *> m_volumes;
+    mutable QVector<Entity *> m_entities;
     mutable bool m_needsRefresh;
 };
 
-
-class TriangleVolumeGatherer : public QBoundingVolumeProvider
+class CollisionVisitor : public TrianglesVisitor
 {
 public:
-    explicit TriangleVolumeGatherer(Entity *root, NodeManagers *manager)
-        : QBoundingVolumeProvider()
-        , m_root(root)
-        , m_manager(manager)
-    {
-        m_volumes = buildTriangleBoundingVolumes();
-    }
+    typedef QVector<QCollisionQueryResult::Hit> HitList;
+    HitList hits;
 
-    ~TriangleVolumeGatherer()
-    {
-        qDeleteAll(m_volumes);
-    }
-
-    QVector<QBoundingVolume *> boundingVolumes() const Q_DECL_FINAL
-    {
-        return m_volumes;
-    }
-
+    CollisionVisitor(NodeManagers* manager, const Entity *root, const Qt3DCore::QRay3D& ray) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0) { }
 private:
-    QVector<QBoundingVolume *> buildTriangleBoundingVolumes()
+    const Entity *m_root;
+    Qt3DCore::QRay3D m_ray;
+    Qt3DRender::QRayCastingService rayCasting;
+    uint m_triangleIndex;
+
+    void visit(uint andx, const QVector3D &a,
+               uint bndx, const QVector3D &b,
+               uint cndx, const QVector3D &c)
     {
-        QVector<QBoundingVolume *> volumes;
-        if (m_root) {
-            GeometryRenderer *gRenderer = m_root->renderComponent<GeometryRenderer>();
-            if (gRenderer) {
-                const QVector<QBoundingVolume *> localVolumes = gRenderer->triangleData();
-                volumes.reserve(localVolumes.size());
-                Q_FOREACH (const QBoundingVolume *v, localVolumes) {
-                    TriangleBoundingVolume *worldVolume = new TriangleBoundingVolume();
-                    *worldVolume = static_cast<const TriangleBoundingVolume *>(v)->transformed(*m_root->worldTransform());
-                    volumes.push_back(worldVolume);
+        TriangleBoundingVolume volume(m_root->peerUuid(), a, b, c);
+        volume = volume.transform(*m_root->worldTransform());
+
+        QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, &volume);
+        if (queryResult.m_distance > 0.) {
+            queryResult.m_triangleIndex = m_triangleIndex;
+            queryResult.m_vertexIndex[0] = andx;
+            queryResult.m_vertexIndex[1] = bndx;
+            queryResult.m_vertexIndex[2] = cndx;
+            hits.push_back(queryResult);
+        }
+
+        m_triangleIndex++;
+    }
+};
+
+struct CollisionGathererFunctor
+{
+    CollisionGathererFunctor() : m_renderer(0) { }
+    Renderer *m_renderer;
+    Qt3DCore::QRay3D m_ray;
+
+    typedef CollisionVisitor::HitList result_type;
+
+    result_type operator ()(const Entity *entity) const
+    {
+        result_type result;
+
+        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+
+        // If the Entity which actually received the hit doesn't have
+        // an object picker component, we need to check the parent if it has one ...
+        while (objectPickerHandle.isNull() && entity != Q_NULLPTR) {
+            entity = entity->parent();
+            if (entity != Q_NULLPTR)
+                objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+        }
+
+        ObjectPicker *objectPicker = m_renderer->nodeManagers()->objectPickerManager()->data(objectPickerHandle);
+        if (objectPicker == Q_NULLPTR)
+            return result;  // don't bother picking entities that don't have an object picker
+
+        GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
+        if (!gRenderer)
+            return result;
+
+        Qt3DRender::QRayCastingService rayCasting;
+
+        if (rayHitsEntity(&rayCasting, entity)) {
+            CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray);
+            visitor.apply(gRenderer, entity->peerUuid());
+            result = visitor.hits;
+
+            struct
+            {
+                bool operator()(const result_type::value_type &a, const result_type::value_type &b)
+                {
+                    return a.m_distance < b.m_distance;
                 }
+            } compareHitsDistance;
+            std::sort(result.begin(), result.end(), compareHitsDistance);
+        }
+
+        return result;
+    }
+
+    bool rayHitsEntity(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const
+    {
+        const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
+        return queryResult.m_distance >= 0.f;
+    }
+};
+
+CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, const CollisionVisitor::HitList &intermediate)
+{
+    if (!intermediate.empty()) {
+        if (result.empty())
+            result.push_back(intermediate.front());
+        float closest = result.front().m_distance;
+        Q_FOREACH (const CollisionVisitor::HitList::value_type& v, intermediate) {
+            if (v.m_distance < closest) {
+                result.push_front(v);
+                closest = v.m_distance;
             }
         }
-        return volumes;
-    }
 
-    Entity *m_root;
-    NodeManagers *m_manager;
-    QVector<QBoundingVolume *> m_volumes;
-};
+        while (result.size() > 1)
+            result.pop_back();
+    }
+    return result;
+}
+
+// Unordered
+CollisionVisitor::HitList reduceToAllHits(CollisionVisitor::HitList &results, const CollisionVisitor::HitList &intermediate)
+{
+    if (!intermediate.empty())
+        results << intermediate;
+    return results;
+}
 
 } // anonymous
 
@@ -240,146 +310,125 @@ void PickBoundingVolumeJob::run()
     if (m_mouseEvents.empty())
         return;
 
-    Qt3DCore::QServiceLocator *services = m_renderer->services();
-    QAbstractCollisionQueryService *rayCasting = services->service<QAbstractCollisionQueryService>
-            (Qt3DCore::QServiceLocator::CollisionService);
+    ViewportCameraGatherer vcGatherer;
+    const QVector<ViewportCameraPair> vcPairs = vcGatherer.gather(m_renderer->frameGraphRoot());
 
-    if (rayCasting == Q_NULLPTR) {
-        Qt3DRender::QRayCastingService *rayCastingService = new QRayCastingService();
-        services->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
-        rayCasting = rayCastingService;
-    }
+    EntityGatherer entitiesGatherer(m_node);
 
-    if (rayCasting != Q_NULLPTR) {
-        ViewportCameraGatherer vcGatherer;
-        const QVector<ViewportCameraPair> vcPairs = vcGatherer.gather(m_renderer->frameGraphRoot());
+    if (!vcPairs.empty()) {
+        Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
+            m_hoveredPickersToClear = m_hoveredPickers;
+            ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
-        SphereBoundingVolumesGatherer sphereGatherer(m_node);
+            Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
+                typedef CollisionGathererFunctor::result_type HitList;
+                CollisionGathererFunctor gathererFunctor;
+                gathererFunctor.m_renderer = m_renderer;
+                gathererFunctor.m_ray = rayForViewportAndCamera(event.pos(), vc.viewport, vc.cameraId);
+                HitList sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reduceToAllHits);
 
-        if (!vcPairs.empty()) {
-            Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
-                m_hoveredPickersToClear = m_hoveredPickers;
-                ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
-                Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
-                    QVector<QCollisionQueryResult::Hit> sphereHits = sphereHitsForViewportAndCamera(event.pos(),
-                                                                                                    vc.viewport,
-                                                                                                    vc.cameraId,
-                                                                                                    rayCasting,
-                                                                                                    &sphereGatherer);
-#if 0
-                    Q_FOREACH (const Qt3DCore::QCollisionQueryResult::Hit sphereHit, sphereHits) {
-                        if (triangleHitsForViewportAndCamera(event.pos(),
-                                                             vc.viewport,
-                                                             vc.cameraId,
-                                                             sphereHit.m_entityId,
-                                                             rayCasting).isEmpty())
-                            sphereHits.removeAll(sphereHit);
+                // If we have hits
+                if (!sphereHits.isEmpty()) {
+                    // Note: how can we control that we want the first/last/all elements along the ray to be picked
+
+                    // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
+                    // an ObjectPicker component when it comes
+
+                    // We want to gather hits against triangles
+                    // build a triangle based bounding volume
+
+                    Q_FOREACH (const QCollisionQueryResult::Hit &hit, sphereHits) {
+                        Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
+                        HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+
+                        // If the Entity which actually received the hit doesn't have
+                        // an object picker component, we need to check the parent if it has one ...
+                        while (objectPickerHandle.isNull() && entity != Q_NULLPTR) {
+                            entity = entity->parent();
+                            if (entity != Q_NULLPTR)
+                                objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
+                        }
+
+                        ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
+
+                        if (objectPicker != Q_NULLPTR) {
+                            // Send the corresponding event
+                            QVector3D localIntersection = hit.m_intersection;
+                            if (entity && entity->worldTransform())
+                                localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
+                            QPickEventPtr pickEvent(new QPickEvent(hit.m_intersection, localIntersection, hit.m_distance,
+                                                                   hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2]));
+
+                            switch (event.type()) {
+                            case QEvent::MouseButtonPress: {
+                                // Store pressed object handle
+                                m_currentPicker = objectPickerHandle;
+                                // Send pressed event to m_currentPicker
+                                objectPicker->onPressed(pickEvent);
+                            }
+                                break;
+
+                            case QEvent::MouseButtonRelease: {
+                                // Send release event to m_currentPicker
+                                if (lastCurrentPicker != Q_NULLPTR) {
+                                    lastCurrentPicker->onClicked(pickEvent);
+                                    lastCurrentPicker->onReleased(pickEvent);
+                                }
+                                break;
+                            }
+
+                            case Qt::TapGesture: {
+                                objectPicker->onClicked(pickEvent);
+                                break;
+                            }
+
+                            case QEvent::HoverMove:
+                            case QEvent::MouseMove: {
+                                if (!m_hoveredPickers.contains(objectPickerHandle)) {
+                                    if (objectPicker->hoverEnabled()) {
+                                        // Send entered event to objectPicker
+                                        objectPicker->onEntered();
+                                        // and save it in the hoveredPickers
+                                        m_hoveredPickers.push_back(objectPickerHandle);
+                                    }
+                                }
+                                break;
+                            }
+
+                            default:
+                                break;
+                            }
+                        }
+
+                        // The ObjectPicker was hit -> it is still being hovered
+                        m_hoveredPickersToClear.removeAll(objectPickerHandle);
+
+                        lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
                     }
-#endif
 
-                    // If we have hits
-                    if (!sphereHits.isEmpty()) {
-                        // Note: how can we control that we want the first/last/all elements along the ray to be picked
-
-                        // How do we differentiate betwnee an Entity with no GeometryRenderer and one with one, both having
-                        // an ObjectPicker component when it comes
-
-                        // We want to gather hits against triangles
-                        // build a triangle based bounding volume
-
-                        Q_FOREACH (const QCollisionQueryResult::Hit &hit, sphereHits) {
-                            Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
-                            HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-
-                            // If the Entity which actually received the hit doesn't have
-                            // an object picker component, we need to check the parent if it has one ...
-                            while (objectPickerHandle.isNull() && entity != Q_NULLPTR) {
-                                entity = entity->parent();
-                                if (entity != Q_NULLPTR)
-                                    objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
-                            }
-
-                            ObjectPicker *objectPicker = m_manager->objectPickerManager()->data(objectPickerHandle);
-
-                            if (objectPicker != Q_NULLPTR) {
-                                // Send the corresponding event
-                                QVector3D localIntersection = hit.m_intersection;
-                                if (entity && entity->worldTransform())
-                                    localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
-                                QPickEventPtr pickEvent(new QPickEvent(hit.m_intersection, localIntersection, hit.m_distance));
-
-                                switch (event.type()) {
-                                case QEvent::MouseButtonPress: {
-                                    // Store pressed object handle
-                                    m_currentPicker = objectPickerHandle;
-                                    // Send pressed event to m_currentPicker
-                                    objectPicker->onPressed(pickEvent);
-                                }
-                                    break;
-
-                                case QEvent::MouseButtonRelease: {
-                                    // Send release event to m_currentPicker
-                                    if (lastCurrentPicker != Q_NULLPTR) {
-                                        lastCurrentPicker->onClicked(pickEvent);
-                                        lastCurrentPicker->onReleased(pickEvent);
-                                    }
-                                    break;
-                                }
-
-                                case Qt::TapGesture: {
-                                    objectPicker->onClicked(pickEvent);
-                                    break;
-                                }
-
-                                case QEvent::HoverMove:
-                                case QEvent::MouseMove: {
-                                    if (!m_hoveredPickers.contains(objectPickerHandle)) {
-                                        if (objectPicker->hoverEnabled()) {
-                                            // Send entered event to objectPicker
-                                            objectPicker->onEntered();
-                                            // and save it in the hoveredPickers
-                                            m_hoveredPickers.push_back(objectPickerHandle);
-                                        }
-                                    }
-                                    break;
-                                }
-
-                                default:
-                                    break;
-                                }
-                            }
-
-                            // The ObjectPicker was hit -> it is still being hovered
-                            m_hoveredPickersToClear.removeAll(objectPickerHandle);
-
-                            lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
+                    // Otherwise no hits
+                } else {
+                    switch (event.type()) {
+                    case QEvent::MouseButtonRelease: {
+                        // Send release event to m_currentPicker
+                        if (lastCurrentPicker != Q_NULLPTR) {
+                            QPickEventPtr pickEvent(new QPickEvent);
+                            lastCurrentPicker->onReleased(pickEvent);
                         }
-
-                        // Otherwise no hits
-                    } else {
-                        switch (event.type()) {
-                        case QEvent::MouseButtonRelease: {
-                            // Send release event to m_currentPicker
-                            if (lastCurrentPicker != Q_NULLPTR) {
-                                QPickEventPtr pickEvent(new QPickEvent);
-                                lastCurrentPicker->onReleased(pickEvent);
-                            }
-                            break;
-                        }
-                        default:
-                            break;
-                        }
+                        break;
+                    }
+                    default:
+                        break;
                     }
                 }
             }
-
-            // Clear Hovered elements that needs to be cleared
-            // Send exit event to object pickers on which we
-            // had set the hovered flag for a previous frame
-            // and that aren't being hovered any longer
-            clearPreviouslyHoveredPickers();
-
         }
+
+        // Clear Hovered elements that needs to be cleared
+        // Send exit event to object pickers on which we
+        // had set the hovered flag for a previous frame
+        // and that aren't being hovered any longer
+        clearPreviouslyHoveredPickers();
     }
 
     // Clear mouse events so that they aren't processed again for the next frame
@@ -402,70 +451,36 @@ void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraI
 
 QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) const
 {
-    //    // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    //    const QSurface *s = m_renderer->surface();
-    //    if (s) {
-    //        const int surfaceWidth = s->size().width();
-    //        const int surfaceHeight = s->size().height();
-    //        return QRect(relativeViewport.x() * surfaceWidth,
-    //                     (1.0 - relativeViewport.y() - relativeViewport.height()) * surfaceHeight,
-    //                     relativeViewport.width() * surfaceWidth,
-    //                     relativeViewport.height() * surfaceHeight);
-    //    }
-    //    return relativeViewport.toRect();
+    // TO DO: find another way to retrieve the size since this won't work with Scene3D
+    // const QSize s = m_renderer->surfaceSize();
+    // if (s.isValid()) {
+    //     const int surfaceWidth = s.width();
+    //     const int surfaceHeight = s.height();
+    //     return QRect(relativeViewport.x() * surfaceWidth,
+    //                  (1.0 - relativeViewport.y() - relativeViewport.height()) * surfaceHeight,
+    //                  relativeViewport.width() * surfaceWidth,
+    //                  relativeViewport.height() * surfaceHeight);
+    // }
+    // return relativeViewport.toRect();
     return QRect();
 }
 
-
-QVector<QCollisionQueryResult::Hit> PickBoundingVolumeJob::sphereHitsForViewportAndCamera(const QPoint &pos,
-                                                                                          const QRectF &relativeViewport,
-                                                                                          const Qt3DCore::QNodeId &cameraId,
-                                                                                          QAbstractCollisionQueryService *rayCasting,
-                                                                                          QBoundingVolumeProvider *volumeProvider) const
+Qt3DCore::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &pos,
+                                                                const QRectF &relativeViewport,
+                                                                const Qt3DCore::QNodeId &cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
     viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport(relativeViewport);
 
-    //    const QSurface *s = m_renderer->surface();
     // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    // In GL the y is inverted compared to Qt
-    //    const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
+    // const QSize s = m_renderer->surfaceSize();
+    // // In GL the y is inverted compared to Qt
+    // const QPoint glCorrectPos = s.isValid() ? QPoint(pos.x(), s.height() - pos.y()) : pos;
     const QPoint glCorrectPos = pos;
     const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
-    const QQueryHandle rayCastingHandle = rayCasting->query(ray, QAbstractCollisionQueryService::AllHits, volumeProvider);
-    const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
-    return queryResult.hits();
-}
-
-QVector<QCollisionQueryResult::Hit> PickBoundingVolumeJob::triangleHitsForViewportAndCamera(const QPoint &pos,
-                                                                                            const QRectF &relativeViewport,
-                                                                                            const Qt3DCore::QNodeId &cameraId,
-                                                                                            const Qt3DCore::QNodeId &entityId,
-                                                                                            QAbstractCollisionQueryService *rayCasting) const
-{
-    QMatrix4x4 viewMatrix;
-    QMatrix4x4 projectionMatrix;
-    viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
-    const QRect viewport = windowViewport(relativeViewport);
-
-    //    const QSurface *s = m_renderer->surface();
-    // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    // In GL the y is inverted compared to Qt
-    //    const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
-    const QPoint glCorrectPos = pos;
-    const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
-
-    // Note: improve this further to only compute this once and not every time
-    TriangleVolumeGatherer boundingVolumeProvider(m_manager->lookupResource<Entity, EntityManager>(entityId),
-                                                  m_manager);
-
-    const QQueryHandle rayCastingHandle = rayCasting->query(ray,
-                                                            QAbstractCollisionQueryService::AllHits,
-                                                            &boundingVolumeProvider);
-    const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
-    return queryResult.hits();
+    return ray;
 }
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
@@ -484,4 +499,3 @@ void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-

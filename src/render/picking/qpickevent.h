@@ -57,9 +57,14 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(float distance READ distance CONSTANT)
     Q_PROPERTY(QVector3D localIntersection READ localIntersection CONSTANT)
     Q_PROPERTY(QVector3D worldIntersection READ worldIntersection CONSTANT)
+    Q_PROPERTY(uint triangleIndex READ triangleIndex CONSTANT)
+    Q_PROPERTY(uint vertex1Index READ vertex1Index CONSTANT)
+    Q_PROPERTY(uint vertex2Index READ vertex2Index CONSTANT)
+    Q_PROPERTY(uint vertex3Index READ vertex3Index CONSTANT)
 public:
     QPickEvent();
-    QPickEvent(const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance);
+    QPickEvent(const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
+               uint triangleIndex = 0, uint vertex1Index = 0, uint vertex2Index = 0, uint vertex3Index = 0);
     ~QPickEvent();
 
     bool isAccepted() const;
@@ -70,6 +75,10 @@ public Q_SLOTS:
     float distance() const;
     const QVector3D &worldIntersection() const;
     const QVector3D &localIntersection() const;
+    uint triangleIndex() const;
+    uint vertex1Index() const;
+    uint vertex2Index() const;
+    uint vertex3Index() const;
 
 Q_SIGNALS:
     void acceptedChanged(bool accepted);

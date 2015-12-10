@@ -123,9 +123,11 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                     const int stride = pickVolumeAttribute->byteStride() ? pickVolumeAttribute->byteStride() : sizeof(float) * pickVolumeAttribute->dataSize();
                     QVector<QVector3D> vertices(pickVolumeAttribute->count());
 
+                    // TODO avoid copying the vertices
                     for (int c = 0, vC = vertices.size(); c < vC; ++c) {
                         QVector3D v;
                         const float *fptr = reinterpret_cast<const float*>(rawBuffer);
+                        // TODO unwrap loop (switch?)
                         for (uint i = 0, m = qMin(pickVolumeAttribute->dataSize(), 3U); i < m; ++i)
                             v[i] = fptr[i];
                         vertices[c] = v;

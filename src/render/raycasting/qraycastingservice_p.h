@@ -60,7 +60,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QBoundingVolume;
 class QBoundingVolumeProvider;
 class QRayCastingServicePrivate;
 
@@ -72,6 +71,7 @@ public:
     QRayCastingService();
 
     QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE;
+    QCollisionQueryResult::Hit query(const Qt3DCore::QRay3D &ray, const QBoundingVolume *volume) Q_DECL_OVERRIDE;
 
     QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE;
     QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE;
@@ -93,6 +93,8 @@ public:
                                    QBoundingVolumeProvider *provider,
                                    QAbstractCollisionQueryService::QueryMode mode,
                                    const QQueryHandle &handle);
+    QCollisionQueryResult::Hit collides(const Qt3DCore::QRay3D &ray,
+                                        const QBoundingVolume *volume);
 
     Q_DECLARE_PUBLIC(QRayCastingService)
 

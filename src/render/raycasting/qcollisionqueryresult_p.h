@@ -70,6 +70,8 @@ public:
         Qt3DCore::QNodeId m_entityId;
         QVector3D m_intersection;
         float m_distance;
+        uint m_triangleIndex;
+        uint m_vertexIndex[3];
     };
 
     QCollisionQueryResult();

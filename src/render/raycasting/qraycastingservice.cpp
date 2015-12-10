@@ -141,6 +141,19 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D
     return result;
 }
 
+QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, const Qt3DRender::QBoundingVolume *volume)
+{
+    QCollisionQueryResult::Hit result;
+    Hit hit = volumeRayIntersection(volume, ray);
+    if (hit.intersects)
+    {
+        result.m_distance = hit.distance;
+        result.m_entityId = hit.id;
+        result.m_intersection = hit.intersection;
+    }
+    return result;
+}
+
 QRayCastingServicePrivate::QRayCastingServicePrivate(const QString &description)
     : QAbstractCollisionQueryServicePrivate(description)
     , m_handlesCount(0)
@@ -168,6 +181,13 @@ QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
     d->m_results.insert(handle, future);
 
     return handle;
+}
+
+QCollisionQueryResult::Hit QRayCastingService::query(const Qt3DCore::QRay3D &ray, const QBoundingVolume *volume)
+{
+    Q_D(QRayCastingService);
+
+    return d->collides(ray, volume);
 }
 
 QCollisionQueryResult QRayCastingService::fetchResult(const QQueryHandle &handle)

@@ -371,19 +371,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<QAspectJobPtr> geometryJobs = createGeometryRendererJobs();
         jobs.append(geometryJobs);
 
-
-        const QVector<QNodeId> geometryRendererTriangleUpdates = manager->geometryRendererManager()->geometryRenderersRequiringTriangleDataRefresh();
-        Q_FOREACH (const QNodeId geomRendererId, geometryRendererTriangleUpdates) {
-            Render::CalcGeometryTriangleVolumesPtr triangleComputeJob(new Render::CalcGeometryTriangleVolumes(geomRendererId, manager));
-            triangleComputeJob->addDependency(d->m_framePreparationJob);
-            pickBoundingVolumeJob->addDependency(triangleComputeJob);
-            jobs.append(triangleComputeJob);
-        }
-
         // Only add dependency if not already present
         const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
-        if (std::find(dependencies.begin(), dependencies.end(), d->m_updateBoundingVolumeJob) == dependencies.end())
-            pickBoundingVolumeJob->addDependency(d->m_updateBoundingVolumeJob);
+        if (std::find(dependencies.begin(), dependencies.end(), d->m_framePreparationJob) == dependencies.end())
+            pickBoundingVolumeJob->addDependency(d->m_framePreparationJob);
 
         // Add all jobs to queue
         jobs.append(d->m_calculateBoundingVolumeJob);
