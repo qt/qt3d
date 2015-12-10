@@ -67,6 +67,7 @@ public:
     QQuaternion m_rotation;
     QVector3D m_scale;
     QVector3D m_translation;
+    QVector3D m_eulerRotationAngles;
 
     mutable QMatrix4x4 m_matrix;
     mutable bool m_matrixDirty;

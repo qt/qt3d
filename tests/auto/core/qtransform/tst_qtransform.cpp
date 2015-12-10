@@ -74,6 +74,12 @@ private Q_SLOTS:
         Qt3DCore::QTransform *rotationSet = new Qt3DCore::QTransform();
         scaleSet->setRotation(Qt3DCore::QTransform::fromAxisAndAngle(0.0f, 0.0f, 1.0f, 30.0f));
         QTest::newRow("rotationSet") << rotationSet;
+
+        Qt3DCore::QTransform *eulerRotationSet = new Qt3DCore::QTransform();
+        eulerRotationSet->setRotationX(90.0f);
+        eulerRotationSet->setRotationY(10.0f);
+        eulerRotationSet->setRotationZ(1.0f);
+        QTest::newRow("eulerRotationSet") << eulerRotationSet;
     }
 
     void checkCloning()
@@ -106,8 +112,9 @@ private Q_SLOTS:
         QCoreApplication::processEvents();
 
         // THEN
+        Qt3DCore::QScenePropertyChangePtr change;
         QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(454.0f, 427.0f, 383.0f));
 
@@ -156,6 +163,18 @@ private Q_SLOTS:
         change = arbiter.events.takeFirst().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "translation");
         QCOMPARE(change->value().value<QVector3D>(), QVector3D());
+
+        arbiter.events.clear();
+
+        // WHEN
+        transform->setRotationX(20.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "rotation");
+        QCOMPARE(change->value().value<QQuaternion>().toEulerAngles().x(), 20.0f);
 
         arbiter.events.clear();
     }

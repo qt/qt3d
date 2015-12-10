@@ -53,6 +53,7 @@ QTransformPrivate::QTransformPrivate()
     , m_rotation()
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_translation()
+    , m_eulerRotationAngles()
     , m_matrixDirty(false)
 {
 }
@@ -83,6 +84,7 @@ void QTransform::copy(const QNode *ref)
     d_func()->m_rotation = transform->rotation();
     d_func()->m_scale = transform->scale3D();
     d_func()->m_translation = transform->translation();
+    d_func()->m_eulerRotationAngles = transform->d_func()->m_eulerRotationAngles;
     d_func()->m_matrixDirty = transform->d_func()->m_matrixDirty;
 }
 
@@ -100,14 +102,77 @@ void QTransform::setMatrix(const QMatrix4x4 &m)
         d->m_scale = s;
         d->m_rotation = r;
         d->m_translation = t;
+        d->m_eulerRotationAngles = d->m_rotation.toEulerAngles();
         emit scale3DChanged(s);
         emit rotationChanged(r);
         emit translationChanged(t);
 
         const bool wasBlocked = blockNotifications(true);
         emit matrixChanged(m);
+        emit rotationXChanged(d->m_eulerRotationAngles.x());
+        emit rotationYChanged(d->m_eulerRotationAngles.y());
+        emit rotationZChanged(d->m_eulerRotationAngles.z());
         blockNotifications(wasBlocked);
     }
+}
+
+void QTransform::setRotationX(float rotationX)
+{
+    Q_D(QTransform);
+
+    if (d->m_eulerRotationAngles.x() == rotationX)
+        return;
+
+    d->m_eulerRotationAngles.setX(rotationX);
+    QQuaternion rotation = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    if (rotation != d->m_rotation) {
+        d->m_rotation = rotation;
+        d->m_matrixDirty = true;
+        emit rotationChanged(rotation);
+    }
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationXChanged(rotationX);
+    blockNotifications(wasBlocked);
+}
+
+void QTransform::setRotationY(float rotationY)
+{
+    Q_D(QTransform);
+
+    if (d->m_eulerRotationAngles.y() == rotationY)
+        return;
+
+    d->m_eulerRotationAngles.setY(rotationY);
+    QQuaternion rotation = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    if (rotation != d->m_rotation) {
+        d->m_rotation = rotation;
+        d->m_matrixDirty = true;
+        emit rotationChanged(rotation);
+    }
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationYChanged(rotationY);
+    blockNotifications(wasBlocked);
+}
+
+void QTransform::setRotationZ(float rotationZ)
+{
+    Q_D(QTransform);
+    if (d->m_eulerRotationAngles.z() == rotationZ)
+        return;
+
+    d->m_eulerRotationAngles.setZ(rotationZ);
+    QQuaternion rotation = QQuaternion::fromEulerAngles(d->m_eulerRotationAngles);
+    if (rotation != d->m_rotation) {
+        d->m_rotation = rotation;
+        d->m_matrixDirty = true;
+        emit rotationChanged(rotation);
+    }
+
+    const bool wasBlocked = blockNotifications(true);
+    emit rotationZChanged(rotationZ);
+    blockNotifications(wasBlocked);
 }
 
 QMatrix4x4 QTransform::matrix() const
@@ -118,6 +183,24 @@ QMatrix4x4 QTransform::matrix() const
         d->m_matrixDirty = false;
     }
     return d->m_matrix;
+}
+
+float QTransform::rotationX() const
+{
+    Q_D(const QTransform);
+    return d->m_eulerRotationAngles.x();
+}
+
+float QTransform::rotationY() const
+{
+    Q_D(const QTransform);
+    return d->m_eulerRotationAngles.y();
+}
+
+float QTransform::rotationZ() const
+{
+    Q_D(const QTransform);
+    return d->m_eulerRotationAngles.z();
 }
 
 void QTransform::setScale3D(const QVector3D &scale)
@@ -158,6 +241,7 @@ void QTransform::setRotation(const QQuaternion &rotation)
     Q_D(QTransform);
     if (rotation != d->m_rotation) {
         d->m_rotation = rotation;
+        d->m_eulerRotationAngles = d->m_rotation.toEulerAngles();
         d->m_matrixDirty = true;
         emit rotationChanged(rotation);
     }
