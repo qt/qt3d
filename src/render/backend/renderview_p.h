@@ -318,6 +318,10 @@ private:
                               Shader *shader,
                               const ShaderUniformBlock &block,
                               const QVariant &value);
+    void setShaderStorageValue(ShaderParameterPack &uniformPack,
+                               Shader *shader,
+                               const ShaderStorageBlock &block,
+                               const QVariant &value);
     void setDefaultUniformBlockShaderDataValue(ShaderParameterPack &uniformPack,
                                                Shader *shader,
                                                ShaderData *shaderData,

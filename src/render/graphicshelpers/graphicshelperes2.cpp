@@ -460,6 +460,14 @@ void GraphicsHelperES2::bindUniformBlock(GLuint programId, GLuint uniformBlockIn
     qWarning() << "UBO are not supported by ES 2.0 (since ES 3.0)";
 }
 
+void GraphicsHelperES2::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+{
+    Q_UNUSED(programId);
+    Q_UNUSED(shaderStorageBlockIndex);
+    Q_UNUSED(shaderStorageBlockBinding);
+    qWarning() << "SSBO are not supported by ES 2.0 (since ES 3.1)";
+}
+
 void GraphicsHelperES2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     Q_UNUSED(target);

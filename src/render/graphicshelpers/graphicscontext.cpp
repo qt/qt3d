@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/graphicshelperinterface_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
+#include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
 #include <QOpenGLShaderProgram>
@@ -91,6 +92,10 @@ GLBuffer::Type bufferTypeToGLBufferType(QBuffer::BufferType type)
         return GLBuffer::PixelPackBuffer;
     case QBuffer::PixelUnpackBuffer:
         return GLBuffer::PixelUnpackBuffer;
+    case QBuffer::UniformBuffer:
+        return GLBuffer::UniformBuffer;
+    case QBuffer::ShaderStorageBuffer:
+        return GLBuffer::ShaderStorageBuffer;
     default:
         Q_UNREACHABLE();
     }
@@ -720,6 +725,11 @@ void GraphicsContext::bindUniformBlock(GLuint programId, GLuint uniformBlockInde
     m_glHelper->bindUniformBlock(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
+void GraphicsContext::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+{
+    m_glHelper->bindShaderStorageBlock(programId, shaderStorageBlockIndex, shaderStorageBlockBinding);
+}
+
 void GraphicsContext::bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer)
 {
     m_glHelper->bindBufferBase(target, bindingIndex, buffer);
@@ -844,7 +854,7 @@ void GraphicsContext::setRenderer(Renderer *renderer)
 
 // It will be easier if the QGraphicContext applies the QUniformPack
 // than the other way around
-void GraphicsContext::setUniforms(ShaderParameterPack &uniforms)
+void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 {
     // Activate textures and update TextureUniform in the pack
     // with the correct textureUnit
@@ -855,9 +865,9 @@ void GraphicsContext::setUniforms(ShaderParameterPack &uniforms)
 
     deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
-    const QHash<QString, const QUniformValue *> &uniformValues = uniforms.uniforms();
-    for (int i = 0; i < uniforms.textures().size(); ++i) {
-        const ShaderParameterPack::NamedTexture &namedTex = uniforms.textures().at(i);
+    const QHash<QString, const QUniformValue *> &uniformValues = parameterPack.uniforms();
+    for (int i = 0; i < parameterPack.textures().size(); ++i) {
+        const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
         Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
         const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded
@@ -871,66 +881,52 @@ void GraphicsContext::setUniforms(ShaderParameterPack &uniforms)
         }
     }
 
-    // Bind UniformBlocks to UBO and update UBO from ShaderData
-    const QVector<BlockToUBO> &blockToUbos = uniforms.uniformBuffers();
-    GLBuffer *ubo = Q_NULLPTR;
-    bool needsToUnbindUBO = false;
+    QOpenGLShaderProgram *shader = m_activeShader->getOrCreateProgram(this);
 
-    // TEMPORARLY Disabled
+    // TO DO: We could cache the binding points somehow and only do the binding when necessary
+    // for SSBO and UBO
 
-    //    for (int i = 0; i < blockToUbos.length(); ++i) {
-    //        const ShaderUniformBlock &block = m_activeShader->uniformBlock(blockToUbos[i].m_blockIndex);
-    //        if (block.m_index != -1 && block.m_size > 0) {
-    //            ubo = manager->lookupResource<GLBuffer, GLBufferManager>(BufferShaderKey(blockToUbos[i].m_shaderDataID,
-    //                                                                                     m_activeShader->peerUuid()));
-    //            // bind Uniform Block of index ubos[i].m_index to binding point i
-    //            bindUniformBlock(m_activeShader->getOrCreateProgram(this)->programId(), block.m_index, i);
-    //            // bind the UBO to the binding point i
-    //            // Specs specify that there are at least 14 binding points
+    // Bind Shader Storage block to SSBO and update SSBO
+    const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
+    int ssboIndex = 0;
+    Q_FOREACH (const BlockToSSBO b, blockToSSBOs) {
+        Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
+        GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
+        bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
+        // Needed to avoid conflict where the buffer would already
+        // be bound as a VertexArray
+        ssbo->bind(this, GLBuffer::ShaderStorageBuffer);
+        ssbo->bindBufferBase(this, ssboIndex++, GLBuffer::ShaderStorageBuffer);
+        // Perform update if required
+        if (cpuBuffer->isDirty()) {
+            uploadDataToGLBuffer(cpuBuffer, ssbo);
+            cpuBuffer->unsetDirty();
+        }
+        // TO DO: Make sure that there's enough binding points
+    }
 
-    //            // Allocate ubo if not allocated previously
-    //            if (!ubo->isCreated()) {
-    //                ubo->create(this);
-    //                ubo->bind(this, GLBuffer::UniformBuffer);
-    //                ubo->allocate(this, block.m_size);
-    //            }
-
-    //            // update the ubo if needed
-
-    //            // TO DO: Maybe QShaderData should act as a QBuffer data provider
-    //            // and internally update a QBuffer which we would then reupload
-    //            // and the ShaderData updates could then be done in some jobs
-    //            // rather than at render time ?
-    //            if (blockToUbos[i].m_needsUpdate) {
-    //                if (!ubo->isBound())
-    //                    ubo->bind(this, GLBuffer::UniformBuffer);
-    //                needsToUnbindUBO |= true;
-    //                const QHash<QString, ShaderUniform> &activeUniformsInBlock = m_activeShader->activeUniformsForUniformBlock(block.m_index);
-    //                const QHash<QString, ShaderUniform>::const_iterator uniformsEnd = activeUniformsInBlock.end();
-    //                QHash<QString, ShaderUniform>::const_iterator uniformsIt = activeUniformsInBlock.begin();
-
-    //                while (uniformsIt != uniformsEnd) {
-    //                    if (blockToUbos[i].m_updatedProperties.contains(uniformsIt.key())) {
-    //                        buildUniformBuffer(blockToUbos[i].m_updatedProperties.value(uniformsIt.key()),
-    //                                           uniformsIt.value(),
-    //                                           m_uboTempArray);
-    //                        ubo->update(this, m_uboTempArray.constData() + uniformsIt.value().m_offset,
-    //                                    uniformsIt.value().m_rawByteSize,
-    //                                    uniformsIt.value().m_offset);
-    //                    }
-    //                    ++uniformsIt;
-    //                }
-    //            }
-    //            // bind UBO to binding point
-    //            ubo->bindToUniformBlock(this, i);
-    //        }
-    //    }
-
-    if (needsToUnbindUBO)
-        ubo->release(this);
+    // Bind UniformBlocks to UBO and update UBO from Buffer
+    // TO DO: Convert ShaderData to Buffer so that we can use that generic process
+    const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
+    int uboIndex = 0;
+    Q_FOREACH (const BlockToUBO b, blockToUBOs) {
+        Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
+        GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
+        bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
+        // Needed to avoid conflict where the buffer would already
+        // be bound as a VertexArray
+        ubo->bind(this, GLBuffer::UniformBuffer);
+        ubo->bindBufferBase(this, uboIndex++, GLBuffer::UniformBuffer);
+        if (cpuBuffer->isDirty()) {
+            // Perform update if required
+            uploadDataToGLBuffer(cpuBuffer, ubo);
+            cpuBuffer->unsetDirty();
+        }
+        // TO DO: Make sure that there's enough binding points
+    }
 
     // Update uniforms in the Default Uniform Block
-    m_activeShader->updateUniforms(this, uniforms);
+    m_activeShader->updateUniforms(this, parameterPack);
 }
 
 void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffer, const QString &shaderName)

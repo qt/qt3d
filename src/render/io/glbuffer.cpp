@@ -133,7 +133,12 @@ void GLBuffer::update(GraphicsContext *ctx, const void *data, uint size, int off
     ctx->openGLContext()->functions()->glBufferSubData(m_lastTarget, offset, size, data);
 }
 
-void GLBuffer::bindToUniformBlock(GraphicsContext *ctx, int bindingPoint)
+void GLBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint, GLBuffer::Type t)
+{
+    ctx->bindBufferBase(glBufferTypes[t], bindingPoint, m_bufferId);
+}
+
+void GLBuffer::bindBufferBase(GraphicsContext *ctx, int bindingPoint)
 {
     ctx->bindBufferBase(m_lastTarget, bindingPoint, m_bufferId);
 }

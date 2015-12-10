@@ -62,7 +62,9 @@ public:
         VertexBuffer        = 0x8892, // GL_ARRAY_BUFFER
         IndexBuffer         = 0x8893, // GL_ELEMENT_ARRAY_BUFFER
         PixelPackBuffer     = 0x88EB, // GL_PIXEL_PACK_BUFFER
-        PixelUnpackBuffer   = 0x88EC  // GL_PIXEL_UNPACK_BUFFER
+        PixelUnpackBuffer   = 0x88EC, // GL_PIXEL_UNPACK_BUFFER
+        UniformBuffer       = 0x8A11, // GL_UNIFORM_BUFFER
+        ShaderStorageBuffer = 0x90D2  // GL_SHADER_STORAGE_BUFFER
     };
     Q_ENUM(BufferType)
 

@@ -108,6 +108,11 @@ void ShaderParameterPack::setUniformBuffer(const BlockToUBO &blockToUBO)
     m_uniformBuffers.append(blockToUBO);
 }
 
+void ShaderParameterPack::setShaderStorageBuffer(const BlockToSSBO &blockToSSBO)
+{
+    m_shaderStorageBuffers.push_back(blockToSSBO);
+}
+
 void TextureUniform::apply(GraphicsContext *ctx, const ShaderUniform &description) const
 {
     // We assume that the texture has been successfully bound and attache to a texture unit

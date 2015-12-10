@@ -81,7 +81,8 @@ public:
     void allocate(GraphicsContext *ctx, uint size, bool dynamic = true);
     void allocate(GraphicsContext *ctx, const void *data, uint size, bool dynamic = true);
     void update(GraphicsContext *ctx, const void *data, uint size, int offset = 0);
-    void bindToUniformBlock(GraphicsContext *ctx, int bindingPoint);
+    void bindBufferBase(GraphicsContext *ctx, int bindingPoint, Type t);
+    void bindBufferBase(GraphicsContext *ctx, int bindingPoint);
 
     inline GLuint bufferId() const { return m_bufferId; }
     inline bool isCreated() const { return m_isCreated; }

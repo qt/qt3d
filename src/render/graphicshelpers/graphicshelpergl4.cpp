@@ -566,6 +566,11 @@ void GraphicsHelperGL4::bindUniformBlock(GLuint programId, GLuint uniformBlockIn
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
+void GraphicsHelperGL4::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+{
+    m_funcs->glShaderStorageBlockBinding(programId, shaderStorageBlockIndex, shaderStorageBlockBinding);
+}
+
 void GraphicsHelperGL4::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_funcs->glBindBufferBase(target, index, buffer);

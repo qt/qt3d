@@ -453,6 +453,14 @@ void GraphicsHelperGL2::bindUniformBlock(GLuint programId, GLuint uniformBlockIn
     qWarning() << "UBO are not supported by OpenGL 2.0 (since OpenGL 3.1)";
 }
 
+void GraphicsHelperGL2::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+{
+    Q_UNUSED(programId);
+    Q_UNUSED(shaderStorageBlockIndex);
+    Q_UNUSED(shaderStorageBlockBinding);
+    qWarning() << "SSBO are not supported by OpenGL 2.0 (since OpenGL 4.3)";
+}
+
 void GraphicsHelperGL2::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     Q_UNUSED(target);

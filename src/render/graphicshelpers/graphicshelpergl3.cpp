@@ -571,6 +571,14 @@ void GraphicsHelperGL3::bindUniformBlock(GLuint programId, GLuint uniformBlockIn
     m_funcs->glUniformBlockBinding(programId, uniformBlockIndex, uniformBlockBinding);
 }
 
+void GraphicsHelperGL3::bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding)
+{
+    Q_UNUSED(programId);
+    Q_UNUSED(shaderStorageBlockIndex);
+    Q_UNUSED(shaderStorageBlockBinding);
+    qWarning() << "SSBO are not supported by OpenGL 3.0 (since OpenGL 4.3)";
+}
+
 void GraphicsHelperGL3::bindBufferBase(GLenum target, GLuint index, GLuint buffer)
 {
     m_funcs->glBindBufferBase(target, index, buffer);

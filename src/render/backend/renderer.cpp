@@ -809,7 +809,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         if (shader == Q_NULLPTR) {
             shader = m_defaultRenderShader;
             command->m_parameterAttributeToShaderNames = m_defaultParameterToGLSLAttributeNames;
-            command->m_uniforms = m_defaultUniformPack;
+            command->m_parameterPack = m_defaultUniformPack;
         }
 
         // The VAO should be created only once for a QGeometry and a ShaderProgram
@@ -868,7 +868,7 @@ void Renderer::executeCommands(const QVector<RenderCommand *> &commands)
         }
 
         //// Update program uniforms
-        m_graphicsContext->setUniforms(command->m_uniforms);
+        m_graphicsContext->setParameters(command->m_parameterPack);
 
         //// Bind SSBO Buffers
         // Note: how does that behave regarding VAO

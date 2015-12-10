@@ -144,7 +144,7 @@ public:
     void specifyIndices(Buffer *buffer);
     void updateBuffer(Buffer *buffer);
 
-    void setUniforms(ShaderParameterPack &uniforms);
+    void setParameters(ShaderParameterPack &parameterPack);
 
     /**
      * @brief glBufferFor - given a client-side (CPU) buffer, provide the
@@ -176,6 +176,7 @@ public:
     void    bindUniform(const QVariant &v, const ShaderUniform &description);
     void    blendEquation(GLenum mode);
     void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);
+    void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    clearColor(const QColor &color);

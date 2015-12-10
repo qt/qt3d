@@ -140,8 +140,8 @@ Entity {
         Attribute {
             id: instanceDataAttribute
             name: "pos"
-            attributeType: AbstractAttribute.VertexAttribute
-            dataType: AbstractAttribute.Float
+            attributeType: Attribute.VertexAttribute
+            dataType: Attribute.Float
             dataSize: 3
             divisor: 1
             buffer: _instanceBuffer

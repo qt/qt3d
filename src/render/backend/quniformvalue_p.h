@@ -137,9 +137,14 @@ private:
 
 struct BlockToUBO {
     int m_blockIndex;
-    Qt3DCore::QNodeId m_shaderDataID;
+    Qt3DCore::QNodeId m_bufferID;
     bool m_needsUpdate;
     QHash<QString, QVariant> m_updatedProperties;
+};
+
+struct BlockToSSBO {
+    int m_blockIndex;
+    Qt3DCore::QNodeId m_bufferID;
 };
 
 class ShaderParameterPack
@@ -150,6 +155,7 @@ public:
     void setUniform(const QString &glslName, const QUniformValue *val);
     void setTexture(const QString &glslName, const Qt3DCore::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
+    void setShaderStorageBuffer(const BlockToSSBO &blockToSSBO);
 
     inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
     const QUniformValue *uniform(const QString &glslName) const { return m_uniforms.value(glslName); }
@@ -168,12 +174,13 @@ public:
 
     inline QVector<NamedTexture> textures() const { return m_textures; }
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
-
+    inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
 private:
     QHash<QString, const QUniformValue* > m_uniforms;
 
     QVector<NamedTexture> m_textures;
     QVector<BlockToUBO> m_uniformBuffers;
+    QVector<BlockToSSBO> m_shaderStorageBuffers;
 
     friend class RenderView;
 };
