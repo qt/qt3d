@@ -792,6 +792,12 @@ void GraphicsContext::pointSize(bool programmable, GLfloat value)
     m_glHelper->pointSize(programmable, value);
 }
 
+void GraphicsContext::dispatchCompute(int x, int y, int z)
+{
+    if (m_glHelper->supportsFeature(GraphicsHelperInterface::Compute))
+        m_glHelper->dispatchCompute(x, y, z);
+}
+
 /*!
     \internal
     Returns a texture unit for a texture, -1 if all texture units are assigned.

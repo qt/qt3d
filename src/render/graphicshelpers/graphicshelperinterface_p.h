@@ -71,7 +71,8 @@ public:
         PrimitiveRestart,
         RenderBufferDimensionRetrieval,
         TextureDimensionRetrieval,
-        ShaderStorageObject
+        ShaderStorageObject,
+        Compute
     };
 
     virtual ~GraphicsHelperInterface() {}
@@ -95,6 +96,7 @@ public:
     virtual void    disableAlphaCoverage() = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;
     virtual void    disablePrimitiveRestart() = 0;
+    virtual void    dispatchCompute(GLuint wx, GLuint wy, GLuint wz) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
     virtual void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) = 0;
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;

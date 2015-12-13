@@ -186,6 +186,7 @@ public:
     void    disableAlphaCoverage();
     void    disableClipPlane(int clipPlane);
     void    disablePrimitiveRestart();
+    void    dispatchCompute(int x, int y, int z);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);

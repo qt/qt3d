@@ -363,6 +363,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case RenderBufferDimensionRetrieval:
     case TextureDimensionRetrieval:
     case ShaderStorageObject:
+    case Compute:
         return true;
     default:
         return false;
@@ -966,6 +967,11 @@ QSize GraphicsHelperGL4::getTextureDimensions(GLuint textureId, GLenum target, u
     m_funcs->glBindTexture(target, 0);
 
     return QSize(width, height);
+}
+
+void GraphicsHelperGL4::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
+{
+    m_funcs->glDispatchCompute(wx, wy, wz);
 }
 
 } // namespace Render

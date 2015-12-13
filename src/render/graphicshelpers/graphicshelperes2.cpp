@@ -601,6 +601,14 @@ QSize GraphicsHelperES2::getTextureDimensions(GLuint textureId, GLenum target, u
     return QSize(0, 0);
 }
 
+void GraphicsHelperES2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
+{
+    Q_UNUSED(wx);
+    Q_UNUSED(wy);
+    Q_UNUSED(wz);
+    qWarning() << "Compute Shaders are not supported by ES 2.0 (since ES 3.1)";
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 

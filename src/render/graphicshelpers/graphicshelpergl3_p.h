@@ -87,6 +87,7 @@ public:
     void disableAlphaCoverage() Q_DECL_OVERRIDE;
     void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
+    void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
     void drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances) Q_DECL_OVERRIDE;
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;

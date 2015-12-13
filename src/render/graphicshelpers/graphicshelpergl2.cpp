@@ -597,6 +597,14 @@ QSize GraphicsHelperGL2::getTextureDimensions(GLuint textureId, GLenum target, u
     return QSize(width, height);
 }
 
+void GraphicsHelperGL2::dispatchCompute(GLuint wx, GLuint wy, GLuint wz)
+{
+    Q_UNUSED(wx);
+    Q_UNUSED(wy);
+    Q_UNUSED(wz);
+    qWarning() << "Compute Shaders are not supported by OpenGL 2.0 (since OpenGL 4.3)";
+}
+
 } // namespace Render
 } // namespace Qt3DRender
 
