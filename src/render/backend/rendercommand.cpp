@@ -47,6 +47,7 @@ RenderCommand::RenderCommand()
     , m_stateSet(Q_NULLPTR)
     , m_depth(0.0f)
     , m_changeCost(0)
+    , m_type(RenderCommand::Draw)
     , m_sortBackToFront(false)
 {
    m_sortingType.global = 0;

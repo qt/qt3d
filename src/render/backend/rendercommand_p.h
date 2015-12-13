@@ -89,6 +89,13 @@ public:
     int m_changeCost;
     uint m_shaderDna;
 
+    enum CommandType {
+        Draw,
+        Compute
+    };
+
+    CommandType m_type;
+
     union sortingType {
         char sorts[4];
         int  global;
