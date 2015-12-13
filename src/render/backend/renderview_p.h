@@ -165,7 +165,7 @@ public:
     void setCompute(bool compute) Q_DECL_NOEXCEPT { m_compute = compute; }
 
     void setComputeWorkgroups(int x, int y, int z) Q_DECL_NOEXCEPT { m_workGroups[0] = x; m_workGroups[1] = y; m_workGroups[2] = z; }
-
+    const int *computeWorkGroups() const Q_DECL_NOEXCEPT { return m_workGroups; }
     inline bool frustumCulling() const Q_DECL_NOEXCEPT { return m_frustumCulling; }
     void setFrustumCulling(bool frustumCulling) Q_DECL_NOEXCEPT { m_frustumCulling = frustumCulling; }
 

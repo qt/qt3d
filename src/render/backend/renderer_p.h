@@ -160,7 +160,7 @@ public:
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE;
 
-    void executeCommands(const QVector<RenderCommand *> &commands);
+    void executeCommands(const RenderView *rv);
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
 
     void setOpenGLContext(QOpenGLContext *context);

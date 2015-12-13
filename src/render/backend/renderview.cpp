@@ -568,7 +568,15 @@ void RenderView::buildComputeRenderCommands(Entity *node)
             // Add the RenderPass Parameters
             ParameterInfoList globalParameters = parameters;
             parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
-            // TO DO: Build appropriate Render Commands
+
+            RenderCommand *command = m_allocator->allocate<RenderCommand>();
+            command->m_type = RenderCommand::Compute;
+            setShaderAndUniforms(command,
+                                 pass,
+                                 globalParameters,
+                                 *(node->worldTransform()),
+                                 QVector<LightSource>());
+            m_commands.append(command);
         }
     }
 }
@@ -851,7 +859,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 // -> uniform block / array (4.3)
                 // -> ssbo block / array (4.3)
 
-                if ((!uniformNames.isEmpty() || !uniformBlockNames.isEmpty()) && !parameters.isEmpty()) {
+                if ((!uniformNames.isEmpty() || !uniformBlockNames.isEmpty() || !shaderStorageBlockNames.isEmpty()) && !parameters.isEmpty()) {
                     ParameterInfoList::iterator it = parameters.begin();
                     const ParameterInfoList::iterator parametersEnd = parameters.end();
                     while (it != parametersEnd) {
