@@ -71,6 +71,9 @@ void Technique::cleanup()
     if (m_graphicsApiFilter)
         delete m_graphicsApiFilter;
     m_graphicsApiFilter = Q_NULLPTR;
+    m_parameterPack.clear();
+    m_renderPasses.clear();
+    m_annotationList.clear();
 }
 
 void Technique::updateFromPeer(Qt3DCore::QNode *peer)
