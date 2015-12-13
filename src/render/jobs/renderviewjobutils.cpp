@@ -153,7 +153,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
             case FrameGraphNode::TechniqueFilter:
                 // Can be set once
                 // TODO Amalgamate all technique filters from leaf to root
-                if (rv->techniqueFilter())
+                if (!rv->techniqueFilter())
                     rv->setTechniqueFilter(static_cast<const TechniqueFilter *>(node));
                 break;
 
