@@ -54,6 +54,8 @@ public:
     virtual ~QAspectJob();
 
     void addDependency(QWeakPointer<QAspectJob> dependency);
+    void removeDependency(QWeakPointer<QAspectJob> dependency);
+
     QVector<QWeakPointer<QAspectJob> > dependencies() const;
     void clearNullDependencies();
 

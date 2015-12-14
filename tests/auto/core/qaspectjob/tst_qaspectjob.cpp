@@ -73,6 +73,24 @@ private Q_SLOTS:
         QVERIFY(job3->dependencies().isEmpty());
     }
 
+    void shouldRemoveDependencies()
+    {
+        // GIVEN
+        QAspectJobPtr job1(new FakeAspectJob);
+        QAspectJobPtr job2(new FakeAspectJob);
+        QAspectJobPtr job3(new FakeAspectJob);
+
+        job1->addDependency(job2);
+        job1->addDependency(job3);
+
+        // WHEN
+        job1->removeDependency(job2);
+
+        // THEN
+        QCOMPARE(job1->dependencies().size(), 1);
+        QCOMPARE(job1->dependencies().at(0).lock(), job3);
+    }
+
     void shouldClearNullDependencies()
     {
         // GIVEN

@@ -80,6 +80,12 @@ void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
     d->m_dependencies.append(dependency);
 }
 
+void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
+{
+    Q_D(QAspectJob);
+    d->m_dependencies.removeAll(dependency);
+}
+
 QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
 {
     Q_D(const QAspectJob);
