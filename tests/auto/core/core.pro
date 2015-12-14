@@ -11,6 +11,7 @@ SUBDIRS = \
     qentity \
     qaspectengine \
     qaspectfactory \
+    qaspectjob \
     qchangearbiter \
     qscene \
     qservicelocator \
