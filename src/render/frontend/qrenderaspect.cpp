@@ -350,7 +350,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         // Clear any previous temporary dependency
-        d->m_calculateBoundingVolumeJob->clearNullDependencies();
+        d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
         const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
         Q_FOREACH (const QAspectJobPtr bufferJob, bufferJobs)
             d->m_calculateBoundingVolumeJob->addDependency(bufferJob);

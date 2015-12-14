@@ -103,7 +103,7 @@ private Q_SLOTS:
 
         // WHEN
         job2.clear();
-        job1->clearNullDependencies();
+        job1->removeDependency(QWeakPointer<QAspectJob>());
 
         // THEN
         QCOMPARE(job1->dependencies().size(), 1);

@@ -83,7 +83,14 @@ void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
 void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
-    d->m_dependencies.removeAll(dependency);
+    if (!dependency.isNull()) {
+        d->m_dependencies.removeAll(dependency);
+    } else {
+        d->m_dependencies.erase(std::remove_if(d->m_dependencies.begin(),
+                                               d->m_dependencies.end(),
+                                               isDependencyNull),
+                                d->m_dependencies.end());
+    }
 }
 
 QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
@@ -91,17 +98,6 @@ QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
     Q_D(const QAspectJob);
     return d->m_dependencies;
 }
-
-void QAspectJob::clearNullDependencies()
-{
-    Q_D(QAspectJob);
-    d->m_dependencies.erase(std::remove_if(d->m_dependencies.begin(),
-                                           d->m_dependencies.end(),
-                                           isDependencyNull),
-                            d->m_dependencies.end());
-}
-
-
 
 } // namespace Qt3DCore
 

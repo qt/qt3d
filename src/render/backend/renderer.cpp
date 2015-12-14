@@ -748,7 +748,7 @@ QAspectJobPtr Renderer::pickBoundingVolumeJob()
     // Clear any previous dependency not valid anymore
     if (!m_pickBoundingVolumeJob)
         m_pickBoundingVolumeJob.reset(new PickBoundingVolumeJob(this));
-    m_pickBoundingVolumeJob->clearNullDependencies();
+    m_pickBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
     return m_pickBoundingVolumeJob;
 }
