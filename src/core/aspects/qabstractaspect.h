@@ -48,6 +48,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QAspectEngine;
 class QAspectManager;
 class QNode;
 class QBackendNode;
@@ -68,8 +69,6 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
 public:
     explicit QAbstractAspect(QObject *parent = 0);
 
-    virtual QVariant executeCommand(const QStringList &args);
-
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
@@ -81,6 +80,8 @@ protected:
     void clearBackendNode(QNode *frontend) const;
 
 private:
+    virtual QVariant executeCommand(const QStringList &args);
+
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -93,6 +94,7 @@ private:
     virtual void onRootEntityChanged(QEntity *rootEntity);
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
+    friend class QAspectEngine;
     friend class QAspectManager;
 };
 
