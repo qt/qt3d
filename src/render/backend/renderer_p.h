@@ -135,6 +135,7 @@ public:
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
     void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
+    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 
     void render() Q_DECL_OVERRIDE;
     void doRender() Q_DECL_OVERRIDE;
@@ -162,7 +163,6 @@ public:
     void setOpenGLContext(QOpenGLContext *context);
     QGraphicsApiFilter *contextInfo() const;
 
-    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
     Qt3DCore::QFrameAllocator *currentFrameAllocator();

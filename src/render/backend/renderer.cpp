@@ -154,8 +154,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
-    // Clean up the TLS allocators
-    destroyAllocators(QAbstractAspectPrivate::get(m_rendererAspect)->jobManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const

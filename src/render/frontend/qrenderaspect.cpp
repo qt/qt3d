@@ -443,6 +443,8 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
 void QRenderAspect::onCleanup()
 {
     Q_D(QRenderAspect);
+    if (d->m_renderer)
+        d->m_renderer->destroyAllocators(d->jobManager());
     delete d->m_renderer;
     d->m_renderer = Q_NULLPTR;
 }

@@ -94,6 +94,7 @@ public:
     virtual void initialize() = 0;
     virtual void shutdown() = 0;
     virtual void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
+    virtual void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
 
     // Threaded renderer
     virtual void render() = 0;
