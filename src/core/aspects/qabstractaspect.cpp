@@ -100,7 +100,7 @@ void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
-    visitor.traverse(n, this, &QAbstractAspect::visitNode);
+    visitor.traverse(n, this, &QAbstractAspect::createBackendNode);
 }
 
 void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
@@ -189,7 +189,7 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
 void QAbstractAspect::setRootEntity(QEntity *rootObject)
 {
     QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QAbstractAspect::visitNode);
+    visitor.traverse(rootObject, this, &QAbstractAspect::createBackendNode);
 }
 
 void QAbstractAspect::registerAspect(QEntity *rootObject)
@@ -226,11 +226,6 @@ void QAbstractAspect::onStartup()
 
 void QAbstractAspect::onShutdown()
 {
-}
-
-void QAbstractAspect::visitNode(QNode *node)
-{
-    createBackendNode(node);
 }
 
 } // of namespace Qt3DCore

@@ -101,8 +101,6 @@ private:
     virtual void onShutdown();
     virtual void onCleanup() = 0;
 
-    virtual void visitNode(QNode *node);
-
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectManager;
 };
