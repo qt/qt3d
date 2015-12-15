@@ -68,8 +68,6 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
 public:
     explicit QAbstractAspect(QObject *parent = 0);
 
-    bool isShuttingDown() const;
-
     virtual QVariant executeCommand(const QStringList &args);
 
 protected:

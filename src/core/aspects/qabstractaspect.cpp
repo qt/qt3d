@@ -194,12 +194,6 @@ QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
     return m_jobManager;
 }
 
-bool QAbstractAspect::isShuttingDown() const
-{
-    Q_D(const QAbstractAspect);
-    return d->m_aspectManager->isShuttingDown();
-}
-
 void QAbstractAspect::onStartup()
 {
 }
