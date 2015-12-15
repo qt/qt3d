@@ -94,23 +94,21 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(className(obj), functor);
 }
 
-void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
-    Q_D(QAbstractAspect);
     QNodeVisitor visitor;
-    visitor.traverse(n, d, &QAbstractAspectPrivate::createBackendNode);
+    visitor.traverse(n, this, &QAbstractAspectPrivate::createBackendNode);
 }
 
-void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
-    Q_D(QAbstractAspect);
-    d->clearBackendNode(n);
+    clearBackendNode(n);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)

@@ -24,7 +24,7 @@ HEADERS += \
     $$PWD/qscenepropertychange.h \
     $$PWD/qscenechange_p.h \
     $$PWD/qscenepropertychange_p.h \
-    $$PWD/qsceneobserverinterface.h \
+    $$PWD/qsceneobserverinterface_p.h \
     $$PWD/qpostman_p.h \
     $$PWD/qbackendscenepropertychange.h \
     $$PWD/qbackendscenepropertychange_p.h \

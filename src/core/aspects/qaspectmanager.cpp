@@ -101,7 +101,7 @@ void QAspectManager::shutdown()
 
     Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
         aspect->onCleanup();
-        m_changeArbiter->unregisterSceneObserver(aspect);
+        m_changeArbiter->unregisterSceneObserver(aspect->d_func());
     }
     // Aspects must be deleted in the Thread they were created in
 }
@@ -151,7 +151,7 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
-        m_changeArbiter->registerSceneObserver(aspect);
+        m_changeArbiter->registerSceneObserver(aspect->d_func());
         aspect->onInitialize(m_data);
     }
     else {

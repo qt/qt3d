@@ -51,6 +51,7 @@
 #include <private/qobject_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/qbackendnodefactory_p.h>
+#include <private/qsceneobserverinterface_p.h>
 #include <private/qt3dcore_global_p.h>
 #include <Qt3DCore/qabstractaspect.h>
 
@@ -69,6 +70,7 @@ class QServiceLocator;
 class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
         : public QObjectPrivate
         , public QBackendNodeFactory
+        , public QSceneObserverInterface
 {
 public:
     QAbstractAspectPrivate();
@@ -80,6 +82,9 @@ public:
 
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
     void clearBackendNode(QNode *frontend) const;
+
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 

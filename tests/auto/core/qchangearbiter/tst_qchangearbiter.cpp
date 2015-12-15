@@ -45,7 +45,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qsceneobserverinterface.h>
+#include <Qt3DCore/private/qsceneobserverinterface_p.h>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <QThread>

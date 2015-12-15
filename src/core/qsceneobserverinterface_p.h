@@ -34,10 +34,21 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QSCENEOBSERVERINTERFACE_H
-#define QT3DCORE_QSCENEOBSERVERINTERFACE_H
+#ifndef QT3DCORE_QSCENEOBSERVERINTERFACE_P_H
+#define QT3DCORE_QSCENEOBSERVERINTERFACE_P_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <Qt3DCore/qscenechange.h>
 
 QT_BEGIN_NAMESPACE
@@ -46,7 +57,7 @@ namespace Qt3DCore {
 
 class QChangeArbiter;
 
-class QT3DCORESHARED_EXPORT QSceneObserverInterface
+class QT3DCORE_PRIVATE_EXPORT QSceneObserverInterface
 {
 public:
     virtual ~QSceneObserverInterface();
@@ -64,4 +75,4 @@ QT_END_NAMESPACE
 
 Q_DECLARE_METATYPE(Qt3DCore::QSceneObserverInterface *)
 
-#endif // QT3DCORE_QSCENEOBSERVERINTERFACE_H
+#endif // QT3DCORE_QSCENEOBSERVERINTERFACE_P_H
