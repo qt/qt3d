@@ -409,7 +409,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
 // 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
 // 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
-void Renderer::setSceneRoot(Entity *sgRoot)
+void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
@@ -424,9 +424,6 @@ void Renderer::setSceneRoot(Entity *sgRoot)
     buildDefaultTechnique();
     buildDefaultMaterial();
 
-    // If that weren't for those lines, the renderer might not event need
-    // to know about the renderer aspect
-    QBackendNodeFactory *factory = QAbstractAspectPrivate::get(m_rendererAspect);
     factory->createBackendNode(m_defaultMaterial);
     factory->createBackendNode(m_defaultMaterial->effect());
     factory->createBackendNode(m_defaultTechnique);

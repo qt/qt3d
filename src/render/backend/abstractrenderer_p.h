@@ -57,6 +57,7 @@ class QSurface;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
+class QBackendNodeFactory;
 class QEventFilterService;
 class QAbstractAspectJobManager;
 }
@@ -107,7 +108,7 @@ public:
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
 
     virtual void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) = 0;
-    virtual void setSceneRoot(Entity *root) = 0;
+    virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
 
     virtual Entity *sceneRoot() const = 0;
     virtual FrameGraphNode *frameGraphRoot() const = 0;

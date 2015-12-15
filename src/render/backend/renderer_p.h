@@ -142,7 +142,7 @@ public:
 
     bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }
 
-    void setSceneRoot(Entity *sgRoot) Q_DECL_OVERRIDE;
+    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) Q_DECL_OVERRIDE;
     Entity *sceneRoot() const Q_DECL_OVERRIDE { return m_renderSceneRoot; }
 
     void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
