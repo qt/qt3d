@@ -123,6 +123,9 @@ public:
 
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
 
+    qint64 time() const Q_DECL_OVERRIDE;
+    void setTime(qint64 time) Q_DECL_OVERRIDE;
+
     void setSurface(QSurface *s) Q_DECL_OVERRIDE;
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
     void setQRenderAspect(QRenderAspect *aspect) Q_DECL_OVERRIDE { m_rendererAspect = aspect; }
@@ -249,6 +252,8 @@ private:
     QAtomicInt m_exposed;
     QOpenGLContext *m_glContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
+
+    qint64 m_time;
 };
 
 } // namespace Render

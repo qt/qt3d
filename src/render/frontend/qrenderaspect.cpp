@@ -150,7 +150,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderer(Q_NULLPTR)
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter())
     , m_surface(Q_NULLPTR)
-    , m_time(0)
     , m_initialized(false)
     , m_framePreparationJob(new Render::FramePreparationJob(m_nodeManagers))
     , m_cleanupJob(new Render::FrameCleanupJob(m_nodeManagers))
@@ -307,7 +306,7 @@ void QRenderAspect::renderShutdown()
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     Q_D(QRenderAspect);
-    d->m_time = time;
+    d->m_renderer->setTime(time);
 
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
@@ -393,12 +392,6 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(d->m_cleanupJob);
     }
     return jobs;
-}
-
-qint64 QRenderAspect::time() const
-{
-    Q_D(const QRenderAspect);
-    return d->m_time;
 }
 
 void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)

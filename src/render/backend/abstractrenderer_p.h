@@ -83,6 +83,9 @@ public:
 
     virtual API api() const = 0;
 
+    virtual qint64 time() const = 0;
+    virtual void setTime(qint64 time) = 0;
+
     virtual void setSurface(QSurface *surface) = 0;
     virtual void setNodeManagers(NodeManagers *managers) = 0;
     virtual void setQRenderAspect(Qt3DRender::QRenderAspect *renderAspect) = 0;

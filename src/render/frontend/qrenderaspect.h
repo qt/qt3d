@@ -70,8 +70,6 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    qint64 time() const;
-
 protected:
     void registerBackendTypes();
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);

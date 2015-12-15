@@ -144,6 +144,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_exposed(0)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
+    , m_time(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -154,6 +155,16 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
+}
+
+qint64 Renderer::time() const
+{
+    return m_time;
+}
+
+void Renderer::setTime(qint64 time)
+{
+    m_time = time;
 }
 
 NodeManagers *Renderer::nodeManagers() const
