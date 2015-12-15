@@ -179,10 +179,10 @@ private:
         pop_back();
     }
 
-    template <typename NodeType>
+    template <typename ReturnType, typename NodeType>
     class FunctionFunctor {
     public:
-        typedef void (*functionPtr)(NodeType);
+        typedef ReturnType (*functionPtr)(NodeType);
 
         FunctionFunctor(functionPtr fPtr)
             : m_functionPointer(fPtr)
@@ -197,10 +197,10 @@ private:
         functionPtr m_functionPointer;
     };
 
-    template <typename C, typename NodeType>
+    template <typename C, typename ReturnType, typename NodeType>
     class MemberFunctionFunctor {
     public:
-        typedef void (C::*functionPtr)(NodeType);
+        typedef ReturnType (C::*functionPtr)(NodeType);
 
         MemberFunctionFunctor(C* instance, functionPtr fPtr)
             : m_instance(instance)
@@ -217,10 +217,10 @@ private:
         functionPtr m_functionPointer;
     };
 
-    template <typename C, typename NodeType>
+    template <typename C, typename ReturnType, typename NodeType>
     class ConstMemberFunctionFunctor {
     public:
-        typedef void (C::*functionPtr)(NodeType) const;
+        typedef ReturnType (C::*functionPtr)(NodeType) const;
 
         ConstMemberFunctionFunctor(C* instance, functionPtr fPtr)
             : m_instance(instance)
@@ -243,22 +243,22 @@ private:
         return t;
     }
 
-    template <typename NodeType>
-    FunctionFunctor<NodeType> createFunctor(void (*fPtr)(NodeType))
+    template <typename ReturnType, typename NodeType>
+    FunctionFunctor<ReturnType, NodeType> createFunctor(ReturnType (*fPtr)(NodeType))
     {
-        return FunctionFunctor<NodeType>(fPtr);
+        return FunctionFunctor<ReturnType, NodeType>(fPtr);
     }
 
-    template <typename C, typename NodeType>
-    MemberFunctionFunctor<C, NodeType> createFunctor(C *instance, void (C::*fPtr)(NodeType))
+    template <typename C, typename ReturnType, typename NodeType>
+    MemberFunctionFunctor<C, ReturnType, NodeType> createFunctor(C *instance, ReturnType (C::*fPtr)(NodeType))
     {
-        return MemberFunctionFunctor<C, NodeType>(instance, fPtr);
+        return MemberFunctionFunctor<C, ReturnType, NodeType>(instance, fPtr);
     }
 
-    template <typename C, typename NodeType>
-    ConstMemberFunctionFunctor<C, NodeType> createFunctor(C *instance, void (C::*fPtr)(NodeType) const)
+    template <typename C, typename ReturnType, typename NodeType>
+    ConstMemberFunctionFunctor<C, ReturnType, NodeType> createFunctor(C *instance, ReturnType (C::*fPtr)(NodeType) const)
     {
-        return ConstMemberFunctionFunctor<C, NodeType>(instance, fPtr);
+        return ConstMemberFunctionFunctor<C, ReturnType, NodeType>(instance, fPtr);
     }
 };
 
