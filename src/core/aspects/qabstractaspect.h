@@ -77,14 +77,14 @@ public:
 
     bool isShuttingDown() const;
 
-    template<class Frontend>
-    void registerBackendType(const QBackendNodeFunctorPtr &functor);
-    void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
-
     virtual QVariant executeCommand(const QStringList &args);
 
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
+
+    template<class Frontend>
+    void registerBackendType(const QBackendNodeFunctorPtr &functor);
+    void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
     QBackendNode *getBackendNode(QNode *frontend) const;
