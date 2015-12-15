@@ -44,12 +44,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QChangeArbiter;
+
 class QT3DCORESHARED_EXPORT QSceneObserverInterface
 {
 public:
     virtual ~QSceneObserverInterface();
+
+private:
     virtual void sceneNodeAdded(QSceneChangePtr &e) = 0;
     virtual void sceneNodeRemoved(QSceneChangePtr &e) = 0;
+
+    friend class QChangeArbiter;
 };
 
 } // Qt3D

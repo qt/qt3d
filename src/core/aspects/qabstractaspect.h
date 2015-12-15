@@ -81,9 +81,6 @@ public:
     void registerBackendType(const QBackendNodeFunctorPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
     virtual QVariant executeCommand(const QStringList &args);
 
 protected:
@@ -96,6 +93,9 @@ protected:
     virtual void setRootEntity(QEntity *rootObject);
 
 private:
+    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
     virtual void onInitialize(const QVariantMap &data) = 0;
     virtual void onStartup();
     virtual void onShutdown();
