@@ -53,6 +53,7 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/private/qentity_p.h>
 
 #include <QMatrix4x4>
 #include <QString>
@@ -138,7 +139,8 @@ void Entity::setHandle(HEntity handle)
 void Entity::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QEntity *entity = static_cast<QEntity *>(peer);
-    const QNodeId parentEntityId = entity->parentEntityId();
+    QEntityPrivate *entityPrivate = static_cast<QEntityPrivate *>(QNodePrivate::get(entity));
+    const QNodeId parentEntityId = entityPrivate->parentEntityId();
 
     m_objectName = peer->objectName();
     m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerUuid());
