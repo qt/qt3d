@@ -80,6 +80,7 @@
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
 
 #include <QStack>
 #include <QSurface>
@@ -154,7 +155,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 Renderer::~Renderer()
 {
     // Clean up the TLS allocators
-    destroyAllocators(m_rendererAspect->jobManager());
+    destroyAllocators(QAbstractAspectPrivate::get(m_rendererAspect)->jobManager());
 }
 
 NodeManagers *Renderer::nodeManagers() const

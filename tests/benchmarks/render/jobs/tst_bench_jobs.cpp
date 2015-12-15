@@ -251,8 +251,8 @@ private Q_SLOTS:
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.worldTransformJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -274,8 +274,8 @@ private Q_SLOTS:
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.updateBoundingJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -297,8 +297,8 @@ private Q_SLOTS:
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.calculateBoundingVolumeJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -320,8 +320,8 @@ private Q_SLOTS:
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.framePreparationJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -342,8 +342,8 @@ private Q_SLOTS:
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.frameCleanupJob();
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -373,8 +373,8 @@ private Q_SLOTS:
         qDebug() << 3;
         QBENCHMARK {
             qDebug() << 4;
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
     */

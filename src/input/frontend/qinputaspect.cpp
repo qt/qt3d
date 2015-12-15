@@ -209,7 +209,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
-    Qt3DCore::QEventFilterService *eventService = services()->eventFilterService();
+    Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();
     eventService->registerEventFilter(d->m_cameraController.data(), 128);
     d->m_inputHandler->registerEventFilters(eventService);
 }

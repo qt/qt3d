@@ -50,6 +50,7 @@
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/qray3d.h>
 #include <QSurface>
@@ -239,12 +240,14 @@ void PickBoundingVolumeJob::run()
     if (m_mouseEvents.empty())
         return;
 
-    QAbstractCollisionQueryService *rayCasting = m_renderer->renderAspect()->services()->service<QAbstractCollisionQueryService>
+    Qt3DCore::QServiceLocator *services
+            = Qt3DCore::QAbstractAspectPrivate::get(m_renderer->renderAspect())->services();
+    QAbstractCollisionQueryService *rayCasting = services->service<QAbstractCollisionQueryService>
             (Qt3DCore::QServiceLocator::CollisionService);
 
     if (rayCasting == Q_NULLPTR) {
         Qt3DRender::QRayCastingService *rayCastingService = new QRayCastingService();
-        m_renderer->renderAspect()->services()->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
+        services->registerServiceProvider(Qt3DCore::QServiceLocator::CollisionService, rayCastingService);
         rayCasting = rayCastingService;
     }
 

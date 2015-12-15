@@ -184,16 +184,14 @@ void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
     q->onRootEntityChanged(rootObject);
 }
 
-QServiceLocator *QAbstractAspect::services() const
+QServiceLocator *QAbstractAspectPrivate::services() const
 {
-    Q_D(const QAbstractAspect);
-    return d->m_aspectManager->serviceLocator();
+    return m_aspectManager->serviceLocator();
 }
 
-QAbstractAspectJobManager *QAbstractAspect::jobManager() const
+QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
 {
-    Q_D(const QAbstractAspect);
-    return d->m_jobManager;
+    return m_jobManager;
 }
 
 bool QAbstractAspect::isShuttingDown() const

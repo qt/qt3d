@@ -62,6 +62,7 @@ class QEntity;
 class QAspectManager;
 class QAbstractAspectJobManager;
 class QChangeArbiter;
+class QServiceLocator;
 
 class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
 {
@@ -69,6 +70,9 @@ public:
     QAbstractAspectPrivate();
 
     void registerAspect(QEntity *rootObject);
+
+    QServiceLocator *services() const;
+    QAbstractAspectJobManager *jobManager() const;
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
 

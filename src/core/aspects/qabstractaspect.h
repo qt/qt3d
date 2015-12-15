@@ -53,9 +53,7 @@ class QNode;
 class QBackendNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QAbstractAspectJobManager;
 class QBackendNodeFunctor;
-class QServiceLocator;
 
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
@@ -69,9 +67,6 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
 
 public:
     explicit QAbstractAspect(QObject *parent = 0);
-
-    QServiceLocator *services() const;
-    QAbstractAspectJobManager *jobManager() const;
 
     bool isShuttingDown() const;
 

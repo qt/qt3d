@@ -419,12 +419,12 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         if (d->m_aspectManager) {
             QAbstractFrameAdvanceService *advanceService = d->m_renderer->frameAdvanceService();
             if (advanceService)
-                services()->registerServiceProvider(Qt3DCore::QServiceLocator::FrameAdvanceService,
-                                                    advanceService);
+                d->services()->registerServiceProvider(Qt3DCore::QServiceLocator::FrameAdvanceService,
+                                                       advanceService);
         }
 
         d->m_renderer->setQRenderAspect(this);
-        d->m_renderer->createAllocators(jobManager());
+        d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }
 
@@ -437,7 +437,7 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         d->setSurface(surface);
 
     if (d->m_aspectManager)
-        d->m_renderer->registerEventFilter(services()->eventFilterService());
+        d->m_renderer->registerEventFilter(d->services()->eventFilterService());
 }
 
 void QRenderAspect::onCleanup()
