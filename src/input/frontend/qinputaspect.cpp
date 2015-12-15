@@ -214,14 +214,6 @@ void QInputAspect::onInitialize(const QVariantMap &)
     d->m_inputHandler->registerEventFilters(eventService);
 }
 
-void QInputAspect::onStartup()
-{
-}
-
-void QInputAspect::onShutdown()
-{
-}
-
 void QInputAspect::onCleanup()
 {
     Q_D(QInputAspect);

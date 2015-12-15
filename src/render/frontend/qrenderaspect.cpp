@@ -442,14 +442,6 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         d->m_renderer->registerEventFilter(services()->eventFilterService());
 }
 
-void QRenderAspect::onStartup()
-{
-}
-
-void QRenderAspect::onShutdown()
-{
-}
-
 void QRenderAspect::onCleanup()
 {
     Q_D(QRenderAspect);
