@@ -12,7 +12,7 @@ uniform FP vec3 ka;            // Ambient reflectivity
 uniform FP vec3 ks;            // Specular reflectivity
 uniform FP float shininess;    // Specular shininess factor
 
-uniform vec3 eyePosition;
+uniform FP vec3 eyePosition;
 
 #pragma include light.inc.frag
 
