@@ -108,7 +108,8 @@ void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
-    QAbstractAspect::clearBackendNode(n);
+    Q_D(QAbstractAspect);
+    d->clearBackendNode(n);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
@@ -149,23 +150,22 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
     return Q_NULLPTR;
 }
 
-void QAbstractAspect::clearBackendNode(QNode *frontend) const
+void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
 {
-    Q_D(const QAbstractAspect);
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
         QBackendNode *backend = functor->get(frontend->id());
         if (backend != Q_NULLPTR) {
             QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-            d->m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
+            m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
             if (backend->mode() == QBackendNode::ReadWrite)
-                d->m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
             functor->destroy(frontend->id());
         }
     }

@@ -77,7 +77,6 @@ protected:
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
-    void clearBackendNode(QNode *frontend) const;
 
 private:
     virtual QVariant executeCommand(const QStringList &args);

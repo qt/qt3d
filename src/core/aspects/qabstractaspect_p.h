@@ -74,6 +74,8 @@ public:
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
+    void clearBackendNode(QNode *frontend) const;
+
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
