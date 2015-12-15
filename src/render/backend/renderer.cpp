@@ -80,7 +80,6 @@
 #include <Qt3DCore/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
-#include <Qt3DCore/private/qabstractaspect_p.h>
 
 #include <QStack>
 #include <QSurface>
@@ -132,7 +131,7 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
  */
 
 Renderer::Renderer(QRenderAspect::RenderType type)
-    : m_rendererAspect(Q_NULLPTR)
+    : m_services(Q_NULLPTR)
     , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)

@@ -416,7 +416,7 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
                                                        advanceService);
         }
 
-        d->m_renderer->setQRenderAspect(this);
+        d->m_renderer->setServices(d->services());
         d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }

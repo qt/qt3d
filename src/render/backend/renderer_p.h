@@ -128,12 +128,12 @@ public:
 
     void setSurface(QSurface *s) Q_DECL_OVERRIDE;
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
-    void setQRenderAspect(QRenderAspect *aspect) Q_DECL_OVERRIDE { m_rendererAspect = aspect; }
+    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     QSurface *surface() const Q_DECL_OVERRIDE { return m_surface; }
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
-    QRenderAspect *renderAspect() const Q_DECL_OVERRIDE { return m_rendererAspect; }
+    Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return m_services; }
 
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
@@ -194,7 +194,7 @@ private:
 #endif
     bool canRender() const;
 
-    QRenderAspect *m_rendererAspect;
+    Qt3DCore::QServiceLocator *m_services;
     NodeManagers *m_nodesManager;
 
     // Frame graph root

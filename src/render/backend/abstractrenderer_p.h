@@ -60,6 +60,7 @@ class QAbstractFrameAdvanceService;
 class QBackendNodeFactory;
 class QEventFilterService;
 class QAbstractAspectJobManager;
+class QServiceLocator;
 }
 
 namespace Qt3DRender {
@@ -88,12 +89,12 @@ public:
 
     virtual void setSurface(QSurface *surface) = 0;
     virtual void setNodeManagers(NodeManagers *managers) = 0;
-    virtual void setQRenderAspect(Qt3DRender::QRenderAspect *renderAspect) = 0;
+    virtual void setServices(Qt3DCore::QServiceLocator *services) = 0;
     virtual void setSurfaceExposed(bool exposed) = 0;
 
     virtual QSurface *surface() const = 0;
     virtual NodeManagers *nodeManagers() const = 0;
-    virtual QRenderAspect *renderAspect() const = 0;
+    virtual Qt3DCore::QServiceLocator *services() const = 0;
 
     virtual void initialize() = 0;
     virtual void shutdown() = 0;
