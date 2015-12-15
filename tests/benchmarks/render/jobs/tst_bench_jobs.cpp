@@ -142,7 +142,7 @@ public:
 
     void visitNode(Qt3DCore::QNode *node)
     {
-        QAbstractAspect::createBackendNode(node);
+        d_func()->createBackendNode(node);
     }
 
 private:

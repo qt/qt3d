@@ -99,8 +99,9 @@ void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
+    Q_D(QAbstractAspect);
     QNodeVisitor visitor;
-    visitor.traverse(n, this, &QAbstractAspect::createBackendNode);
+    visitor.traverse(n, d, &QAbstractAspectPrivate::createBackendNode);
 }
 
 void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
@@ -118,13 +119,12 @@ QVariant QAbstractAspect::executeCommand(const QStringList &args)
     return QVariant();
 }
 
-QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
+QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 {
-    Q_D(const QAbstractAspect);
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
@@ -140,10 +140,10 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
         // TO DO: Find a way to specify the changes to observe
         // Register backendNode with QChangeArbiter
-        if (d->m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
-            d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
+        if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+            m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
             if (backend->mode() == QBackendNode::ReadWrite)
-                d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
         }
         return backend;
     }
@@ -180,7 +180,7 @@ void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
     m_root = rootObject;
 
     QNodeVisitor visitor;
-    visitor.traverse(rootObject, q, &QAbstractAspect::createBackendNode);
+    visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
     q->onRootEntityChanged(rootObject);
 }
 

@@ -428,19 +428,20 @@ void Renderer::setSceneRoot(Entity *sgRoot)
 
     // If that weren't for those lines, the renderer might not event need
     // to know about the renderer aspect
-    m_rendererAspect->createBackendNode(m_defaultMaterial);
-    m_rendererAspect->createBackendNode(m_defaultMaterial->effect());
-    m_rendererAspect->createBackendNode(m_defaultTechnique);
-    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first());
-    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
+    QBackendNodeFactory *factory = QAbstractAspectPrivate::get(m_rendererAspect);
+    factory->createBackendNode(m_defaultMaterial);
+    factory->createBackendNode(m_defaultMaterial->effect());
+    factory->createBackendNode(m_defaultTechnique);
+    factory->createBackendNode(m_defaultTechnique->renderPasses().first());
+    factory->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
 
     // We create backend resources for all the parameters
     Q_FOREACH (QParameter *p, m_defaultMaterial->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
     Q_FOREACH (QParameter *p, m_defaultTechnique->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
     Q_FOREACH (QParameter *p, m_defaultMaterial->effect()->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
 
 
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());

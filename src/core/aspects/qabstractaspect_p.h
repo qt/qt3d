@@ -50,6 +50,7 @@
 
 #include <private/qobject_p.h>
 #include <private/qbackendnode_p.h>
+#include <private/qbackendnodefactory_p.h>
 #include <private/qt3dcore_global_p.h>
 #include <Qt3DCore/qabstractaspect.h>
 
@@ -58,13 +59,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 class QAbstractAspect;
+class QBackendNode;
 class QEntity;
 class QAspectManager;
 class QAbstractAspectJobManager;
 class QChangeArbiter;
 class QServiceLocator;
 
-class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
+class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
+        : public QObjectPrivate
+        , public QBackendNodeFactory
 {
 public:
     QAbstractAspectPrivate();
@@ -74,6 +78,7 @@ public:
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 
+    QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
     void clearBackendNode(QNode *frontend) const;
 
     Q_DECLARE_PUBLIC(QAbstractAspect)
