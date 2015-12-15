@@ -70,8 +70,6 @@ class QT3DCORESHARED_EXPORT QAbstractAspect
 public:
     explicit QAbstractAspect(QObject *parent = 0);
 
-    void registerAspect(QEntity *rootObject);
-
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
 

@@ -171,17 +171,17 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
     }
 }
 
-void QAbstractAspect::registerAspect(QEntity *rootObject)
+void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
 {
-    Q_D(QAbstractAspect);
-    if (rootObject == d->m_root)
+    Q_Q(QAbstractAspect);
+    if (rootObject == m_root)
         return;
 
-    d->m_root = rootObject;
+    m_root = rootObject;
 
     QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QAbstractAspect::createBackendNode);
-    onRootEntityChanged(rootObject);
+    visitor.traverse(rootObject, q, &QAbstractAspect::createBackendNode);
+    q->onRootEntityChanged(rootObject);
 }
 
 QServiceLocator *QAbstractAspect::services() const

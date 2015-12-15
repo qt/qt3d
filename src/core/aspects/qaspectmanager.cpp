@@ -124,7 +124,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 
     if (m_root) {
         Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-            aspect->registerAspect(m_root);
+            aspect->d_func()->registerAspect(m_root);
         m_runMainLoop.fetchAndStoreOrdered(1);
     }
 }

@@ -68,6 +68,8 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate : public QObjectPrivate
 public:
     QAbstractAspectPrivate();
 
+    void registerAspect(QEntity *rootObject);
+
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
