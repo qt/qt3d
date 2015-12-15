@@ -129,7 +129,7 @@ public:
         return d_func()->m_renderer->renderBinJobs();
     }
 
-    void setRootEntity(Qt3DCore::QEntity *root)
+    void onRootEntityChanged(Qt3DCore::QEntity *root)
     {
         if (!m_window) {
             Qt3DCore::QNodeVisitor visitor;
@@ -137,8 +137,6 @@ public:
             static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
                     d_func()->m_renderer->nodeManagers()
                     ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
-        } else {
-            QRenderAspect::setRootEntity(root);
         }
     }
 
@@ -247,7 +245,7 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.worldTransformJob();
@@ -270,7 +268,7 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.updateBoundingJob();
@@ -293,7 +291,7 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.calculateBoundingVolumeJob();
@@ -316,7 +314,7 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.framePreparationJob();
@@ -339,7 +337,7 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.frameCleanupJob();
@@ -367,7 +365,7 @@ private Q_SLOTS:
 
         qDebug() << 1;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        aspect.registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
         qDebug() << 2;
 
         // WHEN

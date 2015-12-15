@@ -171,12 +171,6 @@ void QAbstractAspect::clearBackendNode(QNode *frontend) const
     }
 }
 
-void QAbstractAspect::setRootEntity(QEntity *rootObject)
-{
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QAbstractAspect::createBackendNode);
-}
-
 void QAbstractAspect::registerAspect(QEntity *rootObject)
 {
     Q_D(QAbstractAspect);
@@ -184,7 +178,10 @@ void QAbstractAspect::registerAspect(QEntity *rootObject)
         return;
 
     d->m_root = rootObject;
-    setRootEntity(rootObject);
+
+    QNodeVisitor visitor;
+    visitor.traverse(rootObject, this, &QAbstractAspect::createBackendNode);
+    onRootEntityChanged(rootObject);
 }
 
 QServiceLocator *QAbstractAspect::services() const
@@ -211,6 +208,11 @@ void QAbstractAspect::onStartup()
 
 void QAbstractAspect::onShutdown()
 {
+}
+
+void QAbstractAspect::onRootEntityChanged(QEntity *rootEntity)
+{
+    Q_UNUSED(rootEntity);
 }
 
 } // of namespace Qt3DCore

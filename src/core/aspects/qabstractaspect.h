@@ -89,16 +89,17 @@ protected:
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
     void clearBackendNode(QNode *frontend) const;
 
-    virtual void setRootEntity(QEntity *rootObject);
-
 private:
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     virtual void onInitialize(const QVariantMap &data) = 0;
+    virtual void onCleanup() = 0;
+
     virtual void onStartup();
     virtual void onShutdown();
-    virtual void onCleanup() = 0;
+
+    virtual void onRootEntityChanged(QEntity *rootEntity);
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectManager;

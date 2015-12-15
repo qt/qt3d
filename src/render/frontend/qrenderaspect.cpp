@@ -401,12 +401,10 @@ qint64 QRenderAspect::time() const
     return d->m_time;
 }
 
-void QRenderAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
+void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
 {
-    QAbstractAspect::setRootEntity(rootObject);
-
     Q_D(QRenderAspect);
-    d->m_renderer->setSceneRoot(d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootObject->id()));
+    d->m_renderer->setSceneRoot(d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntity->id()));
 }
 
 void QRenderAspect::onInitialize(const QVariantMap &data)

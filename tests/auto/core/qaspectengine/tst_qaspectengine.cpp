@@ -51,7 +51,7 @@ public: \
         : QAbstractAspect(parent) {} \
 \
 private: \
-    void setRootEntity(QEntity *) Q_DECL_OVERRIDE {} \
+    void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
     void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE {} \
     void onStartup() Q_DECL_OVERRIDE {} \
     void onShutdown() Q_DECL_OVERRIDE {} \
