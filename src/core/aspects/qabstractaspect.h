@@ -87,7 +87,6 @@ protected:
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
-    QBackendNode *getBackendNode(QNode *frontend) const;
     void clearBackendNode(QNode *frontend) const;
 
     virtual void setRootEntity(QEntity *rootObject);

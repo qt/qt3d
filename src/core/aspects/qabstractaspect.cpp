@@ -149,21 +149,6 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
     return Q_NULLPTR;
 }
 
-QBackendNode *QAbstractAspect::getBackendNode(QNode *frontend) const
-{
-    Q_D(const QAbstractAspect);
-    const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeFunctorPtr functor;
-
-    while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
-        metaObj = metaObj->superClass();
-    }
-    if (!functor.isNull())
-        return functor->get(frontend->id());
-    return Q_NULLPTR;
-}
-
 void QAbstractAspect::clearBackendNode(QNode *frontend) const
 {
     Q_D(const QAbstractAspect);
