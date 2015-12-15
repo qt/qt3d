@@ -62,13 +62,13 @@ public:
 public Q_SLOTS:
     void setShareable(bool shareable);
 
-protected:
-    QComponent(QComponentPrivate &dd, QNode *parent = 0);
-    void copy(const QNode *ref) Q_DECL_OVERRIDE;
-
 Q_SIGNALS:
     void shareableChanged(bool shareable);
     void enabledChanged(bool enabled);
+
+protected:
+    QComponent(QComponentPrivate &dd, QNode *parent = 0);
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QComponent)

@@ -93,6 +93,10 @@ public Q_SLOTS:
     virtual void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
 
+Q_SIGNALS:
+    void parentChanged(QObject *parent);
+    void enabledChanged(bool enabled);
+
 protected:
     // Clone should only be made in the main thread
     static QNode *clone(QNode *node);
@@ -117,10 +121,6 @@ private:
     friend class QAspectEngine;
     friend class QPostman;
     friend class QScene;
-
-Q_SIGNALS:
-    void parentChanged(QObject *parent);
-    void enabledChanged(bool enabled);
 };
 
 } // namespace Qt3DCore
