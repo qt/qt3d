@@ -40,24 +40,23 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qaspectjobproviderinterface.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
 class QAspectEngine;
+class QAspectJob;
 class QAspectManager;
 class QNode;
 class QEntity;
 class QAbstractAspectPrivate;
 class QBackendNodeFunctor;
 
+typedef QSharedPointer<QAspectJob> QAspectJobPtr;
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractAspect
-        : public QObject
-        , public QAspectJobProviderInterface
+class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 {
     Q_OBJECT
 
@@ -73,6 +72,8 @@ protected:
 
 private:
     virtual QVariant executeCommand(const QStringList &args);
+
+    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
 
     virtual void onInitialize(const QVariantMap &data) = 0;
     virtual void onCleanup() = 0;

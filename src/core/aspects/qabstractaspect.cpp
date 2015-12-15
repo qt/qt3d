@@ -192,6 +192,12 @@ QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
     return m_jobManager;
 }
 
+QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
+{
+    Q_Q(QAbstractAspect);
+    return q->jobsToExecute(time);
+}
+
 void QAbstractAspect::onStartup()
 {
 }

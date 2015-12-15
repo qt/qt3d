@@ -37,6 +37,7 @@
 #include "qscheduler_p.h"
 
 #include "qabstractaspect.h"
+#include "qabstractaspect_p.h"
 #include "qaspectmanager_p.h"
 #include "qabstractaspectjobmanager_p.h"
 
@@ -71,7 +72,7 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
     // For now just queue them up as they are
     const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
     Q_FOREACH (QAbstractAspect *aspect, aspects) {
-        QVector<QAspectJobPtr> aspectJobs = aspect->jobsToExecute(time);
+        QVector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
         jobQueue << aspectJobs;
     }
 
