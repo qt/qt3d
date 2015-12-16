@@ -50,6 +50,7 @@ namespace Qt3DInput {
 
 class QAbstractPhysicalDevice;
 class QInputAspectPrivate;
+class QInputDeviceIntegration;
 
 class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
 {
@@ -63,8 +64,6 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    using Qt3DCore::QAbstractAspect::registerBackendType;
-
 public Q_SLOTS:
     void setCamera(Qt3DCore::QCamera *camera);
 
@@ -75,6 +74,7 @@ private:
     void loadInputDevicePlugins();
 
     Q_DECLARE_PRIVATE(QInputAspect)
+    friend class QInputDeviceIntegration;
 };
 
 } // namespace Qt3DInput
