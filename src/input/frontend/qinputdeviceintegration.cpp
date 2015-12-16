@@ -43,6 +43,7 @@ namespace Qt3DInput {
 
 QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
     : QObjectPrivate()
+    , m_aspect(Q_NULLPTR)
 {
 }
 
@@ -54,6 +55,13 @@ QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
 QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
+}
+
+void QInputDeviceIntegration::initialize(QInputAspect *aspect)
+{
+    Q_D(QInputDeviceIntegration);
+    d->m_aspect = aspect;
+    onInitialize();
 }
 
 } // namespace Qt3DInput

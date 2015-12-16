@@ -54,13 +54,14 @@ public:
     explicit KeyboardMouseDeviceIntegration(InputHandler *handleer);
     ~KeyboardMouseDeviceIntegration();
 
-    void initialize(QInputAspect *aspect) Q_DECL_FINAL;
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_FINAL;
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) Q_DECL_FINAL;
     QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_FINAL;
     QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
+    void onInitialize() Q_DECL_FINAL;
+
     InputHandler *m_handler;
 };
 

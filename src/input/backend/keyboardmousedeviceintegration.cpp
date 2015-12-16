@@ -54,9 +54,8 @@ KeyboardMouseDeviceIntegration::~KeyboardMouseDeviceIntegration()
 {
 }
 
-void KeyboardMouseDeviceIntegration::initialize(QInputAspect *aspect)
+void KeyboardMouseDeviceIntegration::onInitialize()
 {
-    Q_UNUSED(aspect)
 }
 
 QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseDeviceIntegration::jobsToExecute(qint64 time)

@@ -60,7 +60,7 @@ protected:
     explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = 0);
 
 public:
-    virtual void initialize(Qt3DInput::QInputAspect *aspect) = 0;
+    void initialize(Qt3DInput::QInputAspect *aspect);
 
     virtual QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) = 0;
     virtual QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) = 0;
@@ -68,6 +68,8 @@ public:
     virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;
 
 private:
+    virtual void onInitialize() = 0;
+
     Q_DECLARE_PRIVATE(QInputDeviceIntegration)
 };
 

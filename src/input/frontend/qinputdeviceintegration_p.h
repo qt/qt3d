@@ -55,6 +55,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+class QInputAspect;
 class QInputDeviceIntegration;
 
 class QT3DINPUTSHARED_PRIVATE_EXPORT QInputDeviceIntegrationPrivate : public QObjectPrivate
@@ -63,6 +64,8 @@ public:
     QInputDeviceIntegrationPrivate();
 
     Q_DECLARE_PUBLIC(QInputDeviceIntegration)
+
+    QInputAspect *m_aspect;
 };
 
 } // Qt3DInput
