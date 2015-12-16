@@ -18,6 +18,7 @@ HEADERS += \
     $$PWD/qaxis.h \
     $$PWD/qlogicaldevice.h \
     $$PWD/qinputdeviceintegration.h \
+    $$PWD/qinputdeviceintegration_p.h \
     $$PWD/qabstractphysicaldevice.h \
     $$PWD/qinputdeviceintegrationfactory_p.h \
     $$PWD/qaxissetting.h \

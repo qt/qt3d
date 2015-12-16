@@ -35,15 +35,25 @@
 ****************************************************************************/
 
 #include "qinputdeviceintegration.h"
+#include "qinputdeviceintegration_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
-    : QObject(parent)
+QInputDeviceIntegrationPrivate::QInputDeviceIntegrationPrivate()
+    : QObjectPrivate()
 {
+}
 
+QInputDeviceIntegration::QInputDeviceIntegration(QObject *parent)
+    : QObject(*new QInputDeviceIntegrationPrivate, parent)
+{
+}
+
+QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent)
+    : QObject(dd, parent)
+{
 }
 
 } // namespace Qt3DInput
