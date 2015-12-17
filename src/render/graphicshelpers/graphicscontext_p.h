@@ -194,6 +194,7 @@ public:
     GLint   maxClipPlaneCount();
     void    enablePrimitiveRestart(int restartIndex);
     void    disablePrimitiveRestart();
+    void    pointSize(bool programmable, GLfloat value);
 
     // Helper methods
     static GLint elementType(GLint type);

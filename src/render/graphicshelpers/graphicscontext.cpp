@@ -786,6 +786,11 @@ void GraphicsContext::disablePrimitiveRestart()
         m_glHelper->disablePrimitiveRestart();
 }
 
+void GraphicsContext::pointSize(bool programmable, GLfloat value)
+{
+    m_glHelper->pointSize(programmable, value);
+}
+
 /*!
     \internal
     Returns a texture unit for a texture, -1 if all texture units are assigned.
