@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2015 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,59 +33,55 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#ifndef QT3DRENDER_QPOINTSIZE_H
+#define QT3DRENDER_QPOINTSIZE_H
 
-#ifndef QT3DRENDER_QRENDERSTATE_H
-#define QT3DRENDER_QRENDERSTATE_H
-
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRenderStatePrivate;
+class QPointSizePrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QPointSize : public QRenderState
 {
     Q_OBJECT
+    Q_PROPERTY(Specification specification READ specification WRITE setSpecification NOTIFY specificationChanged)
+    Q_PROPERTY(float value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendState,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PointSize,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane
+    enum Specification {
+        StaticValue = 0,
+        Programmable = 1
     };
-    Q_ENUM(Type)
+    Q_ENUM(Specification)
 
-    ~QRenderState();
+    explicit QPointSize(Qt3DCore::QNode *parent = 0);
+    ~QPointSize();
 
-    Type type() const;
+    Specification specification() const;
+    float value() const;
+    bool isProgrammable() const;
+
+public Q_SLOTS:
+    void setSpecification(Specification spec);
+    void setValue(float value);
+
+Q_SIGNALS:
+    void specificationChanged(Specification spec);
+    void valueChanged(float value);
 
 protected:
-    QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 private:
-    Q_DECLARE_PRIVATE(QRenderState)
+    Q_DECLARE_PRIVATE(QPointSize)
+    QT3D_CLONEABLE(QPointSize)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERSTATE_H
+#endif // QT3DRENDER_QPOINTSIZE_H

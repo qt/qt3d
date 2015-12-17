@@ -55,6 +55,7 @@
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qfrontface.h>
+#include <Qt3DRender/qpointsize.h>
 #include <Qt3DRender/qpolygonoffset.h>
 #include <Qt3DRender/qscissortest.h>
 #include <Qt3DRender/qstenciltest.h>
@@ -210,6 +211,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, GraphicsConte
         gc->disableAlphaCoverage();
     }
 
+    if (maskOfStatesToReset & PointSizeMask) {
+        gc->pointSize(false, 1.0f);    // reset to default
+    }
+
     if (maskOfStatesToReset & PolygonOffsetStateMask) {
         funcs->glDisable(GL_POLYGON_OFFSET_FILL);
     }
@@ -294,6 +299,10 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
     }
     case QRenderState::AlphaCoverage: {
         return AlphaCoverage::getOrCreate();
+    }
+    case QRenderState::PointSize: {
+        QPointSize *pointSize = static_cast<QPointSize *>(renderState);
+        return PointSize::getOrCreate(pointSize->isProgrammable(), pointSize->value());
     }
     case QRenderState::PolygonOffset: {
         QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);

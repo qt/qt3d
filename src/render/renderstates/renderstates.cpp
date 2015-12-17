@@ -233,6 +233,21 @@ AlphaCoverage *AlphaCoverage::getOrCreate()
     return getOrCreateImpl(AlphaCoverage());
 }
 
+void PointSize::apply(GraphicsContext *gc) const
+{
+    gc->pointSize(m_1, m_2);
+}
+
+PointSize *PointSize::getOrCreate(bool programmable, GLfloat value)
+{
+    return getOrCreateImpl(PointSize(programmable, value));
+}
+
+PointSize::PointSize(bool programmable, GLfloat value)
+    : GenericState2<PointSize, bool, GLfloat>(programmable, value)
+{
+}
+
 void PolygonOffset::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_POLYGON_OFFSET_FILL);
