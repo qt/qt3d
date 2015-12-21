@@ -72,6 +72,12 @@ void QInputDeviceIntegration::initialize(QInputAspect *aspect)
     onInitialize();
 }
 
+QInputAspect *QInputDeviceIntegration::inputAspect() const
+{
+    Q_D(const QInputDeviceIntegration);
+    return d->m_aspect;
+}
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE

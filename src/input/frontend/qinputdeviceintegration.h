@@ -81,6 +81,9 @@ public:
     virtual QVector<Qt3DCore::QNodeId> physicalDevices() const = 0;
     virtual QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const = 0;
 
+protected:
+    QInputAspect *inputAspect() const;
+
 private:
     virtual void onInitialize() = 0;
 
