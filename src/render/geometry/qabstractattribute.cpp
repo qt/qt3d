@@ -185,7 +185,7 @@ void QAbstractAttribute::setBuffer(QAbstractBuffer *buffer)
         buffer->setParent(this);
 
     d->m_buffer = buffer;
-    emit bufferChanged();
+    emit bufferChanged(buffer);
 }
 
 void QAbstractAttribute::setName(const QString &name)
@@ -195,7 +195,7 @@ void QAbstractAttribute::setName(const QString &name)
         return;
 
     d->m_name = name;
-    emit nameChanged();
+    emit nameChanged(name);
 }
 
 void QAbstractAttribute::setDataType(DataType type)
@@ -206,7 +206,7 @@ void QAbstractAttribute::setDataType(DataType type)
         return;
 
     d->m_dataType = type;
-    emit dataTypeChanged();
+    emit dataTypeChanged(type);
 }
 
 void QAbstractAttribute::setDataSize(uint size)
@@ -216,7 +216,7 @@ void QAbstractAttribute::setDataSize(uint size)
         return;
     Q_ASSERT(size >= 1 && size <= 4);
     d->m_dataSize = size;
-    emit dataSizeChanged();
+    emit dataSizeChanged(size);
 }
 
 void QAbstractAttribute::setCount(uint count)
@@ -226,7 +226,7 @@ void QAbstractAttribute::setCount(uint count)
         return;
 
     d->m_count = count;
-    emit countChanged();
+    emit countChanged(count);
 }
 
 void QAbstractAttribute::setByteStride(uint byteStride)
@@ -236,7 +236,7 @@ void QAbstractAttribute::setByteStride(uint byteStride)
         return;
 
     d->m_byteStride = byteStride;
-    emit byteStrideChanged();
+    emit byteStrideChanged(byteStride);
 }
 
 void QAbstractAttribute::setByteOffset(uint byteOffset)
@@ -246,7 +246,7 @@ void QAbstractAttribute::setByteOffset(uint byteOffset)
         return;
 
     d->m_byteOffset = byteOffset;
-    emit byteOffsetChanged();
+    emit byteOffsetChanged(byteOffset);
 }
 
 void QAbstractAttribute::setDivisor(uint divisor)
@@ -256,7 +256,7 @@ void QAbstractAttribute::setDivisor(uint divisor)
         return;
 
     d->m_divisor = divisor;
-    emit divisorChanged();
+    emit divisorChanged(divisor);
 }
 
 void QAbstractAttribute::setAttributeType(AttributeType attributeType)
@@ -266,7 +266,7 @@ void QAbstractAttribute::setAttributeType(AttributeType attributeType)
         return;
 
     d->m_attributeType = attributeType;
-    emit attributeTypeChanged();
+    emit attributeTypeChanged(attributeType);
 }
 
 } // Qt3D

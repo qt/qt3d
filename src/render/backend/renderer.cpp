@@ -78,7 +78,7 @@
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
 
 #include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <Qt3DCore/private/qabstractaspectjobmanager_p.h>
 
 #include <QStack>
@@ -131,11 +131,10 @@ const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
  */
 
 Renderer::Renderer(QRenderAspect::RenderType type)
-    : m_rendererAspect(Q_NULLPTR)
+    : m_services(Q_NULLPTR)
     , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_eventSource(Q_NULLPTR)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
@@ -144,6 +143,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_exposed(0)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
+    , m_time(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -154,8 +154,16 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
-    // Clean up the TLS allocators
-    destroyAllocators(m_rendererAspect->jobManager());
+}
+
+qint64 Renderer::time() const
+{
+    return m_time;
+}
+
+void Renderer::setTime(qint64 time)
+{
+    m_time = time;
 }
 
 NodeManagers *Renderer::nodeManagers() const
@@ -215,7 +223,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultTechnique->addParameter(kd);
     basicPass->addBinding(new QParameterMapping(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapping::Uniform));
 
-    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f));
+    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f));
     m_defaultTechnique->addParameter(ks);
     basicPass->addBinding(new QParameterMapping(QStringLiteral("specular"), QStringLiteral("ks"), QParameterMapping::Uniform));
 
@@ -228,7 +236,7 @@ void Renderer::buildDefaultMaterial()
     m_defaultMaterial->setObjectName(QStringLiteral("DefaultMaterial"));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f)));
-    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.95f, 0.95f, 0.95f)));
+    m_defaultMaterial->addParameter(new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f)));
     m_defaultMaterial->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
 
     QEffect* defEff = new QEffect;
@@ -411,7 +419,7 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 // 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
 // 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
 // 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
-void Renderer::setSceneRoot(Entity *sgRoot)
+void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
     QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
@@ -426,21 +434,19 @@ void Renderer::setSceneRoot(Entity *sgRoot)
     buildDefaultTechnique();
     buildDefaultMaterial();
 
-    // If that weren't for those lines, the renderer might not event need
-    // to know about the renderer aspect
-    m_rendererAspect->createBackendNode(m_defaultMaterial);
-    m_rendererAspect->createBackendNode(m_defaultMaterial->effect());
-    m_rendererAspect->createBackendNode(m_defaultTechnique);
-    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first());
-    m_rendererAspect->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
+    factory->createBackendNode(m_defaultMaterial);
+    factory->createBackendNode(m_defaultMaterial->effect());
+    factory->createBackendNode(m_defaultTechnique);
+    factory->createBackendNode(m_defaultTechnique->renderPasses().first());
+    factory->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
 
     // We create backend resources for all the parameters
     Q_FOREACH (QParameter *p, m_defaultMaterial->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
     Q_FOREACH (QParameter *p, m_defaultTechnique->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
     Q_FOREACH (QParameter *p, m_defaultMaterial->effect()->parameters())
-        m_rendererAspect->createBackendNode(p);
+        factory->createBackendNode(p);
 
 
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
@@ -749,7 +755,7 @@ QAspectJobPtr Renderer::pickBoundingVolumeJob()
     // Clear any previous dependency not valid anymore
     if (!m_pickBoundingVolumeJob)
         m_pickBoundingVolumeJob.reset(new PickBoundingVolumeJob(this));
-    m_pickBoundingVolumeJob->clearNullDependencies();
+    m_pickBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
     m_pickBoundingVolumeJob->setRoot(m_renderSceneRoot);
     return m_pickBoundingVolumeJob;
 }

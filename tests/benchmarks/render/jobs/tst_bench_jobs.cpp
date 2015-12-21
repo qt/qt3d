@@ -129,7 +129,7 @@ public:
         return d_func()->m_renderer->renderBinJobs();
     }
 
-    void setRootEntity(Qt3DCore::QEntity *root)
+    void onRootEntityChanged(Qt3DCore::QEntity *root)
     {
         if (!m_window) {
             Qt3DCore::QNodeVisitor visitor;
@@ -137,14 +137,12 @@ public:
             static_cast<Qt3DRender::Render::Renderer *>(d_func()->m_renderer)->m_renderSceneRoot =
                     d_func()->m_renderer->nodeManagers()
                     ->lookupResource<Qt3DRender::Render::Entity, Qt3DRender::Render::EntityManager>(root->id());
-        } else {
-            QRenderAspect::setRootEntity(root);
         }
     }
 
     void visitNode(Qt3DCore::QNode *node)
     {
-        QAbstractAspect::createBackendNode(node);
+        d_func()->createBackendNode(node);
     }
 
 private:
@@ -247,14 +245,14 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.worldTransformJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -270,14 +268,14 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.updateBoundingJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -293,14 +291,14 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.calculateBoundingVolumeJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -316,14 +314,14 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.framePreparationJob();
 
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -339,13 +337,13 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.frameCleanupJob();
         QBENCHMARK {
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
 
@@ -367,7 +365,7 @@ private Q_SLOTS:
 
         qDebug() << 1;
 
-        aspect.setRootEntity(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->registerAspect(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
         qDebug() << 2;
 
         // WHEN
@@ -375,8 +373,8 @@ private Q_SLOTS:
         qDebug() << 3;
         QBENCHMARK {
             qDebug() << 4;
-            aspect.jobManager()->enqueueJobs(jobs);
-            aspect.jobManager()->waitForAllJobs();
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->enqueueJobs(jobs);
+            Qt3DCore::QAbstractAspectPrivate::get(&aspect)->jobManager()->waitForAllJobs();
         }
     }
     */

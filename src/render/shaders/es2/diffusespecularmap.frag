@@ -9,8 +9,8 @@ uniform FP vec3 eyePosition;
 uniform sampler2D diffuseTexture;
 uniform sampler2D specularTexture;
 
-varying FP vec3 position;
-varying FP vec3 normal;
+varying FP vec3 worldPosition;
+varying FP vec3 worldNormal;
 varying FP vec2 texCoord;
 
 #pragma include light.inc.frag
@@ -21,7 +21,7 @@ void main()
     FP vec3 specularTextureColor = texture2D( specularTexture, texCoord ).rgb;
 
     FP vec3 diffuseColor, specularColor;
-    adsModel(position, normal, eyePosition, shininess, diffuseColor, specularColor);
+    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
 
     gl_FragColor = vec4( diffuseTextureColor * ( ka + diffuseColor ) + specularTextureColor * specularColor, 1.0 );
 }

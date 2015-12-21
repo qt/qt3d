@@ -65,10 +65,8 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.1f, 0.1f, 0.1f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
     , m_normalParameter(new QParameter(QStringLiteral("normalTexture"), m_normalTexture))
-    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
+    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.01f, 0.01f, 0.01f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
-    , m_lightPositionParameter(new QParameter(QStringLiteral("lightPosition"), QVector4D(0.0f, 0.0f, 0.0f, 1.0f)))
-    , m_lightIntensityParameter(new QParameter(QStringLiteral("lightIntensity"), QVector3D(1.0f, 1.0f, 1.0f)))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_normalDiffuseGL3Technique(new QTechnique())
     , m_normalDiffuseGL2Technique(new QTechnique())
@@ -93,6 +91,19 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
 
 void QNormalDiffuseMapMaterialPrivate::init()
 {
+    connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleAmbientChanged);
+    connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleDiffuseChanged);
+    connect(m_normalParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleNormalChanged);
+    connect(m_specularParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleSpecularChanged);
+    connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleShininessChanged);
+    connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QNormalDiffuseMapMaterialPrivate::handleTextureScaleChanged);
+
     m_normalDiffuseGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemap.vert"))));
     m_normalDiffuseGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/normaldiffusemap.frag"))));
     m_normalDiffuseGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/normaldiffusemap.vert"))));
@@ -130,11 +141,45 @@ void QNormalDiffuseMapMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_normalParameter);
     m_normalDiffuseEffect->addParameter(m_specularParameter);
     m_normalDiffuseEffect->addParameter(m_shininessParameter);
-    m_normalDiffuseEffect->addParameter(m_lightPositionParameter);
-    m_normalDiffuseEffect->addParameter(m_lightIntensityParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
     q_func()->setEffect(m_normalDiffuseEffect);
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleAmbientChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->ambientChanged(var.value<QColor>());
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleDiffuseChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->diffuseChanged(var.value<QAbstractTextureProvider *>());
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleNormalChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->normalChanged(var.value<QAbstractTextureProvider *>());
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleSpecularChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->specularChanged(var.value<QColor>());
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleShininessChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->shininessChanged(var.toFloat());
+}
+
+void QNormalDiffuseMapMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
+{
+    Q_Q(QNormalDiffuseMapMaterial);
+    emit q->textureScaleChanged(var.toFloat());
 }
 
 /*!
@@ -165,12 +210,6 @@ QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNode *parent)
     : QMaterial(*new QNormalDiffuseMapMaterialPrivate, parent)
 {
     Q_D(QNormalDiffuseMapMaterial);
-    QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
-    QObject::connect(d->m_diffuseParameter, SIGNAL(valueChanged()), this, SIGNAL(diffuseChanged()));
-    QObject::connect(d->m_normalParameter, SIGNAL(valueChanged()), this, SIGNAL(normalChanged()));
-    QObject::connect(d->m_specularParameter, SIGNAL(valueChanged()), this, SIGNAL(specularChanged()));
-    QObject::connect(d->m_shininessParameter, SIGNAL(valueChanged()), this, SIGNAL(shininessChanged()));
-    QObject::connect(d->m_textureScaleParameter, SIGNAL(valueChanged()), this, SIGNAL(textureScaleChanged()));
     d->init();
 }
 
@@ -179,12 +218,6 @@ QNormalDiffuseMapMaterial::QNormalDiffuseMapMaterial(QNormalDiffuseMapMaterialPr
     : QMaterial(dd, parent)
 {
     Q_D(QNormalDiffuseMapMaterial);
-    QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
-    QObject::connect(d->m_diffuseParameter, SIGNAL(valueChanged()), this, SIGNAL(diffuseChanged()));
-    QObject::connect(d->m_normalParameter, SIGNAL(valueChanged()), this, SIGNAL(normalChanged()));
-    QObject::connect(d->m_specularParameter, SIGNAL(valueChanged()), this, SIGNAL(specularChanged()));
-    QObject::connect(d->m_shininessParameter, SIGNAL(valueChanged()), this, SIGNAL(shininessChanged()));
-    QObject::connect(d->m_textureScaleParameter, SIGNAL(valueChanged()), this, SIGNAL(textureScaleChanged()));
     d->init();
 }
 

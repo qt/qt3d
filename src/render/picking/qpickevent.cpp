@@ -73,7 +73,7 @@ void QPickEvent::setAccepted(bool accepted)
     Q_D(QPickEvent);
     if (accepted != d->m_accepted) {
         d->m_accepted = accepted;
-        emit acceptedChanged();
+        emit acceptedChanged(accepted);
     }
 }
 

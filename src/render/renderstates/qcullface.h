@@ -66,10 +66,12 @@ public:
     ~QCullFace();
 
     CullingMode mode() const;
+
+public Q_SLOTS:
     void setMode(CullingMode mode);
 
 Q_SIGNALS:
-    void modeChanged();
+    void modeChanged(CullingMode mode);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

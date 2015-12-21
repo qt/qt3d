@@ -387,7 +387,7 @@ void QCylinderGeometry::setRings(int rings)
         d->m_rings = rings;
         updateVertices();
         updateIndices();
-        emit ringsChanged();
+        emit ringsChanged(rings);
     }
 }
 
@@ -398,7 +398,7 @@ void QCylinderGeometry::setSlices(int slices)
         d->m_slices = slices;
         updateVertices();
         updateIndices();
-        emit slicesChanged();
+        emit slicesChanged(slices);
     }
 }
 
@@ -408,7 +408,7 @@ void QCylinderGeometry::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         updateVertices();
-        emit radiusChanged();
+        emit radiusChanged(radius);
     }
 }
 
@@ -419,7 +419,7 @@ void QCylinderGeometry::setLength(float length)
         d->m_length = length;
         updateVertices();
         updateIndices();
-        emit lengthChanged();
+        emit lengthChanged(length);
     }
 }
 

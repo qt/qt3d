@@ -85,7 +85,7 @@ void QDepthMask::setMask(bool mask)
     Q_D(QDepthMask);
     if (d->m_mask != mask) {
         d->m_mask = mask;
-        emit maskChanged();
+        emit maskChanged(mask);
     }
 }
 

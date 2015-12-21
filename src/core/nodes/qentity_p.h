@@ -63,6 +63,8 @@ public :
 
     Q_DECLARE_PUBLIC(QEntity)
 
+    QNodeId parentEntityId() const;
+
     QComponentList m_components;
     bool m_visible;
 

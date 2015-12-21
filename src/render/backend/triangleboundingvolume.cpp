@@ -89,7 +89,7 @@ bool intersectsSegmentTriangle(const Qt3DCore::QRay3D &ray,
 }
 
 TriangleBoundingVolume::TriangleBoundingVolume()
-    : Qt3DCore::QBoundingVolume()
+    : QBoundingVolume()
 {
 }
 
@@ -97,7 +97,7 @@ TriangleBoundingVolume::TriangleBoundingVolume()
     The vertices a, b, c are assumed to be in counter clockwise order.
  */
 TriangleBoundingVolume::TriangleBoundingVolume(const Qt3DCore::QNodeId &id, const QVector3D &a, const QVector3D &b, const QVector3D &c)
-    : Qt3DCore::QBoundingVolume()
+    : QBoundingVolume()
     , m_id(id)
     , m_a(a)
     , m_b(b)
@@ -121,9 +121,9 @@ bool TriangleBoundingVolume::intersects(const Qt3DCore::QRay3D &ray, QVector3D *
     return intersected;
 }
 
-Qt3DCore::QBoundingVolume::Type TriangleBoundingVolume::type() const
+QBoundingVolume::Type TriangleBoundingVolume::type() const
 {
-    return Qt3DCore::QBoundingVolume::Triangle;
+    return QBoundingVolume::Triangle;
 }
 
 QVector3D TriangleBoundingVolume::a() const

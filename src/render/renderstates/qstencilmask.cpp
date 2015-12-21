@@ -73,7 +73,7 @@ void QStencilMask::setFrontMask(uint mask)
     Q_D(QStencilMask);
     if (d->m_frontMask != mask) {
         d->m_frontMask = mask;
-        Q_EMIT frontMaskChanged();
+        Q_EMIT frontMaskChanged(mask);
     }
 }
 
@@ -82,7 +82,7 @@ void QStencilMask::setBackMask(uint mask)
     Q_D(QStencilMask);
     if (d->m_backMask != mask) {
         d->m_backMask = mask;
-        Q_EMIT backMaskChanged();
+        Q_EMIT backMaskChanged(mask);
     }
 }
 

@@ -159,7 +159,7 @@ void QBlendState::setSrcRGB(QBlendState::Blending srcRGB)
     Q_D(QBlendState);
     if (d->m_srcRGB != srcRGB) {
         d->m_srcRGB = srcRGB;
-        emit srcRGBChanged();
+        emit srcRGBChanged(srcRGB);
     }
 }
 
@@ -183,7 +183,7 @@ void QBlendState::setDstRGB(QBlendState::Blending dstRGB)
     Q_D(QBlendState);
     if (d->m_dstRGB != dstRGB) {
         d->m_dstRGB = dstRGB;
-        emit dstRGBChanged();
+        emit dstRGBChanged(dstRGB);
     }
 }
 
@@ -207,7 +207,7 @@ void QBlendState::setSrcAlpha(QBlendState::Blending srcAlpha)
     Q_D(QBlendState);
     if (d->m_srcAlpha != srcAlpha) {
         d->m_srcAlpha = srcAlpha;
-        emit srcAlphaChanged();
+        emit srcAlphaChanged(srcAlpha);
     }
 }
 
@@ -231,7 +231,7 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     Q_D(QBlendState);
     if (d->m_dstAlpha != dstAlpha) {
         d->m_dstAlpha = dstAlpha;
-        emit dstAlphaChanged();
+        emit dstAlphaChanged(dstAlpha);
     }
 }
 

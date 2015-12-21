@@ -56,19 +56,19 @@ public:
     explicit QPlaneMesh(Qt3DCore::QNode *parent = 0);
     ~QPlaneMesh();
 
-    void setWidth(float width);
     float width() const;
-
-    void setHeight(float height);
     float height() const;
-
-    void setMeshResolution(const QSize &resolution);
     QSize meshResolution() const;
 
+public Q_SLOTS:
+    void setWidth(float width);
+    void setHeight(float height);
+    void setMeshResolution(const QSize &resolution);
+
 Q_SIGNALS:
-    void widthChanged();
-    void heightChanged();
-    void meshResolutionChanged();
+    void meshResolutionChanged(const QSize &meshResolution);
+    void widthChanged(float width);
+    void heightChanged(float height);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

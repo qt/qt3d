@@ -42,7 +42,7 @@ Material {
 
     property color ambient:  Qt.rgba( 0.05, 0.05, 0.05, 1.0 )
     property alias diffuse: diffuseTextureImage.source
-    property color specular: Qt.rgba( 0.95, 0.95, 0.95, 1.0 )
+    property color specular: Qt.rgba( 0.01, 0.01, 0.01, 1.0 )
     property alias normal: normalTextureImage.source
     property real shininess: 150.0
     property real textureScale: 1.0
@@ -84,12 +84,6 @@ Material {
     ]
 
     effect: Effect {
-
-        parameters: [
-            Parameter { name: "lightPosition";  value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },
-            Parameter { name: "lightIntensity"; value: Qt.vector3d( 1.0, 1.0, 1.0 ) }
-        ]
-
         ShaderProgram {
             id: gl2Es2Shader
             vertexShaderCode:   loadSource("qrc:/shaders/es2/normaldiffusemap.vert")

@@ -83,17 +83,17 @@ public:
     explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
     ~QBuffer();
 
-    void setUsage(UsageType usage);
     UsageType usage() const;
-
-    void setType(BufferType type);
     BufferType type() const;
+    bool isSync() const;
 
     void setBufferFunctor(const QBufferFunctorPtr &functor);
     QBufferFunctorPtr bufferFunctor() const;
 
+public Q_SLOTS:
+    void setType(BufferType type);
+    void setUsage(UsageType usage);
     void setSync(bool sync);
-    bool isSync() const;
 
 protected:
     QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
@@ -101,9 +101,9 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void typeChanged();
-    void usageChanged();
-    void syncChanged();
+    void typeChanged(BufferType type);
+    void usageChanged(UsageType usage);
+    void syncChanged(bool sync);
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

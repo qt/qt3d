@@ -62,7 +62,7 @@ protected:
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void dataChanged();
+    void dataChanged(const QByteArray &bytes);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractBuffer)

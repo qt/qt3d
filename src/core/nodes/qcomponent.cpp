@@ -150,7 +150,7 @@ void QComponent::setShareable(bool shareable)
     Q_D(QComponent);
     if (d->m_shareable != shareable) {
         d->m_shareable = shareable;
-        emit shareableChanged();
+        emit shareableChanged(shareable);
     }
 }
 

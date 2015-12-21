@@ -36,7 +36,7 @@
 
 #include "qbackendnode.h"
 #include "qbackendnode_p.h"
-#include "qbackendnodefactory.h"
+#include "qbackendnodefactory_p.h"
 #include "qaspectengine.h"
 #include "qnode.h"
 

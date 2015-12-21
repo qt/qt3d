@@ -52,17 +52,50 @@
 #include <Qt3DCore/qnodeid.h>
 #include <QtCore/qvector.h>
 #include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DInput/private/movingaverage_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
+class QAxisSetting;
+class QInputAspect;
+
+namespace Input {
+
+struct AxisIdSetting
+{
+    int m_axisIdentifier;
+    Qt3DCore::QNodeId m_axisSettingsId;
+};
+
+struct AxisIdFilter
+{
+    int m_axisIdentifier;
+    MovingAverage m_filter;
+};
+
+class AxisSetting;
+
+}
 
 class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDeviceBackendNodePrivate : public Qt3DCore::QBackendNodePrivate
 {
 public:
     explicit QAbstractPhysicalDeviceBackendNodePrivate(Qt3DCore::QBackendNode::Mode mode = Qt3DCore::QBackendNode::ReadOnly);
 
-    QVector<Qt3DCore::QNodeId> m_axisSettings;
+    Q_DECLARE_PUBLIC(QAbstractPhysicalDeviceBackendNode)
+
+    void addAxisSetting(int axisIdentifier, Qt3DCore::QNodeId axisSettingId);
+    void removeAxisSetting(Qt3DCore::QNodeId axisSettingsId);
+
+    Input::MovingAverage &getOrCreateFilter(int axisIdentifier);
+
+    Input::AxisSetting *getAxisSetting(Qt3DCore::QNodeId axisSettingId) const;
+
+    QVector<Input::AxisIdSetting> m_axisSettings;
+    QVector<Input::AxisIdFilter> m_axisFilters;
+    QInputAspect *m_inputAspect;
     bool m_enabled;
 };
 

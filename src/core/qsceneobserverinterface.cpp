@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qsceneobserverinterface.h"
+#include "qsceneobserverinterface_p.h"
 
 QT_BEGIN_NAMESPACE
 

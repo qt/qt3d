@@ -336,7 +336,7 @@ public:
 
     void visitNode(Qt3DCore::QNode *node)
     {
-        QAbstractAspect::createBackendNode(node);
+        d_func()->createBackendNode(node);
     }
 };
 
@@ -380,7 +380,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::Render::TrianglesExtractor extractor(bGeomRenderer, manager);
-        QVector<Qt3DCore::QBoundingVolume *> volumes = extractor.extract(Qt3DCore::QNodeId());
+        QVector<Qt3DRender::QBoundingVolume *> volumes = extractor.extract(Qt3DCore::QNodeId());
 
         // THEN
         QVERIFY(!volumes.empty());

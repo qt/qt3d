@@ -68,10 +68,12 @@ public:
     ~QDepthTest();
 
     DepthFunc func() const;
+
+public Q_SLOTS:
     void setFunc(DepthFunc func);
 
 Q_SIGNALS:
-    void funcChanged();
+    void funcChanged(DepthFunc func);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

@@ -261,6 +261,7 @@ public:
     void setM43(qreal value) { v(3, 2) = value; }
     void setM44(qreal value) { v(3, 3) = value; }
 
+    Q_INVOKABLE void translate(float x, float y, float z) { v.translate(x, y, z); }
     Q_INVOKABLE void translate(const QVector3D &t) { v.translate(t); }
     Q_INVOKABLE void rotate(float angle, const QVector3D &axis) { v.rotate(angle, axis); }
     Q_INVOKABLE void scale(float s) { v.scale(s); }

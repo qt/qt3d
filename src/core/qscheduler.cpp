@@ -37,6 +37,7 @@
 #include "qscheduler_p.h"
 
 #include "qabstractaspect.h"
+#include "qabstractaspect_p.h"
 #include "qaspectmanager_p.h"
 #include "qabstractaspectjobmanager_p.h"
 
@@ -63,11 +64,15 @@ void QScheduler::scheduleAndWaitForFrameAspectJobs(qint64 time)
 {
     QVector<QAspectJobPtr> jobQueue;
 
+    // TODO: Allow clocks with custom scale factors and independent control
+    //       over running / paused / stopped status
+    // TODO: Advance all clocks registered with the engine
+
     // TODO: Set up dependencies between jobs as needed
     // For now just queue them up as they are
     const QList<QAbstractAspect *> &aspects = m_aspectManager->aspects();
     Q_FOREACH (QAbstractAspect *aspect, aspects) {
-        QVector<QAspectJobPtr> aspectJobs = aspect->jobsToExecute(time);
+        QVector<QAspectJobPtr> aspectJobs = QAbstractAspectPrivate::get(aspect)->jobsToExecute(time);
         jobQueue << aspectJobs;
     }
 

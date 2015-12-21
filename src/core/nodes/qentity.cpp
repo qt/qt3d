@@ -111,7 +111,7 @@ void QEntity::copy(const QNode *ref)
     QNode::copy(ref);
     const QEntity *entity = static_cast<const QEntity*>(ref);
     d_func()->m_visible = entity->d_func()->m_visible;
-    d_func()->m_parentEntityId = entity->parentEntityId();
+    d_func()->m_parentEntityId = entity->d_func()->parentEntityId();
 
     Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
         QNode *ccclone = QNode::clone(c);
@@ -228,12 +228,12 @@ QEntity *QEntity::parentEntity() const
  there is no Qt3DCore::QEntity parent of the current Qt3DCore::QEntity in the scene
  hierarchy.
  */
-QNodeId QEntity::parentEntityId() const
+QNodeId QEntityPrivate::parentEntityId() const
 {
-    Q_D(const QEntity);
-    if (d->m_parentEntityId.isNull())
-        parentEntity();
-    return d->m_parentEntityId;
+    Q_Q(const QEntity);
+    if (m_parentEntityId.isNull())
+        q->parentEntity();
+    return m_parentEntityId;
 }
 
 } // namespace Qt3DCore

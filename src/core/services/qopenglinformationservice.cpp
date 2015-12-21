@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qopenglinformationservice.h"
 #include "qopenglinformationservice_p.h"
+#include "qopenglinformationservice_p_p.h"
 
 QT_BEGIN_NAMESPACE
 

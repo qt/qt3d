@@ -54,29 +54,28 @@ class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
-    Q_PROPERTY(int keys READ keys WRITE setKeys NOTIFY keysChanged)
+    Q_PROPERTY(QVariantList keys READ keys WRITE setKeys NOTIFY keysChanged)
 
 public:
     explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxisInput();
 
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
     QAbstractPhysicalDevice *sourceDevice() const;
-
-    void setScale(float scale);
     float scale() const;
-
-    void setAxis(int axis);
     int axis() const;
+    QVariantList keys() const;
 
-    void setKeys(int keys);
-    int keys() const;
+public Q_SLOTS:
+    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
+    void setScale(float scale);
+    void setAxis(int axis);
+    void setKeys(const QVariantList &keys);
 
 Q_SIGNALS:
-    void sourceDeviceChanged();
-    void scaleChanged();
-    void axisChanged();
-    void keysChanged();
+    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
+    void scaleChanged(float scale);
+    void axisChanged(int axis);
+    void keysChanged(const QVariantList &keys);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

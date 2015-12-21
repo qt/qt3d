@@ -52,8 +52,8 @@
 #include <private/qscene_p.h>
 #include "qentity.h"
 #include "qcomponent.h"
-#include <Qt3DCore/qeventfilterservice.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -113,71 +113,54 @@ QAspectEngine::QAspectEngine(QObject *parent)
     d->m_aspectThread->waitForStart(QThread::HighestPriority);
 }
 
-/*! \internal */
-QAspectEngine::QAspectEngine(QAspectEnginePrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-    Q_D(QAspectEngine);
-    d->m_scene = new QScene(this);
-    d->m_postman = new QPostman(this);
-    d->m_postman->setScene(d->m_scene);
-    d->m_aspectThread = new QAspectThread(this);
-    d->m_aspectThread->waitForStart(QThread::HighestPriority);
-}
-
 QAspectEngine::~QAspectEngine()
 {
     Q_D(QAspectEngine);
-    shutdown();
+    setRootEntity(Q_NULLPTR);
     delete d->m_aspectThread;
     delete d->m_postman;
     delete d->m_scene;
 }
 
-void QAspectEngine::initNodeTree(QNode *node)
+void QAspectEnginePrivate::initNodeTree(QNode *node)
 {
     QNodeVisitor visitor;
-    visitor.traverse(node, d_func(), &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
+    visitor.traverse(node, this, &QAspectEnginePrivate::initNode, &QAspectEnginePrivate::initEntity);
 }
 
-void QAspectEngine::initialize()
+void QAspectEnginePrivate::initialize()
 {
-    Q_D(QAspectEngine);
-    QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
-    d->m_scene->setArbiter(arbiter);
+    QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
+    m_scene->setArbiter(arbiter);
     QChangeArbiter::createUnmanagedThreadLocalChangeQueue(arbiter);
     QMetaObject::invokeMethod(arbiter,
                               "setPostman",
-                              Q_ARG(Qt3DCore::QAbstractPostman*, d->m_postman));
+                              Q_ARG(Qt3DCore::QAbstractPostman*, m_postman));
     QMetaObject::invokeMethod(arbiter,
                               "setScene",
-                              Q_ARG(Qt3DCore::QScene*, d->m_scene));
+                              Q_ARG(Qt3DCore::QScene*, m_scene));
 }
 
-void QAspectEngine::shutdown()
+void QAspectEnginePrivate::shutdown()
 {
-    Q_D(QAspectEngine);
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    // Unset the root entity
-    setRootEntity(Q_NULLPTR);
-
     // Cleanup the scene before quitting the backend
-    d->m_scene->setArbiter(Q_NULLPTR);
-    QChangeArbiter *arbiter = d->m_aspectThread->aspectManager()->changeArbiter();
+    m_scene->setArbiter(Q_NULLPTR);
+    QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
 
     // Tell the aspect thread to exit
     // This will return only after the aspectManager has
     // exited its exec loop
-    d->m_aspectThread->aspectManager()->quit();
+    m_aspectThread->aspectManager()->quit();
 
     // Wait for thread to exit
-    d->m_aspectThread->wait();
+    m_aspectThread->wait();
 
     qCDebug(Aspects) << Q_FUNC_INFO << "deleting aspects";
     // Deletes aspects in the same thread as the one they were created in
-    qDeleteAll(d->m_aspects);
+    qDeleteAll(m_aspects);
 
     qCDebug(Aspects) << Q_FUNC_INFO << "Shutdown complete";
 }
@@ -277,14 +260,21 @@ void QAspectEngine::setRootEntity(QEntity *root)
     if (d->m_root == root)
         return;
 
+    const bool shutdownNeeded = d->m_root;
+
     // Set the new root object. This will cause the old tree to be deleted
     // and the deletion of the old frontend tree will cause the backends to
     // free any related resources
     d->m_root.reset(root);
 
+    if (shutdownNeeded)
+        d->shutdown();
+
     // Do we actually have a new scene?
     if (!d->m_root)
         return;
+
+    d->initialize();
 
     // The aspect engine takes ownership of the scene root. We also set the
     // parent of the scene root to be the engine
@@ -294,7 +284,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     // scene object and adding each node to the scene
     // TODO: We probably need a call symmetric to this one above in order to
     // deregister the nodes from the scene
-    initNodeTree(root);
+    d->initNodeTree(root);
 
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the backends to get synchronized before the

@@ -73,12 +73,14 @@ private Q_SLOTS:
     void checkPointLightCloning()
     {
         Qt3DRender::QPointLight pointLight;
+        QCOMPARE(pointLight.type(), Qt3DRender::QLight::PointLight);
         pointLight.setColor(Qt::green);
         pointLight.setIntensity(0.5f);
         pointLight.setAttenuation(QVector3D(0.5f, 0.0f, 1.0f));
 
         QScopedPointer<Qt3DRender::QPointLight> pointLightClone(static_cast<Qt3DRender::QPointLight *>(QNode::clone(&pointLight)));
         QVERIFY(pointLightClone.data());
+        QCOMPARE(pointLightClone->type(), Qt3DRender::QLight::PointLight);
         QCOMPARE(pointLight.color(), pointLightClone->color());
         QCOMPARE(pointLight.intensity(), pointLightClone->intensity());
         QCOMPARE(pointLight.attenuation(), pointLightClone->attenuation());
@@ -87,12 +89,14 @@ private Q_SLOTS:
     void checkDirectionalLightCloning()
     {
         Qt3DRender::QDirectionalLight dirLight;
+        QCOMPARE(dirLight.type(), Qt3DRender::QLight::DirectionalLight);
         dirLight.setColor(Qt::blue);
         dirLight.setIntensity(0.5f);
         dirLight.setDirection(QVector3D(0, 0, -1));
 
         QScopedPointer<Qt3DRender::QDirectionalLight> dirLightClone(static_cast<Qt3DRender::QDirectionalLight *>(QNode::clone(&dirLight)));
         QVERIFY(dirLightClone.data());
+        QCOMPARE(dirLightClone->type(), Qt3DRender::QLight::DirectionalLight);
         QCOMPARE(dirLight.color(), dirLightClone->color());
         QCOMPARE(dirLight.intensity(), dirLightClone->intensity());
         QCOMPARE(dirLight.direction(), dirLightClone->direction());
@@ -101,6 +105,7 @@ private Q_SLOTS:
     void checkSpotLightCloning()
     {
         Qt3DRender::QSpotLight spotLight;
+        QCOMPARE(spotLight.type(), Qt3DRender::QLight::SpotLight);
         spotLight.setColor(Qt::lightGray);
         spotLight.setIntensity(0.5f);
         spotLight.setDirection(QVector3D(0, 0, -1));
@@ -108,6 +113,7 @@ private Q_SLOTS:
 
         QScopedPointer<Qt3DRender::QSpotLight> spotLightClone(static_cast<Qt3DRender::QSpotLight *>(QNode::clone(&spotLight)));
         QVERIFY(spotLightClone.data());
+        QCOMPARE(spotLightClone->type(), Qt3DRender::QLight::SpotLight);
         QCOMPARE(spotLight.color(), spotLightClone->color());
         QCOMPARE(spotLight.intensity(), spotLightClone->intensity());
         QCOMPARE(spotLight.direction(), spotLightClone->direction());

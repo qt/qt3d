@@ -3,6 +3,7 @@ requires(contains(QT_CONFIG, opengl))
 load(configure)
 qtCompileTest(assimp)
 
+CONFIG += examples_need_tools
 load(qt_parts)
 
 #module_qt3d_tutorials.subdir = tutorials

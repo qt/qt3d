@@ -45,7 +45,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 QMouseControllerPrivate::QMouseControllerPrivate()
-    : QNodePrivate()
+    : QAbstractPhysicalDevicePrivate()
+    , m_sensitivity(0.1f)
 {
 }
 
@@ -60,7 +61,7 @@ QMouseControllerPrivate::QMouseControllerPrivate()
  * \sa QMouseInput
  */
 QMouseController::QMouseController(QNode *parent)
-    : QNode(*new QMouseControllerPrivate, parent)
+    : QAbstractPhysicalDevice(*new QMouseControllerPrivate, parent)
 {
 }
 
@@ -68,7 +69,7 @@ QMouseController::QMouseController(QNode *parent)
     \internal
 */
 QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
-    : QNode(dd, parent)
+    : QAbstractPhysicalDevice(dd, parent)
 {
 }
 
@@ -78,6 +79,75 @@ QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
 QMouseController::~QMouseController()
 {
     QNode::cleanup();
+}
+
+int QMouseController::axisCount() const
+{
+    // TO DO: we could have mouse wheel later on
+    return 2;
+}
+
+int QMouseController::buttonCount() const
+{
+    return 3;
+}
+
+QStringList QMouseController::axisNames() const
+{
+    return QStringList()
+            << QStringLiteral("X")
+            << QStringLiteral("Y");
+}
+
+QStringList QMouseController::buttonNames() const
+{
+    return QStringList()
+            << QStringLiteral("Left")
+            << QStringLiteral("Right")
+            << QStringLiteral("Center");
+}
+
+int QMouseController::axisIdentifier(const QString &name)
+{
+    if (name == QStringLiteral("X"))
+        return X;
+    else if (name == QStringLiteral("Y"))
+        return Y;
+    return -1;
+}
+
+int QMouseController::buttonIdentifier(const QString &name)
+{
+    if (name == QStringLiteral("Left"))
+        return Left;
+    else if (name == QStringLiteral("Right"))
+        return Right;
+    else if (name == QStringLiteral("Center"))
+        return Center;
+    return -1;
+}
+
+float QMouseController::sensitivity() const
+{
+    Q_D(const QMouseController);
+    return d->m_sensitivity;
+}
+
+void QMouseController::setSensitivity(float value)
+{
+    Q_D(QMouseController);
+    if (qFuzzyCompare(value, d->m_sensitivity))
+        return;
+
+    d->m_sensitivity = value;
+    emit sensitivityChanged(value);
+}
+
+void QMouseController::copy(const Qt3DCore::QNode *ref)
+{
+    QNode::copy(ref);
+    const QMouseController *object = static_cast<const QMouseController *>(ref);
+    d_func()->m_sensitivity = object->d_func()->m_sensitivity;
 }
 
 void QMouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)

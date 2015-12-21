@@ -48,14 +48,15 @@
 #include <Qt3DInput/qmouseinput.h>
 #include <Qt3DInput/qinputdeviceintegration.h>
 #include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>
-#include <Qt3DCore/qservicelocator.h>
-#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 #include <QDir>
 #include <QLibrary>
 #include <QLibraryInfo>
 #include <QPluginLoader>
 
 #include <Qt3DInput/qaxis.h>
+#include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
@@ -63,6 +64,7 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
+#include <Qt3DInput/private/axisactionhandler_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -71,6 +73,8 @@
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/updateaxisactionjob_p.h>
+#include <Qt3DInput/private/updatehandlerjob_p.h>
+#include <Qt3DInput/private/keyboardmousedeviceintegration_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,6 +90,7 @@ QInputAspectPrivate::QInputAspectPrivate()
     : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
     , m_cameraController(new Input::CameraController())
+    , m_keyboardMouseIntegration(new Input::KeyboardMouseDeviceIntegration(m_inputHandler.data()))
 {
 }
 
@@ -98,18 +103,24 @@ QInputAspectPrivate::QInputAspectPrivate()
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
-    registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QKeyboardController>(QBackendNodeFunctorPtr(new Input::KeyboardControllerFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QKeyboardInput>(QBackendNodeFunctorPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler.data())));
-    registerBackendType<QMouseController>(QBackendNodeFunctorPtr(new Input::MouseControllerFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QMouseController>(QBackendNodeFunctorPtr(new Input::MouseControllerFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseInput>(QBackendNodeFunctorPtr(new Input::MouseInputFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QAxis>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));
     registerBackendType<QAxisInput>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisInput, Input::AxisInputManager>(d_func()->m_inputHandler->axisInputManager())));
     registerBackendType<QAxisSetting>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
     registerBackendType<Qt3DInput::QAction>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
     registerBackendType<QActionInput>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
+    registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeFunctorPtr(new Input::AxisActionHandlerNodeFunctor(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
 
+    // Plugins are QInputDeviceIntegration instances
     loadInputDevicePlugins();
+
+    // KeyboardController and MouseController also provide their own QInputDeviceIntegration
+    Q_D(QInputAspect);
+    d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
 }
 
 void QInputAspect::loadInputDevicePlugins()
@@ -166,19 +177,31 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
         jobs += integration->jobsToExecute(time);
 
     // Jobs that update Axis/Action (store combined axis/action value)
-    QVector<QAspectJobPtr> axisActionJobs;
+    QHash<Input::HLogicalDevice, QAspectJobPtr> logicalDeviceJobs;
+
     Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(d->m_inputHandler.data(), devHandle));
+        logicalDeviceJobs.insert(devHandle, updateAxisActionJob);
+
         Q_FOREACH (const QAspectJobPtr job, jobs)
             updateAxisActionJob->addDependency(job);
-        axisActionJobs.push_back(updateAxisActionJob);
     }
 
-    jobs += axisActionJobs;
+    // Jobs that update the axisactionhandlers
+    Q_FOREACH (Input::HAxisActionHandler handlerHandle, d->m_inputHandler->axisActionHandlerManager()->activeAxisActionHandlers()) {
+        Input::AxisActionHandler *axisActionHandler = d->m_inputHandler->axisActionHandlerManager()->data(handlerHandle);
+        Input::HLogicalDevice logicalDeviceHandle = d->m_inputHandler->logicalDeviceManager()->lookupHandle(axisActionHandler->logicalDevice());
+        QAspectJobPtr updateHandlerJob(new Input::UpdateHandlerJob(axisActionHandler, logicalDeviceHandle, d->m_inputHandler.data()));
 
-    // TO DO:
-    // Have Jobs that update the LogicalDevice
-    // Have Jobs that update the AxisHandlers/ActionHandlers
+        // Create AxisActionHandler Job
+        jobs += updateHandlerJob;
+
+        QAspectJobPtr logicalDeviceJob = logicalDeviceJobs.value(logicalDeviceHandle);
+        if (logicalDeviceJob) {
+            updateHandlerJob->addDependency(logicalDeviceJob);
+            jobs += logicalDeviceJob;
+        }
+    }
 
     return jobs;
 }
@@ -186,17 +209,9 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
 void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
-    Qt3DCore::QEventFilterService *eventService = services()->eventFilterService();
+    Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();
     eventService->registerEventFilter(d->m_cameraController.data(), 128);
     d->m_inputHandler->registerEventFilters(eventService);
-}
-
-void QInputAspect::onStartup()
-{
-}
-
-void QInputAspect::onShutdown()
-{
 }
 
 void QInputAspect::onCleanup()

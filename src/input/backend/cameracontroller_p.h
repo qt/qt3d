@@ -125,14 +125,14 @@ protected:
     bool eventFilter(QObject *receiver, QEvent *event) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void linearSpeedChanged();
-    void orbitRateChanged();
-    void lookRateChanged();
+    void linearSpeedChanged(float speed);
+    void orbitRateChanged(float rate);
+    void lookRateChanged(float rate);
 
-    void multisampleEnabledChanged();
+    void multisampleEnabledChanged(bool enabled);
 
-    void controlModeChanged();
-    void firstPersonUpVectorChanged();
+    void controlModeChanged(ControlMode controlMode);
+    void firstPersonUpVectorChanged(const QVector3D &up);
 
 private Q_SLOTS:
     void onUpdate();

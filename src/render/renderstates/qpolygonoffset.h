@@ -56,14 +56,15 @@ public:
     ~QPolygonOffset();
 
     float factor() const;
-    void setFactor(float factor);
-
     float units() const;
+
+public Q_SLOTS:
+    void setFactor(float factor);
     void setUnits(float units);
 
 Q_SIGNALS:
-    void factorChanged(float newFactor);
-    void unitsChanged(float newUnits);
+    void factorChanged(float factor);
+    void unitsChanged(float units);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

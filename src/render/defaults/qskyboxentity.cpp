@@ -221,7 +221,7 @@ void QSkyboxEntity::setBaseName(const QString &baseName)
     Q_D(QSkyboxEntity);
     if (baseName != d->m_baseName) {
         d->m_baseName = baseName;
-        emit sourceDirectoryChanged();
+        emit sourceDirectoryChanged(baseName);
         d->reloadTexture();
     }
 }
@@ -242,7 +242,7 @@ void QSkyboxEntity::setExtension(const QString &extension)
     Q_D(QSkyboxEntity);
     if (extension != d->m_extension) {
         d->m_extension = extension;
-        emit extensionChanged();
+        emit extensionChanged(extension);
         d->reloadTexture();
     }
 }
@@ -265,7 +265,7 @@ void QSkyboxEntity::setCameraPosition(const QVector3D &cameraPosition)
     if (cameraPosition != d->m_position) {
         d->m_position = cameraPosition;
         d->m_transform->setTranslation(d->m_position);
-        emit cameraPositionChanged();
+        emit cameraPositionChanged(cameraPosition);
     }
 }
 

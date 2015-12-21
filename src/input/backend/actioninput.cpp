@@ -45,6 +45,19 @@ namespace Qt3DInput {
 
 namespace Input {
 
+namespace {
+
+QVector<int> listToIntArray(const QVariantList &l)
+{
+    QVector<int> array;
+    array.reserve(l.size());
+    Q_FOREACH (const QVariant &v, l)
+        array.push_back(v.toInt());
+    return array;
+}
+
+} // anonymous
+
 ActionInput::ActionInput()
     : Qt3DCore::QBackendNode()
     , m_keys(0)
@@ -56,7 +69,7 @@ void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QActionInput *input = static_cast<QActionInput *>(peer);
     m_enabled = input->isEnabled();
-    m_keys = input->keys();
+    m_keys = listToIntArray(input->keys());
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
 }
@@ -65,7 +78,7 @@ void ActionInput::cleanup()
 {
     m_enabled = false;
     m_sourceDevice = Qt3DCore::QNodeId();
-    m_keys = 0;
+    m_keys.clear();
 }
 
 void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -77,7 +90,7 @@ void ActionInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("keys")) {
-            m_keys = propertyChange->value().toInt();
+            m_keys = listToIntArray(propertyChange->value().toList());
         }
     }
 }

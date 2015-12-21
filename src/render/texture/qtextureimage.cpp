@@ -165,7 +165,7 @@ void QTextureImage::setSource(const QUrl &source)
     Q_D(QTextureImage);
     if (source != d->m_source) {
         d->m_source = source;
-        emit sourceChanged();
+        emit sourceChanged(source);
         update();
     }
 }

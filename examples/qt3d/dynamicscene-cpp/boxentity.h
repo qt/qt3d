@@ -63,7 +63,7 @@ public Q_SLOTS:
     void setRadius(float arg);
 
 Q_SIGNALS:
-    void diffuseColorChanged();
+    void diffuseColorChanged(const QColor &);
     void angleChanged();
     void radiusChanged();
 

@@ -59,9 +59,6 @@ public:
     explicit QAspectEngine(QObject *parent = 0);
     ~QAspectEngine();
 
-    void initialize();
-    void shutdown();
-
     void setRootEntity(QEntity *root);
     QSharedPointer<QEntity> rootEntity() const;
 
@@ -73,12 +70,8 @@ public:
 
     QVariant executeCommand(const QString &command);
 
-protected:
-    Q_DECLARE_PRIVATE(QAspectEngine)
-    QAspectEngine(QAspectEnginePrivate &dd, QObject *parent = 0);
-
 private:
-    void initNodeTree(QNode *node);
+    Q_DECLARE_PRIVATE(QAspectEngine)
 };
 
 } // namespace Qt3DCore

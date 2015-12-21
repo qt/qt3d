@@ -54,13 +54,15 @@ public:
     ~QClipPlane();
 
     int plane() const;
+
+public Q_SLOTS:
     void setPlane(int);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 Q_SIGNALS:
-    void planeChanged();
+    void planeChanged(int plane);
 
 private:
     Q_DECLARE_PRIVATE(QClipPlane)

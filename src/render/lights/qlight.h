@@ -52,17 +52,28 @@ class QLightPrivate;
 class QT3DRENDERSHARED_EXPORT QLight : public QShaderData
 {
     Q_OBJECT
+    Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(float intensity READ intensity WRITE setIntensity NOTIFY intensityChanged)
 
 public :
+    enum Type {
+        PointLight = 0,
+        DirectionalLight,
+        SpotLight
+    };
+    Q_ENUM(Type)
+
     explicit QLight(Qt3DCore::QNode *parent = 0);
     ~QLight();
 
+    Type type() const;
     QColor color() const;
-    void setColor(const QColor &color);
-
     float intensity() const;
+
+public Q_SLOTS:
+    void setType(Type type);
+    void setColor(const QColor &color);
     void setIntensity(float intensity);
 
 protected :
@@ -70,8 +81,9 @@ protected :
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void colorChanged();
-    void intensityChanged();
+    void typeChanged(Type type);
+    void colorChanged(const QColor &color);
+    void intensityChanged(float intensity);
 
 private:
     Q_DECLARE_PRIVATE(QLight)

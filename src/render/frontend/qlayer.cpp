@@ -118,7 +118,7 @@ void QLayer::setNames(const QStringList &names)
     Q_D(QLayer);
     if (d->m_names != names) {
         d->m_names = names;
-        emit namesChanged();
+        emit namesChanged(names);
     }
 }
 

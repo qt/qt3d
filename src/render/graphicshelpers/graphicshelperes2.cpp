@@ -38,6 +38,7 @@
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <private/attachmentpack_p.h>
 #include <private/qgraphicsutils_p.h>
+#include <QtGui/private/qopenglextensions_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -119,6 +120,15 @@ void GraphicsHelperES2::drawElements(GLenum primitiveType,
 {
     if (baseVertex != 0)
         qWarning() << "glDrawElementsBaseVertex is not supported with OpenGL ES 2";
+    QOpenGLExtensions *xfuncs = static_cast<QOpenGLExtensions *>(m_funcs);
+    if (indexType == GL_UNSIGNED_INT && !xfuncs->hasOpenGLExtension(QOpenGLExtensions::ElementIndexUint)) {
+        static bool warnShown = false;
+        if (!warnShown) {
+            warnShown = true;
+            qWarning("GL_UNSIGNED_INT index type not supported on this system, skipping draw call.");
+        }
+        return;
+    }
     m_funcs->glDrawElements(primitiveType,
                             primitiveCount,
                             indexType,

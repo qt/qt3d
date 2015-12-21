@@ -62,7 +62,7 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseTexture(new QTexture2D())
     , m_ambientParameter(new QParameter(QStringLiteral("ka"), QColor::fromRgbF(0.05f, 0.05f, 0.05f, 1.0f)))
     , m_diffuseParameter(new QParameter(QStringLiteral("diffuseTexture"), m_diffuseTexture))
-    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.95f, 0.95f, 0.95f, 1.0f)))
+    , m_specularParameter(new QParameter(QStringLiteral("ks"), QColor::fromRgbF(0.01f, 0.01f, 0.01f, 1.0f)))
     , m_shininessParameter(new QParameter(QStringLiteral("shininess"), 150.0f))
     , m_textureScaleParameter(new QParameter(QStringLiteral("texCoordScale"), 1.0f))
     , m_diffuseMapGL3Technique(new QTechnique())
@@ -73,7 +73,7 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseMapES2RenderPass(new QRenderPass())
     , m_diffuseMapGL3Shader(new QShaderProgram())
     , m_diffuseMapGL2ES2Shader(new QShaderProgram())
- {
+{
     m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
     m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
@@ -83,6 +83,17 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
 
 void QDiffuseMapMaterialPrivate::init()
 {
+    connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseMapMaterialPrivate::handleAmbientChanged);
+    connect(m_diffuseParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseMapMaterialPrivate::handleDiffuseChanged);
+    connect(m_specularParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseMapMaterialPrivate::handleSpecularChanged);
+    connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseMapMaterialPrivate::handleShininessChanged);
+    connect(m_textureScaleParameter, &Qt3DRender::QParameter::valueChanged,
+            this, &QDiffuseMapMaterialPrivate::handleTextureScaleChanged);
+
     m_diffuseMapGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/diffusemap.vert"))));
     m_diffuseMapGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/diffusemap.frag"))));
     m_diffuseMapGL2ES2Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/es2/diffusemap.vert"))));
@@ -124,6 +135,36 @@ void QDiffuseMapMaterialPrivate::init()
     q_func()->setEffect(m_diffuseMapEffect);
 }
 
+void QDiffuseMapMaterialPrivate::handleAmbientChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseMapMaterial);
+    emit q->ambientChanged(var.value<QColor>());
+}
+
+void QDiffuseMapMaterialPrivate::handleDiffuseChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseMapMaterial);
+    emit q->diffuseChanged(var.value<QAbstractTextureProvider *>());
+}
+
+void QDiffuseMapMaterialPrivate::handleSpecularChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseMapMaterial);
+    emit q->specularChanged(var.value<QColor>());
+}
+
+void QDiffuseMapMaterialPrivate::handleShininessChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseMapMaterial);
+    emit q->shininessChanged(var.toFloat());
+}
+
+void QDiffuseMapMaterialPrivate::handleTextureScaleChanged(const QVariant &var)
+{
+    Q_Q(QDiffuseMapMaterial);
+    emit q->textureScaleChanged(var.toFloat());
+}
+
 /*!
     \class Qt3DRender::QDiffuseMapMaterial
     \brief The QDiffuseMapMaterial provides a default implementation of the phong lighting effect where the diffuse light component
@@ -152,11 +193,6 @@ QDiffuseMapMaterial::QDiffuseMapMaterial(QNode *parent)
     : QMaterial(*new QDiffuseMapMaterialPrivate, parent)
 {
     Q_D(QDiffuseMapMaterial);
-    QObject::connect(d->m_ambientParameter, SIGNAL(valueChanged()), this, SIGNAL(ambientChanged()));
-    QObject::connect(d->m_diffuseParameter, SIGNAL(valueChanged()), this, SIGNAL(diffuseChanged()));
-    QObject::connect(d->m_specularParameter, SIGNAL(valueChanged()), this, SIGNAL(specularChanged()));
-    QObject::connect(d->m_shininessParameter, SIGNAL(valueChanged()), this, SIGNAL(shininessChanged()));
-    QObject::connect(d->m_textureScaleParameter, SIGNAL(valueChanged()), this, SIGNAL(textureScaleChanged()));
     d->init();
 }
 

@@ -263,8 +263,8 @@ public:
 
     Target target() const;
 
-    void setFormat(TextureFormat format);
     TextureFormat format() const;
+    bool generateMipMaps() const;
 
     Status status() const;
 
@@ -272,58 +272,51 @@ public:
     void removeTextureImage(QAbstractTextureImage *textureImage);
     QList<QAbstractTextureImage *> textureImages() const;
 
-    void setGenerateMipMaps(bool gen);
-    bool generateMipMaps() const;
-
     // sampler data - in the future proxy to a Sampler helper
-    void setMinificationFilter(Filter f);
-    void setMagnificationFilter(Filter f);
-
-    Filter minificationFilter() const;
-    Filter magnificationFilter() const;
-
     void setWrapMode(const QTextureWrapMode &wrapMode);
     QTextureWrapMode *wrapMode();
 
-    void setMaximumAnisotropy(float anisotropy);
-    float maximumAnisotropy() const;
-
-    void setComparisonFunction(ComparisonFunction function);
-    ComparisonFunction comparisonFunction() const;
-
-    void setComparisonMode(ComparisonMode mode);
-    ComparisonMode comparisonMode() const;
-
     void setSize(int width, int height=1, int depth=1);
 
-    void setWidth(int width);
-    void setHeight(int height);
-    void setDepth(int depth);
-
+    Filter minificationFilter() const;
+    Filter magnificationFilter() const;
+    float maximumAnisotropy() const;
+    ComparisonFunction comparisonFunction() const;
+    ComparisonMode comparisonMode() const;
     int width() const;
     int height() const;
     int depth() const;
-
-    void setMaximumLayers(int maximumLayers);
     int maximumLayers() const;
-
-    void setUnique(bool unique);
     bool isUnique() const;
 
+public Q_SLOTS:
+    void setFormat(TextureFormat format);
+    void setGenerateMipMaps(bool gen);
+    void setWidth(int width);
+    void setHeight(int height);
+    void setDepth(int depth);
+    void setMinificationFilter(Filter f);
+    void setMagnificationFilter(Filter f);
+    void setMaximumAnisotropy(float anisotropy);
+    void setComparisonFunction(ComparisonFunction function);
+    void setComparisonMode(ComparisonMode mode);
+    void setMaximumLayers(int maximumLayers);
+    void setUnique(bool unique);
+
 Q_SIGNALS:
-    void formatChanged();
-    void statusChanged();
-    void generateMipMapsChanged();
-    void widthChanged();
-    void heightChanged();
-    void depthChanged();
-    void magnificationFilterChanged();
-    void minificationFilterChanged();
-    void maximumAnisotropyChanged();
-    void comparisonFunctionChanged();
-    void comparisonModeChanged();
-    void maximumLayersChanged();
-    void uniqueChanged();
+    void formatChanged(TextureFormat format);
+    void statusChanged(Status status);
+    void generateMipMapsChanged(bool generateMipMaps);
+    void widthChanged(int width);
+    void heightChanged(int height);
+    void depthChanged(int depth);
+    void magnificationFilterChanged(Filter magnificationFilter);
+    void minificationFilterChanged(Filter minificationFilter);
+    void maximumAnisotropyChanged(float maximumAnisotropy);
+    void comparisonFunctionChanged(ComparisonFunction comparisonFunction);
+    void comparisonModeChanged(ComparisonMode comparisonMode);
+    void maximumLayersChanged(int maximumLayers);
+    void uniqueChanged(bool unique);
 
 protected:
     explicit QAbstractTextureProvider(Qt3DCore::QNode *parent = 0);

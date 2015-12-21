@@ -40,6 +40,20 @@
 
 QT_BEGIN_NAMESPACE
 
+namespace {
+
+QVector<int> variantListToVector(const QVariantList &list)
+{
+    QVector<int> v(list.size());
+    int i = 0;
+    Q_FOREACH (const QVariant &e, list) {
+        v[i++] = e.toInt();
+    }
+    return v;
+}
+
+}
+
 namespace Qt3DInput {
 namespace Input {
 
@@ -55,14 +69,14 @@ void AxisSetting::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxisSetting *setting = static_cast<QAxisSetting *>(peer);
     m_deadZone = setting->deadZone();
-    m_axes = setting->axes();
+    m_axes = variantListToVector(setting->axes());
     m_filter = setting->isFilterEnabled();
 }
 
 void AxisSetting::cleanup()
 {
     m_deadZone = 0.0f;
-    m_axes = 0;
+    m_axes.clear();
     m_filter = false;
 }
 
@@ -73,7 +87,7 @@ void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("deadZone")) {
             m_deadZone = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {
-            m_axes = propertyChange->value().toInt();
+            m_axes = variantListToVector(propertyChange->value().toList());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("filter")) {
             m_filter = propertyChange->value().toBool();
         }

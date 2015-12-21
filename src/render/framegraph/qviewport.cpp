@@ -88,7 +88,7 @@ void QViewport::setRect(const QRectF &rect)
     Q_D(QViewport);
     if (rect != d->m_rect) {
         d->m_rect = rect;
-        emit rectChanged();
+        emit rectChanged(rect);
     }
 }
 
@@ -103,7 +103,7 @@ void QViewport::setClearColor(const QColor &color)
     Q_D(QViewport);
     if (color != d->m_clearColor) {
         d->m_clearColor = color;
-        emit clearColorChanged();
+        emit clearColorChanged(color);
     }
 }
 

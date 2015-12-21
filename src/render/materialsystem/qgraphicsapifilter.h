@@ -86,6 +86,7 @@ public:
     QStringList extensions() const;
     QString vendor() const;
 
+public Q_SLOTS:
     void setApi(Api api);
     void setProfile(Profile profile);
     void setMinorVersion(int minorVersion);
@@ -94,12 +95,12 @@ public:
     void setVendor(const QString &vendor);
 
 Q_SIGNALS:
-    void apiChanged();
-    void profileChanged();
-    void minorVersionChanged();
-    void majorVersionChanged();
-    void extensionsChanged();
-    void vendorChanged();
+    void apiChanged(Api api);
+    void profileChanged(Profile profile);
+    void minorVersionChanged(int minorVersion);
+    void majorVersionChanged(int majorVersion);
+    void extensionsChanged(const QStringList &extensions);
+    void vendorChanged(const QString &vendor);
     void graphicsApiFilterChanged();
 
 private:

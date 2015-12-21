@@ -56,12 +56,14 @@ public:
     ~QTextureImage();
 
     QUrl source() const;
-    void setSource(const QUrl &source);
 
     QTextureDataFunctorPtr dataFunctor() const Q_DECL_OVERRIDE;
 
+public Q_SLOTS:
+    void setSource(const QUrl &source);
+
 Q_SIGNALS:
-    void sourceChanged();
+    void sourceChanged(const QUrl &source);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

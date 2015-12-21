@@ -63,10 +63,12 @@ public:
     ~QFrontFace();
 
     FaceDir direction() const;
+
+public Q_SLOTS:
     void setDirection(FaceDir direction);
 
 Q_SIGNALS:
-    void directionChanged();
+    void directionChanged(FaceDir direction);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

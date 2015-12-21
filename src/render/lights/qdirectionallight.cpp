@@ -66,6 +66,8 @@ namespace Qt3DRender {
     \internal
 */
 QDirectionalLightPrivate::QDirectionalLightPrivate()
+    : QLightPrivate(QLight::DirectionalLight)
+    , m_direction(0.0f, -1.0f, 0.0f)
 {
 }
 
@@ -94,7 +96,7 @@ void QDirectionalLight::setDirection(const QVector3D &direction)
     Q_D(QDirectionalLight);
     if (direction != d->m_direction) {
         d->m_direction = direction;
-        emit directionChanged();
+        emit directionChanged(direction);
     }
 }
 

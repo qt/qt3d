@@ -120,7 +120,7 @@ void QMaterial::setEffect(QEffect *effect)
         if (effect && !effect->parent())
             effect->setParent(this);
         d->m_effect = effect;
-        emit effectChanged();
+        emit effectChanged(effect);
     }
 }
 

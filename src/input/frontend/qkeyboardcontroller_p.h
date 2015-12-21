@@ -48,7 +48,9 @@
 // We mean it.
 //
 
-#include <private/qnode_p.h>
+#include <private/qabstractphysicaldevice_p.h>
+#include <QtCore/qhash.h>
+#include <QtCore/qstring.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,13 +59,15 @@ namespace Qt3DInput {
 class QKeyboardController;
 class QKeyboardInput;
 
-class QKeyboardControllerPrivate : public Qt3DCore::QNodePrivate
+class QKeyboardControllerPrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
 {
 public:
     QKeyboardControllerPrivate();
 
     Q_DECLARE_PUBLIC(QKeyboardController)
     QKeyboardInput *m_activeInput;
+    QHash<QString, int> m_keyMap;
+    QStringList m_keyNames;
 };
 
 } // namespace Qt3DInput

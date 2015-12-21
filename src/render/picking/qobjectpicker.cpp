@@ -128,7 +128,7 @@ void QObjectPicker::setHoverEnabled(bool hoverEnabled)
     Q_D(QObjectPicker);
     if (hoverEnabled != d->m_hoverEnabled) {
         d->m_hoverEnabled = hoverEnabled;
-        emit hoverEnabledChanged();
+        emit hoverEnabledChanged(hoverEnabled);
     }
 }
 
@@ -199,7 +199,7 @@ void QObjectPicker::setPressed(bool pressed)
     if (d->m_pressed != pressed) {
         const bool blocked = blockNotifications(true);
         d->m_pressed = pressed;
-        emit pressedChanged();
+        emit pressedChanged(pressed);
         blockNotifications(blocked);
     }
 }
@@ -210,7 +210,7 @@ void QObjectPicker::setContainsMouse(bool containsMouse)
     if (d->m_containsMouse != containsMouse) {
         const bool blocked = blockNotifications(true);
         d->m_containsMouse = containsMouse;
-        emit containsMouseChanged();
+        emit containsMouseChanged(containsMouse);
         blockNotifications(blocked);
     }
 }

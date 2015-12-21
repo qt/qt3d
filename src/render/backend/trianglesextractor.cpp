@@ -90,13 +90,13 @@ struct BufferInfo
 
 // indices, vertices are already offset
 template<typename index, typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTrianglesIndexed(index *indices,
-                                                              vertex *vertices,
-                                                              const BufferInfo &indexInfo,
-                                                              const BufferInfo &vertexInfo,
-                                                              const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTrianglesIndexed(index *indices,
+                                                    vertex *vertices,
+                                                    const BufferInfo &indexInfo,
+                                                    const BufferInfo &vertexInfo,
+                                                    const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
@@ -118,11 +118,11 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTrianglesIndexed(index *indices,
 
 // vertices are already offset
 template<typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangles(vertex *vertices,
-                                                       const BufferInfo &vertexInfo,
-                                                       const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangles(vertex *vertices,
+                                             const BufferInfo &vertexInfo,
+                                             const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
 
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
@@ -144,13 +144,13 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangles(vertex *vertices,
 
 // indices, vertices are already offset
 template<typename index, typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStripIndexed(index *indices,
-                                                                  vertex *vertices,
-                                                                  const BufferInfo &indexInfo,
-                                                                  const BufferInfo &vertexInfo,
-                                                                  const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleStripIndexed(index *indices,
+                                                        vertex *vertices,
+                                                        const BufferInfo &indexInfo,
+                                                        const BufferInfo &vertexInfo,
+                                                        const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
@@ -172,11 +172,11 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStripIndexed(index *indices
 
 // vertices are already offset
 template<typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStrip(vertex *vertices,
-                                                           const BufferInfo &vertexInfo,
-                                                           const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleStrip(vertex *vertices,
+                                                 const BufferInfo &vertexInfo,
+                                                 const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
 
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
@@ -198,13 +198,13 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleStrip(vertex *vertices,
 
 // indices, vertices are already offset
 template<typename index, typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFanIndexed(index *indices,
-                                                                vertex *vertices,
-                                                                const BufferInfo &indexInfo,
-                                                                const BufferInfo &vertexInfo,
-                                                                const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleFanIndexed(index *indices,
+                                                      vertex *vertices,
+                                                      const BufferInfo &indexInfo,
+                                                      const BufferInfo &vertexInfo,
+                                                      const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
 
@@ -231,11 +231,11 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFanIndexed(index *indices,
 
 // vertices are already offset
 template<typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFan(vertex *vertices,
-                                                         const BufferInfo &vertexInfo,
-                                                         const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleFan(vertex *vertices,
+                                               const BufferInfo &vertexInfo,
+                                               const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
 
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
@@ -262,13 +262,13 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleFan(vertex *vertices,
 
 // indices, vertices are already offset
 template<typename index, typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleAdjacencyIndexed(index *indices,
-                                                              vertex *vertices,
-                                                              const BufferInfo &indexInfo,
-                                                              const BufferInfo &vertexInfo,
-                                                              const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleAdjacencyIndexed(index *indices,
+                                                            vertex *vertices,
+                                                            const BufferInfo &indexInfo,
+                                                            const BufferInfo &vertexInfo,
+                                                            const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
     const uint maxVerticesDataSize = qMin(vertexInfo.dataSize, 3U);
@@ -290,11 +290,11 @@ QVector<Qt3DCore::QBoundingVolume *> traverseTriangleAdjacencyIndexed(index *ind
 
 // vertices are already offset
 template<typename vertex>
-QVector<Qt3DCore::QBoundingVolume *> traverseTriangleAdjacency(vertex *vertices,
-                                                               const BufferInfo &vertexInfo,
-                                                               const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> traverseTriangleAdjacency(vertex *vertices,
+                                                     const BufferInfo &vertexInfo,
+                                                     const Qt3DCore::QNodeId id)
 {
-    QVector<Qt3DCore::QBoundingVolume *> tris;
+    QVector<QBoundingVolume *> tris;
     uint i = 0;
 
     const uint verticesStride = vertexInfo.byteStride / sizeof(vertex);
@@ -332,7 +332,7 @@ typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
 }
 
 template<typename ReturnType, typename Func>
-QVector<Qt3DCore::QBoundingVolume *> processBuffer(const BufferInfo &info, Func &f)
+QVector<QBoundingVolume *> processBuffer(const BufferInfo &info, Func &f)
 {
     switch (info.type) {
     case QAttribute::Byte: return f(info, castToType<QAttribute::Byte>(info.data, info.byteOffset));
@@ -428,7 +428,7 @@ TrianglesExtractor::TrianglesExtractor(GeometryRenderer *renderer, NodeManagers 
 {
 }
 
-QVector<Qt3DCore::QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCore::QNodeId id)
+QVector<QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCore::QNodeId id)
 {
     if (m_renderer && m_renderer->instanceCount() == 1 && isTriangleBased(m_renderer->primitiveType())) {
         Attribute *positionAttribute = Q_NULLPTR;
@@ -473,26 +473,26 @@ QVector<Qt3DCore::QBoundingVolume *> TrianglesExtractor::extract(const Qt3DCore:
                     indexBufferInfo.byteStride = indexAttribute->byteStride();
                     indexBufferInfo.count = indexAttribute->count();
 
-                    IndexExecutor<QVector<Qt3DCore::QBoundingVolume *> > executor;
+                    IndexExecutor<QVector<QBoundingVolume *> > executor;
                     executor.vertexBufferInfo = vertexBufferInfo;
                     executor.primitiveType = m_renderer->primitiveType();
                     executor.id = id;
 
-                    return processBuffer<QVector<Qt3DCore::QBoundingVolume *> >(indexBufferInfo, executor);
+                    return processBuffer<QVector<QBoundingVolume *> >(indexBufferInfo, executor);
 
                 } else { // Non Indexed
 
                     // Check into which type the buffer needs to be casted
-                    VertexExecutor<QVector<Qt3DCore::QBoundingVolume *> > executor;
+                    VertexExecutor<QVector<QBoundingVolume *> > executor;
                     executor.primitiveType = m_renderer->primitiveType();
                     executor.id = id;
 
-                    return processBuffer<QVector<Qt3DCore::QBoundingVolume *> >(vertexBufferInfo, executor);
+                    return processBuffer<QVector<QBoundingVolume *> >(vertexBufferInfo, executor);
                 }
             }
         }
     }
-    return QVector<Qt3DCore::QBoundingVolume *>();
+    return QVector<QBoundingVolume *>();
 }
 
 } // namespace Render

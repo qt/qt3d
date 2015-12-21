@@ -48,7 +48,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qabstractframeadvanceservice.h>
+#include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
 
 QT_BEGIN_NAMESPACE
 

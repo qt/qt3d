@@ -94,21 +94,21 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(className(obj), functor);
 }
 
-void QAbstractAspect::sceneNodeAdded(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
     QNodeVisitor visitor;
-    visitor.traverse(n, this, &QAbstractAspect::visitNode);
+    visitor.traverse(n, this, &QAbstractAspectPrivate::createBackendNode);
 }
 
-void QAbstractAspect::sceneNodeRemoved(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
     QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
     QNode *n = nodePtr.data();
-    QAbstractAspect::clearBackendNode(n);
+    clearBackendNode(n);
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
@@ -117,13 +117,12 @@ QVariant QAbstractAspect::executeCommand(const QStringList &args)
     return QVariant();
 }
 
-QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
+QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 {
-    Q_D(const QAbstractAspect);
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
@@ -139,85 +138,64 @@ QBackendNode *QAbstractAspect::createBackendNode(QNode *frontend) const
         QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
         // TO DO: Find a way to specify the changes to observe
         // Register backendNode with QChangeArbiter
-        if (d->m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
-            d->m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
+        if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+            m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
             if (backend->mode() == QBackendNode::ReadWrite)
-                d->m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
         }
         return backend;
     }
     return Q_NULLPTR;
 }
 
-QBackendNode *QAbstractAspect::getBackendNode(QNode *frontend) const
+void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
 {
-    Q_D(const QAbstractAspect);
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
-        metaObj = metaObj->superClass();
-    }
-    if (!functor.isNull())
-        return functor->get(frontend->id());
-    return Q_NULLPTR;
-}
-
-void QAbstractAspect::clearBackendNode(QNode *frontend) const
-{
-    Q_D(const QAbstractAspect);
-    const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeFunctorPtr functor;
-
-    while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = d->m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(className(*metaObj));
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
         QBackendNode *backend = functor->get(frontend->id());
         if (backend != Q_NULLPTR) {
             QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-            d->m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
+            m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
             if (backend->mode() == QBackendNode::ReadWrite)
-                d->m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
             functor->destroy(frontend->id());
         }
     }
 }
 
-void QAbstractAspect::setRootEntity(QEntity *rootObject)
+void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
 {
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QAbstractAspect::visitNode);
-}
-
-void QAbstractAspect::registerAspect(QEntity *rootObject)
-{
-    Q_D(QAbstractAspect);
-    if (rootObject == d->m_root)
+    Q_Q(QAbstractAspect);
+    if (rootObject == m_root)
         return;
 
-    d->m_root = rootObject;
-    setRootEntity(rootObject);
+    m_root = rootObject;
+
+    QNodeVisitor visitor;
+    visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
+    q->onRootEntityChanged(rootObject);
 }
 
-QServiceLocator *QAbstractAspect::services() const
+QServiceLocator *QAbstractAspectPrivate::services() const
 {
-    Q_D(const QAbstractAspect);
-    return d->m_aspectManager->serviceLocator();
+    return m_aspectManager->serviceLocator();
 }
 
-QAbstractAspectJobManager *QAbstractAspect::jobManager() const
+QAbstractAspectJobManager *QAbstractAspectPrivate::jobManager() const
 {
-    Q_D(const QAbstractAspect);
-    return d->m_jobManager;
+    return m_jobManager;
 }
 
-bool QAbstractAspect::isShuttingDown() const
+QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 {
-    Q_D(const QAbstractAspect);
-    return d->m_aspectManager->isShuttingDown();
+    Q_Q(QAbstractAspect);
+    return q->jobsToExecute(time);
 }
 
 void QAbstractAspect::onStartup()
@@ -228,9 +206,9 @@ void QAbstractAspect::onShutdown()
 {
 }
 
-void QAbstractAspect::visitNode(QNode *node)
+void QAbstractAspect::onRootEntityChanged(QEntity *rootEntity)
 {
-    createBackendNode(node);
+    Q_UNUSED(rootEntity);
 }
 
 } // of namespace Qt3DCore

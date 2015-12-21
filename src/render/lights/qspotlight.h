@@ -37,7 +37,7 @@
 #ifndef QT3DRENDER_QSPOTLIGHT_H
 #define QT3DRENDER_QSPOTLIGHT_H
 
-#include <Qt3DRender/qlight.h>
+#include <Qt3DRender/qpointlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +45,7 @@ namespace Qt3DRender {
 
 class QSpotLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSpotLight : public QLight
+class QT3DRENDERSHARED_EXPORT QSpotLight : public QPointLight
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)
@@ -57,12 +57,13 @@ public:
     QVector3D direction() const;
     float cutOffAngle() const;
 
+public Q_SLOTS:
     void setDirection(const QVector3D &direction);
     void setCutOffAngle(float cutOffAngle);
 
 Q_SIGNALS:
-    void directionChanged();
-    void cutOffAngleChanged();
+    void directionChanged(const QVector3D &direction);
+    void cutOffAngleChanged(float cutOffAngle);
 
 protected:
     QSpotLight(QSpotLightPrivate &dd, Qt3DCore::QNode *parent = 0);

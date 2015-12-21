@@ -50,10 +50,8 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qray3d.h>
-#include <Qt3DCore/qcollisionqueryresult.h>
-#include "qopenglinformationservice.h"
-#include "qsysteminformationservice.h"
-#include <Qt3DCore/qabstractcollisionqueryservice.h>
+#include "qopenglinformationservice_p.h"
+#include "qsysteminformationservice_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -81,37 +79,6 @@ public:
     ~NullOpenGLInformationService() {}
 
     QSurfaceFormat format() const Q_DECL_FINAL { return QSurfaceFormat(); }
-};
-
-class NullCollisionQueryService : public QAbstractCollisionQueryService
-{
-public:
-    NullCollisionQueryService()
-        : QAbstractCollisionQueryService(QStringLiteral("Null Collision Query Service"))
-    {}
-    ~NullCollisionQueryService() {}
-
-    QQueryHandle query(const QRay3D &ray, QueryMode mode, Qt3DCore::QBoundingVolumeProvider *provider) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(ray);
-        Q_UNUSED(mode);
-        Q_UNUSED(provider);
-
-        return 0;
-    }
-
-    QCollisionQueryResult fetchResult(const QQueryHandle &handle) Q_DECL_OVERRIDE
-    {
-        Q_UNUSED(handle);
-
-        QCollisionQueryResult result;
-        return result;
-    }
-
-    QVector<QCollisionQueryResult> fetchAllResults() const Q_DECL_OVERRIDE
-    {
-        return QVector<QCollisionQueryResult>();
-    }
 };
 
 } // namespace Qt3DCore

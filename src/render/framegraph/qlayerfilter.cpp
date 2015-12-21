@@ -112,7 +112,7 @@ void QLayerFilter::setLayers(const QStringList &layers)
     Q_D(QLayerFilter);
     if (d->m_layers != layers) {
         d->m_layers = layers;
-        emit layersChanged();
+        emit layersChanged(layers);
     }
 }
 

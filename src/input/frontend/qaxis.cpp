@@ -68,7 +68,7 @@ void QAxis::setName(const QString &name)
     Q_D(QAxis);
     if (d->m_name != name) {
         d->m_name = name;
-        emit nameChanged();
+        emit nameChanged(name);
     }
 }
 

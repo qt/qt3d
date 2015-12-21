@@ -97,7 +97,7 @@ void QCameraSelector::setCamera(Qt3DCore::QEntity *camera)
         // 2) When the current node is destroyed, it gets destroyed as well
         if (camera && !camera->parent())
             camera->setParent(this);
-        emit cameraChanged();
+        emit cameraChanged(camera);
     }
 }
 

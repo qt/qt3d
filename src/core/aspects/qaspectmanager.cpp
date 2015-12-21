@@ -43,13 +43,13 @@
 #include "qabstractaspectjobmanager_p.h"
 #include "qentity.h"
 
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <Qt3DCore/private/qtickclockservice_p.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <Qt3DCore/private/qscheduler_p.h>
 #include <Qt3DCore/private/qtickclock_p.h>
-#include <Qt3DCore/qabstractframeadvanceservice.h>
+#include <Qt3DCore/private/qabstractframeadvanceservice_p.h>
 #include <QEventLoop>
 #include <QThread>
 #include <QWaitCondition>
@@ -101,7 +101,7 @@ void QAspectManager::shutdown()
 
     Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
         aspect->onCleanup();
-        m_changeArbiter->unregisterSceneObserver(aspect);
+        m_changeArbiter->unregisterSceneObserver(aspect->d_func());
     }
     // Aspects must be deleted in the Thread they were created in
 }
@@ -124,7 +124,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 
     if (m_root) {
         Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-            aspect->registerAspect(m_root);
+            aspect->d_func()->registerAspect(m_root);
         m_runMainLoop.fetchAndStoreOrdered(1);
     }
 }
@@ -151,7 +151,7 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_jobManager = m_jobManager;
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
-        m_changeArbiter->registerSceneObserver(aspect);
+        m_changeArbiter->registerSceneObserver(aspect->d_func());
         aspect->onInitialize(m_data);
     }
     else {

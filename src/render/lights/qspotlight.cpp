@@ -67,7 +67,9 @@ namespace Qt3DRender {
     \internal
 */
 QSpotLightPrivate::QSpotLightPrivate()
-    : m_cutOffAngle(45.0f)
+    : QPointLightPrivate(QLight::SpotLight)
+    , m_cutOffAngle(45.0f)
+    , m_direction(0.0f, -1.0f, 0.0f)
 {
 }
 
@@ -105,13 +107,13 @@ void QSpotLight::copy(const QNode *ref)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QLight(*new QSpotLightPrivate, parent)
+    : QPointLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QLight(dd, parent)
+    : QPointLight(dd, parent)
 {
 }
 
@@ -152,7 +154,7 @@ void QSpotLight::setDirection(const QVector3D &direction)
     Q_D(QSpotLight);
     if (direction != d->m_direction) {
         d->m_direction = direction;
-        emit directionChanged();
+        emit directionChanged(direction);
     }
 }
 
@@ -161,7 +163,7 @@ void QSpotLight::setCutOffAngle(float cutOffAngle)
     Q_D(QSpotLight);
     if (d->m_cutOffAngle != cutOffAngle) {
         d->m_cutOffAngle = cutOffAngle;
-        emit cutOffAngleChanged();
+        emit cutOffAngleChanged(cutOffAngle);
     }
 }
 

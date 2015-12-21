@@ -55,7 +55,7 @@
 
 QT_BEGIN_NAMESPACE
 
-class QMetaObject;
+struct QMetaObject;
 class QObject;
 
 namespace Qt3DCore {

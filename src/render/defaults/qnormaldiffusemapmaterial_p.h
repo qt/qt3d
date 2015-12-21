@@ -71,6 +71,13 @@ public:
 
     virtual void init();
 
+    void handleAmbientChanged(const QVariant &var);
+    void handleDiffuseChanged(const QVariant &var);
+    void handleNormalChanged(const QVariant &var);
+    void handleSpecularChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
+    void handleTextureScaleChanged(const QVariant &var);
+
     QEffect *m_normalDiffuseEffect;
     QAbstractTextureProvider *m_diffuseTexture;
     QAbstractTextureProvider *m_normalTexture;
@@ -79,8 +86,6 @@ public:
     QParameter *m_normalParameter;
     QParameter *m_specularParameter;
     QParameter *m_shininessParameter;
-    QParameter *m_lightPositionParameter;
-    QParameter *m_lightIntensityParameter;
     QParameter *m_textureScaleParameter;
     QTechnique *m_normalDiffuseGL3Technique;
     QTechnique *m_normalDiffuseGL2Technique;

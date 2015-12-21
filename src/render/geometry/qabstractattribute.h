@@ -103,6 +103,7 @@ public:
     virtual QVector<QVector2D> asVector2D() const = 0;
     virtual void dump(int count) = 0;
 
+public Q_SLOTS:
     void setBuffer(QAbstractBuffer *buffer);
     void setName(const QString &name);
     void setDataType(DataType type);
@@ -114,15 +115,15 @@ public:
     void setAttributeType(AttributeType attributeType);
 
 Q_SIGNALS:
-    void bufferChanged();
-    void nameChanged();
-    void dataTypeChanged();
-    void dataSizeChanged();
-    void countChanged();
-    void byteStrideChanged();
-    void byteOffsetChanged();
-    void divisorChanged();
-    void attributeTypeChanged();
+    void bufferChanged(QAbstractBuffer *buffer);
+    void nameChanged(const QString &name);
+    void dataTypeChanged(DataType dataType);
+    void dataSizeChanged(uint dataSize);
+    void countChanged(uint count);
+    void byteStrideChanged(uint byteStride);
+    void byteOffsetChanged(uint byteOffset);
+    void divisorChanged(uint divisor);
+    void attributeTypeChanged(AttributeType attributeType);
 
 protected:
     QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = 0);

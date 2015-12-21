@@ -59,9 +59,10 @@ class QLight;
 class QLightPrivate : public QShaderDataPrivate
 {
 public:
-    QLightPrivate();
+    QLightPrivate(QLight::Type type);
 
     Q_DECLARE_PUBLIC(QLight)
+    QLight::Type m_type;
     QColor m_color;
     float m_intensity;
 };

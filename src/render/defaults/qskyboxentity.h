@@ -63,9 +63,9 @@ public:
     QVector3D cameraPosition() const;
 
 Q_SIGNALS:
-    void sourceDirectoryChanged();
-    void extensionChanged();
-    void cameraPositionChanged();
+    void sourceDirectoryChanged(const QString &path);
+    void extensionChanged(const QString &extension);
+    void cameraPositionChanged(const QVector3D &cameraPosition);
 
 private:
     Q_DECLARE_PRIVATE(QSkyboxEntity)

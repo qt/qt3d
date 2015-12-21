@@ -85,7 +85,7 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
     Q_D(QCullFace);
     if (d->m_mode != mode) {
         d->m_mode = mode;
-        emit modeChanged();
+        emit modeChanged(mode);
     }
 }
 

@@ -37,6 +37,7 @@
 #include <window.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/QInputAspect>
+#include <Qt3DLogic/QLogicAspect>
 #include <Qt3DQuick/QQmlAspectEngine>
 
 #include <QGuiApplication>
@@ -50,7 +51,7 @@ int main(int argc, char* argv[])
 
     engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
     engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-    engine.aspectEngine()->initialize();
+    engine.aspectEngine()->registerAspect(new Qt3DLogic::QLogicAspect());
     QVariantMap data;
     data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
     data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));

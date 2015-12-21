@@ -73,6 +73,7 @@
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qlighting.h>
+#include <Qt3DRender/qdispatchcompute.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -115,12 +116,13 @@
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/lighting_p.h>
+#include <Qt3DRender/private/dispatchcompute_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
 
 #include <QDebug>
 #include <QOffscreenSurface>
@@ -148,7 +150,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     , m_renderer(Q_NULLPTR)
     , m_surfaceEventFilter(new Render::PlatformSurfaceFilter())
     , m_surface(Q_NULLPTR)
-    , m_time(0)
     , m_initialized(false)
     , m_framePreparationJob(new Render::FramePreparationJob(m_nodeManagers))
     , m_cleanupJob(new Render::FrameCleanupJob(m_nodeManagers))
@@ -276,6 +277,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QFrustumCulling>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QLight>(QBackendNodeFunctorPtr(new Render::RenderLightFunctor(d->m_nodeManagers)));
     registerBackendType<QLighting>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::Lighting, QLighting>(d->m_nodeManagers->frameGraphManager())));
+    registerBackendType<QDispatchCompute>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(d->m_nodeManagers->frameGraphManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)
@@ -304,7 +306,7 @@ void QRenderAspect::renderShutdown()
 QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 {
     Q_D(QRenderAspect);
-    d->m_time = time;
+    d->m_renderer->setTime(time);
 
     // Create jobs that will get exectued by the threadpool
     QVector<QAspectJobPtr> jobs;
@@ -347,7 +349,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         // Clear any previous temporary dependency
-        d->m_calculateBoundingVolumeJob->clearNullDependencies();
+        d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
         const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
         Q_FOREACH (const QAspectJobPtr bufferJob, bufferJobs)
             d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
@@ -392,18 +394,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-qint64 QRenderAspect::time() const
+void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
 {
-    Q_D(const QRenderAspect);
-    return d->m_time;
-}
-
-void QRenderAspect::setRootEntity(Qt3DCore::QEntity *rootObject)
-{
-    QAbstractAspect::setRootEntity(rootObject);
-
     Q_D(QRenderAspect);
-    d->m_renderer->setSceneRoot(d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootObject->id()));
+    d->m_renderer->setSceneRoot(d, d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntity->id()));
 }
 
 void QRenderAspect::onInitialize(const QVariantMap &data)
@@ -418,12 +412,12 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         if (d->m_aspectManager) {
             QAbstractFrameAdvanceService *advanceService = d->m_renderer->frameAdvanceService();
             if (advanceService)
-                services()->registerServiceProvider(Qt3DCore::QServiceLocator::FrameAdvanceService,
-                                                    advanceService);
+                d->services()->registerServiceProvider(Qt3DCore::QServiceLocator::FrameAdvanceService,
+                                                       advanceService);
         }
 
-        d->m_renderer->setQRenderAspect(this);
-        d->m_renderer->createAllocators(jobManager());
+        d->m_renderer->setServices(d->services());
+        d->m_renderer->createAllocators(d->jobManager());
         d->m_initialized = true;
     }
 
@@ -436,20 +430,14 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         d->setSurface(surface);
 
     if (d->m_aspectManager)
-        d->m_renderer->registerEventFilter(services()->eventFilterService());
-}
-
-void QRenderAspect::onStartup()
-{
-}
-
-void QRenderAspect::onShutdown()
-{
+        d->m_renderer->registerEventFilter(d->services()->eventFilterService());
 }
 
 void QRenderAspect::onCleanup()
 {
     Q_D(QRenderAspect);
+    if (d->m_renderer)
+        d->m_renderer->destroyAllocators(d->jobManager());
     delete d->m_renderer;
     d->m_renderer = Q_NULLPTR;
 }

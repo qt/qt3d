@@ -38,7 +38,7 @@
 #define QT3DINPUT_QMOUSECONTROLLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,17 +47,45 @@ namespace Qt3DInput {
 class QMouseControllerPrivate;
 class QMouseInput;
 
-class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3DInput::QAbstractPhysicalDevice
 {
     Q_OBJECT
-
+    Q_PROPERTY(float sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
 public:
     explicit QMouseController(Qt3DCore::QNode *parent = 0);
+    ~QMouseController();
+
+    enum Axis {
+        X,
+        Y
+    };
+    Q_ENUM(Axis)
+
+    enum Button {
+        Left,
+        Center,
+        Right
+    };
+    Q_ENUM(Button)
+
+    int axisCount() const Q_DECL_FINAL;
+    int buttonCount() const Q_DECL_FINAL;
+    QStringList axisNames() const Q_DECL_FINAL;
+    QStringList buttonNames() const Q_DECL_FINAL;
+    int axisIdentifier(const QString &name) Q_DECL_FINAL;
+    int buttonIdentifier(const QString &name) Q_DECL_FINAL;
+
+    float sensitivity() const;
+
+public Q_SLOTS:
+    void setSensitivity(float value);
+
+Q_SIGNALS:
+    void sensitivityChanged(float value);
 
 protected:
     QMouseController(QMouseControllerPrivate &dd, Qt3DCore::QNode *parent = 0);
-    ~QMouseController();
-
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:

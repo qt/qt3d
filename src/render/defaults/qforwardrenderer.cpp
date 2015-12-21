@@ -104,9 +104,9 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
     Q_D(QForwardRenderer);
-    QObject::connect(d->m_viewport, SIGNAL(clearColorChanged()), this, SIGNAL(clearColorChanged()));
-    QObject::connect(d->m_viewport, SIGNAL(rectChanged()), this, SIGNAL(viewportRectChanged()));
-    QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged()), this, SIGNAL(cameraChanged()));
+    QObject::connect(d->m_viewport, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
+    QObject::connect(d->m_viewport, SIGNAL(rectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
+    QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
     d->init();
 }
 

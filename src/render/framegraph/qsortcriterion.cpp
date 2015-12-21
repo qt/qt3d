@@ -80,7 +80,7 @@ void QSortCriterion::setSort(QSortCriterion::SortType sort)
     Q_D(QSortCriterion);
     if (d->m_sort != sort) {
         d->m_sort = sort;
-        emit sortChanged();
+        emit sortChanged(sort);
     }
 }
 

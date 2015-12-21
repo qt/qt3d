@@ -106,7 +106,7 @@ void QParameter::setName(const QString &name)
     Q_D(QParameter);
     if (d->m_name != name) {
         d->m_name = name;
-        emit nameChanged();
+        emit nameChanged(name);
     }
 }
 
@@ -121,7 +121,7 @@ void QParameter::setValue(const QVariant &dv)
     Q_D(QParameter);
     if (d->m_value != dv) {
         d->setValue(dv);
-        emit valueChanged();
+        emit valueChanged(dv);
 
         // In case texture are declared inline
         QNode *txt = dv.value<QNode *>();

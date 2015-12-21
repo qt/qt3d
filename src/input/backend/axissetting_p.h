@@ -64,7 +64,7 @@ public:
     void cleanup();
 
     inline float deadZone() const { return m_deadZone; }
-    inline int axes() const { return m_axes; }
+    inline QVector<int> axes() const { return m_axes; }
     inline bool isFilterEnabled() const { return m_filter; }
 
 protected:
@@ -72,7 +72,7 @@ protected:
 
 private:
     float m_deadZone;
-    int m_axes;
+    QVector<int> m_axes;
     bool m_filter;
 };
 

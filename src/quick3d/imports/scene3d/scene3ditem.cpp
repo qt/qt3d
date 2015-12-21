@@ -479,7 +479,6 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     m_aspectEngine->setData(data);
 
     m_aspectEngine->registerAspect(m_renderAspect);
-    m_aspectEngine->initialize();
 }
 
 Scene3DItem::~Scene3DItem()

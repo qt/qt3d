@@ -44,7 +44,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-MouseEventDispatcherJob::MouseEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QMouseEvent> &events)
+MouseEventDispatcherJob::MouseEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_mouseInput(input)
@@ -61,9 +61,9 @@ void MouseEventDispatcherJob::run()
 {
     MouseInput *input = m_inputHandler->mouseInputManager()->lookupResource(m_mouseInput);
     if (input) {
-        Q_FOREACH (const QMouseEvent &e, m_events) {
+        Q_FOREACH (const QT_PREPEND_NAMESPACE(QMouseEvent) &e, m_events) {
             // Send events to frontend
-            input->mouseEvent(Q3DMouseEventPtr(new Q3DMouseEvent(e)));
+            input->mouseEvent(QMouseEventPtr(new QMouseEvent(e)));
         }
     }
 }

@@ -59,6 +59,7 @@ class QInputAspect;
 namespace Input {
 class CameraController;
 class InputHandler;
+class KeyboardMouseDeviceIntegration;
 }
 
 class QInputAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
@@ -69,6 +70,7 @@ public:
     Q_DECLARE_PUBLIC(QInputAspect)
     QScopedPointer<Input::InputHandler> m_inputHandler;
     QScopedPointer<Input::CameraController> m_cameraController;
+    QScopedPointer<Input::KeyboardMouseDeviceIntegration> m_keyboardMouseIntegration;
 };
 
 } // namespace Qt3DInput

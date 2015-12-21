@@ -52,10 +52,6 @@ Entity::Entity(Qt3DCore::QNode *parent)
     m_mesh->setRadius(2.5f);
     m_mesh->setLength(5.0f);
 
-    m_material->setAmbient(Qt::black);
-    m_material->setSpecular(Qt::white);
-    m_material->setShininess(150.0f);
-
     addComponent(m_mesh);
     addComponent(m_transform);
     addComponent(m_material);

@@ -61,15 +61,16 @@ public:
     explicit QMesh(Qt3DCore::QNode *parent = 0);
     ~QMesh();
 
-    void setSource(const QUrl &source);
     QUrl source() const;
-
-    void setSubMesh(const QString &subMesh);
     QString subMesh() const;
 
+public Q_SLOTS:
+    void setSource(const QUrl &source);
+    void setSubMesh(const QString &subMesh);
+
 Q_SIGNALS:
-    void sourceChanged();
-    void subMeshChanged();
+    void sourceChanged(const QUrl &source);
+    void subMeshChanged(const QString &subMesh);
 
 protected:
     QMesh(QMeshPrivate &dd, Qt3DCore::QNode *parent = 0);

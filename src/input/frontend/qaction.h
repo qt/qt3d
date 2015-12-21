@@ -55,15 +55,20 @@ public:
     explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAction();
 
-    void setName(const QString &name);
     QString name() const;
 
     void addInput(QActionInput *input);
     void removeInput(QActionInput *input);
     QVector<QActionInput *> inputs() const;
 
+public Q_SLOTS:
+    void setName(const QString &name);
+
 Q_SIGNALS:
-    void nameChanged();
+    void nameChanged(const QString &name);
+
+    void started(const QString &name);
+    void finished(const QString &name);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

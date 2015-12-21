@@ -80,7 +80,7 @@ void MouseInput::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void MouseInput::mouseEvent(const Q3DMouseEventPtr &event)
+void MouseInput::mouseEvent(const QMouseEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
@@ -89,7 +89,7 @@ void MouseInput::mouseEvent(const Q3DMouseEventPtr &event)
     notifyObservers(e);
 }
 
-void MouseInput::wheelEvent(const Q3DWheelEventPtr &event)
+void MouseInput::wheelEvent(const QWheelEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());

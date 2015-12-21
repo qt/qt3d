@@ -65,9 +65,6 @@ public:
     virtual int axisIdentifier(const QString &name) = 0;
     virtual int buttonIdentifier(const QString &name) = 0;
 
-    virtual float axis(int axisIdentifier) const = 0;
-    virtual bool button(int buttonIdentifier) const = 0;
-
     void addAxisSetting(QAxisSetting *axisSetting);
     void removeAxisSetting(QAxisSetting *axisSetting);
     QVector<QAxisSetting *> axisSettings() const;

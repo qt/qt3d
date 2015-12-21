@@ -135,7 +135,7 @@ void QGeometryRenderer::setInstanceCount(int instanceCount)
         return;
 
     d->m_instanceCount = instanceCount;
-    emit instanceCountChanged();
+    emit instanceCountChanged(instanceCount);
 }
 
 void QGeometryRenderer::setPrimitiveCount(int primitiveCount)
@@ -145,7 +145,7 @@ void QGeometryRenderer::setPrimitiveCount(int primitiveCount)
         return;
 
     d->m_primitiveCount = primitiveCount;
-    emit primitiveCountChanged();
+    emit primitiveCountChanged(primitiveCount);
 }
 
 void QGeometryRenderer::setBaseVertex(int baseVertex)
@@ -155,7 +155,7 @@ void QGeometryRenderer::setBaseVertex(int baseVertex)
         return;
 
     d->m_baseVertex = baseVertex;
-    emit baseVertexChanged();
+    emit baseVertexChanged(baseVertex);
 }
 
 void QGeometryRenderer::setBaseInstance(int baseInstance)
@@ -165,7 +165,7 @@ void QGeometryRenderer::setBaseInstance(int baseInstance)
         return;
 
     d->m_baseInstance = baseInstance;
-    emit baseInstanceChanged();
+    emit baseInstanceChanged(baseInstance);
 }
 
 void QGeometryRenderer::setRestartIndex(int index)
@@ -175,7 +175,7 @@ void QGeometryRenderer::setRestartIndex(int index)
         return;
 
     d->m_restartIndex = index;
-    emit restartIndexChanged();
+    emit restartIndexChanged(index);
 }
 
 void QGeometryRenderer::setPrimitiveRestart(bool enabled)
@@ -185,7 +185,7 @@ void QGeometryRenderer::setPrimitiveRestart(bool enabled)
         return;
 
     d->m_primitiveRestart = enabled;
-    emit primitiveRestartChanged();
+    emit primitiveRestartChanged(enabled);
 }
 
 void QGeometryRenderer::setGeometry(QGeometry *geometry)
@@ -206,7 +206,7 @@ void QGeometryRenderer::setGeometry(QGeometry *geometry)
 
     d->m_geometry = geometry;
     const bool blocked = blockNotifications(true);
-    emit geometryChanged();
+    emit geometryChanged(geometry);
     blockNotifications(blocked);
 
     if (d->m_geometry && d->m_changeArbiter) {
@@ -224,7 +224,7 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
         return;
 
     d->m_primitiveType = primitiveType;
-    emit primitiveTypeChanged();
+    emit primitiveTypeChanged(primitiveType);
 }
 
 void QGeometryRenderer::setGeometryFunctor(const QGeometryFunctorPtr &functor)

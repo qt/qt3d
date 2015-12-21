@@ -71,7 +71,8 @@ void Executor::enqueueLogicFrameUpdates(const QVector<Qt3DCore::QNodeId> &nodeId
 bool Executor::event(QEvent *e)
 {
     if (e->type() == QEvent::User) {
-        processLogicFrameUpdates();
+        FrameUpdateEvent *ev = static_cast<FrameUpdateEvent *>(e);
+        processLogicFrameUpdates(ev->deltaTime());
         e->setAccepted(true);
         return true;
     }
@@ -83,7 +84,7 @@ bool Executor::event(QEvent *e)
 
    Called from context of main thread
 */
-void Executor::processLogicFrameUpdates()
+void Executor::processLogicFrameUpdates(float dt)
 {
     Q_ASSERT(m_scene);
     Q_ASSERT(m_semaphore);
@@ -91,7 +92,7 @@ void Executor::processLogicFrameUpdates()
     foreach (QNode *node, nodes) {
         QLogicComponent *logicComponent = qobject_cast<QLogicComponent *>(node);
         if (logicComponent)
-            logicComponent->onFrameUpdate();
+            logicComponent->onFrameUpdate(dt);
     }
 
     // Release the semaphore so the calling Manager can continue

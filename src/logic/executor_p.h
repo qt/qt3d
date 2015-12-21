@@ -66,9 +66,15 @@ namespace Logic {
 class FrameUpdateEvent : public QEvent
 {
 public:
-    FrameUpdateEvent()
+    FrameUpdateEvent(float dt)
         : QEvent(QEvent::User)
+        , m_dt(dt)
     {}
+
+    float deltaTime() const { return m_dt; }
+
+private:
+    float m_dt;
 };
 
 class Executor : public QObject
@@ -86,7 +92,7 @@ public Q_SLOTS:
 
 protected:
     bool event(QEvent *e);
-    void processLogicFrameUpdates();
+    void processLogicFrameUpdates(float dt);
 
 private:
     QVector<Qt3DCore::QNodeId> m_nodeIds;

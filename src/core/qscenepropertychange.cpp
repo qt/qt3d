@@ -36,7 +36,7 @@
 
 #include "qscenepropertychange.h"
 #include "qscenepropertychange_p.h"
-#include <Qt3DCore/qframeallocator.h>
+#include <Qt3DCore/private/qframeallocator_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -80,21 +80,21 @@ public:
     ~QStencilTestSeparate();
 
     uint mask() const;
-    void setMask(uint mask);
-
     int ref() const;
-    void setRef(int ref);
-
     StencilFunc func() const;
-    void setFunc(StencilFunc func);
 
     StencilFaceMode faceMode() const;
 
+public Q_SLOTS:
+    void setMask(uint mask);
+    void setRef(int ref);
+    void setFunc(StencilFunc func);
+
 Q_SIGNALS:
-    void maskChanged();
-    void funcChanged();
-    void refChanged();
-    void faceModeChanged();
+    void maskChanged(uint mask);
+    void funcChanged(StencilFunc func);
+    void refChanged(int ref);
+    void faceModeChanged(StencilFaceMode faceMode);
 
 private:
     explicit QStencilTestSeparate(StencilFaceMode face, QObject *parent = 0);

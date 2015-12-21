@@ -82,7 +82,8 @@ public:
         StateSet,
         NoDraw,
         FrustumCulling,
-        Lighting
+        Lighting,
+        ComputeDispatch
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 

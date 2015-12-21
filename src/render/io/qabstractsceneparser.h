@@ -80,8 +80,8 @@ public:
     QStringList errors() const;
 
 Q_SIGNALS:
-    void parserStatusChanged();
-    void errorsChanged();
+    void parserStatusChanged(ParserStatus parserStatus);
+    void errorsChanged(const QStringList &errors);
 
 protected:
     void setParserStatus(ParserStatus parserStatus);

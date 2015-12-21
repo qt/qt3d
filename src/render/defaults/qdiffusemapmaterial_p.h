@@ -70,6 +70,12 @@ class QDiffuseMapMaterialPrivate : public QMaterialPrivate
 
     void init();
 
+    void handleAmbientChanged(const QVariant &var);
+    void handleDiffuseChanged(const QVariant &var);
+    void handleSpecularChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
+    void handleTextureScaleChanged(const QVariant &var);
+
     QEffect *m_diffuseMapEffect;
     QAbstractTextureProvider *m_diffuseTexture;
     QParameter *m_ambientParameter;

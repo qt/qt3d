@@ -49,22 +49,28 @@
 //
 
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/private/qabstractserviceprovider_p.h>
-#include <Qt3DCore/qservicelocator.h>
+#include <Qt3DCore/private/qservicelocator_p.h>
+#include <QString>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractFrameAdvanceServicePrivate : public QAbstractServiceProviderPrivate
+class QAbstractFrameAdvanceServicePrivate;
+
+class QT3DCORESHARED_EXPORT QAbstractFrameAdvanceService : public QAbstractServiceProvider
 {
 public:
-    QAbstractFrameAdvanceServicePrivate(const QString &description)
-        : QAbstractServiceProviderPrivate(QServiceLocator::FrameAdvanceService, description)
-    {}
+    virtual qint64 waitForNextFrame() = 0;
+    virtual void start() = 0;
+    virtual void stop() = 0;
+
+protected:
+    QAbstractFrameAdvanceService(const QString &description = QString());
+    QAbstractFrameAdvanceService(QAbstractFrameAdvanceServicePrivate &dd);
 };
 
-}
+} // Qt3D
 
 QT_END_NAMESPACE
 

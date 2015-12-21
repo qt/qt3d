@@ -66,10 +66,6 @@ public:
     void updateVertices();
     void updateIndices();
 
-    void setResolution(const QSize &resolution);
-    void setWidth(float width);
-    void setHeight(float height);
-
     QSize resolution() const;
     float width() const;
     float height() const;
@@ -80,10 +76,15 @@ public:
     QAttribute *tangentAttribute() const;
     QAttribute *indexAttribute() const;
 
+public Q_SLOTS:
+    void setResolution(const QSize &resolution);
+    void setWidth(float width);
+    void setHeight(float height);
+
 Q_SIGNALS:
-    void resolutionChanged();
-    void widthChanged();
-    void heightChanged();
+    void resolutionChanged(const QSize &resolution);
+    void widthChanged(float width);
+    void heightChanged(float height);
 
 protected:
     QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent = Q_NULLPTR);

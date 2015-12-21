@@ -36,6 +36,8 @@
 
 #include "manager_p.h"
 #include "qlogicaspect.h"
+#include <Qt3DCore/private/qabstractaspect_p.h>
+#include <Qt3DCore/private/qaspectmanager_p.h>
 #include <Qt3DLogic/private/executor_p.h>
 #include <Qt3DLogic/private/managers_p.h>
 #include <QtCore/qcoreapplication.h>
@@ -51,6 +53,7 @@ namespace Logic {
 Manager::Manager()
     : m_logicHandlerManager(new HandlerManager)
     , m_semaphore(1)
+    , m_dt(0.0f)
 {
     m_semaphore.acquire();
 }
@@ -87,14 +90,14 @@ void Manager::triggerLogicFrameUpdates()
 
     // Don't use blocking queued connections to main thread if it is already
     // in the process of shutting down as that will deadlock.
-    if (m_logicAspect->isShuttingDown())
+    if (Qt3DCore::QAbstractAspectPrivate::get(m_logicAspect)->m_aspectManager->isShuttingDown())
         return;
 
     // Trigger the main thread to process logic frame updates for each
     // logic component and then wait until done. The Executor will
     // release the semaphore when it has completed its work.
     m_executor->enqueueLogicFrameUpdates(m_logicComponentIds);
-    qApp->postEvent(m_executor, new FrameUpdateEvent);
+    qApp->postEvent(m_executor, new FrameUpdateEvent(m_dt));
     m_semaphore.acquire();
 }
 

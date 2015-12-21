@@ -147,7 +147,7 @@ void QAbstractTextureProvider::setWidth(int width)
     Q_D(QAbstractTextureProvider);
     if (d->m_width != width) {
         d->m_width = width;
-        emit widthChanged();
+        emit widthChanged(width);
     }
 }
 
@@ -161,7 +161,7 @@ void QAbstractTextureProvider::setHeight(int height)
     Q_D(QAbstractTextureProvider);
     if (d->m_height != height) {
         d->m_height = height;
-        emit heightChanged();
+        emit heightChanged(height);
     }
 }
 
@@ -175,7 +175,7 @@ void QAbstractTextureProvider::setDepth(int depth)
     Q_D(QAbstractTextureProvider);
     if (d->m_depth != depth) {
         d->m_depth = depth;
-        emit depthChanged();
+        emit depthChanged(depth);
     }
 }
 
@@ -211,7 +211,7 @@ void QAbstractTextureProvider::setMaximumLayers(int maximumLayers)
     Q_D(QAbstractTextureProvider);
     if (d->m_maximumLayers != maximumLayers) {
         d->m_maximumLayers = maximumLayers;
-        emit maximumLayersChanged();
+        emit maximumLayersChanged(maximumLayers);
     }
 }
 
@@ -245,7 +245,7 @@ void QAbstractTextureProvider::setUnique(bool unique)
     Q_D(QAbstractTextureProvider);
     if (d->m_unique != unique) {
         d->m_unique = unique;
-        emit uniqueChanged();
+        emit uniqueChanged(unique);
     }
 }
 
@@ -270,7 +270,7 @@ void QAbstractTextureProvider::setFormat(TextureFormat format)
     Q_D(QAbstractTextureProvider);
     if (d->m_format != format) {
         d->m_format = format;
-        emit formatChanged();
+        emit formatChanged(format);
     }
 }
 
@@ -293,7 +293,7 @@ void QAbstractTextureProvider::setStatus(Status status)
     Q_D(QAbstractTextureProvider);
     if (status != d->m_status) {
         d->m_status = status;
-        emit statusChanged();
+        emit statusChanged(status);
     }
 }
 
@@ -382,7 +382,7 @@ void QAbstractTextureProvider::setGenerateMipMaps(bool gen)
     Q_D(QAbstractTextureProvider);
     if (d->m_autoMipMap != gen) {
         d->m_autoMipMap = gen;
-        emit generateMipMapsChanged();
+        emit generateMipMapsChanged(gen);
     }
 }
 
@@ -402,7 +402,7 @@ void QAbstractTextureProvider::setMinificationFilter(Filter f)
     Q_D(QAbstractTextureProvider);
     if (d->m_minFilter != f) {
         d->m_minFilter = f;
-        emit minificationFilterChanged();
+        emit minificationFilterChanged(f);
     }
 }
 
@@ -416,7 +416,7 @@ void QAbstractTextureProvider::setMagnificationFilter(Filter f)
     Q_D(QAbstractTextureProvider);
     if (d->m_magFilter != f) {
         d->m_magFilter = f;
-        emit magnificationFilterChanged();
+        emit magnificationFilterChanged(f);
     }
 }
 
@@ -479,7 +479,7 @@ void QAbstractTextureProvider::setMaximumAnisotropy(float anisotropy)
     Q_D(QAbstractTextureProvider);
     if (!qFuzzyCompare(d->m_maximumAnisotropy, anisotropy)) {
         d->m_maximumAnisotropy = anisotropy;
-        emit maximumAnisotropyChanged();
+        emit maximumAnisotropyChanged(anisotropy);
     }
 }
 
@@ -499,7 +499,7 @@ void QAbstractTextureProvider::setComparisonFunction(QAbstractTextureProvider::C
     Q_D(QAbstractTextureProvider);
     if (d->m_comparisonFunction != function) {
         d->m_comparisonFunction = function;
-        emit comparisonFunctionChanged();
+        emit comparisonFunctionChanged(function);
     }
 }
 
@@ -519,7 +519,7 @@ void QAbstractTextureProvider::setComparisonMode(QAbstractTextureProvider::Compa
     Q_D(QAbstractTextureProvider);
     if (d->m_comparisonMode != mode) {
         d->m_comparisonMode = mode;
-        emit comparisonModeChanged();
+        emit comparisonModeChanged(mode);
     }
 }
 

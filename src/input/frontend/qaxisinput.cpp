@@ -47,13 +47,12 @@ class QAxisInputPrivate : public Qt3DCore::QNodePrivate
 public:
     QAxisInputPrivate()
         : Qt3DCore::QNodePrivate()
-        , m_keys(0)
         , m_sourceDevice(Q_NULLPTR)
         , m_scale(0.0f)
         , m_axis(-1)
     {}
 
-    int m_keys;
+    QVariantList m_keys;
     QAbstractPhysicalDevice *m_sourceDevice;
     float m_scale;
     int m_axis;
@@ -79,7 +78,7 @@ void QAxisInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
             sourceDevice->setParent(this);
 
         d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged();
+        emit sourceDeviceChanged(sourceDevice);
     }
 }
 
@@ -94,7 +93,7 @@ void QAxisInput::setScale(float scale)
     Q_D(QAxisInput);
     if (d->m_scale != scale) {
         d->m_scale = scale;
-        emit scaleChanged();
+        emit scaleChanged(scale);
     }
 }
 
@@ -109,7 +108,7 @@ void QAxisInput::setAxis(int axis)
     Q_D(QAxisInput);
     if (d->m_axis != axis) {
         d->m_axis = axis;
-        emit axisChanged();
+        emit axisChanged(axis);
     }
 }
 
@@ -119,16 +118,16 @@ int QAxisInput::axis() const
     return d->m_axis;
 }
 
-void QAxisInput::setKeys(int keys)
+void QAxisInput::setKeys(const QVariantList &keys)
 {
     Q_D(QAxisInput);
     if (keys != d->m_keys) {
         d->m_keys = keys;
-        emit keysChanged();
+        emit keysChanged(keys);
     }
 }
 
-int QAxisInput::keys() const
+QVariantList QAxisInput::keys() const
 {
     Q_D(const QAxisInput);
     return d->m_keys;

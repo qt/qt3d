@@ -82,6 +82,8 @@ public:
 
     void triggerLogicFrameUpdates();
 
+    void setDeltaTime(float dt) { m_dt = dt; }
+
 private:
     QScopedPointer<HandlerManager> m_logicHandlerManager;
     QVector<HHandler> m_logicHandlers;
@@ -89,6 +91,7 @@ private:
     QLogicAspect *m_logicAspect;
     Executor *m_executor;
     QSemaphore m_semaphore;
+    float m_dt;
 };
 
 } // namespace Logic

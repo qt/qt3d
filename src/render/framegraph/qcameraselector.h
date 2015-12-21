@@ -55,11 +55,13 @@ public:
     explicit QCameraSelector(Qt3DCore::QNode *parent = 0);
     ~QCameraSelector();
 
-    void setCamera(Qt3DCore::QEntity *camera);
     Qt3DCore::QEntity *camera() const;
 
+public Q_SLOTS:
+    void setCamera(Qt3DCore::QEntity *camera);
+
 Q_SIGNALS:
-    void cameraChanged();
+    void cameraChanged(Qt3DCore::QEntity *camera);
 
 protected:
     QCameraSelector(QCameraSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);

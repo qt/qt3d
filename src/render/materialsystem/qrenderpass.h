@@ -72,7 +72,6 @@ public:
     ParameterList attributes() const;
     ParameterList uniforms() const;
 
-    void setShaderProgram(QShaderProgram *shaderProgram);
     QShaderProgram *shaderProgram() const;
 
     void addAnnotation(QAnnotation *criterion);
@@ -91,8 +90,11 @@ public:
     void removeParameter(QParameter *p);
     QList<QParameter *> parameters() const;
 
+public Q_SLOTS:
+    void setShaderProgram(QShaderProgram *shaderProgram);
+
 Q_SIGNALS:
-    void shaderProgramChanged();
+    void shaderProgramChanged(QShaderProgram *shaderProgram);
 
 protected:
     QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = 0);

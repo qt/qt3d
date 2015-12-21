@@ -57,8 +57,10 @@ class QSurface;
 
 namespace Qt3DCore {
 class QAbstractFrameAdvanceService;
+class QBackendNodeFactory;
 class QEventFilterService;
 class QAbstractAspectJobManager;
+class QServiceLocator;
 }
 
 namespace Qt3DRender {
@@ -82,18 +84,22 @@ public:
 
     virtual API api() const = 0;
 
+    virtual qint64 time() const = 0;
+    virtual void setTime(qint64 time) = 0;
+
     virtual void setSurface(QSurface *surface) = 0;
     virtual void setNodeManagers(NodeManagers *managers) = 0;
-    virtual void setQRenderAspect(Qt3DRender::QRenderAspect *renderAspect) = 0;
+    virtual void setServices(Qt3DCore::QServiceLocator *services) = 0;
     virtual void setSurfaceExposed(bool exposed) = 0;
 
     virtual QSurface *surface() const = 0;
     virtual NodeManagers *nodeManagers() const = 0;
-    virtual QRenderAspect *renderAspect() const = 0;
+    virtual Qt3DCore::QServiceLocator *services() const = 0;
 
     virtual void initialize() = 0;
     virtual void shutdown() = 0;
     virtual void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
+    virtual void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) = 0;
 
     // Threaded renderer
     virtual void render() = 0;
@@ -106,7 +112,7 @@ public:
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
 
     virtual void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) = 0;
-    virtual void setSceneRoot(Entity *root) = 0;
+    virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
 
     virtual Entity *sceneRoot() const = 0;
     virtual FrameGraphNode *frameGraphRoot() const = 0;

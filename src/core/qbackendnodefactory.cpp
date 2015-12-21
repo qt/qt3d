@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qbackendnodefactory.h"
+#include "qbackendnodefactory_p.h"
 
 QT_BEGIN_NAMESPACE
 

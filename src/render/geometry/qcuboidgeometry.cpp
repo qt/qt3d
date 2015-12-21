@@ -544,7 +544,7 @@ void QCuboidGeometry::setXExtent(float xExtent)
     if (d->m_xExtent != xExtent) {
         d->m_xExtent = xExtent;
         updateVertices();
-        emit xExtentChanged();
+        emit xExtentChanged(xExtent);
     }
 }
 
@@ -554,7 +554,7 @@ void QCuboidGeometry::setYExtent(float yExtent)
     if (d->m_yExtent != yExtent) {
         d->m_yExtent = yExtent;
         updateVertices();
-        emit yExtentChanged();
+        emit yExtentChanged(yExtent);
     }
 }
 
@@ -564,7 +564,7 @@ void QCuboidGeometry::setZExtent(float zExtent)
     if (d->m_zExtent != zExtent) {
         d->m_zExtent = zExtent;
         updateVertices();
-        emit zExtentChanged();
+        emit zExtentChanged(zExtent);
     }
 }
 
@@ -575,7 +575,7 @@ void QCuboidGeometry::setYZMeshResolution(const QSize &resolution)
         d->m_yzFaceResolution = resolution;
         updateVertices();
         updateIndices();
-        emit yzMeshResolutionChanged();
+        emit yzMeshResolutionChanged(resolution);
     }
 }
 
@@ -586,7 +586,7 @@ void QCuboidGeometry::setXZMeshResolution(const QSize &resolution)
         d->m_xzFaceResolution = resolution;
         updateVertices();
         updateIndices();
-        emit xzMeshResolutionChanged();
+        emit xzMeshResolutionChanged(resolution);
     }
 }
 
@@ -597,7 +597,7 @@ void QCuboidGeometry::setXYMeshResolution(const QSize &resolution)
         d->m_xyFaceResolution = resolution;
         updateVertices();
         updateIndices();
-        emit xyMeshResolutionChanged();
+        emit xyMeshResolutionChanged(resolution);
     }
 }
 

@@ -56,10 +56,12 @@ public:
     ~QLayer();
 
     QStringList names() const;
+
+public Q_SLOTS:
     void setNames(const QStringList &names);
 
 Q_SIGNALS:
-    void namesChanged();
+    void namesChanged(const QStringList &names);
 
 protected:
     QLayer(QLayerPrivate &dd, Qt3DCore::QNode *parent = 0);

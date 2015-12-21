@@ -66,7 +66,7 @@ public:
     float average() const;
 
 private:
-    const unsigned int m_maxSampleCount;
+    unsigned int m_maxSampleCount;
     unsigned int m_sampleCount;
     unsigned int m_currentSample;
     float m_total;

@@ -123,25 +123,29 @@ public:
 
     API api() const Q_DECL_OVERRIDE { return AbstractRenderer::OpenGL; }
 
+    qint64 time() const Q_DECL_OVERRIDE;
+    void setTime(qint64 time) Q_DECL_OVERRIDE;
+
     void setSurface(QSurface *s) Q_DECL_OVERRIDE;
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
-    void setQRenderAspect(QRenderAspect *aspect) Q_DECL_OVERRIDE { m_rendererAspect = aspect; }
+    void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
     QSurface *surface() const Q_DECL_OVERRIDE { return m_surface; }
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
-    QRenderAspect *renderAspect() const Q_DECL_OVERRIDE { return m_rendererAspect; }
+    Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return m_services; }
 
     void initialize() Q_DECL_OVERRIDE;
     void shutdown() Q_DECL_OVERRIDE;
     void createAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
+    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager) Q_DECL_OVERRIDE;
 
     void render() Q_DECL_OVERRIDE;
     void doRender() Q_DECL_OVERRIDE;
 
     bool isRunning() const Q_DECL_OVERRIDE { return m_running.load(); }
 
-    void setSceneRoot(Entity *sgRoot) Q_DECL_OVERRIDE;
+    void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) Q_DECL_OVERRIDE;
     Entity *sceneRoot() const Q_DECL_OVERRIDE { return m_renderSceneRoot; }
 
     void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
@@ -162,7 +166,6 @@ public:
     void setOpenGLContext(QOpenGLContext *context);
     QGraphicsApiFilter *contextInfo() const;
 
-    void destroyAllocators(Qt3DCore::QAbstractAspectJobManager *jobManager);
     void addAllocator(Qt3DCore::QFrameAllocator *allocator);
 
     Qt3DCore::QFrameAllocator *currentFrameAllocator();
@@ -191,7 +194,7 @@ private:
 #endif
     bool canRender() const;
 
-    QRenderAspect *m_rendererAspect;
+    Qt3DCore::QServiceLocator *m_services;
     NodeManagers *m_nodesManager;
 
     // Frame graph root
@@ -220,7 +223,6 @@ private:
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
     QSurface *m_surface;
-    QObject *m_eventSource;
 
 
     RenderQueue *m_renderQueue;
@@ -250,6 +252,8 @@ private:
     QAtomicInt m_exposed;
     QOpenGLContext *m_glContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
+
+    qint64 m_time;
 };
 
 } // namespace Render

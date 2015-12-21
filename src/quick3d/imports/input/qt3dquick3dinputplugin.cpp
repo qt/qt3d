@@ -37,14 +37,16 @@
 #include <QtQml>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
-#include <Qt3DInput/q3dkeyevent.h>
+#include <Qt3DInput/qkeyevent.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmouseinput.h>
-#include <Qt3DInput/q3dmouseevent.h>
+#include <Qt3DInput/qmouseevent.h>
 
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qaction.h>
+#include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
@@ -59,18 +61,20 @@ QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterUncreatableType<Qt3DInput::Q3DKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3DInput::QKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DInput::QKeyboardController>(uri, 2, 0, "KeyboardController");
     qmlRegisterType<Qt3DInput::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
 
-    qmlRegisterUncreatableType<Qt3DInput::Q3DMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
-    qmlRegisterUncreatableType<Qt3DInput::Q3DWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3DInput::QMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
+    qmlRegisterUncreatableType<Qt3DInput::QWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DInput::QMouseInput>(uri, 2, 0, "MouseInput");
     qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
+    qmlRegisterType<Qt3DInput::QAxisActionHandler>(uri, 2, 0, "AxisActionHandler");
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
+    qmlRegisterType<Qt3DInput::QAxisSetting>(uri, 2, 0, "AxisSetting");
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
     qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
     qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));

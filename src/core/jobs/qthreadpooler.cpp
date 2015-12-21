@@ -72,12 +72,13 @@ void QThreadPooler::setDependencyHandler(DependencyHandler *handler)
     m_dependencyHandler->setMutex(m_mutex);
 }
 
-void QThreadPooler::enqueueTasks(QVector<RunnableInterface *> &tasks)
+void QThreadPooler::enqueueTasks(const QVector<RunnableInterface *> &tasks)
 {
     // The caller have to set the mutex
+    const QVector<RunnableInterface *>::const_iterator end = tasks.cend();
 
-    for (QVector<RunnableInterface *>::iterator it = tasks.begin();
-         it != tasks.end(); it++) {
+    for (QVector<RunnableInterface *>::const_iterator it = tasks.cbegin();
+         it != end; ++it) {
         if (!m_dependencyHandler->hasDependency((*it)) && !(*it)->reserved()) {
             (*it)->setReserved(true);
             (*it)->setPooler(this);
@@ -92,11 +93,11 @@ void QThreadPooler::taskFinished(RunnableInterface *task)
 
     release();
 
-    QVector<RunnableInterface *> freedTasks;
-    if (task->dependencyHandler())
-        freedTasks = m_dependencyHandler->freeDependencies(task);
-    if (freedTasks.size())
-        enqueueTasks(freedTasks);
+    if (task->dependencyHandler()) {
+        const QVector<RunnableInterface *> freedTasks = m_dependencyHandler->freeDependencies(task);
+        if (!freedTasks.empty())
+            enqueueTasks(freedTasks);
+    }
 
     if (currentCount() == 0) {
         if (m_futureInterface) {
@@ -113,7 +114,7 @@ QFuture<void> QThreadPooler::mapDependables(QVector<RunnableInterface *> &taskQu
 
     if (!m_futureInterface)
         m_futureInterface = new QFutureInterface<void>();
-    if (taskQueue.size())
+    if (!taskQueue.empty())
         m_futureInterface->reportStarted();
 
     acquire(taskQueue.size());
@@ -136,29 +137,17 @@ void QThreadPooler::acquire(int add)
 {
     // The caller have to set the mutex
 
-    forever {
-        int localCount = m_taskCount.load();
-        if (m_taskCount.testAndSetOrdered(localCount, localCount + add))
-            return;
-    }
+    m_taskCount.fetchAndAddOrdered(add);
 }
 
 void QThreadPooler::release()
 {
     // The caller have to set the mutex
 
-    forever {
-        int localCount = m_taskCount.load();
-
-        // Task counter going below zero means coding errors somewhere.
-        Q_ASSERT(localCount > 0);
-
-        if (m_taskCount.testAndSetOrdered(localCount, localCount - 1))
-            return;
-    }
+    m_taskCount.fetchAndAddOrdered(-1);
 }
 
-int QThreadPooler::currentCount()
+int QThreadPooler::currentCount() const
 {
     // The caller have to set the mutex
 

@@ -38,7 +38,7 @@
 #define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +47,7 @@ namespace Qt3DInput {
 class QKeyboardControllerPrivate;
 class QKeyboardInput;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardController : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QKeyboardController : public Qt3DInput::QAbstractPhysicalDevice
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QKeyboardInput *activeInput READ activeInput NOTIFY activeInputChanged)
@@ -58,12 +58,19 @@ public:
 
     QKeyboardInput *activeInput() const;
 
+    int axisCount() const Q_DECL_FINAL;
+    int buttonCount() const Q_DECL_FINAL;
+    QStringList axisNames() const Q_DECL_FINAL;
+    QStringList buttonNames() const Q_DECL_FINAL;
+    int axisIdentifier(const QString &name) Q_DECL_FINAL;
+    int buttonIdentifier(const QString &name) Q_DECL_FINAL;
+
 protected:
     QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent = 0);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void activeInputChanged();
+    void activeInputChanged(QKeyboardInput *activeInput);
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardController)

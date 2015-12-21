@@ -70,17 +70,13 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    qint64 time() const;
-
 protected:
     void registerBackendTypes();
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
     Q_DECLARE_PRIVATE(QRenderAspect)
 
-    void setRootEntity(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
+    void onRootEntityChanged(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
-    void onStartup() Q_DECL_OVERRIDE;
-    void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();

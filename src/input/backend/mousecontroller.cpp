@@ -49,7 +49,8 @@ namespace Qt3DInput {
 namespace Input {
 
 MouseController::MouseController()
-    : QBackendNode()
+    : QAbstractPhysicalDeviceBackendNode(ReadOnly)
+    , m_sensitivity(0.1f)
 {
 }
 
@@ -59,7 +60,9 @@ MouseController::~MouseController()
 
 void MouseController::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    Q_UNUSED(peer);
+    QAbstractPhysicalDeviceBackendNode::updateFromPeer(peer);
+    QMouseController *object = static_cast<QMouseController *>(peer);
+    m_sensitivity = object->sensitivity();
 }
 
 void MouseController::setInputHandler(InputHandler *handler)
@@ -78,18 +81,68 @@ void MouseController::removeMouseInput(const Qt3DCore::QNodeId &input)
     m_mouseInputs.removeOne(input);
 }
 
+float MouseController::axisValue(int axisIdentifier) const
+{
+    switch (axisIdentifier) {
+    case QMouseController::X:
+        return m_mouseState.xAxis;
+    case QMouseController::Y:
+        return m_mouseState.yAxis;
+        break;
+    default:
+        break;
+    }
+    return 0.0f;
+}
+
+bool MouseController::isButtonPressed(int buttonIdentifier) const
+{
+    switch (buttonIdentifier) {
+    case QMouseController::Left:
+        return m_mouseState.leftPressed;
+    case QMouseController::Center:
+        return m_mouseState.centerPressed;
+    case QMouseController::Right:
+        return m_mouseState.rightPressed;
+    default:
+        break;
+    }
+    return false;
+}
+
 QVector<Qt3DCore::QNodeId> MouseController::mouseInputs() const
 {
     return m_mouseInputs;
 }
 
-void MouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void MouseController::updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events)
 {
-    Q_UNUSED(e);
+    if (!events.isEmpty()) {
+        Q_FOREACH (const QT_PREPEND_NAMESPACE(QMouseEvent) &e, events) {
+            m_mouseState.leftPressed = e.buttons() & (Qt::LeftButton);
+            m_mouseState.centerPressed = e.buttons() & (Qt::MiddleButton);
+            m_mouseState.rightPressed = e.buttons() & (Qt::RightButton);
+            m_mouseState.xAxis =  m_sensitivity * (e.screenPos().x() - m_previousPos.x());
+            m_mouseState.yAxis = m_sensitivity * (m_previousPos.y() - e.screenPos().y());
+            m_previousPos = e.screenPos();
+        }
+    } else {
+        m_mouseState = MouseState();
+    }
 }
 
-MouseControllerFunctor::MouseControllerFunctor(InputHandler *handler)
-    : m_handler(handler)
+void MouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("sensitivity"))
+            m_sensitivity = propertyChange->value().toFloat();
+    }
+}
+
+MouseControllerFunctor::MouseControllerFunctor(QInputAspect *inputAspect, InputHandler *handler)
+    : m_inputAspect(inputAspect)
+    , m_handler(handler)
 {
 }
 
@@ -97,6 +150,7 @@ Qt3DCore::QBackendNode *MouseControllerFunctor::create(Qt3DCore::QNode *frontend
 {
     MouseController *controller = m_handler->mouseControllerManager()->getOrCreateResource(frontend->id());
     controller->setFactory(factory);
+    controller->setInputAspect(m_inputAspect);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);
     m_handler->appendMouseController(m_handler->mouseControllerManager()->lookupHandle(frontend->id()));

@@ -54,14 +54,16 @@ public:
     explicit QStencilMask(Qt3DCore::QNode *parent = 0);
     ~QStencilMask();
 
-    void setFrontMask(uint mask);
     uint frontMask() const;
-    void setBackMask(uint mask);
     uint backMask() const;
 
+public Q_SLOTS:
+    void setFrontMask(uint mask);
+    void setBackMask(uint mask);
+
 Q_SIGNALS:
-    void frontMaskChanged();
-    void backMaskChanged();
+    void frontMaskChanged(uint frontMask);
+    void backMaskChanged(uint backMask);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;

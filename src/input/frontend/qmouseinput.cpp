@@ -37,7 +37,7 @@
 #include "qmouseinput.h"
 #include "qmouseinput_p.h"
 #include "qmousecontroller.h"
-#include "q3dmouseevent.h"
+#include "qmouseevent.h"
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -101,7 +101,7 @@ void QMouseInput::setController(QMouseController *controller)
     Q_D(QMouseInput);
     if (d->m_controller != controller) {
         d->m_controller = controller;
-        emit controllerChanged();
+        emit controllerChanged(controller);
     }
 }
 
@@ -146,16 +146,16 @@ void QMouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
-            Q3DMouseEventPtr ev = e->value().value<Q3DMouseEventPtr>();
+            QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
             mouseEvent(ev.data());
         } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
-            Q3DWheelEventPtr ev = e->value().value<Q3DWheelEventPtr>();
+            QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
             emit wheel(ev.data());
         }
     }
 }
 
-void QMouseInput::mouseEvent(Q3DMouseEvent *event)
+void QMouseInput::mouseEvent(QMouseEvent *event)
 {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
@@ -186,7 +186,7 @@ void QMouseInput::setContainsMouse(bool contains)
     Q_D(QMouseInput);
     if (contains != d->m_containsMouse) {
         d->m_containsMouse = contains;
-        emit containsMouseChanged();
+        emit containsMouseChanged(contains);
     }
 }
 

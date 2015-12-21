@@ -77,13 +77,13 @@ public Q_SLOTS:
     void setShininess(float shininess);
 
 Q_SIGNALS:
-    void diffuseChanged();
-    void specularChanged();
-    void coolChanged();
-    void warmChanged();
-    void alphaChanged();
-    void betaChanged();
-    void shininessChanged();
+    void diffuseChanged(const QColor &diffuse);
+    void specularChanged(const QColor &specular);
+    void coolChanged(const QColor &cool);
+    void warmChanged(const QColor &warm);
+    void alphaChanged(float alpha);
+    void betaChanged(float beta);
+    void shininessChanged(float shininess);
 
 protected:
     QGoochMaterial(QGoochMaterialPrivate &dd, Qt3DCore::QNode *parent = 0);

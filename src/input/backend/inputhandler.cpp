@@ -41,7 +41,7 @@
 #include "assignkeyboardfocusjob_p.h"
 #include "keyeventdispatcherjob_p.h"
 #include "mouseeventdispatcherjob_p.h"
-#include <Qt3DCore/qeventfilterservice.h>
+#include <Qt3DCore/private/qeventfilterservice_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,6 +60,7 @@ InputHandler::InputHandler()
     , m_axisManager(new AxisManager())
     , m_actionManager(new ActionManager())
     , m_axisInputManager(new AxisInputManager())
+    , m_axisActionHandlerManager(new AxisActionHandlerManager())
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
@@ -75,21 +76,21 @@ void InputHandler::registerEventFilters(QEventFilterService *service)
     clearPendingMouseEvents();
 
     service->registerEventFilter(m_keyboardEventFilter, 512);
-    service->registerEventFilter(m_mouseEventFilter, 512);
+    service->registerEventFilter(m_mouseEventFilter, 513);
 }
 
 // Called by the keyboardEventFilter in the main thread
-void InputHandler::appendKeyEvent(const QKeyEvent &event)
+void InputHandler::appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event)
 {
     QMutexLocker lock(&m_mutex);
     m_pendingEvents.append(event);
 }
 
 // Called by QInputASpect::jobsToExecute (aspectThread)
-QList<QKeyEvent> InputHandler::pendingKeyEvents()
+QList<QT_PREPEND_NAMESPACE(QKeyEvent)> InputHandler::pendingKeyEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QKeyEvent> pendingEvents = m_pendingEvents;
+    QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingEvents = m_pendingEvents;
     m_pendingEvents.clear();
     return pendingEvents;
 }
@@ -101,16 +102,16 @@ void InputHandler::clearPendingKeyEvents()
     m_pendingEvents.clear();
 }
 
-void InputHandler::appendMouseEvent(const QMouseEvent &event)
+void InputHandler::appendMouseEvent(const QT_PREPEND_NAMESPACE(QMouseEvent) &event)
 {
     QMutexLocker lock(&m_mutex);
     m_pendingMouseEvents.append(event);
 }
 
-QList<QMouseEvent> InputHandler::pendingMouseEvents()
+QList<QT_PREPEND_NAMESPACE(QMouseEvent)> InputHandler::pendingMouseEvents()
 {
     QMutexLocker lock(&m_mutex);
-    QList<QMouseEvent> pendingEvents = m_pendingMouseEvents;
+    QList<QT_PREPEND_NAMESPACE(QMouseEvent)> pendingEvents = m_pendingMouseEvents;
     m_pendingMouseEvents.clear();
     return pendingEvents;
 }
@@ -147,10 +148,11 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 {
     // One job for Keyboard focus change event per Keyboard Controller
     QVector<QAspectJobPtr> jobs;
-    const QList<QKeyEvent> events = pendingKeyEvents();
+    const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
 
     Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
         KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
+        controller->updateKeyEvents(events);
         if (controller) {
             QAspectJobPtr focusChangeJob;
             if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
@@ -176,11 +178,12 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
 {
     QVector<QAspectJobPtr> jobs;
-    const QList<QMouseEvent> events = pendingMouseEvents();
+    const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> events = pendingMouseEvents();
 
     Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
         MouseController *controller = m_mouseControllerManager->data(cHandle);
 
+        controller->updateMouseEvents(events);
         // Event dispacthing job
         if (!events.isEmpty()) {
             Q_FOREACH (const QNodeId &input, controller->mouseInputs()) {

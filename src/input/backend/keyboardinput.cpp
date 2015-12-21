@@ -92,7 +92,7 @@ void KeyboardInput::setFocus(bool focus)
     }
 }
 
-void KeyboardInput::keyEvent(const Q3DKeyEventPtr &event)
+void KeyboardInput::keyEvent(const QKeyEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());

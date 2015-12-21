@@ -95,7 +95,7 @@ void QTextureWrapMode::setX(WrapMode x)
     Q_D(QTextureWrapMode);
     if (d->m_x != x) {
         d->m_x = x;
-        emit xChanged();
+        emit xChanged(x);
     }
 }
 
@@ -117,7 +117,7 @@ void QTextureWrapMode::setY(WrapMode y)
     Q_D(QTextureWrapMode);
     if (d->m_y != y) {
         d->m_y = y;
-        emit yChanged();
+        emit yChanged(y);
     }
 }
 
@@ -139,7 +139,7 @@ void QTextureWrapMode::setZ(WrapMode z)
     Q_D(QTextureWrapMode);
     if (d->m_z != z) {
         d->m_z = z;
-        emit zChanged();
+        emit zChanged(z);
     }
 }
 

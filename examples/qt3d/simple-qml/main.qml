@@ -53,8 +53,8 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    Configuration  {
-        controlledCamera: camera
+    CameraController {
+        camera: camera
     }
 
     components: [

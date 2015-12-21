@@ -40,70 +40,51 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
-#include <Qt3DCore/qaspectjobproviderinterface.h>
-#include <Qt3DCore/qbackendnodefactory.h>
-#include <Qt3DCore/qsceneobserverinterface.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
+class QAspectEngine;
+class QAspectJob;
 class QAspectManager;
 class QNode;
-class QBackendNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QAbstractAspectJobManager;
 class QBackendNodeFunctor;
-class QServiceLocator;
 
+typedef QSharedPointer<QAspectJob> QAspectJobPtr;
 typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
 
-class QT3DCORESHARED_EXPORT QAbstractAspect
-        : public QObject
-        , public QAspectJobProviderInterface
-        , public QSceneObserverInterface
-        , public QBackendNodeFactory
+class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 {
     Q_OBJECT
 
 public:
     explicit QAbstractAspect(QObject *parent = 0);
 
-    void registerAspect(QEntity *rootObject);
-
-    QServiceLocator *services() const;
-    QAbstractAspectJobManager *jobManager() const;
-
-    bool isShuttingDown() const;
+protected:
+    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
     template<class Frontend>
     void registerBackendType(const QBackendNodeFunctorPtr &functor);
     void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
 
-    void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
+private:
     virtual QVariant executeCommand(const QStringList &args);
 
-protected:
-    QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
+    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
 
-    QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
-    QBackendNode *getBackendNode(QNode *frontend) const;
-    void clearBackendNode(QNode *frontend) const;
-
-    virtual void setRootEntity(QEntity *rootObject);
-
-private:
     virtual void onInitialize(const QVariantMap &data) = 0;
-    virtual void onStartup();
-    virtual void onShutdown();
     virtual void onCleanup() = 0;
 
-    virtual void visitNode(QNode *node);
+    virtual void onStartup();
+    virtual void onShutdown();
+
+    virtual void onRootEntityChanged(QEntity *rootEntity);
 
     Q_DECLARE_PRIVATE(QAbstractAspect)
+    friend class QAspectEngine;
     friend class QAspectManager;
 };
 

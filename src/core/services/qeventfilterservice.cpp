@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qeventfilterservice.h"
+#include "qeventfilterservice_p.h"
 #include "qabstractserviceprovider_p.h"
 #include <QMap>
 #include <QObject>

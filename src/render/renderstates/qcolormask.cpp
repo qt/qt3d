@@ -120,7 +120,7 @@ void QColorMask::setRed(bool red)
     Q_D(QColorMask);
     if (red != d->m_red) {
         d->m_red = red;
-        emit redChanged();
+        emit redChanged(red);
     }
 }
 
@@ -133,7 +133,7 @@ void QColorMask::setGreen(bool green)
     Q_D(QColorMask);
     if (green != d->m_green) {
         d->m_green = green;
-        emit greenChanged();
+        emit greenChanged(green);
     }
 }
 
@@ -146,7 +146,7 @@ void QColorMask::setBlue(bool blue)
     Q_D(QColorMask);
     if (blue != d->m_blue) {
         d->m_blue = blue;
-        emit blueChanged();
+        emit blueChanged(blue);
     }
 }
 
@@ -159,7 +159,7 @@ void QColorMask::setAlpha(bool alpha)
     Q_D(QColorMask);
     if (alpha != d->m_alpha) {
         d->m_alpha = alpha;
-        emit alphaChanged();
+        emit alphaChanged(alpha);
     }
 }
 

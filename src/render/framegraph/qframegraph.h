@@ -60,10 +60,12 @@ public:
     ~QFrameGraph();
 
     QFrameGraphNode *activeFrameGraph() const;
+
+public Q_SLOTS:
     void setActiveFrameGraph(QFrameGraphNode *activeFrameGraph);
 
 Q_SIGNALS:
-    void activeFrameGraphChanged();
+    void activeFrameGraphChanged(QFrameGraphNode *activeFrameGraph);
 
 protected:
     QFrameGraph(QFrameGraphPrivate &dd, Qt3DCore::QNode *parent = 0);

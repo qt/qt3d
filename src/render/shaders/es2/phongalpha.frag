@@ -9,14 +9,14 @@ uniform FP float alpha;
 
 uniform FP vec3 eyePosition;
 
-varying FP vec3 position;
-varying FP vec3 normal;
+varying FP vec3 worldPosition;
+varying FP vec3 worldNormal;
 
 #pragma include light.inc.frag
 
 void main()
 {
     FP vec3 diffuseColor, specularColor;
-    adsModel(position, normal, eyePosition, shininess, diffuseColor, specularColor);
+    adsModel(worldPosition, worldNormal, eyePosition, shininess, diffuseColor, specularColor);
     gl_FragColor = vec4( ka + kd * diffuseColor + ks * specularColor, alpha );
 }

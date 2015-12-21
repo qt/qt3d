@@ -48,16 +48,20 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+#include <QMouseEvent>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
+class QInputAspect;
+
 namespace Input {
 
 class InputHandler;
 
-class MouseController : public Qt3DCore::QBackendNode
+class MouseController : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
     MouseController();
@@ -69,7 +73,12 @@ public:
     void addMouseInput(const Qt3DCore::QNodeId &input);
     void removeMouseInput(const Qt3DCore::QNodeId &input);
 
+    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
+    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QNodeId> mouseInputs() const;
+
+    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -77,18 +86,40 @@ protected:
 private:
     QVector<Qt3DCore::QNodeId> m_mouseInputs;
     InputHandler *m_inputHandler;
+
+    struct MouseState {
+
+        MouseState()
+            : xAxis(0.0f)
+            , yAxis(0.0f)
+            , leftPressed(false)
+            , rightPressed(false)
+            , centerPressed(false)
+        {}
+
+        float xAxis;
+        float yAxis;
+        bool leftPressed;
+        bool rightPressed;
+        bool centerPressed;
+    };
+
+    MouseState m_mouseState;
+    QPointF m_previousPos;
+    float m_sensitivity;
 };
 
 class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
-    explicit MouseControllerFunctor(InputHandler *handler);
+    explicit MouseControllerFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 
 private:
+    QInputAspect *m_inputAspect;
     InputHandler *m_handler;
 };
 

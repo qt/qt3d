@@ -36,6 +36,7 @@
 
 #include <QtTest/QtTest>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/qcomponent.h>
 #include <QtCore/qscopedpointer.h>
 
@@ -565,6 +566,12 @@ void tst_Entity::removeSeveralTimesSameComponent()
     QCOMPARE(comp->entities().size(), 0);
 }
 
+Qt3DCore::QNodeId parentEntityId(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QEntityPrivate *d = static_cast<Qt3DCore::QEntityPrivate*>(Qt3DCore::QNodePrivate::get(entity));
+    return d->parentEntityId();
+}
+
 void tst_Entity::verifyCopy()
 {
     // GIVEN
@@ -577,9 +584,9 @@ void tst_Entity::verifyCopy()
     // THEN
     QVERIFY(root->id() != parentLessEntity->id());
     QVERIFY(root->id() != parentedEntity->id());
-    QVERIFY(root->parentEntityId().isNull());
-    QVERIFY(!parentedEntity->parentEntityId().isNull());
-    QVERIFY(parentLessEntity->parentEntityId().isNull());
+    QVERIFY(parentEntityId(root.data()).isNull());
+    QVERIFY(!parentEntityId(parentedEntity).isNull());
+    QVERIFY(parentEntityId(parentLessEntity).isNull());
 
     // WHEN
     MyEntity *parentedEntityCopy = new MyEntity();
@@ -587,7 +594,7 @@ void tst_Entity::verifyCopy()
 
     // THEN
     QVERIFY(parentedEntityCopy->id() == parentedEntity->id());
-    QVERIFY(parentedEntityCopy->parentEntityId() == parentedEntity->parentEntityId());
+    QVERIFY(parentEntityId(parentedEntityCopy) == parentEntityId(parentedEntity));
 
     // WHEN
     MyEntity *parentLessEntityCopy = new MyEntity();
@@ -595,7 +602,7 @@ void tst_Entity::verifyCopy()
 
     // THEN
     QVERIFY(parentLessEntityCopy->id() == parentLessEntity->id());
-    QVERIFY(parentLessEntityCopy->parentEntityId() == parentLessEntity->parentEntityId());
+    QVERIFY(parentEntityId(parentLessEntityCopy) == parentEntityId(parentLessEntity));
 }
 
 

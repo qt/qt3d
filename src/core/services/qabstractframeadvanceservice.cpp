@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#include "qabstractframeadvanceservice.h"
 #include "qabstractframeadvanceservice_p.h"
+#include "qabstractframeadvanceservice_p_p.h"
 
 QT_BEGIN_NAMESPACE
 

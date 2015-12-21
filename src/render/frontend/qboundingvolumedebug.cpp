@@ -96,7 +96,7 @@ void QBoundingVolumeDebug::setRecursive(bool recursive)
     Q_D(QBoundingVolumeDebug);
     if (d->m_recursive != recursive) {
         d->m_recursive = recursive;
-        emit recursiveChanged();
+        emit recursiveChanged(recursive);
     }
 }
 

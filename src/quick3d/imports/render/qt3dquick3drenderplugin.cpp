@@ -103,6 +103,7 @@
 #include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlighting.h>
+#include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -256,6 +257,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QFrameGraph>(uri, 2, 0, "FrameGraph");
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
     qmlRegisterType<Qt3DRender::QLighting>(uri, 2, 0, "Lighting");
+    qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
 
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderAttachment>(uri, 2, 0, "RenderAttachment");

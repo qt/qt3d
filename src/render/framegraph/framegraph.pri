@@ -46,7 +46,9 @@ HEADERS += \
     $$PWD/frustumculling_p.h \
     $$PWD/qlighting.h \
     $$PWD/qlighting_p.h \
-    $$PWD/lighting_p.h
+    $$PWD/lighting_p.h \
+    $$PWD/qdispatchcompute.h \
+    $$PWD/dispatchcompute_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -80,4 +82,6 @@ SOURCES += \
     $$PWD/qfrustumculling.cpp \
     $$PWD/frustumculling.cpp \
     $$PWD/qlighting.cpp \
-    $$PWD/lighting.cpp
+    $$PWD/lighting.cpp \
+    $$PWD/qdispatchcompute.cpp \
+    $$PWD/dispatchcompute.cpp

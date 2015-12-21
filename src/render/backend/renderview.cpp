@@ -39,6 +39,7 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/qlight.h>
 #include <Qt3DRender/private/sphere_p.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
@@ -253,7 +254,7 @@ QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 QUniformValue *RenderView::time(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    qint64 time = m_renderer->renderAspect()->time();
+    qint64 time = m_renderer->time();
     float t = time / 1000000000.0f;
     return QUniformValue::fromVariant(QVariant(t), m_allocator);
 }
@@ -767,31 +768,30 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
                 const QString LIGHT_POSITION_NAME = QStringLiteral("position");
 
-                // Shaders without dynamic indexing will not have lightCount
-                if (uniformNames.contains(LIGHT_COUNT_NAME))
-                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, activeLightSources.count());
-
                 int lightIdx = 0;
                 Q_FOREACH (const LightSource &lightSource, activeLightSources) {
                     if (lightIdx == MAX_LIGHTS)
                         break;
                     Entity *lightEntity = lightSource.entity;
-                    const QVector3D pos = *m_data->m_viewMatrix * lightEntity->worldBoundingVolume()->center();
+                    const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
                     Q_FOREACH (Light *light, lightSource.lights) {
                         if (lightIdx == MAX_LIGHTS)
                             break;
                         QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, pos);
+                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, worldPos);
                         setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                         ++lightIdx;
                     }
                 }
 
+                if (uniformNames.contains(LIGHT_COUNT_NAME))
+                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, qMax(1, lightIdx));
+
                 if (activeLightSources.isEmpty()) {
-                    setUniformValue(command->m_uniforms, LIGHT_COUNT_NAME, 1);
-                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].position"), QVector3D(10.0f, 10.0f, 0.0f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].type"), int(QLight::DirectionalLight));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].direction"), QVector3D(0.0f, -1.0f, -1.0f));
                     setUniformValue(command->m_uniforms, QStringLiteral("lights[0].color"), QVector3D(1.0f, 1.0f, 1.0f));
-                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), QVector3D(0.5f, 0.5f, 0.5f));
+                    setUniformValue(command->m_uniforms, QStringLiteral("lights[0].intensity"), 1.0f);
                 }
             }
             // Set frag outputs in the shaders if hash not empty

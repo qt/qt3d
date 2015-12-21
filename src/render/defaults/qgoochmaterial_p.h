@@ -63,7 +63,16 @@ class QGoochMaterialPrivate : public QMaterialPrivate
 {
 public:
     QGoochMaterialPrivate();
+
     void init();
+
+    void handleDiffuseChanged(const QVariant &var);
+    void handleSpecularChanged(const QVariant &var);
+    void handleCoolChanged(const QVariant &var);
+    void handleWarmChanged(const QVariant &var);
+    void handleAlphaChanged(const QVariant &var);
+    void handleBetaChanged(const QVariant &var);
+    void handleShininessChanged(const QVariant &var);
 
     QEffect *m_effect;
     QParameter *m_diffuseParameter;

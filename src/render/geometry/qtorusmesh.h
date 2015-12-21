@@ -55,21 +55,22 @@ public:
     explicit QTorusMesh(Qt3DCore::QNode *parent = 0);
     ~QTorusMesh();
 
-    void setRings(int rings);
-    void setSlices(int slices);
-    void setRadius(float radius);
-    void setMinorRadius(float minorRadius);
-
     int rings() const;
     int slices() const;
     float radius() const;
     float minorRadius() const;
 
+public Q_SLOTS:
+    void setRings(int rings);
+    void setSlices(int slices);
+    void setRadius(float radius);
+    void setMinorRadius(float minorRadius);
+
 Q_SIGNALS:
-    void radiusChanged();
-    void minorRadiusChanged();
-    void ringsChanged();
-    void slicesChanged();
+    void radiusChanged(float radius);
+    void ringsChanged(int rings);
+    void slicesChanged(int slices);
+    void minorRadiusChanged(float minorRadius);
 
 private:
     // As this is a default provided geometry renderer, no one should be able

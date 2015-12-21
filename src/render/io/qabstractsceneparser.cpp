@@ -65,14 +65,14 @@ void QAbstractSceneParser::setParserStatus(ParserStatus parserStatus)
 {
     if (parserStatus != m_parserStatus) {
         m_parserStatus = parserStatus;
-        emit parserStatusChanged();
+        emit parserStatusChanged(parserStatus);
     }
 }
 
 void QAbstractSceneParser::logError(const QString &error)
 {
     m_errors.append(error);
-    emit errorsChanged();
+    emit errorsChanged(m_errors);
 }
 
 void QAbstractSceneParser::logInfo(const QString &info)

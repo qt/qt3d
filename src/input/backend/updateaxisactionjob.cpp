@@ -48,14 +48,14 @@ namespace Input {
 
 namespace {
 
-bool anyOfRequiredKeysPressed(qint64 keys, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
+bool anyOfRequiredKeysPressed(const QVector<int> &keys, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
 {
     bool validKeyWasPressed = false;
-    for (int i = 0; i < 64; ++i) {
-        const int individualBit = (1 << i);
-        if ((individualBit & keys) && physicalDeviceBackend->isButtonPressed(individualBit))
+    Q_FOREACH (int key, keys) {
+        if (physicalDeviceBackend->isButtonPressed(key)) {
             validKeyWasPressed = true;
-        break;
+            break;
+        }
     }
     return validKeyWasPressed;
 }
@@ -98,7 +98,6 @@ void UpdateAxisActionJob::updateAction(LogicalDevice *device)
                 actionTriggered |= anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
             }
         }
-
         action->setActionTriggered(actionTriggered);
     }
 }
@@ -120,11 +119,11 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 
             if (physicalDeviceBackend != Q_NULLPTR) {
                 // Update the value
-                const qint64 keys = axisInput->keys();
+                const QVector<int> keys = axisInput->keys();
                 // Axis was specified -> we take this as the base value
                 if (axisInput->axis() != -1)
-                    axisValue += physicalDeviceBackend->axisValue(axisInput->axis());
-                else if (keys != 0) {
+                    axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
+                else if (!keys.isEmpty()) {
                     // TO DO: Linear Curver for the progression of the scale value
                     if (anyOfRequiredKeysPressed(keys, physicalDeviceBackend))
                         axisValue += axisInput->scale();

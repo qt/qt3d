@@ -37,6 +37,7 @@
 #include <QtTest/QTest>
 #include <private/renderview_p.h>
 #include <private/qframeallocator_p.h>
+#include <private/qframeallocator_p_p.h>
 
 class tst_RenderViews : public QObject
 {

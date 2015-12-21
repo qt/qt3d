@@ -54,11 +54,13 @@ public:
     explicit QLayerFilter(Qt3DCore::QNode *parent = 0);
     ~QLayerFilter();
 
-    void setLayers(const QStringList &layers);
     QStringList layers() const;
 
+public Q_SLOTS:
+    void setLayers(const QStringList &layers);
+
 Q_SIGNALS:
-    void layersChanged();
+    void layersChanged(const QStringList &layers);
 
 protected:
     QLayerFilter(QLayerFilterPrivate &dd, Qt3DCore::QNode *parent = 0);

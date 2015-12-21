@@ -49,13 +49,11 @@ public: \
         : QAbstractAspect(parent) {} \
 \
 private: \
-    void setRootEntity(QEntity *) Q_DECL_OVERRIDE {} \
+    void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
     void onInitialize(const QVariantMap &) Q_DECL_OVERRIDE {} \
     void onStartup() Q_DECL_OVERRIDE {} \
     void onShutdown() Q_DECL_OVERRIDE {} \
     void onCleanup() Q_DECL_OVERRIDE {} \
-    void sceneNodeAdded(QSceneChangePtr &) Q_DECL_OVERRIDE {} \
-    void sceneNodeRemoved(QSceneChangePtr &) Q_DECL_OVERRIDE {} \
 \
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
     { \

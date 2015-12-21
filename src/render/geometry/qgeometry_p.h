@@ -69,7 +69,7 @@ public:
     QBoundingVolumeSpecifier m_boundingVolumeSpecifier;
 
 private:
-    void _q_boundingVolumeSpecifierChanged();
+    void _q_boundingVolumeSpecifierChanged(Qt3DRender::QAbstractAttribute *);
 };
 
 } // namespace Qt3DRender

@@ -55,15 +55,17 @@ namespace Qt3DRender
     \class Qt3DRender::QLightPrivate
     \internal
 */
-QLightPrivate::QLightPrivate()
-        : m_color(QColor(255, 255, 255))
-        , m_intensity(1.0f)
+QLightPrivate::QLightPrivate(QLight::Type type)
+    : m_type(type)
+    , m_color(QColor(255, 255, 255))
+    , m_intensity(1.0f)
 {
 }
 
 void QLight::copy(const QNode *ref)
 {
     const QLight *light = static_cast<const QLight*>(ref);
+    d_func()->m_type = light->d_func()->m_type;
     d_func()->m_color = light->d_func()->m_color;
     d_func()->m_intensity = light->d_func()->m_intensity;
     QShaderData::copy(ref);
@@ -78,7 +80,7 @@ void QLight::copy(const QNode *ref)
  * Constructs a new QLight with the given \a parent.
  */
 QLight::QLight(Qt3DCore::QNode *parent) :
-    QShaderData(*new QLightPrivate, parent)
+    QShaderData(*new QLightPrivate(PointLight), parent)
 {
 }
 
@@ -91,6 +93,21 @@ QLight::QLight(QLightPrivate &dd, QNode *parent)
 QLight::~QLight()
 {
     cleanup();
+}
+
+QLight::Type QLight::type() const
+{
+    Q_D(const QLight);
+    return d->m_type;
+}
+
+void QLight::setType(Type type)
+{
+    Q_D(QLight);
+    if (d->m_type != type) {
+        d->m_type = type;
+        emit typeChanged(type);
+    }
 }
 
 /*!
@@ -109,7 +126,7 @@ void QLight::setColor(const QColor &color)
     Q_D(QLight);
     if (d->m_color != color) {
         d->m_color = color;
-        emit colorChanged();
+        emit colorChanged(color);
     }
 }
 
@@ -129,7 +146,7 @@ void QLight::setIntensity(float intensity)
     Q_D(QLight);
     if (d->m_intensity != intensity) {
         d->m_intensity = intensity;
-        emit intensityChanged();
+        emit intensityChanged(intensity);
     }
 }
 

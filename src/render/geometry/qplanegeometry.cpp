@@ -250,7 +250,7 @@ void QPlaneGeometry::setResolution(const QSize &resolution)
     d->m_meshResolution = resolution;
     updateVertices();
     updateIndices();
-    emit resolutionChanged();
+    emit resolutionChanged(resolution);
 }
 
 void QPlaneGeometry::setWidth(float width)
@@ -260,7 +260,7 @@ void QPlaneGeometry::setWidth(float width)
         return;
     d->m_width = width;
     updateVertices();
-    emit widthChanged();
+    emit widthChanged(width);
 }
 
 void QPlaneGeometry::setHeight(float height)
@@ -270,7 +270,7 @@ void QPlaneGeometry::setHeight(float height)
         return;
     d->m_height = height;
     updateVertices();
-    emit heightChanged();
+    emit heightChanged(height);
 }
 
 QSize QPlaneGeometry::resolution() const

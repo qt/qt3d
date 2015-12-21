@@ -53,7 +53,8 @@ Entity {
     Transform {
         id: transform
         translation: Qt.vector3d(root.x, root.y, root.z)
-        rotation: fromEulerAngles(theta, phi, 0)
+        rotationX: theta
+        rotationY: phi
         scale: root.scale
     }
 

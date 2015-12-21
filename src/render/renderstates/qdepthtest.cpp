@@ -87,7 +87,7 @@ void QDepthTest::setFunc(QDepthTest::DepthFunc func)
     Q_D(QDepthTest);
     if (d->m_func != func) {
         d->m_func = func;
-        emit funcChanged();
+        emit funcChanged(func);
     }
 }
 

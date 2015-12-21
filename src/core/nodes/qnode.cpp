@@ -534,7 +534,7 @@ void QNode::setParent(QNode *parent)
     QObject::setParent(parent);
     if (parentNode())
         QNodePrivate::get(parentNode())->_q_addChild(this);
-    emit parentChanged();
+    emit parentChanged(parent);
 }
 
 /*!

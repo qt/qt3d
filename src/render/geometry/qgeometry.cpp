@@ -47,7 +47,7 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-void QGeometryPrivate::_q_boundingVolumeSpecifierChanged()
+void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
 {
     if (m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
@@ -64,16 +64,16 @@ QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
 {
     Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged()),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged()));
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
 }
 
 QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged()),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged()));
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
 }
 
 QGeometry::~QGeometry()
@@ -120,7 +120,7 @@ void QGeometry::setVerticesPerPatch(int verticesPerPatch)
     Q_D(QGeometry);
     if (d->m_verticesPerPatch != verticesPerPatch) {
         d->m_verticesPerPatch = verticesPerPatch;
-        emit verticesPerPatchChanged();
+        emit verticesPerPatchChanged(verticesPerPatch);
     }
 }
 

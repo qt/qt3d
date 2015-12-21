@@ -302,7 +302,7 @@ void QTorusGeometry::setRings(int rings)
         d->m_rings = rings;
         updateVertices();
         updateIndices();
-        emit ringsChanged();
+        emit ringsChanged(rings);
     }
 }
 
@@ -313,7 +313,7 @@ void QTorusGeometry::setSlices(int slices)
         d->m_slices = slices;
         updateVertices();
         updateIndices();
-        emit slicesChanged();
+        emit slicesChanged(slices);
     }
 }
 
@@ -323,7 +323,7 @@ void QTorusGeometry::setRadius(float radius)
     if (radius != d->m_radius) {
         d->m_radius = radius;
         updateVertices();
-        emit radiusChanged();
+        emit radiusChanged(radius);
     }
 }
 
@@ -333,7 +333,7 @@ void QTorusGeometry::setMinorRadius(float minorRadius)
     if (minorRadius != d->m_minorRadius) {
         d->m_minorRadius = minorRadius;
         updateVertices();
-        emit minorRadiusChanged();
+        emit minorRadiusChanged(minorRadius);
     }
 }
 

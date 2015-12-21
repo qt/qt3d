@@ -68,12 +68,6 @@ public:
 
     void updateIndices();
     void updateVertices();
-    void setXExtent(float xExtent);
-    void setYExtent(float yExtent);
-    void setZExtent(float zExtent);
-    void setYZMeshResolution(const QSize &resolution);
-    void setXZMeshResolution(const QSize &resolution);
-    void setXYMeshResolution(const QSize &resolution);
 
     float xExtent() const;
     float yExtent() const;
@@ -88,14 +82,22 @@ public:
     QAttribute *tangentAttribute() const;
     QAttribute *indexAttribute() const;
 
-Q_SIGNALS:
-    void xExtentChanged();
-    void yExtentChanged();
-    void zExtentChanged();
+public Q_SLOTS:
+    void setXExtent(float xExtent);
+    void setYExtent(float yExtent);
+    void setZExtent(float zExtent);
+    void setYZMeshResolution(const QSize &resolution);
+    void setXZMeshResolution(const QSize &resolution);
+    void setXYMeshResolution(const QSize &resolution);
 
-    void yzMeshResolutionChanged();
-    void xzMeshResolutionChanged();
-    void xyMeshResolutionChanged();
+Q_SIGNALS:
+    void xExtentChanged(float xExtent);
+    void yExtentChanged(float yExtent);
+    void zExtentChanged(float zExtent);
+
+    void yzMeshResolutionChanged(const QSize &yzMeshResolution);
+    void xzMeshResolutionChanged(const QSize &xzMeshResolution);
+    void xyMeshResolutionChanged(const QSize &xyMeshResolution);
 
 protected:
     QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent = Q_NULLPTR);

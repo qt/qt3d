@@ -85,7 +85,7 @@ void QFrontFace::setDirection(QFrontFace::FaceDir direction)
     Q_D(QFrontFace);
     if (d->m_direction != direction) {
         d->m_direction = direction;
-        emit directionChanged();
+        emit directionChanged(direction);
     }
 }
 

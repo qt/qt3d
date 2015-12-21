@@ -50,7 +50,7 @@
 
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qnodeid.h>
-#include <Qt3DCore/qboundingsphere.h>
+#include <Qt3DRender/private/qboundingsphere_p.h>
 
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public Qt3DCore::QBoundingSphere
+class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public QBoundingSphere
 {
 public:
     inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
