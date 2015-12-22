@@ -367,7 +367,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
             jobs.append(triangleComputeJob);
         }
 
-        pickBoundingVolumeJob->addDependency(d->m_updateBoundingVolumeJob);
+        // Only add dependency if not already present
+        QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
+        if (std::find(dependencies.begin(), dependencies.end(), d->m_updateBoundingVolumeJob) == dependencies.end())
+            pickBoundingVolumeJob->addDependency(d->m_updateBoundingVolumeJob);
 
         // Add all jobs to queue
         jobs.append(d->m_calculateBoundingVolumeJob);
@@ -375,6 +378,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
         jobs.append(pickBoundingVolumeJob);
+
+        // Clear any old dependencies from previous frames
+        d->m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
 
         // Do not create any more RenderView jobs when the platform surface is gone.
         if (d->m_renderer->surface()) {
