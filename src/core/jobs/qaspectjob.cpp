@@ -36,6 +36,7 @@
 
 #include "qaspectjob.h"
 #include "qaspectjob_p.h"
+#include <QByteArray>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,6 +79,11 @@ void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
 {
     Q_D(QAspectJob);
     d->m_dependencies.append(dependency);
+#ifdef QT3DCORE_ASPECT_JOB_DEBUG
+    static int threshold = qMax(1, qgetenv("QT3DCORE_ASPECT_JOB_DEPENDENCY_THRESHOLD").toInt());
+    if (d->m_dependencies.count() > threshold)
+        qWarning() << "Suspicious number of job dependencies found";
+#endif
 }
 
 void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
