@@ -76,6 +76,7 @@ Entity {
                     minorVersion: 2
                     majorVersion: 3
                 }
+                annotations: Annotation { name: "renderingStyle"; value: "forward" }
                 renderPasses: RenderPass {
                     bindings: [
                         ParameterMapping { parameterName: "pos";  shaderVariableName: "pos"; bindingType: ParameterMapping.Attribute }
