@@ -18,3 +18,5 @@ HEADERS += \
     $$PWD/qthreadpooler_p.h
 
 INCLUDEPATH += $$PWD
+
+#DEFINES += QT3DCORE_ASPECT_JOB_DEBUG
