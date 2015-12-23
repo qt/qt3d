@@ -53,6 +53,7 @@ namespace Qt3DRender {
 
 QWindowPrivate::QWindowPrivate()
     : ::QWindowPrivate()
+    , m_initialized(false)
     , m_root(new QEntity())
     , m_userRoot(Q_NULLPTR)
     , m_defaultCamera(new QCamera())
@@ -154,29 +155,32 @@ void QWindow::setRootEntity(Qt3DCore::QEntity *root)
     d->m_userRoot = root;
 }
 
-void QWindow::show()
+void QWindow::showEvent(QShowEvent *event)
 {
     Q_D(QWindow);
 
-    if (d->m_userRoot != Q_NULLPTR)
-        d->m_userRoot->setParent(d->m_root);
+    if (!d->m_initialized) {
+        if (d->m_userRoot != Q_NULLPTR)
+            d->m_userRoot->setParent(d->m_root);
 
-    if (d->m_frameGraph == Q_NULLPTR) {
-        d->m_frameGraph = new QFrameGraph();
-        QForwardRenderer *forwardRenderer = new QForwardRenderer();
-        forwardRenderer->setCamera(d->m_defaultCamera);
-        d->m_frameGraph->setActiveFrameGraph(forwardRenderer);
+        if (d->m_frameGraph == Q_NULLPTR) {
+            d->m_frameGraph = new QFrameGraph();
+            QForwardRenderer *forwardRenderer = new QForwardRenderer();
+            forwardRenderer->setCamera(d->m_defaultCamera);
+            d->m_frameGraph->setActiveFrameGraph(forwardRenderer);
+        }
+
+        QVariantMap data;
+        data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
+        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
+        d->m_engine->setData(data);
+
+        d->m_root->addComponent(d->m_frameGraph);
+        d->m_engine->setRootEntity(d->m_root);
+        d->m_initialized = true;
     }
 
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
-    d->m_engine->setData(data);
-
-    d->m_root->addComponent(d->m_frameGraph);
-    d->m_engine->setRootEntity(d->m_root);
-
-    ::QWindow::show();
+    ::QWindow::showEvent(event);
 }
 
 } // namespace Qt3DRender

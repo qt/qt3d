@@ -67,10 +67,10 @@ public:
     void registerAspect(const QString &name);
 
     void setRootEntity(Qt3DCore::QEntity *root);
-    void show();
 
 protected:
     QWindow(QWindowPrivate &dd, ::QWindow *parent = Q_NULLPTR);
+    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
     void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
 
 private:

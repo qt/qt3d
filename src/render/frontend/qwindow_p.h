@@ -70,6 +70,7 @@ public:
     QWindowPrivate();
 
     Q_DECLARE_PUBLIC(QWindow)
+    bool m_initialized;
     Qt3DCore::QEntity *m_root;
     Qt3DCore::QEntity *   m_userRoot;
     Qt3DCore::QCamera *m_defaultCamera;
