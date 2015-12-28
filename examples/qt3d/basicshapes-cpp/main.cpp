@@ -38,7 +38,6 @@
 
 #include <QGuiApplication>
 
-#include <window.h>
 #include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qcameralens.h>
@@ -60,6 +59,7 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/qwindow.h>
 
 #include <Qt3DCore/qtransform.h>
 #include <Qt3DCore/qaspectengine.h>
@@ -71,7 +71,7 @@
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    Window *view = new Window();
+    Qt3DRender::QWindow *view = new Qt3DRender::QWindow();
     QWidget *container = QWidget::createWindowContainer(view);
     QSize screenSize = view->screen()->size();
     container->setMinimumSize(QSize(200, 100));
@@ -86,21 +86,14 @@ int main(int argc, char **argv)
 
     widget->setWindowTitle(QStringLiteral("Basic shapes"));
 
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(view));
-    engine.setData(data);
+    view->registerAspect(input);
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
-    cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
+    Qt3DCore::QCamera *cameraEntity = view->defaultCamera();
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, 20.0f));
@@ -117,13 +110,13 @@ int main(int argc, char **argv)
     frameGraph->setActiveFrameGraph(forwardRenderer);
 
     // Setting the FrameGraph
-    rootEntity->addComponent(frameGraph);
+    view->setFrameGraph(frameGraph);
 
     // Scenemodifier
     SceneModifier *modifier = new SceneModifier(rootEntity);
 
     // Set root object of the scene
-    engine.setRootEntity(rootEntity);
+    view->setRootEntity(rootEntity);
 
     // Create control widgets
     QCommandLinkButton *info = new QCommandLinkButton();
@@ -170,11 +163,6 @@ int main(int argc, char **argv)
     // Show window
     widget->show();
     widget->resize(1200, 800);
-
-    // Update the aspect ratio
-    QSize widgetSize =  container->size();
-    float aspectRatio = float(widgetSize.width()) / float(widgetSize.height());
-    cameraEntity->lens()->setPerspectiveProjection(45.0f, aspectRatio, 0.1f, 1000.0f);
 
     return app.exec();
 }

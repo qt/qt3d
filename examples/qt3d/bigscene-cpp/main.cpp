@@ -37,7 +37,6 @@
 #include "entity.h"
 
 #include <QGuiApplication>
-#include <window.h>
 
 #include <QPropertyAnimation>
 #include <QUrl>
@@ -54,6 +53,7 @@
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QWindow>
 #include <qmath.h>
 
 using namespace Qt3DCore;
@@ -63,19 +63,13 @@ int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Window view;
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DRender::QWindow view;
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(input);
     QEntity *root = new QEntity();
 
     // Camera
-    QCamera *cameraEntity = new QCamera(root);
+    QCamera *cameraEntity = view.defaultCamera();
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 250.0f, 50.0f));
@@ -89,7 +83,7 @@ int main(int ac, char **av)
     forwardRenderer->setCamera(cameraEntity);
     forwardRenderer->setClearColor(Qt::black);
     frameGraph->setActiveFrameGraph(forwardRenderer);
-    root->addComponent(frameGraph);
+    view.setFrameGraph(frameGraph);
 
     const float radius = 100.0f;
     const int max = 1000;
@@ -122,7 +116,7 @@ int main(int ac, char **av)
         e->setParent(root);
     }
 
-    engine.setRootEntity(root);
+    view.setRootEntity(root);
     view.show();
 
     if (app.arguments().contains(("--bench")))

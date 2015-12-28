@@ -37,7 +37,6 @@
 #include <QFileDialog>
 #include <QApplication>
 
-#include <window.h>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
@@ -46,6 +45,7 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QWindow>
 
 class SceneWalker : public QObject
 {
@@ -104,22 +104,15 @@ int main(int ac, char **av)
 {
     QApplication app(ac, av);
 
-    Window view;
-
-    Qt3DCore::QAspectEngine engine;
+    Qt3DRender::QWindow view;
     Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
-    engine.registerAspect(inputAspect);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(inputAspect);
 
     // Root entity
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    Qt3DCore::QCamera *basicCamera = view.defaultCamera();
     basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
@@ -136,7 +129,7 @@ int main(int ac, char **av)
     forwardRenderer->setCamera(basicCamera);
     forwardRenderer->setClearColor(Qt::black);
     frameGraphComponent->setActiveFrameGraph(forwardRenderer);
-    sceneRoot->addComponent(frameGraphComponent);
+    view.setFrameGraph(frameGraphComponent);
 
     // Scene loader
     Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(sceneRoot);
@@ -161,7 +154,7 @@ int main(int ac, char **av)
 
     sceneLoader->setSource(sourceFileName);
 
-    engine.setRootEntity(sceneRoot);
+    view.setRootEntity(sceneRoot);
     view.show();
 
     return app.exec();

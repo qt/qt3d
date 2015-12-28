@@ -36,7 +36,6 @@
 
 #include <QGuiApplication>
 
-#include <window.h>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCamera>
 
@@ -45,6 +44,7 @@
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QWindow>
 
 #include "forwardrenderer.h"
 #include "examplescene.h"
@@ -53,20 +53,14 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Window view;
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DRender::QWindow view;
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(input);
 
     ExampleScene *sceneRoot = new ExampleScene();
 
     // Scene Camera
-    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    Qt3DCore::QCamera *basicCamera = view.defaultCamera();
     basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
@@ -75,14 +69,7 @@ int main(int argc, char* argv[])
     // For camera controls
     input->setCamera(basicCamera);
 
-    // Forward Renderer FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph(sceneRoot);
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-    forwardRenderer->setCamera(basicCamera);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-    sceneRoot->addComponent(frameGraph);
-
-    engine.setRootEntity(sceneRoot);
+    view.setRootEntity(sceneRoot);
     view.show();
 
     return app.exec();

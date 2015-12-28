@@ -36,7 +36,6 @@
 
 #include <QGuiApplication>
 
-#include <window.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QCameraLens>
@@ -55,28 +54,23 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QWindow>
 
 #include <QPropertyAnimation>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Window view;
+    Qt3DRender::QWindow view;
 
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(input);
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(rootEntity);
+    Qt3DCore::QCamera *cameraEntity = view.defaultCamera();
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, 40.0f));
@@ -245,9 +239,9 @@ int main(int argc, char* argv[])
     customMeshEntity->addComponent(material);
 
 
-    rootEntity->addComponent(frameGraph);
+    view.setFrameGraph(frameGraph);
 
-    engine.setRootEntity(rootEntity);
+    view.setRootEntity(rootEntity);
     view.show();
 
     return app.exec();

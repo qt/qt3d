@@ -36,7 +36,6 @@
 
 #include <QGuiApplication>
 
-#include <window.h>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCamera>
@@ -49,6 +48,7 @@
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QTextureImage>
+#include <Qt3DRender/QWindow>
 
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"
@@ -59,21 +59,15 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Window view;
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DRender::QWindow view;
     Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
+    view.registerAspect(input);
 
     // Scene Root
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    Qt3DCore::QCamera *basicCamera = view.defaultCamera();
     basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
@@ -81,13 +75,6 @@ int main(int argc, char* argv[])
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     // For camera controls
     input->setCamera(basicCamera);
-
-    // Forward Renderer FrameGraph
-    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-    forwardRenderer->setCamera(basicCamera);
-    frameGraphComponent->setActiveFrameGraph(forwardRenderer);
-    sceneRoot->addComponent(frameGraphComponent);
 
     // Scene floor
     PlaneEntity *planeEntity = new PlaneEntity(sceneRoot);
@@ -194,7 +181,7 @@ int main(int argc, char* argv[])
     crossShrub->setPosition(QVector3D(0.0f, 0.0f, 8.0f));
     crossShrub->setScale(0.05f);
 
-    engine.setRootEntity(sceneRoot);
+    view.setRootEntity(sceneRoot);
     view.show();
 
     return app.exec();

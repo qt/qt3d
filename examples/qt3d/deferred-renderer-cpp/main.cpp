@@ -35,7 +35,6 @@
 ****************************************************************************/
 
 #include <Qt3DCore/QEntity>
-#include <window.h>
 
 #include <Qt3DInput/QInputAspect>
 
