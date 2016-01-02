@@ -219,6 +219,19 @@ private:
     AlphaCoverage();
 };
 
+class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSize, bool, GLfloat>
+{
+public:
+    void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    StateMaskSet mask() const Q_DECL_OVERRIDE
+    { return PointSizeMask; }
+
+    static PointSize *getOrCreate(bool programmable, GLfloat value);
+
+private:
+    PointSize(bool programmable, GLfloat value);
+};
+
 class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffset, GLfloat, GLfloat>
 {
 public:

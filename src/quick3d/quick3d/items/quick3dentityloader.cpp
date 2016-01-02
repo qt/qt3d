@@ -62,7 +62,7 @@ protected:
         Quick3DEntityLoaderPrivate *priv = Quick3DEntityLoaderPrivate::get(m_loader);
 
         switch (status) {
-        case Status::Ready: {
+        case Ready: {
             Q_ASSERT(priv->m_entity == Q_NULLPTR);
             priv->m_entity = qobject_cast<QEntity *>(object());
             Q_ASSERT(priv->m_entity != Q_NULLPTR);
@@ -71,7 +71,7 @@ protected:
             break;
         }
 
-        case Status::Error: {
+        case Error: {
             QQmlEnginePrivate::warning(qmlEngine(m_loader), errors());
             priv->clear();
             emit m_loader->entityChanged();

@@ -880,6 +880,16 @@ void GraphicsHelperGL4::disablePrimitiveRestart()
     m_funcs->glDisable(GL_PRIMITIVE_RESTART);
 }
 
+void GraphicsHelperGL4::pointSize(bool programmable, GLfloat value)
+{
+    if (programmable) {
+        m_funcs->glEnable(GL_PROGRAM_POINT_SIZE);
+    } else {
+        m_funcs->glDisable(GL_PROGRAM_POINT_SIZE);
+        m_funcs->glPointSize(value);
+    }
+}
+
 QSize GraphicsHelperGL4::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;

@@ -59,11 +59,11 @@ class QT3DINPUTSHARED_EXPORT QMouseEvent : public QObject
 
 public:
     enum Buttons {
-        LeftButton = Qt::MouseButton::LeftButton,
-        RightButton = Qt::MouseButton::RightButton,
-        MiddleButton = Qt::MouseButton::MiddleButton,
-        BackButton = Qt::MouseButton::BackButton,
-        NoButton = Qt::MouseButton::NoButton
+        LeftButton = Qt::LeftButton,
+        RightButton = Qt::RightButton,
+        MiddleButton = Qt::MiddleButton,
+        BackButton = Qt::BackButton,
+        NoButton = Qt::NoButton
     };
     Q_ENUM(Buttons)
 
@@ -109,11 +109,11 @@ class QT3DINPUTSHARED_EXPORT QWheelEvent : public QObject
 
 public:
     enum Buttons {
-        LeftButton = Qt::MouseButton::LeftButton,
-        RightButton = Qt::MouseButton::RightButton,
-        MiddleButton = Qt::MouseButton::MiddleButton,
-        BackButton = Qt::MouseButton::BackButton,
-        NoButton = Qt::MouseButton::NoButton
+        LeftButton = Qt::LeftButton,
+        RightButton = Qt::RightButton,
+        MiddleButton = Qt::MiddleButton,
+        BackButton = Qt::BackButton,
+        NoButton = Qt::NoButton
     };
     Q_ENUM(Buttons)
 

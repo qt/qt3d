@@ -81,6 +81,7 @@
 #include <Qt3DRender/qclearbuffer.h>
 #include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DRender/qalphacoverage.h>
+#include <Qt3DRender/qpointsize.h>
 #include <Qt3DRender/qpolygonoffset.h>
 #include <Qt3DRender/qcolormask.h>
 #include <Qt3DRender/qshaderdata.h>
@@ -282,6 +283,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3DRender::QDithering>(uri, 2, 0, "Dithering");
     qmlRegisterType<Qt3DRender::QAlphaCoverage>(uri, 2, 0, "AlphaCoverage");
+    qmlRegisterType<Qt3DRender::QPointSize>(uri, 2, 0, "PointSize");
     qmlRegisterType<Qt3DRender::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
     qmlRegisterType<Qt3DRender::QColorMask>(uri, 2, 0, "ColorMask");
     qmlRegisterType<Qt3DRender::QClipPlane>(uri, 2, 0, "ClipPlane");

@@ -542,6 +542,18 @@ void GraphicsHelperES2::disablePrimitiveRestart()
 {
 }
 
+void GraphicsHelperES2::pointSize(bool programmable, GLfloat value)
+{
+    // If this is not a reset to default values, print a warning
+    if (programmable || !qFuzzyCompare(value, 1.0f)) {
+        static bool warned = false;
+        if (!warned) {
+            qWarning() << "glPointSize() and GL_PROGRAM_POINT_SIZE are not supported by ES 2.0";
+            warned = true;
+        }
+    }
+}
+
 QSize GraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;

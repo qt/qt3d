@@ -77,7 +77,8 @@ enum StateMask
     PolygonOffsetStateMask  = 1 << 11,
     ColorStateMask          = 1 << 12,
     ClipPlaneMask           = 1 << 13,
-    StencilOpMask           = 1 << 14
+    StencilOpMask           = 1 << 14,
+    PointSizeMask           = 1 << 15
 };
 
 typedef quint64 StateMaskSet;

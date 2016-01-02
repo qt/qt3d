@@ -540,6 +540,19 @@ void GraphicsHelperGL2::disablePrimitiveRestart()
 {
 }
 
+void GraphicsHelperGL2::pointSize(bool programmable, GLfloat value)
+{
+    // Print a warning once for trying to set GL_PROGRAM_POINT_SIZE
+    if (programmable) {
+        static bool warned = false;
+        if (!warned) {
+            qWarning() << "GL_PROGRAM_POINT_SIZE is not supported by OpenGL 2.0 (since 3.2)";
+            warned = true;
+        }
+    }
+    m_funcs->glPointSize(value);
+}
+
 QSize GraphicsHelperGL2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     Q_UNUSED(renderBufferId);

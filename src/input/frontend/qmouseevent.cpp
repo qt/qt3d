@@ -116,15 +116,15 @@ QMouseEvent::Buttons QMouseEvent::button() const
 {
     switch (m_event.button()) {
     case Qt::MouseButton::LeftButton:
-        return QMouseEvent::Buttons::LeftButton;
+        return QMouseEvent::LeftButton;
     case Qt::MouseButton::RightButton:
-        return QMouseEvent::Buttons::RightButton;
+        return QMouseEvent::RightButton;
     case Qt::MouseButton::MiddleButton:
-        return QMouseEvent::Buttons::MiddleButton;
+        return QMouseEvent::MiddleButton;
     case Qt::MouseButton::BackButton:
-        return QMouseEvent::Buttons::BackButton;
+        return QMouseEvent::BackButton;
     default:
-        return QMouseEvent::Buttons::NoButton;
+        return QMouseEvent::NoButton;
     }
 }
 
@@ -144,17 +144,17 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
-        return QMouseEvent::Modifiers::ShiftModifier;
+        return QMouseEvent::ShiftModifier;
     case Qt::ControlModifier:
-        return QMouseEvent::Modifiers::ControlModifier;
+        return QMouseEvent::ControlModifier;
     case Qt::AltModifier:
-        return QMouseEvent::Modifiers::AltModifier;
+        return QMouseEvent::AltModifier;
     case Qt::MetaModifier:
-        return QMouseEvent::Modifiers::MetaModifier;
+        return QMouseEvent::MetaModifier;
     case Qt::KeypadModifier:
-        return QMouseEvent::Modifiers::KeypadModifier;
+        return QMouseEvent::KeypadModifier;
     default:
-        return QMouseEvent::Modifiers::NoModifier;
+        return QMouseEvent::NoModifier;
     }
 }
 
@@ -244,17 +244,17 @@ QWheelEvent::Modifiers QWheelEvent::modifier() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
-        return QWheelEvent::Modifiers::ShiftModifier;
+        return QWheelEvent::ShiftModifier;
     case Qt::ControlModifier:
-        return QWheelEvent::Modifiers::ControlModifier;
+        return QWheelEvent::ControlModifier;
     case Qt::AltModifier:
-        return QWheelEvent::Modifiers::AltModifier;
+        return QWheelEvent::AltModifier;
     case Qt::MetaModifier:
-        return QWheelEvent::Modifiers::MetaModifier;
+        return QWheelEvent::MetaModifier;
     case Qt::KeypadModifier:
-        return QWheelEvent::Modifiers::KeypadModifier;
+        return QWheelEvent::KeypadModifier;
     default:
-        return QWheelEvent::Modifiers::NoModifier;
+        return QWheelEvent::NoModifier;
     }
 }
 
