@@ -124,12 +124,13 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
     Q_ASSERT(subMeshMatch.isValid());
 
     QTextStream stream(ioDev);
+    QTextStream lineStream;
     while (!stream.atEnd()) {
         QString line = stream.readLine();
         line = line.simplified();
 
         if (line.length() > 0 && line.at(0) != QChar::fromLatin1('#')) {
-            QTextStream lineStream(&line, QIODevice::ReadOnly);
+            lineStream.setString(&line, QIODevice::ReadOnly);
             QString token;
             lineStream >> token;
 
