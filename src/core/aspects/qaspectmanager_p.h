@@ -107,6 +107,7 @@ private:
     QAtomicInt m_terminated;
     QScopedPointer<QServiceLocator> m_serviceLocator;
     QSemaphore m_waitForEndOfExecLoop;
+    QSemaphore m_waitForQuit;
 };
 
 } // namespace Qt3DCore

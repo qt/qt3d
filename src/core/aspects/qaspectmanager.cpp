@@ -68,6 +68,7 @@ QAspectManager::QAspectManager(QObject *parent)
     , m_changeArbiter(new QChangeArbiter(this))
     , m_serviceLocator(new QServiceLocator())
     , m_waitForEndOfExecLoop(0)
+    , m_waitForQuit(0)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
     m_runMainLoop.fetchAndStoreOrdered(0);
@@ -227,6 +228,7 @@ void QAspectManager::exec()
     qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";
 
     m_waitForEndOfExecLoop.release(1);
+    m_waitForQuit.acquire(1);
 }
 
 void QAspectManager::quit()
@@ -244,6 +246,8 @@ void QAspectManager::quit()
 
     // We need to wait for the QAspectManager exec loop to terminate
     m_waitForEndOfExecLoop.acquire(1);
+    m_waitForQuit.release(1);
+
     qCDebug(Aspects) << Q_FUNC_INFO << "Exited event loop";
 }
 
