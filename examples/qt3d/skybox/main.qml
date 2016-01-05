@@ -54,9 +54,9 @@ Entity {
        aspectRatio: 16/9
        nearPlane:   0.01
        farPlane:    1000.0
+       position: Qt.vector3d( 0.0, 0.0, 40.0 )
        viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
        upVector:   Qt.vector3d( 0.0, 1.0, 0.0 )
-       position: Qt.vector3d( 0.0, 0.0, -40.0 )
    }
 
    // So that the camera is rendered always at the same position as the camera
