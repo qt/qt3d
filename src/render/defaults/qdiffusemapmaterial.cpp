@@ -234,7 +234,7 @@ QColor QDiffuseMapMaterial::specular() const
 float QDiffuseMapMaterial::shininess() const
 {
     Q_D(const QDiffuseMapMaterial);
-    return d->m_diffuseParameter->value().toFloat();
+    return d->m_shininessParameter->value().toFloat();
 }
 
 /*!
