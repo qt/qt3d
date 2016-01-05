@@ -347,14 +347,12 @@ void ObjLoader::updateIndices(const QVector<QVector3D> &positions,
     if (hasNormals)
         m_normals.resize(vertexCount);
 
-    foreach (const FaceIndices &faceIndices, faceIndexMap.keys()) {
-        const int i = faceIndexMap.value(faceIndices);
-
-        m_points[i] = positions[faceIndices.positionIndex];
+    for (QHash<FaceIndices, unsigned int>::const_iterator it = faceIndexMap.begin(), endIt = faceIndexMap.end(); it != endIt; ++it) {
+        m_points[it.value()] = positions[it.key().positionIndex];
         if (hasTexCoords)
-            m_texCoords[i] = std::numeric_limits<unsigned int>::max() != faceIndices.texCoordIndex ? texCoords[faceIndices.texCoordIndex] : QVector2D();
+            m_texCoords[it.value()] = std::numeric_limits<unsigned int>::max() != it.key().texCoordIndex ? texCoords[it.key().texCoordIndex] : QVector2D();
         if (hasNormals)
-            m_normals[i] = normals[faceIndices.normalIndex];
+            m_normals[it.value()] = normals[it.key().normalIndex];
     }
 
     // Now iterate over the face indices and lookup the unique vertex index
