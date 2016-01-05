@@ -678,7 +678,8 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
     uint textureSize = assimpTexture->mWidth *
             (isCompressed ? assimpTexture->mHeight : 1);
     // Set texture to RGBA8888
-    char *textureContent = new char[textureSize * 4];
+    QByteArray textureContent;
+    textureContent.reserve(textureSize * 4);
     for (uint i = 0; i < textureSize; i++) {
         uint idx = i * 4;
         aiTexel texel = assimpTexture->pcData[i];
@@ -687,7 +688,7 @@ void AssimpParser::loadEmbeddedTexture(uint textureIndex)
         textureContent[idx + 2] = texel.b;
         textureContent[idx + 3] = texel.a;
     }
-    imageData->setData(QByteArray(textureContent, textureSize * 4));
+    imageData->setData(textureContent);
     texture->addTextureImage(imageData);
     m_scene->m_embeddedTextures[textureIndex] = texture;
 }
