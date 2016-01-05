@@ -86,6 +86,13 @@ void QPostman::sceneChangeEvent(const QSceneChangePtr &e)
     notifyFrontendNode.invoke(this, Q_ARG(QSceneChangePtr, e));
 }
 
+static inline QMetaMethod submitChangeBatchMethod()
+{
+    int idx = QPostman::staticMetaObject.indexOfMethod("submitChangeBatch()");
+    Q_ASSERT(idx != -1);
+    return QPostman::staticMetaObject.method(idx);
+}
+
 /*!
  * This will start or append \a change to a batch of changes from frontend
  * nodes. Once the batch is complete, when the event loop returns, the batch is
@@ -98,8 +105,10 @@ void QPostman::notifyBackend(const QSceneChangePtr &change)
     // otherwise start batch
     // by calling a queued slot
     Q_D(QPostman);
-    if (d->m_batch.empty())
-        QMetaObject::invokeMethod(this, "submitChangeBatch", Qt::QueuedConnection);
+    if (d->m_batch.empty()) {
+        static const QMetaMethod submitChangeBatch = submitChangeBatchMethod();
+        submitChangeBatch.invoke(this, Qt::QueuedConnection);
+    }
     d->m_batch.push_back(change);
 }
 
