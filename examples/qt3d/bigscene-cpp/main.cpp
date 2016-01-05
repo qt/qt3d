@@ -78,7 +78,7 @@ int main(int ac, char **av)
     QCamera *cameraEntity = new QCamera(root);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(0, -250.0f, -50.0f));
+    cameraEntity->setPosition(QVector3D(0, 250.0f, 50.0f));
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
     input->setCamera(cameraEntity);
@@ -101,7 +101,7 @@ int main(int ac, char **av)
         const float angle = M_PI * 2.0f * i * det * 10.;
 
         e->setDiffuseColor(QColor(qFabs(qCos(angle)) * 255, 204, 75));
-        e->setPosition(QVector3D(radius * qCos(angle), 200.* i * det, radius * qSin(angle)));
+        e->setPosition(QVector3D(radius * qCos(angle), -200.* i * det, radius * qSin(angle)));
         e->setTheta(30.0f * i);
         e->setPhi(45.0f * i);
 
