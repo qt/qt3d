@@ -171,7 +171,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                     lineStream >> faceString;
 
                     FaceIndices faceIndices;
-                    QStringList indices = faceString.split(QChar::fromLatin1('/'));
+                    const QVector<QStringRef> indices = faceString.splitRef(QChar::fromLatin1('/'));
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.at(2).toInt() - 1 - normalsOffset;  // fall through
