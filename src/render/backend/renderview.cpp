@@ -362,7 +362,7 @@ void RenderView::sort()
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
                     if (cachedUniforms.contains(it.key())) {
-                        const QUniformValue *refValue = cachedUniforms[it.key()];
+                        const QUniformValue *refValue = cachedUniforms.value(it.key());
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
                             destroyUniformValue(it.value(), m_allocator);
                             it = uniforms.erase(it);
@@ -624,8 +624,8 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     // Build name-value map for the block
     m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
-    QHash<QString, QVariant>::const_iterator activeValuesIt = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.end();
+    QHash<QString, QVariant>::const_iterator activeValuesIt = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.constBegin();
+    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.constEnd();
 
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());

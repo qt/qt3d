@@ -368,7 +368,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         // Only add dependency if not already present
-        QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
+        const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
         if (std::find(dependencies.begin(), dependencies.end(), d->m_updateBoundingVolumeJob) == dependencies.end())
             pickBoundingVolumeJob->addDependency(d->m_updateBoundingVolumeJob);
 
