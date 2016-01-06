@@ -475,6 +475,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                 parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
+                m_commands.reserve(m_commands.size() + passes.size());
                 Q_FOREACH (RenderPass *pass, passes) {
 
                     // Add the RenderPass Parameters
@@ -508,6 +509,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                     // Replace with more sophisticated mechanisms later.
                     std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
                     QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+                    activeLightSources.reserve(m_lightSources.count());
                     int lightCount = 0;
                     for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
                         activeLightSources.append(m_lightSources[i]);

@@ -958,6 +958,7 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
     Attribute *indexAttribute = Q_NULLPTR;
     uint estimatedCount = 0;
 
+    m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);

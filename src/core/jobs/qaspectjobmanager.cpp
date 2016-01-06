@@ -75,6 +75,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
     QVector<RunnableInterface *> taskList;
+    taskList.reserve(jobQueue.size());
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
         AspectTaskRunnable *task = new AspectTaskRunnable();
         task->m_job = job;
