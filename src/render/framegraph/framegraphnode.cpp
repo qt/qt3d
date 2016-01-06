@@ -137,6 +137,7 @@ FrameGraphNode *FrameGraphNode::parent() const
 QList<FrameGraphNode *> FrameGraphNode::children() const
 {
     QList<FrameGraphNode *> children;
+    children.reserve(m_childrenHandles.size());
 
     Q_FOREACH (HFrameGraphNode handle, m_childrenHandles) {
         FrameGraphNode **child = m_manager->data(handle);
