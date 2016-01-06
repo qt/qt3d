@@ -1191,12 +1191,12 @@ bool Exporter::nodeIsUseful(const Importer::Node *n) const
 
 void Exporter::copyExternalTextures(const QString &inputFilename)
 {
-    // External textures need copying only when output dir was specified.
-    if (!opts.outDir.isEmpty()) {
-        foreach (const QString &textureFilename, m_importer->externalTextures()) {
-            QString dst = opts.outDir + textureFilename;
-            QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
-            m_files.insert(QFileInfo(dst).fileName());
+    foreach (const QString &textureFilename, m_importer->externalTextures()) {
+        const QString dst = opts.outDir + textureFilename;
+        m_files.insert(QFileInfo(dst).fileName());
+        // External textures need copying only when output dir was specified.
+        if (!opts.outDir.isEmpty()) {
+            const QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
             if (QFileInfo(src).absolutePath() != QFileInfo(dst).absolutePath()) {
                 if (opts.showLog)
                     qDebug().noquote() << "Copying" << src << "to" << dst;
