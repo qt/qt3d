@@ -764,9 +764,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
 
                 // Lights
-                const QString LIGHT_ARRAY_NAME = QStringLiteral("lights");
                 const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
-                const QString LIGHT_POSITION_NAME = QStringLiteral("position");
+                const QString LIGHT_POSITION_NAME = QStringLiteral(".position");
 
                 int lightIdx = 0;
                 Q_FOREACH (const LightSource &lightSource, activeLightSources) {
@@ -777,8 +776,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Q_FOREACH (Light *light, lightSource.lights) {
                         if (lightIdx == MAX_LIGHTS)
                             break;
-                        QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, worldPos);
+                        const QString structName = QStringLiteral("lights[") + QString::number(lightIdx) + QLatin1Char(']');
+                        setUniformValue(command->m_uniforms, structName + LIGHT_POSITION_NAME, worldPos);
                         setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                         ++lightIdx;
                     }
