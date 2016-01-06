@@ -430,7 +430,7 @@ bool GLTFParser::isGLTFPath(const QString& path)
     // might need to detect other things in the future, but would
     // prefer to avoid doing a full parse.
     QString suffix = finfo.suffix().toLower();
-    return (suffix == QStringLiteral("json") || suffix == QStringLiteral("gltf"));
+    return (suffix == QStringLiteral("json") || suffix == QStringLiteral("gltf") || suffix == QStringLiteral("qgltf"));
 }
 
 void GLTFParser::renameFromJson(const QJsonObject &json, QObject * const object)

@@ -2400,7 +2400,7 @@ void GltfExporter::save(const QString &inputFilename)
 
     m_doc.setObject(m_obj);
 
-    QString gltfName = opts.outDir + basename + QStringLiteral(".gltf");
+    QString gltfName = opts.outDir + basename + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
     if (opts.showLog)
         qDebug().noquote() << (opts.genBin ? "Writing (binary JSON)" : "Writing") << gltfName;
@@ -2452,9 +2452,9 @@ int main(int argc, char **argv)
     cmdLine.addVersionOption();
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
-    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .gltf file"));
+    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
     cmdLine.addOption(binOpt);
-    QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .gltf file"));
+    QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .qgltf file"));
     cmdLine.addOption(compactOpt);
     QCommandLineOption compOpt(QStringLiteral("c"), QStringLiteral("qCompress() vertex/index data in the .bin file"));
     cmdLine.addOption(compOpt);

@@ -54,7 +54,7 @@ Entity {
         },
         SceneLoader
         {
-            source: "qrc:/models/wine.gltf"
+            source: "qrc:/models/wine.qgltf"
         }
     ]
 }
