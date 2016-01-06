@@ -72,6 +72,12 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 
+#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DRender/QDiffuseMapMaterial>
+#include <Qt3DRender/QDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QNormalDiffuseMapMaterial>
+#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -100,6 +106,8 @@ const QString KEY_YFOV       = QStringLiteral("yfov");
 const QString KEY_ZNEAR      = QStringLiteral("znear");
 const QString KEY_ZFAR       = QStringLiteral("zfar");
 const QString KEY_MATERIALS  = QStringLiteral("materials");
+const QString KEY_EXTENSIONS = QStringLiteral("extensions");
+const QString KEY_COMMON_MAT = QStringLiteral("KHR_materials_common");
 const QString KEY_TECHNIQUE  = QStringLiteral("technique");
 const QString KEY_VALUES     = QStringLiteral("values");
 const QString KEY_BUFFERS    = QStringLiteral("buffers");
@@ -245,7 +253,9 @@ Qt3DCore::QEntity* GLTFParser::node(const QString &id)
             Q_FOREACH (QGeometryRenderer *geometryRenderer, m_meshDict.values(mesh.toString())) {
                 QEntity *entity = new QEntity;
                 entity->addComponent(geometryRenderer);
-                entity->addComponent(material(m_meshMaterialDict[geometryRenderer]));
+                QMaterial *mat = material(m_meshMaterialDict[geometryRenderer]);
+                if (mat)
+                    entity->addComponent(mat);
                 entities.append(entity);
             }
 
@@ -513,19 +523,8 @@ Qt3DCore::QEntity* GLTFParser::defaultScene()
     return scene(m_defaultScene);
 }
 
-QMaterial* GLTFParser::material(const QString &id)
+QMaterial *GLTFParser::materialWithCustomShader(const QString &id, const QJsonObject &jsonObj)
 {
-    if (m_materialCache.contains(id))
-        return m_materialCache.value(id);
-
-    QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
-    if (!mats.contains(id)) {
-        qCWarning(GLTFParserLog) << "unknown material" << id << "in GLTF file" << m_basePath;
-        return NULL;
-    }
-
-    QJsonObject jsonObj = mats.value(id).toObject();
-
     //Default ES2 Technique
     QString techniqueName = jsonObj.value(KEY_TECHNIQUE).toString();
     if (!m_techniques.contains(techniqueName)) {
@@ -613,6 +612,114 @@ QMaterial* GLTFParser::material(const QString &id)
 
         mat->addParameter(new QParameter(param->name(), var));
     } // of material technique-instance values iteration
+
+    return mat;
+}
+
+static inline QVariant vec4ToRgb(const QVariant &vec4Var)
+{
+    const QVector4D v = vec4Var.value<QVector4D>();
+    return QVariant(QColor::fromRgbF(v.x(), v.y(), v.z()));
+}
+
+QMaterial *GLTFParser::commonMaterial(const QJsonObject &jsonObj)
+{
+    QVariantHash params;
+    bool hasDiffuseMap = false;
+    bool hasSpecularMap = false;
+    bool hasNormalMap = false;
+
+    QJsonObject values = jsonObj.value(KEY_VALUES).toObject();
+    Q_FOREACH (const QString &vName, values.keys()) {
+        const QJsonValue val = values.value(vName);
+        QVariant var;
+        QString propertyName = vName;
+        if (vName == QStringLiteral("ambient") && val.isArray()) {
+            var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+        } else if (vName == QStringLiteral("diffuse")) {
+            if (val.isString()) {
+                var = parameterValueFromJSON(GL_SAMPLER_2D, val);
+                hasDiffuseMap = true;
+            } else if (val.isArray()) {
+                var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+            }
+        } else if (vName == QStringLiteral("specular")) {
+            if (val.isString()) {
+                var = parameterValueFromJSON(GL_SAMPLER_2D, val);
+                hasSpecularMap = true;
+            } else if (val.isArray()) {
+                var = vec4ToRgb(parameterValueFromJSON(GL_FLOAT_VEC4, val));
+            }
+        } else if (vName == QStringLiteral("shininess") && val.isDouble()) {
+            var = parameterValueFromJSON(GL_FLOAT, val);
+        } else if (vName == QStringLiteral("normalmap") && val.isString()) {
+            var = parameterValueFromJSON(GL_SAMPLER_2D, val);
+            propertyName = QStringLiteral("normal");
+            hasNormalMap = true;
+        } else if (vName == QStringLiteral("transparency")) {
+            qCWarning(GLTFParserLog) << "Semi-transparent common materials are not currently supported, ignoring alpha";
+        }
+        if (var.isValid())
+            params[propertyName] = var;
+    }
+
+    QMaterial *mat = Q_NULLPTR;
+    if (hasNormalMap) {
+        if (hasSpecularMap) {
+            mat = new QNormalDiffuseSpecularMapMaterial;
+        } else {
+            if (hasDiffuseMap)
+                mat = new QNormalDiffuseMapMaterial;
+            else
+                qCWarning(GLTFParserLog) << "Common material with normal and specular maps needs a diffuse map as well";
+        }
+    } else {
+        if (hasSpecularMap) {
+            if (hasDiffuseMap)
+                mat = new QDiffuseSpecularMapMaterial;
+            else
+                qCWarning(GLTFParserLog) << "Common material with specular map needs a diffuse map as well";
+        } else if (hasDiffuseMap) {
+            mat = new QDiffuseMapMaterial;
+        } else {
+            mat = new QPhongMaterial;
+        }
+    }
+
+    if (mat) {
+        for (QVariantHash::const_iterator it = params.constBegin(), itEnd = params.constEnd(); it != itEnd; ++it)
+            mat->setProperty(it.key().toUtf8(), it.value());
+    } else {
+        qCWarning(GLTFParserLog) << "Could not find a suitable built-in material for KHR_materials_common";
+    }
+
+    return mat;
+}
+
+QMaterial* GLTFParser::material(const QString &id)
+{
+    if (m_materialCache.contains(id))
+        return m_materialCache.value(id);
+
+    QJsonObject mats = m_json.object().value(KEY_MATERIALS).toObject();
+    if (!mats.contains(id)) {
+        qCWarning(GLTFParserLog) << "unknown material" << id << "in GLTF file" << m_basePath;
+        return NULL;
+    }
+
+    QJsonObject jsonObj = mats.value(id).toObject();
+
+    QMaterial *mat = Q_NULLPTR;
+
+    // Prefer common materials over custom shaders.
+    if (jsonObj.contains(KEY_EXTENSIONS)) {
+        QJsonObject extensions = jsonObj.value(KEY_EXTENSIONS).toObject();
+        if (extensions.contains(KEY_COMMON_MAT))
+            mat = commonMaterial(extensions.value(KEY_COMMON_MAT).toObject());
+    }
+
+    if (!mat)
+        mat = materialWithCustomShader(id, jsonObj);
 
     m_materialCache[id] = mat;
     return mat;
