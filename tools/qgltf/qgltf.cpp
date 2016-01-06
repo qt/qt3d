@@ -1750,6 +1750,23 @@ static inline QJsonArray vec2jsvec(const QVector<float> &v)
     return arr;
 }
 
+static inline void promoteColorsToRGBA(QJsonObject *obj)
+{
+    QJsonObject::iterator it = obj->begin(), itEnd = obj->end();
+    while (it != itEnd) {
+        QJsonArray arr = it.value().toArray();
+        if (arr.count() == 3) {
+            const QString key = it.key();
+            if (key == QStringLiteral("ambient")
+                    || key == QStringLiteral("diffuse")
+                    || key == QStringLiteral("specular"))
+                arr.append(1);
+                *it = arr;
+        }
+        ++it;
+    }
+}
+
 void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QString> *textureNameMap)
 {
     for (uint i = 0; i < m_importer->materialCount(); ++i) {
@@ -1847,6 +1864,9 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 QJsonObject commonMat;
                 commonMat["technique"] = prog->commonTechniqueName;
                 // Set the values as-is. "normalmap" is our own extension, not in the spec.
+                // However, RGB colors have to be promoted to RGBA since the spec uses
+                // vec4, and all types are pre-defined for common material values.
+                promoteColorsToRGBA(&vals);
                 commonMat["values"] = vals;
                 if (!opaque)
                     commonMat["transparent"] = true;
