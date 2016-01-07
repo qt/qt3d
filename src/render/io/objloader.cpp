@@ -124,54 +124,66 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
     Q_ASSERT(subMeshMatch.isValid());
 
     QTextStream stream(ioDev);
-    QTextStream lineStream;
     while (!stream.atEnd()) {
         QString line = stream.readLine();
         line = line.simplified();
 
         if (line.length() > 0 && line.at(0) != QChar::fromLatin1('#')) {
-            lineStream.setString(&line, QIODevice::ReadOnly);
-            QString token;
-            lineStream >> token;
+            const QVector<QStringRef> tokens = line.splitRef(QChar::fromLatin1(' '));
 
-            if (token == QStringLiteral("v")) {
-                if (!skipping) {
-                    float x, y, z;
-                    lineStream >> x >> y >> z;
-                    positions.append(QVector3D( x, y, z ));
+            if (tokens.first() == QStringLiteral("v")) {
+                if (tokens.size() < 4) {
+                    qCWarning(Render::Io) << "Unsupported number of components in vertex";
                 } else {
-                    positionsOffset++;
+                    if (!skipping) {
+                        float x = tokens.at(1).toFloat();
+                        float y = tokens.at(2).toFloat();
+                        float z = tokens.at(3).toFloat();
+                        positions.append(QVector3D( x, y, z ));
+                    } else {
+                        positionsOffset++;
+                    }
                 }
-            } else if (token == QStringLiteral("vt") && m_loadTextureCoords) {
-                if (!skipping) {
-                    // Process texture coordinate
-                    float s,t;
-                    lineStream >> s >> t;
-                    //FlipUVs
-                    t = 1.0f - t;
-                    texCoords.append(QVector2D(s, t));
+            } else if (tokens.first() == QStringLiteral("vt") && m_loadTextureCoords) {
+                if (tokens.size() < 3) {
+                    qCWarning(Render::Io) << "Unsupported number of components in texture coordinate";
                 } else {
-                    texCoordsOffset++;
+                    if (!skipping) {
+                        // Process texture coordinate
+                        float s = tokens.at(1).toFloat();
+                        float t = tokens.at(2).toFloat();
+                        //FlipUVs
+                        t = 1.0f - t;
+                        texCoords.append(QVector2D( s, t ));
+                    } else {
+                        texCoordsOffset++;
+                    }
                 }
-            } else if (token == QStringLiteral("vn")) {
-                if (!skipping) {
-                    float x, y, z;
-                    lineStream >> x >> y >> z;
-                    normals.append(QVector3D( x, y, z ));
+            } else if (tokens.first() == QStringLiteral("vn")) {
+                if (tokens.size() < 4) {
+                    qCWarning(Render::Io) << "Unsupported number of components in vertex normal";
                 } else {
-                    normalsOffset++;
+                    if (!skipping) {
+                        float x = tokens.at(1).toFloat();
+                        float y = tokens.at(2).toFloat();
+                        float z = tokens.at(3).toFloat();
+                        normals.append(QVector3D( x, y, z ));
+                    } else {
+                        normalsOffset++;
+                    }
                 }
-            } else if (!skipping && token == QStringLiteral("f")) {
+            } else if (!skipping && tokens.first() == QStringLiteral("f")) {
                 // Process face
                 ++faceCount;
-                QVector<FaceIndices> face;
-                int faceVertices = 0;
-                while (!lineStream.atEnd()) {
-                    QString faceString;
-                    lineStream >> faceString;
 
+                int faceVertices = tokens.size() - 1;
+
+                QVector<FaceIndices> face;
+                face.reserve(faceVertices);
+
+                for (int i = 0; i < faceVertices; i++) {
                     FaceIndices faceIndices;
-                    const QVector<QStringRef> indices = faceString.splitRef(QChar::fromLatin1('/'));
+                    const QVector<QStringRef> indices = tokens.at(i + 1).split(QChar::fromLatin1('/'));
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.at(2).toInt() - 1 - normalsOffset;  // fall through
@@ -185,7 +197,6 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                     }
 
                     face.append(faceIndices);
-                    ++faceVertices;
                 }
 
                 // If number of edges in face is greater than 3,
@@ -208,11 +219,14 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                 }
 
                 // end of face
-            } else if ( token == QStringLiteral("o") ) {
-                if (!subMesh.isEmpty() ) {
-                    QString objName;
-                    lineStream >> objName;
-                    skipping = subMeshMatch.indexIn(objName) < 0;
+            } else if (tokens.first() == QStringLiteral("o")) {
+                if (tokens.size() < 2) {
+                    qCWarning(Render::Io) << "Missing submesh name";
+                } else {
+                    if (!subMesh.isEmpty() ) {
+                        QString objName = tokens.at(1).toString();
+                        skipping = subMeshMatch.indexIn(objName) < 0;
+                    }
                 }
             }
         } // end of input line
