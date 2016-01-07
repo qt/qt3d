@@ -378,6 +378,8 @@ void Renderer::shutdown()
 {
     // TO DO: Check that this works with iOs and other cases
     if (m_surface) {
+        m_running.fetchAndStoreOrdered(0);
+
         m_graphicsContext->makeCurrent(m_surface);
         // Stop and destroy the OpenGL logger
         if (m_debugLogger) {
