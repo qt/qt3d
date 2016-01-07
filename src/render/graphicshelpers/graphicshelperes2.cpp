@@ -219,6 +219,15 @@ void GraphicsHelperES2::blendEquation(GLenum mode)
     m_funcs->glBlendEquation(mode);
 }
 
+void GraphicsHelperES2::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+{
+    Q_UNUSED(buf);
+    Q_UNUSED(sfactor);
+    Q_UNUSED(dfactor);
+
+    qWarning() << "glBlendFunci() not supported by OpenGL ES 2.0";
+}
+
 void GraphicsHelperES2::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";

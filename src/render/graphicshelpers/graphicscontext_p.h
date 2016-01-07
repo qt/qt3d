@@ -175,6 +175,7 @@ public:
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
     void    bindUniform(const QVariant &v, const ShaderUniform &description);
     void    blendEquation(GLenum mode);
+    void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    clearColor(const QColor &color);

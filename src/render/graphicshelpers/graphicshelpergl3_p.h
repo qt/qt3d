@@ -75,6 +75,7 @@ public:
     void bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding) Q_DECL_OVERRIDE;
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
+    void blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) Q_DECL_OVERRIDE;
     GLuint boundFrameBufferObject() Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;

@@ -216,6 +216,11 @@ void GraphicsHelperGL4::blendEquation(GLenum mode)
     m_funcs->glBlendEquation(mode);
 }
 
+void GraphicsHelperGL4::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+{
+    m_funcs->glBlendFunci(buf, sfactor, dfactor);
+}
+
 void GraphicsHelperGL4::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
