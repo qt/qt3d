@@ -230,6 +230,7 @@ struct Options {
     };
     TextureCompression texComp;
     bool commonMat;
+    bool shaders;
     bool showLog;
 } opts;
 
@@ -1825,7 +1826,8 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 opaque = false;
             vals[it.key()] = col2jsvec(it.value(), alpha);
         }
-        material["values"] = vals;
+        if (opts.shaders)
+            material["values"] = vals;
 
         ProgramInfo *prog = chooseProgram(i);
         TechniqueInfo techniqueInfo;
@@ -1845,13 +1847,15 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
             m_usedPrograms.insert(prog);
         }
 
-        if (opts.showLog)
-            qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
+        if (opts.shaders) {
+            if (opts.showLog)
+                qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
 
-        material["technique"] = techniqueInfo.name;
-        if (opts.genCore) {
-            material["techniqueCore"] = techniqueInfo.coreName;
-            material["techniqueGL2"] = techniqueInfo.gl2Name;
+            material["technique"] = techniqueInfo.name;
+            if (opts.genCore) {
+                material["techniqueCore"] = techniqueInfo.coreName;
+                material["techniqueGL2"] = techniqueInfo.gl2Name;
+            }
         }
 
         if (opts.commonMat) {
@@ -1922,6 +1926,9 @@ void GltfExporter::exportParameter(QJsonObject &dst, const QVector<ProgramInfo::
 
 void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
 {
+    if (!opts.shaders)
+        return;
+
     QJsonObject shaders;
     QHash<QString, QString> shaderMap;
     foreach (ProgramInfo *prog, m_usedPrograms) {
@@ -2490,6 +2497,8 @@ int main(int argc, char **argv)
     cmdLine.addOption(etc1Opt);
     QCommandLineOption noCommonMatOpt(QStringLiteral("T"), QStringLiteral("Do not generate KHR_materials_common block"));
     cmdLine.addOption(noCommonMatOpt);
+    QCommandLineOption noShadersOpt(QStringLiteral("S"), QStringLiteral("Do not generate shaders/programs/techniques"));
+    cmdLine.addOption(noShadersOpt);
     QCommandLineOption silentOpt(QStringLiteral("s"), QStringLiteral("Silence debug output"));
     cmdLine.addOption(silentOpt);
     cmdLine.process(app);
@@ -2510,6 +2519,7 @@ int main(int argc, char **argv)
     opts.genCore = cmdLine.isSet(coreOpt);
     opts.texComp = cmdLine.isSet(etc1Opt) ? Options::ETC1 : Options::NoTextureCompression;
     opts.commonMat = !cmdLine.isSet(noCommonMatOpt);
+    opts.shaders = !cmdLine.isSet(noShadersOpt);
     opts.showLog = !cmdLine.isSet(silentOpt);
     if (!opts.outDir.isEmpty()) {
         if (!opts.outDir.endsWith('/'))
