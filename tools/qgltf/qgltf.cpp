@@ -2413,16 +2413,6 @@ void GltfExporter::save(const QString &inputFilename)
     }
     m_obj["samplers"] = samplers;
 
-    // Just a dummy light, never referenced.
-    QJsonObject lights;
-    QJsonObject light;
-    QJsonObject pointLight;
-    pointLight["color"] = col2jsvec(QVector<float>() << 1 << 1 << 1);
-    light["point"] = pointLight;
-    light["type"] = QStringLiteral("point");
-    lights["light_1"] = light;
-    m_obj["lights"] = lights;
-
     exportTechniques(m_obj, basename);
 
     m_doc.setObject(m_obj);
