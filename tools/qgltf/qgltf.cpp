@@ -2458,6 +2458,14 @@ void GltfExporter::save(const QString &inputFilename)
         qDebug() << "Done\n";
 }
 
+static const char *description =
+        "qgltf uses Assimp to import a variety of 3D model formats "
+        "and export it into fast-to-load, optimized glTF "
+        "assets embedded into Qt resource files.\n\n"
+        "Note: this tool should typically not be invoked directly. Instead, "
+        "let qmake manage it based on QT3D_MODELS in the .pro file.\n\n"
+        "For standard Qt 3D usage the recommended options are -b -S.";
+
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
@@ -2467,6 +2475,7 @@ int main(int argc, char **argv)
     QCommandLineParser cmdLine;
     cmdLine.addHelpOption();
     cmdLine.addVersionOption();
+    cmdLine.setApplicationDescription(QString::fromUtf8(description));
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
     QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
@@ -2516,6 +2525,9 @@ int main(int argc, char **argv)
             opts.outDir.append('/');
         QDir().mkpath(opts.outDir);
     }
+
+    if (cmdLine.positionalArguments().isEmpty())
+        cmdLine.showHelp();
 
     AssimpImporter importer;
     GltfExporter exporter(&importer);
