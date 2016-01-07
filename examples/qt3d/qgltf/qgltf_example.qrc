@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>Wine.qml</file>
+        <file>Scene.qml</file>
     </qresource>
 </RCC>

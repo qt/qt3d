@@ -48,8 +48,8 @@ Entity {
         aspectRatio: 16/9
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, -100.0, -120.0 )
-        upVector: Qt.vector3d( 0.0, -1.0, 0.0 )
+        position: Qt.vector3d( 0.0, 0.0, 100.0 )
+        upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
@@ -58,24 +58,12 @@ Entity {
     }
 
     components: FrameGraph {
-        activeFrameGraph : Viewport {
-            CameraSelector {
-                camera: camera
-                ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
-                    SortMethod {
-                        criteria: [
-                            SortCriterion { sort: SortCriterion.BackToFront }
-                        ]
-                    }
-                }
-            }
+        activeFrameGraph: ForwardRenderer {
+            clearColor: Qt.rgba(0, 0.5, 1, 1)
+            camera: camera
         }
     }
 
-    Wine {
-        id: wineRack
-        position: Qt.vector3d(-60.0, 0.0, 50.0)
-        angleX: 180
+    Scene {
     }
 }
