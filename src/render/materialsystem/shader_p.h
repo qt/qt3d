@@ -48,6 +48,7 @@
 // We mean it.
 //
 
+#include <QMutex>
 #include <QVector>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
@@ -56,7 +57,6 @@
 QT_BEGIN_NAMESPACE
 
 class QOpenGLShaderProgram;
-class QMutex;
 
 namespace Qt3DRender {
 
@@ -120,7 +120,7 @@ private:
 
     bool m_isLoaded;
     ProgramDNA m_dna;
-    QMutex *m_mutex;
+    QMutex m_mutex;
 
     void updateDNA();
 

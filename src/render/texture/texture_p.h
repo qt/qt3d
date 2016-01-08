@@ -136,7 +136,7 @@ private:
     bool m_formatWasSpecified;
     bool m_unique;
 
-    QMutex *m_lock;
+    mutable QMutex m_lock;
     TextureDNA m_textureDNA;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
