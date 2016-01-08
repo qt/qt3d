@@ -65,24 +65,6 @@
     released
 
     \sa QResourceManager
-    \sa ListAllocatingPolicy
-*/
-
-/*!
-    \class Qt3DCore::ListAllocatingPolicy
-    \inmodule Qt3DCore
-    \since 5.5
-
-    \brief Allocates resources in a list.
-
-    It is best to use it when you don't need to iterate over an entire set of resources, in which
-    case ArrayAllocatingPolicy is faster. It can store a non predefined amount of resources, though
-    there might not be enough handles at some point, depending on the INDEXBITS used.
-    It's main use case is to manage resources that are accessed in an independent manner from other
-    resources of the same type.
-
-    \sa QResourceManager
-    \sa ArrayAllocatingPolicy
 */
 
 /*!

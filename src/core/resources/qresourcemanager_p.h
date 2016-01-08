@@ -286,62 +286,6 @@ private:
 
 };
 
-template <typename T, uint INDEXBITS>
-class ListAllocatingPolicy
-{
-public:
-    ListAllocatingPolicy()
-    {
-    }
-
-    T* allocateResource()
-    {
-        int idx;
-        T *newT;
-        if (!m_freeEntries.isEmpty()) {
-            idx = m_freeEntries.takeFirst();
-            m_resourcesEntries[idx] = T();
-            newT = &m_resourcesEntries[idx];
-        }
-        else {
-            m_resourcesEntries.append(T());
-            idx = m_resourcesEntries.size() - 1;
-            newT = &m_resourcesEntries.last();
-        }
-        // If elements are added to the list, we're not sure the address
-        // that was returned here for previous elements stays valid
-        m_resourcesToIndices[newT] = idx;
-        return newT;
-    }
-
-    void releaseResource(T *r)
-    {
-        if (m_resourcesToIndices.contains(r)) {
-            performCleanup(r, Int2Type<QResourceInfo<T>::needsCleanup>());
-            m_freeEntries.append(m_resourcesToIndices.take(r));
-        }
-    }
-
-    void reset()
-    {
-        m_resourcesEntries.clear();
-        m_resourcesToIndices.clear();
-    }
-
-private:
-    QList<T> m_resourcesEntries;
-    QHash<T*, int> m_resourcesToIndices;
-    QList<int> m_freeEntries;
-
-    void performCleanup(T *r, Int2Type<true>)
-    {
-        r->cleanup();
-    }
-
-    void performCleanup(T *, Int2Type<false>)
-    {}
-};
-
 template <typename T, typename C, uint INDEXBITS = 16,
           template <typename, uint> class AllocatingPolicy = ArrayAllocatingPolicy,
           template <class> class LockingPolicy = NonLockingPolicy
