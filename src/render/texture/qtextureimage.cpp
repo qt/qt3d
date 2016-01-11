@@ -66,7 +66,11 @@ public:
     QTexImageDataPtr operator ()() Q_DECL_FINAL
     {
         QTexImageDataPtr dataPtr;
-        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
+        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")
+#ifdef Q_OS_ANDROID
+                             || m_url.scheme() == QStringLiteral("assets")
+#endif
+                                                                          ) {
             QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
             dataPtr.reset(new QTexImageData());
             if (dataPtr->setCompressedFile(source))
