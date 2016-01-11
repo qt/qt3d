@@ -47,37 +47,37 @@ Quick3DAction::Quick3DAction(QObject *parent)
 {
 }
 
-QQmlListProperty<QActionInput> Quick3DAction::qmlActionInputs()
+QQmlListProperty<QAbstractActionInput> Quick3DAction::qmlActionInputs()
 {
-    return QQmlListProperty<QActionInput>(this, 0,
+    return QQmlListProperty<QAbstractActionInput>(this, 0,
                                         &Quick3DAction::appendActionInput,
                                         &Quick3DAction::actionInputCount,
                                         &Quick3DAction::actionInputAt,
                                         &Quick3DAction::clearActionInputs);
 }
 
-void Quick3DAction::appendActionInput(QQmlListProperty<QActionInput> *list, QActionInput *input)
+void Quick3DAction::appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
     action->parentAction()->addInput(input);
 }
 
-QActionInput *Quick3DAction::actionInputAt(QQmlListProperty<QActionInput> *list, int index)
+QAbstractActionInput *Quick3DAction::actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
     return action->parentAction()->inputs().at(index);
 }
 
-int Quick3DAction::actionInputCount(QQmlListProperty<QActionInput> *list)
+int Quick3DAction::actionInputCount(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
     return action->parentAction()->inputs().count();
 }
 
-void Quick3DAction::clearActionInputs(QQmlListProperty<QActionInput> *list)
+void Quick3DAction::clearActionInputs(QQmlListProperty<QAbstractActionInput> *list)
 {
     Quick3DAction *action = qobject_cast<Quick3DAction *>(list->object);
-    Q_FOREACH (QActionInput *input, action->parentAction()->inputs())
+    Q_FOREACH (QAbstractActionInput *input, action->parentAction()->inputs())
         action->parentAction()->removeInput(input);
 }
 

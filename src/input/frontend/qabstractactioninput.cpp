@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -33,80 +33,20 @@
 ** $QT_END_LICENSE$
 ****************************************************************************/
 
-#include "qactioninput.h"
+#include "qabstractactioninput.h"
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DInput/QAbstractActionInput>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QActionInputPrivate : public Qt3DCore::QNodePrivate
+QAbstractActionInput::QAbstractActionInput(Qt3DCore::QNodePrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QNode(dd, parent)
 {
-public:
-    QActionInputPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(Q_NULLPTR)
-    {}
-
-    QVariantList m_keys;
-    QAbstractPhysicalDevice *m_sourceDevice;
-};
-
-QActionInput::QActionInput(Qt3DCore::QNode *parent)
-    : Qt3DInput::QAbstractActionInput(*new QActionInputPrivate(), parent)
-{
-
 }
 
-QActionInput::~QActionInput()
+QAbstractActionInput::~QAbstractActionInput()
 {
-    QNode::cleanup();
-}
-
-QVariantList QActionInput::keys() const
-{
-    Q_D(const QActionInput);
-    return d->m_keys;
-}
-
-void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
-{
-    Q_D(QActionInput);
-    if (d->m_sourceDevice != sourceDevice) {
-
-        // Check and set parent if needed
-        // to force creation in the backend
-        if (sourceDevice && !sourceDevice->parent())
-            sourceDevice->setParent(this);
-
-        d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged(sourceDevice);
-    }
-}
-
-QAbstractPhysicalDevice *QActionInput::sourceDevice() const
-{
-    Q_D(const QActionInput);
-    return d->m_sourceDevice;
-}
-
-void QActionInput::setKeys(const QVariantList &keys)
-{
-    Q_D(QActionInput);
-    if (d->m_keys != keys) {
-        d->m_keys = keys;
-        emit keysChanged(keys);
-    }
-}
-
-void QActionInput::copy(const Qt3DCore::QNode *ref)
-{
-    QNode::copy(ref);
-    const QActionInput *input = static_cast<const QActionInput *>(ref);
-    d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
-    d_func()->m_keys = input->d_func()->m_keys;
 }
 
 } // Qt3DInput

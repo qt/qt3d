@@ -50,7 +50,7 @@
 
 #include <Qt3DQuickInput/private/qt3dquickinput_global_p.h>
 #include <Qt3DInput/QAction>
-#include <Qt3DInput/QActionInput>
+#include <Qt3DInput/QAbstractActionInput>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -62,18 +62,18 @@ namespace Quick {
 class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAction : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DInput::QActionInput> inputs READ qmlActionInputs CONSTANT)
+    Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> inputs READ qmlActionInputs CONSTANT)
 public:
     explicit Quick3DAction(QObject *parent = Q_NULLPTR);
 
     inline QAction *parentAction() const { return qobject_cast<QAction *>(parent()); }
-    QQmlListProperty<QActionInput> qmlActionInputs();
+    QQmlListProperty<QAbstractActionInput> qmlActionInputs();
 
 private:
-    static void appendActionInput(QQmlListProperty<QActionInput> *list, QActionInput *input);
-    static QActionInput *actionInputAt(QQmlListProperty<QActionInput> *list, int index);
-    static int actionInputCount(QQmlListProperty<QActionInput> *list);
-    static void clearActionInputs(QQmlListProperty<QActionInput> *list);
+    static void appendActionInput(QQmlListProperty<QAbstractActionInput> *list, QAbstractActionInput *input);
+    static QAbstractActionInput *actionInputAt(QQmlListProperty<QAbstractActionInput> *list, int index);
+    static int actionInputCount(QQmlListProperty<QAbstractActionInput> *list);
+    static void clearActionInputs(QQmlListProperty<QAbstractActionInput> *list);
 };
 
 } // namespace Quick

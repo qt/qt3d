@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -31,11 +31,10 @@
 ** met: http://www.gnu.org/licenses/gpl-2.0.html.
 **
 ** $QT_END_LICENSE$
-**
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QACTION_H
-#define QT3DINPUT_QACTION_H
+#ifndef QT3DINPUT_QABSTRACTACTIONINPUT_H
+#define QT3DINPUT_QABSTRACTACTIONINPUT_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
@@ -44,42 +43,18 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QActionPrivate;
-class QAbstractActionInput;
+class QNodePrivate;
 
-class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QAbstractActionInput : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAction();
-
-    QString name() const;
-
-
-public Q_SLOTS:
-    void setName(const QString &name);
-    void addInput(QAbstractActionInput *input);
-    void removeInput(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> inputs() const;
-
-Q_SIGNALS:
-    void nameChanged(const QString &name);
-
-    void started(const QString &name);
-    void finished(const QString &name);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAction)
-    QT3D_CLONEABLE(QAction)
+    explicit QAbstractActionInput(Qt3DCore::QNodePrivate &dd, Qt3DCore::QNode *parent = 0);
+    ~QAbstractActionInput();
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QACTION_H
+#endif // QT3DINPUT_QABSTRACTACTIONINPUT_H

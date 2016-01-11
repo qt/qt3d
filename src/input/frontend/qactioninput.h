@@ -39,6 +39,7 @@
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -47,7 +48,7 @@ namespace Qt3DInput {
 class QAbstractPhysicalDevice;
 class QActionInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInput
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
@@ -80,4 +81,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QACTIONINPUT_H
+#endif // QT3DINPUT_QACTIONINPUT_H

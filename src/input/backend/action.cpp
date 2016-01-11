@@ -36,7 +36,7 @@
 
 #include "action_p.h"
 #include <Qt3DInput/qaction.h>
-#include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ void Action::updateFromPeer(Qt3DCore::QNode *peer)
     QAction *action = static_cast<QAction *>(peer);
     m_enabled = action->isEnabled();
     m_name = action->name();
-    Q_FOREACH (QActionInput *input, action->inputs())
+    Q_FOREACH (QAbstractActionInput *input, action->inputs())
         m_inputs.push_back(input->id());
 }
 

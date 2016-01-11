@@ -37,7 +37,7 @@
 #include "qaction.h"
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ public:
     {}
 
     QString m_name;
-    QVector<QActionInput *> m_inputs;
+    QVector<QAbstractActionInput *> m_inputs;
 };
 
 QAction::QAction(Qt3DCore::QNode *parent)
@@ -79,7 +79,7 @@ QString QAction::name() const
     return d->m_name;
 }
 
-void QAction::addInput(QActionInput *input)
+void QAction::addInput(QAbstractActionInput *input)
 {
     Q_D(QAction);
     if (!d->m_inputs.contains(input)) {
@@ -97,7 +97,7 @@ void QAction::addInput(QActionInput *input)
     }
 }
 
-void QAction::removeInput(QActionInput *input)
+void QAction::removeInput(QAbstractActionInput *input)
 {
     Q_D(QAction);
     if (d->m_inputs.contains(input)) {
@@ -113,7 +113,7 @@ void QAction::removeInput(QActionInput *input)
     }
 }
 
-QVector<QActionInput *> QAction::inputs() const
+QVector<QAbstractActionInput *> QAction::inputs() const
 {
     Q_D(const QAction);
     return d->m_inputs;
@@ -124,8 +124,8 @@ void QAction::copy(const Qt3DCore::QNode *ref)
     QNode::copy(ref);
     const QAction *action = static_cast<const QAction *>(ref);
     d_func()->m_name = action->d_func()->m_name;
-    Q_FOREACH (QActionInput *input, action->inputs())
-        d_func()->m_inputs.append(qobject_cast<QActionInput *>(QNode::clone(input)));
+    Q_FOREACH (QAbstractActionInput *input, action->inputs())
+        d_func()->m_inputs.append(qobject_cast<QAbstractActionInput *>(QNode::clone(input)));
 }
 
 } // Qt3DInput
