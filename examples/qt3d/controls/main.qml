@@ -123,9 +123,9 @@ Item {
             Slider {
                 id: rotation_x
                 Layout.fillWidth: true
-                minimumValue: 45
-                maximumValue: 135
-                value: rotationValue + 90
+                minimumValue: -45
+                maximumValue: 45
+                value: rotationValue
             }
         }
         RowLayout {
@@ -133,9 +133,9 @@ Item {
             Slider {
                 id: rotation_y
                 Layout.fillWidth: true
-                minimumValue: 135
-                maximumValue: 225
-                value: rotationValue + 180
+                minimumValue: -45
+                maximumValue: 45
+                value: rotationValue
             }
         }
         RowLayout {
@@ -168,9 +168,9 @@ Item {
         Slider {
             id: viewCenter_z
             Layout.fillWidth: true
-            minimumValue: -12
-            maximumValue: -4
-            value: -7.5
+            minimumValue: 4
+            maximumValue: 12
+            value: 7.5
         }
     }
 
