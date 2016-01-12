@@ -52,8 +52,8 @@ class QT3DRENDERSHARED_EXPORT QDiffuseSpecularMapMaterial : public QMaterial
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
-    Q_PROPERTY(QAbstractTextureProvider *specular READ specular WRITE setSpecular NOTIFY specularChanged)
-    Q_PROPERTY(QAbstractTextureProvider *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *specular READ specular WRITE setSpecular NOTIFY specularChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
 public:

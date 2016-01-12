@@ -96,9 +96,8 @@ class Scene3DSGNode;
 
     \li The window is closed
 
-    \li This triggers the windowsChanged signal which the Scene3DRenderer
-    uses to perform the necessary cleanups in the QSGRenderThread (destroys
-    DebugLogger ...) with the shutdown slot (queued connection).
+    \li Scene3DItem is notified via itemChange() and calls shutdown() on Scene3DRenderer,
+    which performs the necessary cleanups in the QSGRenderThread (destroys DebugLogger ...).
 
     \li The destroyed signal of the window is also connected to the
     Scene3DRenderer. When triggered in the context of the main thread, the
@@ -163,7 +162,6 @@ public:
         Q_CHECK_PTR(m_item->window());
 
         QObject::connect(m_item->window(), &QQuickWindow::beforeRendering, this, &Scene3DRenderer::render, Qt::DirectConnection);
-        QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
 
         ContextSaver saver;
 
@@ -215,36 +213,11 @@ public:
 
     void synchronize();
 
+    // Executed in the QtQuick render thread.
+    void shutdown();
+
 public Q_SLOTS:
     void render();
-
-    // Executed in the QtQuick render thread.
-    void shutdown()
-    {
-        qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-
-        // Set to null so that subsequent calls to render
-        // would return early
-        m_item = Q_NULLPTR;
-
-        // Shutdown the Renderer Aspect while the OpenGL context
-        // is still valid
-        if (m_renderAspect)
-            m_renderAspect->renderShutdown();
-    }
-
-    // SGThread
-    void onWindowChangedQueued(QQuickWindow *w)
-    {
-        if (w == Q_NULLPTR) {
-            qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
-            shutdown();
-            // Will only trigger something with the Loader case
-            // The window closed cases is handled by the window's destroyed
-            // signal
-            QMetaObject::invokeMethod(m_cleaner, "cleanup");
-        }
-    }
 
 private:
     Scene3DItem *m_item; // Will be released by the QQuickWindow/QML Engine
@@ -565,6 +538,15 @@ void Scene3DItem::setMultisample(bool enable)
     }
 }
 
+void Scene3DItem::itemChange(ItemChange change, const ItemChangeData& value)
+{
+    // Are we being removed from the scene?
+    if (change == QQuickItem::ItemSceneChange && value.window == Q_NULLPTR)
+        m_renderer->shutdown();
+
+    QQuickItem::itemChange(change, value);
+}
+
 QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeData *)
 {
     // If the node already exists
@@ -592,6 +574,25 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
 void Scene3DRenderer::synchronize()
 {
     m_multisample = m_item->multisample();
+}
+
+void Scene3DRenderer::shutdown()
+{
+    qCDebug(Scene3D) << Q_FUNC_INFO << QThread::currentThread();
+
+    // Set to null so that subsequent calls to render
+    // would return early
+    m_item = Q_NULLPTR;
+
+    // Shutdown the Renderer Aspect while the OpenGL context
+    // is still valid
+    if (m_renderAspect)
+        m_renderAspect->renderShutdown();
+
+    // Will only trigger something with the Loader case
+    // The window closed cases is handled by the window's destroyed
+    // signal
+    QMetaObject::invokeMethod(m_cleaner, "cleanup");
 }
 
 void Scene3DRenderer::setSGNode(Scene3DSGNode *node) Q_DECL_NOEXCEPT

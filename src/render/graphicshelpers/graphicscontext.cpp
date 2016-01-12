@@ -687,6 +687,11 @@ void GraphicsContext::blendEquation(GLenum mode)
     m_glHelper->blendEquation(mode);
 }
 
+void GraphicsContext::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+{
+    m_glHelper->blendFunci(buf, sfactor, dfactor);
+}
+
 void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
 {
     m_glHelper->alphaTest(mode1, mode2);

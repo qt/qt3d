@@ -44,7 +44,6 @@
 #include <QThread>
 #include <QCoreApplication>
 #include <QtCore/QFuture>
-#include <QtCore/QFutureWatcher>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,6 +74,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
     // Convert QJobs to Tasks
     QHash<QAspectJob *, AspectTaskRunnable *> tasksMap;
     QVector<RunnableInterface *> taskList;
+    taskList.reserve(jobQueue.size());
     Q_FOREACH (const QAspectJobPtr &job, jobQueue) {
         AspectTaskRunnable *task = new AspectTaskRunnable();
         task->m_job = job;
@@ -107,9 +107,7 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 
 void QAspectJobManager::waitForAllJobs()
 {
-    QFutureWatcher<void> futureWatcher;
-    futureWatcher.setFuture(m_threadPooler->future());
-    futureWatcher.waitForFinished();
+    m_threadPooler->future().waitForFinished();
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
@@ -124,9 +122,7 @@ void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)
     }
 
     QFuture<void> future = m_threadPooler->mapDependables(taskList);
-    QFutureWatcher<void> futureWatcher;
-    futureWatcher.setFuture(future);
-    futureWatcher.waitForFinished();
+    future.waitForFinished();
 }
 
 } // namespace Qt3DCore

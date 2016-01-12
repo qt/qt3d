@@ -169,6 +169,9 @@ private:
     static QRenderState *buildStateEnable(int state);
     static QRenderState *buildState(const QString& functionName, const QJsonValue &value, int &type);
 
+    QMaterial *materialWithCustomShader(const QString &id, const QJsonObject &jsonObj);
+    QMaterial *commonMaterial(const QJsonObject &jsonObj);
+
     QJsonDocument m_json;
     QString m_basePath;
     bool m_parseDone;

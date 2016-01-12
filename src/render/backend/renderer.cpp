@@ -378,6 +378,8 @@ void Renderer::shutdown()
 {
     // TO DO: Check that this works with iOs and other cases
     if (m_surface) {
+        m_running.fetchAndStoreOrdered(0);
+
         m_graphicsContext->makeCurrent(m_surface);
         // Stop and destroy the OpenGL logger
         if (m_debugLogger) {
@@ -958,6 +960,7 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
     Attribute *indexAttribute = Q_NULLPTR;
     uint estimatedCount = 0;
 
+    m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
     Q_FOREACH (const QNodeId &attributeId, geometry->attributes()) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);

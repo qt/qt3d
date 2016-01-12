@@ -128,7 +128,7 @@ QTexture2DArray::~QTexture2DArray()
     Constructs a new Qt3DRender::QTexture3D instance with \a parent as parent.
  */
 QTexture3D::QTexture3D(QNode *parent)
-    : QAbstractTextureProvider(Target2D, parent)
+    : QAbstractTextureProvider(Target3D, parent)
 {
 }
 

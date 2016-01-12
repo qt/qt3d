@@ -169,32 +169,33 @@ public:
     QGraphicsApiFilter *contextInfo() const;
 
     // Wrapper methods
-    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
+    void    alphaTest(GLenum mode1, GLenum mode2);
+    void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
+    void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
+    void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+    void    bindUniform(const QVariant &v, const ShaderUniform &description);
+    void    blendEquation(GLenum mode);
+    void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);
+    GLuint  boundFrameBufferObject();
+    void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
+    void    clearColor(const QColor &color);
+    void    cullFace(GLenum mode);
+    void    depthMask(GLenum mode);
+    void    depthTest(GLenum mode);
+    void    disableAlphaCoverage();
+    void    disableClipPlane(int clipPlane);
+    void    disablePrimitiveRestart();
+    void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);
-    void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
-    void    setVerticesPerPatch(GLint verticesPerPatch);
-    void    blendEquation(GLenum mode);
-    void    alphaTest(GLenum mode1, GLenum mode2);
-    void    depthTest(GLenum mode);
-    void    depthMask(GLenum mode);
-    void    cullFace(GLenum mode);
-    void    frontFace(GLenum mode);
-    void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
-    void    bindUniform(const QVariant &v, const ShaderUniform &description);
-    void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-    void    bindBufferBase(GLenum target, GLuint bindingIndex, GLuint buffer);
-    void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
+    void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
     void    enableAlphaCoverage();
-    void    disableAlphaCoverage();
-    GLuint  boundFrameBufferObject();
-    void    clearColor(const QColor &color);
     void    enableClipPlane(int clipPlane);
-    void    disableClipPlane(int clipPlane);
-    GLint   maxClipPlaneCount();
     void    enablePrimitiveRestart(int restartIndex);
-    void    disablePrimitiveRestart();
+    void    frontFace(GLenum mode);
+    GLint   maxClipPlaneCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    setVerticesPerPatch(GLint verticesPerPatch);
 
     // Helper methods
     static GLint elementType(GLint type);

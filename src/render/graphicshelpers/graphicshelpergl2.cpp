@@ -202,6 +202,15 @@ void GraphicsHelperGL2::blendEquation(GLenum mode)
     m_funcs->glBlendEquation(mode);
 }
 
+void GraphicsHelperGL2::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+{
+    Q_UNUSED(buf);
+    Q_UNUSED(sfactor);
+    Q_UNUSED(dfactor);
+
+    qWarning() << "glBlendFunci() not supported by OpenGL 2.0 (since OpenGL 4.0)";
+}
+
 void GraphicsHelperGL2::alphaTest(GLenum mode1, GLenum mode2)
 {
     m_funcs->glEnable(GL_ALPHA_TEST);

@@ -229,6 +229,8 @@ struct Options {
         ETC1
     };
     TextureCompression texComp;
+    bool commonMat;
+    bool shaders;
     bool showLog;
 } opts;
 
@@ -1190,12 +1192,12 @@ bool Exporter::nodeIsUseful(const Importer::Node *n) const
 
 void Exporter::copyExternalTextures(const QString &inputFilename)
 {
-    // External textures needs copying only when output dir was specified.
-    if (!opts.outDir.isEmpty()) {
-        foreach (const QString &textureFilename, m_importer->externalTextures()) {
-            QString dst = opts.outDir + textureFilename;
-            QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
-            m_files.insert(QFileInfo(dst).fileName());
+    foreach (const QString &textureFilename, m_importer->externalTextures()) {
+        const QString dst = opts.outDir + textureFilename;
+        m_files.insert(QFileInfo(dst).fileName());
+        // External textures need copying only when output dir was specified.
+        if (!opts.outDir.isEmpty()) {
+            const QString src = QFileInfo(inputFilename).path() + QStringLiteral("/") + textureFilename;
             if (QFileInfo(src).absolutePath() != QFileInfo(dst).absolutePath()) {
                 if (opts.showLog)
                     qDebug().noquote() << "Copying" << src << "to" << dst;
@@ -1265,6 +1267,7 @@ private:
             QString semantic;
             uint type;
         };
+        QString commonTechniqueName;
         QString vertShader;
         QString fragShader;
         QVector<Param> attributes;
@@ -1551,6 +1554,7 @@ void GltfExporter::initShaderInfo()
     ProgramInfo p;
 
     p = ProgramInfo();
+    p.commonTechniqueName = "PHONG"; // diffuse RGBA, specular RGBA
     p.vertShader = "color.vert";
     p.fragShader = "color.frag";
     p.attributes << ProgramInfo::Param("position", "vertexPosition", "POSITION", GLT_FLOAT_VEC3);
@@ -1567,6 +1571,7 @@ void GltfExporter::initShaderInfo()
     m_progs << p;
 
     p = ProgramInfo();
+    p.commonTechniqueName = "PHONG"; //  diffuse texture, specular RGBA
     p.vertShader = "diffusemap.vert";
     p.fragShader = "diffusemap.frag";
     p.attributes << ProgramInfo::Param("position", "vertexPosition", "POSITION", GLT_FLOAT_VEC3);
@@ -1584,6 +1589,7 @@ void GltfExporter::initShaderInfo()
     m_progs << p;
 
     p = ProgramInfo();
+    p.commonTechniqueName = "PHONG"; // diffuse texture, specular texture
     p.vertShader = "diffusemap.vert";
     p.fragShader = "diffusespecularmap.frag";
     p.attributes << ProgramInfo::Param("position", "vertexPosition", "POSITION", GLT_FLOAT_VEC3);
@@ -1601,6 +1607,7 @@ void GltfExporter::initShaderInfo()
     m_progs << p;
 
     p = ProgramInfo();
+    p.commonTechniqueName = "PHONG"; // diffuse texture, specular RGBA, normalmap texture
     p.vertShader = "normaldiffusemap.vert";
     p.fragShader = "normaldiffusemap.frag";
     p.attributes << ProgramInfo::Param("position", "vertexPosition", "POSITION", GLT_FLOAT_VEC3);
@@ -1620,6 +1627,7 @@ void GltfExporter::initShaderInfo()
     m_progs << p;
 
     p = ProgramInfo();
+    p.commonTechniqueName = "PHONG"; // diffuse texture, specular texture, normalmap texture
     p.vertShader = "normaldiffusemap.vert";
     p.fragShader = "normaldiffusespecularmap.frag";
     p.attributes << ProgramInfo::Param("position", "vertexPosition", "POSITION", GLT_FLOAT_VEC3);
@@ -1743,6 +1751,23 @@ static inline QJsonArray vec2jsvec(const QVector<float> &v)
     return arr;
 }
 
+static inline void promoteColorsToRGBA(QJsonObject *obj)
+{
+    QJsonObject::iterator it = obj->begin(), itEnd = obj->end();
+    while (it != itEnd) {
+        QJsonArray arr = it.value().toArray();
+        if (arr.count() == 3) {
+            const QString key = it.key();
+            if (key == QStringLiteral("ambient")
+                    || key == QStringLiteral("diffuse")
+                    || key == QStringLiteral("specular"))
+                arr.append(1);
+                *it = arr;
+        }
+        ++it;
+    }
+}
+
 void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QString> *textureNameMap)
 {
     for (uint i = 0; i < m_importer->materialCount(); ++i) {
@@ -1801,7 +1826,8 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
                 opaque = false;
             vals[it.key()] = col2jsvec(it.value(), alpha);
         }
-        material["values"] = vals;
+        if (opts.shaders)
+            material["values"] = vals;
 
         ProgramInfo *prog = chooseProgram(i);
         TechniqueInfo techniqueInfo;
@@ -1821,13 +1847,37 @@ void GltfExporter::exportMaterials(QJsonObject &materials, QHash<QString, QStrin
             m_usedPrograms.insert(prog);
         }
 
-        if (opts.showLog)
-            qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
+        if (opts.shaders) {
+            if (opts.showLog)
+                qDebug().noquote() << "Material #" << i << "->" << techniqueInfo.name;
 
-        material["technique"] = techniqueInfo.name;
-        if (opts.genCore) {
-            material["techniqueCore"] = techniqueInfo.coreName;
-            material["techniqueGL2"] = techniqueInfo.gl2Name;
+            material["technique"] = techniqueInfo.name;
+            if (opts.genCore) {
+                material["techniqueCore"] = techniqueInfo.coreName;
+                material["techniqueGL2"] = techniqueInfo.gl2Name;
+            }
+        }
+
+        if (opts.commonMat) {
+            // The built-in shaders we output are of little use in practice.
+            // Ideally we want Qt3D's own standard materials in order to have our
+            // models participate in lighting for example. To achieve this, output
+            // a KHR_materials_common block which Qt3D's loader will recognize and
+            // prefer over the shader-based techniques.
+            if (!prog->commonTechniqueName.isEmpty()) {
+                QJsonObject commonMat;
+                commonMat["technique"] = prog->commonTechniqueName;
+                // Set the values as-is. "normalmap" is our own extension, not in the spec.
+                // However, RGB colors have to be promoted to RGBA since the spec uses
+                // vec4, and all types are pre-defined for common material values.
+                promoteColorsToRGBA(&vals);
+                commonMat["values"] = vals;
+                if (!opaque)
+                    commonMat["transparent"] = true;
+                QJsonObject extensions;
+                extensions["KHR_materials_common"] = commonMat;
+                material["extensions"] = extensions;
+            }
         }
 
         materials[matInfo.name] = material;
@@ -1876,6 +1926,9 @@ void GltfExporter::exportParameter(QJsonObject &dst, const QVector<ProgramInfo::
 
 void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
 {
+    if (!opts.shaders)
+        return;
+
     QJsonObject shaders;
     QHash<QString, QString> shaderMap;
     foreach (ProgramInfo *prog, m_usedPrograms) {
@@ -2360,21 +2413,11 @@ void GltfExporter::save(const QString &inputFilename)
     }
     m_obj["samplers"] = samplers;
 
-    // Just a dummy light, never referenced.
-    QJsonObject lights;
-    QJsonObject light;
-    QJsonObject pointLight;
-    pointLight["color"] = col2jsvec(QVector<float>() << 1 << 1 << 1);
-    light["point"] = pointLight;
-    light["type"] = QStringLiteral("point");
-    lights["light_1"] = light;
-    m_obj["lights"] = lights;
-
     exportTechniques(m_obj, basename);
 
     m_doc.setObject(m_obj);
 
-    QString gltfName = opts.outDir + basename + QStringLiteral(".gltf");
+    QString gltfName = opts.outDir + basename + QStringLiteral(".qgltf");
     f.setFileName(gltfName);
     if (opts.showLog)
         qDebug().noquote() << (opts.genBin ? "Writing (binary JSON)" : "Writing") << gltfName;
@@ -2426,9 +2469,9 @@ int main(int argc, char **argv)
     cmdLine.addVersionOption();
     QCommandLineOption outDirOpt(QStringLiteral("d"), QStringLiteral("Place all output data into <dir>"), QStringLiteral("dir"));
     cmdLine.addOption(outDirOpt);
-    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .gltf file"));
+    QCommandLineOption binOpt(QStringLiteral("b"), QStringLiteral("Store binary JSON data in the .qgltf file"));
     cmdLine.addOption(binOpt);
-    QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .gltf file"));
+    QCommandLineOption compactOpt(QStringLiteral("m"), QStringLiteral("Store compact JSON in the .qgltf file"));
     cmdLine.addOption(compactOpt);
     QCommandLineOption compOpt(QStringLiteral("c"), QStringLiteral("qCompress() vertex/index data in the .bin file"));
     cmdLine.addOption(compOpt);
@@ -2442,6 +2485,10 @@ int main(int argc, char **argv)
     cmdLine.addOption(coreOpt);
     QCommandLineOption etc1Opt(QStringLiteral("1"), QStringLiteral("Generate ETC1 compressed textures by invoking etc1tool (PNG only)"));
     cmdLine.addOption(etc1Opt);
+    QCommandLineOption noCommonMatOpt(QStringLiteral("T"), QStringLiteral("Do not generate KHR_materials_common block"));
+    cmdLine.addOption(noCommonMatOpt);
+    QCommandLineOption noShadersOpt(QStringLiteral("S"), QStringLiteral("Do not generate shaders/programs/techniques"));
+    cmdLine.addOption(noShadersOpt);
     QCommandLineOption silentOpt(QStringLiteral("s"), QStringLiteral("Silence debug output"));
     cmdLine.addOption(silentOpt);
     cmdLine.process(app);
@@ -2461,6 +2508,8 @@ int main(int argc, char **argv)
     }
     opts.genCore = cmdLine.isSet(coreOpt);
     opts.texComp = cmdLine.isSet(etc1Opt) ? Options::ETC1 : Options::NoTextureCompression;
+    opts.commonMat = !cmdLine.isSet(noCommonMatOpt);
+    opts.shaders = !cmdLine.isSet(noShadersOpt);
     opts.showLog = !cmdLine.isSet(silentOpt);
     if (!opts.outDir.isEmpty()) {
         if (!opts.outDir.endsWith('/'))

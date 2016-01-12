@@ -362,7 +362,7 @@ void RenderView::sort()
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
                     if (cachedUniforms.contains(it.key())) {
-                        const QUniformValue *refValue = cachedUniforms[it.key()];
+                        const QUniformValue *refValue = cachedUniforms.value(it.key());
                         if (*const_cast<QUniformValue *>(refValue) == *it.value()) {
                             destroyUniformValue(it.value(), m_allocator);
                             it = uniforms.erase(it);
@@ -475,6 +475,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                 parametersFromMaterialEffectTechnique(&parameters, m_manager->parameterManager(), material, effect, technique);
 
                 // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
+                m_commands.reserve(m_commands.size() + passes.size());
                 Q_FOREACH (RenderPass *pass, passes) {
 
                     // Add the RenderPass Parameters
@@ -508,6 +509,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
                     // Replace with more sophisticated mechanisms later.
                     std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
                     QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+                    activeLightSources.reserve(m_lightSources.count());
                     int lightCount = 0;
                     for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
                         activeLightSources.append(m_lightSources[i]);
@@ -622,8 +624,8 @@ void RenderView::setDefaultUniformBlockShaderDataValue(QUniformPack &uniformPack
     // Build name-value map for the block
     m_data->m_uniformBlockBuilder.buildActiveUniformNameValueMapStructHelper(shaderData, structName);
     // Set uniform values for each entrie of the block name-value map
-    QHash<QString, QVariant>::const_iterator activeValuesIt = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.end();
+    QHash<QString, QVariant>::const_iterator activeValuesIt = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.constBegin();
+    const QHash<QString, QVariant>::const_iterator activeValuesEnd = m_data->m_uniformBlockBuilder.activeUniformNamesToValue.constEnd();
 
     while (activeValuesIt != activeValuesEnd) {
         setUniformValue(uniformPack, activeValuesIt.key(), activeValuesIt.value());
@@ -764,9 +766,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
 
                 // Lights
-                const QString LIGHT_ARRAY_NAME = QStringLiteral("lights");
                 const QString LIGHT_COUNT_NAME = QStringLiteral("lightCount");
-                const QString LIGHT_POSITION_NAME = QStringLiteral("position");
+                const QString LIGHT_POSITION_NAME = QStringLiteral(".position");
 
                 int lightIdx = 0;
                 Q_FOREACH (const LightSource &lightSource, activeLightSources) {
@@ -777,8 +778,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     Q_FOREACH (Light *light, lightSource.lights) {
                         if (lightIdx == MAX_LIGHTS)
                             break;
-                        QString structName = QString(QStringLiteral("%1[%2]")).arg(LIGHT_ARRAY_NAME).arg(lightIdx);
-                        setUniformValue(command->m_uniforms, structName + QLatin1Char('.') + LIGHT_POSITION_NAME, worldPos);
+                        const QString structName = QStringLiteral("lights[") + QString::number(lightIdx) + QLatin1Char(']');
+                        setUniformValue(command->m_uniforms, structName + LIGHT_POSITION_NAME, worldPos);
                         setDefaultUniformBlockShaderDataValue(command->m_uniforms, shader, light, structName);
                         ++lightIdx;
                     }

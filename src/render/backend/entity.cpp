@@ -364,6 +364,7 @@ template<>
 QList<HLayer> Entity::componentsHandle<Layer>() const
 {
     QList<HLayer> layerHandles;
+    layerHandles.reserve(m_layerComponents.size());
     Q_FOREACH (const QNodeId &id, m_layerComponents)
         layerHandles.append(m_nodeManagers->layerManager()->lookupHandle(id));
     return layerHandles;
@@ -373,6 +374,7 @@ template<>
 QList<HShaderData> Entity::componentsHandle<ShaderData>() const
 {
     QList<HShaderData> shaderDataHandles;
+    shaderDataHandles.reserve(m_shaderDataComponents.size());
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
         shaderDataHandles.append(m_nodeManagers->shaderDataManager()->lookupHandle(id));
     return shaderDataHandles;
@@ -388,6 +390,7 @@ template<>
 QList<HLight> Entity::componentsHandle<Light>() const
 {
     QList<HLight> lightHandles;
+    lightHandles.reserve(m_lightComponents.size());
     Q_FOREACH (const QNodeId &id, m_lightComponents)
         lightHandles.append(m_nodeManagers->lightManager()->lookupHandle(id));
     return lightHandles;
@@ -429,6 +432,7 @@ template<>
 QList<Layer *> Entity::renderComponents<Layer>() const
 {
     QList<Layer *> layers;
+    layers.reserve(m_layerComponents.size());
     Q_FOREACH (const QNodeId &id, m_layerComponents)
         layers.append(m_nodeManagers->layerManager()->lookupResource(id));
     return layers;
@@ -438,6 +442,7 @@ template<>
 QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
     QList<ShaderData *> shaderDatas;
+    shaderDatas.reserve(m_shaderDataComponents.size());
     Q_FOREACH (const QNodeId &id, m_shaderDataComponents)
         shaderDatas.append(m_nodeManagers->shaderDataManager()->lookupResource(id));
     return shaderDatas;
@@ -447,6 +452,7 @@ template<>
 QList<Light *> Entity::renderComponents<Light>() const
 {
     QList<Light *> lights;
+    lights.reserve(m_lightComponents.size());
     Q_FOREACH (const QNodeId &id, m_lightComponents)
         lights.append(m_nodeManagers->lightManager()->lookupResource(id));
     return lights;

@@ -230,6 +230,15 @@ void GraphicsHelperGL3::blendEquation(GLenum mode)
     m_funcs->glBlendEquation(mode);
 }
 
+void GraphicsHelperGL3::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
+{
+    Q_UNUSED(buf);
+    Q_UNUSED(sfactor);
+    Q_UNUSED(dfactor);
+
+    qWarning() << "glBlendFunci() not supported by OpenGL 3.0 (since OpenGL 4.0)";
+}
+
 void GraphicsHelperGL3::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
