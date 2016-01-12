@@ -56,7 +56,7 @@ class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDeviceBackendNode : public Qt3DCor
 public:
     explicit QAbstractPhysicalDeviceBackendNode(QBackendNode::Mode mode);
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
+    virtual void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void setInputAspect(QInputAspect *aspect);
