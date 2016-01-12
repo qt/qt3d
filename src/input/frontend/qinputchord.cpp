@@ -47,8 +47,10 @@ class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivat
 public:
     QInputChordPrivate()
         : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        , m_tolerance(0)
     {}
 
+    int m_tolerance;
 };
 
 QInputChord::QInputChord(Qt3DCore::QNode *parent)
@@ -62,11 +64,26 @@ QInputChord::~QInputChord()
     QNode::cleanup();
 }
 
+int QInputChord::tolerance() const
+{
+    Q_D(const QInputChord);
+    return d->m_tolerance;
+}
 
+void QInputChord::setTolerance(int tolerance)
+{
+    Q_D(QInputChord);
+    if (d->m_tolerance != tolerance) {
+        d->m_tolerance = tolerance;
+        emit toleranceChanged(tolerance);
+    }
+}
 
 void QInputChord::copy(const Qt3DCore::QNode *ref)
 {
     QAbstractAggregateActionInput::copy(ref);
+    const QInputChord *input = static_cast<const QInputChord *>(ref);
+    d_func()->m_tolerance = input->d_func()->m_tolerance;
 }
 
 } // Qt3DInput

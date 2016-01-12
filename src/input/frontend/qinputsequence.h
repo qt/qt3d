@@ -51,10 +51,27 @@ class QInputSequencePrivate;
 class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractAggregateActionInput
 {
     Q_OBJECT
+    Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
+    Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
+    Q_PROPERTY(bool sequential READ sequential WRITE setSequential NOTIFY sequentialChanged)
 
 public:
     explicit QInputSequence(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QInputSequence();
+
+    int timeout() const;
+    int interval() const;
+    bool sequential() const;
+
+public Q_SLOTS:
+    void setTimeout(int timeout);
+    void setInterval(int interval);
+    void setSequential(bool sequential);
+
+Q_SIGNALS:
+    void timeoutChanged(int timeout);
+    void intervalChanged(int interval);
+    void sequentialChanged(bool sequential);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

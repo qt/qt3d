@@ -48,8 +48,14 @@ class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPri
 public:
     QInputSequencePrivate()
         : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        , m_timeout(0)
+        , m_interval(0)
+        , m_sequential(true)
     {}
 
+    int m_timeout;
+    int m_interval;
+    bool m_sequential;
 };
 
 QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
@@ -63,11 +69,58 @@ QInputSequence::~QInputSequence()
     QNode::cleanup();
 }
 
+int QInputSequence::timeout() const
+{
+    Q_D(const QInputSequence);
+    return d->m_timeout;
+}
 
+int QInputSequence::interval() const
+{
+    Q_D(const QInputSequence);
+    return d->m_interval;
+}
+
+bool QInputSequence::sequential() const
+{
+    Q_D(const QInputSequence);
+    return d->m_sequential;
+}
+
+void QInputSequence::setTimeout(int timeout)
+{
+    Q_D(QInputSequence);
+    if (d->m_timeout != timeout) {
+        d->m_timeout = timeout;
+        emit timeoutChanged(timeout);
+    }
+}
+
+void QInputSequence::setInterval(int interval)
+{
+    Q_D(QInputSequence);
+    if (d->m_interval != interval) {
+        d->m_interval = interval;
+        emit intervalChanged(interval);
+    }
+}
+
+void QInputSequence::setSequential(bool sequential)
+{
+    Q_D(QInputSequence);
+    if (d->m_sequential != sequential) {
+        d->m_sequential = sequential;
+        emit sequentialChanged(sequential);
+    }
+}
 
 void QInputSequence::copy(const Qt3DCore::QNode *ref)
 {
     QAbstractAggregateActionInput::copy(ref);
+    const QInputSequence *input = static_cast<const QInputSequence *>(ref);
+    d_func()->m_timeout = input->d_func()->m_timeout;
+    d_func()->m_interval = input->d_func()->m_interval;
+    d_func()->m_sequential = input->d_func()->m_sequential;
 }
 
 } // Qt3DInput
