@@ -37,6 +37,7 @@
 #ifndef QT3DRENDER_QTEXTUREPROVIDERS_H
 #define QT3DRENDER_QTEXTUREPROVIDERS_H
 
+#include <QUrl>
 #include <Qt3DRender/qabstracttextureprovider.h>
 
 QT_BEGIN_NAMESPACE
@@ -129,6 +130,29 @@ class QT3DRENDERSHARED_EXPORT QTextureBuffer : public QAbstractTextureProvider
 public:
     explicit QTextureBuffer(Qt3DCore::QNode *parent = 0);
     ~QTextureBuffer();
+};
+
+class QTextureLoaderPrivate;
+
+class QT3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTextureProvider
+{
+    Q_OBJECT
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+
+public:
+    explicit QTextureLoader(Qt3DCore::QNode *parent = 0);
+    ~QTextureLoader();
+
+    QUrl source() const;
+
+public Q_SLOTS:
+    void setSource(const QUrl &source);
+
+Q_SIGNALS:
+    void sourceChanged(const QUrl &source);
+
+private:
+    Q_DECLARE_PRIVATE(QTextureLoader)
 };
 
 } // namespace Qt3DRender

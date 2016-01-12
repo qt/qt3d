@@ -81,6 +81,8 @@ public :
     QList<QAbstractTextureImage *> m_textureImages;
     int m_maximumLayers;
     bool m_unique;
+
+    QTextureDataFunctorPtr m_dataFunctor;
 };
 
 } // QT3D

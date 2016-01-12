@@ -35,14 +35,14 @@
 ****************************************************************************/
 
 #include "qtextureimage.h"
+#include "qtextureimage_p.h"
 #include "qabstracttextureimage_p.h"
-#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureImagePrivate: public QAbstractTextureImagePrivate
+class QTextureImagePrivate : public QAbstractTextureImagePrivate
 {
 public:
     QTextureImagePrivate()
@@ -52,52 +52,6 @@ public:
 
     Q_DECLARE_PUBLIC(QTextureImage)
     QUrl m_source;
-};
-
-class QImageTextureDataFunctor : public QTextureDataFunctor
-{
-public:
-    QImageTextureDataFunctor(const QUrl &url)
-        : QTextureDataFunctor()
-        , m_url(url)
-    {}
-
-    // Will be executed from within a QAspectJob
-    QTexImageDataPtr operator ()() Q_DECL_FINAL
-    {
-        QTexImageDataPtr dataPtr;
-        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")
-#ifdef Q_OS_ANDROID
-                             || m_url.scheme() == QStringLiteral("assets")
-#endif
-                                                                          ) {
-            QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
-            dataPtr.reset(new QTexImageData());
-            if (dataPtr->setCompressedFile(source))
-                return dataPtr;
-            QImage img;
-            if (img.load(source)) {
-                dataPtr->setImage(img);
-                return dataPtr;
-            }
-            dataPtr.reset();
-            qWarning() << "Failed to load image : " << source;
-        } else {
-            qWarning() << "implement loading from remote URLs";
-        }
-        return dataPtr;
-    }
-
-    bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
-    {
-        const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
-        return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
-    }
-
-    QT3D_FUNCTOR(QImageTextureDataFunctor)
-
-private:
-    QUrl m_url;
 };
 
 /*!

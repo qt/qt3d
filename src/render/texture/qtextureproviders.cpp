@@ -34,11 +34,26 @@
 **
 ****************************************************************************/
 
+#include "qtextureimage.h"
+#include "qabstracttextureimage.h"
+#include "qtextureimage_p.h"
 #include "qtextureproviders.h"
+#include "qabstracttextureprovider_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+class QTextureLoaderPrivate : public QAbstractTextureProviderPrivate
+{
+public:
+    QTextureLoaderPrivate()
+        : QAbstractTextureProviderPrivate()
+    {
+    }
+
+    QUrl m_source;
+};
 
 /*!
     \class Qt3DRender::QTexture1D
@@ -249,6 +264,32 @@ QTextureBuffer::QTextureBuffer(QNode *parent)
 
 QTextureBuffer::~QTextureBuffer()
 {
+}
+
+QTextureLoader::QTextureLoader(QNode *parent)
+    : QAbstractTextureProvider(*new QTextureLoaderPrivate, parent)
+{
+    d_func()->m_target = TargetAutomatic;
+}
+
+QTextureLoader::~QTextureLoader()
+{
+}
+
+QUrl QTextureLoader::source() const
+{
+    Q_D(const QTextureLoader);
+    return d->m_source;
+}
+
+void QTextureLoader::setSource(const QUrl& source)
+{
+    Q_D(QTextureLoader);
+    if (source != d->m_source) {
+        d->m_source = source;
+        d->m_dataFunctor.reset(new QImageTextureDataFunctor(source));
+        emit sourceChanged(source);
+    }
 }
 
 } // namespace Qt3DRender

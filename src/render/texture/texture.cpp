@@ -61,6 +61,7 @@ Texture::Texture()
     , m_height(1)
     , m_depth(1)
     , m_layers(1)
+    , m_mipLevels(1)
     , m_generateMipMaps(false)
     , m_target(QAbstractTextureProvider::Target2D)
     , m_format(QAbstractTextureProvider::RGBA8_UNorm)
@@ -99,6 +100,7 @@ void Texture::cleanup()
     m_height = 1;
     m_depth = 1;
     m_layers = 1;
+    m_mipLevels = 1;
     m_generateMipMaps = false;
     m_target = QAbstractTextureProvider::Target2D;
     m_format = QAbstractTextureProvider::RGBA8_UNorm;
@@ -119,6 +121,8 @@ void Texture::cleanup()
     m_textureManager = Q_NULLPTR;
     m_textureImageManager = Q_NULLPTR;
     m_textureDataManager = Q_NULLPTR;
+    m_dataFunctor.clear();
+    m_textureDataHandle = HTextureData();
 }
 
 // AspectThread
@@ -145,6 +149,10 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
         m_comparisonMode = texture->comparisonMode();
         m_layers = texture->maximumLayers();
         m_unique = texture->isUnique();
+        m_dataFunctor = texture->dataFunctor();
+
+        if (m_dataFunctor)
+            addToPendingTextureJobs();
     }
 }
 
@@ -230,6 +238,11 @@ QOpenGLTexture *Texture::buildGLTexture()
         return Q_NULLPTR;
     }
 
+    if (m_target == QAbstractTextureProvider::TargetAutomatic) {
+        qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
+        return Q_NULLPTR;
+    }
+
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
     if (m_format == QAbstractTextureProvider::Automatic)
@@ -278,8 +291,14 @@ QOpenGLTexture *Texture::buildGLTexture()
             m_target == QAbstractTextureProvider::TargetCubeMapArray)
         glTex->setLayers(m_layers);
 
-    if (m_generateMipMaps)
+    if (m_generateMipMaps) {
         glTex->setMipLevels(glTex->maximumMipLevels());
+    } else {
+        glTex->setAutoMipMapGenerationEnabled(false);
+        glTex->setMipBaseLevel(0);
+        glTex->setMipMaxLevel(m_mipLevels - 1);
+        glTex->setMipLevels(m_mipLevels);
+    }
 
     if (!glTex->create()) {
         qWarning() << Q_FUNC_INFO << "creating QOpenGLTexture failed";
@@ -294,6 +313,52 @@ QOpenGLTexture *Texture::buildGLTexture()
         qWarning() << Q_FUNC_INFO << err;
 
     return glTex;
+}
+
+// RenderThread
+void Texture::setToGLTexture(QTexImageData *imgData)
+{
+    Q_ASSERT(m_gl && m_gl->isCreated() && m_gl->isStorageAllocated());
+
+    const int layers = imgData->layers();
+    const int faces = imgData->faces();
+    const int mipLevels = m_generateMipMaps ? 1 : imgData->mipLevels();
+
+    for (int layer = 0; layer < layers; layer++) {
+        for (int face = 0; face < faces; face++) {
+            for (int level = 0; level < mipLevels; level++) {
+                // ensure we don't accidently cause a detach / copy of the raw bytes
+                const QByteArray &bytes(imgData->data(layer, face, level));
+
+                if (imgData->isCompressed()) {
+                    m_gl->setCompressedData(level,
+                            0,
+                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                            bytes.size(),
+                            bytes.constData());
+                } else {
+                    QOpenGLPixelTransferOptions uploadOptions;
+                    uploadOptions.setAlignment(1);
+                    m_gl->setData(level,
+                            0,
+                            static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
+                            imgData->pixelFormat(),
+                            imgData->pixelType(),
+                            bytes.constData(),
+                            &uploadOptions);
+                }
+            }
+        }
+    }
+
+    // FIXME : make this conditional on Qt version
+    // work-around issue in QOpenGLTexture DSA emulation which rasies
+    // an Invalid Enum error
+    if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
+        int err = ctx->functions()->glGetError();
+        if (err)
+            qWarning() << Q_FUNC_INFO << err;
+    }
 }
 
 // RenderThread
@@ -352,7 +417,7 @@ void Texture::updateWrapAndFilters()
 
 void Texture::updateDNA()
 {
-    int key = m_width + m_height + m_depth + m_layers +
+    int key = m_width + m_height + m_depth + m_layers + m_mipLevels +
                          (m_generateMipMaps ? 1 : 0) +
                          static_cast<int>(m_target) +
                          static_cast<int>(m_format) +
@@ -386,6 +451,14 @@ bool Texture::isTextureReset() const
     return m_isDirty;
 }
 
+void Texture::setTarget(QAbstractTextureProvider::Target target)
+{
+    if (target != m_target) {
+        m_target = target;
+        m_isDirty = true;
+    }
+}
+
 void Texture::setSize(int width, int height, int depth)
 {
     if (width != m_width) {
@@ -407,6 +480,14 @@ void Texture::setFormat(QAbstractTextureProvider::TextureFormat format)
     if (format != m_format) {
         m_format = format;
         m_isDirty |= true;
+    }
+}
+
+void Texture::setMipLevels(int mipLevels)
+{
+    if (mipLevels != m_mipLevels) {
+        m_mipLevels = mipLevels;
+        m_isDirty = true;
     }
 }
 
@@ -527,6 +608,12 @@ void Texture::setTextureDataManager(TextureDataManager *manager)
 // RenderThread
 void Texture::updateAndLoadTextureImage()
 {
+    if (!m_textureDataHandle.isNull()) {
+        QTexImageData *data = m_textureDataManager->data(m_textureDataHandle);
+        if (data != Q_NULLPTR)
+            setToGLTexture(data);
+    }
+
     QVector<TextureImageDNA> dnas;
     Q_FOREACH (HTextureImage t, m_textureImages) {
         TextureImage *img = m_textureImageManager->data(t);
@@ -543,6 +630,7 @@ void Texture::updateAndLoadTextureImage()
             }
         }
     }
+
     m_dataUploadRequired = false;
 }
 

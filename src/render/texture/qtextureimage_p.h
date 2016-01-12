@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_TEXTUREDATA_P_H
-#define QT3DRENDER_TEXTUREDATA_P_H
+#ifndef QT3DRENDER_TEXTUREIMAGE_P_H
+#define QT3DRENDER_TEXTUREIMAGE_P_H
 
 //
 //  W A R N I N G
@@ -48,52 +48,57 @@
 // We mean it.
 //
 
-#include "qtexturedata.h"
+#include "qabstracttextureimage.h"
+#include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTexImageDataPrivate
+class QImageTextureDataFunctor : public QTextureDataFunctor
 {
 public:
-    QTexImageDataPrivate();
+    QImageTextureDataFunctor(const QUrl &url)
+        : QTextureDataFunctor()
+        , m_url(url)
+    {}
 
-    void setData(const QByteArray &data, QOpenGLTexture::PixelFormat fmt,
-                 QOpenGLTexture::PixelType ptype);
+    // Will be executed from within a QAspectJob
+    QTexImageDataPtr operator ()() Q_DECL_FINAL
+    {
+        QTexImageDataPtr dataPtr;
+        if (m_url.isLocalFile() || m_url.scheme() == QStringLiteral("qrc")) {
+            QString source = Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(m_url);
+            dataPtr.reset(new QTexImageData());
+            if (dataPtr->setCompressedFile(source))
+                return dataPtr;
+            QImage img;
+            if (img.load(source)) {
+                dataPtr->setImage(img);
+                return dataPtr;
+            }
+            dataPtr.reset();
+            qWarning() << "Failed to load image : " << source;
+        } else {
+            qWarning() << "implement loading from remote URLs";
+        }
+        return dataPtr;
+    }
 
-    bool setCompressedFile(const QString &source);
+    bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
+    {
+        const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
+        return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
+    }
 
-    QByteArray data(int layer, int face, int mipmapLevel) const;
-
-    int m_width;
-    int m_height;
-    int m_depth;
-    int m_layers;
-    int m_faces;
-    int m_mipLevels;
-    int m_blockSize;
-
-    QOpenGLTexture::Target m_target;
-    QOpenGLTexture::TextureFormat m_format;
-    QOpenGLTexture::PixelFormat m_pixelFormat;
-    QOpenGLTexture::PixelType m_pixelType;
-
-    bool m_isCompressed;
-    QByteArray m_data;
+    QT3D_FUNCTOR(QImageTextureDataFunctor)
 
 private:
-    int layerSize() const;
-    int faceSize() const;
-    int mipmapLevelSize(int level) const;
-
-    bool setPkmFile(const QString &source);
-    bool setDdsFile(const QString &source);
+    QUrl m_url;
 };
 
 } // namespace Qt3DRender
 
-
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_TEXTUREDATA_P_H
+#endif // QT3DRENDER_TEXTUREIMAGE_P_H

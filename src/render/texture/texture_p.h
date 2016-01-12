@@ -99,16 +99,24 @@ public:
 
     void requestTextureDataUpdate();
     void addToPendingTextureJobs();
+    void setTarget(QAbstractTextureProvider::Target target);
     void setSize(int width, int height, int depth);
     void setFormat(QAbstractTextureProvider::TextureFormat format);
+    void setMipLevels(int mipmapLevels);
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
     inline QAbstractTextureProvider::TextureFormat format() const { return m_format; }
+    inline QAbstractTextureProvider::Target target() const { return m_target; }
+    inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
+
+    inline QTextureDataFunctorPtr dataFunctor() const { return m_dataFunctor; }
+    void setTextureDataHandle(HTextureData handle) { m_textureDataHandle = handle; }
 
 private:
     QOpenGLTexture *m_gl;
 
     QOpenGLTexture *buildGLTexture();
+    void setToGLTexture(QTexImageData *imgData);
     void setToGLTexture(TextureImage *rImg, QTexImageData *imgData);
     void updateWrapAndFilters();
 
@@ -116,6 +124,7 @@ private:
     int m_height;
     int m_depth;
     int m_layers;
+    int m_mipLevels;
     bool m_generateMipMaps;
     QAbstractTextureProvider::Target m_target;
     QAbstractTextureProvider::TextureFormat m_format;
@@ -127,6 +136,9 @@ private:
     float m_maximumAnisotropy;
     QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
+
+    QTextureDataFunctorPtr m_dataFunctor;
+    HTextureData m_textureDataHandle;
 
     QVector<HTextureImage> m_textureImages;
 

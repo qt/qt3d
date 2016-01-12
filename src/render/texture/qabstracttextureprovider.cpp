@@ -529,6 +529,12 @@ QAbstractTextureProvider::ComparisonMode QAbstractTextureProvider::comparisonMod
     return d->m_comparisonMode;
 }
 
+QTextureDataFunctorPtr QAbstractTextureProvider::dataFunctor() const
+{
+    Q_D(const QAbstractTextureProvider);
+    return d->m_dataFunctor;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

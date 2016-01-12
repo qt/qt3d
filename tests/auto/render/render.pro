@@ -43,5 +43,6 @@ contains(QT_CONFIG, private_tests) {
         boundingvolumedebug \
         qdefaultmeshes \
         trianglesextractor \
-        triangleboundingvolume
+        triangleboundingvolume \
+        ddstextures
 }

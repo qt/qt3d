@@ -63,6 +63,13 @@ public:
     int width() const;
     int height() const;
     int depth() const;
+
+    int layers() const;
+    int mipLevels() const;
+    int faces() const;
+
+    QOpenGLTexture::Target target() const;
+
     QOpenGLTexture::TextureFormat format() const;
 
     void setImage(const QImage &);
@@ -73,7 +80,7 @@ public:
 
     bool setCompressedFile(const QString &source);
 
-    QByteArray data() const;
+    QByteArray data(int layer = 0, int face = 0, int mipmapLevel = 0) const;
 
     QOpenGLTexture::PixelFormat pixelFormat() const;
 

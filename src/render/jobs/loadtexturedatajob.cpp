@@ -55,6 +55,36 @@ LoadTextureDataJob::~LoadTextureDataJob()
 {
 }
 
+static QPair<HTextureData, QTexImageData *> textureDataFromFunctor(TextureDataManager *textureDataManager, QTextureDataFunctorPtr functor)
+{
+    HTextureData textureDataHandle;
+    QTexImageData *data = Q_NULLPTR;
+
+    QMutexLocker locker(textureDataManager->mutex());
+    // We don't want to take the chance of having two jobs uploading the same functor
+    // because of sync issues
+
+    textureDataHandle = textureDataManager->textureDataFromFunctor(functor);
+
+    // Texture data handle isn't null == there's already a matching TextureData
+    if (!textureDataHandle.isNull()) {
+        data = textureDataManager->data(textureDataHandle);
+    } else {
+        QTexImageDataPtr dataPtr = functor->operator ()();
+        if (dataPtr.isNull()) {
+            qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
+        } else {
+            // Save the QTexImageDataPtr with it's functor as a key
+            textureDataHandle = textureDataManager->acquire();
+            data = textureDataManager->data(textureDataHandle);
+            *data = *(dataPtr.data());
+            textureDataManager->addTextureDataForFunctor(textureDataHandle, functor);
+        }
+    }
+
+    return qMakePair(textureDataHandle, data);
+}
+
 void LoadTextureDataJob::run()
 {
     qCDebug(Jobs) << "Entering" << Q_FUNC_INFO << QThread::currentThread();
@@ -63,40 +93,41 @@ void LoadTextureDataJob::run()
     TextureDataManager *textureDataManager = m_manager->manager<QTexImageData, TextureDataManager>();
 
     if (txt != Q_NULLPTR) {
+        if (txt->dataFunctor()) {
+            QTextureDataFunctorPtr functor = txt->dataFunctor();
+
+            QPair<HTextureData, QTexImageData *> handleData = textureDataFromFunctor(textureDataManager, functor);
+
+            HTextureData textureDataHandle = handleData.first;
+            QTexImageData *data = handleData.second;
+
+            if (txt->target() == QAbstractTextureProvider::TargetAutomatic)
+                txt->setTarget(static_cast<QAbstractTextureProvider::Target>(data->target()));
+
+            if (!txt->isAutoMipMapGenerationEnabled())
+                txt->setMipLevels(data->mipLevels());
+
+            txt->setSize(data->width(), data->height(), data->depth());
+            txt->setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(data->format()));
+            txt->setTextureDataHandle(textureDataHandle);
+        }
+
         // Load update each TextureImage
         Q_FOREACH (HTextureImage texImgHandle, txt->textureImages()) {
             TextureImage *texImg = m_manager->textureImageManager()->data(texImgHandle);
             if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataFunctor().isNull()) {
                 QTextureDataFunctorPtr functor = texImg->dataFunctor();
-                HTextureData textureDataHandle;
-                QTexImageData *data = Q_NULLPTR;
 
-                // scoped for locker
-                {
-                    QMutexLocker locker(textureDataManager->mutex());
-                    // We don't want to take the chance of having two jobs uploading the same functor
-                    // because of sync issues
-                    textureDataHandle = textureDataManager->textureDataFromFunctor(functor);
+                QPair<HTextureData, QTexImageData *> handleData = textureDataFromFunctor(textureDataManager, functor);
 
-                    // Texture data handle isn't null == there's already a matching TextureData
-                    if (!textureDataHandle.isNull()) {
-                        data = textureDataManager->data(textureDataHandle);
-                    } else {
-                        QTexImageDataPtr dataPtr = functor->operator ()();
-                        if (dataPtr.isNull()) {
-                            qCDebug(Jobs) << Q_FUNC_INFO << "Texture has no raw data";
-                        } else {
-                            // Save the QTexImageDataPtr with it's functor as a key
-                            textureDataHandle = textureDataManager->acquire();
-                            data = textureDataManager->data(textureDataHandle);
-                            *data = *(dataPtr.data());
-                            textureDataManager->addTextureDataForFunctor(textureDataHandle, functor);
-                        }
-                    }
+                HTextureData textureDataHandle = handleData.first;
+                QTexImageData *data = handleData.second;
 
-                    // Update HTextureImage Functor to release TextureData when needed
-                    textureDataManager->assignFunctorToTextureImage(functor, texImgHandle);
-                }
+                // XXX released textureDataManager mutex, do we have a race here?
+
+                // Update HTextureImage Functor to release TextureData when needed
+                TextureDataManager *textureDataManager = m_manager->manager<QTexImageData, TextureDataManager>();
+                textureDataManager->assignFunctorToTextureImage(functor, texImgHandle);
 
                 // Set texture size of texture if the first layer / level / face has a valid size
                 // otherwise assume the size was set on the texture itself

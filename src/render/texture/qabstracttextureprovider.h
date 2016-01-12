@@ -48,6 +48,9 @@ namespace Qt3DRender {
 class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
+class QTextureDataFunctor;
+
+typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
 
 class QT3DRENDERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
 {
@@ -78,6 +81,7 @@ public:
     Q_ENUM(Status)
 
     enum Target {
+        TargetAutomatic            = 0,         // Target will be determined by the Qt3D engine
         Target1D                   = 0x0DE0,    // GL_TEXTURE_1D
         Target1DArray              = 0x8C18,    // GL_TEXTURE_1D_ARRAY
         Target2D                   = 0x0DE1,    // GL_TEXTURE_2D
@@ -288,6 +292,7 @@ public:
     int depth() const;
     int maximumLayers() const;
     bool isUnique() const;
+    QTextureDataFunctorPtr dataFunctor() const;
 
 public Q_SLOTS:
     void setFormat(TextureFormat format);
