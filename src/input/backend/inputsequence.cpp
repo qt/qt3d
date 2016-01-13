@@ -77,8 +77,8 @@ void InputSequence::cleanup()
 
 void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
+    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
@@ -88,6 +88,12 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sequential")) {
             m_sequential = propertyChange->value().toBool();
         }
+    } else if (e->type() == Qt3DCore::NodeAdded) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+    } else if (e->type() == Qt3DCore::NodeRemoved) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
 }
 

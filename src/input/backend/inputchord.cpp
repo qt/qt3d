@@ -70,13 +70,19 @@ void InputChord::cleanup()
 
 void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
+    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
     if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("tolerance")) {
             m_tolerance = propertyChange->value().toInt();
         }
+    } else if (e->type() == Qt3DCore::NodeAdded) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+    } else if (e->type() == Qt3DCore::NodeRemoved) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+            m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
     }
 }
 
