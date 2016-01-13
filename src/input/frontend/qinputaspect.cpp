@@ -62,6 +62,8 @@
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qinputchord.h>
+#include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
@@ -70,6 +72,8 @@
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
+#include <Qt3DInput/private/inputchord_p.h>
+#include <Qt3DInput/private/inputsequence_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
@@ -114,6 +118,8 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QAxisSetting>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::AxisSetting, Input::AxisSettingManager>(d_func()->m_inputHandler->axisSettingManager())));
     registerBackendType<Qt3DInput::QAction>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::Action, Input::ActionManager>(d_func()->m_inputHandler->actionManager())));
     registerBackendType<QActionInput>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
+    registerBackendType<QInputChord>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::InputChord, Input::InputChordManager>(d_func()->m_inputHandler->inputChordManager())));
+    registerBackendType<QInputSequence>(QBackendNodeFunctorPtr(new Input::InputNodeFunctor<Input::InputSequence, Input::InputSequenceManager>(d_func()->m_inputHandler->inputSequenceManager())));
     registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeFunctorPtr(new Input::AxisActionHandlerNodeFunctor(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeFunctorPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));

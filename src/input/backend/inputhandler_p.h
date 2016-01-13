@@ -78,6 +78,8 @@ class ActionManager;
 class AxisInputManager;
 class AxisSettingManager;
 class ActionInputManager;
+class InputChordManager;
+class InputSequenceManager;
 class LogicalDeviceManager;
 class GenericPhysicalDeviceManager;
 class GenericDeviceBackendNodeManager;
@@ -99,6 +101,8 @@ public:
     inline AxisActionHandlerManager *axisActionHandlerManager() const { return m_axisActionHandlerManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
+    inline InputChordManager *inputChordManager() const { return m_inputChordManager; }
+    inline InputSequenceManager *inputSequenceManager() const { return m_inputSequenceManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
     inline GenericDeviceBackendNodeManager *genericDeviceBackendNodeManager() const { return m_genericPhysicalDeviceBackendNodeManager; }
 
@@ -146,6 +150,8 @@ private:
     AxisActionHandlerManager *m_axisActionHandlerManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
+    InputChordManager *m_inputChordManager;
+    InputSequenceManager *m_inputSequenceManager;
     LogicalDeviceManager *m_logicalDeviceManager;
     GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;

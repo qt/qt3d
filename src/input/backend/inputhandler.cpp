@@ -63,6 +63,8 @@ InputHandler::InputHandler()
     , m_axisActionHandlerManager(new AxisActionHandlerManager())
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
+    , m_inputChordManager(new InputChordManager())
+    , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
 {

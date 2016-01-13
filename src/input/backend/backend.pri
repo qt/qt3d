@@ -27,7 +27,9 @@ HEADERS += \
     $$PWD/updatehandlerjob_p.h \
     $$PWD/axisactionpayload_p.h \
     $$PWD/keyboardmousegenericdeviceintegration_p.h \
-    $$PWD/genericdevicebackendnode_p.h
+    $$PWD/genericdevicebackendnode_p.h \
+    $$PWD/inputchord_p.h \
+    $$PWD/inputsequence_p.h
 
 SOURCES += \
     $$PWD/cameracontroller.cpp \
@@ -53,6 +55,8 @@ SOURCES += \
     $$PWD/axisactionhandler.cpp \
     $$PWD/updatehandlerjob.cpp \
     $$PWD/keyboardmousegenericdeviceintegration.cpp \
-    $$PWD/genericdevicebackendnode.cpp
+    $$PWD/genericdevicebackendnode.cpp \
+    $$PWD/inputchord.cpp \
+    $$PWD/inputsequence.cpp
 
 INCLUDEPATH += $$PWD

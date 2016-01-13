@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,60 +34,66 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_HANDLE_TYPES_P_H
-#define QT3DINPUT_INPUT_HANDLE_TYPES_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qhandle_p.h>
+#include "inputsequence_p.h"
+#include <Qt3DInput/qinputsequence.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+
 namespace Input {
 
-class KeyboardController;
-class KeyboardInput;
-class MouseController;
-class MouseInput;
-class Axis;
-class AxisActionHandler;
-class AxisInput;
-class AxisSetting;
-class Action;
-class ActionInput;
-class InputSequence;
-class InputChord;
-class LogicalDevice;
-class GenericDeviceBackendNode;
+InputSequence::InputSequence()
+    : Qt3DCore::QBackendNode()
+    , m_inputs()
+    , m_timeout(0)
+    , m_interval(0)
+    , m_sequential(true)
+    , m_enabled(false)
+{
+}
 
-typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
-typedef Qt3DCore::QHandle<KeyboardInput, 16> HKeyboardInput;
-typedef Qt3DCore::QHandle<MouseController, 8> HMouseController;
-typedef Qt3DCore::QHandle<MouseInput, 16> HMouseInput;
-typedef Qt3DCore::QHandle<Axis, 16> HAxis;
-typedef Qt3DCore::QHandle<AxisActionHandler, 16> HAxisActionHandler;
-typedef Qt3DCore::QHandle<AxisSetting, 16> HAxisSetting;
-typedef Qt3DCore::QHandle<Action, 16> HAction;
-typedef Qt3DCore::QHandle<AxisInput, 16> HAxisInput;
-typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
-typedef Qt3DCore::QHandle<InputSequence, 16> HInputSequence;
-typedef Qt3DCore::QHandle<InputChord, 16> HInputChord;
-typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
-typedef Qt3DCore::QHandle<GenericDeviceBackendNode, 8> HGenericDeviceBackendNode;
+void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    QInputSequence *input = static_cast<QInputSequence *>(peer);
+    m_enabled = input->isEnabled();
+    m_timeout = input->timeout();
+    m_interval = input->interval();
+    m_sequential = input->sequential();
+    Q_FOREACH (QAbstractActionInput *i, input->inputs())
+        m_inputs.push_back(i->id());
+}
+
+void InputSequence::cleanup()
+{
+    m_enabled = false;
+    m_timeout = 0;
+    m_interval = 0;
+    m_sequential = true;
+    m_inputs.clear();
+}
+
+void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
+            m_enabled = propertyChange->value().toBool();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
+            m_timeout = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("interval")) {
+            m_interval = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("sequential")) {
+            m_sequential = propertyChange->value().toBool();
+        }
+    }
+}
 
 } // namespace Input
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_HANDLE_TYPES_P_H

@@ -56,6 +56,8 @@
 #include <Qt3DInput/private/mouseinput_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
+#include <Qt3DInput/private/inputsequence_p.h>
+#include <Qt3DInput/private/inputchord_p.h>
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axis_p.h>
@@ -174,6 +176,26 @@ class ActionInputManager : public Qt3DCore::QResourceManager<
 {
 public:
     ActionInputManager() {}
+};
+
+class InputChordManager : public Qt3DCore::QResourceManager<
+        InputChord,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    InputChordManager() {}
+};
+
+class InputSequenceManager : public Qt3DCore::QResourceManager<
+        InputSequence,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    InputSequenceManager() {}
 };
 
 class LogicalDeviceManager : public Qt3DCore::QResourceManager<
