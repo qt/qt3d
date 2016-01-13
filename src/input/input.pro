@@ -5,6 +5,7 @@ QT += core core-private 3dcore 3dcore-private 3drender
 DEFINES += QT3DINPUT_LIBRARY
 
 MODULE = 3dinput
+MODULE_PLUGIN_TYPES = 3dinputdevices
 
 load(qt_module)
 
