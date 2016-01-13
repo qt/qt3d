@@ -79,10 +79,10 @@ QAbstractSceneParser *QSceneParserFactory::create(const QString &name, const QSt
 #ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
-        if (QAbstractSceneParser *ret = qLoadPlugin1<QAbstractSceneParser, QSceneParserPlugin>(directLoader(), name, args))
+        if (QAbstractSceneParser *ret = qLoadPlugin<QAbstractSceneParser, QSceneParserPlugin>(directLoader(), name, args))
             return ret;
     }
-    if (QAbstractSceneParser *ret = qLoadPlugin1<QAbstractSceneParser, QSceneParserPlugin>(loader(), name, args))
+    if (QAbstractSceneParser *ret = qLoadPlugin<QAbstractSceneParser, QSceneParserPlugin>(loader(), name, args))
         return ret;
 #endif
     return Q_NULLPTR;

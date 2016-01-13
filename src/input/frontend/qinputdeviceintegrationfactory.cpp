@@ -78,10 +78,10 @@ QInputDeviceIntegration *QInputDeviceIntegrationFactory::create(const QString &n
 #ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
-        if (QInputDeviceIntegration *ret = qLoadPlugin1<QInputDeviceIntegration, QInputDevicePlugin>(directLoader(), name, args))
+        if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(directLoader(), name, args))
             return ret;
     }
-    if (QInputDeviceIntegration *ret = qLoadPlugin1<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
+    if (QInputDeviceIntegration *ret = qLoadPlugin<QInputDeviceIntegration, QInputDevicePlugin>(loader(), name, args))
         return ret;
 #endif
     return Q_NULLPTR;
