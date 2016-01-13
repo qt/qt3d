@@ -72,6 +72,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
     qmlRegisterType<Qt3DInput::QAxisActionHandler>(uri, 2, 0, "AxisActionHandler");
+    qmlRegisterUncreatableType<Qt3DInput::QAbstractActionInput>(uri, 2, 0, "AbstractActionInput", QStringLiteral("AbstractActionInput is abstract"));
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
     qmlRegisterType<Qt3DInput::QAxisSetting>(uri, 2, 0, "AxisSetting");
