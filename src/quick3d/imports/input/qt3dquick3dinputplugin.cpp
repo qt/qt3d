@@ -49,10 +49,13 @@
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qactioninput.h>
+#include <Qt3DInput/qinputsequence.h>
+#include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3daction_p.h>
+#include <Qt3DQuickInput/private/quick3daggregateaction_p.h>
 #include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
 #include <Qt3DQuickInput/private/quick3dphysicaldevice_p.h>
 
@@ -75,10 +78,13 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QAxisActionHandler>(uri, 2, 0, "AxisActionHandler");
     qmlRegisterUncreatableType<Qt3DInput::QAbstractActionInput>(uri, 2, 0, "AbstractActionInput", QStringLiteral("AbstractActionInput is abstract"));
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
+    qmlRegisterUncreatableType<Qt3DInput::QAbstractAggregateActionInput>(uri, 2, 0, "AbstractAggregateActionInput", QStringLiteral("AbstractAggregateActionInput is abstract"));
     qmlRegisterType<Qt3DInput::QAxisInput>(uri, 2, 0, "AxisInput");
     qmlRegisterType<Qt3DInput::QAxisSetting>(uri, 2, 0, "AxisSetting");
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
     qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
+    qmlRegisterExtendedType<Qt3DInput::QInputSequence, Qt3DInput::Input::Quick::Quick3DAggregateAction>(uri, 2, 0, "InputSequence");
+    qmlRegisterExtendedType<Qt3DInput::QInputChord, Qt3DInput::Input::Quick::Quick3DAggregateAction>(uri, 2, 0, "InputChord");
     qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
     qmlRegisterType<Qt3DInput::QGenericInputDevice>(uri, 2, 0, "GenericInputDevice");
 }
