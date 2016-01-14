@@ -263,6 +263,17 @@ void GraphicsHelperGL3_3::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     qWarning() << "glBlendFunci() not supported by OpenGL 3.3 (since OpenGL 4.0)";
 }
 
+void GraphicsHelperGL3_3::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
+{
+    Q_UNUSED(buf);
+    Q_UNUSED(sRGB);
+    Q_UNUSED(dRGB);
+    Q_UNUSED(sAlpha);
+    Q_UNUSED(dAlpha);
+
+    qWarning() << "glBlendFuncSeparatei() not supported by OpenGL 3.3 (since OpenGL 4.0)";
+}
+
 void GraphicsHelperGL3_3::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
@@ -945,6 +956,16 @@ void GraphicsHelperGL3_3::pointSize(bool programmable, GLfloat value)
         m_funcs->glDisable(GL_PROGRAM_POINT_SIZE);
         m_funcs->glPointSize(value);
     }
+}
+
+void GraphicsHelperGL3_3::enablei(GLenum cap, GLuint index)
+{
+    m_funcs->glEnablei(cap, index);
+}
+
+void GraphicsHelperGL3_3::disablei(GLenum cap, GLuint index)
+{
+    m_funcs->glDisablei(cap, index);
 }
 
 QSize GraphicsHelperGL3_3::getRenderBufferDimensions(GLuint renderBufferId)

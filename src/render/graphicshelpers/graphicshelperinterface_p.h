@@ -86,6 +86,7 @@ public:
     virtual void    bindUniform(const QVariant &v, const ShaderUniform &description) = 0;
     virtual void    blendEquation(GLenum mode) = 0;
     virtual void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) = 0;
+    virtual void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) = 0;
     virtual GLuint  boundFrameBufferObject() = 0;
     virtual void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) = 0;
     virtual bool    checkFrameBufferComplete() = 0;
@@ -95,6 +96,7 @@ public:
     virtual void    depthTest(GLenum mode) = 0;
     virtual void    disableAlphaCoverage() = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;
+    virtual void    disablei(GLenum cap, GLuint index) = 0;
     virtual void    disablePrimitiveRestart() = 0;
     virtual void    dispatchCompute(GLuint wx, GLuint wy, GLuint wz) = 0;
     virtual void    drawArrays(GLenum primitiveType, GLint first, GLsizei count) = 0;
@@ -104,6 +106,7 @@ public:
     virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0) = 0;
     virtual void    enableAlphaCoverage() = 0;
     virtual void    enableClipPlane(int clipPlane) = 0;
+    virtual void    enablei(GLenum cap, GLuint index) = 0;
     virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
     virtual void    frontFace(GLenum mode) = 0;
     virtual QSize   getRenderBufferDimensions(GLuint renderBufferId) = 0;

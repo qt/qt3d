@@ -174,9 +174,10 @@ public:
     void    bindFragOutputs(GLuint shader, const QHash<QString, int> &outputs);
     void    bindUniformBlock(GLuint programId, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
     void    bindUniform(const QVariant &v, const ShaderUniform &description);
+    void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
     void    blendEquation(GLenum mode);
     void    blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor);
-    void    bindShaderStorageBlock(GLuint programId, GLuint shaderStorageBlockIndex, GLuint shaderStorageBlockBinding);
+    void    blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha);
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    clearColor(const QColor &color);
@@ -185,6 +186,7 @@ public:
     void    depthTest(GLenum mode);
     void    disableAlphaCoverage();
     void    disableClipPlane(int clipPlane);
+    void    disablei(GLenum cap, GLuint index);
     void    disablePrimitiveRestart();
     void    dispatchCompute(int x, int y, int z);
     void    drawArrays(GLenum primitiveType, GLint first, GLsizei count);
@@ -193,6 +195,7 @@ public:
     void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
     void    enableAlphaCoverage();
     void    enableClipPlane(int clipPlane);
+    void    enablei(GLenum cap, GLuint index);
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();

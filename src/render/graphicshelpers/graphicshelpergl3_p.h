@@ -77,6 +77,7 @@ public:
     void bindUniform(const QVariant &v, const ShaderUniform &description) Q_DECL_OVERRIDE;
     void blendEquation(GLenum mode) Q_DECL_OVERRIDE;
     void blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor) Q_DECL_OVERRIDE;
+    void blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha) Q_DECL_OVERRIDE;
     GLuint boundFrameBufferObject() Q_DECL_OVERRIDE;
     void buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer) Q_DECL_OVERRIDE;
     bool checkFrameBufferComplete() Q_DECL_OVERRIDE;
@@ -86,6 +87,7 @@ public:
     void depthTest(GLenum mode) Q_DECL_OVERRIDE;
     void disableAlphaCoverage() Q_DECL_OVERRIDE;
     void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    void disablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
     void dispatchCompute(GLuint wx, GLuint wy, GLuint wz) Q_DECL_OVERRIDE;
     void drawArrays(GLenum primitiveType, GLint first, GLsizei count) Q_DECL_OVERRIDE;
@@ -95,6 +97,7 @@ public:
     void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
     void enableAlphaCoverage() Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
+    void enablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void enablePrimitiveRestart(int primitiveRestartIndex) Q_DECL_OVERRIDE;
     void frontFace(GLenum mode) Q_DECL_OVERRIDE;
     QSize getRenderBufferDimensions(GLuint renderBufferId) Q_DECL_OVERRIDE;

@@ -683,6 +683,11 @@ void GraphicsContext::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     m_glHelper->blendFunci(buf, sfactor, dfactor);
 }
 
+void GraphicsContext::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
+{
+    m_glHelper->blendFuncSeparatei(buf, sRGB, dRGB, sAlpha, dAlpha);
+}
+
 void GraphicsContext::alphaTest(GLenum mode1, GLenum mode2)
 {
     m_glHelper->alphaTest(mode1, mode2);
@@ -796,6 +801,16 @@ void GraphicsContext::dispatchCompute(int x, int y, int z)
 {
     if (m_glHelper->supportsFeature(GraphicsHelperInterface::Compute))
         m_glHelper->dispatchCompute(x, y, z);
+}
+
+void GraphicsContext::enablei(GLenum cap, GLuint index)
+{
+    m_glHelper->enablei(cap, index);
+}
+
+void GraphicsContext::disablei(GLenum cap, GLuint index)
+{
+    m_glHelper->disablei(cap, index);
 }
 
 /*!

@@ -236,6 +236,17 @@ void GraphicsHelperES2::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     qWarning() << "glBlendFunci() not supported by OpenGL ES 2.0";
 }
 
+void GraphicsHelperES2::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
+{
+    Q_UNUSED(buf);
+    Q_UNUSED(sRGB);
+    Q_UNUSED(dRGB);
+    Q_UNUSED(sAlpha);
+    Q_UNUSED(dAlpha);
+
+    qWarning() << "glBlendFuncSeparatei() not supported by OpenGL ES 2.0";
+}
+
 void GraphicsHelperES2::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << Q_FUNC_INFO << "AlphaTest not available with OpenGL ES 2.0";
@@ -577,6 +588,20 @@ void GraphicsHelperES2::pointSize(bool programmable, GLfloat value)
             warned = true;
         }
     }
+}
+
+void GraphicsHelperES2::enablei(GLenum cap, GLuint index)
+{
+    Q_UNUSED(cap);
+    Q_UNUSED(index);
+    qWarning() << "glEnablei() not supported by OpenGL ES 2.0";
+}
+
+void GraphicsHelperES2::disablei(GLenum cap, GLuint index)
+{
+    Q_UNUSED(cap);
+    Q_UNUSED(index);
+    qWarning() << "glDisablei() not supported by OpenGL ES 2.0";
 }
 
 QSize GraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)

@@ -262,6 +262,11 @@ void GraphicsHelperGL4::blendFunci(GLuint buf, GLenum sfactor, GLenum dfactor)
     m_funcs->glBlendFunci(buf, sfactor, dfactor);
 }
 
+void GraphicsHelperGL4::blendFuncSeparatei(GLuint buf, GLenum sRGB, GLenum dRGB, GLenum sAlpha, GLenum dAlpha)
+{
+    m_funcs->glBlendFuncSeparatei(buf, sRGB, dRGB, sAlpha, dAlpha);
+}
+
 void GraphicsHelperGL4::alphaTest(GLenum, GLenum)
 {
     qCWarning(Render::Rendering) << "AlphaTest not available with OpenGL 3.2 core";
@@ -941,6 +946,16 @@ void GraphicsHelperGL4::pointSize(bool programmable, GLfloat value)
         m_funcs->glDisable(GL_PROGRAM_POINT_SIZE);
         m_funcs->glPointSize(value);
     }
+}
+
+void GraphicsHelperGL4::enablei(GLenum cap, GLuint index)
+{
+    m_funcs->glEnablei(cap, index);
+}
+
+void GraphicsHelperGL4::disablei(GLenum cap, GLuint index)
+{
+    m_funcs->glDisablei(cap, index);
 }
 
 QSize GraphicsHelperGL4::getRenderBufferDimensions(GLuint renderBufferId)
