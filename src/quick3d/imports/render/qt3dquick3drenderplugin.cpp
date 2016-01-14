@@ -55,6 +55,7 @@
 #include <Qt3DRender/qannotation.h>
 #include <Qt3DRender/qparametermapping.h>
 #include <Qt3DRender/qcuboidmesh.h>
+#include <Qt3DRender/qconemesh.h>
 #include <Qt3DRender/qcylindermesh.h>
 #include <Qt3DRender/qplanemesh.h>
 #include <Qt3DRender/qspheremesh.h>
@@ -99,6 +100,7 @@
 #include <Qt3DRender/qcuboidgeometry.h>
 #include <Qt3DRender/qplanegeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
+#include <Qt3DRender/qconegeometry.h>
 #include <Qt3DRender/qcylindergeometry.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
@@ -241,6 +243,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Meshes
     qmlRegisterType<Qt3DRender::QMesh>(uri, 2, 0, "Mesh");
+    qmlRegisterType<Qt3DRender::QConeMesh>(uri, 2, 0, "ConeMesh");
+    qmlRegisterType<Qt3DRender::QConeGeometry>(uri, 2, 0, "ConeGeometry");
     qmlRegisterType<Qt3DRender::QCuboidMesh>(uri, 2, 0, "CuboidMesh");
     qmlRegisterType<Qt3DRender::QCuboidGeometry>(uri, 2, 0, "CuboidGeometry");
     qmlRegisterType<Qt3DRender::QCylinderMesh>(uri, 2, 0, "CylinderMesh");

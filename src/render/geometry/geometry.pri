@@ -16,6 +16,9 @@ HEADERS += \
     $$PWD/qbuffer.h \
     $$PWD/qbuffer_p.h \
     $$PWD/qbufferfunctor.h \
+    $$PWD/qconegeometry.h \
+    $$PWD/qconegeometry_p.h \
+    $$PWD/qconemesh.h \
     $$PWD/qcuboidmesh.h \
     $$PWD/qcylindergeometry.h \
     $$PWD/qcylindergeometry_p.h \
@@ -51,6 +54,8 @@ SOURCES += \
     $$PWD/qabstractbuffer.cpp \
     $$PWD/qattribute.cpp \
     $$PWD/qbuffer.cpp \
+    $$PWD/qconegeometry.cpp \
+    $$PWD/qconemesh.cpp \
     $$PWD/qcuboidmesh.cpp \
     $$PWD/qcylindergeometry.cpp \
     $$PWD/qcylindermesh.cpp \
