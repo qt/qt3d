@@ -35,32 +35,20 @@
 ****************************************************************************/
 
 #include "instancebuffer.h"
-#include <window.h>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DInput/QInputAspect>
+#include "qt3dquickwindow.h"
 #include <Qt3DQuick/QQmlAspectEngine>
-#include <QtQml>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <QGuiApplication>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
-    Window view;
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
-    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
+    Qt3DQuickWindow view;
 
     InstanceBuffer buffer;
-    engine.qmlEngine()->rootContext()->setContextProperty("_instanceBuffer", &buffer);
-
-    engine.setSource(QUrl("qrc:/main.qml"));
-
+    view.engine()->qmlEngine()->rootContext()->setContextProperty("_instanceBuffer", &buffer);
+    view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

@@ -64,9 +64,7 @@ Entity {
 
     components: [external_forward_renderer, keyboardInput]
 
-    Configuration  {
-        controlledCamera: mainView.camera
-    }
+    FirstPersonCameraController { camera: mainView.camera }
 
     MainView {
         id: mainView

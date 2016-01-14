@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,21 +34,78 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickwindow.h"
-#include <Qt3DQuick/QQmlAspectEngine>
+#ifndef QT3DWINDOW_H
+#define QT3DWINDOW_H
 
-#include <QGuiApplication>
-#include <QtQml>
+#include <QWindow>
 
-int main(int argc, char* argv[])
-{
-    QGuiApplication app(argc, argv);
-    Qt3DQuickWindow view;
+QT_BEGIN_NAMESPACE
 
-    // Expose the window as a context property so we can set the aspect ratio
-    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.show();
-
-    return app.exec();
+namespace Qt3DCore {
+class QAspectEngine;
+class QCamera;
+class QEntity;
 }
+
+namespace Qt3DRender {
+class QFrameGraph;
+class QRenderAspect;
+}
+
+namespace Qt3DInput {
+class QInputAspect;
+}
+
+namespace Qt3DLogic {
+class QLogicAspect;
+}
+
+class Qt3DWindow : public QWindow
+{
+    Q_OBJECT
+public:
+    Qt3DWindow(QScreen *screen = nullptr);
+    Qt3DWindow(QWindow *parent);
+    ~Qt3DWindow();
+
+    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
+    void registerAspect(const QString &name);
+
+    void setRootEntity(Qt3DCore::QEntity *root);
+
+    Qt3DCore::QCamera *camera() const;
+
+public Q_SLOTS:
+
+Q_SIGNALS:
+
+protected:
+    void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+
+private:
+    QScopedPointer<Qt3DCore::QAspectEngine> m_aspectEngine;
+
+    // Aspects
+    Qt3DRender::QRenderAspect *m_renderAspect;
+    Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
+
+    // Renderer configuration
+    Qt3DRender::QFrameGraph *m_frameGraph;
+    Qt3DCore::QCamera *m_defaultCamera;
+
+    // Input configuration
+
+    // Logic configuration
+
+    // Scene
+    Qt3DCore::QEntity *m_root;
+    Qt3DCore::QEntity *m_userRoot;
+
+    bool m_initialized;
+};
+
+QT_END_NAMESPACE
+
+#endif // QT3DWINDOW_H

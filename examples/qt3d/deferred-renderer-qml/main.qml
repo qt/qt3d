@@ -53,9 +53,7 @@ Entity {
         }
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    FirstPersonCameraController { camera: camera }
 
     Entity {
         id : screenQuadEntity

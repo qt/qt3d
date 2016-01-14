@@ -59,9 +59,7 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 3.5, 0.0 )
     }
 
-    Configuration  {
-        controlledCamera: mainCamera
-    }
+    FirstPersonCameraController { camera: mainCamera }
 
     PhongMaterial {
         id: redAdsMaterial

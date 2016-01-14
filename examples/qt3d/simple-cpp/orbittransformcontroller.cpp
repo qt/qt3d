@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,21 +35,68 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickwindow.h"
-#include <Qt3DQuick/QQmlAspectEngine>
+#include "orbittransformcontroller.h"
 
-#include <QGuiApplication>
-#include <QtQml>
+#include <Qt3DCore/qtransform.h>
 
-int main(int argc, char* argv[])
+QT_BEGIN_NAMESPACE
+
+OrbitTransformController::OrbitTransformController(QObject *parent)
+    : QObject(parent)
+    , m_target(Q_NULLPTR)
+    , m_matrix()
+    , m_radius(1.0f)
+    , m_angle(0.0f)
 {
-    QGuiApplication app(argc, argv);
-    Qt3DQuickWindow view;
-
-    // Expose the window as a context property so we can set the aspect ratio
-    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.show();
-
-    return app.exec();
 }
+
+void OrbitTransformController::setTarget(Qt3DCore::QTransform *target)
+{
+    if (m_target != target) {
+        m_target = target;
+        emit targetChanged();
+    }
+}
+
+Qt3DCore::QTransform *OrbitTransformController::target() const
+{
+    return m_target;
+}
+
+void OrbitTransformController::setRadius(float radius)
+{
+    if (!qFuzzyCompare(radius, m_radius)) {
+        m_radius = radius;
+        updateMatrix();
+        emit radiusChanged();
+    }
+}
+
+float OrbitTransformController::radius() const
+{
+    return m_radius;
+}
+
+void OrbitTransformController::setAngle(float angle)
+{
+    if (!qFuzzyCompare(angle, m_angle)) {
+        m_angle = angle;
+        updateMatrix();
+        emit angleChanged();
+    }
+}
+
+float OrbitTransformController::angle() const
+{
+    return m_angle;
+}
+
+void OrbitTransformController::updateMatrix()
+{
+    m_matrix.setToIdentity();
+    m_matrix.rotate(m_angle, QVector3D(0.0f, 1.0f, 0.0f));
+    m_matrix.translate(m_radius, 0.0f, 0.0f);
+    m_target->setMatrix(m_matrix);
+}
+
+QT_END_NAMESPACE

@@ -1,6 +1,7 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,45 +35,52 @@
 **
 ****************************************************************************/
 
-#include "window.h"
+#ifndef ORBITTRANSFORMCONTROLLER_H
+#define ORBITTRANSFORMCONTROLLER_H
 
-#include <QKeyEvent>
-#include <QGuiApplication>
-#include <QOpenGLContext>
+#include <QObject>
+#include <QMatrix4x4>
 
-Window::Window(QScreen *screen)
-    : QWindow(screen)
+QT_BEGIN_NAMESPACE
 
-{
-    setSurfaceType(QSurface::OpenGLSurface);
-
-    resize(1024, 768);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize( 24 );
-    format.setSamples( 4 );
-    format.setStencilBufferSize(8);
-    setFormat(format);
-    create();
+namespace Qt3DCore {
+class QTransform;
 }
 
-Window::~Window()
+class OrbitTransformController : public QObject
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QTransform* target READ target WRITE setTarget NOTIFY targetChanged)
+    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
+    Q_PROPERTY(float angle READ angle WRITE setAngle NOTIFY angleChanged)
 
-void Window::keyPressEvent( QKeyEvent* e )
-{
-    switch ( e->key() )
-    {
-        case Qt::Key_Escape:
-            QGuiApplication::quit();
-            break;
+public:
+    OrbitTransformController(QObject *parent = 0);
 
-        default:
-            QWindow::keyPressEvent( e );
-    }
-}
+    void setTarget(Qt3DCore::QTransform *target);
+    Qt3DCore::QTransform *target() const;
+
+    void setRadius(float radius);
+    float radius() const;
+
+    void setAngle(float angle);
+    float angle() const;
+
+signals:
+    void targetChanged();
+    void radiusChanged();
+    void angleChanged();
+
+protected:
+    void updateMatrix();
+
+private:
+    Qt3DCore::QTransform *m_target;
+    QMatrix4x4 m_matrix;
+    float m_radius;
+    float m_angle;
+};
+
+QT_END_NAMESPACE
+
+#endif // ORBITTRANSFORMCONTROLLER_H

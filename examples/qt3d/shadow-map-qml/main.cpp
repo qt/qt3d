@@ -34,11 +34,8 @@
 **
 ****************************************************************************/
 
-#include <window.h>
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DInput/QInputAspect>
+#include <qt3dquickwindow.h>
 #include <Qt3DQuick/QQmlAspectEngine>
-
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -47,19 +44,10 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Window view;
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
+    Qt3DQuickWindow view;
     view.resize(1600, 800);
-    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
-    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
-    engine.setSource(QUrl("qrc:/main.qml"));
-
+    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

@@ -51,98 +51,16 @@
 #include <Qt3DRender/QCylinderMesh>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>
-#include <Qt3DRender/QWindow>
 
 #include <QPropertyAnimation>
 
-class OrbitTransformController : public QObject
+#include "qt3dwindow.h"
+#include "orbittransformcontroller.h"
+
+Qt3DCore::QEntity *createScene()
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DCore::QTransform* target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(float radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(float angle READ angle WRITE setAngle NOTIFY angleChanged)
-
-public:
-    OrbitTransformController(QObject *parent = 0)
-        : QObject(parent)
-        , m_target(Q_NULLPTR)
-        , m_matrix()
-        , m_radius(1.0f)
-        , m_angle(0.0f)
-    {
-    }
-
-    void setTarget(Qt3DCore::QTransform *target)
-    {
-        if (m_target != target) {
-            m_target = target;
-            emit targetChanged();
-        }
-    }
-
-    Qt3DCore::QTransform *target() const { return m_target; }
-
-    void setRadius(float radius)
-    {
-        if (!qFuzzyCompare(radius, m_radius)) {
-            m_radius = radius;
-            updateMatrix();
-            emit radiusChanged();
-        }
-    }
-
-    float radius() const { return m_radius; }
-
-    void setAngle(float angle)
-    {
-        if (!qFuzzyCompare(angle, m_angle)) {
-            m_angle = angle;
-            updateMatrix();
-            emit angleChanged();
-        }
-    }
-
-    float angle() const { return m_angle; }
-
-signals:
-    void targetChanged();
-    void radiusChanged();
-    void angleChanged();
-
-protected:
-    void updateMatrix()
-    {
-        m_matrix.setToIdentity();
-        m_matrix.rotate(m_angle, QVector3D(0.0f, 1.0f, 0.0f));
-        m_matrix.translate(m_radius, 0.0f, 0.0f);
-        m_target->setMatrix(m_matrix);
-    }
-
-private:
-    Qt3DCore::QTransform *m_target;
-    QMatrix4x4 m_matrix;
-    float m_radius;
-    float m_angle;
-};
-
-int main(int argc, char* argv[])
-{
-    QGuiApplication app(argc, argv);
-    Qt3DRender::QWindow view;
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    view.registerAspect(input);
-
     // Root entity
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-
-    // Camera
-    Qt3DCore::QCamera *cameraEntity = view.defaultCamera();
-
-    cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(0, 0, 40.0f));
-    cameraEntity->setUpVector(QVector3D(0, 1, 0));
-    cameraEntity->setViewCenter(QVector3D(0, 0, 0));
-    input->setCamera(cameraEntity);
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity;
 
     // Material
     Qt3DRender::QMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
@@ -186,10 +104,22 @@ int main(int argc, char* argv[])
     sphereEntity->addComponent(sphereTransform);
     sphereEntity->addComponent(material);
 
-    view.setRootEntity(rootEntity);
+    return rootEntity;
+}
+
+int main(int argc, char* argv[])
+{
+    QGuiApplication app(argc, argv);
+    Qt3DWindow view;
+
+    // Camera
+    Qt3DCore::QCamera *camera = view.camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camera->setPosition(QVector3D(0, 0, 40.0f));
+
+    Qt3DCore::QEntity *scene = createScene();
+    view.setRootEntity(scene);
     view.show();
 
     return app.exec();
 }
-
-#include "main.moc"

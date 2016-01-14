@@ -60,8 +60,8 @@ Entity
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    Configuration  {
-        controlledCamera: camera
+    FirstPersonCameraController {
+        camera: camera
     }
 
     // test_scene.dae contains three named nodes. Once the asynchronous loading of the

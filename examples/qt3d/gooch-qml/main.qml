@@ -41,7 +41,7 @@ import QtQuick 2.2 as QQ2
 Entity {
     id: sceneRoot
 
-    Configuration { controlledCamera: mainCamera }
+    FirstPersonCameraController { camera: mainCamera }
 
     components: [
         FrameGraph { ForwardRenderer { camera: mainCamera } }

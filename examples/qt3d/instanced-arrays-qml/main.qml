@@ -53,9 +53,7 @@ Entity {
         viewCenter: Qt.vector3d(9.5, 0.5, 0.0)
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    FirstPersonCameraController { camera: camera }
 
     components: [
         FrameGraph {

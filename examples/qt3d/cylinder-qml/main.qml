@@ -52,9 +52,7 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    FirstPersonCameraController { camera: mainCamera }
 
     FrameGraph {
         id : external_forward_renderer

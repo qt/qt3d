@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,21 +34,55 @@
 **
 ****************************************************************************/
 
-#include "qt3dquickwindow.h"
-#include <Qt3DQuick/QQmlAspectEngine>
+#ifndef QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H
+#define QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H
 
-#include <QGuiApplication>
-#include <QtQml>
+#include <Qt3DCore/QEntity>
 
-int main(int argc, char* argv[])
-{
-    QGuiApplication app(argc, argv);
-    Qt3DQuickWindow view;
+QT_BEGIN_NAMESPACE
 
-    // Expose the window as a context property so we can set the aspect ratio
-    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.show();
-
-    return app.exec();
+namespace Qt3DCore {
+class QCamera;
 }
+
+namespace Qt3DInput {
+
+class QFirstPersonCameraControllerPrivate;
+
+class QFirstPersonCameraController : public Qt3DCore::QEntity
+{
+    Q_OBJECT
+    Q_PROPERTY(Qt3DCore::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged)
+    Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
+
+public:
+    explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = Q_NULLPTR);
+    ~QFirstPersonCameraController();
+
+    Qt3DCore::QCamera *camera() const;
+    float linearSpeed() const;
+    float lookSpeed() const;
+
+    void setCamera(Qt3DCore::QCamera *camera);
+    void setLinearSpeed(float linearSpeed);
+    void setLookSpeed(float lookSpeed);
+
+Q_SIGNALS:
+    void cameraChanged();
+    void linearSpeedChanged();
+    void lookSpeedChanged();
+
+private:
+    Q_DECLARE_PRIVATE(QFirstPersonCameraController)
+    Q_PRIVATE_SLOT(d_func(),  void _q_onFrameUpdate(float))
+    Q_PRIVATE_SLOT(d_func(),  void _q_onAxisValueChanged(QString, float))
+    Q_PRIVATE_SLOT(d_func(),  void _q_onActionStarted(QString))
+    Q_PRIVATE_SLOT(d_func(),  void _q_onActionFinished(QString))
+};
+
+} // Qt3DInput
+
+QT_END_NAMESPACE
+
+#endif // QT3DINPUT_QFIRSTPERSONCAMERACONTROLLER_H

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,20 +34,61 @@
 **
 ****************************************************************************/
 
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef QT3DQUICKWINDOW_H
+#define QT3DQUICKWINDOW_H
 
-#include <QWindow>
+#include <QQuickWindow>
+#include <QUrl>
 
-class Window : public QWindow
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DCore {
+class QAbstractAspect;
+namespace Quick {
+class QQmlAspectEngine;
+}
+}
+
+namespace Qt3DRender {
+class QRenderAspect;
+}
+
+namespace Qt3DInput {
+class QInputAspect;
+}
+
+namespace Qt3DLogic {
+class QLogicAspect;
+}
+
+class Qt3DQuickWindow : public QQuickWindow
 {
     Q_OBJECT
 public:
-    explicit Window(QScreen *screen = 0);
-    ~Window();
+    Qt3DQuickWindow(QWindow *parent = Q_NULLPTR);
+    ~Qt3DQuickWindow();
+
+    void registerAspect(Qt3DCore::QAbstractAspect *aspect);
+    void registerAspect(const QString &name);
+
+    void setSource(const QUrl &source);
+    Qt3DCore::Quick::QQmlAspectEngine *engine() const;
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *e);
+    void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
+
+private:
+    QScopedPointer<Qt3DCore::Quick::QQmlAspectEngine> m_engine;
+
+    // Aspects
+    Qt3DRender::QRenderAspect *m_renderAspect;
+    Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
+
+    QUrl m_source;
+    bool m_initialized;
 };
 
-#endif // QT3D_WINDOW_H
+QT_END_NAMESPACE
+
+#endif // QT3DQUICKWINDOW_H

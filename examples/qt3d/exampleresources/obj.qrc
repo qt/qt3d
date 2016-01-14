@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>assets/obj/ball.obj</file>
-        <file>assets/obj/trefoil.obj</file>
-        <file>assets/obj/toyplane.obj</file>
-    </qresource>
+        <file>assets/textures/pattern_09/specular.webp</file>
+        <file>assets/textures/pattern_09/normal.webp</file>
+        <file>assets/textures/pattern_09/diffuse.webp</file>
+     </qresource>
 </RCC>

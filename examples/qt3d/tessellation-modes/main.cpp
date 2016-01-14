@@ -35,40 +35,29 @@
 ****************************************************************************/
 
 #include "tessellatedquadmesh.h"
-
-#include <window.h>
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DInput/QInputAspect>
+#include "qt3dquickwindow.h"
 #include <Qt3DQuick/QQmlAspectEngine>
-
 #include <QGuiApplication>
-#include <QtQml>
+#include <qqml.h>
+#include <QQmlContext>
+#include <QQmlEngine>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Window view;
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
-    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
+    Qt3DQuickWindow view;
     // Register our custom types
     qmlRegisterType<TessellatedQuadMesh>("Qt3D.Examples", 1, 0, "TessellatedQuadMesh");
 
     // Expose the window as a context property so we can set the aspect ratio
-    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
 
     // There should be some synchronising mechanism to make sure
     // the source is set after all aspects have been completely initialized
     // Otherwise we might encounter cases where an Aspect's QML elements have
     // not yet been registered
-    engine.setSource(QUrl("qrc:/main.qml"));
+    view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

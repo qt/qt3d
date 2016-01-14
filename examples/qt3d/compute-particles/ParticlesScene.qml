@@ -58,9 +58,7 @@ Entity {
         }
     ]
 
-    Configuration  {
-        controlledCamera: sceneCamera
-    }
+    FirstPersonCameraController { camera: sceneCamera }
 
     Camera {
         id: sceneCamera

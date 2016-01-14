@@ -124,9 +124,7 @@ Entity {
         viewCenter: Qt.vector3d( xLookAtOffset, yLookAtOffset, zLookAtOffset )
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    FirstPersonCameraController { camera: camera }
 
     components: [
         PlanetFrameGraph {

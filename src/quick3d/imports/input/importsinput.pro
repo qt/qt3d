@@ -13,3 +13,4 @@ HEADERS += \
 
 SOURCES += \
     qt3dquick3dinputplugin.cpp
+

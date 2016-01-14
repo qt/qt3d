@@ -5,4 +5,8 @@
 QT += 3dcore 3drender 3dinput
 
 SOURCES += \
-    main.cpp
+    main.cpp \
+    orbittransformcontroller.cpp
+
+HEADERS += \
+    orbittransformcontroller.h

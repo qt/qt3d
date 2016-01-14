@@ -53,9 +53,7 @@ Entity {
         upVector: Qt.vector3d(0.0, 1.0, 0.0)
     }
 
-    Configuration  {
-        controlledCamera: camera
-    }
+    FirstPersonCameraController { camera: camera }
 
     ShadowMapLight {
         id: light

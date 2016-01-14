@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    examples-common \
     playground-qml \
     simple-qml \
     simple-cpp \
@@ -47,6 +48,7 @@ SUBDIRS += \
     lights \
     compute-particles
 
+
 # qmake seems to break in some CI configurations, disable this for now
 #SUBDIRS += qgltf
 
@@ -54,3 +56,9 @@ SUBDIRS += \
 #SUBDIRS += qt3d
 qtHaveModule(widgets): SUBDIRS += assimp-cpp \
     basicshapes-cpp
+
+for(subdir, SUBDIRS) {
+    !equals(subdir, examples-common) {
+        $${subdir}.depends += examples-common
+    }
+}

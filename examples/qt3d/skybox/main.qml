@@ -66,9 +66,7 @@ Entity {
        extension: ".webp"
    }
 
-   Configuration  {
-       controlledCamera: basicCamera
-   }
+   FirstPersonCameraController { camera: basicCamera }
 
    Entity {
        components: [

@@ -34,31 +34,19 @@
 **
 ****************************************************************************/
 
-#include <window.h>
-#include <Qt3DRender/QRenderAspect>
+#include "qt3dquickwindow.h"
 #include <Qt3DQuick/QQmlAspectEngine>
-#include <Qt3DInput/QInputAspect>
-
 #include <QGuiApplication>
-#include <QtQml>
+#include <QQmlEngine>
+#include <QQmlContext>
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
-    Window view;
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
-    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-
-    // Expose the window as a context property so we can set the aspect ratio
-    engine.qmlEngine()->rootContext()->setContextProperty("_window", &view);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
-    engine.setSource(QUrl("qrc:/main.qml"));
+    Qt3DQuickWindow view;
+        // Expose the window as a context property so we can set the aspect ratio
+    view.engine()->qmlEngine()->rootContext()->setContextProperty("_window", &view);
+    view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     return app.exec();

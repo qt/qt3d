@@ -72,9 +72,7 @@ Entity {
         position: Qt.vector3d( 0.0, 10.0, 25.0 )
     }
 
-    Configuration  {
-        controlledCamera: mainCamera
-    }
+    FirstPersonCameraController { camera: mainCamera }
 
     Background {
         id: background

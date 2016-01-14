@@ -34,31 +34,16 @@
 **
 ****************************************************************************/
 
-#include <window.h>
-#include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DQuick/QQmlAspectEngine>
-
+#include "qt3dquickwindow.h"
 #include <QGuiApplication>
 #include <QOpenGLContext>
-#include <QtQml>
 
 int main(int argc, char* argv[])
 {
+    Qt3DQuickWindow view;
     QGuiApplication app(argc, argv);
 
-    Window view;
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
-    engine.aspectEngine()->registerAspect(new Qt3DRender::QRenderAspect());
-    engine.aspectEngine()->registerAspect(new Qt3DInput::QInputAspect());
-
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
-
-    engine.setSource(QUrl("qrc:/main.qml"));
+    view.setSource(QUrl("qrc:/main.qml"));
     view.show();
 
     const bool isES = QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGLES
