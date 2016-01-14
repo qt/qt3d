@@ -72,7 +72,8 @@ public:
         RenderBufferDimensionRetrieval,
         TextureDimensionRetrieval,
         ShaderStorageObject,
-        Compute
+        Compute,
+        DrawBuffersBlend
     };
 
     virtual ~GraphicsHelperInterface() {}

@@ -604,6 +604,11 @@ QGraphicsApiFilter *GraphicsContext::contextInfo() const
     return m_contextInfo;
 }
 
+bool GraphicsContext::supportsDrawBuffersBlend() const
+{
+    return m_glHelper->supportsFeature(GraphicsHelperInterface::DrawBuffersBlend);
+}
+
 /*!
  * Wraps an OpenGL call to glDrawElementsInstanced.
  * If the call is not supported by the system's OpenGL version,

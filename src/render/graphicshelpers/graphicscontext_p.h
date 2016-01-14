@@ -208,7 +208,7 @@ public:
     static GLuint byteSizeFromType(GLint type);
     static GLint glDataTypeFromAttributeDataType(QAttribute::DataType dataType);
 
-
+    bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }
 
 private:

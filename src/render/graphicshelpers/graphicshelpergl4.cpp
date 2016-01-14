@@ -369,6 +369,7 @@ bool GraphicsHelperGL4::supportsFeature(GraphicsHelperInterface::Feature feature
     case TextureDimensionRetrieval:
     case ShaderStorageObject:
     case Compute:
+    case DrawBuffersBlend:
         return true;
     default:
         return false;
