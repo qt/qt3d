@@ -60,18 +60,42 @@ State* getOrCreateImpl(const State& data)
 
 void BlendState::apply(GraphicsContext* gc) const
 {
-    gc->openGLContext()->functions()->glEnable(GL_BLEND);
-    gc->openGLContext()->functions()->glBlendFunc( m_1, m_2 );
+    // Un-indexed BlendState -> Use normal GL1.0 functions
+    if (m_6 < 0) {
+        if (m_5) {
+            gc->openGLContext()->functions()->glEnable(GL_BLEND);
+            gc->openGLContext()->functions()->glBlendFuncSeparate(m_1, m_2, m_3, m_4);
+        } else {
+            gc->openGLContext()->functions()->glDisable(GL_BLEND);
+        }
+    }
+    // BlendState for a particular Draw Buffer. Different behaviours for
+    //  (1) 3.0-3.3: only enablei/disablei supported.
+    //  (2) 4.0+: all operations supported.
+    // We just ignore blend func parameter for (1), so no warnings get
+    // printed.
+    else {
+        if (m_5) {
+            gc->enablei(GL_BLEND, m_6);
+            if (gc->supportsDrawBuffersBlend()) {
+                gc->blendFuncSeparatei(m_6, m_1, m_2, m_3, m_4);
+            }
+        } else {
+            gc->disablei(GL_BLEND, m_6);
+        }
+    }
 }
 
-BlendState *BlendState::getOrCreate(GLenum src, GLenum dst)
+BlendState *BlendState::getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf)
 {
-    BlendState bs(src, dst);
+    BlendState bs(srcRGB, dstRGB, srcAlpha, dstAlpha, enabled, buf);
     return getOrCreateImpl(bs);
 }
 
-BlendState::BlendState(GLenum src, GLenum dst) :
-    GenericState2<BlendState, GLenum, GLenum>(src, dst)
+BlendState::BlendState(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf) :
+    GenericState6<BlendState, GLenum, GLenum, GLenum, GLenum, bool, int>(
+        srcRGB, dstRGB, srcAlpha, dstAlpha, enabled, buf
+    )
 {
 }
 
@@ -277,22 +301,6 @@ ColorMask::ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean a
 ColorMask *ColorMask::getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
 {
     return getOrCreateImpl(ColorMask(red, green, blue, alpha));
-}
-
-void BlendStateSeparate::apply(GraphicsContext *gc) const
-{
-    gc->openGLContext()->functions()->glEnable(GL_BLEND);
-    gc->openGLContext()->functions()->glBlendFuncSeparate(m_1, m_2, m_3, m_4);
-}
-
-BlendStateSeparate *BlendStateSeparate::getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
-{
-    return getOrCreateImpl(BlendStateSeparate(srcRGB, dstRGB, srcAlpha, dstAlpha));
-}
-
-BlendStateSeparate::BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha)
-    : GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>(srcRGB, dstRGB, srcAlpha, dstAlpha)
-{
 }
 
 void ClipPlane::apply(GraphicsContext *gc) const

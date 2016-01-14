@@ -58,28 +58,16 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-class Q_AUTOTEST_EXPORT BlendState : public GenericState2<BlendState, GLenum, GLenum>
+class Q_AUTOTEST_EXPORT BlendState : public GenericState6<BlendState, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     virtual StateMaskSet mask() const Q_DECL_OVERRIDE
     { return BlendStateMask; }
 
-    static BlendState *getOrCreate(GLenum src, GLenum dst);
+    static BlendState *getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf);
 private:
-    BlendState(GLenum src, GLenum dst);
-};
-
-class Q_AUTOTEST_EXPORT BlendStateSeparate : public GenericState4<BlendStateSeparate, GLenum, GLenum, GLenum, GLenum>
-{
-public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    virtual StateMaskSet mask() const Q_DECL_OVERRIDE
-    { return BlendStateMask; }
-
-    static BlendStateSeparate *getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
-private:
-    BlendStateSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);
+    BlendState(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf);
 };
 
 class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendEquation, GLenum>

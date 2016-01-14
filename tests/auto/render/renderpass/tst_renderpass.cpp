@@ -118,7 +118,9 @@ private slots:
 
         QBlendState *blendState = new QBlendState;
         frontendState = blendState;
-        backendState = BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB());
+        backendState = BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB(),
+                                               blendState->srcRGB(), blendState->dstRGB(),
+                                               blendState->enabled(), blendState->bufferIndex());
         QTest::newRow("blendstate") << frontendState << backendState;
 
         QColorMask *colorMask = new QColorMask;

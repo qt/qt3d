@@ -53,6 +53,8 @@ public:
         , m_srcAlpha(QBlendState::Zero)
         , m_dstRGB(QBlendState::Zero)
         , m_dstAlpha(QBlendState::Zero)
+        , m_enabled(true)
+        , m_bufferIndex(-1)
     {
     }
 
@@ -62,6 +64,8 @@ public:
     QBlendState::Blending m_srcAlpha;
     QBlendState::Blending m_dstRGB;
     QBlendState::Blending m_dstAlpha;
+    bool                  m_enabled;
+    int                   m_bufferIndex;
 };
 
 /*!
@@ -69,6 +73,14 @@ public:
     \inmodule Qt3DRender
     \since 5.5
     \brief Encapsulates blending information.
+
+    OpenGL pre-3.0:     Set the same blend state for all draw buffers
+                        (one QBlendState)
+    OpenGL 3.0-pre4.0:  Set the same blend state for all draw buffers,
+                        but can disable blending for particular buffers
+                        (one QBlendState for setting glBlendFunc, n QBlendStates
+                         for enabling/disabling Draw Buffers)
+    OpenGL 4.0+:        Can set blend state individually for each draw buffer.
  */
 
 /*!
@@ -78,6 +90,11 @@ public:
     \inqmlmodule Qt3D.Render
     \since 5.5
     \brief Encapsulates blending information.
+
+    OpenGL pre-3.0:     Set the same blend state for all draw buffers
+    OpenGL 3.0-pre4.0:  Set the same blend state for all draw buffers,
+                        but can disable blending for particular buffers
+    OpenGL 4.0+:        Can set blend state individually for each draw buffer.
 */
 
 /*!
@@ -105,6 +122,8 @@ void QBlendState::copy(const QNode *ref)
     d_func()->m_srcAlpha = refState->d_func()->m_srcAlpha;
     d_func()->m_dstAlpha = refState->d_func()->m_dstAlpha;
     d_func()->m_dstRGB = refState->d_func()->m_dstRGB;
+    d_func()->m_enabled = refState->d_func()->m_enabled;
+    d_func()->m_bufferIndex = refState->d_func()->m_bufferIndex;
 }
 
 /*!
@@ -233,6 +252,61 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
         d->m_dstAlpha = dstAlpha;
         emit dstAlphaChanged(dstAlpha);
     }
+}
+
+bool QBlendState::enabled() const
+{
+    Q_D(const QBlendState);
+    return d->m_enabled;
+}
+
+void QBlendState::setEnabled(bool enabled)
+{
+    Q_D(QBlendState);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged(enabled);
+    }
+}
+
+/*!
+    \qmlproperty int Qt3D.Render::BlendState::bufferIndex
+
+    Specifies the index of the Draw Buffer that this BlendState applies to.
+    If negative, this will apply to all Draw Buffers.
+ */
+
+/*!
+    \property Qt3DRender::QBlendState::bufferIndex
+
+    Specifies the index of the Draw Buffer that this BlendState applies to.
+    If negative, this will apply to all Draw Buffers.
+ */
+int QBlendState::bufferIndex() const
+{
+    Q_D(const QBlendState);
+    return d->m_bufferIndex;
+}
+
+void QBlendState::setBufferIndex(int bufferIndex)
+{
+    Q_D(QBlendState);
+    if (d->m_bufferIndex != bufferIndex) {
+        bool oldAllBuffers = (d->m_bufferIndex < 0);
+        bool newAllBuffers = (bufferIndex < 0);
+
+        d->m_bufferIndex = bufferIndex;
+        emit bufferIndexChanged(bufferIndex);
+
+        if (oldAllBuffers != newAllBuffers)
+            emit specifiesAllDrawBuffersChanged(newAllBuffers);
+    }
+}
+
+bool QBlendState::specifiesAllDrawBuffers() const
+{
+    Q_D(const QBlendState);
+    return (d->m_bufferIndex < 0);
 }
 
 /*!

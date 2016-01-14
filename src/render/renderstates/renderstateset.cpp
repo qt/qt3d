@@ -256,11 +256,18 @@ RenderState *RenderState::getOrCreateBackendState(QRenderState *renderState)
     }
     case QRenderState::BlendState: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
-        return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB());
+        // just use the same values for RGB and Alpha
+        return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB(),
+                                       blendState->srcRGB(), blendState->dstRGB(),
+                                       blendState->enabled(),
+                                       blendState->bufferIndex());
     }
     case QRenderState::BlendStateSeparate: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
-        return BlendStateSeparate::getOrCreate(blendState->srcRGB(), blendState->dstRGB(), blendState->srcAlpha(), blendState->dstAlpha());
+        return BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB(),
+                                       blendState->srcAlpha(), blendState->dstAlpha(),
+                                       blendState->enabled(),
+                                       blendState->bufferIndex());
     }
     case QRenderState::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
