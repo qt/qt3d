@@ -62,6 +62,7 @@
 #include <Qt3DInput/private/axisactionhandler_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
 #include <Qt3DInput/private/logicaldevice_p.h>
+#include <Qt3DInput/private/genericdevicebackendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -190,6 +191,16 @@ public:
 
 private:
     QVector<HLogicalDevice> m_activeDevices;
+};
+
+class GenericDeviceBackendNodeManager : public Qt3DCore::QResourceManager<
+        GenericDeviceBackendNode,
+        Qt3DCore::QNodeId,
+        8,
+        Qt3DCore::ArrayAllocatingPolicy>
+{
+public:
+    GenericDeviceBackendNodeManager() {}
 };
 
 } // namespace Input

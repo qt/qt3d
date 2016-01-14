@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,54 +34,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICE
-#define QT3DINPUT_QABSTRACTPHYSICALDEVICE
+#ifndef GENERICDEVICE_H
+#define GENERICDEVICE_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvector.h>
+#include <Qt3DInput/qabstractphysicaldevice.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisSetting;
-class QInputAspect;
-class QAbstractPhysicalDevicePrivate;
-
-class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QGenericInputDevice : public QAbstractPhysicalDevice
 {
     Q_OBJECT
+    Q_PROPERTY(QVariantMap axesMap READ axesMap WRITE setAxesMap NOTIFY axesMapChanged)
+    Q_PROPERTY(QVariantMap buttonsMap READ buttonsMap WRITE setButtonsMap NOTIFY buttonsMapChanged)
 public:
-    explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
-    ~QAbstractPhysicalDevice();
+    QGenericInputDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
+    ~QGenericInputDevice();
 
-    virtual int axisCount() const;
-    virtual int buttonCount() const;
-    virtual QStringList axisNames() const;
-    virtual QStringList buttonNames() const;
+    QVariantMap axesMap() const;
+    void setAxesMap(const QVariantMap &axesMap);
+    QVariantMap buttonsMap() const;
+    void setButtonsMap(const QVariantMap &buttonsMap);
 
-    virtual int axisIdentifier(const QString &name) const;
-    virtual int buttonIdentifier(const QString &name) const;
-
-    void addAxisSetting(QAxisSetting *axisSetting);
-    void removeAxisSetting(QAxisSetting *axisSetting);
-    QVector<QAxisSetting *> axisSettings() const;
-
-    Q_INVOKABLE void postAxisEvent(int axis, qreal value);
-    Q_INVOKABLE void postButtonEvent(int button, qreal value);
+Q_SIGNALS:
+    void axesMapChanged();
+    void buttonsMapChanged();
 
 protected:
-    QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
-    Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QT3D_CLONEABLE(QGenericInputDevice)
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICE
-
+#endif // GENERICDEVICE_H

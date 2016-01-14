@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,54 +34,69 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICE
-#define QT3DINPUT_QABSTRACTPHYSICALDEVICE
+#include "qgenericinputdevice.h"
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QtCore/qobject.h>
-#include <QtCore/qvector.h>
+#include "qabstractphysicaldevice_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisSetting;
-class QInputAspect;
-class QAbstractPhysicalDevicePrivate;
 
-class QT3DINPUTSHARED_EXPORT QAbstractPhysicalDevice : public Qt3DCore::QNode
+QGenericInputDevice::QGenericInputDevice(Qt3DCore::QNode *parent)
+    : QAbstractPhysicalDevice(parent)
+{}
+
+QGenericInputDevice::~QGenericInputDevice()
 {
-    Q_OBJECT
-public:
-    explicit QAbstractPhysicalDevice(Qt3DCore::QNode *parent = 0);
-    ~QAbstractPhysicalDevice();
+    QAbstractPhysicalDevice::cleanup();
+}
 
-    virtual int axisCount() const;
-    virtual int buttonCount() const;
-    virtual QStringList axisNames() const;
-    virtual QStringList buttonNames() const;
+static void setHashFromVariantMap(QHash<QString, int> &hash, const QVariantMap &map)
+{
+    hash.clear();
+    for (QVariantMap::const_iterator it = map.cbegin(); it != map.cend(); ++it) {
+        bool ok;
+        int value = it.value().toInt(&ok);
+        if (ok)
+            hash[it.key()] = value;
+    }
+}
 
-    virtual int axisIdentifier(const QString &name) const;
-    virtual int buttonIdentifier(const QString &name) const;
+static QVariantMap hash2VariantMap(const QHash<QString, int> &hash)
+{
+    QVariantMap ret;
+    for (QHash<QString, int>::const_iterator it = hash.cbegin(); it != hash.cend(); ++it)
+        ret[it.key()] = it.value();
+    return ret;
+}
 
-    void addAxisSetting(QAxisSetting *axisSetting);
-    void removeAxisSetting(QAxisSetting *axisSetting);
-    QVector<QAxisSetting *> axisSettings() const;
+QVariantMap QGenericInputDevice::axesMap() const
+{
+    Q_D(const QAbstractPhysicalDevice);
+    return hash2VariantMap(d->m_axesHash);
+}
 
-    Q_INVOKABLE void postAxisEvent(int axis, qreal value);
-    Q_INVOKABLE void postButtonEvent(int button, qreal value);
+void QGenericInputDevice::setAxesMap(const QVariantMap &axesMap)
+{
+    Q_D(QAbstractPhysicalDevice);
+    setHashFromVariantMap(d->m_axesHash, axesMap);
+    emit axesMapChanged();
+}
 
-protected:
-    QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
-    Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-};
+QVariantMap QGenericInputDevice::buttonsMap() const
+{
+    Q_D(const QAbstractPhysicalDevice);
+    return hash2VariantMap(d->m_buttonsHash);
+}
+
+void QGenericInputDevice::setButtonsMap(const QVariantMap &buttonsMap)
+{
+    Q_D(QAbstractPhysicalDevice);
+    setHashFromVariantMap(d->m_buttonsHash, buttonsMap);
+    emit axesMapChanged();
+}
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
-
-
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICE
-

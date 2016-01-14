@@ -64,6 +64,7 @@ InputHandler::InputHandler()
     , m_axisSettingManager(new AxisSettingManager())
     , m_actionInputManager(new ActionInputManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
+    , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);
@@ -142,6 +143,16 @@ void InputHandler::removeMouseController(HMouseController controller)
     m_activeMouseControllers.removeAll(controller);
 }
 
+void Qt3DInput::Input::InputHandler::appendGenericDevice(HGenericDeviceBackendNode device)
+{
+    m_activeGenericPhysicalDevices.append(device);
+}
+
+void Qt3DInput::Input::InputHandler::removeGenericDevice(HGenericDeviceBackendNode device)
+{
+    m_activeGenericPhysicalDevices.removeAll(device);
+}
+
 // Return a vector of jobs to be performed for keyboard events
 // Handles all dependencies between jobs
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
@@ -152,8 +163,8 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 
     Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
         KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
-        controller->updateKeyEvents(events);
         if (controller) {
+            controller->updateKeyEvents(events);
             QAspectJobPtr focusChangeJob;
             if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
                 AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());

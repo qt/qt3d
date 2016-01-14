@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include <QtQml>
+#include <Qt3DInput/qgenericinputdevice.h>
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardinput.h>
 #include <Qt3DInput/qkeyevent.h>
@@ -79,6 +80,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3DInput::QAxis, Qt3DInput::Input::Quick::Quick3DAxis>(uri, 2, 0, "Axis");
     qmlRegisterExtendedType<Qt3DInput::QAction, Qt3DInput::Input::Quick::Quick3DAction>(uri, 2, 0, "Action");
     qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
+    qmlRegisterType<Qt3DInput::QGenericInputDevice>(uri, 2, 0, "GenericInputDevice");
 }
 
 QT_END_NAMESPACE

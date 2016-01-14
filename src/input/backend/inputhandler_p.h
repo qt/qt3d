@@ -79,6 +79,8 @@ class AxisInputManager;
 class AxisSettingManager;
 class ActionInputManager;
 class LogicalDeviceManager;
+class GenericPhysicalDeviceManager;
+class GenericDeviceBackendNodeManager;
 
 class InputHandler
 {
@@ -98,6 +100,7 @@ public:
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
+    inline GenericDeviceBackendNodeManager *genericDeviceBackendNodeManager() const { return m_genericPhysicalDeviceBackendNodeManager; }
 
     void appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event);
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
@@ -113,6 +116,9 @@ public:
     void appendMouseController(HMouseController controller);
     void removeMouseController(HMouseController controller);
 
+    void appendGenericDevice(HGenericDeviceBackendNode device);
+    void removeGenericDevice(HGenericDeviceBackendNode device);
+
     QVector<Qt3DCore::QAspectJobPtr> keyboardJobs();
     QVector<Qt3DCore::QAspectJobPtr> mouseJobs();
 
@@ -127,6 +133,7 @@ private:
 
     QVector<HKeyboardController> m_activeKeyboardControllers;
     QVector<HMouseController> m_activeMouseControllers;
+    QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     KeyboardEventFilter *m_keyboardEventFilter;
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingEvents;
     MouseEventFilter *m_mouseEventFilter;
@@ -140,6 +147,7 @@ private:
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
     LogicalDeviceManager *m_logicalDeviceManager;
+    GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
 };
 

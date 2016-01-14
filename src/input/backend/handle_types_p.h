@@ -66,6 +66,7 @@ class AxisSetting;
 class Action;
 class ActionInput;
 class LogicalDevice;
+class GenericDeviceBackendNode;
 
 typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
 typedef Qt3DCore::QHandle<KeyboardInput, 16> HKeyboardInput;
@@ -78,6 +79,7 @@ typedef Qt3DCore::QHandle<Action, 16> HAction;
 typedef Qt3DCore::QHandle<AxisInput, 16> HAxisInput;
 typedef Qt3DCore::QHandle<ActionInput, 16> HActionInput;
 typedef Qt3DCore::QHandle<LogicalDevice, 16> HLogicalDevice;
+typedef Qt3DCore::QHandle<GenericDeviceBackendNode, 8> HGenericDeviceBackendNode;
 
 } // namespace Input
 } // namespace Qt3DInput

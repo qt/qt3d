@@ -34,21 +34,9 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H
-#define QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DInput/qinputdeviceintegration.h>
+#include "keyboardmousegenericdeviceintegration_p.h"
+#include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/inputmanagers_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,30 +44,50 @@ namespace Qt3DInput {
 
 namespace Input {
 
-class InputHandler;
-
-class KeyboardMouseDeviceIntegration : public Qt3DInput::QInputDeviceIntegration
+KeyboardMouseGenericDeviceIntegration::KeyboardMouseGenericDeviceIntegration(InputHandler *handler)
+    : Qt3DInput::QInputDeviceIntegration()
+    , m_handler(handler)
 {
-    Q_OBJECT
-public:
-    explicit KeyboardMouseDeviceIntegration(InputHandler *handleer);
-    ~KeyboardMouseDeviceIntegration();
+}
 
-    QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_FINAL;
-    QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) Q_DECL_FINAL;
-    QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_FINAL;
-    QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+KeyboardMouseGenericDeviceIntegration::~KeyboardMouseGenericDeviceIntegration()
+{
+}
 
-private:
-    void onInitialize() Q_DECL_FINAL;
+void KeyboardMouseGenericDeviceIntegration::onInitialize()
+{
+}
 
-    InputHandler *m_handler;
-};
+QVector<Qt3DCore::QAspectJobPtr> KeyboardMouseGenericDeviceIntegration::jobsToExecute(qint64 time)
+{
+    Q_UNUSED(time)
+    return QVector<Qt3DCore::QAspectJobPtr>();
+}
+
+QAbstractPhysicalDevice *KeyboardMouseGenericDeviceIntegration::createPhysicalDevice(const QString &name)
+{
+    Q_UNUSED(name)
+    return Q_NULLPTR;
+}
+
+QVector<Qt3DCore::QNodeId> KeyboardMouseGenericDeviceIntegration::physicalDevices() const
+{
+    // TO DO: could return the ids of active KeyboardController/MouseController
+    return QVector<Qt3DCore::QNodeId>();
+}
+
+QAbstractPhysicalDeviceBackendNode *KeyboardMouseGenericDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
+{
+    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardControllerManager()->lookupResource(id);
+    if (!device)
+        device = m_handler->mouseControllerManager()->lookupResource(id);
+    if (!device)
+        device = m_handler->genericDeviceBackendNodeManager()->lookupResource(id);
+    return device;
+}
 
 } // Input
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
-
-#endif // QT3DINPUT_INPUT_KEYBOARDMOUSEDEVICEINTEGRATION_P_H

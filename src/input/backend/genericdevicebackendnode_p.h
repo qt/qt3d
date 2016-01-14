@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
-#define QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
+#ifndef GENERICDEVICEBACKENDNODE_H
+#define GENERICDEVICEBACKENDNODE_H
 
 //
 //  W A R N I N G
@@ -48,33 +48,55 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/private/qnode_p.h>
-#include <QtCore/qhash.h>
-#include <QtCore/qmutex.h>
-#include <QtCore/qvector.h>
-#include <Qt3DInput/private/qt3dinput_global_p.h>
+#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
+#include <QHash>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisSetting;
+class QAbstractPhysicalDevice;
 
-class QT3DINPUTSHARED_PRIVATE_EXPORT QAbstractPhysicalDevicePrivate : public Qt3DCore::QNodePrivate
+namespace Input {
+class InputHandler;
+class GenericDeviceBackendNodeData;
+class GenericDeviceBackendNode : public QAbstractPhysicalDeviceBackendNode
 {
 public:
-    QAbstractPhysicalDevicePrivate();
+    explicit GenericDeviceBackendNode(QBackendNode::Mode mode = QBackendNode::ReadWrite);
+    ~GenericDeviceBackendNode();
+    void updateEvents();
 
-    Q_DECLARE_PUBLIC(QAbstractPhysicalDevice)
-    QVector<QAxisSetting *> m_axisSettings;
-    QHash<QString, int> m_axesHash;
-    QHash<QString, int> m_buttonsHash;
+    // QAbstractPhysicalDeviceBackendNode interface
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void cleanup() Q_DECL_OVERRIDE;
+    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
+    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
+
+private:
+    QHash<int, qreal> m_axesValues;
+    QHash<int, qreal> m_buttonsValues;
+    mutable QSharedPointer<QMutex> m_mutex;
 };
 
-}
+class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit GenericDeviceBackendFunctor(QInputAspect *inputaspect, InputHandler *handler);
+
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+
+private:
+    QInputAspect *m_inputAspect;
+    InputHandler *m_handler;
+};
+
+} // namespace Input
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QABSTRACTPHYSICALDEVICE_P_H
-
+#endif // GENERICDEVICEBACKENDNODE_H
