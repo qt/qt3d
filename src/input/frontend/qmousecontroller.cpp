@@ -107,7 +107,7 @@ QStringList QMouseController::buttonNames() const
             << QStringLiteral("Center");
 }
 
-int QMouseController::axisIdentifier(const QString &name)
+int QMouseController::axisIdentifier(const QString &name) const
 {
     if (name == QStringLiteral("X"))
         return X;
@@ -116,7 +116,7 @@ int QMouseController::axisIdentifier(const QString &name)
     return -1;
 }
 
-int QMouseController::buttonIdentifier(const QString &name)
+int QMouseController::buttonIdentifier(const QString &name) const
 {
     if (name == QStringLiteral("Left"))
         return Left;
