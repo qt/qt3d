@@ -596,7 +596,7 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, const QString
     // or a Qt3DCore::QNodeId corresponding to a Texture
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
-    if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId) {
+    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
         if ((tex = m_manager->textureManager()->lookupResource(value.value<Qt3DCore::QNodeId>()))
                 != Q_NULLPTR) {
             uniformPack.setTexture(name, tex->peerUuid());
@@ -624,7 +624,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 {
     Q_UNUSED(shader)
 
-    if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId) {
+    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
 
         Buffer *buffer = Q_NULLPTR;
         if ((buffer = m_manager->bufferManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
