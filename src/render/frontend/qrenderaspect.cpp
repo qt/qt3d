@@ -75,6 +75,7 @@
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputejob.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -119,6 +120,7 @@
 #include <Qt3DRender/private/lighting_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computejob_p.h>
+#include <Qt3DRender/private/rendersurfaceselector_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -261,6 +263,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QRenderPassFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QCameraSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QRenderTargetSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(d->m_nodeManagers->frameGraphManager())));
+    registerBackendType<QRenderSurfaceSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QLayerFilter>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QSortMethod>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QFrameGraphSelector>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_nodeManagers->frameGraphManager())));
