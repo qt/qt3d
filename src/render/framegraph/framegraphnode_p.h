@@ -83,7 +83,8 @@ public:
         NoDraw,
         FrustumCulling,
         Lighting,
-        ComputeDispatch
+        ComputeDispatch,
+        Surface
     };
     FrameGraphNodeType nodeType() const { return m_nodeType; }
 
