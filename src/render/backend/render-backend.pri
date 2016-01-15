@@ -28,7 +28,8 @@ HEADERS += \
     $$PWD/openglvertexarrayobject_p.h \
     $$PWD/trianglesextractor_p.h \
     $$PWD/abstractrenderer_p.h \
-    $$PWD/computejob_p.h
+    $$PWD/computejob_p.h \
+    $$PWD/renderersettings_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -51,4 +52,5 @@ SOURCES += \
     $$PWD/nodemanagers.cpp \
     $$PWD/triangleboundingvolume.cpp \
     $$PWD/trianglesextractor.cpp \
-    $$PWD/computejob.cpp
+    $$PWD/computejob.cpp \
+    $$PWD/renderersettings.cpp
