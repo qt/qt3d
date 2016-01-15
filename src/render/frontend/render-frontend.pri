@@ -18,7 +18,9 @@ HEADERS += \
     $$PWD/qcamera_p.h \
     $$PWD/qcamera.h \
     $$PWD/qcameralens.h \
-    $$PWD/qcameralens_p.h
+    $$PWD/qcameralens_p.h \
+    $$PWD/qrenderersettings.h \
+    $$PWD/qrenderersettings_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
@@ -31,4 +33,5 @@ SOURCES += \
     $$PWD/qboundingvolumedebug.cpp \
     $$PWD/qcomputejob.cpp \
     $$PWD/qcamera.cpp \
-    $$PWD/qcameralens.cpp
+    $$PWD/qcameralens.cpp \
+    $$PWD/qrenderersettings.cpp
