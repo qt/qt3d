@@ -48,7 +48,9 @@ HEADERS += \
     $$PWD/qlighting_p.h \
     $$PWD/lighting_p.h \
     $$PWD/qdispatchcompute.h \
-    $$PWD/dispatchcompute_p.h
+    $$PWD/dispatchcompute_p.h \
+    $$PWD/qrendersurfaceselector.h \
+    $$PWD/qrendersurfaceselector_p.h
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
@@ -84,4 +86,5 @@ SOURCES += \
     $$PWD/qlighting.cpp \
     $$PWD/lighting.cpp \
     $$PWD/qdispatchcompute.cpp \
-    $$PWD/dispatchcompute.cpp
+    $$PWD/dispatchcompute.cpp \
+    $$PWD/qrendersurfaceselector.cpp
