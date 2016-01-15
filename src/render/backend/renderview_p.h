@@ -230,6 +230,9 @@ public:
 
     void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
+    void setSurface(QSurface *surface) { m_surface = surface; }
+    QSurface *surface() const { return m_surface; }
+
     // Helps making the size of RenderView smaller
     // Contains all the data needed for the actual building of the RenderView
     // But that aren't used later by the Renderer
@@ -274,6 +277,7 @@ private:
     mutable QColor *m_clearColor;
     mutable QRectF *m_viewport;
     HTarget m_renderTarget;
+    QSurface *m_surface;
     AttachmentPack m_attachmentPack;
     QClearBuffer::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;

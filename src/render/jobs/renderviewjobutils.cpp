@@ -58,6 +58,7 @@
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
+#include <Qt3DRender/private/rendersurfaceselector_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -219,6 +220,16 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
 
             case FrameGraphNode::Lighting: {
                 // TODO
+                break;
+            }
+
+            case FrameGraphNode::Surface: {
+                // Use the surface closest to leaf node
+                if (rv->surface() == Q_NULLPTR) {
+                    const Render::RenderSurfaceSelector *surfaceSelector
+                        = static_cast<const Render::RenderSurfaceSelector *>(node);
+                    rv->setSurface(surfaceSelector->surface());
+                }
                 break;
             }
 
