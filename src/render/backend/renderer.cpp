@@ -677,30 +677,45 @@ bool Renderer::submitRenderViews()
     if (renderViewsCount <= 0)
         return true;
 
+    qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
+
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
     GLuint boundFboId = 0;
     QColor previousClearColor = renderViews.first()->clearColor();
-
-    // Bail out if we cannot make the OpenGL context current (e.g. if the window has been destroyed)
-    if (!m_graphicsContext->beginDrawing(m_surface, previousClearColor)) {
-        qDeleteAll(renderViews);
-        return false;
-    }
-
-    if (!boundFboIdValid) {
-        boundFboIdValid = true;
-        boundFboId = m_graphicsContext->boundFrameBufferObject();
-    }
-
-    // Reset state to the default state
-    m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
-
-    qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
+    QSurface *surface = Q_NULLPTR;
+    QSurface *previousSurface = Q_NULLPTR;
     for (int i = 0; i < renderViewsCount; ++i) {
         // Initialize GraphicsContext for drawing
         // If the RenderView has a RenderStateSet defined
         const RenderView *renderView = renderViews.at(i);
+
+        // Check if using the same surface as the previous RenderView.
+        // If not, we have to free up the context from the previous surface
+        // and make the context current on the new surface
+        surface = renderView->surface();
+        if (i != 0 && surface != previousSurface && previousSurface)
+            m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
+
+        if (surface != previousSurface) {
+            // If we can't make the context current on the surface, skip to the
+            // next RenderView. We won't get the full frame but we may get something
+            if (!m_graphicsContext->beginDrawing(surface, previousClearColor)) {
+                qWarning() << "Failed to make OpenGL context current on surface";
+                continue;
+            }
+
+            previousSurface = surface;
+
+            if (!boundFboIdValid) {
+                boundFboIdValid = true;
+                boundFboId = m_graphicsContext->boundFrameBufferObject();
+            }
+
+            // Reset state to the default state
+            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+        }
+
 
         // Set RenderView render state
         RenderStateSet *renderViewStateSet = renderView->stateSet();
@@ -741,6 +756,7 @@ bool Renderer::submitRenderViews()
     if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
         m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
+    // Finish up with last surface used in the list of RenderViews
     m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
     // Delete all the RenderViews which will clear the allocators
