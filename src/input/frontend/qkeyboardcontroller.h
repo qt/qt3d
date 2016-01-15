@@ -62,8 +62,8 @@ public:
     int buttonCount() const Q_DECL_FINAL;
     QStringList axisNames() const Q_DECL_FINAL;
     QStringList buttonNames() const Q_DECL_FINAL;
-    int axisIdentifier(const QString &name) Q_DECL_FINAL;
-    int buttonIdentifier(const QString &name) Q_DECL_FINAL;
+    int axisIdentifier(const QString &name) const Q_DECL_FINAL;
+    int buttonIdentifier(const QString &name) const Q_DECL_FINAL;
 
 protected:
     QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent = 0);

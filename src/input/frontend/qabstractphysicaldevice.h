@@ -62,8 +62,8 @@ public:
     virtual QStringList axisNames() const = 0;
     virtual QStringList buttonNames() const = 0;
 
-    virtual int axisIdentifier(const QString &name) = 0;
-    virtual int buttonIdentifier(const QString &name) = 0;
+    virtual int axisIdentifier(const QString &name) const = 0;
+    virtual int buttonIdentifier(const QString &name) const = 0;
 
     void addAxisSetting(QAxisSetting *axisSetting);
     void removeAxisSetting(QAxisSetting *axisSetting);

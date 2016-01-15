@@ -258,13 +258,13 @@ QStringList QKeyboardController::buttonNames() const
     return d->m_keyNames;
 }
 
-int QKeyboardController::axisIdentifier(const QString &name)
+int QKeyboardController::axisIdentifier(const QString &name) const
 {
     Q_UNUSED(name);
     return 0;
 }
 
-int QKeyboardController::buttonIdentifier(const QString &name)
+int QKeyboardController::buttonIdentifier(const QString &name) const
 {
     Q_D(const QKeyboardController);
     return d->m_keyMap.value(name, 0);

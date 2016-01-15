@@ -1,8 +1,8 @@
 SOURCES += main.cpp
 
-LIBS += -lassimp
-
-unix {
+unix:!contains(QT_CONFIG, no-pkg-config) {
     CONFIG += link_pkgconfig
     PKGCONFIG += assimp
+} else {
+    LIBS += -lassimp
 }
