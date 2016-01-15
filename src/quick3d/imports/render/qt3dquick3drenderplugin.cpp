@@ -45,6 +45,7 @@
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/qtechniquefilter.h>
 #include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qtechnique.h>
@@ -273,6 +274,9 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     // RenderTarget
     qmlRegisterType<Qt3DRender::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTarget, Qt3DRender::Render::Quick::Quick3DRenderTarget>("QRenderTarget", "Qt3D.Render/RenderTarget", uri, 2, 0, "RenderTarget");
+
+    // Render surface selector
+    qmlRegisterType<Qt3DRender::QRenderSurfaceSelector>(uri, 2, 0, "RenderSurfaceSelector");
 
     // Sorting
     qmlRegisterType<Qt3DRender::QSortCriterion>(uri, 2, 0, "SortCriterion");
