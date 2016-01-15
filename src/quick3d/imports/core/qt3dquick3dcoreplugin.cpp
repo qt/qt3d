@@ -40,7 +40,6 @@
 #include <Qt3DCore/qtransform.h>
 #include <private/quick3dentity_p.h>
 #include <private/quick3dentityloader_p.h>
-#include <private/quick3dconfiguration_p.h>
 #include <private/quick3dnodeinstantiator_p.h>
 #include <private/qquaternionanimation_p.h>
 #include <private/qt3dquick_global_p.h>
@@ -54,7 +53,6 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
 
     qmlRegisterUncreatableType<Qt3DCore::QComponent>(uri, 2, 0, "Component3D", QStringLiteral(""));
 
-    qmlRegisterType<Qt3DCore::Quick::Quick3DConfiguration>(uri, 2, 0, "Configuration");
     Qt3DCore::Quick::registerExtendedType<Qt3DCore::QEntity, Qt3DCore::Quick::Quick3DEntity>("QEntity", "Qt3D.Core/Entity", uri, 2, 0, "Entity");
     qmlRegisterType<Qt3DCore::Quick::Quick3DEntityLoader>(uri, 2, 0, "EntityLoader");
     qmlRegisterType<Qt3DCore::Quick::Quick3DNodeInstantiator>(uri, 2, 0, "NodeInstantiator");
