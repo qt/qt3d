@@ -42,6 +42,8 @@
 #include "qmesh.h"
 #include "qbuffer.h"
 #include "qattribute.h"
+
+#include <private/qlocale_tools_p.h>
 #include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
 
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -55,6 +57,81 @@
 #include <Qt3DRender/qbuffer.h>
 
 QT_BEGIN_NAMESPACE
+
+namespace Qt3DRender {
+
+/*!
+ * \internal
+ *
+ * A helper class to split a QByteArray and access its sections without
+ * additional memory allocations.
+ */
+class ByteArraySplitter
+{
+public:
+    explicit ByteArraySplitter(const QByteArray &input, char delimiter)
+        : m_input(input)
+    {
+        int position = 0;
+        int lastPosition = 0;
+        for (char ch : input) {
+            if (ch == delimiter) {
+                const Entry entry = { lastPosition, position - lastPosition };
+                m_entries.append(entry);
+                lastPosition = position + 1;
+            }
+
+            ++position;
+        }
+
+        const Entry entry = { lastPosition, position - lastPosition };
+        m_entries.append(entry);
+    }
+
+    int size() const
+    {
+        return m_entries.size();
+    }
+
+    const char* charPtrAt(int index) const
+    {
+        return m_input.constData() + m_entries[index].start;
+    }
+
+    float floatAt(int index) const
+    {
+        return qstrntod(m_input.constData() + m_entries[index].start, m_entries[index].size, nullptr, nullptr);
+    }
+
+    int intAt(int index) const
+    {
+        return strtol(m_input.constData() + m_entries[index].start, nullptr, 10);
+    }
+
+    QString stringAt(int index) const
+    {
+        return QString::fromLatin1(m_input.constData() + m_entries[index].start, m_entries[index].size);
+    }
+
+    QByteArray at(int index) const
+    {
+        return QByteArray(m_input.constData() + m_entries[index].start, m_entries[index].size);
+    }
+
+    struct Entry
+    {
+        int start;
+        int size;
+    };
+
+private:
+    QVarLengthArray<Entry, 16> m_entries;
+    const QByteArray &m_input;
+};
+
+} // namespace Qt3DRender
+
+Q_DECLARE_TYPEINFO(Qt3DRender::ByteArraySplitter::Entry, Q_PRIMITIVE_TYPE);
 
 namespace Qt3DRender {
 
@@ -126,35 +203,36 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
         subMeshMatch.setPattern(QString(QStringLiteral("^(%1)$")).arg(subMesh));
     Q_ASSERT(subMeshMatch.isValid());
 
-    QTextStream stream(ioDev);
-    while (!stream.atEnd()) {
-        QString line = stream.readLine();
-        line = line.simplified();
+    while (!ioDev->atEnd()) {
+        QByteArray line = ioDev->readLine();
 
-        if (line.length() > 0 && line.at(0) != QChar::fromLatin1('#')) {
-            const QVector<QStringRef> tokens = line.splitRef(QChar::fromLatin1(' '));
+        if (line.length() > 0 && line.at(0) != '#') {
+            if (line[line.size() - 1] == '\n')
+                line.chop(1); // chop newline
 
-            if (tokens.first() == QStringLiteral("v")) {
+            const ByteArraySplitter tokens(line, ' ');
+
+            if (qstrncmp(tokens.charPtrAt(0), "v ", 2) == 0) {
                 if (tokens.size() < 4) {
                     qCWarning(Render::Io) << "Unsupported number of components in vertex";
                 } else {
                     if (!skipping) {
-                        float x = tokens.at(1).toFloat();
-                        float y = tokens.at(2).toFloat();
-                        float z = tokens.at(3).toFloat();
+                        float x = tokens.floatAt(1);
+                        float y = tokens.floatAt(2);
+                        float z = tokens.floatAt(3);
                         positions.append(QVector3D( x, y, z ));
                     } else {
                         positionsOffset++;
                     }
                 }
-            } else if (tokens.first() == QStringLiteral("vt") && m_loadTextureCoords) {
+            } else if (m_loadTextureCoords && qstrncmp(tokens.charPtrAt(0), "vt ", 3) == 0) {
                 if (tokens.size() < 3) {
                     qCWarning(Render::Io) << "Unsupported number of components in texture coordinate";
                 } else {
                     if (!skipping) {
                         // Process texture coordinate
-                        float s = tokens.at(1).toFloat();
-                        float t = tokens.at(2).toFloat();
+                        float s = tokens.floatAt(1);
+                        float t = tokens.floatAt(2);
                         //FlipUVs
                         t = 1.0f - t;
                         texCoords.append(QVector2D( s, t ));
@@ -162,20 +240,20 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                         texCoordsOffset++;
                     }
                 }
-            } else if (tokens.first() == QStringLiteral("vn")) {
+            } else if (qstrncmp(tokens.charPtrAt(0), "vn ", 3) == 0) {
                 if (tokens.size() < 4) {
                     qCWarning(Render::Io) << "Unsupported number of components in vertex normal";
                 } else {
                     if (!skipping) {
-                        float x = tokens.at(1).toFloat();
-                        float y = tokens.at(2).toFloat();
-                        float z = tokens.at(3).toFloat();
+                        float x = tokens.floatAt(1);
+                        float y = tokens.floatAt(2);
+                        float z = tokens.floatAt(3);
                         normals.append(QVector3D( x, y, z ));
                     } else {
                         normalsOffset++;
                     }
                 }
-            } else if (!skipping && tokens.first() == QStringLiteral("f")) {
+            } else if (!skipping && qstrncmp(tokens.charPtrAt(0), "f ", 2) == 0) {
                 // Process face
                 ++faceCount;
 
@@ -186,14 +264,15 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 
                 for (int i = 0; i < faceVertices; i++) {
                     FaceIndices faceIndices;
-                    const QVector<QStringRef> indices = tokens.at(i + 1).split(QChar::fromLatin1('/'));
+                    const QByteArray token = tokens.at(i + 1);
+                    const ByteArraySplitter indices(token, '/');
                     switch (indices.size()) {
                     case 3:
-                        faceIndices.normalIndex = indices.at(2).toInt() - 1 - normalsOffset;  // fall through
+                        faceIndices.normalIndex = indices.intAt(2) - 1 - normalsOffset;  // fall through
                     case 2:
-                        faceIndices.texCoordIndex = indices.at(1).toInt() - 1 - texCoordsOffset; // fall through
+                        faceIndices.texCoordIndex = indices.intAt(1) - 1 - texCoordsOffset; // fall through
                     case 1:
-                        faceIndices.positionIndex = indices.at(0).toInt() - 1 - positionsOffset;
+                        faceIndices.positionIndex = indices.intAt(0) - 1 - positionsOffset;
                         break;
                     default:
                         qCWarning(Render::Io) << "Unsupported number of indices in face element";
@@ -222,18 +301,18 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
                 }
 
                 // end of face
-            } else if (tokens.first() == QStringLiteral("o")) {
+            } else if (qstrncmp(tokens.charPtrAt(0), "o ", 2) == 0) {
                 if (tokens.size() < 2) {
                     qCWarning(Render::Io) << "Missing submesh name";
                 } else {
                     if (!subMesh.isEmpty() ) {
-                        QString objName = tokens.at(1).toString();
+                        const QString objName = tokens.stringAt(1);
                         skipping = subMeshMatch.indexIn(objName) < 0;
                     }
                 }
             }
-        } // end of input line
-    } // while (!stream.atEnd())
+        } // empty input line
+    } // while (!ioDev->atEnd())
 
     updateIndices(positions, normals, texCoords, faceIndexMap, faceIndexVector);
 
