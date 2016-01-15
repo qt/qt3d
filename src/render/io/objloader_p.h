@@ -90,7 +90,7 @@ struct FaceIndices
     unsigned int normalIndex;
 };
 
-class ObjLoader
+class Q_AUTOTEST_EXPORT ObjLoader
 {
 public:
     ObjLoader();
