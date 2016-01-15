@@ -49,7 +49,7 @@
                     "data":
                     {
                         "items": [ { "trKey": "<Custom>", "value": "" },
-                                   "QQNode", "QComponent", "QEntity", "QBackendNode" ]
+                                   "QNode", "QComponent", "QEntity", "QBackendNode" ]
                     }
                 },
                 {

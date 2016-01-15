@@ -1,4 +1,5 @@
 %{Cpp:LicenseTemplate}\
+
 #ifndef %{GUARD}
 #define %{GUARD}
 

@@ -1,4 +1,5 @@
 %{Cpp:LicenseTemplate}\
+
 #ifndef %{PRIVATEGUARD}
 #define %{PRIVATEGUARD}
 
