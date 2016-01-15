@@ -72,6 +72,7 @@ namespace Render {
 class NodeManagers;
 class Entity;
 class FrameGraphNode;
+class RendererSettings;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -119,6 +120,9 @@ public:
 
     virtual Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const = 0;
     virtual void registerEventFilter(Qt3DCore::QEventFilterService *service) = 0;
+
+    virtual void setSettings(RendererSettings *settings) = 0;
+    virtual RendererSettings *settings() const = 0;
 
 };
 

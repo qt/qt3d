@@ -76,6 +76,7 @@
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputejob.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DRender/qrenderersettings.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
@@ -121,6 +122,7 @@
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computejob_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
+#include <Qt3DRender/private/renderersettings_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -284,6 +286,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QLighting>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::Lighting, QLighting>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QDispatchCompute>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QComputeJob>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::ComputeJob, Render::ComputeJobManager>(d->m_nodeManagers->computeJobManager())));
+    registerBackendType<QRendererSettings>(QBackendNodeFunctorPtr(new Render::RendererSettingsFunctor(d->m_renderer)));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

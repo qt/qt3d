@@ -37,6 +37,7 @@
 #include "renderersettings_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,6 +73,40 @@ void RendererSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
             m_pickResultMode = propertyChange->value().value<QRendererSettings::PickResultMode>();
     }
+}
+
+
+RendererSettingsFunctor::RendererSettingsFunctor(AbstractRenderer *renderer)
+    : m_renderer(renderer)
+{
+}
+
+Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+{
+    QRendererSettings *settingsFrontend = static_cast<QRendererSettings *>(frontend);
+    if (m_renderer->settings() != Q_NULLPTR) {
+        qWarning() << "Renderer settings already exists";
+        return Q_NULLPTR;
+    }
+
+    RendererSettings *settings = new RendererSettings;
+    settings->setFactory(factory);
+    settings->setPeer(settingsFrontend);
+    m_renderer->setSettings(settings);
+    return settings;
+}
+
+Qt3DCore::QBackendNode *RendererSettingsFunctor::get(const Qt3DCore::QNodeId &id) const
+{
+    Q_UNUSED(id);
+    return Q_NULLPTR;
+}
+
+void RendererSettingsFunctor::destroy(const Qt3DCore::QNodeId &id) const
+{
+    Q_UNUSED(id);
+    // Deletes the old settings object
+    m_renderer->setSettings(Q_NULLPTR);
 }
 
 } // namespace Render

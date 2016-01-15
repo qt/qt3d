@@ -109,6 +109,7 @@ static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
+const RendererSettings Renderer::ms_defaultSettings;
 
 /*!
     \internal
@@ -144,6 +145,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
+    , m_settings(const_cast<RendererSettings *>(&ms_defaultSettings))
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -154,6 +156,9 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
+    // CLean up settings if not using defaults
+    if (m_settings != &ms_defaultSettings)
+        delete m_settings;
 }
 
 qint64 Renderer::time() const
@@ -510,6 +515,21 @@ void Renderer::registerEventFilter(QEventFilterService *service)
 {
     qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
     service->registerEventFilter(m_pickEventFilter.data(), 1024);
+}
+
+void Renderer::setSettings(RendererSettings *settings)
+{
+    // If default settings not in use, clean up
+    if (m_settings != &ms_defaultSettings)
+        delete m_settings;
+
+    // If removing settings, restore to default
+    m_settings = (settings != Q_NULLPTR) ? settings : const_cast<RendererSettings *>(&ms_defaultSettings);
+}
+
+RendererSettings *Renderer::settings() const
+{
+    return m_settings;
 }
 
 void Renderer::render()

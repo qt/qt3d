@@ -57,6 +57,7 @@
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
+#include <Qt3DRender/private/renderersettings_p.h>
 
 #include <QHash>
 #include <QMatrix4x4>
@@ -160,6 +161,9 @@ public:
 
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE;
 
+    virtual void setSettings(RendererSettings *settings) Q_DECL_OVERRIDE;
+    virtual RendererSettings *settings() const Q_DECL_OVERRIDE;
+
     void executeCommands(const RenderView *rv);
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
 
@@ -254,6 +258,9 @@ private:
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 
     qint64 m_time;
+
+    RendererSettings *m_settings;
+    static const RendererSettings ms_defaultSettings;
 };
 
 } // namespace Render

@@ -56,6 +56,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+class AbstractRenderer;
+
 class RendererSettings : public Qt3DCore::QBackendNode
 {
 public:
@@ -68,6 +70,18 @@ public:
 private:
     QRendererSettings::PickMethod m_pickMethod;
     QRendererSettings::PickResultMode m_pickResultMode;
+};
+
+class RendererSettingsFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit RendererSettingsFunctor(AbstractRenderer *renderer);
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+
+private:
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render
