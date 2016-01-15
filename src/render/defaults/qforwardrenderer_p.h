@@ -59,12 +59,14 @@ class QViewport;
 class QClearBuffer;
 class QCameraSelector;
 class QFrustumCulling;
+class QRenderSurfaceSelector;
 
 class QForwardRendererPrivate: public QTechniqueFilterPrivate
 {
 public:
     QForwardRendererPrivate();
 
+    QRenderSurfaceSelector *m_surfaceSelector;
     QViewport *m_viewport;
     QCameraSelector *m_cameraSelector;
     QClearBuffer *m_clearBuffer;

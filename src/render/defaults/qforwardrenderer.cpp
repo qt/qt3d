@@ -42,6 +42,7 @@
 #include <Qt3DRender/qclearbuffer.h>
 #include <Qt3DRender/qannotation.h>
 #include <Qt3DRender/qfrustumculling.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ namespace Qt3DRender {
 */
 QForwardRendererPrivate::QForwardRendererPrivate()
     : QTechniqueFilterPrivate()
+    , m_surfaceSelector(new QRenderSurfaceSelector)
     , m_viewport(new QViewport())
     , m_cameraSelector(new QCameraSelector())
     , m_clearBuffer(new QClearBuffer())
@@ -67,7 +69,8 @@ void QForwardRendererPrivate::init()
     m_frustumCulling->setParent(m_clearBuffer);
     m_clearBuffer->setParent(m_cameraSelector);
     m_cameraSelector->setParent(m_viewport);
-    m_viewport->setParent(q);
+    m_viewport->setParent(m_surfaceSelector);
+    m_surfaceSelector->setParent(q);
 
     m_viewport->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     m_viewport->setClearColor(Qt::white);
@@ -107,6 +110,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_viewport, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
     QObject::connect(d->m_viewport, SIGNAL(rectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
     QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
+    QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QSurface *)), this, SIGNAL(surfaceChanged(QSurface *)));
     d->init();
 }
 
@@ -138,6 +142,12 @@ void QForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
 {
     Q_D(QForwardRenderer);
     d->m_cameraSelector->setCamera(camera);
+}
+
+void QForwardRenderer::setSurface(QSurface *surface)
+{
+    Q_D(QForwardRenderer);
+    d->m_surfaceSelector->setSurface(surface);
 }
 
 /*!
@@ -173,6 +183,12 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
 {
     Q_D(const QForwardRenderer);
     return d->m_cameraSelector->camera();
+}
+
+QSurface *QForwardRenderer::surface() const
+{
+    Q_D(const QForwardRenderer);
+    return d->m_surfaceSelector->surface();
 }
 
 } // namespace Qt3DRender
