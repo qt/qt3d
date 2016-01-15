@@ -67,15 +67,24 @@ public:
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline int timeout() const { return m_timeout; }
     inline int interval() const { return m_interval; }
+    inline qint64 startTime() const { return m_startTime; }
+    void setStartTime(qint64 time);
     inline bool isSequential() const { return m_sequential; }
     inline bool isEnabled() const { return m_enabled; }
+    bool sequenceTriggered() const;
+    void reset();
+    bool actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
     QVector<Qt3DCore::QNodeId> m_inputs;
+    QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
     int m_timeout;
     int m_interval;
     bool m_sequential;
+    qint64 m_startTime;
+    qint64 m_lastInputTime;
+    Qt3DCore::QNodeId m_lastInputId;
     bool m_enabled;
 };
 

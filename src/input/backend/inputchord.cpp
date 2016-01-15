@@ -47,7 +47,9 @@ namespace Input {
 InputChord::InputChord()
     : Qt3DCore::QBackendNode()
     , m_inputs()
+    , m_inputsToTrigger()
     , m_tolerance(0)
+    , m_startTime(0)
     , m_enabled(false)
 {
 }
@@ -65,7 +67,33 @@ void InputChord::cleanup()
 {
     m_enabled = false;
     m_tolerance = 0;
+    m_startTime = 0;
     m_inputs.clear();
+    m_inputsToTrigger.clear();
+}
+
+void InputChord::reset()
+{
+    m_startTime = 0;
+    m_inputsToTrigger.clear();
+    Q_FOREACH (Qt3DCore::QNodeId input, m_inputs)
+        m_inputsToTrigger.push_back(input);
+}
+
+bool InputChord::actionTriggered(Qt3DCore::QNodeId input)
+{
+    m_inputsToTrigger.removeOne(input);
+    if (m_inputsToTrigger.isEmpty()) {
+        //All Triggered
+        reset();
+        return true;
+    }
+    return false;
+}
+
+void InputChord::setStartTime(qint64 time)
+{
+    m_startTime = time;
 }
 
 void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -78,11 +106,15 @@ void InputChord::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_tolerance = propertyChange->value().toInt();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
             m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+            m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+        }
     } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
             m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+            m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+        }
     }
 }
 

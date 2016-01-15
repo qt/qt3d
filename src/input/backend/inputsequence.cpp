@@ -38,6 +38,7 @@
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,9 +49,12 @@ namespace Input {
 InputSequence::InputSequence()
     : Qt3DCore::QBackendNode()
     , m_inputs()
+    , m_inputsToTrigger()
     , m_timeout(0)
     , m_interval(0)
     , m_sequential(true)
+    , m_startTime(0)
+    , m_lastInputTime(0)
     , m_enabled(false)
 {
 }
@@ -71,8 +75,56 @@ void InputSequence::cleanup()
     m_enabled = false;
     m_timeout = 0;
     m_interval = 0;
+    m_startTime = 0;
+    m_lastInputTime = 0;
+    m_lastInputId = Qt3DCore::QNodeId();
     m_sequential = true;
     m_inputs.clear();
+    m_inputsToTrigger.clear();
+}
+
+void InputSequence::setStartTime(qint64 time)
+{
+    m_startTime = time;
+}
+
+void InputSequence::reset()
+{
+    m_startTime = 0;
+    m_lastInputTime = 0;
+    m_inputsToTrigger = m_inputs;
+    m_lastInputId = Qt3DCore::QNodeId();
+}
+
+bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime)
+{
+    // If we are running the root of a sequence and input is not the first element of the sequence
+    // reset and return false
+    if (m_sequential && (!m_inputs.empty() && m_inputsToTrigger.first() != input)) {
+        if (!(input == m_lastInputId && ((currentTime - m_lastInputTime) < 200)))
+            reset();
+        return false;
+    }
+
+    // Otherwise save the last input
+    m_lastInputId = input;
+    // Return false if we've spent too much time in between two sequences
+    if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_interval)) {
+        reset();
+        return false;
+    }
+
+    // Update lastInputTime and remove the inputs to trigger from the sequence
+    m_lastInputTime = currentTime;
+    m_inputsToTrigger.removeOne(input);
+
+    // If we have no more remaining inputs in the sequences of inputs
+    if (m_inputsToTrigger.isEmpty()) {
+        // All Triggered
+        reset();
+        return true;
+    }
+    return false;
 }
 
 void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -89,11 +141,15 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_sequential = propertyChange->value().toBool();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
             m_inputs.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+            m_inputsToTrigger.push_back(propertyChange->value().value<Qt3DCore::QNodeId>());
+        }
     } else if (e->type() == Qt3DCore::NodeRemoved) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("input"))
+        if (propertyChange->propertyName() == QByteArrayLiteral("input")) {
             m_inputs.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+            m_inputsToTrigger.removeOne(propertyChange->value().value<Qt3DCore::QNodeId>());
+        }
     }
 }
 

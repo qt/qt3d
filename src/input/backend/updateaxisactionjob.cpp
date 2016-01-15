@@ -62,8 +62,9 @@ bool anyOfRequiredKeysPressed(const QVector<int> &keys, QAbstractPhysicalDeviceB
 
 } // anonymous
 
-UpdateAxisActionJob::UpdateAxisActionJob(InputHandler *handler, HLogicalDevice handle)
+UpdateAxisActionJob::UpdateAxisActionJob(qint64 currentTime, InputHandler *handler, HLogicalDevice handle)
     : Qt3DCore::QAspectJob()
+    , m_currentTime(currentTime)
     , m_handler(handler)
     , m_handle(handle)
 {
@@ -85,21 +86,70 @@ void UpdateAxisActionJob::updateAction(LogicalDevice *device)
         Action *action = m_handler->actionManager()->lookupResource(actionId);
 
         Q_FOREACH (const Qt3DCore::QNodeId actionInputId, action->inputs()) {
-            ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
-            QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
-
-            Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
-                if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != Q_NULLPTR)
-                    break;
-            }
-
-            if (physicalDeviceBackend != Q_NULLPTR) {
-                // Update the value
-                actionTriggered |= anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
-            }
+            actionTriggered |= processActionInput(actionInputId);
         }
         action->setActionTriggered(actionTriggered);
     }
+}
+
+bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInputId)
+{
+
+    if (m_handler->actionInputManager()->lookupResource(actionInputId)) {
+        ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
+        QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
+
+        Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
+            if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != Q_NULLPTR)
+                break;
+        }
+
+        if (physicalDeviceBackend != Q_NULLPTR) {
+            // Update the value
+            return anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
+        }
+    } else if (m_handler->inputSequenceManager()->lookupResource(actionInputId)) {
+        InputSequence *inputSequence = m_handler->inputSequenceManager()->lookupResource(actionInputId);
+        const qint64 startTime = inputSequence->startTime();
+        if (startTime != 0) {
+            // Check if we are still inside the time limit for the chord
+            if ((m_currentTime - startTime) > inputSequence->timeout()) {
+                inputSequence->reset();
+                return false;
+            }
+        }
+        bool actionTriggered = false;
+        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputSequence->inputs()) {
+            if (processActionInput(actionInputId)){
+                actionTriggered |= inputSequence->actionTriggered(actionInputId, m_currentTime);
+                // Set the start time if it wasn't set before
+                if (startTime == 0)
+                    inputSequence->setStartTime(m_currentTime);
+            }
+        }
+        return actionTriggered;
+    } else if (m_handler->inputChordManager()->lookupResource(actionInputId)) {
+        InputChord *inputChord = m_handler->inputChordManager()->lookupResource(actionInputId);
+        const qint64 startTime = inputChord->startTime();
+        if (startTime != 0) {
+            // Check if we are still inside the time limit for the chord
+            if ((m_currentTime - startTime) > inputChord->tolerance()) {
+                inputChord->reset();
+                return false;
+            }
+        }
+        bool actionTriggered = false;
+        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputChord->inputs()) {
+            if (processActionInput(actionInputId)){
+                actionTriggered |= inputChord->actionTriggered(actionInputId);
+                if (startTime == 0)
+                    inputChord->setStartTime(m_currentTime);
+            }
+        }
+        return actionTriggered;
+    }
+    //Should Never reach this point
+    return false;
 }
 
 void UpdateAxisActionJob::updateAxis(LogicalDevice *device)

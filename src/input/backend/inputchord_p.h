@@ -66,12 +66,17 @@ public:
 
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
     inline int tolerance() const { return m_tolerance; }
+    inline qint64 startTime() const { return m_startTime; }
+    void setStartTime(qint64 time);
     inline bool isEnabled() const { return m_enabled; }
+    void reset();
+    bool actionTriggered(Qt3DCore::QNodeId input);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
 private:
     QVector<Qt3DCore::QNodeId> m_inputs;
+    QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
     int m_tolerance;
+    qint64 m_startTime;
     bool m_enabled;
 };
 

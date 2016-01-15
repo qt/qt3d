@@ -175,7 +175,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     QHash<Input::HLogicalDevice, QAspectJobPtr> logicalDeviceJobs;
 
     Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
-        QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(d->m_inputHandler.data(), devHandle));
+        QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
         logicalDeviceJobs.insert(devHandle, updateAxisActionJob);
 
         Q_FOREACH (const QAspectJobPtr job, jobs)

@@ -49,6 +49,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
+#include <Qt3DCore/qnodeid.h>
 #include <Qt3DInput/private/handle_types_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -62,13 +63,15 @@ class InputHandler;
 class UpdateAxisActionJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit UpdateAxisActionJob(InputHandler *handler, HLogicalDevice handle);
+    explicit UpdateAxisActionJob(qint64 currentTime, InputHandler *handler, HLogicalDevice handle);
     void run() Q_DECL_FINAL;
 
 private:
     void updateAction(LogicalDevice *device);
+    bool processActionInput(const Qt3DCore::QNodeId actionInputId);
     void updateAxis(LogicalDevice *device);
 
+    const qint64 m_currentTime;
     InputHandler *m_handler;
     HLogicalDevice m_handle;
 };
