@@ -93,7 +93,6 @@ private Q_SLOTS:
     void applyRootEntityChange();
 
 private:
-    void itemChange(ItemChange change, const ItemChangeData& value);
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
 
     QStringList m_aspects;
