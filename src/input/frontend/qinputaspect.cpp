@@ -36,7 +36,6 @@
 
 #include "qinputaspect.h"
 #include "qinputaspect_p.h"
-#include "cameracontroller_p.h"
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
 #include "keyboardinput_p.h"
@@ -95,7 +94,6 @@ namespace Qt3DInput {
 QInputAspectPrivate::QInputAspectPrivate()
     : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())
-    , m_cameraController(new Input::CameraController())
     , m_keyboardMouseIntegration(new Input::KeyboardMouseGenericDeviceIntegration(m_inputHandler.data()))
 {
 }
@@ -149,12 +147,6 @@ void QInputAspect::loadInputDevicePlugins()
     }
 }
 
-Qt3DCore::QCamera *QInputAspect::camera() const
-{
-    Q_D(const QInputAspect);
-    return d->m_cameraController->camera();
-}
-
 // Note: caller is responsible for ownership
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
@@ -165,12 +157,6 @@ QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
             break;
     }
     return device;
-}
-
-void QInputAspect::setCamera(Qt3DCore::QCamera *camera)
-{
-    Q_D(QInputAspect);
-    d->m_cameraController->setCamera(camera);
 }
 
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
@@ -219,7 +205,6 @@ void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
     Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();
-    eventService->registerEventFilter(d->m_cameraController.data(), 128);
     d->m_inputHandler->registerEventFilters(eventService);
 }
 

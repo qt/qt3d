@@ -44,7 +44,7 @@
 
 #include <QtGui/QVector2D>
 
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 

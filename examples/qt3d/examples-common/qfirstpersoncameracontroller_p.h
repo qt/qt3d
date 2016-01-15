@@ -43,7 +43,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 class QCamera;
 }
 
@@ -69,7 +69,7 @@ public:
 
     void init();
 
-    Qt3DCore::QCamera *m_camera;
+    Qt3DRender::QCamera *m_camera;
     QAction *m_leftMouseButtonAction;
     QAction *m_fineMotionAction;
     QAxis *m_rxAxis;

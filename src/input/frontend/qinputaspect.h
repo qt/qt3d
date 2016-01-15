@@ -42,10 +42,6 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QCamera;
-}
-
 namespace Qt3DInput {
 
 class QAbstractPhysicalDevice;
@@ -55,17 +51,10 @@ class QInputDeviceIntegration;
 class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DCore::QCamera* camera READ camera WRITE setCamera)
 public:
     explicit QInputAspect(QObject *parent = 0);
-
-    Qt3DCore::QCamera *camera() const;
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);
-
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
-
-public Q_SLOTS:
-    void setCamera(Qt3DCore::QCamera *camera);
 
 private:
     void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;

@@ -57,7 +57,6 @@ namespace Qt3DInput {
 class QInputAspect;
 
 namespace Input {
-class CameraController;
 class InputHandler;
 class KeyboardMouseGenericDeviceIntegration;
 }
@@ -69,7 +68,6 @@ public:
 
     Q_DECLARE_PUBLIC(QInputAspect)
     QScopedPointer<Input::InputHandler> m_inputHandler;
-    QScopedPointer<Input::CameraController> m_cameraController;
     QScopedPointer<Input::KeyboardMouseGenericDeviceIntegration> m_keyboardMouseIntegration;
 };
 

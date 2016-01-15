@@ -36,20 +36,16 @@
 
 #include <Qt3DCore/QEntity>
 
-#include <Qt3DInput/QInputAspect>
-
-#include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QPlaneMesh>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QParameter>
-#include <Qt3DCore/QCamera>
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QPointLight>
-#include <Qt3DRender/QWindow>
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QGuiApplication>
@@ -59,14 +55,15 @@
 #include "finaleffect.h"
 #include "sceneeffect.h"
 #include "pointlightblock.h"
+#include "qt3dwindow.h"
+#include "qfirstpersoncameracontroller.h"
+
 
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
 
-    Qt3DRender::QWindow view;
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect();
-    view.registerAspect(input);
+    Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -99,18 +96,20 @@ int main(int ac, char **av)
     rootEntity->addComponent(light1);
 
     // Scene Camera
-    Qt3DCore::QCamera *camera = view.defaultCamera();
+    Qt3DRender::QCamera *camera = view.camera();
 
     camera->setFieldOfView(45.0f);
     camera->setNearPlane(0.01f);
     camera->setFarPlane(1000.0f);
-    camera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+    camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
 
     camera->setPosition(QVector3D(10.0f, 10.0f, -25.0f));
     camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 10.0f));
 
-    input->setCamera(camera);
+    // For camera controls
+    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    camController->setCamera(camera);
 
     // FrameGraph
     Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();

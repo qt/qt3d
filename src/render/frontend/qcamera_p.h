@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_CAMERALENS_P_H
-#define QT3DCORE_CAMERALENS_P_H
+#ifndef QT3DRENDER_CAMERA_P_H
+#define QT3DRENDER_CAMERA_P_H
 
 //
 //  W A R N I N G
@@ -48,82 +48,42 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcomponent_p.h>
-#include "qcameralens.h"
-
-#include <Qt3DCore/qscenepropertychange.h>
-
-#include <QtGui/qmatrix4x4.h>
+#include <Qt3DRender/qcameralens.h>
+#include <Qt3DCore/qtransform.h>
+#include <private/qentity_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QCameraLensPrivate : public QComponentPrivate
+class QCameraPrivate : public Qt3DCore::QEntityPrivate
 {
 public:
-    QCameraLensPrivate();
+    QCameraPrivate();
 
-    inline void updateProjectionMatrix()
+    Q_DECLARE_PUBLIC(QCamera)
+
+    void updateViewMatrix()
     {
-        switch (m_projectionType) {
-        case QCameraLens::OrthographicProjection:
-            updateOrthographicProjection();
-            break;
-        case QCameraLens::PerspectiveProjection:
-            updatePerpectiveProjection();
-            break;
-        case QCameraLens::FrustumProjection:
-            updateFrustumProjection();
-            break;
-        }
+        QMatrix4x4 m;
+        m.lookAt(m_position, m_viewCenter, m_upVector);
+        m_transform->setMatrix(m);
     }
 
-    Q_DECLARE_PUBLIC(QCameraLens)
+    QVector3D m_position;
+    QVector3D m_viewCenter;
+    QVector3D m_upVector;
 
-    QCameraLens::ProjectionType m_projectionType;
+    QVector3D m_cameraToCenter; // The vector from the camera position to the view center
+    bool m_viewMatrixDirty;
 
-    float m_nearPlane;
-    float m_farPlane;
-
-    float m_fieldOfView;
-    float m_aspectRatio;
-
-    float m_left;
-    float m_right;
-    float m_bottom;
-    float m_top;
-
-    mutable QMatrix4x4 m_projectionMatrix;
-
-private:
-    inline void updatePerpectiveProjection()
-    {
-        Q_Q(QCameraLens);
-        m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.perspective(m_fieldOfView, m_aspectRatio, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
-    }
-
-    inline void updateOrthographicProjection()
-    {
-        Q_Q(QCameraLens);
-        m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.ortho(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
-    }
-
-    inline void updateFrustumProjection()
-    {
-        Q_Q(QCameraLens);
-        m_projectionMatrix.setToIdentity();
-        m_projectionMatrix.frustum(m_left, m_right, m_bottom, m_top, m_nearPlane, m_farPlane);
-        Q_EMIT q->projectionMatrixChanged(m_projectionMatrix);
-    }
+    // Components
+    QCameraLens *m_lens;
+    Qt3DCore::QTransform *m_transform;
 };
 
-} // namespace Qt3DCore
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_CAMERALENS_P_H
+#endif // QT3DRENDER_CAMERA_P_H

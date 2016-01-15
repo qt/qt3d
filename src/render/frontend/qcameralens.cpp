@@ -39,14 +39,14 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::QCameraLensPrivate
+    \class Qt3DRender::QCameraLensPrivate
     \internal
 */
 QCameraLensPrivate::QCameraLensPrivate()
-    : QComponentPrivate()
+    : Qt3DCore::QComponentPrivate()
     , m_projectionType(QCameraLens::OrthographicProjection)
     , m_nearPlane(0.1f)
     , m_farPlane(1024.0f)
@@ -60,7 +60,7 @@ QCameraLensPrivate::QCameraLensPrivate()
 }
 
 QCameraLens::QCameraLens(QNode *parent)
-    : QComponent(*new QCameraLensPrivate, parent)
+    : Qt3DCore::QComponent(*new QCameraLensPrivate, parent)
 {
     Q_D(QCameraLens);
     d->updateProjectionMatrix();
@@ -87,10 +87,10 @@ void QCameraLens::copy(const QNode *ref)
     d_func()->m_projectionMatrix = lens->d_func()->m_projectionMatrix;
 }
 
-/*! \class Qt3DCore::QCameraLens
+/*! \class Qt3DRender::QCameraLens
  *  \inmodule Qt3DCore
  *
- * \brief Qt3DCore::QCameraLens specifies the projection matrix that will be used to
+ * \brief Qt3DRender::QCameraLens specifies the projection matrix that will be used to
  * define a Camera for a 3D scene.
  *
  *  \since 5.5
@@ -105,8 +105,8 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
 /*!
  * Sets the lens' projection type \a projectionType.
  *
- * \note Qt3DCore::QCameraLens::Frustum and
- * Qt3DCore::QCameraLens::PerspectiveProjection are two different ways of
+ * \note Qt3DRender::QCameraLens::Frustum and
+ * Qt3DRender::QCameraLens::PerspectiveProjection are two different ways of
  * specifying the same projection.
  */
 void QCameraLens::setProjectionType(QCameraLens::ProjectionType projectionType)
@@ -239,7 +239,7 @@ float QCameraLens::farPlane() const
  * a projection matrix update.
  *
  * \note this has no effect if the projection type is not
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setFieldOfView(float fieldOfView)
 {
@@ -255,7 +255,7 @@ void QCameraLens::setFieldOfView(float fieldOfView)
  * Returns the projection's field of view in degrees.
  *
  * \note: The return value may be undefined if the projection type is not
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::fieldOfView() const
 {
@@ -268,7 +268,7 @@ float QCameraLens::fieldOfView() const
  * matrix update.
  *
  * \note this has no effect if the projection type is not
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setAspectRatio(float aspectRatio)
 {
@@ -284,7 +284,7 @@ void QCameraLens::setAspectRatio(float aspectRatio)
  * Returns the projection's aspect ratio.
  *
  * \note: The return value may be undefined if the projection type is not
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::aspectRatio() const
 {
@@ -297,7 +297,7 @@ float QCameraLens::aspectRatio() const
  * triggers a projection matrix update.
  *
  * \note this has no effect if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setLeft(float left)
 {
@@ -313,7 +313,7 @@ void QCameraLens::setLeft(float left)
  * Returns the lower left window coordinate of the projection.
  *
  * \note The return value may be undefined if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::left() const
 {
@@ -326,7 +326,7 @@ float QCameraLens::left() const
  * a projection matrix update.
  *
  * \note this has no effect if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setRight(float right)
 {
@@ -342,7 +342,7 @@ void QCameraLens::setRight(float right)
  * Returns the upper right window coordinate of the projection.
  *
  * \note The return value may be undefined if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::right() const
 {
@@ -355,7 +355,7 @@ float QCameraLens::right() const
  * projection matrix update.
  *
  * \note this has no effect if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setBottom(float bottom)
 {
@@ -371,7 +371,7 @@ void QCameraLens::setBottom(float bottom)
  * Returns the bottom window coordinate of the projection.
  *
  * \note The return value may be undefined if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::bottom() const
 {
@@ -384,7 +384,7 @@ float QCameraLens::bottom() const
  * projection matrix update.
  *
  * \note this has no effect if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 void QCameraLens::setTop(float top)
 {
@@ -400,7 +400,7 @@ void QCameraLens::setTop(float top)
  * Returns the bottom window coordinate of the projection.
  *
  * \note The return value may be undefined if the projection type is
- * Qt3DCore::QCameraLens::PerspectiveProjection.
+ * Qt3DRender::QCameraLens::PerspectiveProjection.
  */
 float QCameraLens::top() const
 {
@@ -417,11 +417,11 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
     return d->m_projectionMatrix;
 }
 
-} // Qt3D
+} // Qt3DRender
 
 /*!
     \qmltype CameraLens
-    \instantiates Qt3DCore::QCameraLens
+    \instantiates Qt3DRender::QCameraLens
     \inqmlmodule Qt3D.Core
     \inherits Component3D
     \since 5.5

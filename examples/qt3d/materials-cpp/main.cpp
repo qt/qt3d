@@ -38,7 +38,7 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 
 #include <Qt3DInput/QInputAspect>
 
@@ -48,33 +48,33 @@
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QTextureImage>
-#include <Qt3DRender/QWindow>
 
 #include "planeentity.h"
 #include "rotatingtrefoilknot.h"
 #include "barrel.h"
 #include "houseplant.h"
+#include "qt3dwindow.h"
+#include "qfirstpersoncameracontroller.h"
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DRender::QWindow view;
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    view.registerAspect(input);
+    Qt3DWindow view;
 
     // Scene Root
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DCore::QCamera *basicCamera = view.defaultCamera();
-    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+    Qt3DRender::QCamera *basicCamera = view.camera();
+    basicCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     // For camera controls
-    input->setCamera(basicCamera);
+    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    camController->setCamera(basicCamera);
 
     // Scene floor
     PlaneEntity *planeEntity = new PlaneEntity(sceneRoot);

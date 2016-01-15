@@ -39,34 +39,34 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 /*!
-    \class Qt3DCore::QCameraPrivate
+    \class Qt3DRender::QCameraPrivate
     \internal
 */
 QCameraPrivate::QCameraPrivate()
-    : QEntityPrivate()
+    : Qt3DCore::QEntityPrivate()
     , m_position(0.0f, 0.0f, 0.0f)
     , m_viewCenter(0.0f, 0.0f, -100.0f)
     , m_upVector(0.0f, 1.0f, 0.0f)
     , m_cameraToCenter(m_viewCenter - m_position)
     , m_viewMatrixDirty(false)
     , m_lens(new QCameraLens())
-    , m_transform(new QTransform())
+    , m_transform(new Qt3DCore::QTransform())
 {
 }
 
 /*!
     \qmltype Camera
-    \instantiates Qt3DCore::QCamera
+    \instantiates Qt3DRender::QCamera
     \inherits Entity
     \inqmlmodule Qt3D.Core
     \since 5.5
 */
 
-QCamera::QCamera(QNode *parent)
-    : QEntity(*new QCameraPrivate, parent)
+QCamera::QCamera(Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(*new QCameraPrivate, parent)
 {
     QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)), this, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged(float)), this, SIGNAL(nearPlaneChanged(float)));
@@ -89,8 +89,8 @@ QCamera::~QCamera()
 }
 
 /*! \internal */
-QCamera::QCamera(QCameraPrivate &dd, QNode *parent)
-    : QEntity(dd, parent)
+QCamera::QCamera(QCameraPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QEntity(dd, parent)
 {
     QObject::connect(d_func()->m_lens, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)), this, SIGNAL(projectionTypeChanged(QCameraLens::ProjectionType)));
     QObject::connect(d_func()->m_lens, SIGNAL(nearPlaneChanged(float)), this, SIGNAL(nearPlaneChanged(float)));
@@ -113,7 +113,7 @@ QCameraLens *QCamera::lens() const
     return d->m_lens;
 }
 
-QTransform *QCamera::transform() const
+Qt3DCore::QTransform *QCamera::transform() const
 {
     Q_D(const QCamera);
     return d->m_transform;
@@ -481,6 +481,6 @@ QMatrix4x4 QCamera::viewMatrix() const
     return d->m_transform->matrix();
 }
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE

@@ -37,7 +37,7 @@
 #include <QtTest/QtTest>
 #include <Qt3DRender/private/entity_p.h>
 
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QScenePropertyChange>
 #include <Qt3DCore/QTransform>
 

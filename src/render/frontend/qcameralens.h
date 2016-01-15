@@ -34,11 +34,11 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_CAMERALENS_H
-#define QT3DCORE_CAMERALENS_H
+#ifndef QT3DRENDER_CAMERALENS_H
+#define QT3DRENDER_CAMERALENS_H
 
 #include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 #include <QMatrix4x4>
 #include <QQuaternion>
@@ -46,11 +46,11 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
 class QCameraLensPrivate;
 
-class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
+class QT3DRENDERSHARED_EXPORT QCameraLens : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
@@ -130,8 +130,8 @@ private:
     QT3D_CLONEABLE(QCameraLens)
 };
 
-} // Qt3D
+} // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // CAMERALENS_H
+#endif // QT3DRENDER_CAMERALENS_H

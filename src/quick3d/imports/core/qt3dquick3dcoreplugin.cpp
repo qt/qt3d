@@ -35,8 +35,6 @@
 ****************************************************************************/
 
 #include "qt3dquick3dcoreplugin.h"
-#include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qcamera.h>
 #include <Qt3DCore/qtransform.h>
 #include <private/quick3dentity_p.h>
 #include <private/quick3dentityloader_p.h>
@@ -64,8 +62,6 @@ void Qt3DQuick3DCorePlugin::registerTypes(const char *uri)
     // Ideally we want to make Node an uncreatable type
     // We would need qmlRegisterUncreatableExtendedType for that
     qmlRegisterExtendedUncreatableType<Qt3DCore::QNode, Qt3DCore::Quick::Quick3DNode>(uri, 2, 0, "Node", QStringLiteral("Node is a base class"));
-    Qt3DCore::Quick::registerExtendedType<Qt3DCore::QCamera, Qt3DCore::Quick::Quick3DNode>("QCamera", "Qt3D.Core/Camera", uri, 2, 0, "Camera");
-    qmlRegisterType<Qt3DCore::QCameraLens>(uri, 2, 0, "CameraLens");
 }
 
 QT_END_NAMESPACE

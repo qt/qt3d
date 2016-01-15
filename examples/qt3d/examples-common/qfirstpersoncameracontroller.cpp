@@ -36,7 +36,7 @@
 
 #include "qfirstpersoncameracontroller_p.h"
 #include "qfirstpersoncameracontroller.h"
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
 #include <Qt3DInput/QAxisInput>
 #include <Qt3DInput/QAction>
@@ -226,7 +226,7 @@ QFirstPersonCameraController::~QFirstPersonCameraController()
 {
 }
 
-Qt3DCore::QCamera *QFirstPersonCameraController::camera() const
+Qt3DRender::QCamera *QFirstPersonCameraController::camera() const
 {
     Q_D(const QFirstPersonCameraController);
     return d->m_camera;
@@ -244,7 +244,7 @@ float QFirstPersonCameraController::lookSpeed() const
     return d->m_lookSpeed;
 }
 
-void QFirstPersonCameraController::setCamera(Qt3DCore::QCamera *camera)
+void QFirstPersonCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
     Q_D(QFirstPersonCameraController);
     if (d->m_camera != camera) {

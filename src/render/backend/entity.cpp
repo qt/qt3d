@@ -50,7 +50,7 @@
 #include <Qt3DRender/qcomputejob.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
-#include <Qt3DCore/qcameralens.h>
+#include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qtransform.h>

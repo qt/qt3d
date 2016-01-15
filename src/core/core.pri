@@ -6,8 +6,6 @@ include (./aspects/aspects.pri)
 include (./jobs/jobs.pri)
 # Nodes
 include (./nodes/nodes.pri)
-# Qml Components
-include (./core-components/core-components.pri)
 #Transformations
 include (./transforms/transforms.pri)
 # Resources Management

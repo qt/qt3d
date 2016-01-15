@@ -37,7 +37,6 @@
 #include <QtTest/QtTest>
 #include <QMatrix4x4>
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QFrameGraph>
@@ -47,6 +46,7 @@
 #include <Qt3DRender/private/managers_p.h>
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DRender/private/renderer_p.h>
@@ -167,7 +167,7 @@ Qt3DCore::QEntity *buildBigScene()
     Qt3DCore::QEntity *root = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3DCore::QCamera *cameraEntity = new Qt3DCore::QCamera(root);
+    Qt3DRender::QCamera *cameraEntity = new Qt3DRender::QCamera(root);
     cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, -250.0f, -50.0f));

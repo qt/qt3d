@@ -43,7 +43,7 @@
 #include <Qt3DLogic/qlogicaspect.h>
 
 #include <Qt3DCore/qaspectengine.h>
-#include <Qt3DCore/qcamera.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DCore/qentity.h>
 
 #include <QtGui/qopenglcontext.h>
@@ -57,7 +57,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_frameGraph(nullptr)
-    , m_defaultCamera(new Qt3DCore::QCamera)
+    , m_defaultCamera(new Qt3DRender::QCamera)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
     , m_initialized(false)
@@ -89,7 +89,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_frameGraph(nullptr)
-    , m_defaultCamera(new Qt3DCore::QCamera)
+    , m_defaultCamera(new Qt3DRender::QCamera)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
     , m_initialized(false)
@@ -135,7 +135,12 @@ void Qt3DWindow::setRootEntity(Qt3DCore::QEntity *root)
     m_userRoot = root;
 }
 
-Qt3DCore::QCamera *Qt3DWindow::camera() const
+void Qt3DWindow::setFrameGraph(Qt3DRender::QFrameGraph *frameGraph)
+{
+    m_frameGraph = frameGraph;
+}
+
+Qt3DRender::QCamera *Qt3DWindow::camera() const
 {
     return m_defaultCamera;
 }
@@ -161,9 +166,6 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 
         m_root->addComponent(m_frameGraph);
         m_aspectEngine->setRootEntity(m_root);
-
-        // TODO: Get rid of this too
-        m_inputAspect->setCamera(m_defaultCamera);
 
         m_initialized = true;
     }

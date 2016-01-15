@@ -34,11 +34,12 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_CAMERA_H
-#define QT3DCORE_CAMERA_H
+#ifndef QT3DRENDER_CAMERA_H
+#define QT3DRENDER_CAMERA_H
 
 #include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qcameralens.h>
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/qcameralens.h>
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector3D>
@@ -46,16 +47,19 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-
-class QLookAtTransform;
+class QEntity;
 class QTransform;
+}
+
+namespace Qt3DRender {
 
 class QCameraPrivate;
-class QT3DCORESHARED_EXPORT QCamera : public QEntity
+
+class QT3DRENDERSHARED_EXPORT QCamera : public Qt3DCore::QEntity
 {
     Q_OBJECT
     // CameraLens
-    Q_PROPERTY(Qt3DCore::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
+    Q_PROPERTY(Qt3DRender::QCameraLens::ProjectionType projectionType READ projectionType WRITE setProjectionType NOTIFY projectionTypeChanged)
     Q_PROPERTY(float nearPlane READ nearPlane WRITE setNearPlane NOTIFY nearPlaneChanged)
     Q_PROPERTY(float farPlane READ farPlane WRITE setFarPlane NOTIFY farPlaneChanged)
     Q_PROPERTY(float fieldOfView READ fieldOfView WRITE setFieldOfView NOTIFY fieldOfViewChanged)
@@ -83,7 +87,7 @@ public:
     Q_ENUM(CameraTranslationOption)
 
     QCameraLens *lens() const;
-    QTransform *transform() const;
+    Qt3DCore::QTransform *transform() const;
 
     QQuaternion tiltRotation(float angle) const;
     QQuaternion panRotation(float angle) const;
@@ -162,8 +166,8 @@ protected:
     QCamera(QCameraPrivate &dd, QNode *parent = 0);
 };
 
-} // namespace Qt3DCore
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_CAMERA_H
+#endif // QT3DRENDER_CAMERA_H

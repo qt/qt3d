@@ -42,7 +42,7 @@
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DCore/qray3d.h>
-#include <Qt3DCore/qcamera.h>
+#include <Qt3DRender/qcamera.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -318,7 +318,7 @@ Sphere *tst_RayCasting::volumeAt(int index)
 void tst_RayCasting::mousePicking()
 {
     // GIVEN
-    Qt3DCore::QCamera camera;
+    Qt3DRender::QCamera camera;
     camera.setProjectionType(QCameraLens::PerspectiveProjection);
     camera.setFieldOfView(45.0f);
     camera.setAspectRatio(800.0/600.0f);

@@ -63,7 +63,7 @@
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qstateset.h>
 #include <Qt3DRender/qnodraw.h>
-#include <Qt3DCore/qcameralens.h>
+#include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qgeometry.h>
@@ -248,7 +248,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QShaderProgram>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(d->m_nodeManagers->shaderManager())));
     registerBackendType<QEffect>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(d->m_nodeManagers->effectManager())));
     registerBackendType<QAnnotation>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(d->m_nodeManagers->criterionManager())));
-    registerBackendType<Qt3DCore::QCameraLens>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_nodeManagers->cameraManager())));
+    registerBackendType<Qt3DRender::QCameraLens>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(d->m_nodeManagers->cameraManager())));
     registerBackendType<QLayer>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(d->m_nodeManagers->layerManager())));
     registerBackendType<QRenderPass>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(d->m_nodeManagers->renderPassManager())));
     registerBackendType<QAbstractSceneLoader>(QBackendNodeFunctorPtr(new Render::RenderSceneFunctor(d->m_nodeManagers->sceneManager())));

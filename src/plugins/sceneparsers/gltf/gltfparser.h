@@ -61,13 +61,13 @@ QT_BEGIN_NAMESPACE
 class QFile;
 
 namespace Qt3DCore {
-class QCamera;
-class QCameraLens;
 class QEntity;
 }
 
 namespace Qt3DRender {
 
+class QCamera;
+class QCameraLens;
 class QMaterial;
 class QShaderProgram;
 class QEffect;
@@ -142,7 +142,7 @@ private:
 
     Qt3DCore::QEntity *defaultScene();
     QMaterial *material(const QString &id);
-    Qt3DCore::QCameraLens *camera(const QString &id) const;
+    QCameraLens *camera(const QString &id) const;
 
     void parse();
     void cleanup();

@@ -37,7 +37,7 @@
 #include <QFileDialog>
 #include <QApplication>
 
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DInput/QInputAspect>
@@ -45,7 +45,8 @@
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QWindow>
+#include "qt3dwindow.h"
+#include "qfirstpersoncameracontroller.h"
 
 class SceneWalker : public QObject
 {
@@ -103,17 +104,14 @@ void SceneWalker::walkEntity(Qt3DCore::QEntity *e, int depth)
 int main(int ac, char **av)
 {
     QApplication app(ac, av);
-
-    Qt3DRender::QWindow view;
-    Qt3DInput::QInputAspect *inputAspect = new Qt3DInput::QInputAspect();
-    view.registerAspect(inputAspect);
+    Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DCore::QCamera *basicCamera = view.defaultCamera();
-    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+    Qt3DRender::QCamera *basicCamera = view.camera();
+    basicCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
@@ -121,7 +119,8 @@ int main(int ac, char **av)
     basicCamera->setNearPlane(0.001f);
     basicCamera->setFarPlane(10000.0f);
     // For camera controls
-    inputAspect->setCamera(basicCamera);
+    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
+    camController->setCamera(basicCamera);
 
     // Forward Renderer FrameGraph
     Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);

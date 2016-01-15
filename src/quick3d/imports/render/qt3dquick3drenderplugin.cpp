@@ -106,6 +106,8 @@
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputejob.h>
+#include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -190,6 +192,10 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QShaderData>(uri, 2, 0, "QShaderData", "Quick3D should instantiate Quick3DShaderData only");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderDataArray>(uri, 2, 0, "ShaderDataArray");
     qmlRegisterType<Qt3DRender::Render::Quick::Quick3DShaderData>(uri, 2, 0, "ShaderData");
+
+    // Camera
+    qmlRegisterType<Qt3DRender::QCamera>(uri, 2, 0, "Camera");
+    qmlRegisterType<Qt3DRender::QCameraLens>(uri, 2, 0, "CameraLens");
 
     // Textures
     qmlRegisterType<Qt3DRender::QTextureWrapMode>(uri, 2, 0, "WrapMode");//, QStringLiteral("QTextureWrapMode cannot be created from QML"));

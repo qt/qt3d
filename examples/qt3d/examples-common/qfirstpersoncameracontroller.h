@@ -41,7 +41,7 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 class QCamera;
 }
 
@@ -52,7 +52,7 @@ class QFirstPersonCameraControllerPrivate;
 class QFirstPersonCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DCore::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
     Q_PROPERTY(float linearSpeed READ linearSpeed WRITE setLinearSpeed NOTIFY linearSpeedChanged)
     Q_PROPERTY(float lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY lookSpeedChanged)
 
@@ -60,11 +60,11 @@ public:
     explicit QFirstPersonCameraController(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QFirstPersonCameraController();
 
-    Qt3DCore::QCamera *camera() const;
+    Qt3DRender::QCamera *camera() const;
     float linearSpeed() const;
     float lookSpeed() const;
 
-    void setCamera(Qt3DCore::QCamera *camera);
+    void setCamera(Qt3DRender::QCamera *camera);
     void setLinearSpeed(float linearSpeed);
     void setLookSpeed(float lookSpeed);
 

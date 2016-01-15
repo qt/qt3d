@@ -11,12 +11,14 @@ HEADERS += \
     $$PWD/qrenderattachment_p.h \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
-    $$PWD/qwindow.h \
-    $$PWD/qwindow_p.h \
     $$PWD/sphere_p.h \
     $$PWD/qboundingvolumedebug.h \
     $$PWD/qcomputejob.h \
-    $$PWD/qcomputejob_p.h
+    $$PWD/qcomputejob_p.h \
+    $$PWD/qcamera_p.h \
+    $$PWD/qcamera.h \
+    $$PWD/qcameralens.h \
+    $$PWD/qcameralens_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
@@ -26,6 +28,7 @@ SOURCES += \
     $$PWD/qlayer.cpp \
     $$PWD/qrenderattachment.cpp \
     $$PWD/qrendertarget.cpp \
-    $$PWD/qwindow.cpp \
     $$PWD/qboundingvolumedebug.cpp \
-    $$PWD/qcomputejob.cpp
+    $$PWD/qcomputejob.cpp \
+    $$PWD/qcamera.cpp \
+    $$PWD/qcameralens.cpp

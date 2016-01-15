@@ -37,8 +37,8 @@
 #include <QGuiApplication>
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QAspectEngine>
 
@@ -56,6 +56,7 @@
 
 #include "qt3dwindow.h"
 #include "orbittransformcontroller.h"
+#include "qfirstpersoncameracontroller.h"
 
 Qt3DCore::QEntity *createScene()
 {
@@ -112,12 +113,17 @@ int main(int argc, char* argv[])
     QGuiApplication app(argc, argv);
     Qt3DWindow view;
 
+    Qt3DCore::QEntity *scene = createScene();
+
     // Camera
-    Qt3DCore::QCamera *camera = view.camera();
+    Qt3DRender::QCamera *camera = view.camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera->setPosition(QVector3D(0, 0, 40.0f));
 
-    Qt3DCore::QEntity *scene = createScene();
+    // For camera controls
+    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(scene);
+    camController->setCamera(camera);
+
     view.setRootEntity(scene);
     view.show();
 

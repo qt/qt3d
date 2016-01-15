@@ -43,11 +43,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 class QAspectEngine;
-class QCamera;
+class QAbstractAspect;
 class QEntity;
 }
 
 namespace Qt3DRender {
+class QCamera;
 class QFrameGraph;
 class QRenderAspect;
 }
@@ -72,8 +73,9 @@ public:
     void registerAspect(const QString &name);
 
     void setRootEntity(Qt3DCore::QEntity *root);
+    void setFrameGraph(Qt3DRender::QFrameGraph *frameGraph);
 
-    Qt3DCore::QCamera *camera() const;
+    Qt3DRender::QCamera *camera() const;
 
 public Q_SLOTS:
 
@@ -93,7 +95,7 @@ private:
 
     // Renderer configuration
     Qt3DRender::QFrameGraph *m_frameGraph;
-    Qt3DCore::QCamera *m_defaultCamera;
+    Qt3DRender::QCamera *m_defaultCamera;
 
     // Input configuration
 

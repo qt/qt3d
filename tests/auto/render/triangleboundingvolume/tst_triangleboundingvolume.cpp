@@ -39,8 +39,8 @@
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
 #include <Qt3DCore/qray3d.h>
-#include <Qt3DCore/qcameralens.h>
-#include <Qt3DCore/qcamera.h>
+#include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
 
 class tst_TriangleBoundingVolume : public QObject
@@ -109,8 +109,8 @@ private Q_SLOTS:
                                                           a,
                                                           b,
                                                           c);
-        Qt3DCore::QCamera camera;
-        camera.setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+        Qt3DRender::QCamera camera;
+        camera.setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
         camera.setFieldOfView(45.0f);
         camera.setAspectRatio(800.0/600.0f);
         camera.setNearPlane(0.1f);

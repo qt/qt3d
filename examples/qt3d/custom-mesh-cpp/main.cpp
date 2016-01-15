@@ -37,8 +37,8 @@
 #include <QGuiApplication>
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QAspectEngine>
 
@@ -54,29 +54,30 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QWindow>
 
 #include <QPropertyAnimation>
+#include "qt3dwindow.h"
+#include "qfirstpersoncameracontroller.h"
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-    Qt3DRender::QWindow view;
-
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    view.registerAspect(input);
+    Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3DCore::QCamera *cameraEntity = view.defaultCamera();
+    Qt3DRender::QCamera *cameraEntity = view.camera();
 
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 0, 40.0f));
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
-    input->setCamera(cameraEntity);
+
+    // For camera controls
+    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    camController->setCamera(cameraEntity);
 
     // FrameGraph
     Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
