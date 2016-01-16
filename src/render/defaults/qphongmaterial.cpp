@@ -36,6 +36,7 @@
 
 #include "qphongmaterial.h"
 #include "qphongmaterial_p.h"
+#include <Qt3DRender/qannotation.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtechnique.h>
@@ -70,6 +71,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
     , m_phongES2RenderPass(new QRenderPass())
     , m_phongGL3Shader(new QShaderProgram())
     , m_phongGL2ES2Shader(new QShaderProgram())
+    , m_annotation(new QAnnotation)
 {
 }
 
@@ -84,6 +86,7 @@ void QPhongMaterialPrivate::init()
             this, &QPhongMaterialPrivate::handleSpecularChanged);
     connect(m_shininessParameter, &Qt3DRender::QParameter::valueChanged,
             this, &QPhongMaterialPrivate::handleShininessChanged);
+
 
     m_phongGL3Shader->setVertexShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.vert"))));
     m_phongGL3Shader->setFragmentShaderCode(QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/gl3/phong.frag"))));
@@ -113,6 +116,15 @@ void QPhongMaterialPrivate::init()
     m_phongGL2Technique->addPass(m_phongGL2RenderPass);
     m_phongES2Technique->addPass(m_phongES2RenderPass);
 
+    Q_Q(QPhongMaterial);
+    m_annotation->setParent(q);
+    m_annotation->setName(QStringLiteral("renderingStyle"));
+    m_annotation->setValue("forward");
+
+    m_phongGL3Technique->addAnnotation(m_annotation);
+    m_phongGL2Technique->addAnnotation(m_annotation);
+    m_phongES2Technique->addAnnotation(m_annotation);
+
     m_phongEffect->addTechnique(m_phongGL3Technique);
     m_phongEffect->addTechnique(m_phongGL2Technique);
     m_phongEffect->addTechnique(m_phongES2Technique);
@@ -122,7 +134,7 @@ void QPhongMaterialPrivate::init()
     m_phongEffect->addParameter(m_specularParameter);
     m_phongEffect->addParameter(m_shininessParameter);
 
-    q_func()->setEffect(m_phongEffect);
+    q->setEffect(m_phongEffect);
 }
 
 void QPhongMaterialPrivate::handleAmbientChanged(const QVariant &var)
