@@ -14,3 +14,4 @@ HEADERS += \
 SOURCES += \
     qt3dquick3dinputplugin.cpp
 
+qtHaveModule(gamepad): DEFINES += HAVE_QGAMEPAD

@@ -63,6 +63,10 @@
 #include <Qt3DQuickInput/private/quick3dlogicaldevice_p.h>
 #include <Qt3DQuickInput/private/quick3dphysicaldevice_p.h>
 
+#ifdef HAVE_QGAMEPAD
+# include <Qt3DInput/qgamepadinput.h>
+#endif
+
 #include "qt3dquick3dinputplugin.h"
 
 QT_BEGIN_NAMESPACE
@@ -92,6 +96,9 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterExtendedType<Qt3DInput::QInputChord, Qt3DInput::Input::Quick::Quick3DAggregateAction>(uri, 2, 0, "InputChord");
     qmlRegisterExtendedUncreatableType<Qt3DInput::QAbstractPhysicalDevice, Qt3DInput::Input::Quick::Quick3DPhysicalDevice>(uri, 2, 0, "QAbstractPhysicalDevice", QStringLiteral("QAbstractPhysicalDevice is abstract"));
     qmlRegisterType<Qt3DInput::QGenericInputDevice>(uri, 2, 0, "GenericInputDevice");
+#ifdef HAVE_QGAMEPAD
+    qmlRegisterType<Qt3DInput::QGamepadInput>(uri, 2, 0, "GamepadInput");
+#endif
 }
 
 QT_END_NAMESPACE

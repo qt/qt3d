@@ -87,6 +87,10 @@
 #include <Qt3DInput/private/inputsettings_p.h>
 #include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 
+#ifdef HAVE_QGAMEPAD
+# include <Qt3DInput/qgamepadinput.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -124,6 +128,10 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeFunctorPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QInputSettings>(QBackendNodeFunctorPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
+
+#ifdef HAVE_QGAMEPAD
+    registerBackendType<QGamepadInput>(QBackendNodeFunctorPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
+#endif
 
     // Plugins are QInputDeviceIntegration instances
     loadInputDevicePlugins();

@@ -60,4 +60,12 @@ SOURCES += \
     $$PWD/qinputsequence.cpp \
     $$PWD/qinputsettings.cpp
 
+qtHaveModule(gamepad) {
+    QT += gamepad
+    DEFINES += HAVE_QGAMEPAD
+    HEADERS += $$PWD/qgamepadinput.h
+    SOURCES += $$PWD/qgamepadinput.cpp
+}
+
 INCLUDEPATH += $$PWD
+
