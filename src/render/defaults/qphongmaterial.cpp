@@ -75,7 +75,6 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
 {
 }
 
-// TODO: Define how lights are properties are set in the shaders. Ideally using a QShaderData
 void QPhongMaterialPrivate::init()
 {
     connect(m_ambientParameter, &Qt3DRender::QParameter::valueChanged,
