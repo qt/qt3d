@@ -55,6 +55,13 @@ Material {
     }
 
     effect: Effect {
+
+        Annotation {
+            id: forward
+            name: "renderingStyle"
+            value: "forward"
+        }
+
         parameters: [
             Parameter {
                 name: "diffuseTexture"
@@ -72,6 +79,7 @@ Material {
         techniques: [
             // OpenGL 3.1
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.CoreProfile
@@ -85,6 +93,7 @@ Material {
 
             // GL 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     majorVersion: 2
@@ -97,6 +106,7 @@ Material {
 
             // ES 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGLES
                     profile: GraphicsApiFilter.NoProfile
