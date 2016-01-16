@@ -87,9 +87,16 @@ Entity {
         parameters: Parameter { name: "skyboxTexture"; value: skyboxTexture}
 
         effect: Effect {
+            Annotation {
+                id: forward
+                name: "renderingStyle"
+                value: "forward"
+            }
+
             techniques: [
                 // GL3 Technique
                 Technique {
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.CoreProfile
@@ -106,6 +113,7 @@ Entity {
                     }
                 },
                 Technique {
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.NoProfile
@@ -121,6 +129,7 @@ Entity {
                     }
                 },
                 Technique {
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile
