@@ -60,6 +60,12 @@ Material {
 
     effect: Effect {
 
+        Annotation {
+            id: forward
+            name: "renderingStyle"
+            value: "forward"
+        }
+
         parameters: [
             Parameter { name: "alpha";  value: root.alpha },
             Parameter { name: "ka";   value: Qt.vector3d(root.ambient.r, root.ambient.g, root.ambient.b) },
@@ -71,6 +77,7 @@ Material {
         techniques: [
             // GL 3 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.CoreProfile
@@ -92,6 +99,7 @@ Material {
 
             // GL 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.NoProfile
@@ -113,6 +121,7 @@ Material {
 
             // ES 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGLES
                     profile: GraphicsApiFilter.NoProfile
