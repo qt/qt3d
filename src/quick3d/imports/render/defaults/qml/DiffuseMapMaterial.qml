@@ -69,6 +69,12 @@ Material {
     ]
 
     effect: Effect {
+        Annotation {
+            id: forward
+            name: "renderingStyle"
+            value: "forward"
+        }
+
         ShaderProgram {
             id: gl2Es2Shader
             vertexShaderCode:   loadSource("qrc:/shaders/es2/diffusemap.vert")
@@ -84,6 +90,7 @@ Material {
         techniques: [
             // OpenGL 3.1
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.CoreProfile
@@ -95,6 +102,7 @@ Material {
 
             // OpenGL 2.1
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.NoProfile
@@ -106,6 +114,7 @@ Material {
 
             // OpenGL ES 2
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGLES
                     profile: GraphicsApiFilter.NoProfile
