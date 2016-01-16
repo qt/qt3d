@@ -53,9 +53,17 @@ Material {
     }
 
     effect: Effect {
+
+        Annotation {
+            id: forward
+            name: "renderingStyle"
+            value: "forward"
+        }
+
         techniques: [
             // GL 3 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.CoreProfile
@@ -69,6 +77,7 @@ Material {
 
             // GL 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.NoProfile
@@ -82,6 +91,7 @@ Material {
 
             // ES 2 Technique
             Technique {
+                annotations: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGLES
                     profile: GraphicsApiFilter.NoProfile
