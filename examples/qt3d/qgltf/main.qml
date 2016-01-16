@@ -58,23 +58,12 @@ Entity {
     }
 
     components: FrameGraph {
-        activeFrameGraph : Viewport {
-            CameraSelector {
-                camera: camera
-                ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
-                    SortMethod {
-                        criteria: [
-                            SortCriterion { sort: SortCriterion.BackToFront }
-                        ]
-                    }
-                }
-            }
+        activeFrameGraph: ForwardRenderer {
+            clearColor: Qt.rgba(0, 0.5, 1, 1)
+            camera: camera
         }
     }
 
-    Wine {
-        id: wineRack
-        position: Qt.vector3d(-60.0, 0.0, 0.0)
+    Scene {
     }
 }

@@ -11,10 +11,13 @@ SOURCES += \
 
 OTHER_FILES += \
     main.qml \
-    Wine.qml
+    Scene.qml
 
-QT3D_MODELS = ../exampleresources/assets/gltf/wine/wine.dae
-QGLTF_PARAMS = -g
+QT3D_MODELS = ../exampleresources/assets/test_scene.dae \
+              ../exampleresources/assets/obj/toyplane.obj \
+              ../exampleresources/assets/obj/trefoil.obj
+
+QGLTF_PARAMS = -b -S
 load(qgltf)
 
 RESOURCES += \
