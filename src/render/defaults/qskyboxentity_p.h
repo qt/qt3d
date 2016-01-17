@@ -59,6 +59,7 @@ class QTransform;
 
 namespace Qt3DRender {
 
+class QAnnotation;
 class QTextureCubeMap;
 class QShaderProgram;
 class QSkyboxEntity;
@@ -87,6 +88,7 @@ class QSkyboxEntityPrivate : public Qt3DCore::QEntityPrivate
     QTechnique *m_gl2Technique;
     QTechnique *m_es2Technique;
     QTechnique *m_gl3Technique;
+    QAnnotation *m_annotation;
     QRenderPass *m_gl2RenderPass;
     QRenderPass *m_es2RenderPass;
     QRenderPass *m_gl3RenderPass;
