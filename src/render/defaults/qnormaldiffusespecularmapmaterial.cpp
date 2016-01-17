@@ -135,7 +135,7 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     Q_Q(QNormalDiffuseSpecularMapMaterial);
     m_annotation->setParent(q);
     m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue("forward");
+    m_annotation->setValue(QStringLiteral("forward"));
 
     m_normalDiffuseSpecularGL3Technique->addAnnotation(m_annotation);
     m_normalDiffuseSpecularGL2Technique->addAnnotation(m_annotation);

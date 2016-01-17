@@ -136,7 +136,7 @@ void QPerVertexColorMaterialPrivate::init()
     Q_Q(QPerVertexColorMaterial);
     m_annotation->setParent(q);
     m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue("forward");
+    m_annotation->setValue(QStringLiteral("forward"));
 
     m_vertexGL3Technique->addAnnotation(m_annotation);
     m_vertexGL2Technique->addAnnotation(m_annotation);

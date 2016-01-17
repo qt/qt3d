@@ -128,7 +128,7 @@ void QNormalDiffuseMapMaterialPrivate::init()
     Q_Q(QNormalDiffuseMapMaterial);
     m_annotation->setParent(q);
     m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue("forward");
+    m_annotation->setValue(QStringLiteral("forward"));
 
     m_normalDiffuseGL3Technique->addAnnotation(m_annotation);
     m_normalDiffuseGL2Technique->addAnnotation(m_annotation);

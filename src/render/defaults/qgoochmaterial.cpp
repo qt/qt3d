@@ -116,7 +116,7 @@ void QGoochMaterialPrivate::init()
 
     m_annotation->setParent(q);
     m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue("forward");
+    m_annotation->setValue(QStringLiteral("forward"));
 
     m_gl3Technique->addAnnotation(m_annotation);
     m_gl2Technique->addAnnotation(m_annotation);
