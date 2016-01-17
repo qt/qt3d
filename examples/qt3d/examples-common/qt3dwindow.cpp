@@ -155,6 +155,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
             m_frameGraph = new Qt3DRender::QFrameGraph;
             Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer;
             forwardRenderer->setCamera(m_defaultCamera);
+            forwardRenderer->setSurface(this);
             m_frameGraph->setActiveFrameGraph(forwardRenderer);
         }
 
