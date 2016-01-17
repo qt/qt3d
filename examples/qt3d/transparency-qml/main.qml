@@ -112,6 +112,12 @@ Entity {
         }
 
         effect:  Effect {
+            Annotation {
+                id: forward
+                name: "renderingStyle"
+                value: "forward"
+            }
+
             parameters: [
                 Parameter { name: "alpha";  value: alphaMaterial.alpha },
                 Parameter { name: "ka";   value: "black" },
@@ -131,6 +137,7 @@ Entity {
             techniques: [
                 Technique
                 {
+                    annotations: forward
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.NoProfile
@@ -155,6 +162,7 @@ Entity {
                 },
                 Technique
                 {
+                    annotations: forward
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile
