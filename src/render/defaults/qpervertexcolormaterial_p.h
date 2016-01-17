@@ -54,6 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QAnnotation;
 class QEffect;
 class QTechnique;
 class QParameter;
@@ -79,6 +80,7 @@ public:
     QRenderPass *m_vertexES2RenderPass;
     QShaderProgram *m_vertexGL3Shader;
     QShaderProgram *m_vertexGL2ES2Shader;
+    QAnnotation *m_annotation;
 
     Q_DECLARE_PUBLIC(QPerVertexColorMaterial)
 };
