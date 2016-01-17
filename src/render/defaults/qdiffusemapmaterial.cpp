@@ -36,6 +36,7 @@
 
 #include "qdiffusemapmaterial.h"
 #include "qdiffusemapmaterial_p.h"
+#include <Qt3DRender/qannotation.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
@@ -73,6 +74,7 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseMapES2RenderPass(new QRenderPass())
     , m_diffuseMapGL3Shader(new QShaderProgram())
     , m_diffuseMapGL2ES2Shader(new QShaderProgram())
+    , m_annotation(new QAnnotation)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
     m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
@@ -114,6 +116,15 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_diffuseMapES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    Q_Q(QDiffuseMapMaterial);
+    m_annotation->setParent(q);
+    m_annotation->setName(QStringLiteral("renderingStyle"));
+    m_annotation->setValue("forward");
+
+    m_diffuseMapGL3Technique->addAnnotation(m_annotation);
+    m_diffuseMapGL2Technique->addAnnotation(m_annotation);
+    m_diffuseMapES2Technique->addAnnotation(m_annotation);
+
     m_diffuseMapGL3RenderPass->setShaderProgram(m_diffuseMapGL3Shader);
     m_diffuseMapGL2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
     m_diffuseMapES2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
@@ -132,7 +143,7 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapEffect->addParameter(m_shininessParameter);
     m_diffuseMapEffect->addParameter(m_textureScaleParameter);
 
-    q_func()->setEffect(m_diffuseMapEffect);
+    q->setEffect(m_diffuseMapEffect);
 }
 
 void QDiffuseMapMaterialPrivate::handleAmbientChanged(const QVariant &var)
