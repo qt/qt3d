@@ -282,7 +282,7 @@ void Renderer::createThreadLocalAllocator(void *renderer)
         // RenderCommand has a sizeof 128
         // QMatrix4x4 has a sizeof 68
         // May need to fine tune parameters passed to QFrameAllocator for best performances
-        QFrameAllocator *allocator = new QFrameAllocator(128, 16, 128);
+        QFrameAllocator *allocator = new QFrameAllocator(192, 16, 128);
         theRenderer->tlsAllocators()->setLocalData(allocator);
 
         // Add the allocator to the renderer

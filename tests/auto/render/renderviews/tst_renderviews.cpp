@@ -46,8 +46,8 @@ private Q_SLOTS:
 
     void checkRenderViewSizeFitsWithAllocator()
     {
-        QVERIFY(sizeof(Qt3DRender::Render::RenderView) <= 128);
-        QVERIFY(sizeof(Qt3DRender::Render::RenderView::InnerData) <= 128);
+        QVERIFY(sizeof(Qt3DRender::Render::RenderView) <= 192);
+        QVERIFY(sizeof(Qt3DRender::Render::RenderView::InnerData) <= 192);
     }
 
     void testSort()
@@ -58,7 +58,7 @@ private Q_SLOTS:
     void checkRenderViewDoesNotLeak()
     {
         // GIVEN
-        Qt3DCore::QFrameAllocator allocator(128, 16, 128);
+        Qt3DCore::QFrameAllocator allocator(192, 16, 128);
         Qt3DRender::Render::RenderView *rv = allocator.allocate<Qt3DRender::Render::RenderView>();
         rv->setAllocator(&allocator);
 
