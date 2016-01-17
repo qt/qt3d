@@ -43,7 +43,7 @@
 #include <Qt3DRender/qcylindermesh.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qtechnique.h>
-#include <Qt3DRender/qmaterial.h>
+#include <Qt3DRender/qphongmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
@@ -61,59 +61,46 @@
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
-
     Qt3DWindow view;
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
 
     // Camera
-    Qt3DRender::QCamera *cameraEntity = view.camera();
-    cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
-
-    cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(0, 0, 20.0f));
-    cameraEntity->setUpVector(QVector3D(0, 1, 0));
-    cameraEntity->setViewCenter(QVector3D(0, 0, 0));
+    Qt3DRender::QCamera *camera = view.camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camera->setPosition(QVector3D(0, 0, 20.0f));
+    camera->setUpVector(QVector3D(0, 1, 0));
+    camera->setViewCenter(QVector3D(0, 0, 0));
 
     // For camera controls
-    Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
-    camController->setCamera(cameraEntity);
-
-    // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-
-    // TechiqueFilter and renderPassFilter are not implement yet
-    forwardRenderer->setCamera(cameraEntity);
-    forwardRenderer->setClearColor(Qt::black);
-
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-
+    Qt3DInput::QFirstPersonCameraController *cameraController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
+    cameraController->setCamera(camera);
 
     // Cylinder shape data
-    Qt3DRender::QCylinderMesh *cylinder = new Qt3DRender::QCylinderMesh();
-    cylinder->setRadius(1);
-    cylinder->setLength(3);
-    cylinder->setRings(100);
-    cylinder->setSlices(20);
+    Qt3DRender::QCylinderMesh *mesh = new Qt3DRender::QCylinderMesh();
+    mesh->setRadius(1);
+    mesh->setLength(3);
+    mesh->setRings(100);
+    mesh->setSlices(20);
 
-    // CylinderMesh Transform
-    Qt3DCore::QTransform *cylinderTransform = new Qt3DCore::QTransform;
-    cylinderTransform->setScale(1.5f);
-    cylinderTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
+    // Transform for cylinder
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform;
+    transform->setScale(1.5f);
+    transform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(1, 0, 0), 45.0f));
+
+    // Material
+    Qt3DRender::QPhongMaterial *material = new Qt3DRender::QPhongMaterial(rootEntity);
+    material->setDiffuse(Qt::red);
 
     // Cylinder
-    Qt3DCore::QEntity *cylinderEntity = new Qt3DCore::QEntity(rootEntity);
-    cylinderEntity->addComponent(cylinder);
-    cylinderEntity->addComponent(cylinderTransform);
-
-    // Setting the FrameGraph
-    view.setFrameGraph(frameGraph);
+    Qt3DCore::QEntity *cylinder = new Qt3DCore::QEntity(rootEntity);
+    cylinder->addComponent(mesh);
+    cylinder->addComponent(transform);
+    cylinder->addComponent(material);
 
     // Set root object of the scene
     view.setRootEntity(rootEntity);
-    // Show window
     view.show();
 
     return app.exec();
