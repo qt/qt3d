@@ -89,6 +89,15 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_normalDiffuseES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    Q_Q(QNormalDiffuseMapMaterial);
+    m_annotation->setParent(q);
+    m_annotation->setName(QStringLiteral("renderingStyle"));
+    m_annotation->setValue(QStringLiteral("forward"));
+
+    m_normalDiffuseGL3Technique->addAnnotation(m_annotation);
+    m_normalDiffuseGL2Technique->addAnnotation(m_annotation);
+    m_normalDiffuseES2Technique->addAnnotation(m_annotation);
+
     m_depthTest->setFunc(QDepthTest::Less);
 
     m_normalDiffuseGL3RenderPass->setShaderProgram(m_normalDiffuseGL3Shader);
@@ -118,7 +127,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseEffect->addParameter(m_shininessParameter);
     m_normalDiffuseEffect->addParameter(m_textureScaleParameter);
 
-    q_func()->setEffect(m_normalDiffuseEffect);
+    q->setEffect(m_normalDiffuseEffect);
 }
 
 
