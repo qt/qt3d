@@ -54,6 +54,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+class QAnnotation;
 class QEffect;
 class QAbstractTextureProvider;
 class QTechnique;
@@ -93,6 +94,7 @@ public:
     QRenderPass *m_diffuseSpecularMapES2RenderPass;
     QShaderProgram *m_diffuseSpecularMapGL3Shader;
     QShaderProgram *m_diffuseSpecularMapGL2ES2Shader;
+    QAnnotation *m_annotation;
 
     Q_DECLARE_PUBLIC(QDiffuseSpecularMapMaterial)
 };
