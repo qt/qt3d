@@ -36,6 +36,7 @@
 
 #include "qphongalphamaterial.h"
 #include "qphongalphamaterial_p.h"
+#include <Qt3DRender/qannotation.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtechnique.h>
@@ -77,6 +78,7 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_depthMask(new QDepthMask())
     , m_blendState(new QBlendState())
     , m_blendEquation(new QBlendEquation())
+    , m_annotation(new QAnnotation)
 {
 }
 
@@ -114,6 +116,15 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_phongAlphaES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
+    Q_Q(QPhongAlphaMaterial);
+    m_annotation->setParent(q);
+    m_annotation->setName(QStringLiteral("renderingStyle"));
+    m_annotation->setValue("forward");
+
+    m_phongAlphaGL3Technique->addAnnotation(m_annotation);
+    m_phongAlphaGL2Technique->addAnnotation(m_annotation);
+    m_phongAlphaES2Technique->addAnnotation(m_annotation);
+
     m_depthMask->setMask(false);
     m_blendState->setSrcRGB(QBlendState::SrcAlpha);
     m_blendState->setDstRGB(QBlendState::OneMinusSrcAlpha);
@@ -149,7 +160,7 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongEffect->addParameter(m_shininessParameter);
     m_phongEffect->addParameter(m_alphaParameter);
 
-    q_func()->setEffect(m_phongEffect);
+    q->setEffect(m_phongEffect);
 }
 
 void QPhongAlphaMaterialPrivate::handleAmbientChanged(const QVariant &var)
