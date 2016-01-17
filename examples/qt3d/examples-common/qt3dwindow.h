@@ -73,7 +73,9 @@ public:
     void registerAspect(const QString &name);
 
     void setRootEntity(Qt3DCore::QEntity *root);
+
     void setFrameGraph(Qt3DRender::QFrameGraph *frameGraph);
+    Qt3DRender::QFrameGraph *frameGraph() const;
 
     Qt3DRender::QCamera *camera() const;
 

@@ -140,6 +140,11 @@ void Qt3DWindow::setFrameGraph(Qt3DRender::QFrameGraph *frameGraph)
     m_frameGraph = frameGraph;
 }
 
+Qt3DRender::QFrameGraph *Qt3DWindow::frameGraph() const
+{
+    return m_frameGraph;
+}
+
 Qt3DRender::QCamera *Qt3DWindow::camera() const
 {
     return m_defaultCamera;
