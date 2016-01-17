@@ -112,7 +112,6 @@ int main(int ac, char **av)
     camController->setCamera(camera);
 
     // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
     DeferredRenderer *deferredRenderer = new DeferredRenderer();
     deferredRenderer->setClearColor(Qt::black);
     deferredRenderer->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
@@ -122,9 +121,7 @@ int main(int ac, char **av)
     deferredRenderer->setSceneCamera(camera);
     deferredRenderer->setGBufferLayers(sceneLayer->names());
     deferredRenderer->setScreenQuadLayers(quadLayer->names());
-
-    frameGraph->setActiveFrameGraph(deferredRenderer);
-    view.setFrameGraph(frameGraph);
+    view.setActiveFrameGraph(deferredRenderer);
 
     // Scene Content
     Qt3DCore::QEntity *sphereOne = new Qt3DCore::QEntity(rootEntity);

@@ -63,6 +63,7 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
     Qt3DWindow view;
+    view.defaultFramegraph()->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
 
     // Root entity
     Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
@@ -78,13 +79,6 @@ int main(int argc, char* argv[])
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
-
-    // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-    forwardRenderer->setClearColor(QColor::fromRgbF(0.0, 0.5, 1.0, 1.0));
-    forwardRenderer->setCamera(cameraEntity);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
 
     // Material
     Qt3DRender::QMaterial *material = new Qt3DRender::QPerVertexColorMaterial(rootEntity);
@@ -238,9 +232,6 @@ int main(int argc, char* argv[])
     customMeshEntity->addComponent(customMeshRenderer);
     customMeshEntity->addComponent(transform);
     customMeshEntity->addComponent(material);
-
-
-    view.setFrameGraph(frameGraph);
 
     view.setRootEntity(rootEntity);
     view.show();

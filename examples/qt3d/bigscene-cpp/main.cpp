@@ -63,13 +63,13 @@ using namespace Qt3DRender;
 int main(int ac, char **av)
 {
     QGuiApplication app(ac, av);
-
     Qt3DWindow view;
+    view.defaultFramegraph()->setClearColor(Qt::black);
+
     QEntity *root = new QEntity();
 
     // Camera
     QCamera *cameraEntity = view.camera();
-    cameraEntity->setObjectName(QStringLiteral("cameraEntity"));
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     cameraEntity->setPosition(QVector3D(0, 250.0f, 50.0f));
     cameraEntity->setUpVector(QVector3D(0, 1, 0));
@@ -78,14 +78,6 @@ int main(int ac, char **av)
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(root);
     camController->setCamera(cameraEntity);
-
-    // FrameGraph
-    QFrameGraph *frameGraph = new QFrameGraph();
-    QForwardRenderer *forwardRenderer = new QForwardRenderer();
-    forwardRenderer->setCamera(cameraEntity);
-    forwardRenderer->setClearColor(Qt::black);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-    view.setFrameGraph(frameGraph);
 
     const float radius = 100.0f;
     const int max = 1000;

@@ -109,26 +109,8 @@ int main(int ac, char **av)
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
 
-    // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    Qt3DRender::QTechniqueFilter *techniqueFilter = new Qt3DRender::QTechniqueFilter();
-    Qt3DRender::QViewport *viewport = new Qt3DRender::QViewport(techniqueFilter);
-    Qt3DRender::QClearBuffer *clearBuffer = new Qt3DRender::QClearBuffer(viewport);
-    Qt3DRender::QCameraSelector *cameraSelector = new Qt3DRender::QCameraSelector(clearBuffer);
-    (void) new Qt3DRender::QRenderPassFilter(cameraSelector);
-
-    // TechiqueFilter and renderPassFilter are not implement yet
-    viewport->setRect(QRectF(0, 0, 1, 1));
-    clearBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
-    cameraSelector->setCamera(cameraEntity);
-    frameGraph->setActiveFrameGraph(techniqueFilter);
-
-    // Setting the FrameGraph
-    view.setFrameGraph(frameGraph);
-
     // Set root object of the scene
     view.setRootEntity(rootEntity);
-    // Show window
     view.show();
 
     return app.exec();

@@ -56,7 +56,8 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_renderAspect(new Qt3DRender::QRenderAspect)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_frameGraph(nullptr)
+    , m_frameGraph(new Qt3DRender::QFrameGraph)
+    , m_forwardRenderer(new Qt3DRender::QForwardRenderer)
     , m_defaultCamera(new Qt3DRender::QCamera)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
@@ -80,6 +81,10 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     m_aspectEngine->registerAspect(m_renderAspect);
     m_aspectEngine->registerAspect(m_inputAspect);
     m_aspectEngine->registerAspect(m_logicAspect);
+
+    m_forwardRenderer->setCamera(m_defaultCamera);
+    m_forwardRenderer->setSurface(this);
+    m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
 }
 
 Qt3DWindow::Qt3DWindow(QWindow *parent)
@@ -88,7 +93,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     , m_renderAspect(new Qt3DRender::QRenderAspect)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_frameGraph(nullptr)
+    , m_frameGraph(new Qt3DRender::QFrameGraph)
     , m_defaultCamera(new Qt3DRender::QCamera)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
@@ -111,7 +116,12 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
 
     m_aspectEngine->registerAspect(m_renderAspect);
     m_aspectEngine->registerAspect(m_inputAspect);
-    m_aspectEngine->registerAspect(m_logicAspect);}
+    m_aspectEngine->registerAspect(m_logicAspect);
+
+    m_forwardRenderer->setCamera(m_defaultCamera);
+    m_forwardRenderer->setSurface(this);
+    m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
+}
 
 Qt3DWindow::~Qt3DWindow()
 {
@@ -135,14 +145,19 @@ void Qt3DWindow::setRootEntity(Qt3DCore::QEntity *root)
     m_userRoot = root;
 }
 
-void Qt3DWindow::setFrameGraph(Qt3DRender::QFrameGraph *frameGraph)
+void Qt3DWindow::setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph)
 {
-    m_frameGraph = frameGraph;
+    m_frameGraph->setActiveFrameGraph(activeFrameGraph);
 }
 
-Qt3DRender::QFrameGraph *Qt3DWindow::frameGraph() const
+Qt3DRender::QFrameGraphNode *Qt3DWindow::activeFrameGraph() const
 {
-    return m_frameGraph;
+    return m_frameGraph->activeFrameGraph();
+}
+
+Qt3DRender::QForwardRenderer *Qt3DWindow::defaultFramegraph() const
+{
+    return m_forwardRenderer;
 }
 
 Qt3DRender::QCamera *Qt3DWindow::camera() const
@@ -155,14 +170,6 @@ void Qt3DWindow::showEvent(QShowEvent *e)
     if (!m_initialized) {
         if (m_userRoot != nullptr)
             m_userRoot->setParent(m_root);
-
-        if (m_frameGraph == nullptr) {
-            m_frameGraph = new Qt3DRender::QFrameGraph;
-            Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer;
-            forwardRenderer->setCamera(m_defaultCamera);
-            forwardRenderer->setSurface(this);
-            m_frameGraph->setActiveFrameGraph(forwardRenderer);
-        }
 
         // TODO: Get rid of this
         QVariantMap data;

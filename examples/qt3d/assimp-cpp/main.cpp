@@ -105,6 +105,7 @@ int main(int ac, char **av)
 {
     QApplication app(ac, av);
     Qt3DWindow view;
+    view.defaultFramegraph()->setClearColor(Qt::black);
 
     // Root entity
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
@@ -118,17 +119,10 @@ int main(int ac, char **av)
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     basicCamera->setNearPlane(0.001f);
     basicCamera->setFarPlane(10000.0f);
+
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(basicCamera);
-
-    // Forward Renderer FrameGraph
-    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-    forwardRenderer->setCamera(basicCamera);
-    forwardRenderer->setClearColor(Qt::black);
-    frameGraphComponent->setActiveFrameGraph(forwardRenderer);
-    view.setFrameGraph(frameGraphComponent);
 
     // Scene loader
     Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(sceneRoot);

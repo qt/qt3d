@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
     Qt3DWindow *view = new Qt3DWindow();
+    view->defaultFramegraph()->setClearColor(QColor(QRgb(0x4d4d4f)));
     QWidget *container = QWidget::createWindowContainer(view);
     QSize screenSize = view->screen()->size();
     container->setMinimumSize(QSize(200, 100));
@@ -105,17 +106,6 @@ int main(int argc, char **argv)
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(rootEntity);
     camController->setCamera(cameraEntity);
-
-    // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-
-    forwardRenderer->setCamera(cameraEntity);
-    forwardRenderer->setClearColor(QColor(QRgb(0x4d4d4f)));
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-
-    // Setting the FrameGraph
-    view->setFrameGraph(frameGraph);
 
     // Scenemodifier
     SceneModifier *modifier = new SceneModifier(rootEntity);
