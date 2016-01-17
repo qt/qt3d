@@ -39,9 +39,7 @@ import Qt3D.Render 2.0
 
 Entity {
     components: FrameGraph {
-        ForwardRenderer {
-            window: _q_window
-        }
+        ForwardRenderer {}
     }
 
     Entity {

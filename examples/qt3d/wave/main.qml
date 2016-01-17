@@ -62,7 +62,6 @@ Entity {
         id: frameGraph
         activeFrameGraph: WaveForwardRenderer {
             camera: mainCamera
-            window: _q_window
         }
     }
 

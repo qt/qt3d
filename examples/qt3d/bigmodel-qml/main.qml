@@ -48,7 +48,6 @@ Entity {
         FrameGraph {
             activeFrameGraph:ForwardRenderer {
                 camera: mainCamera
-                window: _q_window
             }
         }
     ]

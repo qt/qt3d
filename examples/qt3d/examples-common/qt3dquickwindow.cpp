@@ -37,6 +37,8 @@
 #include "qt3dquickwindow.h"
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DLogic/qlogicaspect.h>
 
@@ -110,8 +112,12 @@ void Qt3DQuickWindow::showEvent(QShowEvent *e)
         data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
         m_engine->aspectEngine()->setData(data);
 
-        // TODO: Remove this hack once we can automagically set the window on the framegraph
-        m_engine->qmlEngine()->rootContext()->setContextProperty("_q_window", this);
+        // Connect to the QQmlAspectEngine's statusChanged signal so that when the QML is loaded
+        // and th eobjects hav ebeen instantiated, but before we set them on the QAspectEngine we
+        // can swoop in and set the window surface and camera on the framegraph and ensure the camera
+        // respects the window's aspect ratio
+        connect(m_engine.data(), &Qt3DCore::Quick::QQmlAspectEngine::sceneCreated,
+                this, &Qt3DQuickWindow::onSceneCreated);
 
         m_engine->setSource(m_source);
 
@@ -122,6 +128,37 @@ void Qt3DQuickWindow::showEvent(QShowEvent *e)
         m_initialized = true;
     }
     QQuickWindow::showEvent(e);
+}
+
+void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
+{
+    Q_ASSERT(rootObject);
+
+    // Find surface selector in framegraph and set ourselves up as the
+    // render surface there
+    Qt3DRender::QFrameGraph *frameGraphComponent
+        = rootObject->findChild<Qt3DRender::QFrameGraph *>();
+    if (!frameGraphComponent) {
+        qWarning() << "No frame graph component found";
+        return;
+    }
+
+    Qt3DCore::QNode *frameGraphRoot = frameGraphComponent->activeFrameGraph();
+    if (!frameGraphRoot) {
+        qWarning() << "No active frame graph found";
+        return;
+    }
+
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+    if (!surfaceSelector) {
+        qWarning() << "No render surface selector found in frame graph";
+        return;
+    }
+
+    surfaceSelector->setWindow(this);
+
+    // TODO: Set ourselves up as a source of input events for the input aspect
 }
 
 QT_END_NAMESPACE

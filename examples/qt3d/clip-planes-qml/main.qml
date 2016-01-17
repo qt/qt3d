@@ -59,7 +59,6 @@ Entity {
         ClipCappingFrameGraph {
             camera: camera;
             clearColor: Qt.rgba(0.0, 0.5, 1, 1)
-            window: _q_window
         }
     }
 

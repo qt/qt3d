@@ -49,7 +49,6 @@ Entity {
             activeFrameGraph: SortedForwardRenderer {
                 id: renderer
                 camera: mainCamera
-                window: _q_window
             }
         }
     ]

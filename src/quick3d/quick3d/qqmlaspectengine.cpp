@@ -133,6 +133,11 @@ void QQmlAspectEnginePrivate::_q_continueExecute()
         return;
     }
 
+    // Let users know we have loaded the QML file, and the scene has been instantiated.
+    // This gives a chance to manipulate the scene before passing it over to the
+    // aspect engine. Useful for convenience window classes to set up cameras and surfaces
+    // on the framegraph and event sources for the input aspect etc.
+    emit q->sceneCreated(obj);
     m_aspectEngine->setRootEntity(qobject_cast<QEntity *>(obj));
     emit q->statusChanged(q->status());
 }

@@ -64,6 +64,7 @@ public:
 
 Q_SIGNALS:
     void statusChanged(Status);
+    void sceneCreated(QObject* rootObject);
 
 private:
     Q_DECLARE_PRIVATE(QQmlAspectEngine)

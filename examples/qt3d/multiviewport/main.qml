@@ -48,7 +48,6 @@ Entity {
         topRightCamera: cameraSet.cameras[1]
         bottomLeftCamera: cameraSet.cameras[2]
         bottomRightCamera: cameraSet.cameras[3]
-        window: _q_window
     }
 
     Entity {

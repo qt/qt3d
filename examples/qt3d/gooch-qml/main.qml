@@ -47,7 +47,6 @@ Entity {
         FrameGraph {
             ForwardRenderer {
                 camera: mainCamera
-                window: _q_window
             }
         }
     ]

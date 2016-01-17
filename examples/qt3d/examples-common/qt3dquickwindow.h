@@ -78,6 +78,8 @@ protected:
     void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
 
 private:
+    void onSceneCreated(QObject *rootObject);
+
     QScopedPointer<Qt3DCore::Quick::QQmlAspectEngine> m_engine;
 
     // Aspects

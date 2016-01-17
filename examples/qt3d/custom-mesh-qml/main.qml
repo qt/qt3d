@@ -60,7 +60,6 @@ Entity {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0.5, 0.5, 1, 1)
                 camera: camera
-                window: _q_window
             }
         }
     ]
