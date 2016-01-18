@@ -220,6 +220,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTexture2DMultisampleArray, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTexture2DMultisampleArray", "Qt3D.Render/Texture2DMultisampleArray", uri, 2, 0, "Texture2DMultisampleArray");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureRectangle, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureRectangle", "Qt3D.Render/TextureRectangle", uri, 2, 0, "TextureRectangle");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureBuffer, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureBuffer", "Qt3D.Render/TextureBuffer", uri, 2, 0, "TextureBuffer");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTextureLoader, Qt3DRender::Render::Quick::Quick3DTextureExtension>("QTextureLoader", "Qt3D.Render/TextureLoader", uri, 2, 0, "TextureLoader");
     qmlRegisterUncreatableType<Qt3DRender::QAbstractTextureImage>(uri, 2, 0, "QAbstractTextureImage", QStringLiteral("QAbstractTextureImage is abstract"));
     qmlRegisterType<Qt3DRender::QTextureImage>(uri, 2, 0, "TextureImage");
 
