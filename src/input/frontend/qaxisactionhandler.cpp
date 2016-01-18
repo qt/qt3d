@@ -79,6 +79,11 @@ void QAxisActionHandler::setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevi
     if (d->m_logicalDevice == logicalDevice)
         return;
 
+    // Need to set the parent of the logical device if it has none
+    // so as to trigger the backend node created with a NodeCreated notification
+    if (logicalDevice && !logicalDevice->parent())
+        logicalDevice->setParent(this);
+
     d->m_logicalDevice = logicalDevice;
     emit logicalDeviceChanged(logicalDevice);
 }

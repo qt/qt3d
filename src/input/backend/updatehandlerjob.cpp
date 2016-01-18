@@ -86,10 +86,8 @@ void UpdateHandlerJob::run()
     //          If so -> add to notification payload
 
     LogicalDevice *logicalDevice = m_handler->logicalDeviceManager()->data(m_logicalDeviceHandle);
-    if (logicalDevice) {
-        updateActions(logicalDevice);
-        updateAxes(logicalDevice);
-    }
+    updateActions(logicalDevice);
+    updateAxes(logicalDevice);
 }
 
 void UpdateHandlerJob::updateAxes(LogicalDevice *device)
