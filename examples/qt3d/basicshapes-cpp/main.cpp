@@ -116,12 +116,17 @@ int main(int argc, char **argv)
     // Create control widgets
     QCommandLinkButton *info = new QCommandLinkButton();
     info->setText(QStringLiteral("Qt3D ready-made meshes"));
-    info->setDescription(QStringLiteral("Qt3D provides several ready-made meshes, like torus, cylinder, cube and sphere."));
+    info->setDescription(QString::fromLatin1("Qt3D provides several ready-made meshes, like torus, cylinder, cone, "
+                                             "cube, plane and sphere."));
     info->setIconSize(QSize(0,0));
 
     QCheckBox *torusCB = new QCheckBox(widget);
     torusCB->setChecked(true);
     torusCB->setText(QStringLiteral("Torus"));
+
+    QCheckBox *coneCB = new QCheckBox(widget);
+    coneCB->setChecked(true);
+    coneCB->setText(QStringLiteral("Cone"));
 
     QCheckBox *cylinderCB = new QCheckBox(widget);
     cylinderCB->setChecked(true);
@@ -131,28 +136,40 @@ int main(int argc, char **argv)
     cuboidCB->setChecked(true);
     cuboidCB->setText(QStringLiteral("Cuboid"));
 
+    QCheckBox *planeCB = new QCheckBox(widget);
+    planeCB->setChecked(true);
+    planeCB->setText(QStringLiteral("Plane"));
+
     QCheckBox *sphereCB = new QCheckBox(widget);
     sphereCB->setChecked(true);
     sphereCB->setText(QStringLiteral("Sphere"));
 
     vLayout->addWidget(info);
     vLayout->addWidget(torusCB);
+    vLayout->addWidget(coneCB);
     vLayout->addWidget(cylinderCB);
     vLayout->addWidget(cuboidCB);
+    vLayout->addWidget(planeCB);
     vLayout->addWidget(sphereCB);
 
     QObject::connect(torusCB, &QCheckBox::stateChanged,
                      modifier, &SceneModifier::enableTorus);
+    QObject::connect(coneCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enableCone);
     QObject::connect(cylinderCB, &QCheckBox::stateChanged,
                      modifier, &SceneModifier::enableCylinder);
     QObject::connect(cuboidCB, &QCheckBox::stateChanged,
                      modifier, &SceneModifier::enableCuboid);
+    QObject::connect(planeCB, &QCheckBox::stateChanged,
+                     modifier, &SceneModifier::enablePlane);
     QObject::connect(sphereCB, &QCheckBox::stateChanged,
                      modifier, &SceneModifier::enableSphere);
 
     torusCB->setChecked(true);
+    coneCB->setChecked(true);
     cylinderCB->setChecked(true);
     cuboidCB->setChecked(true);
+    planeCB->setChecked(true);
     sphereCB->setChecked(true);
 
     // Show window

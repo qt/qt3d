@@ -43,8 +43,10 @@
 #include <Qt3DCore/qtransform.h>
 
 #include <Qt3DRender/QTorusMesh>
+#include <Qt3DRender/QConeMesh>
 #include <Qt3DRender/QCylinderMesh>
 #include <Qt3DRender/QCuboidMesh>
+#include <Qt3DRender/QPlaneMesh>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QPhongMaterial>
 
@@ -58,16 +60,20 @@ public:
 
 public slots:
     void enableTorus(bool enabled);
+    void enableCone(bool enabled);
     void enableCylinder(bool enabled);
     void enableCuboid(bool enabled);
+    void enablePlane(bool enabled);
     void enableSphere(bool enabled);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;
     Qt3DRender::QTorusMesh *m_torus;
+    Qt3DCore::QEntity *m_coneEntity;
     Qt3DCore::QEntity *m_cylinderEntity;
     Qt3DCore::QEntity *m_torusEntity;
     Qt3DCore::QEntity *m_cuboidEntity;
+    Qt3DCore::QEntity *m_planeEntity;
     Qt3DCore::QEntity *m_sphereEntity;
 };
 
