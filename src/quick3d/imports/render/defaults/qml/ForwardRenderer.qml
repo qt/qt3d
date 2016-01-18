@@ -42,25 +42,29 @@ TechniqueFilter {
     property alias camera: cameraSelector.camera
     property alias clearColor: viewport.clearColor
     property alias viewportRect: viewport.rect
+    property alias window: surfaceSelector.window
 
     // Select the forward rendering Technique of any used Effect
     requires: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
-    // Use the whole viewport
-    Viewport {
-        id: viewport
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-        clearColor: "white"
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
-        // Use the specified camera
-        CameraSelector {
-            id : cameraSelector
-            FrustumCulling {
-                ClearBuffer {
-                    buffers : ClearBuffer.ColorDepthBuffer
+        // Use the whole viewport
+        Viewport {
+            id: viewport
+            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+            clearColor: "white"
+
+            // Use the specified camera
+            CameraSelector {
+                id : cameraSelector
+                FrustumCulling {
+                    ClearBuffer {
+                        buffers : ClearBuffer.ColorDepthBuffer
+                    }
                 }
             }
         }
     }
 }
-
