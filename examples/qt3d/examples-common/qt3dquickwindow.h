@@ -38,6 +38,7 @@
 #define QT3DQUICKWINDOW_H
 
 #include <QQuickWindow>
+#include <QtCore/qpointer.h>
 #include <QUrl>
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,7 @@ class QQmlAspectEngine;
 
 namespace Qt3DRender {
 class QRenderAspect;
+class QCamera;
 }
 
 namespace Qt3DInput {
@@ -64,6 +66,8 @@ class QLogicAspect;
 class Qt3DQuickWindow : public QQuickWindow
 {
     Q_OBJECT
+    Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
+
 public:
     Qt3DQuickWindow(QWindow *parent = Q_NULLPTR);
     ~Qt3DQuickWindow();
@@ -74,11 +78,26 @@ public:
     void setSource(const QUrl &source);
     Qt3DCore::Quick::QQmlAspectEngine *engine() const;
 
+    enum CameraAspectRatioMode {
+        AutomaticAspectRatio,
+        UserAspectRatio
+    };
+    Q_ENUM(CameraAspectRatioMode);
+
+    void setCameraAspectRatioMode(CameraAspectRatioMode mode);
+    CameraAspectRatioMode cameraAspectRatioMode() const;
+
+Q_SIGNALS:
+    void cameraAspectRatioModeChanged(CameraAspectRatioMode mode);
+
 protected:
     void showEvent(QShowEvent *e) Q_DECL_OVERRIDE;
 
 private:
     void onSceneCreated(QObject *rootObject);
+    void setWindowSurface(QObject *rootObject);
+    void setCameraAspectModeHelper();
+    void updateCameraAspectRatio();
 
     QScopedPointer<Qt3DCore::Quick::QQmlAspectEngine> m_engine;
 
@@ -89,6 +108,8 @@ private:
 
     QUrl m_source;
     bool m_initialized;
+    QPointer<Qt3DRender::QCamera> m_camera;
+    CameraAspectRatioMode m_cameraAspectRatioMode;
 };
 
 QT_END_NAMESPACE

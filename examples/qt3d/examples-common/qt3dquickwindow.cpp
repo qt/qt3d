@@ -36,6 +36,7 @@
 
 #include "qt3dquickwindow.h"
 #include <Qt3DQuick/QQmlAspectEngine>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -55,6 +56,7 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_initialized(false)
+    , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {
     setSurfaceType(QSurface::OpenGLSurface);
 
@@ -102,6 +104,21 @@ Qt3DCore::Quick::QQmlAspectEngine *Qt3DQuickWindow::engine() const
     return m_engine.data();
 }
 
+void Qt3DQuickWindow::setCameraAspectRatioMode(CameraAspectRatioMode mode)
+{
+    if (m_cameraAspectRatioMode == mode)
+        return;
+
+    m_cameraAspectRatioMode = mode;
+    setCameraAspectModeHelper();
+    emit cameraAspectRatioModeChanged(mode);
+}
+
+Qt3DQuickWindow::CameraAspectRatioMode Qt3DQuickWindow::cameraAspectRatioMode() const
+{
+    return m_cameraAspectRatioMode;
+}
+
 void Qt3DQuickWindow::showEvent(QShowEvent *e)
 {
     if (!m_initialized) {
@@ -134,6 +151,25 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
 {
     Q_ASSERT(rootObject);
 
+    setWindowSurface(rootObject);
+
+    if (m_cameraAspectRatioMode == AutomaticAspectRatio) {
+        // Set aspect ratio of first camera to match the window
+        QList<Qt3DRender::QCamera *> cameras
+            = rootObject->findChildren<Qt3DRender::QCamera *>();
+        if (cameras.isEmpty()) {
+            qWarning() << "No camera found";
+        } else {
+            m_camera = cameras.first();
+            setCameraAspectModeHelper();
+        }
+    }
+
+    // TODO: Set ourselves up as a source of input events for the input aspect
+}
+
+void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
+{
     // Find surface selector in framegraph and set ourselves up as the
     // render surface there
     Qt3DRender::QFrameGraph *frameGraphComponent
@@ -157,8 +193,28 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
     }
 
     surfaceSelector->setWindow(this);
+}
 
-    // TODO: Set ourselves up as a source of input events for the input aspect
+void Qt3DQuickWindow::setCameraAspectModeHelper()
+{
+    switch (m_cameraAspectRatioMode) {
+    case AutomaticAspectRatio:
+        connect(this, &QWindow::widthChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
+        connect(this, &QWindow::heightChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
+        break;
+    case UserAspectRatio:
+        disconnect(this, &QWindow::widthChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
+        disconnect(this, &QWindow::heightChanged, this, &Qt3DQuickWindow::updateCameraAspectRatio);
+        break;
+    }
+}
+
+void Qt3DQuickWindow::updateCameraAspectRatio()
+{
+    if (m_camera) {
+        m_camera->setAspectRatio(static_cast<float>(width()) /
+                                 static_cast<float>(height()));
+    }
 }
 
 QT_END_NAMESPACE
