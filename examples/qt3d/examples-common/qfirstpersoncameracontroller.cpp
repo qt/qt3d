@@ -90,11 +90,13 @@ void QFirstPersonCameraControllerPrivate::init()
 
     // Left Mouse Button Action
     m_leftMouseButtonInput->setKeys(QVariantList() << QMouseController::Left);
+    m_leftMouseButtonInput->setSourceDevice(m_mouseController);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
     m_leftMouseButtonAction->setName(QStringLiteral("LMB"));
 
     // Fine Motion Action
     m_fineMotionKeyInput->setKeys(QVariantList() << Qt::Key_Shift);
+    m_fineMotionKeyInput->setSourceDevice(m_keyboardController);
     m_fineMotionAction->addInput(m_fineMotionKeyInput);
     m_fineMotionAction->setName(QStringLiteral("fineMotion"));
 
@@ -102,42 +104,50 @@ void QFirstPersonCameraControllerPrivate::init()
 
     // Mouse X
     m_mouseRxInput->setAxis(QMouseController::X);
+    m_mouseRxInput->setSourceDevice(m_mouseController);
     m_rxAxis->addInput(m_mouseRxInput);
     m_rxAxis->setName(QStringLiteral("RX"));
 
     // Mouse Y
     m_mouseRyInput->setAxis(QMouseController::Y);
+    m_mouseRyInput->setSourceDevice(m_mouseController);
     m_ryAxis->addInput(m_mouseRyInput);
     m_ryAxis->setName(QStringLiteral("RY"));
 
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setKeys(QVariantList() << Qt::Key_Right);
     m_keyboardTxPosInput->setScale(1.0f);
+    m_keyboardTxPosInput->setSourceDevice(m_keyboardController);
     m_txAxis->addInput(m_keyboardTxPosInput);
 
     // Keyboard Pos Ty
     m_keyboardTyPosInput->setKeys(QVariantList() << Qt::Key_PageUp);
     m_keyboardTyPosInput->setScale(1.0f);
+    m_keyboardTyPosInput->setSourceDevice(m_keyboardController);
     m_tyAxis->addInput(m_keyboardTyPosInput);
 
     // Keyboard Pos Tz
     m_keyboardTzPosInput->setKeys(QVariantList() << Qt::Key_Up);
     m_keyboardTzPosInput->setScale(1.0f);
+    m_keyboardTzPosInput->setSourceDevice(m_keyboardController);
     m_tzAxis->addInput(m_keyboardTzPosInput);
 
     // Keyboard Neg Tx
     m_keyboardTxNegInput->setKeys(QVariantList() << Qt::Key_Left);
     m_keyboardTxNegInput->setScale(-1.0f);
+    m_keyboardTxNegInput->setSourceDevice(m_keyboardController);
     m_txAxis->addInput(m_keyboardTxNegInput);
 
     // Keyboard Neg Ty
     m_keyboardTyNegInput->setKeys(QVariantList() << Qt::Key_PageDown);
     m_keyboardTyNegInput->setScale(-1.0f);
+    m_keyboardTyNegInput->setSourceDevice(m_keyboardController);
     m_tyAxis->addInput(m_keyboardTyNegInput);
 
     // Keyboard Neg Tz
     m_keyboardTzNegInput->setKeys(QVariantList() << Qt::Key_Down);
     m_keyboardTzNegInput->setScale(-1.0f);
+    m_keyboardTzNegInput->setSourceDevice(m_keyboardController);
     m_tzAxis->addInput(m_keyboardTzNegInput);
 
     m_txAxis->setName(QStringLiteral("TX"));
@@ -164,6 +174,8 @@ void QFirstPersonCameraControllerPrivate::init()
                      q, SLOT(_q_onActionFinished(QString)));
     QObject::connect(m_axisActionHandler, SIGNAL(axisValueChanged(QString,float)),
                      q, SLOT(_q_onAxisValueChanged(QString,float)));
+
+    m_axisActionHandler->setLogicalDevice(m_logicalDevice);
 
     //// LogicComponent
 
@@ -202,17 +214,17 @@ void QFirstPersonCameraControllerPrivate::_q_onAxisValueChanged(QString name, fl
 void QFirstPersonCameraControllerPrivate::_q_onActionStarted(QString name)
 {
     if (name == QStringLiteral("LMB"))
-        m_leftMouseButtonPressed = false;
+        m_leftMouseButtonPressed = true;
     else if (name == QStringLiteral("fineMotion"))
-        m_fineMotion = false;
+        m_fineMotion = true;
 }
 
 void QFirstPersonCameraControllerPrivate::_q_onActionFinished(QString name)
 {
     if (name == QStringLiteral("LMB"))
-        m_leftMouseButtonPressed = true;
+        m_leftMouseButtonPressed = false;
     else if (name == QStringLiteral("fineMotion"))
-        m_fineMotion = true;
+        m_fineMotion = false;
 }
 
 QFirstPersonCameraController::QFirstPersonCameraController(Qt3DCore::QNode *parent)
