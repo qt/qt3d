@@ -42,25 +42,30 @@ TechniqueFilter {
 
     // Expose camera to allow user to choose which camera to use for rendering
     property alias camera: cameraSelector.camera
+    property alias window: surfaceSelector.window
 
     // Select the forward rendering Technique of any used Effect
     requires: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
-    // Use the whole viewport
-    Viewport {
-        id: viewport
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
-        // Use the specified camera
-        CameraSelector {
-            id: cameraSelector
+        // Use the whole viewport
+        Viewport {
+            id: viewport
+            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
-                LayerFilter { layers: "background" }
+            // Use the specified camera
+            CameraSelector {
+                id: cameraSelector
+
+                ClearBuffer {
+                    buffers: ClearBuffer.ColorDepthBuffer
+                    LayerFilter { layers: "background" }
+                }
+
+                LayerFilter { layers: "wave" }
             }
-
-            LayerFilter { layers: "wave" }
         }
     }
 }

@@ -39,6 +39,9 @@
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DLogic/qlogicaspect.h>
+
+#include <QQmlContext>
+
 #include <QtGui/qopenglcontext.h>
 
 QT_BEGIN_NAMESPACE
@@ -106,6 +109,9 @@ void Qt3DQuickWindow::showEvent(QShowEvent *e)
         data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
         data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
         m_engine->aspectEngine()->setData(data);
+
+        // TODO: Remove this hack once we can automagically set the window on the framegraph
+        m_engine->qmlEngine()->rootContext()->setContextProperty("_q_window", this);
 
         m_engine->setSource(m_source);
 

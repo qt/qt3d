@@ -52,13 +52,14 @@ Entity {
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
 
-    FirstPersonCameraController { camera: mainCamera }
+    FirstPersonCameraController { camera: camera }
 
     FrameGraph {
         id : external_forward_renderer
         activeFrameGraph : ForwardRenderer {
             camera: camera
             clearColor: "black"
+            window: _q_window
         }
     }
 
@@ -78,9 +79,9 @@ Entity {
         rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
     }
 
-    Material {
+    PhongMaterial {
         id: material
-        effect: Effect {}
+        diffuse: "green"
     }
 
     Entity {

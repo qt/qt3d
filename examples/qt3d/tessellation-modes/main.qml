@@ -50,6 +50,7 @@ Entity {
                 id: renderer
                 camera: mainCamera
                 clearColor: "black"
+                window: _q_window
             }
         }
     ]

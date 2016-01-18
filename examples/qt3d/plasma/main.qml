@@ -39,7 +39,9 @@ import Qt3D.Render 2.0
 
 Entity {
     components: FrameGraph {
-        ForwardRenderer {}
+        ForwardRenderer {
+            window: _q_window
+        }
     }
 
     Entity {
@@ -59,6 +61,7 @@ Entity {
 
                 effect: Effect {
                     techniques: Technique {
+                        annotations: [ Annotation{ name: "renderingStyle"; value: "forward" } ]
 
                         graphicsApiFilter {
                             minorVersion: 3

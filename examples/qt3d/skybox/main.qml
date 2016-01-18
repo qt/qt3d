@@ -44,6 +44,7 @@ Entity {
        ForwardRenderer {
            camera: basicCamera
            clearColor: "black"
+           window: _q_window
        }
    }
 

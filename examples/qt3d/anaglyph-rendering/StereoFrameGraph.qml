@@ -41,35 +41,40 @@ Viewport {
 
     property alias leftCamera: leftCameraSelector.camera
     property alias rightCamera: rightCameraSelector.camera
+    property alias window: surfaceSelector.window
 
-    // ColorMask is reset by default
-    // By default reset to the default if not specified
-    ClearBuffer {
-        buffers: ClearBuffer.ColorDepthBuffer
-        NoDraw {} // We just want to clear the buffers
-    }
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
-    // Draw with left eye
-    CameraSelector {
-        id: leftCameraSelector
-        StateSet {
-            renderStates: [
-                ColorMask { red: true; green: false; blue: false; alpha: false },
-                DepthTest { func: DepthTest.Less }
-            ]
+        // ColorMask is reset by default
+        // By default reset to the default if not specified
+        ClearBuffer {
+            buffers: ClearBuffer.ColorDepthBuffer
+            NoDraw {} // We just want to clear the buffers
         }
-    }
 
-    // Draw with right eye
-    ClearBuffer {
-        buffers: ClearBuffer.DepthBuffer
+        // Draw with left eye
         CameraSelector {
-            id: rightCameraSelector
+            id: leftCameraSelector
             StateSet {
                 renderStates: [
-                    ColorMask { red: false; green: true; blue: true; alpha: false },
+                    ColorMask { red: true; green: false; blue: false; alpha: false },
                     DepthTest { func: DepthTest.Less }
                 ]
+            }
+        }
+
+        // Draw with right eye
+        ClearBuffer {
+            buffers: ClearBuffer.DepthBuffer
+            CameraSelector {
+                id: rightCameraSelector
+                StateSet {
+                    renderStates: [
+                        ColorMask { red: false; green: true; blue: true; alpha: false },
+                        DepthTest { func: DepthTest.Less }
+                    ]
+                }
             }
         }
     }

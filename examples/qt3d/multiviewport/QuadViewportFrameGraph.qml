@@ -44,37 +44,42 @@ FrameGraph {
     property alias topRightCamera: cameraSelectorTopRightViewport.camera;
     property alias bottomLeftCamera: cameraSelectorBottomLeftViewport.camera;
     property alias bottomRightCamera: cameraSelectorBottomRightViewport.camera;
+    property alias window: surfaceSelector.window
 
-    Viewport {
-        id: mainViewport
-        rect: Qt.rect(0, 0, 1, 1)
-
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
-        }
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
         Viewport {
-            id: topLeftViewport
-            rect: Qt.rect(0, 0, 0.5, 0.5)
-            CameraSelector { id: cameraSelectorTopLeftViewport }
-        }
+            id: mainViewport
+            rect: Qt.rect(0, 0, 1, 1)
 
-        Viewport {
-            id: topRightViewport
-            rect: Qt.rect(0.5, 0, 0.5, 0.5)
-            CameraSelector { id: cameraSelectorTopRightViewport }
-        }
+            ClearBuffer {
+                buffers: ClearBuffer.ColorDepthBuffer
+            }
 
-        Viewport {
-            id: bottomLeftViewport
-            rect: Qt.rect(0, 0.5, 0.5, 0.5)
-            CameraSelector { id: cameraSelectorBottomLeftViewport }
-        }
+            Viewport {
+                id: topLeftViewport
+                rect: Qt.rect(0, 0, 0.5, 0.5)
+                CameraSelector { id: cameraSelectorTopLeftViewport }
+            }
 
-        Viewport {
-            id: bottomRightViewport
-            rect: Qt.rect(0.5, 0.5, 0.5, 0.5)
-            CameraSelector { id: cameraSelectorBottomRightViewport }
+            Viewport {
+                id: topRightViewport
+                rect: Qt.rect(0.5, 0, 0.5, 0.5)
+                CameraSelector { id: cameraSelectorTopRightViewport }
+            }
+
+            Viewport {
+                id: bottomLeftViewport
+                rect: Qt.rect(0, 0.5, 0.5, 0.5)
+                CameraSelector { id: cameraSelectorBottomLeftViewport }
+            }
+
+            Viewport {
+                id: bottomRightViewport
+                rect: Qt.rect(0.5, 0.5, 0.5, 0.5)
+                CameraSelector { id: cameraSelectorBottomRightViewport }
+            }
         }
     }
 }

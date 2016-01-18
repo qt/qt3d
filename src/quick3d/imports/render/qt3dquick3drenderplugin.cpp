@@ -130,6 +130,8 @@
 #include <Qt3DQuickRender/private/quick3dbuffer_p.h>
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 
+#include <QtGui/qwindow.h>
+
 static void initResources()
 {
     Q_INIT_RESOURCE(defaults);
@@ -174,6 +176,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     initResources();
 
     Qt3DRender::Quick::Quick3DRender_initialize();
+
+    qmlRegisterUncreatableType<QWindow>(uri, 2, 0, "Window", "Only for assigning window surface property");
 
     // Converters
     QMetaType::registerConverter<Qt3DRender::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);

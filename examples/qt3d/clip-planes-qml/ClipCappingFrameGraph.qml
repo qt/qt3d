@@ -39,92 +39,97 @@ import Qt3D.Render 2.0
 
 Viewport {
     property alias camera: cameraSelector.camera
+    property alias window: surfaceSelector.window
 
-    CameraSelector {
-        id: cameraSelector
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
-        StateSet {
-            // Enable 3 clipping planes
-            renderStates: [
-                ClipPlane { plane: 0 },
-                ClipPlane { plane: 1 },
-                ClipPlane { plane: 2 },
-                DepthTest { func: DepthTest.LessOrEqual }
-            ]
+        CameraSelector {
+            id: cameraSelector
 
-            // Branch 1
-            LayerFilter {
-                // Render entities with their regular material
-                // Fills depth buffer for entities that are clipped
-                layers: ["content", "visualization"]
-                ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
-                    RenderPassFilter {
-                        includes: Annotation { name: "pass"; value: "material" }
+            StateSet {
+                // Enable 3 clipping planes
+                renderStates: [
+                    ClipPlane { plane: 0 },
+                    ClipPlane { plane: 1 },
+                    ClipPlane { plane: 2 },
+                    DepthTest { func: DepthTest.LessOrEqual }
+                ]
+
+                // Branch 1
+                LayerFilter {
+                    // Render entities with their regular material
+                    // Fills depth buffer for entities that are clipped
+                    layers: ["content", "visualization"]
+                    ClearBuffer {
+                        buffers: ClearBuffer.ColorDepthBuffer
+                        RenderPassFilter {
+                            includes: Annotation { name: "pass"; value: "material" }
+                        }
                     }
                 }
-            }
 
-            // Branch 2
-            ClearBuffer {
-                // Enable and fill Stencil to later generate caps
-                buffers: ClearBuffer.StencilBuffer
-                StateSet {
-                    // Disable depth culling
-                    // Incr for back faces
-                    // Decr for front faces
-                    // No need to output color values
-                    renderStates: [
-                        StencilTest {
-                            front {
-                                func: StencilTestSeparate.Always
-                                ref: 0; mask: 0
-                            }
-                            back {
-                                func: StencilTestSeparate.Always
-                                ref: 0; mask: 0
-                            }
-                        },
-                        StencilOp {
-                            front.stencilDepthPass: StencilOpSeparate.Decr
-                            back.stencilDepthPass: StencilOpSeparate.Incr
-                        },
-                        ColorMask { red: false; green: false; blue: false; alpha: false }
-                    ]
+                // Branch 2
+                ClearBuffer {
+                    // Enable and fill Stencil to later generate caps
+                    buffers: ClearBuffer.StencilBuffer
+                    StateSet {
+                        // Disable depth culling
+                        // Incr for back faces
+                        // Decr for front faces
+                        // No need to output color values
+                        renderStates: [
+                            StencilTest {
+                                front {
+                                    func: StencilTestSeparate.Always
+                                    ref: 0; mask: 0
+                                }
+                                back {
+                                    func: StencilTestSeparate.Always
+                                    ref: 0; mask: 0
+                                }
+                            },
+                            StencilOp {
+                                front.stencilDepthPass: StencilOpSeparate.Decr
+                                back.stencilDepthPass: StencilOpSeparate.Incr
+                            },
+                            ColorMask { red: false; green: false; blue: false; alpha: false }
+                        ]
 
-                    LayerFilter {
-                        layers: "content"
-                        RenderPassFilter {
-                            includes: Annotation { name: "pass"; value: "stencilFill"; }
+                        LayerFilter {
+                            layers: "content"
+                            RenderPassFilter {
+                                includes: Annotation { name: "pass"; value: "stencilFill"; }
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Branch 3
-        StateSet {
-            // Draw caps using stencil buffer
-            LayerFilter {
-                layers: "caps"
-                RenderPassFilter {
-                    includes: Annotation { name: "pass"; value: "capping"; }
+            // Branch 3
+            StateSet {
+                // Draw caps using stencil buffer
+                LayerFilter {
+                    layers: "caps"
+                    RenderPassFilter {
+                        includes: Annotation { name: "pass"; value: "capping"; }
+                    }
                 }
+
+                // Draw back faces - front faces -> caps
+                renderStates: [
+                    StencilTest {
+                        front {
+                            func: StencilTestSeparate.NotEqual
+                            ref: 0; mask: ~0
+                        }
+                        back {
+                            func: StencilTestSeparate.NotEqual
+                            ref: 0; mask: ~0
+                        }
+                    }
+                ]
             }
-
-            // Draw back faces - front faces -> caps
-            renderStates: [
-                StencilTest {
-                    front {
-                        func: StencilTestSeparate.NotEqual
-                        ref: 0; mask: ~0
-                    }
-                    back {
-                        func: StencilTestSeparate.NotEqual
-                        ref: 0; mask: ~0
-                    }
-                }
-            ]
         }
     }
 }

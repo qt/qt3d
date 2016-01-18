@@ -45,7 +45,12 @@ Entity {
     FirstPersonCameraController { camera: mainCamera }
 
     components: [
-        FrameGraph { activeFrameGraph: ForwardRenderer { camera: mainCamera } }
+        FrameGraph {
+            activeFrameGraph:ForwardRenderer {
+                camera: mainCamera
+                window: _q_window
+            }
+        }
     ]
 
     Camera {

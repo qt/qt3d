@@ -46,6 +46,7 @@ Entity {
             id: stereoFrameGraph
             leftCamera: stereoCamera.leftCamera
             rightCamera: stereoCamera.rightCamera
+            window: _q_window
         }
     }
 
