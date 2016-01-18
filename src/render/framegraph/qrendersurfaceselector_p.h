@@ -50,6 +50,7 @@
 
 #include <Qt3DRender/private/qframegraphnode_p.h>
 #include <QtGui/qsurface.h>
+#include <QtGui/qwindow.h>
 
 QT_BEGIN_NAMESPACE
 

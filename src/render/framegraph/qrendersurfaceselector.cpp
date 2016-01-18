@@ -70,6 +70,14 @@ QSurface *QRenderSurfaceSelector::surface() const
     return d->m_surface;
 }
 
+QWindow *QRenderSurfaceSelector::window() const
+{
+    Q_D(const QRenderSurfaceSelector);
+    if (d->m_surface->surfaceClass() == QSurface::Window)
+        return static_cast<QWindow *>(d->m_surface);
+    return Q_NULLPTR;
+}
+
 void QRenderSurfaceSelector::setSurface(QSurface *surface)
 {
     Q_D(QRenderSurfaceSelector);
@@ -78,6 +86,20 @@ void QRenderSurfaceSelector::setSurface(QSurface *surface)
 
     d->m_surface = surface;
     emit surfaceChanged(surface);
+}
+
+void QRenderSurfaceSelector::setWindow(QWindow *window)
+{
+    Q_D(QRenderSurfaceSelector);
+    QWindow *currentWindow = Q_NULLPTR;
+    if (d->m_surface && d->m_surface->surfaceClass() == QSurface::Window)
+        currentWindow = static_cast<QWindow *>(d->m_surface);
+    if (currentWindow == window)
+        return;
+
+    d->m_surface = window;
+    emit windowChanged(window);
+    emit surfaceChanged(d->m_surface);
 }
 
 void QRenderSurfaceSelector::copy(const QNode *ref)

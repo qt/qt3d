@@ -43,6 +43,7 @@
 QT_BEGIN_NAMESPACE
 
 class QSurface;
+class QWindow;
 
 namespace Qt3DRender {
 
@@ -52,17 +53,22 @@ class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrame
 {
     Q_OBJECT
     Q_PROPERTY(QSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
+    Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
+
 public:
     explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = 0);
     ~QRenderSurfaceSelector();
 
     QSurface *surface() const;
+    QWindow *window() const;
 
 public Q_SLOTS:
     void setSurface(QSurface *surface);
+    void setWindow(QWindow *window);
 
 Q_SIGNALS:
-    void surfaceChanged(QSurface* surface);
+    void surfaceChanged(QSurface *surface);
+    void windowChanged(QWindow *window);
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSurfaceSelector)
