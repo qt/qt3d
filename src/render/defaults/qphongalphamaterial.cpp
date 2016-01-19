@@ -206,6 +206,8 @@ void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
 */
 
 /*!
+    \fn Qt3DRender::QPhongAlphaMaterial::QPhongAlphaMaterial(Qt3DCore::QNode *parent)
+
     Constructs a new QPhongAlphaMaterial instance with parent object \a parent.
 */
 QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)

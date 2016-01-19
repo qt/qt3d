@@ -538,6 +538,19 @@ void QNode::setParent(QNode *parent)
 }
 
 /*!
+    \typedef Qt3DCore::QNodePtr
+    \relates Qt3DCore::QNode
+
+    A shared pointer for QNode.
+*/
+/*!
+    \typedef Qt3DCore::QNodeList
+    \relates Qt3DCore::QNode
+
+    List of QNode pointers.
+*/
+
+/*!
  * Returns a list filled with the QNode children of the current
  * QNode instance.
  */

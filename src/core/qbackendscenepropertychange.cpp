@@ -83,6 +83,13 @@ QNodeId QBackendScenePropertyChange::targetNode() const
     return d->m_targetUuid;
 }
 
+/*!
+    \typedef Qt3DCore::QBackendScenePropertyChangePtr
+    \relates Qt3DCore::QBackendScenePropertyChange
+
+    A shared pointer for QBackendScenePropertyChange.
+*/
+
 /*! \internal */
 QBackendScenePropertyChange::QBackendScenePropertyChange(QBackendScenePropertyChangePrivate &dd)
     : QScenePropertyChange(dd)

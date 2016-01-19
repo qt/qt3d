@@ -118,6 +118,12 @@ void QEntity::copy(const QNode *ref)
         addComponent(qobject_cast<QComponent *>(ccclone));
     }
 }
+/*!
+    \typedef Qt3DCore::QComponentList
+    \relates Qt3DCore::QEntity
+
+    List of QComponent pointers.
+*/
 
 /*!
     Returns the list of Qt3DCore::QComponent instances the entity is referencing.

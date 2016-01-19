@@ -81,7 +81,6 @@
     named uniform variables:
 
     \skipto Transform
-    \printuntil phiRotation
     \printuntil }
 
     \section1 Loading Dynamic Per-Vertex Data
@@ -123,8 +122,8 @@
     need for animations:
 
     \quotefromfile wireframe/main.qml
-    \skipto import Qt3D
-    \printuntil QtQuick
+    \skipto import QtQuick
+    \printuntil Render 2.0
 
     We use an \l Entity type as the root type simply to act as a parent for
     its children. In this sense, the \l Entity type is much like the \l Item

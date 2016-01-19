@@ -58,8 +58,8 @@
     import the modules:
 
     \quotefromfile shadow-map-qml/main.qml
-    \skipto import Qt3D
-    \printuntil Render
+    \skipto import Qt3D.Core
+    \printuntil Render 2.0
 
     The first entities we create are a \l Camera, which represents the camera
     used for the final rendering, and a \l Configuration, which allows us to
@@ -90,11 +90,11 @@
 
     \section1 Specifying the Light
 
-    We specify the Light custom entity in \e Light.qml.
+    We specify the Light custom entity in \e ShadowMapLight.qml.
 
     Again, we import the necessary modules:
 
-    \quotefromfile shadow-map-qml/Light.qml
+    \quotefromfile shadow-map-qml/ShadowMapLight.qml
     \skipto import Qt3D
     \printuntil Qt3D.Render
 
@@ -118,8 +118,8 @@
     Qt Quick module:
 
     \quotefromfile shadow-map-qml/ShadowMapFrameGraph.qml
-    \skipto import Qt3D
-    \printuntil QtQuick
+    \skipto import QtQuick
+    \printuntil Render 2.0
 
     The code defines a \l FrameGraph entity that has a tree of entities as the
     active framegraph:

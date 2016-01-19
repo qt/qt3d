@@ -77,6 +77,9 @@ public:
     QVector<QPointer<QObject> > m_objects;
 };
 
+/*!
+    \internal
+*/
 Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()
     : QNodePrivate()
     , m_componentComplete(true)
