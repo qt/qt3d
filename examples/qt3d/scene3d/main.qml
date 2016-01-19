@@ -64,9 +64,8 @@ Item {
 
     Rectangle {
         id: scene
-        width: Math.min(parent.width, parent.height) - 100
-        height: width
-        anchors.centerIn: parent
+        anchors.fill: parent
+        anchors.margins: 50
         color: "darkRed"
 
         transform: Rotation {
@@ -84,6 +83,7 @@ Item {
             anchors.margins: 10
             focus: true
             aspects: "input"
+            cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
 
             AnimatedEntity {}
         }
