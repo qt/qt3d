@@ -79,6 +79,7 @@ private Q_SLOTS:
 private:
     Qt3DCore::QEventFilterService *m_service;
     InputHandler *m_inputHandler;
+    QObject *m_lastEventSource;
 };
 
 } // Input

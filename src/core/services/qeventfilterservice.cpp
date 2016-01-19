@@ -144,8 +144,12 @@ QEventFilterService::~QEventFilterService()
 void QEventFilterService::initialize(QObject *eventSource)
 {
     Q_D(QEventFilterService);
-    d->m_eventDispatcher.reset(new InternalEventListener());
-    eventSource->installEventFilter(d->m_eventDispatcher.data());
+    if (eventSource == Q_NULLPTR) {
+        d->m_eventDispatcher.reset();
+    } else {
+        d->m_eventDispatcher.reset(new InternalEventListener());
+        eventSource->installEventFilter(d->m_eventDispatcher.data());
+    }
 }
 
 void QEventFilterService::registerEventFilter(QObject *eventFilter, int priority)

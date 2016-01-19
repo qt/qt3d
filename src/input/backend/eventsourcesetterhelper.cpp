@@ -49,16 +49,19 @@ EventSourceSetterHelper::EventSourceSetterHelper(Qt3DCore::QEventFilterService *
     : QObject()
     , m_service(service)
     , m_inputHandler(inputHandler)
+    , m_lastEventSource(Q_NULLPTR)
 {
 }
 
 // Any thread
 void EventSourceSetterHelper::setEventSource(QObject *eventSource)
 {
-    QMetaObject::invokeMethod(this,
-                              "setEventSourceHelper",
-                              Qt::BlockingQueuedConnection,
-                              Q_ARG(QObject *, eventSource));
+    if (m_lastEventSource != eventSource) {
+        QMetaObject::invokeMethod(this,
+                                  "setEventSourceHelper",
+                                  Qt::BlockingQueuedConnection,
+                                  Q_ARG(QObject *, eventSource));
+    }
 }
 
 // Main Thread
@@ -66,6 +69,7 @@ void EventSourceSetterHelper::setEventSourceHelper(QObject *eventSource)
 {
     m_service->initialize(eventSource);
     m_inputHandler->registerEventFilters(m_service);
+    m_lastEventSource = eventSource;
 }
 
 } // Input

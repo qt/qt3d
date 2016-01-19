@@ -238,6 +238,16 @@ void InputHandler::setEventSourceHelper(EventSourceSetterHelper *helper)
     m_eventSourceSetter.reset(helper);
 }
 
+void InputHandler::updateEventSource()
+{
+    if (m_settings != Q_NULLPTR) {
+        // Will be updated only if eventSource is different than
+        // what was set last
+        QObject *eventSource = m_settings->eventSource();
+        m_eventSourceSetter->setEventSource(eventSource);
+    }
+}
+
 } // namespace Input
 } // namespace Qt3DInput
 

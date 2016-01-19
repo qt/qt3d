@@ -169,6 +169,8 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     Q_D(QInputAspect);
     QVector<QAspectJobPtr> jobs;
 
+    d->m_inputHandler->updateEventSource();
+
     jobs.append(d->m_inputHandler->keyboardJobs());
     jobs.append(d->m_inputHandler->mouseJobs());
 

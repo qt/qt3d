@@ -134,6 +134,8 @@ public:
     void setInputSettings(InputSettings *settings);
     void setEventSourceHelper(EventSourceSetterHelper *helper);
 
+    void updateEventSource();
+
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
