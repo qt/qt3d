@@ -53,6 +53,7 @@
 #include <Qt3DInput/qinputchord.h>
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/qinputsettings.h>
 #include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3daction_p.h>
 #include <Qt3DQuickInput/private/quick3daggregateaction_p.h>
@@ -68,6 +69,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DInput::QKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DInput::QKeyboardController>(uri, 2, 0, "KeyboardController");
     qmlRegisterType<Qt3DInput::QKeyboardInput>(uri, 2, 0, "KeyboardInput");
+    qmlRegisterType<Qt3DInput::QInputSettings>(uri, 2, 0, "InputSettings");
 
     qmlRegisterUncreatableType<Qt3DInput::QMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterUncreatableType<Qt3DInput::QWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
