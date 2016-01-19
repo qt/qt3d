@@ -694,6 +694,14 @@ bool Renderer::submitRenderViews()
         // If not, we have to free up the context from the previous surface
         // and make the context current on the new surface
         surface = renderView->surface();
+
+        // For now, if we do not have a surface, skip this renderview
+        // TODO: Investigate if it's worth providing a fallback offscreen surface
+        //       to use when surface is null. Or if we should instead expose an
+        //       offscreensurface to Qt3D.
+        if (!surface)
+            continue;
+
         if (i != 0 && surface != previousSurface && previousSurface)
             m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
