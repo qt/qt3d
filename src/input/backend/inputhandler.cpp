@@ -43,6 +43,7 @@
 #include "mouseeventdispatcherjob_p.h"
 #include <Qt3DCore/private/qeventfilterservice_p.h>
 #include "inputsettings_p.h"
+#include "eventsourcesetterhelper_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -69,12 +70,17 @@ InputHandler::InputHandler()
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
     , m_settings(Q_NULLPTR)
+    , m_eventSourceSetter(Q_NULLPTR)
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);
 }
 
-// Called in MainThread
+InputHandler::~InputHandler()
+{
+}
+
+// Called in MainThread (by the EventSourceHelperSetter)
 void InputHandler::registerEventFilters(QEventFilterService *service)
 {
     clearPendingKeyEvents();
@@ -225,6 +231,11 @@ void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputInteg
 void InputHandler::setInputSettings(InputSettings *settings)
 {
     m_settings = settings;
+}
+
+void InputHandler::setEventSourceHelper(EventSourceSetterHelper *helper)
+{
+    m_eventSourceSetter.reset(helper);
 }
 
 } // namespace Input

@@ -169,18 +169,9 @@ void QAspectEnginePrivate::shutdown()
 void QAspectEngine::setData(const QVariantMap &data)
 {
     Q_D(QAspectEngine);
-
-    // We need to initialize the EventFilterService in the main thread
-    // as we can register event filters only on QObjects of the same thread
-    QObject *eventSource = Q_NULLPTR;
-    const QVariant &eventSourceVariant = data.value(QStringLiteral("eventSource"));
-    if (eventSourceVariant.isValid() &&
-            (eventSource = eventSourceVariant.value<QObject *>()) != Q_NULLPTR) {
-        QEventFilterService *eventFilterService = d->m_aspectThread->aspectManager()->serviceLocator()->eventFilterService();
-        if (eventFilterService != Q_NULLPTR)
-            eventFilterService->initialize(eventSource);
-    }
-
+    // Note: setData in the AspectManager is called in the main thread
+    // which in turns calls onInitialize on each aspects in the main thread
+    // We should keep the call to onInitialize in the main thread
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setData",
                               Qt::BlockingQueuedConnection,

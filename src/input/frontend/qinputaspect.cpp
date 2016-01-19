@@ -82,6 +82,7 @@
 #include <Qt3DInput/private/keyboardmousegenericdeviceintegration_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
+#include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -209,7 +210,15 @@ void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
     Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();
-    d->m_inputHandler->registerEventFilters(eventService);
+    Q_ASSERT(eventService);
+
+    // Create event source setter helper in the main thread
+    Qt3DInput::Input::EventSourceSetterHelper *helper =
+            new Qt3DInput::Input::EventSourceSetterHelper(eventService,
+                                                          d->m_inputHandler.data());
+
+    // Set it on the input handler which will also handle its lifetime
+    d->m_inputHandler->setEventSourceHelper(helper);
 }
 
 void QInputAspect::onCleanup()

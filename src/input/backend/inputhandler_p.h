@@ -84,13 +84,13 @@ class LogicalDeviceManager;
 class GenericPhysicalDeviceManager;
 class GenericDeviceBackendNodeManager;
 class InputSettings;
+class EventSourceSetterHelper;
 
 class InputHandler
 {
 public:
     InputHandler();
-
-    void registerEventFilters(Qt3DCore::QEventFilterService *service);
+    ~InputHandler();
 
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
@@ -132,6 +132,7 @@ public:
     void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
 
     void setInputSettings(InputSettings *settings);
+    void setEventSourceHelper(EventSourceSetterHelper *helper);
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
@@ -160,6 +161,10 @@ private:
     GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
     InputSettings *m_settings;
+    QScopedPointer<EventSourceSetterHelper> m_eventSourceSetter;
+
+    void registerEventFilters(Qt3DCore::QEventFilterService *service);
+    friend class EventSourceSetterHelper;
 };
 
 } // namespace Input
