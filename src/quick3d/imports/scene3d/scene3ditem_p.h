@@ -49,6 +49,7 @@
 //
 
 #include <QQuickItem>
+#include <QtCore/qpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,6 +60,7 @@ class QEntity;
 
 namespace Qt3DRender {
 
+class QCamera;
 class QRenderAspect;
 class Scene3DRenderer;
 class Scene3DCleaner;
@@ -69,6 +71,7 @@ class Scene3DItem : public QQuickItem
     Q_PROPERTY(Qt3DCore::QEntity* entity READ entity WRITE setEntity NOTIFY entityChanged)
     Q_PROPERTY(QStringList aspects READ aspects WRITE setAspects NOTIFY aspectsChanged)
     Q_PROPERTY(bool multisample READ multisample WRITE setMultisample NOTIFY multisampleChanged)
+    Q_PROPERTY(CameraAspectRatioMode cameraAspectRatioMode READ cameraAspectRatioMode WRITE setCameraAspectRatioMode NOTIFY cameraAspectRatioModeChanged)
     Q_CLASSINFO("DefaultProperty", "entity")
 public:
     explicit Scene3DItem(QQuickItem *parent = 0);
@@ -80,14 +83,23 @@ public:
     bool multisample() const;
     void setMultisample(bool enable);
 
+    enum CameraAspectRatioMode {
+        AutomaticAspectRatio,
+        UserAspectRatio
+    };
+    Q_ENUM(CameraAspectRatioMode);
+    CameraAspectRatioMode cameraAspectRatioMode() const;
+
 public Q_SLOTS:
     void setAspects(const QStringList &aspects);
     void setEntity(Qt3DCore::QEntity *entity);
+    void setCameraAspectRatioMode(CameraAspectRatioMode mode);
 
 Q_SIGNALS:
     void aspectsChanged();
     void entityChanged();
     void multisampleChanged();
+    void cameraAspectRatioModeChanged(CameraAspectRatioMode mode);
 
 private Q_SLOTS:
     void applyRootEntityChange();
@@ -95,6 +107,8 @@ private Q_SLOTS:
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
     void setWindowSurface(QObject *rootObject);
+    void setCameraAspectModeHelper();
+    void updateCameraAspectRatio();
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;
@@ -105,6 +119,9 @@ private:
     Scene3DCleaner *m_rendererCleaner;
 
     bool m_multisample;
+
+    QPointer<Qt3DRender::QCamera> m_camera;
+    CameraAspectRatioMode m_cameraAspectRatioMode;
 };
 
 } // Qt3DRender

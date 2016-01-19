@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/qentity.h>
+#include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -73,6 +74,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     , m_renderer(Q_NULLPTR)
     , m_rendererCleaner(new Scene3DCleaner())
     , m_multisample(true)
+    , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::MouseButtonMask);
@@ -136,14 +138,43 @@ void Scene3DItem::setEntity(Qt3DCore::QEntity *entity)
     emit entityChanged();
 }
 
+void Scene3DItem::setCameraAspectRatioMode(CameraAspectRatioMode mode)
+{
+    if (m_cameraAspectRatioMode == mode)
+        return;
+
+    m_cameraAspectRatioMode = mode;
+    setCameraAspectModeHelper();
+    emit cameraAspectRatioModeChanged(mode);
+}
+
+Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
+{
+    return m_cameraAspectRatioMode;
+}
+
 void Scene3DItem::applyRootEntityChange()
 {
     if (m_aspectEngine->rootEntity() != m_entity) {
         m_aspectEngine->setRootEntity(m_entity);
 
         // Set the render surface
-        if (m_entity)
-            setWindowSurface(m_entity);
+        if (!m_entity)
+            return;
+
+        setWindowSurface(m_entity);
+
+        if (m_cameraAspectRatioMode == AutomaticAspectRatio) {
+            // Set aspect ratio of first camera to match the window
+            QList<Qt3DRender::QCamera *> cameras
+                = m_entity->findChildren<Qt3DRender::QCamera *>();
+            if (cameras.isEmpty()) {
+                qWarning() << "No camera found and automatic aspect ratio requested";
+            } else {
+                m_camera = cameras.first();
+                setCameraAspectModeHelper();
+            }
+        }
     }
 }
 
@@ -172,6 +203,28 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
     }
 
     surfaceSelector->setWindow(this->window());
+}
+
+void Scene3DItem::setCameraAspectModeHelper()
+{
+    switch (m_cameraAspectRatioMode) {
+    case AutomaticAspectRatio:
+        connect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+        connect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+        break;
+    case UserAspectRatio:
+        disconnect(this, &Scene3DItem::widthChanged, this, &Scene3DItem::updateCameraAspectRatio);
+        disconnect(this, &Scene3DItem::heightChanged, this, &Scene3DItem::updateCameraAspectRatio);
+        break;
+    }
+}
+
+void Scene3DItem::updateCameraAspectRatio()
+{
+    if (m_camera) {
+        m_camera->setAspectRatio(static_cast<float>(width()) /
+                                 static_cast<float>(height()));
+    }
 }
 
 /*!
