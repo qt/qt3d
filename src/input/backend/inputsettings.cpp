@@ -37,6 +37,7 @@
 #include "inputsettings_p.h"
 #include <Qt3DInput/qinputsettings.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DInput/private/inputhandler_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,42 @@ void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("eventSource"))
             m_eventSource = propertyChange->value().value<QObject *>();
+    }
+}
+
+InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
+    : m_handler(handler)
+{
+}
+
+Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+{
+    if (m_handler->inputSettings() != Q_NULLPTR) {
+        qWarning() << "Input settings already specified";
+        return Q_NULLPTR;
+    }
+
+    InputSettings *settings = new InputSettings();
+    settings->setFactory(factory);
+    settings->setPeer(frontend);
+    m_handler->setInputSettings(settings);
+    return settings;
+}
+
+Qt3DCore::QBackendNode *InputSettingsFunctor::get(const Qt3DCore::QNodeId &id) const
+{
+    InputSettings *settings = m_handler->inputSettings();
+    if (settings != Q_NULLPTR && settings->peerUuid() == id)
+        return settings;
+    return Q_NULLPTR;
+}
+
+void InputSettingsFunctor::destroy(const Qt3DCore::QNodeId &id) const
+{
+    InputSettings *settings = m_handler->inputSettings();
+    if (settings != Q_NULLPTR && settings->peerUuid() == id) {
+        m_handler->setInputSettings(Q_NULLPTR);
+        delete settings;
     }
 }
 

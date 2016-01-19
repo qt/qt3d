@@ -57,6 +57,8 @@ namespace Qt3DInput {
 
 namespace Input {
 
+class InputHandler;
+
 class InputSettings : public Qt3DCore::QBackendNode
 {
 public:
@@ -68,6 +70,19 @@ protected:
 
 private:
     QPointer<QObject> m_eventSource;
+};
+
+class InputSettingsFunctor : public Qt3DCore::QBackendNodeFunctor
+{
+public:
+    explicit InputSettingsFunctor(InputHandler *handler);
+
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+
+private:
+    InputHandler *m_handler;
 };
 
 } // Input
