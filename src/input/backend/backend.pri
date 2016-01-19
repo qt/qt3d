@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/genericdevicebackendnode_p.h \
     $$PWD/inputchord_p.h \
     $$PWD/inputsequence_p.h \
-    $$PWD/inputsettings_p.h
+    $$PWD/inputsettings_p.h \
+    $$PWD/eventsourcesetterhelper_p.h
 
 SOURCES += \
     $$PWD/keyboardcontroller.cpp \
@@ -57,6 +58,7 @@ SOURCES += \
     $$PWD/genericdevicebackendnode.cpp \
     $$PWD/inputchord.cpp \
     $$PWD/inputsequence.cpp \
-    $$PWD/inputsettings.cpp
+    $$PWD/inputsettings.cpp \
+    $$PWD/eventsourcesetterhelper.cpp
 
 INCLUDEPATH += $$PWD
