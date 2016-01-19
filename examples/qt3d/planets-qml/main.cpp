@@ -48,6 +48,7 @@ int main(int argc, char **argv)
         format.setProfile(QSurfaceFormat::CoreProfile);
     }
     format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
     format.setSamples(4);
 
     QQuickView view;
