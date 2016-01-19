@@ -186,8 +186,7 @@ void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
     \class Qt3DRender::QPhongAlphaMaterial
 
     \brief The QPhongAlphaMaterial class provides a default implementation of
-    the phong lighting effect with alpha
-.
+    the phong lighting effect with alpha.
     \inmodule Qt3DRenderer
     \since 5.5
 
@@ -207,8 +206,6 @@ void QPhongAlphaMaterialPrivate::handleAlphaChanged(const QVariant &var)
 */
 
 /*!
-    \fn Qt3DRender::QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)
-
     Constructs a new QPhongAlphaMaterial instance with parent object \a parent.
 */
 QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)
@@ -219,8 +216,6 @@ QPhongAlphaMaterial::QPhongAlphaMaterial(QNode *parent)
 }
 
 /*!
-   \fn Qt3DRender::QPhongAlphaMaterial::~QPhongAlphaMaterial()
-
    Destroys the QPhongAlphaMaterial.
 */
 QPhongAlphaMaterial::~QPhongAlphaMaterial()
@@ -250,7 +245,7 @@ QColor QPhongAlphaMaterial::diffuse() const
 }
 
 /*!
-    \property QColor Qt3DRender::QPhongAlphaMaterial::specular
+    \property Qt3DRender::QPhongAlphaMaterial::specular
 
     Holds the specular color.
 */

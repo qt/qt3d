@@ -6,6 +6,12 @@ version                 = $QT_VERSION
 
 examplesinstallpath     = qt3d/qt3d
 
+indexes +=  $QT_INSTALL_DOCS/qtcore/qtcore.index \
+            $QT_INSTALL_DOCS/qtgui/qtgui.index \
+            $QT_INSTALL_DOCS/qtqml/qtqml.index \
+            $QT_INSTALL_DOCS/qtquick/qtquick.index \
+            $QT_INSTALL_DOCS/qmake/qmake.index
+
 qhp.projects            = Qt3D
 
 qhp.Qt3D.file                = qt3d.qhp

@@ -45,7 +45,7 @@ namespace Qt3DRender
 /*!
  * \qmltype Light
  * \inqmlmodule Qt3D.Render
- * \instantiates QLight
+ * \instantiates Qt3DRender::QLight
  * \brief Encapsulate a QLight object in a Qt 3D scene.
  * \since 5.6
  */

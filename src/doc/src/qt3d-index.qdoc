@@ -81,8 +81,8 @@
     \section1 Overview
 
     The high level design and motivation for Qt3D is described in the \l {Qt 3D
-    Overview}. The Qt 3D Renderer aspect offers support for data-driven
-    configuration as described in \l {Qt 3D Renderer Framegraph}.
+    Overview}. The Qt 3D Render aspect offers support for data-driven
+    configuration as described in \l {Qt 3D Render Framegraph}.
 
     \section1 Reference
     \list

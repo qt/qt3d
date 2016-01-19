@@ -157,7 +157,7 @@
     and the fragment's depth can be compared with the result of the sampling. If
     the fragment is further away, then it is in shadow; otherwise it is lit.
 
-    For example code, see the \l {Qt3D: Shadow Map QML Example}.
+    For example code, see the \l {Qt 3D: Shadow Map QML Example}.
 
     \section2 Instanced Rendering
 
@@ -183,7 +183,7 @@
     To combine support for both C++ and QML APIs with having a fully
     configurable renderer, the concept of a \e framegraph was introduced. While
     a \e scenegraph is a data-driven description of \e what to render, a \l
-    {Qt 3D Renderer Framegraph}{framegraph} is a data-driven description of \e
+    {Qt 3D Render Framegraph}{framegraph} is a data-driven description of \e
     how to render it.
 
     A framegraph enables developers to choose between a simple forward renderer,
