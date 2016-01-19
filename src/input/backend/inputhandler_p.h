@@ -83,6 +83,7 @@ class InputSequenceManager;
 class LogicalDeviceManager;
 class GenericPhysicalDeviceManager;
 class GenericDeviceBackendNodeManager;
+class InputSettings;
 
 class InputHandler
 {
@@ -105,6 +106,7 @@ public:
     inline InputSequenceManager *inputSequenceManager() const { return m_inputSequenceManager; }
     inline LogicalDeviceManager *logicalDeviceManager() const { return m_logicalDeviceManager; }
     inline GenericDeviceBackendNodeManager *genericDeviceBackendNodeManager() const { return m_genericPhysicalDeviceBackendNodeManager; }
+    inline InputSettings *inputSettings() const { return m_settings; }
 
     void appendKeyEvent(const QT_PREPEND_NAMESPACE(QKeyEvent) &event);
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> pendingKeyEvents();
@@ -128,6 +130,8 @@ public:
 
     QVector<Qt3DInput::QInputDeviceIntegration *> inputDeviceIntegrations() const;
     void addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration);
+
+    void setInputSettings(InputSettings *settings);
 
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
@@ -155,6 +159,7 @@ private:
     LogicalDeviceManager *m_logicalDeviceManager;
     GenericDeviceBackendNodeManager *m_genericPhysicalDeviceBackendNodeManager;
     QVector<Qt3DInput::QInputDeviceIntegration *> m_inputDeviceIntegrations;
+    InputSettings *m_settings;
 };
 
 } // namespace Input

@@ -42,6 +42,7 @@
 #include "keyeventdispatcherjob_p.h"
 #include "mouseeventdispatcherjob_p.h"
 #include <Qt3DCore/private/qeventfilterservice_p.h>
+#include "inputsettings_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,7 @@ InputHandler::InputHandler()
     , m_inputSequenceManager(new InputSequenceManager())
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
+    , m_settings(Q_NULLPTR)
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);
@@ -218,6 +220,11 @@ QVector<QInputDeviceIntegration *> InputHandler::inputDeviceIntegrations() const
 void InputHandler::addInputDeviceIntegration(QInputDeviceIntegration *inputIntegration)
 {
     m_inputDeviceIntegrations.push_back(inputIntegration);
+}
+
+void InputHandler::setInputSettings(InputSettings *settings)
+{
+    m_settings = settings;
 }
 
 } // namespace Input
