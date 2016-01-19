@@ -47,6 +47,7 @@
 #include <Qt3DInput/qmouseinput.h>
 #include <Qt3DInput/qinputdeviceintegration.h>
 #include <Qt3DInput/qgenericinputdevice.h>
+#include <Qt3DInput/qinputsettings.h>
 #include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -80,6 +81,7 @@
 #include <Qt3DInput/private/updatehandlerjob_p.h>
 #include <Qt3DInput/private/keyboardmousegenericdeviceintegration_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
+#include <Qt3DInput/private/inputsettings_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -121,6 +123,7 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeFunctorPtr(new Input::AxisActionHandlerNodeFunctor(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeFunctorPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeFunctorPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QInputSettings>(QBackendNodeFunctorPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
 
     // Plugins are QInputDeviceIntegration instances
     loadInputDevicePlugins();
@@ -201,6 +204,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
+// Called in main Thread
 void QInputAspect::onInitialize(const QVariantMap &)
 {
     Q_D(QInputAspect);
