@@ -28,7 +28,8 @@ HEADERS += \
     $$PWD/keyboardmousegenericdeviceintegration_p.h \
     $$PWD/genericdevicebackendnode_p.h \
     $$PWD/inputchord_p.h \
-    $$PWD/inputsequence_p.h
+    $$PWD/inputsequence_p.h \
+    $$PWD/inputsettings_p.h
 
 SOURCES += \
     $$PWD/keyboardcontroller.cpp \
@@ -55,6 +56,7 @@ SOURCES += \
     $$PWD/keyboardmousegenericdeviceintegration.cpp \
     $$PWD/genericdevicebackendnode.cpp \
     $$PWD/inputchord.cpp \
-    $$PWD/inputsequence.cpp
+    $$PWD/inputsequence.cpp \
+    $$PWD/inputsettings.cpp
 
 INCLUDEPATH += $$PWD
