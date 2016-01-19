@@ -38,6 +38,7 @@
 #define QT3DINPUT_QINPUTSETTINGS_H
 
 #include <Qt3DCore/qcomponent.h>
+#include <Qt3DInput/qt3dinput_global.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -45,7 +46,7 @@ namespace Qt3DInput {
 
 class QInputSettingsPrivate;
 
-class QInputSettings : public Qt3DCore::QComponent
+class QT3DINPUTSHARED_EXPORT QInputSettings : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(QObject *eventSource READ eventSource WRITE setEventSource NOTIFY eventSourceChanged)
@@ -63,6 +64,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(QInputSettings)
+    QT3D_CLONEABLE(QInputSettings)
 };
 
 } // Qt3DInput
