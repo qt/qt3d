@@ -41,8 +41,13 @@
 #include "scene3dsgnode_p.h"
 
 #include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/qentity.h>
 #include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DInput/QInputAspect>
+
+#include <QtQuick/qquickwindow.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -133,8 +138,40 @@ void Scene3DItem::setEntity(Qt3DCore::QEntity *entity)
 
 void Scene3DItem::applyRootEntityChange()
 {
-    if (m_aspectEngine->rootEntity() != m_entity)
+    if (m_aspectEngine->rootEntity() != m_entity) {
         m_aspectEngine->setRootEntity(m_entity);
+
+        // Set the render surface
+        if (m_entity)
+            setWindowSurface(m_entity);
+    }
+}
+
+void Scene3DItem::setWindowSurface(QObject *rootObject)
+{
+    // Find surface selector in framegraph and set ourselves up as the
+    // render surface there
+    Qt3DRender::QFrameGraph *frameGraphComponent
+        = rootObject->findChild<Qt3DRender::QFrameGraph *>();
+    if (!frameGraphComponent) {
+        qWarning() << "No frame graph component found";
+        return;
+    }
+
+    Qt3DCore::QNode *frameGraphRoot = frameGraphComponent->activeFrameGraph();
+    if (!frameGraphRoot) {
+        qWarning() << "No active frame graph found";
+        return;
+    }
+
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+    if (!surfaceSelector) {
+        qWarning() << "No render surface selector found in frame graph";
+        return;
+    }
+
+    surfaceSelector->setWindow(this->window());
 }
 
 /*!

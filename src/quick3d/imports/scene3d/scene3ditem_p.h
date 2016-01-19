@@ -94,6 +94,7 @@ private Q_SLOTS:
 
 private:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
+    void setWindowSurface(QObject *rootObject);
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;
