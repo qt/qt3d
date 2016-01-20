@@ -62,6 +62,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
+class FrameGraphManager;
+
 class Q_AUTOTEST_EXPORT FrameGraphNode : public Qt3DCore::QBackendNode
 {
 public:
@@ -94,14 +96,12 @@ public:
     void setFrameGraphManager(FrameGraphManager *manager);
     FrameGraphManager *manager() const;
 
-    void setHandle(HFrameGraphNode handle);
-    void setParentHandle(HFrameGraphNode parentHandle);
-    void appendChildHandle(HFrameGraphNode childHandle);
-    void removeChildHandle(HFrameGraphNode childHandle);
+    void setParentId(const Qt3DCore::QNodeId &parentId);
+    void appendChildId(const Qt3DCore::QNodeId &childHandle);
+    void removeChildId(const Qt3DCore::QNodeId &childHandle);
 
-    HFrameGraphNode handle() const;
-    HFrameGraphNode parentHandle() const;
-    QList<HFrameGraphNode> childrenHandles() const;
+    Qt3DCore::QNodeId parentId() const;
+    QList<Qt3DCore::QNodeId> childrenIds() const;
 
     FrameGraphNode *parent() const;
     QList<FrameGraphNode *> children() const;
@@ -112,9 +112,8 @@ protected:
 private:
     FrameGraphNodeType m_nodeType;
     bool m_enabled;
-    HFrameGraphNode m_handle;
-    HFrameGraphNode m_parentHandle;
-    QList<HFrameGraphNode> m_childrenHandles;
+    Qt3DCore::QNodeId m_parentId;
+    QList<Qt3DCore::QNodeId> m_childrenIds;
     FrameGraphManager *m_manager;
 
     friend class FrameGraphVisitor;
@@ -136,15 +135,12 @@ public:
 
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
     {
-        FrameGraphNode **node = m_manager->lookupResource(id);
-        if (node != Q_NULLPTR)
-            return *node;
-        return Q_NULLPTR;
+        return m_manager->lookupNode(id);
     }
 
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
     {
-        m_manager->releaseResource(id);
+        m_manager->releaseNode(id);
     }
 
 protected:
@@ -152,21 +148,18 @@ protected:
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
-            HFrameGraphNode handle = m_manager->lookupHandle(n->id());
-            if (handle.isNull()) {
-                handle = m_manager->getOrAcquireHandle(n->id());
+            if (!m_manager->containsNode(n->id())) {
                 Backend *backend = new Backend();
-                *m_manager->data(handle) = backend;
                 backend->setFactory(factory);
                 backend->setFrameGraphManager(m_manager);
-                backend->setHandle(handle);
                 backend->setPeer(f);
                 QFrameGraphNode *parentFGNode = static_cast<QFrameGraphNode *>(n)->parentFrameGraphNode();
                 if (parentFGNode)
-                    backend->setParentHandle(m_manager->lookupHandle(parentFGNode->id()));
+                    backend->setParentId(parentFGNode->id());
+                m_manager->appendNode(backend);
                 return backend;
             }
-            return static_cast<Backend *>(*m_manager->data(handle));
+            return static_cast<Backend *>(m_manager->lookupNode(n->id()));
         }
         return Q_NULLPTR;
     }

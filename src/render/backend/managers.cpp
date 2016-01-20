@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: http://www.qt-project.org/legal
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,63 +34,37 @@
 **
 ****************************************************************************/
 
-#include "framegraphvisitor_p.h"
+#include "managers_p.h"
 
-#include "framegraphnode_p.h"
-#include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/framegraphnode_p.h>
 
 QT_BEGIN_NAMESPACE
-
-using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
 
-FrameGraphVisitor::FrameGraphVisitor()
-    : m_renderer(Q_NULLPTR)
-    , m_jobs(Q_NULLPTR)
-    , m_renderviewIndex(0)
-
+bool FrameGraphManager::containsNode(const Qt3DCore::QNodeId &id) const
 {
+    return m_nodes.contains(id);
 }
 
-void FrameGraphVisitor::traverse(FrameGraphNode *root,
-                                 Renderer *renderer,
-                                 QVector<Qt3DCore::QAspectJobPtr> *jobs)
+void FrameGraphManager::appendNode(FrameGraphNode *node)
 {
-    m_renderer = renderer;
-    m_jobs = jobs;
-    m_renderviewIndex = 0;
-
-    Q_ASSERT(m_renderer);
-    Q_ASSERT(m_jobs);
-    Q_ASSERT_X(root, Q_FUNC_INFO, "The FrameGraphRoot is null");
-
-    // Kick off the traversal
-    Render::FrameGraphNode *node = root;
-    if (node == Q_NULLPTR)
-        qCritical() << Q_FUNC_INFO << "FrameGraph is null";
-    visit(node);
+    m_nodes.insert(node->peerUuid(), node);
 }
 
-void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
+FrameGraphNode* FrameGraphManager::lookupNode(const Qt3DCore::QNodeId &id) const
 {
-    // TO DO: check if node is a subtree selector
-    // in which case, we only visit the subtrees returned
-    // by the selector functor and not all the children
-    // as we would otherwise do
+    const QHash<Qt3DCore::QNodeId, FrameGraphNode*>::const_iterator it = m_nodes.find(id);
+    if (it == m_nodes.end())
+        return Q_NULLPTR;
+    else
+        return *it;
+}
 
-    // Recurse to children (if we have any), otherwise if this is a leaf node,
-    // initiate a rendering from the current camera
-    Q_FOREACH (Render::FrameGraphNode *n, node->children())
-        visit(n);
-    // Leaf node - create a RenderView ready to be populated
-    // TODO: Pass in only framegraph config that has changed from previous
-    // index RenderViewJob.
-    if (node->childrenIds().empty()) {
-        QAspectJobPtr job = m_renderer->createRenderViewJob(node, m_renderviewIndex++);
-        m_jobs->append(job);
-    }
+void FrameGraphManager::releaseNode(const Qt3DCore::QNodeId &id)
+{
+    delete m_nodes.take(id);
 }
 
 } // namespace Render

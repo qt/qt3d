@@ -35,6 +35,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
@@ -58,6 +59,11 @@ public:
     ~tst_FrameGraphNode()
     {}
 
+    void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, const Qt3DCore::QNodeId &id)
+    {
+        Qt3DCore::QBackendNodePrivate::get(node)->m_peerUuid = id;
+    }
+
 private Q_SLOTS:
 
     void checkInitialState()
@@ -68,10 +74,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(n.nodeType(), Qt3DRender::Render::FrameGraphNode::InvalidNodeType);
         QVERIFY(n.isEnabled());
-        QVERIFY(n.handle().isNull());
+        QVERIFY(n.peerUuid().isNull());
         QVERIFY(n.manager() == Q_NULLPTR);
-        QVERIFY(n.parentHandle().isNull());
-        QVERIFY(n.childrenHandles().empty());
+        QVERIFY(n.parentId().isNull());
+        QVERIFY(n.childrenIds().empty());
     }
 
     void checkPropertyChanges()
@@ -91,29 +97,28 @@ private Q_SLOTS:
         QCOMPARE(n->manager(), manager.data());
 
         // WHEN
-        Qt3DRender::Render::HFrameGraphNode parentHandle = manager->getOrAcquireHandle(Qt3DCore::QNodeId::createId());
+        const Qt3DCore::QNodeId parentId = Qt3DCore::QNodeId::createId();
         // THEN
-        QVERIFY(!parentHandle.isNull());
+        QVERIFY(!parentId.isNull());
 
         // WHEN
-        n->setParentHandle(parentHandle);
+        n->setParentId(parentId);
         // THEN
-        QCOMPARE(n->parentHandle(), parentHandle);
+        QCOMPARE(n->parentId(), parentId);
 
         // WHEN
         const Qt3DCore::QNodeId childId = Qt3DCore::QNodeId::createId();
         QScopedPointer<Qt3DRender::Render::FrameGraphNode> c(new MyFrameGraphNode());
-        Qt3DRender::Render::FrameGraphNode **childNode = manager->getOrCreateResource(childId);
-        *childNode = c.data();
-        Qt3DRender::Render::HFrameGraphNode childHandle = manager->lookupHandle(childId);
-        n->appendChildHandle(childHandle);
+        setIdInternal(c.data(), childId);
+        manager->appendNode(c.data());
+        n->appendChildId(childId);
         // THEN
-        QCOMPARE(n->childrenHandles().count(), 1);
+        QCOMPARE(n->childrenIds().count(), 1);
 
         // WHEN
-        n->appendChildHandle(childHandle);
+        n->appendChildId(childId);
         // THEN
-        QCOMPARE(n->childrenHandles().count(), 1);
+        QCOMPARE(n->childrenIds().count(), 1);
     }
 
     void checkParentChange()
@@ -124,46 +129,47 @@ private Q_SLOTS:
         const Qt3DCore::QNodeId childId = Qt3DCore::QNodeId::createId();
         Qt3DRender::Render::FrameGraphNode *parent1 = new MyFrameGraphNode();
         Qt3DRender::Render::FrameGraphNode *child = new MyFrameGraphNode();
-        const Qt3DRender::Render::HFrameGraphNode parentHandle = manager->getOrAcquireHandle(parentId);
-        const Qt3DRender::Render::HFrameGraphNode childHandle = manager->getOrAcquireHandle(childId);
-        *manager->data(parentHandle) = parent1;
-        *manager->data(childHandle) = child;
-        parent1->setHandle(parentHandle);
-        child->setHandle(childHandle);
+
+        setIdInternal(parent1, parentId);
+        setIdInternal(child, childId);
+
+        manager->appendNode(parent1);
+        manager->appendNode(child);
+
         parent1->setFrameGraphManager(manager.data());
         child->setFrameGraphManager(manager.data());
 
         // THEN
-        QVERIFY(parent1->childrenHandles().isEmpty());
-        QVERIFY(child->parentHandle().isNull());
+        QVERIFY(parent1->childrenIds().isEmpty());
+        QVERIFY(child->parentId().isNull());
 
         // WHEN
-        parent1->appendChildHandle(childHandle);
+        parent1->appendChildId(childId);
         // THEN
-        QCOMPARE(child->parentHandle(), parentHandle);
+        QCOMPARE(child->parentId(), parentId);
         QCOMPARE(child->parent(), parent1);
-        QCOMPARE(parent1->childrenHandles().count(), 1);
-        QCOMPARE(parent1->childrenHandles().first(), childHandle);
-        QCOMPARE(parent1->children().count(), parent1->childrenHandles().count());
+        QCOMPARE(parent1->childrenIds().count(), 1);
+        QCOMPARE(parent1->childrenIds().first(), childId);
+        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
         QCOMPARE(parent1->children().first(), child);
 
         // WHEN
-        parent1->appendChildHandle(childHandle);
+        parent1->appendChildId(childId);
         // THEN
-        QCOMPARE(child->parentHandle(), parentHandle);
+        QCOMPARE(child->parentId(), parentId);
         QCOMPARE(child->parent(), parent1);
-        QCOMPARE(parent1->childrenHandles().count(), 1);
-        QCOMPARE(parent1->childrenHandles().first(), childHandle);
-        QCOMPARE(parent1->children().count(), parent1->childrenHandles().count());
+        QCOMPARE(parent1->childrenIds().count(), 1);
+        QCOMPARE(parent1->childrenIds().first(), childId);
+        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
         QCOMPARE(parent1->children().first(), child);
 
         // WHEN
-        parent1->removeChildHandle(childHandle);
+        parent1->removeChildId(childId);
         // THEN
-        QVERIFY(child->parentHandle().isNull());
+        QVERIFY(child->parentId().isNull());
         QVERIFY(child->parent() == Q_NULLPTR);
-        QCOMPARE(parent1->childrenHandles().count(), 0);
-        QCOMPARE(parent1->children().count(), parent1->childrenHandles().count());
+        QCOMPARE(parent1->childrenIds().count(), 0);
+        QCOMPARE(parent1->children().count(), parent1->childrenIds().count());
     }
 };
 

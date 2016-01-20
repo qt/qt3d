@@ -413,10 +413,7 @@ void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId)
 
 Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
-    FrameGraphNode **fgRoot = m_nodesManager->lookupResource<FrameGraphNode*, FrameGraphManager>(m_frameGraphRootUuid);
-    if (fgRoot != Q_NULLPTR)
-        return *fgRoot;
-    return Q_NULLPTR;
+    return m_nodesManager->frameGraphManager()->lookupNode(m_frameGraphRootUuid);
 }
 
 // QAspectThread context

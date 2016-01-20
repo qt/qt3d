@@ -77,7 +77,7 @@ private:
     {
         Q_FOREACH (Render::FrameGraphNode *n, node->children())
             visit(n);
-        if (node->childrenHandles().empty())
+        if (node->childrenIds().empty())
             m_leaves.push_back(node);
     }
 

@@ -135,14 +135,20 @@ public:
     EntityManager() {}
 };
 
-class FrameGraphManager : public Qt3DCore::QResourceManager<
-        FrameGraphNode *,
-        Qt3DCore::QNodeId,
-        8,
-        Qt3DCore::ArrayAllocatingPolicy>
+class FrameGraphNode;
+
+class Q_AUTOTEST_EXPORT FrameGraphManager
 {
 public:
     FrameGraphManager() {}
+
+    bool containsNode(const Qt3DCore::QNodeId &id) const;
+    void appendNode(FrameGraphNode *node);
+    FrameGraphNode* lookupNode(const Qt3DCore::QNodeId &id) const;
+    void releaseNode(const Qt3DCore::QNodeId &id);
+
+private:
+    QHash<Qt3DCore::QNodeId, FrameGraphNode*> m_nodes;
 };
 
 class LayerManager : public Qt3DCore::QResourceManager<

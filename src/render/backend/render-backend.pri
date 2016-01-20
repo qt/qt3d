@@ -43,6 +43,7 @@ SOURCES += \
     $$PWD/rendertarget.cpp \
     $$PWD/renderattachment.cpp \
     $$PWD/attachmentpack.cpp \
+    $$PWD/managers.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/cameralens.cpp \
     $$PWD/entity.cpp \

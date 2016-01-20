@@ -74,75 +74,62 @@ FrameGraphManager *FrameGraphNode::manager() const
     return m_manager;
 }
 
-void FrameGraphNode::setHandle(HFrameGraphNode handle)
+void FrameGraphNode::setParentId(const Qt3DCore::QNodeId &parentId)
 {
-    m_handle = handle;
-}
-
-void FrameGraphNode::setParentHandle(HFrameGraphNode parentHandle)
-{
-    if (m_parentHandle != parentHandle) {
-        m_parentHandle = parentHandle;
-        FrameGraphNode **parent = m_manager->data(m_parentHandle);
-        if (parent != Q_NULLPTR && *parent != Q_NULLPTR && !(*parent)->m_childrenHandles.contains(m_handle))
-            (*parent)->m_childrenHandles.append(m_handle);
+    if (m_parentId != parentId) {
+        m_parentId = parentId;
+        FrameGraphNode *parent = m_manager->lookupNode(m_parentId);
+        if (parent != Q_NULLPTR && !parent->m_childrenIds.contains(peerUuid()))
+            parent->m_childrenIds.append(peerUuid());
     }
 }
 
-void FrameGraphNode::appendChildHandle(HFrameGraphNode childHandle)
+void FrameGraphNode::appendChildId(const Qt3DCore::QNodeId &childId)
 {
-    if (!m_childrenHandles.contains(childHandle)) {
-        FrameGraphNode **child = m_manager->data(childHandle);
+    if (!m_childrenIds.contains(childId)) {
+        FrameGraphNode *child = m_manager->lookupNode(childId);
         if (child != Q_NULLPTR) {
-            m_childrenHandles.append(childHandle);
-            (*child)->m_parentHandle = m_handle;
+            m_childrenIds.append(childId);
+            child->m_parentId = peerUuid();
         }
     }
 }
 
-void FrameGraphNode::removeChildHandle(HFrameGraphNode childHandle)
+void FrameGraphNode::removeChildId(const Qt3DCore::QNodeId &childId)
 {
-    if (m_childrenHandles.contains(childHandle)) {
-        FrameGraphNode **child = m_manager->data(childHandle);
+    if (m_childrenIds.contains(childId)) {
+        FrameGraphNode *child = m_manager->lookupNode(childId);
         if (child != Q_NULLPTR) {
-            (*child)->m_parentHandle = HFrameGraphNode();
+            child->m_parentId = Qt3DCore::QNodeId();
         }
-        m_childrenHandles.removeAll(childHandle);
+        m_childrenIds.removeAll(childId);
     }
 }
 
-HFrameGraphNode FrameGraphNode::handle() const
+Qt3DCore::QNodeId FrameGraphNode::parentId() const
 {
-    return m_handle;
+    return m_parentId;
 }
 
-HFrameGraphNode FrameGraphNode::parentHandle() const
+QList<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
 {
-    return m_parentHandle;
-}
-
-QList<HFrameGraphNode> FrameGraphNode::childrenHandles() const
-{
-    return m_childrenHandles;
+    return m_childrenIds;
 }
 
 FrameGraphNode *FrameGraphNode::parent() const
 {
-    FrameGraphNode **parent = m_manager->data(m_parentHandle);
-    if (parent != Q_NULLPTR)
-        return *parent;
-    return Q_NULLPTR;
+    return m_manager->lookupNode(m_parentId);
 }
 
 QList<FrameGraphNode *> FrameGraphNode::children() const
 {
     QList<FrameGraphNode *> children;
-    children.reserve(m_childrenHandles.size());
+    children.reserve(m_childrenIds.size());
 
-    Q_FOREACH (HFrameGraphNode handle, m_childrenHandles) {
-        FrameGraphNode **child = m_manager->data(handle);
+    Q_FOREACH (const Qt3DCore::QNodeId &id, m_childrenIds) {
+        FrameGraphNode *child = m_manager->lookupNode(id);
         if (child != Q_NULLPTR)
-            children << *child;
+            children << child;
     }
     return children;
 }
