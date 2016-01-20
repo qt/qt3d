@@ -87,7 +87,7 @@ void tst_DdsTextures::ddsImageData()
 
         Qt3DRender::QTexImageData data;
 
-        QVERIFY(data.setCompressedFile(texture->source));
+        QVERIFY(data.setCompressedFile(QFINDTESTDATA(texture->source)));
         QCOMPARE(data.width(), texture->width);
         QCOMPARE(data.height(), texture->height);
         QCOMPARE(data.faces(), texture->faces);
