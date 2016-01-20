@@ -51,22 +51,55 @@ QAbstractBufferPrivate::QAbstractBufferPrivate()
 {
 }
 
+/*!
+ * \qmltype AbstractBuffer
+ * \instantiates Qt3DRender::QAbstractBuffer
+ * \inqmlmodule Qt3D.Render
+ * \brief Uncreatable
+ */
+
+/*!
+ * \class Qt3DRender::QAbstractBuffer
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DCore::QNode
+ *
+ * Abstract class.
+ */
+
+/*!
+ * \fn void Qt3DRender::QAbstractBuffer::dataChanged(const QByteArray &bytes)
+ *
+ * This signal is emitted with \a bytes when data changes.
+ */
+
+/*!
+ * Constructs a new QAbstractBuffer with \a parent.
+ */
 QAbstractBuffer::QAbstractBuffer(QNode *parent)
     : QNode(*new QAbstractBufferPrivate(), parent)
 {
 }
 
+/*!
+ * Destroys the abstract buffer.
+ */
 QAbstractBuffer::~QAbstractBuffer()
 {
     Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractBuffer subclass didn't call QNode::cleanup in its destructor");
 }
 
-/*! \internal */
+/*!
+ * \internal
+ */
 QAbstractBuffer::QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
+/*!
+ * \internal
+ */
 void QAbstractBuffer::copy(const QNode *ref)
 {
     QNode::copy(ref);
@@ -74,6 +107,9 @@ void QAbstractBuffer::copy(const QNode *ref)
     d_func()->m_data = buffer->d_func()->m_data;
 }
 
+/*!
+ * Sets \a bytes as data.
+ */
 void QAbstractBuffer::setData(const QByteArray &bytes)
 {
     Q_D(QAbstractBuffer);
@@ -84,6 +120,9 @@ void QAbstractBuffer::setData(const QByteArray &bytes)
     }
 }
 
+/*!
+ * \return the data.
+ */
 QByteArray QAbstractBuffer::data() const
 {
     Q_D(const QAbstractBuffer);

@@ -59,69 +59,202 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
 {
 }
 
+/*!
+ * \qmltype GeometryRenderer
+ * \instantiates Qt3DRender::QGeometryRenderer
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::instanceCount
+ *
+ * Holds the instance count.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::primitiveCount
+ *
+ * Holds the primitive count.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::baseVertex
+ *
+ * Holds the base vertex.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::baseInstance
+ *
+ * Holds the base instance.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::restartIndex
+ *
+ * Holds the restart index.
+ */
+
+/*!
+ * \qmlproperty bool GeometryRenderer::primitiveRestart
+ *
+ * Holds the primitive restart flag.
+ */
+
+/*!
+ * \qmlproperty Geometry GeometryRenderer::geometry
+ *
+ * Holds the geometry.
+ */
+
+/*!
+ * \qmlproperty QGeometryRenderer::PrimitiveType GeometryRenderer::primitiveType
+ *
+ * Holds the primitive type.
+ */
+
+/*!
+ * \class Qt3DRender::QGeometryRenderer
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DCore::QComponent
+ *
+ */
+
+/*!
+ * \enum QGeometryRenderer::PrimitiveType
+ *
+ * The type of the primitive.
+ *
+ * \value Points
+ * \value Lines
+ * \value LineLoop
+ * \value LineStrip
+ * \value Triangles
+ * \value TriangleStrip
+ * \value TriangleFan
+ * \value LinesAdjacency
+ * \value TrianglesAdjacency
+ * \value LineStripAdjacency
+ * \value TriangleStripAdjacency
+ * \value Patches
+ */
+
+/*!
+ * Constructs a new QGeometryRenderer with \a parent.
+ */
 QGeometryRenderer::QGeometryRenderer(QNode *parent)
     : QComponent(*new QGeometryRendererPrivate(), parent)
 {
 }
 
+/*!
+ * Destroys this geometry renderer.
+ */
 QGeometryRenderer::~QGeometryRenderer()
 {
     QComponent::cleanup();
 }
 
+/*!
+ * \internal
+ */
 QGeometryRenderer::QGeometryRenderer(QGeometryRendererPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
+/*!
+ * \property QGeometryRenderer::instanceCount
+ *
+ * Holds the instance count.
+ */
 int QGeometryRenderer::instanceCount() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_instanceCount;
 }
 
+/*!
+ * \property QGeometryRenderer::primitiveCount
+ *
+ * Holds the primitive count.
+ */
 int QGeometryRenderer::primitiveCount() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_primitiveCount;
 }
 
+/*!
+ * \property QGeometryRenderer::baseVertex
+ *
+ * Holds the base vertex.
+ */
 int QGeometryRenderer::baseVertex() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_baseVertex;
 }
 
+/*!
+ * \property QGeometryRenderer::baseInstance
+ *
+ * Holds the base instance.
+ */
 int QGeometryRenderer::baseInstance() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_baseInstance;
 }
 
+/*!
+ * \property QGeometryRenderer::restartIndex
+ *
+ * Holds the restart index.
+ */
 int QGeometryRenderer::restartIndex() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_restartIndex;
 }
 
+/*!
+ * \property QGeometryRenderer::primitiveRestart
+ *
+ * Holds the primitive restart flag.
+ */
 bool QGeometryRenderer::primitiveRestart() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_primitiveRestart;
 }
 
+/*!
+ * \property QGeometryRenderer::geometry
+ *
+ * Holds the geometry.
+ */
 QGeometry *QGeometryRenderer::geometry() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_geometry;
 }
 
+/*!
+ * \property QGeometryRenderer::primitiveType
+ *
+ * Holds the primitive type.
+ */
 QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_primitiveType;
 }
 
+/*!
+ * \return the geometry functor.
+ */
 QGeometryFunctorPtr QGeometryRenderer::geometryFunctor() const
 {
     Q_D(const QGeometryRenderer);
@@ -227,6 +360,9 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
     emit primitiveTypeChanged(primitiveType);
 }
 
+/*!
+ * Sets the geometry \a functor.
+ */
 void QGeometryRenderer::setGeometryFunctor(const QGeometryFunctorPtr &functor)
 {
     Q_D(QGeometryRenderer);
@@ -241,6 +377,9 @@ void QGeometryRenderer::setGeometryFunctor(const QGeometryFunctorPtr &functor)
     }
 }
 
+/*!
+ * \internal
+ */
 void QGeometryRenderer::copy(const QNode *ref)
 {
     QComponent::copy(ref);
@@ -256,6 +395,9 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_functor = other->d_func()->m_functor;
 }
 
+/*!
+ * \internal
+ */
 void QGeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     Q_D(QGeometryRenderer);

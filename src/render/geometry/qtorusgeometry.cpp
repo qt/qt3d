@@ -257,6 +257,70 @@ void QTorusGeometryPrivate::init()
     q->addAttribute(m_indexAttribute);
 }
 
+/*!
+ * \qmltype TorusGeometry
+ * \instantiates Qt3DRender::QTorusGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty int TorusGeometry::rings
+ *
+ * Holds the number of rings in the torus.
+ */
+
+/*!
+ * \qmlproperty int TorusGeometry::slices
+ *
+ * Holds the number of slices in the torus.
+ */
+
+/*!
+ * \qmlproperty float TorusGeometry::radius
+ *
+ * Holds the outer radius of the torus.
+ */
+
+/*!
+ * \qmlproperty float TorusGeometry::minorRadius
+ *
+ * Holds the inner radius of the torus.
+ */
+
+/*!
+ * \qmlproperty Attribute TorusGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute TorusGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute TorusGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute TorusGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QTorusGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometry
+ */
+
+/*!
+ * Constructs a new QTorusGeometry with \a parent.
+ */
 QTorusGeometry::QTorusGeometry(QNode *parent)
     : QGeometry(*new QTorusGeometryPrivate(), parent)
 {
@@ -264,6 +328,9 @@ QTorusGeometry::QTorusGeometry(QNode *parent)
     d->init();
 }
 
+/*!
+ * \internal
+ */
 QTorusGeometry::QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent)
     : QGeometry(dd, parent)
 {
@@ -271,11 +338,17 @@ QTorusGeometry::QTorusGeometry(QTorusGeometryPrivate &dd, QNode *parent)
     d->init();
 }
 
+/*!
+ * Destroys this geometry.
+ */
 QTorusGeometry::~QTorusGeometry()
 {
     QGeometry::cleanup();
 }
 
+/*!
+ * Updates vertices based on rings and slices.
+ */
 void QTorusGeometry::updateVertices()
 {
     Q_D(QTorusGeometry);
@@ -286,6 +359,9 @@ void QTorusGeometry::updateVertices()
     d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius)));
 }
 
+/*!
+ * Updates indices based on rings and slices.
+ */
 void QTorusGeometry::updateIndices()
 {
     Q_D(QTorusGeometry);
@@ -337,48 +413,88 @@ void QTorusGeometry::setMinorRadius(float minorRadius)
     }
 }
 
+/*!
+ * \property QTorusGeometry::rings
+ *
+ * Holds the number of rings in the torus.
+ */
 int QTorusGeometry::rings() const
 {
     Q_D(const QTorusGeometry);
     return d->m_rings;
 }
 
+/*!
+ * \property QTorusGeometry::slices
+ *
+ * Holds the number of slices in the torus.
+ */
 int QTorusGeometry::slices() const
 {
     Q_D(const QTorusGeometry);
     return d->m_slices;
 }
 
+/*!
+ * \property QTorusGeometry::radius
+ *
+ * Holds the outer radius of the torus.
+ */
 float QTorusGeometry::radius() const
 {
     Q_D(const QTorusGeometry);
     return d->m_radius;
 }
 
+/*!
+ * \property QTorusGeometry::minorRadius
+ *
+ * Holds the inner radius of the torus.
+ */
 float QTorusGeometry::minorRadius() const
 {
     Q_D(const QTorusGeometry);
     return d->m_minorRadius;
 }
 
+/*!
+ * \property QTorusGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
 QAttribute *QTorusGeometry::positionAttribute() const
 {
     Q_D(const QTorusGeometry);
     return d->m_positionAttribute;
 }
 
+/*!
+ * \property QTorusGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
 QAttribute *QTorusGeometry::normalAttribute() const
 {
     Q_D(const QTorusGeometry);
     return d->m_normalAttribute;
 }
 
+/*!
+ * \property QTorusGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
 QAttribute *QTorusGeometry::texCoordAttribute() const
 {
     Q_D(const QTorusGeometry);
     return d->m_texCoordAttribute;
 }
 
+/*!
+ * \property QTorusGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
 QAttribute *QTorusGeometry::indexAttribute() const
 {
     Q_D(const QTorusGeometry);

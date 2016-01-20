@@ -47,6 +47,9 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+/*!
+ * \internal
+ */
 void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
 {
     if (m_changeArbiter != Q_NULLPTR) {
@@ -60,6 +63,42 @@ void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
     }
 }
 
+/*!
+ * \qmltype Geometry
+ * \instantiates Qt3DRender::QGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty int Geometry::verticesPerPatch
+ *
+ * Holds vertices per patch.
+ */
+
+/*!
+ * \qmlproperty BoundingVolumeSpecifier Geometry::boundingVolumeSpecifier
+ *
+ * Holds bounding volume specifier.
+ */
+
+/*!
+ * \class Qt3DRender::QGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DCore::QNode
+ *
+ */
+
+/*!
+ * \typedef Qt3DRender::QAttributeList
+ * \relates Qt3DRender::QGeometry
+ *
+ * A vector of {QAbstractAttribute}s.
+ */
+
+/*!
+ * Constructs a new QGeometry with \a parent.
+ */
 QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
 {
@@ -68,6 +107,9 @@ QGeometry::QGeometry(QNode *parent)
                      this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
 }
 
+/*!
+ * \internal
+ */
 QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
@@ -76,11 +118,17 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
                      this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
 }
 
+/*!
+ * Destroys this geometry.
+ */
 QGeometry::~QGeometry()
 {
     QNode::cleanup();
 }
 
+/*!
+ * Adds an \a attribute to this geometry.
+ */
 void QGeometry::addAttribute(QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
@@ -103,6 +151,9 @@ void QGeometry::addAttribute(QAbstractAttribute *attribute)
     }
 }
 
+/*!
+ * Removes the given \a attribute from this geometry.
+ */
 void QGeometry::removeAttribute(QAbstractAttribute *attribute)
 {
     Q_D(QGeometry);
@@ -124,24 +175,40 @@ void QGeometry::setVerticesPerPatch(int verticesPerPatch)
     }
 }
 
+/*!
+ * \property QGeometry::verticesPerPatch
+ *
+ * Holds vertices per patch.
+ */
 int QGeometry::verticesPerPatch() const
 {
     Q_D(const QGeometry);
     return d->m_verticesPerPatch;
 }
 
+/*!
+ * \property QGeometry::boundingVolumeSpecifier
+ *
+ * Holds bounding volume specifier.
+ */
 QBoundingVolumeSpecifier *QGeometry::boundingVolumeSpecifier()
 {
     Q_D(QGeometry);
     return &d->m_boundingVolumeSpecifier;
 }
 
+/*!
+ * \return the list of attributes in this geometry.
+ */
 QAttributeList QGeometry::attributes() const
 {
     Q_D(const QGeometry);
     return d->m_attributes;
 }
 
+/*!
+ * \internal
+ */
 void QGeometry::copy(const QNode *ref)
 {
     QNode::copy(ref);

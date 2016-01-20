@@ -308,6 +308,76 @@ void QSphereGeometryPrivate::init()
     q->addAttribute(m_indexAttribute);
 }
 
+/*!
+ * \qmltype SphereGeometry
+ * \instantiates Qt3DRender::QSphereGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty int SphereGeometry::rings
+ *
+ * Holds the number of rings in the sphere.
+ */
+
+/*!
+ * \qmlproperty int SphereGeometry::slices
+ *
+ * Holds the number of slices in the sphere.
+ */
+
+/*!
+ * \qmlproperty float SphereGeometry::radius
+ *
+ * Holds the radius of the sphere.
+ */
+
+/*!
+ * \qmlproperty bool SphereGeometry::generateTangents
+ *
+ * Holds the value of the automatic tangent generation flag.
+ */
+
+/*!
+ * \qmlproperty Attribute SphereGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute SphereGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute SphereGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute SphereGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute SphereGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QSphereGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometry
+ */
+
+/*!
+ * Constructs a new QSphereGeometry with \a parent.
+ */
 QSphereGeometry::QSphereGeometry(QNode *parent)
     : QGeometry(*new QSphereGeometryPrivate(), parent)
 {
@@ -315,6 +385,9 @@ QSphereGeometry::QSphereGeometry(QNode *parent)
     d->init();
 }
 
+/*!
+ * \internal
+ */
 QSphereGeometry::QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent)
     : QGeometry(dd, parent)
 {
@@ -322,11 +395,17 @@ QSphereGeometry::QSphereGeometry(QSphereGeometryPrivate &dd, QNode *parent)
     d->init();
 }
 
+/*!
+ * Destroys this geometry.
+ */
 QSphereGeometry::~QSphereGeometry()
 {
     QGeometry::cleanup();
 }
 
+/*!
+ * Updates vertices based on rings and slices.
+ */
 void QSphereGeometry::updateVertices()
 {
     Q_D(QSphereGeometry);
@@ -338,6 +417,9 @@ void QSphereGeometry::updateVertices()
     d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new SphereVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius)));
 }
 
+/*!
+ * Updates indices based on rings and slices.
+ */
 void QSphereGeometry::updateIndices()
 {
     Q_D(QSphereGeometry);
@@ -392,54 +474,99 @@ void QSphereGeometry::setGenerateTangents(bool gen)
     }
 }
 
+/*!
+ * \property QSphereGeometry::generateTangents
+ *
+ * Holds the value of the automatic tangent generation flag.
+ */
 bool QSphereGeometry::generateTangents() const
 {
     Q_D(const QSphereGeometry);
     return d->m_generateTangents;
 }
 
+/*!
+ * \property QSphereGeometry::rings
+ *
+ * Holds the number of rings in the sphere.
+ */
 int QSphereGeometry::rings() const
 {
     Q_D(const QSphereGeometry);
     return d->m_rings;
 }
 
+/*!
+ * \property QSphereGeometry::slices
+ *
+ * Holds the number of slices in the sphere.
+ */
 int QSphereGeometry::slices() const
 {
     Q_D(const QSphereGeometry);
     return d->m_slices;
 }
 
+/*!
+ * \property QSphereGeometry::radius
+ *
+ * Holds the radius of the sphere.
+ */
 float QSphereGeometry::radius() const
 {
     Q_D(const QSphereGeometry);
     return d->m_radius;
 }
 
+/*!
+ * \property QSphereGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
 QAttribute *QSphereGeometry::positionAttribute() const
 {
     Q_D(const QSphereGeometry);
     return d->m_positionAttribute;
 }
 
+/*!
+ * \property QSphereGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
 QAttribute *QSphereGeometry::normalAttribute() const
 {
     Q_D(const QSphereGeometry);
     return d->m_normalAttribute;
 }
 
+/*!
+ * \property QSphereGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
 QAttribute *QSphereGeometry::texCoordAttribute() const
 {
     Q_D(const QSphereGeometry);
     return d->m_texCoordAttribute;
 }
 
+/*!
+ * \property QSphereGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
 QAttribute *QSphereGeometry::tangentAttribute() const
 {
     Q_D(const QSphereGeometry);
     return d->m_tangentAttribute;
 }
 
+/*!
+ * \property QSphereGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
 QAttribute *QSphereGeometry::indexAttribute() const
 {
     Q_D(const QSphereGeometry);

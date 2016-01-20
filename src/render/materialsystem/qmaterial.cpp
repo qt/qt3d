@@ -43,6 +43,13 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
+ * \qmltype Material
+ * \instantiates Qt3DRender::QMaterial
+ * \inqmlmodule Qt3D.Render
+ * \brief Non-creatable abstract base for materials.
+ */
+
+/*!
  * \class Qt3DRender::QMaterial
  * \inmodule Qt3DRender
  *

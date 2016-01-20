@@ -489,6 +489,89 @@ void QCuboidGeometryPrivate::init()
     q->addAttribute(m_indexAttribute);
 }
 
+/*!
+ * \qmltype CuboidGeometry
+ * \instantiates Qt3DRender::QCuboidGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty float CuboidGeometry::xExtent
+ *
+ * Holds the x extent.
+ */
+
+/*!
+ * \qmlproperty float CuboidGeometry::yExtent
+ *
+ * Holds the y extent.
+ */
+
+/*!
+ * \qmlproperty float CuboidGeometry::zExtent
+ *
+ * Holds the z extent.
+ */
+
+/*!
+ * \qmlproperty size CuboidGeometry::yzMeshResolution
+ *
+ * Holds the y-z resolution.
+ */
+
+/*!
+ * \qmlproperty size CuboidGeometry::xzMeshResolution
+ *
+ * Holds the x-z resolution.
+ */
+
+/*!
+ * \qmlproperty size CuboidGeometry::xyMeshResolution
+ *
+ * Holds the x-y resolution.
+ */
+
+/*!
+ * \qmlproperty Attribute CuboidGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CuboidGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CuboidGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CuboidGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CuboidGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QCuboidGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometry
+ *
+ */
+
+/*!
+ * Constructs a new QCuboidGeometry with \a parent.
+ */
 QCuboidGeometry::QCuboidGeometry(QNode *parent)
     : QGeometry(*new QCuboidGeometryPrivate(), parent)
 {
@@ -496,6 +579,9 @@ QCuboidGeometry::QCuboidGeometry(QNode *parent)
     d->init();
 }
 
+/*!
+ * \internal
+ */
 QCuboidGeometry::QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent)
     : QGeometry(dd, parent)
 {
@@ -503,11 +589,17 @@ QCuboidGeometry::QCuboidGeometry(QCuboidGeometryPrivate &dd, QNode *parent)
     d->init();
 }
 
+/*!
+ * Destroys this geometry.
+ */
 QCuboidGeometry::~QCuboidGeometry()
 {
     QGeometry::cleanup();
 }
 
+/*!
+ * Updates indices based on mesh resolutions.
+ */
 void QCuboidGeometry::updateIndices()
 {
     Q_D(QCuboidGeometry);
@@ -521,6 +613,9 @@ void QCuboidGeometry::updateIndices()
 
 }
 
+/*!
+ * Updates vertices based on mesh resolutions.
+ */
 void QCuboidGeometry::updateVertices()
 {
     Q_D(QCuboidGeometry);
@@ -601,66 +696,121 @@ void QCuboidGeometry::setXYMeshResolution(const QSize &resolution)
     }
 }
 
+/*!
+ * \property QCuboidGeometry::xExtent
+ *
+ * Holds the x extent.
+ */
 float QCuboidGeometry::xExtent() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_xExtent;
 }
 
+/*!
+ * \property QCuboidGeometry::yExtent
+ *
+ * Holds the y extent.
+ */
 float QCuboidGeometry::yExtent() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_yExtent;
 }
 
+/*!
+ * \property QCuboidGeometry::zExtent
+ *
+ * Holds the z extent.
+ */
 float QCuboidGeometry::zExtent() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_zExtent;
 }
 
+/*!
+ * \property QCuboidGeometry::yzMeshResolution
+ *
+ * Holds the y-z resolution.
+ */
 QSize QCuboidGeometry::yzMeshResolution() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_yzFaceResolution;
 }
 
+/*!
+ * \property QCuboidGeometry::xzMeshResolution
+ *
+ * Holds the x-z resolution.
+ */
 QSize QCuboidGeometry::xyMeshResolution() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_xyFaceResolution;
 }
 
+/*!
+ * \property QCuboidGeometry::xyMeshResolution
+ *
+ * Holds the x-y resolution.
+ */
 QSize QCuboidGeometry::xzMeshResolution() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_xzFaceResolution;
 }
 
+/*!
+ * \property QCuboidGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
 QAttribute *QCuboidGeometry::positionAttribute() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_positionAttribute;
 }
 
+/*!
+ * \property QCuboidGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
 QAttribute *QCuboidGeometry::normalAttribute() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_normalAttribute;
 }
 
+/*!
+ * \property QCuboidGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
 QAttribute *QCuboidGeometry::texCoordAttribute() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_texCoordAttribute;
 }
 
+/*!
+ * \property QCuboidGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
 QAttribute *QCuboidGeometry::tangentAttribute() const
 {
     Q_D(const QCuboidGeometry);
     return d->m_tangentAttribute;
 }
 
+/*!
+ * \property QCuboidGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
 QAttribute *QCuboidGeometry::indexAttribute() const
 {
     Q_D(const QCuboidGeometry);

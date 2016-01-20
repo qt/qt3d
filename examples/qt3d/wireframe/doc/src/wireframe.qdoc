@@ -155,7 +155,7 @@
 
     \section1 Mapping Materials
 
-    Qt3D has a robust and very flexible \l {Qt3D Overview#Materials}{material
+    Qt3D has a robust and very flexible \l {Qt 3D Overview#Materials}{material
     system} that allows multiple levels of customization. We use the
     WireframeMaterial custom type to wrap the \l Material type:
 

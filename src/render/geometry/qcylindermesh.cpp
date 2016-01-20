@@ -51,6 +51,49 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \qmltype CylinderMesh
+ * \instantiates Qt3DRender::QCylinderMesh
+ * \inqmlmodule Qt3D.Render
+ * \brief A cylindrical mesh.
+ */
+
+/*!
+ * \qmlproperty int CylinderMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
+
+/*!
+ * \qmlproperty int CylinderMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
+
+/*!
+ * \qmlproperty float CylinderMesh::radius
+ *
+ * Holds the radius of the cylinder.
+ */
+
+/*!
+ * \qmlproperty float CylinderMesh::length
+ *
+ * Holds the length of the cylinder.
+ */
+
+/*!
+ * \class Qt3DRender::QCylinderMesh
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometryRenderer
+ *
+ * \brief A cylindrical mesh.
+ */
+
+/*!
+ * Constructs a new QCylinderMesh with \a parent.
+ */
 QCylinderMesh::QCylinderMesh(QNode *parent)
     : QGeometryRenderer(parent)
 {
@@ -63,6 +106,9 @@ QCylinderMesh::QCylinderMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*!
+ * Destroys this cylinder mesh.
+ */
 QCylinderMesh::~QCylinderMesh()
 {
     QNode::cleanup();
@@ -88,21 +134,41 @@ void QCylinderMesh::setLength(float length)
     static_cast<QCylinderGeometry *>(geometry())->setLength(length);
 }
 
+/*!
+ * \property QCylinderMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
 int QCylinderMesh::rings() const
 {
     return static_cast<QCylinderGeometry *>(geometry())->rings();
 }
 
+/*!
+ * \property QCylinderMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
 int QCylinderMesh::slices() const
 {
     return static_cast<QCylinderGeometry *>(geometry())->slices();
 }
 
+/*!
+ * \property QCylinderMesh::radius
+ *
+ * Holds the radius of the cylinder.
+ */
 float QCylinderMesh::radius() const
 {
     return static_cast<QCylinderGeometry *>(geometry())->radius();
 }
 
+/*!
+ * \property QCylinderMesh::length
+ *
+ * Holds the length of the cylinder.
+ */
 float QCylinderMesh::length() const
 {
     return static_cast<QCylinderGeometry *>(geometry())->length();

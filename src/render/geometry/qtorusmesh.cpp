@@ -46,6 +46,49 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \qmltype TorusMesh
+ * \instantiates Qt3DRender::QTorusMesh
+ * \inqmlmodule Qt3D.Render
+ * \brief A custom mesh.
+ */
+
+/*!
+ * \qmlproperty int TorusMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
+
+/*!
+ * \qmlproperty int TorusMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
+
+/*!
+ * \qmlproperty float TorusMesh::radius
+ *
+ * Holds the outer radius of the torus.
+ */
+
+/*!
+ * \qmlproperty float TorusMesh::minorRadius
+ *
+ * Holds the inner radius of the torus.
+ */
+
+/*!
+ * \class Qt3DRender::QTorusMesh
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometryRenderer
+ *
+ * \brief A custom mesh.
+ */
+
+/*!
+ * Constructs a new QTorusMesh with \a parent.
+ */
 QTorusMesh::QTorusMesh(QNode *parent)
     : QGeometryRenderer(parent)
 {
@@ -58,6 +101,9 @@ QTorusMesh::QTorusMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*!
+ * Destroys this torus mesh.
+ */
 QTorusMesh::~QTorusMesh()
 {
     QGeometryRenderer::cleanup();
@@ -83,21 +129,41 @@ void QTorusMesh::setMinorRadius(float minorRadius)
     static_cast<QTorusGeometry *>(geometry())->setMinorRadius(minorRadius);
 }
 
+/*!
+ * \property QTorusMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
 int QTorusMesh::rings() const
 {
     return static_cast<QTorusGeometry *>(geometry())->rings();
 }
 
+/*!
+ * \property QTorusMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
 int QTorusMesh::slices() const
 {
     return static_cast<QTorusGeometry *>(geometry())->slices();
 }
 
+/*!
+ * \property QTorusMesh::radius
+ *
+ * Holds the outer radius of the torus.
+ */
 float QTorusMesh::radius() const
 {
     return static_cast<QTorusGeometry *>(geometry())->radius();
 }
 
+/*!
+ * \property QTorusMesh::minorRadius
+ *
+ * Holds the inner radius of the torus.
+ */
 float QTorusMesh::minorRadius() const
 {
     return static_cast<QTorusGeometry *>(geometry())->minorRadius();

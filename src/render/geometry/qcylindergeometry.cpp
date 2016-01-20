@@ -342,6 +342,70 @@ void QCylinderGeometryPrivate::init()
     q->addAttribute(m_indexAttribute);
 }
 
+/*!
+ * \qmltype CylinderGeometry
+ * \instantiates Qt3DRender::QCylinderGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty int CylinderGeometry::rings
+ *
+ * Holds the number of rings in the cylinder.
+ */
+
+/*!
+ * \qmlproperty int CylinderGeometry::slices
+ *
+ * Holds the number of slices in the cylinder.
+ */
+
+/*!
+ * \qmlproperty float CylinderGeometry::radius
+ *
+ * Holds the radius of the cylinder.
+ */
+
+/*!
+ * \qmlproperty float CylinderGeometry::length
+ *
+ * Holds the length of the cylinder.
+ */
+
+/*!
+ * \qmlproperty Attribute CylinderGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CylinderGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CylinderGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute CylinderGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QCylinderGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometry
+ */
+
+/*!
+ * Constructs a new QCylinderMesh with \a parent.
+ */
 QCylinderGeometry::QCylinderGeometry(QNode *parent)
     : QGeometry(*new QCylinderGeometryPrivate, parent)
 {
@@ -349,6 +413,9 @@ QCylinderGeometry::QCylinderGeometry(QNode *parent)
     d->init();
 }
 
+/*!
+ * \internal
+ */
 QCylinderGeometry::QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent)
     :QGeometry(dd, parent)
 {
@@ -356,11 +423,17 @@ QCylinderGeometry::QCylinderGeometry(QCylinderGeometryPrivate &dd, QNode *parent
     d->init();
 }
 
+/*!
+ * Destroys the geometry.
+ */
 QCylinderGeometry::~QCylinderGeometry()
 {
     QGeometry::cleanup();
 }
 
+/*!
+ * Updates the vertices based on rings and slices.
+ */
 void QCylinderGeometry::updateVertices()
 {
     Q_D(QCylinderGeometry);
@@ -372,6 +445,9 @@ void QCylinderGeometry::updateVertices()
     d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new CylinderVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_length)));
 }
 
+/*!
+ * Updates the indices based on rings and slices.
+ */
 void QCylinderGeometry::updateIndices()
 {
     Q_D(QCylinderGeometry);
@@ -423,48 +499,88 @@ void QCylinderGeometry::setLength(float length)
     }
 }
 
+/*!
+ * \property QCylinderGeometry::rings
+ *
+ * Holds the number of rings in the cylinder.
+ */
 int QCylinderGeometry::rings() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_rings;
 }
 
+/*!
+ * \property QCylinderGeometry::slices
+ *
+ * Holds the number of slices in the cylinder.
+ */
 int QCylinderGeometry::slices() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_slices;
 }
 
+/*!
+ * \property QCylinderGeometry::radius
+ *
+ * Holds the radius of the cylinder.
+ */
 float QCylinderGeometry::radius() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_radius;
 }
 
+/*!
+ * \property QCylinderGeometry::length
+ *
+ * Holds the length of the cylinder.
+ */
 float QCylinderGeometry::length() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_length;
 }
 
+/*!
+ * \property QCylinderGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
 QAttribute *QCylinderGeometry::positionAttribute() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_positionAttribute;
 }
 
+/*!
+ * \property QCylinderGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
 QAttribute *QCylinderGeometry::normalAttribute() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_normalAttribute;
 }
 
+/*!
+ * \property QCylinderGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
 QAttribute *QCylinderGeometry::texCoordAttribute() const
 {
     Q_D(const QCylinderGeometry);
     return d->m_texCoordAttribute;
 }
 
+/*!
+ * \property QCylinderGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
 QAttribute *QCylinderGeometry::indexAttribute() const
 {
     Q_D(const QCylinderGeometry);

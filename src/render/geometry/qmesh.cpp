@@ -72,11 +72,45 @@ QMeshPrivate::QMeshPrivate()
 {
 }
 
+/*!
+ * \qmltype Mesh
+ * \instantiates Qt3DRender::QMesh
+ * \inqmlmodule Qt3D.Render
+ * \brief A custom mesh.
+ */
+
+/*!
+ * \qmlproperty url Mesh::source
+ *
+ * Holds the source url to the file containing the custom mesh.
+ */
+
+/*!
+ * \qmlproperty string Mesh::subMesh
+ *
+ * Holds the subMesh for the mesh.
+ */
+
+/*!
+ * \class Qt3DRender::QMesh
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometryRenderer
+ *
+ * \brief A custom mesh.
+ */
+
+/*!
+ * Constructs a new QMesh with \a parent.
+ */
 QMesh::QMesh(QNode *parent)
     : QGeometryRenderer(*new QMeshPrivate, parent)
 {
 }
 
+/*!
+ * Destroys this mesh.
+ */
 QMesh::~QMesh()
 {
     QNode::cleanup();
@@ -99,6 +133,11 @@ void QMesh::setSource(const QUrl& source)
     emit sourceChanged(source);
 }
 
+/*!
+ * \property QMesh::source
+ *
+ * Holds the \a source url to the file containing the custom mesh.
+ */
 QUrl QMesh::source() const
 {
     Q_D(const QMesh);
@@ -116,12 +155,20 @@ void QMesh::setSubMesh(const QString &subMesh)
     emit subMeshChanged(subMesh);
 }
 
+/*!
+ * \property QMesh::subMesh
+ *
+ * Holds the subMesh for the mesh.
+ */
 QString QMesh::subMesh() const
 {
     Q_D(const QMesh);
     return d->m_subMesh;
 }
 
+/*!
+ * \internal
+ */
 MeshFunctor::MeshFunctor(const QUrl &sourcePath, const QString& subMesh)
     : QGeometryFunctor()
     , m_sourcePath(sourcePath)
@@ -129,6 +176,9 @@ MeshFunctor::MeshFunctor(const QUrl &sourcePath, const QString& subMesh)
 {
 }
 
+/*!
+ * \internal
+ */
 QGeometry *MeshFunctor::operator()()
 {
     if (m_sourcePath.isEmpty()) {
@@ -153,6 +203,9 @@ QGeometry *MeshFunctor::operator()()
     return Q_NULLPTR;
 }
 
+/*!
+ * \internal
+ */
 bool MeshFunctor::operator ==(const QGeometryFunctor &other) const
 {
     const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);

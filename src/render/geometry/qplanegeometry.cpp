@@ -201,6 +201,70 @@ public:
         QSize m_resolution;
 };
 
+/*!
+ * \qmltype PlaneGeometry
+ * \instantiates Qt3DRender::QPlaneGeometry
+ * \inqmlmodule Qt3D.Render
+ */
+
+/*!
+ * \qmlproperty float PlaneGeometry::width
+ *
+ * Holds the plane width.
+ */
+
+/*!
+ * \qmlproperty float PlaneGeometry::height
+ *
+ * Holds the plane height.
+ */
+
+/*!
+ * \qmlproperty size PlaneGeometry::resolution
+ *
+ * Holds the plane resolution.
+ */
+
+/*!
+ * \qmlproperty Attribute PlaneGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute PlaneGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute PlaneGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute PlaneGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
+
+/*!
+ * \qmlproperty Attribute PlaneGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QPlaneGeometry
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometry
+ */
+
+/*!
+ * Constructs a new QPlaneGeometry with \a parent.
+ */
 QPlaneGeometry::QPlaneGeometry(QPlaneGeometry::QNode *parent)
     : QGeometry(*new QPlaneGeometryPrivate(), parent)
 {
@@ -208,6 +272,9 @@ QPlaneGeometry::QPlaneGeometry(QPlaneGeometry::QNode *parent)
     d->init();
 }
 
+/*!
+ * \internal
+ */
 QPlaneGeometry::QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent)
     : QGeometry(dd, parent)
 {
@@ -215,11 +282,17 @@ QPlaneGeometry::QPlaneGeometry(QPlaneGeometryPrivate &dd, QNode *parent)
     d->init();
 }
 
+/*!
+ * Destroys this geometry.
+ */
 QPlaneGeometry::~QPlaneGeometry()
 {
     QGeometry::cleanup();
 }
 
+/*!
+ * Updates vertices based on resolution.
+ */
 void QPlaneGeometry::updateVertices()
 {
     Q_D(QPlaneGeometry);
@@ -232,6 +305,9 @@ void QPlaneGeometry::updateVertices()
     d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneVertexBufferFunctor(d->m_width, d->m_height, d->m_meshResolution)));
 }
 
+/*!
+ * Updates indices based on resolution.
+ */
 void QPlaneGeometry::updateIndices()
 {
     Q_D(QPlaneGeometry);
@@ -273,48 +349,88 @@ void QPlaneGeometry::setHeight(float height)
     emit heightChanged(height);
 }
 
+/*!
+ * \property QPlaneGeometry::resolution
+ *
+ * Holds the plane resolution.
+ */
 QSize QPlaneGeometry::resolution() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_meshResolution;
 }
 
+/*!
+ * \property QPlaneGeometry::width
+ *
+ * Holds the plane width.
+ */
 float QPlaneGeometry::width() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_width;
 }
 
+/*!
+ * \property QPlaneGeometry::height
+ *
+ * Holds the plane height.
+ */
 float QPlaneGeometry::height() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_height;
 }
 
+/*!
+ * \property QPlaneGeometry::positionAttribute
+ *
+ * Holds the geometry position attribute.
+ */
 QAttribute *QPlaneGeometry::positionAttribute() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_positionAttribute;
 }
 
+/*!
+ * \property QPlaneGeometry::normalAttribute
+ *
+ * Holds the geometry normal attribute.
+ */
 QAttribute *QPlaneGeometry::normalAttribute() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_normalAttribute;
 }
 
+/*!
+ * \property QPlaneGeometry::texCoordAttribute
+ *
+ * Holds the geometry texture coordinate attribute.
+ */
 QAttribute *QPlaneGeometry::texCoordAttribute() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_texCoordAttribute;
 }
 
+/*!
+ * \property QPlaneGeometry::tangentAttribute
+ *
+ * Holds the geometry tangent attribute.
+ */
 QAttribute *QPlaneGeometry::tangentAttribute() const
 {
     Q_D(const QPlaneGeometry);
     return d->m_tangentAttribute;
 }
 
+/*!
+ * \property QPlaneGeometry::indexAttribute
+ *
+ * Holds the geometry index attribute.
+ */
 QAttribute *QPlaneGeometry::indexAttribute() const
 {
     Q_D(const QPlaneGeometry);
