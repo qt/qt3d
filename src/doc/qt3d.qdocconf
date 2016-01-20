@@ -66,7 +66,7 @@ examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
 #excludedirs +=
-
+macro.TODO = ""
 imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
@@ -74,8 +74,7 @@ imagedirs   += images \
                ../../examples/qt3d/wireframe/doc/images \
                ../../examples/qt3d/audio-visualizer-qml/doc/images
 
-Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
-                        QT3DINPUTSHARED_EXPORT \
+Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT \
                         QT3DLOGIC_PRIVATE_EXPORT \
                         QT3DLOGICSHARED_EXPORT \

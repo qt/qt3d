@@ -42,11 +42,28 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+/*! \internal */
 QAbstractPhysicalDevicePrivate::QAbstractPhysicalDevicePrivate()
     : m_axisSettings()
 {
 }
 
+/*!
+ * \qmltype AbstractPhysicalDevice
+ * \instantiates Qt3DInput::QAbstractPhysicalDevice
+ * \inqmlmodule Qt3D.Input
+ * \since 5.6
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QAbstractPhysicalDevice
+ * \inmodule Qt3DInput
+ * \since 5.6
+ * \TODO
+ *
+ */
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAbstractPhysicalDevicePrivate, parent)
 {

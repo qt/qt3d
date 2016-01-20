@@ -53,6 +53,22 @@ public:
     QVector<QAxisInput *> m_inputs;
 };
 
+/*!
+ * \qmltype Axis
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QAxis
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
+
 QAxis::QAxis(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAxisPrivate(), parent)
 {
