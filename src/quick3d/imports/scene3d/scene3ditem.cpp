@@ -80,10 +80,7 @@ Scene3DItem::Scene3DItem(QQuickItem *parent)
     setAcceptedMouseButtons(Qt::MouseButtonMask);
     setAcceptHoverEvents(true);
 
-    // We need to register the event source in the main thread
-    QVariantMap data;
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
-    m_aspectEngine->setData(data);
+    // TO DO: register the event source in the main thread
 
     m_aspectEngine->registerAspect(m_renderAspect);
 }

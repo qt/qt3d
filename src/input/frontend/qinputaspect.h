@@ -57,7 +57,7 @@ public:
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
 private:
-    void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
+    void onInitialize() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
     void loadInputDevicePlugins();

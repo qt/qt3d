@@ -75,7 +75,7 @@ private:
 
     virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
 
-    virtual void onInitialize(const QVariantMap &data) = 0;
+    virtual void onInitialize() = 0;
     virtual void onCleanup() = 0;
 
     virtual void onStartup();

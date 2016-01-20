@@ -394,17 +394,18 @@ void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraI
 
 QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) const
 {
-    // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    const QSize s = m_renderer->surfaceSize();
-    if (s.isValid()) {
-        const int surfaceWidth = s.width();
-        const int surfaceHeight = s.height();
-        return QRect(relativeViewport.x() * surfaceWidth,
-                     (1.0 - relativeViewport.y() - relativeViewport.height()) * surfaceHeight,
-                     relativeViewport.width() * surfaceWidth,
-                     relativeViewport.height() * surfaceHeight);
-    }
-    return relativeViewport.toRect();
+    //    // TO DO: find another way to retrieve the size since this won't work with Scene3D
+    //    const QSurface *s = m_renderer->surface();
+    //    if (s) {
+    //        const int surfaceWidth = s->size().width();
+    //        const int surfaceHeight = s->size().height();
+    //        return QRect(relativeViewport.x() * surfaceWidth,
+    //                     (1.0 - relativeViewport.y() - relativeViewport.height()) * surfaceHeight,
+    //                     relativeViewport.width() * surfaceWidth,
+    //                     relativeViewport.height() * surfaceHeight);
+    //    }
+    //    return relativeViewport.toRect();
+    return QRect();
 }
 
 
@@ -419,10 +420,11 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::sphereHitsForViewportAndCamera
     viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport(relativeViewport);
 
-    const QSize s = m_renderer->surfaceSize();
+    //    const QSurface *s = m_renderer->surface();
     // TO DO: find another way to retrieve the size since this won't work with Scene3D
     // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = s.isValid() ? QPoint(pos.x(), s.height() - pos.y()) : pos;
+    //    const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
+    const QPoint glCorrectPos = pos;
     const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     const QQueryHandle rayCastingHandle = rayCasting->query(ray, QAbstractCollisionQueryService::AllHits, volumeProvider);
     const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
@@ -440,10 +442,11 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::triangleHitsForViewportAndCame
     viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport(relativeViewport);
 
-    const QSize s = m_renderer->surfaceSize();
+    //    const QSurface *s = m_renderer->surface();
     // TO DO: find another way to retrieve the size since this won't work with Scene3D
     // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = s.isValid() ? QPoint(pos.x(), s.height() - pos.y()) : pos;
+    //    const QPoint glCorrectPos = s ? QPoint(pos.x(), s->size().height() - pos.y()) : pos;
+    const QPoint glCorrectPos = pos;
     const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
 
     // Note: improve this further to only compute this once and not every time
@@ -451,8 +454,8 @@ QVector<Qt3DCore::QNodeId> PickBoundingVolumeJob::triangleHitsForViewportAndCame
                                                   m_manager);
 
     const QQueryHandle rayCastingHandle = rayCasting->query(ray,
-                                                                      QAbstractCollisionQueryService::AllHits,
-                                                                      &boundingVolumeProvider);
+                                                            QAbstractCollisionQueryService::AllHits,
+                                                            &boundingVolumeProvider);
     const QCollisionQueryResult queryResult = rayCasting->fetchResult(rayCastingHandle);
     return queryResult.entitiesHit();
 }

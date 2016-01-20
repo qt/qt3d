@@ -105,9 +105,8 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QLogicAspect::onInitialize(const QVariantMap &data)
+void QLogicAspect::onInitialize()
 {
-    Q_UNUSED(data);
 }
 
 void QLogicAspect::onCleanup()

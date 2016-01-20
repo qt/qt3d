@@ -64,6 +64,7 @@
 
 QT_BEGIN_NAMESPACE
 
+class QOpenGLDebugLogger;
 class QOpenGLShaderProgram;
 class QAbstractOpenGLFunctions;
 
@@ -114,7 +115,7 @@ public:
      * this context
      */
     void releaseOpenGL();
-    void setOpenGLContext(QOpenGLContext* ctx, QSurface *surface);
+    void setOpenGLContext(QOpenGLContext* ctx);
     QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
@@ -220,7 +221,7 @@ private:
     GLint assignUnitForTexture(Texture* tex);
     void deactivateTexturesWithScope(TextureScope ts);
 
-    void resolveHighestOpenGLFunctions();
+    GraphicsHelperInterface *resolveHighestOpenGLFunctions();
 
     void bindFrameBufferAttachmentHelper(GLuint fboId, const AttachmentPack &attachments);
     void activateDrawBuffers(const AttachmentPack &attachments);
@@ -239,6 +240,8 @@ private:
     QHash<Qt3DCore::QNodeId, HGLBuffer> m_renderBufferHash;
     QHash<Qt3DCore::QNodeId, GLuint> m_renderTargets;
     QHash<GLuint, QSize> m_renderTargetsSize;
+
+    QHash<QSurface *, GraphicsHelperInterface*> m_glHelpers;
 
     // active textures, indexed by texture unit
     QVector<uint> m_activeTextures;
@@ -262,6 +265,7 @@ private:
     QByteArray m_uboTempArray;
 
     bool m_supportsVAO;
+    QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
 };
 
 } // namespace Render

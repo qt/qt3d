@@ -117,8 +117,8 @@ void PlatformSurfaceFilter::setRendererSurface(QSurface *surface)
     // draw calls. Only when the frame finishes and the mutex is unlocked does
     // this call to Renderer::setSurface continue. Thereby blocking the main
     // thread from destroying the platform surface before we are ready.
-    if (m_renderer != Q_NULLPTR)
-        m_renderer->setSurface(surface);
+//    if (m_renderer != Q_NULLPTR)
+//        m_renderer->setSurface(surface);
 }
 
 } // namespace Render

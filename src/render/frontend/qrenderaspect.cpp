@@ -216,11 +216,8 @@ void QRenderAspectPrivate::setSurface(QSurface *surface)
             m_surfaceSize = surface->size();
 
         // If the window/offscreen surface has a native surface, tell the renderer
-        if (hasPlatformSurface) {
-            m_renderer->setSurface(surface);
-            m_renderer->setSurfaceSize(m_surfaceSize);
-            m_renderer->setDevicePixelRatio(m_devicePixelRatio);
-        }
+        //        if (hasPlatformSurface)
+        //            m_renderer->setSurface(surface);
     }
 }
 
@@ -398,50 +395,22 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // Clear any old dependencies from previous frames
         d->m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
 
-        // Do not create any more RenderView jobs when the platform surface is gone.
-        if (d->m_renderer->surface()) {
-            // Traverse the current framegraph and create jobs to populate
-            // RenderBins with RenderCommands
-            QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-            // TODO: Add wrapper around ThreadWeaver::Collection
-            for (int i = 0; i < renderBinJobs.size(); ++i) {
-                QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-                renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
-                jobs.append(renderBinJob);
-                d->m_cleanupJob->addDependency(renderBinJob);
-            }
+        // Note: We need the RenderBinJobs to set the surface
+        // so we must create the RenderViews in all cases
+
+        // Traverse the current framegraph and create jobs to populate
+        // RenderBins with RenderCommands
+        QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
+        // TODO: Add wrapper around ThreadWeaver::Collection
+        for (int i = 0; i < renderBinJobs.size(); ++i) {
+            QAspectJobPtr renderBinJob = renderBinJobs.at(i);
+            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
+            jobs.append(renderBinJob);
+            d->m_cleanupJob->addDependency(renderBinJob);
         }
         jobs.append(d->m_cleanupJob);
     }
     return jobs;
-}
-
-const QSize &QRenderAspect::surfaceSize() const
-{
-    Q_D(const QRenderAspect);
-    return d->m_surfaceSize;
-}
-
-void QRenderAspect::setSurfaceSize(const QSize &s)
-{
-    Q_D(QRenderAspect);
-    d->m_surfaceSize = s;
-    if (d->m_renderer)
-        d->m_renderer->setSurfaceSize(s);
-}
-
-qreal QRenderAspect::devicePixelRatio() const
-{
-    Q_D(const QRenderAspect);
-    return d->m_devicePixelRatio;
-}
-
-void QRenderAspect::setDevicePixelRatio(qreal r)
-{
-    Q_D(QRenderAspect);
-    d->m_devicePixelRatio = r;
-    if (d->m_renderer)
-        d->m_renderer->setDevicePixelRatio(r);
 }
 
 void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
@@ -450,7 +419,7 @@ void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
     d->m_renderer->setSceneRoot(d, d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntity->id()));
 }
 
-void QRenderAspect::onInitialize(const QVariantMap &data)
+void QRenderAspect::onInitialize()
 {
     // TODO: Remove the m_initialized variable and split out onInitialize()
     // and setting a resource (the QSurface) on the aspects.
@@ -471,13 +440,13 @@ void QRenderAspect::onInitialize(const QVariantMap &data)
         d->m_initialized = true;
     }
 
-    QSurface *surface = Q_NULLPTR;
-    const QVariant &v = data.value(QStringLiteral("surface"));
-    if (v.isValid())
-        surface = v.value<QSurface *>();
+    //    QSurface *surface = Q_NULLPTR;
+    //    const QVariant &v = data.value(QStringLiteral("surface"));
+    //    if (v.isValid())
+    //        surface = v.value<QSurface *>();
 
-    if (surface)
-        d->setSurface(surface);
+    //    if (surface)
+    //        d->setSurface(surface);
 
     if (d->m_aspectManager)
         d->m_renderer->registerEventFilter(d->services()->eventFilterService());

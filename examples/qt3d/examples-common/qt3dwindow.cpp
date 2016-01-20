@@ -171,12 +171,6 @@ void Qt3DWindow::showEvent(QShowEvent *e)
         if (m_userRoot != nullptr)
             m_userRoot->setParent(m_root);
 
-        // TODO: Get rid of this
-        QVariantMap data;
-        data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
-        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
-        m_aspectEngine->setData(data);
-
         m_root->addComponent(m_frameGraph);
         m_aspectEngine->setRootEntity(m_root);
 

@@ -76,7 +76,6 @@
 QT_BEGIN_NAMESPACE
 
 class QSurface;
-class QOpenGLDebugLogger;
 class QMouseEvent;
 
 namespace Qt3DCore {
@@ -127,16 +126,10 @@ public:
     qint64 time() const Q_DECL_OVERRIDE;
     void setTime(qint64 time) Q_DECL_OVERRIDE;
 
-    void setSurface(QSurface *s) Q_DECL_OVERRIDE;
-    void setSurfaceSize(const QSize& s) Q_DECL_OVERRIDE;
-    void setDevicePixelRatio(qreal s) Q_DECL_OVERRIDE;
     void setNodeManagers(NodeManagers *managers) Q_DECL_OVERRIDE { m_nodesManager = managers; }
     void setServices(Qt3DCore::QServiceLocator *services) Q_DECL_OVERRIDE { m_services = services; }
     void setSurfaceExposed(bool exposed) Q_DECL_OVERRIDE;
 
-    QSurface *surface() const Q_DECL_OVERRIDE { return m_surface; }
-    const QSize &surfaceSize() const Q_DECL_OVERRIDE { return m_surfaceSize; }
-    qreal devicePixelRatio() const Q_DECL_OVERRIDE { return m_devicePixelRatio; }
     NodeManagers *nodeManagers() const Q_DECL_OVERRIDE;
     Qt3DCore::QServiceLocator *services() const Q_DECL_OVERRIDE { return m_services; }
 
@@ -230,10 +223,6 @@ private:
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;
-    QSurface *m_surface;
-    QSize m_surfaceSize;
-    qreal m_devicePixelRatio;
-
 
     RenderQueue *m_renderQueue;
     QScopedPointer<RenderThread> m_renderThread;
@@ -244,8 +233,7 @@ private:
 
     QMutex m_mutex;
     QSemaphore m_submitRenderViewsSemaphore;
-    QWaitCondition m_waitForWindowToBeSetCondition;
-    QWaitCondition m_waitForInitializationToBeCompleted;
+    QSemaphore m_waitForInitializationToBeCompleted;
 
     static void createThreadLocalAllocator(void *renderer);
     static void destroyThreadLocalAllocator(void *renderer);
@@ -253,7 +241,6 @@ private:
 
     QAtomicInt m_running;
 
-    QScopedPointer<QOpenGLDebugLogger> m_debugLogger;
     QScopedPointer<PickEventFilter> m_pickEventFilter;
     QVector<Qt3DCore::QFrameAllocator *> m_allocators;
 

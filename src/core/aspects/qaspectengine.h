@@ -62,7 +62,6 @@ public:
     void setRootEntity(QEntity *root);
     QSharedPointer<QEntity> rootEntity() const;
 
-    void setData(const QVariantMap &data);
     void registerAspect(QAbstractAspect *aspect);
     void registerAspect(const QString &name);
 

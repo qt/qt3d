@@ -71,6 +71,7 @@
 #include <QSurface>
 #include <QWindow>
 #include <QOpenGLTexture>
+#include <QOpenGLDebugLogger>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,6 +79,11 @@ namespace Qt3DRender {
 namespace Render {
 
 static QHash<unsigned int, GraphicsContext*> static_contexts;
+
+static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
+{
+    qDebug() << "OpenGL debug message:" << debugMessage;
+}
 
 namespace {
 
@@ -130,6 +136,7 @@ GraphicsContext::GraphicsContext()
     , m_contextInfo(new QGraphicsApiFilter())
     , m_uboTempArray(QByteArray(1024, 0))
     , m_supportsVAO(true)
+    , m_debugLogger(Q_NULLPTR)
 {
     static_contexts[m_id] = this;
 }
@@ -176,11 +183,16 @@ bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
 
     m_surface = surface;
 
-    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
-        if (!static_cast<QWindow *>(m_surface)->isExposed())
-            return false;
-    }
+    // TO DO: Find a way to make to pause work if the window is not exposed
+    //    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
+    //        qDebug() << Q_FUNC_INFO << 1;
+    //        if (!static_cast<QWindow *>(m_surface)->isExposed())
+    //            return false;
+    //        qDebug() << Q_FUNC_INFO << 2;
+    //    }
 
+    // Makes the surface current on the OpenGLContext
+    // and sets the right glHelper
     m_ownCurrent = !(m_gl->surface() == m_surface);
     if (m_ownCurrent && !makeCurrent(m_surface))
         return false;
@@ -297,20 +309,21 @@ void GraphicsContext::releaseOpenGL()
 {
     m_renderShaderHash.clear();
     m_renderBufferHash.clear();
+
+    // Stop and destroy the OpenGL logger
+    if (m_debugLogger) {
+        m_debugLogger->stopLogging();
+        m_debugLogger.reset(Q_NULLPTR);
+    }
 }
 
-void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
+// The OpenGLContext is not current on any surface at this point
+void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx)
 {
-    Q_ASSERT(surface);
     Q_ASSERT(ctx);
 
     releaseOpenGL();
     m_gl = ctx;
-
-    if (makeCurrent(surface)) {
-        resolveHighestOpenGLFunctions();
-        m_gl->doneCurrent();
-    }
 }
 
 void GraphicsContext::activateGLHelper()
@@ -330,6 +343,15 @@ bool GraphicsContext::makeCurrent(QSurface *surface)
     if (!m_gl->makeCurrent(surface)) {
         qCWarning(Backend) << Q_FUNC_INFO << "makeCurrent failed";
         return false;
+    }
+
+    // Set the correct GL Helper depending on the surface
+    // If no helper exists, create one
+
+    m_glHelper = m_glHelpers.value(surface);
+    if (!m_glHelper) {
+        m_glHelper = resolveHighestOpenGLFunctions();
+        m_glHelpers.insert(surface, m_glHelper);
     }
     return true;
 }
@@ -547,13 +569,14 @@ void GraphicsContext::deactivateTexturesWithScope(TextureScope ts)
  * Finds the highest supported opengl version and internally use the most optimized
  * helper for a given version.
  */
-void GraphicsContext::resolveHighestOpenGLFunctions()
+GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
 {
     Q_ASSERT(m_gl);
+    GraphicsHelperInterface *glHelper = Q_NULLPTR;
 
     if (m_gl->isOpenGLES()) {
-        m_glHelper = new GraphicsHelperES2();
-        m_glHelper->initializeHelper(m_gl, Q_NULLPTR);
+        glHelper = new GraphicsHelperES2();
+        glHelper->initializeHelper(m_gl, Q_NULLPTR);
         qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2/ES2 Helper";
     }
 #ifndef QT_OPENGL_ES_2
@@ -561,23 +584,49 @@ void GraphicsContext::resolveHighestOpenGLFunctions()
         QAbstractOpenGLFunctions *glFunctions = Q_NULLPTR;
         if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_4_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 4.3";
-            m_glHelper = new GraphicsHelperGL4();
+            glHelper = new GraphicsHelperGL4();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_3_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.3";
-            m_glHelper = new GraphicsHelperGL3_3();
+            glHelper = new GraphicsHelperGL3_3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_3_2_Core>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 3.2";
-            m_glHelper = new GraphicsHelperGL3();
+            glHelper = new GraphicsHelperGL3();
         } else if ((glFunctions = m_gl->versionFunctions<QOpenGLFunctions_2_0>()) != Q_NULLPTR) {
             qCDebug(Backend) << Q_FUNC_INFO << " Building OpenGL 2 Helper";
-            m_glHelper = new GraphicsHelperGL2();
+            glHelper = new GraphicsHelperGL2();
         }
-        Q_ASSERT_X(m_glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
-        m_glHelper->initializeHelper(m_gl, glFunctions);
+        Q_ASSERT_X(glHelper, "GraphicsContext::resolveHighestOpenGLFunctions", "unable to create valid helper for available OpenGL version");
+        glHelper->initializeHelper(m_gl, glFunctions);
     }
 #endif
 
+    // Note: at this point we are certain the context (m_gl) is current with a surface
+    const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+    const bool enableDebugLogging = !debugLoggingMode.isEmpty();
+
+    if (enableDebugLogging && !m_debugLogger) {
+        if (m_gl->hasExtension("GL_KHR_debug")) {
+            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
+            m_debugLogger.reset(new QOpenGLDebugLogger);
+            if (m_debugLogger->initialize()) {
+                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
+                const QString mode = QString::fromLocal8Bit(debugLoggingMode);
+                m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
+                                            ? QOpenGLDebugLogger::SynchronousLogging
+                                            : QOpenGLDebugLogger::AsynchronousLogging);
+
+                Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
+                    logOpenGLDebugMessage(msg);
+            }
+        } else {
+            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
+        }
+    }
+
+
     // Set Vendor and Extensions of reference GraphicsApiFilter
+    // TO DO: would that vary like the glHelper ?
+
     QStringList extensions;
     Q_FOREACH (const QByteArray &ext, m_gl->extensions().values())
         extensions << QString::fromUtf8(ext);
@@ -587,6 +636,8 @@ void GraphicsContext::resolveHighestOpenGLFunctions()
     m_contextInfo->setProfile(static_cast<QGraphicsApiFilter::Profile>(m_gl->format().profile()));
     m_contextInfo->setExtensions(extensions);
     m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
+
+    return glHelper;
 }
 
 void GraphicsContext::deactivateTexture(Texture* tex)

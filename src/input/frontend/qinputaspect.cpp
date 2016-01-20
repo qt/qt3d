@@ -207,14 +207,14 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-// Called in main Thread
-void QInputAspect::onInitialize(const QVariantMap &)
+// Called in the aspectThread, we would need this to be called in the main Thread
+void QInputAspect::onInitialize()
 {
     Q_D(QInputAspect);
     Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();
     Q_ASSERT(eventService);
 
-    // Create event source setter helper in the main thread
+    // TO DO: Create event source setter helper in the main thread
     Qt3DInput::Input::EventSourceSetterHelper *helper =
             new Qt3DInput::Input::EventSourceSetterHelper(eventService,
                                                           d->m_inputHandler.data());

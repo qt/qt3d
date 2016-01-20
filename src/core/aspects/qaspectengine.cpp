@@ -165,27 +165,16 @@ void QAspectEnginePrivate::shutdown()
     qCDebug(Aspects) << Q_FUNC_INFO << "Shutdown complete";
 }
 
-// Main thread
-void QAspectEngine::setData(const QVariantMap &data)
-{
-    Q_D(QAspectEngine);
-    // Note: setData in the AspectManager is called in the main thread
-    // which in turns calls onInitialize on each aspects in the main thread
-    // We should keep the call to onInitialize in the main thread
-    QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
-                              "setData",
-                              Qt::BlockingQueuedConnection,
-                              Q_ARG(const QVariantMap &, data));
-}
-
 /*!
  * Registers a new \a aspect to the AspectManager.
- * Passing as a QObject* as abstracts like AbstractAspect
- * cannot be registered as a meta type.
  */
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);
+    // The aspect is moved to the AspectThread
+    // AspectManager::registerAspect is called in the context
+    // of the AspectThread. This is turns call aspect->onInitialize
+    // still in the same AspectThread context
     aspect->moveToThread(d->m_aspectThread);
     d->m_aspects << aspect;
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
@@ -265,6 +254,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     if (!d->m_root)
         return;
 
+    // Set postman/scene/arbiter ...
     d->initialize();
 
     // The aspect engine takes ownership of the scene root. We also set the

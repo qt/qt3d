@@ -84,9 +84,7 @@ public Q_SLOTS:
     void shutdown();
 
     void setRootEntity(Qt3DCore::QEntity *root);
-    void setData(const QVariantMap &data);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
-    QVariantMap data() const;
 
     void exec();
     void quit();

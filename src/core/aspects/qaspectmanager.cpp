@@ -130,15 +130,6 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
     }
 }
 
-// Should be called after aspects are registered
-void QAspectManager::setData(const QVariantMap &data)
-{
-    qCDebug(Aspects) << Q_FUNC_INFO;
-    m_data = data;
-    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
-        aspect->onInitialize(m_data);
-}
-
 /*!
  * Registers a new \a aspect.
  */
@@ -153,17 +144,13 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect->d_func());
-        aspect->onInitialize(m_data);
+        // Initialize the aspect in the main thread
+        aspect->onInitialize();
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";
     }
     qCDebug(Aspects) << "Completed registering aspect";
-}
-
-QVariantMap QAspectManager::data() const
-{
-    return m_data;
 }
 
 void QAspectManager::exec()

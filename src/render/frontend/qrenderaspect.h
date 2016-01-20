@@ -70,18 +70,13 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-    const QSize &surfaceSize() const;
-    void setSurfaceSize(const QSize &s);
-    qreal devicePixelRatio() const;
-    void setDevicePixelRatio(qreal r);
-
 protected:
     void registerBackendTypes();
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
     Q_DECLARE_PRIVATE(QRenderAspect)
 
     void onRootEntityChanged(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize(const QVariantMap &data) Q_DECL_OVERRIDE;
+    void onInitialize() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
     QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();

@@ -394,7 +394,6 @@ void RenderView::setRenderer(Renderer *renderer)
 {
     m_renderer = renderer;
     m_manager = renderer->nodeManagers();
-    m_surface = renderer->surface();
     m_data->m_uniformBlockBuilder.shaderDataManager = m_manager->shaderDataManager();
 }
 

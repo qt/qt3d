@@ -41,6 +41,7 @@
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DInput/qinputaspect.h>
+#include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
 
 #include <QQmlContext>
@@ -123,12 +124,6 @@ void Qt3DQuickWindow::showEvent(QShowEvent *e)
 {
     if (!m_initialized) {
 
-        // TODO: Get rid of this
-        QVariantMap data;
-        data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(this)));
-        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
-        m_engine->aspectEngine()->setData(data);
-
         // Connect to the QQmlAspectEngine's statusChanged signal so that when the QML is loaded
         // and th eobjects hav ebeen instantiated, but before we set them on the QAspectEngine we
         // can swoop in and set the window surface and camera on the framegraph and ensure the camera
@@ -165,7 +160,13 @@ void Qt3DQuickWindow::onSceneCreated(QObject *rootObject)
         }
     }
 
-    // TODO: Set ourselves up as a source of input events for the input aspect
+    // Set ourselves up as a source of input events for the input aspect
+    Qt3DInput::QInputSettings *inputSettings = rootObject->findChild<Qt3DInput::QInputSettings *>();
+    if (inputSettings) {
+        inputSettings->setEventSource(this);
+    } else {
+        qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
+    }
 }
 
 void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)

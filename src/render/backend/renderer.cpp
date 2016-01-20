@@ -84,7 +84,6 @@
 #include <QStack>
 #include <QSurface>
 #include <QElapsedTimer>
-#include <QOpenGLDebugLogger>
 #include <QLibraryInfo>
 #include <QPluginLoader>
 #include <QDir>
@@ -101,11 +100,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
-
-static void logOpenGLDebugMessage(const QOpenGLDebugMessage &debugMessage)
-{
-    qDebug() << "OpenGL debug message:" << debugMessage;
-}
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
@@ -135,18 +129,16 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     : m_services(Q_NULLPTR)
     , m_nodesManager(Q_NULLPTR)
     , m_graphicsContext(Q_NULLPTR)
-    , m_surface(Q_NULLPTR)
-    , m_devicePixelRatio(1.)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
-    , m_debugLogger(Q_NULLPTR)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
     , m_settings(const_cast<RendererSettings *>(&ms_defaultSettings))
+    , m_waitForInitializationToBeCompleted(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -323,53 +315,37 @@ void Renderer::destroyThreadLocalAllocator(void *renderer)
 // method termintates
 void Renderer::initialize()
 {
-    if (m_renderThread)
-        m_waitForWindowToBeSetCondition.wait(mutex());
-
-    QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
-    bool enableDebugLogging = !debugLoggingMode.isEmpty();
-
     m_graphicsContext.reset(new GraphicsContext);
     m_graphicsContext->setRenderer(this);
 
-    QSurfaceFormat sf = m_surface->format();
-    if (enableDebugLogging)
-        sf.setOption(QSurfaceFormat::DebugContext);
-
     QOpenGLContext* ctx = m_glContext ? m_glContext : new QOpenGLContext;
+
+    // If we are using our own context (not provided by QtQuick),
+    // we need to create it
     if (!m_glContext) {
-        qCDebug(Backend) << "Creating OpenGL context with format" << sf;
-        ctx->setFormat(sf);
+        // TO DO: Shouldn't we use the highest context available and trust
+        // QOpenGLContext to fall back on the best lowest supported ?
+        const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");
+
+        if (!debugLoggingMode.isEmpty()) {
+            QSurfaceFormat sf = ctx->format();
+            sf.setOption(QSurfaceFormat::DebugContext);
+            ctx->setFormat(sf);
+        }
+
+        // Create OpenGL context
         if (ctx->create())
             qCDebug(Backend) << "OpenGL context created with actual format" << ctx->format();
         else
             qCWarning(Backend) << Q_FUNC_INFO << "OpenGL context creation failed";
     }
-    m_graphicsContext->setOpenGLContext(ctx, m_surface);
 
-    if (enableDebugLogging && ctx->makeCurrent(m_surface)) {
-        bool supported = ctx->hasExtension("GL_KHR_debug");
-        if (supported) {
-            qCDebug(Backend) << "Qt3D: Enabling OpenGL debug logging";
-            m_debugLogger.reset(new QOpenGLDebugLogger);
-            if (m_debugLogger->initialize()) {
-                QObject::connect(m_debugLogger.data(), &QOpenGLDebugLogger::messageLogged, &logOpenGLDebugMessage);
-                QString mode = QString::fromLocal8Bit(debugLoggingMode);
-                m_debugLogger->startLogging(mode.toLower().startsWith(QLatin1String("sync"))
-                                            ? QOpenGLDebugLogger::SynchronousLogging
-                                            : QOpenGLDebugLogger::AsynchronousLogging);
-
-                Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
-                    logOpenGLDebugMessage(msg);
-            }
-        } else {
-            qCDebug(Backend) << "Qt3D: OpenGL debug logging requested but GL_KHR_debug not supported";
-        }
-        ctx->doneCurrent();
-    }
+    // Note: we don't have a surface at this point
+    // The context will be made current later on (at render time)
+    m_graphicsContext->setOpenGLContext(ctx);
 
     // Awake setScenegraphRoot in case it was waiting
-    m_waitForInitializationToBeCompleted.wakeOne();
+    m_waitForInitializationToBeCompleted.release(1);
     // Allow the aspect manager to proceed
     m_vsyncFrameAdvanceService->proceedToNextFrame();
 }
@@ -382,22 +358,9 @@ void Renderer::initialize()
 */
 void Renderer::shutdown()
 {
-    // TO DO: Check that this works with iOs and other cases
-    if (m_surface) {
-        m_running.fetchAndStoreOrdered(0);
-
-        m_graphicsContext->makeCurrent(m_surface);
-        // Stop and destroy the OpenGL logger
-        if (m_debugLogger) {
-            m_debugLogger->stopLogging();
-            m_debugLogger.reset(Q_NULLPTR);
-        }
-
-        // Clean up the graphics context
-        m_graphicsContext.reset(Q_NULLPTR);
-        m_surface = Q_NULLPTR;
-        qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
-    }
+    // Clean up the graphics context
+    m_graphicsContext.reset(Q_NULLPTR);
+    qCDebug(Backend) << Q_FUNC_INFO << "Renderer properly shutdown";
 }
 
 void Renderer::setSurfaceExposed(bool exposed)
@@ -419,23 +382,27 @@ Render::FrameGraphNode *Renderer::frameGraphRoot() const
 
 // QAspectThread context
 // Order of execution :
-// 1) Initialize -> waiting for Window
-// 2) setWindow -> waking Initialize || setSceneGraphRoot waiting
-// 3) setWindow -> waking Initialize if setSceneGraphRoot was called before
-// 4) Initialize resuming, performing initialization and waking up setSceneGraphRoot
-// 5) setSceneGraphRoot called || setSceneGraphRoot resuming if it was waiting
+// 1) RenderThread is created -> release 1 of m_waitForInitializationToBeCompleted when started
+// 2) setSceneRoot waits to acquire initialization
+// 3) submitRenderView -> check for surface
+//    -> make surface current + create proper glHelper if needed
 void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
 {
     Q_ASSERT(sgRoot);
-    QMutexLocker lock(&m_mutex); // This waits until initialize and setSurface have been called
-    if (m_graphicsContext == Q_NULLPTR) // If initialization hasn't been completed we must wait
-        m_waitForInitializationToBeCompleted.wait(&m_mutex);
+
+    // If initialization hasn't been completed we must wait
+    m_waitForInitializationToBeCompleted.acquire();
+
     m_renderSceneRoot = sgRoot;
     if (!m_renderSceneRoot)
         qCWarning(Backend) << "Failed to build render scene";
     m_renderSceneRoot->dump();
     qCDebug(Backend) << Q_FUNC_INFO << "DUMPING SCENE";
 
+
+    // Create the default materials ....
+    // Needs a QOpenGLContext (for things like isOpenGLES ...)
+    // TO DO: Maybe this should be moved elsewhere
     buildDefaultTechnique();
     buildDefaultMaterial();
 
@@ -453,70 +420,11 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     Q_FOREACH (QParameter *p, m_defaultMaterial->effect()->parameters())
         factory->createBackendNode(p);
 
-
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
     m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());
     m_defaultTechniqueHandle = nodeManagers()->lookupHandle<Technique, TechniqueManager, HTechnique>(m_defaultTechnique->id());
     m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().first()->id());
     m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().first()->shaderProgram()->id());
-}
-
-// Called in RenderAspect Thread context
-// Cannot do OpenGLContext initialization here
-void Renderer::setSurface(QSurface* surface)
-{
-    qCDebug(Backend) << Q_FUNC_INFO << QThread::currentThread();
-    // Locking this mutex will wait until initialize() has been called by
-    // RenderThread::run() and the RenderThread is waiting on the
-    // m_waitForWindowToBeSetCondition condition.
-    //
-    // The first time this is called Renderer::setSurface will cause the
-    // Renderer::initialize() function to continue execution in the context
-    // of the Render Thread. On subsequent calls, just the surface will be
-    // updated.
-
-    // setSurface(Q_NULLPTR) is also called when the window is destroyed,
-    // this is the opportunity to cleanup GL resources while we still have
-    // a valid QGraphicContext
-
-    // TODO: Remove the need for a valid surface from the renderer initialization
-    // We can use an offscreen surface to create and assess the OpenGL context.
-    // This should allow us to get rid of the "swapBuffers called on a non-exposed
-    // window" warning that we sometimes see.
-    QMutexLocker locker(&m_mutex);
-
-    // We are about to be destroyed
-    // cleanup GL now
-    if (surface == Q_NULLPTR) {
-        // Bail out of the main render loop. Ensure that even if the render thread
-        // is waiting on RenderViews to be populated that we wake up the wait condition.
-        // We check for termination immediately after being awaken.
-        m_running.fetchAndStoreOrdered(0);
-        if (m_renderThread) { // Pure Qt3D with RenderThread case
-            m_submitRenderViewsSemaphore.release(1);
-            m_renderThread->wait();
-            // This will call shutdown on the Renderer and cleanup GL context
-            // and then set the surface to Q_NULLPTR
-            m_surface = surface;
-        }
-        // else we are dealing with the QtQuick2 / Scene3D in which case we
-        // don't set the surface to Q_NULLPTR just yet as a call to
-        // QRenderAspect::renderShutdown() -> Renderer::shutdown() should
-        // follow and will take care of this
-    } else { // Setting a valid window on initialization
-        m_surface = surface;
-        m_waitForWindowToBeSetCondition.wakeOne();
-    }
-}
-
-void Renderer::setSurfaceSize(const QSize &s)
-{
-    m_surfaceSize = s;
-}
-
-void Renderer::setDevicePixelRatio(qreal s)
-{
-    m_devicePixelRatio = s;
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
@@ -547,7 +455,7 @@ void Renderer::render()
     // Camera, RenderTarget ...
 
     // Utimately the renderer should be a framework
-    // For the processing of the list of renderbins
+    // For the processing of the list of renderviews
 
     // Matrice update, bounding volumes computation ...
     // Should be jobs
@@ -557,10 +465,9 @@ void Renderer::render()
     // One framegraph description
 
     while (m_running.load() > 0) {
-        if (m_exposed.load() > 0)
-            doRender();
-        else
-            QThread::msleep(250);
+        doRender();
+        // TO DO: Restore windows exposed detection
+        // Probably needs to happens some place else though
     }
 }
 
@@ -634,12 +541,9 @@ bool Renderer::canRender() const
         return false;
     }
 
-    // Make sure that the surface we are rendering too has not been unset
-    // (probably due to the window being destroyed or changing QScreens).
-    if (!m_surface) {
-        qCDebug(Rendering) << "QSurface has been removed";
-        return false;
-    }
+    // TO DO: Check if all surfaces have been destroyed...
+    // It may be better if the last window to be closed trigger a call to shutdown
+    // Rather than having checks for the surface everywhere
 
     return true;
 }
@@ -708,6 +612,8 @@ bool Renderer::submitRenderViews()
         // and make the context current on the new surface
         surface = renderView->surface();
 
+        // TO DO: Make sure that the surface we are rendering too has not been unset
+
         // For now, if we do not have a surface, skip this renderview
         // TODO: Investigate if it's worth providing a fallback offscreen surface
         //       to use when surface is null. Or if we should instead expose an
@@ -715,7 +621,7 @@ bool Renderer::submitRenderViews()
         if (!surface)
             continue;
 
-        if (i != 0 && surface != previousSurface && previousSurface)
+        if (surface != previousSurface && previousSurface)
             m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
 
         if (surface != previousSurface) {
@@ -825,9 +731,11 @@ Qt3DCore::QAspectJobPtr Renderer::createRenderViewJob(FrameGraphNode *node, int 
 {
     RenderViewJobPtr job(new RenderViewJob);
     job->setRenderer(this);
-    if (m_surface)
-        job->setSurfaceSize(m_surfaceSize.isValid() ? m_surfaceSize : m_surface->size());
-    job->setDevicePixelRatio(m_devicePixelRatio);
+    //    if (m_surface)
+    //        job->setSurfaceSize(m_surface->size());
+    // TO DO: the surface size can only be set by the RenderView
+    // since the only the RenderView will know about the surface
+    // it should be renderer onto
     job->setFrameGraphLeafNode(node);
     job->setSubmitOrderIndex(submitOrderIndex);
     return job;

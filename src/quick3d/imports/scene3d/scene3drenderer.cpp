@@ -125,11 +125,6 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
 
     ContextSaver saver;
-
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(saver.surface()));
-    m_aspectEngine->setData(data);
-
     m_renderAspect->renderInitialize(saver.context());
     scheduleRootEntityChange();
 }

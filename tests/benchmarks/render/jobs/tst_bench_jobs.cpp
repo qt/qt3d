@@ -87,10 +87,7 @@ public:
             m_window->setFormat(format);
             m_window->create();
 
-            QVariantMap data;
-            data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(m_window.data())));
-            data.insert(QStringLiteral("eventSource"), QVariant::fromValue(m_window.data()));
-            QRenderAspect::onInitialize(data);
+            QRenderAspect::onInitialize();
         }
     }
 
