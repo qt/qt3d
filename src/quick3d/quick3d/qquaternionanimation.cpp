@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE
     \qmltype QuaternionAnimation
     \instantiates Qt3DCore::Quick::QQuaternionAnimation
     \inherits PropertyAnimation
-    \inqmlmodule Qt3D
+    \inqmlmodule Qt3D.Core
     \since 5.6
 
     \brief A PropertyAnimation for quaternions.

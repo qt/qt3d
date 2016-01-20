@@ -184,6 +184,9 @@ QComponent::QComponent(QComponentPrivate &dd, QNode *parent)
     \inqmlmodule Qt3D.Core
     \inherits Node
     \since 5.5
+    \brief Provides the base type for creating Qt 3D components.
+
+    \TODO
 */
 
 /*!

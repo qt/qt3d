@@ -425,6 +425,7 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
     \inqmlmodule Qt3D.Core
     \inherits Component3D
     \since 5.5
+    \brief Provides the projection matrix that is used to define a Camera for 3D scene.
 */
 
 /*!

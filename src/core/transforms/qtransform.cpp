@@ -62,6 +62,12 @@ QTransform::QTransform(QNode *parent)
     : QComponent(*new QTransformPrivate, parent)
 {
 }
+/*!
+    \qmltype Transform
+    \inqmlmodule Qt3D.Core
+    \since 5.6
+    \TODO
+*/
 
 /*! \internal */
 QTransform::QTransform(QTransformPrivate &dd, QNode *parent)
