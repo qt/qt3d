@@ -37,6 +37,7 @@
 import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id: sceneRoot
@@ -64,7 +65,9 @@ Entity {
             id: framegraph
             viewCamera: camera
             lightCamera: light.lightCamera
-        }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
     ]
 
 
