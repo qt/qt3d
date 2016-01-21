@@ -36,6 +36,7 @@
 
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id: sceneRoot
@@ -62,7 +63,10 @@ Entity {
         }
     }
 
-    components: [external_forward_renderer]
+    // Event Source will be set by the Qt3DQuickWindow
+    InputSettings { id: inputSettings }
+
+    components: [external_forward_renderer, inputSettings]
 
     CylinderMesh {
         id: mesh
