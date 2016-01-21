@@ -64,7 +64,9 @@ Entity {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
                 camera: camera
             }
-        }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
     ]
 
     PhongMaterial {
