@@ -44,7 +44,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*!
+    \class Qt3DInput::QActionInputPrivate
+    \internal
+*/
 class QActionInputPrivate : public Qt3DCore::QNodePrivate
 {
 public:
@@ -58,39 +61,59 @@ public:
 };
 
 /*!
- * \qmltype ActionInput
- * \instantiates Qt3DInput::QActionInput
- * \inqmlmodule Qt3D.Input
- * \since 5.5
- * \TODO
- *
- */
+    \class Qt3DInput::QActionInput
+    \inmodule Qt3DInput
+    \inherits QAbstractActionInput
+    \brief QActionInput stores Device and Keys used to trigger an input event.
+    \since 5.7
+*/
 
 /*!
- * \class Qt3DInput::QActionInput
- * \inmodule Qt3DInput
- * \since 5.5
- * \TODO
- *
- */
+    \qmltype ActionInput
+    \inqmlmodule Qt3D.Input
+    \inherits QAbstractActionInput
+    \instantiates Qt3DInput::QActionInput
+    \brief QML frontend for the Qt3DInput::QActionInput C++ class.
 
+    Links a physical device and selected keys on it which can trigger this action.
+    \since 5.7
+*/
+
+/*!
+    Constructs a new QActionInput instance with parent \a parent.
+ */
 QActionInput::QActionInput(Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractActionInput(*new QActionInputPrivate(), parent)
 {
 
 }
 
+/*!
+    Deletes the QActionInput instance.
+ */
 QActionInput::~QActionInput()
 {
     QNode::cleanup();
 }
 
+/*!
+    Return the Keys to trigger the QActionInput instance.
+ */
 QVariantList QActionInput::keys() const
 {
     Q_D(const QActionInput);
     return d->m_keys;
 }
 
+/*!
+  \qmlproperty QAbstractPhysicalDevice Qt3D.Input::ActionInput::sourceDevice
+
+  the current source device of the ActionInput
+*/
+
+/*!
+    Set the current source device of the QActionInput instance.
+ */
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QActionInput);
@@ -106,12 +129,24 @@ void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
     }
 }
 
+/*!
+    Returns the current source device of the QActionInput instance.
+ */
 QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 {
     Q_D(const QActionInput);
     return d->m_sourceDevice;
 }
 
+/*!
+    \qmlproperty QVariantList Qt3D.Input::ActionInput::keys
+
+    The Keys that can trigger this Action
+*/
+
+/*!
+    Set the keys to trigger the QActionInput instance.
+ */
 void QActionInput::setKeys(const QVariantList &keys)
 {
     Q_D(QActionInput);

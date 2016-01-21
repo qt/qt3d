@@ -44,7 +44,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*!
+    \class Qt3DInput::QInputChordPrivate
+    \internal
+*/
 class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
 {
 public:
@@ -56,23 +59,63 @@ public:
     int m_tolerance;
 };
 
+/*!
+    \class Qt3DInput::QInputChord
+    \inmodule Qt3DInput
+    \inherits QAbstractAggregateActionInput
+    \brief QInputChord represents a set of QAbstractActionInput's that must be triggerd at once.
+
+    \since 5.7
+*/
+
+/*!
+    \qmltype InputChord
+    \inqmlmodule Qt3D.Input
+    \inherits QAbstractAggregateActionInput
+    \instantiates Qt3DInput::QInputChord
+    \brief QML frontend for the Qt3DInput::QInputChord C++ class.
+
+    Represents a set of QAbstractActionInput's that must be triggerd at once.
+    \since 5.7
+*/
+
+/*!
+    Constructs a new QInputChord with parent \a parent.
+ */
 QInputChord::QInputChord(Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractAggregateActionInput(*new QInputChordPrivate(), parent)
 {
 
 }
 
+/*!
+    Deletes the QInputChord instance.
+ */
 QInputChord::~QInputChord()
 {
     QNode::cleanup();
 }
 
+/*!
+  \qmlproperty int Qt3D.Input::InputChord::tollerance
+
+  the time in milliseconds in which all QAbstractActionInput's in the input chord must triggered within.
+*/
+
+/*!
+    Returns the time in which all QAbstractActionInput's in the input chord must triggered within.
+    The time is in milliseconds
+ */
 int QInputChord::tolerance() const
 {
     Q_D(const QInputChord);
     return d->m_tolerance;
 }
 
+/*!
+    Sets the time in which all QAbstractActionInput's in the input chord must triggered within.
+    The time is in milliseconds
+ */
 void QInputChord::setTolerance(int tolerance)
 {
     Q_D(QInputChord);

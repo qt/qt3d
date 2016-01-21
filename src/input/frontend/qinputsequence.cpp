@@ -45,7 +45,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*!
+    \class Qt3DInput::QInputChordSequence
+    \internal
+*/
 class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
 {
 public:
@@ -61,35 +64,93 @@ public:
     bool m_sequential;
 };
 
+/*!
+    \class Qt3DInput::QInputSequence
+    \inmodule Qt3DInput
+    \inherits QAbstractAggregateActionInput
+    \brief QInputSequence represents a set of QAbstractActionInput's that must be triggerd one after the other.
+    \since 5.7
+*/
+
+/*!
+    \qmltype InputSequence
+    \inqmlmodule Qt3D.Input
+    \inherits QAbstractAggregateActionInput
+    \instantiates Qt3DInput::QInputSequence
+    \brief QML frontend for the Qt3DInput::QInputSequence C++ class.
+
+    Represents a set of QAbstractActionInput's that must be triggerd one after the other.
+    \since 5.7
+*/
+
+/*!
+    Constructs a new QInputSequence with parent \a parent.
+ */
 QInputSequence::QInputSequence(Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractAggregateActionInput(*new QInputSequencePrivate(), parent)
 {
 
 }
 
+/*!
+    Deletes the QInputSequence instance.
+ */
 QInputSequence::~QInputSequence()
 {
     QNode::cleanup();
 }
 
+/*!
+  \qmlproperty int Qt3D.Input::InputSequence::timeout
+
+  the time in milliseconds in which all QAbstractActionInput's in the input sequence must triggered within.
+*/
+
+/*!
+    Returns the time in which all QAbstractActionInput's in the input sequence must triggered within.
+    The time is in milliseconds
+ */
 int QInputSequence::timeout() const
 {
     Q_D(const QInputSequence);
     return d->m_timeout;
 }
 
+/*!
+  \qmlproperty int Qt3D.Input::InputSequence::interval
+
+  the maximum time in milliseconds in between consecutive QAbstractActionInput's in the input sequence.
+*/
+
+/*!
+    Returns the maximum time in between consecutive QAbstractActionInput's in the input sequence.
+    The time is in milliseconds
+ */
 int QInputSequence::interval() const
 {
     Q_D(const QInputSequence);
     return d->m_interval;
 }
 
+/*!
+  \qmlproperty bool Qt3D.Input::InputSequence::sequential
+
+  if the QAbstractActionInput's in the input sequence must triggered in order.
+*/
+
+/*!
+    Returns true if the QAbstractActionInput's in the input sequence must triggered in order.
+ */
 bool QInputSequence::sequential() const
 {
     Q_D(const QInputSequence);
     return d->m_sequential;
 }
 
+/*!
+    Set the time in which all QAbstractActionInput's in the input sequence must triggered within.
+    The time is in milliseconds
+ */
 void QInputSequence::setTimeout(int timeout)
 {
     Q_D(QInputSequence);
@@ -99,6 +160,10 @@ void QInputSequence::setTimeout(int timeout)
     }
 }
 
+/*!
+    Set the maximum time in between consecutive QAbstractActionInput's in the input sequence.
+    The time is in milliseconds
+ */
 void QInputSequence::setInterval(int interval)
 {
     Q_D(QInputSequence);
@@ -108,6 +173,9 @@ void QInputSequence::setInterval(int interval)
     }
 }
 
+/*!
+    Set if the QAbstractActionInput's in the input sequence must triggered in order.
+ */
 void QInputSequence::setSequential(bool sequential)
 {
     Q_D(QInputSequence);

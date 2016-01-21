@@ -45,7 +45,10 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*!
+    \class Qt3DInput::QActionPrivate
+    \internal
+*/
 class QActionPrivate : public Qt3DCore::QNodePrivate
 {
 public:
@@ -58,31 +61,48 @@ public:
 };
 
 /*!
- * \qmltype Action
- * \inqmlmodule Qt3D.Input
- * \since 5.6
- * \TODO
- *
- */
+    \class Qt3DInput::QActionInput
+    \inmodule Qt3DInput
+    \inherits QAbstractActionInput
+    \brief QActionInput stores Device and Keys used to trigger an input event.
+    \since 5.7
+*/
 
 /*!
- * \class Qt3DInput::QAction
- * \inmodule Qt3DInput
- * \since 5.6
- * \TODO
- *
- */
+    \qmltype Action
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3DInput::QAction
+    \brief QML frontend for the Qt3DInput::QAction C++ class.
 
+    Links a set of QAbstractActionInputs that trigger the same event.
+    \since 5.7
+*/
+
+/*!
+    Constructs a new QAction instance with parent \a parent.
+ */
 QAction::QAction(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QActionPrivate(), parent)
 {
 }
 
+/*!
+    Deletes the QAction instance.
+ */
 QAction::~QAction()
 {
     QNode::cleanup();
 }
 
+/*!
+  \qmlproperty QString Qt3D.Input::Action::name
+
+  the name used to identify this action
+*/
+
+/*!
+    Set the name used to identify this action.
+ */
 void QAction::setName(const QString &name)
 {
     Q_D(QAction);
@@ -92,12 +112,24 @@ void QAction::setName(const QString &name)
     }
 }
 
+/*!
+    Returns the name used to identify this action.
+ */
 QString QAction::name() const
 {
     Q_D(const QAction);
     return d->m_name;
 }
 
+/*!
+  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::Action::inputs
+
+  the list of QAbstractActionInput that must be triggered to trigger this Action.
+*/
+
+/*!
+    Append QAbstractActionInput \a input to the list of inputs that can trigger this action.
+ */
 void QAction::addInput(QAbstractActionInput *input)
 {
     Q_D(QAction);
@@ -116,6 +148,9 @@ void QAction::addInput(QAbstractActionInput *input)
     }
 }
 
+/*!
+    Remove QAbstractActionInput \a input to the list of inputs that can trigger this action.
+ */
 void QAction::removeInput(QAbstractActionInput *input)
 {
     Q_D(QAction);
@@ -132,6 +167,9 @@ void QAction::removeInput(QAbstractActionInput *input)
     }
 }
 
+/*!
+    Returns the list of inputs that can trigger this action.
+ */
 QVector<QAbstractActionInput *> QAction::inputs() const
 {
     Q_D(const QAction);

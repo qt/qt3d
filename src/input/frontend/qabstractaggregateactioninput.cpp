@@ -45,20 +45,63 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+/*!
+    \internal
+*/
 QAbstractAggregateActionInputPrivate::QAbstractAggregateActionInputPrivate()
     : m_inputs()
 {
 }
 
+/*!
+    \class Qt3DInput::QAbstractAggregateActionInput
+    \inherits QAbstractActionInput
+
+    \inmodule Qt3DInput
+    \since 5.7
+
+    \brief QAbstractAggregateActionInput is the base class for the all Aggregate Action Inputs.
+
+    The QAbstractAggregateActionInput class provides the storage for all the aggregate actions child actions.
+*/
+
+/*!
+    \qmltype QAbstractAggregateActionInput
+    \inqmlmodule Qt3D.Input
+    \inherits QAbstractActionInput
+    \instantiates Qt3DInput::QAbstractAggregateActionInput
+    \brief QML frontend for the abstract Qt3DInput::QAbstractAggregateActionInput C++ class.
+
+    The base class for all Aggregate Action Inputs.
+    \since 5.7
+*/
+
+/*!
+    \internal
+*/
 QAbstractAggregateActionInput::QAbstractAggregateActionInput(Qt3DInput::QAbstractAggregateActionInputPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractActionInput(dd, parent)
 {
 }
 
+/*!
+    \internal
+*/
 QAbstractAggregateActionInput::~QAbstractAggregateActionInput()
 {
 }
 
+/*!
+  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::QAbstractAggregateActionInput::inputs
+
+  The list of QAbstractActionInput that must be triggered to trigger this aggregate input.
+*/
+
+/*!
+    Append the QAbstractActionInput \a input to the end of this Agggregate Actions input vector.
+
+    \sa removeInput
+ */
 void QAbstractAggregateActionInput::addInput(QAbstractActionInput *input)
 {
     Q_D(QAbstractAggregateActionInput);
@@ -77,6 +120,11 @@ void QAbstractAggregateActionInput::addInput(QAbstractActionInput *input)
     }
 }
 
+/*!
+    Remove the QAbstractActionInput \a input from this Agggregate Actions input vector.
+
+    \sa addInput
+ */
 void QAbstractAggregateActionInput::removeInput(QAbstractActionInput *input)
 {
     Q_D(QAbstractAggregateActionInput);
@@ -93,6 +141,9 @@ void QAbstractAggregateActionInput::removeInput(QAbstractActionInput *input)
     }
 }
 
+/*!
+    Return vector of QAbstractActionInput's in this Agggregate Actions input vector.
+ */
 QVector<QAbstractActionInput *> QAbstractAggregateActionInput::inputs() const
 {
     Q_D(const QAbstractAggregateActionInput);
