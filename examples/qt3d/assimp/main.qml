@@ -38,15 +38,20 @@ import QtQuick 2.0 as Quick
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 import Qt3D.Examples 2.0
+import Qt3D.Input 2.0
 
 Entity
 {
-    components: FrameGraph {
-        activeFrameGraph: ForwardRenderer {
-            clearColor: Qt.rgba(0, 0.5, 1, 1)
-            camera: camera
-        }
-    }
+    components: [
+        FrameGraph {
+            activeFrameGraph: ForwardRenderer {
+                clearColor: Qt.rgba(0, 0.5, 1, 1)
+                camera: camera
+            }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
+    ]
 
     Camera {
         id: camera
