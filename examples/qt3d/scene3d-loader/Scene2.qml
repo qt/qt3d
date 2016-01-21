@@ -58,10 +58,6 @@ Scene3D {
             viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
         }
 
-        Configuration  {
-            controlledCamera: camera
-        }
-
         FrameGraph {
             id : external_forward_renderer
             activeFrameGraph : ForwardRenderer {
