@@ -70,10 +70,13 @@ InputHandler::InputHandler()
     , m_logicalDeviceManager(new LogicalDeviceManager())
     , m_genericPhysicalDeviceBackendNodeManager(new GenericDeviceBackendNodeManager)
     , m_settings(Q_NULLPTR)
-    , m_eventSourceSetter(Q_NULLPTR)
+    , m_eventSourceSetter(new Qt3DInput::Input::EventSourceSetterHelper(this))
 {
     m_keyboardEventFilter->setInputHandler(this);
     m_mouseEventFilter->setInputHandler(this);
+
+    // Created in the main thread
+    // m_eventSourceSetter needs to be in the main thread
 }
 
 InputHandler::~InputHandler()
@@ -236,6 +239,11 @@ void InputHandler::setInputSettings(InputSettings *settings)
 void InputHandler::setEventSourceHelper(EventSourceSetterHelper *helper)
 {
     m_eventSourceSetter.reset(helper);
+}
+
+EventSourceSetterHelper *InputHandler::eventSourceHelper() const
+{
+    return m_eventSourceSetter.data();
 }
 
 void InputHandler::updateEventSource()

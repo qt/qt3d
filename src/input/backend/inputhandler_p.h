@@ -133,6 +133,7 @@ public:
 
     void setInputSettings(InputSettings *settings);
     void setEventSourceHelper(EventSourceSetterHelper *helper);
+    EventSourceSetterHelper *eventSourceHelper() const;
 
     void updateEventSource();
 

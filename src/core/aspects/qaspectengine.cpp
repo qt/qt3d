@@ -168,6 +168,7 @@ void QAspectEnginePrivate::shutdown()
 /*!
  * Registers a new \a aspect to the AspectManager.
  */
+// Called in the main thread
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
     Q_D(QAspectEngine);

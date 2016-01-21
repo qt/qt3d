@@ -49,6 +49,7 @@
 //
 
 #include <QObject>
+#include <QMutex>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,8 +67,10 @@ class EventSourceSetterHelper : public QObject
 {
     Q_OBJECT
 public:
-    explicit EventSourceSetterHelper(Qt3DCore::QEventFilterService *service,
-                                     InputHandler *m_inputHandler);
+    explicit EventSourceSetterHelper(InputHandler *inputHandler);
+
+    // Called from aspect thread
+    void setEventFilterService(Qt3DCore::QEventFilterService *service);
 
     // Called from any thread
     void setEventSource(QObject *eventSource);
@@ -80,6 +83,7 @@ private:
     Qt3DCore::QEventFilterService *m_service;
     InputHandler *m_inputHandler;
     QObject *m_lastEventSource;
+    QMutex m_mutex;
 };
 
 } // Input

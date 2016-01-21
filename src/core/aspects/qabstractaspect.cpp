@@ -198,10 +198,18 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
     return q->jobsToExecute(time);
 }
 
+/*!
+ *
+ * Called in the QAspectThread context
+ */
 void QAbstractAspect::onStartup()
 {
 }
 
+/*!
+ *
+ * Called in the QAspectThread context
+ */
 void QAbstractAspect::onShutdown()
 {
 }

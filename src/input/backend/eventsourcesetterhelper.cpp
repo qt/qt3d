@@ -44,13 +44,19 @@ namespace Qt3DInput {
 
 namespace Input {
 
-EventSourceSetterHelper::EventSourceSetterHelper(Qt3DCore::QEventFilterService *service,
-                                                 InputHandler *inputHandler)
+EventSourceSetterHelper::EventSourceSetterHelper(InputHandler *inputHandler)
     : QObject()
-    , m_service(service)
+    , m_service(Q_NULLPTR)
     , m_inputHandler(inputHandler)
     , m_lastEventSource(Q_NULLPTR)
 {
+}
+
+// Aspect thread
+void EventSourceSetterHelper::setEventFilterService(Qt3DCore::QEventFilterService *service)
+{
+    QMutexLocker lock(&m_mutex);
+    m_service = service;
 }
 
 // Any thread
@@ -67,9 +73,12 @@ void EventSourceSetterHelper::setEventSource(QObject *eventSource)
 // Main Thread
 void EventSourceSetterHelper::setEventSourceHelper(QObject *eventSource)
 {
-    m_service->initialize(eventSource);
-    m_inputHandler->registerEventFilters(m_service);
-    m_lastEventSource = eventSource;
+    QMutexLocker lock(&m_mutex);
+    if (m_service) {
+        m_service->initialize(eventSource);
+        m_inputHandler->registerEventFilters(m_service);
+        m_lastEventSource = eventSource;
+    }
 }
 
 } // Input
