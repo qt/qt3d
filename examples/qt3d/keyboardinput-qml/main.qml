@@ -55,11 +55,15 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    components: FrameGraph {
-        activeFrameGraph: ForwardRenderer {
-            camera: camera
-        }
-    }
+    components: [
+        FrameGraph {
+            activeFrameGraph: ForwardRenderer {
+                camera: camera
+            }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
+    ]
 
     KeyboardController {
         id: keyboardController
