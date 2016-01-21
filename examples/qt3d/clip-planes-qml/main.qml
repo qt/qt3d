@@ -37,6 +37,7 @@
 import QtQuick 2.4 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id: root
@@ -55,12 +56,16 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    components: FrameGraph {
-        ClipCappingFrameGraph {
-            camera: camera;
-            clearColor: Qt.rgba(0.0, 0.5, 1, 1)
-        }
-    }
+    components: [
+        FrameGraph {
+            ClipCappingFrameGraph {
+                camera: camera;
+                clearColor: Qt.rgba(0.0, 0.5, 1, 1)
+            }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
+    ]
 
     ClipMaterialEffect {
         id: clipMaterialEffect
