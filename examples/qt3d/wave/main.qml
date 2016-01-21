@@ -65,7 +65,10 @@ Entity {
         }
     }
 
-    components: [ frameGraph, input ]
+    components: [ frameGraph, input, inputSettings ]
+
+    // Event Source will be set by the Qt3DQuickWindow
+    InputSettings { id: inputSettings }
 
     BasicCamera {
         id: mainCamera
