@@ -40,29 +40,33 @@ import Qt3D.Render 2.0
 Viewport {
     property alias camera: selector.camera
 
-    // Clear Buffer
-    ClearBuffer {
-        buffers: ClearBuffer.ColorDepthBuffer
-        NoDraw {}
-    }
+    RenderSurfaceSelector {
+        id: surfaceSelector
 
-    // Compute Pass
-    DispatchCompute {
-        workGroupX: 1024; workGroupY: 1; workGroupZ: 1
-        TechniqueFilter {
-            requires: [
-                Annotation { name: "type"; value: "compute"}
-            ]
+        // Clear Buffer
+        ClearBuffer {
+            buffers: ClearBuffer.ColorDepthBuffer
+            NoDraw {}
         }
-    }
 
-    // Draw particles from buffer computed in the Compute Pass
-    CameraSelector {
-        id: selector
-        TechniqueFilter {
-            requires: [
-                Annotation { name: "type"; value: "draw"}
-            ]
+        // Compute Pass
+        DispatchCompute {
+            workGroupX: 1024; workGroupY: 1; workGroupZ: 1
+            TechniqueFilter {
+                requires: [
+                    Annotation { name: "type"; value: "compute"}
+                ]
+            }
+        }
+
+        // Draw particles from buffer computed in the Compute Pass
+        CameraSelector {
+            id: selector
+            TechniqueFilter {
+                requires: [
+                    Annotation { name: "type"; value: "draw"}
+                ]
+            }
         }
     }
 }
