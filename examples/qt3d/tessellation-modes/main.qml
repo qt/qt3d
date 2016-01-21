@@ -37,6 +37,7 @@
 import QtQuick 2.1 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id: root
@@ -51,7 +52,9 @@ Entity {
                 camera: mainCamera
                 clearColor: "black"
             }
-        }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
     ]
 
     BasicCamera {
