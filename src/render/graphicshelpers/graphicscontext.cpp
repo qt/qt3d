@@ -185,6 +185,10 @@ bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
     if (m_ownCurrent && !makeCurrent(m_surface))
         return false;
 
+    // Sets or Create the correct m_glHelper
+    // for the current surface
+    activateGLHelper();
+
     GLint err = m_gl->functions()->glGetError();
     if (err != 0) {
         qCWarning(Backend) << Q_FUNC_INFO << "glGetError:" << err;
@@ -306,6 +310,17 @@ void GraphicsContext::setOpenGLContext(QOpenGLContext* ctx, QSurface *surface)
     if (makeCurrent(surface)) {
         resolveHighestOpenGLFunctions();
         m_gl->doneCurrent();
+    }
+}
+
+void GraphicsContext::activateGLHelper()
+{
+    // Sets the correct GL Helper depending on the surface
+    // If no helper exists, create one
+    m_glHelper = m_glHelpers.value(m_surface);
+    if (!m_glHelper) {
+        m_glHelper = resolveHighestOpenGLFunctions();
+        m_glHelpers.insert(m_surface, m_glHelper);
     }
 }
 

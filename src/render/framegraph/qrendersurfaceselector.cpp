@@ -46,6 +46,7 @@ namespace Qt3DRender {
 
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
+    , m_surface(Q_NULLPTR)
 {
 }
 
@@ -73,7 +74,7 @@ QSurface *QRenderSurfaceSelector::surface() const
 QWindow *QRenderSurfaceSelector::window() const
 {
     Q_D(const QRenderSurfaceSelector);
-    if (d->m_surface->surfaceClass() == QSurface::Window)
+    if (d->m_surface && d->m_surface->surfaceClass() == QSurface::Window)
         return static_cast<QWindow *>(d->m_surface);
     return Q_NULLPTR;
 }

@@ -202,7 +202,10 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
         return;
     }
 
-    surfaceSelector->setWindow(this->window());
+    // Set the item's window surface if it appears
+    // the surface wasn't set on the surfaceSelector
+    if (!surfaceSelector->window())
+        surfaceSelector->setWindow(this->window());
 }
 
 void Scene3DItem::setCameraAspectModeHelper()

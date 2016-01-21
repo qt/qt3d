@@ -569,6 +569,16 @@ void Renderer::doRender()
     // Render using current device state and renderer configuration
     const bool submissionSucceeded = submitRenderViews();
 
+    // Note: submitRenderViews returns false when
+    // * we cannot render because a shutdown has been scheduled
+    // * the renderview is incomplete (only when rendering with a Scene3D)
+    // Otherwise returns true even for cases like
+    // * No render view
+    // * No surface set
+    // * OpenGLContext failed to be set current
+    // This behavior is important as we need to
+    // call proceedToNextFrame despite rendering errors that aren't fatal
+
     // Only reset renderQueue and proceed to next frame if the submission
     // succeeded or it we are using a render thread.
 
@@ -641,12 +651,6 @@ bool Renderer::submitRenderViews()
     // we've been told to render before rendering
     if (m_renderThread) { // Prevent ouf of order execution
         m_submitRenderViewsSemaphore.acquire(1);
-
-        // Early return if we have been unlocked because of
-        // shutdown
-        if (!m_running.load())
-            return false;
-
         // When using Thread rendering, the semaphore should only
         // be released when the frame queue is complete and there's
         // something to render
@@ -671,6 +675,7 @@ bool Renderer::submitRenderViews()
 
     // Lock the mutex to protect access to m_surface and check if we are still set
     // to the running state and that we have a valid surface on which to draw
+    // TO DO: Is that still needed given the surface changes
     QMutexLocker locker(&m_mutex);
     const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
     if (!canRender()) {
@@ -732,7 +737,6 @@ bool Renderer::submitRenderViews()
             m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
         }
 
-
         // Set RenderView render state
         RenderStateSet *renderViewStateSet = renderView->stateSet();
         if (renderViewStateSet)
@@ -767,14 +771,15 @@ bool Renderer::submitRenderViews()
         frameElapsed = timer.elapsed();
     }
 
-    // Reset state to the default state if the last stateset is not the
-    // defaultRenderStateSet
-    if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
-        m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
+    if (surface) {
+        // Reset state to the default state if the last stateset is not the
+        // defaultRenderStateSet
+        if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
+            m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
 
-    // Finish up with last surface used in the list of RenderViews
-    m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
-
+        // Finish up with last surface used in the list of RenderViews
+        m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
+    }
     // Delete all the RenderViews which will clear the allocators
     // that were used for their allocation
     qDeleteAll(renderViews);

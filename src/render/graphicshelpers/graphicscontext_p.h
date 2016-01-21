@@ -118,6 +118,7 @@ public:
     QOpenGLContext *openGLContext() { return m_gl; }
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
+    void activateGLHelper();
 
     void activateShader(Shader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
