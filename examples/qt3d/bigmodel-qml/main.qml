@@ -49,7 +49,9 @@ Entity {
             activeFrameGraph:ForwardRenderer {
                 camera: mainCamera
             }
-        }
+        },
+        // Event Source will be set by the Qt3DQuickWindow
+        InputSettings { }
     ]
 
     Camera {
