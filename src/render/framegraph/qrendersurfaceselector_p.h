@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/qframegraphnode_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <QtGui/qsurface.h>
 #include <QtGui/qwindow.h>
 
@@ -69,6 +70,7 @@ public:
 
     QSurface *m_surface;
     QSize m_externalRenderTargetSize;
+    QScopedPointer<Qt3DRender::Render::PlatformSurfaceFilter> m_surfaceEventFilter;
 };
 
 } // namespace Qt3DRender

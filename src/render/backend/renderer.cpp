@@ -78,6 +78,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/openglvertexarrayobject_p.h>
+#include <Qt3DRender/private/platformsurfacefilter_p.h>
 
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>
@@ -467,7 +468,7 @@ void Renderer::render()
 void Renderer::doRender()
 {
     bool submissionSucceeded = false;
-    uint lastBoundFBOId = 0;
+    Renderer::ViewSubmissionResultData submissionData;
 
     if (isReadyToSubmit()) {
         // Lock the mutex to protect access to m_surface and check if we are still set
@@ -485,7 +486,7 @@ void Renderer::doRender()
             clearDirtyBits(changesToUnset);
 
             // Render using current device state and renderer configuration
-            lastBoundFBOId = submitRenderViews(renderViews);
+            submissionData = submitRenderViews(renderViews);
         }
 
         // Delete all the RenderViews which will clear the allocators
@@ -534,8 +535,11 @@ void Renderer::doRender()
         // as this allows us to gain a bit of time for the preparation of the
         // next frame
         // Finish up with last surface used in the list of RenderViews
-        if (submissionSucceeded)
-            m_graphicsContext->endDrawing(lastBoundFBOId == m_graphicsContext->defaultFBO());
+        if (submissionSucceeded) {
+            SurfaceLocker surfaceLock(submissionData.surface);
+            // Finish up with last surface used in the list of RenderViews
+            m_graphicsContext->endDrawing(submissionData.lastBoundFBOId == m_graphicsContext->defaultFBO() && surfaceLock.isSurfaceValid());
+        }
     }
 }
 
@@ -599,7 +603,7 @@ bool Renderer::isReadyToSubmit()
 
 // Happens in RenderThread context when all RenderViewJobs are done
 // Returns the id of the last bound FBO
-uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderViews)
+Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderViews)
 {
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
@@ -626,6 +630,7 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
         // If not, we have to free up the context from the previous surface
         // and make the context current on the new surface
         surface = renderView->surface();
+        SurfaceLocker surfaceLock(surface);
 
         // TO DO: Make sure that the surface we are rendering too has not been unset
 
@@ -633,13 +638,16 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
         // TODO: Investigate if it's worth providing a fallback offscreen surface
         //       to use when surface is null. Or if we should instead expose an
         //       offscreensurface to Qt3D.
-        if (!surface) {
+        if (!surface || !surfaceLock.isSurfaceValid()) {
             m_lastFrameCorrect.store(0);
             continue;
         }
 
-        if (surface != previousSurface && previousSurface)
-            m_graphicsContext->endDrawing(lastBoundFBOId == m_graphicsContext->defaultFBO());
+        if (surface != previousSurface && previousSurface) {
+            const bool swapBuffers = (lastBoundFBOId == m_graphicsContext->defaultFBO()) && PlatformSurfaceFilter::isSurfaceValid(previousSurface);
+            // We only call swap buffer if we are sure the previous surface is still valid
+            m_graphicsContext->endDrawing(swapBuffers);
+        }
 
         if (surface != previousSurface) {
             // If we can't make the context current on the surface, skip to the
@@ -697,7 +705,9 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
         frameElapsed = timer.elapsed();
     }
 
-    if (surface) {
+    // Reset state and call doneCurrent if the surface
+    // is valid and was actually activated
+    if (surface && m_graphicsContext->hasValidGLHelper()) {
         // Reset state to the default state if the last stateset is not the
         // defaultRenderStateSet
         if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
@@ -708,7 +718,13 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
 
-    return lastBoundFBOId;
+    // Stores the necessary information to safely perform
+    // the last swap buffer call
+    ViewSubmissionResultData resultData;
+    resultData.lastBoundFBOId = lastBoundFBOId;
+    resultData.surface = surface;
+
+    return resultData;
 }
 
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
@@ -840,7 +856,7 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
     rGeometryRenderer->unsetDirty();
 }
 
-void Renderer::performCompute(const RenderView *rv, RenderCommand *command)
+void Renderer::performCompute(const RenderView *, RenderCommand *command)
 {
     Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
     if (shader != Q_NULLPTR) {

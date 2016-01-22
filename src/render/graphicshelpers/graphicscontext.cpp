@@ -342,6 +342,11 @@ void GraphicsContext::activateGLHelper()
     }
 }
 
+bool GraphicsContext::hasValidGLHelper() const
+{
+    return m_glHelper != Q_NULLPTR;
+}
+
 bool GraphicsContext::makeCurrent(QSurface *surface)
 {
     Q_ASSERT(m_gl);

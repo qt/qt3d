@@ -194,7 +194,20 @@ public:
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
     bool isReadyToSubmit();
-    uint submitRenderViews(const QVector<Render::RenderView *> &renderViews);
+
+
+    struct ViewSubmissionResultData
+    {
+        ViewSubmissionResultData()
+            : lastBoundFBOId(0)
+            , surface(Q_NULLPTR)
+        {}
+
+        uint lastBoundFBOId;
+        QSurface *surface;
+    };
+
+    ViewSubmissionResultData submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
     QMutex* mutex() { return &m_mutex; }
 

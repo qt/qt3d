@@ -51,11 +51,32 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+QSemaphore PlatformSurfaceFilter::m_surfacesSemaphore(1);
+QHash<QSurface *, bool> PlatformSurfaceFilter::m_surfacesValidity;
+
+// Surface protection
+// The surface is accessible from multiple threads at 3 potential places
+// 1) In here (the frontend) when we receive an event
+// 2) In the RenderViewJobs
+// 3) In the Renderer for the submission
+// * We don't need any protection in 2) as we are just copying the pointer
+// but not performing any access to the texture as all the information
+// we need has been cached in the RenderSurfaceSelector element
+// * This leaves us with case 1 and 3. It is important that if the surface
+// is about to be destroyed that we let the time to the submission thread
+// to complete whatever it is doing with a surface before we have the time
+// to process the AboutToBeDestroyed event. For that we have lockSurface, releaseSurface
+// on the PlatformSurfaceFilter. But that's not enough, you need to be sure that
+// the surface is still valid. When locked, you can use isSurfaceValid to check
+// if a surface is still accessible.
+// A Surface is valid when it has been created and becomes invalid when AboutToBeDestroyed
+// has been called
+// SurfaceLocker is a convenience type to perform locking an surface validity check
+
 PlatformSurfaceFilter::PlatformSurfaceFilter(QObject *parent)
     : QObject(parent)
     , m_obj(Q_NULLPTR)
     , m_surface(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
 {
     qRegisterMetaType<QSurface *>("QSurface*");
 }
@@ -66,21 +87,6 @@ PlatformSurfaceFilter::~PlatformSurfaceFilter()
         m_obj->removeEventFilter(this);
 }
 
-void PlatformSurfaceFilter::setWindow(QWindow *window)
-{
-    setSurface(window);
-}
-
-void PlatformSurfaceFilter::setOffscreenSurface(QOffscreenSurface *offscreen)
-{
-    setSurface(offscreen);
-}
-
-void PlatformSurfaceFilter::setRenderer(AbstractRenderer *renderer)
-{
-    m_renderer = renderer;
-}
-
 bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
 {
     if (obj == m_obj && e->type() == QEvent::PlatformSurface) {
@@ -88,13 +94,21 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
 
         switch (ev->surfaceEventType()) {
         case QPlatformSurfaceEvent::SurfaceCreated:
-            setRendererSurface(m_surface);
+            // set validy to true
+        {
+            markSurfaceAsValid();
             break;
+        }
 
         case QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed:
-            setSurface<QWindow>(Q_NULLPTR);
-            setRendererSurface(Q_NULLPTR);
+            // set validity to false
+        {
+            SurfaceLocker lock();
+            // If we remove it, the call to isSurfaceValid will
+            // implicitely return false
+            PlatformSurfaceFilter::m_surfacesValidity.remove(m_surface);
             break;
+        }
 
         default:
             qCritical("Unknown surface type");
@@ -104,24 +118,50 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
 
     if (obj == m_obj && e->type() == QEvent::Expose) {
         QExposeEvent *ev = static_cast<QExposeEvent *>(e);
-        m_renderer->setSurfaceExposed(!ev->region().isEmpty());
+        Q_UNUSED(ev);
+        // We could use this to tell to ignore the RenderView
+        // at submission time since it's not exposed
     }
     return false;
 }
 
-void PlatformSurfaceFilter::setRendererSurface(QSurface *surface)
+void PlatformSurfaceFilter::lockSurface()
 {
-    // Tell the renderer about the surface on which to render. This function
-    // is called in the context of the main thread and internally
-    // the renderer uses a private thread to submit OpenGL calls. The surface
-    // pointer within the renderer is protected by a mutex that is locked for
-    // the duration of a frame. In this way, the renderer can be sure to have
-    // a valid surface for the duration of the frame for which it is submitting
-    // draw calls. Only when the frame finishes and the mutex is unlocked does
-    // this call to Renderer::setSurface continue. Thereby blocking the main
-    // thread from destroying the platform surface before we are ready.
-//    if (m_renderer != Q_NULLPTR)
-//        m_renderer->setSurface(surface);
+    PlatformSurfaceFilter::m_surfacesSemaphore.acquire(1);
+}
+
+void PlatformSurfaceFilter::releaseSurface()
+{
+    PlatformSurfaceFilter::m_surfacesSemaphore.release(1);
+}
+
+bool PlatformSurfaceFilter::isSurfaceValid(QSurface *surface)
+{
+    // Should be called only when the surface is locked
+    // with the semaphore
+    return m_surfacesValidity.value(surface, false);
+}
+
+void PlatformSurfaceFilter::markSurfaceAsValid()
+{
+    SurfaceLocker lock(m_surface);
+    PlatformSurfaceFilter::m_surfacesValidity.insert(m_surface, true);
+}
+
+SurfaceLocker::SurfaceLocker(QSurface *surface)
+    : m_surface(surface)
+{
+    PlatformSurfaceFilter::lockSurface();
+}
+
+SurfaceLocker::~SurfaceLocker()
+{
+    PlatformSurfaceFilter::releaseSurface();
+}
+
+bool SurfaceLocker::isSurfaceValid() const
+{
+    return PlatformSurfaceFilter::isSurfaceValid(m_surface);
 }
 
 } // namespace Render

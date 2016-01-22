@@ -43,6 +43,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QtGui/qwindow.h>
+#include <QtGui/qscreen.h>
 #include <QtGui/qoffscreensurface.h>
 
 QT_BEGIN_NAMESPACE
@@ -55,6 +56,9 @@ namespace Render {
 RenderSurfaceSelector::RenderSurfaceSelector()
     : FrameGraphNode(FrameGraphNode::Surface)
     , m_surface(Q_NULLPTR)
+    , m_width(0)
+    , m_height(0)
+    , m_devicePixelRatio(0.0f)
 {
 }
 
@@ -64,6 +68,15 @@ void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
     m_surface = selector->surface();
     setEnabled(selector->isEnabled());
     setRenderTargetSize(selector->externalRenderTargetSize());
+    if (m_surface) {
+        if (m_surface->surfaceClass() == QSurface::Window) {
+            QWindow *window = static_cast<QWindow *>(m_surface);
+            m_width = window->width();
+            m_height = window->height();
+            if (window->screen())
+                m_devicePixelRatio = window->screen()->devicePixelRatio();
+        }
+    }
 }
 
 void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -77,6 +90,10 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))
             setRenderTargetSize(propertyChange->value().toSize());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("width"))
+            m_width = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("height"))
+            m_height = propertyChange->value().toInt();
         markDirty(AbstractRenderer::AllDirty);
     }
 }

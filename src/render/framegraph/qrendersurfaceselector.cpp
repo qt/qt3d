@@ -86,6 +86,7 @@ namespace Qt3DRender {
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
     , m_surface(Q_NULLPTR)
+    , m_surfaceEventFilter(new Qt3DRender::Render::PlatformSurfaceFilter())
 {
 }
 
@@ -143,6 +144,23 @@ void QRenderSurfaceSelector::setSurface(QSurface *surface)
         return;
 
     d->m_surface = surface;
+    // The platform surface filter only deals with QObject
+    // We assume therefore that our surface is actually a QObject underneath
+    if (d->m_surface) {
+        switch (d->m_surface->surfaceClass()) {
+        case QSurface::Window:
+            d->m_surfaceEventFilter->setSurface(static_cast<QWindow *>(d->m_surface));
+            break;
+        case QSurface::Offscreen:
+            d->m_surfaceEventFilter->setSurface(static_cast<QOffscreenSurface *>(d->m_surface));
+            break;
+        default:
+            break;
+        }
+    } else {
+        QWindow *nullWindow = Q_NULLPTR;
+        d->m_surfaceEventFilter->setSurface(nullWindow);
+    }
     emit surfaceChanged(surface);
 }
 
@@ -177,6 +195,37 @@ void QRenderSurfaceSelector::setWindow(QWindow *window)
         return;
 
     d->m_surface = window;
+    d->m_surfaceEventFilter->setSurface(window);
+
+    if (window) {
+        QObject::connect(window, &QWindow::widthChanged, [=] (int width) {
+            if (d->m_changeArbiter != Q_NULLPTR) {
+                Qt3DCore::QScenePropertyChangePtr change(
+                            new Qt3DCore::QScenePropertyChange(
+                                Qt3DCore::NodeUpdated,
+                                Qt3DCore::QSceneChange::Node,
+                                id()));
+
+                change->setPropertyName("width");
+                change->setValue(QVariant::fromValue(width));
+                d->notifyObservers(change);
+            }
+        });
+        QObject::connect(window, &QWindow::heightChanged, [=] (int height) {
+            if (d->m_changeArbiter != Q_NULLPTR) {
+                Qt3DCore::QScenePropertyChangePtr change(
+                            new Qt3DCore::QScenePropertyChange(
+                                Qt3DCore::NodeUpdated,
+                                Qt3DCore::QSceneChange::Node,
+                                id()));
+
+                change->setPropertyName("height");
+                change->setValue(QVariant::fromValue(height));
+                d->notifyObservers(change);
+            }
+        });
+    }
+
     emit windowChanged(window);
     emit surfaceChanged(d->m_surface);
 }

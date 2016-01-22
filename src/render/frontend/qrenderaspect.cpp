@@ -152,8 +152,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
     , m_nodeManagers(new Render::NodeManagers())
     , m_renderer(Q_NULLPTR)
-    , m_surfaceEventFilter(new Render::PlatformSurfaceFilter())
-    , m_surface(Q_NULLPTR)
     , m_initialized(false)
     , m_framePreparationJob(new Render::FramePreparationJob(m_nodeManagers))
     , m_cleanupJob(new Render::FrameCleanupJob(m_nodeManagers))
@@ -178,7 +176,6 @@ QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     // a targeted rendering API -> only OpenGL for now
     m_renderer = new Render::Renderer(type);
     m_renderer->setNodeManagers(m_nodeManagers);
-    m_surfaceEventFilter->setRenderer(m_renderer);
 }
 
 void QRenderAspectPrivate::registerBackendTypes()
@@ -228,44 +225,6 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QComputeCommand>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager>(m_renderer, m_nodeManagers->computeJobManager())));
     q->registerBackendType<QRenderSettings>(QBackendNodeMapperPtr(new Render::RenderSettingsFunctor(m_renderer)));
     q->registerBackendType<QRenderState>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager>(m_renderer, m_nodeManagers->renderStateManager())));
-}
-
-void QRenderAspectPrivate::setSurface(QSurface *surface)
-{
-    if (m_surface == surface)
-        return;
-
-    m_surface = surface;
-
-    // If we have a new surface, install the platform surface event filter onto it
-    // so that we get informed when the underlying platform surface is about to be
-    // deleted and we can tell the renderer about it before it's too late.
-    if (m_surface) {
-        bool hasPlatformSurface = false;
-        switch (m_surface->surfaceClass()) {
-        case QSurface::Window: {
-            QWindow *window = static_cast<QWindow *>(m_surface);
-            m_surfaceEventFilter->setWindow(window);
-            hasPlatformSurface = (window->handle() != Q_NULLPTR);
-            m_devicePixelRatio = window->devicePixelRatio();
-            break;
-        }
-
-        case QSurface::Offscreen: {
-            QOffscreenSurface *offscreen = static_cast<QOffscreenSurface *>(m_surface);
-            m_surfaceEventFilter->setOffscreenSurface(offscreen);
-            hasPlatformSurface = (offscreen->handle() != Q_NULLPTR);
-            break;
-        }
-        }
-
-        if (!m_surfaceSize.isValid())
-            m_surfaceSize = surface->size();
-
-        // If the window/offscreen surface has a native surface, tell the renderer
-        //        if (hasPlatformSurface)
-        //            m_renderer->setSurface(surface);
-    }
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)

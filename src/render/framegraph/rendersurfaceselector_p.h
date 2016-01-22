@@ -72,10 +72,16 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     QSurface *surface() const { return m_surface; }
+    inline int width() const Q_DECL_NOEXCEPT { return m_width; }
+    inline int height() const Q_DECL_NOEXCEPT { return m_height; }
+    inline float devicePixelRatio() const Q_DECL_NOEXCEPT { return m_devicePixelRatio; }
 
 private:
     QSurface *m_surface;
     QSize m_renderTargetSize;
+    int m_width;
+    int m_height;
+    float m_devicePixelRatio;
 };
 
 } // namespace Render

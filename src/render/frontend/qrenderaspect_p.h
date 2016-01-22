@@ -80,7 +80,6 @@ public:
     Q_DECLARE_PUBLIC(QRenderAspect)
 
     void registerBackendTypes();
-    void setSurface(QSurface *surface);
     void loadSceneParsers();
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();
@@ -90,13 +89,6 @@ public:
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;
-
-    // The filter has affinity with the main thread so we have to delete it there
-    // via QScopedPointerDeleteLater
-    QScopedPointer<Render::PlatformSurfaceFilter, QScopedPointerDeleteLater> m_surfaceEventFilter;
-    QSurface *m_surface;
-    QSize m_surfaceSize;
-    qreal m_devicePixelRatio;
 
     bool m_initialized;
     Render::FramePreparationJobPtr m_framePreparationJob;

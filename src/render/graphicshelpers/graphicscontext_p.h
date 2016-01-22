@@ -123,6 +123,7 @@ public:
     bool makeCurrent(QSurface *surface);
     void doneCurrent();
     void activateGLHelper();
+    bool hasValidGLHelper() const;
 
     void activateShader(Shader* shader);
     QOpenGLShaderProgram *containsProgram(const ProgramDNA &dna);
