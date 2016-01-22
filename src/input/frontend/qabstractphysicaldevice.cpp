@@ -53,20 +53,27 @@ QAbstractPhysicalDevicePrivate::QAbstractPhysicalDevicePrivate()
 }
 
 /*!
- * \qmltype AbstractPhysicalDevice
- * \instantiates Qt3DInput::QAbstractPhysicalDevice
- * \inqmlmodule Qt3D.Input
- * \since 5.6
- * \TODO
- *
- */
+    \class Qt3DInput::QAbstractPhysicalDevice
+    \inmodule Qt3DInput
+    \inherits Qt3DCore::QNode
+    \brief QAbstractPhysicalDevice is the base class used by Qt3d to interact with arbitrary input devices.
+
+    \since 5.6
+*/
 
 /*!
- * \class Qt3DInput::QAbstractPhysicalDevice
- * \inmodule Qt3DInput
- * \since 5.6
- * \TODO
- *
+    \qmltype AbstractPhysicalDevice
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3DInput::QAbstractPhysicalDevice
+    \brief QML frontend for the abstract Qt3DInput::QAbstractPhysicalDevice C++ class.
+
+    The base class used by Qt3d to interact with arbitrary input devices.
+
+    \since 5.6
+*/
+
+/*!
+    Constructs a new QAbstractPhysicalDevice instance with parent \a parent.
  */
 QAbstractPhysicalDevice::QAbstractPhysicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAbstractPhysicalDevicePrivate, parent)
@@ -78,35 +85,53 @@ QAbstractPhysicalDevice::QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate 
 {
 }
 
+/*!
+    Deletes the QAbstractPhysicalDevice instance.
+ */
 QAbstractPhysicalDevice::~QAbstractPhysicalDevice()
 {
     Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DInput::QAbstractPhysicalDevice subclass didn't call QNode::cleanup in its destructor");
 }
 
+/*!
+    Return the number of axis this device has.
+ */
 int QAbstractPhysicalDevice::axisCount() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_axesHash.size();
 }
 
+/*!
+    Return the number of buttons this device has.
+ */
 int QAbstractPhysicalDevice::buttonCount() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_buttonsHash.size();
 }
 
+/*!
+    Return a list of the names of device's axis.
+ */
 QStringList QAbstractPhysicalDevice::axisNames() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_axesHash.keys();
 }
 
+/*!
+    Return a list of the names of device's buttons.
+ */
 QStringList QAbstractPhysicalDevice::buttonNames() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_buttonsHash.keys();
 }
 
+/*!
+    Return the integer identifer of the axis /a name or -1 if it does not exist on this device.
+ */
 int QAbstractPhysicalDevice::axisIdentifier(const QString &name) const
 {
     Q_D(const QAbstractPhysicalDevice);
@@ -116,6 +141,9 @@ int QAbstractPhysicalDevice::axisIdentifier(const QString &name) const
     return -1;
 }
 
+/*!
+    Return the integer identifer of the button /a name or -1 if it does not exist on this device.
+ */
 int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
 {
     Q_D(const QAbstractPhysicalDevice);
@@ -125,6 +153,9 @@ int QAbstractPhysicalDevice::buttonIdentifier(const QString &name) const
     return -1;
 }
 
+/*!
+    Add the axisSetting /a axisSetting to this device.
+ */
 void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
@@ -132,6 +163,9 @@ void QAbstractPhysicalDevice::addAxisSetting(QAxisSetting *axisSetting)
         d->m_axisSettings.push_back(axisSetting);
 }
 
+/*!
+    Remove the axisSetting /a axisSetting to this device.
+ */
 void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
 {
     Q_D(QAbstractPhysicalDevice);
@@ -139,12 +173,18 @@ void QAbstractPhysicalDevice::removeAxisSetting(QAxisSetting *axisSetting)
         d->m_axisSettings.removeOne(axisSetting);
 }
 
+/*!
+    Return the axisSettings /ascociated with this device.
+ */
 QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 {
     Q_D(const QAbstractPhysicalDevice);
     return d->m_axisSettings;
 }
 
+/*!
+    Used to notify observers that an axis value has been changed.
+ */
 void QAbstractPhysicalDevice::postAxisEvent(int axis, qreal value)
 {
     Q_D(QAbstractPhysicalDevice);
@@ -154,6 +194,9 @@ void QAbstractPhysicalDevice::postAxisEvent(int axis, qreal value)
     d->notifyObservers(change);
 }
 
+/*!
+    Used to notify observers that an button value has been changed.
+ */
 void QAbstractPhysicalDevice::postButtonEvent(int button, qreal value)
 {
     Q_D(QAbstractPhysicalDevice);

@@ -76,6 +76,28 @@ public:
     \brief QML frontend for the Qt3DInput::QInputChord C++ class.
 
     Represents a set of QAbstractActionInput's that must be triggerd at once.
+
+    The following example shows an sequence that will be triggered by pressing the G, D, and J keys in that order with a maximum time between key presses of 1 second  and overall maximum input time of 3 seconds.
+    \qml
+    InputSequence {
+        interval: 1000
+        timeout: 3000
+        inputs: [
+           ActionInput {
+                sourceDevice: keyboardSourceDevice
+                keys: [Qt.Key_G]
+           },
+           ActionInput {
+                sourceDevice: keyboardSourceDevice
+                keys: [Qt.Key_D]
+           },
+           ActionInput {
+                sourceDevice: keyboardSourceDevice
+                keys: [Qt.Key_J]
+           }
+           ]
+     }
+    \end
     \since 5.7
 */
 
@@ -97,9 +119,23 @@ QInputChord::~QInputChord()
 }
 
 /*!
+  \fn QInputChord::toleranceChanged()
+
+  This signal is emitted when the tolerance of the input chord is changed.
+*/
+
+/*!
   \qmlproperty int Qt3D.Input::InputChord::tollerance
 
-  the time in milliseconds in which all QAbstractActionInput's in the input chord must triggered within.
+  The time in milliseconds in which all QAbstractActionInput's in the input chord must triggered within.
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::InputChord::tolleranceChanged()
+
+    This signal is emitted when the tolerance of the input chord is changed.
+
+    The corresponding handeler is \c onTolleranceChanged
 */
 
 /*!

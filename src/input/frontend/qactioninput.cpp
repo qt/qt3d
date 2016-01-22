@@ -65,6 +65,7 @@ public:
     \inmodule Qt3DInput
     \inherits QAbstractActionInput
     \brief QActionInput stores Device and Keys used to trigger an input event.
+
     \since 5.7
 */
 
@@ -76,6 +77,20 @@ public:
     \brief QML frontend for the Qt3DInput::QActionInput C++ class.
 
     Links a physical device and selected keys on it which can trigger this action.
+
+    Each Action input can be triggered by one or many keys on a source device
+    \qml
+    ActionInput {
+      sourceDevice: keyboardSourceDevice
+      keys: [Qt.Key_A]
+    }
+    \endqml
+   \qml
+    ActionInput {
+      sourceDevice: keyboardSourceDevice
+      keys: [Qt.Key_A,Qt.Key_B]
+    }
+    \endqml
     \since 5.7
 */
 
@@ -106,9 +121,23 @@ QVariantList QActionInput::keys() const
 }
 
 /*!
+  \fn QAbstractPhysicalDevice::sourceDeviceChanged()
+
+  This signal is emitted when the source device ascociated with the action input is changed.
+*/
+
+/*!
   \qmlproperty QAbstractPhysicalDevice Qt3D.Input::ActionInput::sourceDevice
 
-  the current source device of the ActionInput
+  The current source device of the ActionInput
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::sourceDeviceChanged()
+
+    This signal is emitted when the source device ascociated with the action input is changed.
+
+    The corresponding handeler is \c onSourceDeviceChanged
 */
 
 /*!
@@ -139,9 +168,23 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 }
 
 /*!
+  \fn QAbstractPhysicalDevice::keysChanged()
+
+  This signal is emitted when the keys ascociated with the action input is changed.
+*/
+
+/*!
     \qmlproperty QVariantList Qt3D.Input::ActionInput::keys
 
     The Keys that can trigger this Action
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::keysChanged()
+
+    This signal is emitted when the keys ascociated with the action input is changed.
+
+    The corresponding handeler is \c onkeysChanged
 */
 
 /*!

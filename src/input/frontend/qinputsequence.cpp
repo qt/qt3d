@@ -80,6 +80,24 @@ public:
     \brief QML frontend for the Qt3DInput::QInputSequence C++ class.
 
     Represents a set of QAbstractActionInput's that must be triggerd one after the other.
+
+    The following example shows a chord that will be triggered by pressing the A and S keys together with a tolerence of 10 miliseconds between presses.
+    \qml
+    InputChord {
+      tolerance: 10
+      inputs: [
+         ActionInput {
+             sourceDevice: keyboardSourceDevice
+             keys: [Qt.Key_A]
+         },
+         ActionInput {
+            sourceDevice: keyboardSourceDevice
+            keys: [Qt.Key_S]
+         }
+         ]
+    }
+    \endqml
+
     \since 5.7
 */
 
@@ -101,9 +119,23 @@ QInputSequence::~QInputSequence()
 }
 
 /*!
+  \fn QInputSequence::timeoutChanged()
+
+  This signal is emitted when the timeout of the input sequence is changed.
+*/
+
+/*!
   \qmlproperty int Qt3D.Input::InputSequence::timeout
 
-  the time in milliseconds in which all QAbstractActionInput's in the input sequence must triggered within.
+  The time in milliseconds in which all QAbstractActionInput's in the input sequence must triggered within.
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::InputSequence::timeoutChanged()
+
+    This signal is emitted when the timeout of the input sequence is changed.
+
+    The corresponding handeler is \c onTimeoutChanged
 */
 
 /*!
@@ -117,9 +149,23 @@ int QInputSequence::timeout() const
 }
 
 /*!
+  \fn QInputSequence::intervalChanged()
+
+  This signal is emitted when the interval of the input sequence is changed.
+*/
+
+/*!
   \qmlproperty int Qt3D.Input::InputSequence::interval
 
-  the maximum time in milliseconds in between consecutive QAbstractActionInput's in the input sequence.
+  The maximum time in milliseconds in between consecutive QAbstractActionInput's in the input sequence.
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::InputSequence::intervalChanged()
+
+    This signal is emitted when the interval of the input sequence is changed.
+
+    The corresponding handeler is \c onIntervalChanged
 */
 
 /*!
@@ -133,9 +179,23 @@ int QInputSequence::interval() const
 }
 
 /*!
+  \fn QInputSequence::sequentialChanged()
+
+  This signal is emitted when the sequential property of the input sequence is changed.
+*/
+
+/*!
   \qmlproperty bool Qt3D.Input::InputSequence::sequential
 
-  if the QAbstractActionInput's in the input sequence must triggered in order.
+  If the QAbstractActionInput's in the input sequence must triggered in order.
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::InputSequence::sequentialChanged()
+
+    This signal is emitted when the sequential property of the input sequence is changed.
+
+    The corresponding handeler is \c onSequentialChanged
 */
 
 /*!

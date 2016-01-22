@@ -46,7 +46,9 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*!
+    \internal
+*/
 class QLogicalDevicePrivate : public Qt3DCore::QNodePrivate
 {
 public:
@@ -59,31 +61,112 @@ public:
 };
 
 /*!
- * \qmltype LogicalDevice
- * \inqmlmodule Qt3D.Input
- * \since 5.5
- * \TODO
- *
- */
+    \class Qt3DInput::QLogicalDevice
+    \inmodule Qt3DInput
+    \inherits Qt3DCore::QNode
+    \brief QLogicalDevice allows the user to define a set of actions that they wish to use within an application.
+
+    \since 5.6
+*/
 
 /*!
- * \class Qt3DInput::QLogicalDevice
- * \inmodule Qt3DInput
- * \since 5.5
- * \TODO
- *
- */
+    \qmltype LogicalDevice
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3DInput::QLogicalDevice
+    \brief QML frontend for the Qt3DInput::QLogicalDevice C++ class.
 
+    Allows the user to define a set of actions that they wish to use within an application.
+
+    \qml
+    LogicalDevice {
+        id: keyboardLogicalDevice
+
+        actions: [
+            Action {
+                name: "fire"
+                inputs: [
+                    ActionInput {
+                        sourceDevice: keyboardSourceDevice
+                        keys: [Qt.Key_Space]
+                    },
+                    InputChord {
+                        tolerance: 10
+                        inputs: [
+                            ActionInput {
+                                sourceDevice: keyboardSourceDevice
+                                keys: [Qt.Key_A]
+                            },
+                            ActionInput {
+                                sourceDevice: keyboardSourceDevice
+                                keys: [Qt.Key_S]
+                            }
+                        ]
+                    },
+                ]
+            },
+            Action {
+                name: "reload"
+                inputs: [
+                    ActionInput {
+                        sourceDevice: keyboardSourceDevice
+                        keys: [Qt.Key_Alt]
+                    }
+                ]
+            }
+            Action {
+                name: "combo"
+                inputs: [
+                    InputSequence {
+                        interval: 1000
+                        timeout: 10000
+                        inputs: [
+                            ActionInput {
+                                sourceDevice: keyboardSourceDevice
+                                keys: [Qt.Key_G]
+                            },
+                            ActionInput {
+                                sourceDevice: keyboardSourceDevice
+                                keys: [Qt.Key_D]
+                            },
+                            ActionInput {
+                                sourceDevice: keyboardSourceDevice
+                                keys: [Qt.Key_J]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    \endqml
+
+    \since 5.6
+*/
+
+/*!
+    Constructs a new QLogicalDevice instance with parent \a parent.
+ */
 QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QLogicalDevicePrivate(), parent)
 {
 }
 
+/*!
+    Deletes the QLogicalDevice instance.
+ */
 QLogicalDevice::~QLogicalDevice()
 {
     QNode::cleanup();
 }
 
+/*!
+  \qmlproperty QQmlListProperty<Action> Qt3D.Input::LogicalDevice::actions
+
+  The actions used by this Logical Device
+*/
+
+/*!
+    Add an action to the list of actions.
+ */
 void QLogicalDevice::addAction(QAction *action)
 {
     Q_D(QLogicalDevice);
@@ -102,6 +185,9 @@ void QLogicalDevice::addAction(QAction *action)
     }
 }
 
+/*!
+    Remove an action from the list of actions.
+ */
 void QLogicalDevice::removeAction(QAction *action)
 {
     Q_D(QLogicalDevice);
@@ -118,12 +204,24 @@ void QLogicalDevice::removeAction(QAction *action)
     }
 }
 
+/*!
+    Returns the list of actions.
+ */
 QVector<QAction *> QLogicalDevice::actions() const
 {
     Q_D(const QLogicalDevice);
     return d->m_actions;
 }
 
+/*!
+  \qmlproperty QQmlListProperty<Axis> Qt3D.Input::LogicalDevice::axis
+
+  The axis used by this Logical Device
+*/
+
+/*!
+    Add an axis to the list of axis.
+ */
 void QLogicalDevice::addAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
@@ -143,6 +241,9 @@ void QLogicalDevice::addAxis(QAxis *axis)
     }
 }
 
+/*!
+    Remove an axis drom the list of axis.
+ */
 void QLogicalDevice::removeAxis(QAxis *axis)
 {
     Q_D(QLogicalDevice);
@@ -158,6 +259,9 @@ void QLogicalDevice::removeAxis(QAxis *axis)
     }
 }
 
+/*!
+    Returns the list of axis.
+ */
 QVector<QAxis *> QLogicalDevice::axes() const
 {
     Q_D(const QLogicalDevice);

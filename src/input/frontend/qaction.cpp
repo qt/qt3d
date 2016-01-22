@@ -95,9 +95,23 @@ QAction::~QAction()
 }
 
 /*!
+  \fn QAction::nameChanged()
+
+  This signal is emitted when the name of the Action is changed.
+*/
+
+/*!
   \qmlproperty QString Qt3D.Input::Action::name
 
   the name used to identify this action
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::Action::nameChanged()
+
+    This signal is emitted when the name of the Action is changed.
+
+    The corresponding handeler is \c onNameChanged
 */
 
 /*!

@@ -56,22 +56,51 @@ QAxisActionHandlerPrivate::QAxisActionHandlerPrivate()
 }
 
 /*!
- * \qmltype AxisActionHandler
- * \instantiates Qt3DInput::QAxisActionHandler
- * \inqmlmodule Qt3D.Input
- * \since 5.5
- * \TODO
- *
- */
+    \class Qt3DInput::QAxisActionHandler
+    \inmodule Qt3DInput
+    \inherits Qt3DCore::QComponent
+    \brief QAxisActionHandler is the main link between Qt3d Actions and the rest of the program.
+
+    It is responsible for linking to the actions on the connected logical device and performing
+    some meaninful work within the application.
+
+    \since 5.7
+*/
 
 /*!
- * \class Qt3DInput::QAxisActionHandler
- * \inmodule Qt3DInput
- * \since 5.5
- * \TODO
- *
- */
+    \qmltype AxisActionHandler
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3DInput::QAxisActionHandler
+    \brief QML frontend for the Qt3DInput::QAxisActionHandler C++ class.
 
+    QAxisActionHandler is the main link between Qt3d Actions and the rest of the program.
+
+    It is responsible for linking to the actions on the connected logical device and performing
+    some meaninful work within the application.
+
+    \qml
+    AxisActionHandler {
+        id: axisActionHandler
+        logicalDevice: keyboardLogicalDevice
+
+        onActionStarted: {
+            if (name === "fire")
+                console.log("Firing")
+        }
+
+        onActionFinished: {
+            if (name === "fire")
+                console.log("Stopped Firing")
+        }
+
+    }
+    \endqml
+    \since 5.7
+*/
+
+/*!
+    Constructs a new QAxisActionHandler instance with parent \a parent.
+ */
 QAxisActionHandler::QAxisActionHandler(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QAxisActionHandlerPrivate, parent)
 {
@@ -83,17 +112,45 @@ QAxisActionHandler::QAxisActionHandler(QAxisActionHandlerPrivate &dd, Qt3DCore::
 
 }
 
+/*!
+    Deletes the QAxisActionHandler instance.
+ */
 QAxisActionHandler::~QAxisActionHandler()
 {
     QNode::cleanup();
 }
 
+/*!
+  \fn QAxisActionHandler::logicalDeviceChanged()
+
+  This signal is emitted when the logical device ascociated with the handeler is changed.
+*/
+
+/*!
+  \qmlproperty LogicalDevice Qt3D.Input::AxisActionHandler::logicalDevice
+
+  The current logical device of the assocciated with this handeler
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::AxisActionHandler::logicalDeviceChanged()
+
+    This signal is emitted when the logical device ascociated with the handeler is changed.
+
+    The corresponding handeler is \c onLogicalDeviceChanged
+*/
+/*!
+    Return the logical device whos actions and actions this object handles.
+ */
 Qt3DInput::QLogicalDevice *QAxisActionHandler::logicalDevice() const
 {
     Q_D(const QAxisActionHandler);
     return d->m_logicalDevice;
 }
 
+/*!
+    Set the logical device whos actions and actions this object handles.
+ */
 void QAxisActionHandler::setLogicalDevice(Qt3DInput::QLogicalDevice *logicalDevice)
 {
     Q_D(QAxisActionHandler);
