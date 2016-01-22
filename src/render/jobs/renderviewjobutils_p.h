@@ -79,7 +79,7 @@ class NodeManagers;
 class ShaderDataManager;
 struct ShaderUniform;
 class ShaderData;
-class RenderState;
+class RenderStateManager;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -132,8 +132,9 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
 Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
                                                             const QString &name);
 
-Q_AUTOTEST_EXPORT RenderStateSet *buildRenderStateSet(const QList<RenderState*> &states,
-                                                      Qt3DCore::QFrameAllocator *allocator);
+Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
+                                           const QList<Qt3DCore::QNodeId> &nodeIds,
+                                           RenderStateManager *manager);
 
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder

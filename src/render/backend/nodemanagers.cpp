@@ -85,6 +85,7 @@ NodeManagers::NodeManagers()
     , m_boundingVolumeDebugManager(new BoundingVolumeDebugManager())
     , m_lightManager(new LightManager())
     , m_computeJobManager(new ComputeJobManager())
+    , m_renderStateManager(new RenderStateManager())
 {
 }
 
@@ -272,6 +273,12 @@ template<>
 ComputeJobManager *NodeManagers::manager<ComputeJob>() const Q_DECL_NOEXCEPT
 {
     return m_computeJobManager;
+}
+
+template<>
+RenderStateManager *NodeManagers::manager<RenderStateNode>() const Q_DECL_NOEXCEPT
+{
+    return m_renderStateManager;
 }
 
 } // Render

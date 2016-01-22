@@ -209,9 +209,9 @@ void Renderer::buildDefaultTechnique()
     basicPass->setShaderProgram(defaultShader);
 
     m_defaultRenderStateSet = new RenderStateSet;
-    m_defaultRenderStateSet->addState(DepthTest::getOrCreate(GL_LESS));
-    m_defaultRenderStateSet->addState(CullFace::getOrCreate(GL_BACK));
-    m_defaultRenderStateSet->addState(ColorMask::getOrCreate(true, true, true, true));
+    m_defaultRenderStateSet->addState(createRenderStateImpl<DepthTest>()->set(GL_LESS));
+    m_defaultRenderStateSet->addState(createRenderStateImpl<CullFace>()->set(GL_BACK));
+    m_defaultRenderStateSet->addState(createRenderStateImpl<ColorMask>()->set(true, true, true, true));
     //basicPass->setStateSet(m_defaultRenderStateSet);
 
     m_defaultTechnique->addPass(basicPass);

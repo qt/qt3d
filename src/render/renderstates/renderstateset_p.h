@@ -72,7 +72,7 @@ public:
     RenderStateSet();
     ~RenderStateSet();
 
-    void addState(RenderState* ds);
+    void addState(RenderStateImpl* ds);
 
     /**
      * @brief changeCost - metric of cost to change to this state-set from
@@ -94,14 +94,14 @@ private:
      * @param ds
      * @return
      */
-    bool contains(RenderState* ds) const;
+    bool contains(RenderStateImpl* ds) const;
 
-    QVector<RenderState*> m_states;
+    QVector<RenderStateImpl*> m_states;
 
     StateMaskSet m_stateMask;
 
     RenderStateSet* m_cachedPrevious;
-    QVector<RenderState*> m_cachedDeltaStates;
+    QVector<RenderStateImpl*> m_cachedDeltaStates;
 };
 
 } // namespace Render

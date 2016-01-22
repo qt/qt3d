@@ -66,6 +66,7 @@
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/renderpass_p.h>
+#include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
@@ -366,6 +367,16 @@ class ComputeJobManager : public Qt3DCore::QResourceManager<
 public:
     ComputeJobManager() {}
 };
+
+class RenderStateManager : public Qt3DCore::QResourceManager<
+        RenderStateNode,
+        Qt3DCore::QNodeId,
+        16,
+        Qt3DCore::ArrayAllocatingPolicy,
+        Qt3DCore::ObjectLevelLockingPolicy>
+{
+};
+
 
 } // namespace Render
 } // namespace Qt3DRender

@@ -40,6 +40,9 @@
 
 #include "renderstates_p.h"
 
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/qrenderstate.h>
+
 #include <Qt3DRender/private/graphicscontext_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -47,18 +50,32 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-template <class State>
-State* getOrCreateImpl(const State& data)
+void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
 {
-    static QList<State*> static_instances;
-    foreach (State* ext, static_instances) {
-        if (ext->isEqual(data))
-            return ext;
-    }
+    Q_UNUSED(name);
+    Q_UNUSED(value);
+}
 
-    State* result = new State(data);
-    static_instances.append(result);
-    return result;
+RenderStateNode::RenderStateNode()
+    : QBackendNode()
+    , m_impl(NULL)
+{
+}
+
+void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    QRenderState *renderState = static_cast<QRenderState *>(peer);
+
+    // TODO: allocate m_impl
+    m_impl = RenderStateImpl::setOrCreateState(renderState, Q_NULLPTR);
+}
+
+void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+        m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
+    }
 }
 
 void BlendState::apply(GraphicsContext* gc) const
@@ -89,17 +106,14 @@ void BlendState::apply(GraphicsContext* gc) const
     }
 }
 
-BlendState *BlendState::getOrCreate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf)
+void BlendState::updateProperty(const char *name, const QVariant &value)
 {
-    BlendState bs(srcRGB, dstRGB, srcAlpha, dstAlpha, enabled, buf);
-    return getOrCreateImpl(bs);
-}
-
-BlendState::BlendState(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha, bool enabled, int buf) :
-    GenericState6<BlendState, GLenum, GLenum, GLenum, GLenum, bool, int>(
-        srcRGB, dstRGB, srcAlpha, dstAlpha, enabled, buf
-    )
-{
+         if (name == QByteArrayLiteral("srcRGB")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("dstRGB")) m_2 = value.toInt();
+    else if (name == QByteArrayLiteral("srcAlpha")) m_3 = value.toInt();
+    else if (name == QByteArrayLiteral("dstAlphaB")) m_4 = value.toInt();
+    else if (name == QByteArrayLiteral("enabled")) m_5 = value.toBool();
+    else if (name == QByteArrayLiteral("bufferIndex")) m_6 = value.toInt();
 }
 
 void BlendEquation::apply(GraphicsContext *gc) const
@@ -107,31 +121,14 @@ void BlendEquation::apply(GraphicsContext *gc) const
     gc->blendEquation(m_1);
 }
 
-BlendEquation *BlendEquation::getOrCreate(GLenum func)
+void BlendEquation::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(BlendEquation(func));
+    if (name == QByteArrayLiteral("mode")) m_1 = value.toInt();
 }
-
-BlendEquation::BlendEquation(GLenum func) :
-    GenericState1<BlendEquation, GLenum>(func)
-{
-}
-
 
 void AlphaFunc::apply(GraphicsContext* gc) const
 {
     gc->alphaTest(m_1, m_2);
-}
-
-AlphaFunc *AlphaFunc::getOrCreate(GLenum func, GLclampf value)
-{
-    AlphaFunc af(func, value);
-    return getOrCreateImpl(af);
-}
-
-AlphaFunc::AlphaFunc(GLenum func, GLclampf value) :
-    GenericState2<AlphaFunc, GLenum, GLclampf>(func, value)
-{
 }
 
 void DepthTest::apply(GraphicsContext *gc) const
@@ -139,15 +136,9 @@ void DepthTest::apply(GraphicsContext *gc) const
     gc->depthTest(m_1);
 }
 
-DepthTest *DepthTest::getOrCreate(GLenum func)
+void DepthTest::updateProperty(const char *name, const QVariant &value)
 {
-    DepthTest dt(func);
-    return getOrCreateImpl(dt);
-}
-
-DepthTest::DepthTest(GLenum func) :
-    GenericState1<DepthTest, GLenum>(func)
-{
+    if (name == QByteArrayLiteral("func")) m_1 = value.toInt();
 }
 
 void CullFace::apply(GraphicsContext *gc) const
@@ -155,14 +146,9 @@ void CullFace::apply(GraphicsContext *gc) const
     gc->cullFace(m_1);
 }
 
-CullFace *CullFace::getOrCreate(GLenum func)
+void CullFace::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(CullFace(func));
-}
-
-CullFace::CullFace(GLenum func) :
-    GenericState1<CullFace, GLenum>(func)
-{
+    if (name == QByteArrayLiteral("mode")) m_1 = value.toInt();
 }
 
 void FrontFace::apply(GraphicsContext *gc) const
@@ -170,14 +156,9 @@ void FrontFace::apply(GraphicsContext *gc) const
     gc->frontFace(m_1);
 }
 
-FrontFace *FrontFace::getOrCreate(GLenum func)
+void FrontFace::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(FrontFace(func));
-}
-
-FrontFace::FrontFace(GLenum func) :
-    GenericState1<FrontFace, GLenum>(func)
-{
+    if (name == QByteArrayLiteral("direction")) m_1 = value.toInt();
 }
 
 void DepthMask::apply(GraphicsContext *gc) const
@@ -185,34 +166,14 @@ void DepthMask::apply(GraphicsContext *gc) const
    gc->depthMask(m_1);
 }
 
-DepthMask *DepthMask::getOrCreate(GLboolean flag)
+void DepthMask::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(DepthMask(flag));
-}
-
-DepthMask::DepthMask(GLboolean flag) :
-    GenericState1<DepthMask, GLboolean>(flag)
-{
-}
-
-Dithering::Dithering()
-    : RenderState()
-{
+    if (name == QByteArrayLiteral("mask")) m_1 = value.toBool();
 }
 
 void Dithering::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glEnable(GL_DITHER);
-}
-
-Dithering *Dithering::getOrCreate()
-{
-    return getOrCreateImpl(Dithering());
-}
-
-ScissorTest::ScissorTest(int left, int bottom, int width, int height)
-    : GenericState4<ScissorTest, int, int, int, int>(left, bottom, width, height)
-{
 }
 
 void ScissorTest::apply(GraphicsContext *gc) const
@@ -221,21 +182,12 @@ void ScissorTest::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glScissor(m_1, m_2, m_3, m_4);
 }
 
-ScissorTest *ScissorTest::getOrCreate(int left, int bottom, int width, int height)
+void ScissorTest::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(ScissorTest(left, bottom, width, height));
-}
-
-StencilTest *StencilTest::getOrCreate(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
-{
-    return getOrCreateImpl(StencilTest(frontFunc, frontRef, frontMask,
-                                       backFunc, backRef, backMask));
-}
-
-StencilTest::StencilTest(GLenum frontFunc, int frontRef, uint frontMask, GLenum backFunc, int backRef, uint backMask)
-    : GenericState6<StencilTest, GLenum, int, uint, GLenum, int, uint>(frontFunc, frontRef, frontMask,
-                                                                       backFunc, backRef, backMask)
-{
+         if (name == QByteArrayLiteral("left")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("bottom")) m_2 = value.toInt();
+    else if (name == QByteArrayLiteral("width")) m_3 = value.toInt();
+    else if (name == QByteArrayLiteral("height")) m_4 = value.toInt();
 }
 
 void StencilTest::apply(GraphicsContext *gc) const
@@ -245,19 +197,9 @@ void StencilTest::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilFuncSeparate(GL_BACK, m_4, m_5, m_6);
 }
 
-AlphaCoverage::AlphaCoverage()
-    : RenderState()
-{
-}
-
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
     gc->enableAlphaCoverage();
-}
-
-AlphaCoverage *AlphaCoverage::getOrCreate()
-{
-    return getOrCreateImpl(AlphaCoverage());
 }
 
 void PointSize::apply(GraphicsContext *gc) const
@@ -265,14 +207,10 @@ void PointSize::apply(GraphicsContext *gc) const
     gc->pointSize(m_1, m_2);
 }
 
-PointSize *PointSize::getOrCreate(bool programmable, GLfloat value)
+void PointSize::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(PointSize(programmable, value));
-}
-
-PointSize::PointSize(bool programmable, GLfloat value)
-    : GenericState2<PointSize, bool, GLfloat>(programmable, value)
-{
+         if (name == QByteArrayLiteral("specification")) m_1 = value.toBool();
+    else if (name == QByteArrayLiteral("value")) m_2 = value.toFloat();
 }
 
 void PolygonOffset::apply(GraphicsContext *gc) const
@@ -281,14 +219,10 @@ void PolygonOffset::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glPolygonOffset(m_1, m_2);
 }
 
-PolygonOffset *PolygonOffset::getOrCreate(GLfloat factor, GLfloat units)
+void PolygonOffset::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(PolygonOffset(factor, units));
-}
-
-PolygonOffset::PolygonOffset(GLfloat factor, GLfloat units)
-    : GenericState2<PolygonOffset, GLfloat, GLfloat>(factor, units)
-{
+         if (name == QByteArrayLiteral("factor")) m_1 = value.toFloat();
+    else if (name == QByteArrayLiteral("units")) m_2 = value.toFloat();
 }
 
 void ColorMask::apply(GraphicsContext *gc) const
@@ -296,14 +230,12 @@ void ColorMask::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glColorMask(m_1, m_2, m_3, m_4);
 }
 
-ColorMask::ColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
-    : GenericState4<ColorMask, GLboolean, GLboolean, GLboolean, GLboolean>(red, green, blue, alpha)
+void ColorMask::updateProperty(const char *name, const QVariant &value)
 {
-}
-
-ColorMask *ColorMask::getOrCreate(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha)
-{
-    return getOrCreateImpl(ColorMask(red, green, blue, alpha));
+         if (name == QByteArrayLiteral("red")) m_1 = value.toBool();
+    else if (name == QByteArrayLiteral("green")) m_2 = value.toBool();
+    else if (name == QByteArrayLiteral("blue")) m_3 = value.toBool();
+    else if (name == QByteArrayLiteral("alpha")) m_4 = value.toBool();
 }
 
 void ClipPlane::apply(GraphicsContext *gc) const
@@ -311,14 +243,9 @@ void ClipPlane::apply(GraphicsContext *gc) const
     gc->enableClipPlane(m_1);
 }
 
-ClipPlane::ClipPlane(int plane)
-    : GenericState1<ClipPlane, int>(plane)
+void ClipPlane::updateProperty(const char *name, const QVariant &value)
 {
-}
-
-ClipPlane *ClipPlane::getOrCreate(int plane)
-{
-    return getOrCreateImpl(ClipPlane(plane));
+    if (name == QByteArrayLiteral("plane")) m_1 = value.toInt();
 }
 
 void StencilOp::apply(GraphicsContext *gc) const
@@ -327,30 +254,16 @@ void StencilOp::apply(GraphicsContext *gc) const
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_BACK, m_4, m_5, m_6);
 }
 
-StencilOp *StencilOp::getOrCreate(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
-{
-    return getOrCreateImpl(StencilOp(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass));
-}
-
-StencilOp::StencilOp(GLenum fsfail, GLenum fdfail, GLenum fdspass, GLenum bsfail, GLenum bdfail, GLenum bdspass)
-    : GenericState6<StencilOp, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>(fsfail, fdfail, fdspass, bsfail, bdfail, bdspass)
-{
-}
-
 void StencilMask::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilMaskSeparate(GL_FRONT, m_1);
     gc->openGLContext()->functions()->glStencilMaskSeparate(GL_BACK, m_2);
 }
 
-StencilMask *StencilMask::getOrCreate(uint frontMask, uint backMask)
+void StencilMask::updateProperty(const char *name, const QVariant &value)
 {
-    return getOrCreateImpl(StencilMask(frontMask, backMask));
-}
-
-StencilMask::StencilMask(uint frontMask, uint backMask)
-    : GenericState2<StencilMask, uint, uint>(frontMask, backMask)
-{
+         if (name == QByteArrayLiteral("frontMask")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("backMask")) m_2 = value.toInt();
 }
 
 } // namespace Render

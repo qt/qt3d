@@ -526,7 +526,9 @@ void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
                 // RenderPass { renderStates: [] } will use the states defined by
                 // StateSet in the FrameGraph
                 if (!pass->renderStates().isEmpty()) {
-                    command->m_stateSet = buildRenderStateSet(pass->renderStates(), m_allocator);
+                    command->m_stateSet = m_allocator->allocate<RenderStateSet>();
+                    addToRenderStateSet(command->m_stateSet, pass->renderStates(), m_manager->renderStateManager());
+
                     // Merge per pass stateset with global stateset
                     // so that the local stateset only overrides
                     if (m_stateSet != Q_NULLPTR)

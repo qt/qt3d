@@ -86,7 +86,7 @@ void RenderPass::updateFromPeer(Qt3DCore::QNode *peer)
     Q_FOREACH (QAnnotation *c, pass->annotations())
         appendAnnotation(c->id());
     Q_FOREACH (QRenderState *renderState, pass->renderStates())
-        appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+        appendRenderState(renderState->id());
     Q_FOREACH (QParameter *p, pass->parameters())
         m_parameterPack.appendParameter(p->id());
 }
@@ -105,8 +105,7 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             appendBinding(ParameterMapping(propertyChange->value().value<QParameterMapping *>()));
         } else if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-            QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
-            appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+            appendRenderState(nodePtr->id());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         }
@@ -148,9 +147,9 @@ QList<Qt3DCore::QNodeId> RenderPass::annotations() const
     return m_annotationList;
 }
 
-QList<RenderState *> RenderPass::renderStates() const
+QList<Qt3DCore::QNodeId> RenderPass::renderStates() const
 {
-    return m_renderStates.values();
+    return m_renderStates;
 }
 
 QList<Qt3DCore::QNodeId> RenderPass::parameters() const
@@ -180,15 +179,15 @@ void RenderPass::removeBinding(const Qt3DCore::QNodeId &bindingId)
     m_bindings.remove(bindingId);
 }
 
-void RenderPass::appendRenderState(const Qt3DCore::QNodeId &id, RenderState *renderState)
+void RenderPass::appendRenderState(const Qt3DCore::QNodeId &renderStateId)
 {
-    if (!m_renderStates.contains(id))
-        m_renderStates[id] = renderState;
+    if (!m_renderStates.contains(renderStateId))
+        m_renderStates.append(renderStateId);
 }
 
 void RenderPass::removeRenderState(const Qt3DCore::QNodeId &renderStateId)
 {
-    m_renderStates.remove(renderStateId);
+    m_renderStates.removeAll(renderStateId);
 }
 
 } // namespace Render

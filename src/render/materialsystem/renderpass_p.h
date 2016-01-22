@@ -88,7 +88,7 @@ public:
     Qt3DCore::QNodeId shaderProgram() const;
     QList<ParameterMapping> bindings() const;
     QList<Qt3DCore::QNodeId> annotations() const;
-    QList<RenderState *> renderStates() const;
+    QList<Qt3DCore::QNodeId> renderStates() const;
     QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
@@ -98,12 +98,12 @@ private:
     void appendBinding(const ParameterMapping &binding);
     void removeBinding(const Qt3DCore::QNodeId &bindingId);
 
-    void appendRenderState(const Qt3DCore::QNodeId &id, RenderState *renderState);
+    void appendRenderState(const Qt3DCore::QNodeId &renderStateId);
     void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
 
     Qt3DCore::QNodeId m_shaderUuid;
     QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;
-    QHash<Qt3DCore::QNodeId, RenderState *> m_renderStates;
+    QList<Qt3DCore::QNodeId> m_renderStates;
     QList<Qt3DCore::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };

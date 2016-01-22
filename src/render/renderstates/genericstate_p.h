@@ -53,6 +53,7 @@
 //
 
 #include <QList>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -86,108 +87,175 @@ enum StateMask
 
 typedef quint64 StateMaskSet;
 
-class Q_AUTOTEST_EXPORT RenderState
+class RenderStateImpl
 {
 public:
-    virtual ~RenderState() {}
+    virtual ~RenderStateImpl() {}
+
     virtual void apply(GraphicsContext* gc) const = 0;
     virtual StateMaskSet mask() const = 0;
+    virtual bool equalTo(const RenderStateImpl &renderState) const = 0;
 
-    static RenderState *getOrCreateBackendState(QRenderState *renderState);
+    static RenderStateImpl* setOrCreateState(QRenderState *renderState, RenderStateImpl *target);
+    virtual void updateProperty(const char *name, const QVariant &value);
 };
 
-template <typename Derived, typename T>
-class GenericState1 : public RenderState
+/**
+ * @brief Backend Render State Node
+ */
+class Q_AUTOTEST_EXPORT RenderStateNode : public Qt3DCore::QBackendNode
 {
 public:
+    RenderStateNode();
+    virtual ~RenderStateNode() {}
 
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1); }
+    virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
+    StateMaskSet mask() const { return m_impl->mask(); }
+
+    RenderStateImpl *impl() const { return m_impl; }
 
 protected:
-    GenericState1(T t) :
-        m_1(t)
-    {}
+    RenderStateImpl *m_impl;
+};
 
+template <StateMaskSet Mask>
+class MaskedRenderState : public RenderStateImpl
+{
+public:
+    StateMaskSet mask() const Q_DECL_OVERRIDE
+    {
+        return Mask;
+    }
+};
+
+template <StateMaskSet Mask, typename T>
+class GenericState1 : public MaskedRenderState<Mask>
+{
+public:
+    GenericState1 *set(const T& v1)
+    {
+        m_1 = v1;
+        return this;
+    }
+    virtual bool equalTo(const RenderStateImpl &renderState) const
+    {
+        const GenericState1 *other = dynamic_cast<const GenericState1*>(&renderState);
+        return (other != NULL
+                && other->m_1 == m_1);
+    }
+
+protected:
     T m_1;
-
 };
 
-template <typename Derived, typename T, typename S>
-class GenericState2 : public RenderState
+template <StateMaskSet Mask, typename T, typename S>
+class GenericState2 : public MaskedRenderState<Mask>
 {
 public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2); }
+    GenericState2 *set(const T& v1, const S& v2)
+    {
+        m_1 = v1;
+        m_2 = v2;
+        return this;
+    }
+    virtual bool equalTo(const RenderStateImpl &renderState) const
+    {
+        const GenericState2 *other = dynamic_cast<const GenericState2*>(&renderState);
+        return (other != NULL
+                && other->m_1 == m_1
+                && other->m_2 == m_2);
+    }
+
 protected:
-    GenericState2(T t, S s) :
-        m_1(t),
-        m_2(s)
-    {}
-
-
     T m_1;
     S m_2;
 };
 
-template <typename Derived, typename T, typename S, typename U>
-class GenericState3 : public RenderState
+template <StateMaskSet Mask, typename T, typename S, typename U>
+class GenericState3 : public MaskedRenderState<Mask>
 {
 public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3); }
+    GenericState3 *set(const T& v1, const S& v2, const U& v3)
+    {
+        m_1 = v1;
+        m_2 = v2;
+        m_3 = v3;
+        return this;
+    }
+    virtual bool equalTo(const RenderStateImpl &renderState) const
+    {
+        const GenericState3 *other = dynamic_cast<const GenericState3*>(&renderState);
+        return (other != NULL
+                && other->m_1 == m_1
+                && other->m_2 == m_2
+                && other->m_3 == m_3);
+    }
 
 protected:
-    GenericState3(T t, S s, U u) :
-        m_1(t),
-        m_2(s),
-        m_3(u)
-    {}
-
     T m_1;
     S m_2;
     U m_3;
 };
 
-template <typename Derived, typename T, typename S, typename U, typename Z>
-class GenericState4 : public RenderState
+template <StateMaskSet Mask, typename T, typename S, typename U, typename Z>
+class GenericState4 : public MaskedRenderState<Mask>
 {
 public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4); }
+    GenericState4 *set(const T& v1, const S& v2, const U& v3, const Z& v4)
+    {
+        m_1 = v1;
+        m_2 = v2;
+        m_3 = v3;
+        m_4 = v4;
+        return this;
+    }
+    virtual bool equalTo(const RenderStateImpl &renderState) const
+    {
+        const GenericState4 *other = dynamic_cast<const GenericState4*>(&renderState);
+        return (other != NULL
+                && other->m_1 == m_1
+                && other->m_2 == m_2
+                && other->m_3 == m_3
+                && other->m_4 == m_4);
+    }
 
 protected:
-    GenericState4(T t, S s, U u, Z z) :
-        m_1(t),
-        m_2(s),
-        m_3(u),
-        m_4(z)
-    {}
-
     T m_1;
     S m_2;
     U m_3;
     Z m_4;
 };
 
-template <typename Derived, typename T, typename S, typename U, typename V, typename W, typename Z>
-class GenericState6 : public RenderState
+template <StateMaskSet Mask, typename T, typename S, typename U, typename V, typename W, typename Z>
+class GenericState6 : public MaskedRenderState<Mask>
 {
 public:
-    bool isEqual(const Derived& i) const
-    { return (m_1 == i.m_1) && (m_2 == i.m_2) && (m_3 == i.m_3) && (m_4 == i.m_4) && (m_5 == i.m_5) && (m_6 == i.m_6); }
+    GenericState6 *set(const T& v1, const S& v2, const U& v3, const V& v4, const W& v5, const Z& v6)
+    {
+        m_1 = v1;
+        m_2 = v2;
+        m_3 = v3;
+        m_4 = v4;
+        m_5 = v5;
+        m_6 = v6;
+        return this;
+    }
+    virtual bool equalTo(const RenderStateImpl &renderState) const
+    {
+        const GenericState6 *other = dynamic_cast<const GenericState6*>(&renderState);
+        return (other != NULL
+                && other->m_1 == m_1
+                && other->m_2 == m_2
+                && other->m_3 == m_3
+                && other->m_4 == m_4
+                && other->m_5 == m_5
+                && other->m_6 == m_6);
+    }
 
 protected:
-    GenericState6(T t, S s, U u, V v, W w, Z z)
-        : m_1(t)
-        , m_2(s)
-        , m_3(u)
-        , m_4(v)
-        , m_5(w)
-        , m_6(z)
-    {}
-
     T m_1;
     S m_2;
     U m_3;

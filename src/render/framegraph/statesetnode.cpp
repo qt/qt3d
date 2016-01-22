@@ -66,12 +66,12 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
 
     setEnabled(stateSet->isEnabled());
     Q_FOREACH (QRenderState *renderState, stateSet->renderStates())
-        appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+        appendRenderState(renderState->id());
 }
 
-QList<RenderState *> StateSetNode::renderStates() const
+QList<Qt3DCore::QNodeId> StateSetNode::renderStates() const
 {
-    return m_renderStates.values();
+    return m_renderStates;
 }
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -81,8 +81,7 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case NodeAdded: {
         if (propertyChange->propertyName() == QByteArrayLiteral("renderState")) {
             QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-            QRenderState *renderState = static_cast<QRenderState *>(nodePtr.data());
-            appendRenderState(renderState->id(), RenderState::getOrCreateBackendState(renderState));
+            appendRenderState(nodePtr->id());
         }
     }
         break;
@@ -98,15 +97,15 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-void StateSetNode::appendRenderState(const Qt3DCore::QNodeId &id, RenderState *renderState)
+void StateSetNode::appendRenderState(const Qt3DCore::QNodeId &id)
 {
     if (!m_renderStates.contains(id))
-        m_renderStates[id] = renderState;
+        m_renderStates.append(id);
 }
 
 void StateSetNode::removeRenderState(const Qt3DCore::QNodeId &renderStateId)
 {
-    m_renderStates.remove(renderStateId);
+    m_renderStates.removeAll(renderStateId);
 }
 
 } // namespace Render

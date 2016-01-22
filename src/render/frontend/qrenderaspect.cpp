@@ -290,6 +290,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QDispatchCompute>(QBackendNodeFunctorPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QComputeJob>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::ComputeJob, Render::ComputeJobManager>(d->m_nodeManagers->computeJobManager())));
     registerBackendType<QRendererSettings>(QBackendNodeFunctorPtr(new Render::RendererSettingsFunctor(d->m_renderer)));
+    registerBackendType<QRenderState>(QBackendNodeFunctorPtr(new Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager>(d->m_nodeManagers->renderStateManager())));
 }
 
 void QRenderAspect::renderInitialize(QOpenGLContext *context)

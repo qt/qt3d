@@ -67,15 +67,15 @@ public:
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    QList<RenderState *> renderStates() const;
+    QList<Qt3DCore::QNodeId> renderStates() const;
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-    void appendRenderState(const Qt3DCore::QNodeId &id, RenderState *renderState);
+    void appendRenderState(const Qt3DCore::QNodeId &id);
     void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
 
-    QHash<Qt3DCore::QNodeId, RenderState *> m_renderStates;
+    QList<Qt3DCore::QNodeId> m_renderStates;
 };
 
 } // namespace Render
