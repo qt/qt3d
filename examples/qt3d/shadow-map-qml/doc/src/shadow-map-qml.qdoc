@@ -111,10 +111,10 @@
 
     \section1 Configuring the Framegraph
 
-    In Qt3D, the framegraph is the data-driven configuration for the rendering.
+    In Qt 3D, the framegraph is the data-driven configuration for the rendering.
     We implement the framegraph in the \e ShadowMapFrameGraph.qml file.
 
-    In addition to the Qt3D and Qt3D Renderer modules, we also import the
+    In addition to the Qt 3D and Qt 3D Render modules, we also import the
     Qt Quick module:
 
     \quotefromfile shadow-map-qml/ShadowMapFrameGraph.qml
@@ -157,7 +157,7 @@
     \section1 Generating the Shadow Map
 
     In the shadow map generation pass, we must render to an offscreen surface
-    (Framebuffer Object) which has a depth texture attachment. In Qt3D, it is
+    (Framebuffer Object) which has a depth texture attachment. In Qt 3D, it is
     represented by the RenderTarget entity, which has a number of attachments.
 
     In this example, we need only a depth attachment. We define it as a

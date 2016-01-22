@@ -30,12 +30,12 @@
     \title Qt 3D: Wireframe QML Example
     \ingroup qt3d-examples-qml
 
-    \brief A Qt3D QML application that implements a single-pass wireframe
+    \brief A Qt 3D QML application that implements a single-pass wireframe
     rendering method.
 
     \image qt3d-wireframe-rendering.png
 
-    \e {Qt3D Wireframe Rendering} illustrates how to draw a single entity
+    \e {Qt 3D Wireframe Rendering} illustrates how to draw a single entity
     (a trefoil knot) using a custom set of shaders to implement a single-pass
     wireframe rendering method.
 
@@ -92,7 +92,7 @@
 
     \printuntil }
 
-    In addition to the \l Mesh element, Qt3D also enables dynamic generation of
+    In addition to the \l Mesh element, Qt 3D also enables dynamic generation of
     per-vertex attribute data through C++ hooks that are called by the
     task-based engine.
 
@@ -154,7 +154,7 @@
 
     \section1 Mapping Materials
 
-    Qt3D has a robust and very flexible \l {Qt 3D Overview#Materials}{material
+    Qt 3D has a robust and very flexible \l {Qt 3D Overview#Materials}{material
     system} that allows multiple levels of customization. We use the
     WireframeMaterial custom type to wrap the \l Material type:
 
@@ -165,7 +165,7 @@
     \skipto TrefoilKnot
     \printuntil }
 
-    The Qt3D engine in conjunction with the renderer aspect now has enough
+    The Qt 3D engine in conjunction with the renderer aspect now has enough
     information to finally render our mesh using the material we specified.
 
     \section1 Using Animation Elements

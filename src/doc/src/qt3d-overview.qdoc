@@ -42,7 +42,7 @@
     applications.
 
     Qt 3D provides a fully configurable renderer that enables developers to
-    quickly implement any rendering pipeline that they need. Further, Qt3D
+    quickly implement any rendering pipeline that they need. Further, Qt 3D
     provides a generic framework for near-realtime simulations beyond rendering.
 
     Qt 3D is cleanly separated into a core and any number of \e aspects that can
@@ -163,7 +163,7 @@
 
     \e Instancing is a way of getting the GPU to draw many copies (instances) of
     a base object that varies in some way for each copy. Often, in position,
-    orientation, color, material properties, scale, and so on. Qt3D provides an
+    orientation, color, material properties, scale, and so on. Qt 3D provides an
     API similar to the Qt Quick \l Repeater element. In this case, the delegate
     is the base object and the model provides the per-instance data. So whereas
     an entity with a \l Mesh component attached eventually gets transformed into
@@ -196,7 +196,7 @@
 
     \section1 3D Extensions
 
-    Beyond the essentials of displaying 3D content on the screen, Qt3D is
+    Beyond the essentials of displaying 3D content on the screen, Qt 3D is
     extensible and flexible enough to act as a host for following types of
     extensions related to the 3D objects:
 
@@ -311,7 +311,7 @@
     ignores it.
 
     Qt 3D builds custom entities by aggregating components that provide
-    additional capabilities. The Qt3D engine uses aspects to process and
+    additional capabilities. The Qt 3D engine uses aspects to process and
     update entities with specific components.
 
     For example, a physics aspect looks for entities that have some kind of
