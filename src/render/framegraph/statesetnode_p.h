@@ -52,6 +52,7 @@
 //
 
 #include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/private/renderstatecollection_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class StateSetNode : public FrameGraphNode
+class StateSetNode : public FrameGraphNode, public RenderStateCollection
 {
 public:
     StateSetNode();
@@ -67,15 +68,8 @@ public:
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    QList<Qt3DCore::QNodeId> renderStates() const;
-
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-    void appendRenderState(const Qt3DCore::QNodeId &id);
-    void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
-
-    QList<Qt3DCore::QNodeId> m_renderStates;
 };
 
 } // namespace Render

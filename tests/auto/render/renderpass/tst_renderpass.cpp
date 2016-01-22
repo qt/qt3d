@@ -57,18 +57,20 @@
 #include <Qt3DRender/QClipPlane>
 
 #include <Qt3DRender/private/renderstates_p.h>
+#include <Qt3DRender/private/managers_p.h>
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
 
-Q_DECLARE_METATYPE(RenderState*)
-
 class tst_RenderRenderPass : public QObject
 {
     Q_OBJECT
 public:
-    tst_RenderRenderPass() {}
+    tst_RenderRenderPass()
+        : m_renderStateManager(new RenderStateManager())
+    {
+    }
     ~tst_RenderRenderPass() {}
 
 private slots:
@@ -81,116 +83,8 @@ private slots:
         QVERIFY(backend.shaderProgram().isNull());
         QVERIFY(backend.annotations().isEmpty());
         QVERIFY(backend.bindings().isEmpty());
-        QVERIFY(backend.renderStates().isEmpty());
+        QVERIFY(backend.renderStates(m_renderStateManager).isEmpty());
         QVERIFY(backend.parameters().isEmpty());
-    }
-
-    void shouldHavePropertiesMirroringItsPeer_data()
-    {
-        QTest::addColumn<QRenderState*>("frontendState");
-        QTest::addColumn<RenderState*>("backendState");
-
-        QRenderState *frontendState = Q_NULLPTR;
-        RenderState *backendState = Q_NULLPTR;
-
-        QAlphaCoverage *alphaCoverage = new QAlphaCoverage;
-        frontendState = alphaCoverage;
-        backendState = AlphaCoverage::getOrCreate();
-        QTest::newRow("alphacoverage") << frontendState << backendState;
-
-        QAlphaTest *alphaTest = new QAlphaTest;
-        frontendState = alphaTest;
-        backendState = AlphaFunc::getOrCreate(alphaTest->func(), alphaTest->clamp());
-        QTest::newRow("alphatest") << frontendState << backendState;
-
-        QBlendEquation *blendEquation = new QBlendEquation;
-        frontendState = blendEquation;
-        backendState = BlendEquation::getOrCreate(blendEquation->mode());
-        QTest::newRow("blendequation") << frontendState << backendState;
-
-        QBlendState *blendState = new QBlendState;
-        frontendState = blendState;
-        backendState = BlendState::getOrCreate(blendState->srcRGB(), blendState->dstRGB(),
-                                               blendState->srcRGB(), blendState->dstRGB(),
-                                               blendState->enabled(), blendState->bufferIndex());
-        QTest::newRow("blendstate") << frontendState << backendState;
-
-        QColorMask *colorMask = new QColorMask;
-        frontendState = colorMask;
-        backendState = ColorMask::getOrCreate(colorMask->isRed(),
-                                              colorMask->isGreen(),
-                                              colorMask->isBlue(),
-                                              colorMask->isAlpha());
-        QTest::newRow("colormask") << frontendState << backendState;
-
-        QCullFace *cullFace = new QCullFace;
-        frontendState = cullFace;
-        backendState = CullFace::getOrCreate(cullFace->mode());
-        QTest::newRow("cullface") << frontendState << backendState;
-
-        QDepthMask *depthMask = new QDepthMask;
-        frontendState = depthMask;
-        backendState = DepthMask::getOrCreate(depthMask->mask());
-        QTest::newRow("depthmask") << frontendState << backendState;
-
-        QDepthTest *depthTest = new QDepthTest;
-        frontendState = depthTest;
-        backendState = DepthTest::getOrCreate(depthTest->func());
-        QTest::newRow("depthtest") << frontendState << backendState;
-
-        QDithering *dithering = new QDithering;
-        frontendState = dithering;
-        backendState = Dithering::getOrCreate();
-        QTest::newRow("dithering") << frontendState << backendState;
-
-        QFrontFace *frontFace = new QFrontFace;
-        frontendState = frontFace;
-        backendState = FrontFace::getOrCreate(frontFace->direction());
-        QTest::newRow("frontface") << frontendState << backendState;
-
-        QPolygonOffset *polygonOffset = new QPolygonOffset;
-        frontendState = polygonOffset;
-        backendState = PolygonOffset::getOrCreate(polygonOffset->factor(),
-                                                  polygonOffset->units());
-        QTest::newRow("polygonoffset") << frontendState << backendState;
-
-        QScissorTest *scissorTest = new QScissorTest;
-        frontendState = scissorTest;
-        backendState = ScissorTest::getOrCreate(scissorTest->left(),
-                                                scissorTest->bottom(),
-                                                scissorTest->width(),
-                                                scissorTest->height());
-        QTest::newRow("scissortest") << frontendState << backendState;
-
-        QStencilTest *stencilTest = new QStencilTest;
-        frontendState = stencilTest;
-        backendState = StencilTest::getOrCreate(stencilTest->front()->func(),
-                                                stencilTest->front()->ref(),
-                                                stencilTest->front()->mask(),
-                                                stencilTest->back()->func(),
-                                                stencilTest->back()->ref(),
-                                                stencilTest->back()->mask());
-        QTest::newRow("stenciltest") << frontendState << backendState;
-
-        QStencilMask *stencilMask = new QStencilMask;
-        frontendState = stencilMask;
-        backendState = StencilMask::getOrCreate(stencilMask->frontMask(), stencilMask->backMask());
-
-        QTest::newRow("stencilmask") << frontendState << backendState;
-
-        QStencilOp *stencilOp = new QStencilOp;
-        frontendState = stencilOp;
-        backendState = StencilOp::getOrCreate(stencilOp->front()->stencilFail(),
-                                              stencilOp->front()->depthFail(),
-                                              stencilOp->front()->stencilDepthPass(),
-                                              stencilOp->back()->stencilFail(),
-                                              stencilOp->back()->depthFail(),
-                                              stencilOp->back()->stencilDepthPass());
-        QTest::newRow("stencilop") << frontendState << backendState;
-
-        QClipPlane *clipPlane = new QClipPlane;
-        frontendState = clipPlane;
-        backendState = ClipPlane::getOrCreate(clipPlane->plane());
     }
 
     void shouldHavePropertiesMirroringItsPeer()
@@ -205,13 +99,14 @@ private slots:
 
         frontend.addParameter(new QParameter(&frontend));
 
-        QFETCH(QRenderState*, frontendState);
+        QRenderState *frontendState = new QBlendState();
         frontendState->setParent(&frontend);
         frontend.addRenderState(frontendState);
 
         RenderPass backend;
 
-        QFETCH(RenderState*, backendState);
+        RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
+        backendState->setPeer(frontendState);
 
         // WHEN
         backend.setPeer(&frontend);
@@ -231,8 +126,8 @@ private slots:
         QCOMPARE(backend.parameters().size(), 1);
         QCOMPARE(backend.parameters().first(), frontend.parameters().first()->id());
 
-        QCOMPARE(backend.renderStates().size(), 1);
-        QCOMPARE(backend.renderStates().first(), backendState);
+        QCOMPARE(backend.renderStates(m_renderStateManager).size(), 1);
+        QCOMPARE(backend.renderStates(m_renderStateManager).first(), backendState);
     }
 
     void shouldHandleShaderPropertyChangeEvents()
@@ -345,20 +240,15 @@ private slots:
         QVERIFY(backend.parameters().isEmpty());
     }
 
-    void shouldHandlePropertyChangeEvents_data()
-    {
-        shouldHavePropertiesMirroringItsPeer_data();
-    }
-
     void shouldHandlePropertyChangeEvents()
     {
-        // GIVEN
-        QFETCH(QRenderState*, frontendState);
+        QRenderState *frontendState = new QBlendState();
         QNodePtr frontendStatePtr(frontendState);
 
         RenderPass backend;
 
-        QFETCH(RenderState*, backendState);
+        RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
+        backendState->setPeer(frontendState);
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, frontendState->id()));
@@ -367,8 +257,8 @@ private slots:
         backend.sceneChangeEvent(addChange);
 
         // THEN
-        QCOMPARE(backend.renderStates().size(), 1);
-        QCOMPARE(backend.renderStates().first(), backendState);
+        QCOMPARE(backend.renderStates(m_renderStateManager).size(), 1);
+        QCOMPARE(backend.renderStates(m_renderStateManager).first(), backendState);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));
@@ -377,8 +267,11 @@ private slots:
         backend.sceneChangeEvent(removeChange);
 
         // THEN
-        QVERIFY(backend.renderStates().isEmpty());
+        QVERIFY(backend.renderStates(m_renderStateManager).isEmpty());
     }
+
+private:
+    RenderStateManager *m_renderStateManager;
 };
 
 QTEST_APPLESS_MAIN(tst_RenderRenderPass)

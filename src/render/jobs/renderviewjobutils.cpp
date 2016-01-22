@@ -194,7 +194,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     rv->setStateSet(stateSet);
                 }
 
-                addToRenderStateSet(stateSet, rStateSet->renderStates(), manager->renderStateManager());
+                addToRenderStateSet(stateSet, rStateSet, manager->renderStateManager());
                 break;
             }
 
@@ -394,11 +394,10 @@ void parametersFromMaterialEffectTechnique(ParameterInfoList *infoList,
 }
 
 void addToRenderStateSet(RenderStateSet *stateSet,
-                         const QList<Qt3DCore::QNodeId> &nodeIds,
+                         const RenderStateCollection *collection,
                          RenderStateManager *manager)
 {
-    Q_FOREACH (Qt3DCore::QNodeId renderStateId, nodeIds) {
-        RenderStateNode *rstate = manager->lookupResource(renderStateId);
+    Q_FOREACH (RenderStateNode *rstate, collection->renderStates(manager)) {
         stateSet->addState(rstate->impl());
     }
 }

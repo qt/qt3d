@@ -55,6 +55,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/parametermapping_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
+#include <Qt3DRender/private/renderstatecollection_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnodeid.h>
@@ -74,7 +75,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderPass : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT RenderPass : public Qt3DCore::QBackendNode, public RenderStateCollection
 {
 public:
     RenderPass();
@@ -88,7 +89,6 @@ public:
     Qt3DCore::QNodeId shaderProgram() const;
     QList<ParameterMapping> bindings() const;
     QList<Qt3DCore::QNodeId> annotations() const;
-    QList<Qt3DCore::QNodeId> renderStates() const;
     QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
@@ -98,12 +98,8 @@ private:
     void appendBinding(const ParameterMapping &binding);
     void removeBinding(const Qt3DCore::QNodeId &bindingId);
 
-    void appendRenderState(const Qt3DCore::QNodeId &renderStateId);
-    void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
-
     Qt3DCore::QNodeId m_shaderUuid;
     QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;
-    QList<Qt3DCore::QNodeId> m_renderStates;
     QList<Qt3DCore::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };

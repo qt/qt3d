@@ -64,7 +64,6 @@ RenderPass::RenderPass()
 
 RenderPass::~RenderPass()
 {
-    cleanup();
 }
 
 void RenderPass::cleanup()
@@ -147,11 +146,6 @@ QList<Qt3DCore::QNodeId> RenderPass::annotations() const
     return m_annotationList;
 }
 
-QList<Qt3DCore::QNodeId> RenderPass::renderStates() const
-{
-    return m_renderStates;
-}
-
 QList<Qt3DCore::QNodeId> RenderPass::parameters() const
 {
     return m_parameterPack.parameters();
@@ -177,17 +171,6 @@ void RenderPass::appendBinding(const ParameterMapping &binding)
 void RenderPass::removeBinding(const Qt3DCore::QNodeId &bindingId)
 {
     m_bindings.remove(bindingId);
-}
-
-void RenderPass::appendRenderState(const Qt3DCore::QNodeId &renderStateId)
-{
-    if (!m_renderStates.contains(renderStateId))
-        m_renderStates.append(renderStateId);
-}
-
-void RenderPass::removeRenderState(const Qt3DCore::QNodeId &renderStateId)
-{
-    m_renderStates.removeAll(renderStateId);
 }
 
 } // namespace Render

@@ -69,11 +69,6 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
         appendRenderState(renderState->id());
 }
 
-QList<Qt3DCore::QNodeId> StateSetNode::renderStates() const
-{
-    return m_renderStates;
-}
-
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -95,17 +90,6 @@ void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
-}
-
-void StateSetNode::appendRenderState(const Qt3DCore::QNodeId &id)
-{
-    if (!m_renderStates.contains(id))
-        m_renderStates.append(id);
-}
-
-void StateSetNode::removeRenderState(const Qt3DCore::QNodeId &renderStateId)
-{
-    m_renderStates.removeAll(renderStateId);
 }
 
 } // namespace Render

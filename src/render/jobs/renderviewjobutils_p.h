@@ -80,6 +80,7 @@ class ShaderDataManager;
 struct ShaderUniform;
 class ShaderData;
 class RenderStateManager;
+class RenderStateCollection;
 
 Q_AUTOTEST_EXPORT void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv,
                                                                  const FrameGraphNode *fgLeaf);
@@ -133,7 +134,7 @@ Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *i
                                                             const QString &name);
 
 Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
-                                           const QList<Qt3DCore::QNodeId> &nodeIds,
+                                           const RenderStateCollection *collection,
                                            RenderStateManager *manager);
 
 
