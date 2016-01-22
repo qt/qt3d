@@ -50,10 +50,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderPassPrivate
-    \internal
-*/
 QRenderPassPrivate::QRenderPassPrivate()
     : QNodePrivate()
     , m_shader(Q_NULLPTR)

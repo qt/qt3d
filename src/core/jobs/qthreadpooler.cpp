@@ -43,10 +43,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QThreadPooler
-    \internal
-*/
 QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent),
       m_futureInterface(Q_NULLPTR),

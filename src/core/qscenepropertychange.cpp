@@ -50,10 +50,6 @@ namespace Qt3DCore {
 QFrameAllocator *QScenePropertyChangePrivate::m_allocator = new QFrameAllocator(128, sizeof(QScenePropertyChange), sizeof(QScenePropertyChangePrivate) * 2);
 QMutex QScenePropertyChangePrivate::m_mutex;
 
-/*!
-    \class Qt3DCore::QScenePropertyChangePrivate
-    \internal
-*/
 QScenePropertyChangePrivate::QScenePropertyChangePrivate()
     : QSceneChangePrivate()
 {

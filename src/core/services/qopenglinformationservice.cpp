@@ -41,10 +41,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QOpenGLInformationServicePrivate
-    \internal
-*/
 
 /*!
     \class Qt3DCore::QOpenGLInformationService

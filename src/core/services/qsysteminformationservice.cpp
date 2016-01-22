@@ -42,16 +42,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 /*!
-    \class Qt3DCore::QAbstractServiceProviderPrivate
-    \internal
-*/
-
-/*!
-    \class Qt3DCore::QSystemInformationServicePrivate
-    \internal
-*/
-
-/*!
     \class Qt3DCore::QSystemInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D system information service

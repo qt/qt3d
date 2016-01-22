@@ -47,10 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QForwardRendererPrivate
-    \internal
-*/
 QForwardRendererPrivate::QForwardRendererPrivate()
     : QTechniqueFilterPrivate()
     , m_viewport(new QViewport())

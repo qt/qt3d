@@ -42,10 +42,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QLayerFilterPrivate
-    \internal
-*/
 QLayerFilterPrivate::QLayerFilterPrivate()
     : QFrameGraphNodePrivate()
 {

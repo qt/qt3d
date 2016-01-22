@@ -42,10 +42,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QSortCriterionPrivate
-    \internal
-*/
 QSortCriterionPrivate::QSortCriterionPrivate()
     : QNodePrivate()
     , m_sort(QSortCriterion::StateChangeCost)

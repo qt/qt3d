@@ -45,10 +45,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QComponentPrivate
-    \internal
-*/
 QComponentPrivate::QComponentPrivate()
     : QNodePrivate()
     , m_shareable(true)

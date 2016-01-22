@@ -43,10 +43,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QViewportPrivate
-    \internal
-*/
 QViewportPrivate::QViewportPrivate()
     : QFrameGraphNodePrivate()
     , m_rect(QRectF(0.0f, 0.0f, 1.0f, 1.0f))

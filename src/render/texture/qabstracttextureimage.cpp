@@ -44,10 +44,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QAbstractTextureImagePrivate
-    \internal
-*/
 
 /*!
     \qmltype AbstractTextureImage

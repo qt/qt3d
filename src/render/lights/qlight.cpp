@@ -51,10 +51,6 @@ namespace Qt3DRender
  */
 
 
-/*!
-    \class Qt3DRender::QLightPrivate
-    \internal
-*/
 QLightPrivate::QLightPrivate(QLight::Type type)
     : m_type(type)
     , m_color(QColor(255, 255, 255))

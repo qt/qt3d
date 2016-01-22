@@ -140,10 +140,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderAspectPrivate
-    \internal
-*/
 QRenderAspectPrivate::QRenderAspectPrivate(QRenderAspect::RenderType type)
     : QAbstractAspectPrivate()
     , m_nodeManagers(new Render::NodeManagers())

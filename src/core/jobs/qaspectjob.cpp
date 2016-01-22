@@ -51,10 +51,6 @@ bool isDependencyNull(const QWeakPointer<QAspectJob> &dep)
 
 } // anonymous
 
-/*!
-    \class Qt3DCore::QAspectJobPrivate
-    \internal
-*/
 QAspectJobPrivate::QAspectJobPrivate()
 {
 }

@@ -45,10 +45,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QBufferPrivate
-    \internal
-*/
 QBufferPrivate::QBufferPrivate()
     : QAbstractBufferPrivate()
     , m_usage(QBuffer::StaticDraw)

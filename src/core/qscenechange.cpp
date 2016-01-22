@@ -58,10 +58,6 @@ namespace Qt3DCore {
     \value AllChanges Allows an observer to monitor for any of the above changes.
 */
 
-/*!
-    \class Qt3DCore::QSceneChangePrivate
-    \internal
-*/
 QSceneChangePrivate::QSceneChangePrivate()
     : q_ptr(Q_NULLPTR)
 {

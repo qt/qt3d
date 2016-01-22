@@ -47,10 +47,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QTechniquePrivate
-    \internal
-*/
 QTechniquePrivate::QTechniquePrivate()
     : QNodePrivate()
 {

@@ -53,10 +53,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QFrameAllocatorPrivate
-    \internal
-*/
 QFrameAllocatorPrivate::QFrameAllocatorPrivate()
 {
 }

@@ -82,10 +82,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
-/*!
-    \class Qt3DInput::QInputAspectPrivate
-    \internal
-*/
 QInputAspectPrivate::QInputAspectPrivate()
     : QAbstractAspectPrivate()
     , m_inputHandler(new Input::InputHandler())

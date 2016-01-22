@@ -48,10 +48,6 @@ namespace Qt3DCore {
     \inmodule Qt3DCore
 */
 
-/*!
-    \class Qt3DCore::QBackendScenePropertyChangePrivate
-    \internal
-*/
 QBackendScenePropertyChangePrivate::QBackendScenePropertyChangePrivate()
     : QScenePropertyChangePrivate()
 {

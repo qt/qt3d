@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QAbstractAttributePrivate
-    \internal
-*/
 QAbstractAttributePrivate::QAbstractAttributePrivate()
     : QNodePrivate()
     , m_buffer(Q_NULLPTR)

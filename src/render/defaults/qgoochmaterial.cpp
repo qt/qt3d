@@ -49,10 +49,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-   \class Qt3DRender::QGoochMaterialPrivate
-   \internal
-*/
 QGoochMaterialPrivate::QGoochMaterialPrivate()
     : QMaterialPrivate()
     , m_effect(new QEffect)

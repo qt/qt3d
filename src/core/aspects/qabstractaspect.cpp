@@ -54,10 +54,6 @@ static QByteArray className(const QMetaObject &obj)
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QAbstractAspectPrivate
-    \internal
-*/
 QAbstractAspectPrivate::QAbstractAspectPrivate()
     : QObjectPrivate()
     , m_root(Q_NULLPTR)

@@ -47,10 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QShaderProgramPrivate
-    \internal
-*/
 QShaderProgramPrivate::QShaderProgramPrivate()
     : QNodePrivate()
 {

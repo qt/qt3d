@@ -49,6 +49,8 @@ headerdirs += . \
               ../quick3d/quick3d \
               ../input
 
+# Exclude private header files from the documentation build
+excludefiles += "*_p.h"
 
 sourcedirs += . \
               ../render \

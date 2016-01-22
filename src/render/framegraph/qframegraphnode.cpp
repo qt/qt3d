@@ -41,10 +41,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QFrameGraphNodePrivate
-    \internal
-*/
 QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     : QNodePrivate()
     , m_enabled(true)

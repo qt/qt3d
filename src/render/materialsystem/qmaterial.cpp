@@ -73,10 +73,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QMaterialPrivate
-    \internal
-*/
 QMaterialPrivate::QMaterialPrivate()
     : QComponentPrivate()
     , m_effect(Q_NULLPTR)

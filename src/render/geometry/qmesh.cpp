@@ -63,10 +63,6 @@ private:
 };
 
 
-/*!
-    \class Qt3DRender::QMeshPrivate
-    \internal
-*/
 QMeshPrivate::QMeshPrivate()
     : QGeometryRendererPrivate()
 {

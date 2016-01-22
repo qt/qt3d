@@ -56,10 +56,6 @@ namespace Qt3DCore {
 
 QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode *>();
 
-/*!
-    \class Qt3DCore::QNodePrivate
-    \internal
-*/
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)

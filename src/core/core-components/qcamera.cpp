@@ -41,10 +41,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QCameraPrivate
-    \internal
-*/
 QCameraPrivate::QCameraPrivate()
     : QEntityPrivate()
     , m_position(0.0f, 0.0f, 0.0f)

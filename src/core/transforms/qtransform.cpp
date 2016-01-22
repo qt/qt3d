@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QTransformPrivate
-    \internal
-*/
 QTransformPrivate::QTransformPrivate()
     : QComponentPrivate()
     , m_rotation()

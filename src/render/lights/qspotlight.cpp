@@ -62,10 +62,6 @@ namespace Qt3DRender {
   \endcode
  */
 
-/*!
-    \class Qt3DRender::QSpotLightPrivate
-    \internal
-*/
 QSpotLightPrivate::QSpotLightPrivate()
     : QPointLightPrivate(QLight::SpotLight)
     , m_cutOffAngle(45.0f)
