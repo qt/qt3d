@@ -69,7 +69,7 @@ public:
     KeyboardController();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    void cleanup();
+    void cleanup() Q_DECL_OVERRIDE;
 
     void requestFocusForInput(const Qt3DCore::QNodeId &inputId);
     void setInputHandler(InputHandler *handler);
