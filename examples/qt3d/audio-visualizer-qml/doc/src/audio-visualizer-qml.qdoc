@@ -40,7 +40,7 @@
     \ingroup qt3d-examples-qml
     \brief Demonstrates combining Qt 3D rendering and Qt Quick 2 elements.
 
-    \image audio-visualizer-qml-example.jpg
+    \image audio-visualizer-qml-example.png
 
     \e Audio Visualizer demonstrates how to implement an application that combines the use of
     Qt 3D rendering with Qt Quick 2D elements. The example uses media player to play music and it
