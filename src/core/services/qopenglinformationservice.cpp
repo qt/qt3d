@@ -42,7 +42,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 
-/*!
+/* !\internal
     \class Qt3DCore::QOpenGLInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D OpenGL information service
@@ -53,7 +53,7 @@ namespace Qt3DCore {
     having a valid OpenGL context on the current thread.
 */
 
-/*!
+/*
     Creates an instance of QOpenGLInformationService, with a \a description for
     the new service. This constructor is protected so only subclasses can
     instantiate a QOpenGLInformationService object.
@@ -63,7 +63,7 @@ QOpenGLInformationService::QOpenGLInformationService(const QString &description)
 {
 }
 
-/*!
+/*
     \internal
 */
 QOpenGLInformationService::QOpenGLInformationService(QOpenGLInformationServicePrivate &dd)
@@ -71,7 +71,7 @@ QOpenGLInformationService::QOpenGLInformationService(QOpenGLInformationServicePr
 {
 }
 
-/*!
+/*
     \fn QSurfaceFormat Qt3DCore::QOpenGLInformationService::format() const
 
     Subclasses should override this function to return the QSurfaceFormat of the

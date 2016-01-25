@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
+/* !\internal
     \class Qt3DCore::QChangeArbiter
     \inmodule Qt3DCore
     \since 5.5

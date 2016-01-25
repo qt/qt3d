@@ -45,7 +45,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
+/* !\internal
     \class Qt3DCore::QAbstractServiceProvider
     \inmodule Qt3DCore
 */
@@ -56,7 +56,7 @@ QAbstractServiceProvider::QAbstractServiceProvider(int type, const QString &desc
     d_ptr->q_ptr = this;
 }
 
-/*! \internal */
+/* \internal */
 QAbstractServiceProvider::QAbstractServiceProvider(QAbstractServiceProviderPrivate &dd)
     : d_ptr(&dd)
 {
@@ -97,7 +97,7 @@ public:
 };
 
 
-/*!
+/* !\internal
     \class Qt3DCore::QServiceLocator
     \inmodule Qt3DCore
     \brief Service locator used by aspects to retrieve pointers to concrete service objects
@@ -119,7 +119,7 @@ public:
     do nothing implementations.
 */
 
-/*!
+/*
     Creates an instance of QServiceLocator.
 */
 QServiceLocator::QServiceLocator()
@@ -127,14 +127,14 @@ QServiceLocator::QServiceLocator()
 {
 }
 
-/*!
+/*
    Destroys a QServiceLocator object
 */
 QServiceLocator::~QServiceLocator()
 {
 }
 
-/*!
+/*
     Registers \a provider service provider for the service \a serviceType. This replaces any
     existing provider for this service. The service provider does not take ownership
     of the provider.
@@ -149,7 +149,7 @@ void QServiceLocator::registerServiceProvider(int serviceType, QAbstractServiceP
         ++(d->m_nonNullDefaultServices);
 }
 
-/*!
+/*
     Unregisters any existing provider for the \a serviceType.
 
     \sa registerServiceProvider()
@@ -162,7 +162,7 @@ void QServiceLocator::unregisterServiceProvider(int serviceType)
         d->m_nonNullDefaultServices -= removedCount;
 }
 
-/*!
+/*
     Returns the number of registered services.
  */
 int QServiceLocator::serviceCount() const
@@ -171,7 +171,7 @@ int QServiceLocator::serviceCount() const
     return DefaultServiceCount + d->m_services.size() - d->m_nonNullDefaultServices;
 }
 
-/*!
+/*
     \fn T *Qt3DCore::QServiceLocator::service(int serviceType)
 
     Returns a pointer to the service provider for \a serviceType. If no provider
@@ -182,7 +182,7 @@ int QServiceLocator::serviceCount() const
 
 */
 
-/*!
+/*
     Returns a pointer to a provider for the system information service. If no provider
     has been explicitly registered for this service type, then a pointer to a null, do-
     nothing service is returned.
@@ -193,7 +193,7 @@ QSystemInformationService *QServiceLocator::systemInformation()
     return static_cast<QSystemInformationService *>(d->m_services.value(SystemInformation, &d->m_nullSystemInfo));
 }
 
-/*!
+/*
     Returns a pointer to a provider for the OpenGL information service. If no provider
     has been explicitly registered for this service type, then a pointer to a null, do-
     nothing service is returned.
@@ -204,7 +204,7 @@ QOpenGLInformationService *QServiceLocator::openGLInformation()
     return static_cast<QOpenGLInformationService *>(d->m_services.value(OpenGLInformation, &d->m_nullOpenGLInfo));
 }
 
-/*!
+/*
     Returns a pointer to a provider for the frame advance service. If no provider
     has been explicitly registered for this service type, then a pointer to a simple timer-based
     service is returned.
@@ -215,7 +215,7 @@ QAbstractFrameAdvanceService *QServiceLocator::frameAdvanceService()
     return static_cast<QAbstractFrameAdvanceService *>(d->m_services.value(FrameAdvanceService, &d->m_defaultFrameAdvanceService));
 }
 
-/*!
+/*
     Returns a pointer to a provider for the event filter service. If no
     provider has been explicitly registered for this service type, then a
     pointer to the default event filter service is returned.
@@ -226,7 +226,7 @@ QEventFilterService *QServiceLocator::eventFilterService()
     return static_cast<QEventFilterService *>(d->m_services.value(EventFilterService, &d->m_eventFilterService));
 }
 
-/*!
+/*
     \internal
 */
 QAbstractServiceProvider *QServiceLocator::_q_getServiceHelper(int type)

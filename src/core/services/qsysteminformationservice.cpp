@@ -41,7 +41,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
+/* !\internal
     \class Qt3DCore::QSystemInformationService
     \inmodule Qt3DCore
     \brief Interface for a Qt3D system information service
@@ -50,7 +50,7 @@ namespace Qt3DCore {
     system information service.
 */
 
-/*!
+/*
     Creates an instance of QSystemInformationService, with a \a description for
     the new service. This constructor is protected so only subclasses can
     instantiate a QSystemInformationService object.
@@ -60,7 +60,7 @@ QSystemInformationService::QSystemInformationService(const QString &description)
 {
 }
 
-/*!
+/*
     \internal
 */
 QSystemInformationService::QSystemInformationService(QSystemInformationServicePrivate &dd)
@@ -68,14 +68,14 @@ QSystemInformationService::QSystemInformationService(QSystemInformationServicePr
 {
 }
 
-/*!
+/*
     \fn QStringList Qt3DCore::QSystemInformationService::aspectNames() const
 
     Subclasses should override this function and return a string list containing the
     names of all registered aspects.
 */
 
-/*!
+/*
     \fn int Qt3DCore::QSystemInformationService::threadPoolThreadCount() const
 
     Subclasses should override this function and return the number of threads in the
