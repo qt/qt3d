@@ -38,7 +38,7 @@ qhp.Qt3D.subprojects.qmltypes.sortPages  = true
 
 tagfile                 = qt3d.tags
 
-depends                 += qtcore qtqml qtquick qtdoc
+depends                 += qtcore qtgui qtqml qtquick qtdoc
 
 headerdirs += . \
               ../render \
@@ -68,7 +68,7 @@ examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
 #excludedirs +=
-macro.TODO = ""
+macro.TODO = " "
 imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \

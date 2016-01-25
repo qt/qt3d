@@ -41,7 +41,6 @@ QT_BEGIN_NAMESPACE
 
 /*!
     \qmltype QuaternionAnimation
-    \instantiates Qt3DCore::Quick::QQuaternionAnimation
     \inherits PropertyAnimation
     \inqmlmodule Qt3D.Core
     \since 5.6

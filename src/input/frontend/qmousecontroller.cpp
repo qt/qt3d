@@ -51,7 +51,7 @@ QMouseControllerPrivate::QMouseControllerPrivate()
 }
 /*!
  * \qmltype MouseController
- * \intantiates Qt3DInput::QMouseController
+ * \instantiates Qt3DInput::QMouseController
  * \inqmlmodule Qt3D.Input
  * \since 5.5
  * \brief Delegates mouse events to the attached MouseInput objects.

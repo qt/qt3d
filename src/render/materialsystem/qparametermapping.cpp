@@ -89,7 +89,8 @@ QParameterMapping::QParameterMapping(QNode *parent)
   \value Attribute
   \value StandardUniform
   \value FragmentOutput
-
+  \value UniformBufferObject
+  \value ShaderStorageBufferObject
 */
 
 /*! \internal */

@@ -136,7 +136,7 @@
 
     \printuntil ]
 
-    The \l BasicCamera type is a trivial wrapper around the built-in \l Camera
+    The BasicCamera type is a trivial wrapper around the built-in \l Camera
     type that represents a virtual camera. It has properties for such things as
     the near and far planes, field of view, aspect ratio, projection type,
     position, and orientation:
