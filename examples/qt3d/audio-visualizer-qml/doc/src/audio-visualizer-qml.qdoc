@@ -72,7 +72,7 @@
 
     \snippet audio-visualizer-qml/Visualizer.qml 0
 
-    A \c{NodeInstatiator} is used to create the bars that visualize the magnitude of the music.
+    A \c{NodeInstantiator} is used to create the bars that visualize the magnitude of the music.
 
     \snippet audio-visualizer-qml/Visualizer.qml 1
 
