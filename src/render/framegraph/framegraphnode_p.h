@@ -131,9 +131,9 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE
     {
-        return createBackendFrameGraphNode(frontend, factory);
+        return createBackendFrameGraphNode(frontend);
     }
 
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
@@ -147,13 +147,12 @@ public:
     }
 
 protected:
-    Backend *createBackendFrameGraphNode(Qt3DCore::QNode *n, const Qt3DCore::QBackendNodeFactory *factory) const
+    Backend *createBackendFrameGraphNode(Qt3DCore::QNode *n) const
     {
         Frontend *f = qobject_cast<Frontend *>(n);
         if (f != Q_NULLPTR) {
             if (!m_manager->containsNode(n->id())) {
                 Backend *backend = new Backend();
-                backend->setFactory(factory);
                 backend->setFrameGraphManager(m_manager);
                 backend->setPeer(f);
                 QFrameGraphNode *parentFGNode = static_cast<QFrameGraphNode *>(n)->parentFrameGraphNode();
@@ -175,7 +174,7 @@ class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeFunctor
 {
 public:
     explicit FrameGraphComponentFunctor(AbstractRenderer *renderer);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
 

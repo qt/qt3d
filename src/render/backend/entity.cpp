@@ -522,11 +522,10 @@ RenderEntityFunctor::RenderEntityFunctor(NodeManagers *manager)
 {
 }
 
-Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend) const
 {
     HEntity renderNodeHandle = m_nodeManagers->renderNodesManager()->getOrAcquireHandle(frontend->id());
     Entity *entity = m_nodeManagers->renderNodesManager()->data(renderNodeHandle);
-    entity->setFactory(factory);
     entity->setNodeManagers(m_nodeManagers);
     entity->setHandle(renderNodeHandle);
     entity->setPeer(frontend);

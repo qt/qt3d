@@ -317,10 +317,9 @@ RenderShaderDataFunctor::RenderShaderDataFunctor(NodeManagers *managers)
 {
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *frontend) const
 {
     ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(frontend->id());
-    backend->setFactory(factory);
     backend->setManagers(m_managers);
     backend->setPeer(frontend);
     return backend;

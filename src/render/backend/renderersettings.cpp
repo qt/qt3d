@@ -84,7 +84,7 @@ RendererSettingsFunctor::RendererSettingsFunctor(AbstractRenderer *renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *frontend) const
 {
     QRendererSettings *settingsFrontend = static_cast<QRendererSettings *>(frontend);
     if (m_renderer->settings() != Q_NULLPTR) {
@@ -93,7 +93,6 @@ Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *fronten
     }
 
     RendererSettings *settings = new RendererSettings;
-    settings->setFactory(factory);
     settings->setPeer(settingsFrontend);
     m_renderer->setSettings(settings);
     return settings;

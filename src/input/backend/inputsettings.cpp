@@ -75,7 +75,7 @@ InputSettingsFunctor::InputSettingsFunctor(InputHandler *handler)
 {
 }
 
-Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) const
 {
     if (m_handler->inputSettings() != Q_NULLPTR) {
         qWarning() << "Input settings already specified";
@@ -83,7 +83,6 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend, 
     }
 
     InputSettings *settings = new InputSettings();
-    settings->setFactory(factory);
     settings->setPeer(frontend);
     m_handler->setInputSettings(settings);
     return settings;

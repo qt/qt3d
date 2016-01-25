@@ -149,10 +149,9 @@ MouseControllerFunctor::MouseControllerFunctor(QInputAspect *inputAspect, InputH
 {
 }
 
-Qt3DCore::QBackendNode *MouseControllerFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *MouseControllerFunctor::create(Qt3DCore::QNode *frontend) const
 {
     MouseController *controller = m_handler->mouseControllerManager()->getOrCreateResource(frontend->id());
-    controller->setFactory(factory);
     controller->setInputAspect(m_inputAspect);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);

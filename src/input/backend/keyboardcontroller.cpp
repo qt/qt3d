@@ -455,10 +455,9 @@ KeyboardControllerFunctor::KeyboardControllerFunctor(QInputAspect *inputaspect, 
 {
 }
 
-Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *frontend) const
 {
     KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
-    controller->setFactory(factory);
     controller->setInputAspect(m_inputAspect);
     controller->setInputHandler(m_handler);
     controller->setPeer(frontend);

@@ -143,7 +143,7 @@ FrameGraphComponentFunctor::FrameGraphComponentFunctor(AbstractRenderer *rendere
 {
 }
 
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *) const
+Qt3DCore::QBackendNode *FrameGraphComponentFunctor::create(Qt3DCore::QNode *frontend) const
 {
     // TO DO: Ideally we should have a RenderFrameGraph component and use its setPeer method
     // to do that

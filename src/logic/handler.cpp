@@ -67,10 +67,9 @@ HandlerFunctor::HandlerFunctor(Manager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *HandlerFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *HandlerFunctor::create(Qt3DCore::QNode *frontend) const
 {
     Handler *handler = m_manager->logicHandlerManager()->getOrCreateResource(frontend->id());
-    handler->setFactory(factory);
     handler->setManager(m_manager);
     handler->setPeer(frontend);
     m_manager->appendHandler(handler);

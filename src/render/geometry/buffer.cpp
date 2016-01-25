@@ -149,10 +149,9 @@ BufferFunctor::BufferFunctor(BufferManager *manager)
 {
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend) const
 {
     Buffer *buffer = m_manager->getOrCreateResource(frontend->id());
-    buffer->setFactory(factory);
     buffer->setManager(m_manager);
     buffer->setPeer(frontend);
     return buffer;

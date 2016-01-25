@@ -121,7 +121,7 @@ public:
                                   TextureImageManager *textureImageManager,
                                   TextureDataManager *textureDataManager);
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
     void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
 

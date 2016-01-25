@@ -665,10 +665,9 @@ TextureFunctor::TextureFunctor(TextureManager *textureManager,
 {
 }
 
-Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend) const
 {
     Texture *backend = m_textureManager->getOrCreateResource(frontend->id());
-    backend->setFactory(factory);
     backend->setTextureManager(m_textureManager);
     backend->setTextureImageManager(m_textureImageManager);
     backend->setTextureDataManager(m_textureDataManager);

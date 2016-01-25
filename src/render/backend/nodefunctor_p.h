@@ -69,10 +69,9 @@ public:
     {
     }
 
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL
     {
         Backend *backend = m_manager->getOrCreateResource(frontend->id());
-        backend->setFactory(factory);
         backend->setPeer(frontend);
         return backend;
     }

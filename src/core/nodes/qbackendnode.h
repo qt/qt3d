@@ -48,7 +48,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBackendNodeFactory;
 class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
@@ -57,7 +56,7 @@ class QT3DCORESHARED_EXPORT QBackendNodeFunctor
 {
 public:
     virtual ~QBackendNodeFunctor() {}
-    virtual QBackendNode *create(QNode *frontend, const QBackendNodeFactory *factory) const = 0;
+    virtual QBackendNode *create(QNode *frontend) const = 0;
     virtual QBackendNode *get(const QNodeId &id) const = 0;
     virtual void destroy(const QNodeId &id) const = 0;
 };
@@ -74,8 +73,6 @@ public:
 
     explicit QBackendNode(Mode mode = ReadOnly);
     virtual ~QBackendNode();
-
-    void setFactory(const QBackendNodeFactory *factory);
 
     void setPeer(QNode *peer);
     QNodeId peerUuid() const Q_DECL_NOEXCEPT;

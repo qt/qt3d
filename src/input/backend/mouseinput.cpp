@@ -134,10 +134,9 @@ MouseInputFunctor::MouseInputFunctor(InputHandler *handler)
 {
 }
 
-Qt3DCore::QBackendNode *MouseInputFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *MouseInputFunctor::create(Qt3DCore::QNode *frontend) const
 {
     MouseInput *input = m_handler->mouseInputManager()->getOrCreateResource(frontend->id());
-    input->setFactory(factory);
     input->setInputHandler(m_handler);
     input->setPeer(frontend);
     return input;

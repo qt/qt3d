@@ -108,10 +108,9 @@ RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
 {
 }
 
-Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend) const
 {
     Scene *scene = m_sceneManager->getOrCreateResource(frontend->id());
-    scene->setFactory(factory);
     scene->setSceneManager(m_sceneManager);
     scene->setPeer(frontend);
     return scene;

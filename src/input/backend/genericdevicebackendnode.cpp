@@ -101,10 +101,9 @@ GenericDeviceBackendFunctor::GenericDeviceBackendFunctor(QInputAspect *inputaspe
 {
 }
 
-Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::create(Qt3DCore::QNode *frontend) const
 {
     GenericDeviceBackendNode *backendNode = m_handler->genericDeviceBackendNodeManager()->getOrCreateResource(frontend->id());
-    backendNode->setFactory(factory);
     backendNode->setInputAspect(m_inputAspect);
     backendNode->setPeer(frontend);
     m_handler->appendGenericDevice(m_handler->genericDeviceBackendNodeManager()->lookupHandle(frontend->id()));

@@ -63,8 +63,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QBackendNodeFactory;
-
 class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
         : public QObserverInterface
         , public QObservableInterface
@@ -72,7 +70,6 @@ class QT3DCORE_PRIVATE_EXPORT QBackendNodePrivate
 public:
     QBackendNodePrivate(QBackendNode::Mode mode);
 
-    void setFactory(const QBackendNodeFactory *factory);
     void setArbiter(QLockableObserverInterface *arbiter) Q_DECL_OVERRIDE;
     void notifyObservers(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -83,7 +80,6 @@ public:
     QBackendNode *q_ptr;
     QBackendNode::Mode m_mode;
 
-    const QBackendNodeFactory *m_factory;
     QLockableObserverInterface *m_arbiter;
     QNodeId m_peerUuid;
 };

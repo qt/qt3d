@@ -214,10 +214,9 @@ GeometryRendererFunctor::GeometryRendererFunctor(GeometryRendererManager *manage
 {
 }
 
-Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *frontend) const
 {
     GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
-    geometryRenderer->setFactory(factory);
     geometryRenderer->setManager(m_manager);
     geometryRenderer->setPeer(frontend);
     return geometryRenderer;

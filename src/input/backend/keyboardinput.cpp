@@ -152,10 +152,9 @@ KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)
 {
 }
 
-QBackendNode *KeyboardInputFunctor::create(QNode *frontend, const QBackendNodeFactory *factory) const
+QBackendNode *KeyboardInputFunctor::create(QNode *frontend) const
 {
     KeyboardInput *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->id());
-    input->setFactory(factory);
     input->setInputHandler(m_handler);
     input->setPeer(frontend);
     return input;

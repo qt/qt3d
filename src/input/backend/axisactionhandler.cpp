@@ -111,12 +111,11 @@ AxisActionHandlerNodeFunctor::AxisActionHandlerNodeFunctor(AxisActionHandlerMana
 {
 }
 
-Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::create(Qt3DCore::QNode *frontend, const Qt3DCore::QBackendNodeFactory *factory) const
+Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::create(Qt3DCore::QNode *frontend) const
 {
     HAxisActionHandler handle = m_manager->getOrAcquireHandle(frontend->id());
     AxisActionHandler *backend = m_manager->data(handle);
     m_manager->addActiveAxisActionHandler(handle);
-    backend->setFactory(factory);
     backend->setPeer(frontend);
     return backend;
 }
