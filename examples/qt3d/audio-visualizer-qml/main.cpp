@@ -39,7 +39,6 @@
 #include <QtGui/QOpenGLContext>
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
-#include <Qt3DQuick/QQmlAspectEngine>
 #include <QtQml/QQmlContext>
 
 int main(int argc, char* argv[])
@@ -57,14 +56,6 @@ int main(int argc, char* argv[])
     QQuickView view;
     view.setFormat(format);
     view.create();
-
-    Qt3DCore::Quick::QQmlAspectEngine engine;
-
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.aspectEngine()->setData(data);
-    engine.qmlEngine()->rootContext()->setContextProperty("_view", &view);
 
     TouchSettings touchSettings;
     view.rootContext()->setContextProperty("touchSettings", &touchSettings);

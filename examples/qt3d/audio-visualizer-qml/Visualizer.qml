@@ -121,10 +121,6 @@ Entity {
     }
     //![0]
 
-    Configuration  {
-        controlledCamera: camera
-    }
-
     Entity {
         components: [
             DirectionalLight {
