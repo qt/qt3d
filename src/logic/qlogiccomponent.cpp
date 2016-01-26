@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 
-/*!
-    \class Qt3DLogic::QLogicComponentPrivate
-    \internal
-*/
 QLogicComponentPrivate::QLogicComponentPrivate()
     : QComponentPrivate()
 {

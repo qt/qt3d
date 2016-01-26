@@ -81,7 +81,6 @@ public:
 };
 
 /*!
-    \class Qt3DCore::Quick::Quick3DNodeInstantiatorPrivate
     \internal
 */
 Quick3DNodeInstantiatorPrivate::Quick3DNodeInstantiatorPrivate()

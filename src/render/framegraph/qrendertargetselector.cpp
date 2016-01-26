@@ -49,10 +49,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderTargetSelectorPrivate
-    \internal
-*/
 QRenderTargetSelectorPrivate::QRenderTargetSelectorPrivate()
     : QFrameGraphNodePrivate()
     , m_target(Q_NULLPTR)

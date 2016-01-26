@@ -56,11 +56,39 @@ public:
     QAbstractAttribute *m_positionAttribute;
 };
 
+/*!
+ * \qmltype BoundingVolumeSpecifier
+ * \instantiates Qt3DRender::QBoundingVolumeSpecifier
+ * \inqmlmodule Qt3D.Render
+ * \brief Uncreatable
+ */
+
+/*!
+ * \qmlproperty AbstractAttribute BoundingVolumeSpecifier::positionAttribute
+ *
+ * Holds the position attribute.
+ */
+
+/*!
+ * \class Qt3DRender::QBoundingVolumeSpecifier
+ * \inmodule Qt3DRender
+ *
+ * \inherits QObject
+ */
+
+/*!
+ * Constructs a new QBoundingVolumeSpecifier with \a parent.
+ */
 QBoundingVolumeSpecifier::QBoundingVolumeSpecifier(QObject *parent)
     : QObject(*new QBoundingVolumeSpecifierPrivate(), parent)
 {
 }
 
+/*!
+ * \property QBoundingVolumeSpecifier::positionAttribute
+ *
+ * Holds the position attribute.
+ */
 QAbstractAttribute *QBoundingVolumeSpecifier::positionAttribute() const
 {
     Q_D(const QBoundingVolumeSpecifier);

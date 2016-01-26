@@ -80,7 +80,6 @@ Texture::Texture()
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
     , m_unique(false)
-    , m_lock(new QMutex())
     , m_textureDNA(0)
     , m_textureManager(Q_NULLPTR)
     , m_textureImageManager(Q_NULLPTR)
@@ -91,9 +90,6 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    if (m_lock != Q_NULLPTR)
-        delete m_lock;
-    m_lock = Q_NULLPTR;
 }
 
 void Texture::cleanup()
@@ -133,7 +129,7 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
 
-    QMutexLocker lock(m_lock);
+    QMutexLocker lock(&m_lock);
     if (texture != Q_NULLPTR) {
         m_isDirty = true;
         m_width = texture->width();
@@ -176,7 +172,7 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
     // we are receiving a sceneChangeEvent that modifies isDirty or one of the properties
     // at the same time
 
-    QMutexLocker lock(m_lock);
+    QMutexLocker lock(&m_lock);
     if (m_isDirty) {
         delete m_gl;
         m_gl = Q_NULLPTR;
@@ -450,7 +446,7 @@ GLint Texture::textureId()
 // Any Thread
 bool Texture::isTextureReset() const
 {
-    QMutexLocker lock(m_lock);
+    QMutexLocker lock(&m_lock);
     return m_isDirty;
 }
 
@@ -498,7 +494,7 @@ void Texture::setMipLevels(int mipLevels)
 void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     // The QOpenGLTexture has to be manipulated from the RenderThread only
-    QMutexLocker lock(m_lock);
+    QMutexLocker lock(&m_lock);
     // We lock here so that we're sure the texture cannot be rebuilt while we are
     // modifying one of its properties
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);

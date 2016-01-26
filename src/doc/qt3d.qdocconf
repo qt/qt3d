@@ -6,6 +6,12 @@ version                 = $QT_VERSION
 
 examplesinstallpath     = qt3d/qt3d
 
+indexes +=  $QT_INSTALL_DOCS/qtcore/qtcore.index \
+            $QT_INSTALL_DOCS/qtgui/qtgui.index \
+            $QT_INSTALL_DOCS/qtqml/qtqml.index \
+            $QT_INSTALL_DOCS/qtquick/qtquick.index \
+            $QT_INSTALL_DOCS/qmake/qmake.index
+
 qhp.projects            = Qt3D
 
 qhp.Qt3D.file                = qt3d.qhp
@@ -32,7 +38,7 @@ qhp.Qt3D.subprojects.qmltypes.sortPages  = true
 
 tagfile                 = qt3d.tags
 
-depends                 += qtcore qtqml qtquick qtdoc
+depends                 += qtcore qtgui qtqml qtquick qtdoc
 
 headerdirs += . \
               ../render \
@@ -43,6 +49,8 @@ headerdirs += . \
               ../quick3d/quick3d \
               ../input
 
+# Exclude private header files from the documentation build
+excludefiles += "*_p.h"
 
 sourcedirs += . \
               ../render \
@@ -60,20 +68,21 @@ examples.fileextensions       += "*.fraq *.geom *.vert"
 examples.imageextensions      += "*.png"
 
 #excludedirs +=
-
+macro.TODO = " "
 imagedirs   += images \
                ../../examples/qt3d/shadow-map-qml/doc/images \
                ../../examples/qt3d/basicshapes-cpp/doc/images \
                ../../examples/qt3d/planets-qml/doc/images \
-               ../../examples/qt3d/wireframe/doc/images
+               ../../examples/qt3d/wireframe/doc/images \
+               ../../examples/qt3d/audio-visualizer-qml/doc/images
 
-Cpp.ignoretokens     += QT3DCORE_PRIVATE_EXPORT \
-                        QT3DINPUTSHARED_EXPORT \
+Cpp.ignoretokens     += QT3DINPUTSHARED_EXPORT \
                         QT3DCORESHARED_EXPORT \
                         QT3DLOGIC_PRIVATE_EXPORT \
                         QT3DLOGICSHARED_EXPORT \
                         QT3DRENDERSHARED_EXPORT \
-                        QT3DRENDERSHARED_PRIVATE_EXPORT
+                        QT3DRENDERSHARED_PRIVATE_EXPORT \
+                        QT3DQUICKSHARED_PRIVATE_EXPORT
 
 Cpp.ignoredirectives += Q_DECLARE_LOGGING_CATEGORY
 

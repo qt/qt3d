@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QShaderDataPrivate
-    \internal
-*/
 QShaderDataPrivate::QShaderDataPrivate()
     : QComponentPrivate()
     , m_propertyReader(PropertyReaderInterfacePtr(new QShaderDataPropertyReader()))

@@ -59,7 +59,7 @@ public:
     QTickClock m_clock;
 };
 
-/*!
+/* !\internal
     \class Qt3DCore::QTickClockService
     \inmodule Qt3DCore
     \brief Default QAbstractFrameAdvanceService implementation.
@@ -81,7 +81,7 @@ qint64 QTickClockService::waitForNextFrame()
     return d->m_clock.waitForNextTick();
 }
 
-/*!
+/*
     Starts the inner tick clock used by the service.
  */
 void QTickClockService::start()

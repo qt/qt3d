@@ -58,10 +58,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DLogic {
 
-/*!
-    \class Qt3DLogic::QLogicAspectPrivate
-    \internal
-*/
 QLogicAspectPrivate::QLogicAspectPrivate()
     : QAbstractAspectPrivate()
     , m_time(0)

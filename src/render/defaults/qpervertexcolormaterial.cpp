@@ -55,10 +55,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QPerVertexColorMaterialPrivate
-    \internal
-*/
 QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
     : QMaterialPrivate()
     , m_vertexEffect(new QEffect())

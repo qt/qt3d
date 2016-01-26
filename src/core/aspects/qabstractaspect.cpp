@@ -57,10 +57,6 @@ static QByteArray className(const QMetaObject &obj)
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QAbstractAspectPrivate
-    \internal
-*/
 QAbstractAspectPrivate::QAbstractAspectPrivate()
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
@@ -84,13 +80,30 @@ QAbstractAspect::QAbstractAspect(QObject *parent)
     : QObject(*new QAbstractAspectPrivate, parent)
 {
 }
+/*!
+    \typedef Qt3DCore::QAspectJobPtr
+    \relates Qt3DCore::QAbstractAspect
 
-/*! \internal */
+    A shared pointer for QAspectJob.
+*/
+
+/*!
+    \typedef Qt3DCore::QBackendNodeFunctorPtr
+    \relates Qt3DCore::QAbstractAspect
+
+    A shared pointer for QBackendNodeFunctor.
+*/
+
+/*!
+    \internal
+*/
 QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
 }
-
+/*!
+    Registers backend.
+*/
 void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeFunctorPtr &functor)
 {
     Q_D(QAbstractAspect);

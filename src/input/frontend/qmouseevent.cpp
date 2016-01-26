@@ -51,6 +51,20 @@ namespace Qt3DInput {
 // These can always be added in follow up commits once the input API takes shape
 
 /*!
+ * \qmltype MouseEvent
+ * \instantiates Qt3DInput::QMouseEvent
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \brief Provides parameters that describe a mouse event.
+ *
+ * Mouse events occur when a mouse button is pressed and the ray
+ * traversing the view, originating from the mouse position intersects with one
+ * or more elements of the scene.
+ *
+ * \sa KeyEvent, WheelEvent, MouseInput
+ */
+
+/*!
  * \class Qt3DInput::QMouseEvent
  * \inmodule Qt3DInput
  *
@@ -161,6 +175,18 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
     }
 }
 
+/*!
+ * \qmltype WheelEvent
+ * \instantiates Qt3DInput::QWheelEvent
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \brief Contains parameters that describe a mouse wheel event.
+ *
+ * Mouse wheel events occur when the mouse wheel is rotated.
+ *
+ * \sa KeyEvent, MouseEvent, MouseInput
+ *
+ */
 
 /*!
  * \class Qt3DInput::QWheelEvent

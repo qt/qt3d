@@ -44,10 +44,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QParameterMappingPrivate
-    \internal
-*/
 QParameterMappingPrivate::QParameterMappingPrivate()
     : QNodePrivate()
     , m_bindingType(QParameterMapping::Uniform)
@@ -96,7 +92,8 @@ QParameterMapping::QParameterMapping(QNode *parent)
   \value Attribute
   \value StandardUniform
   \value FragmentOutput
-
+  \value UniformBufferObject
+  \value ShaderStorageBufferObject
 */
 
 /*! \internal */

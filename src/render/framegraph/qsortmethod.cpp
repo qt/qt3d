@@ -49,10 +49,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QSortMethodPrivate
-    \internal
-*/
 QSortMethodPrivate::QSortMethodPrivate()
     : QFrameGraphNodePrivate()
 {

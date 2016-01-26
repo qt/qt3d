@@ -122,7 +122,7 @@ public:
 };
 
 
-/*!
+/* !\internal
     \class Qt3DCore::QEventFilterService
     \inmodule Qt3DCore
 

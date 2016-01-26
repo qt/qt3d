@@ -50,10 +50,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderPassFilterPrivate
-    \internal
-*/
 
 QRenderPassFilter::QRenderPassFilter(QNode *parent)
     : QFrameGraphNode(*new QRenderPassFilterPrivate, parent)

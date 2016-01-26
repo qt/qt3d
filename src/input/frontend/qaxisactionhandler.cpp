@@ -48,11 +48,29 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
+/*! \internal */
 QAxisActionHandlerPrivate::QAxisActionHandlerPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_logicalDevice(Q_NULLPTR)
 {
 }
+
+/*!
+ * \qmltype AxisActionHandler
+ * \instantiates Qt3DInput::QAxisActionHandler
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QAxisActionHandler
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
 
 QAxisActionHandler::QAxisActionHandler(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QAxisActionHandlerPrivate, parent)

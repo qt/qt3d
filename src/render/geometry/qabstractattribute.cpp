@@ -47,10 +47,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QAbstractAttributePrivate
-    \internal
-*/
 QAbstractAttributePrivate::QAbstractAttributePrivate()
     : QNodePrivate()
     , m_buffer(Q_NULLPTR)
@@ -65,16 +61,89 @@ QAbstractAttributePrivate::QAbstractAttributePrivate()
 {
 }
 
+/*!
+ * \qmltype AbstractAttribute
+ * \instantiates Qt3DRender::QAbstractAttribute
+ * \inqmlmodule Qt3D.Render
+ * \brief Uncreatable
+ */
+
+/*!
+ * \class Qt3DRender::QAbstractAttribute
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DCore::QNode
+ *
+ * Abstract class.
+ */
+
+/*!
+ * \typedef Qt3DRender::QAbstractBufferPtr
+ * \relates Qt3DRender::QAbstractAttribute
+ */
+
+/*!
+ * \fn QVector<QVector4D> Qt3DRender::QAbstractAttribute::asVector4D() const
+ */
+
+/*!
+ * \fn QVector<QVector3D> Qt3DRender::QAbstractAttribute::asVector3D() const
+ */
+
+/*!
+ * \fn QVector<QVector2D> Qt3DRender::QAbstractAttribute::asVector2D() const
+ */
+
+/*!
+ * \fn void Qt3DRender::QAbstractAttribute::dump(int count)
+ * \a count
+ */
+
+/*!
+ * \enum QAbstractAttribute::AttributeType
+ *
+ * The type of the attribute.
+ *
+ * \value VertexAttribute
+ * \value IndexAttribute
+ */
+
+/*!
+ * \enum QAbstractAttribute::DataType
+ *
+ * The type of the data.
+ *
+ * \value Byte
+ * \value UnsignedByte
+ * \value Short
+ * \value UnsignedShort
+ * \value Int
+ * \value UnsignedInt
+ * \value HalfFloat
+ * \value Float
+ * \value Double
+ */
+
+/*!
+ * Constructs a new QAbstractAttribute with \a parent.
+ */
 QAbstractAttribute::QAbstractAttribute(QNode *parent)
     : QNode(*new QAbstractAttributePrivate(), parent)
 {
 }
 
+/*!
+ * Destroys the abstract attribute.
+ */
 QAbstractAttribute::~QAbstractAttribute()
 {
     Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QAbstractAttribute subclass didn't call QNode::cleanup in its destructor");
 }
 
+/*!
+ * Constructs a new QAbstractAttribute from \a buf of \a type, \a dataSize, \a count, \a offset,
+ * and \a stride with \a parent.
+ */
 QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(*new QAbstractAttributePrivate(), parent)
 {
@@ -87,11 +156,17 @@ QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint
     d->m_byteStride = stride;
 }
 
+/*!
+ * \internal
+ */
 QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
+/*!
+ * \internal
+ */
 QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(dd, parent)
 {
@@ -105,6 +180,9 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractB
     d->m_byteStride = stride;
 }
 
+/*!
+ * \internal
+ */
 void QAbstractAttribute::copy(const QNode *ref)
 {
     QNode::copy(ref);
@@ -120,54 +198,99 @@ void QAbstractAttribute::copy(const QNode *ref)
     d_func()->m_attributeType = attribute->d_func()->m_attributeType;
 }
 
+/*!
+ * \property QAbstractAttribute::buffer
+ *
+ * Holds the buffer.
+ */
 QAbstractBuffer *QAbstractAttribute::buffer() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_buffer;
 }
 
+/*!
+ * \property QAbstractAttribute::name
+ *
+ * Holds the name.
+ */
 QString QAbstractAttribute::name() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_name;
 }
 
+/*!
+ * \property QAbstractAttribute::dataSize
+ *
+ * Holds the data size.
+ */
 uint QAbstractAttribute::dataSize() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_dataSize;
 }
 
+/*!
+ * \property QAbstractAttribute::dataType
+ *
+ * Holds the data type.
+ */
 QAbstractAttribute::DataType QAbstractAttribute::dataType() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_dataType;
 }
 
+/*!
+ * \property QAbstractAttribute::count
+ *
+ * Holds the count.
+ */
 uint QAbstractAttribute::count() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_count;
 }
 
+/*!
+ * \property QAbstractAttribute::byteStride
+ *
+ * Holds the byte stride.
+ */
 uint QAbstractAttribute::byteStride() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_byteStride;
 }
 
+/*!
+ * \property QAbstractAttribute::byteOffset
+ *
+ * Holds the byte offset.
+ */
 uint QAbstractAttribute::byteOffset() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_byteOffset;
 }
 
+/*!
+ * \property QAbstractAttribute::divisor
+ *
+ * Holds the divisor.
+ */
 uint QAbstractAttribute::divisor() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_divisor;
 }
 
+/*!
+ * \property QAbstractAttribute::attributeType
+ *
+ * Holds the attribute type.
+ */
 QAbstractAttribute::AttributeType QAbstractAttribute::attributeType() const
 {
     Q_D(const QAbstractAttribute);

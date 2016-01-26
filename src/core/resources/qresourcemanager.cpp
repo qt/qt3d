@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-/*!
+/* !\internal
     \class Qt3DCore::QResourceManager
     \inmodule Qt3DCore
     \since 5.5
@@ -57,7 +57,7 @@
     parameters. The defaults are ArrayAllocatingPolicy and NonLockingPolicy respectively.
 */
 
-/*!
+/* !\internal
     \class Qt3DCore::ArrayAllocatingPolicy
     \inmodule Qt3DCore
     \since 5.5
@@ -70,7 +70,7 @@
     \sa QResourceManager
 */
 
-/*!
+/* !\internal
     \class Qt3DCore::ObjectLevelLockingPolicy
     \inmodule Qt3DCore
     \since 5.5

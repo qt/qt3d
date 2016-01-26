@@ -58,6 +58,22 @@ public:
     QVector<QAxis *> m_axes;
 };
 
+/*!
+ * \qmltype LogicalDevice
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QLogicalDevice
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
+
 QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QLogicalDevicePrivate(), parent)
 {

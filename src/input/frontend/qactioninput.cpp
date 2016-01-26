@@ -57,6 +57,23 @@ public:
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
+/*!
+ * \qmltype ActionInput
+ * \instantiates Qt3DInput::QActionInput
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QActionInput
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
+
 QActionInput::QActionInput(Qt3DCore::QNode *parent)
     : Qt3DInput::QAbstractActionInput(*new QActionInputPrivate(), parent)
 {

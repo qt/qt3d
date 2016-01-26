@@ -48,10 +48,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
-/*!
-    \class Qt3DInput::QKeyboardInputPrivate
-    \internal
-*/
 QKeyboardInputPrivate::QKeyboardInputPrivate()
     : QComponentPrivate()
     , m_controller(Q_NULLPTR)

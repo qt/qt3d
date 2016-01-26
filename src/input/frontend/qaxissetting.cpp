@@ -59,6 +59,24 @@ public:
     bool m_filter;
 };
 
+/*!
+ * \qmltype AxisSetting
+ * \instantiates Qt3DInput::QAxisSetting
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QAxisSetting
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
+
+
 QAxisSetting::QAxisSetting(Qt3DCore::QNode *parent)
     : QNode(*new QAxisSettingPrivate(), parent)
 {

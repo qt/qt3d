@@ -57,6 +57,22 @@ public:
     QVector<QAbstractActionInput *> m_inputs;
 };
 
+/*!
+ * \qmltype Action
+ * \inqmlmodule Qt3D.Input
+ * \since 5.6
+ * \TODO
+ *
+ */
+
+/*!
+ * \class Qt3DInput::QAction
+ * \inmodule Qt3DInput
+ * \since 5.6
+ * \TODO
+ *
+ */
+
 QAction::QAction(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QActionPrivate(), parent)
 {

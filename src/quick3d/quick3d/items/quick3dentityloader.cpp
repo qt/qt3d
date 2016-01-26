@@ -146,10 +146,6 @@ void Quick3DEntityLoader::copy(const QNode *ref)
     d_func()->m_entity->setParent(this);
 }
 
-/*!
-    \class Qt3DCore::Quick::Quick3DEntityLoaderPrivate
-    \internal
-*/
 Quick3DEntityLoaderPrivate::Quick3DEntityLoaderPrivate()
     : QEntityPrivate(),
       m_incubator(Q_NULLPTR),

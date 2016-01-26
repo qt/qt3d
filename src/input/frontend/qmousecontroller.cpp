@@ -46,12 +46,21 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
+/*! \internal */
 QMouseControllerPrivate::QMouseControllerPrivate()
     : QAbstractPhysicalDevicePrivate()
     , m_sensitivity(0.1f)
 {
 }
+/*!
+ * \qmltype MouseController
+ * \instantiates Qt3DInput::QMouseController
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \brief Delegates mouse events to the attached MouseInput objects.
+ * \TODO
+ * \sa MouseInput
+ */
 
 /*!
  * \class Qt3DInput::QMouseController

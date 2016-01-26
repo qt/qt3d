@@ -45,10 +45,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderStatePrivate
-    \internal
-*/
 QRenderStatePrivate::QRenderStatePrivate(QRenderState::Type type)
     : QNodePrivate(),
       m_type(type)

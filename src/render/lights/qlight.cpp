@@ -48,16 +48,12 @@ namespace Qt3DRender
 /*!
  * \qmltype Light
  * \inqmlmodule Qt3D.Render
- * \instantiates QLight
+ * \instantiates Qt3DRender::QLight
  * \brief Encapsulate a QLight object in a Qt 3D scene.
  * \since 5.6
  */
 
 
-/*!
-    \class Qt3DRender::QLightPrivate
-    \internal
-*/
 QLightPrivate::QLightPrivate(QLight::Type type)
     : m_type(type)
     , m_color(QColor(255, 255, 255))

@@ -155,34 +155,46 @@ class ArrayAllocatingPolicy
 {
 public:
     ArrayAllocatingPolicy()
+        : m_numBuckets(0)
+        , m_numConstructed(0)
     {
         reset();
+    }
+
+    ~ArrayAllocatingPolicy()
+    {
+        deallocateBuckets();
     }
 
     T* allocateResource()
     {
         Q_ASSERT(!m_freeList.isEmpty());
-        int idx = m_freeList.last();
-        m_freeList.pop_back();
+        int idx = m_freeList.takeLast();
         int bucketIdx = idx / BucketSize;
         int localIdx = idx % BucketSize;
-        Q_ASSERT(bucketIdx <= m_buckets.size());
-        if (bucketIdx == m_buckets.size()) {
-            m_buckets.append(Bucket(BucketSize));
-            m_bucketDataPtrs[bucketIdx] = m_buckets.last().data();
+        Q_ASSERT(bucketIdx <= m_numBuckets);
+        if (bucketIdx == m_numBuckets) {
+            m_bucketDataPtrs[bucketIdx] = static_cast<T*>(malloc(sizeof(T) * BucketSize));
+            // ### memset is only needed as long as we also use this for primitive types (see FrameGraphManager)
+            // ### remove once this is fixed, add a static_assert on T instead
+            memset(m_bucketDataPtrs[bucketIdx], 0, sizeof(T) * BucketSize);
+            ++m_numBuckets;
         }
-        // Make sure we got a properly constructed object at that point
-        // otherwise we might end up passing around bogus vtable pointers
-        // (shows up when we start releasing resources)
-        return new (m_bucketDataPtrs[bucketIdx] + localIdx) T;
+
+        Q_ASSERT(idx <= m_numConstructed);
+        if (idx == m_numConstructed) {
+            new (m_bucketDataPtrs[bucketIdx] + localIdx) T;
+            ++m_numConstructed;
+        }
+
+        return m_bucketDataPtrs[bucketIdx] + localIdx;
     }
 
     void releaseResource(T *r)
     {
         // search linearly over buckets to find the index of the resource
         // and put it into the free list
-        const int numBuckets = m_buckets.size();
-        for (int bucketIdx = 0; bucketIdx < numBuckets; ++bucketIdx) {
+        for (int bucketIdx = 0; bucketIdx < m_numBuckets; ++bucketIdx) {
             const T* firstItem = m_bucketDataPtrs[bucketIdx];
             if (firstItem > r || r >= firstItem + BucketSize) {
                 // resource is not in this bucket when its pointer address
@@ -203,13 +215,14 @@ public:
 
     void reset()
     {
-        m_buckets.clear();
+        deallocateBuckets();
         m_freeList.resize(MaxSize);
         for (int i = 0; i < MaxSize; i++)
             m_freeList[i] = MaxSize - (i + 1);
     }
 
 private:
+    Q_DISABLE_COPY(ArrayAllocatingPolicy)
 
     enum {
         MaxSize = (1 << INDEXBITS),
@@ -218,13 +231,25 @@ private:
         BucketSize = (1 << (INDEXBITS < 10 ? INDEXBITS : 10))
     };
 
-    typedef QVector<T> Bucket;
-    QList<Bucket> m_buckets;
-    // optimization: quick access to bucket data pointers
-    // this improves the performance of the releaseResource benchmarks
-    // and reduces their runtime by a factor 2
+    void deallocateBuckets()
+    {
+        while (m_numConstructed > 0) {
+            --m_numConstructed;
+            int bucketIdx = m_numConstructed / BucketSize;
+            int localIdx = m_numConstructed % BucketSize;
+            (m_bucketDataPtrs[bucketIdx] + localIdx)->~T();
+        }
+
+        while (m_numBuckets > 0) {
+            --m_numBuckets;
+            free(m_bucketDataPtrs[m_numBuckets]);
+        }
+    }
+
     T* m_bucketDataPtrs[MaxSize / BucketSize];
     QVector<int> m_freeList;
+    int m_numBuckets;
+    int m_numConstructed;
 
     void performCleanup(T *r, Int2Type<true>)
     {

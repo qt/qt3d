@@ -46,6 +46,13 @@
 #include <Qt3DCore/qscenepropertychange.h>
 
 /*!
+ * \qmltype Material
+ * \instantiates Qt3DRender::QMaterial
+ * \inqmlmodule Qt3D.Render
+ * \brief Non-creatable abstract base for materials.
+ */
+
+/*!
  * \class Qt3DRender::QMaterial
  * \inmodule Qt3DRender
  *
@@ -69,10 +76,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QMaterialPrivate
-    \internal
-*/
 QMaterialPrivate::QMaterialPrivate()
     : QComponentPrivate()
     , m_effect(Q_NULLPTR)

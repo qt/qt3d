@@ -56,10 +56,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QNormalDiffuseSpecularMapMaterialPrivate
-    \internal
-*/
 QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPrivate()
     : QMaterialPrivate()
     , m_normalDiffuseSpecularEffect(new QEffect())

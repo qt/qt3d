@@ -103,7 +103,7 @@ protected:
     PropertyReaderInterfacePtr m_propertyReader;
     QHash<QString, QVariant> m_nestedShaderDataProperties;
     QHash<QString, QShaderData::TransformType> m_transformedProperties;
-    QMutex *m_mutex;
+    QMutex m_mutex;
     static QList<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
     QMatrix4x4 m_viewMatrix;

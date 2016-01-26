@@ -55,10 +55,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QPhongMaterialPrivate
-    \internal
-*/
 QPhongMaterialPrivate::QPhongMaterialPrivate()
     : QMaterialPrivate()
     , m_phongEffect(new QEffect())

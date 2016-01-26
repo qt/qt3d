@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 using namespace Qt3DCore;
 
 namespace Qt3DInput {
-
+/*! \internal */
 QMouseInputPrivate::QMouseInputPrivate()
     : QComponentPrivate()
     , m_controller(Q_NULLPTR)
@@ -58,10 +58,21 @@ QMouseInputPrivate::QMouseInputPrivate()
 }
 
 /*!
+ * \qmltype MouseInput
+ * \instantiates Qt3DInput::QMouseInput
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \brief Provides mouse event notification
+ *
+ * \TODO
+ * \sa MouseController
+ */
+
+/*!
  * \class Qt3DInput::QMouseInput
  * \inmodule Qt3DInput
  *
- * \brief Provides a mean of being notified about mouse events when attached to
+ * \brief Provides a means of being notified about mouse events when attached to
  * a QMouseController instance.
  *
  * \since 5.5

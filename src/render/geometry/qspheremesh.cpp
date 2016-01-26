@@ -45,6 +45,49 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \qmltype SphereMesh
+ * \instantiates Qt3DRender::QSphereMesh
+ * \inqmlmodule Qt3D.Render
+ * \brief A spherical mesh.
+ */
+
+/*!
+ * \qmlproperty int SphereMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
+
+/*!
+ * \qmlproperty int SphereMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
+
+/*!
+ * \qmlproperty float SphereMesh::radius
+ *
+ * Holds the radius of the sphere.
+ */
+
+/*!
+ * \qmlproperty bool SphereMesh::generateTangents
+ *
+ * Holds the value of the automatic tangent generation flag.
+ */
+
+/*!
+ * \class Qt3DRender::QSphereMesh
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometryRenderer
+ *
+ * \brief A spherical mesh.
+ */
+
+/*!
+ * Constructs a new QSphereMesh with \a parent.
+ */
 QSphereMesh::QSphereMesh(QNode *parent)
     : QGeometryRenderer(parent)
 {
@@ -56,6 +99,9 @@ QSphereMesh::QSphereMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*!
+ * Destroys this sphere mesh.
+ */
 QSphereMesh::~QSphereMesh()
 {
     QNode::cleanup();
@@ -81,21 +127,41 @@ void QSphereMesh::setGenerateTangents(bool gen)
     static_cast<QSphereGeometry *>(geometry())->setGenerateTangents(gen);
 }
 
+/*!
+ * \property QSphereMesh::generateTangents
+ *
+ * Holds the value of the automatic tangent generation flag.
+ */
 bool QSphereMesh::generateTangents() const
 {
     return static_cast<QSphereGeometry *>(geometry())->generateTangents();
 }
 
+/*!
+ * \property QSphereMesh::rings
+ *
+ * Holds the number of rings in the mesh.
+ */
 int QSphereMesh::rings() const
 {
     return static_cast<QSphereGeometry *>(geometry())->rings();
 }
 
+/*!
+ * \property QSphereMesh::slices
+ *
+ * Holds the number of slices in the mesh.
+ */
 int QSphereMesh::slices() const
 {
     return static_cast<QSphereGeometry *>(geometry())->slices();
 }
 
+/*!
+ * \property QSphereMesh::radius
+ *
+ * Holds the radius of the sphere.
+ */
 float QSphereMesh::radius() const
 {
     return static_cast<QSphereGeometry *>(geometry())->radius();

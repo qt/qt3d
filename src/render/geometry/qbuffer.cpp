@@ -48,10 +48,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QBufferPrivate
-    \internal
-*/
 QBufferPrivate::QBufferPrivate()
     : QAbstractBufferPrivate()
     , m_usage(QBuffer::StaticDraw)
@@ -59,7 +55,90 @@ QBufferPrivate::QBufferPrivate()
 {
 }
 
+/*!
+ * \qmltype Buffer
+ * \instantiates Qt3DRender::QBuffer
+ * \inqmlmodule Qt3D.Render
+ */
 
+/*!
+ * \qmlproperty QBuffer::UsageType Buffer::usage
+ *
+ * Holds the buffer usage.
+ */
+
+/*!
+ * \qmlproperty QBuffer::BufferType Buffer::type
+ *
+ * Holds the buffer type.
+ */
+
+/*!
+ * \qmlproperty bool Buffer::sync
+ *
+ * Holds the sync flag. When sync is true, this will force data created
+ * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
+ * Qt3DRender::QBuffer node. By default sync is false.
+ *
+ * \note: This has no effect if the buffer's data was set directly using the data
+ * property.
+ */
+
+/*!
+ * \class Qt3DRender::QBuffer
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QAbstractBuffer
+ */
+
+/*!
+ * \enum QBuffer::BufferType
+ *
+ * The type of the buffer.
+ *
+ * \value VertexBuffer
+ *        GL_ARRAY_BUFFER
+ * \value IndexBuffer
+ *        GL_ELEMENT_ARRAY_BUFFER
+ * \value PixelPackBuffer
+ *        GL_PIXEL_PACK_BUFFER
+ * \value PixelUnpackBuffer
+ *        GL_PIXEL_UNPACK_BUFFER
+ */
+
+/*!
+ * \enum QBuffer::UsageType
+ *
+ * The type of the usage.
+ *
+ * \value StreamDraw
+ *        GL_STREAM_DRAW
+ * \value StreamRead
+ *        GL_STREAM_READ
+ * \value StreamCopy
+ *        GL_STREAM_COPY
+ * \value StaticDraw
+ *        GL_STATIC_DRAW
+ * \value StaticRead
+ *        GL_STATIC_READ
+ * \value StaticCopy
+ *        GL_STATIC_COPY
+ * \value DynamicDraw
+ *        GL_DYNAMIC_DRAW
+ * \value DynamicRead
+ *        GL_DYNAMIC_READ
+ * \value DynamicCopy
+ *        GL_DYNAMIC_COPY
+ */
+
+/*!
+ * \typedef Qt3DRender::QBufferFunctorPtr
+ * \relates QBuffer
+ */
+
+/*!
+ * Constructs a new QBuffer of buffer type \a ty with \a parent.
+ */
 QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
     : QAbstractBuffer(*new QBufferPrivate(), parent)
 {
@@ -67,12 +146,17 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
     d->m_type = ty;
 }
 
+/*!
+ * Destroys this buffer.
+ */
 QBuffer::~QBuffer()
 {
     QAbstractBuffer::cleanup();
 }
 
-/*! \internal */
+/*!
+ * \internal
+ */
 QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
     : QAbstractBuffer(dd, parent)
 {
@@ -80,6 +164,9 @@ QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
     d->m_type = ty;
 }
 
+/*!
+ * \internal
+ */
 void QBuffer::copy(const QNode *ref)
 {
     QAbstractBuffer::copy(ref);
@@ -90,6 +177,9 @@ void QBuffer::copy(const QNode *ref)
     d_func()->m_sync = buffer->d_func()->m_sync;
 }
 
+/*!
+ * \internal
+ */
 void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
 {
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
@@ -100,6 +190,11 @@ void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
     }
 }
 
+/*!
+ * \property QBuffer::usage
+ *
+ * Holds the buffer usage.
+ */
 QBuffer::UsageType QBuffer::usage() const
 {
     Q_D(const QBuffer);
@@ -115,12 +210,20 @@ void QBuffer::setUsage(QBuffer::UsageType usage)
     }
 }
 
+/*!
+ * \property QBuffer::type
+ *
+ * Holds the buffer type.
+ */
 QBuffer::BufferType QBuffer::type() const
 {
     Q_D(const QBuffer);
     return d->m_type;
 }
 
+/*!
+ * Sets the buffer \a functor.
+ */
 void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
 {
     Q_D(QBuffer);
@@ -135,6 +238,9 @@ void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
     }
 }
 
+/*!
+ * \return the buffer functor.
+ */
 QBufferFunctorPtr QBuffer::bufferFunctor() const
 {
     Q_D(const QBuffer);
@@ -142,12 +248,14 @@ QBufferFunctorPtr QBuffer::bufferFunctor() const
 }
 
 /*!
-    Sets the sync to \a sync. When sync is true, this will force data created
-    by a Qt3DRender::QBufferFunctor to also be updated on the frontend
-    Qt3DRender::QBuffer node. By default sync is false.
-
-    \note: This has no effect if the buffer's data was set directly using the data
-    property.
+ * \property QBuffer::sync
+ *
+ * Holds the sync flag. When sync is true, this will force data created
+ * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
+ * Qt3DRender::QBuffer node. By default sync is false.
+ *
+ * \note: This has no effect if the buffer's data was set directly using the data
+ * property.
  */
 void QBuffer::setSync(bool sync)
 {
@@ -158,10 +266,6 @@ void QBuffer::setSync(bool sync)
     }
 }
 
-/*!
-    Returns whether data loaded by a Qt3DRender::QBufferFunctor should be
-    synched with the Qt3DRender::QBuffer node or not.
- */
 bool QBuffer::isSync() const
 {
     Q_D(const QBuffer);

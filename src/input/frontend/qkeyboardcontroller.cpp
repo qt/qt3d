@@ -49,10 +49,6 @@ using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
-/*!
-    \class Qt3DInput::QKeyboardControllerPrivate
-    \internal
-*/
 QKeyboardControllerPrivate::QKeyboardControllerPrivate()
     : QAbstractPhysicalDevicePrivate()
 {

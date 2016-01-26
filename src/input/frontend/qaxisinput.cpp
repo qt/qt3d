@@ -61,7 +61,22 @@ public:
     int m_axis;
 };
 
+/*!
+ * \qmltype AxisInput
+ * \instantiates Qt3DInput::QAxisInput
+ * \inqmlmodule Qt3D.Input
+ * \since 5.5
+ * \TODO
+ *
+ */
 
+/*!
+ * \class Qt3DInput::QAxisInput
+ * \inmodule Qt3DInput
+ * \since 5.5
+ * \TODO
+ *
+ */
 QAxisInput::QAxisInput(Qt3DCore::QNode *parent)
     : QNode(*new QAxisInputPrivate(), parent)
 {

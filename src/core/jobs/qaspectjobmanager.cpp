@@ -52,10 +52,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QAspectJobManager
-    \internal
-*/
 QAspectJobManager::QAspectJobManager(QObject *parent)
     : QAbstractAspectJobManager(parent)
     , m_threadPooler(new QThreadPooler(this))

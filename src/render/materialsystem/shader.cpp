@@ -61,7 +61,6 @@ Shader::Shader()
     , m_program(Q_NULLPTR)
     , m_isLoaded(false)
     , m_dna(0)
-    , m_mutex(new QMutex())
 {
     m_shaderCode.resize(static_cast<int>(QShaderProgram::Compute) + 1);
 }
@@ -70,7 +69,6 @@ Shader::~Shader()
 {
     // TO DO: ShaderProgram is leaked as of now
     // Fix that taking care that they may be shared given a same dna
-    delete m_mutex;
 }
 
 void Shader::cleanup()
@@ -258,7 +256,7 @@ void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pac
 void Shader::setFragOutputs(const QHash<QString, int> &fragOutputs)
 {
     {
-        QMutexLocker lock(m_mutex);
+        QMutexLocker lock(&m_mutex);
         m_fragOutputs = fragOutputs;
     }
     updateDNA();
@@ -334,7 +332,7 @@ void Shader::updateDNA()
             + m_shaderCode[QShaderProgram::Fragment]
             + m_shaderCode[QShaderProgram::Compute]);
 
-    QMutexLocker locker(m_mutex);
+    QMutexLocker locker(&m_mutex);
     uint attachmentHash = 0;
     QHash<QString, int>::const_iterator it = m_fragOutputs.begin();
     QHash<QString, int>::const_iterator end = m_fragOutputs.end();

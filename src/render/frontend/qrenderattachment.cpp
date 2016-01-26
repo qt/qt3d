@@ -45,10 +45,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-/*!
-    \class Qt3DRender::QRenderAttachmentPrivate
-    \internal
-*/
 QRenderAttachmentPrivate::QRenderAttachmentPrivate()
     : QNodePrivate()
     , m_texture(Q_NULLPTR)

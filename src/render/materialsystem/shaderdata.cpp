@@ -59,14 +59,12 @@ namespace Render {
 QList<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
 
 ShaderData::ShaderData()
-    : m_mutex(new QMutex)
-    , m_managers(Q_NULLPTR)
+    : m_managers(Q_NULLPTR)
 {
 }
 
 ShaderData::~ShaderData()
 {
-    delete m_mutex;
 }
 
 void ShaderData::setManagers(NodeManagers *managers)
@@ -144,7 +142,7 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
 {
     // We can't perform this only once as we don't know if we would be call as the root or a
     // nested ShaderData
-    QMutexLocker lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
 
     // Update transformed properties
     // We check the matrices and decide if the transform has changed since the previous call to needsUpdate
@@ -219,7 +217,7 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
 // Called by renderview jobs (several concurrent threads)
 void ShaderData::markDirty()
 {
-    QMutexLocker lock(m_mutex);
+    QMutexLocker lock(&m_mutex);
     if (!ShaderData::m_updatedShaderData.contains(peerUuid()))
         ShaderData::m_updatedShaderData.append(peerUuid());
 }

@@ -48,10 +48,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
-/*!
-    \class Qt3DCore::Quick::QQmlAspectEnginePrivate
-    \internal
-*/
 QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
     : QObjectPrivate()
     , m_qmlEngine(new QQmlEngine())

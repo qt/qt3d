@@ -59,10 +59,6 @@ namespace Qt3DCore {
 
 QHash<QNodeId, QNode *> QNodePrivate::m_clonesLookupTable = QHash<QNodeId, QNode *>();
 
-/*!
-    \class Qt3DCore::QNodePrivate
-    \internal
-*/
 QNodePrivate::QNodePrivate()
     : QObjectPrivate()
     , m_changeArbiter(Q_NULLPTR)
@@ -539,6 +535,19 @@ void QNode::setParent(QNode *parent)
         QNodePrivate::get(parentNode())->_q_addChild(this);
     emit parentChanged(parent);
 }
+
+/*!
+    \typedef Qt3DCore::QNodePtr
+    \relates Qt3DCore::QNode
+
+    A shared pointer for QNode.
+*/
+/*!
+    \typedef Qt3DCore::QNodeList
+    \relates Qt3DCore::QNode
+
+    List of QNode pointers.
+*/
 
 /*!
  * Returns a list filled with the QNode children of the current

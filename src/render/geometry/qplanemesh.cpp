@@ -44,6 +44,43 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+/*!
+ * \qmltype PlaneMesh
+ * \instantiates Qt3DRender::QPlaneMesh
+ * \inqmlmodule Qt3D.Render
+ * \brief A square planar mesh.
+ */
+
+/*!
+ * \qmlproperty float PlaneMesh::width
+ *
+ * Holds the plane width.
+ */
+
+/*!
+ * \qmlproperty float PlaneMesh::height
+ *
+ * Holds the plane height.
+ */
+
+/*!
+ * \qmlproperty size PlaneMesh::meshResolution
+ *
+ * Holds the plane resolution.
+ */
+
+/*!
+ * \class Qt3DRender::QPlaneMesh
+ * \inmodule Qt3DRender
+ *
+ * \inherits Qt3DRender::QGeometryRenderer
+ *
+ * \brief A square planar mesh.
+ */
+
+/*!
+ * Constructs a new QPlaneMesh with \a parent.
+ */
 QPlaneMesh::QPlaneMesh(QNode *parent)
     : QGeometryRenderer(parent)
 {
@@ -54,6 +91,9 @@ QPlaneMesh::QPlaneMesh(QNode *parent)
     QGeometryRenderer::setGeometry(geometry);
 }
 
+/*!
+ * Destroys this plane mesh.
+ */
 QPlaneMesh::~QPlaneMesh()
 {
     QNode::cleanup();
@@ -64,6 +104,11 @@ void QPlaneMesh::setWidth(float width)
     static_cast<QPlaneGeometry *>(geometry())->setWidth(width);
 }
 
+/*!
+ * \property QPlaneMesh::width
+ *
+ * Holds the plane width.
+ */
 float QPlaneMesh::width() const
 {
     return static_cast<QPlaneGeometry *>(geometry())->width();
@@ -74,6 +119,11 @@ void QPlaneMesh::setHeight(float height)
     static_cast<QPlaneGeometry *>(geometry())->setHeight(height);
 }
 
+/*!
+ * \property QPlaneMesh::height
+ *
+ * Holds the plane height.
+ */
 float QPlaneMesh::height() const
 {
     return static_cast<QPlaneGeometry *>(geometry())->height();
@@ -84,6 +134,11 @@ void QPlaneMesh::setMeshResolution(const QSize &resolution)
     static_cast<QPlaneGeometry *>(geometry())->setResolution(resolution);
 }
 
+/*!
+ * \property QPlaneMesh::meshResolution
+ *
+ * Holds the plane resolution.
+ */
 QSize QPlaneMesh::meshResolution() const
 {
     return static_cast<QPlaneGeometry *>(geometry())->resolution();

@@ -66,9 +66,6 @@
     \section2 Qt 3D Core Module
     \generatelist {classesbymodule Qt3DCore}
 
-    \section2 Qt 3D Collision Module
-    \generatelist {classesbymodule Qt3DCollision}
-
     \section2 Qt 3D Input Module
     \generatelist {classesbymodule Qt3DInput}
 
@@ -107,7 +104,6 @@
    following import statements:
 
    \badcode
-   import Qt3D.Collision 2.0
    import Qt3D.Render 2.0
    import Qt3D.Input 2.0
    import Qt3D.Logic 2.0
@@ -117,9 +113,6 @@
 
    \section2 Qt 3D Core Module
    \generatelist {qmltypesbymodule Qt3D.Core}
-
-   \section2 Qt 3D Collision Module
-   \generatelist {qmltypesbymodule Qt3D.Collision}
 
    \section2 Qt 3D Input Module
    \generatelist {qmltypesbymodule Qt3D.Input}

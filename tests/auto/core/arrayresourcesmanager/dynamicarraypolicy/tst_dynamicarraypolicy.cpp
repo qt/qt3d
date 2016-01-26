@@ -58,8 +58,14 @@ public:
     tst_ArrayResource() : m_value(0)
     {}
 
+    void cleanup() { m_value = 0; }
+
     QAtomicInt m_value;
 };
+
+QT_BEGIN_NAMESPACE
+Q_DECLARE_RESOURCE_INFO(tst_ArrayResource, Q_REQUIRES_CLEANUP)
+QT_END_NAMESPACE
 
 typedef Qt3DCore::QHandle<tst_ArrayResource> tHandle;
 typedef Qt3DCore::QHandle<tst_ArrayResource, 4> tHandle4;

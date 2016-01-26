@@ -2332,17 +2332,16 @@ void GltfExporter::save(const QString &inputFilename)
     m_obj["meshes"] = meshes;
 
     QJsonObject cameras;
-    for (QHash<QString, Importer::CameraInfo>::const_iterator it = m_importer->cameraInfo().constBegin();
-         it != m_importer->cameraInfo().constEnd(); ++it) {
+    foreach (const Importer::CameraInfo &camInfo, m_importer->cameraInfo()) {
         QJsonObject camera;
         QJsonObject persp;
-        persp["aspect_ratio"] = it->aspectRatio;
-        persp["yfov"] = it->yfov;
-        persp["znear"] = it->znear;
-        persp["zfar"] = it->zfar;
+        persp["aspect_ratio"] = camInfo.aspectRatio;
+        persp["yfov"] = camInfo.yfov;
+        persp["znear"] = camInfo.znear;
+        persp["zfar"] = camInfo.zfar;
         camera["perspective"] = persp;
         camera["type"] = QStringLiteral("perspective");
-        cameras[it->name] = camera;
+        cameras[camInfo.name] = camera;
     }
     m_obj["cameras"] = cameras;
 

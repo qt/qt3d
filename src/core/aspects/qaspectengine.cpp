@@ -62,10 +62,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QAspectEnginePrivate
-    \internal
-*/
 QAspectEnginePrivate::QAspectEnginePrivate()
     : QObjectPrivate()
     , m_postman(Q_NULLPTR)

@@ -29,12 +29,12 @@
     \example basicshapes-cpp
     \title Qt 3D: Basic Shapes C++ Example
     \ingroup qt3d-examples-cpp
-    \brief Shows four basic shapes that Qt3D offers and sets up a mesh for each of them.
+    \brief Shows four basic shapes that Qt 3D offers and sets up a mesh for each of them.
 
     \image basicshapes-cpp-example.jpg
 
-    \e {Basic Shapes} shows four basic shapes that Qt3D offers: a torus, a cylinder,
-    a cube, and a sphere. The example also shows how to embed a Qt3D scene
+    \e {Basic Shapes} shows four basic shapes that Qt 3D offers: a torus, a cylinder,
+    a cube, and a sphere. The example also shows how to embed a Qt 3D scene
     into a widget and connect with other widgets.
 
     \include examples-run.qdocinc

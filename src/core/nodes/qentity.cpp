@@ -52,10 +52,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/*!
-    \class Qt3DCore::QEntityPrivate
-    \internal
-*/
 QEntityPrivate::QEntityPrivate()
     : QNodePrivate()
     , m_parentEntityId()
@@ -121,6 +117,12 @@ void QEntity::copy(const QNode *ref)
         addComponent(qobject_cast<QComponent *>(ccclone));
     }
 }
+/*!
+    \typedef Qt3DCore::QComponentList
+    \relates Qt3DCore::QEntity
+
+    List of QComponent pointers.
+*/
 
 /*!
     Returns the list of Qt3DCore::QComponent instances the entity is referencing.

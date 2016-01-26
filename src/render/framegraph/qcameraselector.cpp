@@ -58,10 +58,6 @@ QCameraSelector::QCameraSelector(QCameraSelectorPrivate &dd, QNode *parent)
 {
 }
 
-/*!
-    \class Qt3DRender::QCameraSelectorPrivate
-    \internal
-*/
 QCameraSelectorPrivate::QCameraSelectorPrivate()
     : QFrameGraphNodePrivate()
     , m_camera(Q_NULLPTR)
