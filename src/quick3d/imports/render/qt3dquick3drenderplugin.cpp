@@ -139,11 +139,6 @@
 
 #include <QtGui/qwindow.h>
 
-static void initResources()
-{
-    Q_INIT_RESOURCE(defaults);
-}
-
 QT_BEGIN_NAMESPACE
 
 static const struct {
@@ -179,9 +174,6 @@ QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3DRender::Render::Qu
 
 void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 {
-    // Init resources for defaults QML files
-    initResources();
-
     Qt3DRender::Quick::Quick3DRender_initialize();
 
     qmlRegisterUncreatableType<QWindow>(uri, 2, 0, "Window", "Only for assigning window surface property");
@@ -327,7 +319,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // Register types provided as QML files compiled into the plugin
     for (int i = 0; i < int(sizeof(qmldir) / sizeof(qmldir[0])); i++) {
-        QString path = QStringLiteral("qrc:/Qt3D/Render/defaults/qml/");
+        QString path = QStringLiteral("qrc:/qt-project.org/imports/Qt3D/Render/defaults/qml/");
         qmlRegisterType(QUrl(path + qmldir[i].type + QStringLiteral(".qml")),
                         uri,
                         qmldir[i].major, qmldir[i].minor,
