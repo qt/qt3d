@@ -45,6 +45,13 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 namespace Quick {
 
+/*!
+    \namespace Qt3DCore::Quick
+    \inmodule Qt3DCore
+    \brief Contains classes used for implementing QML functionality into Qt3D
+    applications.
+*/
+
 QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
     : QObjectPrivate()
     , m_qmlEngine(new QQmlEngine())
@@ -53,11 +60,42 @@ QQmlAspectEnginePrivate::QQmlAspectEnginePrivate()
 {
 }
 
+/*!
+ * \class Qt3DCore::Quick::QQmlAspectEngine
+ * \inmodule Qt3DCore
+ *
+ * \brief The QQmlAspectEngine provides an environment for the QAspectEngine and
+ * a method for instantiating QML components.
+ */
+
+/*!
+ * \enum Qt3DCore::Quick::QQmlAspectEngine::Status
+ *
+ * The status of the engine.
+ *
+ * \value Null
+ * \value Ready
+ * \value Loading
+ * \value Error
+ */
+
+/*!
+ * \fn void Qt3DCore::Quick::QQmlAspectEngine::statusChanged(Status status)
+ *
+ * This signal is emitted with \a status when the status of the engine changes.
+ */
+
+/*!
+ * Constructs a new QQmlAspectEngine with \a parent.
+ */
 QQmlAspectEngine::QQmlAspectEngine(QObject *parent)
     : QObject(*new QQmlAspectEnginePrivate, parent)
 {
 }
 
+/*!
+ * \return the status.
+ */
 QQmlAspectEngine::Status QQmlAspectEngine::status() const
 {
     Q_D(const QQmlAspectEngine);
@@ -68,6 +106,9 @@ QQmlAspectEngine::Status QQmlAspectEngine::status() const
     return Status(d->m_component->status());
 }
 
+/*!
+ * Sets \a source as a source for the QML component to be created.
+ */
 void QQmlAspectEngine::setSource(const QUrl &source)
 {
     Q_D(QQmlAspectEngine);
@@ -88,12 +129,18 @@ void QQmlAspectEngine::setSource(const QUrl &source)
     }
 }
 
+/*!
+ * \return the engine.
+ */
 QQmlEngine *QQmlAspectEngine::qmlEngine() const
 {
     Q_D(const QQmlAspectEngine);
     return d->m_qmlEngine.data();
 }
 
+/*!
+ * \return the aspectEngine.
+ */
 QAspectEngine *QQmlAspectEngine::aspectEngine() const
 {
     Q_D(const QQmlAspectEngine);
