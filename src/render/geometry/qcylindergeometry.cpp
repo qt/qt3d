@@ -84,23 +84,17 @@ void createSidesVertices(float *&verticesPtr,
             *verticesPtr++ = n.x();
             *verticesPtr++ = n.y();
             *verticesPtr++ = n.z();
-
-            if (slice == slices)
-                continue;
         }
     }
 }
 
 void createSidesIndices(quint16 *&indicesPtr, int rings, int slices)
 {
-    for (int ring = 0; ring < rings; ++ring) {
+    for (int ring = 0; ring < rings - 1; ++ring) {
         const int ringIndexStart = ring * (slices + 1);
         const int nextRingIndexStart = (ring + 1) * (slices + 1);
 
-        for (int slice = 0; slice <= slices; ++slice) {
-            if (slice == slices)
-                continue;
-
+        for (int slice = 0; slice < slices; ++slice) {
             const int nextSlice = slice + 1;
 
             *indicesPtr++ = (ringIndexStart + slice);
@@ -147,9 +141,6 @@ void createDiscVertices(float *&verticesPtr,
         *verticesPtr++ = 0.0f;
         *verticesPtr++ = yNormal;
         *verticesPtr++ = 0.0f;
-
-        if (slice == slices)
-            continue;
     }
 }
 
@@ -160,10 +151,7 @@ void createDiscIndices(quint16 *&indicesPtr,
 {
     const double yNormal = (yPosition < 0.0f) ? -1.0f : 1.0f;
 
-    for (int slice = 0; slice <= slices; ++slice) {
-        if (slice == slices)
-            continue;
-
+    for (int slice = 0; slice < slices; ++slice) {
         const int nextSlice = slice + 1;
 
         *indicesPtr++ = discCenterIndex;
@@ -237,7 +225,7 @@ public:
 
     QByteArray operator ()() Q_DECL_OVERRIDE
     {
-        const int facesCount = (m_slices * 2) * m_rings // two tris per side, for all rings
+        const int facesCount = (m_slices * 2) * (m_rings - 1) // two tris per side, for each pair of adjacent rings
                 + m_slices * 2; // two caps
         const int indicesCount = facesCount * 3;
         const int indexSize = sizeof(quint16);
@@ -301,8 +289,8 @@ void QCylinderGeometryPrivate::init()
     // vec3 pos, vec2 tex, vec3 normal
     const quint32 elementSize = 3 + 2 + 3;
     const quint32 stride = elementSize * sizeof(float);
-    const int nVerts = (m_slices + 1) * (m_rings + 1);
-    const int faces = (m_slices * 2) * m_rings + (2 * m_slices);
+    const int nVerts = (m_slices + 1) * m_rings + 2 * (m_slices + 1) + 2;
+    const int faces = (m_slices * 2) * (m_rings - 1) + (m_slices * 2);
 
     m_positionAttribute->setName(QAttribute::defaultPositionAttributeName());
     m_positionAttribute->setDataType(QAttribute::Float);
