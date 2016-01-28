@@ -129,6 +129,25 @@ QVector<int> QActionInput::buttons() const
 
     The current source device of the QActionInput.
 */
+/*!
+  \fn QActionInput::sourceDeviceChanged()
+
+  This signal is emitted when the source device ascociated with the action input is changed.
+*/
+
+/*!
+  \qmlproperty QAbstractPhysicalDevice Qt3D.Input::ActionInput::sourceDevice
+
+  The current source device of the ActionInput
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::sourceDeviceChanged()
+
+    This signal is emitted when the source device ascociated with the action input is changed.
+
+    The corresponding handler is \c onSourceDeviceChanged
+*/
 void QActionInput::setSourceDevice(QAbstractPhysicalDevice *sourceDevice)
 {
     Q_D(QActionInput);
@@ -158,6 +177,29 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
     return d->m_sourceDevice;
 }
 
+/*!
+  \fn QAbstractPhysicalDevice::buttonsChanged()
+
+  This signal is emitted when the buttons ascociated with the action input is changed.
+*/
+
+/*!
+    \qmlproperty QVariantList Qt3D.Input::ActionInput::buttons
+
+    The Buttons that can trigger this Action
+*/
+
+/*!
+    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged()
+
+    This signal is emitted when the buttons ascociated with the action input is changed.
+
+    The corresponding handler is \c onbuttonsChanged
+*/
+
+/*!
+    Set the buttons to trigger the QActionInput instance.
+ */
 void QActionInput::setButtons(const QVector<int> &buttons)
 {
     Q_D(QActionInput);

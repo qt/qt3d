@@ -49,22 +49,23 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 /*!
- * \qmltype Axis
- * \inqmlmodule Qt3D.Input
- * \brief QML frontend for QAxis C++ class.
- * \since 5.5
- * \TODO
- *
- */
+    Constructs a new QAxis instance with \a parent.
+    \class Qt3DInput::QAxis
+    \inmodule Qt3DInput
+    \inherits Qt3DCore::QNode
+    \brief QAxis stores QAbstractAxisInputs used to trigger an input event.
+    \since 5.7
+*/
 
 /*!
- * \class Qt3DInput::QAxis
- * \inmodule Qt3DInput
- * \brief A QAxis class.
- * \since 5.5
- * \TODO
- *
- */
+    \qmltype Axis
+    \inqmlmodule Qt3D.Input
+    \instantiates Qt3DInput::QAxis
+    \brief QML frontend for the Qt3DInput::QAxis C++ class.
+
+    Links a set of AbstractAxisInputs that trigger the same event.
+    \since 5.7
+*/
 
 /*!
     \qmlproperty int QAxis::value
@@ -80,7 +81,7 @@ namespace Qt3DInput {
 */
 
 /*!
-    Constructs a new QAxis instance with \a parent.
+    Constructs a new QAxis instance with parent \a parent.
  */
 QAxis::QAxis(Qt3DCore::QNode *parent)
     : Qt3DCore::QNode(*new QAxisPrivate(), parent)
@@ -91,6 +92,12 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 QAxis::~QAxis()
 {
 }
+
+/*!
+  \qmlproperty QQmlListProperty<Qt3DInput::QAbstractAxisInput> Qt3D.Input::Axis::inputs
+
+  the list of QAbstractAxisInput that can trigger this Axis.
+*/
 
 /*!
     QAxis::addInput

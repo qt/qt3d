@@ -50,6 +50,7 @@ namespace Qt3DInput {
     \inmodule Qt3DInput
     \brief QKeyEvent event type send by KeyBoardHandler.
     \since 5.5
+    \brief Contains parameters that describe a key event
 */
 
 /*!
@@ -58,6 +59,7 @@ namespace Qt3DInput {
     \instantiates Qt3DInput::QKeyEvent
     \brief QML frontend for QKeyEvent C++ class.
     \since 5.5
+    \brief Contains parameters that describe a key event
 
     The KeyEvent QML type cannot be directly created. Objects of this type
     are used as signal parameters in KeyboardHandler.

@@ -124,7 +124,7 @@ QInputSequence::~QInputSequence()
 
     This signal is emitted when the timeout of the input sequence is changed.
 
-    The corresponding handeler is \c onTimeoutChanged
+    The corresponding handler is \c onTimeoutChanged
 */
 
 /*!
@@ -148,7 +148,7 @@ int QInputSequence::timeout() const
 
     This signal is emitted when the buttonInterval of the input sequence is changed.
 
-    The corresponding handeler is \c onButtonIntervalChanged
+    The corresponding handler is \c onButtonIntervalChanged
 */
 
 /*!
