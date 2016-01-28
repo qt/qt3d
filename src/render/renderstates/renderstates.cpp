@@ -56,25 +56,49 @@ void RenderStateImpl::updateProperty(const char *name, const QVariant &value)
     Q_UNUSED(value);
 }
 
+bool RenderStateImpl::isPooledImpl() const Q_DECL_NOEXCEPT
+{
+    return true;
+}
+
 RenderStateNode::RenderStateNode()
     : QBackendNode()
     , m_impl(NULL)
 {
 }
 
+RenderStateNode::~RenderStateNode()
+{
+    cleanup();
+}
+
+void RenderStateNode::cleanup()
+{
+    if (m_impl != Q_NULLPTR) {
+        if (!m_impl->isPooledImpl())
+            delete m_impl;
+        m_impl = Q_NULLPTR;
+    }
+}
+
 void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QRenderState *renderState = static_cast<QRenderState *>(peer);
+    cleanup();
 
-    // TODO: allocate m_impl
-    m_impl = RenderStateImpl::setOrCreateState(renderState, Q_NULLPTR);
+    QRenderState *renderState = static_cast<QRenderState *>(peer);
+    m_impl = RenderStateImpl::getOrCreateState(renderState);
 }
 
 void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::NodeUpdated) {
         Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-        m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
+
+        if (m_impl->isPooledImpl()) {
+            m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());
+        } else {
+            m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
+        }
     }
 }
 

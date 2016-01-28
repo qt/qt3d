@@ -53,7 +53,7 @@ RenderStateCollection::~RenderStateCollection()
 {
 }
 
-QList<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager *manager) const
+QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager *manager) const
 {
     if (m_dirty) {
         m_renderStateNodes.clear();

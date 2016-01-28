@@ -54,27 +54,59 @@
 
 #include <Qt3DRender/private/genericstate_p.h>
 
-#include <QOpenGLContext>
-
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
 
-template <class State>
-State* createRenderStateImpl()
+template <class State, class S>
+State* getOrCreateRenderStateImpl(const S& m1)
 {
-    return new State();
+    State state;
+    state.set(m1);
+    return getOrCreateRenderStateEqualTo<State>(state);
 }
 
-class Q_AUTOTEST_EXPORT BlendState : public GenericState6<BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
+template <class State, class S, class T>
+State* getOrCreateRenderStateImpl(const S& m1, const T& m2)
+{
+    State state;
+    state.set(m1, m2);
+    return getOrCreateRenderStateEqualTo<State>(state);
+}
+
+template <class State, class S, class T, class U>
+State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3)
+{
+    State state;
+    state.set(m1, m2, m3);
+    return getOrCreateRenderStateEqualTo<State>(state);
+}
+
+template <class State, class S, class T, class U, class V>
+State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V& m4)
+{
+    State state;
+    state.set(m1, m2, m3, m4);
+    return getOrCreateRenderStateEqualTo<State>(state);
+}
+
+template <class State, class S, class T, class U, class V, class W, class Z>
+State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V& m4, const W& m5, const Z& m6)
+{
+    State state;
+    state.set(m1, m2, m3, m4, m5, m6);
+    return getOrCreateRenderStateEqualTo<State>(state);
+}
+
+class Q_AUTOTEST_EXPORT BlendState : public GenericState6<BlendState, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendStateMask, GLenum>
+class Q_AUTOTEST_EXPORT BlendEquation : public GenericState1<BlendEquation, BlendStateMask, GLenum>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
@@ -82,100 +114,103 @@ public:
 };
 
 
-class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState2<AlphaTestMask, GLenum, GLclampf>
+class Q_AUTOTEST_EXPORT AlphaFunc : public GenericState2<AlphaFunc, AlphaTestMask, GLenum, GLclampf>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTestStateMask, GLenum>
-{
-public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
-};
-
-class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthWriteStateMask, GLboolean>
+class Q_AUTOTEST_EXPORT DepthTest : public GenericState1<DepthTest, DepthTestStateMask, GLenum>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT CullFace : public GenericState1<CullFaceStateMask, GLenum>
+class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthMask, DepthWriteStateMask, GLboolean>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT FrontFace : public GenericState1<FrontFaceStateMask, GLenum>
+class Q_AUTOTEST_EXPORT CullFace : public GenericState1<CullFace, CullFaceStateMask, GLenum>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT Dithering : public MaskedRenderState<DitheringStateMask>
-{
-public:
-    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
-};
-
-class Q_AUTOTEST_EXPORT ScissorTest : public GenericState4<ScissorStateMask, int, int, int, int>
+class Q_AUTOTEST_EXPORT FrontFace : public GenericState1<FrontFace, FrontFaceStateMask, GLenum>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT StencilTest : public GenericState6<StencilTestStateMask, GLenum, int, uint, GLenum, int, uint>
+class Q_AUTOTEST_EXPORT Dithering : public MaskedRenderState<Dithering, DitheringStateMask>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT AlphaCoverage : public MaskedRenderState<AlphaCoverageStateMask>
+class Q_AUTOTEST_EXPORT ScissorTest : public GenericState4<ScissorTest, ScissorStateMask, int, int, int, int>
+{
+public:
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
+};
+
+class Q_AUTOTEST_EXPORT StencilTest : public GenericState6<StencilTest, StencilTestStateMask, GLenum, int, uint, GLenum, int, uint>
+{
+public:
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+};
+
+class Q_AUTOTEST_EXPORT AlphaCoverage : public MaskedRenderState<AlphaCoverage, AlphaCoverageStateMask>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSizeMask, bool, GLfloat>
+class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSize, PointSizeMask, bool, GLfloat>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffsetStateMask, GLfloat, GLfloat>
+class Q_AUTOTEST_EXPORT PolygonOffset : public GenericState2<PolygonOffset, PolygonOffsetStateMask, GLfloat, GLfloat>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    bool isPooledImpl() const Q_DECL_NOEXCEPT Q_DECL_OVERRIDE { return false; }
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT ColorMask : public GenericState4<ColorStateMask, GLboolean, GLboolean, GLboolean, GLboolean>
+class Q_AUTOTEST_EXPORT ColorMask : public GenericState4<ColorMask, ColorStateMask, GLboolean, GLboolean, GLboolean, GLboolean>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlaneMask, int>
+class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, ClipPlaneMask, int>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOpMask, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
+class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOp, StencilOpMask, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;
 };
 
-class Q_AUTOTEST_EXPORT StencilMask : public GenericState2<StencilWriteStateMask, uint, uint>
+class Q_AUTOTEST_EXPORT StencilMask : public GenericState2<StencilMask, StencilWriteStateMask, uint, uint>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;

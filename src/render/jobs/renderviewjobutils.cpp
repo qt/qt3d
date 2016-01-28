@@ -397,9 +397,8 @@ void addToRenderStateSet(RenderStateSet *stateSet,
                          const RenderStateCollection *collection,
                          RenderStateManager *manager)
 {
-    Q_FOREACH (RenderStateNode *rstate, collection->renderStates(manager)) {
+    Q_FOREACH (RenderStateNode *rstate, collection->renderStates(manager))
         stateSet->addState(rstate->impl());
-    }
 }
 
 namespace {

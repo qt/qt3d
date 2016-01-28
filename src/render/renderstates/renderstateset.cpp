@@ -251,69 +251,61 @@ bool RenderStateSet::contains(RenderStateImpl *ds) const
     return false;
 }
 
-template <class State>
-State* createIfNeeded(RenderStateImpl *state)
-{
-    if (state != Q_NULLPTR)
-        return static_cast<State*>(state);
-    return createRenderStateImpl<State>();
-}
 
-
-RenderStateImpl* RenderStateImpl::setOrCreateState(QRenderState *renderState, RenderStateImpl *target)
+RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
 {
     switch (renderState->type()) {
     case QRenderState::AlphaTest: {
         QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
-        return createIfNeeded<AlphaFunc>(target)->set(alphaTest->func(), alphaTest->clamp());
+        return getOrCreateRenderStateImpl<AlphaFunc>(alphaTest->func(), alphaTest->clamp());
     }
     case QRenderState::BlendEquation: {
         QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
-        return createIfNeeded<BlendEquation>(target)->set(blendEquation->mode());
+        return getOrCreateRenderStateImpl<BlendEquation>(blendEquation->mode());
     }
     case QRenderState::BlendState: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
         // just use the same values for RGB and Alpha
-        return createIfNeeded<BlendState>(target)->set(blendState->srcRGB(), blendState->dstRGB(),
+        return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
                                        blendState->srcRGB(), blendState->dstRGB(),
                                        blendState->enabled(),
                                        blendState->bufferIndex());
     }
     case QRenderState::BlendStateSeparate: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
-        return createIfNeeded<BlendState>(target)->set(blendState->srcRGB(), blendState->dstRGB(),
+        return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
                                        blendState->srcAlpha(), blendState->dstAlpha(),
                                        blendState->enabled(),
                                        blendState->bufferIndex());
     }
     case QRenderState::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
-        return createIfNeeded<CullFace>(target)->set(cullFace->mode());
+        return getOrCreateRenderStateImpl<CullFace>(cullFace->mode());
     }
     case QRenderState::DepthMask: {
         QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
-        return createIfNeeded<DepthMask>(target)->set(depthMask->mask());
+        return getOrCreateRenderStateImpl<DepthMask>(depthMask->mask());
     }
     case QRenderState::DepthTest: {
         QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
-        return createIfNeeded<DepthTest>(target)->set(depthTest->func());
+        return getOrCreateRenderStateImpl<DepthTest>(depthTest->func());
     }
     case QRenderState::AlphaCoverage:
     case QRenderState::Dithering:
     case QRenderState::FrontFace: {
         QFrontFace *frontFace = static_cast<QFrontFace *>(renderState);
-        return createIfNeeded<FrontFace>(target)->set(frontFace->direction());
+        return getOrCreateRenderStateImpl<FrontFace>(frontFace->direction());
     }
     case QRenderState::ScissorTest: {
         QScissorTest *scissorTest = static_cast<QScissorTest *>(renderState);
-        return createIfNeeded<ScissorTest>(target)->set(scissorTest->left(),
+        return getOrCreateRenderStateImpl<ScissorTest>(scissorTest->left(),
                                         scissorTest->bottom(),
                                         scissorTest->width(),
                                         scissorTest->height());
     }
     case QRenderState::StencilTest: {
         QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
-        return createIfNeeded<StencilTest>(target)->set(stencilTest->front()->func(),
+        return getOrCreateRenderStateImpl<StencilTest>(stencilTest->front()->func(),
                                         stencilTest->front()->ref(),
                                         stencilTest->front()->mask(),
                                         stencilTest->back()->func(),
@@ -322,34 +314,34 @@ RenderStateImpl* RenderStateImpl::setOrCreateState(QRenderState *renderState, Re
     }
     case QRenderState::PointSize: {
         QPointSize *pointSize = static_cast<QPointSize *>(renderState);
-        return createIfNeeded<PointSize>(target)->set(pointSize->isProgrammable(), pointSize->value());
+        return getOrCreateRenderStateImpl<PointSize>(pointSize->isProgrammable(), pointSize->value());
     }
     case QRenderState::PolygonOffset: {
         QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
-        return createIfNeeded<PolygonOffset>(target)->set(polygonOffset->factor(),
+        return getOrCreateRenderStateImpl<PolygonOffset>(polygonOffset->factor(),
                                           polygonOffset->units());
     }
     case QRenderState::ColorMask: {
         QColorMask *colorMask = static_cast<QColorMask *>(renderState);
-        return createIfNeeded<ColorMask>(target)->set(colorMask->isRed(),
+        return getOrCreateRenderStateImpl<ColorMask>(colorMask->isRed(),
                                       colorMask->isGreen(),
                                       colorMask->isBlue(),
                                       colorMask->isAlpha());
     }
     case QRenderState::ClipPlane: {
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
-        return createIfNeeded<ClipPlane>(target)->set(clipPlane->plane());
+        return getOrCreateRenderStateImpl<ClipPlane>(clipPlane->plane());
     }
     case QRenderState::StencilOp: {
         QStencilOp *stencilOp = static_cast<QStencilOp *>(renderState);
         const QStencilOpSeparate *front = stencilOp->front();
         const QStencilOpSeparate *back = stencilOp->back();
-        return createIfNeeded<StencilOp>(target)->set(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),
+        return getOrCreateRenderStateImpl<StencilOp>(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),
                                       back->stencilFail(), back->depthFail(), back->stencilDepthPass());
     }
     case QRenderState::StencilMask: {
         QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);
-        return createIfNeeded<StencilMask>(target)->set(stencilMask->frontMask(), stencilMask->backMask());
+        return getOrCreateRenderStateImpl<StencilMask>(stencilMask->frontMask(), stencilMask->backMask());
      }
 
     default:

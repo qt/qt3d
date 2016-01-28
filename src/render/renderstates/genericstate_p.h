@@ -53,7 +53,9 @@
 //
 
 #include <QList>
+#include <QOpenGLContext>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -96,7 +98,26 @@ public:
     virtual StateMaskSet mask() const = 0;
     virtual bool equalTo(const RenderStateImpl &renderState) const = 0;
 
-    static RenderStateImpl* setOrCreateState(QRenderState *renderState, RenderStateImpl *target);
+    /*!
+     * \brief Stored statically?
+     *
+     * Should each unique RenderStateImpl be stored statically and thus shared
+     * between RenderStateNodes?
+     * This should be disabled for RenderStateImpls that may have a large
+     * number of values, e.g. when they are using arbitrary floats
+     * Default: true
+     */
+    virtual bool isPooledImpl() const Q_DECL_NOEXCEPT;
+
+    /*!
+     * \brief Return pointer to pooled object with given property change
+     *
+     * For pooled impls: apply property change, get pooled object reflecting
+     * new state
+     */
+    virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const = 0;
+
+    static RenderStateImpl *getOrCreateState(QRenderState *renderState);
     virtual void updateProperty(const char *name, const QVariant &value);
 };
 
@@ -107,21 +128,48 @@ class Q_AUTOTEST_EXPORT RenderStateNode : public Qt3DCore::QBackendNode
 {
 public:
     RenderStateNode();
-    virtual ~RenderStateNode() {}
+    virtual ~RenderStateNode();
 
     virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
     StateMaskSet mask() const { return m_impl->mask(); }
-
     RenderStateImpl *impl() const { return m_impl; }
 
 protected:
+    void cleanup();
+
     RenderStateImpl *m_impl;
 };
 
-template <StateMaskSet Mask>
+template <class State>
+State *getOrCreateRenderStateEqualTo(const State &prototype)
+{
+    static Qt3DCore::QResourceManager<State, int, 16,
+            Qt3DCore::ArrayAllocatingPolicy,
+            Qt3DCore::ObjectLevelLockingPolicy> manager;
+    static int currIndex = 0;
+
+    // find existing state?
+    for (int idx = 0; idx < currIndex; ++idx) {
+        State *state = manager.lookupResource(idx);
+        if (state->equalTo(prototype))
+            return state;
+    }
+
+    // create new state
+    int thisIndex = currIndex++;
+    State *state = manager.getOrCreateResource(thisIndex);
+    *state = prototype;
+
+    return state;
+}
+
+/**
+ * CRTP base class, in order to simplify object template construction
+ */
+template <class StateSetImpl, StateMaskSet Mask>
 class MaskedRenderState : public RenderStateImpl
 {
 public:
@@ -129,10 +177,23 @@ public:
     {
         return Mask;
     }
+    // apply delta on temporary template, return instance of actual pooled RenderStateImpl
+    virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const
+    {
+        Q_ASSERT(isPooledImpl());
+        StateSetImpl newState = *(static_cast<const StateSetImpl*>(this));
+        newState.updateProperty(name, value);
+        return getOrCreateRenderStateEqualTo(newState);
+    }
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
+    {
+        return mask() == renderState.mask();
+    }
 };
 
-template <StateMaskSet Mask, typename T>
-class GenericState1 : public MaskedRenderState<Mask>
+
+template <class StateSetImpl, StateMaskSet mask, typename T>
+class GenericState1 : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
     GenericState1 *set(const T& v1)
@@ -140,9 +201,9 @@ public:
         m_1 = v1;
         return this;
     }
-    virtual bool equalTo(const RenderStateImpl &renderState) const
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState1 *other = dynamic_cast<const GenericState1*>(&renderState);
+        const GenericState1 *other = static_cast<const GenericState1*>(&renderState);
         return (other != NULL
                 && other->m_1 == m_1);
     }
@@ -151,8 +212,8 @@ protected:
     T m_1;
 };
 
-template <StateMaskSet Mask, typename T, typename S>
-class GenericState2 : public MaskedRenderState<Mask>
+template <class StateSetImpl, StateMaskSet mask, typename T, typename S>
+class GenericState2 : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
     GenericState2 *set(const T& v1, const S& v2)
@@ -161,9 +222,9 @@ public:
         m_2 = v2;
         return this;
     }
-    virtual bool equalTo(const RenderStateImpl &renderState) const
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState2 *other = dynamic_cast<const GenericState2*>(&renderState);
+        const GenericState2 *other = static_cast<const GenericState2*>(&renderState);
         return (other != NULL
                 && other->m_1 == m_1
                 && other->m_2 == m_2);
@@ -174,8 +235,8 @@ protected:
     S m_2;
 };
 
-template <StateMaskSet Mask, typename T, typename S, typename U>
-class GenericState3 : public MaskedRenderState<Mask>
+template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U>
+class GenericState3 : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
     GenericState3 *set(const T& v1, const S& v2, const U& v3)
@@ -185,9 +246,9 @@ public:
         m_3 = v3;
         return this;
     }
-    virtual bool equalTo(const RenderStateImpl &renderState) const
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState3 *other = dynamic_cast<const GenericState3*>(&renderState);
+        const GenericState3 *other = static_cast<const GenericState3*>(&renderState);
         return (other != NULL
                 && other->m_1 == m_1
                 && other->m_2 == m_2
@@ -200,8 +261,8 @@ protected:
     U m_3;
 };
 
-template <StateMaskSet Mask, typename T, typename S, typename U, typename Z>
-class GenericState4 : public MaskedRenderState<Mask>
+template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U, typename Z>
+class GenericState4 : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
     GenericState4 *set(const T& v1, const S& v2, const U& v3, const Z& v4)
@@ -212,9 +273,9 @@ public:
         m_4 = v4;
         return this;
     }
-    virtual bool equalTo(const RenderStateImpl &renderState) const
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState4 *other = dynamic_cast<const GenericState4*>(&renderState);
+        const GenericState4 *other = static_cast<const GenericState4*>(&renderState);
         return (other != NULL
                 && other->m_1 == m_1
                 && other->m_2 == m_2
@@ -229,8 +290,8 @@ protected:
     Z m_4;
 };
 
-template <StateMaskSet Mask, typename T, typename S, typename U, typename V, typename W, typename Z>
-class GenericState6 : public MaskedRenderState<Mask>
+template <class StateSetImpl, StateMaskSet mask, typename T, typename S, typename U, typename V, typename W, typename Z>
+class GenericState6 : public MaskedRenderState<StateSetImpl, mask>
 {
 public:
     GenericState6 *set(const T& v1, const S& v2, const U& v3, const V& v4, const W& v5, const Z& v6)
@@ -243,9 +304,9 @@ public:
         m_6 = v6;
         return this;
     }
-    virtual bool equalTo(const RenderStateImpl &renderState) const
+    bool equalTo(const RenderStateImpl &renderState) const Q_DECL_OVERRIDE
     {
-        const GenericState6 *other = dynamic_cast<const GenericState6*>(&renderState);
+        const GenericState6 *other = static_cast<const GenericState6*>(&renderState);
         return (other != NULL
                 && other->m_1 == m_1
                 && other->m_2 == m_2
