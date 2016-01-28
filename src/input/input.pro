@@ -1,6 +1,6 @@
 TARGET = Qt3DInput
 
-QT += core core-private 3dcore 3dcore-private 3drender
+QT += core core-private 3dcore 3dcore-private 3drender 3dlogic
 
 DEFINES += QT3DINPUT_LIBRARY
 

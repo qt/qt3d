@@ -40,6 +40,7 @@ HEADERS += \
     $$PWD/qinputsequence_p.h \
     $$PWD/qinputchord_p.h
 
+
 SOURCES += \
     $$PWD/qinputaspect.cpp \
     $$PWD/qkeyboarddevice.cpp \

@@ -5,17 +5,21 @@ QT += core-private 3dcore 3dcore-private 3drender 3dinput 3dlogic qml quick
 
 SOURCES += \
     qfirstpersoncameracontroller.cpp \
+    qorbitcontrol.cpp \
     qt3dwindow.cpp \
     qt3dquickwindow.cpp
 
 HEADERS += \
     qfirstpersoncameracontroller.h \
     qfirstpersoncameracontroller_p.h \
+    qorbitcontrol_p.h \
+    qorbitcontrol.h \
     qt3dwindow.h \
     qt3dquickwindow.h
 
 
 QML_FILES = \
+    $$PWD/OrbitController.qml \
     $$PWD/FirstPersonCameraController.qml
 
 OTHER_FILES += \

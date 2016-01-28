@@ -7,13 +7,13 @@ src_render.subdir = $$PWD/render
 src_render.target = sub-render
 src_render.depends = src_core
 
-src_input.subdir = $$PWD/input
-src_input.target = sub-input
-src_input.depends = src_render
-
 src_logic.subdir = $$PWD/logic
 src_logic.target = sub-logic
 src_logic.depends = src_core
+
+src_input.subdir = $$PWD/input
+src_input.target = sub-input
+src_input.depends = src_render
 
 # Quick3D libs
 src_quick3d_core.subdir = $$PWD/quick3d/quick3d
@@ -57,8 +57,8 @@ src_plugins_sceneparsers.depends = src_render
 SUBDIRS += \
     src_core \
     src_render \
-    src_input \
     src_logic \
+    src_input \
     src_quick3d_core \
     src_quick3d_core_imports \
     src_quick3d_render \

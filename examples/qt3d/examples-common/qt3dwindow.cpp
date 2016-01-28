@@ -101,7 +101,6 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
-
     m_inputSettings->setEventSource(this);
 }
 
@@ -140,7 +139,6 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
-
     m_inputSettings->setEventSource(this);
 }
 
