@@ -104,7 +104,17 @@ struct ParameterInfo
     {
         return name < otherName;
     }
+
+    bool operator<(const ParameterInfo &other) const
+    {
+        return name < other.name;
+    }
 };
+
+inline bool operator<(const QString &otherName, const ParameterInfo &pi)
+{
+    return otherName < pi.name;
+}
 
 typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 
