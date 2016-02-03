@@ -54,6 +54,7 @@
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
+#include <Qt3DInput/qinputsettings.h>
 #include <Qt3DLogic/qlogicaspect.h>
 
 #include <Qt3DCore/qaspectengine.h>
@@ -73,6 +74,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_frameGraph(new Qt3DRender::QFrameGraph)
     , m_forwardRenderer(new Qt3DRender::QForwardRenderer)
     , m_defaultCamera(new Qt3DRender::QCamera)
+    , m_inputSettings(new Qt3DInput::QInputSettings)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
     , m_initialized(false)
@@ -99,6 +101,8 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
+
+    m_inputSettings->setEventSource(this);
 }
 
 Qt3DWindow::Qt3DWindow(QWindow *parent)
@@ -109,6 +113,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_frameGraph(new Qt3DRender::QFrameGraph)
     , m_defaultCamera(new Qt3DRender::QCamera)
+    , m_inputSettings(new Qt3DInput::QInputSettings)
     , m_root(new Qt3DCore::QEntity)
     , m_userRoot(nullptr)
     , m_initialized(false)
@@ -135,6 +140,8 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
+
+    m_inputSettings->setEventSource(this);
 }
 
 Qt3DWindow::~Qt3DWindow()
@@ -186,6 +193,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
             m_userRoot->setParent(m_root);
 
         m_root->addComponent(m_frameGraph);
+        m_root->addComponent(m_inputSettings);
         m_aspectEngine->setRootEntity(m_root);
 
         m_initialized = true;

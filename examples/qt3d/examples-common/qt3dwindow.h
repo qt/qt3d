@@ -71,6 +71,7 @@ class QRenderAspect;
 
 namespace Qt3DInput {
 class QInputAspect;
+class QInputSettings;
 }
 
 namespace Qt3DLogic {
@@ -118,6 +119,7 @@ private:
     Qt3DRender::QCamera *m_defaultCamera;
 
     // Input configuration
+    Qt3DInput::QInputSettings *m_inputSettings;
 
     // Logic configuration
 
