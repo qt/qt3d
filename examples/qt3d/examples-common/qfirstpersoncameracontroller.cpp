@@ -206,7 +206,7 @@ void QFirstPersonCameraControllerPrivate::_q_onFrameUpdate(float dt)
         m_camera->translate(m_vxyz * dt);
         if (m_leftMouseButtonPressed) {
             m_camera->pan(m_rxyz.x() * dt, m_firstPersonUp);
-            m_camera->pan(m_rxyz.y() * dt);
+            m_camera->tilt(m_rxyz.y() * dt);
         }
     }
 }
