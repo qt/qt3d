@@ -205,8 +205,8 @@ void QFirstPersonCameraControllerPrivate::_q_onFrameUpdate(float dt)
     if (m_camera != Q_NULLPTR) {
         m_camera->translate(m_vxyz * dt);
         if (m_leftMouseButtonPressed) {
-            m_camera->pan(m_lookSpeed * m_rxyz.x() * dt, m_firstPersonUp);
-            m_camera->pan(m_lookSpeed * m_rxyz.y() * dt);
+            m_camera->pan(m_rxyz.x() * dt, m_firstPersonUp);
+            m_camera->pan(m_rxyz.y() * dt);
         }
     }
 }
@@ -214,15 +214,15 @@ void QFirstPersonCameraControllerPrivate::_q_onFrameUpdate(float dt)
 void QFirstPersonCameraControllerPrivate::_q_onAxisValueChanged(QString name, float value)
 {
     if (name == QStringLiteral("RX"))
-        m_rxyz.setX(value);
+        m_rxyz.setX(value * m_lookSpeed);
     else if (name == QStringLiteral("RY"))
-        m_rxyz.setY(value);
+        m_rxyz.setY(value * m_lookSpeed);
     else if (name == QStringLiteral("TX"))
-        m_vxyz.setX(value);
+        m_vxyz.setX(value * m_linearSpeed);
     else if (name == QStringLiteral("TY"))
-        m_vxyz.setY(value);
+        m_vxyz.setY(value * m_linearSpeed);
     else if (name == QStringLiteral("TZ"))
-        m_vxyz.setZ(value);
+        m_vxyz.setZ(value * m_linearSpeed);
 }
 
 void QFirstPersonCameraControllerPrivate::_q_onActionStarted(QString name)
