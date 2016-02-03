@@ -136,6 +136,8 @@ int main(int argc, char* argv[])
 
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(scene);
+    camController->setLinearSpeed( 50.0f );
+    camController->setLookSpeed( 180.0f );
     camController->setCamera(camera);
 
     view.setRootEntity(scene);
