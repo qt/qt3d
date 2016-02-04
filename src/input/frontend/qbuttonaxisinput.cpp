@@ -96,6 +96,36 @@ QVector<int> QButtonAxisInput::buttons() const
     return d->m_buttons;
 }
 
+float QButtonAxisInput::acceleration() const
+{
+    Q_D(const QButtonAxisInput);
+    return d->m_acceleration;
+}
+
+void QButtonAxisInput::setAcceleration(float acceleration)
+{
+    Q_D(QButtonAxisInput);
+    if (d->m_acceleration != acceleration) {
+        d->m_acceleration = acceleration;
+        emit accelerationChanged(acceleration);
+    }
+}
+
+float QButtonAxisInput::deceleration() const
+{
+    Q_D(const QButtonAxisInput);
+    return d->m_deceleration;
+}
+
+void QButtonAxisInput::setDeceleration(float deceleration)
+{
+    Q_D(QButtonAxisInput);
+    if (d->m_deceleration != deceleration) {
+        d->m_deceleration = deceleration;
+        emit decelerationChanged(deceleration);
+    }
+}
+
 Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange() const
 {
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QButtonAxisInputData>::create(this);
@@ -105,6 +135,8 @@ Qt3DCore::QNodeCreatedChangeBasePtr QButtonAxisInput::createNodeCreationChange()
     data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
     data.buttons = d->m_buttons;
     data.scale = d->m_scale;
+    data.acceleration = d->m_acceleration;
+    data.deceleration = d->m_deceleration;
 
     return creationChange;
 }

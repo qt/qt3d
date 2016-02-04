@@ -188,7 +188,11 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
                     if (!buttons.isEmpty()) {
                         // TO DO: Linear Curver for the progression of the scale value
                         if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
-                            axisValue += buttonInput->scale();
+                            buttonInput->updateSpeedRatio(m_currentTime, ButtonAxisInput::Accelerate);
+                        else if (buttonInput->speedRatio() != 0.0f)
+                            buttonInput->updateSpeedRatio(m_currentTime, ButtonAxisInput::Decelerate);
+
+                        axisValue += buttonInput->speedRatio() * buttonInput->scale();
                     }
                 }
 

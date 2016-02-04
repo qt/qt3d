@@ -27,6 +27,7 @@
 ****************************************************************************/
 
 #include <QtTest/QTest>
+#include <Qt3DCore/QPropertyUpdatedChange>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
@@ -66,6 +67,11 @@ private Q_SLOTS:
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
         axisInputWithKeysAndSourceDevice->setScale(355.0f);
         QTest::newRow("axisInputWithKeysAndSourceDevice") << axisInputWithKeysAndSourceDevice;
+
+        Qt3DInput::QButtonAxisInput *axisInputWithAcceleration = new Qt3DInput::QButtonAxisInput();
+        axisInputWithAcceleration->setAcceleration(41.0f);
+        axisInputWithAcceleration->setDeceleration(42.0f);
+        QTest::newRow("axisInputWithAcceleration") << axisInputWithAcceleration;
     }
 
     void checkCloning()
@@ -88,6 +94,8 @@ private Q_SLOTS:
         QCOMPARE(axisInput->metaObject(), creationChangeData->metaObject());
         QCOMPARE(axisInput->buttons(), cloneData.buttons);
         QCOMPARE(axisInput->scale(), cloneData.scale);
+        QCOMPARE(axisInput->acceleration(), cloneData.acceleration);
+        QCOMPARE(axisInput->deceleration(), cloneData.deceleration);
         QCOMPARE(axisInput->sourceDevice() ? axisInput->sourceDevice()->id() : Qt3DCore::QNodeId(), cloneData.sourceDeviceId);
     }
 
@@ -137,6 +145,32 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
         QCOMPARE(change->propertyName(), "sourceDevice");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), device->id());
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        axisInput->setAcceleration(42.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "acceleration");
+        QCOMPARE(change->value().toFloat(), 42.0f);
+        QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        axisInput->setDeceleration(43.0f);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QPropertyUpdatedChange>();
+        QCOMPARE(change->propertyName(), "deceleration");
+        QCOMPARE(change->value().toFloat(), 43.0f);
         QCOMPARE(change->type(), Qt3DCore::PropertyUpdated);
 
         arbiter.events.clear();
