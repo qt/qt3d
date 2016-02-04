@@ -50,6 +50,8 @@
 #include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/qinputsettings.h>
+
 
 #include <QtQuick/qquickwindow.h>
 
@@ -174,6 +176,14 @@ void Scene3DItem::applyRootEntityChange()
                 m_camera = cameras.first();
                 setCameraAspectModeHelper();
             }
+        }
+
+        // Set ourselves up as a source of input events for the input aspect
+        Qt3DInput::QInputSettings *inputSettings = m_entity->findChild<Qt3DInput::QInputSettings *>();
+        if (inputSettings) {
+            inputSettings->setEventSource(this);
+        } else {
+            qWarning() << "No Input Settings found, keyboard and mouse events won't be handled";
         }
     }
 }
