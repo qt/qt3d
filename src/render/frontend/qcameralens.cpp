@@ -50,7 +50,7 @@ namespace Qt3DRender {
 */
 QCameraLensPrivate::QCameraLensPrivate()
     : Qt3DCore::QComponentPrivate()
-    , m_projectionType(QCameraLens::OrthographicProjection)
+    , m_projectionType(QCameraLens::PerspectiveProjection)
     , m_nearPlane(0.1f)
     , m_farPlane(1024.0f)
     , m_fieldOfView(25.0f)
