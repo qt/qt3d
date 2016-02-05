@@ -69,15 +69,17 @@ namespace Qt3DRender {
 class ByteArraySplitter
 {
 public:
-    explicit ByteArraySplitter(const char *begin, const char *end, char delimiter)
+    explicit ByteArraySplitter(const char *begin, const char *end, char delimiter, QString::SplitBehavior splitBehavior)
         : m_input(begin)
     {
         int position = 0;
         int lastPosition = 0;
         for (auto it = begin; it != end; ++it) {
             if (*it == delimiter) {
-                const Entry entry = { lastPosition, position - lastPosition };
-                m_entries.append(entry);
+                if (position > lastPosition || splitBehavior == QString::KeepEmptyParts) { // skip multiple consecutive delimiters
+                    const Entry entry = { lastPosition, position - lastPosition };
+                    m_entries.append(entry);
+                }
                 lastPosition = position + 1;
             }
 
@@ -113,9 +115,9 @@ public:
         return QString::fromLatin1(m_input + m_entries[index].start, m_entries[index].size);
     }
 
-    ByteArraySplitter splitterAt(int index, char delimiter) const
+    ByteArraySplitter splitterAt(int index, char delimiter, QString::SplitBehavior splitBehavior) const
     {
-        return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter);
+        return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter, splitBehavior);
     }
 
     struct Entry
@@ -223,7 +225,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
             if (line[lineSize - 1] == '\n')
                 --lineSize; // chop newline
 
-            const ByteArraySplitter tokens(line, line + lineSize, ' ');
+            const ByteArraySplitter tokens(line, line + lineSize, ' ', QString::SkipEmptyParts);
 
             if (qstrncmp(tokens.charPtrAt(0), "v ", 2) == 0) {
                 if (tokens.size() < 4) {
@@ -277,7 +279,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 
                 for (int i = 0; i < faceVertices; i++) {
                     FaceIndices faceIndices;
-                    const ByteArraySplitter indices = tokens.splitterAt(i + 1, '/');
+                    const ByteArraySplitter indices = tokens.splitterAt(i + 1, '/', QString::KeepEmptyParts);
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.intAt(2) - 1 - normalsOffset;  // fall through
