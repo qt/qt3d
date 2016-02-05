@@ -203,14 +203,27 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
         subMeshMatch.setPattern(QString(QStringLiteral("^(%1)$")).arg(subMesh));
     Q_ASSERT(subMeshMatch.isValid());
 
+    char lineBuffer[1024];
+    const char *line;
+    QByteArray longLine;
     while (!ioDev->atEnd()) {
-        QByteArray line = ioDev->readLine();
+        // try to read into lineBuffer first, if the line fits (common case) we can do this without expensive allocations
+        // if not, fall back to dynamically allocated QByteArrays
+        auto lineSize = ioDev->readLine(lineBuffer, sizeof(lineBuffer));
+        if (lineSize == sizeof(lineBuffer) - 1 && lineBuffer[lineSize - 1] != '\n') {
+            longLine = QByteArray(lineBuffer, lineSize);
+            longLine += ioDev->readLine();
+            line = longLine.constData();
+            lineSize = longLine.size();
+        } else {
+            line = lineBuffer;
+        }
 
-        if (line.length() > 0 && line.at(0) != '#') {
-            if (line[line.size() - 1] == '\n')
-                line.chop(1); // chop newline
+        if (lineSize > 0 && line[0] != '#') {
+            if (line[lineSize - 1] == '\n')
+                --lineSize; // chop newline
 
-            const ByteArraySplitter tokens(line.constData(), line.constData() + line.size(), ' ');
+            const ByteArraySplitter tokens(line, line + lineSize, ' ');
 
             if (qstrncmp(tokens.charPtrAt(0), "v ", 2) == 0) {
                 if (tokens.size() < 4) {
