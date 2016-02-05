@@ -69,13 +69,13 @@ namespace Qt3DRender {
 class ByteArraySplitter
 {
 public:
-    explicit ByteArraySplitter(const QByteArray &input, char delimiter)
-        : m_input(input)
+    explicit ByteArraySplitter(const char *begin, const char *end, char delimiter)
+        : m_input(begin)
     {
         int position = 0;
         int lastPosition = 0;
-        for (char ch : input) {
-            if (ch == delimiter) {
+        for (auto it = begin; it != end; ++it) {
+            if (*it == delimiter) {
                 const Entry entry = { lastPosition, position - lastPosition };
                 m_entries.append(entry);
                 lastPosition = position + 1;
@@ -95,27 +95,27 @@ public:
 
     const char* charPtrAt(int index) const
     {
-        return m_input.constData() + m_entries[index].start;
+        return m_input + m_entries[index].start;
     }
 
     float floatAt(int index) const
     {
-        return qstrntod(m_input.constData() + m_entries[index].start, m_entries[index].size, nullptr, nullptr);
+        return qstrntod(m_input + m_entries[index].start, m_entries[index].size, nullptr, nullptr);
     }
 
     int intAt(int index) const
     {
-        return strtol(m_input.constData() + m_entries[index].start, nullptr, 10);
+        return strtol(m_input + m_entries[index].start, nullptr, 10);
     }
 
     QString stringAt(int index) const
     {
-        return QString::fromLatin1(m_input.constData() + m_entries[index].start, m_entries[index].size);
+        return QString::fromLatin1(m_input + m_entries[index].start, m_entries[index].size);
     }
 
-    QByteArray at(int index) const
+    ByteArraySplitter splitterAt(int index, char delimiter) const
     {
-        return QByteArray(m_input.constData() + m_entries[index].start, m_entries[index].size);
+        return ByteArraySplitter(m_input + m_entries[index].start, m_input + m_entries[index].start + m_entries[index].size, delimiter);
     }
 
     struct Entry
@@ -126,7 +126,7 @@ public:
 
 private:
     QVarLengthArray<Entry, 16> m_entries;
-    const QByteArray &m_input;
+    const char *m_input;
 };
 
 } // namespace Qt3DRender
@@ -210,7 +210,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
             if (line[line.size() - 1] == '\n')
                 line.chop(1); // chop newline
 
-            const ByteArraySplitter tokens(line, ' ');
+            const ByteArraySplitter tokens(line.constData(), line.constData() + line.size(), ' ');
 
             if (qstrncmp(tokens.charPtrAt(0), "v ", 2) == 0) {
                 if (tokens.size() < 4) {
@@ -264,8 +264,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 
                 for (int i = 0; i < faceVertices; i++) {
                     FaceIndices faceIndices;
-                    const QByteArray token = tokens.at(i + 1);
-                    const ByteArraySplitter indices(token, '/');
+                    const ByteArraySplitter indices = tokens.splitterAt(i + 1, '/');
                     switch (indices.size()) {
                     case 3:
                         faceIndices.normalIndex = indices.intAt(2) - 1 - normalsOffset;  // fall through
