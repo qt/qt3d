@@ -274,7 +274,7 @@ bool ObjLoader::load(::QIODevice *ioDev, const QString &subMesh)
 
                 int faceVertices = tokens.size() - 1;
 
-                QVector<FaceIndices> face;
+                QVarLengthArray<FaceIndices, 4> face; // try to avoid allocations in the common case of triangulated data
                 face.reserve(faceVertices);
 
                 for (int i = 0; i < faceVertices; i++) {
