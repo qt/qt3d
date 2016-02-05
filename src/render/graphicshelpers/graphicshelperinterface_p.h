@@ -123,6 +123,7 @@ public:
     virtual QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
     virtual QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual void    setSeamlessCubemap(bool enable) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;
     virtual bool    supportsFeature(Feature feature) const = 0;
     virtual uint    uniformByteSize(const ShaderUniform &description) = 0;

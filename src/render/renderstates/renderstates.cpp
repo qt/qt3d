@@ -272,6 +272,16 @@ void ClipPlane::updateProperty(const char *name, const QVariant &value)
     if (name == QByteArrayLiteral("plane")) m_1 = value.toInt();
 }
 
+void SeamlessCubemap::apply(GraphicsContext *gc) const
+{
+    gc->setSeamlessCubemap(m_1);
+}
+
+void SeamlessCubemap::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("enabled")) m_1 = value.toBool();
+}
+
 void StencilOp::apply(GraphicsContext *gc) const
 {
     gc->openGLContext()->functions()->glStencilOpSeparate(GL_FRONT, m_1, m_2, m_3);

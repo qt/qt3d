@@ -889,6 +889,11 @@ void GraphicsContext::disablei(GLenum cap, GLuint index)
     m_glHelper->disablei(cap, index);
 }
 
+void GraphicsContext::setSeamlessCubemap(bool enable)
+{
+    m_glHelper->setSeamlessCubemap(enable);
+}
+
 /*!
     \internal
     Returns a texture unit for a texture, -1 if all texture units are assigned.

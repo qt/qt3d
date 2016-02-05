@@ -605,6 +605,12 @@ void GraphicsHelperGL2::disablei(GLenum cap, GLuint index)
     qWarning() << "glDisablei() not supported by OpenGL 2.0 (since 3.0)";
 }
 
+void GraphicsHelperGL2::setSeamlessCubemap(bool enable)
+{
+    Q_UNUSED(enable);
+    qWarning() << "GL_TEXTURE_CUBE_MAP_SEAMLESS not supported by OpenGL 2.0 (since 3.2)";
+}
+
 QSize GraphicsHelperGL2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     Q_UNUSED(renderBufferId);

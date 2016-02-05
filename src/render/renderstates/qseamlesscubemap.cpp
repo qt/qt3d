@@ -1,7 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -38,59 +37,61 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERSTATE_H
-#define QT3DRENDER_QRENDERSTATE_H
-
-#include <Qt3DCore/qnode.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include "qseamlesscubemap.h"
+#include "qrenderstate_p.h"
+#include <private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRenderStatePrivate;
-
-class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
+class QSeamlessCubemapPrivate : public QRenderStatePrivate
 {
-    Q_OBJECT
-
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendState,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PointSize,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane,
-        SeamlessCubemap
-    };
-    Q_ENUM(Type)
+    QSeamlessCubemapPrivate()
+        : QRenderStatePrivate(QRenderState::SeamlessCubemap)
+        , m_enabled(false)
+    {
+    }
 
-    ~QRenderState();
-
-    Type type() const;
-
-protected:
-    QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-
-private:
-    Q_DECLARE_PRIVATE(QRenderState)
+    Q_DECLARE_PUBLIC(QSeamlessCubemap)
+    bool m_enabled;
 };
+
+QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
+    : QRenderState(*new QSeamlessCubemapPrivate, parent)
+{
+}
+
+QSeamlessCubemap::~QSeamlessCubemap()
+{
+    QNode::cleanup();
+}
+
+void QSeamlessCubemap::copy(const QNode *ref)
+{
+    QRenderState::copy(ref);
+    const QSeamlessCubemap *refState = static_cast<const QSeamlessCubemap*>(ref);
+    d_func()->m_enabled = refState->d_func()->m_enabled;
+}
+
+bool QSeamlessCubemap::enabled() const
+{
+    Q_D(const QSeamlessCubemap);
+    return d->m_enabled;
+}
+
+void QSeamlessCubemap::setEnabled(bool enabled)
+{
+    Q_D(QSeamlessCubemap);
+    if (d->m_enabled != enabled) {
+        d->m_enabled = enabled;
+        emit enabledChanged(enabled);
+    }
+}
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERSTATE_H

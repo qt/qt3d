@@ -25,7 +25,8 @@ HEADERS += \
     $$PWD/renderstates_p.h \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
-    $$PWD/renderstatecollection_p.h
+    $$PWD/renderstatecollection_p.h \
+    $$PWD/qseamlesscubemap.h
 
 
 SOURCES += \
@@ -51,4 +52,5 @@ SOURCES += \
     $$PWD/renderstates.cpp \
     $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \
-    $$PWD/renderstatecollection.cpp
+    $$PWD/renderstatecollection.cpp \
+    $$PWD/qseamlesscubemap.cpp

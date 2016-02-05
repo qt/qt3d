@@ -974,6 +974,12 @@ void GraphicsHelperGL3::disablei(GLenum cap, GLuint index)
     m_funcs->glDisablei(cap, index);
 }
 
+void GraphicsHelperGL3::setSeamlessCubemap(bool enable)
+{
+    Q_UNUSED(enable);
+    qWarning() << "GL_TEXTURE_CUBE_MAP_SEAMLESS not supported by OpenGL 3.0 (since 3.2)";
+}
+
 QSize GraphicsHelperGL3::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;

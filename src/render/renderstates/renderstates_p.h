@@ -204,6 +204,13 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
+class Q_AUTOTEST_EXPORT SeamlessCubemap : public GenericState1<SeamlessCubemap, SeamlessCubemapMask, GLboolean>
+{
+public:
+    virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
+};
+
 class Q_AUTOTEST_EXPORT StencilOp : public GenericState6<StencilOp, StencilOpMask, GLenum, GLenum, GLenum, GLenum, GLenum, GLenum>
 {
 public:

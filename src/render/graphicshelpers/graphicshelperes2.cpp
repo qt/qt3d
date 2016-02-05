@@ -607,6 +607,12 @@ void GraphicsHelperES2::disablei(GLenum cap, GLuint index)
     qWarning() << "glDisablei() not supported by OpenGL ES 2.0";
 }
 
+void GraphicsHelperES2::setSeamlessCubemap(bool enable)
+{
+    Q_UNUSED(enable);
+    qWarning() << "GL_TEXTURE_CUBE_MAP_SEAMLESS not supported by OpenGL ES 2.0";
+}
+
 QSize GraphicsHelperES2::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;

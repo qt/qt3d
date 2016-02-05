@@ -205,6 +205,7 @@ public:
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);
 
     // Helper methods

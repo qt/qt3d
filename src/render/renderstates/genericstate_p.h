@@ -84,7 +84,8 @@ enum StateMask
     ColorStateMask          = 1 << 12,
     ClipPlaneMask           = 1 << 13,
     StencilOpMask           = 1 << 14,
-    PointSizeMask           = 1 << 15
+    PointSizeMask           = 1 << 15,
+    SeamlessCubemapMask     = 1 << 16
 };
 
 typedef quint64 StateMaskSet;

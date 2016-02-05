@@ -64,6 +64,7 @@
 #include <Qt3DRender/qstenciltest.h>
 #include <Qt3DRender/qstenciltestseparate.h>
 #include <Qt3DRender/qclipplane.h>
+#include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstencilop.h>
 #include <Qt3DRender/qstencilopseparate.h>
 #include <Qt3DRender/qstencilmask.h>
@@ -232,6 +233,10 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, GraphicsConte
             gc->disableClipPlane(i);
     }
 
+    if (maskOfStatesToReset & SeamlessCubemapMask) {
+        gc->setSeamlessCubemap(false);
+    }
+
     if (maskOfStatesToReset & StencilOpMask) {
         funcs->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
     }
@@ -331,6 +336,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     case QRenderState::ClipPlane: {
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
         return getOrCreateRenderStateImpl<ClipPlane>(clipPlane->plane());
+    }
+    case QRenderState::SeamlessCubemap: {
+        QSeamlessCubemap *seamlessCubemap = static_cast<QSeamlessCubemap *>(renderState);
+        return getOrCreateRenderStateImpl<SeamlessCubemap>(seamlessCubemap->enabled());
     }
     case QRenderState::StencilOp: {
         QStencilOp *stencilOp = static_cast<QStencilOp *>(renderState);

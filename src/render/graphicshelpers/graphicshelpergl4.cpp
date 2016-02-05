@@ -962,6 +962,14 @@ void GraphicsHelperGL4::disablei(GLenum cap, GLuint index)
     m_funcs->glDisablei(cap, index);
 }
 
+void GraphicsHelperGL4::setSeamlessCubemap(bool enable)
+{
+    if (enable)
+        m_funcs->glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    else
+        m_funcs->glDisable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+}
+
 QSize GraphicsHelperGL4::getRenderBufferDimensions(GLuint renderBufferId)
 {
     GLint width = 0;
