@@ -511,12 +511,9 @@ void ObjLoader::generateTangents( const QVector<QVector3D>& points,
     QVector<QVector3D> tan1Accum;
     QVector<QVector3D> tan2Accum;
 
-    for ( int i = 0; i < points.size(); i++ )
-    {
-        tan1Accum.append( QVector3D() );
-        tan2Accum.append( QVector3D() );
-        tangents.append( QVector4D() );
-    }
+    tan1Accum.resize(points.size());
+    tan2Accum.resize(points.size());
+    tangents.resize(points.size());
 
     // Compute the tangent vector
     for ( int i = 0; i < faces.size(); i += 3 )
