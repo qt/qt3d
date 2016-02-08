@@ -548,8 +548,8 @@ void ObjLoader::generateTangents( const QVector<QVector3D>& points,
     for ( int i = 0; i < points.size(); ++i )
     {
         const QVector3D& n = normals[i];
-        QVector3D& t1 = tan1Accum[i];
-        QVector3D& t2 = tan2Accum[i];
+        const QVector3D& t1 = tan1Accum[i];
+        const QVector3D& t2 = tan2Accum[i];
 
         // Gram-Schmidt orthogonalize
         tangents[i] = QVector4D( QVector3D( t1 - QVector3D::dotProduct( n, t1 ) * n ).normalized(), 0.0f );
