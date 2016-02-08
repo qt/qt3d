@@ -21,5 +21,5 @@ SOURCES += \
     $$PWD/qbackendnode.cpp \
     $$PWD/qnodeid.cpp \
     $$PWD/qnodevisitor.cpp \
-    $$PWD/qabstractnodefactory.cpp
-
+    $$PWD/qabstractnodefactory.cpp \
+    $$PWD/propertychangehandler.cpp

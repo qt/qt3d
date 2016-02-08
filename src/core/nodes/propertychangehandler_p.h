@@ -51,6 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DCore/qt3dcore_global.h>
+
 #include <QObject>
 #include <QHash>
 #include <QVector>
@@ -61,17 +63,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-/**
- * The property change handler is similar to QSignalSpy, but geared towards the usecase of Qt3D.
- *
- * It allows connecting to any number of property change signals of the receiver object and forwards
- * the signal invocations to the Receiver by calling its propertyChanged function.
- */
-template<class Receiver>
-class PropertyChangeHandler : public QObject
+class QT3DCORESHARED_EXPORT PropertyChangeHandlerBase : public QObject
 {
+    Q_OBJECT
 public:
-    PropertyChangeHandler(Receiver *receiver, QObject *parent = Q_NULLPTR);
+    PropertyChangeHandlerBase(QObject *parent = Q_NULLPTR);
 
     /**
      * Connect to the change signal of @p property in @p object.
@@ -82,6 +78,19 @@ public:
      * Disconnect from the change signal of @p property in @p object.
      */
     void disconnectFromPropertyChange(const QObject *object, int propertyIndex);
+};
+
+/**
+ * The property change handler is similar to QSignalSpy, but geared towards the usecase of Qt3D.
+ *
+ * It allows connecting to any number of property change signals of the receiver object and forwards
+ * the signal invocations to the Receiver by calling its propertyChanged function.
+ */
+template<class Receiver>
+class PropertyChangeHandler : public PropertyChangeHandlerBase
+{
+public:
+    PropertyChangeHandler(Receiver *receiver, QObject *parent = Q_NULLPTR);
 
     /**
      * @internal
@@ -97,37 +106,9 @@ private:
 
 template<class Receiver>
 PropertyChangeHandler<Receiver>::PropertyChangeHandler(Receiver *receiver, QObject *parent)
-    : QObject(parent)
+    : PropertyChangeHandlerBase(parent)
     , m_receiver(receiver)
 {
-}
-
-template<class Receiver>
-void PropertyChangeHandler<Receiver>::connectToPropertyChange(const QObject *object, int propertyIndex)
-{
-    const QMetaObject *metaObject = object->metaObject();
-    const QMetaProperty property = metaObject->property(propertyIndex);
-    if (!property.hasNotifySignal())
-        return;
-
-    static const int memberOffset = QObject::staticMetaObject.methodCount();
-    QMetaObject::Connection connection = QMetaObject::connect(object, property.notifySignalIndex(),
-                                                              this, memberOffset + propertyIndex,
-                                                              Qt::DirectConnection, 0);
-    Q_ASSERT(connection);
-    Q_UNUSED(connection);
-}
-
-template<class Receiver>
-void PropertyChangeHandler<Receiver>::disconnectFromPropertyChange(const QObject *object, int propertyIndex)
-{
-    const QMetaObject *metaObject = object->metaObject();
-    const QMetaProperty property = metaObject->property(propertyIndex);
-    if (!property.hasNotifySignal())
-        return;
-
-    static const int memberOffset = QObject::staticMetaObject.methodCount();
-    QMetaObject::disconnect(object, property.notifySignalIndex(), this, memberOffset + propertyIndex);
 }
 
 template<class Receiver>
