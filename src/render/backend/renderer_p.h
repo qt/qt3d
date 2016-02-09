@@ -257,6 +257,13 @@ private:
 
     RendererSettings *m_settings;
     static const RendererSettings ms_defaultSettings;
+
+    void performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRenderer,
+                     GLsizei primitiveCount, Attribute *indexAttribute);
+    void performCompute(const RenderView *rv, RenderCommand *command);
+    bool createOrUpdateVAO(RenderCommand *command,
+                           HVao *previousVAOHandle,
+                           OpenGLVertexArrayObject **vao);
 };
 
 } // namespace Render

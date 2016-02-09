@@ -754,6 +754,105 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
     return static_cast<Qt3DCore::QAbstractFrameAdvanceService *>(m_vsyncFrameAdvanceService.data());
 }
 
+// Called by executeCommands
+void Renderer::performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRenderer, GLsizei primitiveCount, Attribute *indexAttribute)
+{
+    const GLint primType = rGeometryRenderer->primitiveType();
+    const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
+    const bool drawIndexed = indexAttribute != Q_NULLPTR;
+    const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
+
+    if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
+        m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
+
+    if (rGeometryRenderer->primitiveRestart())
+        m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
+
+    // TO DO: Add glMulti Draw variants
+    if (!drawInstanced) { // Non instanced Rendering
+        if (drawIndexed)
+            m_graphicsContext->drawElements(primType,
+                                            primitiveCount,
+                                            indexType,
+                                            reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
+                                            rGeometryRenderer->baseVertex());
+
+        else
+            m_graphicsContext->drawArrays(primType, 0, primitiveCount);
+    } else { // Instanced Rendering
+        if (drawIndexed)
+            m_graphicsContext->drawElementsInstanced(primType,
+                                                     primitiveCount,
+                                                     indexType,
+                                                     reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
+                                                     rGeometryRenderer->instanceCount());
+        else
+            m_graphicsContext->drawArraysInstanced(primType,
+                                                   rGeometryRenderer->baseInstance(),
+                                                   primitiveCount,
+                                                   rGeometryRenderer->instanceCount());
+    }
+
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
+    int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+    if (err)
+        qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+#endif
+
+    if (rGeometryRenderer->primitiveRestart())
+        m_graphicsContext->disablePrimitiveRestart();
+
+    // Unset dirtiness on rGeometryRenderer only
+    // The rGeometry may be shared by several rGeometryRenderer
+    // so we cannot unset its dirtiness at this point
+    rGeometryRenderer->unsetDirty();
+}
+
+void Renderer::performCompute(const RenderView *rv, RenderCommand *command)
+{
+    Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
+    if (shader != Q_NULLPTR) {
+        m_graphicsContext->activateShader(shader);
+        m_graphicsContext->setParameters(command->m_parameterPack);
+
+        const int *workGroups = rv->computeWorkGroups();
+        m_graphicsContext->dispatchCompute(workGroups[0],
+                workGroups[1],
+                workGroups[2]);
+
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
+        int err = m_graphicsContext->openGLContext()->functions()->glGetError();
+        if (err)
+            qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+#endif
+    }
+}
+
+bool Renderer::createOrUpdateVAO(RenderCommand *command,
+                                 HVao *previousVaoHandle,
+                                 OpenGLVertexArrayObject **vao)
+{
+    VAOManager *vaoManager = m_nodesManager->vaoManager();
+    if (m_graphicsContext->supportsVAO()) {
+        command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+
+        if (command->m_vao.isNull()) {
+            qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
+            command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
+            vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
+            vaoManager->data(command->m_vao)->create();
+        }
+
+        if (*previousVaoHandle != command->m_vao) {
+            *previousVaoHandle = command->m_vao;
+            *vao = vaoManager->data(command->m_vao);
+            return true;
+        }
+        Q_ASSERT(*vao);
+    }
+    return false;
+}
+
 // Called by RenderView->submit() in RenderThread context
 void Renderer::executeCommands(const RenderView *rv)
 {
@@ -770,23 +869,8 @@ void Renderer::executeCommands(const RenderView *rv)
 
     Q_FOREACH (RenderCommand *command, commands) {
 
-        if (command->m_type == RenderCommand::Compute) {
-            Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
-            if (shader != Q_NULLPTR) {
-                m_graphicsContext->activateShader(shader);
-                m_graphicsContext->setParameters(command->m_parameterPack);
-
-                const int *workGroups = rv->computeWorkGroups();
-                m_graphicsContext->dispatchCompute(workGroups[0],
-                        workGroups[1],
-                        workGroups[2]);
-
-#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-                int err = m_graphicsContext->openGLContext()->functions()->glGetError();
-                if (err)
-                    qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-#endif
-            }
+        if (command->m_type == RenderCommand::Compute) { // Compute Call
+            performCompute(rv, command);
         } else { // Draw Command
 
             // Check if we have a valid GeometryRenderer + Geometry
@@ -809,25 +893,7 @@ void Renderer::executeCommands(const RenderView *rv)
             // The VAO should be created only once for a QGeometry and a ShaderProgram
             // Manager should have a VAO Manager that are indexed by QMeshData and Shader
             // RenderCommand should have a handle to the corresponding VAO for the Mesh and Shader
-            bool needsToBindVAO = false;
-            VAOManager *vaoManager = m_nodesManager->vaoManager();
-            if (m_graphicsContext->supportsVAO()) {
-                command->m_vao = vaoManager->lookupHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-
-                if (command->m_vao.isNull()) {
-                    qCDebug(Rendering) << Q_FUNC_INFO << "Allocating new VAO";
-                    command->m_vao = vaoManager->getOrAcquireHandle(QPair<HGeometry, HShader>(command->m_geometry, command->m_shader));
-                    vaoManager->data(command->m_vao)->setVao(new QOpenGLVertexArrayObject());
-                    vaoManager->data(command->m_vao)->create();
-                }
-
-                if (previousVaoHandle != command->m_vao) {
-                    needsToBindVAO = true;
-                    previousVaoHandle = command->m_vao;
-                    vao = vaoManager->data(command->m_vao);
-                }
-                Q_ASSERT(vao);
-            }
+            const bool needsToBindVAO = createOrUpdateVAO(command, &previousVaoHandle, &vao);
 
             //// We activate the shader here
             // This will fill the attributes & uniforms info the first time the shader is loaded
@@ -849,9 +915,8 @@ void Renderer::executeCommands(const RenderView *rv)
             if (rGeometry->isDirty())
                 m_dirtyGeometry.push_back(rGeometry);
 
-            if (needsToBindVAO && vao) {
+            if (needsToBindVAO && vao != Q_NULLPTR)
                 vao->bind();
-            }
 
             if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
                 // Update or set Attributes and Buffers for the given rGeometry and Command
@@ -860,13 +925,13 @@ void Renderer::executeCommands(const RenderView *rv)
                 if (vao)
                     vao->setSpecified(true);
             }
+
             //// Update program uniforms
             m_graphicsContext->setParameters(command->m_parameterPack);
 
-            //// Draw Calls
+            //// OpenGL State
             // Set state
             RenderStateSet *localState = command->m_stateSet;
-
             // Merge the RenderCommand state with the globalState of the RenderView
             // Or restore the globalState if no stateSet for the RenderCommand
             if (localState != Q_NULLPTR) {
@@ -878,58 +943,10 @@ void Renderer::executeCommands(const RenderView *rv)
             // All Uniforms for a pass are stored in the QUniformPack of the command
             // Uniforms for Effect, Material and Technique should already have been correctly resolved
             // at that point
+
+            //// Draw Calls
             if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
-                const GLint primType = rGeometryRenderer->primitiveType();
-                const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
-                const bool drawIndexed = indexAttribute != Q_NULLPTR;
-                const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
-
-                if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
-                    m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
-
-                if (rGeometryRenderer->primitiveRestart())
-                    m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
-
-                // TO DO: Add glMulti Draw variants
-                if (!drawInstanced) { // Non instanced Rendering
-                    if (drawIndexed)
-                        m_graphicsContext->drawElements(primType,
-                                                        primitiveCount,
-                                                        indexType,
-                                                        reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                                        rGeometryRenderer->baseVertex());
-
-                    else
-                        m_graphicsContext->drawArrays(primType, 0, primitiveCount);
-                } else { // Instanced Rendering
-                    if (drawIndexed)
-                        m_graphicsContext->drawElementsInstanced(primType,
-                                                                 primitiveCount,
-                                                                 indexType,
-                                                                 reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                                                 rGeometryRenderer->instanceCount());
-                    else
-                        m_graphicsContext->drawArraysInstanced(primType,
-                                                               rGeometryRenderer->baseInstance(),
-                                                               primitiveCount,
-                                                               rGeometryRenderer->instanceCount());
-                }
-
-#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-                int err = m_graphicsContext->openGLContext()->functions()->glGetError();
-                if (err)
-                    qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
-#endif
-
-                if (rGeometryRenderer->primitiveRestart())
-                    m_graphicsContext->disablePrimitiveRestart();
-
-
-                // Unset dirtiness on rGeometryRenderer only
-                // The rGeometry may be shared by several rGeometryRenderer
-                // so we cannot unset its dirtiness at this point
-                rGeometryRenderer->unsetDirty();
-
+                performDraw(rGeometry, rGeometryRenderer, primitiveCount, indexAttribute);
             }
         }
     } // end of RenderCommands loop
