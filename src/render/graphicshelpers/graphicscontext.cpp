@@ -204,10 +204,12 @@ bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
     // for the current surface
     activateGLHelper();
 
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     GLint err = m_gl->functions()->glGetError();
     if (err != 0) {
         qCWarning(Backend) << Q_FUNC_INFO << "glGetError:" << err;
     }
+#endif
 
     if (!m_initialized) {
         initialize();
@@ -543,10 +545,12 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
         m_activeTextures[onUnit] = tex->dna();
     }
 
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_gl->functions()->glGetError();
     if (err)
         qCWarning(Backend) << "GL error after activating texture" << QString::number(err, 16)
                            << tex->textureId() << "on unit" << onUnit;
+#endif
 
     m_textureScores.insert(m_activeTextures[onUnit], 200);
     m_pinnedTextureUnits[onUnit] = true;

@@ -219,11 +219,13 @@ QOpenGLTexture *Texture::getOrCreateGLTexture()
 
     // Ideally we might want to abstract that and use the GraphicsContext as a wrapper
     // around that.
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
         int err = ctx->functions()->glGetError();
         if (err)
             qWarning() << Q_FUNC_INFO << "GL error after generating mip-maps" << QString::number(err, 16);
     }
+#endif
 
     return m_gl;
 }
@@ -307,9 +309,11 @@ QOpenGLTexture *Texture::buildGLTexture()
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
     // an Invalid Enum error
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = ctx->functions()->glGetError();
     if (err)
         qWarning() << Q_FUNC_INFO << err;
+#endif
 
     return glTex;
 }
@@ -353,11 +357,13 @@ void Texture::setToGLTexture(QTexImageData *imgData)
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulation which rasies
     // an Invalid Enum error
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
         int err = ctx->functions()->glGetError();
         if (err)
             qWarning() << Q_FUNC_INFO << err;
     }
+#endif
 }
 
 // RenderThread
@@ -387,11 +393,13 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
     // FIXME : make this conditional on Qt version
     // work-around issue in QOpenGLTexture DSA emulaation which rasies
     // an Invalid Enum error
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     if (QOpenGLContext *ctx = QOpenGLContext::currentContext()) {
         int err = ctx->functions()->glGetError();
         if (err)
             qWarning() << Q_FUNC_INFO << err;
     }
+#endif
 }
 
 // RenderThread

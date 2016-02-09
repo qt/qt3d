@@ -776,9 +776,11 @@ void Renderer::executeCommands(const RenderView *rv)
                         workGroups[1],
                         workGroups[2]);
 
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
                 int err = m_graphicsContext->openGLContext()->functions()->glGetError();
                 if (err)
                     qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+#endif
             }
         } else { // Draw Command
 
@@ -908,9 +910,11 @@ void Renderer::executeCommands(const RenderView *rv)
                                                                rGeometryRenderer->instanceCount());
                 }
 
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
                 int err = m_graphicsContext->openGLContext()->functions()->glGetError();
                 if (err)
                     qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
+#endif
 
                 if (rGeometryRenderer->primitiveRestart())
                     m_graphicsContext->disablePrimitiveRestart();

@@ -121,11 +121,13 @@ void TextureUniform::apply(GraphicsContext *ctx, const ShaderUniform &descriptio
     // We assume that the texture has been successfully bound and attache to a texture unit
     if (m_textureUnit != -1) {
         ctx->bindUniform(m_textureUnit, description);
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
         int err = ctx->openGLContext()->functions()->glGetError();
         if (err) {
             qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
                       err, qUtf8Printable(description.m_name), description.m_location);
         }
+#endif
     } else {
         qCWarning(Render::Backend, "Invalid texture unit supplied for \"%s\"",
                   qUtf8Printable(description.m_name));
