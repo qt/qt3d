@@ -94,6 +94,8 @@
 #include <QOffscreenSurface>
 #include <QWindow>
 
+#include <QtGui/private/qopenglcontext_p.h>
+
 // For Debug purposes only
 #include <QThread>
 
@@ -135,13 +137,13 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_renderQueue(new RenderQueue())
     , m_renderThread(type == QRenderAspect::Threaded ? new RenderThread(this) : Q_NULLPTR)
     , m_vsyncFrameAdvanceService(new VSyncFrameAdvanceService())
+    , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
     , m_settings(const_cast<RendererSettings *>(&ms_defaultSettings))
-    , m_waitForInitializationToBeCompleted(0)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -321,11 +323,14 @@ void Renderer::initialize()
     m_graphicsContext.reset(new GraphicsContext);
     m_graphicsContext->setRenderer(this);
 
-    QOpenGLContext* ctx = m_glContext ? m_glContext : new QOpenGLContext;
+    QOpenGLContext* ctx = m_glContext;
 
     // If we are using our own context (not provided by QtQuick),
     // we need to create it
     if (!m_glContext) {
+        ctx = new QOpenGLContext;
+        ctx->setShareContext(qt_gl_global_share_context());
+
         // TO DO: Shouldn't we use the highest context available and trust
         // QOpenGLContext to fall back on the best lowest supported ?
         const QByteArray debugLoggingMode = qgetenv("QT3DRENDER_DEBUG_LOGGING");

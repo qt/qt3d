@@ -177,7 +177,7 @@ public:
             m_bucketDataPtrs[bucketIdx] = static_cast<T*>(malloc(sizeof(T) * BucketSize));
             // ### memset is only needed as long as we also use this for primitive types (see FrameGraphManager)
             // ### remove once this is fixed, add a static_assert on T instead
-            memset(m_bucketDataPtrs[bucketIdx], 0, sizeof(T) * BucketSize);
+            memset((void*) m_bucketDataPtrs[bucketIdx], 0, sizeof(T) * BucketSize);
             ++m_numBuckets;
         }
 

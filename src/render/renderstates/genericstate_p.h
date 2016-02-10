@@ -179,7 +179,7 @@ public:
         return Mask;
     }
     // apply delta on temporary template, return instance of actual pooled RenderStateImpl
-    virtual RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const
+    RenderStateImpl *getOrCreateWithPropertyChange(const char *name, const QVariant &value) const Q_DECL_OVERRIDE
     {
         Q_ASSERT(isPooledImpl());
         StateSetImpl newState = *(static_cast<const StateSetImpl*>(this));
