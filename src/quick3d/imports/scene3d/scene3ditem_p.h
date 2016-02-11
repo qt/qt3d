@@ -112,6 +112,7 @@ private:
     void setWindowSurface(QObject *rootObject);
     void setCameraAspectModeHelper();
     void updateCameraAspectRatio();
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
     QStringList m_aspects;
     Qt3DCore::QEntity *m_entity;

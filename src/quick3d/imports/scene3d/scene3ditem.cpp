@@ -292,6 +292,12 @@ QSGNode *Scene3DItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNode
     return fboNode;
 }
 
+void Scene3DItem::mousePressEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    //Prevent subsequent move and release events being disregarded my the default event->ignore() from QQuickItem
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
