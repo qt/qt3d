@@ -66,10 +66,10 @@ QT_BEGIN_NAMESPACE
 
 Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     : QQuickWindow(parent)
-    , m_engine(new Qt3DCore::Quick::QQmlAspectEngine)
-    , m_renderAspect(new Qt3DRender::QRenderAspect)
-    , m_inputAspect(new Qt3DInput::QInputAspect)
-    , m_logicAspect(new Qt3DLogic::QLogicAspect)
+    , m_engine(Q_NULLPTR)
+    , m_renderAspect(Q_NULLPTR)
+    , m_inputAspect(Q_NULLPTR)
+    , m_logicAspect(Q_NULLPTR)
     , m_initialized(false)
     , m_cameraAspectRatioMode(AutomaticAspectRatio)
 {
@@ -86,7 +86,13 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     format.setSamples(4);
     format.setStencilBufferSize(8);
     setFormat(format);
+    QSurfaceFormat::setDefaultFormat(format);
     create();
+
+    m_engine.reset(new Qt3DCore::Quick::QQmlAspectEngine);
+    m_renderAspect = new Qt3DRender::QRenderAspect;
+    m_inputAspect = new Qt3DInput::QInputAspect;
+    m_logicAspect = new Qt3DLogic::QLogicAspect;
 
     m_engine->aspectEngine()->registerAspect(m_renderAspect);
     m_engine->aspectEngine()->registerAspect(m_inputAspect);
