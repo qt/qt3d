@@ -96,29 +96,25 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(NodeManagers
 
 struct ParameterInfo
 {
-    ParameterInfo(const QString &name = QString(), const QVariant &value = QVariant())
-        : name(name)
+    ParameterInfo(const int nameId = -1, const QVariant &value = QVariant())
+        : nameId(nameId)
         , value(value)
     {}
 
-    QString name;
+    int nameId;
     QVariant value;
 
-    bool operator<(const QString &otherName) const
+    bool operator<(const int otherNameId) const
     {
-        return name < otherName;
+        return nameId < otherNameId;
     }
 
     bool operator<(const ParameterInfo &other) const
     {
-        return name < other.name;
+        return nameId < other.nameId;
     }
 };
 
-inline bool operator<(const QString &otherName, const ParameterInfo &pi)
-{
-    return otherName < pi.name;
-}
 
 typedef QVarLengthArray<ParameterInfo, 16> ParameterInfoList;
 
@@ -140,13 +136,14 @@ void parametersFromParametersProvider(ParameterInfoList *infoList,
         addParametersForIds(infoList, manager, pass->parameters());
 }
 
-Q_AUTOTEST_EXPORT ParameterInfoList::iterator findParamInfo(ParameterInfoList *infoList,
-                                                            const QString &name);
+Q_AUTOTEST_EXPORT ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *infoList,
+                                                                  const int nameId);
 
 Q_AUTOTEST_EXPORT void addToRenderStateSet(RenderStateSet *stateSet,
                                            const RenderStateCollection *collection,
                                            RenderStateManager *manager);
 
+typedef QHash<int, QVariant> UniformBlockValueBuilderHash;
 
 struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 {
@@ -162,7 +159,7 @@ struct Q_AUTOTEST_EXPORT UniformBlockValueBuilder
 
     bool updatedPropertiesOnly;
     QHash<QString, ShaderUniform> uniforms;
-    QHash<QString, QVariant> activeUniformNamesToValue;
+    UniformBlockValueBuilderHash activeUniformNamesToValue;
     ShaderDataManager *shaderDataManager;
 };
 

@@ -31,6 +31,7 @@
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/managers_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 #include <Qt3DRender/qshaderdata.h>
 
 
@@ -328,11 +329,11 @@ void tst_RenderViewUtils::topLevelScalarValue()
     QVERIFY(blockBuilder.uniforms.count() == 1);
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
-    QHash<QString, QVariant>::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
-        QVERIFY(blockBuilder.uniforms.contains(it.key()));
+        QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), QVariant(shaderData->scalar()));
         ++it;
     }
@@ -360,11 +361,11 @@ void tst_RenderViewUtils::topLevelArrayValue()
     QVERIFY(blockBuilder.uniforms.count() == 1);
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), 1);
 
-    QHash<QString, QVariant>::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
-        QVERIFY(blockBuilder.uniforms.contains(it.key()));
+        QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         QCOMPARE(it.value(), QVariant(arrayValues));
         ++it;
     }
@@ -423,13 +424,13 @@ void tst_RenderViewUtils::topLevelStructValue()
 
     QCOMPARE(blockBuilder.activeUniformNamesToValue.count(), blockBuilder.uniforms.count());
 
-    QHash<QString, QVariant>::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
-    const QHash<QString, QVariant>::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
+    Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator it = blockBuilder.activeUniformNamesToValue.begin();
+    const Qt3DRender::Render::UniformBlockValueBuilderHash::const_iterator end = blockBuilder.activeUniformNamesToValue.end();
 
     while (it != end) {
-        QVERIFY(blockBuilder.uniforms.contains(it.key()));
-        QVERIFY(expectedValues.contains(it.key()));
-        QCOMPARE(it.value(), expectedValues.value(it.key()));
+        QVERIFY(blockBuilder.uniforms.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
+        QVERIFY(expectedValues.contains(Qt3DRender::Render::StringToInt::lookupString(it.key())));
+        QCOMPARE(it.value(), expectedValues.value(Qt3DRender::Render::StringToInt::lookupString(it.key())));
         ++it;
     }
 }

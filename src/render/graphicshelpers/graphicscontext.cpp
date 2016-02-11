@@ -971,7 +971,8 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
     deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
-    const QHash<QString, const QUniformValue *> &uniformValues = parameterPack.uniforms();
+    const PackUniformHash uniformValues = parameterPack.uniforms();
+
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
         Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
@@ -979,8 +980,8 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
         // TO DO : Rework the way textures are loaded
         if (t != Q_NULLPTR) {
             int texUnit = activateTexture(TextureScopeMaterial, t);
-            if (uniformValues.contains(namedTex.glslName)) {
-                texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslName]);
+            if (uniformValues.contains(namedTex.glslNameId)) {
+                texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslNameId]);
                 if (texUniform != Q_NULLPTR)
                     const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
             }

@@ -300,7 +300,7 @@ private:
 
     QVector<LightSource> m_lightSources;
 
-    typedef QHash<QString, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
+    typedef QHash<int, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;
     static StandardUniformsPFuncsHash initializeStandardUniformSetters();
     static QStringList ms_standardAttributesNames;
@@ -323,8 +323,8 @@ private:
     QUniformValue *time(const QMatrix4x4 &model) const;
     QUniformValue *eyePosition(const QMatrix4x4 &model) const;
 
-    void setUniformValue(ShaderParameterPack &uniformPack, const QString &name, const QVariant &value);
-    void setStandardUniformValue(ShaderParameterPack &uniformPack, const QString &glslName, const QString &name, const QMatrix4x4 &worldTransform);
+    void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value);
+    void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform);
     void setUniformBlockValue(ShaderParameterPack &uniformPack,
                               Shader *shader,
                               const ShaderUniformBlock &block,

@@ -87,7 +87,7 @@ public:
     virtual bool operator ==(const QUniformValue &other);
     bool operator !=(const QUniformValue &other);
 
-    virtual bool isTexture() const
+    virtual bool isTexture() const Q_DECL_NOEXCEPT
     {
         return false;
     }
@@ -107,12 +107,12 @@ public :
     {
     }
 
-    bool isTexture() const Q_DECL_FINAL
+    bool isTexture() const Q_DECL_NOEXCEPT Q_DECL_FINAL
     {
         return true;
     }
 
-    void setTextureId(const Qt3DCore::QNodeId &id)
+    void setTextureId(const Qt3DCore::QNodeId id)
     {
         m_textureId = id;
     }
@@ -150,28 +150,30 @@ struct BlockToSSBO {
     Qt3DCore::QNodeId m_bufferID;
 };
 
+typedef QHash<int, const QUniformValue *> PackUniformHash;
+
 class ShaderParameterPack
 {
 public:
     ~ShaderParameterPack();
 
-    void setUniform(const QString &glslName, const QUniformValue *val);
-    void setTexture(const QString &glslName, const Qt3DCore::QNodeId &id);
+    void setUniform(const int glslNameId, const QUniformValue *val);
+    void setTexture(const int glslNameId, const Qt3DCore::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
     void setShaderStorageBuffer(const BlockToSSBO &blockToSSBO);
 
-    inline const QHash<QString, const QUniformValue* > &uniforms() const { return m_uniforms; }
-    const QUniformValue *uniform(const QString &glslName) const { return m_uniforms.value(glslName); }
+    inline const PackUniformHash &uniforms() const { return m_uniforms; }
+    const QUniformValue *uniform(const int glslNameId) const { return m_uniforms.value(glslNameId); }
 
     struct NamedTexture
     {
         NamedTexture() {}
-        NamedTexture(const QString &nm, const Qt3DCore::QNodeId &t)
-            : glslName(nm)
+        NamedTexture(const int nm, const Qt3DCore::QNodeId &t)
+            : glslNameId(nm)
             , texId(t)
         { }
 
-        QString glslName;
+        int glslNameId;
         Qt3DCore::QNodeId texId;
     };
 
@@ -179,7 +181,7 @@ public:
     inline QVector<BlockToUBO> uniformBuffers() const { return m_uniformBuffers; }
     inline QVector<BlockToSSBO> shaderStorageBuffers() const { return m_shaderStorageBuffers; }
 private:
-    QHash<QString, const QUniformValue* > m_uniforms;
+    PackUniformHash m_uniforms;
 
     QVector<NamedTexture> m_textures;
     QVector<BlockToUBO> m_uniformBuffers;

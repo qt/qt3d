@@ -84,6 +84,10 @@ public:
     void updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pack);
     void setFragOutputs(const QHash<QString, int> &fragOutputs);
 
+    QVector<int> uniformsNamesIds() const;
+    QVector<int> uniformBlockNamesIds() const;
+    QVector<int> storageBlockNamesIds() const;
+
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
     QVector<QString> uniformBlockNames() const;
@@ -100,11 +104,14 @@ public:
     QVector<ShaderStorageBlock> storageBlocks() const;
 
     QHash<QString, ShaderUniform> activeUniformsForUniformBlock(int blockIndex) const;
-    ShaderUniformBlock uniformBlock(int blockIndex);
-    ShaderUniformBlock uniformBlock(const QString &blockName);
 
-    ShaderStorageBlock storageBlock(int blockIndex);
-    ShaderStorageBlock storageBlock(const QString &blockName);
+    ShaderUniformBlock uniformBlockForBlockIndex(int blockNameId);
+    ShaderUniformBlock uniformBlockForBlockNameId(int blockIndex);
+    ShaderUniformBlock uniformBlockForBlockName(const QString &blockName);
+
+    ShaderStorageBlock storageBlockForBlockIndex(int blockIndex);
+    ShaderStorageBlock storageBlockForBlockNameId(int blockNameId);
+    ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
 
 private:
     QOpenGLShaderProgram *m_program;
@@ -113,16 +120,19 @@ private:
     QOpenGLShaderProgram *createDefaultProgram();
 
     QVector<QString> m_uniformsNames;
+    QVector<int> m_uniformsNamesIds;
     QVector<ShaderUniform> m_uniforms;
 
     QVector<QString> m_attributesNames;
     QVector<ShaderAttribute> m_attributes;
 
     QVector<QString> m_uniformBlockNames;
+    QVector<int> m_uniformBlockNamesIds;
     QVector<ShaderUniformBlock> m_uniformBlocks;
     QHash<int, QHash<QString, ShaderUniform> > m_uniformBlockIndexToShaderUniforms;
 
     QVector<QString> m_shaderStorageBlockNames;
+    QVector<int> m_shaderStorageBlockNamesIds;
     QVector<ShaderStorageBlock> m_shaderStorageBlocks;
 
     QHash<QString, int> m_fragOutputs;

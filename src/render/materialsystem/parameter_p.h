@@ -74,10 +74,12 @@ public:
 
     QString name() const;
     QVariant value() const;
+    int nameId() const;
 
 private:
     QString m_name;
     QVariant m_value;
+    int m_nameId;
 };
 
 } // namespace Render

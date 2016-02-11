@@ -61,7 +61,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class StringToInt
+class Q_AUTOTEST_EXPORT StringToInt
 {
 public:
     static int lookupId(const QString &str);

@@ -70,12 +70,16 @@ public:
     Qt3DCore::QNodeId id() const;
     QString parameterName() const;
     QString shaderVariableName() const;
+    int parameterNameId() const;
+    int shaderVariableNameId() const;
     QParameterMapping::Binding bindingType() const;
 
 private:
     Qt3DCore::QNodeId m_id;
     QString m_parameterName;
     QString m_shaderVariableName;
+    int m_parameterNameId;
+    int m_shaderVariableNameId;
     QParameterMapping::Binding m_bindingType;
 };
 

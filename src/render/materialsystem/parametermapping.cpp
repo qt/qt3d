@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "parametermapping_p.h"
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -46,6 +47,8 @@ namespace Render {
 
 ParameterMapping::ParameterMapping()
     : m_bindingType(QParameterMapping::Uniform)
+    , m_parameterNameId(-1)
+    , m_shaderVariableNameId(-1)
 {
 }
 
@@ -53,6 +56,8 @@ ParameterMapping::ParameterMapping(QParameterMapping *mapping)
     : m_id(mapping ? mapping->id() : Qt3DCore::QNodeId())
     , m_parameterName(mapping ? mapping->parameterName() : QString())
     , m_shaderVariableName(mapping ? mapping->shaderVariableName() : QString())
+    , m_parameterNameId(StringToInt::lookupId(m_parameterName))
+    , m_shaderVariableNameId(StringToInt::lookupId(m_shaderVariableName))
     , m_bindingType(mapping ? mapping->bindingType() : QParameterMapping::Uniform)
 {
 }
@@ -75,6 +80,16 @@ QString ParameterMapping::parameterName() const
 QString ParameterMapping::shaderVariableName() const
 {
     return m_shaderVariableName;
+}
+
+int ParameterMapping::parameterNameId() const
+{
+    return m_parameterNameId;
+}
+
+int ParameterMapping::shaderVariableNameId() const
+{
+    return m_shaderVariableNameId;
 }
 
 QParameterMapping::Binding ParameterMapping::bindingType() const

@@ -78,6 +78,7 @@ struct ShaderUniform
     {}
 
     QString m_name;
+    int m_nameId;
     GLenum m_type;
     int m_size;
     int m_offset; // -1 default, >= 0 if uniform defined in uniform block
@@ -99,6 +100,7 @@ struct ShaderUniformBlock
     {}
 
     QString m_name;
+    int m_nameId;
     int m_index;
     int m_binding;
     int m_activeUniformsCount;
@@ -115,6 +117,7 @@ struct ShaderStorageBlock
     {}
 
     QString m_name;
+    int m_nameId;
     int m_index;
     int m_binding;
     int m_size;

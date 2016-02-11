@@ -62,6 +62,7 @@
 #include <Qt3DRender/private/statesetnode_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -353,11 +354,12 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
 }
 
 
-ParameterInfoList::iterator findParamInfo(ParameterInfoList *params, const QString &name)
+ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const int nameId)
 {
-    ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), name);
-    if (it != params->end() && it->name != name)
-        return params->end();
+    const ParameterInfoList::const_iterator end = params->cend();
+    ParameterInfoList::const_iterator it = std::lower_bound(params->cbegin(), end, nameId);
+    if (it != end && it->nameId != nameId)
+        return end;
     return it;
 }
 
@@ -367,9 +369,9 @@ void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
     Q_FOREACH (const QNodeId &paramId, parameterIds) {
         Parameter *param = manager->lookupResource(paramId);
         if (param != Q_NULLPTR) {
-            ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->name());
-            if (it == params->end() || it->name != param->name())
-                params->insert(it, ParameterInfo(param->name(), param->value()));
+            ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
+            if (it == params->end() || it->nameId != param->nameId())
+                params->insert(it, ParameterInfo(param->nameId(), param->value()));
         }
     }
 }
@@ -437,7 +439,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
             QString varName = blockName + QStringLiteral(".") + qmlPropertyName + QStringLiteral("[0]");
             if (uniforms.contains(varName)) {
                 qCDebug(Shaders) << "UBO array member " << varName << " set for update";
-                activeUniformNamesToValue.insert(varName, value);
+                activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
             }
         }
     } else if (value.userType() == qNodeIdTypeId) { // Struct qmlPropertyName.structMember
@@ -450,7 +452,7 @@ void UniformBlockValueBuilder::buildActiveUniformNameValueMapHelper(const QStrin
         QString varName = blockName + QStringLiteral(".") + qmlPropertyName;
         if (uniforms.contains(varName)) {
             qCDebug(Shaders) << "UBO scalar member " << varName << " set for update";
-            activeUniformNamesToValue.insert(varName, value);
+            activeUniformNamesToValue.insert(StringToInt::lookupId(varName), value);
         }
     }
 }
