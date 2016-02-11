@@ -106,6 +106,7 @@ public:
     void setSize(int width, int height, int depth);
     void setFormat(QAbstractTextureProvider::TextureFormat format);
     void setMipLevels(int mipmapLevels);
+    void setLayers(int layers);
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
     inline QAbstractTextureProvider::TextureFormat format() const { return m_format; }

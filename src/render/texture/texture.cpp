@@ -286,11 +286,12 @@ QOpenGLTexture *Texture::buildGLTexture()
     glTex->setSize(m_width, m_height, m_depth);
     // Set layers count if texture array
     if (m_target == QAbstractTextureProvider::Target1DArray ||
-            m_target == QAbstractTextureProvider::Target2DArray ||
-            m_target == QAbstractTextureProvider::Target3D ||
-            m_target == QAbstractTextureProvider::Target2DMultisampleArray ||
-            m_target == QAbstractTextureProvider::TargetCubeMapArray)
+        m_target == QAbstractTextureProvider::Target2DArray ||
+        m_target == QAbstractTextureProvider::Target3D ||
+        m_target == QAbstractTextureProvider::Target2DMultisampleArray ||
+        m_target == QAbstractTextureProvider::TargetCubeMapArray) {
         glTex->setLayers(m_layers);
+    }
 
     if (m_generateMipMaps) {
         glTex->setMipLevels(glTex->maximumMipLevels());
@@ -335,7 +336,7 @@ void Texture::setToGLTexture(QTexImageData *imgData)
 
                 if (imgData->isCompressed()) {
                     m_gl->setCompressedData(level,
-                            0,
+                            layer,
                             static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
                             bytes.size(),
                             bytes.constData());
@@ -343,7 +344,7 @@ void Texture::setToGLTexture(QTexImageData *imgData)
                     QOpenGLPixelTransferOptions uploadOptions;
                     uploadOptions.setAlignment(1);
                     m_gl->setData(level,
-                            0,
+                            layer,
                             static_cast<QOpenGLTexture::CubeMapFace>(QOpenGLTexture::CubeMapPositiveX + face),
                             imgData->pixelFormat(),
                             imgData->pixelType(),
@@ -494,6 +495,14 @@ void Texture::setMipLevels(int mipLevels)
 {
     if (mipLevels != m_mipLevels) {
         m_mipLevels = mipLevels;
+        m_isDirty = true;
+    }
+}
+
+void Texture::setLayers(int layers)
+{
+    if (layers != m_layers) {
+        m_layers = layers;
         m_isDirty = true;
     }
 }

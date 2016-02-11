@@ -111,6 +111,7 @@ void LoadTextureDataJob::run()
                 txt->setMipLevels(data->mipLevels());
 
             txt->setSize(data->width(), data->height(), data->depth());
+            txt->setLayers(data->layers());
             txt->setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(data->format()));
             txt->setTextureDataHandle(textureDataHandle);
         }
