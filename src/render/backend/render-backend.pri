@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/trianglesvisitor_p.h \
     $$PWD/abstractrenderer_p.h \
     $$PWD/computejob_p.h \
-    $$PWD/renderersettings_p.h
+    $$PWD/renderersettings_p.h \
+    $$PWD/stringtoint_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -56,4 +57,5 @@ SOURCES += \
     $$PWD/trianglesextractor.cpp \
     $$PWD/trianglesvisitor.cpp \
     $$PWD/computejob.cpp \
-    $$PWD/renderersettings.cpp
+    $$PWD/renderersettings.cpp \
+    $$PWD/stringtoint.cpp
