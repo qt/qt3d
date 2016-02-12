@@ -159,31 +159,6 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-bool Shader::isLoaded() const
-{
-    return m_isLoaded;
-}
-
-ProgramDNA Shader::dna() const
-{
-    return m_dna;
-}
-
-QVector<ShaderUniform> Shader::uniforms() const
-{
-    return m_uniforms;
-}
-
-QVector<ShaderAttribute> Shader::attributes() const
-{
-    return m_attributes;
-}
-
-QVector<ShaderUniformBlock> Shader::uniformBlocks() const
-{
-    return m_uniformBlocks;
-}
-
 QHash<QString, ShaderUniform> Shader::activeUniformsForUniformBlock(int blockIndex) const
 {
     return m_uniformBlockIndexToShaderUniforms.value(blockIndex);
@@ -280,21 +255,6 @@ void Shader::setFragOutputs(const QHash<QString, int> &fragOutputs)
         m_fragOutputs = fragOutputs;
     }
     updateDNA();
-}
-
-QVector<int> Shader::uniformsNamesIds() const
-{
-    return m_uniformsNamesIds;
-}
-
-QVector<int> Shader::uniformBlockNamesIds() const
-{
-    return m_uniformBlockNamesIds;
-}
-
-QVector<int> Shader::storageBlockNamesIds() const
-{
-    return m_shaderStorageBlockNamesIds;
 }
 
 static QOpenGLShader::ShaderType shaderType(QShaderProgram::ShaderType type)
