@@ -94,6 +94,14 @@ Q_AUTOTEST_EXPORT RenderRenderPassList findRenderPassesForTechnique(NodeManagers
                                                                     RenderView *renderView,
                                                                     Technique *technique);
 
+// Extracts the type T from a QVariant v without using QVariant::value which is slow
+// Note: Assumes you are 100% sure about the type you requested
+template<typename T>
+Q_AUTOTEST_EXPORT inline T variant_value(const QVariant &v)
+{
+    return *reinterpret_cast<const T *>(v.data());
+}
+
 struct ParameterInfo
 {
     ParameterInfo(const int nameId = -1, const QVariant &value = QVariant())

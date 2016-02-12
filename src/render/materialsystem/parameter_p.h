@@ -74,7 +74,7 @@ public:
 
     QString name() const;
     QVariant value() const;
-    int nameId() const;
+    int nameId() const Q_DECL_NOEXCEPT;
 
 private:
     QString m_name;

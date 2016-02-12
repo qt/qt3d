@@ -213,8 +213,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 const Render::DispatchCompute *dispatchCompute = static_cast<const Render::DispatchCompute *>(node);
                 rv->setCompute(true);
                 rv->setComputeWorkgroups(dispatchCompute->x(),
-                                        dispatchCompute->y(),
-                                        dispatchCompute->z());
+                                         dispatchCompute->y(),
+                                         dispatchCompute->z());
                 break;
             }
 
@@ -227,7 +227,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // Use the surface closest to leaf node
                 if (rv->surface() == Q_NULLPTR) {
                     const Render::RenderSurfaceSelector *surfaceSelector
-                        = static_cast<const Render::RenderSurfaceSelector *>(node);
+                            = static_cast<const Render::RenderSurfaceSelector *>(node);
                     rv->setSurface(surfaceSelector->surface());
                 }
                 break;
@@ -257,7 +257,7 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     NodeManagers *manager = renderer->nodeManagers();
 
     // Iterate through the techniques in the effect
-    Q_FOREACH (const QNodeId &techniqueId, effect->techniques()) {
+    Q_FOREACH (const QNodeId techniqueId, effect->techniques()) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
@@ -366,13 +366,13 @@ ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                          const QList<Qt3DCore::QNodeId> &parameterIds)
 {
-    Q_FOREACH (const QNodeId &paramId, parameterIds) {
+    Q_FOREACH (const QNodeId paramId, parameterIds) {
         Parameter *param = manager->lookupResource(paramId);
-        if (param != Q_NULLPTR) {
-            ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
-            if (it == params->end() || it->nameId != param->nameId())
-                params->insert(it, ParameterInfo(param->nameId(), param->value()));
-        }
+        if (Q_UNLIKELY(!param))
+            continue;
+        ParameterInfoList::iterator it = std::lower_bound(params->begin(), params->end(), param->nameId());
+        if (it == params->end() || it->nameId != param->nameId())
+            params->insert(it, ParameterInfo(param->nameId(), param->value()));
     }
 }
 

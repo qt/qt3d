@@ -64,15 +64,12 @@
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/private/stringtoint_p.h>
-
 #include <Qt3DRender/qparametermapping.h>
-
 #include <Qt3DCore/qentity.h>
-
 #include <QtGui/qsurface.h>
-
 #include <algorithm>
 
 #include <QDebug>
@@ -533,56 +530,56 @@ void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
         return;
 
     GeometryRenderer *geometryRenderer = Q_NULLPTR;
-    if (node->componentHandle<GeometryRenderer, 16>() != HGeometryRenderer()
-            && (geometryRenderer = node->renderComponent<GeometryRenderer>()) != Q_NULLPTR
-            && geometryRenderer->isEnabled()) {
+    HGeometryRenderer geometryRendererHandle = node->componentHandle<GeometryRenderer, 16>();
+    if (!geometryRendererHandle.isNull()
+            && (geometryRenderer = m_manager->geometryRendererManager()->data(geometryRendererHandle)) != Q_NULLPTR
+            && geometryRenderer->isEnabled()
+            && !geometryRenderer->geometryId().isNull()) {
 
+        // There is a geometry renderer with geometry
         ParameterInfoList parameters;
         RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
-        // There is a geometry renderer
-        if (geometryRenderer != Q_NULLPTR && !geometryRenderer->geometryId().isNull()) {
 
-            // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
-            Q_FOREACH (RenderPass *pass, passes) {
-                // Add the RenderPass Parameters
-                ParameterInfoList globalParameters = parameters;
-                parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
+        // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
+        Q_FOREACH (RenderPass *pass, passes) {
+            // Add the RenderPass Parameters
+            ParameterInfoList globalParameters = parameters;
+            parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
 
-                RenderCommand *command = m_allocator->allocate<RenderCommand>();
-                command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
-                command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
-                command->m_geometryRenderer = node->componentHandle<GeometryRenderer, 16>();
-                // For RenderPass based states we use the globally set RenderState
-                // if no renderstates are defined as part of the pass. That means:
-                // RenderPass { renderStates: [] } will use the states defined by
-                // StateSet in the FrameGraph
-                if (pass->hasRenderStates()) {
-                    command->m_stateSet = m_allocator->allocate<RenderStateSet>();
-                    addToRenderStateSet(command->m_stateSet, pass, m_manager->renderStateManager());
+            RenderCommand *command = m_allocator->allocate<RenderCommand>();
+            command->m_depth = m_data->m_eyePos.distanceToPoint(node->worldBoundingVolume()->center());
+            command->m_geometry = m_manager->lookupHandle<Geometry, GeometryManager, HGeometry>(geometryRenderer->geometryId());
+            command->m_geometryRenderer = geometryRendererHandle;
+            // For RenderPass based states we use the globally set RenderState
+            // if no renderstates are defined as part of the pass. That means:
+            // RenderPass { renderStates: [] } will use the states defined by
+            // StateSet in the FrameGraph
+            if (pass->hasRenderStates()) {
+                command->m_stateSet = m_allocator->allocate<RenderStateSet>();
+                addToRenderStateSet(command->m_stateSet, pass, m_manager->renderStateManager());
 
-                    // Merge per pass stateset with global stateset
-                    // so that the local stateset only overrides
-                    if (m_stateSet != Q_NULLPTR)
-                        command->m_stateSet->merge(m_stateSet);
-                    command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
-                }
-
-                // Pick which lights to take in to account.
-                // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
-                // Replace with more sophisticated mechanisms later.
-                std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
-                QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
-                int lightCount = 0;
-                for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
-                    activeLightSources.append(m_lightSources[i]);
-                    lightCount += m_lightSources[i].lights.count();
-                }
-
-                setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
-
-                buildSortingKey(command);
-                m_commands.append(command);
+                // Merge per pass stateset with global stateset
+                // so that the local stateset only overrides
+                if (m_stateSet != Q_NULLPTR)
+                    command->m_stateSet->merge(m_stateSet);
+                command->m_changeCost = m_renderer->defaultRenderState()->changeCost(command->m_stateSet);
             }
+
+            // Pick which lights to take in to account.
+            // For now decide based on the distance by taking the MAX_LIGHTS closest lights.
+            // Replace with more sophisticated mechanisms later.
+            std::sort(m_lightSources.begin(), m_lightSources.end(), LightSourceCompare(node));
+            QVector<LightSource> activeLightSources; // NB! the total number of lights here may still exceed MAX_LIGHTS
+            int lightCount = 0;
+            for (int i = 0; i < m_lightSources.count() && lightCount < MAX_LIGHTS; ++i) {
+                activeLightSources.append(m_lightSources[i]);
+                lightCount += m_lightSources[i].lights.count();
+            }
+
+            setShaderAndUniforms(command, pass, globalParameters, *(node->worldTransform()), activeLightSources);
+
+            buildSortingKey(command);
+            m_commands.append(command);
         }
     }
 }
@@ -635,7 +632,9 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
     // ShaderData/Buffers would be handled as UBO/SSBO and would therefore
     // not be in the default uniform block
     if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
-        if ((tex = m_manager->textureManager()->lookupResource(value.value<Qt3DCore::QNodeId>()))
+        // Speed up conversion to avoid using QVariant::value()
+        const Qt3DCore::QNodeId texId = variant_value<Qt3DCore::QNodeId>(value);
+        if ((tex = m_manager->textureManager()->lookupResource(texId))
                 != Q_NULLPTR) {
             uniformPack.setTexture(nameId, tex->peerUuid());
             TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();

@@ -48,6 +48,7 @@
 #include <private/glbuffer_p.h>
 #include <private/managers_p.h>
 #include <private/nodemanagers_p.h>
+#include <private/renderviewjobutils_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,12 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 namespace Render {
+
+namespace {
+
+const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
+
+}
 
 QList<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
 
@@ -163,11 +170,18 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
     QHash<QString, QVariant>::const_iterator it = m_nestedShaderDataProperties.begin();
 
     while (it != end) {
-        if (it.value().userType() == QMetaType::QVariantList) {
+        const int userType = it.value().userType();
+
+        if (userType == QMetaType::QVariantList) {
             QVariantList updatedNodes;
             bool nestedNeedsUpdate = false;
-            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
-                ShaderData *nested = lookupResource(v.value<QNodeId>());
+            const QVariantList values = variant_value<QVariantList>(it.value());
+            Q_FOREACH (const QVariant &v, values) {
+                if (v.userType() != qNodeIdTypeId)
+                    continue;
+
+                const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(v);
+                ShaderData *nested = lookupResource(nestedId);
                 if (nested != Q_NULLPTR) {
                     // We need to add the nested nodes to the updated property list
                     // as we need to maintain order
@@ -180,8 +194,9 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
             // Of course we only add all the nodes if at least one of the nested nodes required and update
             if (nestedNeedsUpdate && !updatedNodes.empty())
                 m_updatedProperties.insert(it.key(), updatedNodes);
-        } else {
-            ShaderData *nested = lookupResource(it.value().value<QNodeId>());
+        } else if (userType == qNodeIdTypeId) {
+            const Qt3DCore::QNodeId nestedId = variant_value<Qt3DCore::QNodeId>(it.value());
+            ShaderData *nested = lookupResource(nestedId);
             if (nested != Q_NULLPTR && nested->updateViewTransform(viewMatrix))
                 m_updatedProperties.insert(it.key(), it.value());
         }
@@ -221,8 +236,6 @@ void ShaderData::markDirty()
     if (!ShaderData::m_updatedShaderData.contains(peerUuid()))
         ShaderData::m_updatedShaderData.append(peerUuid());
 }
-
-const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 void ShaderData::readPeerProperties(QShaderData *shaderData)
 {
