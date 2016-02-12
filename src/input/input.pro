@@ -1,8 +1,7 @@
 TARGET = Qt3DInput
-
-QT += core core-private 3dcore 3dcore-private 3drender
-
 MODULE = 3dinput
+
+QT += core-private 3dcore-private
 
 include(frontend/frontend.pri)
 include(backend/backend.pri)

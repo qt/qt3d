@@ -1,9 +1,9 @@
 TARGET   = Qt3DRender
-
-QT      += core-private gui-private 3dcore 3dcore-private openglextensions concurrent
-
 MODULE   = 3drender
 
+QT = core-private gui-private 3dcore-private
+QT_PRIVATE = openglextensions
+QT_FOR_PRIVATE = concurrent
 
 include (backend/render-backend.pri)
 include (geometry/geometry.pri)
