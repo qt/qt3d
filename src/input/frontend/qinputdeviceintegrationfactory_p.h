@@ -64,7 +64,7 @@ public:
     static QInputDeviceIntegration *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
 };
 
-} // Qt3DRender
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
