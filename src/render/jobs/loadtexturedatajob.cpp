@@ -103,6 +103,8 @@ void LoadTextureDataJob::run()
 
             HTextureData textureDataHandle = handleData.first;
             QTexImageData *data = handleData.second;
+            if (!data)
+                return;
 
             if (txt->target() == QAbstractTextureProvider::TargetAutomatic)
                 txt->setTarget(static_cast<QAbstractTextureProvider::Target>(data->target()));
