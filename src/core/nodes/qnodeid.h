@@ -56,34 +56,39 @@ public:
 
     static QNodeId createId();
 
-    inline bool isNull() const
+    inline bool isNull() const Q_DECL_NOEXCEPT
     {
         return m_id == 0;
     }
 
-    inline bool operator ==(const QNodeId &other) const
+    inline bool operator ==(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return other.m_id == m_id;
     }
 
-    inline bool operator !=(const QNodeId &other) const
+    inline bool operator !=(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return !operator ==(other);
     }
 
-    inline bool operator <(const QNodeId &other) const
+    inline bool operator <(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return m_id < other.m_id;
     }
 
-    inline bool operator >(const QNodeId &other) const
+    inline bool operator >(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return m_id > other.m_id;
     }
 
-    inline quint64 id() const
+    inline quint64 id() const Q_DECL_NOEXCEPT
     {
         return m_id;
+    }
+
+    inline operator bool() const Q_DECL_NOEXCEPT
+    {
+        return m_id != 0;
     }
 
 private:
@@ -95,7 +100,7 @@ private:
 QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeId &id);
 #endif
 
-inline uint qHash(const QNodeId &id, uint seed = 0) Q_DECL_NOTHROW
+inline uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW
 {
     Q_UNUSED(seed);
     return id.id();
