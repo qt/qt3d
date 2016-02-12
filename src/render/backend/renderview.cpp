@@ -878,11 +878,14 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                             setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlock(it->name), it->value);
                         } else { // Parameter is a struct
                             const QVariant &v = it->value;
-                            ShaderData *shaderData = Q_NULLPTR;
-                            if (static_cast<QMetaType::Type>(v.type()) == qNodeIdTypeId &&
-                                    (shaderData = m_manager->shaderDataManager()->lookupResource(v.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
-                                // Try to check if we have a struct or array matching a QShaderData parameter
-                                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, it->name);
+                            if (static_cast<QMetaType::Type>(v.userType()) == qNodeIdTypeId) {
+                                const Qt3DCore::QNodeId nodeId = v.value<Qt3DCore::QNodeId>();
+                                ShaderData *shaderData = Q_NULLPTR;
+                                shaderData = m_manager->shaderDataManager()->lookupResource(nodeId);
+                                if (shaderData) {
+                                    // Try to check if we have a struct or array matching a QShaderData parameter
+                                    setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, it->name);
+                                }
                             }
                             // Otherwise: param unused by current shader
                         }
