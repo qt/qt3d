@@ -3,8 +3,6 @@ TARGET   = Qt3DQuickRender
 QT      += core core-private qml qml-private 3dcore 3drender 3dquick 3dquick-private 3dcore-private 3drender-private
 CONFIG -= precompile_header
 
-DEFINES += QT3DQUICKRENDER_LIBRARY
-
 MODULE   = 3dquickrender
 
 gcov {

@@ -1,8 +1,7 @@
 TARGET     = Qt3DCore
 MODULE     = 3dcore
-QT         = core-private gui-private
 
-DEFINES += QT3DCORE_LIBRARY
+QT         = core-private gui-private
 
 gcov {
     CONFIG += static

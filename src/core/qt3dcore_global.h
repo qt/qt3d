@@ -42,7 +42,7 @@
 QT_BEGIN_NAMESPACE
 
 #if defined(QT_SHARED) || !defined(QT_STATIC)
-#  if defined(QT3DCORE_LIBRARY)
+#  if defined(QT_BUILD_3DCORE_LIB)
 #    define QT3DCORESHARED_EXPORT Q_DECL_EXPORT
 #  else
 #    define QT3DCORESHARED_EXPORT Q_DECL_IMPORT

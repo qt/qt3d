@@ -2,8 +2,6 @@ TARGET   = Qt3DRender
 
 QT      += core-private gui-private 3dcore 3dcore-private openglextensions concurrent
 
-DEFINES += QT3DRENDER_LIBRARY
-
 MODULE   = 3drender
 
 

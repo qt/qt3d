@@ -2,8 +2,6 @@ TARGET   = Qt3DQuick
 
 QT      += core-private gui-private qml qml-private quick quick-private 3dcore 3dcore-private
 
-DEFINES += QT3DQUICK_LIBRARY
-
 MODULE   = 3dquick
 
 gcov {

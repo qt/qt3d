@@ -1,8 +1,7 @@
 TARGET     = Qt3DLogic
 MODULE     = 3dlogic
-QT         = core-private gui-private 3dcore 3dcore-private
 
-DEFINES += QT3DLOGIC_LIBRARY
+QT         = core-private gui-private 3dcore 3dcore-private
 
 gcov {
     CONFIG += static
