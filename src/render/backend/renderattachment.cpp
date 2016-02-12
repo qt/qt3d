@@ -50,7 +50,7 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderAttachment::RenderAttachment()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 

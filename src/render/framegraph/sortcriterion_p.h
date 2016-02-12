@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qsortcriterion.h>
-#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +62,7 @@ namespace Render {
 
 class SortCriterionManager;
 
-class SortCriterion : public Qt3DCore::QBackendNode
+class SortCriterion : public BackendNode
 {
 public:
     SortCriterion();

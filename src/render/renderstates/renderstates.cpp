@@ -62,7 +62,7 @@ bool RenderStateImpl::isPooledImpl() const Q_DECL_NOEXCEPT
 }
 
 RenderStateNode::RenderStateNode()
-    : QBackendNode()
+    : BackendNode()
     , m_impl(NULL)
 {
 }

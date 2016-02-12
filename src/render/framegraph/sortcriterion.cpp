@@ -49,7 +49,7 @@ namespace Qt3DRender {
 namespace Render {
 
 SortCriterion::SortCriterion()
-    : QBackendNode()
+    : BackendNode()
     , m_type(QSortCriterion::StateChangeCost)
 {
 }

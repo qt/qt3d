@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -64,7 +64,7 @@ class ParameterManager;
 class ShaderDataManager;
 class TextureManager;
 
-class Parameter : public Qt3DCore::QBackendNode
+class Parameter : public BackendNode
 {
 public:
     Parameter();

@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,7 +61,7 @@ namespace Render {
 
 class ComputeJobPrivate;
 
-class Q_AUTOTEST_EXPORT ComputeJob : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ComputeJob : public BackendNode
 {
 public:
     ComputeJob();

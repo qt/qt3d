@@ -51,11 +51,11 @@
 // We mean it.
 //
 
-#include <qglobal.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qabstracttextureprovider.h>
 #include <Qt3DRender/qabstracttextureimage.h>
-#include <Qt3DRender/private/handle_types_p.h>
+#include <qglobal.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -69,7 +69,7 @@ class TextureDataManager;
 
 typedef uint TextureImageDNA;
 
-class TextureImage : public Qt3DCore::QBackendNode
+class TextureImage : public BackendNode
 {
 public:
     TextureImage();

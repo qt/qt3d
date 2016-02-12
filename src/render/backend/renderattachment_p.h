@@ -51,10 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qrenderattachment.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -66,7 +65,7 @@ namespace Render {
 
 class AttachmentManager;
 
-class RenderAttachment : public Qt3DCore::QBackendNode
+class RenderAttachment : public BackendNode
 {
 public:
     RenderAttachment();

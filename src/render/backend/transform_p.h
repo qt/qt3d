@@ -51,10 +51,10 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <QMatrix4x4>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QtGui/qquaternion.h>
 #include <QtGui/qvector3d.h>
+#include <QMatrix4x4>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +65,7 @@ namespace Render {
 class Renderer;
 class TransformManager;
 
-class Transform : public Qt3DCore::QBackendNode
+class Transform : public BackendNode
 {
 public:
     Transform();

@@ -56,7 +56,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Material::Material()
-    : QBackendNode()
+    : BackendNode()
     , m_enabled(true)
 {
 }

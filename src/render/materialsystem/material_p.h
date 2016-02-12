@@ -53,9 +53,9 @@
 
 #include <QVariant>
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
-#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ class Technique;
 class Effect;
 class MaterialManager;
 
-class Q_AUTOTEST_EXPORT Material : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Material : public BackendNode
 {
 public:
     Material();

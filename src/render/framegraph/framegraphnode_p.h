@@ -51,9 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <qglobal.h>
@@ -67,7 +67,7 @@ namespace Render {
 
 class FrameGraphManager;
 
-class Q_AUTOTEST_EXPORT FrameGraphNode : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT FrameGraphNode : public BackendNode
 {
 public:
     FrameGraphNode();

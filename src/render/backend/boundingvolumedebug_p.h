@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QVector3D>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT BoundingVolumeDebug : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT BoundingVolumeDebug : public BackendNode
 {
 public:
     BoundingVolumeDebug();

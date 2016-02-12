@@ -52,7 +52,6 @@
 //
 
 #include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 

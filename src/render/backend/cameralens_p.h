@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QMatrix4x4>
 #include <QRectF>
 
@@ -63,7 +63,7 @@ namespace Render {
 
 class CameraManager;
 
-class CameraLens : public Qt3DCore::QBackendNode
+class CameraLens : public BackendNode
 {
 public:
     CameraLens();

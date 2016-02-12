@@ -48,7 +48,7 @@ namespace Qt3DRender {
 namespace Render {
 
 ComputeJob::ComputeJob()
-    : QBackendNode(ReadOnly)
+    : BackendNode(ReadOnly)
     , m_enabled(false)
 {
 }

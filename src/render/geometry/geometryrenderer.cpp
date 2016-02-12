@@ -52,7 +52,7 @@ namespace Qt3DRender {
 namespace Render {
 
 GeometryRenderer::GeometryRenderer()
-    : QBackendNode(ReadWrite)
+    : BackendNode(ReadWrite)
     , m_instanceCount(0)
     , m_primitiveCount(0)
     , m_baseVertex(0)

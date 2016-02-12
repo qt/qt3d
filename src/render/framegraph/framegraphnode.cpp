@@ -48,7 +48,7 @@ namespace Qt3DRender {
 namespace Render {
 
 FrameGraphNode::FrameGraphNode()
-    : QBackendNode()
+    : BackendNode()
     , m_nodeType(InvalidNodeType)
     , m_enabled(true)
     , m_manager(Q_NULLPTR)

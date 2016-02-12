@@ -52,10 +52,9 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
 
@@ -79,7 +78,7 @@ class Sphere;
 class Renderer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT Entity : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Entity : public BackendNode
 {
 public:
     Entity();

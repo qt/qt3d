@@ -51,8 +51,8 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <private/shadervariables_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/shadervariables_p.h>
 #include <Qt3DRender/qshaderdata.h>
 #include <QMutex>
 #include <QMatrix4x4>
@@ -67,7 +67,7 @@ class GraphicsContext;
 class GLBuffer;
 class NodeManagers;
 
-class Q_AUTOTEST_EXPORT ShaderData : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ShaderData : public BackendNode
 {
 public:
     ShaderData();

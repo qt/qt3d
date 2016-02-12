@@ -59,7 +59,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Technique::Technique()
-    : QBackendNode()
+    : BackendNode()
     , m_graphicsApiFilter(Q_NULLPTR)
 {
 }

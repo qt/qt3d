@@ -57,7 +57,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Parameter::Parameter()
-    : QBackendNode()
+    : BackendNode()
     , m_nameId(-1)
 {
 }

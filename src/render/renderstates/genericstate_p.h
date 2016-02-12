@@ -52,10 +52,10 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DCore/private/qresourcemanager_p.h>
 #include <QList>
 #include <QOpenGLContext>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/private/qresourcemanager_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -125,7 +125,7 @@ public:
 /**
  * @brief Backend Render State Node
  */
-class Q_AUTOTEST_EXPORT RenderStateNode : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT RenderStateNode : public BackendNode
 {
 public:
     RenderStateNode();

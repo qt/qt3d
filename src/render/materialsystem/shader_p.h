@@ -51,11 +51,11 @@
 // We mean it.
 //
 
-#include <QMutex>
-#include <QVector>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/quniformvalue_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <QMutex>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ class AttachmentPack;
 
 typedef uint ProgramDNA;
 
-class Q_AUTOTEST_EXPORT Shader : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Shader : public BackendNode
 {
 public:
     Shader();

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderTarget::RenderTarget()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Geometry::Geometry()
-    : QBackendNode(ReadOnly)
+    : BackendNode(ReadOnly)
     , m_verticesPerPatch(0)
     , m_geometryDirty(false)
 {

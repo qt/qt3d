@@ -51,7 +51,7 @@ namespace Qt3DRender {
 namespace Render {
 
 ObjectPicker::ObjectPicker()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_isDirty(false)
     , m_isPressed(false)
     , m_hoverEnabled(false)

@@ -48,7 +48,7 @@ namespace Qt3DRender {
 namespace Render {
 
 BoundingVolumeDebug::BoundingVolumeDebug()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_recursive(false)
     , m_radius(0.0f)
 {

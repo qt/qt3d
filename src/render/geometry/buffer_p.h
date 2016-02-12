@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferfunctor.h>
 
@@ -63,7 +63,7 @@ namespace Render {
 
 class BufferManager;
 
-class Q_AUTOTEST_EXPORT Buffer : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Buffer : public BackendNode
 {
 public:
     Buffer();

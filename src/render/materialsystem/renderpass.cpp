@@ -58,7 +58,7 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderPass::RenderPass()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 

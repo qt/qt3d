@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qrenderersettings.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ namespace Render {
 
 class AbstractRenderer;
 
-class RendererSettings : public Qt3DCore::QBackendNode
+class RendererSettings : public BackendNode
 {
 public:
     RendererSettings();

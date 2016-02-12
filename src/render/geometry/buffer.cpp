@@ -50,7 +50,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Buffer::Buffer()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_type(QBuffer::VertexBuffer)
     , m_usage(QBuffer::StaticDraw)
     , m_bufferDirty(false)

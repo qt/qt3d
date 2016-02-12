@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,13 +37,7 @@
 **
 ****************************************************************************/
 
-#include "cameralens_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
-
-#include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "backendnode_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -52,53 +46,15 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-CameraLens::CameraLens()
-    : BackendNode()
+BackendNode::BackendNode(Mode mode)
+    : QBackendNode(mode)
 {
-    m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
 }
 
-CameraLens::~CameraLens()
+BackendNode::~BackendNode()
 {
-    cleanup();
 }
 
-void CameraLens::cleanup()
-{
-
-}
-
-void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QCameraLens *lens = static_cast<QCameraLens *>(peer);
-    setProjection(lens->projectionMatrix());
-    m_enabled = lens->isEnabled();
-}
-
-void CameraLens::setProjection(const QMatrix4x4 &projection)
-{
-    m_projection = projection;
-}
-
-void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-
-        if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
-            QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
-            m_projection = projectionMatrix;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        }
-    }
-        break;
-
-    default:
-        break;
-    }
-}
 
 } // namespace Render
 } // namespace Qt3DRender

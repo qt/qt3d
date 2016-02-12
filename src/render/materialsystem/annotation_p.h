@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qannotation.h>
-#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,7 +64,7 @@ namespace Render {
 
 class CriterionManager;
 
-class Annotation : public Qt3DCore::QBackendNode
+class Annotation : public BackendNode
 {
 public:
     Annotation();

@@ -70,7 +70,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Entity::Entity()
-    : QBackendNode()
+    : BackendNode()
     , m_nodeManagers(Q_NULLPTR)
     , m_enabled(true)
     , m_boundingDirty(false)

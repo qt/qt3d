@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
@@ -60,7 +60,7 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT Attribute : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT Attribute : public BackendNode
 {
 public:
     Attribute();

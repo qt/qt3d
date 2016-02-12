@@ -50,7 +50,7 @@ namespace Qt3DRender {
 namespace Render {
 
 TextureImage::TextureImage()
-    : QBackendNode()
+    : BackendNode()
     , m_layer(0)
     , m_mipmapLevel(0)
     , m_face(QAbstractTextureProvider::CubeMapPositiveX)

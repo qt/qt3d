@@ -49,7 +49,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Attribute::Attribute()
-    : QBackendNode(ReadOnly)
+    : BackendNode(ReadOnly)
     , m_dataType(QAbstractAttribute::Float)
     , m_dataSize(1)
     , m_count(0)

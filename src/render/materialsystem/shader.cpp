@@ -58,7 +58,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Shader::Shader()
-    : QBackendNode()
+    : BackendNode()
     , m_program(Q_NULLPTR)
     , m_isLoaded(false)
     , m_dna(0)

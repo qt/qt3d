@@ -52,13 +52,12 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/parametermapping_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DRender/private/renderstatecollection_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -75,7 +74,7 @@ namespace Render {
 class RenderPassManager;
 class RenderState;
 
-class Q_AUTOTEST_EXPORT RenderPass : public Qt3DCore::QBackendNode, public RenderStateCollection
+class Q_AUTOTEST_EXPORT RenderPass : public BackendNode, public RenderStateCollection
 {
 public:
     RenderPass();

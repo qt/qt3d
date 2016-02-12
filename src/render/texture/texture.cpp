@@ -58,7 +58,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Texture::Texture()
-    : QBackendNode()
+    : BackendNode()
     , m_gl(Q_NULLPTR)
     , m_width(1)
     , m_height(1)

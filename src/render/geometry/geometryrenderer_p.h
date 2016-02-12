@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qgeometryfunctor.h>
 
@@ -65,7 +65,7 @@ namespace Render {
 
 class GeometryRendererManager;
 
-class Q_AUTOTEST_EXPORT GeometryRenderer : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT GeometryRenderer : public BackendNode
 {
 public:
     GeometryRenderer();

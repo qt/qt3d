@@ -51,8 +51,8 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qbackendnode.h>
 #include <QStringList>
 
 QT_BEGIN_NAMESPACE
@@ -65,7 +65,7 @@ namespace Render {
 
 class LayerManager;
 
-class Layer : public Qt3DCore::QBackendNode
+class Layer : public BackendNode
 {
 public:
     Layer();

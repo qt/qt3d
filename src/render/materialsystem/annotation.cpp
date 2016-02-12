@@ -48,7 +48,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Annotation::Annotation()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 

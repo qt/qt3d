@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,7 +62,7 @@ typedef QSharedPointer<QPickEvent> QPickEventPtr;
 
 namespace Render {
 
-class Q_AUTOTEST_EXPORT ObjectPicker : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT ObjectPicker : public BackendNode
 {
 public:
     ObjectPicker();

@@ -51,8 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -66,7 +65,7 @@ namespace Render {
 
 class RenderTargetManager;
 
-class RenderTarget : public Qt3DCore::QBackendNode
+class RenderTarget : public BackendNode
 {
 public:
     RenderTarget();

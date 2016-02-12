@@ -54,7 +54,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Effect::Effect()
-    : QBackendNode()
+    : BackendNode()
 {
 }
 

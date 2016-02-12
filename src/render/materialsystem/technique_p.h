@@ -52,11 +52,11 @@
 // We mean it.
 //
 
-#include <QVector>
-#include <QStringList>
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DRender/qannotation.h>
-#include <Qt3DCore/qbackendnode.h>
+#include <QVector>
+#include <QStringList>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,7 +72,7 @@ namespace Render {
 
 class TechniqueManager;
 
-class Technique : public Qt3DCore::QBackendNode
+class Technique : public BackendNode
 {
 public:
     Technique();

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Transform::Transform()
-    : QBackendNode()
+    : BackendNode()
     , m_rotation()
     , m_scale(1.0f, 1.0f, 1.0f)
     , m_translation()

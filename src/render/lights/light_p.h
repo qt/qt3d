@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <private/shaderdata_p.h>
+#include <Qt3DRender/private/shaderdata_p.h>
 
 QT_BEGIN_NAMESPACE
 

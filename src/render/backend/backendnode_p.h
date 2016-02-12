@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,70 +37,40 @@
 **
 ****************************************************************************/
 
-#include "cameralens_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
+#ifndef QT3DRENDER_RENDER_BACKENDNODE_H
+#define QT3DRENDER_RENDER_BACKENDNODE_H
 
-#include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qcameralens.h>
-#include <Qt3DCore/qentity.h>
-#include <Qt3DCore/qscenepropertychange.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/qbackendnode.h>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
+
 namespace Render {
 
-CameraLens::CameraLens()
-    : BackendNode()
+class BackendNode : public Qt3DCore::QBackendNode
 {
-    m_clearColor = QVector4D(0.5, 0.5, 1.0, 1.0);
-}
-
-CameraLens::~CameraLens()
-{
-    cleanup();
-}
-
-void CameraLens::cleanup()
-{
-
-}
-
-void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QCameraLens *lens = static_cast<QCameraLens *>(peer);
-    setProjection(lens->projectionMatrix());
-    m_enabled = lens->isEnabled();
-}
-
-void CameraLens::setProjection(const QMatrix4x4 &projection)
-{
-    m_projection = projection;
-}
-
-void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    switch (e->type()) {
-    case NodeUpdated: {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-
-        if (propertyChange->propertyName() == QByteArrayLiteral("projectionMatrix")) {
-            QMatrix4x4 projectionMatrix = propertyChange->value().value<QMatrix4x4>();
-            m_projection = projectionMatrix;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
-            m_enabled = propertyChange->value().toBool();
-        }
-    }
-        break;
-
-    default:
-        break;
-    }
-}
+public:
+    BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
+    ~BackendNode();
+};
 
 } // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_BACKENDNODE_H

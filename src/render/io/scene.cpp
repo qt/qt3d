@@ -54,7 +54,7 @@ namespace Qt3DRender {
 namespace Render {
 
 Scene::Scene()
-    : QBackendNode(QBackendNode::ReadWrite)
+    : BackendNode(QBackendNode::ReadWrite)
     , m_sceneManager(Q_NULLPTR)
 {
 }

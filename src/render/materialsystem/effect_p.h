@@ -51,10 +51,9 @@
 // We mean it.
 //
 
+#include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/private/parameterpack_p.h>
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
 #include <QList>
 
 QT_BEGIN_NAMESPACE
@@ -65,7 +64,7 @@ class QTechnique;
 
 namespace Render {
 
-class Effect : public Qt3DCore::QBackendNode
+class Effect : public BackendNode
 {
 public:
     Effect();
