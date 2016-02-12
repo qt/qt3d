@@ -6,10 +6,6 @@ DEFINES += QT3DRENDER_LIBRARY
 
 MODULE   = 3drender
 
-MODULE_PLUGIN_TYPES = \
-    sceneparsers
-
-load(qt_module)
 
 include (backend/render-backend.pri)
 include (geometry/geometry.pri)
@@ -52,3 +48,7 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 SOURCES += \
     renderlogging.cpp
+
+MODULE_PLUGIN_TYPES = \
+    sceneparsers
+load(qt_module)

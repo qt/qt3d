@@ -2,8 +2,6 @@ TARGET     = Qt3DLogic
 MODULE     = 3dlogic
 QT         = core-private gui-private 3dcore 3dcore-private
 
-load(qt_module)
-
 DEFINES += QT3DLOGIC_LIBRARY
 
 gcov {
@@ -16,3 +14,5 @@ gcov {
 win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(logic.pri)
+
+load(qt_module)

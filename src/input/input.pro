@@ -6,11 +6,11 @@ DEFINES += QT3DINPUT_LIBRARY
 
 MODULE = 3dinput
 
-load(qt_module)
-
 include(frontend/frontend.pri)
 include(backend/backend.pri)
 
 HEADERS += \
     qt3dinput_global.h \
     qt3dinput_global_p.h
+
+load(qt_module)

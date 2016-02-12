@@ -6,8 +6,6 @@ DEFINES += QT3DQUICK_LIBRARY
 
 MODULE   = 3dquick
 
-load(qt_module)
-
 gcov {
     CONFIG += static
     QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
@@ -37,3 +35,4 @@ win32-g++*:QMAKE_CXXFLAGS_CXX11 = -std=gnu++0x
 
 include(./items/items.pri)
 
+load(qt_module)
