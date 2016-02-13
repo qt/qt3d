@@ -257,7 +257,14 @@ void Scene3DRenderer::render()
             saver.context()->makeCurrent(saver.surface());
 
         // Blit multisampled FBO with non multisampled FBO with texture attachment
-        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), m_multisampledFBO.data());
+        const QRect dstRect(QPoint(0, 0), m_finalFBO->size());
+        const QRect srcRect(QPoint(0, 0), m_multisampledFBO->size());
+        QOpenGLFramebufferObject::blitFramebuffer(m_finalFBO.data(), dstRect,
+                                                  m_multisampledFBO.data(), srcRect,
+                                                  GL_COLOR_BUFFER_BIT,
+                                                  GL_NEAREST,
+                                                  0, 0,
+                                                  QOpenGLFramebufferObject::DontRestoreFramebufferBinding);
 
         // Restore QtQuick FBO
         m_multisampledFBO->bindDefault();
