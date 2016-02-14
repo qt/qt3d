@@ -194,7 +194,7 @@ void QFixedFrameAllocator::trim()
             if (m_lastAllocatedChunck == &m_chunks[i])
                 m_lastAllocatedChunck = Q_NULLPTR;
             if (m_lastFreedChunck == &m_chunks[i])
-                m_lastAllocatedChunck = Q_NULLPTR;
+                m_lastFreedChunck = Q_NULLPTR;
             m_chunks.removeAt(i);
         }
     }
