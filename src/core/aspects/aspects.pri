@@ -1,3 +1,4 @@
+#DEFINES += QT3D_CORE_JOB_TIMING
 
 SOURCES += \
         $$PWD/qabstractaspect.cpp \

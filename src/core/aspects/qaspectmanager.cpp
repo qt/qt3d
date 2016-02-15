@@ -58,6 +58,9 @@
 #include <QWaitCondition>
 #include <QSurface>
 
+#if defined(QT3D_CORE_JOB_TIMING)
+#include <QElapsedTimer>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -201,7 +204,14 @@ void QAspectManager::exec()
             // For each Aspect
             // Ask them to launch set of jobs for the current frame
             // Updates matrices, bounding volumes, render bins ...
+#if defined(QT3D_CORE_JOB_TIMING)
+            QElapsedTimer timer;
+            timer.start();
+#endif
             m_scheduler->scheduleAndWaitForFrameAspectJobs(t);
+#if defined(QT3D_CORE_JOB_TIMING)
+            qDebug() << "Jobs took" << timer.nsecsElapsed() / 1.0e6;
+#endif
 
             // Process any pending events
             eventLoop.processEvents();
