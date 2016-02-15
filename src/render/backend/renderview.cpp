@@ -73,6 +73,9 @@
 #include <algorithm>
 
 #include <QDebug>
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+#include <QElapsedTimer>
+#endif
 
 QT_BEGIN_NAMESPACE
 
@@ -482,34 +485,51 @@ private:
     QVector3D p;
 };
 
-// Tries to order renderCommand by shader so as to minimize shader changes
-void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
+// TODO: Convert into a job that caches lookup of entities for layers
+static void findEntitiesInLayers(Entity *e, const QVector<int> &filterLayerIds, QVector<Entity *> &entities)
 {
-    // Skip branches that are not enabled
-    if (!node->isEnabled())
+    // Bail if sub-tree is disabled
+    if (!e->isEnabled())
         return;
 
-    // Build renderCommand for current node
-    if (isEntityInLayers(node, m_data->m_layerIds)) {
+    // Check this entity
+    if (isEntityInLayers(e, filterLayerIds))
+        entities.push_back(e);
 
-        // Note: in theory going to both code paths is possible but
-        // would most likely be the result of the user not knowing what he's doing
-        // so we don't handle that case
+    // Recurse to children
+    Q_FOREACH (Entity *child, e->children())
+        findEntitiesInLayers(child, filterLayerIds, entities);
+}
+
+// Tries to order renderCommand by shader so as to minimize shader changes
+void RenderView::buildRenderCommands(Entity *rootEntity, const Plane *planes)
+{
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    QElapsedTimer timer;
+    timer.start();
+#endif
+    // Filter the entities according to the layers for this renderview
+    QVector<Entity *> entities;
+    const int entityCount = m_renderer->nodeManagers()->renderNodesManager()->count();
+    entities.reserve(entityCount);
+    findEntitiesInLayers(rootEntity, m_data->m_layerIds, entities);
+#if defined(QT3D_RENDER_VIEW_JOB_TIMINGS)
+    qDebug() << "Found" << entities.size() << "entities in layers" << m_data->m_layers
+             << "in" << timer.nsecsElapsed() / 1.0e6 << "ms";
+#endif
+
+    Q_FOREACH (Entity *entity, entities) {
         if (m_compute) {
             // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
             // when the RenderView is part of a DispatchCompute branch
-            buildComputeRenderCommands(node);
+            buildComputeRenderCommands(entity);
         } else {
             // 2) Look for Drawable  Entities if Entity -> components [ GeometryRenderer, Material ]
             // when the RenderView is not part of a DispatchCompute branch
             // Investigate if it's worth doing as separate jobs
-            buildDrawRenderCommands(node, planes);
+            buildDrawRenderCommands(entity, planes);
         }
     }
-
-    // Traverse children
-    Q_FOREACH (Entity *child, node->children())
-        buildRenderCommands(child, planes);
 }
 
 void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)

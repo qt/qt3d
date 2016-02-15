@@ -223,7 +223,7 @@ public:
 
     RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
-    void buildRenderCommands(Entity *preprocessedTreeRoot, const Plane *planes);
+    void buildRenderCommands(Entity *rootEntity, const Plane *planes);
     void buildDrawRenderCommands(Entity *node, const Plane *planes);
     void buildComputeRenderCommands(Entity *node);
     QVector<RenderCommand *> commands() const { return m_commands; }
