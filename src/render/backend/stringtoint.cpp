@@ -39,6 +39,7 @@
 
 #include "stringtoint_p.h"
 #include <QMutex>
+#include <QReadWriteLock>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,27 +50,59 @@ namespace Render {
 namespace {
 
 QMutex mutex;
+QReadWriteLock readLock;
 
 } // anonymous
 
 QVector<QString> StringToInt::m_stringsArray = QVector<QString>();
+QVector<QString> StringToInt::m_pendingStringsArray = QVector<QString>();
+int StringToInt::m_calls = 0;
 
 int StringToInt::lookupId(const QString &str)
 {
-    QMutexLocker lock(&mutex);
-    const int idx = StringToInt::m_stringsArray.indexOf(str);
+    // Note: how do we protect against the case where
+    // we are synching the two arrays ?
+    QReadLocker readLocker(&readLock);
+    int idx = StringToInt::m_stringsArray.indexOf(str);
+
     if (Q_UNLIKELY(idx < 0)) {
-        StringToInt::m_stringsArray.push_back(str);
-        return StringToInt::m_stringsArray.size() - 1;
+        QMutexLocker lock(&mutex);
+
+        // If not found in m_stringsArray, maybe it's in the pending array
+        if ((idx = StringToInt::m_pendingStringsArray.indexOf(str)) >= 0) {
+            idx += StringToInt::m_stringsArray.size();
+        } else {
+            // If not, we add it to the m_pendingStringArray
+            StringToInt::m_pendingStringsArray.push_back(str);
+            idx = StringToInt::m_stringsArray.size() + m_pendingStringsArray.size() - 1;
+        }
+
+        // We sync the two arrays every 20 calls
+        if (StringToInt::m_calls % 20 == 0 && StringToInt::m_pendingStringsArray.size() > 0) {
+            // Unlock reader to writeLock
+            // since a read lock cannot be locked for writing
+            readLocker.unlock();
+            QWriteLocker writeLock(&readLock);
+
+            StringToInt::m_stringsArray += StringToInt::m_pendingStringsArray;
+            StringToInt::m_pendingStringsArray.clear();
+            StringToInt::m_calls = 0;
+        }
     }
     return idx;
 }
 
 QString StringToInt::lookupString(int idx)
 {
-    QMutexLocker lock(&mutex);
+    QReadLocker readLocker(&readLock);
     if (Q_LIKELY(StringToInt::m_stringsArray.size() > idx))
         return StringToInt::m_stringsArray.at(idx);
+
+    // Maybe it's in the pending array then
+    QMutexLocker lock(&mutex);
+    if (StringToInt::m_stringsArray.size() + StringToInt::m_pendingStringsArray.size() > idx)
+        return StringToInt::m_pendingStringsArray.at(idx - StringToInt::m_stringsArray.size());
+
     return QString();
 }
 

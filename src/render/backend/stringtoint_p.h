@@ -69,6 +69,8 @@ public:
 
 private:
     static QVector<QString> m_stringsArray;
+    static QVector<QString> m_pendingStringsArray;
+    static int m_calls;
 };
 
 } // Render
