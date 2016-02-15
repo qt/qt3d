@@ -154,6 +154,8 @@ public:
 
     inline void appendLayerFilter(const QStringList &layers) { m_data->m_layers << layers; }
     inline QStringList layerFilters() const { return m_data->m_layers; }
+    inline void appendLayerFilter(const QVector<int> &layerIds) { m_data->m_layerIds << layerIds; }
+    inline QVector<int> layerFilterIds() const { return m_data->m_layerIds; }
 
     inline void setRenderPassFilter(const RenderPassFilter *rpFilter) { m_data->m_passFilter = rpFilter; }
     inline const RenderPassFilter *renderPassFilter() const { return m_data->m_passFilter; }
@@ -255,7 +257,8 @@ public:
         const RenderPassFilter *m_passFilter;
         QMatrix4x4 *m_viewMatrix;
         QMatrix4x4 *m_viewProjectionMatrix;
-        QStringList m_layers;
+        QStringList m_layers; // Only for debug
+        QVector<int> m_layerIds;
         QList<Qt3DCore::QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;

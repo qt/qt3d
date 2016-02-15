@@ -477,6 +477,8 @@ public:
 
     int maxResourcesEntries() const { return m_maxResourcesEntries; }
 
+    int count() const Q_DECL_NOEXCEPT { return m_handleManager.activeEntries(); }
+
 protected:
     QHandleManager<T, INDEXBITS> m_handleManager;
     QHash<C, QHandle<T, INDEXBITS> > m_handleToResourceMapper;

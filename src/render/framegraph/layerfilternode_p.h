@@ -72,10 +72,12 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QStringList layers() const;
+    QVector<int> layerIds() const Q_DECL_NOEXCEPT { return m_layerIds; }
     void setLayers(const QStringList &list);
 
 private:
     QStringList m_layers;
+    QVector<int> m_layerIds;
 };
 
 } // namespace Render

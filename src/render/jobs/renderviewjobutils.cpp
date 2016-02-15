@@ -114,7 +114,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 }
 
             case FrameGraphNode::LayerFilter: // Can be set multiple times in the tree
-                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layers());
+                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layerIds());
+                rv->appendLayerFilter(static_cast<const LayerFilterNode *>(node)->layers()); // For debug
                 break;
 
             case FrameGraphNode::RenderPassFilter:

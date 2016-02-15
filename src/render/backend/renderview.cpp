@@ -100,17 +100,18 @@ QString LIGHT_STRUCT_NAMES[MAX_LIGHTS];
 
 // TODO: Should we treat lack of layer data as implicitly meaning that an
 // entity is in all layers?
-bool isEntityInLayers(const Entity *entity, const QStringList &layers)
+bool isEntityInLayers(const Entity *entity, const QVector<int> &filterLayerIds)
 {
-    if (layers.isEmpty())
+    if (filterLayerIds.isEmpty())
         return true;
 
-    QList<Layer *> renderLayers = entity->renderComponents<Layer>();
-    Q_FOREACH (Layer *layer, renderLayers) {
-        if (layer->isEnabled())
-            Q_FOREACH (const QString &layerName, layer->layers())
-                if (layers.contains(layerName))
+    QList<Layer *> entityLayers = entity->renderComponents<Layer>();
+    Q_FOREACH (const Layer *entityLayer, entityLayers) {
+        if (entityLayer->isEnabled()) {
+            Q_FOREACH (const int layerId, entityLayer->layerIds())
+                if (filterLayerIds.contains(layerId))
                     return true;
+        }
     }
     return false;
 }
@@ -489,7 +490,7 @@ void RenderView::buildRenderCommands(Entity *node, const Plane *planes)
         return;
 
     // Build renderCommand for current node
-    if (isEntityInLayers(node, m_data->m_layers)) {
+    if (isEntityInLayers(node, m_data->m_layerIds)) {
 
         // Note: in theory going to both code paths is possible but
         // would most likely be the result of the user not knowing what he's doing

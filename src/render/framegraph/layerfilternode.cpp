@@ -40,6 +40,7 @@
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +57,7 @@ LayerFilterNode::LayerFilterNode()
 void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
-    m_layers = layerFilter->layers();
+    setLayers(layerFilter->layers());
     setEnabled(layerFilter->isEnabled());
 }
 
@@ -79,6 +80,10 @@ QStringList LayerFilterNode::layers() const
 void LayerFilterNode::setLayers(const QStringList &list)
 {
     m_layers = list;
+    m_layerIds.clear();
+    m_layerIds.reserve(m_layers.size());
+    Q_FOREACH (const QString &name, m_layers)
+        m_layerIds.push_back(StringToInt::lookupId(name));
 }
 
 } // namespace Render

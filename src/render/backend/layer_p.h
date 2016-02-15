@@ -75,11 +75,13 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     QStringList layers() const;
+    QVector<int> layerIds() const Q_DECL_NOEXCEPT { return m_layerIds; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
 private:
     QStringList m_layers;
+    QVector<int> m_layerIds;
     bool m_enabled;
 };
 

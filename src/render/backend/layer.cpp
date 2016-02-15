@@ -40,6 +40,7 @@
 #include "layer_p.h"
 #include "qlayer.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -67,6 +68,9 @@ void Layer::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLayer *layer = static_cast<QLayer *>(peer);
     m_layers = layer->names();
+    m_layerIds.reserve(m_layers.size());
+    Q_FOREACH (const QString &name, m_layers)
+        m_layerIds.push_back(StringToInt::lookupId(name));
     m_enabled = layer->isEnabled();
 }
 
@@ -78,10 +82,15 @@ QStringList Layer::layers() const
 void Layer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names"))
+    if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("names")) {
         m_layers = propertyChange->value().toStringList();
-    else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+        m_layerIds.clear();
+        m_layerIds.reserve(m_layers.size());
+        Q_FOREACH (const QString &name, m_layers)
+            m_layerIds.push_back(StringToInt::lookupId(name));
+    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
         m_enabled = propertyChange->value().toBool();
+    }
 }
 
 } // namespace Render
