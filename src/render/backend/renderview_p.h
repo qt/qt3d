@@ -300,28 +300,28 @@ private:
 
     QVector<LightSource> m_lightSources;
 
-    typedef QHash<int, QUniformValue* (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
+    typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;
     static StandardUniformsPFuncsHash initializeStandardUniformSetters();
     static QStringList ms_standardAttributesNames;
     static QStringList initializeStandardAttributeNames();
 
-    QUniformValue *modelMatrix(const QMatrix4x4& model) const;
-    QUniformValue *viewMatrix(const QMatrix4x4&) const;
-    QUniformValue *projectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue *modelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseViewMatrix(const QMatrix4x4 &) const;
-    QUniformValue *inverseProjectionMatrix(const QMatrix4x4 &) const;
-    QUniformValue *inverseModelViewMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *modelViewNormalMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *viewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *inverseViewportMatrix(const QMatrix4x4 &model) const;
-    QUniformValue *time(const QMatrix4x4 &model) const;
-    QUniformValue *eyePosition(const QMatrix4x4 &model) const;
+    QUniformValue modelMatrix(const QMatrix4x4& model) const;
+    QUniformValue viewMatrix(const QMatrix4x4&) const;
+    QUniformValue projectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue modelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseModelMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewMatrix(const QMatrix4x4 &) const;
+    QUniformValue inverseProjectionMatrix(const QMatrix4x4 &) const;
+    QUniformValue inverseModelViewMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue modelViewNormalMatrix(const QMatrix4x4 &model) const;
+    QUniformValue viewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue inverseViewportMatrix(const QMatrix4x4 &model) const;
+    QUniformValue time(const QMatrix4x4 &model) const;
+    QUniformValue eyePosition(const QMatrix4x4 &model) const;
 
     void setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value);
     void setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform);

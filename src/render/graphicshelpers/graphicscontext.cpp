@@ -971,19 +971,17 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
 
     deactivateTexturesWithScope(TextureScopeMaterial);
     // Update the uniforms with the correct texture unit id's
-    const PackUniformHash uniformValues = parameterPack.uniforms();
+    PackUniformHash &uniformValues = parameterPack.uniforms();
 
     for (int i = 0; i < parameterPack.textures().size(); ++i) {
         const ShaderParameterPack::NamedTexture &namedTex = parameterPack.textures().at(i);
         Texture *t = manager->lookupResource<Texture, TextureManager>(namedTex.texId);
-        const TextureUniform *texUniform = Q_NULLPTR;
         // TO DO : Rework the way textures are loaded
         if (t != Q_NULLPTR) {
             int texUnit = activateTexture(TextureScopeMaterial, t);
             if (uniformValues.contains(namedTex.glslNameId)) {
-                texUniform = static_cast<const TextureUniform *>(uniformValues[namedTex.glslNameId]);
-                if (texUniform != Q_NULLPTR)
-                    const_cast<TextureUniform *>(texUniform)->setTextureUnit(texUnit);
+                QUniformValue &texUniform = uniformValues[namedTex.glslNameId];
+                texUniform.setTextureUnit(texUnit);
             }
         }
     }

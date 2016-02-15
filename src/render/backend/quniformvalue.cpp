@@ -55,38 +55,42 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-QUniformValue::QUniformValue()
+void QUniformValue::apply(GraphicsContext *ctx, const ShaderUniform &description) const
 {
+    switch (m_type) {
+    case Value:
+        ctx->bindUniform(m_var, description);
+        break;
+
+    case TextureSampler:
+        // We assume that the texture has been successfully bound and attache to a texture unit
+        if (m_textureIdUnit.m_textureUnit != -1) {
+            ctx->bindUniform(m_textureIdUnit.m_textureUnit, description);
+#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
+            int err = ctx->openGLContext()->functions()->glGetError();
+            if (err) {
+                qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
+                          err, qUtf8Printable(description.m_name), description.m_location);
+            }
+#endif
+        } else {
+            qCWarning(Render::Backend, "Invalid texture unit supplied for \"%s\"",
+                      qUtf8Printable(description.m_nameId));
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
-QUniformValue *QUniformValue::fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator)
-{
-    QUniformValue *u = allocator->allocate<QUniformValue>();
-    u->m_var = v;
-    return u;
-}
-
-bool QUniformValue::operator ==(const QUniformValue &other)
-{
-    return (other.m_var == m_var);
-}
-
-bool QUniformValue::operator !=(const QUniformValue &other)
-{
-    return !operator ==(other);
-}
-
-void QUniformValue::apply(GraphicsContext *ctx, const ShaderUniform &shaderDescription) const
-{
-    ctx->bindUniform(m_var, shaderDescription);
-}
 
 ShaderParameterPack::~ShaderParameterPack()
 {
     m_uniforms.clear();
 }
 
-void ShaderParameterPack::setUniform(const int glslNameId, const QUniformValue *val)
+void ShaderParameterPack::setUniform(const int glslNameId, const QUniformValue &val)
 {
     m_uniforms.insert(glslNameId, val);
 }
@@ -113,24 +117,6 @@ void ShaderParameterPack::setUniformBuffer(const BlockToUBO &blockToUBO)
 void ShaderParameterPack::setShaderStorageBuffer(const BlockToSSBO &blockToSSBO)
 {
     m_shaderStorageBuffers.push_back(blockToSSBO);
-}
-
-void TextureUniform::apply(GraphicsContext *ctx, const ShaderUniform &description) const
-{
-    // We assume that the texture has been successfully bound and attache to a texture unit
-    if (m_textureUnit != -1) {
-        ctx->bindUniform(m_textureUnit, description);
-#if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
-        int err = ctx->openGLContext()->functions()->glGetError();
-        if (err) {
-            qCWarning(Render::Backend, "Error %d after setting uniform \"%s\" at location %d",
-                      err, qUtf8Printable(description.m_name), description.m_location);
-        }
-#endif
-    } else {
-        qCWarning(Render::Backend, "Invalid texture unit supplied for \"%s\"",
-                  qUtf8Printable(description.m_nameId));
-    }
 }
 
 } // namespace Render

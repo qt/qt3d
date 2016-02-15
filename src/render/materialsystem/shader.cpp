@@ -269,7 +269,7 @@ void Shader::updateUniforms(GraphicsContext *ctx, const ShaderParameterPack &pac
     Q_FOREACH (const ShaderUniform &uniform, m_uniforms) {
         PackUniformHash::const_iterator valueIt = values.constFind(uniform.m_nameId);
         if (valueIt != valueEnd)
-            valueIt.value()->apply(ctx, uniform);
+            valueIt.value().apply(ctx, uniform);
     }
 }
 

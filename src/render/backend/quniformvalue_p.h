@@ -57,7 +57,6 @@
 #include <QOpenGLShaderProgram>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-
 #include <Qt3DRender/private/shadervariables_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -72,70 +71,116 @@ namespace Qt3DRender {
 namespace Render {
 
 class GraphicsContext;
-/**
- * @brief The QUniformValue class - immutable storage of uniform value
- * in the rendering backend.
- */
+
 class QUniformValue
 {
 public:
-    QUniformValue();
-    virtual ~QUniformValue() {}
+    enum UniformType {
+        Value,
+        TextureSampler,
+        Unknown
+    };
 
-    static QUniformValue *fromVariant(const QVariant &v, Qt3DCore::QFrameAllocator *allocator);
-
-    virtual bool operator ==(const QUniformValue &other);
-    bool operator !=(const QUniformValue &other);
-
-    virtual bool isTexture() const Q_DECL_NOEXCEPT
+    QUniformValue()
+        : m_type(Unknown)
+        , m_var()
     {
-        return false;
     }
 
-    virtual void apply(GraphicsContext *ctx, const ShaderUniform &description) const;
+    explicit QUniformValue(const QVariant &var, UniformType type = Value)
+        : m_type(type)
+        , m_var(var)
+    {
+    }
+
+    void setType(UniformType type) Q_DECL_NOTHROW { m_type = type; }
+    UniformType type() Q_DECL_NOEXCEPT { return m_type; }
+    bool isTexture() const Q_DECL_NOEXCEPT { return m_type == TextureSampler; }
+
+    void setValue(const QVariant &value) Q_DECL_NOEXCEPT
+    {
+        Q_ASSERT(m_type == Value);
+        m_var = value;
+    }
+
+    QVariant value() const
+    {
+        Q_ASSERT(m_type == Value);
+        return m_var;
+    }
+
+    void setTextureUnit(int textureUnit) Q_DECL_NOEXCEPT
+    {
+        Q_ASSERT(m_type == TextureSampler);
+        m_textureIdUnit.m_textureUnit = textureUnit;
+    }
+
+    int textureUnit() const Q_DECL_NOEXCEPT
+    {
+        Q_ASSERT(m_type == TextureSampler);
+        return m_textureIdUnit.m_textureUnit;
+    }
+
+    void setTextureId(Qt3DCore::QNodeId textureId) Q_DECL_NOEXCEPT
+    {
+        Q_ASSERT(m_type == TextureSampler);
+        m_textureIdUnit.m_textureId = textureId;
+    }
+
+    Qt3DCore::QNodeId textureId() const Q_DECL_NOEXCEPT
+    {
+        Q_ASSERT(m_type == TextureSampler);
+        return m_textureIdUnit.m_textureId;
+    }
+
+    bool operator ==(const QUniformValue &other) Q_DECL_NOEXCEPT
+    {
+        if (other.m_type != m_type)
+            return false;
+
+        switch (m_type) {
+        case Value:
+            return other.m_var == m_var;
+        case TextureSampler:
+            return other.m_textureIdUnit == m_textureIdUnit;
+        default:
+            break;
+        }
+    }
+
+    bool operator !=(const QUniformValue &other) Q_DECL_NOEXCEPT
+    {
+        return !operator ==(other);
+    }
+
+    void apply(GraphicsContext *ctx, const ShaderUniform &description) const;
 
 protected:
-    QVariant m_var;
-};
+    struct TextureIdUnit {
+        Qt3DCore::QNodeId m_textureId;
+        int m_textureUnit;
 
-class TextureUniform : public QUniformValue
-{
-public :
-    TextureUniform()
-        : QUniformValue()
-        , m_textureUnit(-1)
-    {
-    }
+        TextureIdUnit()
+            : m_textureId()
+            , m_textureUnit(-1)
+        {}
 
-    bool isTexture() const Q_DECL_NOEXCEPT Q_DECL_FINAL
-    {
-        return true;
-    }
-
-    void setTextureId(const Qt3DCore::QNodeId id)
-    {
-        m_textureId = id;
-    }
-
-    Qt3DCore::QNodeId textureId() const { return m_textureId; }
-
-    bool operator ==(const QUniformValue &other) Q_DECL_OVERRIDE
-    {
-        if (other.isTexture()) {
-            const TextureUniform *otherTex = static_cast<const TextureUniform *>(&other);
-            return otherTex->textureId() == m_textureId;
+        bool operator == (const TextureIdUnit &other) const Q_DECL_NOEXCEPT
+        {
+            return (other.m_textureId == m_textureId) && (other.m_textureUnit == m_textureUnit);
         }
-        return false;
-    }
 
-    // Called by the QGraphicContext prior applying
-    void setTextureUnit(int textureUnit) { m_textureUnit = textureUnit; }
+        bool operator !=(const TextureIdUnit &other) const Q_DECL_NOEXCEPT
+        {
+            return !operator ==(other);
+        }
+    };
 
-    void apply(GraphicsContext *ctx, const ShaderUniform &description) const Q_DECL_OVERRIDE;
-
-private:
-    Qt3DCore::QNodeId m_textureId;
-    int m_textureUnit;
+    // TODO: Replace QVariant with our own union of GLSL types as we don't
+    // need the full flexibility of QVariant on the backend
+    QVariant m_var;
+    TextureIdUnit m_textureIdUnit;
+    UniformType m_type;
 };
 
 struct BlockToUBO {
@@ -150,20 +195,21 @@ struct BlockToSSBO {
     Qt3DCore::QNodeId m_bufferID;
 };
 
-typedef QHash<int, const QUniformValue *> PackUniformHash;
+typedef QHash<int, QUniformValue> PackUniformHash;
 
 class ShaderParameterPack
 {
 public:
     ~ShaderParameterPack();
 
-    void setUniform(const int glslNameId, const QUniformValue *val);
+    void setUniform(const int glslNameId, const QUniformValue &val);
     void setTexture(const int glslNameId, const Qt3DCore::QNodeId &id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
     void setShaderStorageBuffer(const BlockToSSBO &blockToSSBO);
 
+    inline PackUniformHash &uniforms() { return m_uniforms; }
     inline const PackUniformHash &uniforms() const { return m_uniforms; }
-    const QUniformValue *uniform(const int glslNameId) const { return m_uniforms.value(glslNameId); }
+    QUniformValue uniform(const int glslNameId) const { return m_uniforms.value(glslNameId); }
 
     struct NamedTexture
     {

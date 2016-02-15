@@ -125,15 +125,6 @@ bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
     return false;
 }
 
-void destroyUniformValue(const QUniformValue *value, Qt3DCore::QFrameAllocator *allocator)
-{
-    QUniformValue *v = const_cast<QUniformValue *>(value);
-    if (v->isTexture())
-        allocator->deallocate(static_cast<TextureUniform *>(v));
-    else
-        allocator->deallocate(v);
-}
-
 } // anonymouse namespace
 
 bool wasInitialized = false;
@@ -180,67 +171,67 @@ QStringList RenderView::initializeStandardAttributeNames()
     return attributesNames;
 }
 
-QUniformValue *RenderView::modelMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::modelMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(model, m_allocator);
+    return QUniformValue(QVariant::fromValue(model));
 }
 
-QUniformValue *RenderView::viewMatrix(const QMatrix4x4 &) const
+QUniformValue RenderView::viewMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue::fromVariant(*m_data->m_viewMatrix, m_allocator);
+    return QUniformValue(QVariant::fromValue(*m_data->m_viewMatrix));
 }
 
-QUniformValue *RenderView::projectionMatrix(const QMatrix4x4 &) const
+QUniformValue RenderView::projectionMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue::fromVariant(m_data->m_renderCamera->projection(), m_allocator);
+    return QUniformValue(QVariant::fromValue(m_data->m_renderCamera->projection()));
 }
 
-QUniformValue *RenderView::modelViewMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::modelViewMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(*m_data->m_viewMatrix * model, m_allocator);
+    return QUniformValue(QVariant::fromValue(*m_data->m_viewMatrix * model));
 }
 
-QUniformValue *RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::modelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(*m_data->m_viewProjectionMatrix * model, m_allocator);
+    return QUniformValue(QVariant::fromValue(*m_data->m_viewProjectionMatrix * model));
 }
 
-QUniformValue *RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::inverseModelMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(model.inverted(), m_allocator);
+    return QUniformValue(QVariant::fromValue(model.inverted()));
 }
 
-QUniformValue *RenderView::inverseViewMatrix(const QMatrix4x4 &) const
+QUniformValue RenderView::inverseViewMatrix(const QMatrix4x4 &) const
 {
-    return QUniformValue::fromVariant(m_data->m_viewMatrix->inverted(), m_allocator);
+    return QUniformValue(QVariant::fromValue(m_data->m_viewMatrix->inverted()));
 }
 
-QUniformValue *RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
+QUniformValue RenderView::inverseProjectionMatrix(const QMatrix4x4 &) const
 {
     QMatrix4x4 projection;
     if (m_data->m_renderCamera)
         projection = m_data->m_renderCamera->projection();
-    return QUniformValue::fromVariant(projection.inverted(), m_allocator);
+    return QUniformValue(QVariant::fromValue(projection.inverted()));
 }
 
-QUniformValue *RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::inverseModelViewMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant((*m_data->m_viewMatrix * model).inverted(), m_allocator);
+    return QUniformValue(QVariant::fromValue((*m_data->m_viewMatrix * model).inverted()));
 }
 
-QUniformValue *RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::inverseModelViewProjectionMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant((*m_data->m_viewProjectionMatrix * model).inverted(0), m_allocator);
+    return QUniformValue(QVariant::fromValue((*m_data->m_viewProjectionMatrix * model).inverted(0)));
 }
 
-QUniformValue *RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::modelNormalMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(QVariant::fromValue(model.normalMatrix()), m_allocator);
+    return QUniformValue(QVariant::fromValue(model.normalMatrix()));
 }
 
-QUniformValue *RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::modelViewNormalMatrix(const QMatrix4x4 &model) const
 {
-    return QUniformValue::fromVariant(QVariant::fromValue((*m_data->m_viewMatrix * model).normalMatrix()), m_allocator);
+    return QUniformValue(QVariant::fromValue((*m_data->m_viewMatrix * model).normalMatrix()));
 }
 
 // TODO: Move this somewhere global where GraphicsContext::setViewport() can use it too
@@ -252,38 +243,38 @@ static QRectF resolveViewport(const QRectF &fractionalViewport, const QSize &sur
                   fractionalViewport.height() * surfaceSize.height());
 }
 
-QUniformValue *RenderView::viewportMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::viewportMatrix(const QMatrix4x4 &model) const
 {
     // TODO: Can we avoid having to pass the model matrix in to these functions?
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
     viewportMatrix.viewport(resolveViewport(*m_viewport, m_surfaceSize));
-    return QUniformValue::fromVariant(QVariant::fromValue(viewportMatrix), m_allocator);
+    return QUniformValue(QVariant::fromValue(viewportMatrix));
 
 }
 
-QUniformValue *RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
+QUniformValue RenderView::inverseViewportMatrix(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     QMatrix4x4 viewportMatrix;
     viewportMatrix.viewport(resolveViewport(*m_viewport, m_surfaceSize));
     QMatrix4x4 inverseViewportMatrix = viewportMatrix.inverted();
-    return QUniformValue::fromVariant(QVariant::fromValue(inverseViewportMatrix), m_allocator);
+    return QUniformValue(QVariant::fromValue(inverseViewportMatrix));
 
 }
 
-QUniformValue *RenderView::time(const QMatrix4x4 &model) const
+QUniformValue RenderView::time(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
     qint64 time = m_renderer->time();
     float t = time / 1000000000.0f;
-    return QUniformValue::fromVariant(QVariant(t), m_allocator);
+    return QUniformValue(QVariant(t));
 }
 
-QUniformValue *RenderView::eyePosition(const QMatrix4x4 &model) const
+QUniformValue RenderView::eyePosition(const QMatrix4x4 &model) const
 {
     Q_UNUSED(model);
-    return QUniformValue::fromVariant(QVariant::fromValue(m_data->m_eyePos), m_allocator);
+    return QUniformValue(QVariant::fromValue(m_data->m_eyePos));
 }
 
 RenderView::RenderView()
@@ -330,9 +321,6 @@ RenderView::~RenderView()
         const PackUniformHash uniforms = command->m_parameterPack.uniforms();
         const PackUniformHash::const_iterator end = uniforms.constEnd();
         PackUniformHash::const_iterator it = uniforms.constBegin();
-
-        for (; it != end; ++it)
-            destroyUniformValue(it.value(), m_allocator);
 
         if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
@@ -405,9 +393,8 @@ void RenderView::sort()
                     // sharing the same material (shader) are rendered, we can't have the case
                     // where two uniforms, referencing the same texture eventually have 2 different
                     // texture unit values
-                    const QUniformValue *refValue = cachedUniforms.value(it.key(), Q_NULLPTR);
-                    if (refValue != Q_NULLPTR && *const_cast<QUniformValue *>(refValue) == *it.value()) {
-                        destroyUniformValue(it.value(), m_allocator);
+                    QUniformValue refValue = cachedUniforms.value(it.key());
+                    if (refValue == it.value()) {
                         it = uniforms.erase(it);
                     } else {
                         cachedUniforms.insert(it.key(), it.value());
@@ -623,9 +610,6 @@ const AttachmentPack &RenderView::attachmentPack() const
 
 void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, const QVariant &value)
 {
-    if (const QUniformValue *val = uniformPack.uniform(nameId))
-        destroyUniformValue(val, m_allocator);
-
     Texture *tex = Q_NULLPTR;
     // At this point a uniform value can only be a scalar type
     // or a Qt3DCore::QNodeId corresponding to a Texture
@@ -637,20 +621,19 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
         if ((tex = m_manager->textureManager()->lookupResource(texId))
                 != Q_NULLPTR) {
             uniformPack.setTexture(nameId, tex->peerUuid());
-            TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
-            texUniform->setTextureId(tex->peerUuid());
+            //TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
+            QUniformValue texUniform;
+            texUniform.setType(QUniformValue::TextureSampler);
+            texUniform.setTextureId(tex->peerUuid());
             uniformPack.setUniform(nameId, texUniform);
         }
     } else {
-        uniformPack.setUniform(nameId, QUniformValue::fromVariant(value, m_allocator));
+        uniformPack.setUniform(nameId, QUniformValue(value));
     }
 }
 
 void RenderView::setStandardUniformValue(ShaderParameterPack &uniformPack, int glslNameId, int nameId, const QMatrix4x4 &worldTransform)
 {
-    if (const QUniformValue *val = uniformPack.uniform(glslNameId))
-        destroyUniformValue(val, m_allocator);
-
     uniformPack.setUniform(glslNameId, (this->*ms_standardUniformSetters[nameId])(worldTransform));
 }
 
