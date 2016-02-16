@@ -42,10 +42,46 @@
 
 #include <QtGui/qwindow.h>
 #include <QtGui/qoffscreensurface.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+/*!
+ * \class Qt3DRender::QRenderSurfaceSelector
+ * \inmodule Qt3DRender
+ * \brief QRenderSurfaceSelector
+ * \since
+ *
+ * \inherits Qt3DRender::QFrameGraphNode
+ *
+ */
+
+/*!
+ * \qmltype RenderSurfaceSelector
+ * \inqmlmodule Qt3D.Render
+ * \since
+ * \ingroup
+ * \instantiates Qt3DRender::QRenderSurfaceSelector
+ * \brief RenderSurfaceSelector
+ *
+ */
+
+/*! \qmlproperty QSurface Qt3D.Render::RenderSurfaceSelector::surface
+ *
+ * Holds the surface.
+ */
+
+/*! \qmlproperty QWindow Qt3D.Render::RenderSurfaceSelector::window
+ *
+ * Holds the window.
+ */
+
+/*! \qmlproperty QSize Qt3D.Render::RenderSurfaceSelector::externalRenderTargetSize
+ *
+ * Holds the size of the external render target.
+ */
 
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
@@ -53,16 +89,30 @@ QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
 {
 }
 
+void QRenderSurfaceSelectorPrivate::setExternalRenderTargetSize(const QSize &size)
+{
+    m_externalRenderTargetSize = size;
+}
+
+/*!
+ * Constructs QRenderSurfaceSelector with given \a parent.
+ */
 QRenderSurfaceSelector::QRenderSurfaceSelector(Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(*new QRenderSurfaceSelectorPrivate, parent)
 {
 }
 
+/*!
+ * \internal
+ */
 QRenderSurfaceSelector::QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DRender::QFrameGraphNode(dd, parent)
 {
 }
 
+/*!
+ * Destroys QRenderSurfaceSelector.
+ */
 QRenderSurfaceSelector::~QRenderSurfaceSelector()
 {
     QNode::cleanup();
@@ -82,6 +132,10 @@ QWindow *QRenderSurfaceSelector::window() const
     return Q_NULLPTR;
 }
 
+/*! \property QRenderSurfaceSelector::surface
+ *
+ * Sets \a surface.
+ */
 void QRenderSurfaceSelector::setSurface(QSurface *surface)
 {
     Q_D(QRenderSurfaceSelector);
@@ -92,6 +146,27 @@ void QRenderSurfaceSelector::setSurface(QSurface *surface)
     emit surfaceChanged(surface);
 }
 
+QSize QRenderSurfaceSelector::externalRenderTargetSize() const
+{
+    Q_D(const QRenderSurfaceSelector);
+    return d->externalRenderTargetSize();
+}
+
+/*!
+ * Sets render target \a size if different than underlying surface size.
+ * Tells picking the correct size.
+ */
+void QRenderSurfaceSelector::setExternalRenderTargetSize(const QSize &size)
+{
+    Q_D(QRenderSurfaceSelector);
+    d->setExternalRenderTargetSize(size);
+    emit externalRenderTargetSizeChanged(size);
+}
+
+/*! \property QRenderSurfaceSelector::window
+ *
+ * Sets \a window.
+ */
 void QRenderSurfaceSelector::setWindow(QWindow *window)
 {
     Q_D(QRenderSurfaceSelector);
@@ -106,12 +181,16 @@ void QRenderSurfaceSelector::setWindow(QWindow *window)
     emit surfaceChanged(d->m_surface);
 }
 
+/*!
+ * \internal
+ */
 void QRenderSurfaceSelector::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QRenderSurfaceSelector *object = static_cast<const QRenderSurfaceSelector *>(ref);
 
     d_func()->m_surface = object->d_func()->m_surface;
+    d_func()->m_externalRenderTargetSize = object->d_func()->m_externalRenderTargetSize;
 }
 
 } // namespace Qt3DRender

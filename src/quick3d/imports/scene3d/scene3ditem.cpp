@@ -218,6 +218,31 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
         surfaceSelector->setWindow(this->window());
 }
 
+void Scene3DItem::setItemArea(const QSize &area)
+{
+    // Find surface selector in framegraph and set the area
+    Qt3DRender::QRenderSettings *renderSettings
+        = m_entity->findChild<Qt3DRender::QRenderSettings *>();
+    if (!renderSettings) {
+        qWarning() << "No renderer settings component found";
+        return;
+    }
+
+    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
+    if (!frameGraphRoot) {
+        qWarning() << "No active frame graph found";
+        return;
+    }
+
+    Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+        = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+    if (!surfaceSelector) {
+        qWarning() << "No render surface selector found in frame graph";
+        return;
+    }
+    surfaceSelector->setExternalRenderTargetSize(area);
+}
+
 void Scene3DItem::setCameraAspectModeHelper()
 {
     switch (m_cameraAspectRatioMode) {

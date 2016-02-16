@@ -63,6 +63,7 @@ void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
     QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
     m_surface = selector->surface();
     setEnabled(selector->isEnabled());
+    setRenderTargetSize(selector->externalRenderTargetSize());
 }
 
 void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -74,8 +75,19 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_surface = propertyChange->value().value<QSurface *>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))
+            setRenderTargetSize(propertyChange->value().toSize());
         markDirty(AbstractRenderer::AllDirty);
     }
+}
+
+QSize RenderSurfaceSelector::renderTargetSize() const
+{
+    if (m_renderTargetSize.isValid())
+        return m_renderTargetSize;
+    if (m_surface && m_surface->size().isValid())
+        return m_surface->size();
+    return QSize();
 }
 
 } // namespace Render

@@ -42,6 +42,7 @@
 
 #include <Qt3DRender/qframegraphnode.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <QtCore/QSize>
 
 QT_BEGIN_NAMESPACE
 
@@ -57,6 +58,7 @@ class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrame
     Q_OBJECT
     Q_PROPERTY(QSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
 
 public:
     explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = nullptr);
@@ -64,6 +66,8 @@ public:
 
     QSurface *surface() const;
     QWindow *window() const;
+    QSize externalRenderTargetSize() const;
+    void setExternalRenderTargetSize(const QSize &size);
 
 public Q_SLOTS:
     void setSurface(QSurface *surface);
@@ -72,6 +76,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void surfaceChanged(QSurface *surface);
     void windowChanged(QWindow *window);
+    void externalRenderTargetSizeChanged(const QSize &size);
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSurfaceSelector)

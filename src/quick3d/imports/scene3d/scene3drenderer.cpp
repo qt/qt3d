@@ -219,8 +219,12 @@ void Scene3DRenderer::render()
 
     ContextSaver saver;
 
-    const QSize currentSize = m_item->boundingRect().size().toSize() * window->effectiveDevicePixelRatio();
+    const QSize boundingRectSize = m_item->boundingRect().size().toSize();
+    const QSize currentSize = boundingRectSize * window->effectiveDevicePixelRatio();
     const bool forceRecreate = currentSize != m_lastSize || m_multisample != m_lastMultisample;
+
+    if (currentSize != m_lastSize)
+        m_item->setItemArea(boundingRectSize);
 
     // Rebuild FBO and textures if never created or a resize has occurred
     if ((m_multisampledFBO.isNull() || forceRecreate) && m_multisample) {

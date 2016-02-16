@@ -85,6 +85,7 @@ public:
 
     bool multisample() const;
     void setMultisample(bool enable);
+    void setItemArea(const QSize &area);
 
     enum CameraAspectRatioMode {
         AutomaticAspectRatio,

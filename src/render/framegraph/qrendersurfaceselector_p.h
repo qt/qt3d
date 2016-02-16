@@ -64,7 +64,11 @@ class QRenderSurfaceSelectorPrivate : public Qt3DRender::QFrameGraphNodePrivate
 public:
     QRenderSurfaceSelectorPrivate();
 
+    void setExternalRenderTargetSize(const QSize &size);
+    QSize externalRenderTargetSize() const { return m_externalRenderTargetSize; }
+
     QSurface *m_surface;
+    QSize m_externalRenderTargetSize;
 };
 
 } // namespace Qt3DRender

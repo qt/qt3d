@@ -53,6 +53,7 @@
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
+#include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
@@ -67,13 +68,14 @@ namespace Render {
 
 namespace {
 
-struct ViewportCameraPair
+struct ViewportCameraAreaTriplet
 {
     Qt3DCore::QNodeId cameraId;
     QRectF viewport;
+    QSize area;
 };
 
-class ViewportCameraGatherer
+class ViewportCameraAreaGatherer
 {
 private:
     QVector<FrameGraphNode *> m_leaves;
@@ -86,19 +88,22 @@ private:
             m_leaves.push_back(node);
     }
 
-    ViewportCameraPair gatherUpViewportCameras(Render::FrameGraphNode *node) const
+    ViewportCameraAreaTriplet gatherUpViewportCameraAreas(Render::FrameGraphNode *node) const
     {
-        ViewportCameraPair vc;
-        vc.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
+        ViewportCameraAreaTriplet vca;
+        vca.viewport = QRectF(0.0f, 0.0f, 1.0f, 1.0f);
 
         while (node) {
             if (node->isEnabled()) {
                 switch (node->nodeType()) {
                 case FrameGraphNode::CameraSelector:
-                    vc.cameraId = static_cast<const CameraSelector *>(node)->cameraUuid();
+                    vca.cameraId = static_cast<const CameraSelector *>(node)->cameraUuid();
                     break;
                 case FrameGraphNode::Viewport:
-                    vc.viewport = computeViewport(vc.viewport, static_cast<const ViewportNode *>(node));
+                    vca.viewport = computeViewport(vca.viewport, static_cast<const ViewportNode *>(node));
+                    break;
+                case FrameGraphNode::Surface:
+                    vca.area = static_cast<const RenderSurfaceSelector *>(node)->renderTargetSize();
                     break;
                 default:
                     break;
@@ -106,24 +111,24 @@ private:
             }
             node = node->parent();
         }
-        return vc;
+        return vca;
     }
 
 public:
-    QVector<ViewportCameraPair> gather(FrameGraphNode *root)
+    QVector<ViewportCameraAreaTriplet> gather(FrameGraphNode *root)
     {
         // Retrieve all leaves
         visit(root);
-        QVector<ViewportCameraPair> vcPairs;
-        vcPairs.reserve(m_leaves.count());
+        QVector<ViewportCameraAreaTriplet> vcaTriplets;
+        vcaTriplets.reserve(m_leaves.count());
 
         // Find all viewport/camera pairs by traversing from leaf to root
         Q_FOREACH (Render::FrameGraphNode *leaf, m_leaves) {
-            ViewportCameraPair vcPair = gatherUpViewportCameras(leaf);
-            if (!vcPair.cameraId.isNull())
-                vcPairs.push_back(vcPair);
+            ViewportCameraAreaTriplet vcaTriplet = gatherUpViewportCameraAreas(leaf);
+            if (!vcaTriplet.cameraId.isNull())
+                vcaTriplets.push_back(vcaTriplet);
         }
-        return vcPairs;
+        return vcaTriplets;
     }
 
 };
@@ -315,21 +320,21 @@ void PickBoundingVolumeJob::run()
     if (m_mouseEvents.empty())
         return;
 
-    ViewportCameraGatherer vcGatherer;
-    const QVector<ViewportCameraPair> vcPairs = vcGatherer.gather(m_renderer->frameGraphRoot());
+    ViewportCameraAreaGatherer vcaGatherer;
+    const QVector<ViewportCameraAreaTriplet> vcaTriplets = vcaGatherer.gather(m_renderer->frameGraphRoot());
 
     EntityGatherer entitiesGatherer(m_node);
 
-    if (!vcPairs.empty()) {
+    if (!vcaTriplets.empty()) {
         Q_FOREACH (const QMouseEvent &event, m_mouseEvents) {
             m_hoveredPickersToClear = m_hoveredPickers;
             ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
-            Q_FOREACH (const ViewportCameraPair &vc, vcPairs) {
+            Q_FOREACH (const ViewportCameraAreaTriplet &vca, vcaTriplets) {
                 typedef CollisionGathererFunctor::result_type HitList;
                 CollisionGathererFunctor gathererFunctor;
                 gathererFunctor.m_renderer = m_renderer;
-                gathererFunctor.m_ray = rayForViewportAndCamera(event.pos(), vc.viewport, vc.cameraId);
+                gathererFunctor.m_ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
                 HitList sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reduceToAllHits);
 
                 // If we have hits
@@ -461,36 +466,31 @@ void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
     }
 }
 
-QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) const
+QRect PickBoundingVolumeJob::windowViewport(const QSize &area, const QRectF &relativeViewport) const
 {
-    // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    // const QSize s = m_renderer->surfaceSize();
-    // if (s.isValid()) {
-    //     const int surfaceWidth = s.width();
-    //     const int surfaceHeight = s.height();
-    //     return QRect(relativeViewport.x() * surfaceWidth,
-    //                  (1.0 - relativeViewport.y() - relativeViewport.height()) * surfaceHeight,
-    //                  relativeViewport.width() * surfaceWidth,
-    //                  relativeViewport.height() * surfaceHeight);
-    // }
-    // return relativeViewport.toRect();
-    return QRect();
+    if (area.isValid()) {
+        const int areaWidth = area.width();
+        const int areaHeight = area.height();
+        return QRect(relativeViewport.x() * areaWidth,
+                     (1.0 - relativeViewport.y() - relativeViewport.height()) * areaHeight,
+                     relativeViewport.width() * areaWidth,
+                     relativeViewport.height() * areaHeight);
+    }
+    return relativeViewport.toRect();
 }
 
-QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &pos,
+QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
+                                                      const QPoint &pos,
                                                       const QRectF &relativeViewport,
                                                       Qt3DCore::QNodeId cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
     viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
-    const QRect viewport = windowViewport(relativeViewport);
+    const QRect viewport = windowViewport(area, relativeViewport);
 
-    // TO DO: find another way to retrieve the size since this won't work with Scene3D
-    // const QSize s = m_renderer->surfaceSize();
-    // // In GL the y is inverted compared to Qt
-    // const QPoint glCorrectPos = s.isValid() ? QPoint(pos.x(), s.height() - pos.y()) : pos;
-    const QPoint glCorrectPos = pos;
+    // In GL the y is inverted compared to Qt
+    const QPoint glCorrectPos = QPoint(pos.x(), area.isValid() ? area.height() - pos.y() : pos.y());
     const QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }

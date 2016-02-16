@@ -98,8 +98,9 @@ private:
     void viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
-    QRect windowViewport(const QRectF &relativeViewport) const;
-    QRay3D rayForViewportAndCamera(const QPoint &pos,
+    QRect windowViewport(const QSize &area, const QRectF &relativeViewport) const;
+    QRay3D rayForViewportAndCamera(const QSize &area,
+                                   const QPoint &pos,
                                    const QRectF &relativeViewport,
                                    Qt3DCore::QNodeId cameraId) const;
     void clearPreviouslyHoveredPickers();

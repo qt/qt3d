@@ -65,6 +65,9 @@ class RenderSurfaceSelector : public Qt3DRender::Render::FrameGraphNode
 public:
     RenderSurfaceSelector();
 
+    QSize renderTargetSize() const;
+    void setRenderTargetSize(const QSize &size) { m_renderTargetSize = size; }
+
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
@@ -72,6 +75,7 @@ public:
 
 private:
     QSurface *m_surface;
+    QSize m_renderTargetSize;
 };
 
 } // namespace Render
