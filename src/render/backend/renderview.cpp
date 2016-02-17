@@ -321,10 +321,6 @@ RenderView::~RenderView()
         return;
 
     Q_FOREACH (RenderCommand *command, m_commands) {
-        // Deallocate all uniform values of the QUniformPack of each RenderCommand
-        const PackUniformHash uniforms = command->m_parameterPack.uniforms();
-        const PackUniformHash::const_iterator end = uniforms.constEnd();
-        PackUniformHash::const_iterator it = uniforms.constBegin();
 
         if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
