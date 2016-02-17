@@ -51,19 +51,10 @@ class QSeamlessCubemapPrivate;
 class QT3DRENDERSHARED_EXPORT QSeamlessCubemap : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
     explicit QSeamlessCubemap(Qt3DCore::QNode *parent = 0);
     ~QSeamlessCubemap();
-
-    bool enabled() const;
-
-public Q_SLOTS:
-    void setEnabled(bool isEnabled);
-
-Q_SIGNALS:
-    void enabledChanged(bool isEnabled);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

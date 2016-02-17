@@ -273,14 +273,14 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         // just use the same values for RGB and Alpha
         return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
                                        blendState->srcRGB(), blendState->dstRGB(),
-                                       blendState->enabled(),
+                                       blendState->isEnabled(),
                                        blendState->bufferIndex());
     }
     case QRenderState::BlendStateSeparate: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);
         return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
                                        blendState->srcAlpha(), blendState->dstAlpha(),
-                                       blendState->enabled(),
+                                       blendState->isEnabled(),
                                        blendState->bufferIndex());
     }
     case QRenderState::CullFace: {
@@ -339,7 +339,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::SeamlessCubemap: {
         QSeamlessCubemap *seamlessCubemap = static_cast<QSeamlessCubemap *>(renderState);
-        return getOrCreateRenderStateImpl<SeamlessCubemap>(seamlessCubemap->enabled());
+        return getOrCreateRenderStateImpl<SeamlessCubemap>(seamlessCubemap->isEnabled());
     }
     case QRenderState::StencilOp: {
         QStencilOp *stencilOp = static_cast<QStencilOp *>(renderState);

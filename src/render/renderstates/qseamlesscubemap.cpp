@@ -51,12 +51,10 @@ class QSeamlessCubemapPrivate : public QRenderStatePrivate
 public:
     QSeamlessCubemapPrivate()
         : QRenderStatePrivate(QRenderState::SeamlessCubemap)
-        , m_enabled(false)
     {
     }
 
     Q_DECLARE_PUBLIC(QSeamlessCubemap)
-    bool m_enabled;
 };
 
 QSeamlessCubemap::QSeamlessCubemap(QNode *parent)
@@ -73,22 +71,6 @@ void QSeamlessCubemap::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QSeamlessCubemap *refState = static_cast<const QSeamlessCubemap*>(ref);
-    d_func()->m_enabled = refState->d_func()->m_enabled;
-}
-
-bool QSeamlessCubemap::enabled() const
-{
-    Q_D(const QSeamlessCubemap);
-    return d->m_enabled;
-}
-
-void QSeamlessCubemap::setEnabled(bool enabled)
-{
-    Q_D(QSeamlessCubemap);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged(enabled);
-    }
 }
 
 } // namespace Qt3DRender

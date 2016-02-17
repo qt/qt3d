@@ -56,7 +56,6 @@ public:
         , m_srcAlpha(QBlendState::Zero)
         , m_dstRGB(QBlendState::Zero)
         , m_dstAlpha(QBlendState::Zero)
-        , m_enabled(true)
         , m_bufferIndex(-1)
     {
     }
@@ -67,7 +66,6 @@ public:
     QBlendState::Blending m_srcAlpha;
     QBlendState::Blending m_dstRGB;
     QBlendState::Blending m_dstAlpha;
-    bool                  m_enabled;
     int                   m_bufferIndex;
 };
 
@@ -125,7 +123,6 @@ void QBlendState::copy(const QNode *ref)
     d_func()->m_srcAlpha = refState->d_func()->m_srcAlpha;
     d_func()->m_dstAlpha = refState->d_func()->m_dstAlpha;
     d_func()->m_dstRGB = refState->d_func()->m_dstRGB;
-    d_func()->m_enabled = refState->d_func()->m_enabled;
     d_func()->m_bufferIndex = refState->d_func()->m_bufferIndex;
 }
 
@@ -254,21 +251,6 @@ void QBlendState::setDstAlpha(QBlendState::Blending dstAlpha)
     if (d->m_dstAlpha != dstAlpha) {
         d->m_dstAlpha = dstAlpha;
         emit dstAlphaChanged(dstAlpha);
-    }
-}
-
-bool QBlendState::enabled() const
-{
-    Q_D(const QBlendState);
-    return d->m_enabled;
-}
-
-void QBlendState::setEnabled(bool enabled)
-{
-    Q_D(QBlendState);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged(enabled);
     }
 }
 

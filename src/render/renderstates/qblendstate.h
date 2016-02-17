@@ -56,7 +56,6 @@ class QT3DRENDERSHARED_EXPORT QBlendState : public QRenderState
     Q_PROPERTY(Blending srcAlpha READ srcAlpha WRITE setSrcAlpha NOTIFY srcAlphaChanged)
     Q_PROPERTY(Blending dstRGB READ dstRGB WRITE setDstRGB NOTIFY dstRGBChanged)
     Q_PROPERTY(Blending dstAlpha READ dstAlpha WRITE setDstAlpha NOTIFY dstAlphaChanged)
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(bool specifiesAllDrawBuffers READ specifiesAllDrawBuffers NOTIFY specifiesAllDrawBuffersChanged)
     Q_PROPERTY(int bufferIndex READ bufferIndex WRITE setBufferIndex NOTIFY bufferIndexChanged)
 
@@ -93,7 +92,6 @@ public:
     Blending dstRGB() const;
     Blending srcAlpha() const;
     Blending dstAlpha() const;
-    bool enabled() const;
     int bufferIndex() const;
     bool specifiesAllDrawBuffers() const;
 
@@ -102,7 +100,6 @@ public Q_SLOTS:
     void setDstRGB(Blending dstRGB);
     void setSrcAlpha(Blending srcAlpha);
     void setDstAlpha(Blending dstAlpha);
-    void setEnabled(bool isEnabled);
     void setBufferIndex(int index);
 
 Q_SIGNALS:
@@ -110,7 +107,6 @@ Q_SIGNALS:
     void srcAlphaChanged(Blending srcAlpha);
     void dstRGBChanged(Blending dstRGB);
     void dstAlphaChanged(Blending dstAlpha);
-    void enabledChanged(bool enabled);
     void bufferIndexChanged(int index);
     void specifiesAllDrawBuffersChanged(bool specifyAll);
 
