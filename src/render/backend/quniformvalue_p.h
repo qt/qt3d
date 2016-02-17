@@ -146,6 +146,7 @@ public:
         default:
             break;
         }
+        return false;
     }
 
     bool operator !=(const QUniformValue &other) Q_DECL_NOEXCEPT
@@ -178,9 +179,9 @@ protected:
 
     // TODO: Replace QVariant with our own union of GLSL types as we don't
     // need the full flexibility of QVariant on the backend
+    UniformType m_type;
     QVariant m_var;
     TextureIdUnit m_textureIdUnit;
-    UniformType m_type;
 };
 
 struct BlockToUBO {
