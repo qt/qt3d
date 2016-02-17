@@ -46,7 +46,6 @@ namespace Qt3DRender {
 
 QFrameGraphNodePrivate::QFrameGraphNodePrivate()
     : QNodePrivate()
-    , m_enabled(true)
 {
 }
 
@@ -105,34 +104,6 @@ QFrameGraphNode::QFrameGraphNode(QFrameGraphNodePrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
-
-/*!
-    \qmlproperty bool Qt3D.Render::FrameGraphNode::enabled
-
-    Holds whether the frame graph node is enabled or disabled.
-*/
-
-/*!
-    \property Qt3DRender::QFrameGraphNode::enabled
-
-    Holds whether the frame graph node is enabled or disabled.
-*/
-
-bool QFrameGraphNode::isEnabled() const
-{
-    Q_D(const QFrameGraphNode);
-    return d->m_enabled;
-}
-
-void QFrameGraphNode::setEnabled(bool enabled)
-{
-    Q_D(QFrameGraphNode);
-    if (d->m_enabled != enabled) {
-        d->m_enabled = enabled;
-        emit enabledChanged(enabled);
-    }
-}
-
 
 } // namespace Qt3DRender
 

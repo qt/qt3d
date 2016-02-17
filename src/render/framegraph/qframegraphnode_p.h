@@ -67,7 +67,6 @@ public:
     QFrameGraphNodePrivate();
 
     Q_DECLARE_PUBLIC(QFrameGraphNode)
-    bool m_enabled;
     QList<QFrameGraphNode *> m_fgChildren;
 };
 
