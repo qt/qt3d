@@ -40,6 +40,7 @@
 #include "rendersettings_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -59,12 +60,14 @@ void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
     QRenderSettings *settings = static_cast<QRenderSettings *>(peer);
     m_pickMethod = settings->pickMethod();
     m_pickResultMode = settings->pickResultMode();
+    m_activeFrameGraph = settings->activeFrameGraph()->id();
 }
 
 void RenderSettings::cleanup()
 {
     m_pickMethod = QRenderSettings::BoundingVolumePicking;
     m_pickResultMode = QRenderSettings::NearestPick;
+    m_activeFrameGraph = Qt3DCore::QNodeId();
 }
 
 void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -75,10 +78,11 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_pickMethod = propertyChange->value().value<QRenderSettings::PickMethod>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
             m_pickResultMode = propertyChange->value().value<QRenderSettings::PickResultMode>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
+            m_activeFrameGraph = propertyChange->value().value<QNodePtr>()->id();
         markDirty(AbstractRenderer::AllDirty);
     }
 }
-
 
 RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
     : m_renderer(renderer)

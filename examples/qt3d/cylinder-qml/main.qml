@@ -69,7 +69,7 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    FrameGraph {
+    RendererSettings {
         id : external_forward_renderer
         activeFrameGraph : ForwardRenderer {
             camera: camera

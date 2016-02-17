@@ -52,7 +52,7 @@
 #include <Qt3DQuick/QQmlAspectEngine>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
@@ -193,14 +193,14 @@ void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
 {
     // Find surface selector in framegraph and set ourselves up as the
     // render surface there
-    Qt3DRender::QFrameGraph *frameGraphComponent
-        = rootObject->findChild<Qt3DRender::QFrameGraph *>();
-    if (!frameGraphComponent) {
-        qWarning() << "No frame graph component found";
+    Qt3DRender::QRenderSettings *rendererSettings
+        = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+    if (!rendererSettings) {
+        qWarning() << "No renderer settings component found";
         return;
     }
 
-    Qt3DCore::QNode *frameGraphRoot = frameGraphComponent->activeFrameGraph();
+    Qt3DCore::QNode *frameGraphRoot = rendererSettings->activeFrameGraph();
     if (!frameGraphRoot) {
         qWarning() << "No active frame graph found";
         return;

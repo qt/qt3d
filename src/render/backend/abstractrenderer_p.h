@@ -133,7 +133,6 @@ public:
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;
 
-    virtual void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) = 0;
     virtual void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *root) = 0;
 
     virtual Entity *sceneRoot() const = 0;

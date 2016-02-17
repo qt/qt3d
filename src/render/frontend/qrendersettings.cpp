@@ -37,6 +37,7 @@
 **
 ****************************************************************************/
 
+#include "qframegraphnode.h"
 #include "qrendersettings.h"
 #include "qrendersettings_p.h"
 
@@ -46,6 +47,7 @@ namespace Qt3DRender {
 
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
+    , m_activeFrameGraph(Q_NULLPTR)
     , m_pickMethod(QRenderSettings::BoundingVolumePicking)
     , m_pickResultMode(QRenderSettings::NearestPick)
 {
@@ -66,6 +68,12 @@ QRenderSettings::~QRenderSettings()
     QNode::cleanup();
 }
 
+QFrameGraphNode *QRenderSettings::activeFrameGraph() const
+{
+    Q_D(const QRenderSettings);
+    return d->m_activeFrameGraph;
+}
+
 QRenderSettings::PickMethod QRenderSettings::pickMethod() const
 {
     Q_D(const QRenderSettings);
@@ -76,6 +84,18 @@ QRenderSettings::PickResultMode QRenderSettings::pickResultMode() const
 {
     Q_D(const QRenderSettings);
     return d->m_pickResultMode;
+}
+
+void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
+{
+    Q_D(QRenderSettings);
+    if (d->m_activeFrameGraph == activeFrameGraph)
+        return;
+
+    if (activeFrameGraph != Q_NULLPTR && !activeFrameGraph->parent())
+        activeFrameGraph->setParent(this);
+    d->m_activeFrameGraph = activeFrameGraph;
+    emit activeFrameGraphChanged(activeFrameGraph);
 }
 
 void QRenderSettings::setPickMethod(QRenderSettings::PickMethod pickMethod)
@@ -102,6 +122,8 @@ void QRenderSettings::copy(const QNode *ref)
 {
     QComponent::copy(ref);
     const QRenderSettings *object = static_cast<const QRenderSettings *>(ref);
+    setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNode::clone(object->activeFrameGraph())));
+
     d_func()->m_pickMethod = object->d_func()->m_pickMethod;
     d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
 }

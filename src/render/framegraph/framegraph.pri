@@ -12,8 +12,6 @@ HEADERS += \
     $$PWD/qcameraselector_p.h \
     $$PWD/qclearbuffer.h \
     $$PWD/qclearbuffer_p.h \
-    $$PWD/qframegraph.h \
-    $$PWD/qframegraph_p.h \
     $$PWD/qframegraphnode.h \
     $$PWD/qframegraphnode_p.h \
     $$PWD/qframegraphselector.h \
@@ -63,7 +61,6 @@ SOURCES += \
     $$PWD/nodraw.cpp \
     $$PWD/qcameraselector.cpp \
     $$PWD/qclearbuffer.cpp \
-    $$PWD/qframegraph.cpp \
     $$PWD/qframegraphnode.cpp \
     $$PWD/qframegraphselector.cpp \
     $$PWD/qlayerfilter.cpp \

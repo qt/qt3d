@@ -107,8 +107,6 @@ namespace Render {
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
-const RenderSettings Renderer::ms_defaultSettings;
-
 /*!
     \internal
 
@@ -144,7 +142,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
-    , m_settings(const_cast<RenderSettings *>(&ms_defaultSettings))
+    , m_settings(Q_NULLPTR)
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -155,9 +153,6 @@ Renderer::Renderer(QRenderAspect::RenderType type)
 
 Renderer::~Renderer()
 {
-    // CLean up settings if not using defaults
-    if (m_settings != &ms_defaultSettings)
-        delete m_settings;
 
     delete m_renderQueue;
 }
@@ -377,15 +372,10 @@ void Renderer::setSurfaceExposed(bool exposed)
     m_exposed.fetchAndStoreOrdered(exposed);
 }
 
-void Renderer::setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId)
-{
-    m_frameGraphRootUuid = fgRootId;
-    qCDebug(Backend) << Q_FUNC_INFO << m_frameGraphRootUuid;
-}
-
 Render::FrameGraphNode *Renderer::frameGraphRoot() const
 {
-    return m_nodesManager->frameGraphManager()->lookupNode(m_frameGraphRootUuid);
+    Q_ASSERT(m_settings);
+    return m_nodesManager->frameGraphManager()->lookupNode(m_settings->activeFrameGraphID());
 }
 
 // QAspectThread context
@@ -443,12 +433,7 @@ void Renderer::registerEventFilter(QEventFilterService *service)
 
 void Renderer::setSettings(RenderSettings *settings)
 {
-    // If default settings not in use, clean up
-    if (m_settings != &ms_defaultSettings)
-        delete m_settings;
-
-    // If removing settings, restore to default
-    m_settings = (settings != Q_NULLPTR) ? settings : const_cast<RenderSettings *>(&ms_defaultSettings);
+    m_settings = settings;
 }
 
 RenderSettings *Renderer::settings() const

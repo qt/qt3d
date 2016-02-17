@@ -40,7 +40,6 @@
 #include "framegraphnode_p.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
-#include <Qt3DRender/qframegraph.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -135,33 +134,6 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
             children << child;
     }
     return children;
-}
-
-// TO DO: We need to rework that and probably add a RenderFrameGraph element
-FrameGraphComponentFunctor::FrameGraphComponentFunctor(AbstractRenderer *renderer)
-    : m_renderer(renderer)
-{
-}
-
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::create(Qt3DCore::QNode *frontend) const
-{
-    // TO DO: Ideally we should have a RenderFrameGraph component and use its setPeer method
-    // to do that
-    QFrameGraph *framegraph = static_cast<QFrameGraph *>(frontend);
-    if (framegraph->activeFrameGraph() != Q_NULLPTR)
-        m_renderer->setFrameGraphRoot(framegraph->activeFrameGraph()->id());
-    return Q_NULLPTR;
-}
-
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::get(Qt3DCore::QNodeId id) const
-{
-    Q_UNUSED(id);
-    return Q_NULLPTR;
-}
-
-void FrameGraphComponentFunctor::destroy(Qt3DCore::QNodeId id) const
-{
-    Q_UNUSED(id);
 }
 
 } // namespace Render

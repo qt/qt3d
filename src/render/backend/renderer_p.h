@@ -149,7 +149,6 @@ public:
     void setSceneRoot(Qt3DCore::QBackendNodeFactory *factory, Entity *sgRoot) Q_DECL_OVERRIDE;
     Entity *sceneRoot() const Q_DECL_OVERRIDE { return m_renderSceneRoot; }
 
-    void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
     FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE;
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) Q_DECL_OVERRIDE;
@@ -266,7 +265,6 @@ private:
     qint64 m_time;
 
     RenderSettings *m_settings;
-    static const RenderSettings ms_defaultSettings;
 
     void performDraw(GeometryRenderer *rGeometryRenderer,
                      GLsizei primitiveCount, Attribute *indexAttribute);

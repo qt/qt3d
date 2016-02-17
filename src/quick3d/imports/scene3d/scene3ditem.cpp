@@ -47,8 +47,8 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
+#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DInput/qinputsettings.h>
 
@@ -192,14 +192,14 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 {
     // Find surface selector in framegraph and set ourselves up as the
     // render surface there
-    Qt3DRender::QFrameGraph *frameGraphComponent
-        = rootObject->findChild<Qt3DRender::QFrameGraph *>();
-    if (!frameGraphComponent) {
-        qWarning() << "No frame graph component found";
+    Qt3DRender::QRenderSettings *renderSettings
+        = rootObject->findChild<Qt3DRender::QRenderSettings *>();
+    if (!renderSettings) {
+        qWarning() << "No renderer settings component found";
         return;
     }
 
-    Qt3DCore::QNode *frameGraphRoot = frameGraphComponent->activeFrameGraph();
+    Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
     if (!frameGraphRoot) {
         qWarning() << "No active frame graph found";
         return;

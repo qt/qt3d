@@ -51,7 +51,7 @@
 #include "qt3dwindow.h"
 
 #include <Qt3DRender/qforwardrenderer.h>
-#include <Qt3DRender/qframegraph.h>
+#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DInput/qinputaspect.h>
 #include <Qt3DInput/qinputsettings.h>
@@ -71,7 +71,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     , m_renderAspect(new Qt3DRender::QRenderAspect)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_frameGraph(new Qt3DRender::QFrameGraph)
+    , m_rendererSettings(new Qt3DRender::QRenderSettings)
     , m_forwardRenderer(new Qt3DRender::QForwardRenderer)
     , m_defaultCamera(new Qt3DRender::QCamera)
     , m_inputSettings(new Qt3DInput::QInputSettings)
@@ -100,7 +100,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
 
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
-    m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
+    m_rendererSettings->setActiveFrameGraph(m_forwardRenderer);
 
     m_inputSettings->setEventSource(this);
 }
@@ -111,7 +111,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     , m_renderAspect(new Qt3DRender::QRenderAspect)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_frameGraph(new Qt3DRender::QFrameGraph)
+    , m_rendererSettings(new Qt3DRender::QRenderSettings)
     , m_defaultCamera(new Qt3DRender::QCamera)
     , m_inputSettings(new Qt3DInput::QInputSettings)
     , m_root(new Qt3DCore::QEntity)
@@ -139,7 +139,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
 
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
-    m_frameGraph->setActiveFrameGraph(m_forwardRenderer);
+    m_rendererSettings->setActiveFrameGraph(m_forwardRenderer);
 
     m_inputSettings->setEventSource(this);
 }
@@ -168,12 +168,12 @@ void Qt3DWindow::setRootEntity(Qt3DCore::QEntity *root)
 
 void Qt3DWindow::setActiveFrameGraph(Qt3DRender::QFrameGraphNode *activeFrameGraph)
 {
-    m_frameGraph->setActiveFrameGraph(activeFrameGraph);
+    m_rendererSettings->setActiveFrameGraph(activeFrameGraph);
 }
 
 Qt3DRender::QFrameGraphNode *Qt3DWindow::activeFrameGraph() const
 {
-    return m_frameGraph->activeFrameGraph();
+    return m_rendererSettings->activeFrameGraph();
 }
 
 Qt3DRender::QForwardRenderer *Qt3DWindow::defaultFramegraph() const
@@ -192,7 +192,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
         if (m_userRoot != nullptr)
             m_userRoot->setParent(m_root);
 
-        m_root->addComponent(m_frameGraph);
+        m_root->addComponent(m_rendererSettings);
         m_root->addComponent(m_inputSettings);
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_root));
 

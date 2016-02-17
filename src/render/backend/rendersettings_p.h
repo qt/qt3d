@@ -70,9 +70,12 @@ public:
     void cleanup();
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }
+
 private:
     QRenderSettings::PickMethod m_pickMethod;
     QRenderSettings::PickResultMode m_pickResultMode;
+    Qt3DCore::QNodeId m_activeFrameGraph;
 };
 
 class RenderSettingsFunctor : public Qt3DCore::QBackendNodeMapper

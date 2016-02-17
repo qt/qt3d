@@ -50,7 +50,6 @@
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qeffect.h>
@@ -273,7 +272,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DRender::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QRenderStateSet", "Qt3D.Render/RenderStateSet", uri, 2, 0, "RenderStateSet");
     qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
-    qmlRegisterType<Qt3DRender::QFrameGraph>(uri, 2, 0, "FrameGraph");
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
     qmlRegisterType<Qt3DRender::QLighting>(uri, 2, 0, "Lighting");
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");

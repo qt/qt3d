@@ -25,7 +25,6 @@ contains(QT_CONFIG, private_tests) {
         qcameraselector \
         qclearbuffer \
         qframegraphnode \
-        qframegraph \
         qlayerfilter \
         qlight \
         qray3d \

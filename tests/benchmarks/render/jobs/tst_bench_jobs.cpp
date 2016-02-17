@@ -31,10 +31,10 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QCylinderMesh>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/private/managers_p.h>
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
@@ -164,13 +164,12 @@ Qt3DCore::QEntity *buildBigScene()
     cameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
     // FrameGraph
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
+    Qt3DRender::QRenderSettings* renderSettings = new Qt3DRender::QRenderSettings();
     Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setCamera(cameraEntity);
     forwardRenderer->setClearColor(Qt::black);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
-    root->addComponent(frameGraph);
-
+    renderSettings->setActiveFrameGraph(forwardRenderer);
+    root->addComponent(renderSettings);
 
     const float radius = 100.0f;
     const int max = 1000;

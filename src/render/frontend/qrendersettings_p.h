@@ -63,6 +63,7 @@ class QRenderSettingsPrivate : public Qt3DCore::QComponentPrivate
 public:
     QRenderSettingsPrivate();
 
+    QFrameGraphNode *m_activeFrameGraph;
     QRenderSettings::PickMethod m_pickMethod;
     QRenderSettings::PickResultMode m_pickResultMode;
 };

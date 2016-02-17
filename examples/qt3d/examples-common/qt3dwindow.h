@@ -63,10 +63,10 @@ class QEntity;
 
 namespace Qt3DRender {
 class QCamera;
-class QFrameGraph;
 class QFrameGraphNode;
 class QForwardRenderer;
 class QRenderAspect;
+class QRenderSettings;
 }
 
 namespace Qt3DInput {
@@ -114,7 +114,7 @@ private:
     Qt3DLogic::QLogicAspect *m_logicAspect;
 
     // Renderer configuration
-    Qt3DRender::QFrameGraph *m_frameGraph;
+    Qt3DRender::QRenderSettings *m_rendererSettings;
     Qt3DRender::QForwardRenderer *m_forwardRenderer;
     Qt3DRender::QCamera *m_defaultCamera;
 

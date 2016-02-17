@@ -48,7 +48,6 @@
 
 #include <Qt3DRender/qabstractsceneloader.h>
 #include <Qt3DRender/qcameraselector.h>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
 #include <Qt3DRender/qmaterial.h>
@@ -272,7 +271,6 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QLayerFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QSortPolicy>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QFrameGraphSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
-    registerBackendType<QFrameGraph>(QBackendNodeMapperPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_renderer, d->m_nodeManagers->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeMapperPtr(new Render::RenderShaderDataFunctor(d->m_renderer, d->m_nodeManagers)));
     registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(d->m_renderer, d->m_nodeManagers->textureManager(), d->m_nodeManagers->textureImageManager(), d->m_nodeManagers->textureDataManager())));
