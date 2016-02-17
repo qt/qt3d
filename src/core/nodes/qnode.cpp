@@ -615,7 +615,8 @@ QNode *QNode::clone(QNode *node)
         clonedNode = node->doClone();
         // doClone, returns new instance with content copied
         // and relationships added
-        QNodePrivate::m_clonesLookupTable.insert(clonedNode->id(), clonedNode);
+        Q_ASSERT(node->id() == clonedNode->id());
+        QNodePrivate::m_clonesLookupTable.insert(node->id(), clonedNode);
     }
     Q_FOREACH (QObject *c, node->children()) {
         QNode *childNode = qobject_cast<QNode *>(c);

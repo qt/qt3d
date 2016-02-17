@@ -206,6 +206,7 @@ void QAbstractTextureImage::update()
  */
 void QAbstractTextureImage::copy(const QNode *ref)
 {
+    QNode::copy(ref);
     const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
     d_func()->m_face = imageRef->cubeMapFace();
     d_func()->m_layer = imageRef->layer();
