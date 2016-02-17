@@ -758,7 +758,6 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 void Renderer::performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRenderer, GLsizei primitiveCount, Attribute *indexAttribute)
 {
     const GLint primType = rGeometryRenderer->primitiveType();
-    const bool drawInstanced = rGeometryRenderer->instanceCount() > 1;
     const bool drawIndexed = indexAttribute != Q_NULLPTR;
     const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
 
