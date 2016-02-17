@@ -67,7 +67,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void shareableChanged(bool shareable);
-    void enabledChanged(bool enabled);
 
 protected:
     QComponent(QComponentPrivate &dd, QNode *parent = 0);
