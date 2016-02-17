@@ -61,7 +61,6 @@
 #include <Qt3DCore/qaspectengine.h>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DRender/QParameter>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QCylinderMesh>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QCameraSelector>

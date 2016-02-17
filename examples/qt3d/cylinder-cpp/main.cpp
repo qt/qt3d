@@ -62,7 +62,6 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qforwardrenderer.h>
 
 #include <Qt3DCore/qentity.h>

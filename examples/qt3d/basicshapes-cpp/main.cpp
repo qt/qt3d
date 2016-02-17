@@ -78,7 +78,6 @@
 #include <Qt3DCore/qaspectengine.h>
 
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qframegraph.h>
 #include <Qt3DRender/qforwardrenderer.h>
 
 #include "qt3dwindow.h"

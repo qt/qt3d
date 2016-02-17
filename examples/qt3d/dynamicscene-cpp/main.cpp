@@ -56,10 +56,8 @@
 #include <Qt3DInput/QInputAspect>
 
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 
-#include "forwardrenderer.h"
 #include "examplescene.h"
 #include "qt3dwindow.h"
 #include "qfirstpersoncameracontroller.h"

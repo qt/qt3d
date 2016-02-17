@@ -60,7 +60,6 @@
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QDiffuseMapMaterial>
 #include <Qt3DRender/QForwardRenderer>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QTextureImage>
 
 #include "planeentity.h"

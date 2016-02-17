@@ -60,7 +60,6 @@
 
 #include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QPerVertexColorMaterial>
 

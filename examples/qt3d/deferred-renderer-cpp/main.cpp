@@ -50,7 +50,6 @@
 
 #include <Qt3DCore/QEntity>
 
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QPlaneMesh>
