@@ -103,8 +103,9 @@ void Scene::setSceneManager(SceneManager *manager)
         m_sceneManager = manager;
 }
 
-RenderSceneFunctor::RenderSceneFunctor(SceneManager *sceneManager)
+RenderSceneFunctor::RenderSceneFunctor(AbstractRenderer *renderer, SceneManager *sceneManager)
     : m_sceneManager(sceneManager)
+    , m_renderer(renderer)
 {
 }
 
@@ -113,6 +114,7 @@ Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend) co
     Scene *scene = m_sceneManager->getOrCreateResource(frontend->id());
     scene->setSceneManager(m_sceneManager);
     scene->setPeer(frontend);
+    scene->setRenderer(m_renderer);
     return scene;
 }
 

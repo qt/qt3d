@@ -517,8 +517,9 @@ QNodeId Entity::componentUuid<ComputeJob>() const { return m_computeComponent; }
 template<>
 QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }
 
-RenderEntityFunctor::RenderEntityFunctor(NodeManagers *manager)
+RenderEntityFunctor::RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager)
     : m_nodeManagers(manager)
+    , m_renderer(renderer)
 {
 }
 
@@ -529,6 +530,7 @@ Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend) c
     entity->setNodeManagers(m_nodeManagers);
     entity->setHandle(renderNodeHandle);
     entity->setPeer(frontend);
+    entity->setRenderer(m_renderer);
     return entity;
 }
 

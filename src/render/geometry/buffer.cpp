@@ -144,8 +144,9 @@ void Buffer::unsetDirty()
     m_bufferDirty = false;
 }
 
-BufferFunctor::BufferFunctor(BufferManager *manager)
+BufferFunctor::BufferFunctor(AbstractRenderer *renderer, BufferManager *manager)
     : m_manager(manager)
+    , m_renderer(renderer)
 {
 }
 
@@ -154,6 +155,7 @@ Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend) const
     Buffer *buffer = m_manager->getOrCreateResource(frontend->id());
     buffer->setManager(m_manager);
     buffer->setPeer(frontend);
+    buffer->setRenderer(m_renderer);
     return buffer;
 }
 

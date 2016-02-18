@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnode.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,12 +61,15 @@ namespace Qt3DRender {
 
 namespace Render {
 
+class AbstractRenderer;
+
 template<class Backend, class Manager>
 class NodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit NodeFunctor(Manager *manager)
+    explicit NodeFunctor(AbstractRenderer *renderer, Manager *manager)
         : m_manager(manager)
+        , m_renderer(renderer)
     {
     }
 
@@ -73,6 +77,7 @@ public:
     {
         Backend *backend = m_manager->getOrCreateResource(frontend->id());
         backend->setPeer(frontend);
+        backend->setRenderer(m_renderer);
         return backend;
     }
 
@@ -88,6 +93,7 @@ public:
 
 private:
     Manager *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qbackendnode.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,11 @@ class BackendNode : public Qt3DCore::QBackendNode
 public:
     BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
     ~BackendNode();
+
+    void setRenderer(AbstractRenderer *renderer);
+
+private:
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

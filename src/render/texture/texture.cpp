@@ -673,12 +673,14 @@ void Texture::addToPendingTextureJobs()
     m_textureDataManager->addToPendingTextures(peerUuid());
 }
 
-TextureFunctor::TextureFunctor(TextureManager *textureManager,
-                                           TextureImageManager *textureImageManager,
-                                           TextureDataManager *textureDataManager)
+TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
+                               TextureManager *textureManager,
+                               TextureImageManager *textureImageManager,
+                               TextureDataManager *textureDataManager)
     : m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
     , m_textureDataManager(textureDataManager)
+    , m_renderer(renderer)
 {
 }
 
@@ -689,6 +691,7 @@ Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend) const
     backend->setTextureImageManager(m_textureImageManager);
     backend->setTextureDataManager(m_textureDataManager);
     backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 

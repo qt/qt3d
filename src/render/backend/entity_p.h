@@ -278,13 +278,14 @@ Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit RenderEntityFunctor(NodeManagers *manager);
+    explicit RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager);
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
     void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     NodeManagers *m_nodeManagers;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

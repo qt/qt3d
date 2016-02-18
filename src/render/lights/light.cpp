@@ -52,8 +52,9 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-RenderLightFunctor::RenderLightFunctor(NodeManagers *managers)
+RenderLightFunctor::RenderLightFunctor(AbstractRenderer *renderer, NodeManagers *managers)
     : m_managers(managers)
+    , m_renderer(renderer)
 {
 }
 
@@ -62,6 +63,7 @@ Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend) co
     Light *backend = m_managers->lightManager()->getOrCreateResource(frontend->id());
     backend->setManagers(m_managers);
     backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 

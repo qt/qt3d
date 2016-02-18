@@ -117,9 +117,10 @@ private:
 class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit TextureImageFunctor(TextureManager *textureManager,
-                                  TextureImageManager *textureImageManager,
-                                  TextureDataManager *textureDataManager);
+    explicit TextureImageFunctor(AbstractRenderer *renderer,
+                                 TextureManager *textureManager,
+                                 TextureImageManager *textureImageManager,
+                                 TextureDataManager *textureDataManager);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
@@ -129,6 +130,7 @@ private:
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
+    AbstractRenderer *m_renderer;
 };
 
 

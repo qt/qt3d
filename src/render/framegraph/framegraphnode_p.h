@@ -126,8 +126,9 @@ template<typename Backend, typename Frontend>
 class FrameGraphNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit FrameGraphNodeFunctor(FrameGraphManager *manager)
+    explicit FrameGraphNodeFunctor(AbstractRenderer *renderer, FrameGraphManager *manager)
         : m_manager(manager)
+        , m_renderer(renderer)
     {
     }
 
@@ -155,6 +156,7 @@ protected:
                 Backend *backend = new Backend();
                 backend->setFrameGraphManager(m_manager);
                 backend->setPeer(f);
+                backend->setRenderer(m_renderer);
                 QFrameGraphNode *parentFGNode = static_cast<QFrameGraphNode *>(n)->parentFrameGraphNode();
                 if (parentFGNode)
                     backend->setParentId(parentFGNode->id());
@@ -168,6 +170,7 @@ protected:
 
 private:
     FrameGraphManager *m_manager;
+    AbstractRenderer *m_renderer;
 };
 
 class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeMapper

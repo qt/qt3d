@@ -120,7 +120,7 @@ protected:
 class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit RenderShaderDataFunctor(NodeManagers *managers);
+    explicit RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
@@ -128,6 +128,7 @@ public:
 
 private:
     NodeManagers *m_managers;
+    AbstractRenderer *m_renderer;
 };
 
 } // namespace Render

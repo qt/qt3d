@@ -209,8 +209,9 @@ QVector<QBoundingVolume *> GeometryRenderer::triangleData() const
     return m_triangleVolumes;
 }
 
-GeometryRendererFunctor::GeometryRendererFunctor(GeometryRendererManager *manager)
+GeometryRendererFunctor::GeometryRendererFunctor(AbstractRenderer *renderer, GeometryRendererManager *manager)
     : m_manager(manager)
+    , m_renderer(renderer)
 {
 }
 
@@ -219,6 +220,7 @@ Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *fronten
     GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(frontend->id());
     geometryRenderer->setManager(m_manager);
     geometryRenderer->setPeer(frontend);
+    geometryRenderer->setRenderer(m_renderer);
     return geometryRenderer;
 }
 

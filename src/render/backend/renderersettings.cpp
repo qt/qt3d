@@ -94,6 +94,7 @@ Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *fronten
 
     RendererSettings *settings = new RendererSettings;
     settings->setPeer(settingsFrontend);
+    settings->setRenderer(m_renderer);
     m_renderer->setSettings(settings);
     return settings;
 }

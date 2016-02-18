@@ -48,6 +48,7 @@ namespace Render {
 
 BackendNode::BackendNode(Mode mode)
     : QBackendNode(mode)
+    , m_renderer(Q_NULLPTR)
 {
 }
 
@@ -55,6 +56,10 @@ BackendNode::~BackendNode()
 {
 }
 
+void BackendNode::setRenderer(AbstractRenderer *renderer)
+{
+    m_renderer = renderer;
+}
 
 } // namespace Render
 } // namespace Qt3DRender

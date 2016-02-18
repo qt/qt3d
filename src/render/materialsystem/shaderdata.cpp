@@ -325,8 +325,9 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-RenderShaderDataFunctor::RenderShaderDataFunctor(NodeManagers *managers)
+RenderShaderDataFunctor::RenderShaderDataFunctor(AbstractRenderer *renderer, NodeManagers *managers)
     : m_managers(managers)
+    , m_renderer(renderer)
 {
 }
 
@@ -335,6 +336,7 @@ Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *fronten
     ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(frontend->id());
     backend->setManagers(m_managers);
     backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 

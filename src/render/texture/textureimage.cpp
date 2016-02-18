@@ -158,12 +158,13 @@ void TextureImage::updateDNA()
                     + (m_textureDataHandle.handle() << 12));
 }
 
-TextureImageFunctor::TextureImageFunctor(TextureManager *textureManager,
-                                                     TextureImageManager *textureImageManager,
-                                                     TextureDataManager *textureDataManager)
+TextureImageFunctor::TextureImageFunctor(AbstractRenderer *renderer, TextureManager *textureManager,
+                                         TextureImageManager *textureImageManager,
+                                         TextureDataManager *textureDataManager)
     : m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
     , m_textureDataManager(textureDataManager)
+    , m_renderer(renderer)
 {
 }
 
@@ -174,6 +175,7 @@ Qt3DCore::QBackendNode *TextureImageFunctor::create(Qt3DCore::QNode *frontend) c
     backend->setTextureImageManager(m_textureImageManager);
     backend->setTextureDataManager(m_textureDataManager);
     backend->setPeer(frontend);
+    backend->setRenderer(m_renderer);
     return backend;
 }
 
