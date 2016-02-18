@@ -42,6 +42,7 @@
 
 #include <QObject>
 #include <QVector3D>
+#include <QPointF>
 #include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,6 +58,7 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool accepted READ isAccepted WRITE setAccepted NOTIFY acceptedChanged)
+    Q_PROPERTY(QPointF position READ position CONSTANT)
     Q_PROPERTY(float distance READ distance CONSTANT)
     Q_PROPERTY(QVector3D localIntersection READ localIntersection CONSTANT)
     Q_PROPERTY(QVector3D worldIntersection READ worldIntersection CONSTANT)
@@ -66,7 +68,7 @@ class QT3DRENDERSHARED_EXPORT QPickEvent : public QObject
     Q_PROPERTY(uint vertex3Index READ vertex3Index CONSTANT)
 public:
     QPickEvent();
-    QPickEvent(const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
+    QPickEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
                uint triangleIndex = 0, uint vertex1Index = 0, uint vertex2Index = 0, uint vertex3Index = 0);
     ~QPickEvent();
 
@@ -75,6 +77,7 @@ public:
 public Q_SLOTS:
     void setAccepted(bool accepted);
 
+    const QPointF& position() const;
     float distance() const;
     const QVector3D &worldIntersection() const;
     const QVector3D &localIntersection() const;

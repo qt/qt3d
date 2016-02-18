@@ -359,7 +359,7 @@ void PickBoundingVolumeJob::run()
                             QVector3D localIntersection = hit.m_intersection;
                             if (entity && entity->worldTransform())
                                 localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
-                            QPickEventPtr pickEvent(new QPickEvent(hit.m_intersection, localIntersection, hit.m_distance,
+                            QPickEventPtr pickEvent(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
                                                                    hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2]));
 
                             switch (event.type()) {

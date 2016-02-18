@@ -55,6 +55,7 @@ public:
     }
 
     bool m_accepted;
+    QPointF m_position;
     QVector3D m_worldIntersection;
     QVector3D m_localIntersection;
     float m_distance;
@@ -69,11 +70,12 @@ QPickEvent::QPickEvent()
 {
 }
 
-QPickEvent::QPickEvent(const QVector3D &intersection, const QVector3D &localIntersection, float distance,
+QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance,
                        uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index)
     : QObject(*new QPickEventPrivate())
 {
     Q_D(QPickEvent);
+    d->m_position = position;
     d->m_distance = distance;
     d->m_worldIntersection = intersection;
     d->m_localIntersection = localIntersection;
@@ -100,6 +102,12 @@ void QPickEvent::setAccepted(bool accepted)
         d->m_accepted = accepted;
         emit acceptedChanged(accepted);
     }
+}
+
+const QPointF &QPickEvent::position() const
+{
+    Q_D(const QPickEvent);
+    return d->m_position;
 }
 
 float QPickEvent::distance() const
