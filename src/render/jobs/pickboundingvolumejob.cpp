@@ -385,8 +385,13 @@ void PickBoundingVolumeJob::run()
                                 break;
                             }
 
-                            case QEvent::HoverMove:
                             case QEvent::MouseMove: {
+                                if (objectPicker->isPressed() && objectPicker->mouseTrackingEnabled()) {
+                                    objectPicker->onMoved(pickEvent);
+                                }
+                                // fallthrough
+                            }
+                            case QEvent::HoverMove: {
                                 if (!m_hoveredPickers.contains(objectPickerHandle)) {
                                     if (objectPicker->hoverEnabled()) {
                                         // Send entered event to objectPicker

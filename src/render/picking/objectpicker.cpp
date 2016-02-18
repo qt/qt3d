@@ -53,7 +53,9 @@ namespace Render {
 ObjectPicker::ObjectPicker()
     : QBackendNode(QBackendNode::ReadWrite)
     , m_isDirty(false)
+    , m_isPressed(false)
     , m_hoverEnabled(false)
+    , m_mouseTrackingEnabled(false)
 {
 }
 
@@ -64,7 +66,9 @@ ObjectPicker::~ObjectPicker()
 void ObjectPicker::cleanup()
 {
     m_isDirty = false;
+    m_isPressed = false;
     m_hoverEnabled = false;
+    m_mouseTrackingEnabled = false;
 }
 
 void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
@@ -72,6 +76,7 @@ void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
     QObjectPicker *picker = static_cast<QObjectPicker *>(peer);
     if (picker) {
         m_hoverEnabled = picker->hoverEnabled();
+        m_mouseTrackingEnabled = picker->mouseTrackingEnabled();
         m_isDirty = true;
     }
 }
@@ -86,12 +91,21 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_hoverEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }
+        if (propertyName == QByteArrayLiteral("mouseTrackingEnabled")) {
+            m_mouseTrackingEnabled = propertyChange->value().toBool();
+            m_isDirty = true;
+        }
     }
 }
 
 bool ObjectPicker::isDirty() const
 {
     return m_isDirty;
+}
+
+bool ObjectPicker::isPressed() const
+{
+    return m_isPressed;
 }
 
 void ObjectPicker::unsetDirty()
@@ -109,10 +123,24 @@ bool ObjectPicker::hoverEnabled() const
     return m_hoverEnabled;
 }
 
+bool ObjectPicker::mouseTrackingEnabled() const
+{
+    return m_mouseTrackingEnabled;
+}
+
 void ObjectPicker::onClicked(QPickEventPtr event)
 {
     Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
     e->setPropertyName("clicked");
+    e->setTargetNode(peerUuid());
+    e->setValue(QVariant::fromValue(event));
+    notifyObservers(e);
+}
+
+void ObjectPicker::onMoved(QPickEventPtr event)
+{
+    Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+    e->setPropertyName("moved");
     e->setTargetNode(peerUuid());
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -124,6 +152,7 @@ void ObjectPicker::onPressed(QPickEventPtr event)
     e->setPropertyName("pressed");
     e->setTargetNode(peerUuid());
     e->setValue(QVariant::fromValue(event));
+    m_isPressed = true;
     notifyObservers(e);
 }
 
@@ -133,6 +162,7 @@ void ObjectPicker::onReleased(QPickEventPtr event)
     e->setPropertyName("released");
     e->setTargetNode(peerUuid());
     e->setValue(QVariant::fromValue(event));
+    m_isPressed = false;
     notifyObservers(e);
 }
 

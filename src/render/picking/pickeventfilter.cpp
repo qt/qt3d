@@ -80,8 +80,7 @@ bool PickEventFilter::eventFilter(QObject *obj, QEvent *e)
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseMove:
-    case QEvent::HoverMove:
-    case Qt::TapGesture: {
+    case QEvent::HoverMove: {
         QMutexLocker locker(&m_mutex);
         m_pendingEvents.push_back(QMouseEvent(*static_cast<QMouseEvent *>(e)));
     }

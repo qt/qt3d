@@ -72,11 +72,14 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_FINAL;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_FINAL;
     bool isDirty() const;
+    bool isPressed() const;
     void unsetDirty();
     void makeDirty();
     bool hoverEnabled() const;
+    bool mouseTrackingEnabled() const;
 
     void onClicked(QPickEventPtr event);
+    void onMoved(QPickEventPtr event);
     void onPressed(QPickEventPtr event);
     void onReleased(QPickEventPtr event);
     void onEntered();
@@ -84,7 +87,9 @@ public:
 
 private:
     bool m_isDirty;
+    bool m_isPressed;
     bool m_hoverEnabled;
+    bool m_mouseTrackingEnabled;
 };
 
 } // Render

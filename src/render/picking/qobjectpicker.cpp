@@ -54,7 +54,7 @@ namespace Qt3DRender {
     \brief The QObjectPicker class instantiates a component that can
     be used to interact with a QEntity by a process known as picking.
 
-    The signals pressed(), released(), clicked(), entered(), and exited() are
+    The signals pressed(), released(), clicked(), moved(), entered(), and exited() are
     emitted when the bounding volume defined by the pickAttribute property intersects
     with a ray.
 
@@ -77,6 +77,10 @@ namespace Qt3DRender {
 */
 
 /*!
+    \qmlsignal Qt3D.Render::ObjectPicker::moved()
+*/
+
+/*!
     \qmlsignal Qt3D.Render::ObjectPicker::entered()
 */
 
@@ -90,6 +94,7 @@ public:
     QObjectPickerPrivate()
         : QComponentPrivate()
         , m_hoverEnabled(false)
+        , m_mouseTrackingEnabled(false)
         , m_pressed(false)
         , m_containsMouse(false)
         , m_acceptedLastPressedEvent(true)
@@ -99,6 +104,7 @@ public:
 
     Q_DECLARE_PUBLIC(QObjectPicker)
     bool m_hoverEnabled;
+    bool m_mouseTrackingEnabled;
     bool m_pressed;
     bool m_containsMouse;
     bool m_acceptedLastPressedEvent;
@@ -106,13 +112,15 @@ public:
     enum EventType {
         Pressed,
         Released,
-        Clicked
+        Clicked,
+        Moved
     };
 
     void propagateEvent(QPickEvent *event, EventType type);
 
     void pressedEvent(QPickEvent *event);
     void clickedEvent(QPickEvent *event);
+    void movedEvent(QPickEvent *event);
     void releasedEvent(QPickEvent *event);
 };
 
@@ -144,6 +152,24 @@ bool QObjectPicker::hoverEnabled() const
     return d->m_hoverEnabled;
 }
 
+void QObjectPicker::setMouseTrackingEnabled(bool mouseTrackingEnabled)
+{
+    Q_D(QObjectPicker);
+    if (mouseTrackingEnabled != d->m_mouseTrackingEnabled) {
+        d->m_mouseTrackingEnabled = mouseTrackingEnabled;
+        emit mouseTrackingEnabledChanged(mouseTrackingEnabled);
+    }
+}
+
+/*!
+    \qmlproperty bool Qt3D.Render::ObjectPicker::mouseTrackingEnabled
+*/
+bool QObjectPicker::mouseTrackingEnabled() const
+{
+    Q_D(const QObjectPicker);
+    return d->m_mouseTrackingEnabled;
+}
+
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::containsMouse
 */
@@ -167,6 +193,7 @@ void QObjectPicker::copy(const QNode *ref)
     QComponent::copy(ref);
     const QObjectPicker *picker = static_cast<const QObjectPicker *>(ref);
     d_func()->m_hoverEnabled = picker->d_func()->m_hoverEnabled;
+    d_func()->m_mouseTrackingEnabled = picker->d_func()->m_mouseTrackingEnabled;
 }
 
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
@@ -186,6 +213,9 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
         } else if (propertyName == QByteArrayLiteral("clicked")) {
             QPickEventPtr ev = e->value().value<QPickEventPtr>();
             d->clickedEvent(ev.data());
+        } else if (propertyName == QByteArrayLiteral("moved")) {
+            QPickEventPtr ev = e->value().value<QPickEventPtr>();
+            d->movedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
             setContainsMouse(true);
@@ -242,6 +272,9 @@ void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
                     case EventType::Clicked:
                         objectPickerPrivate->clickedEvent(event);
                         break;
+                    case EventType::Moved:
+                        objectPickerPrivate->movedEvent(event);
+                        break;
                     }
                     break;
                 }
@@ -277,6 +310,17 @@ void QObjectPickerPrivate::clickedEvent(QPickEvent *event)
     emit q->clicked(event);
     if (!event->isAccepted())
         propagateEvent(event, EventType::Clicked);
+}
+
+/*!
+    \internal
+ */
+void QObjectPickerPrivate::movedEvent(QPickEvent *event)
+{
+    Q_Q(QObjectPicker);
+    emit q->moved(event);
+    if (!event->isAccepted())
+        propagateEvent(event, EventType::Moved);
 }
 
 /*!

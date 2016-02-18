@@ -55,6 +55,7 @@ class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
+    Q_PROPERTY(bool mouseTrackingEnabled READ mouseTrackingEnabled WRITE setMouseTrackingEnabled NOTIFY mouseTrackingEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
@@ -63,20 +64,24 @@ public:
     ~QObjectPicker();
 
     bool hoverEnabled() const;
+    bool mouseTrackingEnabled() const;
 
     bool containsMouse() const;
     bool isPressed() const;
 
 public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
+    void setMouseTrackingEnabled(bool mouseTrackingEnabled);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *pick);
     void released(Qt3DRender::QPickEvent *pick);
     void clicked(Qt3DRender::QPickEvent *pick);
+    void moved(Qt3DRender::QPickEvent *pick);
     void entered();
     void exited();
     void hoverEnabledChanged(bool hoverEnabled);
+    void mouseTrackingEnabledChanged(bool mouseTrackingEnabled);
     void pressedChanged(bool pressed);
     void containsMouseChanged(bool containsMouse);
 
