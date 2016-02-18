@@ -102,7 +102,7 @@ void SceneWalker::onStatusChanged()
 
 void SceneWalker::walkEntity(Qt3DCore::QEntity *e, int depth)
 {
-    Qt3DCore::QNodeList nodes = e->childrenNodes();
+    Qt3DCore::QNodeList nodes = e->childNodes();
     for (int i = 0; i < nodes.count(); ++i) {
         Qt3DCore::QNode *node = nodes[i];
         Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(node);

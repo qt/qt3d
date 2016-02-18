@@ -553,7 +553,7 @@ void QNode::setParent(QNode *parent)
  * Returns a list filled with the QNode children of the current
  * QNode instance.
  */
-QNodeList QNode::childrenNodes() const
+QNodeList QNode::childNodes() const
 {
     QNodeList nodeChildrenList;
     const QObjectList objectChildrenList = QObject::children();

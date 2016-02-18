@@ -88,7 +88,7 @@ public:
     bool notificationsBlocked() const;
     bool blockNotifications(bool block);
 
-    QNodeList childrenNodes() const;
+    QNodeList childNodes() const;
 
     bool isEnabled() const;
 
