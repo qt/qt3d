@@ -86,6 +86,8 @@ void Annotation::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         m_value = propertyChange->value();
     else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
         m_name = propertyChange->value().toString();
+
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 bool Annotation::operator ==(const Annotation &other)

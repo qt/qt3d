@@ -81,6 +81,7 @@ void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("value")) {
             m_value = propertyChange->value();
         }
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

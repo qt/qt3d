@@ -126,6 +126,7 @@
 #include <Qt3DRender/private/computejob_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/renderersettings_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qtransform.h>
@@ -334,6 +335,11 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
 
     // Create jobs to load in any meshes that are pending
     if (d->m_renderer != Q_NULLPTR && d->m_renderer->isRunning()) {
+        // don't spawn any jobs, if the renderer decides to skip this frame
+        if (!d->m_renderer->shouldRender()) {
+            d->m_renderer->skipNextFrame();
+            return jobs;
+        }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
         //QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();

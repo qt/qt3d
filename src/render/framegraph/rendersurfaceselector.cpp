@@ -74,6 +74,7 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_surface = propertyChange->value().value<QSurface *>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

@@ -33,6 +33,7 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include "testpostmanarbiter.h"
+#include "testrenderer.h"
 
 class tst_ObjectPicker : public QObject
 {
@@ -83,6 +84,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::ObjectPicker objectPicker;
+        TestRenderer renderer;
+        objectPicker.setRenderer(&renderer);
 
         QVERIFY(!objectPicker.isDirty());
 
@@ -95,6 +98,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(objectPicker.hoverEnabled(), true);
         QVERIFY(objectPicker.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         objectPicker.unsetDirty();
         QVERIFY(!objectPicker.isDirty());

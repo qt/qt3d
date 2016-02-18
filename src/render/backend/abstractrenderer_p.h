@@ -50,6 +50,7 @@
 // We mean it.
 //
 
+#include <QtCore/qflags.h>
 #include <Qt3DRender/private/qt3drender_global_p.h>
 #include <Qt3DCore/qaspectjob.h>
 #include <Qt3DCore/qnodeid.h>
@@ -77,6 +78,17 @@ class NodeManagers;
 class Entity;
 class FrameGraphNode;
 class RendererSettings;
+class BackendNode;
+
+// Changes made to backend nodes are reported to the Renderer
+enum class BackendNodeDirtyFlag {
+    Transform   = 1 << 0,
+    Material    = 1 << 1,
+    Geometry    = 1 << 2,
+    Any         = 1 << 15
+};
+Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
+Q_DECLARE_OPERATORS_FOR_FLAGS(BackendNodeDirtySet)
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -110,6 +122,11 @@ public:
     virtual void doRender() = 0;
 
     virtual bool isRunning() const = 0;
+
+    virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;
+    virtual BackendNodeDirtySet dirtyBits() = 0;
+    virtual bool shouldRender() = 0;
+    virtual void skipNextFrame() = 0;
 
     virtual QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() = 0;
     virtual Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() = 0;

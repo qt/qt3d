@@ -31,6 +31,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include "testpostmanarbiter.h"
+#include "testrenderer.h"
 
 class TestFunctor : public Qt3DRender::QBufferFunctor
 {
@@ -119,7 +120,9 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Buffer renderBuffer;
+        renderBuffer.setRenderer(&renderer);
 
         // THEN
         QVERIFY(renderBuffer.type() != Qt3DRender::QBuffer::IndexBuffer);
@@ -135,6 +138,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::IndexBuffer);
+        QVERIFY(renderer.dirtyBits() != 0);
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();

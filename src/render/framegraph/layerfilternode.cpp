@@ -69,6 +69,7 @@ void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setLayers(propertyChange->value().value<QStringList>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

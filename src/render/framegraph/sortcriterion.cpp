@@ -75,6 +75,7 @@ void SortCriterion::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == NodeUpdated && propertyChange->propertyName() == QByteArrayLiteral("sort")) {
         m_type = static_cast<QSortCriterion::SortType>(propertyChange->value().toInt());
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 } // namespace Render

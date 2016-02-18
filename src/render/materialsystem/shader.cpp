@@ -156,6 +156,7 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         if (!m_isLoaded)
             updateDNA();
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

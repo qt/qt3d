@@ -95,6 +95,7 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_mouseTrackingEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

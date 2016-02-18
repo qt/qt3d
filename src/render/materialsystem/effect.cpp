@@ -104,6 +104,8 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default :
         break;
     }
+
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)

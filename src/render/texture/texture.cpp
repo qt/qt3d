@@ -597,6 +597,7 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
 
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 TextureDNA Texture::dna() const

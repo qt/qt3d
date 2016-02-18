@@ -33,7 +33,7 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QEffect>
 #include <Qt3DCore/QScenePropertyChange>
-
+#include "testrenderer.h"
 
 using namespace Qt3DCore;
 using namespace Qt3DRender;
@@ -131,6 +131,8 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     // GIVEN
     QScopedPointer<QParameter> parameter(new QParameter());
     Material backend;
+    TestRenderer renderer;
+    backend.setRenderer(&renderer);
 
     // WHEN
     QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
@@ -141,6 +143,7 @@ void tst_RenderMaterial::shouldHandleParametersPropertyChange()
     // THEN
     QCOMPARE(backend.parameters().count(), 1);
     QCOMPARE(backend.parameters().first(), parameter->id());
+    QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
     QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
@@ -156,6 +159,8 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 {
     // GIVEN
     Material backend;
+    TestRenderer renderer;
+    backend.setRenderer(&renderer);
 
     // WHEN
     QScenePropertyChangePtr updateChange(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, QNodeId()));
@@ -165,6 +170,7 @@ void tst_RenderMaterial::shouldHandleEnablePropertyChange()
 
     // THEN
     QVERIFY(!backend.isEnabled());
+    QVERIFY(renderer.dirtyBits() != 0);
 
     // WHEN
     QScenePropertyChangePtr secondUpdateChange(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, QNodeId()));
@@ -181,6 +187,8 @@ void tst_RenderMaterial::shouldHandleEffectPropertyChange()
 {
     // GIVEN
     Material backend;
+    TestRenderer renderer;
+    backend.setRenderer(&renderer);
 
     // WHEN
     QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
@@ -191,6 +199,7 @@ void tst_RenderMaterial::shouldHandleEffectPropertyChange()
 
     // THEN
     QCOMPARE(backend.effect(), effectId);
+    QVERIFY(renderer.dirtyBits() != 0);
 }
 
 QTEST_APPLESS_MAIN(tst_RenderMaterial)

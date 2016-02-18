@@ -51,7 +51,6 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/private/backendnode_p.h>
 

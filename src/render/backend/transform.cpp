@@ -92,6 +92,8 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_enabled = propertyChange->value().toBool();
         }
     }
+
+    markDirty(BackendNodeDirtyFlag::Transform);
 }
 
 void Transform::updateMatrix()

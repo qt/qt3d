@@ -75,6 +75,7 @@ void FrustumCulling::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             break;
         }
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 } // namespace Render

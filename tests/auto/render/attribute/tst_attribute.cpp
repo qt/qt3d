@@ -30,6 +30,7 @@
 #include <Qt3DRender/private/attribute_p.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include "testrenderer.h"
 
 class tst_Attribute : public QObject
 {
@@ -76,7 +77,9 @@ private Q_SLOTS:
     void checkInitialAndCleanedUpState()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Attribute renderAttribute;
+        renderAttribute.setRenderer(&renderer);
 
         // THEN
         QVERIFY(renderAttribute.peerUuid().isNull());
@@ -127,7 +130,9 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Attribute renderAttribute;
+        renderAttribute.setRenderer(&renderer);
 
         QVERIFY(!renderAttribute.isDirty());
 
@@ -140,9 +145,12 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAbstractAttribute::Int);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
+        QVERIFY(!renderer.dirtyBits());
 
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
@@ -153,8 +161,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.dataSize(), 3U);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -166,8 +176,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::IndexAttribute);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -179,8 +191,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.count(), 1340U);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -192,8 +206,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.name(), QStringLiteral("L88"));
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -205,8 +221,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.byteOffset(), 555U);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -218,8 +236,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.byteStride(), 454U);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -231,8 +251,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.divisor(), 1450U);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
 
         // WHEN
@@ -245,8 +267,10 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.bufferId(), bufferId);
         QVERIFY(renderAttribute.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderAttribute.unsetDirty();
+        renderer.resetDirty();
         QVERIFY(!renderAttribute.isDirty());
     }
 };

@@ -61,13 +61,16 @@ namespace Qt3DRender {
 
 namespace Render {
 
-class BackendNode : public Qt3DCore::QBackendNode
+class Q_AUTOTEST_EXPORT BackendNode : public Qt3DCore::QBackendNode
 {
 public:
     BackendNode(Qt3DCore::QBackendNode::Mode mode = ReadOnly);
     ~BackendNode();
 
     void setRenderer(AbstractRenderer *renderer);
+
+protected:
+    void markDirty(BackendNodeDirtySet changes);
 
 private:
     AbstractRenderer *m_renderer;

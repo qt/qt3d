@@ -32,6 +32,7 @@
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
+#include "testrenderer.h"
 
 class tst_RenderGeometry : public QObject
 {
@@ -110,7 +111,9 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::Geometry renderGeometry;
+        renderGeometry.setRenderer(&renderer);
         Qt3DCore::QNodeId geometryId = Qt3DCore::QNodeId::createId();
 
         // WHEN

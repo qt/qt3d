@@ -133,6 +133,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_bufferId = propertyChange->value().value<QNodeId>();
             m_attributeDirty = true;
         }
+        markDirty(BackendNodeDirtyFlag::Any);
         break;
     }
 

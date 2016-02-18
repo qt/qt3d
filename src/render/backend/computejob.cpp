@@ -73,6 +73,7 @@ void ComputeJob::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             m_enabled = propertyChange->value().toBool();
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

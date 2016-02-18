@@ -152,6 +152,11 @@ public:
     void setFrameGraphRoot(const Qt3DCore::QNodeId fgRootId) Q_DECL_OVERRIDE;
     FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE;
 
+    void markDirty(BackendNodeDirtySet changes, BackendNode *node) Q_DECL_OVERRIDE;
+    BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
+    bool shouldRender() Q_DECL_OVERRIDE;
+    void skipNextFrame() Q_DECL_OVERRIDE;
+
     QVector<Qt3DCore::QAspectJobPtr> renderBinJobs() Q_DECL_OVERRIDE;
     Qt3DCore::QAspectJobPtr pickBoundingVolumeJob() Q_DECL_OVERRIDE;
 
@@ -164,7 +169,7 @@ public:
     virtual void setSettings(RendererSettings *settings) Q_DECL_OVERRIDE;
     virtual RendererSettings *settings() const Q_DECL_OVERRIDE;
 
-    void executeCommands(const RenderView *rv);
+    bool executeCommands(const RenderView *rv);
     Attribute *updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate);
 
     void setOpenGLContext(QOpenGLContext *context);
@@ -250,6 +255,8 @@ private:
     QVector<Attribute *> m_dirtyAttributes;
     QVector<Geometry *> m_dirtyGeometry;
     QAtomicInt m_exposed;
+    BackendNodeDirtySet m_changeSet;
+    QAtomicInt m_lastFrameCorrect;
     QOpenGLContext *m_glContext;
     PickBoundingVolumeJobPtr m_pickBoundingVolumeJob;
 

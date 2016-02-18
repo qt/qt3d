@@ -42,6 +42,8 @@
 #include <Qt3DRender/QBoundingVolumeDebug>
 #include <Qt3DRender/QComputeJob>
 
+#include "testrenderer.h"
+
 typedef Qt3DCore::QNodeId (*UuidMethod)(Qt3DRender::Render::Entity *);
 typedef QList<Qt3DCore::QNodeId> (*UuidListMethod)(Qt3DRender::Render::Entity *);
 
@@ -94,7 +96,10 @@ private slots:
     {
         // GIVEN
         QFETCH(QList<QComponent*>, components);
+
+        TestRenderer renderer;
         Qt3DRender::Render::Entity entity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(entity.componentUuid<Transform>().isNull());
@@ -127,6 +132,7 @@ private slots:
         QVERIFY(!entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(!entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(entity.isBoundingVolumeDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         entity.cleanup();
@@ -178,7 +184,9 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidMethod method = reinterpret_cast<UuidMethod>(functionPtr);
 
-        Entity entity;
+        TestRenderer renderer;
+        Qt3DRender::Render::Entity entity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(method(&entity).isNull());
@@ -191,8 +199,10 @@ private slots:
 
         // THEN
         QCOMPARE(method(&entity), component->id());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
+        renderer.resetDirty();
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, component->id()));
         removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(component->id()));
@@ -200,6 +210,7 @@ private slots:
 
         // THEN
         QVERIFY(method(&entity).isNull());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         delete component;
     }
@@ -227,7 +238,9 @@ private slots:
         QFETCH(void*, functionPtr);
         UuidListMethod method = reinterpret_cast<UuidListMethod>(functionPtr);
 
-        Entity entity;
+        TestRenderer renderer;
+        Qt3DRender::Render::Entity entity;
+        entity.setRenderer(&renderer);
 
         // THEN
         QVERIFY(method(&entity).isEmpty());
@@ -245,8 +258,10 @@ private slots:
         Q_FOREACH (QComponent *component, components) {
             QVERIFY(method(&entity).contains(component->id()));
         }
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
+        renderer.resetDirty();
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(ComponentRemoved, QSceneChange::Node, components.first()->id()));
         removeChange->setPropertyName("componentId");
         removeChange->setValue(QVariant::fromValue(components.first()->id()));
@@ -255,6 +270,7 @@ private slots:
         // THEN
         QCOMPARE(method(&entity).size(), components.size() - 1);
         QVERIFY(!method(&entity).contains(components.first()->id()));
+        QVERIFY(renderer.dirtyBits() != 0);
 
         qDeleteAll(components);
     }

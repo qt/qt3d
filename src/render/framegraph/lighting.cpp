@@ -71,6 +71,7 @@ void Lighting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 } // namespace Render

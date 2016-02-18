@@ -140,6 +140,8 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_waitForInitializationToBeCompleted(0)
     , m_pickEventFilter(new PickEventFilter())
     , m_exposed(0)
+    , m_lastFrameCorrect(0)
+    , m_changeSet(0)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
@@ -597,6 +599,8 @@ bool Renderer::submitRenderViews()
 
     const int renderViewsCount = renderViews.size();
     quint64 frameElapsed = queueElapsed;
+    m_lastFrameCorrect.store(1);    // everything fine until now.....
+    m_changeSet = 0;                // mark "not dirty"
 
     // Early return if there's actually nothing to render
     if (renderViewsCount <= 0)
@@ -674,7 +678,8 @@ bool Renderer::submitRenderViews()
         m_graphicsContext->setViewport(renderView->viewport(), renderView->surfaceSize() * renderView->devicePixelRatio());
 
         // Execute the render commands
-        executeCommands(renderView);
+        if (!executeCommands(renderView))
+            m_lastFrameCorrect.store(0);    // something went wrong; make sure to render the next frame!
 
         // executeCommands takes care of restoring the stateset to the value
         // of gc->currentContext() at the moment it was called (either
@@ -705,16 +710,42 @@ bool Renderer::submitRenderViews()
     return true;
 }
 
+void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
+{
+    Q_UNUSED(node);
+    m_changeSet |= changes;
+}
+
+BackendNodeDirtySet Renderer::dirtyBits()
+{
+    return m_changeSet;
+}
+
+bool Renderer::shouldRender()
+{
+    // Only render if something changed during the last frame, or the last frame
+    // was not rendered successfully
+    return (m_changeSet != 0 || !m_lastFrameCorrect.load());
+}
+
+void Renderer::skipNextFrame()
+{
+    // make submitRenderViews() actually run
+    m_renderQueue->setNoRender();
+    m_submitRenderViewsSemaphore.release(1);
+}
+
 // Waits to be told to create jobs for the next frame
 // Called by QRenderAspect jobsToExecute context of QAspectThread
 QVector<Qt3DCore::QAspectJobPtr> Renderer::renderBinJobs()
 {
+    QVector<QAspectJobPtr> renderBinJobs;
+
     // Traverse the current framegraph. For each leaf node create a
     // RenderView and set its configuration then create a job to
     // populate the RenderView with a set of RenderCommands that get
     // their details from the RenderNodes that are visible to the
     // Camera selected by the framegraph configuration
-    QVector<QAspectJobPtr> renderBinJobs;
 
     FrameGraphVisitor visitor;
     visitor.traverse(frameGraphRoot(), this, &renderBinJobs);
@@ -842,8 +873,11 @@ bool Renderer::createOrUpdateVAO(RenderCommand *command,
 }
 
 // Called by RenderView->submit() in RenderThread context
-void Renderer::executeCommands(const RenderView *rv)
+// Returns true, if all RenderCommands were sent to the GPU
+bool Renderer::executeCommands(const RenderView *rv)
 {
+    bool allCommandsIssued = true;
+
     // Render drawing commands
     const QVector<RenderCommand *> commands = rv->commands();
 
@@ -867,6 +901,7 @@ void Renderer::executeCommands(const RenderView *rv)
             const bool hasGeometryRenderer = rGeometry != Q_NULLPTR && rGeometryRenderer != Q_NULLPTR && !rGeometry->attributes().isEmpty();
 
             if (!hasGeometryRenderer) {
+                allCommandsIssued = false;
                 qCWarning(Rendering) << "RenderCommand should have a mesh to render";
                 continue;
             }
@@ -935,6 +970,8 @@ void Renderer::executeCommands(const RenderView *rv)
             //// Draw Calls
             if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
                 performDraw(rGeometry, rGeometryRenderer, primitiveCount, indexAttribute);
+            } else {
+                allCommandsIssued = false;
             }
         }
     } // end of RenderCommands loop
@@ -955,6 +992,8 @@ void Renderer::executeCommands(const RenderView *rv)
     Q_FOREACH (Geometry *geometry, m_dirtyGeometry)
         geometry->unsetDirty();
     m_dirtyGeometry.clear();
+
+    return allCommandsIssued;
 }
 
 Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderCommand *command, GLsizei &count, bool forceUpdate)

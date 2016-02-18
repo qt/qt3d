@@ -68,6 +68,7 @@ void ClearBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_type = static_cast<QClearBuffer::BufferType>(propertyChange->value().toInt());
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

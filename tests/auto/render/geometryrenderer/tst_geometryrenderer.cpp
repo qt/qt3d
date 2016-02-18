@@ -31,6 +31,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryfunctor.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include "testrenderer.h"
 
 class TestFunctor : public Qt3DRender::QGeometryFunctor
 {
@@ -160,6 +161,8 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
+        TestRenderer renderer;
+        renderGeometryRenderer.setRenderer(&renderer);
 
         QVERIFY(!renderGeometryRenderer.isDirty());
 
@@ -172,6 +175,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometryRenderer.instanceCount(), 2);
         QVERIFY(renderGeometryRenderer.isDirty());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         renderGeometryRenderer.unsetDirty();
         QVERIFY(!renderGeometryRenderer.isDirty());

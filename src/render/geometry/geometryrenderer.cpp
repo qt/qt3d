@@ -174,6 +174,8 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         break;
     }
 
+    markDirty(BackendNodeDirtyFlag::Any);
+
     // Add to dirty list in manager
 }
 

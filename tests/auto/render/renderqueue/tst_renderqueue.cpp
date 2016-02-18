@@ -74,6 +74,7 @@ void tst_RenderQueue::circleQueues()
 
         // WHEN
         renderQueue.reset();
+        renderQueue.setTargetRenderViewCount(7);
 
         // THEN
         QVERIFY(!renderQueue.isFrameQueueComplete());
@@ -206,6 +207,7 @@ void tst_RenderQueue::concurrentQueueAccess()
 
         // reset queue for next frame
         renderQueue->reset();
+        renderQueue->setTargetRenderViewCount(7);
         jobsThread->m_waitToFillQueue.wakeAll();
     }
     jobsThread->wait();

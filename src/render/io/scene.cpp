@@ -74,6 +74,7 @@ void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         m_source = propertyChange->value().toUrl();
         m_sceneManager->addSceneData(m_source, peerUuid());
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 QUrl Scene::source() const

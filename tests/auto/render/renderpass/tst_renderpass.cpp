@@ -59,6 +59,8 @@
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/managers_p.h>
 
+#include "testrenderer.h"
+
 using namespace Qt3DCore;
 using namespace Qt3DRender;
 using namespace Qt3DRender::Render;
@@ -136,6 +138,8 @@ private slots:
         QScopedPointer<QShaderProgram> shader(new QShaderProgram);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, shader->id()));
@@ -145,6 +149,7 @@ private slots:
 
         // THEN
         QCOMPARE(backend.shaderProgram(), shader->id());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, shader->id()));
@@ -162,6 +167,8 @@ private slots:
         QScopedPointer<QAnnotation> annotation(new QAnnotation);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
@@ -172,6 +179,7 @@ private slots:
         // THEN
         QCOMPARE(backend.annotations().size(), 1);
         QCOMPARE(backend.annotations().first(), annotation->id());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
@@ -189,6 +197,8 @@ private slots:
         QScopedPointer<QParameterMapping> binding(new QParameterMapping);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, binding->id()));
@@ -202,6 +212,7 @@ private slots:
         QCOMPARE(backend.bindings().first().bindingType(), binding->bindingType());
         QCOMPARE(backend.bindings().first().parameterName(), binding->parameterName());
         QCOMPARE(backend.bindings().first().shaderVariableName(), binding->shaderVariableName());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, binding->id()));
@@ -219,6 +230,8 @@ private slots:
         QScopedPointer<QParameter> parameter(new QParameter);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, parameter->id()));
@@ -229,6 +242,7 @@ private slots:
         // THEN
         QCOMPARE(backend.parameters().size(), 1);
         QCOMPARE(backend.parameters().first(), parameter->id());
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, parameter->id()));
@@ -246,6 +260,8 @@ private slots:
         QNodePtr frontendStatePtr(frontendState);
 
         RenderPass backend;
+        TestRenderer renderer;
+        backend.setRenderer(&renderer);
 
         RenderStateNode *backendState = m_renderStateManager->getOrCreateResource(frontendState->id());
         backendState->setPeer(frontendState);
@@ -259,6 +275,7 @@ private slots:
         // THEN
         QCOMPARE(backend.renderStates(m_renderStateManager).size(), 1);
         QCOMPARE(backend.renderStates(m_renderStateManager).first(), backendState);
+        QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, frontendState->id()));

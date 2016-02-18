@@ -129,6 +129,7 @@ void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
+    markDirty(BackendNodeDirtyFlag::Any);
 }
 
 Qt3DCore::QNodeId RenderPass::shaderProgram() const

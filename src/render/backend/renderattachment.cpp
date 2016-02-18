@@ -119,6 +119,7 @@ void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
             m_attachmentData.m_name = propertyChange->value().toString();
         }
+        markDirty(BackendNodeDirtyFlag::Any);
     }
 }
 

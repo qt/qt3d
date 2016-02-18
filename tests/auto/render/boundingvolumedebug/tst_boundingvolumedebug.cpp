@@ -32,6 +32,7 @@
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include "testpostmanarbiter.h"
+#include "testrenderer.h"
 
 class tst_BoundingVolumeDebug : public QObject
 {
@@ -84,7 +85,9 @@ private Q_SLOTS:
     void checkPropertyChanges()
     {
         // GIVEN
+        TestRenderer renderer;
         Qt3DRender::Render::BoundingVolumeDebug boundingVolumeDebug;
+        boundingVolumeDebug.setRenderer(&renderer);
         QVERIFY(!boundingVolumeDebug.isRecursive());
 
         // WHEN
@@ -95,6 +98,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(boundingVolumeDebug.isRecursive(), true);
+        QVERIFY(renderer.dirtyBits() != 0);
     }
 
     void checkBackendPropertyNotifications()

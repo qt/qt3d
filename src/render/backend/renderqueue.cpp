@@ -51,6 +51,7 @@ RenderQueue::RenderQueue()
     : m_targetRenderViewCount(0)
     , m_currentRenderViewCount(0)
     , m_currentWorkQueue(1)
+    , m_noRender(false)
 {
 }
 
@@ -66,7 +67,15 @@ int RenderQueue::currentRenderViewCount() const
 void RenderQueue::reset()
 {
     m_currentRenderViewCount = 0;
-    Q_ASSERT(currentRenderViewCount() == 0);
+    m_targetRenderViewCount = 0;
+    m_currentWorkQueue.clear();
+    m_noRender = false;
+}
+
+void RenderQueue::setNoRender()
+{
+    Q_ASSERT(m_targetRenderViewCount == 0);
+    m_noRender = true;
 }
 
 /*!
@@ -76,6 +85,7 @@ void RenderQueue::reset()
  */
 bool RenderQueue::queueRenderView(RenderView *renderView, uint submissionOrderIndex)
 {
+    Q_ASSERT(!m_noRender);
     m_currentWorkQueue[submissionOrderIndex] = renderView;
     ++m_currentRenderViewCount;
     return isFrameQueueComplete();
@@ -96,6 +106,7 @@ QVector<RenderView *> RenderQueue::nextFrameQueue()
  */
 void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
 {
+    Q_ASSERT(!m_noRender);
     m_targetRenderViewCount = targetRenderViewCount;
     m_currentWorkQueue.resize(targetRenderViewCount);
 }
@@ -107,7 +118,8 @@ void RenderQueue::setTargetRenderViewCount(int targetRenderViewCount)
  */
 bool RenderQueue::isFrameQueueComplete() const
 {
-    return m_targetRenderViewCount && m_targetRenderViewCount == currentRenderViewCount();
+    return (m_noRender
+            || (m_targetRenderViewCount && m_targetRenderViewCount == currentRenderViewCount()));
 }
 
 } // namespace Render

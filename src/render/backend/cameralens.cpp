@@ -92,6 +92,8 @@ void CameraLens::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
         }
+
+        markDirty(BackendNodeDirtyFlag::Any);
     }
         break;
 
