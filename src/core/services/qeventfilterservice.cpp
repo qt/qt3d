@@ -48,36 +48,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DCore {
 
 namespace {
+    struct FilterPriorityPair
+    {
+        QObject *filter;
+        int priority;
+    };
 
-struct FilterPriorityPair
-{
-    QObject *filter;
-    int priority;
-};
+    bool operator <(const FilterPriorityPair &a, const FilterPriorityPair &b)
+    {
+        return a.priority < b.priority;
+    }
 
-bool operator <(const FilterPriorityPair &a, const FilterPriorityPair &b)
-{
-    return a.priority < b.priority;
+    class InternalEventListener;
 }
 
-class InternalEventListener : public QObject
+class QEventFilterServicePrivate : public QAbstractServiceProviderPrivate
 {
-    Q_OBJECT
 public:
-    explicit InternalEventListener(QObject *parent = Q_NULLPTR)
-        : QObject(parent)
-    {
-    }
-
-    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL
-    {
-        for (int i = m_eventFilters.size() - 1; i >= 0; --i) {
-            const FilterPriorityPair &fPPair = m_eventFilters.at(i);
-            if (fPPair.filter->eventFilter(obj, e))
-                return true;
-        }
-        return false;
-    }
+    QEventFilterServicePrivate()
+        : QAbstractServiceProviderPrivate(QServiceLocator::EventFilterService, QStringLiteral("Default event filter service implementation"))
+    {}
 
     void registerEventFilter(QObject *eventFilter, int priority)
     {
@@ -105,21 +95,36 @@ public:
         }
     }
 
-private:
+    QScopedPointer<InternalEventListener> m_eventDispatcher;
     QVector<FilterPriorityPair> m_eventFilters;
 };
 
-} // anonymous
+namespace {
 
-class QEventFilterServicePrivate : public QAbstractServiceProviderPrivate
+class InternalEventListener : public QObject
 {
+    Q_OBJECT
 public:
-    QEventFilterServicePrivate()
-        : QAbstractServiceProviderPrivate(QServiceLocator::EventFilterService, QStringLiteral("Default event filter service implementation"))
-    {}
+    explicit InternalEventListener(QEventFilterServicePrivate *filterService, QObject *parent = Q_NULLPTR)
+        : QObject(parent)
+        , m_filterService(filterService)
+    {
+    }
 
-    QScopedPointer<InternalEventListener> m_eventDispatcher;
+    bool eventFilter(QObject *obj, QEvent *e) Q_DECL_FINAL
+    {
+        for (int i = m_filterService->m_eventFilters.size() - 1; i >= 0; --i) {
+            const FilterPriorityPair &fPPair = m_filterService->m_eventFilters.at(i);
+            if (fPPair.filter->eventFilter(obj, e))
+                return true;
+        }
+        return false;
+    }
+
+    QEventFilterServicePrivate* m_filterService;
 };
+
+} // anonymous
 
 
 /* !\internal
@@ -150,7 +155,7 @@ void QEventFilterService::initialize(QObject *eventSource)
     if (eventSource == Q_NULLPTR) {
         d->m_eventDispatcher.reset();
     } else {
-        d->m_eventDispatcher.reset(new InternalEventListener());
+        d->m_eventDispatcher.reset(new InternalEventListener(d));
         eventSource->installEventFilter(d->m_eventDispatcher.data());
     }
 }
@@ -158,17 +163,13 @@ void QEventFilterService::initialize(QObject *eventSource)
 void QEventFilterService::registerEventFilter(QObject *eventFilter, int priority)
 {
     Q_D(QEventFilterService);
-    if (!d->m_eventDispatcher)
-        return;
-    d->m_eventDispatcher->registerEventFilter(eventFilter, priority);
+    d->registerEventFilter(eventFilter, priority);
 }
 
 void QEventFilterService::unregisterEventFilter(QObject *eventFilter)
 {
     Q_D(QEventFilterService);
-    if (!d->m_eventDispatcher)
-        return;
-    d->m_eventDispatcher->unregisterEventFilter(eventFilter);
+    d->unregisterEventFilter(eventFilter);
 }
 
 } // Qt3DCore

@@ -151,7 +151,7 @@ void QMouseInput::copy(const QNode *ref)
     // of the controller.
     // Perhaps it's time to investigate sending a "kernel" or "seed" over to the backend rather
     // than a complete clone.
-    if (refInput && refInput->controller()->parent() == ref)
+    if (refInput && refInput->controller() && refInput->controller()->parent() == ref)
         d->m_controller = static_cast<QMouseController *>(QNode::clone(refInput->controller()));
 }
 
