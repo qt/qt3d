@@ -152,7 +152,10 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
 
 void TextureImage::updateDNA()
 {
-    m_dna = ::qHash(m_layer + m_mipmapLevel + static_cast<int>(m_face) + m_textureDataHandle);
+    m_dna = ::qHash(m_layer
+                    + (m_mipmapLevel << 4)
+                    + (static_cast<int>(m_face) << 8)
+                    + (m_textureDataHandle.handle() << 12));
 }
 
 TextureImageFunctor::TextureImageFunctor(TextureManager *textureManager,
