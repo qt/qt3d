@@ -427,12 +427,11 @@ void QNodePrivate::nodePtrDeleter(QNode *q)
 QNode::QNode(QNode *parent)
     : QObject(*new QNodePrivate, parent)
 {
-    qRegisterMetaType<QNode *>("QNode*");
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
     if (parent) {
         // This needs to be invoked  only after the QNode has been fully
-        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(QNode*, this));
+        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
     }
 }
 
@@ -440,12 +439,11 @@ QNode::QNode(QNode *parent)
 QNode::QNode(QNodePrivate &dd, QNode *parent)
     : QObject(dd, parent)
 {
-    qRegisterMetaType<QNode *>("QNode*");
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
     if (parent) {
         // This needs to be invoked  only after the QNode has been fully
-        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(QNode*, this));
+        QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
     }
 }
 

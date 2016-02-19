@@ -41,7 +41,10 @@ class tst_Nodes : public QObject
 {
     Q_OBJECT
 public:
-    tst_Nodes() : QObject() {}
+    tst_Nodes() : QObject()
+    {
+        qRegisterMetaType<Qt3DCore::QNode*>();
+    }
     ~tst_Nodes() {}
 
 private slots:

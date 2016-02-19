@@ -118,8 +118,8 @@ private:
     // when dealing with QNode objects
     void setParent(QObject *) Q_DECL_EQ_DELETE;
 
-    Q_PRIVATE_SLOT(d_func(), void _q_addChild(QNode *))
-    Q_PRIVATE_SLOT(d_func(), void _q_removeChild(QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_addChild(Qt3DCore::QNode *))
+    Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
 
     friend class QAspectEngine;
     friend class QPostman;

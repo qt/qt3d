@@ -69,6 +69,7 @@ QAspectEnginePrivate::QAspectEnginePrivate()
 {
     qRegisterMetaType<Qt3DCore::QAbstractAspect *>();
     qRegisterMetaType<Qt3DCore::QObserverInterface *>();
+    qRegisterMetaType<Qt3DCore::QNode *>();
     qRegisterMetaType<Qt3DCore::QEntity *>();
     qRegisterMetaType<Qt3DCore::QScene *>();
     qRegisterMetaType<Qt3DCore::QAbstractPostman *>();
