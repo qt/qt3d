@@ -49,12 +49,6 @@
 
 QT_BEGIN_NAMESPACE
 
-static QByteArray className(const QMetaObject &obj)
-{
-    // note: class names are stored in static meta objects, thus the usage of fromRawData here is fine
-    return QByteArray::fromRawData(obj.className(), int(strlen(obj.className())));
-}
-
 namespace Qt3DCore {
 
 QAbstractAspectPrivate::QAbstractAspectPrivate()
@@ -107,7 +101,7 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
 void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeFunctorPtr &functor)
 {
     Q_D(QAbstractAspect);
-    d->m_backendCreatorFunctors.insert(className(obj), functor);
+    d->m_backendCreatorFunctors.insert(&obj, functor);
 }
 
 void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &e)
@@ -138,7 +132,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
     const QMetaObject *metaObj = frontend->metaObject();
     QBackendNodeFunctorPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(metaObj);
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
@@ -170,7 +164,7 @@ void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
     QBackendNodeFunctorPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
-        functor = m_backendCreatorFunctors.value(className(*metaObj));
+        functor = m_backendCreatorFunctors.value(metaObj);
         metaObj = metaObj->superClass();
     }
     if (!functor.isNull()) {
