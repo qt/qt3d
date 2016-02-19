@@ -429,7 +429,7 @@ QNode::QNode(QNode *parent)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent) {
+    if (parent && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR) {
         // This needs to be invoked  only after the QNode has been fully
         QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
     }
@@ -441,7 +441,7 @@ QNode::QNode(QNodePrivate &dd, QNode *parent)
 {
     // We need to add ourselves with the parent if it is valid
     // This will notify the backend about the new child
-    if (parent) {
+    if (parent && QNodePrivate::get(parent)->m_changeArbiter != Q_NULLPTR) {
         // This needs to be invoked  only after the QNode has been fully
         QMetaObject::invokeMethod(parent, "_q_addChild", Qt::QueuedConnection, Q_ARG(Qt3DCore::QNode*, this));
     }
