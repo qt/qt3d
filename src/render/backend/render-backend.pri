@@ -36,7 +36,8 @@ HEADERS += \
     $$PWD/stringtoint_p.h \
     $$PWD/backendnode_p.h \
     $$PWD/rendertargetoutput_p.h \
-    $$PWD/commandexecuter_p.h
+    $$PWD/commandexecuter_p.h \
+    $$PWD/uniform_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -66,5 +67,6 @@ SOURCES += \
     $$PWD/rendertargetoutput.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/commandexecuter.cpp \
-    $$PWD/openglvertexarrayobject.cpp
+    $$PWD/openglvertexarrayobject.cpp \
+    $$PWD/uniform.cpp
 
