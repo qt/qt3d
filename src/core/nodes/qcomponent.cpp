@@ -135,7 +135,7 @@ QComponent::~QComponent()
 /*!
     Returns whether the QComponent is shareable across entities or not.
 */
-bool QComponent::shareable() const
+bool QComponent::isShareable() const
 {
     Q_D(const QComponent);
     return d->m_shareable;
@@ -157,7 +157,7 @@ void QComponent::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QComponent *comp = static_cast<const QComponent *>(ref);
-    setShareable(comp->shareable());
+    setShareable(comp->isShareable());
 }
 
 /*!

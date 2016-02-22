@@ -216,7 +216,7 @@ void QNodePrivate::setSceneHelper(QNode *root)
         const QVector<QEntity *> entities = c->entities();
         Q_FOREACH (QEntity *entity, entities) {
             if (!m_scene->hasEntityForComponent(c->id(), entity->id())) {
-                if (!c->shareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
+                if (!c->isShareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
                     qWarning() << "Trying to assign a non shareable component to more than one Entity";
                 m_scene->addEntityForComponent(c->id(), entity->id());
             }
