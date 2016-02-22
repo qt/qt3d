@@ -74,7 +74,7 @@ class SceneManager : public Qt3DCore::QResourceManager<Scene,
 public:
     SceneManager();
 
-    void addSceneData(const QUrl &source, const Qt3DCore::QNodeId &sceneUuid);
+    void addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid);
     QVector<LoadSceneJobPtr> pendingSceneLoaderJobs();
 
     void addLoadedSceneTree(const QUrl &source, Qt3DCore::QEntity *tree);

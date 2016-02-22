@@ -114,7 +114,7 @@ void MouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-void MouseInput::setController(const Qt3DCore::QNodeId &controller)
+void MouseInput::setController(Qt3DCore::QNodeId controller)
 {
     if (!m_mouseController.isNull()) {
         MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
@@ -142,12 +142,12 @@ Qt3DCore::QBackendNode *MouseInputFunctor::create(Qt3DCore::QNode *frontend) con
     return input;
 }
 
-Qt3DCore::QBackendNode *MouseInputFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *MouseInputFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->mouseInputManager()->lookupResource(id);
 }
 
-void MouseInputFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void MouseInputFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_handler->mouseInputManager()->releaseResource(id);
 }

@@ -96,10 +96,10 @@ public:
     void syncChanges();
 
     void registerObserver(QObserverInterface *observer,
-                          const QNodeId &nodeId,
+                          QNodeId nodeId,
                           ChangeFlags changeFlags = AllChanges);
     void unregisterObserver(QObserverInterface *observer,
-                            const QNodeId &nodeId);
+                            QNodeId nodeId);
 
     void registerSceneObserver(QSceneObserverInterface *observer);
     void unregisterSceneObserver(QSceneObserverInterface *observer);

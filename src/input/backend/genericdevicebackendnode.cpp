@@ -110,12 +110,12 @@ Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::create(Qt3DCore::QNode *fro
     return backendNode;
 }
 
-Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->genericDeviceBackendNodeManager()->lookupResource(id);
 }
 
-void GenericDeviceBackendFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void GenericDeviceBackendFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_handler->removeGenericDevice(m_handler->genericDeviceBackendNodeManager()->lookupHandle(id));
     m_handler->genericDeviceBackendNodeManager()->releaseResource(id);

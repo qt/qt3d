@@ -78,13 +78,13 @@ QList<Qt3DCore::QNodeId> TechniqueFilter::filters() const
     return m_filters;
 }
 
-void TechniqueFilter::appendFilter(const QNodeId &criterionId)
+void TechniqueFilter::appendFilter(QNodeId criterionId)
 {
     if (!m_filters.contains(criterionId))
         m_filters.append(criterionId);
 }
 
-void TechniqueFilter::removeFilter(const Qt3DCore::QNodeId &criterionId)
+void TechniqueFilter::removeFilter(Qt3DCore::QNodeId criterionId)
 {
     m_filters.removeOne(criterionId);
 }

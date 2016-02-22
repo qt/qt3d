@@ -70,8 +70,8 @@ public:
     bool hasRenderStates() const;
 
 protected:
-    void appendRenderState(const Qt3DCore::QNodeId &renderStateId);
-    void removeRenderState(const Qt3DCore::QNodeId &renderStateId);
+    void appendRenderState(Qt3DCore::QNodeId renderStateId);
+    void removeRenderState(Qt3DCore::QNodeId renderStateId);
 
 private:
     QVector<Qt3DCore::QNodeId> m_renderStateIds;

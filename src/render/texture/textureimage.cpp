@@ -177,12 +177,12 @@ Qt3DCore::QBackendNode *TextureImageFunctor::create(Qt3DCore::QNode *frontend) c
     return backend;
 }
 
-Qt3DCore::QBackendNode *TextureImageFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *TextureImageFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_textureImageManager->lookupResource(id);
 }
 
-void TextureImageFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void TextureImageFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureImageManager->releaseResource(id);
 }

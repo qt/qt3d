@@ -80,7 +80,7 @@ public:
         Node
     };
 
-    QSceneChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
+    QSceneChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
     virtual ~QSceneChange();
 
     ChangeFlag type() const;
@@ -93,7 +93,7 @@ protected:
     Q_DECLARE_PRIVATE(QSceneChange)
     QSceneChangePrivate *d_ptr;
     QSceneChange(QSceneChangePrivate &dd);
-    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
+    QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
 
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events

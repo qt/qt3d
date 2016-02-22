@@ -213,7 +213,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
         controller->updateMouseEvents(events);
         // Event dispacthing job
         if (!events.isEmpty()) {
-            Q_FOREACH (const QNodeId &input, controller->mouseInputs()) {
+            Q_FOREACH (QNodeId input, controller->mouseInputs()) {
                 MouseEventDispatcherJob *job = new MouseEventDispatcherJob(input, events);
                 job->setInputHandler(this);
                 jobs.append(QAspectJobPtr(job));

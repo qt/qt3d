@@ -75,7 +75,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
                 QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
                 if (entities.size() > 1) // TO DO: QComponent shareable property
                     qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
-                Q_FOREACH (const QNodeId &id, entities) {
+                Q_FOREACH (QNodeId id, entities) {
                     QEntity *parentEntity = qobject_cast<QEntity *>(d->m_scene->lookupNode(id));
                     if (parentEntity != Q_NULLPTR) {
                         QEntity *cloneScene = qobject_cast<QEntity *>(QNode::clone(scene));

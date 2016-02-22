@@ -76,7 +76,7 @@ class TextureDataManager : public Qt3DCore::QResourceManager<QTexImageData,
 {
 public:
     TextureDataManager();
-    void addToPendingTextures(const Qt3DCore::QNodeId &textureId);
+    void addToPendingTextures(Qt3DCore::QNodeId textureId);
 
     QVector<Qt3DCore::QNodeId> texturesPending();
 

@@ -99,9 +99,9 @@ public:
     void setFrameGraphManager(FrameGraphManager *manager);
     FrameGraphManager *manager() const;
 
-    void setParentId(const Qt3DCore::QNodeId &parentId);
-    void appendChildId(const Qt3DCore::QNodeId &childHandle);
-    void removeChildId(const Qt3DCore::QNodeId &childHandle);
+    void setParentId(Qt3DCore::QNodeId parentId);
+    void appendChildId(Qt3DCore::QNodeId childHandle);
+    void removeChildId(Qt3DCore::QNodeId childHandle);
 
     Qt3DCore::QNodeId parentId() const;
     QList<Qt3DCore::QNodeId> childrenIds() const;
@@ -136,12 +136,12 @@ public:
         return createBackendFrameGraphNode(frontend);
     }
 
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE
     {
         return m_manager->lookupNode(id);
     }
 
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE
     {
         m_manager->releaseNode(id);
     }
@@ -175,8 +175,8 @@ class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeFunctor
 public:
     explicit FrameGraphComponentFunctor(AbstractRenderer *renderer);
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     AbstractRenderer *m_renderer;

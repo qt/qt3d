@@ -72,7 +72,7 @@ public:
     ~BufferManager();
 
     // Aspect Thread
-    void addDirtyBuffer(const Qt3DCore::QNodeId &bufferId);
+    void addDirtyBuffer(Qt3DCore::QNodeId bufferId);
     QVector<Qt3DCore::QNodeId> dirtyBuffers();
 
 private:

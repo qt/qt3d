@@ -66,7 +66,7 @@ class NodeManagers;
 class LoadTextureDataJob : public Qt3DCore::QAspectJob
 {
 public:
-    LoadTextureDataJob(const Qt3DCore::QNodeId &textureId);
+    LoadTextureDataJob(Qt3DCore::QNodeId textureId);
     ~LoadTextureDataJob();
     inline void setNodeManagers(NodeManagers *manager) { m_manager = manager; }
 

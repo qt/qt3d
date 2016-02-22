@@ -79,7 +79,7 @@ void Manager::appendHandler(Handler *handler)
     m_logicComponentIds.append(handler->peerUuid());
 }
 
-void Manager::removeHandler(const Qt3DCore::QNodeId &id)
+void Manager::removeHandler(Qt3DCore::QNodeId id)
 {
     HHandler handle = m_logicHandlerManager->lookupHandle(id);
     m_logicComponentIds.removeAll(id);

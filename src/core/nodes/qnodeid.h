@@ -97,7 +97,7 @@ private:
 
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, const QNodeId &id);
+QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
 inline uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW

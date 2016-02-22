@@ -52,7 +52,7 @@ SceneManager::SceneManager() : QResourceManager<Scene,
 {
 }
 
-void SceneManager::addSceneData(const QUrl &source, const Qt3DCore::QNodeId &sceneUuid)
+void SceneManager::addSceneData(const QUrl &source, Qt3DCore::QNodeId sceneUuid)
 {
     LoadSceneJobPtr newJob(new LoadSceneJob(source, sceneUuid));
 

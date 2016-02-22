@@ -76,12 +76,12 @@ Qt3DCore::QBackendNode *HandlerFunctor::create(Qt3DCore::QNode *frontend) const
     return handler;
 }
 
-Qt3DCore::QBackendNode *HandlerFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *HandlerFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->logicHandlerManager()->lookupResource(id);
 }
 
-void HandlerFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void HandlerFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_manager->removeHandler(id);
 }

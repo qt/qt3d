@@ -692,12 +692,12 @@ Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend) const
     return backend;
 }
 
-Qt3DCore::QBackendNode *TextureFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_textureManager->lookupResource(id);
 }
 
-void TextureFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void TextureFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_textureManager->releaseResource(id);
 }

@@ -222,12 +222,12 @@ Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *fronten
     return geometryRenderer;
 }
 
-Qt3DCore::QBackendNode *GeometryRendererFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *GeometryRendererFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void GeometryRendererFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void GeometryRendererFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     return m_manager->releaseResource(id);
 }

@@ -52,7 +52,7 @@ BufferManager::~BufferManager()
 {
 }
 
-void BufferManager::addDirtyBuffer(const Qt3DCore::QNodeId &bufferId)
+void BufferManager::addDirtyBuffer(Qt3DCore::QNodeId bufferId)
 {
     if (!m_dirtyBuffers.contains(bufferId))
         m_dirtyBuffers.push_back(bufferId);

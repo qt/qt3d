@@ -95,7 +95,7 @@ void ShaderParameterPack::setUniform(const int glslNameId, const QUniformValue &
     m_uniforms.insert(glslNameId, val);
 }
 
-void ShaderParameterPack::setTexture(const int glslNameId, const Qt3DCore::QNodeId &texId)
+void ShaderParameterPack::setTexture(const int glslNameId, Qt3DCore::QNodeId texId)
 {
     for (int t=0; t<m_textures.size(); ++t) {
         if (m_textures[t].glslNameId != glslNameId)

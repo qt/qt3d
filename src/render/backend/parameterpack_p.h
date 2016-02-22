@@ -66,8 +66,8 @@ public:
     ParameterPack();
     ~ParameterPack();
     void clear();
-    void appendParameter(const Qt3DCore::QNodeId &parameterId);
-    void removeParameter(const Qt3DCore::QNodeId &parameterId);
+    void appendParameter(Qt3DCore::QNodeId parameterId);
+    void removeParameter(Qt3DCore::QNodeId parameterId);
     QList<Qt3DCore::QNodeId> parameters() const;
 
 private:

@@ -88,8 +88,8 @@ public:
     explicit LogicalDeviceNodeFunctor(LogicalDeviceManager *manager);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     LogicalDeviceManager *m_manager;

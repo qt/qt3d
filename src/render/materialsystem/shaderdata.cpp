@@ -79,7 +79,7 @@ void ShaderData::setManagers(NodeManagers *managers)
     m_managers = managers;
 }
 
-ShaderData *ShaderData::lookupResource(NodeManagers *managers, const QNodeId &id)
+ShaderData *ShaderData::lookupResource(NodeManagers *managers, QNodeId id)
 {
     ShaderData *shaderData = managers->shaderDataManager()->lookupResource(id);
     if (!shaderData)
@@ -88,7 +88,7 @@ ShaderData *ShaderData::lookupResource(NodeManagers *managers, const QNodeId &id
     return shaderData;
 }
 
-ShaderData *ShaderData::lookupResource(const QNodeId &id)
+ShaderData *ShaderData::lookupResource(QNodeId id)
 {
     return ShaderData::lookupResource(m_managers, id);
 }
@@ -127,7 +127,7 @@ void ShaderData::clearUpdatedProperties()
 
 void ShaderData::cleanup(NodeManagers *managers)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId &id, m_updatedShaderData) {
+    Q_FOREACH (Qt3DCore::QNodeId id, m_updatedShaderData) {
         ShaderData *shaderData = ShaderData::lookupResource(managers, id);
         if (shaderData)
             shaderData->clearUpdatedProperties();
@@ -338,12 +338,12 @@ Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *fronten
     return backend;
 }
 
-Qt3DCore::QBackendNode *RenderShaderDataFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_managers->shaderDataManager()->lookupResource(id);
 }
 
-void RenderShaderDataFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RenderShaderDataFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_managers->shaderDataManager()->releaseResource(id);
 }

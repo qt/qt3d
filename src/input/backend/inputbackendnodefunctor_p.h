@@ -76,12 +76,12 @@ public:
         return backend;
     }
 
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
     }
 
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         m_manager->releaseResource(id);
     }

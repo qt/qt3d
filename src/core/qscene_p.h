@@ -73,13 +73,13 @@ public:
 
     QAspectEngine *engine() const;
 
-    void addObservable(QObservableInterface *observable, const QNodeId &id);
+    void addObservable(QObservableInterface *observable, QNodeId id);
     void addObservable(QNode *observable);
-    void removeObservable(QObservableInterface *observable, const QNodeId &id);
+    void removeObservable(QObservableInterface *observable, QNodeId id);
     void removeObservable(QNode *observable);
-    QObservableList lookupObservables(const QNodeId &id) const;
+    QObservableList lookupObservables(QNodeId id) const;
 
-    QNode *lookupNode(const QNodeId &id) const;
+    QNode *lookupNode(QNodeId id) const;
     QVector<QNode *> lookupNodes(const QVector<QNodeId> &ids) const;
     QNodeId nodeIdFromObservable(QObservableInterface *observable) const;
 
@@ -87,10 +87,10 @@ public:
     Qt3DCore::QLockableObserverInterface *arbiter() const;
 
     // Component -> Entities
-    QList<QNodeId> entitiesForComponent(const QNodeId &id) const;
-    void addEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
-    void removeEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
-    bool hasEntityForComponent(const QNodeId &componentUuid, const QNodeId &entityUuid);
+    QList<QNodeId> entitiesForComponent(QNodeId id) const;
+    void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
+    void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
+    bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
 
 private:
     Q_DECLARE_PRIVATE(QScene)

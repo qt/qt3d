@@ -73,8 +73,8 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void setInputHandler(InputHandler *handler);
 
-    void addMouseInput(const Qt3DCore::QNodeId &input);
-    void removeMouseInput(const Qt3DCore::QNodeId &input);
+    void addMouseInput(Qt3DCore::QNodeId input);
+    void removeMouseInput(Qt3DCore::QNodeId input);
 
     float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
@@ -118,8 +118,8 @@ public:
     explicit MouseControllerFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     QInputAspect *m_inputAspect;

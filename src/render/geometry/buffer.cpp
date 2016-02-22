@@ -157,12 +157,12 @@ Qt3DCore::QBackendNode *BufferFunctor::create(Qt3DCore::QNode *frontend) const
     return buffer;
 }
 
-Qt3DCore::QBackendNode *BufferFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *BufferFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void BufferFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void BufferFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     return m_manager->releaseResource(id);
 }

@@ -83,8 +83,8 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    void appendFilter(const Qt3DCore::QNodeId &criterionId);
-    void removeFilter(const Qt3DCore::QNodeId &criterionId);
+    void appendFilter(Qt3DCore::QNodeId criterionId);
+    void removeFilter(Qt3DCore::QNodeId criterionId);
 
     QList<Qt3DCore::QNodeId> m_filters;
     ParameterPack m_parameterPack;

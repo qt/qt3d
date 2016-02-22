@@ -381,7 +381,7 @@ void KeyboardController::cleanup()
     m_keyStates.keys[4] = 0;
 }
 
-void KeyboardController::requestFocusForInput(const Qt3DCore::QNodeId &inputId)
+void KeyboardController::requestFocusForInput(Qt3DCore::QNodeId inputId)
 {
     // Saves the last inputId, this will then be used in an Aspect Job to determine which
     // input will have the focus. This in turn will call KeyboardInput::setFocus which will
@@ -394,7 +394,7 @@ void KeyboardController::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-void KeyboardController::addKeyboardInput(const Qt3DCore::QNodeId &input)
+void KeyboardController::addKeyboardInput(Qt3DCore::QNodeId input)
 {
     if (!m_keyboardInputs.contains(input)) {
         m_keyboardInputs.append(input);
@@ -402,13 +402,13 @@ void KeyboardController::addKeyboardInput(const Qt3DCore::QNodeId &input)
     }
 }
 
-void KeyboardController::removeKeyboardInput(const Qt3DCore::QNodeId &input)
+void KeyboardController::removeKeyboardInput(Qt3DCore::QNodeId input)
 {
     m_keyboardInputs.removeAll(input);
     m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
-void KeyboardController::setCurrentFocusItem(const Qt3DCore::QNodeId &input)
+void KeyboardController::setCurrentFocusItem(Qt3DCore::QNodeId input)
 {
     m_currentFocusItem = input;
 }
@@ -465,12 +465,12 @@ Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *front
     return controller;
 }
 
-Qt3DCore::QBackendNode *KeyboardControllerFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *KeyboardControllerFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->keyboardControllerManager()->lookupResource(id);
 }
 
-void KeyboardControllerFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void KeyboardControllerFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(id));
     m_handler->keyboardControllerManager()->releaseResource(id);

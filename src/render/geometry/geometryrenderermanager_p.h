@@ -72,7 +72,7 @@ public:
     ~GeometryRendererManager();
 
     // Aspect Thread
-    void addDirtyGeometryRenderer(const Qt3DCore::QNodeId &bufferId);
+    void addDirtyGeometryRenderer(Qt3DCore::QNodeId bufferId);
     QVector<Qt3DCore::QNodeId> dirtyGeometryRenderers();
 
     void requestTriangleDataRefreshForGeometryRenderer(const Qt3DCore::QNodeId geometryRenderer);

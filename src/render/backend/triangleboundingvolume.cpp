@@ -99,7 +99,7 @@ TriangleBoundingVolume::TriangleBoundingVolume()
 /*!
     The vertices a, b, c are assumed to be in counter clockwise order.
  */
-TriangleBoundingVolume::TriangleBoundingVolume(const Qt3DCore::QNodeId &id, const QVector3D &a, const QVector3D &b, const QVector3D &c)
+TriangleBoundingVolume::TriangleBoundingVolume(Qt3DCore::QNodeId id, const QVector3D &a, const QVector3D &b, const QVector3D &c)
     : QBoundingVolume()
     , m_id(id)
     , m_a(a)

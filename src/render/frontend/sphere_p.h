@@ -67,13 +67,13 @@ namespace Render {
 class QT3DRENDERSHARED_PRIVATE_EXPORT Sphere : public QBoundingSphere
 {
 public:
-    inline Sphere(const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
+    inline Sphere(Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
         : m_center()
         , m_radius(0.0f)
         , m_id(i)
     {}
 
-    inline Sphere(const QVector3D &c, float r, const Qt3DCore::QNodeId &i = Qt3DCore::QNodeId())
+    inline Sphere(const QVector3D &c, float r, Qt3DCore::QNodeId i = Qt3DCore::QNodeId())
         : m_center(c)
         , m_radius(r)
         , m_id(i)

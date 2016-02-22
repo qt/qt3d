@@ -74,8 +74,8 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
-    void removeRenderAttachment(const Qt3DCore::QNodeId &attachmentId);
+    void appendRenderAttachment(Qt3DCore::QNodeId attachmentId);
+    void removeRenderAttachment(Qt3DCore::QNodeId attachmentId);
 
     QList<Qt3DCore::QNodeId> renderAttachments() const;
 

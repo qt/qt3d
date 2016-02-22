@@ -65,12 +65,12 @@ Qt3DCore::QBackendNode *RenderLightFunctor::create(Qt3DCore::QNode *frontend) co
     return backend;
 }
 
-Qt3DCore::QBackendNode *RenderLightFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderLightFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_managers->lightManager()->lookupResource(id);
 }
 
-void RenderLightFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RenderLightFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_managers->lightManager()->releaseResource(id);
 }

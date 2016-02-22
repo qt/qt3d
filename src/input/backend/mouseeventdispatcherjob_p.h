@@ -65,7 +65,7 @@ class InputHandler;
 class MouseEventDispatcherJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit MouseEventDispatcherJob(const Qt3DCore::QNodeId &input, const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
+    explicit MouseEventDispatcherJob(Qt3DCore::QNodeId input, const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
     void setInputHandler(InputHandler *handler);
     void run() Q_DECL_FINAL;
 

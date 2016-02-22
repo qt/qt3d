@@ -443,7 +443,7 @@ void PickBoundingVolumeJob::run()
     m_mouseEvents.clear();
 }
 
-void PickBoundingVolumeJob::viewMatrixForCamera(const Qt3DCore::QNodeId &cameraId,
+void PickBoundingVolumeJob::viewMatrixForCamera(Qt3DCore::QNodeId cameraId,
                                                 QMatrix4x4 &viewMatrix,
                                                 QMatrix4x4 &projectionMatrix) const
 {
@@ -475,7 +475,7 @@ QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) cons
 
 Qt3DCore::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &pos,
                                                                 const QRectF &relativeViewport,
-                                                                const Qt3DCore::QNodeId &cameraId) const
+                                                                Qt3DCore::QNodeId cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;

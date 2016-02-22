@@ -51,7 +51,7 @@ class QScenePropertyChangePrivate;
 class QT3DCORESHARED_EXPORT QScenePropertyChange : public QSceneChange
 {
 public:
-    QScenePropertyChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
+    QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
     virtual ~QScenePropertyChange();
 
     const char *propertyName() const;
@@ -66,7 +66,7 @@ public:
 protected:
     Q_DECLARE_PRIVATE(QScenePropertyChange)
     QScenePropertyChange(QScenePropertyChangePrivate &dd);
-    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, Priority priority = Standard);
+    QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, Priority priority = Standard);
 };
 
 typedef QSharedPointer<QScenePropertyChange> QScenePropertyChangePtr;

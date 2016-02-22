@@ -56,7 +56,7 @@ QNodeId QNodeId::createId()
 }
 
 #ifndef QT_NO_DEBUG_STREAM
-QDebug operator<<(QDebug d, const QNodeId &id)
+QDebug operator<<(QDebug d, QNodeId id)
 {
     d << id.id();
     return d;

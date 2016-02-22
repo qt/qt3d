@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
-LoadSceneJob::LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &m_sceneComponent)
+LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponent)
     : QAspectJob()
     , m_source(source)
     , m_sceneComponent(m_sceneComponent)

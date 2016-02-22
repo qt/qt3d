@@ -156,13 +156,13 @@ QList<Qt3DCore::QNodeId> Technique::parameters() const
     return m_parameterPack.parameters();
 }
 
-void Technique::appendRenderPass(const Qt3DCore::QNodeId &renderPassId)
+void Technique::appendRenderPass(Qt3DCore::QNodeId renderPassId)
 {
     if (!m_renderPasses.contains(renderPassId))
         m_renderPasses.append(renderPassId);
 }
 
-void Technique::removeRenderPass(const Qt3DCore::QNodeId &renderPassId)
+void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
 {
     m_renderPasses.removeOne(renderPassId);
 }
@@ -182,13 +182,13 @@ QGraphicsApiFilter *Technique::graphicsApiFilter() const
     return m_graphicsApiFilter;
 }
 
-void Technique::appendAnnotation(const Qt3DCore::QNodeId &criterionId)
+void Technique::appendAnnotation(Qt3DCore::QNodeId criterionId)
 {
     if (!m_annotationList.contains(criterionId))
         m_annotationList.append(criterionId);
 }
 
-void Technique::removeAnnotation(const Qt3DCore::QNodeId &criterionId)
+void Technique::removeAnnotation(Qt3DCore::QNodeId criterionId)
 {
     m_annotationList.removeOne(criterionId);
 }

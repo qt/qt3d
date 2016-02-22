@@ -346,7 +346,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_cleanupJob->setRoot(d->m_renderer->sceneRoot());
 
         const QVector<QNodeId> texturesPending = manager->textureDataManager()->texturesPending();
-        Q_FOREACH (const QNodeId &textureId, texturesPending) {
+        Q_FOREACH (QNodeId textureId, texturesPending) {
             Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
@@ -460,7 +460,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::createRenderBufferJobs()
     const QVector<QNodeId> dirtyBuffers = d->m_nodeManagers->bufferManager()->dirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
 
-    Q_FOREACH (const QNodeId &bufId, dirtyBuffers) {
+    Q_FOREACH (QNodeId bufId, dirtyBuffers) {
         Render::HBuffer bufferHandle = d->m_nodeManagers->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
         if (!bufferHandle.isNull()) {
             // Create new buffer job
@@ -480,7 +480,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::createGeometryRendererJobs()
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
 
-    Q_FOREACH (const QNodeId &geoRendererId, dirtyGeometryRenderers) {
+    Q_FOREACH (QNodeId geoRendererId, dirtyGeometryRenderers) {
         Render::HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
         if (!geometryRendererHandle.isNull()) {
             Render::LoadGeometryJobPtr job(new Render::LoadGeometryJob(geometryRendererHandle));

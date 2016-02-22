@@ -141,7 +141,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         rv->setDrawBuffers(targetSelector->drawBuffers());
 
                         // Copy attachments
-                        Q_FOREACH (const QNodeId &attachmentId, renderTarget->renderAttachments()) {
+                        Q_FOREACH (QNodeId attachmentId, renderTarget->renderAttachments()) {
                             RenderAttachment *attachment = manager->attachmentManager()->lookupResource(attachmentId);
                             if (attachment)
                                 rv->addRenderAttachment(attachment->attachment());
@@ -281,11 +281,11 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (const QNodeId &filterAnnotationId, techniqueFilter->filters()) {
+            Q_FOREACH (QNodeId filterAnnotationId, techniqueFilter->filters()) {
                 foundMatch = false;
                 Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
 
-                Q_FOREACH (const QNodeId &techniqueAnnotationId, technique->annotations()) {
+                Q_FOREACH (QNodeId techniqueAnnotationId, technique->annotations()) {
                     Annotation *techniqueAnnotation = manager->criterionManager()->lookupResource(techniqueAnnotationId);
                     if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
                         break;
@@ -316,7 +316,7 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
     Q_ASSERT(technique);
 
     RenderRenderPassList passes;
-    Q_FOREACH (const QNodeId &passId, technique->renderPasses()) {
+    Q_FOREACH (QNodeId passId, technique->renderPasses()) {
         RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
         if (renderPass) {
@@ -327,11 +327,11 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
             if (!foundMatch && renderPass->annotations().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (const QNodeId &filterAnnotationId, passFilter->filters()) {
+                Q_FOREACH (QNodeId filterAnnotationId, passFilter->filters()) {
                     foundMatch = false;
                     Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
 
-                    Q_FOREACH (const QNodeId &passAnnotationId, renderPass->annotations()) {
+                    Q_FOREACH (QNodeId passAnnotationId, renderPass->annotations()) {
                         Annotation *passAnnotation = manager->criterionManager()->lookupResource(passAnnotationId);
                         if ((foundMatch = (*passAnnotation == *filterAnnotation)))
                             break;

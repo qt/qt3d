@@ -72,13 +72,13 @@ QList<Qt3DCore::QNodeId> RenderPassFilter::filters() const
     return m_filters;
 }
 
-void RenderPassFilter::appendFilter(const Qt3DCore::QNodeId &criterionId)
+void RenderPassFilter::appendFilter(Qt3DCore::QNodeId criterionId)
 {
     if (!m_filters.contains(criterionId))
         m_filters.append(criterionId);
 }
 
-void RenderPassFilter::removeFilter(const Qt3DCore::QNodeId &criterionId)
+void RenderPassFilter::removeFilter(Qt3DCore::QNodeId criterionId)
 {
     m_filters.removeOne(criterionId);
 }

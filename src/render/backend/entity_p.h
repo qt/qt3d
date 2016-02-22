@@ -111,7 +111,7 @@ public:
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
-    void removeComponent(const Qt3DCore::QNodeId &nodeId);
+    void removeComponent(Qt3DCore::QNodeId nodeId);
 
     bool isEnabled() const;
     void setEnabled(bool isEnabled);
@@ -281,8 +281,8 @@ class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
 public:
     explicit RenderEntityFunctor(NodeManagers *manager);
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     NodeManagers *m_nodeManagers;

@@ -75,7 +75,7 @@ void QScenePropertyChangePrivate::operator delete(void *ptr, size_t size)
     QScenePropertyChangePrivate::m_allocator->deallocateRawMemory(ptr, size);
 }
 
-QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
+QScenePropertyChange::QScenePropertyChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
     : QSceneChange(*new QScenePropertyChangePrivate, type, observableType, subjectId, priority)
 {
 }
@@ -87,7 +87,7 @@ QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd)
 }
 
 /*! \internal */
-QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
+QScenePropertyChange::QScenePropertyChange(QScenePropertyChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
     : QSceneChange(dd, type, observableType, subjectId, priority)
 {
 }

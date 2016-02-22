@@ -72,7 +72,7 @@ class Q_AUTOTEST_EXPORT TriangleBoundingVolume : public QBoundingVolume
 {
 public:
     TriangleBoundingVolume();
-    explicit TriangleBoundingVolume(const Qt3DCore::QNodeId &id,
+    explicit TriangleBoundingVolume(Qt3DCore::QNodeId id,
                                     const QVector3D &a,
                                     const QVector3D &b,
                                     const QVector3D &c);

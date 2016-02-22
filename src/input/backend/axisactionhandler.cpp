@@ -120,12 +120,12 @@ Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::create(Qt3DCore::QNode *fr
     return backend;
 }
 
-Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *AxisActionHandlerNodeFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void AxisActionHandlerNodeFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void AxisActionHandlerNodeFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     HAxisActionHandler handle = m_manager->lookupHandle(id);
     m_manager->releaseResource(id);

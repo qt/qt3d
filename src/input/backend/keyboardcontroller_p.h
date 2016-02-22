@@ -74,13 +74,13 @@ public:
 
     void cleanup() Q_DECL_OVERRIDE;
 
-    void requestFocusForInput(const Qt3DCore::QNodeId &inputId);
+    void requestFocusForInput(Qt3DCore::QNodeId inputId);
     void setInputHandler(InputHandler *handler);
 
-    void addKeyboardInput(const Qt3DCore::QNodeId &input);
-    void removeKeyboardInput(const Qt3DCore::QNodeId &input);
+    void addKeyboardInput(Qt3DCore::QNodeId input);
+    void removeKeyboardInput(Qt3DCore::QNodeId input);
 
-    void setCurrentFocusItem(const Qt3DCore::QNodeId &input);
+    void setCurrentFocusItem(Qt3DCore::QNodeId input);
 
     float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
     bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
@@ -276,8 +276,8 @@ public:
     explicit KeyboardControllerFunctor(QInputAspect *inputaspect, InputHandler *handler);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
 
 private:
     QInputAspect *m_inputAspect;

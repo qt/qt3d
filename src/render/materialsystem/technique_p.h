@@ -84,11 +84,11 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QList<Qt3DCore::QNodeId> parameters() const;
 
-    void appendRenderPass(const Qt3DCore::QNodeId &renderPassId);
-    void removeRenderPass(const Qt3DCore::QNodeId &renderPassId);
+    void appendRenderPass(Qt3DCore::QNodeId renderPassId);
+    void removeRenderPass(Qt3DCore::QNodeId renderPassId);
 
-    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
-    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void appendAnnotation(Qt3DCore::QNodeId criterionId);
+    void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
     QList<Qt3DCore::QNodeId> annotations() const;
     QList<Qt3DCore::QNodeId> renderPasses() const;

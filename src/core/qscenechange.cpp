@@ -70,7 +70,7 @@ QSceneChangePrivate::~QSceneChangePrivate()
 {
 }
 
-QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
     : d_ptr(new QSceneChangePrivate)
 {
     d_ptr->q_ptr = this;
@@ -95,7 +95,7 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd)
 }
 
 /*! \internal */
-QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, const QNodeId &subjectId, QSceneChange::Priority priority)
+QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableType observableType, QNodeId subjectId, QSceneChange::Priority priority)
     : d_ptr(&dd)
 {
     d_ptr->q_ptr = this;

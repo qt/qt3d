@@ -51,7 +51,7 @@ TextureDataManager::TextureDataManager()
 {}
 
 // Called from AspectThread sync
-void TextureDataManager::addToPendingTextures(const Qt3DCore::QNodeId &textureId)
+void TextureDataManager::addToPendingTextures(Qt3DCore::QNodeId textureId)
 {
     // This simple check ensures that we won't be having n jobs
     // for one mesh, in case n Materials are referencing the said

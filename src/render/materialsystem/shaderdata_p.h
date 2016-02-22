@@ -111,8 +111,8 @@ protected:
 
     void readPeerProperties(QShaderData *peer);
     void clearUpdatedProperties();
-    static ShaderData *lookupResource(NodeManagers *managers, const Qt3DCore::QNodeId &id);
-    ShaderData *lookupResource(const Qt3DCore::QNodeId &id);
+    static ShaderData *lookupResource(NodeManagers *managers, Qt3DCore::QNodeId id);
+    ShaderData *lookupResource(Qt3DCore::QNodeId id);
 
     friend class RenderShaderDataFunctor;
 };
@@ -123,8 +123,8 @@ public:
     explicit RenderShaderDataFunctor(NodeManagers *managers);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_FINAL;
-    Qt3DCore::QBackendNode *get(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
-    void destroy(const Qt3DCore::QNodeId &id) const Q_DECL_FINAL;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
 
 private:
     NodeManagers *m_managers;

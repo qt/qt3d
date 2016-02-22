@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-AssignKeyboardFocusJob::AssignKeyboardFocusJob(const Qt3DCore::QNodeId &controller)
+AssignKeyboardFocusJob::AssignKeyboardFocusJob(Qt3DCore::QNodeId controller)
     : QAspectJob()
     , m_inputHandler(Q_NULLPTR)
     , m_keyboardController(controller)

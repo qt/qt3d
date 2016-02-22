@@ -69,7 +69,7 @@ class NodeManagers;
 class LoadSceneJob : public Qt3DCore::QAspectJob
 {
 public:
-    explicit LoadSceneJob(const QUrl &source, const Qt3DCore::QNodeId &sceneComponent);
+    explicit LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId sceneComponent);
     void setNodeManagers(NodeManagers *managers) { m_managers = managers; }
     void setSceneParsers(const QList<QAbstractSceneParser *> sceneParsers) { m_parsers = sceneParsers; }
 

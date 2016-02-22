@@ -204,7 +204,7 @@ public:
     ~ShaderParameterPack();
 
     void setUniform(const int glslNameId, const QUniformValue &val);
-    void setTexture(const int glslNameId, const Qt3DCore::QNodeId &id);
+    void setTexture(const int glslNameId, Qt3DCore::QNodeId id);
     void setUniformBuffer(const BlockToUBO &blockToUBO);
     void setShaderStorageBuffer(const BlockToSSBO &blockToSSBO);
 
@@ -215,7 +215,7 @@ public:
     struct NamedTexture
     {
         NamedTexture() {}
-        NamedTexture(const int nm, const Qt3DCore::QNodeId &t)
+        NamedTexture(const int nm, Qt3DCore::QNodeId t)
             : glslNameId(nm)
             , texId(t)
         { }

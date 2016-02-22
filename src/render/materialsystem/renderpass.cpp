@@ -151,13 +151,13 @@ QList<Qt3DCore::QNodeId> RenderPass::parameters() const
     return m_parameterPack.parameters();
 }
 
-void RenderPass::appendAnnotation(const Qt3DCore::QNodeId &annotationId)
+void RenderPass::appendAnnotation(Qt3DCore::QNodeId annotationId)
 {
     if (!m_annotationList.contains(annotationId))
         m_annotationList.append(annotationId);
 }
 
-void RenderPass::removeAnnotation(const Qt3DCore::QNodeId &annotationId)
+void RenderPass::removeAnnotation(Qt3DCore::QNodeId annotationId)
 {
     m_annotationList.removeOne(annotationId);
 }
@@ -168,7 +168,7 @@ void RenderPass::appendBinding(const ParameterMapping &binding)
         m_bindings[binding.id()] = binding;
 }
 
-void RenderPass::removeBinding(const Qt3DCore::QNodeId &bindingId)
+void RenderPass::removeBinding(Qt3DCore::QNodeId bindingId)
 {
     m_bindings.remove(bindingId);
 }

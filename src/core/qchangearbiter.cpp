@@ -212,7 +212,7 @@ QScene *QChangeArbiter::scene() const
 }
 
 void QChangeArbiter::registerObserver(QObserverInterface *observer,
-                                      const QNodeId &nodeId,
+                                      QNodeId nodeId,
                                       ChangeFlags changeFlags)
 {
     QMutexLocker locker(&m_mutex);
@@ -227,7 +227,7 @@ void QChangeArbiter::registerSceneObserver(QSceneObserverInterface *observer)
         m_sceneObservers << observer;
 }
 
-void QChangeArbiter::unregisterObserver(QObserverInterface *observer, const QNodeId &nodeId)
+void QChangeArbiter::unregisterObserver(QObserverInterface *observer, QNodeId nodeId)
 {
     QMutexLocker locker(&m_mutex);
     if (m_nodeObservations.contains(nodeId)) {

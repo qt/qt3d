@@ -106,7 +106,7 @@ void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-void Effect::appendRenderTechnique(const Qt3DCore::QNodeId &technique)
+void Effect::appendRenderTechnique(Qt3DCore::QNodeId technique)
 {
     if (!m_techniques.contains(technique))
         m_techniques.append(technique);

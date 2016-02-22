@@ -107,12 +107,12 @@ Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNode *fronte
     return backend;
 }
 
-Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
 }
 
-void LogicalDeviceNodeFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void LogicalDeviceNodeFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     HLogicalDevice handle = m_manager->lookupHandle(id);
     m_manager->releaseResource(id);

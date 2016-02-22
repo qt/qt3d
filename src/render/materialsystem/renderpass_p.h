@@ -92,11 +92,11 @@ public:
     QList<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    void appendAnnotation(const Qt3DCore::QNodeId &criterionId);
-    void removeAnnotation(const Qt3DCore::QNodeId &criterionId);
+    void appendAnnotation(Qt3DCore::QNodeId criterionId);
+    void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
     void appendBinding(const ParameterMapping &binding);
-    void removeBinding(const Qt3DCore::QNodeId &bindingId);
+    void removeBinding(Qt3DCore::QNodeId bindingId);
 
     Qt3DCore::QNodeId m_shaderUuid;
     QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;

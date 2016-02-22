@@ -77,7 +77,7 @@ FrameGraphManager *FrameGraphNode::manager() const
     return m_manager;
 }
 
-void FrameGraphNode::setParentId(const Qt3DCore::QNodeId &parentId)
+void FrameGraphNode::setParentId(Qt3DCore::QNodeId parentId)
 {
     if (m_parentId != parentId) {
         m_parentId = parentId;
@@ -87,7 +87,7 @@ void FrameGraphNode::setParentId(const Qt3DCore::QNodeId &parentId)
     }
 }
 
-void FrameGraphNode::appendChildId(const Qt3DCore::QNodeId &childId)
+void FrameGraphNode::appendChildId(Qt3DCore::QNodeId childId)
 {
     if (!m_childrenIds.contains(childId)) {
         FrameGraphNode *child = m_manager->lookupNode(childId);
@@ -98,7 +98,7 @@ void FrameGraphNode::appendChildId(const Qt3DCore::QNodeId &childId)
     }
 }
 
-void FrameGraphNode::removeChildId(const Qt3DCore::QNodeId &childId)
+void FrameGraphNode::removeChildId(Qt3DCore::QNodeId childId)
 {
     if (m_childrenIds.contains(childId)) {
         FrameGraphNode *child = m_manager->lookupNode(childId);
@@ -129,7 +129,7 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
     QList<FrameGraphNode *> children;
     children.reserve(m_childrenIds.size());
 
-    Q_FOREACH (const Qt3DCore::QNodeId &id, m_childrenIds) {
+    Q_FOREACH (Qt3DCore::QNodeId id, m_childrenIds) {
         FrameGraphNode *child = m_manager->lookupNode(id);
         if (child != Q_NULLPTR)
             children << child;
@@ -153,13 +153,13 @@ Qt3DCore::QBackendNode *FrameGraphComponentFunctor::create(Qt3DCore::QNode *fron
     return Q_NULLPTR;
 }
 
-Qt3DCore::QBackendNode *FrameGraphComponentFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *FrameGraphComponentFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     return Q_NULLPTR;
 }
 
-void FrameGraphComponentFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void FrameGraphComponentFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
 }

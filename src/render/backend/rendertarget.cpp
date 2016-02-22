@@ -67,13 +67,13 @@ void RenderTarget::cleanup()
 {
 }
 
-void RenderTarget::appendRenderAttachment(const QNodeId &attachmentId)
+void RenderTarget::appendRenderAttachment(QNodeId attachmentId)
 {
     if (!m_renderAttachments.contains(attachmentId))
         m_renderAttachments.append(attachmentId);
 }
 
-void RenderTarget::removeRenderAttachment(const QNodeId &attachmentId)
+void RenderTarget::removeRenderAttachment(QNodeId attachmentId)
 {
     m_renderAttachments.removeOne(attachmentId);
 }

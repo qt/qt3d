@@ -51,7 +51,7 @@ public:
     ~tst_FrameGraphNode()
     {}
 
-    void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, const Qt3DCore::QNodeId &id)
+    void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, Qt3DCore::QNodeId id)
     {
         Qt3DCore::QBackendNodePrivate::get(node)->m_peerUuid = id;
     }

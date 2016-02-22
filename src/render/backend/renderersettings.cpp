@@ -98,13 +98,13 @@ Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *fronten
     return settings;
 }
 
-Qt3DCore::QBackendNode *RendererSettingsFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RendererSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     return Q_NULLPTR;
 }
 
-void RendererSettingsFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RendererSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     // Deletes the old settings object

@@ -116,12 +116,12 @@ Qt3DCore::QBackendNode *RenderSceneFunctor::create(Qt3DCore::QNode *frontend) co
     return scene;
 }
 
-Qt3DCore::QBackendNode *RenderSceneFunctor::get(const Qt3DCore::QNodeId &id) const
+Qt3DCore::QBackendNode *RenderSceneFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_sceneManager->lookupResource(id);
 }
 
-void RenderSceneFunctor::destroy(const Qt3DCore::QNodeId &id) const
+void RenderSceneFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_sceneManager->releaseResource(id);
 }
