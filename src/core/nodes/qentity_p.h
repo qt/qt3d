@@ -68,7 +68,7 @@ public :
 
     QNodeId parentEntityId() const;
 
-    QComponentList m_components;
+    QComponentVector m_components;
     bool m_visible;
 
     // TODO: Is a bool enough here or do we need additional states for entities?

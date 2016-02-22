@@ -52,7 +52,7 @@ namespace Qt3DCore {
 class QComponent;
 class QEntityPrivate;
 
-typedef QList<QComponent*> QComponentList;
+typedef QVector<QComponent*> QComponentVector;
 
 class QT3DCORESHARED_EXPORT QEntity : public QNode
 {
@@ -61,7 +61,7 @@ public:
     explicit QEntity(QNode *parent = 0);
     virtual ~QEntity();
 
-    QComponentList components() const;
+    QComponentVector components() const;
 
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);

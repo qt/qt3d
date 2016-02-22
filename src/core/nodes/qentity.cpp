@@ -120,7 +120,7 @@ void QEntity::copy(const QNode *ref)
     }
 }
 /*!
-    \typedef Qt3DCore::QComponentList
+    \typedef Qt3DCore::QComponentVector
     \relates Qt3DCore::QEntity
 
     List of QComponent pointers.
@@ -129,7 +129,7 @@ void QEntity::copy(const QNode *ref)
 /*!
     Returns the list of Qt3DCore::QComponent instances the entity is referencing.
 */
-QList<QComponent *> QEntity::components() const
+QComponentVector QEntity::components() const
 {
     Q_D(const QEntity);
     return d->m_components;
