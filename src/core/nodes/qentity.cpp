@@ -87,7 +87,9 @@ QEntity::QEntity(QNode *parent)
 QEntity::~QEntity()
 {
     // remove all component aggregations
-    removeAllComponents();
+    Q_D(const QEntity);
+    Q_FOREACH (QComponent *comp, d->m_components)
+        removeComponent(comp);
 
     QNode::cleanup();
     // If all children are removed
@@ -189,16 +191,6 @@ void QEntity::removeComponent(QComponent *comp)
     }
 
     d->m_components.removeOne(comp);
-}
-
-/*!
-    Remove all references to the components.
-*/
-void QEntity::removeAllComponents()
-{
-    Q_D(const QEntity);
-    Q_FOREACH (QComponent *comp, d->m_components)
-        removeComponent(comp);
 }
 
 /*!

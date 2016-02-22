@@ -65,7 +65,6 @@ public:
 
     void addComponent(QComponent *comp);
     void removeComponent(QComponent *comp);
-    void removeAllComponents();
 
     QEntity *parentEntity() const;
 
