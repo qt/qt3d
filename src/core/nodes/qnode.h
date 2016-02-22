@@ -93,7 +93,7 @@ public:
     bool isEnabled() const;
 
 public Q_SLOTS:
-    virtual void setParent(QNode *parent);
+    void setParent(QNode *parent);
     void setEnabled(bool isEnabled);
 
 Q_SIGNALS:
