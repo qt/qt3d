@@ -81,7 +81,6 @@ public:
     virtual void updateFromPeer(QNode *peer) = 0;
 
 protected:
-    QBackendNode *createBackendNode(QNode *frontend) const;
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
 
