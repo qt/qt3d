@@ -111,7 +111,7 @@ private:
     QVector<QBoundingVolume *> m_triangleVolumes;
 };
 
-class GeometryRendererFunctor : public Qt3DCore::QBackendNodeFunctor
+class GeometryRendererFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit GeometryRendererFunctor(GeometryRendererManager *manager);

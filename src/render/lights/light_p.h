@@ -67,7 +67,7 @@ public:
 
 };
 
-class RenderLightFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderLightFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderLightFunctor(NodeManagers *managers);

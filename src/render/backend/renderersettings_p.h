@@ -75,7 +75,7 @@ private:
     QRendererSettings::PickResultMode m_pickResultMode;
 };
 
-class RendererSettingsFunctor : public Qt3DCore::QBackendNodeFunctor
+class RendererSettingsFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RendererSettingsFunctor(AbstractRenderer *renderer);

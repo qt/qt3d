@@ -161,7 +161,7 @@ private:
     void updateDNA();
 };
 
-class TextureFunctor : public Qt3DCore::QBackendNodeFunctor
+class TextureFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TextureFunctor(TextureManager *textureManager,

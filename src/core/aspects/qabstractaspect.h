@@ -54,10 +54,10 @@ class QAspectManager;
 class QNode;
 class QEntity;
 class QAbstractAspectPrivate;
-class QBackendNodeFunctor;
+class QBackendNodeMapper;
 
 typedef QSharedPointer<QAspectJob> QAspectJobPtr;
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
 class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 {
@@ -70,8 +70,8 @@ protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
 
     template<class Frontend>
-    void registerBackendType(const QBackendNodeFunctorPtr &functor);
-    void registerBackendType(const QMetaObject &, const QBackendNodeFunctorPtr &functor);
+    void registerBackendType(const QBackendNodeMapperPtr &functor);
+    void registerBackendType(const QMetaObject &, const QBackendNodeMapperPtr &functor);
 
 private:
     virtual QVariant executeCommand(const QStringList &args);
@@ -92,7 +92,7 @@ private:
 };
 
 template<class Frontend>
-void QAbstractAspect::registerBackendType(const QBackendNodeFunctorPtr &functor)
+void QAbstractAspect::registerBackendType(const QBackendNodeMapperPtr &functor)
 {
     registerBackendType(Frontend::staticMetaObject, functor);
 }

@@ -52,16 +52,16 @@ class QBackendNodePrivate;
 class QBackendNode;
 class QAspectEngine;
 
-class QT3DCORESHARED_EXPORT QBackendNodeFunctor
+class QT3DCORESHARED_EXPORT QBackendNodeMapper
 {
 public:
-    virtual ~QBackendNodeFunctor() {}
+    virtual ~QBackendNodeMapper() {}
     virtual QBackendNode *create(QNode *frontend) const = 0;
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;
 };
 
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 
 class QT3DCORESHARED_EXPORT QBackendNode
 {

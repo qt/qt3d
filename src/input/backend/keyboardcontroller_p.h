@@ -270,7 +270,7 @@ private:
     KeyStates m_keyStates;
 };
 
-class KeyboardControllerFunctor : public Qt3DCore::QBackendNodeFunctor
+class KeyboardControllerFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit KeyboardControllerFunctor(QInputAspect *inputaspect, InputHandler *handler);

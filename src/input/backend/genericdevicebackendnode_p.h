@@ -83,7 +83,7 @@ private:
     mutable QSharedPointer<QMutex> m_mutex;
 };
 
-class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeFunctor
+class GenericDeviceBackendFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit GenericDeviceBackendFunctor(QInputAspect *inputaspect, InputHandler *handler);

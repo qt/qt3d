@@ -87,7 +87,7 @@ QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
 
 void QLogicAspect::registerBackendTypes()
 {
-    registerBackendType<QLogicComponent>(QBackendNodeFunctorPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
+    registerBackendType<QLogicComponent>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)

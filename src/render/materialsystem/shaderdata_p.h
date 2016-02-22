@@ -117,7 +117,7 @@ protected:
     friend class RenderShaderDataFunctor;
 };
 
-class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderShaderDataFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderShaderDataFunctor(NodeManagers *managers);

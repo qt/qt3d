@@ -82,10 +82,10 @@ QAbstractAspect::QAbstractAspect(QObject *parent)
 */
 
 /*!
-    \typedef Qt3DCore::QBackendNodeFunctorPtr
+    \typedef Qt3DCore::QBackendNodeMapperPtr
     \relates Qt3DCore::QAbstractAspect
 
-    A shared pointer for QBackendNodeFunctor.
+    A shared pointer for QBackendNodeMapper.
 */
 
 /*!
@@ -98,7 +98,7 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
 /*!
     Registers backend.
 */
-void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeFunctorPtr &functor)
+void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackendNodeMapperPtr &functor)
 {
     Q_D(QAbstractAspect);
     d->m_backendCreatorFunctors.insert(&obj, functor);
@@ -130,7 +130,7 @@ QVariant QAbstractAspect::executeCommand(const QStringList &args)
 QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 {
     const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeFunctorPtr functor;
+    QBackendNodeMapperPtr functor;
     while (metaObj != Q_NULLPTR && functor.isNull()) {
         functor = m_backendCreatorFunctors.value(metaObj);
         metaObj = metaObj->superClass();
@@ -161,7 +161,7 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
 {
     const QMetaObject *metaObj = frontend->metaObject();
-    QBackendNodeFunctorPtr functor;
+    QBackendNodeMapperPtr functor;
 
     while (metaObj != Q_NULLPTR && functor.isNull()) {
         functor = m_backendCreatorFunctors.value(metaObj);

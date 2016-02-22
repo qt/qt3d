@@ -87,7 +87,7 @@ private:
     bool m_enabled;
 };
 
-class KeyboardInputFunctor : public Qt3DCore::QBackendNodeFunctor
+class KeyboardInputFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit KeyboardInputFunctor(InputHandler *handler);

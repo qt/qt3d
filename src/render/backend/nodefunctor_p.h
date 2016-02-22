@@ -61,7 +61,7 @@ namespace Qt3DRender {
 namespace Render {
 
 template<class Backend, class Manager>
-class NodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class NodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit NodeFunctor(Manager *manager)

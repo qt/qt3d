@@ -82,7 +82,7 @@ private:
 };
 
 
-class LogicalDeviceNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class LogicalDeviceNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit LogicalDeviceNodeFunctor(LogicalDeviceManager *manager);

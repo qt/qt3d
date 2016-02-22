@@ -123,7 +123,7 @@ private:
 };
 
 template<typename Backend, typename Frontend>
-class FrameGraphNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class FrameGraphNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit FrameGraphNodeFunctor(FrameGraphManager *manager)
@@ -170,7 +170,7 @@ private:
     FrameGraphManager *m_manager;
 };
 
-class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeFunctor
+class FrameGraphComponentFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit FrameGraphComponentFunctor(AbstractRenderer *renderer);

@@ -76,7 +76,7 @@ private:
     QPointer<QObject> m_eventSource;
 };
 
-class InputSettingsFunctor : public Qt3DCore::QBackendNodeFunctor
+class InputSettingsFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit InputSettingsFunctor(InputHandler *handler);

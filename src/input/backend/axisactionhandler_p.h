@@ -83,7 +83,7 @@ private:
     ActionPayload m_lastActionStates;
 };
 
-class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class AxisActionHandlerNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit AxisActionHandlerNodeFunctor(AxisActionHandlerManager *manager);

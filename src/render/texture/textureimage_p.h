@@ -114,7 +114,7 @@ private:
     TextureImageDNA m_dna;
 };
 
-class TextureImageFunctor : public Qt3DCore::QBackendNodeFunctor
+class TextureImageFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit TextureImageFunctor(TextureManager *textureManager,

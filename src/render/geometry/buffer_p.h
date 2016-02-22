@@ -94,7 +94,7 @@ private:
     BufferManager *m_manager;
 };
 
-class BufferFunctor : public Qt3DCore::QBackendNodeFunctor
+class BufferFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit BufferFunctor(BufferManager *manager);

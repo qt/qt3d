@@ -85,7 +85,7 @@ private:
     InputHandler *m_inputHandler;
 };
 
-class MouseInputFunctor : public Qt3DCore::QBackendNodeFunctor
+class MouseInputFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit MouseInputFunctor(InputHandler *handler);

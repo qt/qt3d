@@ -99,7 +99,7 @@ public:
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
-    QHash<const QMetaObject*, QBackendNodeFunctorPtr> m_backendCreatorFunctors;
+    QHash<const QMetaObject*, QBackendNodeMapperPtr> m_backendCreatorFunctors;
 
     static QAbstractAspectPrivate *get(QAbstractAspect *aspect);
 };

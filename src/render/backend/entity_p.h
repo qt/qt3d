@@ -276,7 +276,7 @@ Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeJob>() const;
 template<>
 Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
 
-class RenderEntityFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderEntityFunctor(NodeManagers *manager);

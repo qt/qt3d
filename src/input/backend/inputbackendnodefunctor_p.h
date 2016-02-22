@@ -61,7 +61,7 @@ namespace Qt3DInput {
 namespace Input {
 
 template<class Backend, class Manager>
-class InputNodeFunctor : public Qt3DCore::QBackendNodeFunctor
+class InputNodeFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit InputNodeFunctor(Manager *manager)

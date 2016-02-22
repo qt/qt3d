@@ -112,7 +112,7 @@ private:
     float m_sensitivity;
 };
 
-class MouseControllerFunctor : public Qt3DCore::QBackendNodeFunctor
+class MouseControllerFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit MouseControllerFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);

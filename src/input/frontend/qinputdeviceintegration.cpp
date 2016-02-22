@@ -62,7 +62,7 @@ QInputDeviceIntegration::QInputDeviceIntegration(QInputDeviceIntegrationPrivate 
 {
 }
 
-void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeFunctorPtr &functor)
+void QInputDeviceIntegration::registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor)
 {
     Q_D(QInputDeviceIntegration);
     d->m_aspect->registerBackendType(metaObject, functor);

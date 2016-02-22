@@ -50,8 +50,8 @@
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
-class QBackendNodeFunctor;
-typedef QSharedPointer<QBackendNodeFunctor> QBackendNodeFunctorPtr;
+class QBackendNodeMapper;
+typedef QSharedPointer<QBackendNodeMapper> QBackendNodeMapperPtr;
 }
 
 
@@ -69,12 +69,12 @@ protected:
     explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = 0);
 
     template<class Frontend>
-    void registerBackendType(const Qt3DCore::QBackendNodeFunctorPtr &functor)
+    void registerBackendType(const Qt3DCore::QBackendNodeMapperPtr &functor)
     {
         registerBackendType(Frontend::staticMetaObject, functor);
     }
 
-    void registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeFunctorPtr &functor);
+    void registerBackendType(const QMetaObject &metaObject, const Qt3DCore::QBackendNodeMapperPtr &functor);
 
 public:
     void initialize(Qt3DInput::QInputAspect *aspect);

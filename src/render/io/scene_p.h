@@ -84,7 +84,7 @@ private:
     QUrl m_source;
 };
 
-class RenderSceneFunctor : public Qt3DCore::QBackendNodeFunctor
+class RenderSceneFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit RenderSceneFunctor(SceneManager *sceneManager);

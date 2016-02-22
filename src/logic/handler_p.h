@@ -80,7 +80,7 @@ private:
 };
 
 
-class HandlerFunctor : public Qt3DCore::QBackendNodeFunctor
+class HandlerFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
     explicit HandlerFunctor(Manager *handler);
