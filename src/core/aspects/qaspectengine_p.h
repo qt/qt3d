@@ -78,7 +78,7 @@ public:
     QPostman *m_postman;
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;
-    QList<QAbstractAspect*> m_aspects;
+    QVector<QAbstractAspect*> m_aspects;
 
     void initialize();
     void shutdown();

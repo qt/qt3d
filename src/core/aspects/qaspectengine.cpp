@@ -197,7 +197,7 @@ void QAspectEngine::registerAspect(const QString &name)
         registerAspect(aspect);
 }
 
-QList<QAbstractAspect *> QAspectEngine::aspects() const
+QVector<QAbstractAspect *> QAspectEngine::aspects() const
 {
     Q_D(const QAspectEngine);
     return d->m_aspects;

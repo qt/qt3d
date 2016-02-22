@@ -41,7 +41,7 @@
 #define QT3DCORE_QASPECTENGINE_H
 
 #include <QObject>
-#include <QList>
+#include <QVector>
 
 #include <Qt3DCore/qt3dcore_global.h>
 
@@ -68,7 +68,7 @@ public:
     void registerAspect(QAbstractAspect *aspect);
     void registerAspect(const QString &name);
 
-    QList<QAbstractAspect*> aspects() const;
+    QVector<QAbstractAspect*> aspects() const;
 
     QVariant executeCommand(const QString &command);
 
