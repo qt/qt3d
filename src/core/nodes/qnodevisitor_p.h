@@ -92,18 +92,18 @@ public:
 
     QNode *rootNode() const;
     QNode *currentNode() const;
-    void setPath(QNodeList path);
-    QNodeList path() const;
+    void setPath(QNodeVector path);
+    QNodeVector path() const;
     void append(QNode *n);
     void pop_back();
 
 private:
-    QNodeList m_path;
+    QNodeVector m_path;
 
     template<typename NodeVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN)
     {
-        setPath(QNodeList() << rootNode_);
+        setPath(QNodeVector() << rootNode_);
         if (rootNode_)
             visitNode(rootNode_, fN);
     }
@@ -111,7 +111,7 @@ private:
     template<typename NodeVisitorFunctor, typename EntityVisitorFunctor>
     void startTraversing(QNode *rootNode_, NodeVisitorFunctor fN, EntityVisitorFunctor fE)
     {
-        setPath(QNodeList() << rootNode_);
+        setPath(QNodeVector() << rootNode_);
         QEntity* rootEntity = qobject_cast<QEntity *>(rootNode_);
 
         if (rootEntity)

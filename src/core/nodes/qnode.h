@@ -57,7 +57,7 @@ class QNodePrivate;
 class QEntity;
 class QAspectEngine;
 
-typedef QList<QNode *> QNodeList;
+typedef QVector<QNode *> QNodeVector;
 typedef QSharedPointer<QNode> QNodePtr;
 
 #define QT3DCORE_QUOTE(str) #str
@@ -88,7 +88,7 @@ public:
     bool notificationsBlocked() const;
     bool blockNotifications(bool block);
 
-    QNodeList childNodes() const;
+    QNodeVector childNodes() const;
 
     bool isEnabled() const;
 

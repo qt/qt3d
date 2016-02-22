@@ -541,7 +541,7 @@ void QNode::setParent(QNode *parent)
     A shared pointer for QNode.
 */
 /*!
-    \typedef Qt3DCore::QNodeList
+    \typedef Qt3DCore::QNodeVector
     \relates Qt3DCore::QNode
 
     List of QNode pointers.
@@ -551,9 +551,9 @@ void QNode::setParent(QNode *parent)
  * Returns a list filled with the QNode children of the current
  * QNode instance.
  */
-QNodeList QNode::childNodes() const
+QNodeVector QNode::childNodes() const
 {
-    QNodeList nodeChildrenList;
+    QNodeVector nodeChildrenList;
     const QObjectList objectChildrenList = QObject::children();
     nodeChildrenList.reserve(objectChildrenList.size());
 
