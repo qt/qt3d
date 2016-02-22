@@ -117,7 +117,7 @@ void QQmlAspectEngine::setSource(const QUrl &source)
     Q_D(QQmlAspectEngine);
 
     if (d->m_component) {
-        d->m_aspectEngine->setRootEntity(Q_NULLPTR);
+        d->m_aspectEngine->setRootEntity(QEntityPtr());
         d->m_component = Q_NULLPTR;
     }
 
@@ -184,7 +184,7 @@ void QQmlAspectEnginePrivate::_q_continueExecute()
     // aspect engine. Useful for convenience window classes to set up cameras and surfaces
     // on the framegraph and event sources for the input aspect etc.
     emit q->sceneCreated(obj);
-    m_aspectEngine->setRootEntity(qobject_cast<QEntity *>(obj));
+    m_aspectEngine->setRootEntity(QEntityPtr(qobject_cast<QEntity *>(obj)));
     emit q->statusChanged(q->status());
 }
 

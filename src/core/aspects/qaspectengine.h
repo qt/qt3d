@@ -55,6 +55,8 @@ class QAspectEnginePrivate;
 class QEntity;
 class QNode;
 
+typedef QSharedPointer<QEntity> QEntityPtr;
+
 class QT3DCORESHARED_EXPORT QAspectEngine : public QObject
 {
     Q_OBJECT
@@ -62,8 +64,8 @@ public:
     explicit QAspectEngine(QObject *parent = 0);
     ~QAspectEngine();
 
-    void setRootEntity(QEntity *root);
-    QSharedPointer<QEntity> rootEntity() const;
+    void setRootEntity(QEntityPtr root);
+    QEntityPtr rootEntity() const;
 
     void registerAspect(QAbstractAspect *aspect);
     void registerAspect(const QString &name);

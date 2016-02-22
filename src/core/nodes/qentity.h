@@ -77,6 +77,8 @@ private:
     QT3D_CLONEABLE(QEntity)
 };
 
+typedef QSharedPointer<QEntity> QEntityPtr;
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE

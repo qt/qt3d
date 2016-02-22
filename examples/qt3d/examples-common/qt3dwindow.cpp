@@ -194,7 +194,7 @@ void Qt3DWindow::showEvent(QShowEvent *e)
 
         m_root->addComponent(m_frameGraph);
         m_root->addComponent(m_inputSettings);
-        m_aspectEngine->setRootEntity(m_root);
+        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_root));
 
         m_initialized = true;
     }

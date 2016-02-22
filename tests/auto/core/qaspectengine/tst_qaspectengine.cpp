@@ -97,7 +97,7 @@ private Q_SLOTS:
 
         QEntity *e = new QEntity;
         e->setObjectName("root");
-        engine->setRootEntity(e);
+        engine->setRootEntity(QEntityPtr(e));
 
         QSharedPointer<QEntity> root = engine->rootEntity();
         QVERIFY(root == e);
@@ -122,7 +122,7 @@ private Q_SLOTS:
         QAspectEngine engine;
 
         // WHEN
-        engine.setRootEntity(root);
+        engine.setRootEntity(QEntityPtr(root));
 
         // THEN
         // Nothing particular happen on exit, especially no crash

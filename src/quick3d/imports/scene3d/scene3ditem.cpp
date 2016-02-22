@@ -158,7 +158,7 @@ Scene3DItem::CameraAspectRatioMode Scene3DItem::cameraAspectRatioMode() const
 void Scene3DItem::applyRootEntityChange()
 {
     if (m_aspectEngine->rootEntity() != m_entity) {
-        m_aspectEngine->setRootEntity(m_entity);
+        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_entity));
 
         // Set the render surface
         if (!m_entity)

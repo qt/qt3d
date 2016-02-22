@@ -116,7 +116,7 @@ QAspectEngine::QAspectEngine(QObject *parent)
 QAspectEngine::~QAspectEngine()
 {
     Q_D(QAspectEngine);
-    setRootEntity(Q_NULLPTR);
+    setRootEntity(QEntityPtr());
     delete d->m_aspectThread;
     delete d->m_postman;
     delete d->m_scene;
@@ -234,7 +234,7 @@ QVariant QAspectEngine::executeCommand(const QString &command)
     return QVariant();
 }
 
-void QAspectEngine::setRootEntity(QEntity *root)
+void QAspectEngine::setRootEntity(QEntityPtr root)
 {
     qCDebug(Aspects) << "Setting scene root on aspect manager";
     Q_D(QAspectEngine);
@@ -246,7 +246,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     // Set the new root object. This will cause the old tree to be deleted
     // and the deletion of the old frontend tree will cause the backends to
     // free any related resources
-    d->m_root.reset(root);
+    d->m_root = root;
 
     if (shutdownNeeded)
         d->shutdown();
@@ -266,7 +266,7 @@ void QAspectEngine::setRootEntity(QEntity *root)
     // scene object and adding each node to the scene
     // TODO: We probably need a call symmetric to this one above in order to
     // deregister the nodes from the scene
-    d->initNodeTree(root);
+    d->initNodeTree(root.data());
 
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the backends to get synchronized before the
@@ -274,11 +274,11 @@ void QAspectEngine::setRootEntity(QEntity *root)
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRootEntity",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QEntity *, root));
+                              Q_ARG(Qt3DCore::QEntity *, root.data()));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
 }
 
-QSharedPointer<QEntity> QAspectEngine::rootEntity() const
+QEntityPtr QAspectEngine::rootEntity() const
 {
     Q_D(const QAspectEngine);
     return d->m_root;
