@@ -769,29 +769,18 @@ void Renderer::performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRende
         m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
 
     // TO DO: Add glMulti Draw variants
-    if (!drawInstanced) { // Non instanced Rendering
-        if (drawIndexed)
-            m_graphicsContext->drawElements(primType,
-                                            primitiveCount,
-                                            indexType,
-                                            reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                            rGeometryRenderer->baseVertex());
-
-        else
-            m_graphicsContext->drawArrays(primType, 0, primitiveCount);
-    } else { // Instanced Rendering
-        if (drawIndexed)
-            m_graphicsContext->drawElementsInstanced(primType,
-                                                     primitiveCount,
-                                                     indexType,
-                                                     reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
-                                                     rGeometryRenderer->instanceCount());
-        else
-            m_graphicsContext->drawArraysInstanced(primType,
-                                                   rGeometryRenderer->baseInstance(),
-                                                   primitiveCount,
-                                                   rGeometryRenderer->instanceCount());
-    }
+    if (drawIndexed)
+        m_graphicsContext->drawElementsInstanced(primType,
+                                                 primitiveCount,
+                                                 indexType,
+                                                 reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
+                                                 rGeometryRenderer->instanceCount(),
+                                                 rGeometryRenderer->baseVertex());
+    else
+        m_graphicsContext->drawArraysInstanced(primType,
+                                               rGeometryRenderer->baseInstance(),
+                                               primitiveCount,
+                                               rGeometryRenderer->instanceCount());
 
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
     int err = m_graphicsContext->openGLContext()->functions()->glGetError();
