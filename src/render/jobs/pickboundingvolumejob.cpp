@@ -374,6 +374,7 @@ void PickBoundingVolumeJob::run()
                             case QEvent::MouseButtonRelease: {
                                 // Send release event to m_currentPicker
                                 if (lastCurrentPicker != Q_NULLPTR) {
+                                    m_currentPicker = HObjectPicker();
                                     lastCurrentPicker->onClicked(pickEvent);
                                     lastCurrentPicker->onReleased(pickEvent);
                                 }
@@ -420,6 +421,7 @@ void PickBoundingVolumeJob::run()
                     case QEvent::MouseButtonRelease: {
                         // Send release event to m_currentPicker
                         if (lastCurrentPicker != Q_NULLPTR) {
+                            m_currentPicker = HObjectPicker();
                             QPickEventPtr pickEvent(new QPickEvent);
                             lastCurrentPicker->onReleased(pickEvent);
                         }

@@ -341,7 +341,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         }
 
         Render::NodeManagers *manager = d->m_renderer->nodeManagers();
-        //QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
+        QAspectJobPtr pickBoundingVolumeJob = d->m_renderer->pickBoundingVolumeJob();
 
         // Create the jobs to build the frame
         d->m_framePreparationJob->setRoot(d->m_renderer->sceneRoot());
@@ -377,16 +377,16 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         jobs.append(geometryJobs);
 
         // Only add dependency if not already present
-//        const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
-//        if (std::find(dependencies.begin(), dependencies.end(), d->m_framePreparationJob) == dependencies.end())
-//            pickBoundingVolumeJob->addDependency(d->m_framePreparationJob);
+        const QVector<QWeakPointer<QAspectJob> > dependencies = pickBoundingVolumeJob->dependencies();
+        if (std::find(dependencies.begin(), dependencies.end(), d->m_framePreparationJob) == dependencies.end())
+            pickBoundingVolumeJob->addDependency(d->m_framePreparationJob);
 
         // Add all jobs to queue
         jobs.append(d->m_calculateBoundingVolumeJob);
         jobs.append(d->m_worldTransformJob);
-        //jobs.append(d->m_updateBoundingVolumeJob);
+        jobs.append(d->m_updateBoundingVolumeJob);
         jobs.append(d->m_framePreparationJob);
-        //jobs.append(pickBoundingVolumeJob);
+        jobs.append(pickBoundingVolumeJob);
 
         // Clear any old dependencies from previous frames
         d->m_cleanupJob->removeDependency(QWeakPointer<QAspectJob>());
