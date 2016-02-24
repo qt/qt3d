@@ -633,8 +633,10 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
         // TODO: Investigate if it's worth providing a fallback offscreen surface
         //       to use when surface is null. Or if we should instead expose an
         //       offscreensurface to Qt3D.
-        if (!surface)
+        if (!surface) {
+            m_lastFrameCorrect.store(0);
             continue;
+        }
 
         if (surface != previousSurface && previousSurface)
             m_graphicsContext->endDrawing(lastBoundFBOId == m_graphicsContext->defaultFBO());
@@ -644,6 +646,7 @@ uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderView
             // next RenderView. We won't get the full frame but we may get something
             if (!m_graphicsContext->beginDrawing(surface, previousClearColor)) {
                 qWarning() << "Failed to make OpenGL context current on surface";
+                m_lastFrameCorrect.store(0);
                 continue;
             }
 
