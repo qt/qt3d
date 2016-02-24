@@ -341,11 +341,11 @@ void GraphicsHelperGL4::bindFrameBufferAttachment(QOpenGLTexture *texture, const
 {
     GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
-    if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-        attr = GL_COLOR_ATTACHMENT0 + attachment.m_type;
-    else if (attachment.m_type == QRenderAttachment::DepthAttachment)
+    if (attachment.m_point <= QRenderAttachment::ColorAttachment15)
+        attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
+    else if (attachment.m_point == QRenderAttachment::DepthAttachment)
         attr = GL_DEPTH_ATTACHMENT;
-    else if (attachment.m_type == QRenderAttachment::StencilAttachment)
+    else if (attachment.m_point == QRenderAttachment::StencilAttachment)
         attr = GL_STENCIL_ATTACHMENT;
 
     texture->bind();

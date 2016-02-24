@@ -59,30 +59,30 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QRenderTargetSelector *>("renderTargetSelector");
-        QTest::addColumn<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >("drawBuffers");
+        QTest::addColumn<QList<Qt3DRender::QRenderAttachment::AttachmentPoint> >("drawBuffers");
         QTest::addColumn<Qt3DRender::QRenderTarget * >("target");
 
         Qt3DRender::QRenderTargetSelector *defaultConstructed = new Qt3DRender::QRenderTargetSelector();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>() << static_cast<Qt3DRender::QRenderTarget *>(Q_NULLPTR);
+        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QRenderAttachment::AttachmentPoint>() << static_cast<Qt3DRender::QRenderTarget *>(Q_NULLPTR);
 
         Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTarget = new Qt3DRender::QRenderTargetSelector();
         Qt3DRender::QRenderTarget *target1 = new Qt3DRender::QRenderTarget();
         renderTargetSelectorWithTarget->setTarget(target1);
-        QTest::newRow("renderTargetSelectorWithTarget") << renderTargetSelectorWithTarget << QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>() << target1;
+        QTest::newRow("renderTargetSelectorWithTarget") << renderTargetSelectorWithTarget << QList<Qt3DRender::QRenderAttachment::AttachmentPoint>() << target1;
 
         Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTargetAndBuffers = new Qt3DRender::QRenderTargetSelector();
         Qt3DRender::QRenderTarget *target2 = new Qt3DRender::QRenderTarget();
         renderTargetSelectorWithTargetAndBuffers->setTarget(target2);
-        QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> attachmentTypes = QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>() << Qt3DRender::QRenderAttachment::ColorAttachment0 << Qt3DRender::QRenderAttachment::DepthAttachment;
-        renderTargetSelectorWithTargetAndBuffers->setDrawBuffers(attachmentTypes);
-        QTest::newRow("renderTargetSelectorWithTargetAndDrawBuffers") << renderTargetSelectorWithTargetAndBuffers << attachmentTypes << target2;
+        QList<Qt3DRender::QRenderAttachment::AttachmentPoint> attachmentPoints = QList<Qt3DRender::QRenderAttachment::AttachmentPoint>() << Qt3DRender::QRenderAttachment::ColorAttachment0 << Qt3DRender::QRenderAttachment::DepthAttachment;
+        renderTargetSelectorWithTargetAndBuffers->setDrawBuffers(attachmentPoints);
+        QTest::newRow("renderTargetSelectorWithTargetAndDrawBuffers") << renderTargetSelectorWithTargetAndBuffers << attachmentPoints << target2;
     }
 
     void checkCloning()
     {
         // GIVEN
         QFETCH(Qt3DRender::QRenderTargetSelector*, renderTargetSelector);
-        QFETCH(QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>, drawBuffers);
+        QFETCH(QList<Qt3DRender::QRenderAttachment::AttachmentPoint>, drawBuffers);
         QFETCH(Qt3DRender::QRenderTarget *, target);
 
         // THEN
@@ -150,7 +150,7 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> drawBuffers;
+        QList<Qt3DRender::QRenderAttachment::AttachmentPoint> drawBuffers;
         drawBuffers << Qt3DRender::QRenderAttachment::ColorAttachment0 << Qt3DRender::QRenderAttachment::DepthAttachment;
         renderTargetSelector->setDrawBuffers(drawBuffers);
         QCoreApplication::processEvents();
@@ -160,7 +160,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "drawBuffers");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
-        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >(), drawBuffers);
+        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderAttachment::AttachmentPoint> >(), drawBuffers);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
@@ -173,7 +173,7 @@ private Q_SLOTS:
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        renderTargetSelector->setDrawBuffers(QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>());
+        renderTargetSelector->setDrawBuffers(QList<Qt3DRender::QRenderAttachment::AttachmentPoint>());
         QCoreApplication::processEvents();
 
         // THEN
@@ -181,7 +181,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "drawBuffers");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
-        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >(), QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>());
+        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderAttachment::AttachmentPoint> >(), QList<Qt3DRender::QRenderAttachment::AttachmentPoint>());
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
 

@@ -48,7 +48,7 @@ namespace Qt3DRender {
 QRenderAttachmentPrivate::QRenderAttachmentPrivate()
     : QNodePrivate()
     , m_texture(Q_NULLPTR)
-    , m_type(QRenderAttachment::ColorAttachment0)
+    , m_attachmentPoint(QRenderAttachment::ColorAttachment0)
     , m_mipLevel(0)
     , m_layer(0)
     , m_face(QRenderAttachment::CubeMapNegativeX)
@@ -59,7 +59,7 @@ void QRenderAttachment::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QRenderAttachment *rA = static_cast<const QRenderAttachment*>(ref);
-    d_func()->m_type = rA->d_func()->m_type;
+    d_func()->m_attachmentPoint = rA->d_func()->m_attachmentPoint;
     setTexture(qobject_cast<QAbstractTextureProvider *>(QNode::clone(rA->d_func()->m_texture)));
 }
 
@@ -79,19 +79,19 @@ QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent
 {
 }
 
-void QRenderAttachment::setType(QRenderAttachment::RenderAttachmentType type)
+void QRenderAttachment::setAttachmentPoint(QRenderAttachment::AttachmentPoint attachmentPoint)
 {
     Q_D(QRenderAttachment);
-    if (type != d->m_type) {
-        d->m_type = type;
-        emit typeChanged(type);
+    if (attachmentPoint != d->m_attachmentPoint) {
+        d->m_attachmentPoint = attachmentPoint;
+        emit attachmentPointChanged(attachmentPoint);
     }
 }
 
-QRenderAttachment::RenderAttachmentType QRenderAttachment::type() const
+QRenderAttachment::AttachmentPoint QRenderAttachment::attachmentPoint() const
 {
     Q_D(const QRenderAttachment);
-    return d->m_type;
+    return d->m_attachmentPoint;
 }
 
 void QRenderAttachment::setTexture(QAbstractTextureProvider *texture)

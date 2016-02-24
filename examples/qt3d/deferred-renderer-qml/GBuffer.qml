@@ -62,7 +62,8 @@ RenderTarget {
 
         RenderAttachment {
             objectName : "color"
-            type : RenderAttachment.ColorAttachment0
+            attachmentPoint : RenderAttachment.ColorAttachment0
+
             texture : Texture2D {
                 id : colorAttachment
                 width : 1024
@@ -79,7 +80,8 @@ RenderTarget {
         },
         RenderAttachment {
             objectName : "position"
-            type : RenderAttachment.ColorAttachment1
+            attachmentPoint : RenderAttachment.ColorAttachment1
+
             texture : Texture2D {
                 id : positionAttachment
                 width : 1024
@@ -98,7 +100,8 @@ RenderTarget {
         },
         RenderAttachment {
             objectName : "normal"
-            type : RenderAttachment.ColorAttachment2
+            attachmentPoint : RenderAttachment.ColorAttachment2
+
             texture : Texture2D {
                 id : normalAttachment
                 width : 1024
@@ -117,7 +120,8 @@ RenderTarget {
         },
         RenderAttachment {
             objectName : "depth"
-            type : RenderAttachment.DepthAttachment
+            attachmentPoint : RenderAttachment.DepthAttachment
+
             texture : Texture2D {
                 id : depthAttachment
                 width : 1024

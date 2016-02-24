@@ -71,7 +71,7 @@ FrameGraph {
                     attachments: [
                         RenderAttachment {
                             name: "depth"
-                            type: RenderAttachment.DepthAttachment
+                            attachmentPoint: RenderAttachment.DepthAttachment
                             texture: Texture2D {
                                 id: depthTexture
                                 width: 1024

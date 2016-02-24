@@ -69,11 +69,11 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     Qt3DCore::QNodeId renderTargetUuid() const;
-    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+    QList<QRenderAttachment::AttachmentPoint> drawBuffers() const;
 
 private:
     Qt3DCore::QNodeId m_renderTargetUuid;
-    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
+    QList<QRenderAttachment::AttachmentPoint> m_drawBuffers;
 };
 
 } // namespace Render

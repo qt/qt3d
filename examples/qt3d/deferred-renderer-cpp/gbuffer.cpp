@@ -60,7 +60,7 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         Qt3DRender::QAbstractTextureProvider::D32F
     };
 
-    const Qt3DRender::QRenderAttachment::RenderAttachmentType attachmentTypes[AttachmentsCount] = {
+    const Qt3DRender::QRenderAttachment::AttachmentPoint attachmentPoints[AttachmentsCount] = {
         Qt3DRender::QRenderAttachment::ColorAttachment0,
         Qt3DRender::QRenderAttachment::ColorAttachment1,
         Qt3DRender::QRenderAttachment::ColorAttachment2,
@@ -80,7 +80,7 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         m_textures[i]->setMagnificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
 
         attachment->setTexture(m_textures[i]);
-        attachment->setType(attachmentTypes[i]);
+        attachment->setAttachmentPoint(attachmentPoints[i]);
 
         addAttachment(attachment);
     }

@@ -78,7 +78,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("drawBuffers"))
-            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >();
+            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::AttachmentPoint> >();
         markDirty(AbstractRenderer::AllDirty);
     }
 }
@@ -88,7 +88,7 @@ Qt3DCore::QNodeId RenderTargetSelector::renderTargetUuid() const
     return m_renderTargetUuid;
 }
 
-QList<QRenderAttachment::RenderAttachmentType> RenderTargetSelector::drawBuffers() const
+QList<QRenderAttachment::AttachmentPoint> RenderTargetSelector::drawBuffers() const
 {
     return m_drawBuffers;
 }

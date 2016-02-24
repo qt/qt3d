@@ -66,7 +66,7 @@ struct Attachment
     int m_mipLevel;
     int m_layer;
     Qt3DCore::QNodeId m_textureUuid;
-    QRenderAttachment::RenderAttachmentType m_type;
+    QRenderAttachment::AttachmentPoint m_point;
     QRenderAttachment::CubeMapFace m_face;
 };
 
@@ -77,13 +77,13 @@ public:
 
     void addAttachment(const Attachment &attachment);
     QVector<Attachment> attachments() const;
-    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+    QList<QRenderAttachment::AttachmentPoint> drawBuffers() const;
 
-    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers);
+    void setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &drawBuffers);
 
 private:
     QVector<Attachment> m_attachments;
-    QList<QRenderAttachment::RenderAttachmentType> m_drawBuffers;
+    QList<QRenderAttachment::AttachmentPoint> m_drawBuffers;
 };
 
 } // namespace Render

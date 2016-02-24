@@ -491,15 +491,15 @@ void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
     int activeDrawBuffers[QRenderAttachment::ColorAttachment15 + 1];
     int i = 0;
 
-    const QList<QRenderAttachment::RenderAttachmentType> &drawBuffers = attachments.drawBuffers();
+    const QList<QRenderAttachment::AttachmentPoint> &drawBuffers = attachments.drawBuffers();
 
     // If drawBuffers is empty, use all the attachments as draw buffers
     if (drawBuffers.isEmpty()) {
         Q_FOREACH (const Attachment &attachment, attachments.attachments())
-            if (attachment.m_type <= QRenderAttachment::ColorAttachment15)
-                activeDrawBuffers[i++] = attachment.m_type;
+            if (attachment.m_point <= QRenderAttachment::ColorAttachment15)
+                activeDrawBuffers[i++] = attachment.m_point;
     } else {
-        Q_FOREACH (const QRenderAttachment::RenderAttachmentType drawBuffer, drawBuffers)
+        Q_FOREACH (const QRenderAttachment::AttachmentPoint drawBuffer, drawBuffers)
             if (drawBuffer <= QRenderAttachment::ColorAttachment15)
                 activeDrawBuffers[i++] = drawBuffer;
     }

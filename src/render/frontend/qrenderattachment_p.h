@@ -68,7 +68,7 @@ public:
     Q_DECLARE_PUBLIC(QRenderAttachment)
 
     QAbstractTextureProvider *m_texture;
-    QRenderAttachment::RenderAttachmentType m_type;
+    QRenderAttachment::AttachmentPoint m_attachmentPoint;
     int m_mipLevel;
     int m_layer;
     QRenderAttachment::CubeMapFace m_face;

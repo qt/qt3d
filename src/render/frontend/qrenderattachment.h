@@ -53,14 +53,14 @@ class QRenderAttachmentPrivate;
 class QT3DRENDERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(RenderAttachmentType type READ type WRITE setType NOTIFY typeChanged)
+    Q_PROPERTY(AttachmentPoint attachmentPoint READ attachmentPoint WRITE setAttachmentPoint NOTIFY attachmentPointChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 
 public:
-    enum RenderAttachmentType {
+    enum AttachmentPoint {
         ColorAttachment0 = 0,
         ColorAttachment1,
         ColorAttachment2,
@@ -81,7 +81,7 @@ public:
         StencilAttachment,
         DepthStencilAttachment
     };
-    Q_ENUM(RenderAttachmentType)
+    Q_ENUM(AttachmentPoint)
 
     enum CubeMapFace {
         CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
@@ -96,21 +96,21 @@ public:
     explicit QRenderAttachment(Qt3DCore::QNode *parent = 0);
     ~QRenderAttachment();
 
-    RenderAttachmentType type() const;
+    AttachmentPoint attachmentPoint() const;
     QAbstractTextureProvider *texture() const;
     int mipLevel() const;
     int layer() const;
     CubeMapFace face() const;
 
 public Q_SLOTS:
-    void setType(RenderAttachmentType type);
+    void setAttachmentPoint(AttachmentPoint attachmentPoint);
     void setTexture(QAbstractTextureProvider *texture);
     void setMipLevel(int level);
     void setLayer(int layer);
     void setFace(CubeMapFace face);
 
 Q_SIGNALS:
-    void typeChanged(RenderAttachmentType type);
+    void attachmentPointChanged(AttachmentPoint attachmentPoint);
     void textureChanged(QAbstractTextureProvider *texture);
     void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
@@ -129,6 +129,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QRenderAttachment::RenderAttachmentType)
+Q_DECLARE_METATYPE(Qt3DRender::QRenderAttachment::AttachmentPoint)
 
 #endif // QT3DRENDER_QRENDERATTACHMENT_H

@@ -824,8 +824,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
             QHash<QString, int> fragOutputs;
             if (!m_renderTarget.isNull() && !shader->isLoaded()) {
                 Q_FOREACH (const Attachment &att, m_attachmentPack.attachments()) {
-                    if (att.m_type <= QRenderAttachment::ColorAttachment15)
-                        fragOutputs.insert(att.m_name, att.m_type);
+                    if (att.m_point <= QRenderAttachment::ColorAttachment15)
+                        fragOutputs.insert(att.m_name, att.m_point);
                 }
             }
 

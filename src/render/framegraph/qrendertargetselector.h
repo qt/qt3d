@@ -62,8 +62,8 @@ public:
 
     QRenderTarget *target() const;
 
-    void setDrawBuffers(const QList<QRenderAttachment::RenderAttachmentType> &buffers);
-    QList<QRenderAttachment::RenderAttachmentType> drawBuffers() const;
+    void setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &buffers);
+    QList<QRenderAttachment::AttachmentPoint> drawBuffers() const;
 
 public Q_SLOTS:
     void setTarget(QRenderTarget *target);
@@ -84,6 +84,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderAttachment::RenderAttachmentType>)
+Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderAttachment::AttachmentPoint>)
 
 #endif // QT3DRENDER_QRENDERTARGETSELECTOR_H
