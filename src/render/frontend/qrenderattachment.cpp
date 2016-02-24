@@ -158,21 +158,6 @@ QRenderAttachment::CubeMapFace QRenderAttachment::face() const
     return d->m_face;
 }
 
-void QRenderAttachment::setName(const QString &name)
-{
-    Q_D(QRenderAttachment);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged(name);
-    }
-}
-
-QString QRenderAttachment::name() const
-{
-    Q_D(const QRenderAttachment);
-    return d->m_name;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

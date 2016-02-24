@@ -62,7 +62,6 @@ void RenderAttachment::updateFromPeer(Qt3DCore::QNode *peer)
     m_attachmentData.m_layer = attachment->layer();
     m_attachmentData.m_type = attachment->type();
     m_attachmentData.m_face = attachment->face();
-    m_attachmentData.m_name = attachment->name();
     if (attachment->texture())
         m_attachmentData.m_textureUuid = attachment->texture()->id();
 }
@@ -80,11 +79,6 @@ int RenderAttachment::mipLevel() const
 int RenderAttachment::layer() const
 {
     return m_attachmentData.m_layer;
-}
-
-QString RenderAttachment::name() const
-{
-    return m_attachmentData.m_name;
 }
 
 QRenderAttachment::CubeMapFace RenderAttachment::face() const
@@ -115,9 +109,6 @@ void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_attachmentData.m_face = static_cast<QRenderAttachment::CubeMapFace>(propertyChange->value().toInt());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
-            m_attachmentData.m_name = propertyChange->value().toString();
         }
         markDirty(BackendNodeDirtyFlag::Any);
     }

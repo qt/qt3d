@@ -67,13 +67,6 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         Qt3DRender::QRenderAttachment::DepthAttachment
     };
 
-    const QString attachmentNames[AttachmentsCount] = {
-        QString::fromLatin1("color"),
-        QString::fromLatin1("position"),
-        QString::fromLatin1("normal"),
-        QString::fromLatin1("depth")
-    };
-
     for (int i = 0; i < AttachmentsCount; i++) {
         Qt3DRender::QRenderAttachment *attachment = new Qt3DRender::QRenderAttachment(this);
 
@@ -88,7 +81,6 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
 
         attachment->setTexture(m_textures[i]);
         attachment->setType(attachmentTypes[i]);
-        attachment->setName(attachmentNames[i]);
 
         addAttachment(attachment);
     }

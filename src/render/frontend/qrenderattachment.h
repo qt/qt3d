@@ -58,7 +58,6 @@ class QT3DRENDERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 
 public:
     enum RenderAttachmentType {
@@ -102,7 +101,6 @@ public:
     int mipLevel() const;
     int layer() const;
     CubeMapFace face() const;
-    QString name() const;
 
 public Q_SLOTS:
     void setType(RenderAttachmentType type);
@@ -110,7 +108,6 @@ public Q_SLOTS:
     void setMipLevel(int level);
     void setLayer(int layer);
     void setFace(CubeMapFace face);
-    void setName(const QString &name);
 
 Q_SIGNALS:
     void typeChanged(RenderAttachmentType type);
@@ -118,7 +115,6 @@ Q_SIGNALS:
     void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
     void faceChanged(CubeMapFace face);
-    void nameChanged(const QString &name);
 
 protected:
     QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = 0);
