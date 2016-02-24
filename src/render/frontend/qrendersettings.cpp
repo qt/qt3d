@@ -50,6 +50,7 @@ QRenderSettingsPrivate::QRenderSettingsPrivate()
     , m_activeFrameGraph(Q_NULLPTR)
     , m_pickMethod(QRenderSettings::BoundingVolumePicking)
     , m_pickResultMode(QRenderSettings::NearestPick)
+    , m_renderPolicy(QRenderSettings::OnDemand)
 {
 }
 
@@ -86,6 +87,12 @@ QRenderSettings::PickResultMode QRenderSettings::pickResultMode() const
     return d->m_pickResultMode;
 }
 
+QRenderSettings::RenderPolicy QRenderSettings::renderPolicy() const
+{
+    Q_D(const QRenderSettings);
+    return d->m_renderPolicy;
+}
+
 void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
 {
     Q_D(QRenderSettings);
@@ -118,6 +125,16 @@ void QRenderSettings::setPickResultMode(QRenderSettings::PickResultMode pickResu
     emit pickResultModeChanged(pickResultMode);
 }
 
+void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy)
+{
+    Q_D(QRenderSettings);
+    if (d->m_renderPolicy == renderPolicy)
+        return;
+
+    d->m_renderPolicy = renderPolicy;
+    emit renderPolicyChanged(renderPolicy);
+}
+
 void QRenderSettings::copy(const QNode *ref)
 {
     QComponent::copy(ref);
@@ -126,6 +143,7 @@ void QRenderSettings::copy(const QNode *ref)
 
     d_func()->m_pickMethod = object->d_func()->m_pickMethod;
     d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
+    d_func()->m_renderPolicy = object->d_func()->m_renderPolicy;
 }
 
 } // namespace Qt3Drender

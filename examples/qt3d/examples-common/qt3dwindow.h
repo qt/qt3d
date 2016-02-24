@@ -114,7 +114,7 @@ private:
     Qt3DLogic::QLogicAspect *m_logicAspect;
 
     // Renderer configuration
-    Qt3DRender::QRenderSettings *m_rendererSettings;
+    Qt3DRender::QRenderSettings *m_renderSettings;
     Qt3DRender::QForwardRenderer *m_forwardRenderer;
     Qt3DRender::QCamera *m_defaultCamera;
 

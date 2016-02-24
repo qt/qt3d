@@ -66,6 +66,7 @@ public:
     QFrameGraphNode *m_activeFrameGraph;
     QRenderSettings::PickMethod m_pickMethod;
     QRenderSettings::PickResultMode m_pickResultMode;
+    QRenderSettings::RenderPolicy m_renderPolicy;
 };
 
 } // namespace Qt3Drender

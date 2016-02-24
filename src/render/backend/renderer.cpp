@@ -730,11 +730,16 @@ bool Renderer::shouldRender()
     // was not rendered successfully
     // TODO: Reinstate the proper logic here when it catches all cases
     return true;
-    //return (m_changeSet != 0 || !m_lastFrameCorrect.load());
+    // was not rendered successfully (or render-on-demand is disabled)
+    return (m_settings->renderPolicy() == QRenderSettings::Always
+            || m_changeSet != 0
+            || !m_lastFrameCorrect.load());
 }
 
 void Renderer::skipNextFrame()
 {
+    Q_ASSERT(m_settings->renderPolicy() != QRenderSettings::Always);
+
     // make submitRenderViews() actually run
     m_renderQueue->setNoRender();
     m_submitRenderViewsSemaphore.release(1);

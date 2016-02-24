@@ -55,12 +55,12 @@ class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
     Q_OBJECT
     Q_PROPERTY(PickMethod pickMethod READ pickMethod WRITE setPickMethod NOTIFY pickMethodChanged)
     Q_PROPERTY(PickResultMode pickResultMode READ pickResultMode WRITE setPickResultMode NOTIFY pickResultModeChanged)
-
+    Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
     Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
-    explicit QRenderSettings(Qt3DCore::QNode *parent = nullptr);
+    explicit QRenderSettings(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QRenderSettings();
 
     enum PickMethod {
@@ -75,23 +75,32 @@ public:
     };
     Q_ENUM(PickResultMode)
 
+    enum RenderPolicy {
+        OnDemand,
+        Always
+    };
+    Q_ENUM(RenderPolicy)
+
     PickMethod pickMethod() const;
     PickResultMode pickResultMode() const;
     QFrameGraphNode *activeFrameGraph() const;
+    RenderPolicy renderPolicy() const;
 
 public Q_SLOTS:
     void setPickMethod(PickMethod pickMethod);
     void setPickResultMode(PickResultMode pickResultMode);
     void setActiveFrameGraph(QFrameGraphNode *activeFrameGraph);
+    void setRenderPolicy(RenderPolicy renderPolicy);
 
 Q_SIGNALS:
     void pickMethodChanged(PickMethod pickMethod);
     void pickResultModeChanged(PickResultMode pickResult);
     void activeFrameGraphChanged(QFrameGraphNode *activeFrameGraph);
+    void renderPolicyChanged(RenderPolicy renderPolicy);
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSettings)
-    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

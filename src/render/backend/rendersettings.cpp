@@ -61,6 +61,7 @@ void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
     m_pickMethod = settings->pickMethod();
     m_pickResultMode = settings->pickResultMode();
     m_activeFrameGraph = settings->activeFrameGraph()->id();
+    m_renderPolicy = settings->renderPolicy();
 }
 
 void RenderSettings::cleanup()
@@ -68,6 +69,7 @@ void RenderSettings::cleanup()
     m_pickMethod = QRenderSettings::BoundingVolumePicking;
     m_pickResultMode = QRenderSettings::NearestPick;
     m_activeFrameGraph = Qt3DCore::QNodeId();
+    m_renderPolicy = QRenderSettings::OnDemand;
 }
 
 void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -80,6 +82,8 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_pickResultMode = propertyChange->value().value<QRenderSettings::PickResultMode>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
             m_activeFrameGraph = propertyChange->value().value<QNodePtr>()->id();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))
+            m_renderPolicy = propertyChange->value().value<QRenderSettings::RenderPolicy>();
         markDirty(AbstractRenderer::AllDirty);
     }
 }

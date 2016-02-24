@@ -71,8 +71,10 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }
+    QRenderSettings::RenderPolicy renderPolicy() const { return m_renderPolicy; }
 
 private:
+    QRenderSettings::RenderPolicy m_renderPolicy;
     QRenderSettings::PickMethod m_pickMethod;
     QRenderSettings::PickResultMode m_pickResultMode;
     Qt3DCore::QNodeId m_activeFrameGraph;
