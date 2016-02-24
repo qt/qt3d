@@ -67,7 +67,6 @@ public:
 
     Q_DECLARE_PUBLIC(QMaterial)
     QList<QParameter *> m_parameters;
-    TextureDict m_textures;
     QEffect *m_effect;
 };
 

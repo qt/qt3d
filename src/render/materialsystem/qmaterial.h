@@ -53,7 +53,6 @@ class QAbstractTextureProvider;
 class QParameter;
 class QMaterialPrivate;
 class QEffect;
-typedef QMap<QString, QAbstractTextureProvider*> TextureDict;
 
 class QT3DRENDERSHARED_EXPORT QMaterial : public Qt3DCore::QComponent
 {
@@ -69,10 +68,6 @@ public:
     void addParameter(QParameter *parameter);
     void removeParameter(QParameter *parameter);
     QList<QParameter *> parameters() const;
-
-    TextureDict textureValues() const;
-
-    void setTextureParameter(QString name, QAbstractTextureProvider* tex);
 
 public Q_SLOTS:
     void setEffect(QEffect *effect);

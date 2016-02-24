@@ -179,19 +179,6 @@ QList<QParameter *> QMaterial::parameters() const
     return d->m_parameters;
 }
 
-TextureDict QMaterial::textureValues() const
-{
-    Q_D(const QMaterial);
-    return d->m_textures;
-}
-
-// TO DO: Check if this is really needed
-void QMaterial::setTextureParameter(QString name, QAbstractTextureProvider *tex)
-{
-    Q_D(QMaterial);
-    d->m_textures[name] = tex;
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
