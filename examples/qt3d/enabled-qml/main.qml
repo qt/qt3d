@@ -58,7 +58,7 @@ Entity {
 
     components: FrameGraph {
         Viewport {
-            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+            normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
             clearColor: "white"
             enabled: counter !== 5
 

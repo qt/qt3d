@@ -113,14 +113,14 @@ W.Window
                         NoDraw {}
                     }
                     Viewport {
-                        rect: Qt.rect(0.0, 0.0, 0.5, 1.0)
+                        normalizedRect: Qt.rect(0.0, 0.0, 0.5, 1.0)
                         CameraSelector {
                             camera: camera
                             LayerFilter { layers: "content"}
                         }
                     }
                     Viewport {
-                        rect: Qt.rect(0.5, 0.0, 0.5, 1.0)
+                        normalizedRect: Qt.rect(0.5, 0.0, 0.5, 1.0)
                         CameraSelector {
                             camera: camera2
                             LayerFilter {

@@ -56,7 +56,7 @@ ForwardRenderer::ForwardRenderer(Qt3DCore::QNode *parent)
     , m_cameraSelector(new Qt3DRender::QCameraSelector())
     , m_clearBuffer(new Qt3DRender::QClearBuffer())
 {
-    m_viewport->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+    m_viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     m_viewport->setClearColor(Qt::white);
     m_clearBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
     m_cameraSelector->setParent(m_viewport);

@@ -65,7 +65,7 @@ FrameGraph {
 
         Viewport {
             id: mainViewport
-            rect: Qt.rect(0, 0, 1, 1)
+            normalizedRect: Qt.rect(0, 0, 1, 1)
 
             ClearBuffer {
                 buffers: ClearBuffer.ColorDepthBuffer
@@ -73,25 +73,25 @@ FrameGraph {
 
             Viewport {
                 id: topLeftViewport
-                rect: Qt.rect(0, 0, 0.5, 0.5)
+                normalizedRect: Qt.rect(0, 0, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorTopLeftViewport }
             }
 
             Viewport {
                 id: topRightViewport
-                rect: Qt.rect(0.5, 0, 0.5, 0.5)
+                normalizedRect: Qt.rect(0.5, 0, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorTopRightViewport }
             }
 
             Viewport {
                 id: bottomLeftViewport
-                rect: Qt.rect(0, 0.5, 0.5, 0.5)
+                normalizedRect: Qt.rect(0, 0.5, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorBottomLeftViewport }
             }
 
             Viewport {
                 id: bottomRightViewport
-                rect: Qt.rect(0.5, 0.5, 0.5, 0.5)
+                normalizedRect: Qt.rect(0.5, 0.5, 0.5, 0.5)
                 CameraSelector { id: cameraSelectorBottomRightViewport }
             }
         }

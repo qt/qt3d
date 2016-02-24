@@ -69,7 +69,7 @@ TechniqueFilter {
         Viewport {
             id: viewport
             objectName : "viewport"
-            rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+            normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
             clearColor: "white"
 
             // Use the specified camera

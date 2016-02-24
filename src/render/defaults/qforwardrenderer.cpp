@@ -71,7 +71,7 @@ void QForwardRendererPrivate::init()
     m_viewport->setParent(m_surfaceSelector);
     m_surfaceSelector->setParent(q);
 
-    m_viewport->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+    m_viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     m_viewport->setClearColor(Qt::white);
     m_clearBuffer->setBuffers(QClearBuffer::ColorDepthBuffer);
 
@@ -123,7 +123,7 @@ QForwardRenderer::~QForwardRenderer()
 void QForwardRenderer::setViewportRect(const QRectF &viewportRect)
 {
     Q_D(QForwardRenderer);
-    d->m_viewport->setRect(viewportRect);
+    d->m_viewport->setNormalizedRect(viewportRect);
 }
 
 void QForwardRenderer::setClearColor(const QColor &clearColor)
@@ -152,12 +152,12 @@ void QForwardRenderer::setSurface(QSurface *surface)
 /*!
     \property Qt3DRender::QForwardRenderer::viewportRect
 
-    Holds the current viewport rect.
+    Holds the current viewport normalizedRect.
  */
 QRectF QForwardRenderer::viewportRect() const
 {
     Q_D(const QForwardRenderer);
-    return d->m_viewport->rect();
+    return d->m_viewport->normalizedRect();
 }
 
 /*!

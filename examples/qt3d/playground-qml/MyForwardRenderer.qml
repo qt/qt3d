@@ -79,7 +79,7 @@ TechniqueFilter {
         // Main Viewport
         Viewport {
             id: viewport
-            rect: Qt.rect(0.0, 0, 1.0, 1.0)
+            normalizedRect: Qt.rect(0.0, 0, 1.0, 1.0)
 
             CameraSelector {
                 id: mainCameraSelector
@@ -96,7 +96,7 @@ TechniqueFilter {
 
     Viewport {
         id: detailViewport
-        rect: Qt.rect(0.75, 0.0, 0.25, 0.25)
+        normalizedRect: Qt.rect(0.75, 0.0, 0.25, 0.25)
 
         CameraSelector {
             id: detailCameraSelector

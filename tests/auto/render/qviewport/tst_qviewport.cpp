@@ -50,14 +50,14 @@ private Q_SLOTS:
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QViewport *>("viewport");
-        QTest::addColumn<QRectF>("rect");
+        QTest::addColumn<QRectF>("normalizedRect");
         QTest::addColumn<QColor>("color");
 
         Qt3DRender::QViewport *defaultConstructed = new Qt3DRender::QViewport();
         QTest::newRow("defaultConstructed") << defaultConstructed << QRectF(0.0f, 0.0f, 1.0f, 1.0f) << QColor();
 
         Qt3DRender::QViewport *smallGreenViewport = new Qt3DRender::QViewport();
-        smallGreenViewport->setRect(QRectF(0.2f, 0.2f, 0.6f, 0.6f));
+        smallGreenViewport->setNormalizedRect(QRectF(0.2f, 0.2f, 0.6f, 0.6f));
         smallGreenViewport->setClearColor(QColor(Qt::green));
         QTest::newRow("smallGreenViewport") << smallGreenViewport << QRectF(0.2f, 0.2f, 0.6f, 0.6f) << QColor(Qt::green);
 
@@ -67,11 +67,11 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QViewport *, viewport);
-        QFETCH(QRectF, rect);
+        QFETCH(QRectF, normalizedRect);
         QFETCH(QColor, color);
 
         // THEN
-        QCOMPARE(viewport->rect(), rect);
+        QCOMPARE(viewport->normalizedRect(), normalizedRect);
         QCOMPARE(viewport->clearColor(), color);
 
         // WHEN
@@ -80,7 +80,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(viewport->id(), clone->id());
-        QCOMPARE(viewport->rect(), clone->rect());
+        QCOMPARE(viewport->normalizedRect(), clone->normalizedRect());
         QCOMPARE(viewport->clearColor(), clone->clearColor());
 
         delete viewport;
@@ -129,13 +129,13 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        viewport->setRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
+        viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "rect");
+        QCOMPARE(change->propertyName(), "normalizedRect");
         QCOMPARE(change->subjectId(), viewport->id());
         QCOMPARE(change->value().value<QRectF>(), QRectF(0.5f, 0.5f, 1.0f, 1.0f));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
@@ -143,20 +143,20 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        viewport->setRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
+        viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        viewport->setRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
+        viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "rect");
+        QCOMPARE(change->propertyName(), "normalizedRect");
         QCOMPARE(change->subjectId(), viewport->id());
         QCOMPARE(change->value().value<QRectF>(), QRectF(0.0f, 0.0f, 1.0f, 1.0f));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);

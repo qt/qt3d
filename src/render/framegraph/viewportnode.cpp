@@ -60,10 +60,10 @@ ViewportNode::ViewportNode()
 void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QViewport *viewport = static_cast<QViewport *>(peer);
-    setXMin(viewport->rect().x());
-    setXMax(viewport->rect().width());
-    setYMin(viewport->rect().y());
-    setYMax(viewport->rect().height());
+    setXMin(viewport->normalizedRect().x());
+    setXMax(viewport->normalizedRect().width());
+    setYMin(viewport->normalizedRect().y());
+    setYMax(viewport->normalizedRect().height());
     m_clearColor = viewport->clearColor();
     setEnabled(viewport->isEnabled());
 }
@@ -114,12 +114,12 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("rect")) {
-            QRectF rect = propertyChange->value().value<QRectF>();
-            setXMin(rect.x());
-            setYMin(rect.y());
-            setXMax(rect.width());
-            setYMax(rect.height());
+        if (propertyChange->propertyName() == QByteArrayLiteral("normalizedRect")) {
+            QRectF normalizedRect = propertyChange->value().value<QRectF>();
+            setXMin(normalizedRect.x());
+            setYMin(normalizedRect.y());
+            setXMax(normalizedRect.width());
+            setYMax(normalizedRect.height());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
             m_clearColor = propertyChange->value().value<QColor>();

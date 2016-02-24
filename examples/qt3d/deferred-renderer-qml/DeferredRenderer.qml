@@ -52,7 +52,7 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Viewport {
-    rect : Qt.rect(0.0, 0.0, 1.0, 1.0)
+    normalizedRect : Qt.rect(0.0, 0.0, 1.0, 1.0)
 
     property alias gBuffer : gBufferTargetSelector.target
     property alias camera : sceneCameraSelector.camera

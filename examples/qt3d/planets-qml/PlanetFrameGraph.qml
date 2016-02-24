@@ -60,7 +60,7 @@ FrameGraph {
     readonly property Texture2D shadowTexture: depthTexture
 
     activeFrameGraph: Viewport {
-        rect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+        normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
         clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
         TechniqueFilter {
