@@ -664,7 +664,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
     if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
 
         Buffer *buffer = Q_NULLPTR;
-        if ((buffer = m_manager->bufferManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
+        if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != Q_NULLPTR) {
             BlockToUBO uniformBlockUBO;
             uniformBlockUBO.m_blockIndex = block.m_index;
             uniformBlockUBO.m_bufferID = buffer->peerUuid();
@@ -730,9 +730,9 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
                                        const QVariant &value)
 {
     Q_UNUSED(shader)
-    if (static_cast<QMetaType::Type>(value.type()) == qNodeIdTypeId) {
+    if (static_cast<QMetaType::Type>(value.userType()) == qNodeIdTypeId) {
         Buffer *buffer = Q_NULLPTR;
-        if ((buffer = m_manager->bufferManager()->lookupResource(value.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
+        if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != Q_NULLPTR) {
             BlockToSSBO shaderStorageBlock;
             shaderStorageBlock.m_blockIndex = block.m_index;
             shaderStorageBlock.m_bufferID = buffer->peerUuid();
@@ -900,6 +900,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         && !parameters.isEmpty()) {
                     ParameterInfoList::const_iterator it = parameters.cbegin();
                     const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
+
                     while (it != parametersEnd) {
                         if (uniformNamesIds.contains(it->nameId)) { // Parameter is a regular uniform
                             setUniformValue(command->m_parameterPack, it->nameId, it->value);
@@ -910,8 +911,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                         } else { // Parameter is a struct
                             const QVariant &v = it->value;
                             ShaderData *shaderData = Q_NULLPTR;
-                            if (static_cast<QMetaType::Type>(v.type()) == qNodeIdTypeId &&
-                                    (shaderData = m_manager->shaderDataManager()->lookupResource(v.value<Qt3DCore::QNodeId>())) != Q_NULLPTR) {
+                            if (static_cast<QMetaType::Type>(v.userType()) == qNodeIdTypeId &&
+                                    (shaderData = m_manager->shaderDataManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(v))) != Q_NULLPTR) {
                                 // Try to check if we have a struct or array matching a QShaderData parameter
                                 setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
                             }
