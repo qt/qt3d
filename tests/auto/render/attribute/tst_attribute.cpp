@@ -49,7 +49,7 @@ private Q_SLOTS:
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setDataType(Qt3DRender::QAbstractAttribute::UnsignedShort);
+        attribute.setDataType(Qt3DRender::QAttribute::UnsignedShort);
         attribute.setDataSize(3);
 
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
@@ -86,7 +86,7 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAbstractAttribute::Float);
+        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Float);
         QCOMPARE(renderAttribute.dataSize(), 1U);
         QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
@@ -102,7 +102,7 @@ private Q_SLOTS:
         attribute.setCount(427);
         attribute.setDivisor(305);
         attribute.setName(QStringLiteral("C3"));
-        attribute.setDataType(Qt3DRender::QAbstractAttribute::Double);
+        attribute.setDataType(Qt3DRender::QAttribute::Double);
         attribute.setDataSize(4);
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
@@ -118,7 +118,7 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAbstractAttribute::Float);
+        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Float);
         QCOMPARE(renderAttribute.dataSize(), 1U);
         QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
@@ -138,12 +138,12 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(static_cast<int>(Qt3DRender::QAbstractAttribute::Int));
+        updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::Int));
         updateChange->setPropertyName("dataType");
         renderAttribute.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAbstractAttribute::Int);
+        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Int);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 

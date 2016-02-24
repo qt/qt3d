@@ -166,7 +166,7 @@ private:
     QFile* resolveLocalData(QString path) const;
 
     QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
-    static QAbstractAttribute::DataType accessorTypeFromJSON(int componentType);
+    static QAttribute::DataType accessorTypeFromJSON(int componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     static QRenderState *buildStateEnable(int state);

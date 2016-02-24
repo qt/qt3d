@@ -50,13 +50,13 @@ namespace Render {
 
 Attribute::Attribute()
     : BackendNode(ReadOnly)
-    , m_dataType(QAbstractAttribute::Float)
+    , m_dataType(QAttribute::Float)
     , m_dataSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
     , m_divisor(0)
-    , m_attributeType(QAbstractAttribute::VertexAttribute)
+    , m_attributeType(QAttribute::VertexAttribute)
     , m_attributeDirty(false)
 {
 }
@@ -67,13 +67,13 @@ Attribute::~Attribute()
 
 void Attribute::cleanup()
 {
-    m_dataType = QAbstractAttribute::Float;
+    m_dataType = QAttribute::Float;
     m_dataSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
     m_divisor = 0;
-    m_attributeType = QAbstractAttribute::VertexAttribute;
+    m_attributeType = QAttribute::VertexAttribute;
     m_bufferId = Qt3DCore::QNodeId();
     m_name.clear();
     m_attributeDirty = false;
@@ -109,7 +109,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_name = propertyChange->value().value<QString>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("dataType")) {
-            m_dataType = static_cast<QAbstractAttribute::DataType>(propertyChange->value().value<int>());
+            m_dataType = static_cast<QAttribute::DataType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("dataSize")) {
             m_dataSize = propertyChange->value().value<uint>();
@@ -127,7 +127,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_divisor = propertyChange->value().value<uint>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("attributeType")) {
-            m_attributeType = static_cast<QAbstractAttribute::AttributeType>(propertyChange->value().value<int>());
+            m_attributeType = static_cast<QAttribute::AttributeType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
         } else  if (propertyName == QByteArrayLiteral("buffer")) {
             m_bufferId = propertyChange->value().value<QNodeId>();

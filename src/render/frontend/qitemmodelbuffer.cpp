@@ -114,33 +114,33 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+QAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 
     case GL_UNSIGNED_SHORT:
         dataCount = 1;
-        return QAbstractAttribute::UnsignedShort;
+        return QAttribute::UnsignedShort;
 
     case GL_UNSIGNED_BYTE:
         dataCount = 1;
-        return QAbstractAttribute::UnsignedByte;
+        return QAttribute::UnsignedByte;
 
     case GL_UNSIGNED_INT:
         dataCount = 1;
-        return QAbstractAttribute::UnsignedInt;
+        return QAttribute::UnsignedInt;
 
     case GL_SHORT:
         dataCount = 1;
-        return QAbstractAttribute::Short;
+        return QAttribute::Short;
 
     case GL_BYTE:
         dataCount = 1;
-        return QAbstractAttribute::Byte;
+        return QAttribute::Byte;
 
     case GL_INT:
         dataCount = 1;
-        return QAbstractAttribute::Int;
+        return QAttribute::Int;
 
     case GL_FLOAT:
         dataCount = 1;
@@ -164,7 +164,7 @@ QAbstractAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
         Q_UNREACHABLE();
     }
 
-    return QAbstractAttribute::Float;
+    return QAttribute::Float;
 }
 
 } // anonymous

@@ -39,7 +39,7 @@
 
 #include "geometry_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qabstractattribute.h>
+#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 
@@ -74,7 +74,7 @@ void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
     QGeometry *geometry = static_cast<QGeometry *>(peer);
     if (geometry != Q_NULLPTR) {
         m_attributes.reserve(geometry->attributes().size());
-        Q_FOREACH (QAbstractAttribute *attribute, geometry->attributes())
+        Q_FOREACH (QAttribute *attribute, geometry->attributes())
             m_attributes.push_back(attribute->id());
         m_verticesPerPatch = geometry->verticesPerPatch();
         m_geometryDirty = true;

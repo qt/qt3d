@@ -47,11 +47,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractAttribute;
+class QAttribute;
 class QGeometryPrivate;
 class QBoundingVolumeSpecifier;
 
-typedef QVector<QAbstractAttribute *> QAttributeList;
+typedef QVector<QAttribute *> QAttributeList;
 
 class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
@@ -63,8 +63,8 @@ public:
     ~QGeometry();
 
     QAttributeList attributes() const;
-    void addAttribute(QAbstractAttribute *attribute);
-    void removeAttribute(QAbstractAttribute *attribute);
+    void addAttribute(QAttribute *attribute);
+    void removeAttribute(QAttribute *attribute);
 
     int verticesPerPatch() const;
 
@@ -83,7 +83,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGeometry)
     QT3D_CLONEABLE(QGeometry)
-    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged(QAbstractAttribute *))
+    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged(QAttribute *))
 };
 
 } // namespace Qt3DRender

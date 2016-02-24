@@ -41,7 +41,7 @@
 #include "qgeometry_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qabstractattribute.h>
+#include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
 
 QT_BEGIN_NAMESPACE
@@ -53,7 +53,7 @@ namespace Qt3DRender {
 /*!
  * \internal
  */
-void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
+void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAttribute *)
 {
     if (m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, m_id));
@@ -96,7 +96,7 @@ void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)
  * \typedef Qt3DRender::QAttributeList
  * \relates Qt3DRender::QGeometry
  *
- * A vector of {QAbstractAttribute}s.
+ * A vector of {QAttribute}s.
  */
 
 /*!
@@ -106,8 +106,8 @@ QGeometry::QGeometry(QNode *parent)
     : QNode(*new QGeometryPrivate(), parent)
 {
     Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAttribute *)),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAttribute *)));
 }
 
 /*!
@@ -117,8 +117,8 @@ QGeometry::QGeometry(QGeometryPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QGeometry);
-    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAbstractAttribute *)),
-                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAbstractAttribute *)));
+    QObject::connect(&d->m_boundingVolumeSpecifier, SIGNAL(positionAttributeChanged(QAttribute *)),
+                     this, SLOT(_q_boundingVolumeSpecifierChanged(QAttribute *)));
 }
 
 /*!
@@ -132,7 +132,7 @@ QGeometry::~QGeometry()
 /*!
  * Adds an \a attribute to this geometry.
  */
-void QGeometry::addAttribute(QAbstractAttribute *attribute)
+void QGeometry::addAttribute(QAttribute *attribute)
 {
     Q_D(QGeometry);
     if (!d->m_attributes.contains(attribute)) {
@@ -157,7 +157,7 @@ void QGeometry::addAttribute(QAbstractAttribute *attribute)
 /*!
  * Removes the given \a attribute from this geometry.
  */
-void QGeometry::removeAttribute(QAbstractAttribute *attribute)
+void QGeometry::removeAttribute(QAttribute *attribute)
 {
     Q_D(QGeometry);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -217,11 +217,11 @@ void QGeometry::copy(const QNode *ref)
     QNode::copy(ref);
     const QGeometry *geometry = static_cast<const QGeometry *>(ref);
     d_func()->m_verticesPerPatch = geometry->d_func()->m_verticesPerPatch;
-    Q_FOREACH (QAbstractAttribute *attribute, geometry->d_func()->m_attributes)
-        d_func()->m_attributes.append(qobject_cast<QAbstractAttribute *>(QNode::clone(attribute)));
+    Q_FOREACH (QAttribute *attribute, geometry->d_func()->m_attributes)
+        d_func()->m_attributes.append(qobject_cast<QAttribute *>(QNode::clone(attribute)));
     // Copy bounding volume specifier attribute
     if (geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute() != Q_NULLPTR)
-        d_func()->m_boundingVolumeSpecifier.setPositionAttribute(qobject_cast<QAbstractAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute())));
+        d_func()->m_boundingVolumeSpecifier.setPositionAttribute(qobject_cast<QAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumeSpecifier.positionAttribute())));
 }
 
 } // namespace Qt3DRender

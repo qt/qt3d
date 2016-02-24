@@ -7,10 +7,6 @@ HEADERS += \
     $$PWD/geometry_p.h \
     $$PWD/geometryrenderer_p.h \
     $$PWD/geometryrenderermanager_p.h \
-    $$PWD/qabstractattribute.h \
-    $$PWD/qabstractattribute_p.h \
-    $$PWD/qattribute.h \
-    $$PWD/qattribute_p.h \
     $$PWD/qbuffer.h \
     $$PWD/qbuffer_p.h \
     $$PWD/qbufferfunctor.h \
@@ -39,7 +35,9 @@ HEADERS += \
     $$PWD/qcuboidgeometry_p.h \
     $$PWD/qplanegeometry.h \
     $$PWD/qplanegeometry_p.h \
-    $$PWD/qboundingvolumespecifier.h
+    $$PWD/qboundingvolumespecifier.h \
+    $$PWD/qattribute_p.h \
+    $$PWD/qattribute.h
 
 SOURCES += \
     $$PWD/attribute.cpp \
@@ -48,8 +46,6 @@ SOURCES += \
     $$PWD/geometry.cpp \
     $$PWD/geometryrenderer.cpp \
     $$PWD/geometryrenderermanager.cpp \
-    $$PWD/qabstractattribute.cpp \
-    $$PWD/qattribute.cpp \
     $$PWD/qbuffer.cpp \
     $$PWD/qconegeometry.cpp \
     $$PWD/qconemesh.cpp \
@@ -66,5 +62,6 @@ SOURCES += \
     $$PWD/qspheregeometry.cpp \
     $$PWD/qcuboidgeometry.cpp \
     $$PWD/qplanegeometry.cpp \
-    $$PWD/qboundingvolumespecifier.cpp
+    $$PWD/qboundingvolumespecifier.cpp \
+    $$PWD/qattribute.cpp
 

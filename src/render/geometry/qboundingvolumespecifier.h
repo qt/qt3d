@@ -47,23 +47,23 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractAttribute;
+class QAttribute;
 class QBoundingVolumeSpecifierPrivate;
 
 class QT3DRENDERSHARED_EXPORT QBoundingVolumeSpecifier : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAbstractAttribute *positionAttribute READ positionAttribute WRITE setPositionAttribute NOTIFY positionAttributeChanged)
+    Q_PROPERTY(Qt3DRender::QAttribute *positionAttribute READ positionAttribute WRITE setPositionAttribute NOTIFY positionAttributeChanged)
 public:
     explicit QBoundingVolumeSpecifier(QObject *parent = 0);
 
-    QAbstractAttribute *positionAttribute() const;
+    QAttribute *positionAttribute() const;
 
 public Q_SLOTS:
-    void setPositionAttribute(QAbstractAttribute *positionAttribute);
+    void setPositionAttribute(QAttribute *positionAttribute);
 
 Q_SIGNALS:
-    void positionAttributeChanged(QAbstractAttribute *positionAttribute);
+    void positionAttributeChanged(QAttribute *positionAttribute);
 
 private:
     Q_DECLARE_PRIVATE(QBoundingVolumeSpecifier)

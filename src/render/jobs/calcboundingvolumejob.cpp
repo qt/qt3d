@@ -96,8 +96,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
             if (pickVolumeAttribute) {
                 if (!pickVolumeAttribute
-                        || pickVolumeAttribute->attributeType() != QAbstractAttribute::VertexAttribute
-                        || pickVolumeAttribute->dataType() != QAbstractAttribute::Float
+                        || pickVolumeAttribute->attributeType() != QAttribute::VertexAttribute
+                        || pickVolumeAttribute->dataType() != QAttribute::Float
                         || pickVolumeAttribute->dataSize() < 3) {
                     qWarning() << "QBoundingVolumeSpecifier pickVolume Attribute not suited for bounding volume computation";
                     return;

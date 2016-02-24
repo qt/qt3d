@@ -40,34 +40,67 @@
 #ifndef QT3DRENDER_QATTRIBUTE_H
 #define QT3DRENDER_QATTRIBUTE_H
 
-#include <Qt3DRender/qabstractattribute.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DCore/QNode>
 #include <QtCore/QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAttributePrivate;
 class QBuffer;
+class QAttributePrivate;
 
-class QT3DRENDERSHARED_EXPORT QAttribute : public QAbstractAttribute
+typedef QSharedPointer<QBuffer> QBufferPtr;
+
+class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
 {
     Q_OBJECT
+    Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
+    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
+    Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
+    Q_PROPERTY(uint count READ count WRITE setCount NOTIFY countChanged)
+    Q_PROPERTY(uint byteStride READ byteStride WRITE setByteStride NOTIFY byteStrideChanged)
+    Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
+    Q_PROPERTY(uint divisor READ divisor WRITE setDivisor NOTIFY divisorChanged)
+    Q_PROPERTY(AttributeType attributeType READ attributeType WRITE setAttributeType NOTIFY attributeTypeChanged)
 
 public:
-    explicit QAttribute(Qt3DCore::QNode *parent = 0);
-    QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
-    QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
+    enum AttributeType {
+        VertexAttribute,
+        IndexAttribute
+    };
+
+    Q_ENUM(AttributeType)
+
+    enum DataType {
+        Byte = 0,
+        UnsignedByte,
+        Short,
+        UnsignedShort,
+        Int,
+        UnsignedInt,
+        HalfFloat,
+        Float,
+        Double
+    };
+    Q_ENUM(DataType)
+
+    explicit QAttribute(QNode *parent = 0);
+    explicit QAttribute(QBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    explicit QAttribute(QBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
     ~QAttribute();
 
-    QVector<QVector4D> asVector4D() const Q_DECL_OVERRIDE;
-    QVector<QVector3D> asVector3D() const Q_DECL_OVERRIDE;
-    QVector<QVector2D> asVector2D() const Q_DECL_OVERRIDE;
-
-    void dump(int count) Q_DECL_OVERRIDE;
-
     QBuffer *buffer() const;
+    QString name() const;
+    DataType dataType() const;
+    uint dataSize() const;
+    uint count() const;
+    uint byteStride() const;
+    uint byteOffset() const;
+    uint divisor() const;
+    AttributeType attributeType() const;
 
     Q_INVOKABLE static QString defaultPositionAttributeName();
     Q_INVOKABLE static QString defaultNormalAttributeName();
@@ -75,15 +108,37 @@ public:
     Q_INVOKABLE static QString defaultTextureCoordinateAttributeName();
     Q_INVOKABLE static QString defaultTangentAttributeName();
 
+public Q_SLOTS:
+    void setBuffer(QBuffer *buffer);
+    void setName(const QString &name);
+    void setDataType(DataType type);
+    void setDataSize(uint size);
+    void setCount(uint count);
+    void setByteStride(uint byteStride);
+    void setByteOffset(uint byteOffset);
+    void setDivisor(uint divisor);
+    void setAttributeType(AttributeType attributeType);
+
+Q_SIGNALS:
+    void bufferChanged(QBuffer *buffer);
+    void nameChanged(const QString &name);
+    void dataTypeChanged(DataType dataType);
+    void dataSizeChanged(uint dataSize);
+    void countChanged(uint count);
+    void byteStrideChanged(uint byteStride);
+    void byteOffsetChanged(uint byteOffset);
+    void divisorChanged(uint divisor);
+    void attributeTypeChanged(AttributeType attributeType);
+
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QT3D_CLONEABLE(QAttribute)
     Q_DECLARE_PRIVATE(QAttribute)
+    QT3D_CLONEABLE(QAttribute)
 };
 
-} // namespace Qt3DRender
+} // Qt3DRender
 
 QT_END_NAMESPACE
 

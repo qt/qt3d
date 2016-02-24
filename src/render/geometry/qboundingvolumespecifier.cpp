@@ -39,7 +39,7 @@
 
 #include "qboundingvolumespecifier.h"
 #include <private/qobject_p.h>
-#include <Qt3DRender/qabstractattribute.h>
+#include <Qt3DRender/qattribute.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -53,7 +53,7 @@ public:
         , m_positionAttribute(Q_NULLPTR)
     {}
 
-    QAbstractAttribute *m_positionAttribute;
+    QAttribute *m_positionAttribute;
 };
 
 /*!
@@ -89,13 +89,13 @@ QBoundingVolumeSpecifier::QBoundingVolumeSpecifier(QObject *parent)
  *
  * Holds the position attribute.
  */
-QAbstractAttribute *QBoundingVolumeSpecifier::positionAttribute() const
+QAttribute *QBoundingVolumeSpecifier::positionAttribute() const
 {
     Q_D(const QBoundingVolumeSpecifier);
     return d->m_positionAttribute;
 }
 
-void QBoundingVolumeSpecifier::setPositionAttribute(QAbstractAttribute *positionAttribute)
+void QBoundingVolumeSpecifier::setPositionAttribute(QAttribute *positionAttribute)
 {
     Q_D(QBoundingVolumeSpecifier);
     if (positionAttribute != d->m_positionAttribute) {

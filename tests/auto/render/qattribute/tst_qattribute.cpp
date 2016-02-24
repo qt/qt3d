@@ -63,7 +63,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute *customVertex = new Qt3DRender::QAttribute();
         Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
         customVertex->setBuffer(buffer);
-        customVertex->setAttributeType(Qt3DRender::QAbstractAttribute::VertexAttribute);
+        customVertex->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         customVertex->setCount(454);
         customVertex->setByteStride(427);
         customVertex->setByteOffset(305);
@@ -76,7 +76,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute *customIndex = new Qt3DRender::QAttribute();
         Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
         customIndex->setBuffer(indexBuffer);
-        customIndex->setAttributeType(Qt3DRender::QAbstractAttribute::IndexAttribute);
+        customIndex->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         customIndex->setCount(383);
         customIndex->setByteStride(350);
         customIndex->setByteOffset(327);
@@ -214,14 +214,14 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        attribute->setAttributeType(Qt3DRender::QAbstractAttribute::IndexAttribute);
+        attribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "attributeType");
-        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAbstractAttribute::IndexAttribute));
+        QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::IndexAttribute));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
