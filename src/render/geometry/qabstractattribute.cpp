@@ -39,7 +39,7 @@
 
 #include "qabstractattribute.h"
 #include "qabstractattribute_p.h"
-#include "qabstractbuffer.h"
+#include <Qt3DRender/qbuffer.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -78,7 +78,7 @@ QAbstractAttributePrivate::QAbstractAttributePrivate()
  */
 
 /*!
- * \typedef Qt3DRender::QAbstractBufferPtr
+ * \typedef Qt3DRender::QBufferPtr
  * \relates Qt3DRender::QAbstractAttribute
  */
 
@@ -144,7 +144,7 @@ QAbstractAttribute::~QAbstractAttribute()
  * Constructs a new QAbstractAttribute from \a buf of \a type, \a dataSize, \a count, \a offset,
  * and \a stride with \a parent.
  */
-QAbstractAttribute::QAbstractAttribute(QAbstractBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
+QAbstractAttribute::QAbstractAttribute(QBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(*new QAbstractAttributePrivate(), parent)
 {
     Q_D(QAbstractAttribute);
@@ -167,7 +167,7 @@ QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *par
 /*!
  * \internal
  */
-QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
+QAbstractAttribute::QAbstractAttribute(QAbstractAttributePrivate &dd, QBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(dd, parent)
 {
     Q_D(QAbstractAttribute);
@@ -187,7 +187,7 @@ void QAbstractAttribute::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QAbstractAttribute *attribute = static_cast<const QAbstractAttribute *>(ref);
-    d_func()->m_buffer = qobject_cast<QAbstractBuffer *>(QNode::clone(attribute->d_func()->m_buffer));
+    d_func()->m_buffer = qobject_cast<QBuffer *>(QNode::clone(attribute->d_func()->m_buffer));
     d_func()->m_name = attribute->d_func()->m_name;
     d_func()->m_count = attribute->d_func()->m_count;
     d_func()->m_divisor = attribute->d_func()->m_divisor;
@@ -203,7 +203,7 @@ void QAbstractAttribute::copy(const QNode *ref)
  *
  * Holds the buffer.
  */
-QAbstractBuffer *QAbstractAttribute::buffer() const
+QBuffer *QAbstractAttribute::buffer() const
 {
     Q_D(const QAbstractAttribute);
     return d->m_buffer;
@@ -297,7 +297,7 @@ QAbstractAttribute::AttributeType QAbstractAttribute::attributeType() const
     return d->m_attributeType;
 }
 
-void QAbstractAttribute::setBuffer(QAbstractBuffer *buffer)
+void QAbstractAttribute::setBuffer(QBuffer *buffer)
 {
     Q_D(QAbstractAttribute);
     if (d->m_buffer == buffer)

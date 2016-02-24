@@ -43,7 +43,7 @@ class tst_QAttribute: public Qt3DCore::QNode
 public:
     tst_QAttribute()
     {
-        qRegisterMetaType<Qt3DRender::QAbstractBuffer*>("Qt3DCore::QAbstractBuffer*");
+        qRegisterMetaType<Qt3DRender::QBuffer*>("Qt3DCore::QBuffer*");
     }
 
     ~tst_QAttribute()

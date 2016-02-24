@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DRender/QAbstractAttribute>
-#include <Qt3DRender/QAbstractBuffer>
+#include <Qt3DRender/QBuffer>
 #include <private/qnode_p.h>
 #include <private/qt3drender_global_p.h>
 
@@ -69,7 +69,7 @@ public:
 
     QAbstractAttributePrivate();
 
-    QAbstractBuffer *m_buffer;
+    QBuffer *m_buffer;
     QString m_name;
     QAbstractAttribute::DataType m_dataType;
     uint m_dataSize;

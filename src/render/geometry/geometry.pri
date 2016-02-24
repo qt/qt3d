@@ -9,8 +9,6 @@ HEADERS += \
     $$PWD/geometryrenderermanager_p.h \
     $$PWD/qabstractattribute.h \
     $$PWD/qabstractattribute_p.h \
-    $$PWD/qabstractbuffer.h \
-    $$PWD/qabstractbuffer_p.h \
     $$PWD/qattribute.h \
     $$PWD/qattribute_p.h \
     $$PWD/qbuffer.h \
@@ -51,7 +49,6 @@ SOURCES += \
     $$PWD/geometryrenderer.cpp \
     $$PWD/geometryrenderermanager.cpp \
     $$PWD/qabstractattribute.cpp \
-    $$PWD/qabstractbuffer.cpp \
     $$PWD/qattribute.cpp \
     $$PWD/qbuffer.cpp \
     $$PWD/qconegeometry.cpp \

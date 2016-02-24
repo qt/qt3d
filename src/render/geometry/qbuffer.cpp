@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qbuffer.h"
 #include "qbuffer_p.h"
+#include "qbuffer.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -49,7 +49,7 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 
 QBufferPrivate::QBufferPrivate()
-    : QAbstractBufferPrivate()
+    : QNodePrivate()
     , m_usage(QBuffer::StaticDraw)
     , m_sync(false)
 {
@@ -88,8 +88,15 @@ QBufferPrivate::QBufferPrivate()
  * \class Qt3DRender::QBuffer
  * \inmodule Qt3DRender
  *
- * \inherits Qt3DRender::QAbstractBuffer
+ * \inherits Qt3DCore::QNode
  */
+
+/*!
+ * \fn void Qt3DRender::QBuffer::dataChanged(const QByteArray &bytes)
+ *
+ * This signal is emitted with \a bytes when data changes.
+ */
+
 
 /*!
  * \enum QBuffer::BufferType
@@ -140,7 +147,7 @@ QBufferPrivate::QBufferPrivate()
  * Constructs a new QBuffer of buffer type \a ty with \a parent.
  */
 QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
-    : QAbstractBuffer(*new QBufferPrivate(), parent)
+    : QNode(*new QBufferPrivate(), parent)
 {
     Q_D(QBuffer);
     d->m_type = ty;
@@ -151,17 +158,7 @@ QBuffer::QBuffer(QBuffer::BufferType ty, QNode *parent)
  */
 QBuffer::~QBuffer()
 {
-    QAbstractBuffer::cleanup();
-}
-
-/*!
- * \internal
- */
-QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
-    : QAbstractBuffer(dd, parent)
-{
-    Q_D(QBuffer);
-    d->m_type = ty;
+    QBuffer::cleanup();
 }
 
 /*!
@@ -169,8 +166,9 @@ QBuffer::QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, QNode *parent)
  */
 void QBuffer::copy(const QNode *ref)
 {
-    QAbstractBuffer::copy(ref);
+    QNode::copy(ref);
     const QBuffer *buffer = static_cast<const QBuffer *>(ref);
+    d_func()->m_data = buffer->d_func()->m_data;
     d_func()->m_type = buffer->d_func()->m_type;
     d_func()->m_usage = buffer->d_func()->m_usage;
     d_func()->m_functor = buffer->d_func()->m_functor;
@@ -188,6 +186,28 @@ void QBuffer::sceneChangeEvent(const QSceneChangePtr &change)
         setData(e->value().toByteArray());
         blockNotifications(blocked);
     }
+}
+
+/*!
+ * Sets \a bytes as data.
+ */
+void QBuffer::setData(const QByteArray &bytes)
+{
+   Q_D(QBuffer);
+    if (bytes != d->m_data) {
+        d->m_data = bytes;
+        Qt3DCore::QNodePrivate::get(this)->notifyPropertyChange("data", QVariant::fromValue(d->m_data));
+        emit dataChanged(bytes);
+    }
+}
+
+/*!
+ * \return the data.
+ */
+QByteArray QBuffer::data() const
+{
+    Q_D(const QBuffer);
+    return d->m_data;
 }
 
 /*!

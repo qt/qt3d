@@ -48,15 +48,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractBuffer;
+class QBuffer;
 class QAbstractAttributePrivate;
 
-typedef QSharedPointer<QAbstractBuffer> QAbstractBufferPtr;
+typedef QSharedPointer<QBuffer> QBufferPtr;
 
 class QT3DRENDERSHARED_EXPORT QAbstractAttribute : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QAbstractBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
+    Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
     Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
@@ -89,9 +89,9 @@ public:
 
     explicit QAbstractAttribute(QNode *parent = 0);
     ~QAbstractAttribute();
-    QAbstractAttribute(QAbstractBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    QAbstractAttribute(QBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
 
-    QAbstractBuffer *buffer() const;
+    QBuffer *buffer() const;
     QString name() const;
     DataType dataType() const;
     uint dataSize() const;
@@ -107,7 +107,7 @@ public:
     virtual void dump(int count) = 0;
 
 public Q_SLOTS:
-    void setBuffer(QAbstractBuffer *buffer);
+    void setBuffer(QBuffer *buffer);
     void setName(const QString &name);
     void setDataType(DataType type);
     void setDataSize(uint size);
@@ -118,7 +118,7 @@ public Q_SLOTS:
     void setAttributeType(AttributeType attributeType);
 
 Q_SIGNALS:
-    void bufferChanged(QAbstractBuffer *buffer);
+    void bufferChanged(QBuffer *buffer);
     void nameChanged(const QString &name);
     void dataTypeChanged(DataType dataType);
     void dataSizeChanged(uint dataSize);
@@ -130,7 +130,7 @@ Q_SIGNALS:
 
 protected:
     QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = 0);
-    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
