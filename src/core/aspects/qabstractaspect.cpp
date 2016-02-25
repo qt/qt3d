@@ -133,7 +133,13 @@ QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
     return QVector<QAspectJobPtr>();
 }
 
-void QAbstractAspect::onInitialize()
+/*!
+    Called in the context of the aspect thread once the aspect has been registered.
+    This provides an opportunity for the aspect to do any initialization tasks that
+    require to be in the aspect thread context such as creating QObject subclasses that
+    must have affinity with this thread.
+*/
+void QAbstractAspect::onRegistered()
 {
 }
 

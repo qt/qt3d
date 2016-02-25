@@ -149,8 +149,9 @@ void QAspectManager::registerAspect(QAbstractAspect *aspect)
         QAbstractAspectPrivate::get(aspect)->m_arbiter = m_changeArbiter;
         // Register sceneObserver with the QChangeArbiter
         m_changeArbiter->registerSceneObserver(aspect->d_func());
-        // Initialize the aspect in the main thread
-        aspect->onInitialize();
+
+        // Allow the aspect to do some work now that it is registered
+        aspect->onRegistered();
     }
     else {
         qCWarning(Aspects) << "Failed to register aspect";

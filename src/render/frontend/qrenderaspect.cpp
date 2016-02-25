@@ -413,7 +413,7 @@ void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
     d->m_renderer->setSceneRoot(d, d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntity->id()));
 }
 
-void QRenderAspect::onInitialize()
+void QRenderAspect::onRegistered()
 {
     // TODO: Remove the m_initialized variable and split out onInitialize()
     // and setting a resource (the QSurface) on the aspects.

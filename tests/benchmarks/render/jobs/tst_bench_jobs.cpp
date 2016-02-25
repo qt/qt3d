@@ -79,7 +79,7 @@ public:
             m_window->setFormat(format);
             m_window->create();
 
-            QRenderAspect::onInitialize();
+            QRenderAspect::onRegistered();
         }
     }
 

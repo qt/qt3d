@@ -74,7 +74,7 @@ protected:
     Q_DECLARE_PRIVATE(QRenderAspect)
 
     void onRootEntityChanged(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
-    void onInitialize() Q_DECL_OVERRIDE;
+    void onRegistered() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
 
 private:

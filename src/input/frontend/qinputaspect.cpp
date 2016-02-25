@@ -204,8 +204,7 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-// Called in the aspectThread
-void QInputAspect::onInitialize()
+void QInputAspect::onRegistered()
 {
     Q_D(QInputAspect);
     Qt3DCore::QEventFilterService *eventService = d->services()->eventFilterService();

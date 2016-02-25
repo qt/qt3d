@@ -104,7 +104,7 @@ QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QLogicAspect::onInitialize()
+void QLogicAspect::onRegistered()
 {
 }
 

@@ -61,7 +61,7 @@ protected:
     void registerBackendTypes();
 
 private:
-    void onInitialize() Q_DECL_OVERRIDE;
+    void onRegistered() Q_DECL_OVERRIDE;
     void onStartup() Q_DECL_OVERRIDE;
     void onShutdown() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;

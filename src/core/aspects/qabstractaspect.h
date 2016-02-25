@@ -78,7 +78,7 @@ private:
 
     virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time);
 
-    virtual void onInitialize();
+    virtual void onRegistered();
     virtual void onCleanup();
 
     virtual void onStartup();
