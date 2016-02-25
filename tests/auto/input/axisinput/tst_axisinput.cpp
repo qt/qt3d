@@ -69,7 +69,7 @@ private Q_SLOTS:
         backendAxisInput.setPeer(&axisInput);
 
         // THEN
-        QCOMPARE(backendAxisInput.peerUuid(), axisInput.id());
+        QCOMPARE(backendAxisInput.peerId(), axisInput.id());
         QCOMPARE(backendAxisInput.isEnabled(), axisInput.isEnabled());
         compareKeys(backendAxisInput.buttons(), axisInput.buttons());
         QCOMPARE(backendAxisInput.axis(), axisInput.axis());
@@ -83,7 +83,7 @@ private Q_SLOTS:
         Qt3DInput::Input::AxisInput backendAxisInput;
 
         // THEN
-        QVERIFY(backendAxisInput.peerUuid().isNull());
+        QVERIFY(backendAxisInput.peerId().isNull());
         QCOMPARE(backendAxisInput.scale(), 0.0f);
         QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);
@@ -104,7 +104,7 @@ private Q_SLOTS:
         backendAxisInput.cleanup();
 
         // THEN
-        QVERIFY(backendAxisInput.peerUuid().isNull());
+        QVERIFY(backendAxisInput.peerId().isNull());
         QCOMPARE(backendAxisInput.scale(), 0.0f);
         QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);

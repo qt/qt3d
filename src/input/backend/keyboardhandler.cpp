@@ -87,8 +87,8 @@ void KeyboardHandler::setFocus(bool focus)
 {
     if (focus != m_focus) {
         m_focus = focus;
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
-        e->setTargetNode(peerUuid());
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+        e->setTargetNode(peerId());
         e->setPropertyName("focus");
         e->setValue(m_focus);
         notifyObservers(e);
@@ -97,8 +97,8 @@ void KeyboardHandler::setFocus(bool focus)
 
 void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
-    e->setTargetNode(peerUuid());
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    e->setTargetNode(peerId());
     e->setPropertyName("event");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -129,7 +129,7 @@ void KeyboardHandler::requestFocus()
 {
     KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
     if (controller && m_enabled)
-        controller->requestFocusForInput(peerUuid());
+        controller->requestFocusForInput(peerId());
 }
 
 void KeyboardHandler::setController(QNodeId controller)
@@ -137,13 +137,13 @@ void KeyboardHandler::setController(QNodeId controller)
     if (!m_keyboardController.isNull()) {
         KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
         if (controller)
-            controller->removeKeyboardInput(peerUuid());
+            controller->removeKeyboardInput(peerId());
     }
     m_keyboardController = controller;
     if (!m_keyboardController.isNull()) {
         KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
         if (controller)
-            controller->addKeyboardInput(peerUuid());
+            controller->addKeyboardInput(peerId());
     }
 }
 

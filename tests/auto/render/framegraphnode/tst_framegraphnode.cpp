@@ -52,7 +52,7 @@ public:
 
     void setIdInternal(Qt3DRender::Render::FrameGraphNode *node, Qt3DCore::QNodeId id)
     {
-        Qt3DCore::QBackendNodePrivate::get(node)->m_peerUuid = id;
+        Qt3DCore::QBackendNodePrivate::get(node)->m_peerId = id;
     }
 
 private Q_SLOTS:
@@ -65,7 +65,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(n.nodeType(), Qt3DRender::Render::FrameGraphNode::InvalidNodeType);
         QVERIFY(n.isEnabled());
-        QVERIFY(n.peerUuid().isNull());
+        QVERIFY(n.peerId().isNull());
         QVERIFY(n.manager() == Q_NULLPTR);
         QVERIFY(n.parentId().isNull());
         QVERIFY(n.childrenIds().empty());

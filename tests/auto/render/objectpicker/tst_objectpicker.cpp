@@ -51,7 +51,7 @@ private Q_SLOTS:
         objectPicker.setPeer(&picker);
 
         // THEN
-        QVERIFY(!objectPicker.peerUuid().isNull());
+        QVERIFY(!objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), true);
         QCOMPARE(objectPicker.isDirty(), true);
     }
@@ -62,7 +62,7 @@ private Q_SLOTS:
         Qt3DRender::Render::ObjectPicker objectPicker;
 
         // THEN
-        QVERIFY(objectPicker.peerUuid().isNull());
+        QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
 
@@ -75,7 +75,7 @@ private Q_SLOTS:
         objectPicker.cleanup();
 
         // THEN
-        QVERIFY(objectPicker.peerUuid().isNull());
+        QVERIFY(objectPicker.peerId().isNull());
         QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
     }

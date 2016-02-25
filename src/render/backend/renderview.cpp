@@ -636,11 +636,11 @@ void RenderView::setUniformValue(ShaderParameterPack &uniformPack, int nameId, c
         const Qt3DCore::QNodeId texId = variant_value<Qt3DCore::QNodeId>(value);
         if ((tex = m_manager->textureManager()->lookupResource(texId))
                 != Q_NULLPTR) {
-            uniformPack.setTexture(nameId, tex->peerUuid());
+            uniformPack.setTexture(nameId, tex->peerId());
             //TextureUniform *texUniform = m_allocator->allocate<TextureUniform>();
             QUniformValue texUniform;
             texUniform.setType(QUniformValue::TextureSampler);
-            texUniform.setTextureId(tex->peerUuid());
+            texUniform.setTextureId(tex->peerId());
             uniformPack.setUniform(nameId, texUniform);
         }
     } else {
@@ -666,7 +666,7 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
         if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != Q_NULLPTR) {
             BlockToUBO uniformBlockUBO;
             uniformBlockUBO.m_blockIndex = block.m_index;
-            uniformBlockUBO.m_bufferID = buffer->peerUuid();
+            uniformBlockUBO.m_bufferID = buffer->peerId();
             uniformPack.setUniformBuffer(uniformBlockUBO);
             // Buffer update to GL buffer will be done at render time
         }
@@ -684,12 +684,12 @@ void RenderView::setUniformBlockValue(ShaderParameterPack &uniformPack,
 
         // Temporarly disabled
 
-        //        BufferShaderKey uboKey(shaderData->peerUuid(),
-        //                               shader->peerUuid());
+        //        BufferShaderKey uboKey(shaderData->peerId(),
+        //                               shader->peerId());
 
         //        BlockToUBO uniformBlockUBO;
         //        uniformBlockUBO.m_blockIndex = block.m_index;
-        //        uniformBlockUBO.m_shaderDataID = shaderData->peerUuid();
+        //        uniformBlockUBO.m_shaderDataID = shaderData->peerId();
         //        bool uboNeedsUpdate = false;
 
         //        // build UBO at uboId if not created before
@@ -734,7 +734,7 @@ void RenderView::setShaderStorageValue(ShaderParameterPack &uniformPack,
         if ((buffer = m_manager->bufferManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(value))) != Q_NULLPTR) {
             BlockToSSBO shaderStorageBlock;
             shaderStorageBlock.m_blockIndex = block.m_index;
-            shaderStorageBlock.m_bufferID = buffer->peerUuid();
+            shaderStorageBlock.m_bufferID = buffer->peerId();
             uniformPack.setShaderStorageBuffer(shaderStorageBlock);
             // Buffer update to GL buffer will be done at render time
         }

@@ -61,7 +61,7 @@ private Q_SLOTS:
         renderGeometry.setPeer(&geometry);
 
         // THEN
-        QCOMPARE(renderGeometry.peerUuid(), geometry.id());
+        QCOMPARE(renderGeometry.peerId(), geometry.id());
         QCOMPARE(renderGeometry.isDirty(), true);
         QCOMPARE(renderGeometry.attributes().count(), 4);
         QCOMPARE(renderGeometry.verticesPerPatch(), 4);
@@ -79,7 +79,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
-        QVERIFY(renderGeometry.peerUuid().isNull());
+        QVERIFY(renderGeometry.peerId().isNull());
         QCOMPARE(renderGeometry.verticesPerPatch(), 0);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
 

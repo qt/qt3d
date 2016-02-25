@@ -108,7 +108,7 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
             m_geometryId = geometryRenderer->geometry()->id();
         m_functor = geometryRenderer->geometryFunctor();
         if (m_functor && m_manager != Q_NULLPTR)
-            m_manager->addDirtyGeometryRenderer(peerUuid());
+            m_manager->addDirtyGeometryRenderer(peerId());
         m_dirty = true;
     }
 }
@@ -149,7 +149,7 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_dirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
             m_functor = newFunctor;
             if (m_functor && m_manager != Q_NULLPTR)
-                m_manager->addDirtyGeometryRenderer(peerUuid());
+                m_manager->addDirtyGeometryRenderer(peerId());
         }
         break;
     }
@@ -184,12 +184,12 @@ void GeometryRenderer::executeFunctor()
     Q_ASSERT(m_functor);
     QGeometry *geometry = (*m_functor)();
 
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e->setPropertyName("geometry");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(QNodePtr(geometry, &QNodePrivate::nodePtrDeleter)));
-    e->setTargetNode(peerUuid());
+    e->setTargetNode(peerId());
     notifyObservers(e);
     // Maybe we could also send a status to help troubleshoot errors
 }

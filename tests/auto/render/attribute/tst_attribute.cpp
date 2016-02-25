@@ -61,7 +61,7 @@ private Q_SLOTS:
         renderAttribute.setPeer(&attribute);
 
         // THEN
-        QCOMPARE(renderAttribute.peerUuid(), attribute.id());
+        QCOMPARE(renderAttribute.peerId(), attribute.id());
         QCOMPARE(renderAttribute.isDirty(), true);
         QCOMPARE(renderAttribute.vertexBaseType(), attribute.vertexBaseType());
         QCOMPARE(renderAttribute.vertexSize(), attribute.vertexSize());
@@ -82,7 +82,7 @@ private Q_SLOTS:
         renderAttribute.setRenderer(&renderer);
 
         // THEN
-        QVERIFY(renderAttribute.peerUuid().isNull());
+        QVERIFY(renderAttribute.peerId().isNull());
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
@@ -114,7 +114,7 @@ private Q_SLOTS:
         renderAttribute.cleanup();
 
         // THEN
-        QVERIFY(renderAttribute.peerUuid().isNull());
+        QVERIFY(renderAttribute.peerId().isNull());
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);

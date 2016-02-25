@@ -53,7 +53,7 @@ bool FrameGraphManager::containsNode(Qt3DCore::QNodeId id) const
 
 void FrameGraphManager::appendNode(FrameGraphNode *node)
 {
-    m_nodes.insert(node->peerUuid(), node);
+    m_nodes.insert(node->peerId(), node);
 }
 
 FrameGraphNode* FrameGraphManager::lookupNode(Qt3DCore::QNodeId id) const

@@ -426,15 +426,15 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
     GLuint fboId = defaultFboId; // Default FBO
     if (renderTarget != Q_NULLPTR) {
         // New RenderTarget
-        if (!m_renderTargets.contains(renderTarget->peerUuid())) {
+        if (!m_renderTargets.contains(renderTarget->peerId())) {
             if (m_defaultFBO && fboId == m_defaultFBO) {
                 // this is the default fbo that some platforms create (iOS), we just register it
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerUuid(), fboId);
+                m_renderTargets.insert(renderTarget->peerId(), fboId);
             } else if ((fboId = m_glHelper->createFrameBufferObject()) != 0) {
                 // The FBO is created and its attachments are set once
                 // Insert FBO into hash
-                m_renderTargets.insert(renderTarget->peerUuid(), fboId);
+                m_renderTargets.insert(renderTarget->peerId(), fboId);
                 // Bind FBO
                 m_glHelper->bindFrameBufferObject(fboId);
                 bindFrameBufferAttachmentHelper(fboId, attachments);
@@ -442,7 +442,7 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
                 qCritical() << "Failed to create FBO";
             }
         } else {
-            fboId = m_renderTargets.value(renderTarget->peerUuid());
+            fboId = m_renderTargets.value(renderTarget->peerId());
 
             // We need to check if  one of the attachment was resized
             TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
@@ -1075,21 +1075,21 @@ void GraphicsContext::specifyIndices(Buffer *buffer)
 
 void GraphicsContext::updateBuffer(Buffer *buffer)
 {
-    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerUuid());
+    const QHash<Qt3DCore::QNodeId, HGLBuffer>::iterator it = m_renderBufferHash.find(buffer->peerId());
     if (it != m_renderBufferHash.end())
         uploadDataToGLBuffer(buffer, m_renderer->nodeManagers()->glBufferManager()->data(it.value()));
 }
 
 GLBuffer *GraphicsContext::glBufferForRenderBuffer(Buffer *buf)
 {
-    if (!m_renderBufferHash.contains(buf->peerUuid()))
-        m_renderBufferHash.insert(buf->peerUuid(), createGLBufferFor(buf));
-    return m_renderer->nodeManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerUuid()));
+    if (!m_renderBufferHash.contains(buf->peerId()))
+        m_renderBufferHash.insert(buf->peerId(), createGLBufferFor(buf));
+    return m_renderer->nodeManagers()->glBufferManager()->data(m_renderBufferHash.value(buf->peerId()));
 }
 
 HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
 {
-    GLBuffer *b = m_renderer->nodeManagers()->glBufferManager()->getOrCreateResource(buffer->peerUuid());
+    GLBuffer *b = m_renderer->nodeManagers()->glBufferManager()->getOrCreateResource(buffer->peerId());
     //    b.setUsagePattern(static_cast<QOpenGLBuffer::UsagePattern>(buffer->usage()));
     Q_ASSERT(b);
     if (!b->create(this))
@@ -1100,7 +1100,7 @@ HGLBuffer GraphicsContext::createGLBufferFor(Buffer *buffer)
 
     // TO DO: Handle usage pattern
     b->allocate(this, buffer->data().constData(), buffer->data().size(), false);
-    return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerUuid());
+    return m_renderer->nodeManagers()->glBufferManager()->lookupHandle(buffer->peerId());
 }
 
 void GraphicsContext::uploadDataToGLBuffer(Buffer *buffer, GLBuffer *b, bool releaseBuffer)

@@ -75,7 +75,7 @@ public:
     virtual ~QBackendNode();
 
     void setPeer(QNode *peer);
-    QNodeId peerUuid() const Q_DECL_NOEXCEPT;
+    QNodeId peerId() const Q_DECL_NOEXCEPT;
 
     Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;

@@ -50,7 +50,7 @@ private Q_SLOTS:
         boundingVolumeDebug.setPeer(&fbvH);
 
         // THEN
-        QVERIFY(!boundingVolumeDebug.peerUuid().isNull());
+        QVERIFY(!boundingVolumeDebug.peerId().isNull());
         QCOMPARE(boundingVolumeDebug.isRecursive(), true);
     }
 
@@ -60,7 +60,7 @@ private Q_SLOTS:
         Qt3DRender::Render::BoundingVolumeDebug boundingVolumeDebug;
 
         // THEN
-        QVERIFY(boundingVolumeDebug.peerUuid().isNull());
+        QVERIFY(boundingVolumeDebug.peerId().isNull());
         QCOMPARE(boundingVolumeDebug.isRecursive(), false);
         QCOMPARE(boundingVolumeDebug.radius(), 0.0f);
         QCOMPARE(boundingVolumeDebug.center(), QVector3D());
@@ -76,7 +76,7 @@ private Q_SLOTS:
         boundingVolumeDebug.cleanup();
 
         // THEN
-        QVERIFY(boundingVolumeDebug.peerUuid().isNull());
+        QVERIFY(boundingVolumeDebug.peerId().isNull());
         QCOMPARE(boundingVolumeDebug.isRecursive(), false);
         QCOMPARE(boundingVolumeDebug.radius(), 0.0f);
         QCOMPARE(boundingVolumeDebug.center(), QVector3D());

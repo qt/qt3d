@@ -93,17 +93,17 @@ QBackendNode::~QBackendNode()
 void QBackendNode::setPeer(QNode *peer)
 {
     Q_D(QBackendNode);
-    QNodeId peerUuid;
+    QNodeId peerId;
     if (peer != Q_NULLPTR)
-        peerUuid = peer->id();
-    d->m_peerUuid = peerUuid;
+        peerId = peer->id();
+    d->m_peerId = peerId;
     updateFromPeer(peer);
 }
 
-QNodeId QBackendNode::peerUuid() const Q_DECL_NOEXCEPT
+QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QBackendNode);
-    return d->m_peerUuid;
+    return d->m_peerId;
 }
 
 QBackendNode::Mode QBackendNode::mode() const Q_DECL_NOEXCEPT

@@ -66,10 +66,10 @@ void AssignKeyboardFocusJob::run()
     Q_FOREACH (const HKeyboardHandler handle, controller->keyboardInputsHandles()) {
         KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
         if (input) {
-            bool hasFocus = input->peerUuid() == controller->lastKeyboardInputRequester();
+            bool hasFocus = input->peerId() == controller->lastKeyboardInputRequester();
             input->setFocus(hasFocus);
             if (hasFocus)
-                controller->setCurrentFocusItem(input->peerUuid());
+                controller->setCurrentFocusItem(input->peerId());
         }
     }
 }

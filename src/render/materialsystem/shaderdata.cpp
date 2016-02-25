@@ -233,8 +233,8 @@ bool ShaderData::updateWorldTransform(const QMatrix4x4 &worldMatrix)
 void ShaderData::markDirty()
 {
     QMutexLocker lock(&m_mutex);
-    if (!ShaderData::m_updatedShaderData.contains(peerUuid()))
-        ShaderData::m_updatedShaderData.append(peerUuid());
+    if (!ShaderData::m_updatedShaderData.contains(peerId()))
+        ShaderData::m_updatedShaderData.append(peerId());
 }
 
 void ShaderData::readPeerProperties(QShaderData *shaderData)

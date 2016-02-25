@@ -90,9 +90,9 @@ void Entity::cleanup()
             parentEntity->removeChildHandle(m_handle);
         for (int i = 0; i < m_childrenHandles.size(); i++)
             m_nodeManagers->renderNodesManager()->release(m_childrenHandles[i]);
-        // We need to release using peerUuid otherwise the handle will be cleared
+        // We need to release using peerId otherwise the handle will be cleared
         // but would still remain in the Id to Handle table
-        m_nodeManagers->worldMatrixManager()->releaseResource(peerUuid());
+        m_nodeManagers->worldMatrixManager()->releaseResource(peerId());
 
         qCDebug(Render::RenderNodes) << Q_FUNC_INFO;
 
@@ -148,7 +148,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     const QNodeId parentEntityId = entityPrivate->parentEntityId();
 
     m_objectName = peer->objectName();
-    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerUuid());
+    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
 
     // TO DO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
     m_transformComponent = QNodeId();
@@ -160,9 +160,9 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_layerComponents.clear();
     m_shaderDataComponents.clear();
     m_lightComponents.clear();
-    m_localBoundingVolume.reset(new Sphere(peerUuid()));
-    m_worldBoundingVolume.reset(new Sphere(peerUuid()));
-    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerUuid()));
+    m_localBoundingVolume.reset(new Sphere(peerId()));
+    m_worldBoundingVolume.reset(new Sphere(peerId()));
+    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
 
     Q_FOREACH (QComponent *comp, entity->components())
         addComponent(comp);
@@ -170,7 +170,7 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     if (!parentEntityId.isNull()) {
         setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
     } else {
-        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerUuid();
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
     }
 
     m_enabled = entity->isEnabled();

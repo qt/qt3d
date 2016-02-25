@@ -85,8 +85,8 @@ void MouseHandler::setInputHandler(InputHandler *handler)
 
 void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
-    e->setTargetNode(peerUuid());
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    e->setTargetNode(peerId());
     e->setPropertyName("mouse");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -94,8 +94,8 @@ void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 
 void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
-    e->setTargetNode(peerUuid());
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    e->setTargetNode(peerId());
     e->setPropertyName("wheel");
     e->setValue(QVariant::fromValue(event));
     notifyObservers(e);
@@ -119,13 +119,13 @@ void MouseHandler::setController(Qt3DCore::QNodeId controller)
     if (!m_mouseController.isNull()) {
         MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
         if (controller)
-            controller->removeMouseInput(peerUuid());
+            controller->removeMouseInput(peerId());
     }
     m_mouseController = controller;
     if (!m_mouseController.isNull()) {
         MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
         if (controller)
-            controller->addMouseInput(peerUuid());
+            controller->addMouseInput(peerId());
     }
 }
 

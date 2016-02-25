@@ -64,7 +64,7 @@ void Scene::updateFromPeer(Qt3DCore::QNode *peer)
     QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
 
     m_source = loader->source();
-    m_sceneManager->addSceneData(m_source, peerUuid());
+    m_sceneManager->addSceneData(m_source, peerId());
 }
 
 void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -72,7 +72,7 @@ void Scene::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("source")) {
         m_source = propertyChange->value().toUrl();
-        m_sceneManager->addSceneData(m_source, peerUuid());
+        m_sceneManager->addSceneData(m_source, peerId());
     }
     markDirty(AbstractRenderer::AllDirty);
 }
@@ -84,17 +84,17 @@ QUrl Scene::source() const
 
 void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
 {
-    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e->setPropertyName("scene");
     // The Frontend element has to perform the clone
     // So that the objects are created in the main thread
     e->setValue(QVariant::fromValue(QNodePtr(subTree, &QNodePrivate::nodePtrDeleter)));
-    e->setTargetNode(peerUuid());
+    e->setTargetNode(peerId());
     notifyObservers(e);
-    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+    QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e2->setPropertyName("status");
     e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
-    e2->setTargetNode(peerUuid());
+    e2->setTargetNode(peerId());
     notifyObservers(e2);
 }
 

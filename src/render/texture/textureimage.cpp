@@ -91,7 +91,7 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
         m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
         Texture *txt = m_textureManager->data(m_textureProvider);
         // Notify the Texture that it has a new TextureImage and needs an update
-        txt->addTextureImageData(m_textureImageManager->lookupHandle(peerUuid()));
+        txt->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
     }

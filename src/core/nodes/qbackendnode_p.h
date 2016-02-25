@@ -81,7 +81,7 @@ public:
     QBackendNode::Mode m_mode;
 
     QLockableObserverInterface *m_arbiter;
-    QNodeId m_peerUuid;
+    QNodeId m_peerId;
 };
 
 } // Qt3D

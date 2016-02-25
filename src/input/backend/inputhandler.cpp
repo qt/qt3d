@@ -182,7 +182,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
             controller->updateKeyEvents(events);
             QAspectJobPtr focusChangeJob;
             if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
-                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerUuid());
+                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerId());
                 job->setInputHandler(this);
                 focusChangeJob.reset(job);
                 jobs.append(focusChangeJob);

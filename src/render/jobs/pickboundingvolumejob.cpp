@@ -182,7 +182,7 @@ private:
                uint bndx, const QVector3D &b,
                uint cndx, const QVector3D &c)
     {
-        TriangleBoundingVolume volume(m_root->peerUuid(), a, b, c);
+        TriangleBoundingVolume volume(m_root->peerId(), a, b, c);
         volume = volume.transform(*m_root->worldTransform());
 
         QCollisionQueryResult::Hit queryResult = rayCasting.query(m_ray, &volume);
@@ -232,7 +232,7 @@ struct CollisionGathererFunctor
 
         if (rayHitsEntity(&rayCasting, entity)) {
             CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray);
-            visitor.apply(gRenderer, entity->peerUuid());
+            visitor.apply(gRenderer, entity->peerId());
             result = visitor.hits;
 
             struct

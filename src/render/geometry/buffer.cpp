@@ -87,9 +87,9 @@ void Buffer::executeFunctor()
     m_data = (*m_functor)();
     if (m_syncData) {
         // Send data back to the frontend
-        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
+        QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
         e->setPropertyName("data");
-        e->setTargetNode(peerUuid());
+        e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(m_data));
         notifyObservers(e);
     }
@@ -105,7 +105,7 @@ void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
         m_functor = buffer->bufferFunctor();
         // Add to dirty list in the manager
         if (m_functor && m_manager != Q_NULLPTR)
-            m_manager->addDirtyBuffer(peerUuid());
+            m_manager->addDirtyBuffer(peerId());
         m_bufferDirty = true;
         m_syncData = buffer->isSyncData();
     }
@@ -131,7 +131,7 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_bufferDirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
             m_functor = newFunctor;
             if (m_functor && m_manager != Q_NULLPTR)
-                m_manager->addDirtyBuffer(peerUuid());
+                m_manager->addDirtyBuffer(peerId());
         } else if (propertyName == QByteArrayLiteral("syncData")) {
             m_syncData = propertyChange->value().toBool();
         }

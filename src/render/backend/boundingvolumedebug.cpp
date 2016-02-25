@@ -90,9 +90,9 @@ void BoundingVolumeDebug::setRadius(float radius)
 {
     if (m_radius != radius) {
         m_radius = radius;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
         e->setPropertyName("radius");
-        e->setTargetNode(peerUuid());
+        e->setTargetNode(peerId());
         e->setValue(QVariant(radius));
         notifyObservers(e);
     }
@@ -102,9 +102,9 @@ void BoundingVolumeDebug::setCenter(const QVector3D &center)
 {
     if (m_center != center) {
         m_center = center;
-        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerId()));
         e->setPropertyName("center");
-        e->setTargetNode(peerUuid());
+        e->setTargetNode(peerId());
         e->setValue(QVariant::fromValue(center));
         notifyObservers(e);
     }

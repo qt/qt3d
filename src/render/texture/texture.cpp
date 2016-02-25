@@ -443,7 +443,7 @@ void Texture::updateDNA()
             m_textureDNA += img->dna();
     }
     if (m_unique) // Ensures uniqueness by adding unique QNode id to the dna
-        m_textureDNA += qHash(peerUuid());
+        m_textureDNA += qHash(peerId());
 }
 
 // RenderThread
@@ -671,7 +671,7 @@ void Texture::requestTextureDataUpdate()
 // Called by RenderTextureImages
 void Texture::addToPendingTextureJobs()
 {
-    m_textureDataManager->addToPendingTextures(peerUuid());
+    m_textureDataManager->addToPendingTextures(peerId());
 }
 
 TextureFunctor::TextureFunctor(AbstractRenderer *renderer,

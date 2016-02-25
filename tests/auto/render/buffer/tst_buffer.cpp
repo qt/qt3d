@@ -77,7 +77,7 @@ private Q_SLOTS:
         renderBuffer.setPeer(&buffer);
 
         // THEN
-        QCOMPARE(renderBuffer.peerUuid(), buffer.id());
+        QCOMPARE(renderBuffer.peerId(), buffer.id());
         QCOMPARE(renderBuffer.isDirty(), true);
         QCOMPARE(renderBuffer.type(), buffer.type());
         QCOMPARE(renderBuffer.usage(), buffer.usage());
@@ -96,7 +96,7 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::VertexBuffer);
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.peerUuid().isNull());
+        QVERIFY(renderBuffer.peerId().isNull());
         QVERIFY(renderBuffer.bufferFunctor().isNull());
 
         // GIVEN

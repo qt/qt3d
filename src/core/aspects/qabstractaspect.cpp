@@ -149,9 +149,9 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
         // TO DO: Find a way to specify the changes to observe
         // Register backendNode with QChangeArbiter
         if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
-            m_arbiter->registerObserver(backendPriv, backend->peerUuid(), AllChanges);
+            m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
             if (backend->mode() == QBackendNode::ReadWrite)
-                m_arbiter->scene()->addObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
         }
         return backend;
     }
@@ -171,9 +171,9 @@ void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
         QBackendNode *backend = functor->get(frontend->id());
         if (backend != Q_NULLPTR) {
             QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
-            m_arbiter->unregisterObserver(backendPriv, backend->peerUuid());
+            m_arbiter->unregisterObserver(backendPriv, backend->peerId());
             if (backend->mode() == QBackendNode::ReadWrite)
-                m_arbiter->scene()->removeObservable(backendPriv, backend->peerUuid());
+                m_arbiter->scene()->removeObservable(backendPriv, backend->peerId());
             functor->destroy(frontend->id());
         }
     }

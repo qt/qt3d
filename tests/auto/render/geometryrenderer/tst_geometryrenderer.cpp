@@ -87,7 +87,7 @@ private Q_SLOTS:
         renderGeometryRenderer.setPeer(&geometryRenderer);
 
         // THEN
-        QCOMPARE(renderGeometryRenderer.peerUuid(), geometryRenderer.id());
+        QCOMPARE(renderGeometryRenderer.peerId(), geometryRenderer.id());
         QCOMPARE(renderGeometryRenderer.isDirty(), true);
         QCOMPARE(renderGeometryRenderer.instanceCount(), geometryRenderer.instanceCount());
         QCOMPARE(renderGeometryRenderer.primitiveCount(), geometryRenderer.primitiveCount());
@@ -108,7 +108,7 @@ private Q_SLOTS:
         Qt3DRender::Render::GeometryRenderer renderGeometryRenderer;
 
         // THEN
-        QVERIFY(renderGeometryRenderer.peerUuid().isNull());
+        QVERIFY(renderGeometryRenderer.peerId().isNull());
         QVERIFY(renderGeometryRenderer.geometryId().isNull());
         QCOMPARE(renderGeometryRenderer.isDirty(), false);
         QCOMPARE(renderGeometryRenderer.instanceCount(), 0);
@@ -143,7 +143,7 @@ private Q_SLOTS:
         renderGeometryRenderer.cleanup();
 
         // THEN
-        QVERIFY(renderGeometryRenderer.peerUuid().isNull());
+        QVERIFY(renderGeometryRenderer.peerId().isNull());
         QVERIFY(renderGeometryRenderer.geometryId().isNull());
         QCOMPARE(renderGeometryRenderer.isDirty(), false);
         QCOMPARE(renderGeometryRenderer.instanceCount(), 0);

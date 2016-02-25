@@ -55,7 +55,7 @@ private Q_SLOTS:
         backendAction.setPeer(&action);
 
         // THEN
-        QCOMPARE(backendAction.peerUuid(), action.id());
+        QCOMPARE(backendAction.peerId(), action.id());
         QCOMPARE(backendAction.isEnabled(), action.isEnabled());
         QCOMPARE(backendAction.inputs().size(), action.inputs().size());
 
@@ -72,7 +72,7 @@ private Q_SLOTS:
         Qt3DInput::Input::Action backendAction;
 
         // THEN
-        QVERIFY(backendAction.peerUuid().isNull());
+        QVERIFY(backendAction.peerId().isNull());
         QCOMPARE(backendAction.actionTriggered(), false);
         QCOMPARE(backendAction.isEnabled(), false);
         QCOMPARE(backendAction.inputs().size(), 0);
@@ -89,7 +89,7 @@ private Q_SLOTS:
         backendAction.cleanup();
 
         // THEN
-        QVERIFY(backendAction.peerUuid().isNull());
+        QVERIFY(backendAction.peerId().isNull());
         QCOMPARE(backendAction.actionTriggered(), false);
         QCOMPARE(backendAction.isEnabled(), false);
         QCOMPARE(backendAction.inputs().size(), 0);

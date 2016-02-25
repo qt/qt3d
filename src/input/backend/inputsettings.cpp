@@ -91,7 +91,7 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) 
 Qt3DCore::QBackendNode *InputSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerUuid() == id)
+    if (settings != Q_NULLPTR && settings->peerId() == id)
         return settings;
     return Q_NULLPTR;
 }
@@ -99,7 +99,7 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::get(Qt3DCore::QNodeId id) const
 void InputSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
-    if (settings != Q_NULLPTR && settings->peerUuid() == id) {
+    if (settings != Q_NULLPTR && settings->peerId() == id) {
         m_handler->setInputSettings(Q_NULLPTR);
         delete settings;
     }

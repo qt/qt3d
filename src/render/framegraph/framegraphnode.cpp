@@ -82,8 +82,8 @@ void FrameGraphNode::setParentId(Qt3DCore::QNodeId parentId)
     if (m_parentId != parentId) {
         m_parentId = parentId;
         FrameGraphNode *parent = m_manager->lookupNode(m_parentId);
-        if (parent != Q_NULLPTR && !parent->m_childrenIds.contains(peerUuid()))
-            parent->m_childrenIds.append(peerUuid());
+        if (parent != Q_NULLPTR && !parent->m_childrenIds.contains(peerId()))
+            parent->m_childrenIds.append(peerId());
     }
 }
 
@@ -93,7 +93,7 @@ void FrameGraphNode::appendChildId(Qt3DCore::QNodeId childId)
         FrameGraphNode *child = m_manager->lookupNode(childId);
         if (child != Q_NULLPTR) {
             m_childrenIds.append(childId);
-            child->m_parentId = peerUuid();
+            child->m_parentId = peerId();
         }
     }
 }
