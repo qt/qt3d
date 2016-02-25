@@ -1524,7 +1524,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
 
     if (functionName == QStringLiteral("frontFace")) {
         QFrontFace *frontFace = new QFrontFace;
-        frontFace->setDirection((QFrontFace::FaceDir)values.at(0).toInt(GL_CCW));
+        frontFace->setDirection((QFrontFace::WindingDirection)values.at(0).toInt(GL_CCW));
         return frontFace;
     }
 

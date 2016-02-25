@@ -57,7 +57,7 @@ public:
     }
 
     Q_DECLARE_PUBLIC(QFrontFace)
-    QFrontFace::FaceDir m_direction;
+    QFrontFace::WindingDirection m_direction;
 };
 
 QFrontFace::QFrontFace(QNode *parent)
@@ -77,13 +77,13 @@ void QFrontFace::copy(const QNode *ref)
     d_func()->m_direction = refState->d_func()->m_direction;
 }
 
-QFrontFace::FaceDir QFrontFace::direction() const
+QFrontFace::WindingDirection QFrontFace::direction() const
 {
     Q_D(const QFrontFace);
     return d->m_direction;
 }
 
-void QFrontFace::setDirection(QFrontFace::FaceDir direction)
+void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
 {
     Q_D(QFrontFace);
     if (d->m_direction != direction) {

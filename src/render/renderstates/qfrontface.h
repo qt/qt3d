@@ -52,26 +52,26 @@ class QFrontFacePrivate;
 class QT3DRENDERSHARED_EXPORT QFrontFace : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(FaceDir direction READ direction WRITE setDirection NOTIFY directionChanged)
+    Q_PROPERTY(WindingDirection direction READ direction WRITE setDirection NOTIFY directionChanged)
 public:
 
-    enum FaceDir
+    enum WindingDirection
     {
         ClockWise = 0x0900,
         CounterClockWise = 0x0901
     };
-    Q_ENUM(FaceDir)
+    Q_ENUM(WindingDirection)
 
     explicit QFrontFace(Qt3DCore::QNode *parent = 0);
     ~QFrontFace();
 
-    FaceDir direction() const;
+    WindingDirection direction() const;
 
 public Q_SLOTS:
-    void setDirection(FaceDir direction);
+    void setDirection(WindingDirection direction);
 
 Q_SIGNALS:
-    void directionChanged(FaceDir direction);
+    void directionChanged(WindingDirection direction);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
