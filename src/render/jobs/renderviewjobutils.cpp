@@ -141,10 +141,10 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         rv->setDrawBuffers(targetSelector->drawBuffers());
 
                         // Copy attachments
-                        Q_FOREACH (QNodeId attachmentId, renderTarget->renderAttachments()) {
-                            RenderTargetOutput *attachment = manager->attachmentManager()->lookupResource(attachmentId);
-                            if (attachment)
-                                rv->addRenderAttachment(attachment->attachment());
+                        Q_FOREACH (QNodeId outputId, renderTarget->renderOutputs()) {
+                            RenderTargetOutput *output = manager->attachmentManager()->lookupResource(outputId);
+                            if (output)
+                                rv->addRenderAttachment(output->attachment());
                         }
 
                     }

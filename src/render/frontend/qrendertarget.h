@@ -57,9 +57,9 @@ public:
     explicit QRenderTarget(Qt3DCore::QNode *parent = 0);
     ~QRenderTarget();
 
-    void addAttachment(QRenderTargetOutput *attachment);
-    void removeAttachment(QRenderTargetOutput *attachment);
-    QList<QRenderTargetOutput *> attachments() const;
+    void addOutput(QRenderTargetOutput *output);
+    void removeOutput(QRenderTargetOutput *output);
+    QList<QRenderTargetOutput *> outputs() const;
 
 protected:
     QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = 0);

@@ -57,8 +57,8 @@ void QRenderTarget::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QRenderTarget *other = static_cast<const QRenderTarget*>(ref);
-    Q_FOREACH (QRenderTargetOutput *attachment, other->d_func()->m_attachments)
-        addAttachment(qobject_cast<QRenderTargetOutput *>(QNode::clone(attachment)));
+    Q_FOREACH (QRenderTargetOutput *output, other->d_func()->m_outputs)
+        addOutput(qobject_cast<QRenderTargetOutput *>(QNode::clone(output)));
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)
@@ -77,41 +77,41 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 {
 }
 
-void QRenderTarget::addAttachment(QRenderTargetOutput *attachment)
+void QRenderTarget::addOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
-    if (!d->m_attachments.contains(attachment)) {
-        d->m_attachments.append(attachment);
+    if (!d->m_outputs.contains(output)) {
+        d->m_outputs.append(output);
 
-        if (!attachment->parent())
-            attachment->setParent(this);
+        if (!output->parent())
+            output->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("attachment");
-            change->setValue(QVariant::fromValue(attachment->id()));
+            change->setPropertyName("output");
+            change->setValue(QVariant::fromValue(output->id()));
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderTarget::removeAttachment(QRenderTargetOutput *attachment)
+void QRenderTarget::removeOutput(QRenderTargetOutput *output)
 {
     Q_D(QRenderTarget);
 
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("attachment");
-        change->setValue(QVariant::fromValue(attachment->id()));
+        change->setPropertyName("output");
+        change->setValue(QVariant::fromValue(output->id()));
         d->notifyObservers(change);
     }
-    d->m_attachments.removeOne(attachment);
+    d->m_outputs.removeOne(output);
 }
 
-QList<QRenderTargetOutput *> QRenderTarget::attachments() const
+QList<QRenderTargetOutput *> QRenderTarget::outputs() const
 {
     Q_D(const QRenderTarget);
-    return d->m_attachments;
+    return d->m_outputs;
 }
 
 } // namespace Qt3DRender

@@ -72,7 +72,7 @@ FrameGraph {
 
                 RenderTargetSelector {
                     target: RenderTarget {
-                        attachments: [
+                        outputs: [
                             RenderTargetOutput {
                                 objectName: "depth"
                                 attachmentPoint: RenderTargetOutput.Depth

@@ -68,7 +68,7 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {
-        Qt3DRender::QRenderTargetOutput *attachment = new Qt3DRender::QRenderTargetOutput(this);
+        Qt3DRender::QRenderTargetOutput *output = new Qt3DRender::QRenderTargetOutput(this);
 
         m_textures[i] = new Qt3DRender::QTexture2D();
         m_textures[i]->setFormat(formats[i]);
@@ -79,10 +79,9 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         m_textures[i]->setMinificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
         m_textures[i]->setMagnificationFilter(Qt3DRender::QAbstractTextureProvider::Linear);
 
-        attachment->setTexture(m_textures[i]);
-        attachment->setAttachmentPoint(attachmentPoints[i]);
-
-        addAttachment(attachment);
+        output->setTexture(m_textures[i]);
+        output->setAttachmentPoint(attachmentPoints[i]);
+        addOutput(output);
     }
 }
 

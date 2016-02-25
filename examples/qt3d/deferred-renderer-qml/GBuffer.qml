@@ -58,7 +58,7 @@ RenderTarget {
     property alias normal : normalAttachment
     property alias depth : depthAttachment
 
-    attachments : [
+    outputs : [
 
         RenderTargetOutput {
             objectName : "color"
@@ -132,5 +132,5 @@ RenderTarget {
                 }
             }
         }
-    ] // attachments
+    ] // outputs
 }

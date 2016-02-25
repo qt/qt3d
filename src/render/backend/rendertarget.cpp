@@ -58,38 +58,38 @@ RenderTarget::RenderTarget()
 void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
-    m_renderAttachments.clear();
-    Q_FOREACH (QRenderTargetOutput *att, target->attachments())
-        appendRenderAttachment(att->id());
+    m_renderOutputs.clear();
+    Q_FOREACH (QRenderTargetOutput *att, target->outputs())
+        appendRenderOutput(att->id());
 }
 
 void RenderTarget::cleanup()
 {
 }
 
-void RenderTarget::appendRenderAttachment(QNodeId attachmentId)
+void RenderTarget::appendRenderOutput(QNodeId outputId)
 {
-    if (!m_renderAttachments.contains(attachmentId))
-        m_renderAttachments.append(attachmentId);
+    if (!m_renderOutputs.contains(outputId))
+        m_renderOutputs.append(outputId);
 }
 
-void RenderTarget::removeRenderAttachment(QNodeId attachmentId)
+void RenderTarget::removeRenderOutput(QNodeId outputId)
 {
-    m_renderAttachments.removeOne(attachmentId);
+    m_renderOutputs.removeOne(outputId);
 }
 
-QVector<Qt3DCore::QNodeId> RenderTarget::renderAttachments() const
+QVector<Qt3DCore::QNodeId> RenderTarget::renderOutputs() const
 {
-    return m_renderAttachments;
+    return m_renderOutputs;
 }
 
 void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        appendRenderAttachment(propertyChange->value().value<QNodeId>());
-    else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
-        removeRenderAttachment(propertyChange->value().value<QNodeId>());
+    if (e->type() == NodeAdded && propertyChange->propertyName() == QByteArrayLiteral("output"))
+        appendRenderOutput(propertyChange->value().value<QNodeId>());
+    else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("output"))
+        removeRenderOutput(propertyChange->value().value<QNodeId>());
     markDirty(AbstractRenderer::AllDirty);
 }
 

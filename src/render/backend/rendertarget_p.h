@@ -73,15 +73,15 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    void appendRenderAttachment(Qt3DCore::QNodeId attachmentId);
-    void removeRenderAttachment(Qt3DCore::QNodeId attachmentId);
+    void appendRenderOutput(Qt3DCore::QNodeId outputId);
+    void removeRenderOutput(Qt3DCore::QNodeId outputId);
 
-    QVector<Qt3DCore::QNodeId> renderAttachments() const;
+    QVector<Qt3DCore::QNodeId> renderOutputs() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QVector<Qt3DCore::QNodeId> m_renderAttachments;
+    QVector<Qt3DCore::QNodeId> m_renderOutputs;
 };
 
 } // namespace Render
