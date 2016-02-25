@@ -119,7 +119,7 @@ private Q_SLOTS:
                 QCOMPARE(buffer->usage(), clonedBuffer->usage());
                 QCOMPARE(buffer->type(), clonedBuffer->type());
                 QCOMPARE(buffer->bufferFunctor(), clonedBuffer->bufferFunctor());
-                QCOMPARE(buffer->isSync(), clonedBuffer->isSync());
+                QCOMPARE(buffer->isSyncData(), clonedBuffer->isSyncData());
                 if (buffer->bufferFunctor()) {
                     QVERIFY(clonedBuffer->bufferFunctor());
                     QVERIFY(*clonedBuffer->bufferFunctor() == *buffer->bufferFunctor());

@@ -189,11 +189,11 @@ private Q_SLOTS:
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(true);
-        updateChange->setPropertyName("sync");
+        updateChange->setPropertyName("syncData");
         renderBuffer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderBuffer.isSync(), true);
+        QCOMPARE(renderBuffer.isSyncData(), true);
         QVERIFY(!renderBuffer.isDirty());
 
         // WHEN

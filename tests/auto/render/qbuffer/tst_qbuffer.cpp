@@ -91,7 +91,7 @@ private Q_SLOTS:
         indexBuffer->setUsage(Qt3DRender::QBuffer::StaticCopy);
         indexBuffer->setData(QByteArrayLiteral("For displacement"));
         indexBuffer->setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(1340)));
-        indexBuffer->setSync(true);
+        indexBuffer->setSyncData(true);
         QTest::newRow("index") << indexBuffer;
     }
 
@@ -111,7 +111,7 @@ private Q_SLOTS:
         QCOMPARE(buffer->usage(), clone->usage());
         QCOMPARE(buffer->type(), clone->type());
         QCOMPARE(buffer->bufferFunctor(), clone->bufferFunctor());
-        QCOMPARE(buffer->isSync(), clone->isSync());
+        QCOMPARE(buffer->isSyncData(), clone->isSyncData());
         if (buffer->bufferFunctor()) {
             QVERIFY(clone->bufferFunctor());
             QVERIFY(*clone->bufferFunctor() == *buffer->bufferFunctor());
@@ -174,13 +174,13 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        buffer->setSync(true);
+        buffer->setSyncData(true);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "sync");
+        QCOMPARE(change->propertyName(), "syncData");
         QCOMPARE(change->value().toBool(), true);
 
         arbiter.events.clear();

@@ -81,7 +81,7 @@ public:
     inline QByteArray data() const { return m_data; }
     inline bool isDirty() const { return m_bufferDirty; }
     inline QBufferFunctorPtr bufferFunctor() const { return m_functor; }
-    inline bool isSync() const { return m_sync; }
+    inline bool isSyncData() const { return m_syncData; }
     void unsetDirty();
 
 private:
@@ -89,7 +89,7 @@ private:
     QBuffer::UsageType m_usage;
     QByteArray m_data;
     bool m_bufferDirty;
-    bool m_sync;
+    bool m_syncData;
     QBufferFunctorPtr m_functor;
     BufferManager *m_manager;
 };

@@ -57,7 +57,7 @@ class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(BufferType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(UsageType usage READ usage WRITE setUsage NOTIFY usageChanged)
-    Q_PROPERTY(bool sync READ isSync WRITE setSync NOTIFY syncChanged)
+    Q_PROPERTY(bool syncData READ isSyncData WRITE setSyncData NOTIFY syncDataChanged)
 
 public:
     enum BufferType
@@ -90,7 +90,7 @@ public:
 
     UsageType usage() const;
     BufferType type() const;
-    bool isSync() const;
+    bool isSyncData() const;
 
     void setData(const QByteArray &bytes);
     QByteArray data() const;
@@ -101,7 +101,7 @@ public:
 public Q_SLOTS:
     void setType(BufferType type);
     void setUsage(UsageType usage);
-    void setSync(bool sync);
+    void setSyncData(bool syncData);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
@@ -111,7 +111,7 @@ Q_SIGNALS:
     void dataChanged(const QByteArray &bytes);
     void typeChanged(BufferType type);
     void usageChanged(UsageType usage);
-    void syncChanged(bool sync);
+    void syncDataChanged(bool syncData);
 
 private:
     Q_DECLARE_PRIVATE(QBuffer)

@@ -51,7 +51,7 @@ namespace Qt3DRender {
 QBufferPrivate::QBufferPrivate()
     : QNodePrivate()
     , m_usage(QBuffer::StaticDraw)
-    , m_sync(false)
+    , m_syncData(false)
 {
 }
 
@@ -74,11 +74,11 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
- * \qmlproperty bool Buffer::sync
+ * \qmlproperty bool Buffer::syncData
  *
- * Holds the sync flag. When sync is true, this will force data created
+ * Holds the syncData flag. When syncData is true, this will force data created
  * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default sync is false.
+ * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data
  * property.
@@ -172,7 +172,7 @@ void QBuffer::copy(const QNode *ref)
     d_func()->m_type = buffer->d_func()->m_type;
     d_func()->m_usage = buffer->d_func()->m_usage;
     d_func()->m_functor = buffer->d_func()->m_functor;
-    d_func()->m_sync = buffer->d_func()->m_sync;
+    d_func()->m_syncData = buffer->d_func()->m_syncData;
 }
 
 /*!
@@ -268,28 +268,28 @@ QBufferFunctorPtr QBuffer::bufferFunctor() const
 }
 
 /*!
- * \property QBuffer::sync
+ * \property QBuffer::syncData
  *
- * Holds the sync flag. When sync is true, this will force data created
+ * Holds the syncData flag. When syncData is true, this will force data created
  * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
- * Qt3DRender::QBuffer node. By default sync is false.
+ * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data
  * property.
  */
-void QBuffer::setSync(bool sync)
+void QBuffer::setSyncData(bool syncData)
 {
     Q_D(QBuffer);
-    if (d->m_sync != sync) {
-        d->m_sync = sync;
-        emit syncChanged(sync);
+    if (d->m_syncData != syncData) {
+        d->m_syncData = syncData;
+        emit syncDataChanged(syncData);
     }
 }
 
-bool QBuffer::isSync() const
+bool QBuffer::isSyncData() const
 {
     Q_D(const QBuffer);
-    return d->m_sync;
+    return d->m_syncData;
 }
 
 void QBuffer::setType(QBuffer::BufferType type)
