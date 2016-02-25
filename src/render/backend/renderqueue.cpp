@@ -48,10 +48,10 @@ namespace Qt3DRender {
 namespace Render {
 
 RenderQueue::RenderQueue()
-    : m_targetRenderViewCount(0)
+    : m_noRender(false)
+    , m_targetRenderViewCount(0)
     , m_currentRenderViewCount(0)
     , m_currentWorkQueue(1)
-    , m_noRender(false)
 {
 }
 

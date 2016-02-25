@@ -678,10 +678,10 @@ TextureFunctor::TextureFunctor(AbstractRenderer *renderer,
                                TextureManager *textureManager,
                                TextureImageManager *textureImageManager,
                                TextureDataManager *textureDataManager)
-    : m_textureManager(textureManager)
+    : m_renderer(renderer)
+    , m_textureManager(textureManager)
     , m_textureImageManager(textureImageManager)
     , m_textureDataManager(textureDataManager)
-    , m_renderer(renderer)
 {
 }
 
