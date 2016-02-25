@@ -66,6 +66,7 @@ class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAction : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAbstractActionInput> inputs READ qmlActionInputs CONSTANT)
+    Q_CLASSINFO("DefaultProperty", "inputs")
 public:
     explicit Quick3DAction(QObject *parent = Q_NULLPTR);
 
