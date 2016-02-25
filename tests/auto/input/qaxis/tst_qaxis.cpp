@@ -36,8 +36,9 @@
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
-// So we sublcass QNode instead of QObject
-class tst_QAxis: public Qt3DCore::QNode
+// We need to call QAxis::sceneChangeEvent which is protected
+// So we sublcass QAxis instead of QObject
+class tst_QAxis: public Qt3DInput::QAxis
 {
     Q_OBJECT
 public:
@@ -88,6 +89,7 @@ private Q_SLOTS:
         QCOMPARE(axis->id(), clone->id());
         QCOMPARE(axis->name(), clone->name());
         QCOMPARE(axis->inputs().count(), clone->inputs().count());
+        QCOMPARE(axis->value(), clone->value());
 
         for (int i = 0, m = axis->inputs().count(); i < m; ++i) {
             QCOMPARE(axis->inputs().at(i)->id(), clone->inputs().at(i)->id());
@@ -141,6 +143,23 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkValuePropertyChanged()
+    {
+        // GIVEN
+        QCOMPARE(value(), 0.0f);
+
+        // Note: simulate backend change to frontend
+        // WHEN
+        Qt3DCore::QScenePropertyChangePtr valueChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("value");
+        valueChange->setValue(383.0f);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(value(), 383.0f);
+    }
+
 
 protected:
     Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE

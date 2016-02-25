@@ -50,10 +50,22 @@ class QAxisPrivate : public Qt3DCore::QNodePrivate
 public:
     QAxisPrivate()
         : Qt3DCore::QNodePrivate()
+        , m_value(0.0f)
     {}
+
+    Q_DECLARE_PUBLIC(QAxis)
 
     QString m_name;
     QVector<QAxisInput *> m_inputs;
+    float m_value;
+
+    void setValue(float value)
+    {
+        if (value != m_value) {
+            m_value = value;
+            q_func()->valueChanged(m_value);
+        }
+    }
 };
 
 /*!
@@ -137,6 +149,12 @@ QVector<QAxisInput *> QAxis::inputs() const
     return d->m_inputs;
 }
 
+float QAxis::value() const
+{
+    Q_D(const QAxis);
+    return d->m_value;
+}
+
 void QAxis::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
@@ -145,6 +163,15 @@ void QAxis::copy(const Qt3DCore::QNode *ref)
     Q_FOREACH (QAxisInput *input, axis->inputs())
         d_func()->m_inputs.append(qobject_cast<QAxisInput *>(QNode::clone(input)));
 
+}
+
+void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAxis);
+    Qt3DCore::QScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(change);
+    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("value")) {
+        d->setValue(e->value().toFloat());
+    }
 }
 
 } // Qt3DInput

@@ -53,6 +53,7 @@ class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(float value READ value NOTIFY valueChanged)
 public:
     explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxis();
@@ -63,14 +64,18 @@ public:
     void removeInput(QAxisInput *input);
     QVector<QAxisInput *> inputs() const;
 
+    float value() const;
+
 public Q_SLOTS:
     void setName(const QString &name);
 
 Q_SIGNALS:
     void nameChanged(const QString &name);
+    void valueChanged(float value);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAxis)
