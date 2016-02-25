@@ -151,12 +151,12 @@ void QSkyboxEntityPrivate::init()
     m_mesh->setXZMeshResolution(QSize(2, 2));
     m_mesh->setYZMeshResolution(QSize(2, 2));
 
-    m_posXImage->setCubeMapFace(QTextureCubeMap::CubeMapPositiveX);
-    m_posYImage->setCubeMapFace(QTextureCubeMap::CubeMapPositiveY);
-    m_posZImage->setCubeMapFace(QTextureCubeMap::CubeMapPositiveZ);
-    m_negXImage->setCubeMapFace(QTextureCubeMap::CubeMapNegativeX);
-    m_negYImage->setCubeMapFace(QTextureCubeMap::CubeMapNegativeY);
-    m_negZImage->setCubeMapFace(QTextureCubeMap::CubeMapNegativeZ);
+    m_posXImage->setFace(QTextureCubeMap::CubeMapPositiveX);
+    m_posYImage->setFace(QTextureCubeMap::CubeMapPositiveY);
+    m_posZImage->setFace(QTextureCubeMap::CubeMapPositiveZ);
+    m_negXImage->setFace(QTextureCubeMap::CubeMapNegativeX);
+    m_negYImage->setFace(QTextureCubeMap::CubeMapNegativeY);
+    m_negZImage->setFace(QTextureCubeMap::CubeMapNegativeZ);
 
     m_skyboxTexture->setMagnificationFilter(QTextureCubeMap::Linear);
     m_skyboxTexture->setMinificationFilter(QTextureCubeMap::Linear);

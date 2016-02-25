@@ -81,7 +81,7 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
     QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
     m_layer = textureImage->layer();
     m_mipLevel = textureImage->mipLevel();
-    m_face = textureImage->cubeMapFace();
+    m_face = textureImage->face();
     m_functor = textureImage->dataFunctor();
     // Notify the Texture that we are one of its TextureImage
     if (!peer->parentNode()) {
@@ -108,7 +108,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
             m_mipLevel = propertyChange->value().toInt();
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("cubeMapFace")) {
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_face = static_cast<QAbstractTextureProvider::CubeMapFace>(propertyChange->value().toInt());
             m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataFunctor")) {

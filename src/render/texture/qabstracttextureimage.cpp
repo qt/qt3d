@@ -129,7 +129,7 @@ int QAbstractTextureImage::layer() const
 }
 
 /*!
-    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::cubeMapFace
+    \qmlproperty enumeration Qt3D.Render::AbstractTextureImage::face
 
     Holds the cube map face of the texture image.
 
@@ -146,7 +146,7 @@ int QAbstractTextureImage::layer() const
  */
 
 /*!
-    \property Qt3DRender::QAbstractTextureImage::cubeMapFace
+    \property Qt3DRender::QAbstractTextureImage::face
 
     Holds the cube map face of the texture image.
 
@@ -154,7 +154,7 @@ int QAbstractTextureImage::layer() const
     \l {QAbstractTextureProvider::}{TargetCubeMap} and
     \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
  */
-QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
+QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::face() const
 {
     Q_D(const QAbstractTextureImage);
     return d->m_face;
@@ -178,12 +178,12 @@ void QAbstractTextureImage::setLayer(int layer)
     }
 }
 
-void QAbstractTextureImage::setCubeMapFace(QAbstractTextureProvider::CubeMapFace face)
+void QAbstractTextureImage::setFace(QAbstractTextureProvider::CubeMapFace face)
 {
     Q_D(QAbstractTextureImage);
     if (face != d->m_face) {
         d->m_face = face;
-        emit cubeMapFaceChanged(face);
+        emit faceChanged(face);
     }
 }
 
@@ -208,7 +208,7 @@ void QAbstractTextureImage::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
-    d_func()->m_face = imageRef->cubeMapFace();
+    d_func()->m_face = imageRef->face();
     d_func()->m_layer = imageRef->layer();
     d_func()->m_mipLevel = imageRef->mipLevel();
 }
