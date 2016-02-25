@@ -12,7 +12,6 @@ HEADERS += \
     $$PWD/renderqueue_p.h \
     $$PWD/parameterpack_p.h \
     $$PWD/rendertarget_p.h \
-    $$PWD/renderattachment_p.h \
     $$PWD/attachmentpack_p.h \
     $$PWD/shadervariables_p.h \
     $$PWD/qgraphicsutils_p.h \
@@ -34,7 +33,8 @@ HEADERS += \
     $$PWD/computejob_p.h \
     $$PWD/renderersettings_p.h \
     $$PWD/stringtoint_p.h \
-    $$PWD/backendnode_p.h
+    $$PWD/backendnode_p.h \
+    $$PWD/rendertargetoutput_p.h
 
 SOURCES += \
     $$PWD/renderthread.cpp \
@@ -46,7 +46,6 @@ SOURCES += \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
-    $$PWD/renderattachment.cpp \
     $$PWD/attachmentpack.cpp \
     $$PWD/managers.cpp \
     $$PWD/platformsurfacefilter.cpp \
@@ -62,4 +61,5 @@ SOURCES += \
     $$PWD/computejob.cpp \
     $$PWD/renderersettings.cpp \
     $$PWD/stringtoint.cpp \
-    $$PWD/backendnode.cpp
+    $$PWD/backendnode.cpp \
+    $$PWD/rendertargetoutput.cpp

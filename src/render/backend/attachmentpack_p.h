@@ -51,7 +51,7 @@
 // We mean it.
 //
 
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 #include <QVector>
 
 QT_BEGIN_NAMESPACE
@@ -66,8 +66,8 @@ struct Attachment
     int m_mipLevel;
     int m_layer;
     Qt3DCore::QNodeId m_textureUuid;
-    QRenderAttachment::AttachmentPoint m_point;
-    QRenderAttachment::CubeMapFace m_face;
+    QRenderTargetOutput::AttachmentPoint m_point;
+    QRenderTargetOutput::CubeMapFace m_face;
 };
 
 class AttachmentPack
@@ -77,13 +77,13 @@ public:
 
     void addAttachment(const Attachment &attachment);
     QVector<Attachment> attachments() const;
-    QList<QRenderAttachment::AttachmentPoint> drawBuffers() const;
+    QList<QRenderTargetOutput::AttachmentPoint> drawBuffers() const;
 
-    void setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &drawBuffers);
+    void setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers);
 
 private:
     QVector<Attachment> m_attachments;
-    QList<QRenderAttachment::AttachmentPoint> m_drawBuffers;
+    QList<QRenderTargetOutput::AttachmentPoint> m_drawBuffers;
 };
 
 } // namespace Render

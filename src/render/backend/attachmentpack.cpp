@@ -59,12 +59,12 @@ QVector<Attachment> AttachmentPack::attachments() const
     return m_attachments;
 }
 
-QList<QRenderAttachment::AttachmentPoint> AttachmentPack::drawBuffers() const
+QList<QRenderTargetOutput::AttachmentPoint> AttachmentPack::drawBuffers() const
 {
     return m_drawBuffers;
 }
 
-void AttachmentPack::setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &drawBuffers)
+void AttachmentPack::setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers)
 {
     m_drawBuffers = drawBuffers;
 }
@@ -72,8 +72,8 @@ void AttachmentPack::setDrawBuffers(const QList<QRenderAttachment::AttachmentPoi
 Attachment::Attachment()
     : m_mipLevel(0)
     , m_layer(0)
-    , m_point(QRenderAttachment::ColorAttachment0)
-    , m_face(QRenderAttachment::CubeMapNegativeX)
+    , m_point(QRenderTargetOutput::ColorAttachment0)
+    , m_face(QRenderTargetOutput::CubeMapNegativeX)
 {
 }
 

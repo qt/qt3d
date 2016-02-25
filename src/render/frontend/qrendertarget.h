@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderTargetPrivate;
-class QRenderAttachment;
+class QRenderTargetOutput;
 
 class QT3DRENDERSHARED_EXPORT QRenderTarget : public Qt3DCore::QComponent
 {
@@ -57,9 +57,9 @@ public:
     explicit QRenderTarget(Qt3DCore::QNode *parent = 0);
     ~QRenderTarget();
 
-    void addAttachment(QRenderAttachment *attachment);
-    void removeAttachment(QRenderAttachment *attachment);
-    QList<QRenderAttachment *> attachments() const;
+    void addAttachment(QRenderTargetOutput *attachment);
+    void removeAttachment(QRenderTargetOutput *attachment);
+    QList<QRenderTargetOutput *> attachments() const;
 
 protected:
     QRenderTarget(QRenderTargetPrivate &dd, Qt3DCore::QNode *parent = 0);

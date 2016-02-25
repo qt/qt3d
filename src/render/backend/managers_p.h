@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/private/qresourcemanager_p.h>
-#include <Qt3DRender/private/renderattachment_p.h>
+#include <Qt3DRender/private/rendertargetoutput_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/annotation_p.h>
 #include <Qt3DRender/private/effect_p.h>
@@ -87,7 +87,7 @@ namespace Qt3DRender {
 namespace Render {
 
 class AttachmentManager : public Qt3DCore::QResourceManager<
-        RenderAttachment,
+        RenderTargetOutput,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,

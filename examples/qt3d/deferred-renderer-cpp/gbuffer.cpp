@@ -60,15 +60,15 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
         Qt3DRender::QAbstractTextureProvider::D32F
     };
 
-    const Qt3DRender::QRenderAttachment::AttachmentPoint attachmentPoints[AttachmentsCount] = {
-        Qt3DRender::QRenderAttachment::ColorAttachment0,
-        Qt3DRender::QRenderAttachment::ColorAttachment1,
-        Qt3DRender::QRenderAttachment::ColorAttachment2,
-        Qt3DRender::QRenderAttachment::DepthAttachment
+    const Qt3DRender::QRenderTargetOutput::AttachmentPoint attachmentPoints[AttachmentsCount] = {
+        Qt3DRender::QRenderTargetOutput::ColorAttachment0,
+        Qt3DRender::QRenderTargetOutput::ColorAttachment1,
+        Qt3DRender::QRenderTargetOutput::ColorAttachment2,
+        Qt3DRender::QRenderTargetOutput::DepthAttachment
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {
-        Qt3DRender::QRenderAttachment *attachment = new Qt3DRender::QRenderAttachment(this);
+        Qt3DRender::QRenderTargetOutput *attachment = new Qt3DRender::QRenderTargetOutput(this);
 
         m_textures[i] = new Qt3DRender::QTexture2D();
         m_textures[i]->setFormat(formats[i]);

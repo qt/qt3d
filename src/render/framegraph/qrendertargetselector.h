@@ -43,7 +43,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qframegraphnode.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -62,8 +62,8 @@ public:
 
     QRenderTarget *target() const;
 
-    void setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &buffers);
-    QList<QRenderAttachment::AttachmentPoint> drawBuffers() const;
+    void setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &buffers);
+    QList<QRenderTargetOutput::AttachmentPoint> drawBuffers() const;
 
 public Q_SLOTS:
     void setTarget(QRenderTarget *target);
@@ -84,6 +84,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderAttachment::AttachmentPoint>)
+Q_DECLARE_METATYPE(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>)
 
 #endif // QT3DRENDER_QRENDERTARGETSELECTOR_H

@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/QRenderTarget>
 #include <Qt3DRender/qtexture.h>
-#include <Qt3DRender/QRenderAttachment>
+#include <Qt3DRender/QRenderTargetOutput>
 
 class GBuffer : public Qt3DRender::QRenderTarget
 {
@@ -75,7 +75,7 @@ public:
 
 private:
     Qt3DRender::QAbstractTextureProvider *m_textures[AttachmentsCount];
-    Qt3DRender::QRenderAttachment *m_attachments[AttachmentsCount];
+    Qt3DRender::QRenderTargetOutput *m_attachments[AttachmentsCount];
 };
 
 #endif // GBUFFER_H

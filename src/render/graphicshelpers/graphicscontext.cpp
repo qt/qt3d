@@ -488,19 +488,19 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
 
 void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
 {
-    int activeDrawBuffers[QRenderAttachment::ColorAttachment15 + 1];
+    int activeDrawBuffers[QRenderTargetOutput::ColorAttachment15 + 1];
     int i = 0;
 
-    const QList<QRenderAttachment::AttachmentPoint> &drawBuffers = attachments.drawBuffers();
+    const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers = attachments.drawBuffers();
 
     // If drawBuffers is empty, use all the attachments as draw buffers
     if (drawBuffers.isEmpty()) {
         Q_FOREACH (const Attachment &attachment, attachments.attachments())
-            if (attachment.m_point <= QRenderAttachment::ColorAttachment15)
+            if (attachment.m_point <= QRenderTargetOutput::ColorAttachment15)
                 activeDrawBuffers[i++] = attachment.m_point;
     } else {
-        Q_FOREACH (const QRenderAttachment::AttachmentPoint drawBuffer, drawBuffers)
-            if (drawBuffer <= QRenderAttachment::ColorAttachment15)
+        Q_FOREACH (const QRenderTargetOutput::AttachmentPoint drawBuffer, drawBuffers)
+            if (drawBuffer <= QRenderTargetOutput::ColorAttachment15)
                 activeDrawBuffers[i++] = drawBuffer;
     }
 

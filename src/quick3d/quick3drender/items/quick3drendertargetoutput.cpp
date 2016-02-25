@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "quick3drendertarget_p.h"
+#include "quick3drendertargetoutput_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -45,48 +45,48 @@ namespace Qt3DRender {
 namespace Render {
 namespace Quick {
 
-Quick3DRenderTarget::Quick3DRenderTarget(QObject * parent)
+Quick3DRenderTargetOutput::Quick3DRenderTargetOutput(QObject * parent)
     : QObject(parent)
 {
 }
 
-QQmlListProperty<QRenderAttachment> Quick3DRenderTarget::qmlAttachments()
+QQmlListProperty<QRenderTargetOutput> Quick3DRenderTargetOutput::qmlAttachments()
 {
-    return QQmlListProperty<QRenderAttachment>(this, 0,
-                                               &Quick3DRenderTarget::appendRenderAttachment,
-                                               &Quick3DRenderTarget::renderAttachmentCount,
-                                               &Quick3DRenderTarget::renderAttachmentAt,
-                                               &Quick3DRenderTarget::clearRenderAttachments);
+    return QQmlListProperty<QRenderTargetOutput>(this, 0,
+                                               &Quick3DRenderTargetOutput::appendRenderAttachment,
+                                               &Quick3DRenderTargetOutput::renderAttachmentCount,
+                                               &Quick3DRenderTargetOutput::renderAttachmentAt,
+                                               &Quick3DRenderTargetOutput::clearRenderAttachments);
 }
 
-void Quick3DRenderTarget::appendRenderAttachment(QQmlListProperty<QRenderAttachment> *list, QRenderAttachment *attachment)
+void Quick3DRenderTargetOutput::appendRenderAttachment(QQmlListProperty<QRenderTargetOutput> *list, QRenderTargetOutput *attachment)
 {
-    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT)
         rT->parentRenderTarget()->addAttachment(attachment);
 }
 
-QRenderAttachment *Quick3DRenderTarget::renderAttachmentAt(QQmlListProperty<QRenderAttachment> *list, int index)
+QRenderTargetOutput *Quick3DRenderTargetOutput::renderAttachmentAt(QQmlListProperty<QRenderTargetOutput> *list, int index)
 {
-    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT)
         return rT->parentRenderTarget()->attachments().at(index);
     return Q_NULLPTR;
 }
 
-int Quick3DRenderTarget::renderAttachmentCount(QQmlListProperty<QRenderAttachment> *list)
+int Quick3DRenderTargetOutput::renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list)
 {
-    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT)
         return rT->parentRenderTarget()->attachments().count();
     return -1;
 }
 
-void Quick3DRenderTarget::clearRenderAttachments(QQmlListProperty<QRenderAttachment> *list)
+void Quick3DRenderTargetOutput::clearRenderAttachments(QQmlListProperty<QRenderTargetOutput> *list)
 {
-    Quick3DRenderTarget *rT = qobject_cast<Quick3DRenderTarget *>(list->object);
+    Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT) {
-        Q_FOREACH (QRenderAttachment *att, rT->parentRenderTarget()->attachments())
+        Q_FOREACH (QRenderTargetOutput *att, rT->parentRenderTarget()->attachments())
             rT->parentRenderTarget()->removeAttachment(att);
     }
 }

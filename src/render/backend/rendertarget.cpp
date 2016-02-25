@@ -40,7 +40,7 @@
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 #include <QVariant>
 
 QT_BEGIN_NAMESPACE
@@ -59,7 +59,7 @@ void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
     m_renderAttachments.clear();
-    Q_FOREACH (QRenderAttachment *att, target->attachments())
+    Q_FOREACH (QRenderTargetOutput *att, target->attachments())
         appendRenderAttachment(att->id());
 }
 

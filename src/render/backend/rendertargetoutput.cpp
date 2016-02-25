@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include <Qt3DRender/private/renderattachment_p.h>
+#include <Qt3DRender/private/rendertargetoutput_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qtexture.h>
 #include <QVariant>
@@ -49,14 +49,14 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-RenderAttachment::RenderAttachment()
+RenderTargetOutput::RenderTargetOutput()
     : BackendNode()
 {
 }
 
-void RenderAttachment::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderTargetOutput::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QRenderAttachment *attachment = static_cast<QRenderAttachment *>(peer);
+    QRenderTargetOutput *attachment = static_cast<QRenderTargetOutput *>(peer);
 
     m_attachmentData.m_mipLevel = attachment->mipLevel();
     m_attachmentData.m_layer = attachment->layer();
@@ -66,37 +66,42 @@ void RenderAttachment::updateFromPeer(Qt3DCore::QNode *peer)
         m_attachmentData.m_textureUuid = attachment->texture()->id();
 }
 
-Qt3DCore::QNodeId RenderAttachment::textureUuid() const
+Qt3DCore::QNodeId RenderTargetOutput::textureUuid() const
 {
     return m_attachmentData.m_textureUuid;
 }
 
-int RenderAttachment::mipLevel() const
+int RenderTargetOutput::mipLevel() const
 {
     return m_attachmentData.m_mipLevel;
 }
 
-int RenderAttachment::layer() const
+int RenderTargetOutput::layer() const
 {
     return m_attachmentData.m_layer;
 }
 
-QRenderAttachment::CubeMapFace RenderAttachment::face() const
+QString RenderTargetOutput::name() const
+{
+    return m_attachmentData.m_name;
+}
+
+QRenderTargetOutput::CubeMapFace RenderTargetOutput::face() const
 {
     return m_attachmentData.m_face;
 }
 
-QRenderAttachment::AttachmentPoint RenderAttachment::point() const
+QRenderTargetOutput::AttachmentPoint RenderTargetOutput::point() const
 {
     return m_attachmentData.m_point;
 }
 
-void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void RenderTargetOutput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (e->type() == NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("type")) {
-            m_attachmentData.m_point = static_cast<QRenderAttachment::AttachmentPoint>(propertyChange->value().toInt());
+            m_attachmentData.m_point = static_cast<QRenderTargetOutput::AttachmentPoint>(propertyChange->value().toInt());
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("texture")) {
             m_attachmentData.m_textureUuid = propertyChange->value().value<QNodeId>();
@@ -108,13 +113,13 @@ void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_attachmentData.m_layer = propertyChange->value().toInt();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
-            m_attachmentData.m_face = static_cast<QRenderAttachment::CubeMapFace>(propertyChange->value().toInt());
+            m_attachmentData.m_face = static_cast<QRenderTargetOutput::CubeMapFace>(propertyChange->value().toInt());
         }
         markDirty(AbstractRenderer::AllDirty);
     }
 }
 
-Attachment RenderAttachment::attachment() const
+Attachment RenderTargetOutput::attachment() const
 {
     return m_attachmentData;
 }

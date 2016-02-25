@@ -81,7 +81,7 @@
 #include <Qt3DRender/qstenciltestseparate.h>
 #include <Qt3DRender/qscissortest.h>
 #include <Qt3DRender/qdithering.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 #include <Qt3DRender/qclearbuffer.h>
 #include <Qt3DRender/qsortcriterion.h>
 #include <Qt3DRender/qalphacoverage.h>
@@ -121,7 +121,7 @@
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
 #include <Qt3DQuickRender/private/quick3dviewport_p.h>
 #include <Qt3DQuickRender/private/quick3drenderpassfilter_p.h>
-#include <Qt3DQuickRender/private/quick3drendertarget_p.h>
+#include <Qt3DQuickRender/private/quick3drendertargetoutput_p.h>
 #include <Qt3DQuickRender/private/quick3deffect_p.h>
 #include <Qt3DQuickRender/private/quick3dscene_p.h>
 #include <Qt3DQuickRender/private/quick3dtexture_p.h>
@@ -279,8 +279,8 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
 
     // RenderTarget
-    qmlRegisterType<Qt3DRender::QRenderAttachment>(uri, 2, 0, "RenderAttachment");
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTarget, Qt3DRender::Render::Quick::Quick3DRenderTarget>("QRenderTarget", "Qt3D.Render/RenderTarget", uri, 2, 0, "RenderTarget");
+    qmlRegisterType<Qt3DRender::QRenderTargetOutput>(uri, 2, 0, "RenderTargetOutput");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTarget, Qt3DRender::Render::Quick::Quick3DRenderTargetOutput>("QRenderTarget", "Qt3D.Render/RenderTarget", uri, 2, 0, "RenderTarget");
 
     // Render surface selector
     qmlRegisterType<Qt3DRender::QRenderSurfaceSelector>(uri, 2, 0, "RenderSurfaceSelector");

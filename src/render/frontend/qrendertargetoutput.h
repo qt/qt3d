@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERATTACHMENT_H
-#define QT3DRENDER_QRENDERATTACHMENT_H
+#ifndef QT3DRENDER_QRENDERTARGETOUTPUT_H
+#define QT3DRENDER_QRENDERTARGETOUTPUT_H
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
@@ -48,9 +48,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QAbstractTextureProvider;
-class QRenderAttachmentPrivate;
+class QRenderTargetOutputPrivate;
 
-class QT3DRENDERSHARED_EXPORT QRenderAttachment : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(AttachmentPoint attachmentPoint READ attachmentPoint WRITE setAttachmentPoint NOTIFY attachmentPointChanged)
@@ -93,8 +93,8 @@ public:
     };
     Q_ENUM(CubeMapFace)
 
-    explicit QRenderAttachment(Qt3DCore::QNode *parent = 0);
-    ~QRenderAttachment();
+    explicit QRenderTargetOutput(Qt3DCore::QNode *parent = 0);
+    ~QRenderTargetOutput();
 
     AttachmentPoint attachmentPoint() const;
     QAbstractTextureProvider *texture() const;
@@ -117,18 +117,18 @@ Q_SIGNALS:
     void faceChanged(CubeMapFace face);
 
 protected:
-    QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(QRenderAttachment)
-    QT3D_CLONEABLE(QRenderAttachment)
+    Q_DECLARE_PRIVATE(QRenderTargetOutput)
+    QT3D_CLONEABLE(QRenderTargetOutput)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QRenderAttachment::AttachmentPoint)
+Q_DECLARE_METATYPE(Qt3DRender::QRenderTargetOutput::AttachmentPoint)
 
-#endif // QT3DRENDER_QRENDERATTACHMENT_H
+#endif // QT3DRENDER_QRENDERTARGETOUTPUT_H

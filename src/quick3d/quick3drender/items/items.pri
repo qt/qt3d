@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/quick3dmaterial_p.h \
     $$PWD/quick3drenderpass_p.h \
     $$PWD/quick3drenderpassfilter_p.h \
-    $$PWD/quick3drendertarget_p.h \
     $$PWD/quick3drendertargetselector_p.h \
     $$PWD/quick3dscene_p.h \
     $$PWD/quick3dshaderdata_p.h \
@@ -17,11 +16,11 @@ HEADERS += \
     $$PWD/quick3dtexture_p.h \
     $$PWD/quick3dviewport_p.h \
     $$PWD/quick3dparameter_p_p.h \
-    $$PWD/quick3dparameter_p.h
+    $$PWD/quick3dparameter_p.h \
+    $$PWD/quick3drendertargetoutput_p.h
 
 SOURCES += \
     $$PWD/quick3drenderpassfilter.cpp \
-    $$PWD/quick3drendertarget.cpp \
     $$PWD/quick3dtechniquefilter.cpp \
     $$PWD/quick3dviewport.cpp \
     $$PWD/quick3dmaterial.cpp \
@@ -37,6 +36,7 @@ SOURCES += \
     $$PWD/quick3dstateset.cpp \
     $$PWD/quick3drendertargetselector.cpp \
     $$PWD/quick3dgeometry.cpp \
-    $$PWD/quick3dbuffer.cpp
+    $$PWD/quick3dbuffer.cpp \
+    $$PWD/quick3drendertargetoutput.cpp
 
 INCLUDEPATH += $$PWD

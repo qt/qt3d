@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERATTACHMENT_H
-#define QT3DRENDER_RENDER_RENDERATTACHMENT_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETOUTPUT_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETOUTPUT_P_H
 
 //
 //  W A R N I N G
@@ -51,44 +51,38 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qrenderattachment.h>
-#include <Qt3DRender/private/attachmentpack_p.h>
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qrendertarget.h>
+#include <Qt3DRender/qrendertargetoutput.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QRenderAttachment;
-
 namespace Render {
+namespace Quick {
 
-class AttachmentManager;
-
-class RenderAttachment : public BackendNode
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderTargetOutput : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderTargetOutput> attachments READ qmlAttachments)
 public:
-    RenderAttachment();
+    explicit Quick3DRenderTargetOutput(QObject *parent = 0);
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-
-    Qt3DCore::QNodeId textureUuid() const;
-    int mipLevel() const;
-    int layer() const;
-    QRenderAttachment::CubeMapFace face() const;
-    QRenderAttachment::AttachmentPoint point() const;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Attachment attachment() const;
+    inline QRenderTarget *parentRenderTarget() const { return qobject_cast<QRenderTarget *>(parent()); }
+    QQmlListProperty<QRenderTargetOutput> qmlAttachments();
 
 private:
-    Qt3DCore::QNodeId m_attachmentUuid;
-    Attachment m_attachmentData;
+    static void appendRenderAttachment(QQmlListProperty<QRenderTargetOutput> *list, QRenderTargetOutput *attachment);
+    static QRenderTargetOutput *renderAttachmentAt(QQmlListProperty<QRenderTargetOutput> *list, int index);
+    static int renderAttachmentCount(QQmlListProperty<QRenderTargetOutput> *list);
+    static void clearRenderAttachments(QQmlListProperty<QRenderTargetOutput> *list);
 };
 
+} // namespace Quick
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERATTACHMENT_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DRENDERTARGETOUTPUT_P_H

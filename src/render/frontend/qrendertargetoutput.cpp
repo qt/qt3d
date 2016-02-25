@@ -36,8 +36,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include "qrenderattachment_p.h"
-#include "qrenderattachment.h"
+#include "qrendertargetoutput_p.h"
+#include "qrendertargetoutput.h"
 #include "qtexture.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -45,58 +45,58 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QRenderAttachmentPrivate::QRenderAttachmentPrivate()
+QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
     : QNodePrivate()
     , m_texture(Q_NULLPTR)
-    , m_attachmentPoint(QRenderAttachment::ColorAttachment0)
+    , m_attachmentPoint(QRenderTargetOutput::ColorAttachment0)
     , m_mipLevel(0)
     , m_layer(0)
-    , m_face(QRenderAttachment::CubeMapNegativeX)
+    , m_face(QRenderTargetOutput::CubeMapNegativeX)
 {
 }
 
-void QRenderAttachment::copy(const QNode *ref)
+void QRenderTargetOutput::copy(const QNode *ref)
 {
     QNode::copy(ref);
-    const QRenderAttachment *rA = static_cast<const QRenderAttachment*>(ref);
+    const QRenderTargetOutput *rA = static_cast<const QRenderTargetOutput*>(ref);
     d_func()->m_attachmentPoint = rA->d_func()->m_attachmentPoint;
     setTexture(qobject_cast<QAbstractTextureProvider *>(QNode::clone(rA->d_func()->m_texture)));
 }
 
-QRenderAttachment::QRenderAttachment(QNode *parent)
-    : QNode(*new QRenderAttachmentPrivate, parent)
+QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
+    : QNode(*new QRenderTargetOutputPrivate, parent)
 {
 }
 
-QRenderAttachment::~QRenderAttachment()
+QRenderTargetOutput::~QRenderTargetOutput()
 {
     QNode::cleanup();
 }
 
 /*! \internal */
-QRenderAttachment::QRenderAttachment(QRenderAttachmentPrivate &dd, QNode *parent)
+QRenderTargetOutput::QRenderTargetOutput(QRenderTargetOutputPrivate &dd, QNode *parent)
     : QNode(dd, parent)
 {
 }
 
-void QRenderAttachment::setAttachmentPoint(QRenderAttachment::AttachmentPoint attachmentPoint)
+void QRenderTargetOutput::setAttachmentPoint(QRenderTargetOutput::AttachmentPoint attachmentPoint)
 {
-    Q_D(QRenderAttachment);
+    Q_D(QRenderTargetOutput);
     if (attachmentPoint != d->m_attachmentPoint) {
         d->m_attachmentPoint = attachmentPoint;
         emit attachmentPointChanged(attachmentPoint);
     }
 }
 
-QRenderAttachment::AttachmentPoint QRenderAttachment::attachmentPoint() const
+QRenderTargetOutput::AttachmentPoint QRenderTargetOutput::attachmentPoint() const
 {
-    Q_D(const QRenderAttachment);
+    Q_D(const QRenderTargetOutput);
     return d->m_attachmentPoint;
 }
 
-void QRenderAttachment::setTexture(QAbstractTextureProvider *texture)
+void QRenderTargetOutput::setTexture(QAbstractTextureProvider *texture)
 {
-    Q_D(QRenderAttachment);
+    Q_D(QRenderTargetOutput);
     if (texture != d->m_texture) {
         d->m_texture = texture;
 
@@ -107,54 +107,54 @@ void QRenderAttachment::setTexture(QAbstractTextureProvider *texture)
     }
 }
 
-QAbstractTextureProvider *QRenderAttachment::texture() const
+QAbstractTextureProvider *QRenderTargetOutput::texture() const
 {
-    Q_D(const QRenderAttachment);
+    Q_D(const QRenderTargetOutput);
     return d->m_texture;
 }
 
-void QRenderAttachment::setMipLevel(int level)
+void QRenderTargetOutput::setMipLevel(int level)
 {
-    Q_D(QRenderAttachment);
+    Q_D(QRenderTargetOutput);
     if (d->m_mipLevel != level) {
         d->m_mipLevel = level;
         emit mipLevelChanged(level);
     }
 }
 
-int QRenderAttachment::mipLevel() const
+int QRenderTargetOutput::mipLevel() const
 {
-    Q_D(const QRenderAttachment);
+    Q_D(const QRenderTargetOutput);
     return d->m_mipLevel;
 }
 
-void QRenderAttachment::setLayer(int layer)
+void QRenderTargetOutput::setLayer(int layer)
 {
-    Q_D(QRenderAttachment);
+    Q_D(QRenderTargetOutput);
     if (d->m_layer != layer) {
         d->m_layer = layer;
         emit layerChanged(layer);
     }
 }
 
-int QRenderAttachment::layer() const
+int QRenderTargetOutput::layer() const
 {
-    Q_D(const QRenderAttachment);
+    Q_D(const QRenderTargetOutput);
     return d->m_layer;
 }
 
-void QRenderAttachment::setFace(QRenderAttachment::CubeMapFace face)
+void QRenderTargetOutput::setFace(QRenderTargetOutput::CubeMapFace face)
 {
-    Q_D(QRenderAttachment);
+    Q_D(QRenderTargetOutput);
     if (d->m_face != face) {
         d->m_face = face;
         emit faceChanged(face);
     }
 }
 
-QRenderAttachment::CubeMapFace QRenderAttachment::face() const
+QRenderTargetOutput::CubeMapFace QRenderTargetOutput::face() const
 {
-    Q_D(const QRenderAttachment);
+    Q_D(const QRenderTargetOutput);
     return d->m_face;
 }
 

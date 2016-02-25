@@ -67,7 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderTargetSelector)
     QRenderTarget *m_target;
-    QList<QRenderAttachment::AttachmentPoint> m_drawBuffers;
+    QList<QRenderTargetOutput::AttachmentPoint> m_drawBuffers;
 };
 
 } // namespace Qt3DRender

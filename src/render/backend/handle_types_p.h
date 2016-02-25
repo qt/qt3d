@@ -64,7 +64,7 @@ class QTexImageData;
 
 namespace Render {
 
-class RenderAttachment;
+class RenderTargetOutput;
 class CameraLens;
 class Annotation;
 class Effect;
@@ -94,7 +94,7 @@ class ComputeJob;
 class GLBuffer;
 class RenderStateNode;
 
-typedef Qt3DCore::QHandle<RenderAttachment, 16> HAttachment;
+typedef Qt3DCore::QHandle<RenderTargetOutput, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
 typedef Qt3DCore::QHandle<Annotation, 16> HCriterion;
 typedef Qt3DCore::QHandle<Effect, 16> HEffect;

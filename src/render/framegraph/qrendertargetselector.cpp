@@ -98,7 +98,7 @@ QRenderTarget *QRenderTargetSelector::target() const
 /*!
  * \internal
  * Sets the draw buffers \a buffers to be used. The draw buffers should be
- * matching the Qt3DRender::QRenderAttachment::RenderAttachmentType
+ * matching the Qt3DRender::QRenderTargetOutput::RenderAttachmentType
  * defined in the attachments of the Qt3DRender::QRenderTarget associated to the
  * Qt3DRender::QRenderTargetSelector instance.
  *
@@ -106,7 +106,7 @@ QRenderTarget *QRenderTargetSelector::target() const
  * default to using all the attachments' draw buffers.
  *
  */
-void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::AttachmentPoint> &buffers)
+void QRenderTargetSelector::setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
     Q_D(QRenderTargetSelector);
     if (buffers != d->m_drawBuffers) {
@@ -124,7 +124,7 @@ void QRenderTargetSelector::setDrawBuffers(const QList<QRenderAttachment::Attach
 /*!
  * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
-QList<QRenderAttachment::AttachmentPoint> QRenderTargetSelector::drawBuffers() const
+QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::drawBuffers() const
 {
     Q_D(const QRenderTargetSelector);
     return d->m_drawBuffers;

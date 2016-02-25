@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderTarget;
-class QRenderAttachment;
+class QRenderTargetOutput;
 
 namespace Render {
 

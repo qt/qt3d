@@ -192,7 +192,7 @@ SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT
+AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT
 {
     return m_attachmentManager;
 }

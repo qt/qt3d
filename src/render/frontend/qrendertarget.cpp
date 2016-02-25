@@ -39,7 +39,7 @@
 
 #include "qrendertarget.h"
 #include "qrendertarget_p.h"
-#include "qrenderattachment.h"
+#include "qrendertargetoutput.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,8 +57,8 @@ void QRenderTarget::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QRenderTarget *other = static_cast<const QRenderTarget*>(ref);
-    Q_FOREACH (QRenderAttachment *attachment, other->d_func()->m_attachments)
-        addAttachment(qobject_cast<QRenderAttachment *>(QNode::clone(attachment)));
+    Q_FOREACH (QRenderTargetOutput *attachment, other->d_func()->m_attachments)
+        addAttachment(qobject_cast<QRenderTargetOutput *>(QNode::clone(attachment)));
 }
 
 QRenderTarget::QRenderTarget(QNode *parent)
@@ -77,7 +77,7 @@ QRenderTarget::QRenderTarget(QRenderTargetPrivate &dd, QNode *parent)
 {
 }
 
-void QRenderTarget::addAttachment(QRenderAttachment *attachment)
+void QRenderTarget::addAttachment(QRenderTargetOutput *attachment)
 {
     Q_D(QRenderTarget);
     if (!d->m_attachments.contains(attachment)) {
@@ -95,7 +95,7 @@ void QRenderTarget::addAttachment(QRenderAttachment *attachment)
     }
 }
 
-void QRenderTarget::removeAttachment(QRenderAttachment *attachment)
+void QRenderTarget::removeAttachment(QRenderTargetOutput *attachment)
 {
     Q_D(QRenderTarget);
 
@@ -108,7 +108,7 @@ void QRenderTarget::removeAttachment(QRenderAttachment *attachment)
     d->m_attachments.removeOne(attachment);
 }
 
-QList<QRenderAttachment *> QRenderTarget::attachments() const
+QList<QRenderTargetOutput *> QRenderTarget::attachments() const
 {
     Q_D(const QRenderTarget);
     return d->m_attachments;

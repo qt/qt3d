@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERATTACHMENT_P_H
-#define QT3DRENDER_QRENDERATTACHMENT_P_H
+#ifndef QT3DRENDER_QRENDERTARGETOUTPUT_P_H
+#define QT3DRENDER_QRENDERTARGETOUTPUT_P_H
 
 //
 //  W A R N I N G
@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -60,22 +60,22 @@ namespace Qt3DRender {
 
 class QAbstractTextureProvider;
 
-class QRenderAttachmentPrivate : public Qt3DCore::QNodePrivate
+class QRenderTargetOutputPrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    QRenderAttachmentPrivate();
+    QRenderTargetOutputPrivate();
 
-    Q_DECLARE_PUBLIC(QRenderAttachment)
+    Q_DECLARE_PUBLIC(QRenderTargetOutput)
 
     QAbstractTextureProvider *m_texture;
-    QRenderAttachment::AttachmentPoint m_attachmentPoint;
+    QRenderTargetOutput::AttachmentPoint m_attachmentPoint;
     int m_mipLevel;
     int m_layer;
-    QRenderAttachment::CubeMapFace m_face;
+    QRenderTargetOutput::CubeMapFace m_face;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERATTACHMENT_P_H
+#endif // QT3DRENDER_QRENDERTARGETOUTPUT_P_H

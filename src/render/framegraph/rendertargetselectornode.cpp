@@ -44,7 +44,7 @@
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
-#include <Qt3DRender/qrenderattachment.h>
+#include <Qt3DRender/qrendertargetoutput.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -78,7 +78,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("drawBuffers"))
-            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::AttachmentPoint> >();
+            m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
         markDirty(AbstractRenderer::AllDirty);
     }
 }
@@ -88,7 +88,7 @@ Qt3DCore::QNodeId RenderTargetSelector::renderTargetUuid() const
     return m_renderTargetUuid;
 }
 
-QList<QRenderAttachment::AttachmentPoint> RenderTargetSelector::drawBuffers() const
+QList<QRenderTargetOutput::AttachmentPoint> RenderTargetSelector::drawBuffers() const
 {
     return m_drawBuffers;
 }

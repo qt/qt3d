@@ -113,7 +113,7 @@ class Annotation;
 class FrameGraphNode;
 class Transform;
 class Scene;
-class RenderAttachment;
+class RenderTargetOutput;
 class RenderTarget;
 class ShaderData;
 class SortCriterion;
@@ -291,7 +291,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT SceneManager *NodeManagers::manager<Scene>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderAttachment>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT AttachmentManager *NodeManagers::manager<RenderTargetOutput>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT SortCriterionManager *NodeManagers::manager<SortCriterion>() const Q_DECL_NOEXCEPT;

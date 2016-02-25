@@ -260,7 +260,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(d->m_renderer, d->m_nodeManagers->renderPassManager())));
     registerBackendType<QAbstractSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(d->m_renderer, d->m_nodeManagers->sceneManager())));
     registerBackendType<QRenderTarget>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(d->m_renderer, d->m_nodeManagers->renderTargetManager())));
-    registerBackendType<QRenderAttachment>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderAttachment, Render::AttachmentManager>(d->m_renderer, d->m_nodeManagers->attachmentManager())));
+    registerBackendType<QRenderTargetOutput>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager>(d->m_renderer, d->m_nodeManagers->attachmentManager())));
     registerBackendType<QSortCriterion>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(d->m_renderer, d->m_nodeManagers->sortCriterionManager())));
     registerBackendType<QClearBuffer>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffer, QClearBuffer>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QTechniqueFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
