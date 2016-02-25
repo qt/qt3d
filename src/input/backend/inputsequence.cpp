@@ -54,7 +54,7 @@ InputSequence::InputSequence()
     , m_inputs()
     , m_inputsToTrigger()
     , m_timeout(0)
-    , m_interval(0)
+    , m_buttonInterval(0)
     , m_sequential(true)
     , m_startTime(0)
     , m_lastInputTime(0)
@@ -67,7 +67,7 @@ void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
     QInputSequence *input = static_cast<QInputSequence *>(peer);
     m_enabled = input->isEnabled();
     m_timeout = input->timeout();
-    m_interval = input->interval();
+    m_buttonInterval = input->buttonInterval();
     m_sequential = input->sequential();
     Q_FOREACH (QAbstractActionInput *i, input->inputs())
         m_inputs.push_back(i->id());
@@ -77,7 +77,7 @@ void InputSequence::cleanup()
 {
     m_enabled = false;
     m_timeout = 0;
-    m_interval = 0;
+    m_buttonInterval = 0;
     m_startTime = 0;
     m_lastInputTime = 0;
     m_lastInputId = Qt3DCore::QNodeId();
@@ -112,7 +112,7 @@ bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 curren
     // Otherwise save the last input
     m_lastInputId = input;
     // Return false if we've spent too much time in between two sequences
-    if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_interval)) {
+    if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_buttonInterval)) {
         reset();
         return false;
     }
@@ -138,8 +138,8 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_enabled = propertyChange->value().toBool();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("timeout")) {
             m_timeout = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("interval")) {
-            m_interval = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonInterval")) {
+            m_buttonInterval = propertyChange->value().toInt();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("sequential")) {
             m_sequential = propertyChange->value().toBool();
         }

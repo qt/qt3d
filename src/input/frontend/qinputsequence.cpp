@@ -55,12 +55,12 @@ public:
     QInputSequencePrivate()
         : Qt3DInput::QAbstractAggregateActionInputPrivate()
         , m_timeout(0)
-        , m_interval(0)
+        , m_buttonInterval(0)
         , m_sequential(true)
     {}
 
     int m_timeout;
-    int m_interval;
+    int m_buttonInterval;
     bool m_sequential;
 };
 
@@ -149,33 +149,33 @@ int QInputSequence::timeout() const
 }
 
 /*!
-  \fn QInputSequence::intervalChanged()
+  \fn QInputSequence::buttonIntervalChanged()
 
-  This signal is emitted when the interval of the input sequence is changed.
+  This signal is emitted when the buttonInterval of the input sequence is changed.
 */
 
 /*!
-  \qmlproperty int Qt3D.Input::InputSequence::interval
+  \qmlproperty int Qt3D.Input::InputSequence::buttonInterval
 
   The maximum time in milliseconds in between consecutive QAbstractActionInput's in the input sequence.
 */
 
 /*!
-    \qmlsignal Qt3D.Input::InputSequence::intervalChanged()
+    \qmlsignal Qt3D.Input::InputSequence::buttonIntervalChanged()
 
-    This signal is emitted when the interval of the input sequence is changed.
+    This signal is emitted when the buttonInterval of the input sequence is changed.
 
-    The corresponding handeler is \c onIntervalChanged
+    The corresponding handeler is \c onButtonIntervalChanged
 */
 
 /*!
     Returns the maximum time in between consecutive QAbstractActionInput's in the input sequence.
     The time is in milliseconds
  */
-int QInputSequence::interval() const
+int QInputSequence::buttonInterval() const
 {
     Q_D(const QInputSequence);
-    return d->m_interval;
+    return d->m_buttonInterval;
 }
 
 /*!
@@ -224,12 +224,12 @@ void QInputSequence::setTimeout(int timeout)
     Set the maximum time in between consecutive QAbstractActionInput's in the input sequence.
     The time is in milliseconds
  */
-void QInputSequence::setInterval(int interval)
+void QInputSequence::setButtonInterval(int buttonInterval)
 {
     Q_D(QInputSequence);
-    if (d->m_interval != interval) {
-        d->m_interval = interval;
-        emit intervalChanged(interval);
+    if (d->m_buttonInterval != buttonInterval) {
+        d->m_buttonInterval = buttonInterval;
+        emit buttonIntervalChanged(buttonInterval);
     }
 }
 
@@ -250,7 +250,7 @@ void QInputSequence::copy(const Qt3DCore::QNode *ref)
     QAbstractAggregateActionInput::copy(ref);
     const QInputSequence *input = static_cast<const QInputSequence *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
-    d_func()->m_interval = input->d_func()->m_interval;
+    d_func()->m_buttonInterval = input->d_func()->m_buttonInterval;
     d_func()->m_sequential = input->d_func()->m_sequential;
 }
 
