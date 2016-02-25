@@ -84,14 +84,14 @@ private Q_SLOTS:
         QCOMPARE(dirLight.type(), Qt3DRender::QLight::DirectionalLight);
         dirLight.setColor(Qt::blue);
         dirLight.setIntensity(0.5f);
-        dirLight.setDirection(QVector3D(0, 0, -1));
+        dirLight.setWorldDirection(QVector3D(0, 0, -1));
 
         QScopedPointer<Qt3DRender::QDirectionalLight> dirLightClone(static_cast<Qt3DRender::QDirectionalLight *>(QNode::clone(&dirLight)));
         QVERIFY(dirLightClone.data());
         QCOMPARE(dirLightClone->type(), Qt3DRender::QLight::DirectionalLight);
         QCOMPARE(dirLight.color(), dirLightClone->color());
         QCOMPARE(dirLight.intensity(), dirLightClone->intensity());
-        QCOMPARE(dirLight.direction(), dirLightClone->direction());
+        QCOMPARE(dirLight.worldDirection(), dirLightClone->worldDirection());
     }
 
     void checkSpotLightCloning()
@@ -180,7 +180,7 @@ private Q_SLOTS:
 
         dirLight->setColor(Qt::blue);
         dirLight->setIntensity(0.5f);
-        dirLight->setDirection(QVector3D(0.5f, 0.0f, -1.0f));
+        dirLight->setWorldDirection(QVector3D(0.5f, 0.0f, -1.0f));
         QCoreApplication::processEvents();
 
         QCOMPARE(dirLightArbiter.events.size(), 3);
@@ -195,7 +195,7 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
         change = dirLightArbiter.events[2].staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "direction");
+        QCOMPARE(change->propertyName(), "worldDirection");
         QCOMPARE(change->subjectId(), dirLight->id());
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);

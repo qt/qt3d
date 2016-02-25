@@ -80,7 +80,7 @@ Entity
         components: [
             DirectionalLight {
                 color: Qt.rgba(0.8, 0.8, 0.8, 1.0)
-                direction: Qt.vector3d(-1, -1, 0)
+                worldDirection: Qt.vector3d(-1, -1, 0)
             }
         ]
     }
