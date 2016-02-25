@@ -136,7 +136,7 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
         const qint64 startTime = inputChord->startTime();
         if (startTime != 0) {
             // Check if we are still inside the time limit for the chord
-            if ((m_currentTime - startTime) > inputChord->tolerance()) {
+            if ((m_currentTime - startTime) > inputChord->timeout()) {
                 inputChord->reset();
                 return false;
             }

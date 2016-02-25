@@ -53,10 +53,10 @@ class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivat
 public:
     QInputChordPrivate()
         : Qt3DInput::QAbstractAggregateActionInputPrivate()
-        , m_tolerance(0)
+        , m_timeout(0)
     {}
 
-    int m_tolerance;
+    int m_timeout;
 };
 
 /*!
@@ -119,9 +119,9 @@ QInputChord::~QInputChord()
 }
 
 /*!
-  \fn QInputChord::toleranceChanged()
+  \fn QInputChord::timeoutChanged()
 
-  This signal is emitted when the tolerance of the input chord is changed.
+  This signal is emitted when the timeout of the input chord is changed.
 */
 
 /*!
@@ -133,7 +133,7 @@ QInputChord::~QInputChord()
 /*!
     \qmlsignal Qt3D.Input::InputChord::tolleranceChanged()
 
-    This signal is emitted when the tolerance of the input chord is changed.
+    This signal is emitted when the timeout of the input chord is changed.
 
     The corresponding handeler is \c onTolleranceChanged
 */
@@ -142,22 +142,22 @@ QInputChord::~QInputChord()
     Returns the time in which all QAbstractActionInput's in the input chord must triggered within.
     The time is in milliseconds
  */
-int QInputChord::tolerance() const
+int QInputChord::timeout() const
 {
     Q_D(const QInputChord);
-    return d->m_tolerance;
+    return d->m_timeout;
 }
 
 /*!
     Sets the time in which all QAbstractActionInput's in the input chord must triggered within.
     The time is in milliseconds
  */
-void QInputChord::setTolerance(int tolerance)
+void QInputChord::setTimeout(int timeout)
 {
     Q_D(QInputChord);
-    if (d->m_tolerance != tolerance) {
-        d->m_tolerance = tolerance;
-        emit toleranceChanged(tolerance);
+    if (d->m_timeout != timeout) {
+        d->m_timeout = timeout;
+        emit timeoutChanged(timeout);
     }
 }
 
@@ -165,7 +165,7 @@ void QInputChord::copy(const Qt3DCore::QNode *ref)
 {
     QAbstractAggregateActionInput::copy(ref);
     const QInputChord *input = static_cast<const QInputChord *>(ref);
-    d_func()->m_tolerance = input->d_func()->m_tolerance;
+    d_func()->m_timeout = input->d_func()->m_timeout;
 }
 
 } // Qt3DInput

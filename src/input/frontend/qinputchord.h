@@ -54,19 +54,19 @@ class QInputChordPrivate;
 class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractAggregateActionInput
 {
     Q_OBJECT
-    Q_PROPERTY(int tolerance READ tolerance WRITE setTolerance NOTIFY toleranceChanged)
+    Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
 
 public:
     explicit QInputChord(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QInputChord();
 
-    int tolerance() const;
+    int timeout() const;
 
 public Q_SLOTS:
-    void setTolerance(int tolerance);
+    void setTimeout(int timeout);
 
 Q_SIGNALS:
-    void toleranceChanged(int tolerance);
+    void timeoutChanged(int timeout);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

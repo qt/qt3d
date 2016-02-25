@@ -68,7 +68,7 @@ public:
     void cleanup();
 
     inline QVector<Qt3DCore::QNodeId> inputs() const { return m_inputs; }
-    inline int tolerance() const { return m_tolerance; }
+    inline int timeout() const { return m_timeout; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
     inline bool isEnabled() const { return m_enabled; }
@@ -78,7 +78,7 @@ public:
 private:
     QVector<Qt3DCore::QNodeId> m_inputs;
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
-    int m_tolerance;
+    int m_timeout;
     qint64 m_startTime;
     bool m_enabled;
 };
