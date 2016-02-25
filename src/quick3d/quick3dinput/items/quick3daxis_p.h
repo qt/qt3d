@@ -66,6 +66,7 @@ class QT3DQUICKINPUTSHARED_PRIVATE_EXPORT Quick3DAxis : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Qt3DInput::QAxisInput> inputs READ qmlAxisInputs CONSTANT)
+    Q_CLASSINFO("DefaultProperty", "inputs")
 public:
     explicit Quick3DAxis(QObject *parent = Q_NULLPTR);
 
