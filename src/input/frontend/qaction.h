@@ -53,23 +53,18 @@ class QAbstractActionInput;
 class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
 public:
     explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAction();
 
-    QString name() const;
     bool isActive() const;
 
-public Q_SLOTS:
-    void setName(const QString &name);
     void addInput(QAbstractActionInput *input);
     void removeInput(QAbstractActionInput *input);
     QVector<QAbstractActionInput *> inputs() const;
 
 Q_SIGNALS:
-    void nameChanged(const QString &name);
     void activeChanged(bool isActive);
 
 protected:

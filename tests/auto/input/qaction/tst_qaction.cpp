@@ -61,14 +61,12 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QAction *namedaction = new Qt3DInput::QAction();
-        namedaction->setName(QStringLiteral("fire"));
         QTest::newRow("namedAction") << namedaction;
 
         Qt3DInput::QAction *namedactionWithInputs = new Qt3DInput::QAction();
         Qt3DInput::QActionInput *actionInput1 = new Qt3DInput::QActionInput();
         Qt3DInput::QActionInput *actionInput2 = new Qt3DInput::QActionInput();
         Qt3DInput::QActionInput *actionInput3 = new Qt3DInput::QActionInput();
-        namedactionWithInputs->setName("accelerate");
         namedactionWithInputs->addInput(actionInput1);
         namedactionWithInputs->addInput(actionInput2);
         namedactionWithInputs->addInput(actionInput3);
@@ -87,7 +85,6 @@ private Q_SLOTS:
         // THEN
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(action->id(), clone->id());
-        QCOMPARE(action->name(), clone->name());
         QCOMPARE(action->inputs().count(), clone->inputs().count());
         QCOMPARE(action->isActive(), clone->isActive());
 
@@ -104,26 +101,13 @@ private Q_SLOTS:
         TestArbiter arbiter(action.data());
 
         // WHEN
-        action->setName(QStringLiteral("454"));
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "name");
-        QCOMPARE(change->value().toString(), QStringLiteral("454"));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
         Qt3DInput::QActionInput *input = new Qt3DInput::QActionInput();
         action->addInput(input);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "input");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), input->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);

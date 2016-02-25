@@ -59,7 +59,6 @@ public:
 
     Q_DECLARE_PUBLIC(QAction)
 
-    QString m_name;
     QVector<QAbstractActionInput *> m_inputs;
     bool m_active;
 
@@ -126,27 +125,6 @@ QAction::~QAction()
     The corresponding handeler is \c onNameChanged
 */
 
-/*!
-    Set the name used to identify this action.
- */
-void QAction::setName(const QString &name)
-{
-    Q_D(QAction);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged(name);
-    }
-}
-
-/*!
-    Returns the name used to identify this action.
- */
-QString QAction::name() const
-{
-    Q_D(const QAction);
-    return d->m_name;
-}
-
 bool QAction::isActive() const
 {
     Q_D(const QAction);
@@ -212,7 +190,6 @@ void QAction::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QAction *action = static_cast<const QAction *>(ref);
-    d_func()->m_name = action->d_func()->m_name;
     Q_FOREACH (QAbstractActionInput *input, action->inputs())
         d_func()->m_inputs.append(qobject_cast<QAbstractActionInput *>(QNode::clone(input)));
 }

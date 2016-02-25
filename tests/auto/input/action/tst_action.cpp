@@ -50,7 +50,6 @@ private Q_SLOTS:
         Qt3DInput::QActionInput actionInput;
 
         action.addInput(&actionInput);
-        action.setName(QStringLiteral("L88"));
 
         // WHEN
         backendAction.setPeer(&action);
@@ -58,7 +57,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAction.peerUuid(), action.id());
         QCOMPARE(backendAction.isEnabled(), action.isEnabled());
-        QCOMPARE(backendAction.name(), action.name());
         QCOMPARE(backendAction.inputs().size(), action.inputs().size());
 
         const int inputsCount = backendAction.inputs().size();
@@ -75,7 +73,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(backendAction.peerUuid().isNull());
-        QVERIFY(backendAction.name().isEmpty());
         QCOMPARE(backendAction.actionTriggered(), false);
         QCOMPARE(backendAction.isEnabled(), false);
         QCOMPARE(backendAction.inputs().size(), 0);
@@ -85,7 +82,6 @@ private Q_SLOTS:
         Qt3DInput::QActionInput axisInput;
 
         axis.addInput(&axisInput);
-        axis.setName(QStringLiteral("L88"));
 
         // WHEN
         backendAction.updateFromPeer(&axis);
@@ -94,7 +90,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(backendAction.peerUuid().isNull());
-        QVERIFY(backendAction.name().isEmpty());
         QCOMPARE(backendAction.actionTriggered(), false);
         QCOMPARE(backendAction.isEnabled(), false);
         QCOMPARE(backendAction.inputs().size(), 0);
@@ -104,15 +99,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DInput::Input::Action backendAction;
-
-        // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QStringLiteral("LT1"));
-        updateChange->setPropertyName("name");
-        backendAction.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendAction.name(), QStringLiteral("LT1"));
+        Qt3DCore::QScenePropertyChangePtr updateChange;
 
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));

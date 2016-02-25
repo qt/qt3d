@@ -60,7 +60,6 @@ void Action::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAction *action = static_cast<QAction *>(peer);
     m_enabled = action->isEnabled();
-    m_name = action->name();
     Q_FOREACH (QAbstractActionInput *input, action->inputs())
         m_inputs.push_back(input->id());
 }
@@ -69,7 +68,6 @@ void Action::cleanup()
 {
     m_enabled = false;
     m_inputs.clear();
-    m_name.clear();
     m_actionTriggered = false;
 }
 
@@ -93,8 +91,6 @@ void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
-            m_name = propertyChange->value().toString();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))
