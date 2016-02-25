@@ -52,7 +52,7 @@ namespace Render {
 TextureImage::TextureImage()
     : BackendNode()
     , m_layer(0)
-    , m_mipmapLevel(0)
+    , m_mipLevel(0)
     , m_face(QAbstractTextureProvider::CubeMapPositiveX)
     , m_dirty(true)
     , m_textureManager(Q_NULLPTR)
@@ -65,7 +65,7 @@ TextureImage::TextureImage()
 void TextureImage::cleanup()
 {
     m_layer = 0;
-    m_mipmapLevel = 0;
+    m_mipLevel = 0;
     m_dirty = true;
     m_face = QAbstractTextureProvider::CubeMapPositiveX;
     m_functor.reset();
@@ -80,7 +80,7 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAbstractTextureImage *textureImage = static_cast<QAbstractTextureImage *>(peer);
     m_layer = textureImage->layer();
-    m_mipmapLevel = textureImage->mipmapLevel();
+    m_mipLevel = textureImage->mipLevel();
     m_face = textureImage->cubeMapFace();
     m_functor = textureImage->dataFunctor();
     // Notify the Texture that we are one of its TextureImage
@@ -105,8 +105,8 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyChange->propertyName() == QByteArrayLiteral("layer")) {
             m_layer = propertyChange->value().toInt();
             m_dirty = true;
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipmapLevel")) {
-            m_mipmapLevel = propertyChange->value().toInt();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("mipLevel")) {
+            m_mipLevel = propertyChange->value().toInt();
             m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("cubeMapFace")) {
             m_face = static_cast<QAbstractTextureProvider::CubeMapFace>(propertyChange->value().toInt());
@@ -154,7 +154,7 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
 void TextureImage::updateDNA()
 {
     m_dna = ::qHash(m_layer
-                    + (m_mipmapLevel << 4)
+                    + (m_mipLevel << 4)
                     + (static_cast<int>(m_face) << 8)
                     + (m_textureDataHandle.handle() << 12));
 }

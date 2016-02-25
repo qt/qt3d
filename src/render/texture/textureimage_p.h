@@ -78,13 +78,13 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     int m_layer;
-    int m_mipmapLevel;
+    int m_mipLevel;
     QAbstractTextureProvider::CubeMapFace m_face;
     bool m_dirty;
     inline TextureImageDNA dna() const { return m_dna; }
 
     inline int layer() const { return m_layer; }
-    inline int mipmapLevel() const { return m_mipmapLevel; }
+    inline int mipLevel() const { return m_mipLevel; }
     inline QAbstractTextureProvider::CubeMapFace face() const { return m_face; }
 
     void setTextureManager(TextureManager *manager);

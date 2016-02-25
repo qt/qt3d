@@ -66,14 +66,14 @@ class QAbstractTextureImagePrivate;
 class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(int mipmapLevel READ mipmapLevel WRITE setMipmapLevel NOTIFY mipmapLevelChanged)
+    Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
 public:
     explicit QAbstractTextureImage(Qt3DCore::QNode *parent = 0);
     virtual ~QAbstractTextureImage();
 
-    int mipmapLevel() const;
+    int mipLevel() const;
     int layer() const;
     QAbstractTextureProvider::CubeMapFace cubeMapFace() const;
 
@@ -81,12 +81,12 @@ public:
     virtual QTextureDataFunctorPtr dataFunctor() const = 0;
 
 public Q_SLOTS:
-    void setMipmapLevel(int level);
+    void setMipLevel(int level);
     void setLayer(int layer);
     void setCubeMapFace(QAbstractTextureProvider::CubeMapFace face);
 
 Q_SIGNALS:
-    void mipmapLevelChanged(int mipmapLevel);
+    void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
     void cubeMapFaceChanged(QAbstractTextureProvider::CubeMapFace cubeMapFace);
 

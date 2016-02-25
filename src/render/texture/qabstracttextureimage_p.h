@@ -66,7 +66,7 @@ class QT3DRENDERSHARED_PRIVATE_EXPORT QAbstractTextureImagePrivate : public Qt3D
 public:
     QAbstractTextureImagePrivate()
         : QNodePrivate()
-        , m_mipmapLevel(0)
+        , m_mipLevel(0)
         , m_layer(0)
         , m_face(QAbstractTextureProvider::CubeMapPositiveX)
     {
@@ -74,7 +74,7 @@ public:
 
     Q_DECLARE_PUBLIC(QAbstractTextureImage)
 
-    int m_mipmapLevel;
+    int m_mipLevel;
     int m_layer;
     QAbstractTextureProvider::CubeMapFace m_face;
 };

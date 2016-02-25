@@ -374,7 +374,7 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
     // ensure we don't accidently cause a detach / copy of the raw bytes
     const QByteArray &bytes(imgData->data());
     if (imgData->isCompressed()) {
-        m_gl->setCompressedData(rImg->mipmapLevel(),
+        m_gl->setCompressedData(rImg->mipLevel(),
                                 rImg->layer(),
                                 static_cast<QOpenGLTexture::CubeMapFace>(rImg->face()),
                                 bytes.size(),
@@ -382,7 +382,7 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
     } else {
         QOpenGLPixelTransferOptions uploadOptions;
         uploadOptions.setAlignment(1);
-        m_gl->setData(rImg->mipmapLevel(),
+        m_gl->setData(rImg->mipLevel(),
                       rImg->layer(),
                       static_cast<QOpenGLTexture::CubeMapFace>(rImg->face()),
                       imgData->pixelFormat(),

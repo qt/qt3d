@@ -137,7 +137,7 @@ void LoadTextureDataJob::run()
 
                 // Set texture size of texture if the first layer / level / face has a valid size
                 // otherwise assume the size was set on the texture itself
-                if (texImg->layer() == 0 && texImg->mipmapLevel() == 0 &&
+                if (texImg->layer() == 0 && texImg->mipLevel() == 0 &&
                         texImg->face() == QAbstractTextureProvider::CubeMapPositiveX) {
 
                     if (data == Q_NULLPTR) {

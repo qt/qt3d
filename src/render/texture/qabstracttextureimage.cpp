@@ -95,20 +95,20 @@ QAbstractTextureImage::~QAbstractTextureImage()
 
 
 /*!
-    \qmlproperty int Qt3D.Render::AbstractTextureImage::mipmapLevel
+    \qmlproperty int Qt3D.Render::AbstractTextureImage::mipLevel
 
     Holds the mipmap level of the texture image.
  */
 
 /*!
-    \property Qt3DRender::QAbstractTextureImage::mipmapLevel
+    \property Qt3DRender::QAbstractTextureImage::mipLevel
 
     Holds the mipmap level of the texture image.
  */
-int QAbstractTextureImage::mipmapLevel() const
+int QAbstractTextureImage::mipLevel() const
 {
     Q_D(const QAbstractTextureImage);
-    return d->m_mipmapLevel;
+    return d->m_mipLevel;
 }
 
 /*!
@@ -160,12 +160,12 @@ QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::cubeMapFace() const
     return d->m_face;
 }
 
-void QAbstractTextureImage::setMipmapLevel(int level)
+void QAbstractTextureImage::setMipLevel(int level)
 {
     Q_D(QAbstractTextureImage);
-    if (level != d->m_mipmapLevel) {
-        d->m_mipmapLevel = level;
-        emit mipmapLevelChanged(level);
+    if (level != d->m_mipLevel) {
+        d->m_mipLevel = level;
+        emit mipLevelChanged(level);
     }
 }
 
@@ -210,7 +210,7 @@ void QAbstractTextureImage::copy(const QNode *ref)
     const QAbstractTextureImage *imageRef = static_cast<const QAbstractTextureImage *>(ref);
     d_func()->m_face = imageRef->cubeMapFace();
     d_func()->m_layer = imageRef->layer();
-    d_func()->m_mipmapLevel = imageRef->mipmapLevel();
+    d_func()->m_mipLevel = imageRef->mipLevel();
 }
 
 /*! \internal */
