@@ -61,25 +61,25 @@ class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
 
 public:
     enum AttachmentPoint {
-        ColorAttachment0 = 0,
-        ColorAttachment1,
-        ColorAttachment2,
-        ColorAttachment3,
-        ColorAttachment4,
-        ColorAttachment5,
-        ColorAttachment6,
-        ColorAttachment7,
-        ColorAttachment8,
-        ColorAttachment9,
-        ColorAttachment10,
-        ColorAttachment11,
-        ColorAttachment12,
-        ColorAttachment13,
-        ColorAttachment14,
-        ColorAttachment15,
-        DepthAttachment,
-        StencilAttachment,
-        DepthStencilAttachment
+        Color0 = 0,
+        Color1,
+        Color2,
+        Color3,
+        Color4,
+        Color5,
+        Color6,
+        Color7,
+        Color8,
+        Color9,
+        Color10,
+        Color11,
+        Color12,
+        Color13,
+        Color14,
+        Color15,
+        Depth,
+        Stencil,
+        DepthStencil
     };
     Q_ENUM(AttachmentPoint)
 

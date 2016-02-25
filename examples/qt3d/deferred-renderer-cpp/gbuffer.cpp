@@ -61,10 +61,10 @@ GBuffer::GBuffer(Qt3DCore::QNode *parent)
     };
 
     const Qt3DRender::QRenderTargetOutput::AttachmentPoint attachmentPoints[AttachmentsCount] = {
-        Qt3DRender::QRenderTargetOutput::ColorAttachment0,
-        Qt3DRender::QRenderTargetOutput::ColorAttachment1,
-        Qt3DRender::QRenderTargetOutput::ColorAttachment2,
-        Qt3DRender::QRenderTargetOutput::DepthAttachment
+        Qt3DRender::QRenderTargetOutput::Color0,
+        Qt3DRender::QRenderTargetOutput::Color1,
+        Qt3DRender::QRenderTargetOutput::Color2,
+        Qt3DRender::QRenderTargetOutput::Depth
     };
 
     for (int i = 0; i < AttachmentsCount; i++) {

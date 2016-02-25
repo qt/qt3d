@@ -72,7 +72,7 @@ void AttachmentPack::setDrawBuffers(const QList<QRenderTargetOutput::AttachmentP
 Attachment::Attachment()
     : m_mipLevel(0)
     , m_layer(0)
-    , m_point(QRenderTargetOutput::ColorAttachment0)
+    , m_point(QRenderTargetOutput::Color0)
     , m_face(QRenderTargetOutput::CubeMapNegativeX)
 {
 }

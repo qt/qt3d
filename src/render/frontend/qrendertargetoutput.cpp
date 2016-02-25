@@ -48,7 +48,7 @@ namespace Qt3DRender {
 QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
     : QNodePrivate()
     , m_texture(Q_NULLPTR)
-    , m_attachmentPoint(QRenderTargetOutput::ColorAttachment0)
+    , m_attachmentPoint(QRenderTargetOutput::Color0)
     , m_mipLevel(0)
     , m_layer(0)
     , m_face(QRenderTargetOutput::CubeMapNegativeX)

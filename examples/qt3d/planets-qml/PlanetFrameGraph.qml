@@ -75,7 +75,7 @@ FrameGraph {
                         attachments: [
                             RenderTargetOutput {
                                 name: "depth"
-                                attachmentPoint: RenderTargetOutput.DepthAttachment
+                                attachmentPoint: RenderTargetOutput.Depth
                                 texture: Texture2D {
                                     id: depthTexture
                                     width: mainview.width

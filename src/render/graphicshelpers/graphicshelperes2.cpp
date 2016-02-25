@@ -320,11 +320,11 @@ void GraphicsHelperES2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
 {
     GLenum attr = GL_COLOR_ATTACHMENT0;
 
-    if (attachment.m_point == QRenderTargetOutput::ColorAttachment0)
+    if (attachment.m_point == QRenderTargetOutput::Color0)
         attr = GL_COLOR_ATTACHMENT0;
-    else if (attachment.m_point == QRenderTargetOutput::DepthAttachment)
+    else if (attachment.m_point == QRenderTargetOutput::Depth)
         attr = GL_DEPTH_ATTACHMENT;
-    else if (attachment.m_point == QRenderTargetOutput::StencilAttachment)
+    else if (attachment.m_point == QRenderTargetOutput::Stencil)
         attr = GL_STENCIL_ATTACHMENT;
     else
         qCritical() << "Unsupported FBO attachment OpenGL ES 2.0";

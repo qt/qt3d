@@ -73,7 +73,7 @@ private Q_SLOTS:
         Qt3DRender::QRenderTargetSelector *renderTargetSelectorWithTargetAndBuffers = new Qt3DRender::QRenderTargetSelector();
         Qt3DRender::QRenderTarget *target2 = new Qt3DRender::QRenderTarget();
         renderTargetSelectorWithTargetAndBuffers->setTarget(target2);
-        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> attachmentPoints = QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << Qt3DRender::QRenderTargetOutput::ColorAttachment0 << Qt3DRender::QRenderTargetOutput::DepthAttachment;
+        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> attachmentPoints = QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
         renderTargetSelectorWithTargetAndBuffers->setDrawBuffers(attachmentPoints);
         QTest::newRow("renderTargetSelectorWithTargetAndDrawBuffers") << renderTargetSelectorWithTargetAndBuffers << attachmentPoints << target2;
     }
@@ -151,7 +151,7 @@ private Q_SLOTS:
 
         // WHEN
         QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> drawBuffers;
-        drawBuffers << Qt3DRender::QRenderTargetOutput::ColorAttachment0 << Qt3DRender::QRenderTargetOutput::DepthAttachment;
+        drawBuffers << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
         renderTargetSelector->setDrawBuffers(drawBuffers);
         QCoreApplication::processEvents();
 

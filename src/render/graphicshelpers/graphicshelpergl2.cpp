@@ -301,11 +301,11 @@ void GraphicsHelperGL2::bindFrameBufferAttachment(QOpenGLTexture *texture, const
     if (m_fboFuncs != Q_NULLPTR) {
         GLenum attr = GL_DEPTH_STENCIL_ATTACHMENT;
 
-        if (attachment.m_point <= QRenderTargetOutput::ColorAttachment15)
+        if (attachment.m_point <= QRenderTargetOutput::Color15)
             attr = GL_COLOR_ATTACHMENT0 + attachment.m_point;
-        else if (attachment.m_point == QRenderTargetOutput::DepthAttachment)
+        else if (attachment.m_point == QRenderTargetOutput::Depth)
             attr = GL_DEPTH_ATTACHMENT;
-        else if (attachment.m_point == QRenderTargetOutput::StencilAttachment)
+        else if (attachment.m_point == QRenderTargetOutput::Stencil)
             attr = GL_STENCIL_ATTACHMENT;
         else
             qCritical() << "DepthStencil Attachment not supported on OpenGL 2.0";
