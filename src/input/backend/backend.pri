@@ -22,9 +22,6 @@ HEADERS += \
     $$PWD/axissetting_p.h \
     $$PWD/qabstractphysicaldevicebackendnode_p.h \
     $$PWD/updateaxisactionjob_p.h \
-    $$PWD/axisactionhandler_p.h \
-    $$PWD/updatehandlerjob_p.h \
-    $$PWD/axisactionpayload_p.h \
     $$PWD/keyboardmousegenericdeviceintegration_p.h \
     $$PWD/genericdevicebackendnode_p.h \
     $$PWD/inputchord_p.h \
@@ -52,8 +49,6 @@ SOURCES += \
     $$PWD/movingaverage.cpp \
     $$PWD/axissetting.cpp \
     $$PWD/updateaxisactionjob.cpp \
-    $$PWD/axisactionhandler.cpp \
-    $$PWD/updatehandlerjob.cpp \
     $$PWD/keyboardmousegenericdeviceintegration.cpp \
     $$PWD/genericdevicebackendnode.cpp \
     $$PWD/inputchord.cpp \

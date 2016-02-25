@@ -33,6 +33,8 @@
 #include <Qt3DInput/private/axis_p.h>
 #include <Qt3DInput/QAxisInput>
 #include <Qt3DInput/QAxis>
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include "testpostmanarbiter.h"
 
 class tst_Axis: public QObject
 {
@@ -140,6 +142,36 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAxis.inputs().size(), 0);
+    }
+
+    void checkValuePropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DInput::Input::Axis backendAxis;
+        Qt3DCore::QBackendNodePrivate::get(&backendAxis)->setArbiter(&arbiter);
+
+        // WHEN
+        backendAxis.setAxisValue(454.0f);
+
+        // THEN
+        QCOMPARE(backendAxis.axisValue(), 454.0f);
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "value");
+        QCOMPARE(change->value().toFloat(), backendAxis.axisValue());
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendAxis.setAxisValue(454.0f);
+
+        // THEN
+        QCOMPARE(backendAxis.axisValue(), 454.0f);
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
+
     }
 };
 

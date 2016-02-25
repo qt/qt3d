@@ -41,7 +41,7 @@
 #define QT3DINPUT_QLOGICALDEVICE_H
 
 #include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qcomponent.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,7 +51,7 @@ class QLogicalDevicePrivate;
 class QAction;
 class QAxis;
 
-class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QNode
+class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:

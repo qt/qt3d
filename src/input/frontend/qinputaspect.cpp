@@ -60,7 +60,6 @@
 #include <QPluginLoader>
 
 #include <Qt3DInput/qaxis.h>
-#include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
@@ -70,7 +69,6 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/private/axis_p.h>
-#include <Qt3DInput/private/axisactionhandler_p.h>
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/private/axisinput_p.h>
 #include <Qt3DInput/private/axissetting_p.h>
@@ -81,7 +79,6 @@
 #include <Qt3DInput/private/inputbackendnodefunctor_p.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
 #include <Qt3DInput/private/updateaxisactionjob_p.h>
-#include <Qt3DInput/private/updatehandlerjob_p.h>
 #include <Qt3DInput/private/keyboardmousegenericdeviceintegration_p.h>
 #include <Qt3DInput/private/genericdevicebackendnode_p.h>
 #include <Qt3DInput/private/inputsettings_p.h>
@@ -124,7 +121,6 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QActionInput>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::ActionInput, Input::ActionInputManager>(d_func()->m_inputHandler->actionInputManager())));
     registerBackendType<QInputChord>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputChord, Input::InputChordManager>(d_func()->m_inputHandler->inputChordManager())));
     registerBackendType<QInputSequence>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::InputSequence, Input::InputSequenceManager>(d_func()->m_inputHandler->inputSequenceManager())));
-    registerBackendType<Qt3DInput::QAxisActionHandler>(QBackendNodeMapperPtr(new Input::AxisActionHandlerNodeFunctor(d_func()->m_inputHandler->axisActionHandlerManager())));
     registerBackendType<QLogicalDevice>(QBackendNodeMapperPtr(new Input::LogicalDeviceNodeFunctor(d_func()->m_inputHandler->logicalDeviceManager())));
     registerBackendType<QGenericInputDevice>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QInputSettings>(QBackendNodeMapperPtr(new Input::InputSettingsFunctor(d_func()->m_inputHandler.data())));
@@ -184,31 +180,16 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations())
         jobs += integration->jobsToExecute(time);
 
-    // Jobs that update Axis/Action (store combined axis/action value)
-    QHash<Input::HLogicalDevice, QAspectJobPtr> logicalDeviceJobs;
+    // All the jobs added up until this point are independents
+    // but the axis action jobs will be dependent on these
+    const QVector<QAspectJobPtr> dependsOnJobs = jobs;
 
+    // Jobs that update Axis/Action (store combined axis/action value)
     Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
-        logicalDeviceJobs.insert(devHandle, updateAxisActionJob);
-
-        Q_FOREACH (const QAspectJobPtr job, jobs)
+        jobs += updateAxisActionJob;
+        Q_FOREACH (const QAspectJobPtr job, dependsOnJobs)
             updateAxisActionJob->addDependency(job);
-    }
-
-    // Jobs that update the axisactionhandlers
-    Q_FOREACH (Input::HAxisActionHandler handlerHandle, d->m_inputHandler->axisActionHandlerManager()->activeAxisActionHandlers()) {
-        Input::AxisActionHandler *axisActionHandler = d->m_inputHandler->axisActionHandlerManager()->data(handlerHandle);
-        Input::HLogicalDevice logicalDeviceHandle = d->m_inputHandler->logicalDeviceManager()->lookupHandle(axisActionHandler->logicalDevice());
-        QAspectJobPtr updateHandlerJob(new Input::UpdateHandlerJob(axisActionHandler, logicalDeviceHandle, d->m_inputHandler.data()));
-
-        // Create AxisActionHandler Job
-        jobs += updateHandlerJob;
-
-        QAspectJobPtr logicalDeviceJob = logicalDeviceJobs.value(logicalDeviceHandle);
-        if (logicalDeviceJob) {
-            updateHandlerJob->addDependency(logicalDeviceJob);
-            jobs += logicalDeviceJob;
-        }
     }
 
     return jobs;

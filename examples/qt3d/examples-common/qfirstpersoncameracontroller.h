@@ -90,9 +90,6 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QFirstPersonCameraController)
     Q_PRIVATE_SLOT(d_func(),  void _q_onFrameUpdate(float))
-    Q_PRIVATE_SLOT(d_func(),  void _q_onAxisValueChanged(QString, float))
-    Q_PRIVATE_SLOT(d_func(),  void _q_onActionStarted(QString))
-    Q_PRIVATE_SLOT(d_func(),  void _q_onActionFinished(QString))
 };
 
 } // Qt3DInput

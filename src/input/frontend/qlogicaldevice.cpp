@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qlogicaldevice.h"
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -49,11 +49,11 @@ namespace Qt3DInput {
 /*!
     \internal
 */
-class QLogicalDevicePrivate : public Qt3DCore::QNodePrivate
+class QLogicalDevicePrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QLogicalDevicePrivate()
-        : Qt3DCore::QNodePrivate()
+        : Qt3DCore::QComponentPrivate()
     {}
 
     QVector<QAction *> m_actions;
@@ -146,7 +146,7 @@ public:
     Constructs a new QLogicalDevice instance with parent \a parent.
  */
 QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
-    : Qt3DCore::QNode(*new QLogicalDevicePrivate(), parent)
+    : Qt3DCore::QComponent(*new QLogicalDevicePrivate(), parent)
 {
 }
 
@@ -155,7 +155,7 @@ QLogicalDevice::QLogicalDevice(Qt3DCore::QNode *parent)
  */
 QLogicalDevice::~QLogicalDevice()
 {
-    QNode::cleanup();
+    QComponent::cleanup();
 }
 
 /*!

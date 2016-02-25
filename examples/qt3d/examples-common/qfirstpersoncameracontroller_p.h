@@ -84,15 +84,19 @@ public:
     void init();
 
     Qt3DRender::QCamera *m_camera;
+
     QAction *m_leftMouseButtonAction;
     QAction *m_fineMotionAction;
+
     QAxis *m_rxAxis;
     QAxis *m_ryAxis;
     QAxis *m_txAxis;
     QAxis *m_tyAxis;
     QAxis *m_tzAxis;
+
     QActionInput *m_leftMouseButtonInput;
     QActionInput *m_fineMotionKeyInput;
+
     QAxisInput *m_mouseRxInput;
     QAxisInput *m_mouseRyInput;
     QAxisInput *m_keyboardTxPosInput;
@@ -101,23 +105,19 @@ public:
     QAxisInput *m_keyboardTxNegInput;
     QAxisInput *m_keyboardTyNegInput;
     QAxisInput *m_keyboardTzNegInput;
+
     QKeyboardController *m_keyboardController;
     QMouseController *m_mouseController;
+
     QLogicalDevice *m_logicalDevice;
-    QAxisActionHandler *m_axisActionHandler;
+
     Qt3DLogic::QLogicComponent *m_logicComponent;
+
     float m_linearSpeed;
     float m_lookSpeed;
-    QVector3D m_vxyz;
-    bool m_fineMotion;
-    QVector3D m_rxyz;
-    bool m_leftMouseButtonPressed;
     QVector3D m_firstPersonUp;
 
     void _q_onFrameUpdate(float);
-    void _q_onAxisValueChanged(QString, float);
-    void _q_onActionStarted(QString);
-    void _q_onActionFinished(QString);
 
     Q_DECLARE_PUBLIC(QFirstPersonCameraController)
 };

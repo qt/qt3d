@@ -56,7 +56,6 @@
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
-#include <Qt3DInput/QAxisActionHandler>
 #include <Qt3DInput/QKeyboardController>
 #include <Qt3DInput/QMouseController>
 #include <Qt3DLogic/QLogicComponent>
@@ -89,12 +88,9 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_keyboardController(new QKeyboardController())
     , m_mouseController(new QMouseController())
     , m_logicalDevice(new QLogicalDevice())
-    , m_axisActionHandler(new QAxisActionHandler())
     , m_logicComponent(new Qt3DLogic::QLogicComponent())
     , m_linearSpeed(10.0f)
     , m_lookSpeed(180.0f)
-    , m_fineMotion(false)
-    , m_leftMouseButtonPressed(false)
     , m_firstPersonUp(QVector3D(0.0f, 1.0f, 0.0f))
 {}
 
@@ -106,13 +102,11 @@ void QFirstPersonCameraControllerPrivate::init()
     m_leftMouseButtonInput->setKeys(QVariantList() << QMouseController::Left);
     m_leftMouseButtonInput->setSourceDevice(m_mouseController);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
-    m_leftMouseButtonAction->setName(QStringLiteral("LMB"));
 
     // Fine Motion Action
     m_fineMotionKeyInput->setKeys(QVariantList() << Qt::Key_Shift);
     m_fineMotionKeyInput->setSourceDevice(m_keyboardController);
     m_fineMotionAction->addInput(m_fineMotionKeyInput);
-    m_fineMotionAction->setName(QStringLiteral("fineMotion"));
 
     //// Axes
 
@@ -120,13 +114,11 @@ void QFirstPersonCameraControllerPrivate::init()
     m_mouseRxInput->setAxis(QMouseController::X);
     m_mouseRxInput->setSourceDevice(m_mouseController);
     m_rxAxis->addInput(m_mouseRxInput);
-    m_rxAxis->setName(QStringLiteral("RX"));
 
     // Mouse Y
     m_mouseRyInput->setAxis(QMouseController::Y);
     m_mouseRyInput->setSourceDevice(m_mouseController);
     m_ryAxis->addInput(m_mouseRyInput);
-    m_ryAxis->setName(QStringLiteral("RY"));
 
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setKeys(QVariantList() << Qt::Key_Right);
@@ -164,10 +156,6 @@ void QFirstPersonCameraControllerPrivate::init()
     m_keyboardTzNegInput->setSourceDevice(m_keyboardController);
     m_tzAxis->addInput(m_keyboardTzNegInput);
 
-    m_txAxis->setName(QStringLiteral("TX"));
-    m_tyAxis->setName(QStringLiteral("TY"));
-    m_tzAxis->setName(QStringLiteral("TZ"));
-
     //// Logical Device
 
     m_logicalDevice->addAction(m_fineMotionAction);
@@ -179,66 +167,26 @@ void QFirstPersonCameraControllerPrivate::init()
     m_logicalDevice->addAxis(m_tzAxis);
 
     Q_Q(QFirstPersonCameraController);
-
-    //// AxisActionHandler
-
-    QObject::connect(m_axisActionHandler, SIGNAL(actionStarted(QString)),
-                     q, SLOT(_q_onActionStarted(QString)));
-    QObject::connect(m_axisActionHandler, SIGNAL(actionFinished(QString)),
-                     q, SLOT(_q_onActionFinished(QString)));
-    QObject::connect(m_axisActionHandler, SIGNAL(axisValueChanged(QString,float)),
-                     q, SLOT(_q_onAxisValueChanged(QString,float)));
-
-    m_axisActionHandler->setLogicalDevice(m_logicalDevice);
-
     //// LogicComponent
 
     QObject::connect(m_logicComponent, SIGNAL(frameUpdate(float)),
                      q, SLOT(_q_onFrameUpdate(float)));
 
     q->addComponent(m_logicComponent);
-    q->addComponent(m_axisActionHandler);
+    q->addComponent(m_logicalDevice);
 }
 
 void QFirstPersonCameraControllerPrivate::_q_onFrameUpdate(float dt)
 {
     if (m_camera != Q_NULLPTR) {
-        m_camera->translate(m_vxyz * dt);
-        if (m_leftMouseButtonPressed) {
-            m_camera->pan(m_rxyz.x() * dt, m_firstPersonUp);
-            m_camera->tilt(m_rxyz.y() * dt);
+        m_camera->translate(QVector3D(m_txAxis->value() * m_linearSpeed,
+                                      m_tyAxis->value() * m_linearSpeed,
+                                      m_tzAxis->value() * m_linearSpeed) * dt);
+        if (m_leftMouseButtonAction->isActive()) {
+            m_camera->pan(m_rxAxis->value() * m_lookSpeed * dt, m_firstPersonUp);
+            m_camera->tilt(m_ryAxis->value() * m_lookSpeed * dt);
         }
     }
-}
-
-void QFirstPersonCameraControllerPrivate::_q_onAxisValueChanged(QString name, float value)
-{
-    if (name == QStringLiteral("RX"))
-        m_rxyz.setX(value * m_lookSpeed);
-    else if (name == QStringLiteral("RY"))
-        m_rxyz.setY(value * m_lookSpeed);
-    else if (name == QStringLiteral("TX"))
-        m_vxyz.setX(value * m_linearSpeed);
-    else if (name == QStringLiteral("TY"))
-        m_vxyz.setY(value * m_linearSpeed);
-    else if (name == QStringLiteral("TZ"))
-        m_vxyz.setZ(value * m_linearSpeed);
-}
-
-void QFirstPersonCameraControllerPrivate::_q_onActionStarted(QString name)
-{
-    if (name == QStringLiteral("LMB"))
-        m_leftMouseButtonPressed = true;
-    else if (name == QStringLiteral("fineMotion"))
-        m_fineMotion = true;
-}
-
-void QFirstPersonCameraControllerPrivate::_q_onActionFinished(QString name)
-{
-    if (name == QStringLiteral("LMB"))
-        m_leftMouseButtonPressed = false;
-    else if (name == QStringLiteral("fineMotion"))
-        m_fineMotion = false;
 }
 
 QFirstPersonCameraController::QFirstPersonCameraController(Qt3DCore::QNode *parent)

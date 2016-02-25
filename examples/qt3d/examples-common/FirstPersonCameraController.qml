@@ -63,13 +63,13 @@ Entity {
     QtObject {
         id: d
         readonly property vector3d firstPersonUp: Qt.vector3d(0, 1, 0)
-        property bool leftMouseButtonPressed: false
-        property real vx: 0;
-        property real vy: 0;
-        property real vz: 0;
-        property real dx: 0
-        property real dy: 0
-        property bool fineMotion: false
+        readonly property bool leftMouseButtonPressed: leftMouseButtonAction.active
+        readonly property real vx: txAxis.value * linearSpeed;
+        readonly property real vy: tyAxis.value * linearSpeed;
+        readonly property real vz: tzAxis.value * linearSpeed;
+        readonly property real dx: rxAxis.value * lookSpeed
+        readonly property real dy: ryAxis.value * lookSpeed
+        readonly property bool fineMotion: fineMotionAction.active
     }
 
     KeyboardController {
@@ -81,176 +81,83 @@ Entity {
         sensitivity: d.fineMotion ? 0.01 : 0.1
     }
 
-    LogicalDevice {
-        id: cameraControlDevice
+    components: [
 
-        actions: [
-            Action {
-                name: "LMB"
-                inputs: [
+        LogicalDevice {
+            actions: [
+                Action {
+                    id: leftMouseButtonAction
                     ActionInput {
                         sourceDevice: mouseSourceDevice
                         keys: [MouseController.Left]
                     }
-                ]
-            },
-            Action {
-                name: "fineMotion"
-                inputs: [
+                },
+                Action {
+                    id: fineMotionAction
                     ActionInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_Shift]
                     }
-                ]
-            }
-        ] // actions
+                }
+            ] // actions
 
-        axes: [
-            // Rotation
-            Axis {
-                name: "RX"
-                inputs: [
+            axes: [
+                // Rotation
+                Axis {
+                    id: rxAxis
                     AxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseController.X
                     }
-                ]
-            },
-            Axis {
-                name: "RY"
-                inputs: [
+                },
+                Axis {
+                    id: ryAxis
                     AxisInput {
                         sourceDevice: mouseSourceDevice
                         axis: MouseController.Y
                     }
-                ]
-            },
-            // Translation
-            Axis {
-                name: "TX"
-                inputs: [
+                },
+                // Translation
+                Axis {
+                    id: txAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_Left]
                         scale: -1.0
-                    },
+                    }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_Right]
                         scale: 1.0
                     }
-                ]
-            },
-            Axis {
-                name: "TZ"
-                inputs: [
+                },
+                Axis {
+                    id: tzAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_Up]
                         scale: 1.0
-                    },
+                    }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_Down]
                         scale: -1.0
                     }
-                ]
-            },
-            Axis {
-                name: "TY"
-                inputs: [
+                },
+                Axis {
+                    id: tyAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_PageUp]
                         scale: 1.0
-                    },
+                    }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
                         keys: [Qt.Key_PageDown]
                         scale: -1.0
                     }
-                ]
-            }
-        ] // axes
-    }
-
-    components: [
-        AxisActionHandler {
-            id: handler
-            logicalDevice: cameraControlDevice
-
-            onAxisValueChanged: {
-
-                switch (name) {
-
-                case "TX": {
-                    d.vx = axisValue * linearSpeed
-                    break;
                 }
-
-                case "TY": {
-                    d.vy = axisValue * linearSpeed
-                    break;
-                }
-
-                case "TZ": {
-                    d.vz = axisValue * linearSpeed
-                    break;
-                }
-
-                case "RX": {
-                    d.dx = axisValue;
-                    break;
-                }
-
-                case "RY": {
-                    d.dy = axisValue;
-                    break;
-                }
-                case "MouseWheel": {
-                    d.zoom = axisValue;
-                    break
-                }
-
-                }
-            }
-
-            onActionStarted: {
-
-                switch (name) {
-
-                case "LMB": {
-                    d.leftMouseButtonPressed = true;
-                    break;
-                }
-
-                case "fineMotion": {
-                    console.log("fineMotion started")
-                    d.fineMotion = true;
-                    break;
-                }
-
-                }
-
-            }
-
-            onActionFinished: {
-
-                switch (name) {
-
-                case "LMB": {
-                    d.leftMouseButtonPressed = false;
-                    break;
-                }
-
-                case "fineMotion": {
-                    console.log("fineMotion finished")
-                    d.fineMotion = false;
-                    break;
-                }
-
-                }
-            }
+            ] // axes
         },
 
         LogicComponent {
@@ -260,8 +167,8 @@ Entity {
                 root.camera.translate(Qt.vector3d(d.vx, d.vy, d.vz).times(dt))
 
                 if (d.leftMouseButtonPressed) {
-                    root.camera.pan(root.lookSpeed * d.dx * dt, d.firstPersonUp)
-                    root.camera.tilt(root.lookSpeed * d.dy * dt)
+                    root.camera.pan(d.dx * dt, d.firstPersonUp)
+                    root.camera.tilt(d.dy * dt)
                 }
             }
         }

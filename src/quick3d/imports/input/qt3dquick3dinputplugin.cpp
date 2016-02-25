@@ -50,7 +50,6 @@
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qaxissetting.h>
 #include <Qt3DInput/qaction.h>
-#include <Qt3DInput/qaxisactionhandler.h>
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qinputchord.h>
@@ -84,7 +83,6 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
-    qmlRegisterType<Qt3DInput::QAxisActionHandler>(uri, 2, 0, "AxisActionHandler");
     qmlRegisterUncreatableType<Qt3DInput::QAbstractActionInput>(uri, 2, 0, "AbstractActionInput", QStringLiteral("AbstractActionInput is abstract"));
     qmlRegisterType<Qt3DInput::QActionInput>(uri, 2, 0, "ActionInput");
     qmlRegisterUncreatableType<Qt3DInput::QAbstractAggregateActionInput>(uri, 2, 0, "AbstractAggregateActionInput", QStringLiteral("AbstractAggregateActionInput is abstract"));

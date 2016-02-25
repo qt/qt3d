@@ -41,6 +41,7 @@
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +50,7 @@ namespace Qt3DInput {
 namespace Input {
 
 Axis::Axis()
-    : Qt3DCore::QBackendNode()
+    : Qt3DCore::QBackendNode(ReadWrite)
     , m_enabled(false)
     , m_axisValue(0.0f)
 {
@@ -74,7 +75,16 @@ void Axis::cleanup()
 
 void Axis::setAxisValue(float axisValue)
 {
-    m_axisValue = axisValue;
+    if (axisValue != m_axisValue) {
+        m_axisValue = axisValue;
+
+        // Send a change to the frontend
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        e->setTargetNode(peerUuid());
+        e->setPropertyName("value");
+        e->setValue(m_axisValue);
+        notifyObservers(e);
+    }
 }
 
 void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

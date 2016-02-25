@@ -23,8 +23,6 @@ HEADERS += \
     $$PWD/qinputdeviceintegrationfactory_p.h \
     $$PWD/qaxissetting.h \
     $$PWD/qabstractphysicaldevice_p.h \
-    $$PWD/qaxisactionhandler_p.h \
-    $$PWD/qaxisactionhandler.h \
     $$PWD/qgenericinputdevice.h \
     $$PWD/qabstractactioninput.h \
     $$PWD/qabstractaggregateactioninput.h \
@@ -52,7 +50,6 @@ SOURCES += \
     $$PWD/qabstractphysicaldevice.cpp \
     $$PWD/qinputdeviceintegrationfactory.cpp \
     $$PWD/qaxissetting.cpp \
-    $$PWD/qaxisactionhandler.cpp \
     $$PWD/qgenericinputdevice.cpp \
     $$PWD/qabstractactioninput.cpp \
     $$PWD/qabstractaggregateactioninput.cpp \

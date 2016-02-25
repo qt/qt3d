@@ -76,7 +76,6 @@ class MouseControllerManager;
 class MouseInputManager;
 class MouseEventFilter;
 class AxisManager;
-class AxisActionHandlerManager;
 class ActionManager;
 class AxisInputManager;
 class AxisSettingManager;
@@ -102,7 +101,6 @@ public:
     inline AxisManager *axisManager() const { return m_axisManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
     inline AxisInputManager *axisInputManager() const { return m_axisInputManager; }
-    inline AxisActionHandlerManager *axisActionHandlerManager() const { return m_axisActionHandlerManager; }
     inline AxisSettingManager *axisSettingManager() const { return m_axisSettingManager; }
     inline ActionInputManager *actionInputManager() const { return m_actionInputManager; }
     inline InputChordManager *inputChordManager() const { return m_inputChordManager; }
@@ -158,7 +156,6 @@ private:
     AxisManager *m_axisManager;
     ActionManager *m_actionManager;
     AxisInputManager *m_axisInputManager;
-    AxisActionHandlerManager *m_axisActionHandlerManager;
     AxisSettingManager *m_axisSettingManager;
     ActionInputManager *m_actionInputManager;
     InputChordManager *m_inputChordManager;

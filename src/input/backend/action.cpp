@@ -41,6 +41,7 @@
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -49,7 +50,7 @@ namespace Qt3DInput {
 namespace Input {
 
 Action::Action()
-    : Qt3DCore::QBackendNode()
+    : Qt3DCore::QBackendNode(ReadWrite)
     , m_enabled(false)
     , m_actionTriggered(false)
 {
@@ -74,7 +75,16 @@ void Action::cleanup()
 
 void Action::setActionTriggered(bool actionTriggered)
 {
-    m_actionTriggered = actionTriggered;
+    if (actionTriggered != m_actionTriggered) {
+        m_actionTriggered = actionTriggered;
+
+        // Send change to the frontend
+        Qt3DCore::QBackendScenePropertyChangePtr e(new Qt3DCore::QBackendScenePropertyChange(Qt3DCore::NodeUpdated, peerUuid()));
+        e->setTargetNode(peerUuid());
+        e->setPropertyName("active");
+        e->setValue(m_actionTriggered);
+        notifyObservers(e);
+    }
 }
 
 void Action::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

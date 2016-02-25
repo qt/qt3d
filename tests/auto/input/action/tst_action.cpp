@@ -33,6 +33,8 @@
 #include <Qt3DInput/private/action_p.h>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QAction>
+#include <Qt3DCore/private/qbackendnode_p.h>
+#include "testpostmanarbiter.h"
 
 class tst_Action: public QObject
 {
@@ -140,6 +142,36 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(backendAction.inputs().size(), 0);
+    }
+
+    void checkActivePropertyBackendNotification()
+    {
+        // GIVEN
+        TestArbiter arbiter;
+        Qt3DInput::Input::Action backendAction;
+        Qt3DCore::QBackendNodePrivate::get(&backendAction)->setArbiter(&arbiter);
+        const bool currentActionTriggeredValue = backendAction.actionTriggered();
+
+        // WHEN
+        backendAction.setActionTriggered(true);
+
+        // THEN
+        QVERIFY(currentActionTriggeredValue != backendAction.actionTriggered());
+        QCOMPARE(arbiter.events.count(), 1);
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "active");
+        QCOMPARE(change->value().toBool(), backendAction.actionTriggered());
+
+        arbiter.events.clear();
+
+        // WHEN
+        backendAction.setActionTriggered(true);
+
+        // THEN
+        QVERIFY(currentActionTriggeredValue != backendAction.actionTriggered());
+        QCOMPARE(arbiter.events.count(), 0);
+
+        arbiter.events.clear();
     }
 };
 
