@@ -83,8 +83,8 @@ private:
 
     virtual void onCleanup();
 
-    virtual void onStartup();
-    virtual void onShutdown();
+    virtual void onEngineStartup();
+    virtual void onEngineShutdown();
 
     virtual void onRootEntityChanged(QEntity *rootEntity);
 

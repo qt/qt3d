@@ -184,7 +184,7 @@ void QAspectManager::exec()
             // pieces of initialization
             qCDebug(Aspects) << "Calling onStartup() for each aspect";
             for (QAbstractAspect *aspect : qAsConst(m_aspects))
-                aspect->onStartup();
+                aspect->onEngineStartup();
         }
 
         // Only enter main render loop once the renderer and other aspects are initialized
@@ -222,7 +222,7 @@ void QAspectManager::exec()
             // any blocking work on the main thread that could potentially deadlock during shutdown.
             qCDebug(Aspects) << "Calling onShutdown() for each aspect";
             for (QAbstractAspect *aspect : qAsConst(m_aspects))
-                aspect->onShutdown();
+                aspect->onEngineShutdown();
         }
     }
     qCDebug(Aspects) << Q_FUNC_INFO << "Exiting event loop";

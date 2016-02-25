@@ -246,7 +246,7 @@ void QAbstractAspect::onUnregistered()
  *
  * Called in the QAspectThread context
  */
-void QAbstractAspect::onStartup()
+void QAbstractAspect::onEngineStartup()
 {
 }
 
@@ -254,7 +254,7 @@ void QAbstractAspect::onStartup()
  *
  * Called in the QAspectThread context
  */
-void QAbstractAspect::onShutdown()
+void QAbstractAspect::onEngineShutdown()
 {
 }
 

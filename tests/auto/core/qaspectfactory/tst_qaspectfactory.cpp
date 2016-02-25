@@ -43,8 +43,8 @@ public: \
 private: \
     void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
     void onRegistered() Q_DECL_OVERRIDE {} \
-    void onStartup() Q_DECL_OVERRIDE {} \
-    void onShutdown() Q_DECL_OVERRIDE {} \
+    void onEngineStartup() Q_DECL_OVERRIDE {} \
+    void onEngineShutdown() Q_DECL_OVERRIDE {} \
     void onCleanup() Q_DECL_OVERRIDE {} \
 \
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \

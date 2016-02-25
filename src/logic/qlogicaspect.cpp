@@ -112,13 +112,13 @@ void QLogicAspect::onCleanup()
 {
 }
 
-void QLogicAspect::onStartup()
+void QLogicAspect::onEngineStartup()
 {
     Q_D(QLogicAspect);
     d->m_executor->setScene(d->m_arbiter->scene());
 }
 
-void QLogicAspect::onShutdown()
+void QLogicAspect::onEngineShutdown()
 {
     Q_D(QLogicAspect);
     // Throw away any pending work that may deadlock during the shutdown procedure
