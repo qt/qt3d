@@ -40,6 +40,7 @@
 #include "attribute_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -50,6 +51,7 @@ namespace Render {
 
 Attribute::Attribute()
     : BackendNode(ReadOnly)
+    , m_nameId(0)
     , m_dataType(QAttribute::Float)
     , m_dataSize(1)
     , m_count(0)
@@ -77,6 +79,7 @@ void Attribute::cleanup()
     m_bufferId = Qt3DCore::QNodeId();
     m_name.clear();
     m_attributeDirty = false;
+    m_nameId = 0;
 }
 
 void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
@@ -91,6 +94,7 @@ void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
         m_divisor = attribute->divisor();
         m_attributeType = attribute->attributeType();
         m_name = attribute->name();
+        m_nameId = StringToInt::lookupId(m_name);
         if (attribute->buffer())
             m_bufferId = attribute->buffer()->id();
         m_attributeDirty = true;
@@ -107,6 +111,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case NodeUpdated: {
         if (propertyName == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().value<QString>();
+            m_nameId = StringToInt::lookupId(m_name);
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("dataType")) {
             m_dataType = static_cast<QAttribute::DataType>(propertyChange->value().value<int>());
@@ -133,7 +138,7 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_bufferId = propertyChange->value().value<QNodeId>();
             m_attributeDirty = true;
         }
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
         break;
     }
 

@@ -87,6 +87,7 @@ public:
     inline QVector<int> uniformsNamesIds() const Q_DECL_NOEXCEPT { return m_uniformsNamesIds; }
     inline QVector<int> uniformBlockNamesIds() const Q_DECL_NOEXCEPT { return m_uniformBlockNamesIds; }
     inline QVector<int> storageBlockNamesIds() const Q_DECL_NOEXCEPT { return m_shaderStorageBlockNamesIds; }
+    inline QVector<int> attributeNamesIds() const Q_DECL_NOEXCEPT { return m_attributeNamesIds; }
 
     QVector<QString> uniformsNames() const;
     QVector<QString> attributesNames() const;
@@ -124,6 +125,7 @@ private:
     QVector<ShaderUniform> m_uniforms;
 
     QVector<QString> m_attributesNames;
+    QVector<int> m_attributeNamesIds;
     QVector<ShaderAttribute> m_attributes;
 
     QVector<QString> m_uniformBlockNames;

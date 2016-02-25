@@ -61,7 +61,7 @@ void BackendNode::setRenderer(AbstractRenderer *renderer)
     m_renderer = renderer;
 }
 
-void BackendNode::markDirty(BackendNodeDirtySet changes)
+void BackendNode::markDirty(AbstractRenderer::BackendNodeDirtySet changes)
 {
     Q_ASSERT(m_renderer);
     m_renderer->markDirty(changes, this);

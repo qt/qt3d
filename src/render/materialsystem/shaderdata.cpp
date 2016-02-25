@@ -322,7 +322,7 @@ void ShaderData::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         default:
             break;
         }
-        BackendNode::markDirty(BackendNodeDirtyFlag::Any);
+        BackendNode::markDirty(AbstractRenderer::AllDirty);
     }
 }
 

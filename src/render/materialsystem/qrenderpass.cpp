@@ -42,7 +42,6 @@
 #include "qrenderpass_p.h"
 #include "qparameter.h"
 #include "qannotation.h"
-#include "qparametermapping.h"
 #include "qscenepropertychange.h"
 #include "qrenderstate.h"
 #include "private/qnode_p.h"
@@ -67,10 +66,10 @@ void QRenderPass::copy(const QNode *ref)
 
     Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
         addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(crit)));
-    Q_FOREACH (QParameterMapping *binding, other->d_func()->m_bindings)
-        addBinding(qobject_cast<QParameterMapping *>(QNode::clone(binding)));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
         addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
+    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
+        addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 
 QRenderPass::QRenderPass(QNode *parent)
@@ -181,42 +180,6 @@ QList<QAnnotation *> QRenderPass::annotations() const
 {
     Q_D(const QRenderPass);
     return d->m_annotationList;
-}
-
-void QRenderPass::addBinding(QParameterMapping *binding)
-{
-    Q_D(QRenderPass);
-    if (!d->m_bindings.contains(binding)) {
-        d->m_bindings.append(binding);
-
-        if (!binding->parent())
-            binding->setParent(this);
-
-        if (d->m_changeArbiter != Q_NULLPTR) {
-            QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("binding");
-            change->setValue(QVariant::fromValue(QNode::clone(binding)));
-            d->notifyObservers(change);
-        }
-    }
-}
-
-void QRenderPass::removeBinding(QParameterMapping *binding)
-{
-    Q_D(QRenderPass);
-    if (d->m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("binding");
-        change->setValue(QVariant::fromValue(binding->id()));
-        d->notifyObservers(change);
-    }
-    d->m_bindings.removeOne(binding);
-}
-
-QList<QParameterMapping *> QRenderPass::bindings() const
-{
-    Q_D(const QRenderPass);
-    return d->m_bindings;
 }
 
 /*!

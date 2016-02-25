@@ -54,7 +54,6 @@
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qparametermapping.h>
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/qrendertargetselector.h>
 #include <Qt3DRender/qtechniquefilter.h>

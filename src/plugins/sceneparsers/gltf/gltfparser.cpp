@@ -67,7 +67,6 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
-#include <Qt3DRender/QParameterMapping>
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QRenderState>
 #include <Qt3DRender/QScissorTest>
@@ -102,7 +101,7 @@ const QString KEY_ROTATION   = QStringLiteral("rotation");
 const QString KEY_SCALE      = QStringLiteral("scale");
 const QString KEY_TRANSLATION = QStringLiteral("translation");
 const QString KEY_TYPE       = QStringLiteral("type");
-const QString KEY_PERSPECTIVE =QStringLiteral("perspective");
+const QString KEY_PERSPECTIVE = QStringLiteral("perspective");
 const QString KEY_NAME       = QStringLiteral("name");
 const QString KEY_COUNT      = QStringLiteral("count");
 const QString KEY_YFOV       = QStringLiteral("yfov");
@@ -993,7 +992,6 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
             delete parameter;
         }
 
-        pass->addBinding(new QParameterMapping(attributeName, shaderAttributeName, QParameterMapping::Attribute));
     } // of program-instance attributes
 
     // Uniforms
@@ -1009,9 +1007,7 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
         //Check if the parameter has a standard uniform semantic
         QString standardUniformName = standardUniformNamefromSemantic(m_parameterDataDict[parameter].semantic);
         if (standardUniformName.isNull()) {
-            pass->addBinding(new QParameterMapping(pname, shaderUniformName, QParameterMapping::Uniform));
         } else {
-            pass->addBinding(new QParameterMapping(standardUniformName, shaderUniformName, QParameterMapping::StandardUniform));
             t->removeParameter(parameter);
             m_parameterDataDict.remove(parameter);
             delete parameter;

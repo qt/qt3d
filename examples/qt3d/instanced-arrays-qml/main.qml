@@ -93,9 +93,6 @@ Entity {
                 }
                 annotations: Annotation { name: "renderingStyle"; value: "forward" }
                 renderPasses: RenderPass {
-                    bindings: [
-                        ParameterMapping { parameterName: "pos";  shaderVariableName: "pos"; bindingType: ParameterMapping.Attribute }
-                    ]
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/instanced.vert")
                         fragmentShaderCode: loadSource("qrc:/instanced.frag")

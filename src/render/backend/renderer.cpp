@@ -44,7 +44,6 @@
 
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qmesh.h>
-#include <Qt3DRender/qparametermapping.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qtechnique.h>
@@ -220,17 +219,14 @@ void Renderer::buildDefaultTechnique()
 
     m_defaultTechnique->addPass(basicPass);
 
-    QParameter* ka = new QParameter(QStringLiteral("ambient"), QVector3D(0.2f, 0.2f, 0.2f));
+    QParameter* ka = new QParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);
-    basicPass->addBinding(new QParameterMapping(QStringLiteral("ambient"), QStringLiteral("ka"), QParameterMapping::Uniform));
 
-    QParameter* kd = new QParameter(QStringLiteral("diffuse"), QVector3D(1.0f, 0.5f, 0.0f));
+    QParameter* kd = new QParameter(QStringLiteral("kd"), QVector3D(1.0f, 0.5f, 0.0f));
     m_defaultTechnique->addParameter(kd);
-    basicPass->addBinding(new QParameterMapping(QStringLiteral("diffuse"), QStringLiteral("kd"), QParameterMapping::Uniform));
 
-    QParameter* ks = new QParameter(QStringLiteral("specular"), QVector3D(0.01f, 0.01f, 0.01f));
+    QParameter* ks = new QParameter(QStringLiteral("ks"), QVector3D(0.01f, 0.01f, 0.01f));
     m_defaultTechnique->addParameter(ks);
-    basicPass->addBinding(new QParameterMapping(QStringLiteral("specular"), QStringLiteral("ks"), QParameterMapping::Uniform));
 
     m_defaultTechnique->addParameter(new QParameter(QStringLiteral("shininess"), 150.0f));
 }
@@ -600,7 +596,13 @@ bool Renderer::submitRenderViews()
     const int renderViewsCount = renderViews.size();
     quint64 frameElapsed = queueElapsed;
     m_lastFrameCorrect.store(1);    // everything fine until now.....
-    m_changeSet = 0;                // mark "not dirty"
+
+    // Clear all dirty flags but Compute so that
+    // we still render every frame when a compute shader is used in a scene
+    BackendNodeDirtySet changesToUnset = m_changeSet;
+    if (changesToUnset.testFlag(Renderer::ComputeDirty))
+        changesToUnset.setFlag(Renderer::ComputeDirty, false);
+    clearDirtyBits(changesToUnset);
 
     // Early return if there's actually nothing to render
     if (renderViewsCount <= 0)
@@ -716,9 +718,14 @@ void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)
     m_changeSet |= changes;
 }
 
-BackendNodeDirtySet Renderer::dirtyBits()
+Renderer::BackendNodeDirtySet Renderer::dirtyBits()
 {
     return m_changeSet;
+}
+
+void Renderer::clearDirtyBits(BackendNodeDirtySet changes)
+{
+    m_changeSet &= ~changes;
 }
 
 bool Renderer::shouldRender()
@@ -839,6 +846,9 @@ void Renderer::performCompute(const RenderView *rv, RenderCommand *command)
                 workGroups[1],
                 workGroups[2]);
 
+        // HACK: Reset the compute flag to dirty
+        m_changeSet |= AbstractRenderer::ComputeDirty;
+
 #if defined(QT3D_RENDER_ASPECT_OPENGL_DEBUG)
         int err = m_graphicsContext->openGLContext()->functions()->glGetError();
         if (err)
@@ -909,7 +919,6 @@ bool Renderer::executeCommands(const RenderView *rv)
             Shader *shader = m_nodesManager->data<Shader, ShaderManager>(command->m_shader);
             if (shader == Q_NULLPTR) {
                 shader = m_defaultRenderShader;
-                command->m_parameterAttributeToShaderNames = m_defaultParameterToGLSLAttributeNames;
                 command->m_parameterPack = m_defaultUniformPack;
             }
 
@@ -941,7 +950,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             if (needsToBindVAO && vao != Q_NULLPTR)
                 vao->bind();
 
-            if (!command->m_parameterAttributeToShaderNames.isEmpty()) {
+            if (!command->m_attributes.isEmpty()) {
                 // Update or set Attributes and Buffers for the given rGeometry and Command
                 indexAttribute = updateBuffersAndAttributes(rGeometry, command, primitiveCount, requiresVAOUpdate);
                 specified = true;
@@ -1030,9 +1039,9 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
                 m_graphicsContext->specifyIndices(buffer);
             indexAttribute = attribute;
             // Vertex Attribute
-        } else if (command->m_parameterAttributeToShaderNames.contains(attribute->name())) {
+        } else if (command->m_attributes.contains(attribute->nameId())) {
             if (attribute->isDirty() || forceUpdate)
-                m_graphicsContext->specifyAttribute(attribute, buffer, command->m_parameterAttributeToShaderNames.value(attribute->name()));
+                m_graphicsContext->specifyAttribute(attribute, buffer, attribute->name());
             estimatedCount = qMax(attribute->count(), estimatedCount);
         }
 

@@ -70,9 +70,7 @@ public:
     void setRenderer(AbstractRenderer *renderer);
 
 protected:
-    void markDirty(BackendNodeDirtySet changes);
-
-private:
+    void markDirty(AbstractRenderer::BackendNodeDirtySet changes);
     AbstractRenderer *m_renderer;
 };
 

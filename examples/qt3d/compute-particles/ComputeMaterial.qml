@@ -100,10 +100,6 @@ Material {
                         shaderProgram: drawShader
                         // We assume the mesh to be drawn will also receive
                         // Vertex buffers attributes that will be used to position and color
-                        bindings: [
-                            ParameterMapping { parameterName: "particlePosition";  shaderVariableName: "particlePosition"; bindingType: ParameterMapping.Attribute },
-                            ParameterMapping { parameterName: "particleColor";  shaderVariableName: "particleColor"; bindingType: ParameterMapping.Attribute }
-                        ]
                     }
                 ]
                 annotations: [

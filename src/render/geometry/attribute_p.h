@@ -73,6 +73,7 @@ public:
 
     inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
+    inline int nameId() const { return m_nameId; }
     inline QAttribute::DataType dataType() const { return m_dataType; }
     inline uint dataSize() const { return m_dataSize; }
     inline uint count() const { return m_count; }
@@ -86,6 +87,7 @@ public:
 private:
     Qt3DCore::QNodeId m_bufferId;
     QString m_name;
+    int m_nameId;
     QAttribute::DataType m_dataType;
     uint m_dataSize;
     uint m_count;

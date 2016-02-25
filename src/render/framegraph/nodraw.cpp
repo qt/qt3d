@@ -71,7 +71,7 @@ void NoDraw::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     case NodeUpdated: {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
         break;
 
     default:

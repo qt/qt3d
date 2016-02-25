@@ -154,6 +154,9 @@ public:
 
     void markDirty(BackendNodeDirtySet changes, BackendNode *node) Q_DECL_OVERRIDE;
     BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
+    void clearDirtyBits(BackendNodeDirtySet changes) Q_DECL_OVERRIDE;
+
+
     bool shouldRender() Q_DECL_OVERRIDE;
     void skipNextFrame() Q_DECL_OVERRIDE;
 
@@ -227,7 +230,6 @@ private:
     // is missing a shader
     Shader *m_defaultRenderShader;
     RenderStateSet *m_defaultRenderStateSet;
-    QHash<QString, QString> m_defaultParameterToGLSLAttributeNames;
     ShaderParameterPack m_defaultUniformPack;
 
     QScopedPointer<GraphicsContext> m_graphicsContext;

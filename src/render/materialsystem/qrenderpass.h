@@ -81,10 +81,6 @@ public:
     void removeAnnotation(QAnnotation *criterion);
     QList<QAnnotation *> annotations() const;
 
-    void addBinding(QParameterMapping *binding);
-    void removeBinding(QParameterMapping *binding);
-    QList<QParameterMapping *> bindings() const;
-
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
     QList<QRenderState *> renderStates() const;

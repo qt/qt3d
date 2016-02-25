@@ -82,7 +82,7 @@ void BoundingVolumeDebug::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyName == QByteArrayLiteral("recursive")) {
             m_recursive = propertyChange->value().toBool();
         }
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

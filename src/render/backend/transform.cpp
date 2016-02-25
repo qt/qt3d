@@ -93,7 +93,7 @@ void Transform::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
     }
 
-    markDirty(BackendNodeDirtyFlag::Transform);
+    markDirty(AbstractRenderer::TransformDirty);
 }
 
 void Transform::updateMatrix()

@@ -85,7 +85,7 @@ void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_workGroups[2] = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

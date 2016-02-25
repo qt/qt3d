@@ -90,7 +90,7 @@ void RenderTarget::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         appendRenderAttachment(propertyChange->value().value<QNodeId>());
     else if (e->type() == NodeRemoved && propertyChange->propertyName() == QByteArrayLiteral("attachment"))
         removeRenderAttachment(propertyChange->value().value<QNodeId>());
-    markDirty(BackendNodeDirtyFlag::Any);
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 } // namespace Render

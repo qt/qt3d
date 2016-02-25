@@ -75,7 +75,7 @@ void RendererSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_pickMethod = propertyChange->value().value<QRendererSettings::PickMethod>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
             m_pickResultMode = propertyChange->value().value<QRendererSettings::PickResultMode>();
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

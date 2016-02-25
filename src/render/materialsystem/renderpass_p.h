@@ -54,7 +54,6 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/private/parametermapping_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
 #include <Qt3DRender/private/renderstatecollection_p.h>
 #include <Qt3DCore/private/qabstractaspect_p.h>
@@ -86,7 +85,6 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId shaderProgram() const;
-    QList<ParameterMapping> bindings() const;
     QList<Qt3DCore::QNodeId> annotations() const;
     QList<Qt3DCore::QNodeId> parameters() const;
 
@@ -94,11 +92,7 @@ private:
     void appendAnnotation(Qt3DCore::QNodeId criterionId);
     void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
-    void appendBinding(const ParameterMapping &binding);
-    void removeBinding(Qt3DCore::QNodeId bindingId);
-
     Qt3DCore::QNodeId m_shaderUuid;
-    QHash<Qt3DCore::QNodeId, ParameterMapping> m_bindings;
     QList<Qt3DCore::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };

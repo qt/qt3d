@@ -36,7 +36,6 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QParameterMapping>
 #include <Qt3DRender/QDiffuseMapMaterial>
 #include <Qt3DRender/QPerVertexColorMaterial>
 #include <Qt3DRender/QNormalDiffuseMapMaterial>
@@ -131,7 +130,6 @@ private:
         compareParameters(original->parameters(), clone->parameters());
         compareRenderStates(original->renderStates(), clone->renderStates());
         compareAnnotations(original->annotations(), clone->annotations());
-        compareBindings(original->bindings(), clone->bindings());
         compareShaderPrograms(original->shaderProgram(), clone->shaderProgram());
     }
 
@@ -159,22 +157,6 @@ private:
             QCOMPARE(origAnnotation->id(), cloneAnnotation->id());
             QCOMPARE(origAnnotation->name(), cloneAnnotation->name());
             QCOMPARE(origAnnotation->value(), cloneAnnotation->value());
-        }
-    }
-
-    void compareBindings(const QList<Qt3DRender::QParameterMapping *> &original, const QList<Qt3DRender::QParameterMapping *> &clone)
-    {
-        const int bindingsCount = original.size();
-        QCOMPARE(bindingsCount, clone.size());
-
-        for (int i = 0; i < bindingsCount; ++i) {
-            const Qt3DRender::QParameterMapping *origMapping = original.at(i);
-            const Qt3DRender::QParameterMapping *cloneMapping = clone.at(i);
-
-            QCOMPARE(origMapping->id(), cloneMapping->id());
-            QCOMPARE(origMapping->bindingType(), cloneMapping->bindingType());
-            QCOMPARE(origMapping->parameterName(), cloneMapping->parameterName());
-            QCOMPARE(origMapping->shaderVariableName(), cloneMapping->shaderVariableName());
         }
     }
 

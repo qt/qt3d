@@ -67,7 +67,6 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/private/stringtoint_p.h>
-#include <Qt3DRender/qparametermapping.h>
 #include <Qt3DCore/qentity.h>
 #include <QtGui/qsurface.h>
 #include <algorithm>
@@ -133,7 +132,7 @@ bool isEntityFrustumCulled(const Entity *entity, const Plane *planes)
 
 bool wasInitialized = false;
 RenderView::StandardUniformsPFuncsHash RenderView::ms_standardUniformSetters;
-QStringList RenderView::ms_standardAttributesNames = RenderView::initializeStandardAttributeNames();
+QStringList RenderView::m_standardAttributesNames = RenderView::initializeStandardAttributeNames();
 
 
 
@@ -817,7 +816,7 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
             const QVector<int> uniformNamesIds = shader->uniformsNamesIds();
             const QVector<int> uniformBlockNamesIds = shader->uniformBlockNamesIds();
             const QVector<int> shaderStorageBlockNamesIds = shader->storageBlockNamesIds();
-            const QVector<QString> attributeNames = shader->attributesNames();
+            const QVector<int> attributeNamesIds = shader->attributeNamesIds();
 
             // Set fragData Name and index
             // Later on we might want to relink the shader if attachments have changed
@@ -830,7 +829,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
             }
 
-            if (!uniformNamesIds.isEmpty() || !attributeNames.isEmpty() || !shaderStorageBlockNamesIds.isEmpty()) {
+            if (!uniformNamesIds.isEmpty() || !attributeNamesIds.isEmpty() ||
+                    !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
 
                 // Set default standard uniforms without bindings
                 Q_FOREACH (const int uniformNameId, uniformNamesIds) {
@@ -839,56 +839,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 }
 
                 // Set default attributes
-                Q_FOREACH (const QString &attributeName, attributeNames) {
-                    if (ms_standardAttributesNames.contains(attributeName))
-                        command->m_parameterAttributeToShaderNames.insert(attributeName, attributeName);
-                }
-
-                // Set uniforms and attributes explicitly binded
-                Q_FOREACH (const ParameterMapping &binding, rPass->bindings()) {
-                    const ParameterInfoList::const_iterator it = findParamInfo(&parameters, binding.parameterNameId());
-
-                    if (it == parameters.end()) {
-                        // A Parameters wasn't found with the name binding.parameterName
-                        // -> we need to use the binding.shaderVariableName
-                        switch (binding.bindingType()) {
-
-                        case QParameterMapping::Attribute:
-                            if (attributeNames.contains(binding.shaderVariableName())) {
-                                command->m_parameterAttributeToShaderNames.insert(binding.parameterName(), binding.shaderVariableName());
-                                break;
-                            }
-                        case QParameterMapping::StandardUniform:
-                            if (uniformNamesIds.contains(binding.shaderVariableNameId())
-                                    && ms_standardUniformSetters.contains(binding.parameterNameId())) {
-                                setStandardUniformValue(command->m_parameterPack, binding.shaderVariableNameId(), binding.parameterNameId(), worldTransform);
-                                break;
-                            }
-
-                        case QParameterMapping::FragmentOutput:
-                            if (fragOutputs.contains(binding.parameterName())) {
-                                fragOutputs.insert(binding.shaderVariableName(), fragOutputs.take(binding.parameterName()));
-                                break;
-                            }
-
-                        case QParameterMapping::UniformBufferObject:
-                            if (uniformBlockNamesIds.contains(binding.parameterNameId())) {
-                                setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), it->value);
-                                break;
-                            }
-
-                        case QParameterMapping::ShaderStorageBufferObject:
-                            if (shaderStorageBlockNamesIds.contains(binding.parameterNameId())) {
-                                setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), it->value);
-                                break;
-                            }
-
-                        default:
-                            qCWarning(Render::Backend) << Q_FUNC_INFO << "Trying to bind a Parameter that hasn't been defined " << binding.parameterName();
-                            break;
-                        }
-                    }
-                }
+                Q_FOREACH (const int attributeNameId, attributeNamesIds)
+                    command->m_attributes.push_back(attributeNameId);
 
                 // Parameters remaining could be
                 // -> uniform scalar / vector
@@ -896,30 +848,27 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 // -> uniform block / array (4.3)
                 // -> ssbo block / array (4.3)
 
-                if ((!uniformNamesIds.isEmpty() || !uniformBlockNamesIds.isEmpty() || !shaderStorageBlockNamesIds.isEmpty())
-                        && !parameters.isEmpty()) {
-                    ParameterInfoList::const_iterator it = parameters.cbegin();
-                    const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
+                ParameterInfoList::const_iterator it = parameters.cbegin();
+                const ParameterInfoList::const_iterator parametersEnd = parameters.cend();
 
-                    while (it != parametersEnd) {
-                        if (uniformNamesIds.contains(it->nameId)) { // Parameter is a regular uniform
-                            setUniformValue(command->m_parameterPack, it->nameId, it->value);
-                        } else if (uniformBlockNamesIds.indexOf(it->nameId) != -1) { // Parameter is a uniform block
-                            setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), it->value);
-                        } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
-                            setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), it->value);
-                        } else { // Parameter is a struct
-                            const QVariant &v = it->value;
-                            ShaderData *shaderData = Q_NULLPTR;
-                            if (static_cast<QMetaType::Type>(v.userType()) == qNodeIdTypeId &&
-                                    (shaderData = m_manager->shaderDataManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(v))) != Q_NULLPTR) {
-                                // Try to check if we have a struct or array matching a QShaderData parameter
-                                setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
-                            }
-                            // Otherwise: param unused by current shader
+                while (it != parametersEnd) {
+                    if (uniformNamesIds.contains(it->nameId)) { // Parameter is a regular uniform
+                        setUniformValue(command->m_parameterPack, it->nameId, it->value);
+                    } else if (uniformBlockNamesIds.indexOf(it->nameId) != -1) { // Parameter is a uniform block
+                        setUniformBlockValue(command->m_parameterPack, shader, shader->uniformBlockForBlockNameId(it->nameId), it->value);
+                    } else if (shaderStorageBlockNamesIds.indexOf(it->nameId) != -1) { // Parameters is a SSBO
+                        setShaderStorageValue(command->m_parameterPack, shader, shader->storageBlockForBlockNameId(it->nameId), it->value);
+                    } else { // Parameter is a struct
+                        const QVariant &v = it->value;
+                        ShaderData *shaderData = Q_NULLPTR;
+                        if (static_cast<QMetaType::Type>(v.userType()) == qNodeIdTypeId &&
+                                (shaderData = m_manager->shaderDataManager()->lookupResource(variant_value<Qt3DCore::QNodeId>(v))) != Q_NULLPTR) {
+                            // Try to check if we have a struct or array matching a QShaderData parameter
+                            setDefaultUniformBlockShaderDataValue(command->m_parameterPack, shader, shaderData, StringToInt::lookupString(it->nameId));
                         }
-                        ++it;
+                        // Otherwise: param unused by current shader
                     }
+                    ++it;
                 }
 
                 // Lights

@@ -126,7 +126,7 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             setEnabled(propertyChange->value().toBool());
         }
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

@@ -75,7 +75,7 @@ void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_cameraUuid = propertyChange->value().value<QNodeId>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

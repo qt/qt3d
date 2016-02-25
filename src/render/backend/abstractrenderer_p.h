@@ -80,15 +80,6 @@ class FrameGraphNode;
 class RendererSettings;
 class BackendNode;
 
-// Changes made to backend nodes are reported to the Renderer
-enum class BackendNodeDirtyFlag {
-    Transform   = 1 << 0,
-    Material    = 1 << 1,
-    Geometry    = 1 << 2,
-    Any         = 1 << 15
-};
-Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
-Q_DECLARE_OPERATORS_FOR_FLAGS(BackendNodeDirtySet)
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT AbstractRenderer
 {
@@ -98,6 +89,16 @@ public:
     enum API {
         OpenGL
     };
+
+    // Changes made to backend nodes are reported to the Renderer
+    enum BackendNodeDirtyFlag {
+        TransformDirty   = 1 << 0,
+        MaterialDirty    = 1 << 1,
+        GeometryDirty    = 1 << 2,
+        ComputeDirty     = 1 << 3,
+        AllDirty         = 1 << 15
+    };
+    Q_DECLARE_FLAGS(BackendNodeDirtySet, BackendNodeDirtyFlag)
 
     virtual API api() const = 0;
 
@@ -125,6 +126,7 @@ public:
 
     virtual void markDirty(BackendNodeDirtySet changes, BackendNode *node) = 0;
     virtual BackendNodeDirtySet dirtyBits() = 0;
+    virtual void clearDirtyBits(BackendNodeDirtySet changes) = 0;
     virtual bool shouldRender() = 0;
     virtual void skipNextFrame() = 0;
 
@@ -144,6 +146,8 @@ public:
     virtual RendererSettings *settings() const = 0;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractRenderer::BackendNodeDirtySet)
 
 } // Render
 

@@ -62,7 +62,15 @@ namespace Render {
 
 struct ShaderAttribute
 {
+    ShaderAttribute()
+        : m_nameId(-1)
+        , m_type(0)
+        , m_size(0)
+        , m_location(-1)
+    {}
+
     QString m_name;
+    int m_nameId;
     GLenum m_type;
     int m_size;
     int m_location;
@@ -71,7 +79,8 @@ struct ShaderAttribute
 struct ShaderUniform
 {
     ShaderUniform()
-        : m_size(0)
+        : m_nameId(-1)
+        , m_size(0)
         , m_offset(-1)
         , m_location(-1)
         , m_blockIndex(-1)
@@ -93,7 +102,8 @@ struct ShaderUniform
 struct ShaderUniformBlock
 {
     ShaderUniformBlock()
-        : m_index(-1)
+        : m_nameId(-1)
+        , m_index(-1)
         , m_binding(-1)
         , m_activeUniformsCount(0)
         , m_size(0)

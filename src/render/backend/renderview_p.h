@@ -306,7 +306,7 @@ private:
     typedef QHash<int, QUniformValue (RenderView::*)(const QMatrix4x4& model) const> StandardUniformsPFuncsHash;
     static StandardUniformsPFuncsHash ms_standardUniformSetters;
     static StandardUniformsPFuncsHash initializeStandardUniformSetters();
-    static QStringList ms_standardAttributesNames;
+    static QStringList m_standardAttributesNames;
     static QStringList initializeStandardAttributeNames();
 
     QUniformValue modelMatrix(const QMatrix4x4& model) const;

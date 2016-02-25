@@ -121,7 +121,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
     }
-    markDirty(BackendNodeDirtyFlag::Any);
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 void TextureImage::setTextureManager(TextureManager *manager)

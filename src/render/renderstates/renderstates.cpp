@@ -99,7 +99,7 @@ void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else {
             m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
         }
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

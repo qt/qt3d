@@ -76,7 +76,7 @@ void SortMethod::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
         setEnabled(propertyChange->value().toBool());
     }
-    markDirty(BackendNodeDirtyFlag::Any);
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 QList<QNodeId> SortMethod::criteria() const

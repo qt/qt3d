@@ -156,7 +156,7 @@ void Shader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         }
         if (!m_isLoaded)
             updateDNA();
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 
@@ -362,8 +362,12 @@ void Shader::initializeAttributes(const QVector<ShaderAttribute> &attributesDesc
 {
     m_attributes = attributesDescription;
     m_attributesNames.resize(attributesDescription.size());
+    m_attributeNamesIds.resize(attributesDescription.size());
     for (int i = 0, m = attributesDescription.size(); i < m; i++) {
         m_attributesNames[i] = attributesDescription[i].m_name;
+        m_attributes[i].m_nameId = StringToInt::lookupId(m_attributesNames[i]);
+        m_attributeNamesIds[i] = m_attributes[i].m_nameId;
+        qDebug() << m_attributes[i].m_nameId << m_attributeNamesIds[i] << m_attributesNames[i];
         qCDebug(Shaders) << "Active Attribute " << attributesDescription[i].m_name;
     }
 }
@@ -430,6 +434,7 @@ void Shader::initialize(const Shader &other)
     m_uniformsNames = other.m_uniformsNames;
     m_uniforms = other.m_uniforms;
     m_attributesNames = other.m_attributesNames;
+    m_attributeNamesIds = other.m_attributeNamesIds;
     m_attributes = other.m_attributes;
     m_uniformBlockNamesIds = other.m_uniformBlockNamesIds;
     m_uniformBlockNames = other.m_uniformBlockNames;

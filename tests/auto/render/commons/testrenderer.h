@@ -67,13 +67,14 @@ public:
     void setSettings(Qt3DRender::Render::RendererSettings *settings) Q_DECL_OVERRIDE { Q_UNUSED(settings); }
     Qt3DRender::Render::RendererSettings *settings() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
 
-    void markDirty(Qt3DRender::Render::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) Q_DECL_OVERRIDE;
-    Qt3DRender::Render::BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
+    void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) Q_DECL_OVERRIDE;
+    Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;
+    void clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes) Q_DECL_OVERRIDE;
 
     void resetDirty();
 
 protected:
-    Qt3DRender::Render::BackendNodeDirtySet m_changes;
+    Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet m_changes;
 };
 
 QT_END_NAMESPACE

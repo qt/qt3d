@@ -149,7 +149,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     default:
         break;
     }
-    markDirty(BackendNodeDirtyFlag::Any);
+    markDirty(AbstractRenderer::AllDirty);
 }
 
 QList<Qt3DCore::QNodeId> Technique::parameters() const

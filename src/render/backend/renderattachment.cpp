@@ -110,7 +110,7 @@ void RenderAttachment::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
             m_attachmentData.m_face = static_cast<QRenderAttachment::CubeMapFace>(propertyChange->value().toInt());
         }
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

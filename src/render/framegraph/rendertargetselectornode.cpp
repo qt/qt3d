@@ -79,7 +79,7 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("drawBuffers"))
             m_drawBuffers = propertyChange->value().value<QList<Qt3DRender::QRenderAttachment::RenderAttachmentType> >();
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

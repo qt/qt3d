@@ -40,6 +40,7 @@
 #include "computejob_p.h"
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,6 +66,8 @@ void ComputeJob::cleanup()
 void ComputeJob::updateFromPeer(Qt3DCore::QNode *peer)
 {
     m_enabled = peer->isEnabled();
+    if (m_renderer != Q_NULLPTR)
+        BackendNode::markDirty(AbstractRenderer::ComputeDirty);
 }
 
 void ComputeJob::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -73,7 +76,7 @@ void ComputeJob::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             m_enabled = propertyChange->value().toBool();
-        markDirty(BackendNodeDirtyFlag::Any);
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 

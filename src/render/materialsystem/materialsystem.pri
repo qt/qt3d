@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/effect_p.h \
     $$PWD/material_p.h \
     $$PWD/parameter_p.h \
-    $$PWD/parametermapping_p.h \
     $$PWD/qannotation.h \
     $$PWD/qannotation_p.h \
     $$PWD/qeffect.h \
@@ -14,8 +13,6 @@ HEADERS += \
     $$PWD/qmaterial_p.h \
     $$PWD/qparameter.h \
     $$PWD/qparameter_p.h \
-    $$PWD/qparametermapping.h \
-    $$PWD/qparametermapping_p.h \
     $$PWD/qrenderpass_p.h \
     $$PWD/qrenderpass.h \
     $$PWD/qshaderdata.h \
@@ -35,12 +32,10 @@ SOURCES += \
     $$PWD/effect.cpp \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \
-    $$PWD/parametermapping.cpp \
     $$PWD/qannotation.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qmaterial.cpp \
     $$PWD/qparameter.cpp \
-    $$PWD/qparametermapping.cpp \
     $$PWD/qrenderpass.cpp \
     $$PWD/qshaderdata.cpp \
     $$PWD/qshaderprogram.cpp \

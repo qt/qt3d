@@ -39,15 +39,20 @@ TestRenderer::~TestRenderer()
 {
 }
 
-void TestRenderer::markDirty(Qt3DRender::Render::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node)
+void TestRenderer::markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node)
 {
     Q_UNUSED(node);
     m_changes |= changes;
 }
 
-Qt3DRender::Render::BackendNodeDirtySet TestRenderer::dirtyBits()
+Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet TestRenderer::dirtyBits()
 {
     return m_changes;
+}
+
+void TestRenderer::clearDirtyBits(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes)
+{
+    m_changes &= changes;
 }
 
 void TestRenderer::resetDirty()

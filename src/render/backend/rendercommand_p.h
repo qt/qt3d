@@ -86,7 +86,7 @@ public:
 
     // A QAttribute pack might be interesting
     // This is a temporary fix in the meantime, to remove the hacked methods in Technique
-    QHash<QString, QString> m_parameterAttributeToShaderNames;
+    QVector<int> m_attributes;
 
     float m_depth;
     int m_changeCost;
