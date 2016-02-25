@@ -54,12 +54,13 @@ class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
 public:
     explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAction();
 
     QString name() const;
-
+    bool isActive() const;
 
 public Q_SLOTS:
     void setName(const QString &name);
@@ -69,12 +70,11 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void nameChanged(const QString &name);
-
-    void started(const QString &name);
-    void finished(const QString &name);
+    void activeChanged(bool isActive);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     Q_DECLARE_PRIVATE(QAction)

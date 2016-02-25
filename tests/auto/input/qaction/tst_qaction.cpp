@@ -36,8 +36,9 @@
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
+// We need to call QAction::sceneChangeEvent which is protected
 // So we sublcass QNode instead of QObject
-class tst_QAction: public Qt3DCore::QNode
+class tst_QAction: public Qt3DInput::QAction
 {
     Q_OBJECT
 public:
@@ -88,6 +89,7 @@ private Q_SLOTS:
         QCOMPARE(action->id(), clone->id());
         QCOMPARE(action->name(), clone->name());
         QCOMPARE(action->inputs().count(), clone->inputs().count());
+        QCOMPARE(action->isActive(), clone->isActive());
 
         for (int i = 0, m = action->inputs().count(); i < m; ++i) {
             QCOMPARE(action->inputs().at(i)->id(), clone->inputs().at(i)->id());
@@ -141,6 +143,23 @@ private Q_SLOTS:
 
         arbiter.events.clear();
     }
+
+    void checkActivePropertyChanged()
+    {
+        // GIVEN
+        QCOMPARE(isActive(), false);
+
+        // Note: simulate backend change to frontend
+        // WHEN
+        Qt3DCore::QScenePropertyChangePtr valueChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
+        valueChange->setPropertyName("active");
+        valueChange->setValue(true);
+        sceneChangeEvent(valueChange);
+
+        // THEN
+        QCOMPARE(isActive(), true);
+    }
+
 
 protected:
     Qt3DCore::QNode *doClone() const Q_DECL_OVERRIDE

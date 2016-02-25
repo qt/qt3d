@@ -54,10 +54,22 @@ class QActionPrivate : public Qt3DCore::QNodePrivate
 public:
     QActionPrivate()
         : Qt3DCore::QNodePrivate()
+        , m_active(false)
     {}
+
+    Q_DECLARE_PUBLIC(QAction)
 
     QString m_name;
     QVector<QAbstractActionInput *> m_inputs;
+    bool m_active;
+
+    void setActive(bool active)
+    {
+        if (active != m_active) {
+            m_active = active;
+            q_func()->activeChanged(active);
+        }
+    }
 };
 
 /*!
@@ -135,6 +147,12 @@ QString QAction::name() const
     return d->m_name;
 }
 
+bool QAction::isActive() const
+{
+    Q_D(const QAction);
+    return d->m_active;
+}
+
 /*!
   \qmlproperty QQmlListProperty<Qt3DInput::QAbstractActionInput> Qt3D.Input::Action::inputs
 
@@ -197,6 +215,15 @@ void QAction::copy(const Qt3DCore::QNode *ref)
     d_func()->m_name = action->d_func()->m_name;
     Q_FOREACH (QAbstractActionInput *input, action->inputs())
         d_func()->m_inputs.append(qobject_cast<QAbstractActionInput *>(QNode::clone(input)));
+}
+
+void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+{
+    Q_D(QAction);
+    Qt3DCore::QScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(change);
+    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("active")) {
+        d->setActive(e->value().toBool());
+    }
 }
 
 } // Qt3DInput
