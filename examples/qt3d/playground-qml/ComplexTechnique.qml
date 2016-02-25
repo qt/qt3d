@@ -156,7 +156,7 @@ Technique {
             renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
                 BlendEquation {mode: BlendEquation.FuncAdd},
                 CullFace { mode : CullFace.Back },
-                DepthTest { func : DepthTest.LessOrEqual}
+                DepthTest { depthFunction : DepthTest.LessOrEqual}
             ]
             shaderProgram : ShaderProgram {
                 vertexShaderCode: "

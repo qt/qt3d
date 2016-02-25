@@ -293,7 +293,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::DepthTest: {
         QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
-        return getOrCreateRenderStateImpl<DepthTest>(depthTest->func());
+        return getOrCreateRenderStateImpl<DepthTest>(depthTest->depthFunction());
     }
     case QRenderState::AlphaCoverage:
     case QRenderState::Dithering:

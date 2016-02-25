@@ -67,7 +67,7 @@ Viewport {
                     ClipPlane { plane: 0 },
                     ClipPlane { plane: 1 },
                     ClipPlane { plane: 2 },
-                    DepthTest { func: DepthTest.LessOrEqual }
+                    DepthTest { depthFunction: DepthTest.LessOrEqual }
                 ]
 
                 // Branch 1

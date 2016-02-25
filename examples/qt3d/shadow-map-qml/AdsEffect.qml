@@ -93,7 +93,7 @@ Effect {
 
                     renderStates: [
                         PolygonOffset { factor: 4; units: 4 },
-                        DepthTest { func: DepthTest.Less }
+                        DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
 
@@ -138,7 +138,7 @@ Effect {
 
                     renderStates: [
                         PolygonOffset { factor: 4; units: 4 },
-                        DepthTest { func: DepthTest.Less }
+                        DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
 

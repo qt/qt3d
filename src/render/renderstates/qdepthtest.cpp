@@ -54,19 +54,19 @@ class QDepthTestPrivate : public QRenderStatePrivate
 public :
     QDepthTestPrivate()
         : QRenderStatePrivate(QRenderState::DepthTest)
-        , m_func(QDepthTest::Never)
+        , m_depthFunction(QDepthTest::Never)
     {
     }
 
     Q_DECLARE_PUBLIC(QDepthTest)
-    QDepthTest::DepthFunc m_func;
+    QDepthTest::DepthFunction m_depthFunction;
 };
 
 void QDepthTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QDepthTest *refState = static_cast<const QDepthTest*>(ref);
-    d_func()->m_func = refState->d_func()->m_func;
+    d_func()->m_depthFunction = refState->d_func()->m_depthFunction;
 }
 
 QDepthTest::QDepthTest(QNode *parent)
@@ -79,18 +79,18 @@ QDepthTest::~QDepthTest()
     QNode::cleanup();
 }
 
-QDepthTest::DepthFunc QDepthTest::func() const
+QDepthTest::DepthFunction QDepthTest::depthFunction() const
 {
     Q_D(const QDepthTest);
-    return d->m_func;
+    return d->m_depthFunction;
 }
 
-void QDepthTest::setFunc(QDepthTest::DepthFunc func)
+void QDepthTest::setDepthFunction(QDepthTest::DepthFunction depthFunction)
 {
     Q_D(QDepthTest);
-    if (d->m_func != func) {
-        d->m_func = func;
-        emit funcChanged(func);
+    if (d->m_depthFunction != depthFunction) {
+        d->m_depthFunction = depthFunction;
+        emit depthFunctionChanged(depthFunction);
     }
 }
 

@@ -1507,7 +1507,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     if (functionName == QStringLiteral("depthFunc")) {
         type = GL_DEPTH_TEST;
         QDepthTest *depthTest = new QDepthTest;
-        depthTest->setFunc((QDepthTest::DepthFunc)values.at(0).toInt(GL_LESS));
+        depthTest->setDepthFunction((QDepthTest::DepthFunction)values.at(0).toInt(GL_LESS));
         return depthTest;
     }
 

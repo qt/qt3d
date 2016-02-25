@@ -106,7 +106,7 @@ Material {
         }
 
         AlphaCoverage { id: alphaCoverageState }
-        DepthTest { id: depthTestState; func: DepthTest.Less }
+        DepthTest { id: depthTestState; depthFunction: DepthTest.Less }
 
         techniques: [
             // OpenGL 3.1

@@ -172,7 +172,7 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
+                            DepthTest { depthFunction: DepthTest.Less },
                             DepthMask { mask: false },
                             BlendState {
                                 srcRGB: BlendState.SrcAlpha
@@ -197,7 +197,7 @@ Entity {
                     renderPasses: RenderPass {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
-                            DepthTest { func: DepthTest.Less },
+                            DepthTest { depthFunction: DepthTest.Less },
                             DepthMask { mask: false },
                             BlendState {
                                 srcRGB: BlendState.SrcAlpha

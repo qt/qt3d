@@ -127,7 +127,7 @@ void QSkyboxEntityPrivate::init()
     QCullFace *cullFront = new QCullFace();
     cullFront->setMode(QCullFace::Front);
     QDepthTest *depthTest = new QDepthTest();
-    depthTest->setFunc(QDepthTest::LessOrEqual);
+    depthTest->setDepthFunction(QDepthTest::LessOrEqual);
 
     m_gl3RenderPass->addRenderState(cullFront);
     m_gl3RenderPass->addRenderState(depthTest);

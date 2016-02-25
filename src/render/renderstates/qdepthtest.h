@@ -52,10 +52,10 @@ class QDepthTestPrivate;
 class QT3DRENDERSHARED_EXPORT QDepthTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(DepthFunc func READ func WRITE setFunc NOTIFY funcChanged)
+    Q_PROPERTY(DepthFunction depthFunction READ depthFunction WRITE setDepthFunction NOTIFY depthFunctionChanged)
 public:
 
-    enum DepthFunc {
+    enum DepthFunction {
         Never = 0x0200,
         Always = 0x0207,
         Less = 0x0201,
@@ -65,18 +65,18 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(DepthFunc)
+    Q_ENUM(DepthFunction)
 
     explicit QDepthTest(Qt3DCore::QNode *parent = 0);
     ~QDepthTest();
 
-    DepthFunc func() const;
+    DepthFunction depthFunction() const;
 
 public Q_SLOTS:
-    void setFunc(DepthFunc func);
+    void setDepthFunction(DepthFunction depthFunction);
 
 Q_SIGNALS:
-    void funcChanged(DepthFunc func);
+    void depthFunctionChanged(DepthFunction depthFunction);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

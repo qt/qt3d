@@ -98,7 +98,7 @@ Effect {
 
                     // Disable depth testing and use simple additive blending
                     renderStates: [
-                        DepthTest { func: DepthTest.Always },
+                        DepthTest { depthFunction: DepthTest.Always },
                         DepthMask { mask: true },
                         BlendState {
                             srcRGB: BlendState.One

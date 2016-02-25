@@ -111,7 +111,7 @@ Entity {
                         renderStates: [
                             // cull front faces
                             CullFace { mode: CullFace.Front },
-                            DepthTest { func: DepthTest.LessOrEqual }
+                            DepthTest { depthFunction: DepthTest.LessOrEqual }
                         ]
                     }
                 },
@@ -127,7 +127,7 @@ Entity {
                         shaderProgram: gl2es2SkyboxShader
                         renderStates: [
                             CullFace { mode: CullFace.Front },
-                            DepthTest { func: DepthTest.LessOrEqual }
+                            DepthTest { depthFunction: DepthTest.LessOrEqual }
                         ]
                     }
                 },
@@ -143,7 +143,7 @@ Entity {
                         shaderProgram: gl2es2SkyboxShader
                         renderStates: [
                             CullFace { mode: CullFace.Front },
-                            DepthTest { func: DepthTest.LessOrEqual }
+                            DepthTest { depthFunction: DepthTest.LessOrEqual }
                         ]
                     }
                 }

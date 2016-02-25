@@ -97,7 +97,7 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseGL2Technique->addAnnotation(m_annotation);
     m_normalDiffuseES2Technique->addAnnotation(m_annotation);
 
-    m_depthTest->setFunc(QDepthTest::Less);
+    m_depthTest->setDepthFunction(QDepthTest::Less);
 
     m_normalDiffuseGL3RenderPass->setShaderProgram(m_normalDiffuseGL3Shader);
     m_normalDiffuseGL3RenderPass->addRenderState(m_alphaCoverage);

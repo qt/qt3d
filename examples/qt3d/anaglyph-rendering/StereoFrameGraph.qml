@@ -73,7 +73,7 @@ Viewport {
             StateSet {
                 renderStates: [
                     ColorMask { red: true; green: false; blue: false; alpha: false },
-                    DepthTest { func: DepthTest.Less }
+                    DepthTest { depthFunction: DepthTest.Less }
                 ]
             }
         }
@@ -86,7 +86,7 @@ Viewport {
                 StateSet {
                     renderStates: [
                         ColorMask { red: false; green: true; blue: true; alpha: false },
-                        DepthTest { func: DepthTest.Less }
+                        DepthTest { depthFunction: DepthTest.Less }
                     ]
                 }
             }
