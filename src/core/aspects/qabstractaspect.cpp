@@ -133,16 +133,6 @@ QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
     return QVector<QAspectJobPtr>();
 }
 
-/*!
-    Called in the context of the aspect thread once the aspect has been registered.
-    This provides an opportunity for the aspect to do any initialization tasks that
-    require to be in the aspect thread context such as creating QObject subclasses that
-    must have affinity with this thread.
-*/
-void QAbstractAspect::onRegistered()
-{
-}
-
 void QAbstractAspect::onCleanup()
 {
 }
@@ -226,6 +216,30 @@ QVector<QAspectJobPtr> QAbstractAspectPrivate::jobsToExecute(qint64 time)
 {
     Q_Q(QAbstractAspect);
     return q->jobsToExecute(time);
+}
+
+/*!
+    Called in the context of the aspect thread once the aspect has been registered.
+    This provides an opportunity for the aspect to do any initialization tasks that
+    require to be in the aspect thread context such as creating QObject subclasses that
+    must have affinity with this thread.
+
+    \sa onUnregistered
+*/
+void QAbstractAspect::onRegistered()
+{
+}
+
+/*!
+    Called in the context of the aspect thread during unregistration
+
+    of the aspect. This gives the aspect a chance to do any final pieces of
+    cleanup that it would not do when just changing to a new scene.
+
+    \sa onRegistered
+*/
+void QAbstractAspect::onUnregistered()
+{
 }
 
 /*!
