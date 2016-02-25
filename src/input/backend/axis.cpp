@@ -60,7 +60,6 @@ void Axis::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxis *axis = static_cast<QAxis *>(peer);
     m_enabled = axis->isEnabled();
-    m_name = axis->name();
     Q_FOREACH (QAxisInput *input, axis->inputs())
         m_inputs.push_back(input->id());
 }
@@ -69,7 +68,6 @@ void Axis::cleanup()
 {
     m_enabled = false;
     m_inputs.clear();
-    m_name.clear();
     m_axisValue = 0.0f;
 }
 
@@ -93,8 +91,6 @@ void Axis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("name")) {
-            m_name = propertyChange->value().toString();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input"))

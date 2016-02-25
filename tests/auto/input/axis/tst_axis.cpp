@@ -50,7 +50,6 @@ private Q_SLOTS:
         Qt3DInput::QAxisInput axisInput;
 
         axis.addInput(&axisInput);
-        axis.setName(QStringLiteral("L88"));
 
         // WHEN
         backendAxis.setPeer(&axis);
@@ -58,7 +57,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAxis.peerUuid(), axis.id());
         QCOMPARE(backendAxis.isEnabled(), axis.isEnabled());
-        QCOMPARE(backendAxis.name(), axis.name());
         QCOMPARE(backendAxis.inputs().size(), axis.inputs().size());
 
         const int inputsCount = backendAxis.inputs().size();
@@ -75,7 +73,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(backendAxis.peerUuid().isNull());
-        QVERIFY(backendAxis.name().isEmpty());
         QCOMPARE(backendAxis.axisValue(), 0.0f);
         QCOMPARE(backendAxis.isEnabled(), false);
         QCOMPARE(backendAxis.inputs().size(), 0);
@@ -85,7 +82,6 @@ private Q_SLOTS:
         Qt3DInput::QAxisInput axisInput;
 
         axis.addInput(&axisInput);
-        axis.setName(QStringLiteral("L88"));
 
         // WHEN
         backendAxis.updateFromPeer(&axis);
@@ -94,7 +90,6 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(backendAxis.peerUuid().isNull());
-        QVERIFY(backendAxis.name().isEmpty());
         QCOMPARE(backendAxis.axisValue(), 0.0f);
         QCOMPARE(backendAxis.isEnabled(), false);
         QCOMPARE(backendAxis.inputs().size(), 0);
@@ -104,15 +99,7 @@ private Q_SLOTS:
     {
         // GIVEN
         Qt3DInput::Input::Axis backendAxis;
-
-        // WHEN
-        Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QStringLiteral("LT1"));
-        updateChange->setPropertyName("name");
-        backendAxis.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(backendAxis.name(), QStringLiteral("LT1"));
+        Qt3DCore::QScenePropertyChangePtr updateChange;
 
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));

@@ -52,13 +52,10 @@ class QAxisInput;
 class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(float value READ value NOTIFY valueChanged)
 public:
     explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxis();
-
-    QString name() const;
 
     void addInput(QAxisInput *input);
     void removeInput(QAxisInput *input);
@@ -66,11 +63,7 @@ public:
 
     float value() const;
 
-public Q_SLOTS:
-    void setName(const QString &name);
-
 Q_SIGNALS:
-    void nameChanged(const QString &name);
     void valueChanged(float value);
 
 protected:

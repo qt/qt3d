@@ -55,7 +55,6 @@ public:
 
     Q_DECLARE_PUBLIC(QAxis)
 
-    QString m_name;
     QVector<QAxisInput *> m_inputs;
     float m_value;
 
@@ -92,21 +91,6 @@ QAxis::QAxis(Qt3DCore::QNode *parent)
 QAxis::~QAxis()
 {
     QNode::cleanup();
-}
-
-void QAxis::setName(const QString &name)
-{
-    Q_D(QAxis);
-    if (d->m_name != name) {
-        d->m_name = name;
-        emit nameChanged(name);
-    }
-}
-
-QString QAxis::name() const
-{
-    Q_D(const QAxis);
-    return d->m_name;
 }
 
 void QAxis::addInput(QAxisInput *input)
@@ -159,7 +143,6 @@ void QAxis::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QAxis *axis = static_cast<const QAxis *>(ref);
-    d_func()->m_name = axis->d_func()->m_name;
     Q_FOREACH (QAxisInput *input, axis->inputs())
         d_func()->m_inputs.append(qobject_cast<QAxisInput *>(QNode::clone(input)));
 
