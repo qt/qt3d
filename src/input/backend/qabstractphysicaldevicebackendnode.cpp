@@ -228,8 +228,8 @@ float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
         Q_ASSERT(axisSetting);
         float val = rawAxisValue;
 
-        // Low pass filtering
-        if (axisSetting->isFilterEnabled()) {
+        // Low pass smoothing
+        if (axisSetting->isSmoothEnabled()) {
             // Get the filter corresponding to this axis
             Input::MovingAverage &filter = d->getOrCreateFilter(axisIdentifier);
             filter.addSample(val);

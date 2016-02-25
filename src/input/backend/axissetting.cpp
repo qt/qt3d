@@ -64,7 +64,7 @@ AxisSetting::AxisSetting()
     : Qt3DCore::QBackendNode()
     , m_deadZoneRadius(0.0f)
     , m_axes(0)
-    , m_filter(false)
+    , m_smooth(false)
 {
 }
 
@@ -73,14 +73,14 @@ void AxisSetting::updateFromPeer(Qt3DCore::QNode *peer)
     QAxisSetting *setting = static_cast<QAxisSetting *>(peer);
     m_deadZoneRadius = setting->deadZoneRadius();
     m_axes = variantListToVector(setting->axes());
-    m_filter = setting->isFilterEnabled();
+    m_smooth = setting->isSmoothEnabled();
 }
 
 void AxisSetting::cleanup()
 {
     m_deadZoneRadius = 0.0f;
     m_axes.clear();
-    m_filter = false;
+    m_smooth = false;
 }
 
 void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -91,8 +91,8 @@ void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_deadZoneRadius = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {
             m_axes = variantListToVector(propertyChange->value().toList());
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("filter")) {
-            m_filter = propertyChange->value().toBool();
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("smooth")) {
+            m_smooth = propertyChange->value().toBool();
         }
     }
 }

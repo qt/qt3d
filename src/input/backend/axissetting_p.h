@@ -68,7 +68,7 @@ public:
 
     inline float deadZoneRadius() const { return m_deadZoneRadius; }
     inline QVector<int> axes() const { return m_axes; }
-    inline bool isFilterEnabled() const { return m_filter; }
+    inline bool isSmoothEnabled() const { return m_smooth; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
@@ -76,7 +76,7 @@ protected:
 private:
     float m_deadZoneRadius;
     QVector<int> m_axes;
-    bool m_filter;
+    bool m_smooth;
 };
 
 } // namespace Input

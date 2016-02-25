@@ -51,12 +51,12 @@ public:
         : Qt3DCore::QNodePrivate()
         , m_deadZoneRadius(0.0f)
         , m_axes()
-        , m_filter(false)
+        , m_smooth(false)
     {}
 
     float m_deadZoneRadius;
     QVariantList m_axes;
-    bool m_filter;
+    bool m_smooth;
 };
 
 /*!
@@ -99,10 +99,10 @@ float QAxisSetting::deadZoneRadius() const
     return d->m_deadZoneRadius;
 }
 
-bool QAxisSetting::isFilterEnabled() const
+bool QAxisSetting::isSmoothEnabled() const
 {
     Q_D(const QAxisSetting);
-    return d->m_filter;
+    return d->m_smooth;
 }
 
 void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
@@ -125,14 +125,14 @@ void QAxisSetting::setAxes(const QVariantList &axes)
     emit axesChanged(axes);
 }
 
-void QAxisSetting::setFilterEnabled(bool enabled)
+void QAxisSetting::setSmoothEnabled(bool enabled)
 {
     Q_D(QAxisSetting);
-    if (d->m_filter == enabled)
+    if (d->m_smooth == enabled)
         return;
 
-    d->m_filter = enabled;
-    emit filterChanged(enabled);
+    d->m_smooth = enabled;
+    emit smoothChanged(enabled);
 }
 
 void QAxisSetting::copy(const Qt3DCore::QNode *ref)
@@ -141,7 +141,7 @@ void QAxisSetting::copy(const Qt3DCore::QNode *ref)
     const QAxisSetting *setting = static_cast<const QAxisSetting *>(ref);
     d_func()->m_deadZoneRadius = setting->d_func()->m_deadZoneRadius;
     d_func()->m_axes = setting->d_func()->m_axes;
-    d_func()->m_filter = setting->d_func()->m_filter;
+    d_func()->m_smooth = setting->d_func()->m_smooth;
 }
 
 } // namespace Qt3DInput
