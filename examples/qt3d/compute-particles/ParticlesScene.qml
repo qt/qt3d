@@ -129,8 +129,8 @@ Entity {
         id: particlePositionDataAttribute
         name: "particlePosition"
         attributeType: Attribute.VertexAttribute
-        dataType: Attribute.Float
-        dataSize: 3
+        vertexBaseType: Attribute.Float
+        vertexSize: 3
         divisor: 1
         byteStride: 12 * floatSize
         buffer: particleBuffer
@@ -140,8 +140,8 @@ Entity {
         id: particleColorDataAttribute
         name: "particleColor"
         attributeType: Attribute.VertexAttribute
-        dataType: Attribute.Float
-        dataSize: 3
+        vertexBaseType: Attribute.Float
+        vertexSize: 3
         divisor: 1
         byteOffset: 8 * floatSize
         byteStride: 12 * floatSize

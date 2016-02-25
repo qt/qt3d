@@ -212,7 +212,7 @@ public:
     static GLint elementType(GLint type);
     static GLint tupleSizeFromType(GLint type);
     static GLuint byteSizeFromType(GLint type);
-    static GLint glDataTypeFromAttributeDataType(QAttribute::DataType dataType);
+    static GLint glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType);
 
     bool supportsDrawBuffersBlend() const;
     bool supportsVAO() const { return m_supportsVAO; }

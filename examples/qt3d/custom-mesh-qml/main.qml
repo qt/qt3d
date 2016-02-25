@@ -177,8 +177,8 @@ Entity {
         geometry:  Geometry {
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 0
                 byteStride: 9 * 4
                 count: 4
@@ -188,8 +188,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 3 * 4
                 byteStride: 9 * 4
                 count: 4
@@ -199,8 +199,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.VertexAttribute
-                dataType: Attribute.Float
-                dataSize: 3
+                vertexBaseType: Attribute.Float
+                vertexSize: 3
                 byteOffset: 6 * 4
                 byteStride: 9 * 4
                 count: 4
@@ -210,8 +210,8 @@ Entity {
 
             Attribute {
                 attributeType: Attribute.IndexAttribute
-                dataType: Attribute.UnsignedShort
-                dataSize: 1
+                vertexBaseType: Attribute.UnsignedShort
+                vertexSize: 1
                 byteOffset: 0
                 byteStride: 0
                 count: 12

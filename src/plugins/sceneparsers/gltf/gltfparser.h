@@ -130,7 +130,7 @@ private:
         AccessorData(const QJsonObject& json);
 
         QString bufferViewName;
-        QAttribute::DataType type;
+        QAttribute::VertexBaseType type;
         uint dataSize;
         int count;
         int offset;
@@ -166,7 +166,7 @@ private:
     QFile* resolveLocalData(QString path) const;
 
     QVariant parameterValueFromJSON(int type, const QJsonValue &value) const;
-    static QAttribute::DataType accessorTypeFromJSON(int componentType);
+    static QAttribute::VertexBaseType accessorTypeFromJSON(int componentType);
     static uint accessorDataSizeFromJson(const QString &type);
 
     static QRenderState *buildStateEnable(int state);

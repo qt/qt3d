@@ -74,8 +74,8 @@ public:
     inline Qt3DCore::QNodeId bufferId() const { return m_bufferId; }
     inline QString name() const { return m_name; }
     inline int nameId() const { return m_nameId; }
-    inline QAttribute::DataType dataType() const { return m_dataType; }
-    inline uint dataSize() const { return m_dataSize; }
+    inline QAttribute::VertexBaseType vertexBaseType() const { return m_vertexDataType; }
+    inline uint vertexSize() const { return m_vertexSize; }
     inline uint count() const { return m_count; }
     inline uint byteStride() const { return m_byteStride; }
     inline uint byteOffset() const { return m_byteOffset; }
@@ -88,8 +88,8 @@ private:
     Qt3DCore::QNodeId m_bufferId;
     QString m_name;
     int m_nameId;
-    QAttribute::DataType m_dataType;
-    uint m_dataSize;
+    QAttribute::VertexBaseType m_vertexDataType;
+    uint m_vertexSize;
     uint m_count;
     uint m_byteStride;
     uint m_byteOffset;

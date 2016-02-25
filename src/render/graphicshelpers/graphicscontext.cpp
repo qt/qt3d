@@ -1051,9 +1051,9 @@ void GraphicsContext::specifyAttribute(const Attribute *attribute, Buffer *buffe
     }
     prog->enableAttributeArray(location);
     prog->setAttributeBuffer(location,
-                             glDataTypeFromAttributeDataType(attribute->dataType()),
+                             glDataTypeFromAttributeDataType(attribute->vertexBaseType()),
                              attribute->byteOffset(),
-                             attribute->dataSize(),
+                             attribute->vertexSize(),
                              attribute->byteStride());
 
     if (attribute->divisor() != 0) {
@@ -1202,7 +1202,7 @@ GLuint GraphicsContext::byteSizeFromType(GLint type)
     return 0;
 }
 
-GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::DataType dataType)
+GLint GraphicsContext::glDataTypeFromAttributeDataType(QAttribute::VertexBaseType dataType)
 {
     switch (dataType) {
     case QAttribute::Byte:

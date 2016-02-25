@@ -114,7 +114,7 @@ void variantToBytes(void* dest, const QVariant& v, GLint type)
 
 namespace {
 
-QAttribute::DataType typeFromGLType(GLint dataType, uint &dataCount)
+QAttribute::VertexBaseType typeFromGLType(GLint dataType, uint &dataCount)
 {
     switch (dataType) {
 
@@ -236,7 +236,7 @@ QBuffer *QItemModelBuffer::buffer()
         for (int m=0; m<mappingCount; ++m) {
             const RoleMapping mapping(m_mappings.at(m));
             uint dataSize = 0;
-            QAttribute::DataType dataType = typeFromGLType(mapping.type, dataSize);
+            QAttribute::VertexBaseType dataType = typeFromGLType(mapping.type, dataSize);
             QAttribute *attr(new QAttribute(m_buffer, dataType,
                                             dataSize, rowCount,
                                             offset, m_itemStride));

@@ -52,8 +52,8 @@ namespace Render {
 Attribute::Attribute()
     : BackendNode(ReadOnly)
     , m_nameId(0)
-    , m_dataType(QAttribute::Float)
-    , m_dataSize(1)
+    , m_vertexDataType(QAttribute::Float)
+    , m_vertexSize(1)
     , m_count(0)
     , m_byteStride(0)
     , m_byteOffset(0)
@@ -69,8 +69,8 @@ Attribute::~Attribute()
 
 void Attribute::cleanup()
 {
-    m_dataType = QAttribute::Float;
-    m_dataSize = 1;
+    m_vertexDataType = QAttribute::Float;
+    m_vertexSize = 1;
     m_count = 0;
     m_byteStride = 0;
     m_byteOffset = 0;
@@ -86,8 +86,8 @@ void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAttribute *attribute = static_cast<QAttribute *>(peer);
     if (attribute) {
-        m_dataType = attribute->dataType();
-        m_dataSize = attribute->dataSize();
+        m_vertexDataType = attribute->vertexBaseType();
+        m_vertexSize = attribute->vertexSize();
         m_count = attribute->count();
         m_byteOffset = attribute->byteOffset();
         m_byteStride = attribute->byteStride();
@@ -113,11 +113,11 @@ void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_name = propertyChange->value().value<QString>();
             m_nameId = StringToInt::lookupId(m_name);
             m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("dataType")) {
-            m_dataType = static_cast<QAttribute::DataType>(propertyChange->value().value<int>());
+        } else if (propertyName == QByteArrayLiteral("vertexBaseType")) {
+            m_vertexDataType = static_cast<QAttribute::VertexBaseType>(propertyChange->value().value<int>());
             m_attributeDirty = true;
-        } else if (propertyName == QByteArrayLiteral("dataSize")) {
-            m_dataSize = propertyChange->value().value<uint>();
+        } else if (propertyName == QByteArrayLiteral("vertexSize")) {
+            m_vertexSize = propertyChange->value().value<uint>();
             m_attributeDirty = true;
         } else if (propertyName == QByteArrayLiteral("count")) {
             m_count = propertyChange->value().value<uint>();

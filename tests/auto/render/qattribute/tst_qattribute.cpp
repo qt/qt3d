@@ -105,8 +105,8 @@ private Q_SLOTS:
         QCOMPARE(attribute->byteStride(), clone->byteStride());
         QCOMPARE(attribute->byteOffset(), clone->byteOffset());
         QCOMPARE(attribute->divisor(), clone->divisor());
-        QCOMPARE(attribute->dataType(), clone->dataType());
-        QCOMPARE(attribute->dataSize(), clone->dataSize());
+        QCOMPARE(attribute->vertexBaseType(), clone->vertexBaseType());
+        QCOMPARE(attribute->vertexSize(), clone->vertexSize());
         QVERIFY(attribute->attributeType() == clone->attributeType());
 
         if (attribute->buffer() != Q_NULLPTR) {
@@ -129,7 +129,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "dataType");
+        QCOMPARE(change->propertyName(), "vertexBaseType");
         QCOMPARE(change->value().value<int>(), static_cast<int>(Qt3DRender::QAttribute::Double));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
@@ -142,7 +142,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "dataSize");
+        QCOMPARE(change->propertyName(), "vertexSize");
         QCOMPARE(change->value().value<uint>(), 4U);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 

@@ -63,8 +63,8 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderAttribute.peerUuid(), attribute.id());
         QCOMPARE(renderAttribute.isDirty(), true);
-        QCOMPARE(renderAttribute.dataType(), attribute.dataType());
-        QCOMPARE(renderAttribute.dataSize(), attribute.dataSize());
+        QCOMPARE(renderAttribute.vertexBaseType(), attribute.vertexBaseType());
+        QCOMPARE(renderAttribute.vertexSize(), attribute.vertexSize());
         QCOMPARE(renderAttribute.attributeType(), attribute.attributeType());
         QCOMPARE(renderAttribute.byteOffset(), attribute.byteOffset());
         QCOMPARE(renderAttribute.byteStride(), attribute.byteStride());
@@ -86,8 +86,8 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Float);
-        QCOMPARE(renderAttribute.dataSize(), 1U);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Float);
+        QCOMPARE(renderAttribute.vertexSize(), 1U);
         QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
@@ -118,8 +118,8 @@ private Q_SLOTS:
         QVERIFY(renderAttribute.bufferId().isNull());
         QVERIFY(renderAttribute.name().isEmpty());
         QCOMPARE(renderAttribute.isDirty(), false);
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Float);
-        QCOMPARE(renderAttribute.dataSize(), 1U);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Float);
+        QCOMPARE(renderAttribute.vertexSize(), 1U);
         QCOMPARE(renderAttribute.attributeType(), Qt3DRender::QAttribute::VertexAttribute);
         QCOMPARE(renderAttribute.byteOffset(), 0U);
         QCOMPARE(renderAttribute.byteStride(), 0U);
@@ -139,11 +139,11 @@ private Q_SLOTS:
         // WHEN
         Qt3DCore::QScenePropertyChangePtr updateChange(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(static_cast<int>(Qt3DRender::QAttribute::Int));
-        updateChange->setPropertyName("dataType");
+        updateChange->setPropertyName("vertexBaseType");
         renderAttribute.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderAttribute.dataType(), Qt3DRender::QAttribute::Int);
+        QCOMPARE(renderAttribute.vertexBaseType(), Qt3DRender::QAttribute::Int);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 
@@ -155,11 +155,11 @@ private Q_SLOTS:
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(3);
-        updateChange->setPropertyName("dataSize");
+        updateChange->setPropertyName("vertexSize");
         renderAttribute.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderAttribute.dataSize(), 3U);
+        QCOMPARE(renderAttribute.vertexSize(), 3U);
         QVERIFY(renderAttribute.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 

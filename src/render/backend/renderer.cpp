@@ -797,7 +797,7 @@ void Renderer::performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRende
 {
     const GLint primType = rGeometryRenderer->primitiveType();
     const bool drawIndexed = indexAttribute != Q_NULLPTR;
-    const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->dataType()) : 0;
+    const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType()) : 0;
 
     if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
         m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());

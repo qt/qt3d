@@ -126,7 +126,7 @@ QAttribute::~QAttribute()
  * Constructs a new QAttribute from \a buf of \a type, \a dataSize, \a count, \a offset,
  * and \a stride with \a parent.
  */
-QAttribute::QAttribute(QBuffer *buf, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
+QAttribute::QAttribute(QBuffer *buf, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(*new QAttributePrivate(), parent)
 {
     Q_D(QAttribute);
@@ -143,7 +143,7 @@ QAttribute::QAttribute(QBuffer *buf, DataType type, uint dataSize, uint count, u
  * Constructs a new QAttribute named \a name from \a buf of \a type, \a
  * dataSize, \a count, \a offset, and \a stride with \a parent.
  */
-QAttribute::QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
+QAttribute::QAttribute(QBuffer *buf, const QString &name, VertexBaseType type, uint dataSize, uint count, uint offset, uint stride, QNode *parent)
     : QNode(*new QAttributePrivate(), parent)
 {
     Q_D(QAttribute);
@@ -202,7 +202,7 @@ QString QAttribute::name() const
  *
  * Holds the data size.
  */
-uint QAttribute::dataSize() const
+uint QAttribute::vertexSize() const
 {
     Q_D(const QAttribute);
     return d->m_dataSize;
@@ -213,7 +213,7 @@ uint QAttribute::dataSize() const
  *
  * Holds the data type.
  */
-QAttribute::DataType QAttribute::dataType() const
+QAttribute::VertexBaseType QAttribute::vertexBaseType() const
 {
     Q_D(const QAttribute);
     return d->m_dataType;
@@ -301,7 +301,7 @@ void QAttribute::setName(const QString &name)
     emit nameChanged(name);
 }
 
-void QAttribute::setDataType(DataType type)
+void QAttribute::setDataType(VertexBaseType type)
 {
     Q_D(QAttribute);
 

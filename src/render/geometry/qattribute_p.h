@@ -71,7 +71,7 @@ public:
 
     QBuffer *m_buffer;
     QString m_name;
-    QAttribute::DataType m_dataType;
+    QAttribute::VertexBaseType m_dataType;
     uint m_dataSize;
     uint m_count;
     uint m_byteStride;

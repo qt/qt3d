@@ -412,7 +412,7 @@ QGeometry *ObjLoader::geometry() const
     }
 
     QByteArray indexBytes;
-    QAttribute::DataType ty;
+    QAttribute::VertexBaseType ty;
     if (m_indices.size() < 65536) {
         // we can use USHORT
         ty = QAttribute::UnsignedShort;

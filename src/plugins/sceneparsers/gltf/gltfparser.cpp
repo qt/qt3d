@@ -1380,7 +1380,7 @@ QVariant GLTFParser::parameterValueFromJSON(int type, const QJsonValue &value) c
     return QVariant();
 }
 
-QAttribute::DataType GLTFParser::accessorTypeFromJSON(int componentType)
+QAttribute::VertexBaseType GLTFParser::accessorTypeFromJSON(int componentType)
 {
     if (componentType == GL_BYTE) {
         return QAttribute::Byte;

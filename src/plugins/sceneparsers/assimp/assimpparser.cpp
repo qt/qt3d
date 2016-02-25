@@ -627,7 +627,7 @@ void AssimpParser::loadMesh(uint meshIndex)
         meshGeometry->addAttribute(colorAttribute);
     }
 
-    QAttribute::DataType indiceType;
+    QAttribute::VertexBaseType indiceType;
     QByteArray ibufferContent;
     uint indices = mesh->mNumFaces * 3;
     // If there are less than 65535 indices, indices can then fit in ushort

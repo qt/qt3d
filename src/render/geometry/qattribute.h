@@ -58,8 +58,8 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QBuffer *buffer READ buffer WRITE setBuffer NOTIFY bufferChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-    Q_PROPERTY(DataType dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged)
-    Q_PROPERTY(uint dataSize READ dataSize WRITE setDataSize NOTIFY dataSizeChanged)
+    Q_PROPERTY(VertexBaseType vertexBaseType READ vertexBaseType WRITE setDataType NOTIFY dataTypeChanged)
+    Q_PROPERTY(uint vertexSize READ vertexSize WRITE setDataSize NOTIFY dataSizeChanged)
     Q_PROPERTY(uint count READ count WRITE setCount NOTIFY countChanged)
     Q_PROPERTY(uint byteStride READ byteStride WRITE setByteStride NOTIFY byteStrideChanged)
     Q_PROPERTY(uint byteOffset READ byteOffset WRITE setByteOffset NOTIFY byteOffsetChanged)
@@ -74,7 +74,7 @@ public:
 
     Q_ENUM(AttributeType)
 
-    enum DataType {
+    enum VertexBaseType {
         Byte = 0,
         UnsignedByte,
         Short,
@@ -85,17 +85,17 @@ public:
         Float,
         Double
     };
-    Q_ENUM(DataType)
+    Q_ENUM(VertexBaseType)
 
     explicit QAttribute(QNode *parent = 0);
-    explicit QAttribute(QBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
-    explicit QAttribute(QBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    explicit QAttribute(QBuffer *buf, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    explicit QAttribute(QBuffer *buf, const QString &name, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
     ~QAttribute();
 
     QBuffer *buffer() const;
     QString name() const;
-    DataType dataType() const;
-    uint dataSize() const;
+    VertexBaseType vertexBaseType() const;
+    uint vertexSize() const;
     uint count() const;
     uint byteStride() const;
     uint byteOffset() const;
@@ -111,7 +111,7 @@ public:
 public Q_SLOTS:
     void setBuffer(QBuffer *buffer);
     void setName(const QString &name);
-    void setDataType(DataType type);
+    void setDataType(VertexBaseType type);
     void setDataSize(uint size);
     void setCount(uint count);
     void setByteStride(uint byteStride);
@@ -122,8 +122,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void bufferChanged(QBuffer *buffer);
     void nameChanged(const QString &name);
-    void dataTypeChanged(DataType dataType);
-    void dataSizeChanged(uint dataSize);
+    void dataTypeChanged(VertexBaseType vertexBaseType);
+    void dataSizeChanged(uint vertexSize);
     void countChanged(uint count);
     void byteStrideChanged(uint byteStride);
     void byteOffsetChanged(uint byteOffset);

@@ -74,7 +74,7 @@ bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_N
 struct BufferInfo
 {
     BufferInfo()
-        : type(QAttribute::DataType::Float)
+        : type(QAttribute::VertexBaseType::Float)
         , dataSize(0)
         , count(0)
         , byteStride(0)
@@ -82,7 +82,7 @@ struct BufferInfo
     {}
 
     QByteArray data;
-    QAttribute::DataType type;
+    QAttribute::VertexBaseType type;
     uint dataSize;
     uint count;
     uint byteStride;
@@ -314,7 +314,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
 }
 
 
-template <QAttribute::DataType> struct EnumToType;
+template <QAttribute::VertexBaseType> struct EnumToType;
 template <> struct EnumToType<QAttribute::Byte> { typedef const char type; };
 template <> struct EnumToType<QAttribute::UnsignedByte> { typedef const uchar type; };
 template <> struct EnumToType<QAttribute::Short> { typedef const short type; };
@@ -324,7 +324,7 @@ template <> struct EnumToType<QAttribute::UnsignedInt> { typedef const uint type
 template <> struct EnumToType<QAttribute::Float> { typedef const float type; };
 template <> struct EnumToType<QAttribute::Double> { typedef const double type; };
 
-template<QAttribute::DataType v>
+template<QAttribute::VertexBaseType v>
 typename EnumToType<v>::type *castToType(const QByteArray &u, uint byteOffset)
 {
     return reinterpret_cast< typename EnumToType<v>::type *>(u.constData() + byteOffset);
@@ -478,17 +478,17 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 
                 BufferInfo vertexBufferInfo;
                 vertexBufferInfo.data = positionBuffer->data();
-                vertexBufferInfo.type = positionAttribute->dataType();
+                vertexBufferInfo.type = positionAttribute->vertexBaseType();
                 vertexBufferInfo.byteOffset = positionAttribute->byteOffset();
                 vertexBufferInfo.byteStride = positionAttribute->byteStride();
-                vertexBufferInfo.dataSize = positionAttribute->dataSize();
+                vertexBufferInfo.dataSize = positionAttribute->vertexSize();
                 vertexBufferInfo.count = positionAttribute->count();
 
                 if (indexBuffer) { // Indexed
 
                     BufferInfo indexBufferInfo;
                     indexBufferInfo.data = indexBuffer->data();
-                    indexBufferInfo.type = indexAttribute->dataType();
+                    indexBufferInfo.type = indexAttribute->vertexBaseType();
                     indexBufferInfo.byteOffset = indexAttribute->byteOffset();
                     indexBufferInfo.byteStride = indexAttribute->byteStride();
                     indexBufferInfo.count = indexAttribute->count();
