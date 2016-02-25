@@ -138,7 +138,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                         // Add renderTarget Handle and build renderCommand AttachmentPack
 
                         // Copy draw buffers list
-                        rv->setDrawBuffers(targetSelector->drawBuffers());
+                        rv->setDrawBuffers(targetSelector->outputs());
 
                         // Copy attachments
                         Q_FOREACH (QNodeId outputId, renderTarget->renderOutputs()) {

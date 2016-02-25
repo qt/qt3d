@@ -58,7 +58,7 @@ QVariantList Quick3DRenderTargetSelector::drawBuffers() const
 {
     // Converts RenderAttachmentType to int
     QVariantList l;
-    Q_FOREACH (const QRenderTargetOutput::AttachmentPoint &b, parentRenderTargetSelector()->drawBuffers())
+    Q_FOREACH (const QRenderTargetOutput::AttachmentPoint &b, parentRenderTargetSelector()->outputs())
         l.append(static_cast<int>(b));
     return l;
 }
@@ -72,7 +72,7 @@ void Quick3DRenderTargetSelector::setDrawBuffers(const QVariantList &buffers)
         Q_FOREACH (const QVariant &buf, buffers)
             drawBuffersList.append(static_cast<QRenderTargetOutput::AttachmentPoint>(buf.toInt()));
 
-        parentRenderTargetSelector()->setDrawBuffers(drawBuffersList);
+        parentRenderTargetSelector()->setOutputs(drawBuffersList);
         emit drawBuffersChanged();
     }
 }

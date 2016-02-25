@@ -61,7 +61,7 @@ void QRenderTargetSelector::copy(const QNode *ref)
 
     const QRenderTargetSelector *other = static_cast<const QRenderTargetSelector*>(ref);
 
-    setDrawBuffers(other->drawBuffers());
+    setOutputs(other->outputs());
     if (other->d_func()->m_target)
         setTarget(qobject_cast<QRenderTarget *>(QNode::clone(other->d_func()->m_target)));
 }
@@ -106,16 +106,16 @@ QRenderTarget *QRenderTargetSelector::target() const
  * default to using all the attachments' draw buffers.
  *
  */
-void QRenderTargetSelector::setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
+void QRenderTargetSelector::setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers)
 {
     Q_D(QRenderTargetSelector);
-    if (buffers != d->m_drawBuffers) {
-        d->m_drawBuffers = buffers;
+    if (buffers != d->m_outputs) {
+        d->m_outputs = buffers;
 
         if (d->m_changeArbiter) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-            change->setPropertyName("drawBuffers");
-            change->setValue(QVariant::fromValue(d->m_drawBuffers));
+            change->setPropertyName("outputs");
+            change->setValue(QVariant::fromValue(d->m_outputs));
             d->notifyObservers(change);
         }
     }
@@ -124,10 +124,10 @@ void QRenderTargetSelector::setDrawBuffers(const QList<QRenderTargetOutput::Atta
 /*!
  * Returns the list of draw buffers for the current Qt3DRender::QRenderTargetSelector instance.
  */
-QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::drawBuffers() const
+QList<QRenderTargetOutput::AttachmentPoint> QRenderTargetSelector::outputs() const
 {
     Q_D(const QRenderTargetSelector);
-    return d->m_drawBuffers;
+    return d->m_outputs;
 }
 
 QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, QNode *parent)

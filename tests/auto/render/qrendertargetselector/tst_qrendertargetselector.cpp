@@ -53,13 +53,13 @@ private Q_SLOTS:
         QScopedPointer<Qt3DRender::QRenderTargetSelector> defaultTargetSelector(new Qt3DRender::QRenderTargetSelector);
 
         QVERIFY(defaultTargetSelector->target() == Q_NULLPTR);
-        QCOMPARE(defaultTargetSelector->drawBuffers().count(), 0);
+        QCOMPARE(defaultTargetSelector->outputs().count(), 0);
     }
 
     void checkCloning_data()
     {
         QTest::addColumn<Qt3DRender::QRenderTargetSelector *>("renderTargetSelector");
-        QTest::addColumn<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >("drawBuffers");
+        QTest::addColumn<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >("outputs");
         QTest::addColumn<Qt3DRender::QRenderTarget * >("target");
 
         Qt3DRender::QRenderTargetSelector *defaultConstructed = new Qt3DRender::QRenderTargetSelector();
@@ -74,7 +74,7 @@ private Q_SLOTS:
         Qt3DRender::QRenderTarget *target2 = new Qt3DRender::QRenderTarget();
         renderTargetSelectorWithTargetAndBuffers->setTarget(target2);
         QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> attachmentPoints = QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>() << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
-        renderTargetSelectorWithTargetAndBuffers->setDrawBuffers(attachmentPoints);
+        renderTargetSelectorWithTargetAndBuffers->setOutputs(attachmentPoints);
         QTest::newRow("renderTargetSelectorWithTargetAndDrawBuffers") << renderTargetSelectorWithTargetAndBuffers << attachmentPoints << target2;
     }
 
@@ -82,11 +82,11 @@ private Q_SLOTS:
     {
         // GIVEN
         QFETCH(Qt3DRender::QRenderTargetSelector*, renderTargetSelector);
-        QFETCH(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>, drawBuffers);
+        QFETCH(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>, outputs);
         QFETCH(Qt3DRender::QRenderTarget *, target);
 
         // THEN
-        QCOMPARE(renderTargetSelector->drawBuffers(), drawBuffers);
+        QCOMPARE(renderTargetSelector->outputs(), outputs);
         QCOMPARE(renderTargetSelector->target(), target);
 
         // WHEN
@@ -96,7 +96,7 @@ private Q_SLOTS:
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(renderTargetSelector->id(), clone->id());
 
-        QCOMPARE(renderTargetSelector->drawBuffers(), clone->drawBuffers());
+        QCOMPARE(renderTargetSelector->outputs(), clone->outputs());
 
         if (renderTargetSelector->target() != Q_NULLPTR) {
             QVERIFY(clone->target() != Q_NULLPTR);
@@ -150,36 +150,36 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> drawBuffers;
-        drawBuffers << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
-        renderTargetSelector->setDrawBuffers(drawBuffers);
+        QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> outputs;
+        outputs << Qt3DRender::QRenderTargetOutput::Color0 << Qt3DRender::QRenderTargetOutput::Depth;
+        renderTargetSelector->setOutputs(outputs);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "drawBuffers");
+        QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
-        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), drawBuffers);
+        QCOMPARE(change->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), outputs);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        renderTargetSelector->setDrawBuffers(drawBuffers);
+        renderTargetSelector->setOutputs(outputs);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        renderTargetSelector->setDrawBuffers(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
+        renderTargetSelector->setOutputs(QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "drawBuffers");
+        QCOMPARE(change->propertyName(), "outputs");
         QCOMPARE(change->subjectId(), renderTargetSelector->id());
         QCOMPARE(change->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >(), QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint>());
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);

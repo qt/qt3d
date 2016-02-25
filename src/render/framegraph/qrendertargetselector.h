@@ -62,8 +62,8 @@ public:
 
     QRenderTarget *target() const;
 
-    void setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &buffers);
-    QList<QRenderTargetOutput::AttachmentPoint> drawBuffers() const;
+    void setOutputs(const QList<QRenderTargetOutput::AttachmentPoint> &buffers);
+    QList<QRenderTargetOutput::AttachmentPoint> outputs() const;
 
 public Q_SLOTS:
     void setTarget(QRenderTarget *target);
