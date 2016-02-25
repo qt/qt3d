@@ -62,7 +62,7 @@ namespace Input {
 
 AxisSetting::AxisSetting()
     : Qt3DCore::QBackendNode()
-    , m_deadZone(0.0f)
+    , m_deadZoneRadius(0.0f)
     , m_axes(0)
     , m_filter(false)
 {
@@ -71,14 +71,14 @@ AxisSetting::AxisSetting()
 void AxisSetting::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxisSetting *setting = static_cast<QAxisSetting *>(peer);
-    m_deadZone = setting->deadZone();
+    m_deadZoneRadius = setting->deadZoneRadius();
     m_axes = variantListToVector(setting->axes());
     m_filter = setting->isFilterEnabled();
 }
 
 void AxisSetting::cleanup()
 {
-    m_deadZone = 0.0f;
+    m_deadZoneRadius = 0.0f;
     m_axes.clear();
     m_filter = false;
 }
@@ -87,8 +87,8 @@ void AxisSetting::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == Qt3DCore::NodeUpdated) {
         Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("deadZone")) {
-            m_deadZone = propertyChange->value().toFloat();
+        if (propertyChange->propertyName() == QByteArrayLiteral("deadZoneRadius")) {
+            m_deadZoneRadius = propertyChange->value().toFloat();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("axes")) {
             m_axes = variantListToVector(propertyChange->value().toList());
         } else if (propertyChange->propertyName() == QByteArrayLiteral("filter")) {

@@ -237,7 +237,7 @@ float QAbstractPhysicalDeviceBackendNode::processedAxisValue(int axisIdentifier)
         }
 
         // Deadzone handling
-        const float d = axisSetting->deadZone();
+        const float d = axisSetting->deadZoneRadius();
         if (!qFuzzyIsNull(d)) {
             if (std::abs(val) <= d) {
                 val = 0.0f;

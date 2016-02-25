@@ -54,7 +54,7 @@ class QAxisSettingPrivate;
 class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(float deadZone READ deadZone WRITE setDeadZone NOTIFY deadZoneChanged)
+    Q_PROPERTY(float deadZoneRadius READ deadZoneRadius WRITE setDeadZoneRadius NOTIFY deadZoneRadiusChanged)
     Q_PROPERTY(QVariantList axes READ axes WRITE setAxes NOTIFY axesChanged)
     Q_PROPERTY(bool filter READ isFilterEnabled WRITE setFilterEnabled NOTIFY filterChanged)
 
@@ -62,17 +62,17 @@ public:
     explicit QAxisSetting(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAxisSetting();
 
-    float deadZone() const;
+    float deadZoneRadius() const;
     QVariantList axes() const;
     bool isFilterEnabled() const;
 
 public Q_SLOTS:
-    void setDeadZone(float deadZone);
+    void setDeadZoneRadius(float deadZoneRadius);
     void setAxes(const QVariantList &axes);
     void setFilterEnabled(bool enabled);
 
 Q_SIGNALS:
-    void deadZoneChanged(float deadZone);
+    void deadZoneRadiusChanged(float deadZoneRadius);
     void axesChanged(QVariantList axes);
     void filterChanged(bool filter);
 

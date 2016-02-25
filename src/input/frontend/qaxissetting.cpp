@@ -49,12 +49,12 @@ class QAxisSettingPrivate : public Qt3DCore::QNodePrivate
 public:
     QAxisSettingPrivate()
         : Qt3DCore::QNodePrivate()
-        , m_deadZone(0.0f)
+        , m_deadZoneRadius(0.0f)
         , m_axes()
         , m_filter(false)
     {}
 
-    float m_deadZone;
+    float m_deadZoneRadius;
     QVariantList m_axes;
     bool m_filter;
 };
@@ -93,10 +93,10 @@ QVariantList QAxisSetting::axes() const
     return d->m_axes;
 }
 
-float QAxisSetting::deadZone() const
+float QAxisSetting::deadZoneRadius() const
 {
     Q_D(const QAxisSetting);
-    return d->m_deadZone;
+    return d->m_deadZoneRadius;
 }
 
 bool QAxisSetting::isFilterEnabled() const
@@ -105,14 +105,14 @@ bool QAxisSetting::isFilterEnabled() const
     return d->m_filter;
 }
 
-void QAxisSetting::setDeadZone(float deadZone)
+void QAxisSetting::setDeadZoneRadius(float deadZoneRadius)
 {
     Q_D(QAxisSetting);
-    if (d->m_deadZone == deadZone)
+    if (d->m_deadZoneRadius == deadZoneRadius)
         return;
 
-    d->m_deadZone = deadZone;
-    emit deadZoneChanged(deadZone);
+    d->m_deadZoneRadius = deadZoneRadius;
+    emit deadZoneRadiusChanged(deadZoneRadius);
 }
 
 void QAxisSetting::setAxes(const QVariantList &axes)
@@ -139,7 +139,7 @@ void QAxisSetting::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
     const QAxisSetting *setting = static_cast<const QAxisSetting *>(ref);
-    d_func()->m_deadZone = setting->d_func()->m_deadZone;
+    d_func()->m_deadZoneRadius = setting->d_func()->m_deadZoneRadius;
     d_func()->m_axes = setting->d_func()->m_axes;
     d_func()->m_filter = setting->d_func()->m_filter;
 }

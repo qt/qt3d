@@ -66,7 +66,7 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    inline float deadZone() const { return m_deadZone; }
+    inline float deadZoneRadius() const { return m_deadZoneRadius; }
     inline QVector<int> axes() const { return m_axes; }
     inline bool isFilterEnabled() const { return m_filter; }
 
@@ -74,7 +74,7 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    float m_deadZone;
+    float m_deadZoneRadius;
     QVector<int> m_axes;
     bool m_filter;
 };
