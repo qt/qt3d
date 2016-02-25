@@ -56,12 +56,10 @@ public:
         : Qt3DInput::QAbstractAggregateActionInputPrivate()
         , m_timeout(0)
         , m_buttonInterval(0)
-        , m_sequential(true)
     {}
 
     int m_timeout;
     int m_buttonInterval;
-    bool m_sequential;
 };
 
 /*!
@@ -179,35 +177,6 @@ int QInputSequence::buttonInterval() const
 }
 
 /*!
-  \fn QInputSequence::sequentialChanged()
-
-  This signal is emitted when the sequential property of the input sequence is changed.
-*/
-
-/*!
-  \qmlproperty bool Qt3D.Input::InputSequence::sequential
-
-  If the QAbstractActionInput's in the input sequence must triggered in order.
-*/
-
-/*!
-    \qmlsignal Qt3D.Input::InputSequence::sequentialChanged()
-
-    This signal is emitted when the sequential property of the input sequence is changed.
-
-    The corresponding handeler is \c onSequentialChanged
-*/
-
-/*!
-    Returns true if the QAbstractActionInput's in the input sequence must triggered in order.
- */
-bool QInputSequence::sequential() const
-{
-    Q_D(const QInputSequence);
-    return d->m_sequential;
-}
-
-/*!
     Set the time in which all QAbstractActionInput's in the input sequence must triggered within.
     The time is in milliseconds
  */
@@ -233,25 +202,12 @@ void QInputSequence::setButtonInterval(int buttonInterval)
     }
 }
 
-/*!
-    Set if the QAbstractActionInput's in the input sequence must triggered in order.
- */
-void QInputSequence::setSequential(bool sequential)
-{
-    Q_D(QInputSequence);
-    if (d->m_sequential != sequential) {
-        d->m_sequential = sequential;
-        emit sequentialChanged(sequential);
-    }
-}
-
 void QInputSequence::copy(const Qt3DCore::QNode *ref)
 {
     QAbstractAggregateActionInput::copy(ref);
     const QInputSequence *input = static_cast<const QInputSequence *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
     d_func()->m_buttonInterval = input->d_func()->m_buttonInterval;
-    d_func()->m_sequential = input->d_func()->m_sequential;
 }
 
 } // Qt3DInput

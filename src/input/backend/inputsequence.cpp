@@ -55,7 +55,6 @@ InputSequence::InputSequence()
     , m_inputsToTrigger()
     , m_timeout(0)
     , m_buttonInterval(0)
-    , m_sequential(true)
     , m_startTime(0)
     , m_lastInputTime(0)
     , m_enabled(false)
@@ -68,7 +67,6 @@ void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
     m_enabled = input->isEnabled();
     m_timeout = input->timeout();
     m_buttonInterval = input->buttonInterval();
-    m_sequential = input->sequential();
     Q_FOREACH (QAbstractActionInput *i, input->inputs())
         m_inputs.push_back(i->id());
 }
@@ -81,7 +79,6 @@ void InputSequence::cleanup()
     m_startTime = 0;
     m_lastInputTime = 0;
     m_lastInputId = Qt3DCore::QNodeId();
-    m_sequential = true;
     m_inputs.clear();
     m_inputsToTrigger.clear();
 }
@@ -101,15 +98,7 @@ void InputSequence::reset()
 
 bool InputSequence::actionTriggered(Qt3DCore::QNodeId input, const qint64 currentTime)
 {
-    // If we are running the root of a sequence and input is not the first element of the sequence
-    // reset and return false
-    if (m_sequential && (!m_inputs.empty() && m_inputsToTrigger.first() != input)) {
-        if (!(input == m_lastInputId && ((currentTime - m_lastInputTime) < 200)))
-            reset();
-        return false;
-    }
-
-    // Otherwise save the last input
+    // Save the last input
     m_lastInputId = input;
     // Return false if we've spent too much time in between two sequences
     if ((m_lastInputTime != 0) && ((currentTime - m_lastInputTime) > m_buttonInterval)) {
@@ -140,8 +129,6 @@ void InputSequence::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_timeout = propertyChange->value().toInt();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("buttonInterval")) {
             m_buttonInterval = propertyChange->value().toInt();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("sequential")) {
-            m_sequential = propertyChange->value().toBool();
         }
     } else if (e->type() == Qt3DCore::NodeAdded) {
         if (propertyChange->propertyName() == QByteArrayLiteral("input")) {

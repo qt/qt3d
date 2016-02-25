@@ -56,7 +56,6 @@ class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractAggrega
     Q_OBJECT
     Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
     Q_PROPERTY(int buttonInterval READ buttonInterval WRITE setButtonInterval NOTIFY buttonIntervalChanged)
-    Q_PROPERTY(bool sequential READ sequential WRITE setSequential NOTIFY sequentialChanged)
 
 public:
     explicit QInputSequence(Qt3DCore::QNode *parent = Q_NULLPTR);
@@ -64,17 +63,14 @@ public:
 
     int timeout() const;
     int buttonInterval() const;
-    bool sequential() const;
 
 public Q_SLOTS:
     void setTimeout(int timeout);
     void setButtonInterval(int buttonInterval);
-    void setSequential(bool sequential);
 
 Q_SIGNALS:
     void timeoutChanged(int timeout);
     void buttonIntervalChanged(int buttonInterval);
-    void sequentialChanged(bool sequential);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

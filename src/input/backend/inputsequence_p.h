@@ -72,7 +72,6 @@ public:
     inline int buttonInterval() const { return m_buttonInterval; }
     inline qint64 startTime() const { return m_startTime; }
     void setStartTime(qint64 time);
-    inline bool isSequential() const { return m_sequential; }
     inline bool isEnabled() const { return m_enabled; }
     bool sequenceTriggered() const;
     void reset();
@@ -84,7 +83,6 @@ private:
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
     int m_timeout;
     int m_buttonInterval;
-    bool m_sequential;
     qint64 m_startTime;
     qint64 m_lastInputTime;
     Qt3DCore::QNodeId m_lastInputId;
