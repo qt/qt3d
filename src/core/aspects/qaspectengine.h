@@ -69,6 +69,8 @@ public:
 
     void registerAspect(QAbstractAspect *aspect);
     void registerAspect(const QString &name);
+    void unregisterAspect(QAbstractAspect *aspect);
+    void unregisterAspect(const QString &name);
 
     QVector<QAbstractAspect*> aspects() const;
 

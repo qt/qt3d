@@ -167,8 +167,9 @@ void QAspectEnginePrivate::shutdown()
 }
 
 /*!
- * Registers a new \a aspect to the AspectManager.
- */
+    Registers a new \a aspect to the AspectManager. The QAspectEngine takes
+    ownership of the aspect and will delete it when the aspect is unregistered.
+*/
 // Called in the main thread
 void QAspectEngine::registerAspect(QAbstractAspect *aspect)
 {
@@ -194,8 +195,48 @@ void QAspectEngine::registerAspect(const QString &name)
 {
     Q_D(QAspectEngine);
     QAbstractAspect *aspect = d->m_factory.createAspect(name);
-    if (aspect)
+    if (aspect) {
         registerAspect(aspect);
+        d->m_namedAspects.insert(name, aspect);
+    }
+}
+
+void QAspectEngine::unregisterAspect(QAbstractAspect *aspect)
+{
+    Q_D(QAspectEngine);
+    if (!d->m_aspects.contains(aspect)) {
+        qWarning() << "Attempting to unregister an aspect that is not registered";
+        return;
+    }
+
+    // Cleanly shutdown this aspect by setting its root entity to null which
+    // will cause its onEngineShutdown() virtual to be called to allow it to
+    // cleanup any resources. Then remove it from the QAspectManager's list
+    // of aspects.
+    // TODO: Implement this once we are able to cleanly shutdown
+
+    // Remove from our collection of named aspects (if present)
+    const auto it = std::find_if(d->m_namedAspects.begin(), d->m_namedAspects.end(),
+                                 [aspect](QAbstractAspect *v) { return v == aspect; });
+    if (it != d->m_namedAspects.end())
+        d->m_namedAspects.erase(it);
+
+    // Finally, scheduly the aspect for deletion. Do this via the event loop
+    // in case we are unregistering the aspect in response to a signal from it.
+    aspect->deleteLater();
+}
+
+void QAspectEngine::unregisterAspect(const QString &name)
+{
+    Q_D(QAspectEngine);
+    if (!d->m_namedAspects.contains(name)) {
+        qWarning() << "Attempting to unregister an aspect that is not registered";
+        return;
+    }
+
+    // Delegate unregistering and removal to the overload
+    QAbstractAspect *aspect = d->m_namedAspects.value(name);
+    unregisterAspect(aspect);
 }
 
 QVector<QAbstractAspect *> QAspectEngine::aspects() const

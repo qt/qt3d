@@ -79,6 +79,7 @@ public:
     QScene *m_scene;
     QSharedPointer<QEntity> m_root;
     QVector<QAbstractAspect*> m_aspects;
+    QHash<QString, QAbstractAspect *> m_namedAspects;
 
     void initialize();
     void shutdown();
