@@ -71,14 +71,14 @@ AxisInput::AxisInput()
 
 // AxisInput can have two types of behavior
 // Axis input with source device and axis -> will retrieve the axis value from the source device
-// Axis input with source device and scale + keys -> will be used as a multiplication factor with other AxisInput
+// Axis input with source device and scale + buttons -> will be used as a multiplication factor with other AxisInput
 void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxisInput *input = static_cast<QAxisInput *>(peer);
     m_axis = input->axis();
     m_scale = input->scale();
     m_enabled = input->isEnabled();
-    m_keys = listToIntArray(input->keys());
+    m_buttons = listToIntArray(input->buttons());
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
 }
@@ -88,7 +88,7 @@ void AxisInput::cleanup()
     m_axis = 0;
     m_enabled = false;
     m_scale = 0.0f;
-    m_keys.clear();
+    m_buttons.clear();
     m_sourceDevice = Qt3DCore::QNodeId();
 }
 
@@ -104,8 +104,8 @@ void AxisInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_axis = propertyChange->value().toInt();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().toBool();
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("keys")) {
-            m_keys = listToIntArray(propertyChange->value().toList());
+        } else if (propertyChange->propertyName() == QByteArrayLiteral("buttons")) {
+            m_buttons = listToIntArray(propertyChange->value().toList());
         }
     }
 }

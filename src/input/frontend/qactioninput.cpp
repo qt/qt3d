@@ -56,7 +56,7 @@ public:
         , m_sourceDevice(Q_NULLPTR)
     {}
 
-    QVariantList m_keys;
+    QVariantList m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;
 };
 
@@ -64,7 +64,7 @@ public:
     \class Qt3DInput::QActionInput
     \inmodule Qt3DInput
     \inherits QAbstractActionInput
-    \brief QActionInput stores Device and Keys used to trigger an input event.
+    \brief QActionInput stores Device and Buttons used to trigger an input event.
 
     \since 5.7
 */
@@ -76,19 +76,19 @@ public:
     \instantiates Qt3DInput::QActionInput
     \brief QML frontend for the Qt3DInput::QActionInput C++ class.
 
-    Links a physical device and selected keys on it which can trigger this action.
+    Links a physical device and selected buttons on it which can trigger this action.
 
-    Each Action input can be triggered by one or many keys on a source device
+    Each Action input can be triggered by one or many buttons on a source device
     \qml
     ActionInput {
       sourceDevice: keyboardSourceDevice
-      keys: [Qt.Key_A]
+      buttons: [Qt.Key_A]
     }
     \endqml
    \qml
     ActionInput {
       sourceDevice: keyboardSourceDevice
-      keys: [Qt.Key_A,Qt.Key_B]
+      buttons: [Qt.Key_A,Qt.Key_B]
     }
     \endqml
     \since 5.7
@@ -112,12 +112,12 @@ QActionInput::~QActionInput()
 }
 
 /*!
-    Return the Keys to trigger the QActionInput instance.
+    Return the Buttons to trigger the QActionInput instance.
  */
-QVariantList QActionInput::keys() const
+QVariantList QActionInput::buttons() const
 {
     Q_D(const QActionInput);
-    return d->m_keys;
+    return d->m_buttons;
 }
 
 /*!
@@ -168,34 +168,34 @@ QAbstractPhysicalDevice *QActionInput::sourceDevice() const
 }
 
 /*!
-  \fn QAbstractPhysicalDevice::keysChanged()
+  \fn QAbstractPhysicalDevice::buttonsChanged()
 
-  This signal is emitted when the keys ascociated with the action input is changed.
+  This signal is emitted when the buttons ascociated with the action input is changed.
 */
 
 /*!
-    \qmlproperty QVariantList Qt3D.Input::ActionInput::keys
+    \qmlproperty QVariantList Qt3D.Input::ActionInput::buttons
 
-    The Keys that can trigger this Action
+    The Buttons that can trigger this Action
 */
 
 /*!
-    \qmlsignal Qt3D.Input::ActionInput::keysChanged()
+    \qmlsignal Qt3D.Input::ActionInput::buttonsChanged()
 
-    This signal is emitted when the keys ascociated with the action input is changed.
+    This signal is emitted when the buttons ascociated with the action input is changed.
 
-    The corresponding handeler is \c onkeysChanged
+    The corresponding handeler is \c onbuttonsChanged
 */
 
 /*!
-    Set the keys to trigger the QActionInput instance.
+    Set the buttons to trigger the QActionInput instance.
  */
-void QActionInput::setKeys(const QVariantList &keys)
+void QActionInput::setButtons(const QVariantList &buttons)
 {
     Q_D(QActionInput);
-    if (d->m_keys != keys) {
-        d->m_keys = keys;
-        emit keysChanged(keys);
+    if (d->m_buttons != buttons) {
+        d->m_buttons = buttons;
+        emit buttonsChanged(buttons);
     }
 }
 
@@ -204,7 +204,7 @@ void QActionInput::copy(const Qt3DCore::QNode *ref)
     QNode::copy(ref);
     const QActionInput *input = static_cast<const QActionInput *>(ref);
     d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
-    d_func()->m_keys = input->d_func()->m_keys;
+    d_func()->m_buttons = input->d_func()->m_buttons;
 }
 
 } // Qt3DInput

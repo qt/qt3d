@@ -93,7 +93,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        keys: [MouseController.Left]
+                        buttons: [MouseController.Left]
                     }
                 ]
             },
@@ -102,7 +102,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        keys: [MouseController.Right]
+                        buttons: [MouseController.Right]
                     }
                 ]
             },
@@ -111,7 +111,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Shift]
+                        buttons: [Qt.Key_Shift]
                     }
                 ]
             }
@@ -144,12 +144,12 @@ Entity {
                 inputs: [
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Left]
+                        buttons: [Qt.Key_Left]
                         scale: -1.0
                     },
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Right]
+                        buttons: [Qt.Key_Right]
                         scale: 1.0
                     }
                 ]
@@ -159,12 +159,12 @@ Entity {
                 inputs: [
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Up]
+                        buttons: [Qt.Key_Up]
                         scale: 1.0
                     },
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Down]
+                        buttons: [Qt.Key_Down]
                         scale: -1.0
                     }
                 ]
@@ -174,12 +174,12 @@ Entity {
                 inputs: [
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageUp]
+                        buttons: [Qt.Key_PageUp]
                         scale: 1.0
                     },
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageDown]
+                        buttons: [Qt.Key_PageDown]
                         scale: -1.0
                     }
                 ]

@@ -61,14 +61,14 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed;
 
         Qt3DInput::QAxisInput *axisInputWithKeysAndAxis = new Qt3DInput::QAxisInput();
-        axisInputWithKeysAndAxis->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        axisInputWithKeysAndAxis->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         axisInputWithKeysAndAxis->setAxis(383);
         axisInputWithKeysAndAxis->setScale(327.0f);
         QTest::newRow("axisInputWithKeys") << axisInputWithKeysAndAxis;
 
         Qt3DInput::QAxisInput *axisInputWithKeysAndSourceDevice = new Qt3DInput::QAxisInput();
         TestDevice *device = new TestDevice();
-        axisInputWithKeysAndSourceDevice->setKeys(QVariantList() << QVariant((1 << 1) | (1 << 5)));
+        axisInputWithKeysAndSourceDevice->setButtons(QVariantList() << QVariant((1 << 1) | (1 << 5)));
         axisInputWithKeysAndSourceDevice->setSourceDevice(device);
         axisInputWithKeysAndSourceDevice->setAxis(427);
         axisInputWithKeysAndAxis->setScale(355.0f);
@@ -87,7 +87,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(axisInput->id(), clone->id());
-        QCOMPARE(axisInput->keys(), clone->keys());
+        QCOMPARE(axisInput->buttons(), clone->buttons());
         QCOMPARE(axisInput->axis(), clone->axis());
         QCOMPARE(axisInput->scale(), clone->scale());
 
@@ -104,15 +104,15 @@ private Q_SLOTS:
         TestArbiter arbiter(axisInput.data());
 
         // WHEN
-        QVariantList keys = QVariantList() << QVariant(555);
-        axisInput->setKeys(keys);
+        QVariantList buttons = QVariantList() << QVariant(555);
+        axisInput->setButtons(buttons);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "keys");
-        QCOMPARE(change->value().toList(), keys);
+        QCOMPARE(change->propertyName(), "buttons");
+        QCOMPARE(change->value().toList(), buttons);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

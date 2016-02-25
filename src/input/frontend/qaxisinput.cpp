@@ -55,7 +55,7 @@ public:
         , m_axis(-1)
     {}
 
-    QVariantList m_keys;
+    QVariantList m_buttons;
     QAbstractPhysicalDevice *m_sourceDevice;
     float m_scale;
     int m_axis;
@@ -136,19 +136,19 @@ int QAxisInput::axis() const
     return d->m_axis;
 }
 
-void QAxisInput::setKeys(const QVariantList &keys)
+void QAxisInput::setButtons(const QVariantList &buttons)
 {
     Q_D(QAxisInput);
-    if (keys != d->m_keys) {
-        d->m_keys = keys;
-        emit keysChanged(keys);
+    if (buttons != d->m_buttons) {
+        d->m_buttons = buttons;
+        emit buttonsChanged(buttons);
     }
 }
 
-QVariantList QAxisInput::keys() const
+QVariantList QAxisInput::buttons() const
 {
     Q_D(const QAxisInput);
-    return d->m_keys;
+    return d->m_buttons;
 }
 
 void QAxisInput::copy(const Qt3DCore::QNode *ref)
@@ -156,7 +156,7 @@ void QAxisInput::copy(const Qt3DCore::QNode *ref)
     QNode::copy(ref);
     const QAxisInput *input = static_cast<const QAxisInput *>(ref);
     d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
-    d_func()->m_keys = input->d_func()->m_keys;
+    d_func()->m_buttons = input->d_func()->m_buttons;
     d_func()->m_scale = input->d_func()->m_scale;
     d_func()->m_axis = input->d_func()->m_axis;
 }

@@ -67,13 +67,13 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void cleanup();
 
-    inline QVector<int> keys() const { return m_keys; }
+    inline QVector<int> buttons() const { return m_buttons; }
     inline Qt3DCore::QNodeId sourceDevice() const { return m_sourceDevice; }
     inline bool isEnabled() const { return m_enabled; }
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QVector<int> m_keys;
+    QVector<int> m_buttons;
     Qt3DCore::QNodeId m_sourceDevice;
     bool m_enabled;
 };

@@ -55,22 +55,22 @@ class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInp
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
-    Q_PROPERTY(QVariantList keys READ keys WRITE setKeys NOTIFY keysChanged)
+    Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
 
 public:
     explicit QActionInput(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QActionInput();
 
     QAbstractPhysicalDevice *sourceDevice() const;
-    QVariantList keys() const;
+    QVariantList buttons() const;
 
 public Q_SLOTS:
     void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
-    void setKeys(const QVariantList &keys);
+    void setButtons(const QVariantList &buttons);
 
 Q_SIGNALS:
     void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
-    void keysChanged(const QVariantList &keys);
+    void buttonsChanged(const QVariantList &buttons);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

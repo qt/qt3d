@@ -60,7 +60,7 @@ private Q_SLOTS:
         Qt3DInput::QAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setKeys(QVariantList() << QVariant(1 << 8));
+        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
         axisInput.setAxis(327);
         axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
@@ -71,7 +71,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(backendAxisInput.peerUuid(), axisInput.id());
         QCOMPARE(backendAxisInput.isEnabled(), axisInput.isEnabled());
-        compareKeys(backendAxisInput.keys(), axisInput.keys());
+        compareKeys(backendAxisInput.buttons(), axisInput.buttons());
         QCOMPARE(backendAxisInput.axis(), axisInput.axis());
         QCOMPARE(backendAxisInput.scale(), axisInput.scale());
         QCOMPARE(backendAxisInput.sourceDevice(), sourceDevice.id());
@@ -85,7 +85,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(backendAxisInput.peerUuid().isNull());
         QCOMPARE(backendAxisInput.scale(), 0.0f);
-        QVERIFY(backendAxisInput.keys().isEmpty());
+        QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);
         QCOMPARE(backendAxisInput.isEnabled(), false);
         QCOMPARE(backendAxisInput.sourceDevice(), Qt3DCore::QNodeId());
@@ -94,7 +94,7 @@ private Q_SLOTS:
         Qt3DInput::QAxisInput axisInput;
         TestDevice sourceDevice;
 
-        axisInput.setKeys(QVariantList() << QVariant(1 << 8));
+        axisInput.setButtons(QVariantList() << QVariant(1 << 8));
         axisInput.setAxis(327);
         axisInput.setScale(0.5f);
         axisInput.setSourceDevice(&sourceDevice);
@@ -106,7 +106,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(backendAxisInput.peerUuid().isNull());
         QCOMPARE(backendAxisInput.scale(), 0.0f);
-        QVERIFY(backendAxisInput.keys().isEmpty());
+        QVERIFY(backendAxisInput.buttons().isEmpty());
         QCOMPARE(backendAxisInput.axis(), 0);
         QCOMPARE(backendAxisInput.isEnabled(), false);
         QCOMPARE(backendAxisInput.sourceDevice(), Qt3DCore::QNodeId());
@@ -129,11 +129,11 @@ private Q_SLOTS:
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariantList() << QVariant(64));
-        updateChange->setPropertyName("keys");
+        updateChange->setPropertyName("buttons");
         backendAxisInput.sceneChangeEvent(updateChange);
 
         // THEN
-        compareKeys(backendAxisInput.keys(), QVariantList() << QVariant(64));
+        compareKeys(backendAxisInput.buttons(), QVariantList() << QVariant(64));
 
         // WHEN
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));

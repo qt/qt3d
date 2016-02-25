@@ -89,14 +89,14 @@ Entity {
                     id: leftMouseButtonAction
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        keys: [MouseController.Left]
+                        buttons: [MouseController.Left]
                     }
                 },
                 Action {
                     id: fineMotionAction
                     ActionInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Shift]
+                        buttons: [Qt.Key_Shift]
                     }
                 }
             ] // actions
@@ -122,12 +122,12 @@ Entity {
                     id: txAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Left]
+                        buttons: [Qt.Key_Left]
                         scale: -1.0
                     }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Right]
+                        buttons: [Qt.Key_Right]
                         scale: 1.0
                     }
                 },
@@ -135,12 +135,12 @@ Entity {
                     id: tzAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Up]
+                        buttons: [Qt.Key_Up]
                         scale: 1.0
                     }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_Down]
+                        buttons: [Qt.Key_Down]
                         scale: -1.0
                     }
                 },
@@ -148,12 +148,12 @@ Entity {
                     id: tyAxis
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageUp]
+                        buttons: [Qt.Key_PageUp]
                         scale: 1.0
                     }
                     AxisInput {
                         sourceDevice: keyboardSourceDevice
-                        keys: [Qt.Key_PageDown]
+                        buttons: [Qt.Key_PageDown]
                         scale: -1.0
                     }
                 }

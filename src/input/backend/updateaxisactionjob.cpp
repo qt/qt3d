@@ -51,16 +51,16 @@ namespace Input {
 
 namespace {
 
-bool anyOfRequiredKeysPressed(const QVector<int> &keys, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
+bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
 {
-    bool validKeyWasPressed = false;
-    Q_FOREACH (int key, keys) {
-        if (physicalDeviceBackend->isButtonPressed(key)) {
-            validKeyWasPressed = true;
+    bool validButtonWasPressed = false;
+    Q_FOREACH (int button, buttons) {
+        if (physicalDeviceBackend->isButtonPressed(button)) {
+            validButtonWasPressed = true;
             break;
         }
     }
-    return validKeyWasPressed;
+    return validButtonWasPressed;
 }
 
 } // anonymous
@@ -109,7 +109,7 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
         if (physicalDeviceBackend != Q_NULLPTR) {
             // Update the value
-            return anyOfRequiredKeysPressed(actionInput->keys(), physicalDeviceBackend);
+            return anyOfRequiredButtonsPressed(actionInput->buttons(), physicalDeviceBackend);
         }
     } else if (m_handler->inputSequenceManager()->lookupResource(actionInputId)) {
         InputSequence *inputSequence = m_handler->inputSequenceManager()->lookupResource(actionInputId);
@@ -172,13 +172,13 @@ void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 
             if (physicalDeviceBackend != Q_NULLPTR) {
                 // Update the value
-                const QVector<int> keys = axisInput->keys();
+                const QVector<int> buttons = axisInput->buttons();
                 // Axis was specified -> we take this as the base value
                 if (axisInput->axis() != -1)
                     axisValue += physicalDeviceBackend->processedAxisValue(axisInput->axis());
-                else if (!keys.isEmpty()) {
+                else if (!buttons.isEmpty()) {
                     // TO DO: Linear Curver for the progression of the scale value
-                    if (anyOfRequiredKeysPressed(keys, physicalDeviceBackend))
+                    if (anyOfRequiredButtonsPressed(buttons, physicalDeviceBackend))
                         axisValue += axisInput->scale();
                 }
             }
