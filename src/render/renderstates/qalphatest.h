@@ -52,11 +52,11 @@ class QAlphaTestPrivate;
 class QT3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(AlphaFunc func READ func WRITE setFunc NOTIFY funcChanged)
+    Q_PROPERTY(AlphaFunction alphaFunction READ alphaFunction WRITE setAlphaFunction NOTIFY alphaFunctionChanged)
     Q_PROPERTY(float clamp READ clamp WRITE setClamp NOTIFY clampChanged)
 public:
 
-    enum AlphaFunc {
+    enum AlphaFunction {
         Never = 0x0200,
         Always = 0x0207,
         Less = 0x0201,
@@ -66,20 +66,20 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(AlphaFunc)
+    Q_ENUM(AlphaFunction)
 
     explicit QAlphaTest(Qt3DCore::QNode *parent = 0);
     ~QAlphaTest();
 
-    AlphaFunc func() const;
+    AlphaFunction alphaFunction() const;
     float clamp() const;
 
 public Q_SLOTS:
-    void setFunc(AlphaFunc func);
+    void setAlphaFunction(AlphaFunction alphaFunction);
     void setClamp(float clamp);
 
 Q_SIGNALS:
-    void funcChanged(AlphaFunc func);
+    void alphaFunctionChanged(AlphaFunction alphaFunction);
     void clampChanged(float clamp);
 
 protected:

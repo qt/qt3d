@@ -52,13 +52,13 @@ class QAlphaTestPrivate : public QRenderStatePrivate
 public:
     QAlphaTestPrivate()
         : QRenderStatePrivate(QRenderState::AlphaTest)
-        , m_func(QAlphaTest::Never)
+        , m_alphaFunction(QAlphaTest::Never)
         , m_clamp(0.0f)
     {
     }
 
     Q_DECLARE_PUBLIC(QAlphaTest)
-    QAlphaTest::AlphaFunc m_func;
+    QAlphaTest::AlphaFunction m_alphaFunction;
     float m_clamp;
 };
 
@@ -76,22 +76,22 @@ void QAlphaTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QAlphaTest *refState = static_cast<const QAlphaTest*>(ref);
-    d_func()->m_func = refState->d_func()->m_func;
+    d_func()->m_alphaFunction = refState->d_func()->m_alphaFunction;
     d_func()->m_clamp = refState->d_func()->m_clamp;
 }
 
-QAlphaTest::AlphaFunc QAlphaTest::func() const
+QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
 {
     Q_D(const QAlphaTest);
-    return d->m_func;
+    return d->m_alphaFunction;
 }
 
-void QAlphaTest::setFunc(QAlphaTest::AlphaFunc func)
+void QAlphaTest::setAlphaFunction(QAlphaTest::AlphaFunction alphaFunction)
 {
     Q_D(QAlphaTest);
-    if (d->m_func != func) {
-        d->m_func = func;
-        emit funcChanged(func);
+    if (d->m_alphaFunction != alphaFunction) {
+        d->m_alphaFunction = alphaFunction;
+        emit alphaFunctionChanged(alphaFunction);
     }
 }
 

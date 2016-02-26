@@ -262,7 +262,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     switch (renderState->type()) {
     case QRenderState::AlphaTest: {
         QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
-        return getOrCreateRenderStateImpl<AlphaFunc>(alphaTest->func(), alphaTest->clamp());
+        return getOrCreateRenderStateImpl<AlphaFunc>(alphaTest->alphaFunction(), alphaTest->clamp());
     }
     case QRenderState::BlendEquation: {
         QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
