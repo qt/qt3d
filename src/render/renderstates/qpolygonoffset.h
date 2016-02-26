@@ -52,21 +52,21 @@ class QT3DRENDERSHARED_EXPORT QPolygonOffset : public QRenderState
 {
     Q_OBJECT
 
-    Q_PROPERTY(float factor READ factor WRITE setFactor NOTIFY factorChanged)
+    Q_PROPERTY(float scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
     Q_PROPERTY(float units READ units WRITE setUnits NOTIFY unitsChanged)
 public:
     explicit QPolygonOffset(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPolygonOffset();
 
-    float factor() const;
+    float scaleFactor() const;
     float units() const;
 
 public Q_SLOTS:
-    void setFactor(float factor);
+    void setScaleFactor(float scaleFactor);
     void setUnits(float units);
 
 Q_SIGNALS:
-    void factorChanged(float factor);
+    void scaleFactorChanged(float scaleFactor);
     void unitsChanged(float units);
 
 protected:

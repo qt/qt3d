@@ -323,7 +323,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::PolygonOffset: {
         QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
-        return getOrCreateRenderStateImpl<PolygonOffset>(polygonOffset->factor(),
+        return getOrCreateRenderStateImpl<PolygonOffset>(polygonOffset->scaleFactor(),
                                           polygonOffset->units());
     }
     case QRenderState::ColorMask: {

@@ -49,12 +49,12 @@ class QPolygonOffsetPrivate : public QRenderStatePrivate
 public:
     QPolygonOffsetPrivate()
         : QRenderStatePrivate(QRenderState::PolygonOffset)
-        , m_factor(0)
+        , m_scaleFactor(0)
         , m_units(0)
     {
     }
 
-    float m_factor;
+    float m_scaleFactor;
     float m_units;
 
     Q_DECLARE_PUBLIC(QPolygonOffset)
@@ -70,18 +70,18 @@ QPolygonOffset::~QPolygonOffset()
     QNode::cleanup();
 }
 
-float QPolygonOffset::factor() const
+float QPolygonOffset::scaleFactor() const
 {
     Q_D(const QPolygonOffset);
-    return d->m_factor;
+    return d->m_scaleFactor;
 }
 
-void QPolygonOffset::setFactor(float factor)
+void QPolygonOffset::setScaleFactor(float scaleFactor)
 {
     Q_D(QPolygonOffset);
-    if (d->m_factor != factor) {
-        d->m_factor = factor;
-        emit factorChanged(d->m_factor);
+    if (d->m_scaleFactor != scaleFactor) {
+        d->m_scaleFactor = scaleFactor;
+        emit scaleFactorChanged(d->m_scaleFactor);
     }
 }
 
@@ -104,7 +104,7 @@ void QPolygonOffset::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
-    d_func()->m_factor = refState->d_func()->m_factor;
+    d_func()->m_scaleFactor = refState->d_func()->m_scaleFactor;
     d_func()->m_units = refState->d_func()->m_units;
 }
 
