@@ -43,6 +43,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <Qt3DCore/qt3dcore_global.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,8 @@ public:
 
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = 0);
+
+    QNodeId rootEntityId() const Q_DECL_NOEXCEPT;
 
     template<class Frontend>
     void registerBackendType(const QBackendNodeMapperPtr &functor);

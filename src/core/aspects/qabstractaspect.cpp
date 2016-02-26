@@ -55,6 +55,7 @@ namespace Qt3DCore {
 QAbstractAspectPrivate::QAbstractAspectPrivate()
     : QObjectPrivate()
     , m_root(Q_NULLPTR)
+    , m_rootId()
     , m_aspectManager(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
@@ -96,6 +97,13 @@ QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
 {
 }
+
+QNodeId QAbstractAspect::rootEntityId() const Q_DECL_NOEXCEPT
+{
+    Q_D(const QAbstractAspect);
+    return d->m_rootId;
+}
+
 /*!
     Registers backend.
 */
@@ -198,6 +206,7 @@ void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
         return;
 
     m_root = rootObject;
+    m_rootId = rootObject->id();
 
     QNodeVisitor visitor;
     visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);

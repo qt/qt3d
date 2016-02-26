@@ -96,6 +96,7 @@ public:
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;
+    QNodeId m_rootId;
     QAspectManager *m_aspectManager;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_arbiter;
