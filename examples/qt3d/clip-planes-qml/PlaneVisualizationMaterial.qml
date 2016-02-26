@@ -101,7 +101,7 @@ Material {
                             srcRGB: BlendState.SrcAlpha
                             dstRGB: BlendState.OneMinusSrcAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.FuncAdd}
                     ]
                     annotations: Annotation { name: "pass"; value: "material" }
                 }
@@ -123,7 +123,7 @@ Material {
                             srcRGB: BlendState.SrcAlpha
                             dstRGB: BlendState.OneMinusSrcAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
                     annotations: Annotation { name: "pass"; value: "material" }
                 }

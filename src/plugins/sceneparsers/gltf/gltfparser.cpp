@@ -1474,7 +1474,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
         type = GL_BLEND;
         //TODO: support settings blendEquation alpha
         QBlendEquation *blendEquation = new QBlendEquation;
-        blendEquation->setMode((QBlendEquation::BlendMode)values.at(0).toInt(GL_FUNC_ADD));
+        blendEquation->setBlendFunction((QBlendEquation::BlendFunction)values.at(0).toInt(GL_FUNC_ADD));
         return blendEquation;
     }
 

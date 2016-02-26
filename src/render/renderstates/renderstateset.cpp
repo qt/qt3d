@@ -266,7 +266,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::BlendEquation: {
         QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
-        return getOrCreateRenderStateImpl<BlendEquation>(blendEquation->mode());
+        return getOrCreateRenderStateImpl<BlendEquation>(blendEquation->blendFunction());
     }
     case QRenderState::BlendState: {
         QBlendState *blendState = static_cast<QBlendState *>(renderState);

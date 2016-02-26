@@ -127,7 +127,7 @@ void QPhongAlphaMaterialPrivate::init()
     m_depthMask->setMask(false);
     m_blendState->setSrcRGB(QBlendState::SrcAlpha);
     m_blendState->setDstRGB(QBlendState::OneMinusSrcAlpha);
-    m_blendEquation->setMode(QBlendEquation::FuncAdd);
+    m_blendEquation->setBlendFunction(QBlendEquation::Add);
 
     m_phongAlphaGL3RenderPass->setShaderProgram(m_phongAlphaGL3Shader);
     m_phongAlphaGL2RenderPass->setShaderProgram(m_phongAlphaGL2ES2Shader);

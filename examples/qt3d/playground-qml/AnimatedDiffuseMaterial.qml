@@ -179,7 +179,7 @@ Material {
                         annotations : [Annotation {name : "Name"; value : "Texture" }]
                         bindings: ParameterMapping {parameterName: "texture"; shaderVariableName: "tex"; bindingType: ParameterMapping.Uniform}
                         renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
-                            BlendEquation {mode: BlendEquation.FuncAdd},
+                            BlendEquation {blendFunction: BlendEquation.Add},
                             CullFace { mode : CullFace.Back },
                             DepthTest { depthFunction : DepthTest.LessOrEqual}
                         ]

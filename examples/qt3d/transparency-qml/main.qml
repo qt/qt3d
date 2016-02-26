@@ -178,7 +178,7 @@ Entity {
                                 srcRGB: BlendState.SrcAlpha
                                 dstRGB: BlendState.OneMinusSrcAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong
@@ -203,7 +203,7 @@ Entity {
                                 srcRGB: BlendState.SrcAlpha
                                 dstRGB: BlendState.OneMinusSrcAlpha
                             }
-                            ,BlendEquation {mode: BlendEquation.FuncAdd}
+                            ,BlendEquation {blendFunction: BlendEquation.Add}
                         ]
 
                         shaderProgram: alphaPhong

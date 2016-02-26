@@ -95,7 +95,7 @@ Material {
                             srcRGB: BlendState.SrcAlpha
                             dstRGB: BlendState.OneMinusSrcAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
                 }
             },
@@ -117,7 +117,7 @@ Material {
                             srcRGB: BlendState.SrcAlpha
                             dstRGB: BlendState.OneMinusSrcAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
                 }
             },
@@ -139,7 +139,7 @@ Material {
                             srcRGB: BlendState.SrcAlpha
                             dstRGB: BlendState.OneMinusSrcAlpha
                         },
-                        BlendEquation {mode: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
                 }
             }

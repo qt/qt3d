@@ -52,19 +52,19 @@ class QBlendEquationPrivate : public QRenderStatePrivate
 public:
     QBlendEquationPrivate()
         : QRenderStatePrivate(QRenderState::BlendEquation)
-        , m_mode(QBlendEquation::FuncAdd)
+        , m_blendFunction(QBlendEquation::Add)
     {
     }
 
     Q_DECLARE_PUBLIC(QBlendEquation)
-    QBlendEquation::BlendMode m_mode;
+    QBlendEquation::BlendFunction m_blendFunction;
 };
 
 void QBlendEquation::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QBlendEquation *refState = reinterpret_cast<const QBlendEquation*>(ref);
-    d_func()->m_mode = refState->d_func()->m_mode;
+    d_func()->m_blendFunction = refState->d_func()->m_blendFunction;
 }
 
 QBlendEquation::QBlendEquation(QNode *parent)
@@ -77,18 +77,18 @@ QBlendEquation::~QBlendEquation()
     QNode::cleanup();
 }
 
-QBlendEquation::BlendMode QBlendEquation::mode() const
+QBlendEquation::BlendFunction QBlendEquation::blendFunction() const
 {
     Q_D(const QBlendEquation);
-    return d->m_mode;
+    return d->m_blendFunction;
 }
 
-void QBlendEquation::setMode(QBlendEquation::BlendMode mode)
+void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunction)
 {
     Q_D(QBlendEquation);
-    if (d->m_mode != mode) {
-        d->m_mode = mode;
-        emit modeChanged(mode);
+    if (d->m_blendFunction != blendFunction) {
+        d->m_blendFunction = blendFunction;
+        emit blendFunctionChanged(blendFunction);
     }
 }
 
