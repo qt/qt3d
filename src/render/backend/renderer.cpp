@@ -479,12 +479,36 @@ void Renderer::render()
 
 void Renderer::doRender()
 {
-    // Render using current device state and renderer configuration
-    const bool submissionSucceeded = submitRenderViews();
+    bool submissionSucceeded = false;
+    uint lastBoundFBOId = 0;
 
-    // Note: submitRenderViews returns false when
+    if (isReadyToSubmit()) {
+        // Lock the mutex to protect access to m_surface and check if we are still set
+        // to the running state and that we have a valid surface on which to draw
+        // TO DO: Is that still needed given the surface changes
+        QMutexLocker locker(&m_mutex);
+        const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
+
+        if (canRender() && (submissionSucceeded = renderViews.size() > 0) == true) {
+            // Clear all dirty flags but Compute so that
+            // we still render every frame when a compute shader is used in a scene
+            BackendNodeDirtySet changesToUnset = m_changeSet;
+            if (changesToUnset.testFlag(Renderer::ComputeDirty))
+                changesToUnset.setFlag(Renderer::ComputeDirty, false);
+            clearDirtyBits(changesToUnset);
+
+            // Render using current device state and renderer configuration
+            lastBoundFBOId = submitRenderViews(renderViews);
+        }
+
+        // Delete all the RenderViews which will clear the allocators
+        // that were used for their allocation
+        qDeleteAll(renderViews);
+    }
+
+    // Note: submissionSucceeded is false when
     // * we cannot render because a shutdown has been scheduled
-    // * the renderview is incomplete (only when rendering with a Scene3D)
+    // * the renderqueue is incomplete (only when rendering with a Scene3D)
     // Otherwise returns true even for cases like
     // * No render view
     // * No surface set
@@ -518,6 +542,13 @@ void Renderer::doRender()
         // In turn this will allow the aspect manager to request a new set of jobs
         // to be performed for each aspect
         m_vsyncFrameAdvanceService->proceedToNextFrame();
+
+        // Perform the last swapBuffers calls after the proceedToNextFrame
+        // as this allows us to gain a bit of time for the preparation of the
+        // next frame
+        // Finish up with last surface used in the list of RenderViews
+        if (submissionSucceeded)
+            m_graphicsContext->endDrawing(lastBoundFBOId == m_graphicsContext->defaultFBO());
     }
 }
 
@@ -554,8 +585,7 @@ bool Renderer::canRender() const
     return true;
 }
 
-// Happens in RenderThread context when all RenderViewJobs are done
-bool Renderer::submitRenderViews()
+bool Renderer::isReadyToSubmit()
 {
     // If we are using a render thread, make sure that
     // we've been told to render before rendering
@@ -567,7 +597,6 @@ bool Renderer::submitRenderViews()
         // The case of shutdown should have been handled just before
         Q_ASSERT(m_renderQueue->isFrameQueueComplete());
     } else {
-
         // When using synchronous rendering (QtQuick)
         // We are not sure that the frame queue is actually complete
         // Since a call to render may not be synched with the completions
@@ -578,41 +607,26 @@ bool Renderer::submitRenderViews()
         if (!m_renderQueue->isFrameQueueComplete())
             return false;
     }
+    return true;
+}
 
+// Happens in RenderThread context when all RenderViewJobs are done
+// Returns the id of the last bound FBO
+uint Renderer::submitRenderViews(const QVector<Render::RenderView *> &renderViews)
+{
     QElapsedTimer timer;
     quint64 queueElapsed = 0;
     timer.start();
-
-    // Lock the mutex to protect access to m_surface and check if we are still set
-    // to the running state and that we have a valid surface on which to draw
-    // TO DO: Is that still needed given the surface changes
-    QMutexLocker locker(&m_mutex);
-    const QVector<Render::RenderView *> renderViews = m_renderQueue->nextFrameQueue();
-    if (!canRender()) {
-        qDeleteAll(renderViews);
-        return false;
-    }
 
     const int renderViewsCount = renderViews.size();
     quint64 frameElapsed = queueElapsed;
     m_lastFrameCorrect.store(1);    // everything fine until now.....
 
-    // Clear all dirty flags but Compute so that
-    // we still render every frame when a compute shader is used in a scene
-    BackendNodeDirtySet changesToUnset = m_changeSet;
-    if (changesToUnset.testFlag(Renderer::ComputeDirty))
-        changesToUnset.setFlag(Renderer::ComputeDirty, false);
-    clearDirtyBits(changesToUnset);
-
-    // Early return if there's actually nothing to render
-    if (renderViewsCount <= 0)
-        return true;
-
     qCDebug(Memory) << Q_FUNC_INFO << "rendering frame ";
 
     // We might not want to render on the default FBO
     bool boundFboIdValid = false;
-    GLuint boundFboId = 0;
+    uint lastBoundFBOId = 0;
     QColor previousClearColor = renderViews.first()->clearColor();
     QSurface *surface = Q_NULLPTR;
     QSurface *previousSurface = Q_NULLPTR;
@@ -636,7 +650,7 @@ bool Renderer::submitRenderViews()
             continue;
 
         if (surface != previousSurface && previousSurface)
-            m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
+            m_graphicsContext->endDrawing(lastBoundFBOId == m_graphicsContext->defaultFBO());
 
         if (surface != previousSurface) {
             // If we can't make the context current on the surface, skip to the
@@ -650,7 +664,7 @@ bool Renderer::submitRenderViews()
 
             if (!boundFboIdValid) {
                 boundFboIdValid = true;
-                boundFboId = m_graphicsContext->boundFrameBufferObject();
+                lastBoundFBOId = m_graphicsContext->boundFrameBufferObject();
             }
 
             // Reset state to the default state
@@ -665,7 +679,8 @@ bool Renderer::submitRenderViews()
         // Set RenderTarget ...
         // Activate RenderTarget
         m_graphicsContext->activateRenderTarget(nodeManagers()->data<RenderTarget, RenderTargetManager>(renderView->renderTargetHandle()),
-                                                renderView->attachmentPack(), boundFboId);
+                                                renderView->attachmentPack(),
+                                                lastBoundFBOId);
 
         // Set clear color if different
         if (previousClearColor != renderView->clearColor()) {
@@ -697,19 +712,13 @@ bool Renderer::submitRenderViews()
         // defaultRenderStateSet
         if (m_graphicsContext->currentStateSet() != m_defaultRenderStateSet)
             m_graphicsContext->setCurrentStateSet(m_defaultRenderStateSet);
-
-        // Finish up with last surface used in the list of RenderViews
-        m_graphicsContext->endDrawing(boundFboId == m_graphicsContext->defaultFBO());
     }
-    // Delete all the RenderViews which will clear the allocators
-    // that were used for their allocation
-    qDeleteAll(renderViews);
 
     queueElapsed = timer.elapsed() - queueElapsed;
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission of Queue in " << queueElapsed << "ms <=> " << queueElapsed / renderViewsCount << "ms per RenderView <=> Avg " << 1000.0f / (queueElapsed * 1.0f/ renderViewsCount * 1.0f) << " RenderView/s";
     qCDebug(Rendering) << Q_FUNC_INFO << "Submission Completed in " << timer.elapsed() << "ms";
 
-    return true;
+    return lastBoundFBOId;
 }
 
 void Renderer::markDirty(BackendNodeDirtySet changes, BackendNode *node)

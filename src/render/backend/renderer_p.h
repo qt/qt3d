@@ -194,7 +194,8 @@ public:
 
 
     void enqueueRenderView(RenderView *renderView, int submitOrder);
-    bool submitRenderViews();
+    bool isReadyToSubmit();
+    uint submitRenderViews(const QVector<Render::RenderView *> &renderViews);
 
     QMutex* mutex() { return &m_mutex; }
 
