@@ -1538,7 +1538,7 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
         type = GL_POLYGON_OFFSET_FILL;
         QPolygonOffset *polygonOffset = new QPolygonOffset;
         polygonOffset->setScaleFactor((float)values.at(0).toDouble(0.0f));
-        polygonOffset->setUnits((float)values.at(1).toDouble(0.0f));
+        polygonOffset->setDepthSteps((float)values.at(1).toDouble(0.0f));
         return polygonOffset;
     }
 

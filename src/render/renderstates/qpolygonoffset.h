@@ -53,21 +53,21 @@ class QT3DRENDERSHARED_EXPORT QPolygonOffset : public QRenderState
     Q_OBJECT
 
     Q_PROPERTY(float scaleFactor READ scaleFactor WRITE setScaleFactor NOTIFY scaleFactorChanged)
-    Q_PROPERTY(float units READ units WRITE setUnits NOTIFY unitsChanged)
+    Q_PROPERTY(float depthSteps READ depthSteps WRITE setDepthSteps NOTIFY depthStepsChanged)
 public:
     explicit QPolygonOffset(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPolygonOffset();
 
     float scaleFactor() const;
-    float units() const;
+    float depthSteps() const;
 
 public Q_SLOTS:
     void setScaleFactor(float scaleFactor);
-    void setUnits(float units);
+    void setDepthSteps(float depthSteps);
 
 Q_SIGNALS:
     void scaleFactorChanged(float scaleFactor);
-    void unitsChanged(float units);
+    void depthStepsChanged(float depthSteps);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

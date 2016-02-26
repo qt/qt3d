@@ -92,7 +92,7 @@ Effect {
                     }
 
                     renderStates: [
-                        PolygonOffset { scaleFactor: 4; units: 4 },
+                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
                         DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
@@ -137,7 +137,7 @@ Effect {
                     }
 
                     renderStates: [
-                        PolygonOffset { scaleFactor: 4; units: 4 },
+                        PolygonOffset { scaleFactor: 4; depthSteps: 4 },
                         DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },

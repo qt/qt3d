@@ -50,12 +50,12 @@ public:
     QPolygonOffsetPrivate()
         : QRenderStatePrivate(QRenderState::PolygonOffset)
         , m_scaleFactor(0)
-        , m_units(0)
+        , m_depthSteps(0)
     {
     }
 
     float m_scaleFactor;
-    float m_units;
+    float m_depthSteps;
 
     Q_DECLARE_PUBLIC(QPolygonOffset)
 };
@@ -85,18 +85,18 @@ void QPolygonOffset::setScaleFactor(float scaleFactor)
     }
 }
 
-float QPolygonOffset::units() const
+float QPolygonOffset::depthSteps() const
 {
     Q_D(const QPolygonOffset);
-    return d->m_units;
+    return d->m_depthSteps;
 }
 
-void QPolygonOffset::setUnits(float units)
+void QPolygonOffset::setDepthSteps(float depthSteps)
 {
     Q_D(QPolygonOffset);
-    if (d->m_units != units) {
-        d->m_units = units;
-        emit unitsChanged(d->m_units);
+    if (d->m_depthSteps != depthSteps) {
+        d->m_depthSteps = depthSteps;
+        emit depthStepsChanged(d->m_depthSteps);
     }
 }
 
@@ -105,7 +105,7 @@ void QPolygonOffset::copy(const QNode *ref)
     QRenderState::copy(ref);
     const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
     d_func()->m_scaleFactor = refState->d_func()->m_scaleFactor;
-    d_func()->m_units = refState->d_func()->m_units;
+    d_func()->m_depthSteps = refState->d_func()->m_depthSteps;
 }
 
 } // namespace Qt3DRender
