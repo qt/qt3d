@@ -366,10 +366,13 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
     return jobs;
 }
 
-void QRenderAspect::onRootEntityChanged(Qt3DCore::QEntity *rootEntity)
+void QRenderAspect::onEngineStartup()
 {
     Q_D(QRenderAspect);
-    d->m_renderer->setSceneRoot(d, d->m_renderer->nodeManagers()->lookupResource<Render::Entity, Render::EntityManager>(rootEntity->id()));
+    Render::NodeManagers *managers = d->m_renderer->nodeManagers();
+    Render::Entity *rootEntity = managers->lookupResource<Render::Entity, Render::EntityManager>(rootEntityId());
+    Q_ASSERT(rootEntity);
+    d->m_renderer->setSceneRoot(d, rootEntity);
 }
 
 void QRenderAspect::onRegistered()

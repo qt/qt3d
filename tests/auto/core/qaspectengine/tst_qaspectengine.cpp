@@ -40,18 +40,12 @@ class PrintRootAspect : public QAbstractAspect
 public:
     explicit PrintRootAspect(QObject *parent = 0)
         : QAbstractAspect(parent)
-        , m_rootEntity(nullptr)
+        , m_rootEntityId()
     {
         qDebug() << Q_FUNC_INFO;
     }
 
 private:
-    void onRootEntityChanged(QEntity *rootEntity) Q_DECL_OVERRIDE
-    {
-        qDebug() << Q_FUNC_INFO;
-        m_rootEntity = rootEntity;
-    }
-
     void onRegistered() Q_DECL_OVERRIDE
     {
         qDebug() << Q_FUNC_INFO;
@@ -60,6 +54,7 @@ private:
     void onEngineStartup() Q_DECL_OVERRIDE
     {
         qDebug() << Q_FUNC_INFO;
+        m_rootEntityId = rootEntityId();
     }
 
     void onEngineShutdown() Q_DECL_OVERRIDE
@@ -74,12 +69,12 @@ private:
 
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
     {
-        if (m_rootEntity)
-            qDebug() << Q_FUNC_INFO << m_rootEntity->objectName();
+        if (m_rootEntityId)
+            qDebug() << Q_FUNC_INFO << m_rootEntityId;
         return QVector<QAspectJobPtr>();
     }
 
-    QEntity *m_rootEntity;
+    QNodeId m_rootEntityId;
 };
 
 #define FAKE_ASPECT(ClassName) \
@@ -91,7 +86,6 @@ public: \
         : QAbstractAspect(parent) {} \
     \
 private: \
-    void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
     void onRegistered() Q_DECL_OVERRIDE {} \
     void onEngineStartup() Q_DECL_OVERRIDE {} \
     void onEngineShutdown() Q_DECL_OVERRIDE {} \

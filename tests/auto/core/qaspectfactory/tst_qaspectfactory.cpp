@@ -41,7 +41,6 @@ public: \
         : QAbstractAspect(parent) {} \
 \
 private: \
-    void onRootEntityChanged(QEntity *) Q_DECL_OVERRIDE {} \
     void onRegistered() Q_DECL_OVERRIDE {} \
     void onEngineStartup() Q_DECL_OVERRIDE {} \
     void onEngineShutdown() Q_DECL_OVERRIDE {} \

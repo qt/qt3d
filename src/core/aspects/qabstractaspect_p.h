@@ -80,7 +80,7 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
 public:
     QAbstractAspectPrivate();
 
-    void registerAspect(QEntity *rootObject);
+    void setRootAndCreateNodes(QEntity *rootObject);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;

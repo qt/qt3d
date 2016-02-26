@@ -89,8 +89,6 @@ private:
     virtual void onEngineStartup();
     virtual void onEngineShutdown();
 
-    virtual void onRootEntityChanged(QEntity *rootEntity);
-
     Q_DECLARE_PRIVATE(QAbstractAspect)
     friend class QAspectEngine;
     friend class QAspectManager;

@@ -154,7 +154,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 
     if (m_root) {
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            aspect->d_func()->registerAspect(m_root);
+            aspect->d_func()->setRootAndCreateNodes(m_root);
     }
 }
 
