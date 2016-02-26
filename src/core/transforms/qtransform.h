@@ -107,11 +107,11 @@ Q_SIGNALS:
     void scaleChanged(float scale);
     void scale3DChanged(const QVector3D &scale);
     void rotationChanged(const QQuaternion &rotation);
+    void translationChanged(const QVector3D &translation);
+    void matrixChanged(const QMatrix4x4 &matrix);
     void rotationXChanged(float rotationX);
     void rotationYChanged(float rotationY);
     void rotationZChanged(float rotationZ);
-    void translationChanged(const QVector3D &translation);
-    void matrixChanged(const QMatrix4x4 &matrix);
 
 protected:
     QTransform(QTransformPrivate &dd, QNode *parent = 0);
