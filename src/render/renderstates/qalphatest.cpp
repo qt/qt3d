@@ -53,13 +53,13 @@ public:
     QAlphaTestPrivate()
         : QRenderStatePrivate(QRenderState::AlphaTest)
         , m_alphaFunction(QAlphaTest::Never)
-        , m_clamp(0.0f)
+        , m_referenceValue(0.0f)
     {
     }
 
     Q_DECLARE_PUBLIC(QAlphaTest)
     QAlphaTest::AlphaFunction m_alphaFunction;
-    float m_clamp;
+    float m_referenceValue;
 };
 
 QAlphaTest::QAlphaTest(QNode *parent)
@@ -77,7 +77,7 @@ void QAlphaTest::copy(const QNode *ref)
     QRenderState::copy(ref);
     const QAlphaTest *refState = static_cast<const QAlphaTest*>(ref);
     d_func()->m_alphaFunction = refState->d_func()->m_alphaFunction;
-    d_func()->m_clamp = refState->d_func()->m_clamp;
+    d_func()->m_referenceValue = refState->d_func()->m_referenceValue;
 }
 
 QAlphaTest::AlphaFunction QAlphaTest::alphaFunction() const
@@ -95,18 +95,18 @@ void QAlphaTest::setAlphaFunction(QAlphaTest::AlphaFunction alphaFunction)
     }
 }
 
-float QAlphaTest::clamp() const
+float QAlphaTest::referenceValue() const
 {
     Q_D(const QAlphaTest);
-    return d->m_clamp;
+    return d->m_referenceValue;
 }
 
-void QAlphaTest::setClamp(float clamp)
+void QAlphaTest::setReferenceValue(float referenceValue)
 {
     Q_D(QAlphaTest);
-    if (d->m_clamp != clamp) {
-        d->m_clamp = clamp;
-        emit clampChanged(clamp);
+    if (d->m_referenceValue != referenceValue) {
+        d->m_referenceValue = referenceValue;
+        emit referenceValueChanged(referenceValue);
     }
 }
 

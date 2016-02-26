@@ -53,7 +53,7 @@ class QT3DRENDERSHARED_EXPORT QAlphaTest : public QRenderState
 {
     Q_OBJECT
     Q_PROPERTY(AlphaFunction alphaFunction READ alphaFunction WRITE setAlphaFunction NOTIFY alphaFunctionChanged)
-    Q_PROPERTY(float clamp READ clamp WRITE setClamp NOTIFY clampChanged)
+    Q_PROPERTY(float referenceValue READ referenceValue WRITE setReferenceValue NOTIFY referenceValueChanged)
 public:
 
     enum AlphaFunction {
@@ -72,15 +72,15 @@ public:
     ~QAlphaTest();
 
     AlphaFunction alphaFunction() const;
-    float clamp() const;
+    float referenceValue() const;
 
 public Q_SLOTS:
     void setAlphaFunction(AlphaFunction alphaFunction);
-    void setClamp(float clamp);
+    void setReferenceValue(float referenceValue);
 
 Q_SIGNALS:
     void alphaFunctionChanged(AlphaFunction alphaFunction);
-    void clampChanged(float clamp);
+    void referenceValueChanged(float referenceValue);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
