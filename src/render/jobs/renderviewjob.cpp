@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 #include <QElapsedTimer>
 
@@ -50,6 +51,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 namespace Render {
+
+RenderViewJob::RenderViewJob()
+    : m_renderer(0)
+    , m_devicePixelRatio(1.)
+    , m_fgLeaf(0)
+    , m_index(0)
+{
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, 0);
+}
 
 void RenderViewJob::run()
 {

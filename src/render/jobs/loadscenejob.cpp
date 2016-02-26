@@ -43,6 +43,7 @@
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/qabstractsceneparser.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,7 @@ LoadSceneJob::LoadSceneJob(const QUrl &source, Qt3DCore::QNodeId m_sceneComponen
     , m_sceneComponent(m_sceneComponent)
     , m_managers(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadScene, 0);
 }
 
 void LoadSceneJob::run()

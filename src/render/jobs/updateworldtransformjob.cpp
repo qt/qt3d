@@ -44,6 +44,8 @@
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+
 #include <QThread>
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +76,7 @@ UpdateWorldTransformJob::UpdateWorldTransformJob()
     : Qt3DCore::QAspectJob()
     , m_node(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateTransform, 0);
 }
 
 void UpdateWorldTransformJob::setRoot(Entity *root)

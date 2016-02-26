@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/loadgeometryjob_p.h \
     $$PWD/calcboundingvolumejob_p.h \
     $$PWD/pickboundingvolumejob_p.h \
-    $$PWD/calcgeometrytrianglevolumes_p.h
+    $$PWD/calcgeometrytrianglevolumes_p.h \
+    $$PWD/job_common_p.h
 
 SOURCES += \
     $$PWD/updateworldtransformjob.cpp \

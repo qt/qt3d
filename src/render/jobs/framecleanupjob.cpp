@@ -45,6 +45,7 @@
 #include <private/managers_p.h>
 #include <private/texturedatamanager_p.h>
 #include <private/sphere_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -55,6 +56,7 @@ FrameCleanupJob::FrameCleanupJob(NodeManagers *managers)
     : m_managers(managers)
     , m_root(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FrameCleanup, 0);
 }
 
 FrameCleanupJob::~FrameCleanupJob()

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2015 Paul Lemire
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,78 +37,54 @@
 **
 ****************************************************************************/
 
-#include "qaspectjob.h"
-#include "qaspectjob_p.h"
-#include <QByteArray>
+#ifndef QT3DRENDER_RENDER_JOB_COMMON_P_H
+#define QT3DRENDER_RENDER_JOB_COMMON_P_H
+
+#include <Qt3DCore/private/qaspectjob_p.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-namespace {
+namespace Render {
 
-bool isDependencyNull(const QWeakPointer<QAspectJob> &dep)
-{
-    return dep.isNull();
-}
+namespace JobTypes {
 
-} // anonymous
+    enum JobType {
+        LoadBuffer = 0,
+        FrameCleanup,
+        FramePreparation,
+        CalcBoundingVolume,
+        CalcTriangleVolume,
+        LoadGeometry,
+        LoadScene,
+        LoadTextureData,
+        PickBoundingVolume,
+        RenderView,
+        UpdateTransform,
+        UpdateBoundingVolume
+    };
 
-QAspectJobPrivate::QAspectJobPrivate()
-{
-}
+} // JobTypes
 
-QAspectJobPrivate *QAspectJobPrivate::get(QAspectJob *job)
-{
-    return job->d_func();
-}
+} // Render
 
-QAspectJob::QAspectJob()
-    : d_ptr(new QAspectJobPrivate)
-{
-}
+} // Qt3DRender
 
-/*! \internal */
-QAspectJob::QAspectJob(QAspectJobPrivate &dd)
-    : d_ptr(&dd)
-{
-}
+#ifdef QT3D_JOBS_RUN_STATS
 
-QAspectJob::~QAspectJob()
-{
-    delete d_ptr;
-}
+#include <Qt3DCore/private/qaspectjob_p.h>
 
-void QAspectJob::addDependency(QWeakPointer<QAspectJob> dependency)
-{
-    Q_D(QAspectJob);
-    d->m_dependencies.append(dependency);
-#ifdef QT3DCORE_ASPECT_JOB_DEBUG
-    static int threshold = qMax(1, qgetenv("QT3DCORE_ASPECT_JOB_DEPENDENCY_THRESHOLD").toInt());
-    if (d->m_dependencies.count() > threshold)
-        qWarning() << "Suspicious number of job dependencies found";
+#define SET_JOB_RUN_STAT_TYPE(job, type, instance) \
+    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[0] = type; \
+    Qt3DCore::QAspectJobPrivate::get(job)->m_stats.jobId.typeAndInstance[1] = instance;
+
+#else
+
+#define SET_JOB_RUN_STAT_TYPE(job, type, instance)
+
 #endif
-}
-
-void QAspectJob::removeDependency(QWeakPointer<QAspectJob> dependency)
-{
-    Q_D(QAspectJob);
-    if (!dependency.isNull()) {
-        d->m_dependencies.removeAll(dependency);
-    } else {
-        d->m_dependencies.erase(std::remove_if(d->m_dependencies.begin(),
-                                               d->m_dependencies.end(),
-                                               isDependencyNull),
-                                d->m_dependencies.end());
-    }
-}
-
-QVector<QWeakPointer<QAspectJob> > QAspectJob::dependencies() const
-{
-    Q_D(const QAspectJob);
-    return d->m_dependencies;
-}
-
-} // namespace Qt3DCore
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_JOB_COMMON_P_H

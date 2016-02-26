@@ -57,6 +57,7 @@
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/qray3d.h>
 #include <QSurface>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -288,6 +289,7 @@ PickBoundingVolumeJob::PickBoundingVolumeJob(Renderer *renderer)
     , m_manager(renderer->nodeManagers())
     , m_node(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::PickBoundingVolume, 0);
 }
 
 void PickBoundingVolumeJob::setRoot(Entity *root)

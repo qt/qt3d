@@ -53,6 +53,7 @@
 
 #include <QtCore/qmath.h>
 #include <QtConcurrent/QtConcurrent>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -161,6 +162,7 @@ CalculateBoundingVolumeJob::CalculateBoundingVolumeJob(NodeManagers *manager)
     : m_manager(manager),
       m_node(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcBoundingVolume, 0);
 }
 
 void CalculateBoundingVolumeJob::run()

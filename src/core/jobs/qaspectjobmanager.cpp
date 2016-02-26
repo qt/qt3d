@@ -68,6 +68,7 @@ void QAspectJobManager::initialize()
 {
 }
 
+// Adds all Aspect Jobs to be processed for a frame
 void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 {
     // Convert QJobs to Tasks
@@ -100,13 +101,19 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
         }
     }
     m_dependencyHandler->addDependencies(qMove(dependencyList));
-
+#ifdef QT3D_JOBS_RUN_STATS
+    QThreadPooler::starNewFrameJobLogsStats();
+#endif
     m_threadPooler->mapDependables(taskList);
 }
 
+// Wait for all aspects jobs to be completed
 void QAspectJobManager::waitForAllJobs()
 {
     m_threadPooler->future().waitForFinished();
+#ifdef QT3D_JOBS_RUN_STATS
+    QThreadPooler::writeFrameJobLogStats();
+#endif
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)

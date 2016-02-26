@@ -42,9 +42,18 @@
 
 #include <QDebug>
 
+#ifdef QT3D_JOBS_RUN_STATS
+#include <QFile>
+#include <QThreadStorage>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
+
+#ifdef QT3D_JOBS_RUN_STATS
+QElapsedTimer QThreadPooler::m_jobsStatTimer;
+#endif
 
 QThreadPooler::QThreadPooler(QObject *parent)
     : QObject(parent),
@@ -54,6 +63,9 @@ QThreadPooler::QThreadPooler(QObject *parent)
 {
     // Ensures that threads will never be recycled
     m_threadPool.setExpiryTimeout(-1);
+#ifdef QT3D_JOBS_RUN_STATS
+    QThreadPooler::m_jobsStatTimer.start();
+#endif
 }
 
 QThreadPooler::~QThreadPooler()
@@ -157,6 +169,73 @@ int QThreadPooler::maxThreadCount() const
 {
     return m_threadPool.maxThreadCount();
 }
+
+#ifdef QT3D_JOBS_RUN_STATS
+
+typedef QVector<JobRunStats> JobRunStatsList;
+typedef JobRunStatsList* JobRunStatsListPtr;
+typedef QThreadStorage<JobRunStatsListPtr> JobRunStatStorage;
+
+JobRunStatStorage jobStatsCached;
+
+QVector<JobRunStatsListPtr> localStorages;
+QMutex localStoragesMutex;
+
+// Called by the jobs
+void QThreadPooler::addJobLogStatsEntry(JobRunStats &stats)
+{
+    if (!jobStatsCached.hasLocalData()) {
+        QMutexLocker lock(&localStoragesMutex);
+        auto jobVector = new JobRunStatsList;
+        jobStatsCached.setLocalData(jobVector);
+        localStorages.push_back(jobVector);
+    }
+    jobStatsCached.localData()->push_back(stats);
+}
+
+// Called before jobs are executed (AspectThread)
+void QThreadPooler::starNewFrameJobLogsStats()
+{
+    Q_FOREACH (JobRunStatsListPtr storage, localStorages) {
+        const int oldSize = storage->size();
+        storage->clear();
+        storage->reserve(oldSize);
+    }
+    QThreadPooler::m_jobsStatTimer.restart();
+}
+
+// Called after jobs have been executed
+void QThreadPooler::writeFrameJobLogStats()
+{
+    static QScopedPointer<QFile> traceFile;
+    static quint32 frameId = 0;
+    if (!traceFile) {
+        traceFile.reset(new QFile(QStringLiteral("trace.qt3d")));
+        if (!traceFile->open(QFile::WriteOnly|QFile::Truncate))
+            qCritical("Failed to open trace file");
+    }
+
+    FrameHeader header;
+    header.frameId = frameId;
+    header.jobCount = 0;
+
+    Q_FOREACH (const JobRunStatsListPtr storage, localStorages)
+        header.jobCount += storage->size();
+
+    traceFile->write(reinterpret_cast<char *>(&header), sizeof(FrameHeader));
+
+
+
+    Q_FOREACH (const JobRunStatsListPtr storage, localStorages) {
+        qDebug() << Q_FUNC_INFO << localStorages.size() << storage << storage->size();
+        Q_FOREACH (const JobRunStats &stat, *storage) {
+            traceFile->write(reinterpret_cast<const char *>(&stat), sizeof(JobRunStats));
+        }
+    }
+    traceFile->flush();
+    ++frameId;
+}
+#endif
 
 } // namespace Qt3DCore
 

@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/texturedatamanager_p.h>
 #include <Qt3DRender/qtexturedata.h>
 #include <QThread>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +53,7 @@ namespace Render {
 LoadTextureDataJob::LoadTextureDataJob(Qt3DCore::QNodeId textureId)
     : m_textureId(textureId)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadTextureData, 0);
 }
 
 LoadTextureDataJob::~LoadTextureDataJob()

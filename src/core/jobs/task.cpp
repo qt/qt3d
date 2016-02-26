@@ -42,7 +42,7 @@
 #include "qthreadpooler_p.h"
 
 #include <QMutexLocker>
-
+#include <QElapsedTimer>
 #include <QDebug>
 
 QT_BEGIN_NAMESPACE
@@ -67,8 +67,23 @@ AspectTaskRunnable::~AspectTaskRunnable()
 
 void AspectTaskRunnable::run()
 {
-    if (m_job)
+    if (m_job) {
+#ifdef QT3D_JOBS_RUN_STATS
+        QAspectJobPrivate *jobD = QAspectJobPrivate::get(m_job.data());
+        if (m_pooler) {
+            jobD->m_stats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+            jobD->m_stats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
+        }
+#endif
         m_job->run();
+#ifdef QT3D_JOBS_RUN_STATS
+        if (m_pooler) {
+            jobD->m_stats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+            // Add current job's stats to log output
+            QThreadPooler::addJobLogStatsEntry(jobD->m_stats);
+        }
+#endif
+    }
 
     // We could have an append sub task or something in here
     // So that a job can post sub jobs ?

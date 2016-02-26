@@ -51,6 +51,7 @@
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -61,6 +62,7 @@ FramePreparationJob::FramePreparationJob(NodeManagers *manager)
     : m_root(Q_NULLPTR)
     , m_manager(manager)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::FramePreparation, 0);
 }
 
 FramePreparationJob::~FramePreparationJob()

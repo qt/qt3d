@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/sphere_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 #include <QThread>
 
@@ -73,6 +74,7 @@ void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 UpdateBoundingVolumeJob::UpdateBoundingVolumeJob()
     : m_node(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::UpdateBoundingVolume, 0);
 }
 
 void UpdateBoundingVolumeJob::setRoot(Entity *root)

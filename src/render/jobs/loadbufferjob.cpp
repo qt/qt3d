@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/buffer_p.h>
 #include <Qt3DRender/private/buffermanager_p.h>
 #include <Qt3DRender/private/renderer_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,6 +55,7 @@ LoadBufferJob::LoadBufferJob(const HBuffer &handle)
     , m_handle(handle)
     , m_nodeManagers(Q_NULLPTR)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::LoadBuffer, 0);
 }
 
 LoadBufferJob::~LoadBufferJob()

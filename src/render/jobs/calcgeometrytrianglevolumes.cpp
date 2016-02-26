@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/trianglesextractor_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
+#include <Qt3DRender/private/job_common_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +53,7 @@ CalcGeometryTriangleVolumes::CalcGeometryTriangleVolumes(const Qt3DCore::QNodeId
     , m_geometryRendererId(geometryRendererId)
     , m_manager(manager)
 {
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::CalcTriangleVolume, 0);
 }
 
 void CalcGeometryTriangleVolumes::run()
