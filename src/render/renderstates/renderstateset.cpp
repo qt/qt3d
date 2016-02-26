@@ -350,7 +350,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::StencilMask: {
         QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);
-        return getOrCreateRenderStateImpl<StencilMask>(stencilMask->frontMask(), stencilMask->backMask());
+        return getOrCreateRenderStateImpl<StencilMask>(stencilMask->frontOutputMask(), stencilMask->backOutputMask());
      }
 
     default:

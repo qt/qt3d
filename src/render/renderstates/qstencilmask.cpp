@@ -49,12 +49,12 @@ class QStencilMaskPrivate : public QRenderStatePrivate
 public:
     QStencilMaskPrivate()
         : QRenderStatePrivate(QRenderState::StencilMask)
-        , m_frontMask(0)
-        , m_backMask(0)
+        , m_frontOutputMask(0)
+        , m_backOutputMask(0)
     {}
 
-    uint m_frontMask;
-    uint m_backMask;
+    uint m_frontOutputMask;
+    uint m_backOutputMask;
 };
 
 /*!
@@ -71,42 +71,42 @@ QStencilMask::~QStencilMask()
     QNode::cleanup();
 }
 
-void QStencilMask::setFrontMask(uint mask)
+void QStencilMask::setFrontOutputMask(uint mask)
 {
     Q_D(QStencilMask);
-    if (d->m_frontMask != mask) {
-        d->m_frontMask = mask;
-        Q_EMIT frontMaskChanged(mask);
+    if (d->m_frontOutputMask != mask) {
+        d->m_frontOutputMask = mask;
+        Q_EMIT frontOutputMaskChanged(mask);
     }
 }
 
-void QStencilMask::setBackMask(uint mask)
+void QStencilMask::setBackOutputMask(uint mask)
 {
     Q_D(QStencilMask);
-    if (d->m_backMask != mask) {
-        d->m_backMask = mask;
-        Q_EMIT backMaskChanged(mask);
+    if (d->m_backOutputMask != mask) {
+        d->m_backOutputMask = mask;
+        Q_EMIT backOutputMaskChanged(mask);
     }
 }
 
-uint QStencilMask::frontMask() const
+uint QStencilMask::frontOutputMask() const
 {
     Q_D(const QStencilMask);
-    return d->m_frontMask;
+    return d->m_frontOutputMask;
 }
 
-uint QStencilMask::backMask() const
+uint QStencilMask::backOutputMask() const
 {
     Q_D(const QStencilMask);
-    return d->m_backMask;
+    return d->m_backOutputMask;
 }
 
 void QStencilMask::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QStencilMask *otherRef = static_cast<const QStencilMask *>(ref);
-    d_func()->m_frontMask = otherRef->frontMask();
-    d_func()->m_backMask = otherRef->backMask();
+    d_func()->m_frontOutputMask = otherRef->frontOutputMask();
+    d_func()->m_backOutputMask = otherRef->backOutputMask();
 }
 
 } // namespace Qt3DRender
