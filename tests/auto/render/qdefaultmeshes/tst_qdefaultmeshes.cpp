@@ -98,7 +98,6 @@ private Q_SLOTS:
             const Qt3DRender::QGeometry *clonedGeometry = clone->geometry();
 
             QCOMPARE(clonedGeometry->attributes().count(), geometry->attributes().count());
-            QCOMPARE(geometry->verticesPerPatch(), clonedGeometry->verticesPerPatch());
 
             for (int i = 0; i < geometry->attributes().count(); ++i) {
                 const Qt3DRender::QAttribute *originalAttribute = static_cast<Qt3DRender::QAttribute *>(geometry->attributes().at(i));

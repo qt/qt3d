@@ -93,6 +93,7 @@ private Q_SLOTS:
         geometry1->setPrimitiveRestart(false);
         geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
         geometry1->setPrimitiveCount(15);
+        geometry1->setVerticesPerPatch(2);
         geometry1->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(383)));
         QTest::newRow("triangle") << geometry1;
 
@@ -102,8 +103,9 @@ private Q_SLOTS:
         geometry2->setBaseVertex(58);
         geometry2->setBaseInstance(10);
         geometry2->setRestartIndex(65535);
-        geometry1->setPrimitiveCount(2056);
+        geometry2->setPrimitiveCount(2056);
         geometry2->setPrimitiveRestart(true);
+        geometry2->setVerticesPerPatch(3);
         geometry2->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
         geometry2->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(305)));
         QTest::newRow("lines with restart") << geometry2;
@@ -128,6 +130,7 @@ private Q_SLOTS:
         QCOMPARE(clone->restartIndex(), geometryRenderer->restartIndex());
         QCOMPARE(clone->primitiveRestart(), geometryRenderer->primitiveRestart());
         QCOMPARE(clone->primitiveType(), geometryRenderer->primitiveType());
+        QCOMPARE(clone->verticesPerPatch(), geometryRenderer->verticesPerPatch());
 
         if (geometryRenderer->geometry() != Q_NULLPTR) {
             QVERIFY(clone->geometry() != Q_NULLPTR);
@@ -208,6 +211,19 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "restartIndex");
         QCOMPARE(change->value().value<int>(), 65535);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+
+        arbiter.events.clear();
+
+        // WHEN
+        geometryRenderer->setVerticesPerPatch(2);
+        QCoreApplication::processEvents();
+
+        // THEN
+        QCOMPARE(arbiter.events.size(), 1);
+        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "verticesPerPatch");
+        QCOMPARE(change->value().toInt(), 2);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();

@@ -83,6 +83,7 @@ public:
     inline int baseVertex() const { return m_baseVertex; }
     inline int baseInstance() const { return m_baseInstance; }
     inline int restartIndex() const { return m_restartIndex; }
+    inline int verticesPerPatch() const { return m_verticesPerPatch; }
     inline bool primitiveRestart() const { return m_primitiveRestart; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
@@ -102,6 +103,7 @@ private:
     int m_baseVertex;
     int m_baseInstance;
     int m_restartIndex;
+    int m_verticesPerPatch;
     bool m_primitiveRestart;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;

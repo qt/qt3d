@@ -70,7 +70,7 @@ Material {
         Parameter { name: "shininess"; value: root.shininess },
         Parameter { name: "line.width"; value: root.lineWidth },
         Parameter { name: "line.color"; value: root.lineColor },
-        Parameter { name: "innerTessLevel"; value: root.innerTessLevel },
-        Parameter { name: "outerTessLevel"; value: root.outerTessLevel }
+        Parameter { name: "inner[0]"; value: root.innerTessLevel },
+        Parameter { name: "outer[0]"; value: root.outerTessLevel }
     ]
 }

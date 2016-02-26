@@ -52,7 +52,6 @@ namespace Render {
 
 Geometry::Geometry()
     : BackendNode(ReadOnly)
-    , m_verticesPerPatch(0)
     , m_geometryDirty(false)
 {
 }
@@ -63,7 +62,6 @@ Geometry::~Geometry()
 
 void Geometry::cleanup()
 {
-    m_verticesPerPatch = 0;
     m_attributes.clear();
     m_geometryDirty = false;
     m_boundingPositionAttribute = Qt3DCore::QNodeId();
@@ -76,7 +74,6 @@ void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
         m_attributes.reserve(geometry->attributes().size());
         Q_FOREACH (QAttribute *attribute, geometry->attributes())
             m_attributes.push_back(attribute->id());
-        m_verticesPerPatch = geometry->verticesPerPatch();
         m_geometryDirty = true;
         if (geometry->boundingVolumeSpecifier()->positionAttribute() != Q_NULLPTR)
             m_boundingPositionAttribute = geometry->boundingVolumeSpecifier()->positionAttribute()->id();
@@ -106,13 +103,9 @@ void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeUpdated:
-        if (propertyName == QByteArrayLiteral("verticesPerPatch")) {
-            m_verticesPerPatch = propertyChange->value().value<int>();
-            break;
-
-            // Note: doesn't set dirtyness as this parameter changing doesn't need
-            // a new VAO update.
-        } else if (propertyName == QByteArrayLiteral("boundingVolumeSpecifierPositionAttribute")) {
+        // Note: doesn't set dirtyness as this parameter changing doesn't need
+        // a new VAO update.
+        if (propertyName == QByteArrayLiteral("boundingVolumeSpecifierPositionAttribute")) {
             m_boundingPositionAttribute = propertyChange->value().value<Qt3DCore::QNodeId>();
             break;
         }

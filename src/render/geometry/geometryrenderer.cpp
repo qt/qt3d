@@ -58,6 +58,7 @@ GeometryRenderer::GeometryRenderer()
     , m_baseVertex(0)
     , m_baseInstance(0)
     , m_restartIndex(-1)
+    , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
@@ -77,6 +78,7 @@ void GeometryRenderer::cleanup()
     m_baseVertex = 0;
     m_baseInstance = 0;
     m_restartIndex = -1;
+    m_verticesPerPatch = 0;
     m_primitiveRestart = false;
     m_primitiveType = QGeometryRenderer::Triangles;
     m_geometryId = Qt3DCore::QNodeId();
@@ -101,6 +103,7 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
         m_baseVertex = geometryRenderer->baseVertex();
         m_baseInstance = geometryRenderer->baseInstance();
         m_restartIndex = geometryRenderer->restartIndex();
+        m_verticesPerPatch = geometryRenderer->verticesPerPatch();
         m_primitiveRestart = geometryRenderer->primitiveRestart();
         m_primitiveType = geometryRenderer->primitiveType();
         m_enabled = geometryRenderer->isEnabled();
@@ -135,6 +138,9 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("restartIndex")) {
             m_restartIndex = propertyChange->value().value<int>();
+            m_dirty = true;
+        } else if (propertyName == QByteArrayLiteral("verticesPerPatch")) {
+            m_verticesPerPatch = propertyChange->value().value<int>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("primitiveRestart")) {
             m_primitiveRestart = propertyChange->value().value<bool>();

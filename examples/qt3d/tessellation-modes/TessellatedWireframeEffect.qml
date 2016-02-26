@@ -64,9 +64,9 @@ Effect {
     property alias shaderProgram: program
 
     parameters: [
-        Parameter { name: "ambient";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
-        Parameter { name: "diffuse";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
-        Parameter { name: "specular";  value: Qt.vector3d( 0.95, 0.95, 0.95 ) },
+        Parameter { name: "ka";   value: Qt.vector3d( 0.1, 0.1, 0.1 ) },
+        Parameter { name: "kd";   value: Qt.vector3d( 0.7, 0.7, 0.7 ) },
+        Parameter { name: "ks";  value: Qt.vector3d( 0.95, 0.95, 0.95 ) },
         Parameter { name: "shininess"; value: 150.0 }
     ]
 
@@ -90,18 +90,6 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-
-                    bindings: [
-                        ParameterMapping { parameterName: "ambient";  shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "diffuse";  shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "specular"; shaderVariableName: "ks"; bindingType: ParameterMapping.Uniform },
-
-                        // TODO: Support uniform arrays. We want to be able to do (or something similar) and map vectors or lists of values
-                        // through to the uniforms
-                        ParameterMapping { parameterName: "innerTessLevel"; shaderVariableName: "inner[0]"; bindingType: ParameterMapping.Uniform },
-                        ParameterMapping { parameterName: "outerTessLevel"; shaderVariableName: "outer[0]"; bindingType: ParameterMapping.Uniform }
-                    ]
-
                     shaderProgram: ShaderProgram {
                         id: program
                         vertexShaderCode:   loadSource("qrc:/shaders/passthru.vert")

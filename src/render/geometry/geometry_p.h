@@ -73,13 +73,11 @@ public:
 
     inline QVector<Qt3DCore::QNodeId> attributes() const { return m_attributes; }
     inline bool isDirty() const { return m_geometryDirty; }
-    inline int verticesPerPatch() const { return m_verticesPerPatch; }
     inline Qt3DCore::QNodeId boundingPositionAttribute() const { return m_boundingPositionAttribute; }
     void unsetDirty();
 
 private:
     QVector<Qt3DCore::QNodeId> m_attributes;
-    int m_verticesPerPatch;
     bool m_geometryDirty;
     Qt3DCore::QNodeId m_boundingPositionAttribute;
 };

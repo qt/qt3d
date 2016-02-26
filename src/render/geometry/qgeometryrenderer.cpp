@@ -56,6 +56,7 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
     , m_baseVertex(0)
     , m_baseInstance(0)
     , m_restartIndex(-1)
+    , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
     , m_geometry(Q_NULLPTR)
     , m_primitiveType(QGeometryRenderer::Triangles)
@@ -96,6 +97,12 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
  * \qmlproperty int GeometryRenderer::restartIndex
  *
  * Holds the restart index.
+ */
+
+/*!
+ * \qmlproperty int GeometryRenderer::verticesPerPatch
+ *
+ * Holds vertices per patch.
  */
 
 /*!
@@ -223,6 +230,17 @@ int QGeometryRenderer::restartIndex() const
 }
 
 /*!
+ * \property QGeometry::verticesPerPatch
+ *
+ * Holds vertices per patch.
+ */
+int QGeometryRenderer::verticesPerPatch() const
+{
+    Q_D(const QGeometryRenderer);
+    return d->m_verticesPerPatch;
+}
+
+/*!
  * \property QGeometryRenderer::primitiveRestart
  *
  * Holds the primitive restart flag.
@@ -314,6 +332,15 @@ void QGeometryRenderer::setRestartIndex(int index)
     emit restartIndexChanged(index);
 }
 
+void QGeometryRenderer::setVerticesPerPatch(int verticesPerPatch)
+{
+    Q_D(QGeometryRenderer);
+    if (d->m_verticesPerPatch != verticesPerPatch) {
+        d->m_verticesPerPatch = verticesPerPatch;
+        emit verticesPerPatchChanged(verticesPerPatch);
+    }
+}
+
 void QGeometryRenderer::setPrimitiveRestart(bool enabled)
 {
     Q_D(QGeometryRenderer);
@@ -394,6 +421,7 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_restartIndex = other->d_func()->m_restartIndex;
     d_func()->m_primitiveRestart = other->d_func()->m_primitiveRestart;
     d_func()->m_primitiveType = other->d_func()->m_primitiveType;
+    d_func()->m_verticesPerPatch = other->d_func()->m_verticesPerPatch;
     d_func()->m_geometry = static_cast<QGeometry *>(QNode::clone(other->d_func()->m_geometry));
     d_func()->m_functor = other->d_func()->m_functor;
 }

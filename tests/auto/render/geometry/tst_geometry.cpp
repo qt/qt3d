@@ -54,7 +54,6 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
-        geometry.setVerticesPerPatch(4);
         geometry.boundingVolumeSpecifier()->setPositionAttribute(&attr1);
 
         // WHEN
@@ -64,7 +63,6 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.peerId(), geometry.id());
         QCOMPARE(renderGeometry.isDirty(), true);
         QCOMPARE(renderGeometry.attributes().count(), 4);
-        QCOMPARE(renderGeometry.verticesPerPatch(), 4);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), attr1.id());
 
         for (int i = 0; i < 4; ++i)
@@ -80,7 +78,6 @@ private Q_SLOTS:
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
         QVERIFY(renderGeometry.peerId().isNull());
-        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
 
         // GIVEN
@@ -95,7 +92,6 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
-        geometry.setVerticesPerPatch(4);
 
         // WHEN
         renderGeometry.updateFromPeer(&geometry);
@@ -104,7 +100,6 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(renderGeometry.isDirty(), false);
         QVERIFY(renderGeometry.attributes().isEmpty());
-        QCOMPARE(renderGeometry.verticesPerPatch(), 0);
         QCOMPARE(renderGeometry.boundingPositionAttribute(), Qt3DCore::QNodeId());
     }
 
@@ -140,16 +135,6 @@ private Q_SLOTS:
         QVERIFY(renderGeometry.isDirty());
 
         renderGeometry.unsetDirty();
-        QVERIFY(!renderGeometry.isDirty());
-
-        // WHEN
-        updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
-        updateChange->setValue(QVariant::fromValue(3));
-        updateChange->setPropertyName("verticesPerPatch");
-        renderGeometry.sceneChangeEvent(updateChange);
-
-        // THEN
-        QCOMPARE(renderGeometry.verticesPerPatch(), 3);
         QVERIFY(!renderGeometry.isDirty());
 
         // WHEN

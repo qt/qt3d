@@ -802,14 +802,14 @@ QAbstractFrameAdvanceService *Renderer::frameAdvanceService() const
 }
 
 // Called by executeCommands
-void Renderer::performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRenderer, GLsizei primitiveCount, Attribute *indexAttribute)
+void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiveCount, Attribute *indexAttribute)
 {
     const GLint primType = rGeometryRenderer->primitiveType();
     const bool drawIndexed = indexAttribute != Q_NULLPTR;
     const GLint indexType = drawIndexed ? GraphicsContext::glDataTypeFromAttributeDataType(indexAttribute->vertexBaseType()) : 0;
 
     if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
-        m_graphicsContext->setVerticesPerPatch(rGeometry->verticesPerPatch());
+        m_graphicsContext->setVerticesPerPatch(rGeometryRenderer->verticesPerPatch());
 
     if (rGeometryRenderer->primitiveRestart())
         m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
@@ -987,7 +987,7 @@ bool Renderer::executeCommands(const RenderView *rv)
 
             //// Draw Calls
             if (primitiveCount && (specified || (vao && vao->isSpecified()))) {
-                performDraw(rGeometry, rGeometryRenderer, primitiveCount, indexAttribute);
+                performDraw(rGeometryRenderer, primitiveCount, indexAttribute);
             } else {
                 allCommandsIssued = false;
             }

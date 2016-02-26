@@ -64,11 +64,9 @@ public:
     Q_DECLARE_PUBLIC(QGeometry)
     QGeometryPrivate()
         : QNodePrivate()
-        , m_verticesPerPatch(0)
     {}
 
     QAttributeList m_attributes;
-    int m_verticesPerPatch;
     QBoundingVolumeSpecifier m_boundingVolumeSpecifier;
 
 private:

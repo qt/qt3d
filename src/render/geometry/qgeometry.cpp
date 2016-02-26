@@ -73,12 +73,6 @@ void QGeometryPrivate::_q_boundingVolumeSpecifierChanged(QAttribute *)
  */
 
 /*!
- * \qmlproperty int Geometry::verticesPerPatch
- *
- * Holds vertices per patch.
- */
-
-/*!
  * \qmlproperty BoundingVolumeSpecifier Geometry::boundingVolumeSpecifier
  *
  * Holds bounding volume specifier.
@@ -169,26 +163,6 @@ void QGeometry::removeAttribute(QAttribute *attribute)
     d->m_attributes.removeOne(attribute);
 }
 
-void QGeometry::setVerticesPerPatch(int verticesPerPatch)
-{
-    Q_D(QGeometry);
-    if (d->m_verticesPerPatch != verticesPerPatch) {
-        d->m_verticesPerPatch = verticesPerPatch;
-        emit verticesPerPatchChanged(verticesPerPatch);
-    }
-}
-
-/*!
- * \property QGeometry::verticesPerPatch
- *
- * Holds vertices per patch.
- */
-int QGeometry::verticesPerPatch() const
-{
-    Q_D(const QGeometry);
-    return d->m_verticesPerPatch;
-}
-
 /*!
  * \property QGeometry::boundingVolumeSpecifier
  *
@@ -216,7 +190,6 @@ void QGeometry::copy(const QNode *ref)
 {
     QNode::copy(ref);
     const QGeometry *geometry = static_cast<const QGeometry *>(ref);
-    d_func()->m_verticesPerPatch = geometry->d_func()->m_verticesPerPatch;
     Q_FOREACH (QAttribute *attribute, geometry->d_func()->m_attributes)
         d_func()->m_attributes.append(qobject_cast<QAttribute *>(QNode::clone(attribute)));
     // Copy bounding volume specifier attribute

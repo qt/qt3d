@@ -268,7 +268,7 @@ private:
     RenderSettings *m_settings;
     static const RenderSettings ms_defaultSettings;
 
-    void performDraw(Geometry *rGeometry, GeometryRenderer *rGeometryRenderer,
+    void performDraw(GeometryRenderer *rGeometryRenderer,
                      GLsizei primitiveCount, Attribute *indexAttribute);
     void performCompute(const RenderView *rv, RenderCommand *command);
     bool createOrUpdateVAO(RenderCommand *command,

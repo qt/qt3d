@@ -70,6 +70,7 @@ public:
     int m_baseVertex;
     int m_baseInstance;
     int m_restartIndex;
+    int m_verticesPerPatch;
     bool m_primitiveRestart;
     QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;

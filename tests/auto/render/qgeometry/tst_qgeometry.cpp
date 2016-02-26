@@ -59,7 +59,6 @@ private Q_SLOTS:
         QTest::newRow("defaultConstructed") << defaultConstructed << 0;
 
         Qt3DRender::QGeometry *geometry1 = new Qt3DRender::QGeometry();
-        geometry1->setVerticesPerPatch(2);
         Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 4, 454);
         geometry1->addAttribute(attribute);
         geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
@@ -73,7 +72,6 @@ private Q_SLOTS:
         geometry2->addAttribute(attribute);
         geometry2->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr3"), Qt3DRender::QAttribute::Float, 2, 327));
         geometry2->removeAttribute(attribute);
-        geometry2->setVerticesPerPatch(3);
         QTest::newRow("3 - 1 attributes") << geometry2 << 2;
     }
 
@@ -92,7 +90,6 @@ private Q_SLOTS:
         QCOMPARE(geometry->id(), clone->id());
         QCOMPARE(attributeCount, geometry->attributes().count());
         QCOMPARE(attributeCount, clone->attributes().count());
-        QCOMPARE(geometry->verticesPerPatch(), clone->verticesPerPatch());
         if (geometry->boundingVolumeSpecifier()->positionAttribute())
                 QCOMPARE(geometry->boundingVolumeSpecifier()->positionAttribute()->id(), clone->boundingVolumeSpecifier()->positionAttribute()->id());
 
@@ -148,19 +145,6 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "attribute");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
-
-        arbiter.events.clear();
-
-        // WHEN
-        geometry->setVerticesPerPatch(2);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "verticesPerPatch");
-        QCOMPARE(change->value().toInt(), 2);
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
