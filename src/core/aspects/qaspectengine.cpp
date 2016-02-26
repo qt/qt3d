@@ -117,7 +117,14 @@ QAspectEngine::QAspectEngine(QObject *parent)
 QAspectEngine::~QAspectEngine()
 {
     Q_D(QAspectEngine);
+
+    // Shutdown the simulation loop by setting an empty scene
     setRootEntity(QEntityPtr());
+
+    // Exit the main loop
+    d->m_aspectThread->aspectManager()->quit();
+    d->m_aspectThread->wait();
+
     delete d->m_aspectThread;
     delete d->m_postman;
     delete d->m_scene;
@@ -142,6 +149,13 @@ void QAspectEnginePrivate::initialize()
                               Q_ARG(Qt3DCore::QScene*, m_scene));
 }
 
+/*!
+    \internal
+
+    Called when we unset the root entity. Causes the QAspectManager's simulation
+    loop to be exited. The main loop should keep processing events ready
+    to start up the simulation again with a new root entity.
+*/
 void QAspectEnginePrivate::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
@@ -150,20 +164,6 @@ void QAspectEnginePrivate::shutdown()
     m_scene->setArbiter(Q_NULLPTR);
     QChangeArbiter *arbiter = m_aspectThread->aspectManager()->changeArbiter();
     QChangeArbiter::destroyUnmanagedThreadLocalChangeQueue(arbiter);
-
-    // Tell the aspect thread to exit
-    // This will return only after the aspectManager has
-    // exited its exec loop
-    m_aspectThread->aspectManager()->quit();
-
-    // Wait for thread to exit
-    m_aspectThread->wait();
-
-    qCDebug(Aspects) << Q_FUNC_INFO << "deleting aspects";
-    // Deletes aspects in the same thread as the one they were created in
-    qDeleteAll(m_aspects);
-
-    qCDebug(Aspects) << Q_FUNC_INFO << "Shutdown complete";
 }
 
 /*!
@@ -278,7 +278,7 @@ QVariant QAspectEngine::executeCommand(const QString &command)
 
 void QAspectEngine::setRootEntity(QEntityPtr root)
 {
-    qCDebug(Aspects) << "Setting scene root on aspect manager";
+    qCDebug(Aspects) << Q_FUNC_INFO << "root =" << root;
     Q_D(QAspectEngine);
     if (d->m_root == root)
         return;
@@ -290,8 +290,10 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // free any related resources
     d->m_root = root;
 
-    if (shutdownNeeded)
+    if (shutdownNeeded) {
         d->shutdown();
+        d->m_aspectThread->aspectManager()->exitSimulationLoop();
+    }
 
     // Do we actually have a new scene?
     if (!d->m_root)
@@ -311,13 +313,16 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     d->initNodeTree(root.data());
 
     // Finally, tell the aspects about the new scene object tree. This is done
-    // in a blocking manner to allow the backends to get synchronized before the
+    // in a blocking manner to allow the aspects to get synchronized before the
     // main thread starts triggering potentially more notifications
+    qCDebug(Aspects) << "Begin setting scene root on aspect manager";
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRootEntity",
                               Qt::BlockingQueuedConnection,
                               Q_ARG(Qt3DCore::QEntity *, root.data()));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
+
+    d->m_aspectThread->aspectManager()->enterSimulationLoop();
 }
 
 QEntityPtr QAspectEngine::rootEntity() const

@@ -80,6 +80,9 @@ public:
     explicit QAspectManager(QObject *parent = 0);
     ~QAspectManager();
 
+    void enterSimulationLoop();
+    void exitSimulationLoop();
+
     bool isShuttingDown() const;
 
 public Q_SLOTS:
@@ -104,8 +107,8 @@ private:
     QScheduler *m_scheduler;
     QAbstractAspectJobManager *m_jobManager;
     QChangeArbiter *m_changeArbiter;
+    QAtomicInt m_runSimulationLoop;
     QAtomicInt m_runMainLoop;
-    QAtomicInt m_terminated;
     QScopedPointer<QServiceLocator> m_serviceLocator;
     QSemaphore m_waitForEndOfExecLoop;
     QSemaphore m_waitForQuit;

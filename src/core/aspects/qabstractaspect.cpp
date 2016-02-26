@@ -46,6 +46,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -191,6 +192,7 @@ void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
 
 void QAbstractAspectPrivate::registerAspect(QEntity *rootObject)
 {
+    qCDebug(Aspects) << Q_FUNC_INFO << "rootObject =" << rootObject;
     Q_Q(QAbstractAspect);
     if (rootObject == m_root)
         return;
