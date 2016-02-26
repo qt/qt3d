@@ -408,7 +408,7 @@ void QRenderAspect::onRegistered()
         d->m_renderer->registerEventFilter(d->services()->eventFilterService());
 }
 
-void QRenderAspect::onCleanup()
+void QRenderAspect::onUnregistered()
 {
     Q_D(QRenderAspect);
     if (d->m_renderer)

@@ -214,7 +214,7 @@ void QInputAspect::onRegistered()
     d->m_inputHandler->eventSourceHelper()->setEventFilterService(eventService);
 }
 
-void QInputAspect::onCleanup()
+void QInputAspect::onUnregistered()
 {
     Q_D(QInputAspect);
     // At this point it is too late to call removeEventFilter as the eventSource (Window)

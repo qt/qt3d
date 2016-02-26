@@ -60,9 +60,10 @@ public:
     QStringList availablePhysicalDevices() const;
 
 private:
-    void onRegistered() Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
+
+    void onRegistered() Q_DECL_OVERRIDE;
+    void onUnregistered() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QInputAspect)
     friend class QInputDeviceIntegration;

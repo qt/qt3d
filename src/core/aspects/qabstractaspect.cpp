@@ -142,10 +142,6 @@ QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
     return QVector<QAspectJobPtr>();
 }
 
-void QAbstractAspect::onCleanup()
-{
-}
-
 QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 {
     const QMetaObject *metaObj = frontend->metaObject();

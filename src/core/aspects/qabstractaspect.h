@@ -84,8 +84,6 @@ private:
     virtual void onRegistered();
     virtual void onUnregistered();
 
-    virtual void onCleanup();
-
     virtual void onEngineStartup();
     virtual void onEngineShutdown();
 

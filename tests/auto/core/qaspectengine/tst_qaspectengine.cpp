@@ -62,11 +62,6 @@ private:
         qDebug() << Q_FUNC_INFO;
     }
 
-    void onCleanup() Q_DECL_OVERRIDE
-    {
-        qDebug() << Q_FUNC_INFO;
-    }
-
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
     {
         if (m_rootEntityId)
@@ -89,7 +84,6 @@ private: \
     void onRegistered() Q_DECL_OVERRIDE {} \
     void onEngineStartup() Q_DECL_OVERRIDE {} \
     void onEngineShutdown() Q_DECL_OVERRIDE {} \
-    void onCleanup() Q_DECL_OVERRIDE {} \
     \
     QVector<QAspectJobPtr> jobsToExecute(qint64) Q_DECL_OVERRIDE \
     { \

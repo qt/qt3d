@@ -108,10 +108,6 @@ void QLogicAspect::onRegistered()
 {
 }
 
-void QLogicAspect::onCleanup()
-{
-}
-
 void QLogicAspect::onEngineStartup()
 {
     Q_D(QLogicAspect);

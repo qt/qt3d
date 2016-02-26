@@ -74,7 +74,8 @@ protected:
     Q_DECLARE_PRIVATE(QRenderAspect)
 
     void onRegistered() Q_DECL_OVERRIDE;
-    void onCleanup() Q_DECL_OVERRIDE;
+    void onUnregistered() Q_DECL_OVERRIDE;
+
     void onEngineStartup() Q_DECL_OVERRIDE;
 
 private:

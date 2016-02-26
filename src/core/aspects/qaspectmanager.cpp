@@ -130,10 +130,9 @@ void QAspectManager::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
-        aspect->onCleanup();
+    for (QAbstractAspect *aspect : qAsConst(m_aspects))
         m_changeArbiter->unregisterSceneObserver(aspect->d_func());
-    }
+
     // Aspects must be deleted in the Thread they were created in
 }
 
@@ -145,9 +144,8 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
         return;
 
     if (m_root) {
-        // Allow each aspect chance to cleanup any resources from this scene
-        for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            aspect->onCleanup();
+        // TODO: Delete all backend nodes. This is to be symmetric with how
+        // we create them below in the call to setRootAndCreateNodes
     }
 
     m_root = root;
