@@ -72,14 +72,14 @@ Entity {
         }
     }
 
-    FrameGraph {
-        id: frameGraph
+    RenderSettings {
+        id: renderSettings
         activeFrameGraph: WaveForwardRenderer {
             camera: mainCamera
         }
     }
 
-    components: [ frameGraph, input, inputSettings ]
+    components: [ renderSettings, input, inputSettings ]
 
     // Event Source will be set by the Qt3DQuickWindow
     InputSettings { id: inputSettings }

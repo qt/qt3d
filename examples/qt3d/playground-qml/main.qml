@@ -58,7 +58,7 @@ Entity {
 
     property bool detailCamera: true
 
-    FrameGraph {
+    RenderSettings {
         id : external_forward_renderer
         activeFrameGraph: MyForwardRenderer {
             mainCamera: mainView.camera

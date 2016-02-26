@@ -68,7 +68,7 @@ Entity {
     }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 camera: camera
                 clearColor: "white"

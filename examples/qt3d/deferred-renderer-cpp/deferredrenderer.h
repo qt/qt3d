@@ -56,6 +56,7 @@
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderTargetSelector>
+#include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QCameraSelector>
 #include <Qt3DRender/QAnnotation>
 
@@ -72,6 +73,7 @@ public:
     void setScreenQuadLayers(const QStringList &layerName);
 
 private:
+    Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector;
     Qt3DRender::QLayerFilter *m_sceneFilter;
     Qt3DRender::QLayerFilter *m_screenQuadFilter;
     Qt3DRender::QClearBuffer *m_clearScreenQuad;

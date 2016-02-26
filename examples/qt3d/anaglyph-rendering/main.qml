@@ -55,7 +55,7 @@ import Qt3D.Render 2.0
 Entity {
     id: root
 
-    components: FrameGraph {
+    components: RenderSettings {
         StereoFrameGraph {
             id: stereoFrameGraph
             leftCamera: stereoCamera.leftCamera

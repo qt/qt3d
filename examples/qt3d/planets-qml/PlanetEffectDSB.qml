@@ -79,15 +79,6 @@ Effect {
                 RenderPass {
                     annotations: [ Annotation { name : "pass"; value : "forward" } ]
 
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
-
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetDB.vert")
                         fragmentShaderCode: loadSource("qrc:/shaders/gl3/planetDSB.frag")
@@ -108,15 +99,6 @@ Effect {
             renderPasses: [
                 RenderPass {
                     annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")
@@ -139,15 +121,6 @@ Effect {
             renderPasses: [
                 RenderPass {
                     annotations: [ Annotation { name : "pass"; value : "forward" } ]
-
-                    bindings: [
-                        // Uniforms (those provided by the user)
-                        ParameterMapping {
-                            parameterName: "ambient";
-                            shaderVariableName: "ka";
-                            bindingType: ParameterMapping.Uniform
-                        }
-                    ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es2/planetDB.vert")

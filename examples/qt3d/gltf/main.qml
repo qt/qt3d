@@ -69,8 +69,8 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    FrameGraph {
-        id : framegraph
+    RenderSettings {
+        id : renderSettings
         activeFrameGraph : Viewport {
             clearColor: "black"
             CameraSelector {
@@ -87,7 +87,7 @@ Entity {
         }
     }
 
-    components: [ framegraph ]
+    components: [ renderSettings ]
 
     Wine {
         id: wineRack

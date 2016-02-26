@@ -161,13 +161,6 @@ Material {
                     RenderPass {
                         annotations: Annotation {name: "Name"; value: "ColorMaterial"}
 
-                        bindings: [ // Add only the bindings needed for a shader
-                            ParameterMapping {parameterName: "ambient"; shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform},
-                            ParameterMapping {parameterName: "diffuse"; shaderVariableName: "kd"; bindingType: ParameterMapping.Uniform},
-                            ParameterMapping {parameterName: "lightPos"; shaderVariableName: "lightPosition"; bindingType: ParameterMapping.Uniform},
-                            ParameterMapping {parameterName: "lightIntensity"; shaderVariableName: "lightIntensity"; bindingType: ParameterMapping.Uniform}
-                        ]
-
                         shaderProgram: ShaderProgram {
                             id: diffuseShader
                             vertexShaderCode: loadSource("qrc:/shaders/diffuse.vert")
@@ -177,7 +170,6 @@ Material {
                     // TEXTURE PASS + UBO
                     RenderPass {
                         annotations : [Annotation {name : "Name"; value : "Texture" }]
-                        bindings: ParameterMapping {parameterName: "texture"; shaderVariableName: "tex"; bindingType: ParameterMapping.Uniform}
 
                         renderStates : [BlendEquationArguments {sourceRgb: BlendEquationArguments.One; destinationRgb : BlendEquationArguments.One},
                                         BlendEquation {blendFunction: BlendEquation.Add},

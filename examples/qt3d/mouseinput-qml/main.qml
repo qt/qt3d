@@ -69,22 +69,25 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    components: FrameGraph {
-        ForwardRenderer {
-            camera: camera
-            clearColor: "black"
-        }
-    }
+    components: [
+        RenderSettings {
+            ForwardRenderer {
+                camera: camera
+                clearColor: "black"
+            }
+            renderPolicy: RenderSettings.Always
+        },
+        InputSettings {}
+    ]
 
     SphereMesh {
         id: sphereMesh
         radius: 3
     }
 
-    Material {
+    PhongMaterial {
         id: material
-        effect : Effect {
-        }
+        diffuse: "green"
     }
 
     MouseController {
@@ -98,6 +101,7 @@ Entity {
 
         property Transform transform: Transform {
             scale: sphere1.scaleFactor
+                rotation: fromAxisAndAngle(Qt.vector3d(1, 0, 0), 45)
         }
 
         property MouseHandler mouseHandler : MouseHandler {

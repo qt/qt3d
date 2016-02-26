@@ -71,7 +71,7 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer{
                 camera: camera
                 clearColor: Qt.rgba(0.0, 0.5, 1, 1)

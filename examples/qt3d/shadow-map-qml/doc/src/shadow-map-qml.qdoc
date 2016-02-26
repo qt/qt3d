@@ -121,7 +121,7 @@
     \skipto import QtQuick
     \printuntil Render 2.0
 
-    The code defines a \l FrameGraph entity that has a tree of entities as the
+    The code defines a \l RendererSettings entity that has a tree of entities as the
     active framegraph:
 
     \printuntil clearColor

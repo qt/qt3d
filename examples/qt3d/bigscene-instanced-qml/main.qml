@@ -71,11 +71,17 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 clearColor: Qt.rgba(0, 0.5, 1, 1)
                 camera: camera
             }
+            // we need to explicitly set the RenderPolicy to AlwaysRender here,
+            // because a vertex shader will use time-based rendering, so the
+            // scene will change every frame without the scene-graph changing.
+            // RenderOnDemand would therefore not render every frame, as it won't
+            // detect scene-graph changes
+            renderPolicy: RenderSettings.Always
         },
         // Event Source will be set by the Qt3DQuickWindow
         InputSettings { }

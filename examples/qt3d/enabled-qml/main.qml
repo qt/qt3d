@@ -56,28 +56,33 @@ Entity {
     id: sceneRoot
     property int counter: 0
 
-    components: FrameGraph {
-        Viewport {
-            normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-            clearColor: "white"
-            enabled: counter !== 5
+    components: [
+        RenderSettings {
+            activeFrameGraph: Viewport {
+                normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
+                clearColor: "white"
+                enabled: counter !== 5
 
-            ClearBuffer {
-                buffers : ClearBuffer.ColorDepthBuffer
-                enabled: counter !== 6
-            }
+                RenderSurfaceSelector {
 
-            CameraSelector {
-                camera: camera
-                enabled: counter !== 7
+                    ClearBuffer {
+                        buffers : ClearBuffer.ColorDepthBuffer
+                        enabled: counter !== 6
+                    }
 
-                LayerFilter {
-                    enabled: counter === 12
-                    layers: "scene"
+                    CameraSelector {
+                        camera: camera
+                        enabled: counter !== 7
+
+                        LayerFilter {
+                            enabled: counter === 12
+                            layers: "scene"
+                        }
+                    }
                 }
             }
         }
-    }
+    ]
 
     QQ2.Timer {
         interval: 500

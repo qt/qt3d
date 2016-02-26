@@ -59,7 +59,7 @@ Entity {
     FirstPersonCameraController { camera: mainCamera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             ForwardRenderer {
                 camera: mainCamera
             }

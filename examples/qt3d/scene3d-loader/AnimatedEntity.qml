@@ -72,7 +72,7 @@ Entity {
     FirstPersonCameraController { camera: camera }
 
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: Viewport {
                 id: viewport
                 normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left

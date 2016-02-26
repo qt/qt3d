@@ -69,8 +69,8 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    FrameGraph {
-        id : external_forward_renderer
+    RenderSettings {
+        id : renderSettings
         activeFrameGraph : ForwardRenderer {
             camera: camera
             clearColor: "lightsteelblue"
@@ -80,7 +80,7 @@ Entity {
     // Event Source will be set by the Qt3DQuickWindow
     InputSettings { id: inputSettings }
 
-    components: [external_forward_renderer, inputSettings]
+    components: [renderSettings, inputSettings]
 
     TorusMesh {
         id: mesh

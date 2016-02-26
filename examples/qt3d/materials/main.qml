@@ -60,7 +60,7 @@ Entity {
     // Use the renderer configuration specified in ForwardRenderer.qml
     // and render from the mainCamera
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: SortedForwardRenderer {
                 id: renderer
                 camera: mainCamera

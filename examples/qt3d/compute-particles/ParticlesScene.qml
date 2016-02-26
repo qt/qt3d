@@ -65,10 +65,14 @@ Entity {
     signal reset()
 
     components: [
-        FrameGraph {
+        RenderSettings {
             ComputeFrameGraph {
                 camera: sceneCamera
             }
+            // explicitly set RenderingPolicy to AlwaysRender, as changes in the
+            // scene won't be reflected in actual Qt scene-graph changes (due to
+            // GPU compute calls)
+            renderPolicy: RenderSettings.Always
         }
     ]
 

@@ -54,7 +54,7 @@ import Qt3D.Render 2.0
 
 Entity
 {
-    components: FrameGraph {
+    components: RenderSettings {
         activeFrameGraph: ForwardRenderer {
             clearColor: Qt.rgba(0, 0, 0, 1)
             camera: camera

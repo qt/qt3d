@@ -115,7 +115,7 @@ Effect {
                                 lightColor += lights[i].color * (lights[i].intensity * max(dot(s, norm), 0.0));
                             }
                             lightColor /= float(lightCount);
-                            fragColor = col * lightColor;
+                            fragColor = col;
                         }
                                 "
                 }

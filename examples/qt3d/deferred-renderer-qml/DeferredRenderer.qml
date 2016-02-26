@@ -57,41 +57,43 @@ Viewport {
     property alias gBuffer : gBufferTargetSelector.target
     property alias camera : sceneCameraSelector.camera
 
-    LayerFilter {
-        layers : "scene"
+    RenderSurfaceSelector {
+        LayerFilter {
+            layers : "scene"
 
-        RenderTargetSelector {
-            id : gBufferTargetSelector
+            RenderTargetSelector {
+                id : gBufferTargetSelector
+
+                ClearBuffer {
+                    buffers: ClearBuffer.ColorDepthBuffer
+
+                    RenderPassFilter {
+                        id : geometryPass
+                        includes : Annotation { name : "pass"; value : "geometry" }
+
+                        CameraSelector {
+                            id : sceneCameraSelector
+                        }
+                    }
+                }
+            }
+        }
+
+        LayerFilter {
+            layers : "screenQuad"
 
             ClearBuffer {
                 buffers: ClearBuffer.ColorDepthBuffer
 
                 RenderPassFilter {
-                    id : geometryPass
-                    includes : Annotation { name : "pass"; value : "geometry" }
-
+                    id : finalPass
+                    includes : Annotation { name : "pass"; value : "final" }
                     CameraSelector {
-                        id : sceneCameraSelector
+                        camera: sceneCameraSelector.camera
                     }
                 }
+
             }
-        }
-    }
-
-    LayerFilter {
-        layers : "screenQuad"
-
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
-
-            RenderPassFilter {
-                id : finalPass
-                includes : Annotation { name : "pass"; value : "final" }
-                CameraSelector {
-                    camera: sceneCameraSelector.camera
-                }
-            }
-
         }
     }
 }

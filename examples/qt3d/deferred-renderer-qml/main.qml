@@ -51,6 +51,7 @@
 import QtQuick 2.0 as QQ2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
+import Qt3D.Input 2.0
 
 Entity {
     id : root
@@ -59,13 +60,17 @@ Entity {
         id : gBuffer
     }
 
-    components : FrameGraph {
-        id : deferredFrameGraphComponent
-        activeFrameGraph: DeferredRenderer {
-            camera : camera
-            gBuffer: gBuffer
-        }
-    }
+    components : [
+        RenderSettings {
+            activeFrameGraph: DeferredRenderer {
+                camera : camera
+                gBuffer: gBuffer
+            }
+
+            renderPolicy: RenderSettings.Always
+        },
+        InputSettings {}
+    ]
 
     FirstPersonCameraController { camera: camera }
 
@@ -106,7 +111,7 @@ Entity {
             QQ2.NumberAnimation on intensity { from: 0; to: 5.0; duration: 1000; loops: QQ2.Animation.Infinite }
         }
 
-        components: sceneEntity.light
+        components: [ sceneEntity.light ]
 
         Camera {
             id: camera
@@ -129,7 +134,6 @@ Entity {
             id : sphereMesh
             rings: 50
             slices: 100
-            shareable: false
         }
 
         SceneEffect {
@@ -198,7 +202,7 @@ Entity {
         }
 
         Entity {
-            id: light3
+            id: sphere3
             property PointLight light : PointLight {
                 color : "white"
                 intensity : 2.0

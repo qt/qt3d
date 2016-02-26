@@ -60,11 +60,6 @@ Technique {
     renderPasses : [
         RenderPass {
             annotations : [Annotation {name : "Name"; value : "TextureLighting" }]
-            bindings : [ // Add only the bindings needed for a shader
-                ParameterMapping {parameterName: "vertexTexCoord"; shaderVariableName: "texCoord0"; bindingType: ParameterMapping.Attribute},
-                ParameterMapping {parameterName: "tex"; shaderVariableName: "texture"; bindingType: ParameterMapping.Uniform},
-                ParameterMapping {parameterName: "modelViewProjection"; shaderVariableName: "customMvp"; bindingType: ParameterMapping.StandardUniform}
-            ]
 
             shaderProgram : ShaderProgram {
                 id : textureShaderLighting

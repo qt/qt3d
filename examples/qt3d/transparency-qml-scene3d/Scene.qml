@@ -69,7 +69,12 @@ Entity {
 
     FirstPersonCameraController { camera: camera }
 
-    components: FrameGraph { ForwardRenderer{ camera: camera; clearColor: Qt.rgba(0.0, 0.5, 1, 1) } }
+    components: RenderSettings {
+        ForwardRenderer{
+            camera: camera
+            clearColor: Qt.rgba(0.0, 0.5, 1, 1)
+        }
+    }
 
     TorusMesh {
         id: torusMesh

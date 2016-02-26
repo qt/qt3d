@@ -51,7 +51,7 @@
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
-FrameGraph {
+RenderSettings {
     id: quadViewportFrameGraph
 
     property alias topLeftCamera: cameraSelectorTopLeftViewport.camera;
@@ -60,7 +60,7 @@ FrameGraph {
     property alias bottomRightCamera: cameraSelectorBottomRightViewport.camera;
     property alias window: surfaceSelector.window
 
-    RenderSurfaceSelector {
+    activeFrameGraph: RenderSurfaceSelector {
         id: surfaceSelector
 
         Viewport {

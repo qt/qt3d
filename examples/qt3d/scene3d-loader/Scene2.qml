@@ -72,15 +72,15 @@ Scene3D {
             viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
         }
 
-        FrameGraph {
-            id : external_forward_renderer
+        RenderSettings {
+            id : renderSettings
             activeFrameGraph : ForwardRenderer {
                 camera: camera
                 clearColor: "black"
             }
         }
 
-        components: [external_forward_renderer]
+        components: [renderSettings]
 
         TorusMesh {
             id: mesh

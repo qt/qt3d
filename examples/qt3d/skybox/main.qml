@@ -56,7 +56,7 @@ Entity {
     id: root
 
     components: [
-        FrameGraph {
+        RenderSettings {
             ForwardRenderer {
                 camera: basicCamera
                 clearColor: "black"

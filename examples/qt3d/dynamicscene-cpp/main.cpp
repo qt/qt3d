@@ -65,7 +65,6 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
     Qt3DWindow view;
 
     ExampleScene *sceneRoot = new ExampleScene();
@@ -77,6 +76,7 @@ int main(int argc, char* argv[])
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
+
     // For camera controls
     Qt3DInput::QFirstPersonCameraController *camController = new Qt3DInput::QFirstPersonCameraController(sceneRoot);
     camController->setCamera(basicCamera);

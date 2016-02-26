@@ -58,7 +58,7 @@ Entity {
 
     // Render from the mainCamera
     components: [
-        FrameGraph {
+        RenderSettings {
             activeFrameGraph: ForwardRenderer {
                 id: renderer
                 camera: mainCamera
