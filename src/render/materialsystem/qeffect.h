@@ -51,8 +51,7 @@ class QParameter;
 class QTechnique;
 class QEffectPrivate;
 
-class QT3DRENDERSHARED_EXPORT QEffect
-        : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QEffect : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
@@ -63,8 +62,8 @@ public:
     void removeParameter(QParameter *parameter);
     QList<QParameter *> parameters() const;
 
-    virtual void addTechnique(QTechnique *t);
-    virtual void removeTechnique(QTechnique *t);
+    void addTechnique(QTechnique *t);
+    void removeTechnique(QTechnique *t);
     QList<QTechnique *> techniques() const;
 
 protected:
