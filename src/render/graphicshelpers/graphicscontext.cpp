@@ -539,7 +539,7 @@ int GraphicsContext::activateTexture(TextureScope scope, Texture *tex, int onUni
 
     // actually re-bind if required, the tex->dna on the unit not being the same
     // Note: tex->dna() could be 0 if the texture has not been created yet
-    if (m_activeTextures[onUnit] != tex->dna() || tex->dna() == 0) {
+    if (m_activeTextures[onUnit] != tex->dna() || tex->dna() == 0 || tex->dataUploadRequired()) {
         QOpenGLTexture *glTex = tex->getOrCreateGLTexture();
         glTex->bind(onUnit);
         m_activeTextures[onUnit] = tex->dna();

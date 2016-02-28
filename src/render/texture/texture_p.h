@@ -116,6 +116,8 @@ public:
     inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_dataFunctor; }
     void setTextureDataHandle(HTextureData handle) { m_textureDataHandle = handle; }
 
+    inline bool dataUploadRequired() const { return m_dataUploadRequired; }
+
 private:
     QOpenGLTexture *m_gl;
 
