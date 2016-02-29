@@ -104,8 +104,8 @@ Viewport {
                                 }
                             },
                             StencilOperation {
-                                front.stencilDepthPass: StencilOpSeparate.Decrement
-                                back.stencilDepthPass: StencilOpSeparate.Increment
+                                front.allTestsPassOperation: StencilOpSeparate.Decrement
+                                back.allTestsPassOperation: StencilOpSeparate.Increment
                             },
                             ColorMask { redMasked: false; greenMasked: false; blueMasked: false; alphaMasked: false }
                         ]

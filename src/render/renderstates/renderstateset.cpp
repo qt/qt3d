@@ -348,8 +348,8 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         QStencilOperation *stencilOp = static_cast<QStencilOperation *>(renderState);
         const QStencilOpSeparate *front = stencilOp->front();
         const QStencilOpSeparate *back = stencilOp->back();
-        return getOrCreateRenderStateImpl<StencilOp>(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),
-                                      back->stencilFail(), back->depthFail(), back->stencilDepthPass());
+        return getOrCreateRenderStateImpl<StencilOp>(front->stencilTestFailureOperation(), front->depthTestFailureOperation(), front->allTestsPassOperation(),
+                                      back->stencilTestFailureOperation(), back->depthTestFailureOperation(), back->allTestsPassOperation());
     }
     case QRenderState::StencilMask: {
         QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);

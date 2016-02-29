@@ -54,9 +54,9 @@ class QT3DRENDERSHARED_EXPORT QStencilOpSeparate : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(FaceMode faceMode READ faceMode NOTIFY faceModeChanged)
-    Q_PROPERTY(Operation stencilFail READ stencilFail WRITE setStencilFail NOTIFY stencilFailChanged)
-    Q_PROPERTY(Operation depthFail READ depthFail WRITE setDepthFail NOTIFY depthFailChanged)
-    Q_PROPERTY(Operation stencilDepthPass READ stencilDepthPass WRITE setStencilDepthPass NOTIFY stencilDepthPassChanged)
+    Q_PROPERTY(Operation stencilTestFailureOperation READ stencilTestFailureOperation WRITE setStencilTestFailureOperation NOTIFY stencilTestFailureOperationChanged)
+    Q_PROPERTY(Operation depthTestFailureOperation READ depthTestFailureOperation WRITE setDepthTestFailureOperation NOTIFY depthTestFailureOperationChanged)
+    Q_PROPERTY(Operation allTestsPassOperation READ allTestsPassOperation WRITE setAllTestsPassOperation NOTIFY allTestsPassOperationChanged)
 
 public:
     enum FaceMode
@@ -84,19 +84,19 @@ public:
 
     FaceMode faceMode() const;
 
-    Operation stencilFail() const;
-    Operation depthFail() const;
-    Operation stencilDepthPass() const;
+    Operation stencilTestFailureOperation() const;
+    Operation depthTestFailureOperation() const;
+    Operation allTestsPassOperation() const;
 
 public Q_SLOTS:
-    void setStencilFail(Operation operation);
-    void setDepthFail(Operation operation);
-    void setStencilDepthPass(Operation operation);
+    void setStencilTestFailureOperation(Operation operation);
+    void setDepthTestFailureOperation(Operation operation);
+    void setAllTestsPassOperation(Operation operation);
 
 Q_SIGNALS:
-    void stencilFailChanged(Operation stencilFail);
-    void depthFailChanged(Operation depthFail);
-    void stencilDepthPassChanged(Operation stencilDepthPass);
+    void stencilTestFailureOperationChanged(Operation stencilFail);
+    void depthTestFailureOperationChanged(Operation depthFail);
+    void allTestsPassOperationChanged(Operation stencilDepthPass);
     void faceModeChanged(FaceMode faceMode);
 
 private:

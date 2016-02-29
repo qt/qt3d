@@ -85,12 +85,12 @@ void QStencilOperation::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QStencilOperation *refState = static_cast<const QStencilOperation*>(ref);
-    d_func()->m_back->setDepthFail(refState->d_func()->m_back->depthFail());
-    d_func()->m_back->setStencilFail(refState->d_func()->m_back->stencilFail());
-    d_func()->m_back->setStencilDepthPass(refState->d_func()->m_back->stencilDepthPass());
-    d_func()->m_front->setDepthFail(refState->d_func()->m_front->depthFail());
-    d_func()->m_front->setStencilFail(refState->d_func()->m_front->stencilFail());
-    d_func()->m_front->setStencilDepthPass(refState->d_func()->m_front->stencilDepthPass());
+    d_func()->m_back->setDepthTestFailureOperation(refState->d_func()->m_back->depthTestFailureOperation());
+    d_func()->m_back->setStencilTestFailureOperation(refState->d_func()->m_back->stencilTestFailureOperation());
+    d_func()->m_back->setAllTestsPassOperation(refState->d_func()->m_back->allTestsPassOperation());
+    d_func()->m_front->setDepthTestFailureOperation(refState->d_func()->m_front->depthTestFailureOperation());
+    d_func()->m_front->setStencilTestFailureOperation(refState->d_func()->m_front->stencilTestFailureOperation());
+    d_func()->m_front->setAllTestsPassOperation(refState->d_func()->m_front->allTestsPassOperation());
 }
 
 } // namespace Qt3DRender

@@ -50,17 +50,17 @@ public:
     QStencilOpSeparatePrivate(QStencilOpSeparate::FaceMode mode)
         : QObjectPrivate()
         , m_face(mode)
-        , m_stencilFailOperation(QStencilOpSeparate::Keep)
-        , m_depthFailOperation(QStencilOpSeparate::Keep)
-        , m_stencilDepthPassOperation(QStencilOpSeparate::Keep)
+        , m_stencilTestFailureOperation(QStencilOpSeparate::Keep)
+        , m_depthTestFailureOperation(QStencilOpSeparate::Keep)
+        , m_allTestsPassOperation(QStencilOpSeparate::Keep)
     {
 
     }
 
     QStencilOpSeparate::FaceMode m_face;
-    QStencilOpSeparate::Operation m_stencilFailOperation;
-    QStencilOpSeparate::Operation m_depthFailOperation;
-    QStencilOpSeparate::Operation m_stencilDepthPassOperation;
+    QStencilOpSeparate::Operation m_stencilTestFailureOperation;
+    QStencilOpSeparate::Operation m_depthTestFailureOperation;
+    QStencilOpSeparate::Operation m_allTestsPassOperation;
 };
 
 QStencilOpSeparate::QStencilOpSeparate(FaceMode mode, QObject *parent)
@@ -78,49 +78,49 @@ QStencilOpSeparate::FaceMode QStencilOpSeparate::faceMode() const
     return d->m_face;
 }
 
-void QStencilOpSeparate::setStencilFail(QStencilOpSeparate::Operation operation)
+void QStencilOpSeparate::setStencilTestFailureOperation(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_stencilFailOperation != operation) {
-        d->m_stencilFailOperation = operation;
-        Q_EMIT stencilFailChanged(operation);
+    if (d->m_stencilTestFailureOperation != operation) {
+        d->m_stencilTestFailureOperation = operation;
+        Q_EMIT stencilTestFailureOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::stencilFail() const
+QStencilOpSeparate::Operation QStencilOpSeparate::stencilTestFailureOperation() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_stencilFailOperation;
+    return d->m_stencilTestFailureOperation;
 }
 
-void QStencilOpSeparate::setDepthFail(QStencilOpSeparate::Operation operation)
+void QStencilOpSeparate::setDepthTestFailureOperation(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_depthFailOperation != operation) {
-        d->m_depthFailOperation = operation;
-        Q_EMIT depthFailChanged(operation);
+    if (d->m_depthTestFailureOperation != operation) {
+        d->m_depthTestFailureOperation = operation;
+        Q_EMIT depthTestFailureOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::depthFail() const
+QStencilOpSeparate::Operation QStencilOpSeparate::depthTestFailureOperation() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_depthFailOperation;
+    return d->m_depthTestFailureOperation;
 }
 
-void QStencilOpSeparate::setStencilDepthPass(QStencilOpSeparate::Operation operation)
+void QStencilOpSeparate::setAllTestsPassOperation(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_stencilDepthPassOperation != operation) {
-        d->m_stencilDepthPassOperation = operation;
-        Q_EMIT stencilDepthPassChanged(operation);
+    if (d->m_allTestsPassOperation != operation) {
+        d->m_allTestsPassOperation = operation;
+        Q_EMIT allTestsPassOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::stencilDepthPass() const
+QStencilOpSeparate::Operation QStencilOpSeparate::allTestsPassOperation() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_stencilDepthPassOperation;
+    return d->m_allTestsPassOperation;
 }
 
 } // namespace Qt3DRender
