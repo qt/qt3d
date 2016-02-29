@@ -72,6 +72,7 @@ public:
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name) Q_DECL_FINAL;
     QVector<Qt3DCore::QNodeId> physicalDevices() const Q_DECL_FINAL;
     QAbstractPhysicalDeviceBackendNode *physicalDevice(Qt3DCore::QNodeId id) const Q_DECL_FINAL;
+    QStringList deviceNames() const Q_DECL_FINAL;
 
 private:
     void onInitialize() Q_DECL_FINAL;

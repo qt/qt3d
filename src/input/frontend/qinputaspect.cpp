@@ -129,27 +129,26 @@ QInputAspect::QInputAspect(QObject *parent)
     registerBackendType<QGamepadInput>(QBackendNodeMapperPtr(new Input::GenericDeviceBackendFunctor(this, d_func()->m_inputHandler.data())));
 #endif
 
+    Q_D(QInputAspect);
     // Plugins are QInputDeviceIntegration instances
-    loadInputDevicePlugins();
+    d->loadInputDevicePlugins();
 
     // KeyboardController and MouseController also provide their own QInputDeviceIntegration
-    Q_D(QInputAspect);
     d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
 }
 
-void QInputAspect::loadInputDevicePlugins()
+void QInputAspectPrivate::loadInputDevicePlugins()
 {
-    Q_D(QInputAspect);
     QStringList keys = QInputDeviceIntegrationFactory::keys();
-    Q_FOREACH (QString key, keys) {
+    Q_FOREACH (const QString &key, keys) {
         Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
         if (integration != Q_NULLPTR) {
-            d->m_inputHandler->addInputDeviceIntegration(integration);
+            m_inputHandler->addInputDeviceIntegration(integration);
             // Initialize will allow the InputDeviceIntegration to
             // register their frontend / backend types,
             // create their managers
             // launch a thread to listen to the actual physical device....
-            integration->initialize(this);
+            integration->initialize(q_func());
         }
     }
 }
@@ -164,6 +163,16 @@ QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
             break;
     }
     return device;
+}
+
+QStringList QInputAspect::availablePhysicalDevices() const
+{
+    Q_D(const QInputAspect);
+    QStringList deviceNamesList;
+    const auto deviceIntegrations = d->m_inputHandler->inputDeviceIntegrations();
+    for (const QInputDeviceIntegration *integration : deviceIntegrations)
+        deviceNamesList += integration->deviceNames();
+    return deviceNamesList;
 }
 
 QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)

@@ -89,6 +89,11 @@ QAbstractPhysicalDeviceBackendNode *KeyboardMouseGenericDeviceIntegration::physi
     return device;
 }
 
+QStringList KeyboardMouseGenericDeviceIntegration::deviceNames() const
+{
+    return QStringList() << tr("Keyboard") << tr("Mouse");
+}
+
 } // Input
 
 } // Qt3DInput
