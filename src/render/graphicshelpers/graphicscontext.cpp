@@ -469,7 +469,8 @@ void GraphicsContext::activateRenderTarget(RenderTarget *renderTarget, const Att
             // We need to check if  one of the attachment was resized
             TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
             bool needsResize = false;
-            Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
+            const auto attachments_ = attachments.attachments();
+            for (const Attachment &attachment : attachments_) {
                 Texture *rTex = textureManager->lookupResource(attachment.m_textureUuid);
                 if (rTex != nullptr)
                     needsResize |= rTex->isTextureReset();
@@ -492,7 +493,8 @@ void GraphicsContext::bindFrameBufferAttachmentHelper(GLuint fboId, const Attach
 
     QSize fboSize;
     TextureManager *textureManager = m_renderer->nodeManagers()->textureManager();
-    Q_FOREACH (const Attachment &attachment, attachments.attachments()) {
+    const auto attachments_ = attachments.attachments();
+    for (const Attachment &attachment : attachments_) {
         Texture *rTex =textureManager->lookupResource(attachment.m_textureUuid);
         if (rTex != nullptr) {
             QOpenGLTexture *glTex = rTex->getOrCreateGLTexture();
@@ -630,7 +632,8 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
                                             ? QOpenGLDebugLogger::SynchronousLogging
                                             : QOpenGLDebugLogger::AsynchronousLogging);
 
-                Q_FOREACH (const QOpenGLDebugMessage &msg, m_debugLogger->loggedMessages())
+                const auto msgs = m_debugLogger->loggedMessages();
+                for (const QOpenGLDebugMessage &msg : msgs)
                     logOpenGLDebugMessage(msg);
             }
         } else {
@@ -643,7 +646,8 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     // TO DO: would that vary like the glHelper ?
 
     QStringList extensions;
-    Q_FOREACH (const QByteArray &ext, m_gl->extensions().values())
+    const auto exts = m_gl->extensions();
+    for (const QByteArray &ext : exts)
         extensions << QString::fromUtf8(ext);
     m_contextInfo.m_major = m_gl->format().version().first;
     m_contextInfo.m_minor = m_gl->format().version().second;
@@ -1035,7 +1039,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     // Bind Shader Storage block to SSBO and update SSBO
     const QVector<BlockToSSBO> blockToSSBOs = parameterPack.shaderStorageBuffers();
     int ssboIndex = 0;
-    Q_FOREACH (const BlockToSSBO b, blockToSSBOs) {
+    for (const BlockToSSBO b : blockToSSBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ssbo = glBufferForRenderBuffer(cpuBuffer);
         bindShaderStorageBlock(shader->programId(), b.m_blockIndex, ssboIndex);
@@ -1055,7 +1059,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     // TO DO: Convert ShaderData to Buffer so that we can use that generic process
     const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
     int uboIndex = 0;
-    Q_FOREACH (const BlockToUBO &b, blockToUBOs) {
+    for (const BlockToUBO &b : blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);

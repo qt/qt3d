@@ -211,11 +211,11 @@ void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
     if (!m_entities.isEmpty()) {
         Qt3DCore::QEntity *entity = m_entities.first();
         Qt3DCore::QEntity *parentEntity = nullptr;
-        Qt3DRender::QObjectPicker *objectPicker = nullptr;
         while (entity != nullptr && entity->parent() != nullptr && !event->isAccepted()) {
             parentEntity = entity->parentEntity();
-            Q_FOREACH (Qt3DCore::QComponent *c, parentEntity->components()) {
-                if ((objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) != nullptr) {
+            const auto components = parentEntity->components();
+            for (Qt3DCore::QComponent *c : components) {
+                if (auto objectPicker = qobject_cast<Qt3DRender::QObjectPicker *>(c)) {
                     QObjectPickerPrivate *objectPickerPrivate = static_cast<QObjectPickerPrivate *>(QObjectPickerPrivate::get(objectPicker));
                     switch (type) {
                     case Pressed:

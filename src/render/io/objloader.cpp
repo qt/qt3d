@@ -462,7 +462,7 @@ void ObjLoader::updateIndices(const QVector<QVector3D> &positions,
     const int indexCount = faceIndexVector.size();
     m_indices.clear();
     m_indices.reserve(indexCount);
-    foreach (const FaceIndices &faceIndices, faceIndexVector) {
+    for (const FaceIndices faceIndices : faceIndexVector) {
         const unsigned int i = faceIndexMap.value(faceIndices);
         m_indices.append(i);
     }

@@ -95,7 +95,7 @@ QVector<Qt3DCore::QNodeId> QCollisionQueryResult::entitiesHit() const
 {
     Q_D(const QCollisionQueryResult);
     QVector<Qt3DCore::QNodeId> result;
-    Q_FOREACH (const Hit& hit, d->m_hits)
+    for (const Hit& hit : d->m_hits)
         result << hit.m_entityId;
     return result;
 }

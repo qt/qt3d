@@ -137,7 +137,7 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBo
     } else {
         QVector<Hit> hits = QtConcurrent::blockingMappedReduced<QVector<Hit> >(volumes, gathererFunctor, reduceToAllHits);
         std::sort(hits.begin(), hits.end(), compareHitsDistance);
-        Q_FOREACH (const Hit &hit, hits)
+        for (const Hit &hit : qAsConst(hits))
             q->addEntityHit(result, hit.id, hit.intersection, hit.distance);
     }
 

@@ -444,7 +444,7 @@ void Texture::updateDNA()
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
 
     // apply non-unique hashes from texture images or texture data
-    Q_FOREACH (HTextureImage imgHandle, m_textureImages) {
+    for (HTextureImage imgHandle : qAsConst(m_textureImages)) {
         TextureImage *img = m_textureImageManager->data(imgHandle);
         if (img)
             m_textureDNA += img->dna();

@@ -58,7 +58,7 @@ QVector<RenderStateNode*> RenderStateCollection::renderStates(RenderStateManager
     if (m_dirty) {
         m_renderStateNodes.clear();
 
-        Q_FOREACH (Qt3DCore::QNodeId id, m_renderStateIds) {
+        for (const Qt3DCore::QNodeId id : m_renderStateIds) {
             RenderStateNode *node = manager->lookupResource(id);
             m_renderStateNodes.append(node);
         }
