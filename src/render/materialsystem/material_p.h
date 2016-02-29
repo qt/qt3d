@@ -83,7 +83,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     inline bool isEnabled() const { return m_enabled; }
 
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
     Qt3DCore::QNodeId effect() const;
 
 private:

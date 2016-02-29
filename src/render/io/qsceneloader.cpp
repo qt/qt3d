@@ -72,7 +72,7 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             QNodePtr nodePtr = e->value().value<QNodePtr>();
             QEntity *scene = static_cast<QEntity *>(nodePtr.data());
             if (scene != Q_NULLPTR && d->m_scene != Q_NULLPTR) {
-                QList<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
+                QVector<QNodeId> entities = d->m_scene->entitiesForComponent(d->m_id);
                 if (entities.size() > 1) // TO DO: QComponent shareable property
                     qCWarning(Render::Frontend) << "It is strongly discouraged to share SceneLoader component between entities";
                 Q_FOREACH (QNodeId id, entities) {

@@ -76,12 +76,12 @@ public:
     void appendRenderAttachment(Qt3DCore::QNodeId attachmentId);
     void removeRenderAttachment(Qt3DCore::QNodeId attachmentId);
 
-    QList<Qt3DCore::QNodeId> renderAttachments() const;
+    QVector<Qt3DCore::QNodeId> renderAttachments() const;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
-    QList<Qt3DCore::QNodeId> m_renderAttachments;
+    QVector<Qt3DCore::QNodeId> m_renderAttachments;
 };
 
 } // namespace Render

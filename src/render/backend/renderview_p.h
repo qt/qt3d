@@ -236,7 +236,7 @@ public:
     void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }
     HTarget renderTargetHandle() const Q_DECL_NOEXCEPT { return m_renderTarget; }
 
-    void addSortCriteria(const QList<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
+    void addSortCriteria(const QVector<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
     void setSurface(QSurface *surface) { m_surface = surface; }
     QSurface *surface() const { return m_surface; }
@@ -259,7 +259,7 @@ public:
         QMatrix4x4 *m_viewProjectionMatrix;
         QStringList m_layers; // Only for debug
         QVector<int> m_layerIds;
-        QList<Qt3DCore::QNodeId> m_sortingCriteria;
+        QVector<Qt3DCore::QNodeId> m_sortingCriteria;
         QVector3D m_eyePos;
         UniformBlockValueBuilder m_uniformBlockBuilder;
     };

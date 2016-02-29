@@ -104,7 +104,7 @@ protected:
     QHash<QString, QVariant> m_nestedShaderDataProperties;
     QHash<QString, QShaderData::TransformType> m_transformedProperties;
     QMutex m_mutex;
-    static QList<Qt3DCore::QNodeId> m_updatedShaderData;
+    static QVector<Qt3DCore::QNodeId> m_updatedShaderData;
     QMatrix4x4 m_worldMatrix;
     QMatrix4x4 m_viewMatrix;
     NodeManagers *m_managers;

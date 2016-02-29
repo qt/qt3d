@@ -131,7 +131,7 @@ void tst_Cloning::checkEntityCloning()
     QCOMPARE(cloneEntity->children().count(), 4);
     QCOMPARE(cloneEntity->components().count(), 3);
 
-    QList<Qt3DCore::QNodeId> ids = QList<Qt3DCore::QNodeId>() << comp1->id() << comp2->id() << comp3->id() << childNode->id();
+    QVector<Qt3DCore::QNodeId> ids = QVector<Qt3DCore::QNodeId>() << comp1->id() << comp2->id() << comp3->id() << childNode->id();
 
     Q_FOREACH (QObject *c, cloneEntity->children()) {
         Qt3DCore::QNode *n = qobject_cast<Qt3DCore::QNode *>(c);

@@ -67,7 +67,7 @@ void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
         m_parameterPack.appendParameter(p->id());
 }
 
-QList<Qt3DCore::QNodeId> RenderPassFilter::filters() const
+QVector<Qt3DCore::QNodeId> RenderPassFilter::filters() const
 {
     return m_filters;
 }
@@ -83,7 +83,7 @@ void RenderPassFilter::removeFilter(Qt3DCore::QNodeId criterionId)
     m_filters.removeOne(criterionId);
 }
 
-QList<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
+QVector<Qt3DCore::QNodeId> RenderPassFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }

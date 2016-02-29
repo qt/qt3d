@@ -130,12 +130,12 @@ Qt3DCore::QNodeId RenderPass::shaderProgram() const
     return m_shaderUuid;
 }
 
-QList<Qt3DCore::QNodeId> RenderPass::annotations() const
+QVector<Qt3DCore::QNodeId> RenderPass::annotations() const
 {
     return m_annotationList;
 }
 
-QList<Qt3DCore::QNodeId> RenderPass::parameters() const
+QVector<Qt3DCore::QNodeId> RenderPass::parameters() const
 {
     return m_parameterPack.parameters();
 }

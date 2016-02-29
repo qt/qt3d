@@ -104,7 +104,7 @@ public:
     void removeChildId(Qt3DCore::QNodeId childHandle);
 
     Qt3DCore::QNodeId parentId() const;
-    QList<Qt3DCore::QNodeId> childrenIds() const;
+    QVector<Qt3DCore::QNodeId> childrenIds() const;
 
     FrameGraphNode *parent() const;
     QList<FrameGraphNode *> children() const;
@@ -116,7 +116,7 @@ private:
     FrameGraphNodeType m_nodeType;
     bool m_enabled;
     Qt3DCore::QNodeId m_parentId;
-    QList<Qt3DCore::QNodeId> m_childrenIds;
+    QVector<Qt3DCore::QNodeId> m_childrenIds;
     FrameGraphManager *m_manager;
 
     friend class FrameGraphVisitor;

@@ -75,11 +75,11 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void appendRenderTechnique(Qt3DCore::QNodeId t);
 
-    QList<Qt3DCore::QNodeId> techniques() const;
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> techniques() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
-    QList<Qt3DCore::QNodeId> m_techniques;
+    QVector<Qt3DCore::QNodeId> m_techniques;
     ParameterPack m_parameterPack;
 };
 

@@ -68,12 +68,12 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     setEnabled(filter->isEnabled());
 }
 
-QList<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
+QVector<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
 {
     return m_parameterPack.parameters();
 }
 
-QList<Qt3DCore::QNodeId> TechniqueFilter::filters() const
+QVector<Qt3DCore::QNodeId> TechniqueFilter::filters() const
 {
     return m_filters;
 }

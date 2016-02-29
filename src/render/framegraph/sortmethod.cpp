@@ -79,7 +79,7 @@ void SortMethod::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::AllDirty);
 }
 
-QList<QNodeId> SortMethod::criteria() const
+QVector<QNodeId> SortMethod::criteria() const
 {
     return m_criteria;
 }

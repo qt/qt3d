@@ -182,11 +182,15 @@ QLockableObserverInterface *QScene::arbiter() const
     return d->m_arbiter;
 }
 
-QList<QNodeId> QScene::entitiesForComponent(QNodeId id) const
+QVector<QNodeId> QScene::entitiesForComponent(QNodeId id) const
 {
     Q_D(const QScene);
     QReadLocker lock(&d->m_lock);
-    return d->m_componentToEntities.values(id);
+    QVector<QNodeId> result;
+    const auto p = d->m_componentToEntities.equal_range(id);
+    for (auto it = p.first; it != p.second; ++it)
+        result.push_back(*it);
+    return result;
 }
 
 void QScene::addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid)

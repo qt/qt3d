@@ -498,10 +498,10 @@ template<>
 Qt3DCore::QNodeId Entity::componentUuid<Material>() const { return m_materialComponent; }
 
 template<>
-QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
+QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const { return m_layerComponents; }
 
 template<>
-QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_shaderDataComponents; }
+QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const { return m_shaderDataComponents; }
 
 template<>
 Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const { return m_geometryRendererComponent; }
@@ -516,7 +516,7 @@ template<>
 QNodeId Entity::componentUuid<ComputeJob>() const { return m_computeComponent; }
 
 template<>
-QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }
+QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }
 
 RenderEntityFunctor::RenderEntityFunctor(AbstractRenderer *renderer, NodeManagers *manager)
     : m_nodeManagers(manager)

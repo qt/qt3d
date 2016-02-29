@@ -63,7 +63,7 @@ const int qNodeIdTypeId = qMetaTypeId<Qt3DCore::QNodeId>();
 
 }
 
-QList<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
+QVector<Qt3DCore::QNodeId> ShaderData::m_updatedShaderData;
 
 ShaderData::ShaderData()
     : m_managers(Q_NULLPTR)
@@ -253,7 +253,7 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
         m_properties.insert(propertyName, propertyValue);
         m_originalProperties.insert(propertyName, propertyValue);
 
-        // We check if the property is a QNodeId or QList<QNodeId> so that we can
+        // We check if the property is a QNodeId or QVector<QNodeId> so that we can
         // check nested QShaderData for update
         if (propertyValue.userType() == qNodeIdTypeId) {
             m_nestedShaderDataProperties.insert(propertyName, propertyValue);

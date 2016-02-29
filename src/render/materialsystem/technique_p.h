@@ -82,7 +82,7 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
     void appendRenderPass(Qt3DCore::QNodeId renderPassId);
     void removeRenderPass(Qt3DCore::QNodeId renderPassId);
@@ -90,16 +90,16 @@ public:
     void appendAnnotation(Qt3DCore::QNodeId criterionId);
     void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
-    QList<Qt3DCore::QNodeId> annotations() const;
-    QList<Qt3DCore::QNodeId> renderPasses() const;
+    QVector<Qt3DCore::QNodeId> annotations() const;
+    QVector<Qt3DCore::QNodeId> renderPasses() const;
     QGraphicsApiFilter *graphicsApiFilter() const;
 
 private:
     QGraphicsApiFilter *m_graphicsApiFilter;
 
     ParameterPack m_parameterPack;
-    QList<Qt3DCore::QNodeId> m_annotationList;
-    QList<Qt3DCore::QNodeId> m_renderPasses;
+    QVector<Qt3DCore::QNodeId> m_annotationList;
+    QVector<Qt3DCore::QNodeId> m_renderPasses;
 };
 
 } // namespace Render

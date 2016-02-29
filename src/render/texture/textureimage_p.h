@@ -108,7 +108,7 @@ private:
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;
     TextureDataManager *m_textureDataManager;
-    QList<Qt3DCore::QNodeId> m_referencedTextures;
+    QVector<Qt3DCore::QNodeId> m_referencedTextures;
     HTexture m_textureProvider;
     Qt3DCore::QNodeId m_textureProviderId;
     TextureImageDNA m_dna;

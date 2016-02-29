@@ -357,7 +357,7 @@ void tst_QScene::addEntityForComponent()
 
     // THEN
     for (int i = 0; i < 10; i++) {
-        QList<Qt3DCore::QNodeId> ids = scene->entitiesForComponent(components.at(i)->id());
+        QVector<Qt3DCore::QNodeId> ids = scene->entitiesForComponent(components.at(i)->id());
         QCOMPARE(ids.count(), 10);
     }
 }

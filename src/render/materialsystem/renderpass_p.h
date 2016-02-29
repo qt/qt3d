@@ -85,15 +85,15 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId shaderProgram() const;
-    QList<Qt3DCore::QNodeId> annotations() const;
-    QList<Qt3DCore::QNodeId> parameters() const;
+    QVector<Qt3DCore::QNodeId> annotations() const;
+    QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
     void appendAnnotation(Qt3DCore::QNodeId criterionId);
     void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
     Qt3DCore::QNodeId m_shaderUuid;
-    QList<Qt3DCore::QNodeId> m_annotationList;
+    QVector<Qt3DCore::QNodeId> m_annotationList;
     ParameterPack m_parameterPack;
 };
 

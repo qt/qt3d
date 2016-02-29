@@ -78,7 +78,7 @@ void RenderTarget::removeRenderAttachment(QNodeId attachmentId)
     m_renderAttachments.removeOne(attachmentId);
 }
 
-QList<Qt3DCore::QNodeId> RenderTarget::renderAttachments() const
+QVector<Qt3DCore::QNodeId> RenderTarget::renderAttachments() const
 {
     return m_renderAttachments;
 }

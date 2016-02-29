@@ -152,7 +152,7 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::AllDirty);
 }
 
-QList<Qt3DCore::QNodeId> Technique::parameters() const
+QVector<Qt3DCore::QNodeId> Technique::parameters() const
 {
     return m_parameterPack.parameters();
 }
@@ -168,12 +168,12 @@ void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
     m_renderPasses.removeOne(renderPassId);
 }
 
-QList<Qt3DCore::QNodeId> Technique::annotations() const
+QVector<Qt3DCore::QNodeId> Technique::annotations() const
 {
     return m_annotationList;
 }
 
-QList<Qt3DCore::QNodeId> Technique::renderPasses() const
+QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
 {
     return m_renderPasses;
 }

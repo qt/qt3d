@@ -149,9 +149,9 @@ public:
     }
 
     template<class Backend>
-    QList<Qt3DCore::QNodeId> componentsUuid() const
+    QVector<Qt3DCore::QNodeId> componentsUuid() const
     {
-        return QList<Qt3DCore::QNodeId>();
+        return QVector<Qt3DCore::QNodeId>();
     }
 
 private:
@@ -169,9 +169,9 @@ private:
     Qt3DCore::QNodeId m_transformComponent;
     Qt3DCore::QNodeId m_materialComponent;
     Qt3DCore::QNodeId m_cameraComponent;
-    QList<Qt3DCore::QNodeId> m_layerComponents;
-    QList<Qt3DCore::QNodeId> m_shaderDataComponents;
-    QList<Qt3DCore::QNodeId> m_lightComponents;
+    QVector<Qt3DCore::QNodeId> m_layerComponents;
+    QVector<Qt3DCore::QNodeId> m_shaderDataComponents;
+    QVector<Qt3DCore::QNodeId> m_lightComponents;
     Qt3DCore::QNodeId m_geometryRendererComponent;
     Qt3DCore::QNodeId m_objectPickerComponent;
     Qt3DCore::QNodeId m_boundingVolumeDebugComponent;
@@ -255,10 +255,10 @@ template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<Material>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Layer>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<ShaderData>() const;
 
 template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<GeometryRenderer>() const;
@@ -273,7 +273,7 @@ template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeJob>() const;
 
 template<>
-Q_AUTOTEST_EXPORT QList<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
+Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;
 
 class RenderEntityFunctor : public Qt3DCore::QBackendNodeMapper
 {

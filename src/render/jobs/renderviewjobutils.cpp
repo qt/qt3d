@@ -365,7 +365,7 @@ ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const
 }
 
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
-                         const QList<Qt3DCore::QNodeId> &parameterIds)
+                         const QVector<Qt3DCore::QNodeId> &parameterIds)
 {
     Q_FOREACH (const QNodeId paramId, parameterIds) {
         Parameter *param = manager->lookupResource(paramId);

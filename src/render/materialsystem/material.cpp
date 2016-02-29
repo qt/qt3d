@@ -116,7 +116,7 @@ void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::AllDirty);
 }
 
-QList<Qt3DCore::QNodeId> Material::parameters() const
+QVector<Qt3DCore::QNodeId> Material::parameters() const
 {
     return m_parameterPack.parameters();
 }

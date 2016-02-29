@@ -87,7 +87,7 @@ public:
     Qt3DCore::QLockableObserverInterface *arbiter() const;
 
     // Component -> Entities
-    QList<QNodeId> entitiesForComponent(QNodeId id) const;
+    QVector<QNodeId> entitiesForComponent(QNodeId id) const;
     void addEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     void removeEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);
     bool hasEntityForComponent(QNodeId componentUuid, QNodeId entityUuid);

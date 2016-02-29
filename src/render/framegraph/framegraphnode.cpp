@@ -114,7 +114,7 @@ Qt3DCore::QNodeId FrameGraphNode::parentId() const
     return m_parentId;
 }
 
-QList<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
+QVector<Qt3DCore::QNodeId> FrameGraphNode::childrenIds() const
 {
     return m_childrenIds;
 }
