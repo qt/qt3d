@@ -205,6 +205,7 @@ public:
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);
     void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);
 

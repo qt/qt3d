@@ -855,6 +855,11 @@ void GraphicsContext::disableClipPlane(int clipPlane)
     m_glHelper->disableClipPlane(clipPlane);
 }
 
+void GraphicsContext::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
+{
+    m_glHelper->setClipPlane(clipPlane, normal, distance);
+}
+
 GLint GraphicsContext::maxClipPlaneCount()
 {
     return m_glHelper->maxClipPlaneCount();

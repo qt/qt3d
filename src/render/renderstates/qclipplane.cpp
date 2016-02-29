@@ -49,10 +49,14 @@ class QClipPlanePrivate : public QRenderStatePrivate
 public:
     QClipPlanePrivate()
         : QRenderStatePrivate(QRenderState::ClipPlane)
-        , m_plane(0)
+        , m_planeIndex(0)
+        , m_normal()
+        , m_distance(0.0f)
     {}
 
-    int m_plane;
+    int m_planeIndex;
+    QVector3D m_normal;
+    float m_distance;
 };
 
 /*!
@@ -97,22 +101,52 @@ QClipPlane::~QClipPlane()
  * Returns the index of the clip plane.
  * \note usually between 0-7
  */
-int QClipPlane::plane() const
+int QClipPlane::planeIndex() const
 {
     Q_D(const QClipPlane);
-    return d->m_plane;
+    return d->m_planeIndex;
+}
+
+QVector3D QClipPlane::normal() const
+{
+    Q_D(const QClipPlane);
+    return d->m_normal;
+}
+
+float QClipPlane::distance() const
+{
+    Q_D(const QClipPlane);
+    return d->m_distance;
 }
 
 /*!
  * Sets the index of the clip plane to \a plane.
  * \note above 7, support is not garanteed
  */
-void QClipPlane::setPlane(int plane)
+void QClipPlane::setPlaneIndex(int planeIndex)
 {
     Q_D(QClipPlane);
-    if (plane != d->m_plane) {
-        d->m_plane = plane;
-        Q_EMIT planeChanged(plane);
+    if (planeIndex != d->m_planeIndex) {
+        d->m_planeIndex = planeIndex;
+        Q_EMIT planeIndexChanged(planeIndex);
+    }
+}
+
+void QClipPlane::setNormal(QVector3D normal)
+{
+    Q_D(QClipPlane);
+    if (normal != d->m_normal) {
+        d->m_normal = normal;
+        Q_EMIT normalChanged(normal);
+    }
+}
+
+void QClipPlane::setDistance(float distance)
+{
+    Q_D(QClipPlane);
+    if (distance != d->m_distance) {
+        d->m_distance = distance;
+        Q_EMIT distanceChanged(distance);
     }
 }
 
@@ -120,7 +154,9 @@ void QClipPlane::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QClipPlane *refClip = static_cast<const QClipPlane *>(ref);
-    d_func()->m_plane = refClip->plane();
+    d_func()->m_planeIndex = refClip->planeIndex();
+    d_func()->m_normal = refClip->normal();
+    d_func()->m_distance = refClip->distance();
 }
 
 } // namespace Qt3DRender

@@ -336,7 +336,9 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::ClipPlane: {
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
-        return getOrCreateRenderStateImpl<ClipPlane>(clipPlane->plane());
+        return getOrCreateRenderStateImpl<ClipPlane>(clipPlane->planeIndex(),
+                                                     clipPlane->normal(),
+                                                     clipPlane->distance());
     }
     case QRenderState::SeamlessCubemap: {
         QSeamlessCubemap *seamlessCubemap = static_cast<QSeamlessCubemap *>(renderState);

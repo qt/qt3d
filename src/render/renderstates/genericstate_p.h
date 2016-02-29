@@ -55,6 +55,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <QList>
+#include <QVector3D>
 #include <QOpenGLContext>
 
 QT_BEGIN_NAMESPACE

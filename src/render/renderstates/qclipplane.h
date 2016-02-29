@@ -41,6 +41,7 @@
 #define QT3DRENDER_QCLIPPLANE_H
 
 #include <Qt3DRender/qrenderstate.h>
+#include <QtGui/qvector3d.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -51,21 +52,29 @@ class QClipPlanePrivate;
 class QT3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(int plane READ plane WRITE setPlane NOTIFY planeChanged)
+    Q_PROPERTY(int planeIndex READ planeIndex WRITE setPlaneIndex NOTIFY planeIndexChanged)
+    Q_PROPERTY(QVector3D normal READ normal WRITE setNormal NOTIFY normalChanged)
+    Q_PROPERTY(float distance READ distance WRITE setDistance NOTIFY distanceChanged)
 public:
     explicit QClipPlane(Qt3DCore::QNode *parent = 0);
     ~QClipPlane();
 
-    int plane() const;
+    int planeIndex() const;
+    QVector3D normal() const;
+    float distance() const;
 
 public Q_SLOTS:
-    void setPlane(int);
+    void setPlaneIndex(int);
+    void setNormal(QVector3D);
+    void setDistance(float);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
 
 Q_SIGNALS:
-    void planeChanged(int plane);
+    void planeIndexChanged(int planeIndex);
+    void normalChanged(QVector3D normal);
+    void distanceChanged(float distance);
 
 private:
     Q_DECLARE_PRIVATE(QClipPlane)

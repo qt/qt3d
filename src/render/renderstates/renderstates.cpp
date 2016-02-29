@@ -266,11 +266,14 @@ void ColorMask::updateProperty(const char *name, const QVariant &value)
 void ClipPlane::apply(GraphicsContext *gc) const
 {
     gc->enableClipPlane(m_1);
+    gc->setClipPlane(m_1, m_2, m_3);
 }
 
 void ClipPlane::updateProperty(const char *name, const QVariant &value)
 {
-    if (name == QByteArrayLiteral("plane")) m_1 = value.toInt();
+    if (name == QByteArrayLiteral("planeIndex")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("normal")) m_2 = value.value<QVector3D>();
+    else if (name == QByteArrayLiteral("distance")) m_3 = value.toFloat();
 }
 
 void SeamlessCubemap::apply(GraphicsContext *gc) const

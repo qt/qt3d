@@ -197,7 +197,7 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT ClipPlane : public GenericState1<ClipPlane, ClipPlaneMask, int>
+class Q_AUTOTEST_EXPORT ClipPlane : public GenericState3<ClipPlane, ClipPlaneMask, int, QVector3D, float>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_FINAL;

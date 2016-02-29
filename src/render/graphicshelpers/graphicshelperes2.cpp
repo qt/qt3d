@@ -568,6 +568,11 @@ void GraphicsHelperES2::disableClipPlane(int)
 {
 }
 
+void GraphicsHelperES2::setClipPlane(int, const QVector3D &, float)
+{
+    qWarning() << "Clip planes not supported by OpenGL ES 2.0";
+}
+
 GLint GraphicsHelperES2::maxClipPlaneCount()
 {
     return 0;
