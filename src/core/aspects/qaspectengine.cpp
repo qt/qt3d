@@ -212,16 +212,16 @@ QVariant QAspectEngine::executeCommand(const QString &command)
         if (d->m_aspects.isEmpty())
             return QLatin1Literal("No loaded aspect");
 
-        QStringList reply;
-        reply << QLatin1Literal("Loaded aspects:");
+        QString reply;
+        reply += QLatin1String("Loaded aspects:");
         for (QAbstractAspect *aspect : qAsConst(d->m_aspects)) {
             const QString name = d->m_factory.aspectName(aspect);
             if (!name.isEmpty())
-                reply << (QLatin1Literal(" * ") + name);
+                reply += QLatin1String("\n * ") + name;
             else
-                reply << QLatin1Literal(" * <unnamed>");
+                reply += QLatin1String("\n * <unnamed>");
         }
-        return reply.join(QLatin1Char('\n'));
+        return reply;
     }
 
     QStringList args = command.split(QLatin1Char(' '));
