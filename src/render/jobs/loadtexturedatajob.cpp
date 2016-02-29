@@ -123,7 +123,8 @@ void LoadTextureDataJob::run()
         }
 
         // Load update each TextureImage
-        Q_FOREACH (HTextureImage texImgHandle, txt->textureImages()) {
+        const auto texImgHandles = txt->textureImages();
+        for (HTextureImage texImgHandle : texImgHandles) {
             TextureImage *texImg = m_manager->textureImageManager()->data(texImgHandle);
             if (texImg != Q_NULLPTR && texImg->isDirty() && !texImg->dataGenerator().isNull()) {
                 QTextureImageDataGeneratorPtr generator = texImg->dataGenerator();

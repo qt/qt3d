@@ -82,8 +82,8 @@ void FramePreparationJob::run()
 void FramePreparationJob::parseNodeTree(Entity *node)
 {
     // Update transform properties in ShaderDatas and Lights
-    QList<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
-    Q_FOREACH (ShaderData *r, shaderDatas)
+    const QList<ShaderData *> shaderDatas = node->renderComponents<ShaderData>();
+    for (ShaderData *r : shaderDatas)
         r->updateWorldTransform(*node->worldTransform());
 
     // Look if for the GeometryRender/Geometry the attributes and or buffers are dirty
@@ -97,7 +97,8 @@ void FramePreparationJob::parseNodeTree(Entity *node)
             // Check if the attributes or buffers are dirty
             bool dirty = geomRenderer->isDirty();
             Attribute *attr = Q_NULLPTR;
-            Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
+            const auto attrIds = geom->attributes();
+            for (const Qt3DCore::QNodeId attrId : attrIds) {
                 if ((attr = m_manager->attributeManager()->lookupResource(attrId)) != Q_NULLPTR) {
                     dirty |= attr->isDirty();
                     if (!dirty) {
@@ -115,7 +116,7 @@ void FramePreparationJob::parseNodeTree(Entity *node)
     }
 
     const QVector<Entity *> children = node->children();
-    Q_FOREACH (Entity *c, children)
+    for (Entity *c : children)
         parseNodeTree(c);
 }
 

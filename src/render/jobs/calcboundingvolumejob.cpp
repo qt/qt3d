@@ -87,7 +87,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
 
             // Use the default position attribute if attribute is null
             if (!pickVolumeAttribute) {
-                Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
+                const auto attrIds = geom->attributes();
+                for (const Qt3DCore::QNodeId attrId : attrIds) {
                     pickVolumeAttribute = manager->lookupResource<Attribute, AttributeManager>(attrId);
                     if (pickVolumeAttribute &&
                             pickVolumeAttribute->name() == QAttribute::defaultPositionAttributeName())
@@ -151,7 +152,8 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
         functor.manager = manager;
         QtConcurrent::blockingMap(children, functor);
     } else {
-        Q_FOREACH (Entity *child, node->children())
+        const auto children = node->children();
+        for (Entity *child : children)
             calculateLocalBoundingVolume(manager, child);
     }
 }

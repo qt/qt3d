@@ -251,7 +251,8 @@ Technique *findTechniqueForEffect(Renderer *renderer,
     NodeManagers *manager = renderer->nodeManagers();
 
     // Iterate through the techniques in the effect
-    Q_FOREACH (const QNodeId techniqueId, effect->techniques()) {
+    const auto techniqueIds = effect->techniques();
+    for (const QNodeId techniqueId : techniqueIds) {
         Technique *technique = manager->techniqueManager()->lookupResource(techniqueId);
 
         if (!technique)
@@ -274,11 +275,13 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (QNodeId filterKeyId, techniqueFilter->filters()) {
+            const auto filterKeyIds = techniqueFilter->filters();
+            for (const QNodeId filterKeyId : filterKeyIds) {
                 foundMatch = false;
                 FilterKey *filterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                Q_FOREACH (QNodeId techniqueFilterKeyId, technique->filterKeys()) {
+                const auto techniqueFilterKeyIds = technique->filterKeys();
+                for (const QNodeId techniqueFilterKeyId : techniqueFilterKeyIds) {
                     FilterKey *techniqueFilterKey = manager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
                     if ((foundMatch = (*techniqueFilterKey == *filterKey)))
                         break;
@@ -309,7 +312,8 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
     Q_ASSERT(technique);
 
     RenderRenderPassList passes;
-    Q_FOREACH (QNodeId passId, technique->renderPasses()) {
+    const auto passIds = technique->renderPasses();
+    for (const QNodeId passId : passIds) {
         RenderPass *renderPass = manager->renderPassManager()->lookupResource(passId);
 
         if (renderPass && renderPass->isEnabled()) {
@@ -320,11 +324,13 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
             if (!foundMatch && renderPass->filterKeys().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (QNodeId filterKeyId, passFilter->filters()) {
+                const auto filterKeyIds = passFilter->filters();
+                for (const QNodeId filterKeyId : filterKeyIds) {
                     foundMatch = false;
                     FilterKey *filterFilterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                    Q_FOREACH (QNodeId passFilterKeyId, renderPass->filterKeys()) {
+                    const auto passFilterKeyIds = renderPass->filterKeys();
+                    for (const QNodeId passFilterKeyId : passFilterKeyIds) {
                         FilterKey *passFilterKey = manager->filterKeyManager()->lookupResource(passFilterKeyId);
                         if ((foundMatch = (*passFilterKey == *filterFilterKey)))
                             break;
@@ -360,7 +366,7 @@ ParameterInfoList::const_iterator findParamInfo(ParameterInfoList *params, const
 void addParametersForIds(ParameterInfoList *params, ParameterManager *manager,
                          const QVector<Qt3DCore::QNodeId> &parameterIds)
 {
-    Q_FOREACH (const QNodeId paramId, parameterIds) {
+    for (const QNodeId paramId : parameterIds) {
         Parameter *param = manager->lookupResource(paramId);
         if (Q_UNLIKELY(!param))
             continue;
@@ -393,7 +399,8 @@ void addToRenderStateSet(RenderStateSet *stateSet,
                          const RenderStateCollection *collection,
                          RenderStateManager *manager)
 {
-    Q_FOREACH (RenderStateNode *rstate, collection->renderStates(manager))
+    const auto rstates = collection->renderStates(manager);
+    for (RenderStateNode *rstate : rstates)
         stateSet->addState(rstate->impl());
 }
 

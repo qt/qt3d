@@ -85,7 +85,8 @@ private:
 
     void visit(FrameGraphNode *node)
     {
-        Q_FOREACH (Render::FrameGraphNode *n, node->children())
+        const auto children = node->children();
+        for (Render::FrameGraphNode *n : children)
             visit(n);
         if (node->childrenIds().empty())
             m_leaves.push_back(node);
@@ -297,7 +298,7 @@ CollisionVisitor::HitList reduceToFirstHit(CollisionVisitor::HitList &result, co
         if (result.empty())
             result.push_back(intermediate.front());
         float closest = result.front().m_distance;
-        Q_FOREACH (const CollisionVisitor::HitList::value_type& v, intermediate) {
+        for (const auto &v : intermediate) {
             if (v.m_distance < closest) {
                 result.push_front(v);
                 closest = v.m_distance;
@@ -388,7 +389,7 @@ void PickBoundingVolumeJob::run()
                     // We want to gather hits against triangles
                     // build a triangle based bounding volume
 
-                    Q_FOREACH (const QCollisionQueryResult::Hit &hit, sphereHits) {
+                    for (const QCollisionQueryResult::Hit &hit : qAsConst(sphereHits)) {
                         Entity *entity = m_manager->renderNodesManager()->lookupResource(hit.m_entityId);
                         HObjectPicker objectPickerHandle = entity->componentHandle<ObjectPicker, 16>();
 

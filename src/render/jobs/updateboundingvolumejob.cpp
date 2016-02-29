@@ -57,14 +57,15 @@ namespace {
 void expandWorldBoundingVolume(Qt3DRender::Render::Entity *node)
 {
     // Go to the nodes that have the most depth
-    Q_FOREACH (Entity *c, node->children())
+    const auto children = node->children();
+    for (Entity *c : children)
         expandWorldBoundingVolume(c);
 
     // Then traverse back from leaf to root
     // Initialize parent bounding volume to be equal to that of the first child
-    if (node->hasChildren()) {
+    if (!children.empty()) {
         Qt3DRender::Render::Sphere *parentBoundingVolume = node->worldBoundingVolumeWithChildren();
-        Q_FOREACH (Entity *c, node->children())
+        for (Entity *c : children)
             parentBoundingVolume->expandToContain(*c->worldBoundingVolumeWithChildren());
     }
 }

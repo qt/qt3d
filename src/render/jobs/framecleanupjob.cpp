@@ -97,7 +97,8 @@ void FrameCleanupJob::updateBoundingVolumesDebug(Entity *node)
     }
 #endif
 
-    Q_FOREACH (Entity *c, node->children())
+    const auto children = node->children();
+    for (Entity *c : children)
         updateBoundingVolumesDebug(c);
 }
 
