@@ -108,7 +108,8 @@ QVariantList QSortPolicy::sortTypeList() const
 {
     Q_D(const QSortPolicy);
     QVariantList ret;
-    Q_FOREACH (const auto type, d->m_sortTypes)
+    ret.reserve(d->m_sortTypes.size());
+    for (const auto type : d->m_sortTypes)
         ret.append(QVariant(type));
 
     return ret;
@@ -124,7 +125,7 @@ void QSortPolicy::setSortTypes(const QVariantList &sortTypes)
 {
     Q_D(QSortPolicy);
     d->m_sortTypes.clear();
-    Q_FOREACH (const auto &typeVariant, sortTypes)
+    for (const auto &typeVariant : sortTypes)
         d->m_sortTypes.append(static_cast<QSortPolicy::SortType>(typeVariant.toInt()));
 }
 
