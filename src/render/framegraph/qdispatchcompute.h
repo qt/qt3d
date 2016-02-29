@@ -63,6 +63,7 @@ public:
     int workGroupY() const;
     int workGroupZ() const;
 
+public Q_SLOTS:
     void setWorkGroupX(int workGroupX);
     void setWorkGroupY(int workGroupY);
     void setWorkGroupZ(int workGroupZ);
