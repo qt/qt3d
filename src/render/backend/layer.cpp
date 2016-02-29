@@ -71,7 +71,7 @@ void Layer::updateFromPeer(Qt3DCore::QNode *peer)
     m_layers = layer->names();
     m_layerIds.clear();
     m_layerIds.reserve(m_layers.size());
-    Q_FOREACH (const QString &name, m_layers)
+    for (const QString &name : qAsConst(m_layers))
         m_layerIds.push_back(StringToInt::lookupId(name));
 }
 
@@ -87,7 +87,7 @@ void Layer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         m_layers = propertyChange->value().toStringList();
         m_layerIds.clear();
         m_layerIds.reserve(m_layers.size());
-        Q_FOREACH (const QString &name, m_layers)
+        for (const QString &name : qAsConst(m_layers))
             m_layerIds.push_back(StringToInt::lookupId(name));
     }
     markDirty(AbstractRenderer::AllDirty);

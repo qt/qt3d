@@ -107,12 +107,14 @@ bool isEntityInLayers(const Entity *entity, const QVector<int> &filterLayerIds)
     if (filterLayerIds.isEmpty())
         return true;
 
-    QList<Layer *> entityLayers = entity->renderComponents<Layer>();
-    Q_FOREACH (const Layer *entityLayer, entityLayers) {
+    const QList<Layer *> entityLayers = entity->renderComponents<Layer>();
+    for (const Layer *entityLayer : entityLayers) {
         if (entityLayer->isEnabled()) {
-            Q_FOREACH (const int layerId, entityLayer->layerIds())
+            const auto layerIds = entityLayer->layerIds();
+            for (const int layerId : layerIds) {
                 if (filterLayerIds.contains(layerId))
                     return true;
+            }
         }
     }
     return false;
@@ -304,7 +306,7 @@ RenderView::~RenderView()
     if (m_allocator == Q_NULLPTR) // Mainly needed for unit tests
         return;
 
-    Q_FOREACH (RenderCommand *command, m_commands) {
+    for (RenderCommand *command : qAsConst(m_commands)) {
 
         if (command->m_stateSet != Q_NULLPTR) // We do not delete the RenderState as that is stored statically
             m_allocator->deallocate<RenderStateSet>(command->m_stateSet);
@@ -447,7 +449,8 @@ void RenderView::gatherLights(Entity *node)
         m_lightSources.append(LightSource(node, lights));
 
     // Traverse children
-    Q_FOREACH (Entity *child, node->children())
+    const auto children = node->children();
+    for (Entity *child : children)
         gatherLights(child);
 }
 
@@ -477,7 +480,8 @@ static void findEntitiesInLayers(Entity *e, const QVector<int> &filterLayerIds, 
         entities.push_back(e);
 
     // Recurse to children
-    Q_FOREACH (Entity *child, e->children())
+    const auto children = e->children();
+    for (Entity *child : children)
         findEntitiesInLayers(child, filterLayerIds, entities);
 }
 
@@ -498,7 +502,7 @@ void RenderView::buildRenderCommands(Entity *rootEntity, const Plane *planes)
              << "in" << timer.nsecsElapsed() / 1.0e6 << "ms";
 #endif
 
-    Q_FOREACH (Entity *entity, entities) {
+    for (Entity *entity : qAsConst(entities)) {
         if (m_compute) {
             // 1) Look for Compute Entities if Entity -> components [ ComputeJob, Material ]
             // when the RenderView is part of a DispatchCompute branch
@@ -526,10 +530,10 @@ void RenderView::buildDrawRenderCommands(Entity *node, const Plane *planes)
 
         // There is a geometry renderer with geometry
         ParameterInfoList parameters;
-        RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+        const RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
 
         // 1 RenderCommand per RenderPass pass on an Entity with a Mesh
-        Q_FOREACH (RenderPass *pass, passes) {
+        for (RenderPass *pass : passes) {
             // Add the RenderPass Parameters
             ParameterInfoList globalParameters = parameters;
             parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
@@ -585,9 +589,9 @@ void RenderView::buildComputeRenderCommands(Entity *node)
             && computeJob->isEnabled()) {
 
         ParameterInfoList parameters;
-        RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
+        const RenderRenderPassList passes = passesAndParameters(&parameters, node, true);
 
-        Q_FOREACH (RenderPass *pass, passes) {
+        for (RenderPass *pass : passes) {
             // Add the RenderPass Parameters
             ParameterInfoList globalParameters = parameters;
             parametersFromParametersProvider(&globalParameters, m_manager->parameterManager(), pass);
@@ -804,7 +808,8 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
             // But for now we set them once and for all
             QHash<QString, int> fragOutputs;
             if (!m_renderTarget.isNull() && !shader->isLoaded()) {
-                Q_FOREACH (const Attachment &att, m_attachmentPack.attachments()) {
+                const auto atts = m_attachmentPack.attachments();
+                for (const Attachment &att : atts) {
                     if (att.m_point <= QRenderTargetOutput::Color15)
                         fragOutputs.insert(att.m_name, att.m_point);
                 }
@@ -814,13 +819,13 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                     !shaderStorageBlockNamesIds.isEmpty() || !attributeNamesIds.isEmpty()) {
 
                 // Set default standard uniforms without bindings
-                Q_FOREACH (const int uniformNameId, uniformNamesIds) {
+                for (const int uniformNameId : uniformNamesIds) {
                     if (ms_standardUniformSetters.contains(uniformNameId))
                         setStandardUniformValue(command->m_parameterPack, uniformNameId, uniformNameId, worldTransform);
                 }
 
                 // Set default attributes
-                Q_FOREACH (const int attributeNameId, attributeNamesIds)
+                for (const int attributeNameId : attributeNamesIds)
                     command->m_attributes.push_back(attributeNameId);
 
                 // Parameters remaining could be
@@ -855,12 +860,12 @@ void RenderView::setShaderAndUniforms(RenderCommand *command, RenderPass *rPass,
                 // Lights
 
                 int lightIdx = 0;
-                Q_FOREACH (const LightSource &lightSource, activeLightSources) {
+                for (const LightSource &lightSource : activeLightSources) {
                     if (lightIdx == MAX_LIGHTS)
                         break;
                     Entity *lightEntity = lightSource.entity;
                     const QVector3D worldPos = lightEntity->worldBoundingVolume()->center();
-                    Q_FOREACH (Light *light, lightSource.lights) {
+                    for (Light *light : lightSource.lights) {
                         if (lightIdx == MAX_LIGHTS)
                             break;
                         setUniformValue(command->m_parameterPack, LIGHT_POSITION_NAMES[lightIdx], worldPos);

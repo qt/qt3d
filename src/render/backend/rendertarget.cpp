@@ -61,7 +61,8 @@ void RenderTarget::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderTarget *target = static_cast<QRenderTarget *>(peer);
     m_renderOutputs.clear();
-    Q_FOREACH (QRenderTargetOutput *att, target->outputs())
+    const auto outputs = target->outputs();
+    for (QRenderTargetOutput *att : outputs)
         appendRenderOutput(att->id());
 }
 

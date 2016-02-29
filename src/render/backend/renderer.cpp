@@ -426,12 +426,15 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     factory->createBackendNode(m_defaultTechnique->renderPasses().constFirst()->shaderProgram());
 
     // We create backend resources for all the parameters
-    Q_FOREACH (QParameter *p, m_defaultMaterial->parameters())
-        factory->createBackendNode(p);
-    Q_FOREACH (QParameter *p, m_defaultTechnique->parameters())
-        factory->createBackendNode(p);
-    Q_FOREACH (QParameter *p, m_defaultMaterial->effect()->parameters())
-        factory->createBackendNode(p);
+    const QVector<QParameter *> parameterList[] = {
+        m_defaultMaterial->parameters(),
+        m_defaultTechnique->parameters(),
+        m_defaultMaterial->effect()->parameters(),
+    };
+    for (const auto &parameters : parameterList) {
+        for (QParameter *p : parameters)
+            factory->createBackendNode(p);
+    }
 
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
     m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());
@@ -556,8 +559,9 @@ void Renderer::doRender()
             // Note: we can check for non render thread cases (scene3d)
             // only when we are sure that a full frame was previously submitted
             // (submissionSucceeded == true)
-            Q_FOREACH (QFrameAllocator *allocator, m_allocators)
+            for (QFrameAllocator *allocator : qAsConst(m_allocators)) {
                 Q_ASSERT(allocator->isEmpty());
+            }
         }
         // We allow the RenderTickClock service to proceed to the next frame
         // In turn this will allow the aspect manager to request a new set of jobs
@@ -1048,11 +1052,11 @@ bool Renderer::executeCommands(const RenderView *rv)
     m_graphicsContext->setCurrentStateSet(globalState);
 
     // Unset dirtiness on Geometry and Attributes
-    Q_FOREACH (Attribute *attribute, m_dirtyAttributes)
+    for (Attribute *attribute : qAsConst(m_dirtyAttributes))
         attribute->unsetDirty();
     m_dirtyAttributes.clear();
 
-    Q_FOREACH (Geometry *geometry, m_dirtyGeometry)
+    for (Geometry *geometry : qAsConst(m_dirtyGeometry))
         geometry->unsetDirty();
     m_dirtyGeometry.clear();
 
@@ -1065,7 +1069,8 @@ Attribute *Renderer::updateBuffersAndAttributes(Geometry *geometry, RenderComman
     uint estimatedCount = 0;
 
     m_dirtyAttributes.reserve(m_dirtyAttributes.size() + geometry->attributes().size());
-    Q_FOREACH (QNodeId attributeId, geometry->attributes()) {
+    const auto attributeIds = geometry->attributes();
+    for (QNodeId attributeId : attributeIds) {
         // TO DO: Improvement we could store handles and use the non locking policy on the attributeManager
         Attribute *attribute = m_nodesManager->attributeManager()->lookupResource(attributeId);
 

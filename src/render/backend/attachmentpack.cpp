@@ -56,7 +56,8 @@ AttachmentPack::AttachmentPack(const RenderTargetSelector *selector, const Rende
     const QVector<QRenderTargetOutput::AttachmentPoint> selectedAttachmentPoints = selector->outputs();
 
     // Copy attachments
-    Q_FOREACH (Qt3DCore::QNodeId outputId, target->renderOutputs()) {
+    const auto outputIds = target->renderOutputs();
+    for (Qt3DCore::QNodeId outputId : outputIds) {
         const RenderTargetOutput *output = attachmentManager->lookupResource(outputId);
         if (output)
             m_attachments.append(output->attachment());

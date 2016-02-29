@@ -459,7 +459,8 @@ void TrianglesVisitor::apply(const GeometryRenderer *renderer, const Qt3DCore::Q
 
         if (geom) {
             Qt3DRender::Render::Attribute *attribute = Q_NULLPTR;
-            Q_FOREACH (const Qt3DCore::QNodeId attrId, geom->attributes()) {
+            const auto attrIds = geom->attributes();
+            for (const Qt3DCore::QNodeId attrId : attrIds) {
                 attribute = m_manager->lookupResource<Attribute, AttributeManager>(attrId);
                 if (attribute){
                     if (attribute->name() == QAttribute::defaultPositionAttributeName())

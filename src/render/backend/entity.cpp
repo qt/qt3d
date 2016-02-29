@@ -165,7 +165,8 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_worldBoundingVolume.reset(new Sphere(peerId()));
     m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
 
-    Q_FOREACH (QComponent *comp, entity->components())
+    const auto components = entity->components();
+    for (QComponent *comp : components)
         addComponent(comp);
 
     if (!parentEntityId.isNull()) {
@@ -243,7 +244,8 @@ void Entity::dump() const
     static int depth = 0;
     QString indent(2 * depth++, QChar::fromLatin1(' '));
     qCDebug(Backend) << indent + m_objectName;
-    foreach (const Entity *child, children())
+    const auto children_ = children();
+    for (const Entity *child : children_)
         child->dump();
     --depth;
 }
@@ -275,7 +277,7 @@ QVector<Entity *> Entity::children() const
 {
     QVector<Entity *> childrenVector;
     childrenVector.reserve(m_childrenHandles.size());
-    foreach (HEntity handle, m_childrenHandles) {
+    for (HEntity handle : m_childrenHandles) {
         Entity *child = m_nodeManagers->renderNodesManager()->data(handle);
         if (child != Q_NULLPTR)
             childrenVector.append(child);
@@ -426,7 +428,7 @@ QList<HLayer> Entity::componentsHandle<Layer>() const
 {
     QList<HLayer> layerHandles;
     layerHandles.reserve(m_layerComponents.size());
-    Q_FOREACH (QNodeId id, m_layerComponents)
+    for (QNodeId id : m_layerComponents)
         layerHandles.append(m_nodeManagers->layerManager()->lookupHandle(id));
     return layerHandles;
 }
@@ -436,7 +438,7 @@ QList<HShaderData> Entity::componentsHandle<ShaderData>() const
 {
     QList<HShaderData> shaderDataHandles;
     shaderDataHandles.reserve(m_shaderDataComponents.size());
-    Q_FOREACH (QNodeId id, m_shaderDataComponents)
+    for (QNodeId id : m_shaderDataComponents)
         shaderDataHandles.append(m_nodeManagers->shaderDataManager()->lookupHandle(id));
     return shaderDataHandles;
 }
@@ -452,7 +454,7 @@ QList<HLight> Entity::componentsHandle<Light>() const
 {
     QList<HLight> lightHandles;
     lightHandles.reserve(m_lightComponents.size());
-    Q_FOREACH (QNodeId id, m_lightComponents)
+    for (QNodeId id : m_lightComponents)
         lightHandles.append(m_nodeManagers->lightManager()->lookupHandle(id));
     return lightHandles;
 }
@@ -500,7 +502,7 @@ QList<Layer *> Entity::renderComponents<Layer>() const
 {
     QList<Layer *> layers;
     layers.reserve(m_layerComponents.size());
-    Q_FOREACH (QNodeId id, m_layerComponents)
+    for (QNodeId id : m_layerComponents)
         layers.append(m_nodeManagers->layerManager()->lookupResource(id));
     return layers;
 }
@@ -510,7 +512,7 @@ QList<ShaderData *> Entity::renderComponents<ShaderData>() const
 {
     QList<ShaderData *> shaderDatas;
     shaderDatas.reserve(m_shaderDataComponents.size());
-    Q_FOREACH (QNodeId id, m_shaderDataComponents)
+    for (QNodeId id : m_shaderDataComponents)
         shaderDatas.append(m_nodeManagers->shaderDataManager()->lookupResource(id));
     return shaderDatas;
 }
@@ -520,7 +522,7 @@ QList<Light *> Entity::renderComponents<Light>() const
 {
     QList<Light *> lights;
     lights.reserve(m_lightComponents.size());
-    Q_FOREACH (QNodeId id, m_lightComponents)
+    for (QNodeId id : m_lightComponents)
         lights.append(m_nodeManagers->lightManager()->lookupResource(id));
     return lights;
 }
