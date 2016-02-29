@@ -328,10 +328,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::ColorMask: {
         QColorMask *colorMask = static_cast<QColorMask *>(renderState);
-        return getOrCreateRenderStateImpl<ColorMask>(colorMask->isRed(),
-                                      colorMask->isGreen(),
-                                      colorMask->isBlue(),
-                                      colorMask->isAlpha());
+        return getOrCreateRenderStateImpl<ColorMask>(colorMask->isRedMasked(),
+                                      colorMask->isGreenMasked(),
+                                      colorMask->isBlueMasked(),
+                                      colorMask->isAlphaMasked());
     }
     case QRenderState::ClipPlane: {
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);

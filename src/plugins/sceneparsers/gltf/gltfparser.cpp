@@ -1490,10 +1490,10 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
 
     if (functionName == QStringLiteral("colorMask")) {
         QColorMask *colorMask = new QColorMask;
-        colorMask->setRed(values.at(0).toBool(true));
-        colorMask->setGreen(values.at(1).toBool(true));
-        colorMask->setBlue(values.at(2).toBool(true));
-        colorMask->setAlpha(values.at(3).toBool(true));
+        colorMask->setRedMasked(values.at(0).toBool(true));
+        colorMask->setGreenMasked(values.at(1).toBool(true));
+        colorMask->setBlueMasked(values.at(2).toBool(true));
+        colorMask->setAlphaMasked(values.at(3).toBool(true));
         return colorMask;
     }
 

@@ -51,31 +51,31 @@ class QColorMaskPrivate;
 class QT3DRENDERSHARED_EXPORT QColorMask : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(bool red READ isRed WRITE setRed NOTIFY redChanged)
-    Q_PROPERTY(bool green READ isGreen WRITE setGreen NOTIFY greenChanged)
-    Q_PROPERTY(bool blue READ isBlue WRITE setBlue NOTIFY blueChanged)
-    Q_PROPERTY(bool alpha READ isAlpha WRITE setAlpha NOTIFY alphaChanged)
+    Q_PROPERTY(bool redMasked READ isRedMasked WRITE setRedMasked NOTIFY redMaskedChanged)
+    Q_PROPERTY(bool greenMasked READ isGreenMasked WRITE setGreenMasked NOTIFY greenMaskedChanged)
+    Q_PROPERTY(bool blueMasked READ isBlueMasked WRITE setBlueMasked NOTIFY blueMaskedChanged)
+    Q_PROPERTY(bool alphaMasked READ isAlphaMasked WRITE setAlphaMasked NOTIFY alphaMaskedChanged)
 
 public:
     explicit QColorMask(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QColorMask();
 
-    bool isRed() const;
-    bool isGreen() const;
-    bool isBlue() const;
-    bool isAlpha() const;
+    bool isRedMasked() const;
+    bool isGreenMasked() const;
+    bool isBlueMasked() const;
+    bool isAlphaMasked() const;
 
 public Q_SLOTS:
-    void setRed(bool red);
-    void setGreen(bool green);
-    void setBlue(bool blue);
-    void setAlpha(bool alpha);
+    void setRedMasked(bool redMasked);
+    void setGreenMasked(bool greenMasked);
+    void setBlueMasked(bool blueMasked);
+    void setAlphaMasked(bool alphaMasked);
 
 Q_SIGNALS:
-    void redChanged(bool red);
-    void greenChanged(bool green);
-    void blueChanged(bool blue);
-    void alphaChanged(bool alpha);
+    void redMaskedChanged(bool redMasked);
+    void greenMaskedChanged(bool greenMasked);
+    void blueMaskedChanged(bool blueMasked);
+    void alphaMaskedChanged(bool alphaMasked);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;

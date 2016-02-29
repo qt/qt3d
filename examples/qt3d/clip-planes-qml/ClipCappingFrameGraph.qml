@@ -107,7 +107,7 @@ Viewport {
                                 front.stencilDepthPass: StencilOpSeparate.Decr
                                 back.stencilDepthPass: StencilOpSeparate.Incr
                             },
-                            ColorMask { red: false; green: false; blue: false; alpha: false }
+                            ColorMask { redMasked: false; greenMasked: false; blueMasked: false; alphaMasked: false }
                         ]
 
                         LayerFilter {

@@ -49,16 +49,16 @@ class QColorMaskPrivate : public QRenderStatePrivate
 public:
     QColorMaskPrivate()
         : QRenderStatePrivate(QRenderState::ColorMask)
-        , m_red(true)
-        , m_green(true)
-        , m_blue(true)
-        , m_alpha(true)
+        , m_redMasked(true)
+        , m_greenMasked(true)
+        , m_blueMasked(true)
+        , m_alphaMasked(true)
     {}
 
-    bool m_red;
-    bool m_green;
-    bool m_blue;
-    bool m_alpha;
+    bool m_redMasked;
+    bool m_greenMasked;
+    bool m_blueMasked;
+    bool m_alphaMasked;
 
     Q_DECLARE_PUBLIC(QColorMask)
 };
@@ -90,40 +90,40 @@ QColorMask::~QColorMask()
     QNode::cleanup();
 }
 
-bool QColorMask::isRed() const
+bool QColorMask::isRedMasked() const
 {
     Q_D(const QColorMask);
-    return d->m_red;
+    return d->m_redMasked;
 }
 
-bool QColorMask::isGreen() const
+bool QColorMask::isGreenMasked() const
 {
     Q_D(const QColorMask);
-    return d->m_green;
+    return d->m_greenMasked;
 }
 
-bool QColorMask::isBlue() const
+bool QColorMask::isBlueMasked() const
 {
     Q_D(const QColorMask);
-    return d->m_blue;
+    return d->m_blueMasked;
 }
 
-bool QColorMask::isAlpha() const
+bool QColorMask::isAlphaMasked() const
 {
     Q_D(const QColorMask);
-    return d->m_alpha;
+    return d->m_alphaMasked;
 }
 
 /*!
     \property Qt3DRender::QColorMask::red
     Holds whether the red color component should be written to the frame buffer.
  */
-void QColorMask::setRed(bool red)
+void QColorMask::setRedMasked(bool redMasked)
 {
     Q_D(QColorMask);
-    if (red != d->m_red) {
-        d->m_red = red;
-        emit redChanged(red);
+    if (redMasked != d->m_redMasked) {
+        d->m_redMasked = redMasked;
+        emit redMaskedChanged(redMasked);
     }
 }
 
@@ -131,12 +131,12 @@ void QColorMask::setRed(bool red)
     \property Qt3DRender::QColorMask::green
     Holds whether the green color component should be written to the frame buffer.
  */
-void QColorMask::setGreen(bool green)
+void QColorMask::setGreenMasked(bool greenMasked)
 {
     Q_D(QColorMask);
-    if (green != d->m_green) {
-        d->m_green = green;
-        emit greenChanged(green);
+    if (greenMasked != d->m_greenMasked) {
+        d->m_greenMasked = greenMasked;
+        emit greenMaskedChanged(greenMasked);
     }
 }
 
@@ -144,25 +144,25 @@ void QColorMask::setGreen(bool green)
     \property Qt3DRender::QColorMask::blue
     Holds whether the blue color component should be written to the frame buffer.
  */
-void QColorMask::setBlue(bool blue)
+void QColorMask::setBlueMasked(bool blueMasked)
 {
     Q_D(QColorMask);
-    if (blue != d->m_blue) {
-        d->m_blue = blue;
-        emit blueChanged(blue);
+    if (blueMasked != d->m_blueMasked) {
+        d->m_blueMasked = blueMasked;
+        emit blueMaskedChanged(blueMasked);
     }
 }
 
 /*!
-    \property Qt3DRender::QColorMask::alpha
-    Holds whether the alpha component should be written to the frame buffer.
+    \property Qt3DRender::QColorMask::alphaMasked
+    Holds whether the alphaMasked component should be written to the frame buffer.
  */
-void QColorMask::setAlpha(bool alpha)
+void QColorMask::setAlphaMasked(bool alphaMasked)
 {
     Q_D(QColorMask);
-    if (alpha != d->m_alpha) {
-        d->m_alpha = alpha;
-        emit alphaChanged(alpha);
+    if (alphaMasked != d->m_alphaMasked) {
+        d->m_alphaMasked = alphaMasked;
+        emit alphaMaskedChanged(alphaMasked);
     }
 }
 
@@ -170,10 +170,10 @@ void QColorMask::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QColorMask *refState = static_cast<const QColorMask *>(ref);
-    d_func()->m_red = refState->d_func()->m_red;
-    d_func()->m_green = refState->d_func()->m_green;
-    d_func()->m_blue = refState->d_func()->m_blue;
-    d_func()->m_alpha = refState->d_func()->m_alpha;
+    d_func()->m_redMasked = refState->d_func()->m_redMasked;
+    d_func()->m_greenMasked = refState->d_func()->m_greenMasked;
+    d_func()->m_blueMasked = refState->d_func()->m_blueMasked;
+    d_func()->m_alphaMasked = refState->d_func()->m_alphaMasked;
 }
 
 } // namespace Qt3DRender

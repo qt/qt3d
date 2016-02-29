@@ -72,7 +72,7 @@ Viewport {
             id: leftCameraSelector
             RenderStateSet {
                 renderStates: [
-                    ColorMask { red: true; green: false; blue: false; alpha: false },
+                    ColorMask { redMasked: true; greenMasked: false; blueMasked: false; alphaMasked: false },
                     DepthTest { depthFunction: DepthTest.Less }
                 ]
             }
@@ -85,7 +85,7 @@ Viewport {
                 id: rightCameraSelector
                 RenderStateSet {
                     renderStates: [
-                        ColorMask { red: false; green: true; blue: true; alpha: false },
+                        ColorMask { redMasked: false; greenMasked: true; blueMasked: true; alphaMasked: false },
                         DepthTest { depthFunction: DepthTest.Less }
                     ]
                 }
