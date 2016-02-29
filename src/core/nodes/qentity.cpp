@@ -88,7 +88,11 @@ QEntity::~QEntity()
 {
     // remove all component aggregations
     Q_D(const QEntity);
-    Q_FOREACH (QComponent *comp, d->m_components)
+    // to avoid hammering m_components by repeated removeComponent()
+    // calls below, move all contents out, so the removeOne() calls in
+    // removeComponent() don't actually remove something:
+    const auto components = std::move(d->m_components);
+    for (QComponent *comp : components)
         removeComponent(comp);
 
     QNode::cleanup();
