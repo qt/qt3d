@@ -124,35 +124,19 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
                 observer->sceneNodeRemoved(change);
         }
 
-        switch (change->observableType()) {
-
-        case QSceneChange::Observable: {
-            const QNodeId nodeId = change->subjectId();
-            if (m_nodeObservations.contains(nodeId)) {
-                QObserverList &observers = m_nodeObservations[nodeId];
-                Q_FOREACH (const QObserverPair&observer, observers) {
-                    if ((change->type() & observer.first))
-                        observer.second->sceneChangeEvent(change);
-                }
+        const QNodeId nodeId = change->subjectId();
+        const auto it = m_nodeObservations.constFind(nodeId);
+        if (it != m_nodeObservations.cend()) {
+            const QObserverList &observers = it.value();
+            for (const QObserverPair &observer : observers) {
+                if ((change->type() & observer.first))
+                    observer.second->sceneChangeEvent(change);
+            }
+            if (change->observableType() == QSceneChange::Observable) {
                 // Also send change to the postman
                 m_postman->sceneChangeEvent(change);
             }
-            break;
         }
-
-        case QSceneChange::Node: {
-            const QNodeId nodeId = change->subjectId();
-            if (m_nodeObservations.contains(nodeId)) {
-                QObserverList &observers = m_nodeObservations[nodeId];
-                Q_FOREACH (const QObserverPair&observer, observers) {
-                    if ((change->type() & observer.first))
-                        observer.second->sceneChangeEvent(change);
-                }
-            }
-            break;
-        }
-
-        } // observableType switch
     }
     changeQueue->clear();
 }
