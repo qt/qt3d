@@ -46,13 +46,13 @@ namespace Qt3DRender {
 class QPointSizePrivate : public QRenderStatePrivate
 {
 public:
-    QPointSizePrivate(QPointSize::Specification spec, float value)
+    QPointSizePrivate(QPointSize::SizeMode sizeMode, float value)
         : QRenderStatePrivate(QRenderState::PointSize)
-        , m_specification(spec)
+        , m_sizeMode(sizeMode)
         , m_value(value)
     {}
 
-    QPointSize::Specification m_specification;
+    QPointSize::SizeMode m_sizeMode;
     float m_value;
 
     Q_DECLARE_PUBLIC(QPointSize)
@@ -70,7 +70,7 @@ public:
  */
 
 QPointSize::QPointSize(Qt3DCore::QNode *parent)
-    : QRenderState(*new QPointSizePrivate(Specification::Programmable, 0.f), parent)
+    : QRenderState(*new QPointSizePrivate(SizeMode::Programmable, 0.f), parent)
 {
 }
 
@@ -79,10 +79,10 @@ QPointSize::~QPointSize()
     QNode::cleanup();
 }
 
-QPointSize::Specification QPointSize::specification() const
+QPointSize::SizeMode QPointSize::sizeMode() const
 {
     Q_D(const QPointSize);
-    return d->m_specification;
+    return d->m_sizeMode;
 }
 
 float QPointSize::value() const
@@ -91,16 +91,11 @@ float QPointSize::value() const
     return d->m_value;
 }
 
-bool QPointSize::isProgrammable() const
-{
-    return (specification() == QPointSize::Specification::Programmable);
-}
-
-void QPointSize::setSpecification(Specification spec)
+void QPointSize::setSizeMode(SizeMode sizeMode)
 {
     Q_D(QPointSize);
-    d->m_specification = spec;
-    emit specificationChanged(spec);
+    d->m_sizeMode = sizeMode;
+    emit sizeModeChanged(sizeMode);
 }
 
 void QPointSize::setValue(float size)
@@ -118,7 +113,7 @@ void QPointSize::copy(const Qt3DCore::QNode *ref)
 
     Q_D(QPointSize);
     d->m_value = refState->d_func()->m_value;
-    d->m_specification = refState->d_func()->m_specification;
+    d->m_sizeMode = refState->d_func()->m_sizeMode;
 }
 
 } // namespace Qt3DRender

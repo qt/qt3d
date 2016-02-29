@@ -319,7 +319,8 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::PointSize: {
         QPointSize *pointSize = static_cast<QPointSize *>(renderState);
-        return getOrCreateRenderStateImpl<PointSize>(pointSize->isProgrammable(), pointSize->value());
+        const bool isProgrammable = (pointSize->sizeMode() == QPointSize::Programmable);
+        return getOrCreateRenderStateImpl<PointSize>(isProgrammable, pointSize->value());
     }
     case QRenderState::PolygonOffset: {
         QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
