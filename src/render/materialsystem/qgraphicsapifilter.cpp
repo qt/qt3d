@@ -59,7 +59,7 @@ bool GraphicsApiFilterData::operator ==(const GraphicsApiFilterData &other) cons
             && other.m_profile <= m_profile
             && (other.m_major < m_major
                 || (other.m_major == m_major && other.m_minor <= m_minor))) {
-        Q_FOREACH (const QString &neededExt, other.m_extensions)
+        for (const QString &neededExt : other.m_extensions)
             if (!m_extensions.contains(neededExt))
                 return false;
         // If a vendor name was specified in sample, we perform comparison,

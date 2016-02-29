@@ -76,7 +76,8 @@ class QShaderDataPropertyReader: public PropertyReaderInterface
             return QVariant::fromValue(shaderData->id());
         } else if (v.userType() == qVectorShaderDataTypeId) {
             QVariantList vlist;
-            Q_FOREACH (QShaderData *data, v.value<QVector<QShaderData *> >()) {
+            const auto data_ = v.value<QVector<QShaderData *> >();
+            for (QShaderData *data : data_) {
                 if (data)
                     vlist.append(QVariant::fromValue(data->id()));
             }

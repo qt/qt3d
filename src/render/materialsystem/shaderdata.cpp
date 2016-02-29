@@ -129,7 +129,8 @@ void ShaderData::clearUpdatedProperties()
 
     while (it != end) {
         if (it.value().userType() == QMetaType::QVariantList) {
-            Q_FOREACH (const QVariant &v, it.value().value<QVariantList>()) {
+            const auto values = it.value().value<QVariantList>();
+            for (const QVariant &v : values) {
                 ShaderData *nested = lookupResource(v.value<QNodeId>());
                 if (nested != nullptr)
                     nested->clearUpdatedProperties();
@@ -194,7 +195,7 @@ bool ShaderData::updateViewTransform(const QMatrix4x4 &viewMatrix)
             QVariantList updatedNodes;
             bool nestedNeedsUpdate = false;
             const QVariantList values = variant_value<QVariantList>(it.value());
-            Q_FOREACH (const QVariant &v, values) {
+            for (const QVariant &v : values) {
                 if (v.userType() != qNodeIdTypeId)
                     continue;
 
