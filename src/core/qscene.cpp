@@ -124,12 +124,13 @@ void QScene::removeObservable(QNode *observable)
     if (observable != Q_NULLPTR) {
         QWriteLocker lock(&d->m_lock);
         QNodeId nodeUuid = observable->id();
-        QObservableList observables = d->m_observablesLookupTable.values(nodeUuid);
-        Q_FOREACH (QObservableInterface *o, observables) {
-            o->setArbiter(Q_NULLPTR);
-            d->m_observableToUuid.remove(o);
+        const auto p = d->m_observablesLookupTable.equal_range(nodeUuid); // must be non-const equal_range to ensure p.second stays valid
+        auto it = p.first;
+        while (it != p.second) {
+            it.value()->setArbiter(nullptr);
+            d->m_observableToUuid.remove(it.value());
+            it = d->m_observablesLookupTable.erase(it);
         }
-        d->m_observablesLookupTable.remove(nodeUuid);
         d->m_nodeLookupTable.remove(nodeUuid);
         observable->d_func()->setArbiter(Q_NULLPTR);
     }
