@@ -68,7 +68,8 @@ void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
     QInputSequence *input = static_cast<QInputSequence *>(peer);
     m_timeout = input->timeout();
     m_buttonInterval = input->buttonInterval();
-    Q_FOREACH (QAbstractActionInput *i, input->sequences())
+    const auto sequences = input->sequences();
+    for (QAbstractActionInput *i : sequences)
         m_sequences.push_back(i->id());
 }
 

@@ -61,7 +61,8 @@ Action::Action()
 void Action::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAction *action = static_cast<QAction *>(peer);
-    Q_FOREACH (QAbstractActionInput *input, action->inputs())
+    const auto inputs = action->inputs();
+    for (QAbstractActionInput *input : inputs)
         m_inputs.push_back(input->id());
 }
 

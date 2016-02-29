@@ -61,7 +61,8 @@ Axis::Axis()
 void Axis::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAxis *axis = static_cast<QAxis *>(peer);
-    Q_FOREACH (QAxisInput *input, axis->inputs())
+    const auto inputs = axis->inputs();
+    for (QAxisInput *input : inputs)
         m_inputs.push_back(input->id());
 }
 

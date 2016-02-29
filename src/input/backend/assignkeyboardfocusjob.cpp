@@ -63,7 +63,8 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 void AssignKeyboardFocusJob::run()
 {
     KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
-    Q_FOREACH (const HKeyboardHandler handle, keyboardDevice->keyboardInputsHandles()) {
+    const auto handles = keyboardDevice->keyboardInputsHandles();
+    for (const HKeyboardHandler handle : handles) {
         KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
         if (input) {
             bool hasFocus = input->peerId() == keyboardDevice->lastKeyboardInputRequester();

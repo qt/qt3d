@@ -63,7 +63,7 @@ QVector<int> variantListToVector(const QVariantList &list)
 {
     QVector<int> v(list.size());
     int i = 0;
-    Q_FOREACH (const QVariant &e, list) {
+    for (const QVariant &e : list) {
         v[i++] = e.toInt();
     }
     return v;
@@ -154,10 +154,12 @@ void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
     Q_D(QAbstractPhysicalDeviceBackendNode);
     QAbstractPhysicalDevice *physicalDevice = static_cast<QAbstractPhysicalDevice *>(peer);
-    Q_FOREACH (QAxisSetting *axisSetting, physicalDevice->axisSettings()) {
+    const auto axisSettings = physicalDevice->axisSettings();
+    for (QAxisSetting *axisSetting : axisSettings) {
         // Each axis setting can apply to more than one axis. If an axis is
         // mentioned in more than one setting, we use the last one
-        Q_FOREACH (int axisId, variantListToVector(axisSetting->axes()))
+        const auto axisIds = variantListToVector(axisSetting->axes());
+        for (int axisId : axisIds)
             d->addAxisSetting(axisId, axisSetting->id());
     }
 }
@@ -190,7 +192,8 @@ void QAbstractPhysicalDeviceBackendNode::sceneChangeEvent(const Qt3DCore::QScene
         if (change->propertyName() == QByteArrayLiteral("axisSettings")) {
             const auto axisSettingId = change->addedNodeId();
             Input::AxisSetting *axisSetting = d->getAxisSetting(axisSettingId);
-            Q_FOREACH (int axisId, axisSetting->axes())
+            const auto axisIds = axisSetting->axes();
+            for (int axisId : axisIds)
                 d->addAxisSetting(axisId, axisSettingId);
         }
         break;

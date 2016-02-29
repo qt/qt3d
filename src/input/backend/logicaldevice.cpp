@@ -61,9 +61,11 @@ LogicalDevice::LogicalDevice()
 void LogicalDevice::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLogicalDevice *device = static_cast<QLogicalDevice *>(peer);
-    Q_FOREACH (QAxis *axis, device->axes())
+    const auto axes = device->axes();
+    for (QAxis *axis : axes)
         m_axes.push_back(axis->id());
-    Q_FOREACH (QAction *action, device->actions())
+    const auto actions = device->actions();
+    for (QAction *action : actions)
         m_actions.push_back(action->id());
 }
 

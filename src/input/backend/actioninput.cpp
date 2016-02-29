@@ -55,7 +55,7 @@ QVector<int> listToIntArray(const QVariantList &l)
 {
     QVector<int> array;
     array.reserve(l.size());
-    Q_FOREACH (const QVariant &v, l)
+    for (const QVariant &v : l)
         array.push_back(v.toInt());
     return array;
 }

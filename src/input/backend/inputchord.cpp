@@ -63,7 +63,8 @@ void InputChord::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QInputChord *input = static_cast<QInputChord *>(peer);
     m_timeout = input->timeout();
-    Q_FOREACH (QAbstractActionInput *i, input->chords())
+    const auto chords = input->chords();
+    for (QAbstractActionInput *i : chords)
         m_chords.push_back(i->id());
 }
 

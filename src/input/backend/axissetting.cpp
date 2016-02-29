@@ -50,9 +50,8 @@ QVector<int> variantListToVector(const QVariantList &list)
 {
     QVector<int> v(list.size());
     int i = 0;
-    Q_FOREACH (const QVariant &e, list) {
+    for (const QVariant &e : list)
         v[i++] = e.toInt();
-    }
     return v;
 }
 

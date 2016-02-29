@@ -54,7 +54,7 @@ namespace {
 bool anyOfRequiredButtonsPressed(const QVector<int> &buttons, QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend)
 {
     bool validButtonWasPressed = false;
-    Q_FOREACH (int button, buttons) {
+    for (int button : buttons) {
         if (physicalDeviceBackend->isButtonPressed(button)) {
             validButtonWasPressed = true;
             break;
@@ -84,13 +84,15 @@ void UpdateAxisActionJob::run()
 
 void UpdateAxisActionJob::updateAction(LogicalDevice *device)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId actionId, device->actions()) {
+    const auto actionIds = device->actions();
+    for (const Qt3DCore::QNodeId actionId : actionIds) {
         bool actionTriggered = false;
         Action *action = m_handler->actionManager()->lookupResource(actionId);
 
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, action->inputs()) {
+        const auto actionInputIds = action->inputs();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds)
             actionTriggered |= processActionInput(actionInputId);
-        }
+
         action->setActionTriggered(actionTriggered);
     }
 }
@@ -102,7 +104,8 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
         ActionInput *actionInput = m_handler->actionInputManager()->lookupResource(actionInputId);
         QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
 
-        Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
+        const auto integrations = m_handler->inputDeviceIntegrations();
+        for (QInputDeviceIntegration *integration : integrations) {
             if ((physicalDeviceBackend = integration->physicalDevice(actionInput->sourceDevice())) != Q_NULLPTR)
                 break;
         }
@@ -122,7 +125,8 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputSequence->sequences()) {
+        const auto actionInputIds = inputSequence->sequences();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputSequence->actionTriggered(actionInputId, m_currentTime);
                 // Set the start time if it wasn't set before
@@ -142,7 +146,8 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
             }
         }
         bool actionTriggered = false;
-        Q_FOREACH (const Qt3DCore::QNodeId actionInputId, inputChord->chords()) {
+        const auto actionInputIds = inputChord->chords();
+        for (const Qt3DCore::QNodeId actionInputId : actionInputIds) {
             if (processActionInput(actionInputId)){
                 actionTriggered |= inputChord->actionTriggered(actionInputId);
                 if (startTime == 0)
@@ -157,15 +162,18 @@ bool UpdateAxisActionJob::processActionInput(const Qt3DCore::QNodeId actionInput
 
 void UpdateAxisActionJob::updateAxis(LogicalDevice *device)
 {
-    Q_FOREACH (const Qt3DCore::QNodeId axisId, device->axes()) {
+    const auto axisIds = device->axes();
+    for (const Qt3DCore::QNodeId axisId : axisIds) {
         Axis *axis = m_handler->axisManager()->lookupResource(axisId);
         float axisValue = 0.0f;
 
-        Q_FOREACH (const Qt3DCore::QNodeId axisInputId, axis->inputs()) {
+        const auto axisInputIds = axis->inputs();
+        for (const Qt3DCore::QNodeId axisInputId : axisInputIds) {
             AxisInput *axisInput = m_handler->axisInputManager()->lookupResource(axisInputId);
             QAbstractPhysicalDeviceBackendNode *physicalDeviceBackend = Q_NULLPTR;
 
-            Q_FOREACH (QInputDeviceIntegration *integration, m_handler->inputDeviceIntegrations()) {
+            const auto integrations = m_handler->inputDeviceIntegrations();
+            for (QInputDeviceIntegration *integration : integrations) {
                 if ((physicalDeviceBackend = integration->physicalDevice(axisInput->sourceDevice())) != Q_NULLPTR)
                     break;
             }
