@@ -37,51 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_COMPUTEJOB_P_H
-#define QT3DRENDER_RENDER_COMPUTEJOB_P_H
+#ifndef QT3DRENDER_QCOMPUTECOMMAND_H
+#define QT3DRENDER_QCOMPUTECOMMAND_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
+class QComputeCommandPrivate;
 
-class ComputeJobPrivate;
-
-class Q_AUTOTEST_EXPORT ComputeJob : public BackendNode
+class QT3DRENDERSHARED_EXPORT QComputeCommand : public Qt3DCore::QComponent
 {
+    Q_OBJECT
+    Q_PROPERTY(int workGroupX READ workGroupX WRITE setWorkGroupX NOTIFY workGroupXChanged)
+    Q_PROPERTY(int workGroupY READ workGroupY WRITE setWorkGroupY NOTIFY workGroupYChanged)
+    Q_PROPERTY(int workGroupZ READ workGroupZ WRITE setWorkGroupZ NOTIFY workGroupZChanged)
+
 public:
-    ComputeJob();
-    ~ComputeJob();
 
-    void cleanup();
+    explicit QComputeCommand(Qt3DCore::QNode *parent = Q_NULLPTR);
+    ~QComputeCommand();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    int workGroupX() const;
+    int workGroupY() const;
+    int workGroupZ() const;
 
-    inline bool isEnabled() const { return m_enabled; }
+public Q_SLOTS:
+    void setWorkGroupX(int workGroupX);
+    void setWorkGroupY(int workGroupY);
+    void setWorkGroupZ(int workGroupZ);
+
+Q_SIGNALS:
+    void workGroupXChanged();
+    void workGroupYChanged();
+    void workGroupZChanged();
+
+protected:
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    bool m_enabled;
+    Q_DECLARE_PRIVATE(QComputeCommand)
+    QT3D_CLONEABLE(QComputeCommand)
 };
-
-} // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_COMPUTEJOB_P_H
+#endif // QT3DRENDER_QCOMPUTECOMMAND_H

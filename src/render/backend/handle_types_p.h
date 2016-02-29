@@ -90,7 +90,7 @@ class ObjectPicker;
 class BoundingVolumeDebug;
 class OpenGLVertexArrayObject;
 class Light;
-class ComputeJob;
+class ComputeCommand;
 class GLBuffer;
 class RenderStateNode;
 
@@ -122,7 +122,7 @@ typedef Qt3DCore::QHandle<GeometryRenderer, 16> HGeometryRenderer;
 typedef Qt3DCore::QHandle<ObjectPicker, 16> HObjectPicker;
 typedef Qt3DCore::QHandle<BoundingVolumeDebug, 16> HBoundingVolumeDebug;
 typedef Qt3DCore::QHandle<Light, 16> HLight;
-typedef Qt3DCore::QHandle<ComputeJob, 16> HComputeJob;
+typedef Qt3DCore::QHandle<ComputeCommand, 16> HComputeCommand;
 typedef Qt3DCore::QHandle<GLBuffer, 16> HGLBuffer;
 typedef Qt3DCore::QHandle<RenderStateNode, 16> HRenderState;
 

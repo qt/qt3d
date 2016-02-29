@@ -40,7 +40,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QBoundingVolumeDebug>
-#include <Qt3DRender/QComputeJob>
+#include <Qt3DRender/QComputeCommand>
 
 #include "testrenderer.h"
 
@@ -60,7 +60,7 @@ QNodeId materialUuid(Entity *entity) { return entity->componentUuid<Material>();
 QNodeId geometryRendererUuid(Entity *entity) { return entity->componentUuid<GeometryRenderer>(); }
 QNodeId objectPickerUuid(Entity *entity) { return entity->componentUuid<ObjectPicker>(); }
 QNodeId boundingVolumeDebugUuid(Entity *entity) { return entity->componentUuid<BoundingVolumeDebug>(); }
-QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeJob>(); }
+QNodeId computeJobUuid(Entity *entity) { return entity->componentUuid<ComputeCommand>(); }
 
 QVector<QNodeId> layersUuid(Entity *entity) { return entity->componentsUuid<Layer>(); }
 QVector<QNodeId> shadersUuid(Entity *entity) { return entity->componentsUuid<ShaderData>(); }
@@ -87,7 +87,7 @@ private slots:
                 << new QLayer
                 << new QShaderData
                 << new QBoundingVolumeDebug
-                << new QComputeJob;
+                << new QComputeCommand;
 
         QTest::newRow("all components") << components;
     }
@@ -108,7 +108,7 @@ private slots:
         QVERIFY(entity.componentUuid<GeometryRenderer>().isNull());
         QVERIFY(entity.componentUuid<ObjectPicker>().isNull());
         QVERIFY(entity.componentUuid<BoundingVolumeDebug>().isNull());
-        QVERIFY(entity.componentUuid<ComputeJob>().isNull());
+        QVERIFY(entity.componentUuid<ComputeCommand>().isNull());
         QVERIFY(entity.componentsUuid<Layer>().isEmpty());
         QVERIFY(entity.componentsUuid<ShaderData>().isEmpty());
         QVERIFY(!entity.isBoundingVolumeDirty());
@@ -173,7 +173,7 @@ private slots:
         component = new QBoundingVolumeDebug;
         QTest::newRow("boundingVolumeDebug") << component << reinterpret_cast<void*>(boundingVolumeDebugUuid);
 
-        component = new QComputeJob;
+        component = new QComputeCommand;
         QTest::newRow("computeJob") << component << reinterpret_cast<void*>(computeJobUuid);
     }
 

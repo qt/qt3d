@@ -112,7 +112,7 @@
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
-#include <Qt3DRender/qcomputejob.h>
+#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
@@ -251,7 +251,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QSphereGeometry>(uri, 2, 0, "SphereGeometry");
 
     // Compute Job
-    qmlRegisterType<Qt3DRender::QComputeJob>(uri, 2, 0, "ComputeJob");
+    qmlRegisterType<Qt3DRender::QComputeCommand>(uri, 2, 0, "ComputeCommand");
 
     // Layers
     qmlRegisterType<Qt3DRender::QLayer>(uri, 2, 0, "Layer");

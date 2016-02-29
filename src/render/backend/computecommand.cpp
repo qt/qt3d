@@ -37,41 +37,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QCOMPUTEJOB_H
-#define QT3DRENDER_QCOMPUTEJOB_H
-
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
+#include "computecommand_p.h"
+#include <Qt3DCore/qnode.h>
+#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QComputeJobPrivate;
+namespace Render {
 
-class QT3DRENDERSHARED_EXPORT QComputeJob : public Qt3DCore::QComponent
+ComputeCommand::ComputeCommand()
+    : BackendNode(ReadOnly)
+    , m_enabled(false)
 {
-    Q_OBJECT
+}
 
-public:
-    explicit QComputeJob(Qt3DCore::QNode *parent = nullptr);
-    ~QComputeJob();
+ComputeCommand::~ComputeCommand()
+{
+}
 
-public Q_SLOTS:
+void ComputeCommand::cleanup()
+{
+    m_enabled = false;
+}
 
-Q_SIGNALS:
+void ComputeCommand::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    m_enabled = peer->isEnabled();
+    if (m_renderer != Q_NULLPTR)
+        BackendNode::markDirty(AbstractRenderer::ComputeDirty);
+}
 
-protected:
-    Q_DECLARE_PRIVATE(QComputeJob)
-    QComputeJob(QComputeJobPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            m_enabled = propertyChange->value().toBool();
+        markDirty(AbstractRenderer::AllDirty);
+    }
+}
 
-private:
-    QT3D_CLONEABLE(QComputeJob)
-};
+} // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QCOMPUTEJOB_H

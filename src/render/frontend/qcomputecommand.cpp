@@ -37,38 +37,83 @@
 **
 ****************************************************************************/
 
-#include "qcomputejob.h"
-#include "qcomputejob_p.h"
+#include "qcomputecommand.h"
+#include "qcomputecommand_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QComputeJobPrivate::QComputeJobPrivate()
+QComputeCommandPrivate::QComputeCommandPrivate()
     : Qt3DCore::QComponentPrivate()
+    , m_workGroupX(1)
+    , m_workGroupY(1)
+    , m_workGroupZ(1)
 {
 }
 
-QComputeJob::QComputeJob(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QComputeJobPrivate, parent)
+QComputeCommand::QComputeCommand(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QComputeCommandPrivate, parent)
 {
 }
 
-QComputeJob::QComputeJob(QComputeJobPrivate &dd, Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(dd, parent)
+QComputeCommand::~QComputeCommand()
 {
+    QComponent::cleanup();
 }
 
-QComputeJob::~QComputeJob()
+int QComputeCommand::workGroupX() const
 {
-    QNode::cleanup();
+    Q_D(const QComputeCommand);
+    return d->m_workGroupX;
 }
 
-void QComputeJob::copy(const QNode *ref)
+int QComputeCommand::workGroupY() const
+{
+    Q_D(const QComputeCommand);
+    return d->m_workGroupX;
+}
+
+int QComputeCommand::workGroupZ() const
+{
+    Q_D(const QComputeCommand);
+    return d->m_workGroupX;
+}
+
+void QComputeCommand::setWorkGroupX(int workGroupX)
+{
+    Q_D(QComputeCommand);
+    if (d->m_workGroupX != workGroupX) {
+        d->m_workGroupX = workGroupX;
+        emit workGroupXChanged();
+    }
+}
+
+void QComputeCommand::setWorkGroupY(int workGroupY)
+{
+    Q_D(QComputeCommand);
+    if (d->m_workGroupY != workGroupY) {
+        d->m_workGroupY = workGroupY;
+        emit workGroupYChanged();
+    }
+}
+
+void QComputeCommand::setWorkGroupZ(int workGroupZ)
+{
+    Q_D(QComputeCommand);
+    if (d->m_workGroupZ != workGroupZ) {
+        d->m_workGroupZ = workGroupZ;
+        emit workGroupZChanged();
+    }
+}
+
+void QComputeCommand::copy(const QNode *ref)
 {
     QComponent::copy(ref);
-    const QComputeJob *object = static_cast<const QComputeJob *>(ref);
-    Q_UNUSED(object);
+    const QComputeCommand *object = static_cast<const QComputeCommand *>(ref);
+    d_func()->m_workGroupX = object->workGroupX();
+    d_func()->m_workGroupY = object->workGroupY();
+    d_func()->m_workGroupZ = object->workGroupZ();
 }
 
 } // Render

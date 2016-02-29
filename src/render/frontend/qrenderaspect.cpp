@@ -76,7 +76,7 @@
 #include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
-#include <Qt3DRender/qcomputejob.h>
+#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 
@@ -122,7 +122,7 @@
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/lighting_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
-#include <Qt3DRender/private/computejob_p.h>
+#include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/backendnode_p.h>
@@ -288,7 +288,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(d->m_renderer, d->m_nodeManagers)));
     registerBackendType<QLighting>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::Lighting, QLighting>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QDispatchCompute>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
-    registerBackendType<QComputeJob>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeJob, Render::ComputeJobManager>(d->m_renderer, d->m_nodeManagers->computeJobManager())));
+    registerBackendType<QComputeCommand>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager>(d->m_renderer, d->m_nodeManagers->computeJobManager())));
     registerBackendType<QRenderSettings>(QBackendNodeMapperPtr(new Render::RenderSettingsFunctor(d->m_renderer)));
     registerBackendType<QRenderState>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager>(d->m_renderer, d->m_nodeManagers->renderStateManager())));
 }

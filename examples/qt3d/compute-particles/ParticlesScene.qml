@@ -155,7 +155,7 @@ Entity {
 
     Entity {
         id: particleComputeEntity
-        readonly property ComputeJob particlesComputeJob: ComputeJob {}
+        readonly property ComputeCommand particlesComputeJob: ComputeCommand {}
         components: [
             particlesComputeJob,
             computeMaterial

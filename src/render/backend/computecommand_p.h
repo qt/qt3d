@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QCOMPUTEJOB_P_H
-#define QT3DRENDER_QCOMPUTEJOB_P_H
+#ifndef QT3DRENDER_RENDER_COMPUTECOMMAND_P_H
+#define QT3DRENDER_RENDER_COMPUTECOMMAND_P_H
 
 //
 //  W A R N I N G
@@ -51,21 +51,37 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QComputeJobPrivate : public Qt3DCore::QComponentPrivate
+namespace Render {
+
+class ComputeJobPrivate;
+
+class Q_AUTOTEST_EXPORT ComputeCommand : public BackendNode
 {
 public:
-    QComputeJobPrivate();
+    ComputeCommand();
+    ~ComputeCommand();
 
+    void cleanup();
+
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    inline bool isEnabled() const { return m_enabled; }
+
+private:
+    bool m_enabled;
 };
+
+} // Render
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QCOMPUTEJOB_P_H
+#endif // QT3DRENDER_RENDER_COMPUTECOMMAND_P_H

@@ -37,51 +37,38 @@
 **
 ****************************************************************************/
 
-#include "computejob_p.h"
-#include <Qt3DCore/qnode.h>
-#include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/private/abstractrenderer_p.h>
+#ifndef QT3DRENDER_QCOMPUTECOMMAND_P_H
+#define QT3DRENDER_QCOMPUTECOMMAND_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-ComputeJob::ComputeJob()
-    : BackendNode(ReadOnly)
-    , m_enabled(false)
+class QComputeCommandPrivate : public Qt3DCore::QComponentPrivate
 {
-}
+public:
+    QComputeCommandPrivate();
 
-ComputeJob::~ComputeJob()
-{
-}
-
-void ComputeJob::cleanup()
-{
-    m_enabled = false;
-}
-
-void ComputeJob::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    m_enabled = peer->isEnabled();
-    if (m_renderer != Q_NULLPTR)
-        BackendNode::markDirty(AbstractRenderer::ComputeDirty);
-}
-
-void ComputeJob::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            m_enabled = propertyChange->value().toBool();
-        markDirty(AbstractRenderer::AllDirty);
-    }
-}
-
-} // Render
+    int m_workGroupX;
+    int m_workGroupY;
+    int m_workGroupZ;
+};
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QCOMPUTECOMMAND_P_H

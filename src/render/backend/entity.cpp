@@ -50,7 +50,7 @@
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qboundingvolumedebug.h>
-#include <Qt3DRender/qcomputejob.h>
+#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/qcameralens.h>
@@ -287,7 +287,7 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_objectPickerComponent = component->id();
     } else if (qobject_cast<QBoundingVolumeDebug *>(component) != Q_NULLPTR) {
         m_boundingVolumeDebugComponent = component->id();
-    } else if (qobject_cast<QComputeJob *>(component) != Q_NULLPTR) {
+    } else if (qobject_cast<QComputeCommand *>(component) != Q_NULLPTR) {
         m_computeComponent = component->id();
     }
 }
@@ -407,7 +407,7 @@ QList<HLight> Entity::componentsHandle<Light>() const
 }
 
 template<>
-HComputeJob Entity::componentHandle<ComputeJob>() const
+HComputeCommand Entity::componentHandle<ComputeCommand>() const
 {
     return m_nodeManagers->computeJobManager()->lookupHandle(m_computeComponent);
 }
@@ -481,7 +481,7 @@ BoundingVolumeDebug *Entity::renderComponent<BoundingVolumeDebug>() const
 }
 
 template<>
-ComputeJob *Entity::renderComponent<ComputeJob>() const
+ComputeCommand *Entity::renderComponent<ComputeCommand>() const
 {
     return m_nodeManagers->computeJobManager()->lookupResource(m_computeComponent);
 }
@@ -513,7 +513,7 @@ template<>
 QNodeId Entity::componentUuid<BoundingVolumeDebug>() const { return m_boundingVolumeDebugComponent; }
 
 template<>
-QNodeId Entity::componentUuid<ComputeJob>() const { return m_computeComponent; }
+QNodeId Entity::componentUuid<ComputeCommand>() const { return m_computeComponent; }
 
 template<>
 QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const { return m_lightComponents; }

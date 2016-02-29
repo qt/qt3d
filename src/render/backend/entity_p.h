@@ -211,7 +211,7 @@ template<>
 QList<HLight> Entity::componentsHandle<Light>() const;
 
 template<>
-Q_AUTOTEST_EXPORT HComputeJob Entity::componentHandle<ComputeJob>() const;
+Q_AUTOTEST_EXPORT HComputeCommand Entity::componentHandle<ComputeCommand>() const;
 
 // Render components
 template<>
@@ -242,7 +242,7 @@ template<>
 QList<Light *> Entity::renderComponents<Light>() const;
 
 template<>
-Q_AUTOTEST_EXPORT ComputeJob *Entity::renderComponent<ComputeJob>() const;
+Q_AUTOTEST_EXPORT ComputeCommand *Entity::renderComponent<ComputeCommand>() const;
 
 // UUid
 template<>
@@ -270,7 +270,7 @@ template<>
 Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<BoundingVolumeDebug>() const;
 
 template<>
-Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeJob>() const;
+Q_AUTOTEST_EXPORT Qt3DCore::QNodeId Entity::componentUuid<ComputeCommand>() const;
 
 template<>
 Q_AUTOTEST_EXPORT QVector<Qt3DCore::QNodeId> Entity::componentsUuid<Light>() const;

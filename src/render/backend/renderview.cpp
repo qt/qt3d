@@ -594,9 +594,9 @@ void RenderView::buildComputeRenderCommands(Entity *node)
     // enabled flag
     // layer component
     // material/effect/technique/parameters/filters/
-    ComputeJob *computeJob = Q_NULLPTR;
-    if (node->componentHandle<ComputeJob, 16>() != HComputeJob()
-            && (computeJob = node->renderComponent<ComputeJob>()) != Q_NULLPTR
+    ComputeCommand *computeJob = Q_NULLPTR;
+    if (node->componentHandle<ComputeCommand, 16>() != HComputeCommand()
+            && (computeJob = node->renderComponent<ComputeCommand>()) != Q_NULLPTR
             && computeJob->isEnabled()) {
 
         ParameterInfoList parameters;
