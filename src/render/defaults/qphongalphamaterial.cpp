@@ -48,7 +48,7 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qblendequation.h>
-#include <Qt3DRender/qblendstate.h>
+#include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qdepthmask.h>
 #include <QUrl>
 #include <QVector3D>
@@ -75,7 +75,7 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_phongAlphaGL3Shader(new QShaderProgram())
     , m_phongAlphaGL2ES2Shader(new QShaderProgram())
     , m_depthMask(new QDepthMask())
-    , m_blendState(new QBlendState())
+    , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
     , m_annotation(new QAnnotation)
 {
@@ -125,8 +125,9 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2Technique->addAnnotation(m_annotation);
 
     m_depthMask->setMask(false);
-    m_blendState->setSrcRGB(QBlendState::SrcAlpha);
-    m_blendState->setDstRGB(QBlendState::OneMinusSrcAlpha);
+
+    m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
+    m_blendState->setDestinationRgb(QBlendEquationArguments::OneMinusSourceAlpha);
     m_blendEquation->setBlendFunction(QBlendEquation::Add);
 
     m_phongAlphaGL3RenderPass->setShaderProgram(m_phongAlphaGL3Shader);

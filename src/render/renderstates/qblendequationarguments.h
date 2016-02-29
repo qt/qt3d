@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBLENDSTATE_H
-#define QT3DRENDER_QBLENDSTATE_H
+#ifndef QT3DRENDER_QBLENDEQUATIONARGUMENTS_H
+#define QT3DRENDER_QBLENDEQUATIONARGUMENTS_H
 
 #include <Qt3DRender/qrenderstate.h>
 
@@ -47,16 +47,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QBlendStatePrivate;
+class QBlendEquationArgumentsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QBlendState : public QRenderState
+class QT3DRENDERSHARED_EXPORT QBlendEquationArguments : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Blending srcRGB READ srcRGB WRITE setSrcRGB NOTIFY srcRGBChanged)
-    Q_PROPERTY(Blending srcAlpha READ srcAlpha WRITE setSrcAlpha NOTIFY srcAlphaChanged)
-    Q_PROPERTY(Blending dstRGB READ dstRGB WRITE setDstRGB NOTIFY dstRGBChanged)
-    Q_PROPERTY(Blending dstAlpha READ dstAlpha WRITE setDstAlpha NOTIFY dstAlphaChanged)
-    Q_PROPERTY(bool specifiesAllDrawBuffers READ specifiesAllDrawBuffers NOTIFY specifiesAllDrawBuffersChanged)
+    Q_PROPERTY(Blending sourceRgb READ sourceRgb WRITE setSourceRgb NOTIFY sourceRgbChanged)
+    Q_PROPERTY(Blending sourceAlpha READ sourceAlpha WRITE setSourceAlpha NOTIFY sourceAlphaChanged)
+    Q_PROPERTY(Blending destinationRgb READ destinationRgb WRITE setDestinationRgb NOTIFY destinationRgbChanged)
+    Q_PROPERTY(Blending destinationAlpha READ destinationAlpha WRITE setDestinationAlpha NOTIFY destinationAlphaChanged)
     Q_PROPERTY(int bufferIndex READ bufferIndex WRITE setBufferIndex NOTIFY bufferIndexChanged)
 
 public:
@@ -65,61 +64,60 @@ public:
     {
         Zero = 0,
         One = 1,
-        SrcColor = 0x0300,
-        SrcAlpha = 0x0302,
-        Src1Alpha,
-        Src1Color,
-        DstColor = 0x0306,
-        DstAlpha = 0x0304,
-        SrcAlphaSaturate = 0x0308,
+        SourceColor = 0x0300,
+        SourceAlpha = 0x0302,
+        Source1Alpha,
+        Source1Color,
+        DestinationColor = 0x0306,
+        DestinationAlpha = 0x0304,
+        SourceAlphaSaturate = 0x0308,
         ConstantColor = 0x8001,
         ConstantAlpha = 0x8003,
-        OneMinusSrcColor = 0x0301,
-        OneMinusSrcAlpha = 0x0303,
-        OneMinusDstAlpha = 0x0305,
-        OneMinusDstColor = 0x0307,
+        OneMinusSourceColor = 0x0301,
+        OneMinusSourceAlpha = 0x0303,
+        OneMinusDestinationAlpha = 0x0305,
+        OneMinusDestinationColor = 0x0307,
         OneMinusConstantColor = 0x8002,
         OneMinusConstantAlpha = 0x8004,
-        OneMinusSrc1Alpha,
-        OneMinusSrc1Color0
+        OneMinusSource1Alpha,
+        OneMinusSource1Color0
     };
     Q_ENUM(Blending)
 
-    explicit QBlendState(Qt3DCore::QNode *parent = 0);
-    ~QBlendState();
+    explicit QBlendEquationArguments(Qt3DCore::QNode *parent = 0);
+    ~QBlendEquationArguments();
 
-    Blending srcRGB() const;
-    Blending dstRGB() const;
-    Blending srcAlpha() const;
-    Blending dstAlpha() const;
+    Blending sourceRgb() const;
+    Blending destinationRgb() const;
+    Blending sourceAlpha() const;
+    Blending destinationAlpha() const;
     int bufferIndex() const;
     bool specifiesAllDrawBuffers() const;
 
 public Q_SLOTS:
-    void setSrcRGB(Blending srcRGB);
-    void setDstRGB(Blending dstRGB);
-    void setSrcAlpha(Blending srcAlpha);
-    void setDstAlpha(Blending dstAlpha);
+    void setSourceRgb(Blending sourceRgb);
+    void setDestinationRgb(Blending destinationRgb);
+    void setSourceAlpha(Blending sourceAlpha);
+    void setDestinationAlpha(Blending destinationAlpha);
     void setBufferIndex(int index);
 
 Q_SIGNALS:
-    void srcRGBChanged(Blending srcRGB);
-    void srcAlphaChanged(Blending srcAlpha);
-    void dstRGBChanged(Blending dstRGB);
-    void dstAlphaChanged(Blending dstAlpha);
+    void sourceRgbChanged(Blending sourceRgb);
+    void sourceAlphaChanged(Blending sourceAlpha);
+    void destinationRgbChanged(Blending destinationRgb);
+    void destinationAlphaChanged(Blending destinationAlpha);
     void bufferIndexChanged(int index);
-    void specifiesAllDrawBuffersChanged(bool specifyAll);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    QBlendState(QRenderState::Type type, Qt3DCore::QNode *parent = 0);
+    QBlendEquationArguments(QRenderState::Type type, Qt3DCore::QNode *parent = 0);
 
 private:
-    Q_DECLARE_PRIVATE(QBlendState)
-    QT3D_CLONEABLE(QBlendState)
+    Q_DECLARE_PRIVATE(QBlendEquationArguments)
+    QT3D_CLONEABLE(QBlendEquationArguments)
 };
 
-class QT3DRENDERSHARED_EXPORT QBlendStateSeparate : public QBlendState
+class QT3DRENDERSHARED_EXPORT QBlendStateSeparate : public QBlendEquationArguments
 {
     Q_OBJECT
 public:
@@ -130,4 +128,4 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QBLENDSTATE_H
+#endif // QT3DRENDER_QBLENDEQUATIONARGUMENTS_H

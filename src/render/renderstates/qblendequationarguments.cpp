@@ -1,0 +1,312 @@
+/****************************************************************************
+**
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 The Qt Company Ltd and/or its subsidiary(-ies).
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt3D module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:LGPL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or (at your option) the GNU General
+** Public license version 3 or any later version approved by the KDE Free
+** Qt Foundation. The licenses are as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-2.0.html and
+** https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+#include "qblendequationarguments.h"
+#include "qrenderstate_p.h"
+#include <Qt3DCore/qscenepropertychange.h>
+#include <private/qnode_p.h>
+
+QT_BEGIN_NAMESPACE
+
+namespace Qt3DRender {
+
+class QBlendEquationArgumentsPrivate : public QRenderStatePrivate
+{
+public:
+    QBlendEquationArgumentsPrivate(QRenderState::Type type = QRenderState::BlendEquationArguments)
+        : QRenderStatePrivate(type)
+        , m_sourceRgb(QBlendEquationArguments::Zero)
+        , m_sourceAlpha(QBlendEquationArguments::Zero)
+        , m_destinationRgb(QBlendEquationArguments::Zero)
+        , m_destinationAlpha(QBlendEquationArguments::Zero)
+        , m_bufferIndex(-1)
+    {
+    }
+
+    Q_DECLARE_PUBLIC(QBlendEquationArguments)
+
+    QBlendEquationArguments::Blending m_sourceRgb;
+    QBlendEquationArguments::Blending m_sourceAlpha;
+    QBlendEquationArguments::Blending m_destinationRgb;
+    QBlendEquationArguments::Blending m_destinationAlpha;
+    int m_bufferIndex;
+};
+
+/*!
+    \class Qt3DRender::QBlendEquationArguments
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief Encapsulates blending information.
+
+    OpenGL pre-3.0:     Set the same blend state for all draw buffers
+                        (one QBlendEquationArguments)
+    OpenGL 3.0-pre4.0:  Set the same blend state for all draw buffers,
+                        but can disable blending for particular buffers
+                        (one QBlendEquationArguments for setting glBlendFunc, n QBlendEquationArgumentss
+                         for enabling/disabling Draw Buffers)
+    OpenGL 4.0+:        Can set blend state individually for each draw buffer.
+ */
+
+/*!
+    \qmltype BlendEquationArguments
+    \instantiates Qt3DRender::QBlendEquationArguments
+    \inherits RenderState
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief Encapsulates blending information.
+
+    OpenGL pre-3.0:     Set the same blend state for all draw buffers
+    OpenGL 3.0-pre4.0:  Set the same blend state for all draw buffers,
+                        but can disable blending for particular buffers
+    OpenGL 4.0+:        Can set blend state individually for each draw buffer.
+*/
+
+/*!
+  The constructor creates a new blend state object with the specified \a parent.
+ */
+QBlendEquationArguments::QBlendEquationArguments(QNode *parent)
+    : QRenderState(*new QBlendEquationArgumentsPrivate, parent)
+{
+}
+
+QBlendEquationArguments::~QBlendEquationArguments()
+{
+    QNode::cleanup();
+}
+
+/*! \fn void QBlendEquationArguments::copy(const Qt3DCore::QNode *ref)
+  \internal
+  Copies \a ref into this object.
+ */
+void QBlendEquationArguments::copy(const QNode *ref)
+{
+    QRenderState::copy(ref);
+    const QBlendEquationArguments *refState = static_cast<const QBlendEquationArguments*>(ref);
+    d_func()->m_sourceRgb = refState->d_func()->m_sourceRgb;
+    d_func()->m_sourceAlpha = refState->d_func()->m_sourceAlpha;
+    d_func()->m_destinationAlpha = refState->d_func()->m_destinationAlpha;
+    d_func()->m_destinationRgb = refState->d_func()->m_destinationRgb;
+    d_func()->m_bufferIndex = refState->d_func()->m_bufferIndex;
+}
+
+/*!
+  \internal
+*/
+QBlendEquationArguments::QBlendEquationArguments(QRenderState::Type type, QNode *parent)
+    : QRenderState(*new QBlendEquationArgumentsPrivate(type), parent)
+{
+}
+
+/*!
+  \enum Qt3DRender::QBlendEquationArguments::Blending
+
+  \value Zero 0
+  \value One 1
+  \value SrcColor 0x0300
+  \value SourceAlpha 0x0302
+  \value Src1Alpha
+  \value Src1Color
+  \value DstColor 0x0306
+  \value destinationAlpha 0x0304
+  \value SourceAlphaSaturate 0x0308
+  \value ConstantColor 0x8001
+  \value ConstantAlpha 0x8003
+  \value OneMinusSrcColor 0x0301
+  \value OneMinusSourceAlpha 0x0303
+  \value OneMinusdestinationAlpha 0x0305
+  \value OneMinusDstColor 0x0307
+  \value OneMinusConstantColor 0x8002
+  \value OneMinusConstantAlpha 0x8004
+  \value OneMinusSrc1Alpha
+  \value OneMinusSrc1Color0
+*/
+
+/*!
+    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::sourceRgb
+
+ */
+
+/*!
+    \property Qt3DRender::QBlendEquationArguments::sourceRgb
+
+ */
+QBlendEquationArguments::Blending QBlendEquationArguments::sourceRgb() const
+{
+    Q_D(const QBlendEquationArguments);
+    return d->m_sourceRgb;
+}
+
+void QBlendEquationArguments::setSourceRgb(QBlendEquationArguments::Blending sourceRgb)
+{
+    Q_D(QBlendEquationArguments);
+    if (d->m_sourceRgb != sourceRgb) {
+        d->m_sourceRgb = sourceRgb;
+        emit sourceRgbChanged(sourceRgb);
+    }
+}
+
+/*!
+    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::destinationRgb
+
+ */
+
+/*!
+    \property Qt3DRender::QBlendEquationArguments::destinationRgb
+
+ */
+QBlendEquationArguments::Blending QBlendEquationArguments::destinationRgb() const
+{
+    Q_D(const QBlendEquationArguments);
+    return d->m_destinationRgb;
+}
+
+void QBlendEquationArguments::setDestinationRgb(QBlendEquationArguments::Blending destinationRgb)
+{
+    Q_D(QBlendEquationArguments);
+    if (d->m_destinationRgb != destinationRgb) {
+        d->m_destinationRgb = destinationRgb;
+        emit destinationRgbChanged(destinationRgb);
+    }
+}
+
+/*!
+    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::sourceAlpha
+
+ */
+
+/*!
+    \property Qt3DRender::QBlendEquationArguments::sourceAlpha
+
+ */
+QBlendEquationArguments::Blending QBlendEquationArguments::sourceAlpha() const
+{
+    Q_D(const QBlendEquationArguments);
+    return d->m_sourceAlpha;
+}
+
+void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending sourceAlpha)
+{
+    Q_D(QBlendEquationArguments);
+    if (d->m_sourceAlpha != sourceAlpha) {
+        d->m_sourceAlpha = sourceAlpha;
+        emit sourceAlphaChanged(sourceAlpha);
+    }
+}
+
+/*!
+    \qmlproperty enumeration Qt3D.Render::BlendEquationArguments::DestinationAlpha
+
+ */
+
+/*!
+    \property Qt3DRender::QBlendEquationArguments::destinationAlpha
+
+ */
+QBlendEquationArguments::Blending QBlendEquationArguments::destinationAlpha() const
+{
+    Q_D(const QBlendEquationArguments);
+    return d->m_destinationAlpha;
+}
+
+void QBlendEquationArguments::setDestinationAlpha(QBlendEquationArguments::Blending destinationAlpha)
+{
+    Q_D(QBlendEquationArguments);
+    if (d->m_destinationAlpha != destinationAlpha) {
+        d->m_destinationAlpha = destinationAlpha;
+        emit destinationAlphaChanged(destinationAlpha);
+    }
+}
+
+/*!
+    \qmlproperty int Qt3D.Render::BlendEquationArguments::bufferIndex
+
+    Specifies the index of the Draw Buffer that this BlendEquationArguments applies to.
+    If negative, this will apply to all Draw Buffers.
+ */
+
+/*!
+    \property Qt3DRender::QBlendEquationArguments::bufferIndex
+
+    Specifies the index of the Draw Buffer that this BlendEquationArguments applies to.
+    If negative, this will apply to all Draw Buffers.
+ */
+int QBlendEquationArguments::bufferIndex() const
+{
+    Q_D(const QBlendEquationArguments);
+    return d->m_bufferIndex;
+}
+
+void QBlendEquationArguments::setBufferIndex(int bufferIndex)
+{
+    Q_D(QBlendEquationArguments);
+    if (d->m_bufferIndex != bufferIndex) {
+        d->m_bufferIndex = bufferIndex;
+        emit bufferIndexChanged(bufferIndex);
+    }
+}
+
+/*!
+    \class Qt3DRender::QBlendSeparate
+    \inmodule Qt3DRender
+    \since 5.5
+    \brief Encapsulates blending information.
+ */
+
+/*!
+    \qmltype BlendStateSeparate
+    \instantiates Qt3DRender::QBlendStateSeparate
+    \inherits RenderState
+    \inqmlmodule Qt3D.Render
+    \since 5.5
+    \brief Encapsulates blending information.
+*/
+
+/*!
+  The constructor creates a QBlendStateSeparate instance with the
+  specified \a parent.
+ */
+QBlendStateSeparate::QBlendStateSeparate(QNode *parent)
+    : QBlendEquationArguments(QRenderState::BlendStateSeparate, parent)
+{
+}
+
+} // namespace Qt3DRender
+
+QT_END_NAMESPACE

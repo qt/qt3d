@@ -59,7 +59,7 @@ public:
         AlphaCoverage,
         AlphaTest,
         BlendEquation,
-        BlendState,
+        BlendEquationArguments,
         BlendStateSeparate,
         ColorMask,
         CullFace,

@@ -95,9 +95,9 @@ Effect {
                     renderStates: [
                         DepthTest { depthFunction: DepthTest.Always },
                         DepthMask { mask: true },
-                        BlendState {
-                            srcRGB: BlendState.One
-                            dstRGB: BlendState.OneMinusSrcColor
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.One
+                            destinationRgb: BlendEquationArguments.OneMinusSrcColor
                         }
                     ]
 

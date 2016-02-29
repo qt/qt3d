@@ -70,7 +70,7 @@
 #include <Qt3DRender/qpointlight.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qrenderstate.h>
-#include <Qt3DRender/qblendstate.h>
+#include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qalphatest.h>
 #include <Qt3DRender/qdepthtest.h>
@@ -291,7 +291,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
 
     // RenderStates
     qmlRegisterUncreatableType<Qt3DRender::QRenderState>(uri, 2, 0, "RenderState", QStringLiteral("QRenderState is a base class"));
-    qmlRegisterType<Qt3DRender::QBlendState>(uri, 2, 0, "BlendState");
+    qmlRegisterType<Qt3DRender::QBlendEquationArguments>(uri, 2, 0, "BlendEquationArguments");
     qmlRegisterType<Qt3DRender::QBlendStateSeparate>(uri, 2, 0, "BlendStateSeparate");
     qmlRegisterType<Qt3DRender::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3DRender::QAlphaTest>(uri, 2, 0, "AlphaTest");

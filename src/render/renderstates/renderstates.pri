@@ -5,7 +5,6 @@ HEADERS += \
     $$PWD/qalphacoverage.h \
     $$PWD/qalphatest.h \
     $$PWD/qblendequation.h \
-    $$PWD/qblendstate.h \
     $$PWD/qclipplane.h \
     $$PWD/qcolormask.h \
     $$PWD/qcullface.h \
@@ -26,14 +25,14 @@ HEADERS += \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
     $$PWD/renderstatecollection_p.h \
-    $$PWD/qseamlesscubemap.h
+    $$PWD/qseamlesscubemap.h \
+    $$PWD/qblendequationarguments.h
 
 
 SOURCES += \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qalphatest.cpp \
     $$PWD/qblendequation.cpp \
-    $$PWD/qblendstate.cpp \
     $$PWD/qclipplane.cpp \
     $$PWD/qcolormask.cpp \
     $$PWD/qcullface.cpp \
@@ -53,4 +52,5 @@ SOURCES += \
     $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \
     $$PWD/renderstatecollection.cpp \
-    $$PWD/qseamlesscubemap.cpp
+    $$PWD/qseamlesscubemap.cpp \
+    $$PWD/qblendequationarguments.cpp

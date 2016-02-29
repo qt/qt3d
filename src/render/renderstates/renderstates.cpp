@@ -103,9 +103,9 @@ void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-void BlendState::apply(GraphicsContext* gc) const
+void BlendEquationArguments::apply(GraphicsContext* gc) const
 {
-    // Un-indexed BlendState -> Use normal GL1.0 functions
+    // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions
     if (m_6 < 0) {
         if (m_5) {
             gc->openGLContext()->functions()->glEnable(GL_BLEND);
@@ -114,7 +114,7 @@ void BlendState::apply(GraphicsContext* gc) const
             gc->openGLContext()->functions()->glDisable(GL_BLEND);
         }
     }
-    // BlendState for a particular Draw Buffer. Different behaviours for
+    // BlendEquationArguments for a particular Draw Buffer. Different behaviours for
     //  (1) 3.0-3.3: only enablei/disablei supported.
     //  (2) 4.0+: all operations supported.
     // We just ignore blend func parameter for (1), so no warnings get
@@ -131,12 +131,12 @@ void BlendState::apply(GraphicsContext* gc) const
     }
 }
 
-void BlendState::updateProperty(const char *name, const QVariant &value)
+void BlendEquationArguments::updateProperty(const char *name, const QVariant &value)
 {
-         if (name == QByteArrayLiteral("srcRGB")) m_1 = value.toInt();
-    else if (name == QByteArrayLiteral("dstRGB")) m_2 = value.toInt();
-    else if (name == QByteArrayLiteral("srcAlpha")) m_3 = value.toInt();
-    else if (name == QByteArrayLiteral("dstAlphaB")) m_4 = value.toInt();
+         if (name == QByteArrayLiteral("sourceRgb")) m_1 = value.toInt();
+    else if (name == QByteArrayLiteral("destinationRgb")) m_2 = value.toInt();
+    else if (name == QByteArrayLiteral("sourceAlpha")) m_3 = value.toInt();
+    else if (name == QByteArrayLiteral("destinationAlpha")) m_4 = value.toInt();
     else if (name == QByteArrayLiteral("enabled")) m_5 = value.toBool();
     else if (name == QByteArrayLiteral("bufferIndex")) m_6 = value.toInt();
 }

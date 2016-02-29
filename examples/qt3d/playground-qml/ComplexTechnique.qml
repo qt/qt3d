@@ -153,7 +153,7 @@ Technique {
         },
         RenderPass {
             annotations : [Annotation {name : "Name"; value : "Lighting" }]
-            renderStates : [BlendState {srcRGB: BlendState.One; dstRGB : BlendState.One},
+            renderStates : [BlendEquationArguments {sourceRgb: BlendEquationArguments.One; destinationRgb : BlendEquationArguments.One},
                 BlendEquation {blendFunction: BlendEquation.Add},
                 CullFace { mode : CullFace.Back },
                 DepthTest { depthFunction : DepthTest.LessOrEqual}

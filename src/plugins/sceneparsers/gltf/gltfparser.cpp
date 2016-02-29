@@ -1481,10 +1481,10 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     if (functionName == QStringLiteral("blendFuncSeparate")) {
         type = GL_BLEND;
         QBlendStateSeparate *blendState = new QBlendStateSeparate;
-        blendState->setSrcRGB((QBlendState::Blending)values.at(0).toInt(GL_ONE));
-        blendState->setSrcAlpha((QBlendState::Blending)values.at(1).toInt(GL_ONE));
-        blendState->setDstRGB((QBlendState::Blending)values.at(2).toInt(GL_ZERO));
-        blendState->setDstAlpha((QBlendState::Blending)values.at(3).toInt(GL_ZERO));
+        blendState->setSourceRgb((QBlendEquationArguments::Blending)values.at(0).toInt(GL_ONE));
+        blendState->setSourceAlpha((QBlendEquationArguments::Blending)values.at(1).toInt(GL_ONE));
+        blendState->setDestinationRgb((QBlendEquationArguments::Blending)values.at(2).toInt(GL_ZERO));
+        blendState->setDestinationAlpha((QBlendEquationArguments::Blending)values.at(3).toInt(GL_ZERO));
         return blendState;
     }
 

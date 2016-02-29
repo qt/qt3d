@@ -91,9 +91,9 @@ Material {
                     shaderProgram: gl3PhongAlphaShader
                     renderStates: [
                         DepthMask { mask: false },
-                        BlendState {
-                            srcRGB: BlendState.SrcAlpha
-                            dstRGB: BlendState.OneMinusSrcAlpha
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
                         BlendEquation {blendFunction: BlendEquation.Add}
                     ]
@@ -113,9 +113,9 @@ Material {
                     shaderProgram: gl2es2PhongAlphaShader
                     renderStates: [
                         DepthMask { mask: false },
-                        BlendState {
-                            srcRGB: BlendState.SrcAlpha
-                            dstRGB: BlendState.OneMinusSrcAlpha
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
                         BlendEquation {blendFunction: BlendEquation.Add}
                     ]
@@ -135,9 +135,9 @@ Material {
                     shaderProgram: gl2es2PhongAlphaShader
                     renderStates: [
                         DepthMask { mask: false },
-                        BlendState {
-                            srcRGB: BlendState.SrcAlpha
-                            dstRGB: BlendState.OneMinusSrcAlpha
+                        BlendEquationArguments {
+                            sourceRgb: BlendEquationArguments.SourceAlpha
+                            destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
                         BlendEquation {blendFunction: BlendEquation.Add}
                     ]

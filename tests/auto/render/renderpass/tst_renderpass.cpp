@@ -39,7 +39,7 @@
 #include <Qt3DRender/QAlphaCoverage>
 #include <Qt3DRender/QAlphaTest>
 #include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QBlendState>
+#include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthMask>
@@ -97,7 +97,7 @@ private slots:
 
         frontend.addParameter(new QParameter(&frontend));
 
-        QRenderState *frontendState = new QBlendState();
+        QRenderState *frontendState = new QBlendEquationArguments();
         frontendState->setParent(&frontend);
         frontend.addRenderState(frontendState);
 
@@ -213,7 +213,7 @@ private slots:
 
     void shouldHandlePropertyChangeEvents()
     {
-        QRenderState *frontendState = new QBlendState();
+        QRenderState *frontendState = new QBlendEquationArguments();
         QNodePtr frontendStatePtr(frontendState);
 
         RenderPass backend;

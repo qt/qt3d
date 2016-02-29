@@ -51,7 +51,7 @@
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>
 #include <Qt3DRender/qblendequation.h>
-#include <Qt3DRender/qblendstate.h>
+#include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qcolormask.h>
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/qdepthmask.h>
@@ -268,18 +268,18 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
         return getOrCreateRenderStateImpl<BlendEquation>(blendEquation->blendFunction());
     }
-    case QRenderState::BlendState: {
-        QBlendState *blendState = static_cast<QBlendState *>(renderState);
+    case QRenderState::BlendEquationArguments: {
+        QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
         // just use the same values for RGB and Alpha
-        return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
-                                       blendState->srcRGB(), blendState->dstRGB(),
+        return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
+                                       blendState->sourceRgb(), blendState->destinationRgb(),
                                        blendState->isEnabled(),
                                        blendState->bufferIndex());
     }
     case QRenderState::BlendStateSeparate: {
-        QBlendState *blendState = static_cast<QBlendState *>(renderState);
-        return getOrCreateRenderStateImpl<BlendState>(blendState->srcRGB(), blendState->dstRGB(),
-                                       blendState->srcAlpha(), blendState->dstAlpha(),
+        QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
+        return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
+                                       blendState->sourceAlpha(), blendState->destinationAlpha(),
                                        blendState->isEnabled(),
                                        blendState->bufferIndex());
     }

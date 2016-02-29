@@ -99,7 +99,7 @@ State* getOrCreateRenderStateImpl(const S& m1, const T& m2, const U& m3, const V
     return getOrCreateRenderStateEqualTo<State>(state);
 }
 
-class Q_AUTOTEST_EXPORT BlendState : public GenericState6<BlendState, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
+class Q_AUTOTEST_EXPORT BlendEquationArguments : public GenericState6<BlendEquationArguments, BlendStateMask, GLenum, GLenum, GLenum, GLenum, bool, int>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
