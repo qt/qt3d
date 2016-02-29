@@ -60,9 +60,9 @@ void QTechniqueFilter::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
 
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_matchList)
+    for (QAnnotation *crit : other->d_func()->m_matchList)
         addMatch(qobject_cast<QAnnotation *>(QNode::clone(crit)));
-    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
+    for (QParameter *p : other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 

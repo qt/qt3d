@@ -83,7 +83,7 @@ void LayerFilterNode::setLayers(const QStringList &list)
     m_layers = list;
     m_layerIds.clear();
     m_layerIds.reserve(m_layers.size());
-    Q_FOREACH (const QString &name, m_layers)
+    for (const QString &name : list)
         m_layerIds.push_back(StringToInt::lookupId(name));
 }
 

@@ -61,9 +61,11 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     QTechniqueFilter *filter = static_cast<QTechniqueFilter *>(peer);
     m_filters.clear();
     m_parameterPack.clear();
-    Q_FOREACH (QAnnotation *criterion, filter->criteria())
+    const auto criteria = filter->criteria();
+    for (QAnnotation *criterion : criteria)
         appendFilter(criterion->id());
-    Q_FOREACH (QParameter *p, filter->parameters())
+    const auto parameters = filter->parameters();
+    for (QParameter *p : parameters)
         m_parameterPack.appendParameter(p->id());
     setEnabled(filter->isEnabled());
 }

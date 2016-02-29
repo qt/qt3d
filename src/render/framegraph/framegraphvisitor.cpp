@@ -85,7 +85,8 @@ void FrameGraphVisitor::visit(Render::FrameGraphNode *node)
 
     // Recurse to children (if we have any), otherwise if this is a leaf node,
     // initiate a rendering from the current camera
-    Q_FOREACH (Render::FrameGraphNode *n, node->children())
+    const auto children = node->children();
+    for (Render::FrameGraphNode *n : children)
         visit(n);
     // Leaf node - create a RenderView ready to be populated
     // TODO: Pass in only framegraph config that has changed from previous

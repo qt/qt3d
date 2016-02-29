@@ -58,7 +58,7 @@ void QSortMethod::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QSortMethod *other = static_cast<const QSortMethod*>(ref);
-    Q_FOREACH (QSortCriterion *c, other->d_func()->m_criteria)
+    for (QSortCriterion *c : other->d_func()->m_criteria)
         addCriterion(qobject_cast<QSortCriterion *>(QNode::clone(c)));
 }
 

@@ -93,7 +93,7 @@ void QRenderStateSet::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QRenderStateSet *other = static_cast<const QRenderStateSet*>(ref);
 
-    Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
+    for (QRenderState *renderState : other->d_func()->m_renderStates)
         addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
 }
 

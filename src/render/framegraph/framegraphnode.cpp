@@ -129,7 +129,7 @@ QList<FrameGraphNode *> FrameGraphNode::children() const
     QList<FrameGraphNode *> children;
     children.reserve(m_childrenIds.size());
 
-    Q_FOREACH (Qt3DCore::QNodeId id, m_childrenIds) {
+    for (Qt3DCore::QNodeId id : m_childrenIds) {
         FrameGraphNode *child = m_manager->lookupNode(id);
         if (child != Q_NULLPTR)
             children << child;

@@ -110,9 +110,9 @@ void QRenderPassFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    Q_FOREACH (QAnnotation *c, other->d_func()->m_includeList)
+    for (QAnnotation *c : other->d_func()->m_includeList)
         addInclude(qobject_cast<QAnnotation *>(QNode::clone(c)));
-    Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
+    for (QParameter *p : other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
 

@@ -57,7 +57,8 @@ void SortMethod::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QSortMethod *sortMethod = static_cast<QSortMethod *>(peer);
     m_criteria.clear();
-    Q_FOREACH (QSortCriterion *c, sortMethod->criteria())
+    const auto criteria = sortMethod->criteria();
+    for (QSortCriterion *c : criteria)
         m_criteria.append(c->id());
     setEnabled(sortMethod->isEnabled());
 }

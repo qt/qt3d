@@ -65,7 +65,8 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
     QRenderStateSet *stateSet = static_cast<QRenderStateSet*>(peer);
 
     setEnabled(stateSet->isEnabled());
-    Q_FOREACH (QRenderState *renderState, stateSet->renderStates())
+    const auto renderStates = stateSet->renderStates();
+    for (QRenderState *renderState : renderStates)
         appendRenderState(renderState->id());
 }
 
