@@ -957,7 +957,7 @@ bool Renderer::executeCommands(const RenderView *rv)
     OpenGLVertexArrayObject *vao = Q_NULLPTR;
     HVao previousVaoHandle;
 
-    Q_FOREACH (RenderCommand *command, commands) {
+    for (RenderCommand *command : qAsConst(commands)) {
 
         if (command->m_type == RenderCommand::Compute) { // Compute Call
             performCompute(rv, command);
