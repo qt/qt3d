@@ -85,7 +85,8 @@ int Quick3DStateSet::renderStateCount(QQmlListProperty<QRenderState> *list)
 void Quick3DStateSet::clearRenderStates(QQmlListProperty<QRenderState> *list)
 {
     Quick3DStateSet *stateSet = qobject_cast<Quick3DStateSet *>(list->object);
-    Q_FOREACH (QRenderState *s, stateSet->parentStateSet()->renderStates())
+    const auto states = stateSet->parentStateSet()->renderStates();
+    for (QRenderState *s : states)
         stateSet->parentStateSet()->removeRenderState(s);
 }
 

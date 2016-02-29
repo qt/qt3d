@@ -86,7 +86,8 @@ void Quick3DRenderTargetOutput::clearRenderAttachments(QQmlListProperty<QRenderT
 {
     Quick3DRenderTargetOutput *rT = qobject_cast<Quick3DRenderTargetOutput *>(list->object);
     if (rT) {
-        Q_FOREACH (QRenderTargetOutput *output, rT->parentRenderTarget()->outputs())
+        const auto outputs = rT->parentRenderTarget()->outputs();
+        for (QRenderTargetOutput *output : outputs)
             rT->parentRenderTarget()->removeOutput(output);
     }
 }

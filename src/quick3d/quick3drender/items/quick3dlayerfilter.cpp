@@ -92,9 +92,9 @@ void Quick3DLayerFilter::clearLayers(QQmlListProperty<QLayer> *list)
 {
     Quick3DLayerFilter *filter = qobject_cast<Quick3DLayerFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QLayer *layer, filter->parentFilter()->layers()) {
+        const auto layers = filter->parentFilter()->layers();
+        for (QLayer *layer : layers)
             filter->parentFilter()->removeLayer(layer);
-        }
     }
 }
 

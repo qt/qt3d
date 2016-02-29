@@ -127,10 +127,10 @@ QT_BEGIN_NAMESPACE
 
 QVariantList Quick3DShaderDataArrayToVariantListConverter(Qt3DRender::Render::Quick::Quick3DShaderDataArray *array)
 {
-    QVector<Qt3DRender::QShaderData *> arrayValues = array->values();
+    const QVector<Qt3DRender::QShaderData *> arrayValues = array->values();
     QVariantList values;
     values.reserve(arrayValues.size());
-    Q_FOREACH (Qt3DRender::QShaderData *data, arrayValues)
+    for (Qt3DRender::QShaderData *data : arrayValues)
         values.append(QVariant::fromValue(data));
     return values;
 }
