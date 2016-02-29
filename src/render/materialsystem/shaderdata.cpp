@@ -147,7 +147,7 @@ void ShaderData::clearUpdatedProperties()
 
 void ShaderData::cleanup(NodeManagers *managers)
 {
-    Q_FOREACH (Qt3DCore::QNodeId id, m_updatedShaderData) {
+    for (Qt3DCore::QNodeId id : qAsConst(m_updatedShaderData)) {
         ShaderData *shaderData = ShaderData::lookupResource(managers, id);
         if (shaderData)
             shaderData->clearUpdatedProperties();
@@ -285,7 +285,8 @@ void ShaderData::readPeerProperties(QShaderData *shaderData)
     }
 
     // Also check the dynamic properties
-    foreach (const QByteArray &propertyName , shaderData->dynamicPropertyNames()) {
+    const auto propertyNames = shaderData->dynamicPropertyNames();
+    for (const QByteArray &propertyName : propertyNames) {
         if (propertyName == "data" || propertyName == "childNodes")  // We don't handle default Node properties
             continue;
 

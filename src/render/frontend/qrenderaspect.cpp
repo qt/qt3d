@@ -472,8 +472,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
 
 void QRenderAspectPrivate::loadSceneParsers()
 {
-    QStringList keys = QSceneIOFactory::keys();
-    Q_FOREACH (QString key, keys) {
+    const QStringList keys = QSceneIOFactory::keys();
+    for (const QString &key : keys) {
         QSceneIOHandler *sceneIOHandler = QSceneIOFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
             m_sceneIOHandler.append(sceneIOHandler);

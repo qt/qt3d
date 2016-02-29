@@ -363,7 +363,7 @@ void PickBoundingVolumeJob::run()
             m_hoveredPickersToClear = m_hoveredPickers;
             ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
-            Q_FOREACH (const ViewportCameraAreaTriplet &vca, vcaTriplets) {
+            for (const ViewportCameraAreaTriplet &vca : vcaTriplets) {
                 typedef AbstractCollisionGathererFunctor::result_type HitList;
                 HitList sphereHits;
                 QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
@@ -542,7 +542,7 @@ QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QSize &area,
 
 void PickBoundingVolumeJob::clearPreviouslyHoveredPickers()
 {
-    Q_FOREACH (const HObjectPicker &pickHandle, m_hoveredPickersToClear) {
+    for (const HObjectPicker pickHandle : qAsConst(m_hoveredPickersToClear)) {
         ObjectPicker *pick = m_manager->objectPickerManager()->data(pickHandle);
         if (pick)
             pick->onExited();

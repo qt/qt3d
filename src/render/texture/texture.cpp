@@ -641,7 +641,7 @@ void Texture::updateAndLoadTextureImage()
     }
 
     QVector<TextureImageDNA> dnas;
-    Q_FOREACH (HTextureImage t, m_textureImages) {
+    for (HTextureImage t : qAsConst(m_textureImages)) {
         TextureImage *img = m_textureImageManager->data(t);
         if (img != nullptr && img->isDirty()) {
             if (dnas.contains(img->dna())) {
