@@ -54,6 +54,9 @@ RenderCommand::RenderCommand()
     , m_sortBackToFront(false)
 {
    m_sortingType.global = 0;
+   m_workGroups[0] = 0;
+   m_workGroups[1] = 0;
+   m_workGroups[2] = 0;
 }
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2)

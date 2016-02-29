@@ -40,6 +40,7 @@
 #include "computecommand_p.h"
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -52,6 +53,9 @@ ComputeCommand::ComputeCommand()
     : BackendNode(ReadOnly)
     , m_enabled(false)
 {
+    m_workGroups[0] = 1;
+    m_workGroups[1] = 1;
+    m_workGroups[2] = 1;
 }
 
 ComputeCommand::~ComputeCommand()
@@ -61,11 +65,18 @@ ComputeCommand::~ComputeCommand()
 void ComputeCommand::cleanup()
 {
     m_enabled = false;
+    m_workGroups[0] = 1;
+    m_workGroups[1] = 1;
+    m_workGroups[2] = 1;
 }
 
 void ComputeCommand::updateFromPeer(Qt3DCore::QNode *peer)
 {
     m_enabled = peer->isEnabled();
+    QComputeCommand *computeCommand = static_cast<QComputeCommand *>(peer);
+    m_workGroups[0] = computeCommand->workGroupX();
+    m_workGroups[1] = computeCommand->workGroupY();
+    m_workGroups[2] = computeCommand->workGroupZ();
     if (m_renderer != Q_NULLPTR)
         BackendNode::markDirty(AbstractRenderer::ComputeDirty);
 }
@@ -76,6 +87,12 @@ void ComputeCommand::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == Qt3DCore::NodeUpdated) {
         if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             m_enabled = propertyChange->value().toBool();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupX"))
+            m_workGroups[0] = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupY"))
+            m_workGroups[1] = propertyChange->value().toInt();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("workGroupZ"))
+            m_workGroups[2] = propertyChange->value().toInt();
         markDirty(AbstractRenderer::AllDirty);
     }
 }

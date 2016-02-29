@@ -105,6 +105,7 @@ public:
     } m_sortingType;
 
     bool m_sortBackToFront;
+    int m_workGroups[3];
 };
 
 bool compareCommands(RenderCommand *r1, RenderCommand *r2);

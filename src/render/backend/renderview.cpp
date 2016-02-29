@@ -609,6 +609,9 @@ void RenderView::buildComputeRenderCommands(Entity *node)
 
             RenderCommand *command = m_allocator->allocate<RenderCommand>();
             command->m_type = RenderCommand::Compute;
+            command->m_workGroups[0] = std::max(m_workGroups[0], computeJob->x());
+            command->m_workGroups[1] = std::max(m_workGroups[1], computeJob->y());
+            command->m_workGroups[2] = std::max(m_workGroups[2], computeJob->z());
             setShaderAndUniforms(command,
                                  pass,
                                  globalParameters,

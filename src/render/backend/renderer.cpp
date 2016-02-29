@@ -849,11 +849,9 @@ void Renderer::performCompute(const RenderView *rv, RenderCommand *command)
     if (shader != Q_NULLPTR) {
         m_graphicsContext->activateShader(shader);
         m_graphicsContext->setParameters(command->m_parameterPack);
-
-        const int *workGroups = rv->computeWorkGroups();
-        m_graphicsContext->dispatchCompute(workGroups[0],
-                workGroups[1],
-                workGroups[2]);
+        m_graphicsContext->dispatchCompute(command->m_workGroups[0],
+                command->m_workGroups[1],
+                command->m_workGroups[2]);
 
         // HACK: Reset the compute flag to dirty
         m_changeSet |= AbstractRenderer::ComputeDirty;
