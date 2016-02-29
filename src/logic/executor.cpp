@@ -91,8 +91,8 @@ void Executor::processLogicFrameUpdates(float dt)
 {
     Q_ASSERT(m_scene);
     Q_ASSERT(m_semaphore);
-    QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
-    foreach (QNode *node, nodes) {
+    const QVector<QNode *> nodes = m_scene->lookupNodes(m_nodeIds);
+    for (QNode *node : nodes) {
         QLogicComponent *logicComponent = qobject_cast<QLogicComponent *>(node);
         if (logicComponent)
             logicComponent->onFrameUpdate(dt);
