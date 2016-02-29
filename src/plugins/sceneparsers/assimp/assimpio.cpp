@@ -169,16 +169,20 @@ QString texturePath(const aiString &path)
 QParameter *findNamedParameter(const QString &name, QMaterial *material)
 {
     // Does the material contain the parameter ?
-    foreach (QParameter *p , material->parameters())
+    const auto params = material->parameters();
+    for (QParameter *p : params) {
         if (p->name() == name)
             return p;
+    }
 
     // Does the material's effect contain the parameter ?
     if (material->effect()) {
         const QEffect *e = material->effect();
-        foreach (QParameter *p, e->parameters())
+        const auto params = e->parameters();
+        for (QParameter *p : params) {
             if (p->name() == name)
                 return p;
+        }
     }
 
     // Create and add parameter to material
