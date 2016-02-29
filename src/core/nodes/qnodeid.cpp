@@ -43,16 +43,17 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-QNodeId QNodeId::createId()
+QNodeId QNodeId::createId() Q_DECL_NOTHROW
 {
+    typedef
 #if defined(Q_ATOMIC_INT64_IS_SUPPORTED)
-    static QAtomicInteger<quint64> m_curId = QAtomicInteger<quint64>(1);
+        quint64
 #else
-    static QAtomicInteger<quint32> m_curId = QAtomicInteger<quint32>(1);
+        quint32
 #endif
-    QNodeId id;
-    id.m_id = m_curId.fetchAndAddOrdered(1);
-    return id;
+        UIntType;
+    static QBasicAtomicInteger<UIntType> next = Q_BASIC_ATOMIC_INITIALIZER(0);
+    return QNodeId(next.fetchAndAddRelaxed(1) + 1);
 }
 
 #ifndef QT_NO_DEBUG_STREAM

@@ -42,51 +42,55 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <QDebug>
+#include <QtCore/QHashFunctions>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QT3DCORESHARED_EXPORT QNodeId
+class QNodeId
 {
+    Q_DECL_CONSTEXPR explicit QNodeId(quint64 i) Q_DECL_NOTHROW
+        : m_id(i)
+    {}
 public:
-    QNodeId()
+    Q_DECL_CONSTEXPR QNodeId() Q_DECL_NOTHROW
         : m_id(0)
     {}
 
-    static QNodeId createId();
+    QT3DCORESHARED_EXPORT static QNodeId createId() Q_DECL_NOTHROW;
 
-    inline bool isNull() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool isNull() const Q_DECL_NOEXCEPT
     {
         return m_id == 0;
     }
 
-    inline bool operator ==(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator ==(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return other.m_id == m_id;
     }
 
-    inline bool operator !=(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator !=(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return !operator ==(other);
     }
 
-    inline bool operator <(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator <(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return m_id < other.m_id;
     }
 
-    inline bool operator >(QNodeId other) const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR bool operator >(QNodeId other) const Q_DECL_NOEXCEPT
     {
         return m_id > other.m_id;
     }
 
-    inline quint64 id() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR quint64 id() const Q_DECL_NOEXCEPT
     {
         return m_id;
     }
 
-    inline operator bool() const Q_DECL_NOEXCEPT
+    Q_DECL_CONSTEXPR operator bool() const Q_DECL_NOEXCEPT
     {
         return m_id != 0;
     }
@@ -100,10 +104,10 @@ private:
 QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);
 #endif
 
-inline uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW
+inline Q_DECL_CONSTEXPR uint qHash(QNodeId id, uint seed = 0) Q_DECL_NOTHROW
 {
-    Q_UNUSED(seed);
-    return id.id();
+    using QT_PREPEND_NAMESPACE(qHash);
+    return qHash(id.id(), seed);
 }
 
 } // Qt3D
