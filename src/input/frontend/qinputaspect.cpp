@@ -142,8 +142,8 @@ QInputAspect::QInputAspect(QObject *parent)
 
 void QInputAspectPrivate::loadInputDevicePlugins()
 {
-    QStringList keys = QInputDeviceIntegrationFactory::keys();
-    Q_FOREACH (const QString &key, keys) {
+    const QStringList keys = QInputDeviceIntegrationFactory::keys();
+    for (const QString &key : keys) {
         Qt3DInput::QInputDeviceIntegration *integration = QInputDeviceIntegrationFactory::create(key, QStringList());
         if (integration != nullptr) {
             m_inputHandler->addInputDeviceIntegration(integration);
@@ -160,12 +160,12 @@ void QInputAspectPrivate::loadInputDevicePlugins()
 QAbstractPhysicalDevice *QInputAspect::createPhysicalDevice(const QString &name)
 {
     Q_D(QInputAspect);
-    QAbstractPhysicalDevice *device = nullptr;
-    Q_FOREACH (Qt3DInput::QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations()) {
-        if ((device = integration->createPhysicalDevice(name)) != nullptr)
-            break;
+    const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
+    for (Qt3DInput::QInputDeviceIntegration *integration : integrations) {
+        if (auto dev = integration->createPhysicalDevice(name))
+            return dev;
     }
-    return device;
+    return nullptr;
 }
 
 QStringList QInputAspect::availablePhysicalDevices() const
@@ -189,7 +189,8 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     jobs.append(d->m_inputHandler->keyboardJobs());
     jobs.append(d->m_inputHandler->mouseJobs());
 
-    Q_FOREACH (QInputDeviceIntegration *integration, d->m_inputHandler->inputDeviceIntegrations())
+    const auto integrations = d->m_inputHandler->inputDeviceIntegrations();
+    for (QInputDeviceIntegration *integration : integrations)
         jobs += integration->jobsToExecute(time);
 
     // All the jobs added up until this point are independents
@@ -197,10 +198,11 @@ QVector<QAspectJobPtr> QInputAspect::jobsToExecute(qint64 time)
     const QVector<QAspectJobPtr> dependsOnJobs = jobs;
 
     // Jobs that update Axis/Action (store combined axis/action value)
-    Q_FOREACH (Input::HLogicalDevice devHandle, d->m_inputHandler->logicalDeviceManager()->activeDevices()) {
+    const auto devHandles = d->m_inputHandler->logicalDeviceManager()->activeDevices();
+    for (Input::HLogicalDevice devHandle : devHandles) {
         QAspectJobPtr updateAxisActionJob(new Input::UpdateAxisActionJob(time, d->m_inputHandler.data(), devHandle));
         jobs += updateAxisActionJob;
-        Q_FOREACH (const QAspectJobPtr job, dependsOnJobs)
+        for (const QAspectJobPtr &job : dependsOnJobs)
             updateAxisActionJob->addDependency(job);
     }
 
