@@ -354,7 +354,7 @@ void QNodePrivate::insertTree(QNode *treeRoot, int depth)
         m_scene->addObservable(treeRoot);
     }
 
-    Q_FOREACH (QObject *c, treeRoot->children()) {
+    for (QObject *c : treeRoot->children()) {
         QNode *n = Q_NULLPTR;
         if ((n = qobject_cast<QNode *>(c)) != Q_NULLPTR)
             insertTree(n, depth + 1);
