@@ -75,6 +75,7 @@ class QPostman Q_DECL_FINAL
     Q_OBJECT
 public:
     explicit QPostman(QObject *parent = 0);
+    ~QPostman();
 
     void setScene(QScene *sceneLookup) Q_DECL_FINAL;
     void sceneChangeEvent(const QSceneChangePtr &e) Q_DECL_FINAL;

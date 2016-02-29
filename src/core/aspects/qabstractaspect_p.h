@@ -80,6 +80,7 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
 {
 public:
     QAbstractAspectPrivate();
+    ~QAbstractAspectPrivate();
 
     void setRootAndCreateNodes(QEntity *rootObject, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
 

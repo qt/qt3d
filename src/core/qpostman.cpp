@@ -70,6 +70,10 @@ QPostman::QPostman(QObject *parent)
     qRegisterMetaType<QSceneChangePtr >("QSceneChangePtr");
 }
 
+QPostman::~QPostman()
+{
+}
+
 void QPostman::setScene(QScene *scene)
 {
     Q_D(QPostman);

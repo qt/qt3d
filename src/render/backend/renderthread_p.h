@@ -68,6 +68,7 @@ class Q_AUTOTEST_EXPORT RenderThread : public QThread
     Q_OBJECT
 public:
     explicit RenderThread(Renderer *renderer);
+    ~RenderThread();
 
     void waitForStart( Priority priority = InheritPriority );
 

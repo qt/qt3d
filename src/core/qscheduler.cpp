@@ -53,6 +53,10 @@ QScheduler::QScheduler(QObject *parent)
 {
 }
 
+QScheduler::~QScheduler()
+{
+}
+
 void QScheduler::setAspectManager(QAspectManager *aspectManager)
 {
     m_aspectManager = aspectManager;

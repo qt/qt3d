@@ -63,6 +63,10 @@ QAbstractAspectPrivate::QAbstractAspectPrivate()
 {
 }
 
+QAbstractAspectPrivate::~QAbstractAspectPrivate()
+{
+}
+
 QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 {
     return aspect->d_func();
@@ -120,6 +124,13 @@ QAbstractAspect::QAbstractAspect(QObject *parent)
  */
 QAbstractAspect::QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent)
     : QObject(dd, parent)
+{
+}
+
+/*!
+    \internal
+*/
+QAbstractAspect::~QAbstractAspect()
 {
 }
 

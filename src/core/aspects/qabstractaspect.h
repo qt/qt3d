@@ -66,6 +66,7 @@ class QT3DCORESHARED_EXPORT QAbstractAspect : public QObject
 
 public:
     explicit QAbstractAspect(QObject *parent = Q_NULLPTR);
+    ~QAbstractAspect();
 
 protected:
     QAbstractAspect(QAbstractAspectPrivate &dd, QObject *parent = Q_NULLPTR);

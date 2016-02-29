@@ -67,6 +67,7 @@ class QAspectThread : public QThread
     Q_OBJECT
 public:
     explicit QAspectThread(QObject *parent = 0);
+    ~QAspectThread();
 
     void waitForStart(Priority priority);
 

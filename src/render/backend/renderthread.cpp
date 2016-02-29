@@ -59,6 +59,10 @@ RenderThread::RenderThread(Renderer *renderer)
 {
 }
 
+RenderThread::~RenderThread()
+{
+}
+
 // Called by Renderer in the context of the Aspect Thread
 void RenderThread::waitForStart( Priority priority )
 {

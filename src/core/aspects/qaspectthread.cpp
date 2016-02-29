@@ -55,6 +55,10 @@ QAspectThread::QAspectThread(QObject *parent)
     qCDebug(Aspects) << Q_FUNC_INFO;
 }
 
+QAspectThread::~QAspectThread()
+{
+}
+
 void QAspectThread::waitForStart(Priority priority)
 {
     qCDebug(Aspects) << "Starting QAspectThread and going to sleep until it is ready for us...";

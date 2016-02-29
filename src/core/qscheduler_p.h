@@ -65,6 +65,7 @@ class QScheduler : public QObject
     Q_OBJECT
 public:
     explicit QScheduler(QObject *parent = 0);
+    ~QScheduler();
 
     void setAspectManager(QAspectManager *aspectManager);
     QAspectManager *aspectManager() const;
