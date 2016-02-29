@@ -44,7 +44,7 @@ TechniqueFilter {
     // Expose camera to allow user to choose which camera to use for rendering
     property alias camera: cameraSelector.camera
     property alias clearColor: viewport.clearColor
-    property alias viewportRect: viewport.rect
+    property alias viewportRect: viewport.normalizedRect
     property alias window: surfaceSelector.window
 
     // Select the forward rendering Technique of any used Effect
