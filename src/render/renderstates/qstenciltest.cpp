@@ -90,12 +90,12 @@ void QStencilTest::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
     const QStencilTest *refState = static_cast<const QStencilTest*>(ref);
-    d_func()->m_front->setMask(refState->d_func()->m_front->mask());
-    d_func()->m_front->setRef(refState->d_func()->m_front->ref());
-    d_func()->m_front->setFunc(refState->d_func()->m_front->func());
-    d_func()->m_back->setMask(refState->d_func()->m_back->mask());
-    d_func()->m_back->setRef(refState->d_func()->m_back->ref());
-    d_func()->m_back->setFunc(refState->d_func()->m_back->func());
+    d_func()->m_front->setComparisonMask(refState->d_func()->m_front->comparisonMask());
+    d_func()->m_front->setReferenceValue(refState->d_func()->m_front->referenceValue());
+    d_func()->m_front->setStencilFunction(refState->d_func()->m_front->stencilFunction());
+    d_func()->m_back->setComparisonMask(refState->d_func()->m_back->comparisonMask());
+    d_func()->m_back->setReferenceValue(refState->d_func()->m_back->referenceValue());
+    d_func()->m_back->setStencilFunction(refState->d_func()->m_back->stencilFunction());
 }
 
 

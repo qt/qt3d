@@ -95,12 +95,12 @@ Viewport {
                         renderStates: [
                             StencilTest {
                                 front {
-                                    func: StencilTestSeparate.Always
-                                    ref: 0; mask: 0
+                                    stencilFunction: StencilTestSeparate.Always
+                                    referenceValue: 0; mask: 0
                                 }
                                 back {
-                                    func: StencilTestSeparate.Always
-                                    ref: 0; mask: 0
+                                    stencilFunction: StencilTestSeparate.Always
+                                    referenceValue: 0; mask: 0
                                 }
                             },
                             StencilOp {
@@ -134,12 +134,12 @@ Viewport {
                 renderStates: [
                     StencilTest {
                         front {
-                            func: StencilTestSeparate.NotEqual
-                            ref: 0; mask: ~0
+                            stencilFunction: StencilTestSeparate.NotEqual
+                            referenceValue: 0; mask: ~0
                         }
                         back {
-                            func: StencilTestSeparate.NotEqual
-                            ref: 0; mask: ~0
+                            stencilFunction: StencilTestSeparate.NotEqual
+                            referenceValue: 0; mask: ~0
                         }
                     }
                 ]

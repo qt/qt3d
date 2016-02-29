@@ -310,12 +310,12 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::StencilTest: {
         QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
-        return getOrCreateRenderStateImpl<StencilTest>(stencilTest->front()->func(),
-                                        stencilTest->front()->ref(),
-                                        stencilTest->front()->mask(),
-                                        stencilTest->back()->func(),
-                                        stencilTest->back()->ref(),
-                                        stencilTest->back()->mask());
+        return getOrCreateRenderStateImpl<StencilTest>(stencilTest->front()->stencilFunction(),
+                                        stencilTest->front()->referenceValue(),
+                                        stencilTest->front()->comparisonMask(),
+                                        stencilTest->back()->stencilFunction(),
+                                        stencilTest->back()->referenceValue(),
+                                        stencilTest->back()->comparisonMask());
     }
     case QRenderState::PointSize: {
         QPointSize *pointSize = static_cast<QPointSize *>(renderState);

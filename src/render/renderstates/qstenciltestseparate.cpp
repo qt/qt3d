@@ -50,17 +50,17 @@ public:
     QStencilTestSeparatePrivate(QStencilTestSeparate::StencilFaceMode face)
         : QObjectPrivate()
         , m_face(face)
-        , m_mask(0)
-        , m_ref(0)
-        , m_func(QStencilTestSeparate::Never)
+        , m_comparisonMask(0)
+        , m_referenceValue(0)
+        , m_stencilFunction(QStencilTestSeparate::Never)
     {
     }
 
     Q_DECLARE_PUBLIC(QStencilTestSeparate)
     QStencilTestSeparate::StencilFaceMode m_face;
-    uint m_mask;
-    int m_ref;
-    QStencilTestSeparate::StencilFunc m_func;
+    uint m_comparisonMask;
+    int m_referenceValue;
+    QStencilTestSeparate::StencilFunction m_stencilFunction;
 };
 
 
@@ -73,48 +73,48 @@ QStencilTestSeparate::~QStencilTestSeparate()
 {
 }
 
-uint QStencilTestSeparate::mask() const
+uint QStencilTestSeparate::comparisonMask() const
 {
     Q_D(const QStencilTestSeparate);
-    return d->m_mask;
+    return d->m_comparisonMask;
 }
 
-void QStencilTestSeparate::setMask(uint mask)
+void QStencilTestSeparate::setComparisonMask(uint comparisonMask)
 {
     Q_D(QStencilTestSeparate);
-    if (d->m_mask != mask) {
-        d->m_mask = mask;
-        emit maskChanged(mask);
+    if (d->m_comparisonMask != comparisonMask) {
+        d->m_comparisonMask = comparisonMask;
+        emit comparisonMaskChanged(comparisonMask);
     }
 }
 
-int QStencilTestSeparate::ref() const
+int QStencilTestSeparate::referenceValue() const
 {
     Q_D(const QStencilTestSeparate);
-    return d->m_ref;
+    return d->m_referenceValue;
 }
 
-void QStencilTestSeparate::setRef(int ref)
+void QStencilTestSeparate::setReferenceValue(int referenceValue)
 {
     Q_D(QStencilTestSeparate);
-    if (d->m_ref != ref) {
-        d->m_ref = ref;
-        emit refChanged(ref);
+    if (d->m_referenceValue != referenceValue) {
+        d->m_referenceValue = referenceValue;
+        emit referenceValueChanged(referenceValue);
     }
 }
 
-QStencilTestSeparate::StencilFunc QStencilTestSeparate::func() const
+QStencilTestSeparate::StencilFunction QStencilTestSeparate::stencilFunction() const
 {
     Q_D(const QStencilTestSeparate);
-    return d->m_func;
+    return d->m_stencilFunction;
 }
 
-void QStencilTestSeparate::setFunc(QStencilTestSeparate::StencilFunc func)
+void QStencilTestSeparate::setStencilFunction(QStencilTestSeparate::StencilFunction stencilFunction)
 {
     Q_D(QStencilTestSeparate);
-    if (d->m_func != func) {
-        d->m_func = func;
-        emit funcChanged(func);
+    if (d->m_stencilFunction != stencilFunction) {
+        d->m_stencilFunction = stencilFunction;
+        emit stencilFunctionChanged(stencilFunction);
     }
 }
 

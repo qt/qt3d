@@ -54,9 +54,9 @@ class QT3DRENDERSHARED_EXPORT QStencilTestSeparate : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(StencilFaceMode faceMode READ faceMode NOTIFY faceModeChanged)
-    Q_PROPERTY(uint mask READ mask WRITE setMask NOTIFY maskChanged)
-    Q_PROPERTY(int ref READ ref WRITE setRef NOTIFY refChanged)
-    Q_PROPERTY(StencilFunc func READ func WRITE setFunc NOTIFY funcChanged)
+    Q_PROPERTY(uint comparisonMask READ comparisonMask WRITE setComparisonMask NOTIFY comparisonMaskChanged)
+    Q_PROPERTY(int referenceValue READ referenceValue WRITE setReferenceValue NOTIFY referenceValueChanged)
+    Q_PROPERTY(StencilFunction stencilFunction READ stencilFunction WRITE setStencilFunction NOTIFY stencilFunctionChanged)
 
 public:
     enum StencilFaceMode
@@ -67,7 +67,7 @@ public:
     };
     Q_ENUM(StencilFaceMode)
 
-    enum StencilFunc
+    enum StencilFunction
     {
         Never = 0x0200,
         Always = 0x0207,
@@ -78,25 +78,25 @@ public:
         Greater = 0x0204,
         NotEqual = 0x0205
     };
-    Q_ENUM(StencilFunc)
+    Q_ENUM(StencilFunction)
 
     ~QStencilTestSeparate();
 
-    uint mask() const;
-    int ref() const;
-    StencilFunc func() const;
+    uint comparisonMask() const;
+    int referenceValue() const;
+    StencilFunction stencilFunction() const;
 
     StencilFaceMode faceMode() const;
 
 public Q_SLOTS:
-    void setMask(uint mask);
-    void setRef(int ref);
-    void setFunc(StencilFunc func);
+    void setComparisonMask(uint comparisonMask);
+    void setReferenceValue(int referenceValue);
+    void setStencilFunction(StencilFunction stencilFunction);
 
 Q_SIGNALS:
-    void maskChanged(uint mask);
-    void funcChanged(StencilFunc func);
-    void refChanged(int ref);
+    void comparisonMaskChanged(uint comparisonMask);
+    void stencilFunctionChanged(StencilFunction stencilFunction);
+    void referenceValueChanged(int referenceValue);
     void faceModeChanged(StencilFaceMode faceMode);
 
 private:
