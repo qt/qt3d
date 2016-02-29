@@ -318,7 +318,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         d->m_cleanupJob->setRoot(d->m_renderer->sceneRoot());
 
         const QVector<QNodeId> texturesPending = manager->textureDataManager()->texturesPending();
-        Q_FOREACH (QNodeId textureId, texturesPending) {
+        for (const QNodeId textureId : texturesPending) {
             Render::LoadTextureDataJobPtr loadTextureJob(new Render::LoadTextureDataJob(textureId));
             loadTextureJob->setNodeManagers(manager);
             jobs.append(loadTextureJob);
@@ -327,7 +327,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
         const QVector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->pendingSceneLoaderJobs();
-        Q_FOREACH (const Render::LoadSceneJobPtr &job, sceneJobs) {
+        for (const Render::LoadSceneJobPtr &job : sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
             job->setSceneIOHandlers(d->m_sceneIOHandler);
             jobs.append(job);
@@ -336,7 +336,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // Clear any previous temporary dependency
         d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
         const QVector<QAspectJobPtr> bufferJobs = d->createRenderBufferJobs();
-        Q_FOREACH (const QAspectJobPtr &bufferJob, bufferJobs)
+        for (const QAspectJobPtr &bufferJob : bufferJobs)
             d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
         jobs.append(bufferJobs);
 
@@ -433,7 +433,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createRenderBufferJobs()
     const QVector<QNodeId> dirtyBuffers = m_nodeManagers->bufferManager()->dirtyBuffers();
     QVector<QAspectJobPtr> dirtyBuffersJobs;
 
-    Q_FOREACH (QNodeId bufId, dirtyBuffers) {
+    for (const QNodeId bufId : dirtyBuffers) {
         Render::HBuffer bufferHandle = m_nodeManagers->lookupHandle<Render::Buffer, Render::BufferManager, Render::HBuffer>(bufId);
         if (!bufferHandle.isNull()) {
             // Create new buffer job
@@ -452,7 +452,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
     const QVector<QNodeId> dirtyGeometryRenderers = geomRendererManager->dirtyGeometryRenderers();
     QVector<QAspectJobPtr> dirtyGeometryRendererJobs;
 
-    Q_FOREACH (QNodeId geoRendererId, dirtyGeometryRenderers) {
+    for (const QNodeId geoRendererId : dirtyGeometryRenderers) {
         Render::HGeometryRenderer geometryRendererHandle = geomRendererManager->lookupHandle(geoRendererId);
         if (!geometryRendererHandle.isNull()) {
             Render::LoadGeometryJobPtr job(new Render::LoadGeometryJob(geometryRendererHandle));
@@ -466,8 +466,8 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
 
 void QRenderAspectPrivate::loadSceneParsers()
 {
-    QStringList keys = QSceneParserFactory::keys();
-    Q_FOREACH (QString key, keys) {
+    const QStringList keys = QSceneParserFactory::keys();
+    for (const QString &key : keys) {
         QSceneIOHandler *sceneIOHandler = QSceneParserFactory::create(key, QStringList());
         if (sceneIOHandler != Q_NULLPTR)
             m_sceneIOHandler.append(sceneIOHandler);

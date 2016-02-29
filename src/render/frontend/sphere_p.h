@@ -92,7 +92,7 @@ public:
     void expandToContain(const QVector3D &point);
     inline void expandToContain(const QVector<QVector3D> &points)
     {
-        Q_FOREACH (const QVector3D &p, points)
+        for (const QVector3D &p : points)
             expandToContain(p);
     }
 
