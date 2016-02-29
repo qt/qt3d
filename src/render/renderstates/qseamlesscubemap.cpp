@@ -67,11 +67,6 @@ QSeamlessCubemap::~QSeamlessCubemap()
     QNode::cleanup();
 }
 
-void QSeamlessCubemap::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-}
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

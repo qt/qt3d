@@ -56,9 +56,6 @@ public:
     explicit QSeamlessCubemap(Qt3DCore::QNode *parent = nullptr);
     ~QSeamlessCubemap();
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
 private:
     Q_DECLARE_PRIVATE(QSeamlessCubemap)
     QT3D_CLONEABLE(QSeamlessCubemap)
