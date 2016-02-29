@@ -116,11 +116,11 @@ void QChangeArbiter::distributeQueueChanges(QChangeQueue *changeQueue)
             continue;
 
         if (change->type() == NodeCreated) {
-            Q_FOREACH (QSceneObserverInterface *observer, m_sceneObservers)
+            for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
                 observer->sceneNodeAdded(change);
         }
         else if (change->type() == NodeAboutToBeDeleted || change->type() == NodeDeleted) {
-            Q_FOREACH (QSceneObserverInterface *observer, m_sceneObservers)
+            for (QSceneObserverInterface *observer : qAsConst(m_sceneObservers))
                 observer->sceneNodeRemoved(change);
         }
 
@@ -173,10 +173,10 @@ void QChangeArbiter::removeLockingChangeQueue(QChangeArbiter::QChangeQueue *queu
 void QChangeArbiter::syncChanges()
 {
     QMutexLocker locker(&m_mutex);
-    Q_FOREACH (QChangeArbiter::QChangeQueue *changeQueue, m_changeQueues)
+    for (QChangeArbiter::QChangeQueue *changeQueue : qAsConst(m_changeQueues))
         distributeQueueChanges(changeQueue);
 
-    Q_FOREACH (QChangeQueue *changeQueue, m_lockingChangeQueues)
+    for (QChangeQueue *changeQueue : qAsConst(m_lockingChangeQueues))
         distributeQueueChanges(changeQueue);
 }
 
