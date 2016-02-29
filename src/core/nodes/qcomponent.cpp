@@ -123,9 +123,10 @@ QComponent::QComponent(QNode *parent)
 
 QComponent::~QComponent()
 {
-    Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QComponent subclass didn't call QNode::cleanup in its destructor");
+    Q_D(QComponent);
+    Q_ASSERT_X(d->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QComponent subclass didn't call QNode::cleanup in its destructor");
 
-    Q_FOREACH (QEntity *entity, entities()) {
+    for (QEntity *entity : qAsConst(d->m_entities)) {
         QEntityPrivate *entityPimpl = static_cast<QEntityPrivate *>(QEntityPrivate::get(entity));
         if (entityPimpl)
             entityPimpl->m_components.removeAll(this);

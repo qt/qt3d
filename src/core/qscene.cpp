@@ -157,7 +157,7 @@ QVector<QNode *> QScene::lookupNodes(const QVector<QNodeId> &ids) const
     QReadLocker lock(&d->m_lock);
     QVector<QNode *> nodes(ids.size());
     int index = 0;
-    Q_FOREACH (QNodeId id, ids)
+    for (QNodeId id : ids)
         nodes[index++] = d->m_nodeLookupTable.value(id);
     return nodes;
 }

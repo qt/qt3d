@@ -97,7 +97,7 @@ void QNodePrivate::_q_addChild(QNode *childNode)
         // We need to clone the parent of the childNode we send
         QNode *parentClone = QNode::clone(q_func());
         QNode *childClone = Q_NULLPTR;
-        Q_FOREACH (QObject *c, parentClone->children()) {
+        for (QObject *c : parentClone->children()) {
             QNode *clone = qobject_cast<QNode *>(c);
             if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
                 childClone = clone;
@@ -214,7 +214,7 @@ void QNodePrivate::setSceneHelper(QNode *root)
     // We also need to handle QEntity <-> QComponent relationships
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
         const QVector<QEntity *> entities = c->entities();
-        Q_FOREACH (QEntity *entity, entities) {
+        for (QEntity *entity : entities) {
             if (!m_scene->hasEntityForComponent(c->id(), entity->id())) {
                 if (!c->isShareable() && !m_scene->entitiesForComponent(c->id()).isEmpty())
                     qWarning() << "Trying to assign a non shareable component to more than one Entity";
@@ -235,7 +235,7 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
     // We also need to handle QEntity <-> QComponent relationships removal
     if (QComponent *c = qobject_cast<QComponent *>(root)) {
         const QVector<QEntity *> entities = c->entities();
-        Q_FOREACH (QEntity *entity, entities) {
+        for (QEntity *entity : entities) {
             if (m_scene)
                 m_scene->removeEntityForComponent(c->id(), entity->id());
         }
@@ -252,7 +252,8 @@ void QNodePrivate::unsetSceneHelper(QNode *root)
 void QNodePrivate::addEntityComponentToScene(QNode *root)
 {
     if (QEntity *e = qobject_cast<QEntity *>(root)) {
-        Q_FOREACH (QComponent *c, e->components()) {
+        const auto components = e->components();
+        for (QComponent *c : components) {
             if (!m_scene->hasEntityForComponent(c->id(), e->id()))
                 m_scene->addEntityForComponent(c->id(), e->id());
         }
@@ -554,10 +555,10 @@ void QNode::setParent(QNode *parent)
 QNodeVector QNode::childNodes() const
 {
     QNodeVector nodeChildrenList;
-    const QObjectList objectChildrenList = QObject::children();
+    const QObjectList &objectChildrenList = QObject::children();
     nodeChildrenList.reserve(objectChildrenList.size());
 
-    Q_FOREACH (QObject *c, objectChildrenList) {
+    for (QObject *c : objectChildrenList) {
         if (QNode *n = qobject_cast<QNode *>(c))
             nodeChildrenList.push_back(n);
     }
@@ -616,7 +617,7 @@ QNode *QNode::clone(QNode *node)
         Q_ASSERT(node->id() == clonedNode->id());
         QNodePrivate::m_clonesLookupTable.insert(node->id(), clonedNode);
     }
-    Q_FOREACH (QObject *c, node->children()) {
+    for (QObject *c : node->children()) {
         QNode *childNode = qobject_cast<QNode *>(c);
         if (childNode != Q_NULLPTR) {
             QNode *cclone = QNode::clone(childNode);

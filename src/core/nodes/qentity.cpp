@@ -118,7 +118,7 @@ void QEntity::copy(const QNode *ref)
     d_func()->m_visible = entity->d_func()->m_visible;
     d_func()->m_parentEntityId = entity->d_func()->parentEntityId();
 
-    Q_FOREACH (QComponent *c, entity->d_func()->m_components) {
+    for (QComponent *c : qAsConst(entity->d_func()->m_components)) {
         QNode *ccclone = QNode::clone(c);
         addComponent(qobject_cast<QComponent *>(ccclone));
     }

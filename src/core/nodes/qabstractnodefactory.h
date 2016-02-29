@@ -59,7 +59,8 @@ public:
 
     template<class T> static T *createNode(const char *type)
     {
-        Q_FOREACH (QAbstractNodeFactory *f, QAbstractNodeFactory::nodeFactories()) {
+        const auto factories = QAbstractNodeFactory::nodeFactories();
+        for (QAbstractNodeFactory *f : factories) {
             QNode *n = f->createNode(type);
             if (n)
                 return qobject_cast<T *>(n);

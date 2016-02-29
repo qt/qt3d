@@ -110,7 +110,7 @@ int QFrameAllocator::allocatorPoolSize() const
 bool QFrameAllocator::isEmpty() const
 {
     Q_D(const QFrameAllocator);
-    Q_FOREACH (const QFixedFrameAllocator &allocator, d->m_allocatorPool) {
+    for (const QFixedFrameAllocator &allocator : d->m_allocatorPool) {
         if (!allocator.isEmpty())
             return false;
     }
@@ -121,7 +121,7 @@ uint QFrameAllocator::totalChunkCount() const
 {
     Q_D(const QFrameAllocator);
     uint chunkCount = 0;
-    foreach (const QFixedFrameAllocator& allocator, d->m_allocatorPool)
+    for (const QFixedFrameAllocator& allocator : d->m_allocatorPool)
         chunkCount += allocator.chunkCount();
     return chunkCount;
 }
@@ -218,7 +218,7 @@ void QFixedFrameAllocator::clear()
 
 bool QFixedFrameAllocator::isEmpty() const
 {
-    Q_FOREACH (const QFrameChunk &chunck, m_chunks) {
+    for (const QFrameChunk &chunck : m_chunks) {
         if (chunck.m_blocksAvailable != chunck.m_maxBlocksAvailable)
             return false;
     }

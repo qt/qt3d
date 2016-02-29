@@ -88,7 +88,8 @@ void QAspectEnginePrivate::initNode(QNode *node)
 
 void QAspectEnginePrivate::initEntity(QEntity *entity)
 {
-    Q_FOREACH (QComponent *comp, entity->components()) {
+    const auto components = entity->components();
+    for (QComponent *comp : components) {
         if (!m_scene->hasEntityForComponent(comp->id(), entity->id())) {
             if (!comp->isShareable() && !m_scene->entitiesForComponent(comp->id()).isEmpty())
                 qWarning() << "Trying to assign a non shareable component to more than one Entity";
@@ -213,7 +214,7 @@ QVariant QAspectEngine::executeCommand(const QString &command)
 
         QStringList reply;
         reply << QLatin1Literal("Loaded aspects:");
-        foreach (QAbstractAspect *aspect, d->m_aspects) {
+        for (QAbstractAspect *aspect : qAsConst(d->m_aspects)) {
             const QString name = d->m_factory.aspectName(aspect);
             if (!name.isEmpty())
                 reply << (QLatin1Literal(" * ") + name);
@@ -226,7 +227,7 @@ QVariant QAspectEngine::executeCommand(const QString &command)
     QStringList args = command.split(QLatin1Char(' '));
     QString aspectName = args.takeFirst();
 
-    foreach (QAbstractAspect *aspect, d->m_aspects) {
+    for (QAbstractAspect *aspect : qAsConst(d->m_aspects)) {
         if (aspectName == d->m_factory.aspectName(aspect))
             return aspect->executeCommand(args);
     }
