@@ -106,7 +106,7 @@ void QAspectManager::shutdown()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
-    Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
+    for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
         aspect->onCleanup();
         m_changeArbiter->unregisterSceneObserver(aspect->d_func());
     }
@@ -122,15 +122,14 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 
     if (m_root) {
         // Allow each aspect chance to cleanup any resources from this scene
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects) {
+        for (QAbstractAspect *aspect : qAsConst(m_aspects))
             aspect->onCleanup();
-        }
     }
 
     m_root = root;
 
     if (m_root) {
-        Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+        for (QAbstractAspect *aspect : qAsConst(m_aspects))
             aspect->d_func()->registerAspect(m_root);
         m_runMainLoop.fetchAndStoreOrdered(1);
     }
@@ -183,7 +182,7 @@ void QAspectManager::exec()
             // We are about to enter the main loop. Give aspects a chance to do any last
             // pieces of initialization
             qCDebug(Aspects) << "Calling onStartup() for each aspect";
-            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+            for (QAbstractAspect *aspect : qAsConst(m_aspects))
                 aspect->onStartup();
         }
 
@@ -221,7 +220,7 @@ void QAspectManager::exec()
             // Give aspects a chance to perform any shutdown actions. This may include unqueuing
             // any blocking work on the main thread that could potentially deadlock during shutdown.
             qCDebug(Aspects) << "Calling onShutdown() for each aspect";
-            Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+            for (QAbstractAspect *aspect : qAsConst(m_aspects))
                 aspect->onShutdown();
         }
     }
