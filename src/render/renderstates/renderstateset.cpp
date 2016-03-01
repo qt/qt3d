@@ -62,7 +62,7 @@
 #include <Qt3DRender/qpolygonoffset.h>
 #include <Qt3DRender/qscissortest.h>
 #include <Qt3DRender/qstenciltest.h>
-#include <Qt3DRender/qstenciltestseparate.h>
+#include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstencilop.h>

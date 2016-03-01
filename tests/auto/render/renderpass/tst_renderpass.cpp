@@ -49,7 +49,7 @@
 #include <Qt3DRender/QPolygonOffset>
 #include <Qt3DRender/QScissorTest>
 #include <Qt3DRender/QStencilTest>
-#include <Qt3DRender/QStencilTestSeparate>
+#include <Qt3DRender/QStencilTestArguments>
 #include <Qt3DRender/QStencilMask>
 #include <Qt3DRender/QStencilOp>
 #include <Qt3DRender/QStencilOpSeparate>

@@ -37,90 +37,90 @@
 **
 ****************************************************************************/
 
-#include "qstenciltestseparate.h"
+#include "qstenciltestarguments.h"
 #include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilTestSeparatePrivate : public QObjectPrivate
+class QStencilTestArgumentsPrivate : public QObjectPrivate
 {
 public:
-    QStencilTestSeparatePrivate(QStencilTestSeparate::StencilFaceMode face)
+    QStencilTestArgumentsPrivate(QStencilTestArguments::StencilFaceMode face)
         : QObjectPrivate()
         , m_face(face)
         , m_comparisonMask(0)
         , m_referenceValue(0)
-        , m_stencilFunction(QStencilTestSeparate::Never)
+        , m_stencilFunction(QStencilTestArguments::Never)
     {
     }
 
-    Q_DECLARE_PUBLIC(QStencilTestSeparate)
-    QStencilTestSeparate::StencilFaceMode m_face;
+    Q_DECLARE_PUBLIC(QStencilTestArguments)
+    QStencilTestArguments::StencilFaceMode m_face;
     uint m_comparisonMask;
     int m_referenceValue;
-    QStencilTestSeparate::StencilFunction m_stencilFunction;
+    QStencilTestArguments::StencilFunction m_stencilFunction;
 };
 
 
-QStencilTestSeparate::QStencilTestSeparate(QStencilTestSeparate::StencilFaceMode face, QObject *parent)
-    : QObject(*new QStencilTestSeparatePrivate(face), parent)
+QStencilTestArguments::QStencilTestArguments(QStencilTestArguments::StencilFaceMode face, QObject *parent)
+    : QObject(*new QStencilTestArgumentsPrivate(face), parent)
 {
 }
 
-QStencilTestSeparate::~QStencilTestSeparate()
+QStencilTestArguments::~QStencilTestArguments()
 {
 }
 
-uint QStencilTestSeparate::comparisonMask() const
+uint QStencilTestArguments::comparisonMask() const
 {
-    Q_D(const QStencilTestSeparate);
+    Q_D(const QStencilTestArguments);
     return d->m_comparisonMask;
 }
 
-void QStencilTestSeparate::setComparisonMask(uint comparisonMask)
+void QStencilTestArguments::setComparisonMask(uint comparisonMask)
 {
-    Q_D(QStencilTestSeparate);
+    Q_D(QStencilTestArguments);
     if (d->m_comparisonMask != comparisonMask) {
         d->m_comparisonMask = comparisonMask;
         emit comparisonMaskChanged(comparisonMask);
     }
 }
 
-int QStencilTestSeparate::referenceValue() const
+int QStencilTestArguments::referenceValue() const
 {
-    Q_D(const QStencilTestSeparate);
+    Q_D(const QStencilTestArguments);
     return d->m_referenceValue;
 }
 
-void QStencilTestSeparate::setReferenceValue(int referenceValue)
+void QStencilTestArguments::setReferenceValue(int referenceValue)
 {
-    Q_D(QStencilTestSeparate);
+    Q_D(QStencilTestArguments);
     if (d->m_referenceValue != referenceValue) {
         d->m_referenceValue = referenceValue;
         emit referenceValueChanged(referenceValue);
     }
 }
 
-QStencilTestSeparate::StencilFunction QStencilTestSeparate::stencilFunction() const
+QStencilTestArguments::StencilFunction QStencilTestArguments::stencilFunction() const
 {
-    Q_D(const QStencilTestSeparate);
+    Q_D(const QStencilTestArguments);
     return d->m_stencilFunction;
 }
 
-void QStencilTestSeparate::setStencilFunction(QStencilTestSeparate::StencilFunction stencilFunction)
+void QStencilTestArguments::setStencilFunction(QStencilTestArguments::StencilFunction stencilFunction)
 {
-    Q_D(QStencilTestSeparate);
+    Q_D(QStencilTestArguments);
     if (d->m_stencilFunction != stencilFunction) {
         d->m_stencilFunction = stencilFunction;
         emit stencilFunctionChanged(stencilFunction);
     }
 }
 
-QStencilTestSeparate::StencilFaceMode QStencilTestSeparate::faceMode() const
+QStencilTestArguments::StencilFaceMode QStencilTestArguments::faceMode() const
 {
-    Q_D(const QStencilTestSeparate);
+    Q_D(const QStencilTestArguments);
     return d->m_face;
 }
 

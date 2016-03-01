@@ -78,7 +78,7 @@
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/qfrontface.h>
 #include <Qt3DRender/qstenciltest.h>
-#include <Qt3DRender/qstenciltestseparate.h>
+#include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DRender/qscissortest.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qrendertargetoutput.h>
@@ -299,7 +299,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QDepthMask>(uri, 2, 0, "DepthMask");
     qmlRegisterType<Qt3DRender::QCullFace>(uri, 2, 0, "CullFace");
     qmlRegisterType<Qt3DRender::QFrontFace>(uri, 2, 0, "FrontFace");
-    qmlRegisterUncreatableType<Qt3DRender::QStencilTestSeparate>(uri, 2, 0, "StencilTestSeparate", QStringLiteral("QStencilTestSeparate cannot be instantiated on its own"));
+    qmlRegisterUncreatableType<Qt3DRender::QStencilTestArguments>(uri, 2, 0, "StencilTestSeparate", QStringLiteral("QStencilTestArguments cannot be instantiated on its own"));
     qmlRegisterType<Qt3DRender::QStencilTest>(uri, 2, 0, "StencilTest");
     qmlRegisterType<Qt3DRender::QScissorTest>(uri, 2, 0, "ScissorTest");
     qmlRegisterType<Qt3DRender::QDithering>(uri, 2, 0, "Dithering");

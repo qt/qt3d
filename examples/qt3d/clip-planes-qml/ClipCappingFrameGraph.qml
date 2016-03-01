@@ -95,11 +95,11 @@ Viewport {
                         renderStates: [
                             StencilTest {
                                 front {
-                                    stencilFunction: StencilTestSeparate.Always
+                                    stencilFunction: StencilTestArguments.Always
                                     referenceValue: 0; comparisonMask: 0
                                 }
                                 back {
-                                    stencilFunction: StencilTestSeparate.Always
+                                    stencilFunction: StencilTestArguments.Always
                                     referenceValue: 0; comparisonMask: 0
                                 }
                             },
@@ -134,11 +134,11 @@ Viewport {
                 renderStates: [
                     StencilTest {
                         front {
-                            stencilFunction: StencilTestSeparate.NotEqual
+                            stencilFunction: StencilTestArguments.NotEqual
                             referenceValue: 0; comparisonMask: ~0
                         }
                         back {
-                            stencilFunction: StencilTestSeparate.NotEqual
+                            stencilFunction: StencilTestArguments.NotEqual
                             referenceValue: 0; comparisonMask: ~0
                         }
                     }

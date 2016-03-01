@@ -20,7 +20,7 @@ HEADERS += \
     $$PWD/qstencilop.h \
     $$PWD/qstencilopseparate.h \
     $$PWD/qstenciltest.h \
-    $$PWD/qstenciltestseparate.h \
+    $$PWD/qstenciltestarguments.h \
     $$PWD/renderstates_p.h \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
@@ -47,7 +47,7 @@ SOURCES += \
     $$PWD/qstencilop.cpp \
     $$PWD/qstencilopseparate.cpp \
     $$PWD/qstenciltest.cpp \
-    $$PWD/qstenciltestseparate.cpp \
+    $$PWD/qstenciltestarguments.cpp \
     $$PWD/renderstates.cpp \
     $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \

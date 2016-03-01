@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSTENCILTESTSEPARATE_H
-#define QT3DRENDER_QSTENCILTESTSEPARATE_H
+#ifndef QT3DRENDER_QSTENCILTESTARGUMENTS_H
+#define QT3DRENDER_QSTENCILTESTARGUMENTS_H
 
 #include <QObject>
 #include <Qt3DRender/qt3drender_global.h>
@@ -48,9 +48,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QStencilTestPrivate;
-class QStencilTestSeparatePrivate;
+class QStencilTestArgumentsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QStencilTestSeparate : public QObject
+class QT3DRENDERSHARED_EXPORT QStencilTestArguments : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(StencilFaceMode faceMode READ faceMode NOTIFY faceModeChanged)
@@ -80,7 +80,7 @@ public:
     };
     Q_ENUM(StencilFunction)
 
-    ~QStencilTestSeparate();
+    ~QStencilTestArguments();
 
     uint comparisonMask() const;
     int referenceValue() const;
@@ -100,15 +100,15 @@ Q_SIGNALS:
     void faceModeChanged(StencilFaceMode faceMode);
 
 private:
-    explicit QStencilTestSeparate(StencilFaceMode face, QObject *parent = 0);
+    explicit QStencilTestArguments(StencilFaceMode face, QObject *parent = 0);
 
     friend class QStencilTestPrivate;
 
-    Q_DECLARE_PRIVATE(QStencilTestSeparate)
+    Q_DECLARE_PRIVATE(QStencilTestArguments)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSTENCILTESTSEPARATE_H
+#endif // QT3DRENDER_QSTENCILTESTARGUMENTS_H

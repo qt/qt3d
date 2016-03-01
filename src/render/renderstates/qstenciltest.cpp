@@ -42,7 +42,7 @@
 #include "qrenderstate_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include "qstenciltestseparate.h"
+#include "qstenciltestarguments.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -54,14 +54,14 @@ class QStencilTestPrivate : public QRenderStatePrivate
 public:
     QStencilTestPrivate()
         : QRenderStatePrivate(QRenderState::StencilTest)
-        , m_front(new QStencilTestSeparate(QStencilTestSeparate::Front))
-        , m_back(new QStencilTestSeparate(QStencilTestSeparate::Back))
+        , m_front(new QStencilTestArguments(QStencilTestArguments::Front))
+        , m_back(new QStencilTestArguments(QStencilTestArguments::Back))
     {
     }
 
     Q_DECLARE_PUBLIC(QStencilTest)
-    QStencilTestSeparate *m_front;
-    QStencilTestSeparate *m_back;
+    QStencilTestArguments *m_front;
+    QStencilTestArguments *m_back;
 };
 
 QStencilTest::QStencilTest(QNode *parent)
@@ -74,13 +74,13 @@ QStencilTest::~QStencilTest()
     QNode::cleanup();
 }
 
-QStencilTestSeparate *QStencilTest::front() const
+QStencilTestArguments *QStencilTest::front() const
 {
     Q_D(const QStencilTest);
     return d->m_front;
 }
 
-QStencilTestSeparate *QStencilTest::back() const
+QStencilTestArguments *QStencilTest::back() const
 {
     Q_D(const QStencilTest);
     return d->m_back;
