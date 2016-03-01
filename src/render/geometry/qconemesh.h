@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QConeMesh : public QGeometryRenderer
     Q_PROPERTY( float bottomRadius READ bottomRadius WRITE setBottomRadius NOTIFY bottomRadiusChanged )
     Q_PROPERTY(float length READ length WRITE setLength NOTIFY lengthChanged)
 public:
-    explicit QConeMesh(Qt3DCore::QNode *parent = 0);
+    explicit QConeMesh(Qt3DCore::QNode *parent = nullptr);
     ~QConeMesh();
 
     int rings() const;

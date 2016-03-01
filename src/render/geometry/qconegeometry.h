@@ -66,7 +66,7 @@ class QT3DRENDERSHARED_EXPORT QConeGeometry : public QGeometry
     Q_PROPERTY(Qt3DRender::QAttribute *indexAttribute READ indexAttribute CONSTANT)
 
 public:
-    explicit QConeGeometry(QNode *parent = 0);
+    explicit QConeGeometry(QNode *parent = nullptr);
     ~QConeGeometry();
 
     void updateVertices();
@@ -104,7 +104,7 @@ Q_SIGNALS:
     void lengthChanged( float length );
 
 protected:
-    QConeGeometry(QConeGeometryPrivate &dd, QNode *parent = 0);
+    QConeGeometry(QConeGeometryPrivate &dd, QNode *parent = nullptr);
 
 private:
     Q_DECLARE_PRIVATE(QConeGeometry)

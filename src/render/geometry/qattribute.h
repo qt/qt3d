@@ -87,9 +87,9 @@ public:
     };
     Q_ENUM(VertexBaseType)
 
-    explicit QAttribute(QNode *parent = 0);
-    explicit QAttribute(QBuffer *buf, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
-    explicit QAttribute(QBuffer *buf, const QString &name, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    explicit QAttribute(QNode *parent = nullptr);
+    explicit QAttribute(QBuffer *buf, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = nullptr);
+    explicit QAttribute(QBuffer *buf, const QString &name, VertexBaseType vertexBaseType, uint vertexSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = nullptr);
     ~QAttribute();
 
     QBuffer *buffer() const;

@@ -143,7 +143,7 @@ class QT3DRENDERSHARED_EXPORT QTextureLoader : public QAbstractTextureProvider
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
 
 public:
-    explicit QTextureLoader(Qt3DCore::QNode *parent = 0);
+    explicit QTextureLoader(Qt3DCore::QNode *parent = nullptr);
     ~QTextureLoader();
 
     QUrl source() const;

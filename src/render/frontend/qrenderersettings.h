@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QRendererSettings : public Qt3DCore::QComponent
     Q_PROPERTY(PickResultMode pickResultMode READ pickResultMode WRITE setPickResultMode NOTIFY pickResultModeChanged)
 
 public:
-    explicit QRendererSettings(Qt3DCore::QNode *parent = 0);
+    explicit QRendererSettings(Qt3DCore::QNode *parent = nullptr);
     ~QRendererSettings();
 
     enum PickMethod {
@@ -84,7 +84,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QRendererSettings)
-    QRendererSettings(QRendererSettingsPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRendererSettings(QRendererSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

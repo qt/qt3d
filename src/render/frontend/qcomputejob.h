@@ -54,7 +54,7 @@ class QT3DRENDERSHARED_EXPORT QComputeJob : public Qt3DCore::QComponent
     Q_OBJECT
 
 public:
-    explicit QComputeJob(Qt3DCore::QNode *parent = 0);
+    explicit QComputeJob(Qt3DCore::QNode *parent = nullptr);
     ~QComputeJob();
 
 public Q_SLOTS:
@@ -63,7 +63,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QComputeJob)
-    QComputeJob(QComputeJobPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QComputeJob(QComputeJobPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

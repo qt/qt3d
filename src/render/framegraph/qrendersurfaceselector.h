@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrame
     Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
 
 public:
-    explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = 0);
+    explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = nullptr);
     ~QRenderSurfaceSelector();
 
     QSurface *surface() const;
@@ -75,7 +75,7 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE(QRenderSurfaceSelector)
-    QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderSurfaceSelector(QRenderSurfaceSelectorPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
