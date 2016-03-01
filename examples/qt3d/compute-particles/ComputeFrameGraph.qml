@@ -67,7 +67,7 @@ Viewport {
         DispatchCompute {
             workGroupX: 1024; workGroupY: 1; workGroupZ: 1
             TechniqueFilter {
-                requires: [
+                matchAll: [
                     Annotation { name: "type"; value: "compute"}
                 ]
             }
@@ -77,7 +77,7 @@ Viewport {
         CameraSelector {
             id: selector
             TechniqueFilter {
-                requires: [
+                matchAll: [
                     Annotation { name: "type"; value: "draw"}
                 ]
             }

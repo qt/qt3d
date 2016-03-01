@@ -50,7 +50,7 @@ Quick3DTechniqueFilter::Quick3DTechniqueFilter(QObject *parent)
 {
 }
 
-QQmlListProperty<QAnnotation> Quick3DTechniqueFilter::requireList()
+QQmlListProperty<QAnnotation> Quick3DTechniqueFilter::matchList()
 {
     return QQmlListProperty<QAnnotation>(this, 0,
                                          &Quick3DTechniqueFilter::appendRequire,
@@ -73,7 +73,7 @@ void Quick3DTechniqueFilter::appendRequire(QQmlListProperty<QAnnotation> *list, 
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
         criterion->setParent(filter->parentTechniqueFilter());
-        filter->parentTechniqueFilter()->addRequirement(criterion);
+        filter->parentTechniqueFilter()->addMatch(criterion);
     }
 }
 
@@ -98,7 +98,7 @@ void Quick3DTechniqueFilter::clearRequires(QQmlListProperty<QAnnotation> *list)
     Quick3DTechniqueFilter *filter = qobject_cast<Quick3DTechniqueFilter *>(list->object);
     if (filter) {
         Q_FOREACH (QAnnotation *criterion, filter->parentTechniqueFilter()->criteria())
-            filter->parentTechniqueFilter()->removeRequirement(criterion);
+            filter->parentTechniqueFilter()->removeMatch(criterion);
     }
 }
 

@@ -60,8 +60,8 @@ void QTechniqueFilter::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
 
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_requireList)
-        addRequirement(qobject_cast<QAnnotation *>(QNode::clone(crit)));
+    Q_FOREACH (QAnnotation *crit, other->d_func()->m_matchList)
+        addMatch(qobject_cast<QAnnotation *>(QNode::clone(crit)));
     Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
@@ -85,14 +85,14 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 QList<QAnnotation *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
-    return d->m_requireList;
+    return d->m_matchList;
 }
 
-void QTechniqueFilter::addRequirement(QAnnotation *criterion)
+void QTechniqueFilter::addMatch(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
-    if (!d->m_requireList.contains(criterion)) {
-        d->m_requireList.append(criterion);
+    if (!d->m_matchList.contains(criterion)) {
+        d->m_matchList.append(criterion);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -110,7 +110,7 @@ void QTechniqueFilter::addRequirement(QAnnotation *criterion)
     }
 }
 
-void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
+void QTechniqueFilter::removeMatch(QAnnotation *criterion)
 {
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -119,7 +119,7 @@ void QTechniqueFilter::removeRequirement(QAnnotation *criterion)
         propertyChange->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(propertyChange);
     }
-    d->m_requireList.removeOne(criterion);
+    d->m_matchList.removeOne(criterion);
 }
 
 void QTechniqueFilter::addParameter(QParameter *parameter)

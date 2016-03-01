@@ -66,13 +66,13 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DTechniqueFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> requires READ requireList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> matchAll READ matchList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DTechniqueFilter(QObject *parent = 0);
 
-    QQmlListProperty<QAnnotation> requireList();
+    QQmlListProperty<QAnnotation> matchList();
     QQmlListProperty<QParameter> parameterList();
 
     inline QTechniqueFilter *parentTechniqueFilter() const { return qobject_cast<QTechniqueFilter*>(parent()); }

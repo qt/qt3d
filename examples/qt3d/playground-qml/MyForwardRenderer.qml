@@ -68,7 +68,7 @@ TechniqueFilter {
     property alias layerFilters: layerFilter.layers
     property alias clearColor: viewport.clearColor
 
-    requires : [
+    matchAll : [
         Annotation { name: "RenderingStyle"; value: "forward";},
         Annotation { name: "Enabled"; value: true;}
     ]

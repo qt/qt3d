@@ -65,7 +65,7 @@ public :
     QTechniqueFilterPrivate();
 
     Q_DECLARE_PUBLIC(QTechniqueFilter)
-    QList<QAnnotation *> m_requireList;
+    QList<QAnnotation *> m_matchList;
     QList<QParameter *> m_parameters;
 };
 

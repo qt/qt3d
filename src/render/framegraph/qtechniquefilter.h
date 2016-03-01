@@ -59,8 +59,8 @@ public:
     ~QTechniqueFilter();
 
     QList<QAnnotation *> criteria() const;
-    void addRequirement(QAnnotation *criterion);
-    void removeRequirement(QAnnotation *criterion);
+    void addMatch(QAnnotation *criterion);
+    void removeMatch(QAnnotation *criterion);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);

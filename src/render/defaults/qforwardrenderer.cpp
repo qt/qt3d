@@ -78,7 +78,7 @@ void QForwardRendererPrivate::init()
     QAnnotation *forwardRenderingStyle = new QAnnotation(q);
     forwardRenderingStyle->setName(QStringLiteral("renderingStyle"));
     forwardRenderingStyle->setValue(QStringLiteral("forward"));
-    q->addRequirement(forwardRenderingStyle);
+    q->addMatch(forwardRenderingStyle);
 }
 
 /*!

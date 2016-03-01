@@ -64,7 +64,7 @@ FrameGraph {
         clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
         TechniqueFilter {
-            requires: [ Annotation { name: "name"; value: "Desktop" } ]
+            matchAll: [ Annotation { name: "name"; value: "Desktop" } ]
 
 
             RenderPassFilter {

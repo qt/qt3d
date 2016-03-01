@@ -83,8 +83,8 @@ private Q_SLOTS:
         annotation1->setName(QStringLiteral("hasNitroKit"));
         annotation1->setValue(false);
         QList<Qt3DRender::QAnnotation *> annotations1 = QList<Qt3DRender::QAnnotation *>() << annotation1 << annotation2;
-        techniqueFilterWithAnnotations->addRequirement(annotation1);
-        techniqueFilterWithAnnotations->addRequirement(annotation2);
+        techniqueFilterWithAnnotations->addMatch(annotation1);
+        techniqueFilterWithAnnotations->addMatch(annotation2);
         QTest::newRow("techniqueFilterWithAnnotations") << techniqueFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << annotations1;
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithParamsAndAnnotations = new Qt3DRender::QTechniqueFilter();
@@ -100,8 +100,8 @@ private Q_SLOTS:
         QList<Qt3DRender::QAnnotation *> annotations2 = QList<Qt3DRender::QAnnotation *>() << annotation3 << annotation4;
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter3);
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter4);
-        techniqueFilterWithParamsAndAnnotations->addRequirement(annotation3);
-        techniqueFilterWithParamsAndAnnotations->addRequirement(annotation4);
+        techniqueFilterWithParamsAndAnnotations->addMatch(annotation3);
+        techniqueFilterWithParamsAndAnnotations->addMatch(annotation4);
         QTest::newRow("techniqueFilterWithParamsAndAnnotations") << techniqueFilterWithParamsAndAnnotations << params2 << annotations2;
     }
 
@@ -194,7 +194,7 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::QAnnotation *annotation1 = new Qt3DRender::QAnnotation();
-        techniqueFilter->addRequirement(annotation1);
+        techniqueFilter->addMatch(annotation1);
         QCoreApplication::processEvents();
 
         // THEN
@@ -208,14 +208,14 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        techniqueFilter->addRequirement(annotation1);
+        techniqueFilter->addMatch(annotation1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        techniqueFilter->removeRequirement(annotation1);
+        techniqueFilter->removeMatch(annotation1);
         QCoreApplication::processEvents();
 
         // THEN
