@@ -80,7 +80,7 @@ public:
     };
     Q_ENUM(UsageType)
 
-    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = 0);
+    explicit QBuffer(BufferType ty = QBuffer::VertexBuffer, Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QBuffer();
 
     UsageType usage() const;
@@ -96,7 +96,7 @@ public Q_SLOTS:
     void setSync(bool sync);
 
 protected:
-    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = 0);
+    QBuffer(QBufferPrivate &dd, QBuffer::BufferType ty, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 

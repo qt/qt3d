@@ -65,7 +65,7 @@ class QT3DCORESHARED_EXPORT QCameraLens : public QComponent
     Q_PROPERTY(QMatrix4x4 projectionMatrix READ projectionMatrix NOTIFY projectionMatrixChanged)
 
 public:
-    explicit QCameraLens(QNode *parent = 0);
+    explicit QCameraLens(QNode *parent = Q_NULLPTR);
     ~QCameraLens();
 
     enum ProjectionType {
@@ -122,7 +122,7 @@ Q_SIGNALS:
     void projectionMatrixChanged(const QMatrix4x4 &projectionMatrix);
 
 protected:
-    QCameraLens(QCameraLensPrivate &dd, QNode *parent = 0);
+    QCameraLens(QCameraLensPrivate &dd, QNode *parent = Q_NULLPTR);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:

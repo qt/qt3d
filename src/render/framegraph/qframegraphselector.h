@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QFrameGraphSelector : public QFrameGraphNode
 {
     Q_OBJECT
 public:
-    explicit QFrameGraphSelector(Qt3DCore::QNode *parent = 0);
+    explicit QFrameGraphSelector(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QFrameGraphSelector();
 
     QFrameGraphSelectorFunctorPtr selectionFunctor() const;

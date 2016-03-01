@@ -67,7 +67,7 @@ class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(Qt3DRender::QAbstractTextureProvider::CubeMapFace cubeMapFace READ cubeMapFace WRITE setCubeMapFace NOTIFY cubeMapFaceChanged)
 public:
-    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTextureImage(Qt3DCore::QNode *parent = Q_NULLPTR);
     virtual ~QAbstractTextureImage();
 
     int mipmapLevel() const;
@@ -89,7 +89,7 @@ Q_SIGNALS:
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = 0);
+    QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)

@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QSceneParserPlugin : public QObject
 {
     Q_OBJECT
 public:
-    explicit QSceneParserPlugin(QObject *parent = 0);
+    explicit QSceneParserPlugin(QObject *parent = Q_NULLPTR);
     ~QSceneParserPlugin();
 
     virtual QAbstractSceneParser *create(const QString &key, const QStringList &paramList);

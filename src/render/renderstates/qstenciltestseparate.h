@@ -97,7 +97,7 @@ Q_SIGNALS:
     void faceModeChanged(StencilFaceMode faceMode);
 
 private:
-    explicit QStencilTestSeparate(StencilFaceMode face, QObject *parent = 0);
+    explicit QStencilTestSeparate(StencilFaceMode face, QObject *parent = Q_NULLPTR);
 
     friend class QStencilTestPrivate;
 

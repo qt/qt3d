@@ -54,7 +54,7 @@ class QT3DQUICKSHARED_EXPORT QQmlAspectEngine: public QObject
 public:
     enum Status { Null, Ready, Loading, Error };
 
-    explicit QQmlAspectEngine(QObject *parent = 0);
+    explicit QQmlAspectEngine(QObject *parent = Q_NULLPTR);
 
     Status status() const;
     void setSource(const QUrl &source);

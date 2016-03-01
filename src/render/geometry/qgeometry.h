@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
     Q_PROPERTY(Qt3DRender::QBoundingVolumeSpecifier *boundingVolumeSpecifier READ boundingVolumeSpecifier CONSTANT)
 public:
-    explicit QGeometry(Qt3DCore::QNode *parent = 0);
+    explicit QGeometry(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QGeometry();
 
     QAttributeList attributes() const;
@@ -74,7 +74,7 @@ Q_SIGNALS:
     void verticesPerPatchChanged(int verticesPerPatch);
 
 protected:
-    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

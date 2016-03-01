@@ -51,7 +51,7 @@ class QT3DRENDERSHARED_EXPORT QStateSet : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QStateSet(Qt3DCore::QNode *parent = 0);
+    explicit QStateSet(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QStateSet();
 
     void addRenderState(QRenderState *state);
@@ -59,7 +59,7 @@ public:
     QList<QRenderState *> renderStates() const;
 
 protected:
-    QStateSet(QStateSetPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QStateSet(QStateSetPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

@@ -319,9 +319,9 @@ Q_SIGNALS:
     void uniqueChanged(bool unique);
 
 protected:
-    explicit QAbstractTextureProvider(Qt3DCore::QNode *parent = 0);
-    explicit QAbstractTextureProvider(Target target, Qt3DCore::QNode *parent = 0);
-    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTextureProvider(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit QAbstractTextureProvider(Target target, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 

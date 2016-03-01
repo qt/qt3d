@@ -64,8 +64,8 @@ public:
     };
     Q_ENUM(Binding)
 
-    explicit QParameterMapping(Qt3DCore::QNode *parent = 0);
-    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3DCore::QNode *parent = 0);
+    explicit QParameterMapping(Qt3DCore::QNode *parent = Q_NULLPTR);
+    QParameterMapping(const QString &parameterName, const QString &shaderParameterName, QParameterMapping::Binding bindingType, Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QParameterMapping();
 
     QString parameterName() const;
@@ -83,7 +83,7 @@ Q_SIGNALS:
     void bindingTypeChanged(Binding bindingType);
 
 protected:
-    QParameterMapping(QParameterMappingPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QParameterMapping(QParameterMappingPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

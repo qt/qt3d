@@ -53,7 +53,7 @@ struct FunctorType
         // The MSVC linker can under some cases optimize all the template
         // functions into a single function. The code below is there to ensure
         // that the linker won't collapse all these distincts functions into one
-        static T *t = 0;
+        static T *t = Q_NULLPTR;
         return reinterpret_cast<qintptr>(t);
     }
 };

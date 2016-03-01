@@ -52,7 +52,7 @@ class QT3DRENDERSHARED_EXPORT QFrameGraphNode : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
 public:
-    explicit QFrameGraphNode(Qt3DCore::QNode *parent = 0);
+    explicit QFrameGraphNode(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QFrameGraphNode();
 
     QFrameGraphNode *parentFrameGraphNode() const;
@@ -63,7 +63,7 @@ public Q_SLOTS:
     void setEnabled(bool enabled);
 
 protected:
-    QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = 0);
+    QFrameGraphNode(QFrameGraphNodePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 Q_SIGNALS:
     void enabledChanged(bool enabled);

@@ -54,7 +54,7 @@ class QT3DINPUTSHARED_EXPORT QKeyboardInput : public Qt3DCore::QComponent
     Q_PROPERTY(Qt3DInput::QKeyboardController *controller READ controller WRITE setController NOTIFY controllerChanged)
     Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 public:
-    explicit QKeyboardInput(QNode *parent = 0);
+    explicit QKeyboardInput(QNode *parent = Q_NULLPTR);
     ~QKeyboardInput();
 
     QKeyboardController *controller() const;
@@ -113,7 +113,7 @@ Q_SIGNALS:
     void released(Qt3DInput::QKeyEvent *event);
 
 protected:
-    QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = 0);
+    QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void keyEvent(QKeyEvent *event);

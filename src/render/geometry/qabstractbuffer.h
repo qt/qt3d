@@ -51,14 +51,14 @@ class QT3DRENDERSHARED_EXPORT QAbstractBuffer : public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    QAbstractBuffer(QNode *parent = 0);
+    QAbstractBuffer(QNode *parent = Q_NULLPTR);
     virtual ~QAbstractBuffer();
 
     void setData(const QByteArray &bytes);
     QByteArray data() const;
 
 protected:
-    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = 0);
+    QAbstractBuffer(QAbstractBufferPrivate &dd, QNode *parent = Q_NULLPTR);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:

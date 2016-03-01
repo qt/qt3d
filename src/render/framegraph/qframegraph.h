@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QFrameGraph : public Qt3DCore::QComponent
     Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
 
 public:
-    explicit QFrameGraph(Qt3DCore::QNode *parent = 0);
+    explicit QFrameGraph(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QFrameGraph();
 
     QFrameGraphNode *activeFrameGraph() const;
@@ -68,7 +68,7 @@ Q_SIGNALS:
     void activeFrameGraphChanged(QFrameGraphNode *activeFrameGraph);
 
 protected:
-    QFrameGraph(QFrameGraphPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QFrameGraph(QFrameGraphPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

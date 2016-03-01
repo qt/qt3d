@@ -91,7 +91,7 @@ public:
     };
     Q_ENUM(CubeMapFace)
 
-    explicit QRenderAttachment(Qt3DCore::QNode *parent = 0);
+    explicit QRenderAttachment(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QRenderAttachment();
 
     RenderAttachmentType type() const;
@@ -118,7 +118,7 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
 protected:
-    QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderAttachment(QRenderAttachmentPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

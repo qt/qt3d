@@ -59,7 +59,7 @@ public:
     };
     Q_ENUM(FaceDir)
 
-    explicit QFrontFace(Qt3DCore::QNode *parent = 0);
+    explicit QFrontFace(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QFrontFace();
 
     FaceDir direction() const;

@@ -62,7 +62,7 @@ public:
     };
     Q_ENUM(BlendMode)
 
-    explicit QBlendEquation(Qt3DCore::QNode *parent = 0);
+    explicit QBlendEquation(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QBlendEquation();
 
     BlendMode mode() const;

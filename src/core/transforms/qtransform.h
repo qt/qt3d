@@ -61,7 +61,7 @@ class QT3DCORESHARED_EXPORT QTransform : public QComponent
     Q_PROPERTY(QVector3D translation READ translation WRITE setTranslation NOTIFY translationChanged)
 
 public:
-    explicit QTransform(QNode *parent = 0);
+    explicit QTransform(QNode *parent = Q_NULLPTR);
     ~QTransform();
 
     float scale() const;
@@ -111,7 +111,7 @@ Q_SIGNALS:
     void matrixChanged(const QMatrix4x4 &matrix);
 
 protected:
-    QTransform(QTransformPrivate &dd, QNode *parent = 0);
+    QTransform(QTransformPrivate &dd, QNode *parent = Q_NULLPTR);
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 
 private:

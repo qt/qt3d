@@ -52,7 +52,7 @@ class QT3DINPUTSHARED_EXPORT QMouseController : public Qt3DInput::QAbstractPhysi
     Q_OBJECT
     Q_PROPERTY(float sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
 public:
-    explicit QMouseController(Qt3DCore::QNode *parent = 0);
+    explicit QMouseController(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QMouseController();
 
     enum Axis {
@@ -84,7 +84,7 @@ Q_SIGNALS:
     void sensitivityChanged(float value);
 
 protected:
-    QMouseController(QMouseControllerPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QMouseController(QMouseControllerPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 

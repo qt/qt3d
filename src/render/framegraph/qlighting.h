@@ -50,11 +50,11 @@ class QT3DRENDERSHARED_EXPORT QLighting : public QFrameGraphNode
     Q_OBJECT
 
 public:
-    explicit QLighting(Qt3DCore::QNode *parent = 0);
+    explicit QLighting(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QLighting();
 
 protected:
-    QLighting(QLightingPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QLighting(QLightingPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

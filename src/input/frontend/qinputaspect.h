@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QInputAspect : public Qt3DCore::QAbstractAspect
     Q_OBJECT
     Q_PROPERTY(Qt3DCore::QCamera* camera READ camera WRITE setCamera)
 public:
-    explicit QInputAspect(QObject *parent = 0);
+    explicit QInputAspect(QObject *parent = Q_NULLPTR);
 
     Qt3DCore::QCamera *camera() const;
     QAbstractPhysicalDevice *createPhysicalDevice(const QString &name);

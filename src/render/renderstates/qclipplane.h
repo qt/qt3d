@@ -50,7 +50,7 @@ class QT3DRENDERSHARED_EXPORT QClipPlane : public QRenderState
     Q_OBJECT
     Q_PROPERTY(int plane READ plane WRITE setPlane NOTIFY planeChanged)
 public:
-    explicit QClipPlane(Qt3DCore::QNode *parent = 0);
+    explicit QClipPlane(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QClipPlane();
 
     int plane() const;

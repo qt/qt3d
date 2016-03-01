@@ -55,10 +55,10 @@ class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
 
 public:
-    explicit QParameter(Qt3DCore::QNode *parent = 0);
+    explicit QParameter(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QParameter();
-    QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = 0);
-    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = 0);
+    QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = Q_NULLPTR);
+    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = Q_NULLPTR);
 
     QString name() const;
 
@@ -77,7 +77,7 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
 protected:
-    QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QParameter(QParameterPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

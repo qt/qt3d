@@ -51,7 +51,7 @@ class QT3DRENDERSHARED_EXPORT QPointLight : public QLight
     Q_PROPERTY(QVector3D attenuation READ attenuation WRITE setAttenuation NOTIFY attenuationChanged)
 
 public:
-    explicit QPointLight(Qt3DCore::QNode *parent = 0);
+    explicit QPointLight(Qt3DCore::QNode *parent = Q_NULLPTR);
 
     QVector3D attenuation() const;
 

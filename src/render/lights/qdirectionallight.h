@@ -51,7 +51,7 @@ class QT3DRENDERSHARED_EXPORT QDirectionalLight : public QLight
     Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)
 
 public:
-    explicit QDirectionalLight(Qt3DCore::QNode *parent = 0);
+    explicit QDirectionalLight(Qt3DCore::QNode *parent = Q_NULLPTR);
 
     QVector3D direction() const;
 
@@ -62,7 +62,7 @@ Q_SIGNALS:
     void directionChanged(const QVector3D &direction);
 
 protected:
-    QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QDirectionalLight(QDirectionalLightPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

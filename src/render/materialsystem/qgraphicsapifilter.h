@@ -75,7 +75,7 @@ public:
     };
     Q_ENUM(Profile)
 
-    explicit QGraphicsApiFilter(QObject *parent = 0);
+    explicit QGraphicsApiFilter(QObject *parent = Q_NULLPTR);
 
     void copy(const QGraphicsApiFilter &ref);
 

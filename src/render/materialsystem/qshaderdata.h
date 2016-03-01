@@ -59,7 +59,7 @@ class QT3DRENDERSHARED_EXPORT QShaderData : public Qt3DCore::QComponent
 {
     Q_OBJECT
 public:
-    explicit QShaderData(Qt3DCore::QNode *parent = 0);
+    explicit QShaderData(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QShaderData();
 
     enum TransformType {
@@ -71,7 +71,7 @@ public:
     PropertyReaderInterfacePtr propertyReader() const;
 
 protected:
-    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QShaderData(QShaderDataPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 

@@ -84,9 +84,9 @@ public:
     };
     Q_ENUM(DataType)
 
-    explicit QAbstractAttribute(QNode *parent = 0);
+    explicit QAbstractAttribute(QNode *parent = Q_NULLPTR);
     ~QAbstractAttribute();
-    QAbstractAttribute(QAbstractBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    QAbstractAttribute(QAbstractBuffer *buf, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = Q_NULLPTR);
 
     QAbstractBuffer *buffer() const;
     QString name() const;
@@ -126,8 +126,8 @@ Q_SIGNALS:
     void attributeTypeChanged(AttributeType attributeType);
 
 protected:
-    QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = 0);
-    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = 0);
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QNode *parent = Q_NULLPTR);
+    QAbstractAttribute(QAbstractAttributePrivate &dd, QAbstractBuffer *buf, const QString &name, DataType dataType, uint dataSize, uint count, uint offset = 0, uint stride = 0, QNode *parent = Q_NULLPTR);
 
     void copy(const QNode *ref) Q_DECL_OVERRIDE;
 

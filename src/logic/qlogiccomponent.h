@@ -56,11 +56,11 @@ class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3DCore::QComponent
     Q_OBJECT
 
 public:
-    explicit QLogicComponent(Qt3DCore::QNode *parent = 0);
+    explicit QLogicComponent(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QLogicComponent();
 
 protected:
-    QLogicComponent(QLogicComponentPrivate &dd, QNode *parent = 0);
+    QLogicComponent(QLogicComponentPrivate &dd, QNode *parent = Q_NULLPTR);
 
 Q_SIGNALS:
     void frameUpdate(float dt);

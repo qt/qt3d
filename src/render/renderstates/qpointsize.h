@@ -57,7 +57,7 @@ public:
     };
     Q_ENUM(Specification)
 
-    explicit QPointSize(Qt3DCore::QNode *parent = 0);
+    explicit QPointSize(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QPointSize();
 
     Specification specification() const;

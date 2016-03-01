@@ -55,7 +55,7 @@ class QT3DINPUTSHARED_EXPORT QMouseInput : public Qt3DCore::QComponent
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
-    explicit QMouseInput(QNode *parent = 0);
+    explicit QMouseInput(QNode *parent = Q_NULLPTR);
     ~QMouseInput();
 
     QMouseController *controller() const;
@@ -82,7 +82,7 @@ Q_SIGNALS:
     void wheel(Qt3DInput::QWheelEvent *wheel);
 
 protected:
-    QMouseInput(QMouseInputPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QMouseInput(QMouseInputPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void mouseEvent(Qt3DInput::QMouseEvent *event);

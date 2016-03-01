@@ -52,7 +52,7 @@ class QT3DRENDERSHARED_EXPORT QBoundingVolumeSpecifier : public QObject
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QAbstractAttribute *positionAttribute READ positionAttribute WRITE setPositionAttribute NOTIFY positionAttributeChanged)
 public:
-    explicit QBoundingVolumeSpecifier(QObject *parent = 0);
+    explicit QBoundingVolumeSpecifier(QObject *parent = Q_NULLPTR);
 
     QAbstractAttribute *positionAttribute() const;
 

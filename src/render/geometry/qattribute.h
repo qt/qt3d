@@ -53,7 +53,7 @@ class QT3DRENDERSHARED_EXPORT QAttribute : public QAbstractAttribute
     Q_OBJECT
 
 public:
-    explicit QAttribute(Qt3DCore::QNode *parent = 0);
+    explicit QAttribute(Qt3DCore::QNode *parent = Q_NULLPTR);
     QAttribute(QBuffer *buf, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     QAttribute(QBuffer *buf, const QString &name, DataType type, uint dataSize, int count, int offset=0, int stride = 0);
     ~QAttribute();

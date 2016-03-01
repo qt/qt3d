@@ -80,7 +80,7 @@ public:
     };
     Q_ENUM(Blending)
 
-    explicit QBlendState(Qt3DCore::QNode *parent = 0);
+    explicit QBlendState(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QBlendState();
 
     Blending srcRGB() const;
@@ -102,7 +102,7 @@ Q_SIGNALS:
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    QBlendState(QRenderState::Type type, Qt3DCore::QNode *parent = 0);
+    QBlendState(QRenderState::Type type, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QBlendState)
@@ -113,7 +113,7 @@ class QT3DRENDERSHARED_EXPORT QBlendStateSeparate : public QBlendState
 {
     Q_OBJECT
 public:
-    explicit QBlendStateSeparate(Qt3DCore::QNode *parent = 0);
+    explicit QBlendStateSeparate(Qt3DCore::QNode *parent = Q_NULLPTR);
 };
 
 } // namespace Qt3DRender

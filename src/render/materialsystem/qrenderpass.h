@@ -64,7 +64,7 @@ class QT3DRENDERSHARED_EXPORT QRenderPass : public Qt3DCore::QNode
     Q_PROPERTY(Qt3DRender::QShaderProgram *shaderProgram READ shaderProgram WRITE setShaderProgram NOTIFY shaderProgramChanged)
 
 public:
-    explicit QRenderPass(Qt3DCore::QNode *parent = 0);
+    explicit QRenderPass(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QRenderPass();
 
     QString glslNameForParameter(QString paramName) const;
@@ -97,7 +97,7 @@ Q_SIGNALS:
     void shaderProgramChanged(QShaderProgram *shaderProgram);
 
 protected:
-    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderPass(QRenderPassPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

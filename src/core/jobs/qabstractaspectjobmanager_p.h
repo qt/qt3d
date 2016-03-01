@@ -60,7 +60,7 @@ class QAbstractAspectJobManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit QAbstractAspectJobManager(QObject *p = 0);
+    explicit QAbstractAspectJobManager(QObject *p = Q_NULLPTR);
 
     virtual void initialize() {}
     virtual void enqueueJobs(const QVector<QAspectJobPtr> &jobQueue) = 0;

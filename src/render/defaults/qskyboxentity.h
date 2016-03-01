@@ -50,7 +50,7 @@ class QT3DRENDERSHARED_EXPORT QSkyboxEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 public:
-    explicit QSkyboxEntity(Qt3DCore::QNode *parent = 0);
+    explicit QSkyboxEntity(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QSkyboxEntity();
 
     void setBaseName(const QString &path);

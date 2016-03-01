@@ -55,7 +55,7 @@ class QT3DRENDERSHARED_EXPORT QAbstractSceneLoader : public Qt3DCore::QComponent
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QAbstractSceneLoader(Qt3DCore::QNode *parent = 0);
+    explicit QAbstractSceneLoader(Qt3DCore::QNode *parent = Q_NULLPTR);
     ~QAbstractSceneLoader();
 
     enum Status {
@@ -77,7 +77,7 @@ Q_SIGNALS:
     void statusChanged(Status status);
 
 protected:
-    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

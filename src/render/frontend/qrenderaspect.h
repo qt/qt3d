@@ -61,8 +61,8 @@ public:
         Threaded
     };
 
-    explicit QRenderAspect(QObject *parent = 0);
-    explicit QRenderAspect(RenderType type, QObject *parent = 0);
+    explicit QRenderAspect(QObject *parent = Q_NULLPTR);
+    explicit QRenderAspect(RenderType type, QObject *parent = Q_NULLPTR);
 
     void renderInitialize(QOpenGLContext *context);
     void renderSynchronous();

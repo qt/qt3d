@@ -62,8 +62,8 @@ class QT3DINPUTSHARED_EXPORT QInputDeviceIntegration : public QObject
 {
     Q_OBJECT
 protected:
-    explicit QInputDeviceIntegration(QObject *parent = 0);
-    explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = 0);
+    explicit QInputDeviceIntegration(QObject *parent = Q_NULLPTR);
+    explicit QInputDeviceIntegration(QInputDeviceIntegrationPrivate &dd, QObject *parent = Q_NULLPTR);
 
     template<class Frontend>
     void registerBackendType(const Qt3DCore::QBackendNodeFunctorPtr &functor)
