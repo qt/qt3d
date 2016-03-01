@@ -68,6 +68,14 @@ QAbstractAspectPrivate *QAbstractAspectPrivate::get(QAbstractAspect *aspect)
 }
 
 /*!
+ *
+ * Called in the context of the main thread
+ */
+void QAbstractAspectPrivate::onEngineAboutToShutdown()
+{
+}
+
+/*!
     \class Qt3DCore::QAbstractAspect
     \inmodule Qt3DCore
     \brief QAbstractAspect is the base class for aspects that provide a vertical slice of behavior.

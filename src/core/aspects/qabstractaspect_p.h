@@ -93,6 +93,8 @@ public:
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
+    virtual void onEngineAboutToShutdown();
+
     Q_DECLARE_PUBLIC(QAbstractAspect)
 
     QEntity *m_root;

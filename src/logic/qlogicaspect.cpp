@@ -70,6 +70,13 @@ QLogicAspectPrivate::QLogicAspectPrivate()
     m_manager->setExecutor(m_executor.data());
 }
 
+void QLogicAspectPrivate::onEngineAboutToShutdown()
+{
+    // Throw away any pending work that may deadlock during the shutdown procedure
+    // when the main thread waits for any queued jobs to finish.
+    m_executor->clearQueueAndProceed();
+}
+
 QLogicAspect::QLogicAspect(QObject *parent)
     : QAbstractAspect(*new QLogicAspectPrivate(), parent)
 {
@@ -112,14 +119,6 @@ void QLogicAspect::onEngineStartup()
 {
     Q_D(QLogicAspect);
     d->m_executor->setScene(d->m_arbiter->scene());
-}
-
-void QLogicAspect::onEngineShutdown()
-{
-    Q_D(QLogicAspect);
-    // Throw away any pending work that may deadlock during the shutdown procedure
-    // when the main thread waits for any queued jobs to finish.
-    d->m_executor->clearQueueAndProceed();
 }
 
 } // namespace Qt3DLogic

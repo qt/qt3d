@@ -63,7 +63,6 @@ protected:
 private:
     void onRegistered() Q_DECL_OVERRIDE;
     void onEngineStartup() Q_DECL_OVERRIDE;
-    void onEngineShutdown() Q_DECL_OVERRIDE;
 
     Q_DECLARE_PRIVATE(QLogicAspect)
     QLogicAspect(QLogicAspectPrivate &dd, QObject *parent);

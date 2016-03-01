@@ -99,6 +99,18 @@ void QAspectManager::exitSimulationLoop()
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
     m_runSimulationLoop.fetchAndStoreOrdered(0);
+
+    // Give any aspects a chance to unqueue any asynchronous work they
+    // may have scheduled that would otherwise potentially deadlock or
+    // cause races. For example, the QLogicAspect queues up a vector of
+    // QNodeIds to be processed by a callback on the main thread. However,
+    // if we don't unqueue this work and release its semaphore, the logic
+    // aspect would cause a deadlock when trying to exit the inner loop.
+    // This is because we call this function from the main thread and the
+    // logic aspect is waiting for the main thread to execute the
+    // QLogicComponent::onFrameUpdate() callback.
+    Q_FOREACH (QAbstractAspect *aspect, m_aspects)
+        aspect->d_func()->onEngineAboutToShutdown();
 }
 
 bool QAspectManager::isShuttingDown() const
