@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/qalphacoverage.h \
     $$PWD/qalphatest.h \
     $$PWD/qblendequation.h \
+    $$PWD/qblendequationarguments.h \
     $$PWD/qclipplane.h \
     $$PWD/qcolormask.h \
     $$PWD/qcullface.h \
@@ -18,21 +19,21 @@ HEADERS += \
     $$PWD/qscissortest.h \
     $$PWD/qstencilmask.h \
     $$PWD/qstenciloperation.h \
-    $$PWD/qstencilopseparate.h \
+    $$PWD/qstenciloperationarguments.h \
     $$PWD/qstenciltest.h \
     $$PWD/qstenciltestarguments.h \
     $$PWD/renderstates_p.h \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
     $$PWD/renderstatecollection_p.h \
-    $$PWD/qseamlesscubemap.h \
-    $$PWD/qblendequationarguments.h
+    $$PWD/qseamlesscubemap.h
 
 
 SOURCES += \
     $$PWD/qalphacoverage.cpp \
     $$PWD/qalphatest.cpp \
     $$PWD/qblendequation.cpp \
+    $$PWD/qblendequationarguments.cpp \
     $$PWD/qclipplane.cpp \
     $$PWD/qcolormask.cpp \
     $$PWD/qcullface.cpp \
@@ -45,12 +46,11 @@ SOURCES += \
     $$PWD/qscissortest.cpp \
     $$PWD/qstencilmask.cpp \
     $$PWD/qstenciloperation.cpp \
-    $$PWD/qstencilopseparate.cpp \
+    $$PWD/qstenciloperationarguments.cpp \
     $$PWD/qstenciltest.cpp \
     $$PWD/qstenciltestarguments.cpp \
     $$PWD/renderstates.cpp \
     $$PWD/renderstateset.cpp \
     $$PWD/qpointsize.cpp \
     $$PWD/renderstatecollection.cpp \
-    $$PWD/qseamlesscubemap.cpp \
-    $$PWD/qblendequationarguments.cpp
+    $$PWD/qseamlesscubemap.cpp

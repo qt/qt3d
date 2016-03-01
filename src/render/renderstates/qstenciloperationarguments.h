@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSTENCILOPSEPARATE_H
-#define QT3DRENDER_QSTENCILOPSEPARATE_H
+#ifndef QT3DRENDER_QSTENCILOPERATIONARGUMENTS_H
+#define QT3DRENDER_QSTENCILOPERATIONARGUMENTS_H
 
 #include <QObject>
 #include <Qt3DRender/qt3drender_global.h>
@@ -48,9 +48,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QStencilOperationPrivate;
-class QStencilOpSeparatePrivate;
+class QStencilOperationArgumentsPrivate;
 
-class QT3DRENDERSHARED_EXPORT QStencilOpSeparate : public QObject
+class QT3DRENDERSHARED_EXPORT QStencilOperationArguments : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(FaceMode faceMode READ faceMode NOTIFY faceModeChanged)
@@ -80,7 +80,7 @@ public:
     };
     Q_ENUM(Operation)
 
-    ~QStencilOpSeparate();
+    ~QStencilOperationArguments();
 
     FaceMode faceMode() const;
 
@@ -100,8 +100,8 @@ Q_SIGNALS:
     void faceModeChanged(FaceMode faceMode);
 
 private:
-    explicit QStencilOpSeparate(FaceMode mode, QObject *parent = 0);
-    Q_DECLARE_PRIVATE(QStencilOpSeparate)
+    explicit QStencilOperationArguments(FaceMode mode, QObject *parent = 0);
+    Q_DECLARE_PRIVATE(QStencilOperationArguments)
 
     friend class QStencilOperationPrivate;
 };
@@ -110,4 +110,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSTENCILOPSEPARATE_H
+#endif // QT3DRENDER_QSTENCILOPERATIONARGUMENTS_H

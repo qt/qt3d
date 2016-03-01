@@ -91,7 +91,7 @@
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstenciloperation.h>
-#include <Qt3DRender/qstencilopseparate.h>
+#include <Qt3DRender/qstenciloperationarguments.h>
 #include <Qt3DRender/qstencilmask.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
@@ -306,7 +306,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QPolygonOffset>(uri, 2, 0, "PolygonOffset");
     qmlRegisterType<Qt3DRender::QColorMask>(uri, 2, 0, "ColorMask");
     qmlRegisterType<Qt3DRender::QClipPlane>(uri, 2, 0, "ClipPlane");
-    qmlRegisterUncreatableType<Qt3DRender::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
+    qmlRegisterUncreatableType<Qt3DRender::QStencilOperationArguments>(uri, 2, 0, "StencilOperationArguments", QStringLiteral("StencilOperationArguments cannot be instanciated on its own"));
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
     qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");

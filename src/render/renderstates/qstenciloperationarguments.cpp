@@ -37,89 +37,89 @@
 **
 ****************************************************************************/
 
-#include "qstencilopseparate.h"
+#include "qstenciloperationarguments.h"
 #include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilOpSeparatePrivate : public QObjectPrivate
+class QStencilOperationArgumentsPrivate : public QObjectPrivate
 {
 public:
-    QStencilOpSeparatePrivate(QStencilOpSeparate::FaceMode mode)
+    QStencilOperationArgumentsPrivate(QStencilOperationArguments::FaceMode mode)
         : QObjectPrivate()
         , m_face(mode)
-        , m_stencilTestFailureOperation(QStencilOpSeparate::Keep)
-        , m_depthTestFailureOperation(QStencilOpSeparate::Keep)
-        , m_allTestsPassOperation(QStencilOpSeparate::Keep)
+        , m_stencilTestFailureOperation(QStencilOperationArguments::Keep)
+        , m_depthTestFailureOperation(QStencilOperationArguments::Keep)
+        , m_allTestsPassOperation(QStencilOperationArguments::Keep)
     {
 
     }
 
-    QStencilOpSeparate::FaceMode m_face;
-    QStencilOpSeparate::Operation m_stencilTestFailureOperation;
-    QStencilOpSeparate::Operation m_depthTestFailureOperation;
-    QStencilOpSeparate::Operation m_allTestsPassOperation;
+    QStencilOperationArguments::FaceMode m_face;
+    QStencilOperationArguments::Operation m_stencilTestFailureOperation;
+    QStencilOperationArguments::Operation m_depthTestFailureOperation;
+    QStencilOperationArguments::Operation m_allTestsPassOperation;
 };
 
-QStencilOpSeparate::QStencilOpSeparate(FaceMode mode, QObject *parent)
-    : QObject(*new QStencilOpSeparatePrivate(mode), parent)
+QStencilOperationArguments::QStencilOperationArguments(FaceMode mode, QObject *parent)
+    : QObject(*new QStencilOperationArgumentsPrivate(mode), parent)
 {
 }
 
-QStencilOpSeparate::~QStencilOpSeparate()
+QStencilOperationArguments::~QStencilOperationArguments()
 {
 }
 
-QStencilOpSeparate::FaceMode QStencilOpSeparate::faceMode() const
+QStencilOperationArguments::FaceMode QStencilOperationArguments::faceMode() const
 {
-    Q_D(const QStencilOpSeparate);
+    Q_D(const QStencilOperationArguments);
     return d->m_face;
 }
 
-void QStencilOpSeparate::setStencilTestFailureOperation(QStencilOpSeparate::Operation operation)
+void QStencilOperationArguments::setStencilTestFailureOperation(QStencilOperationArguments::Operation operation)
 {
-    Q_D(QStencilOpSeparate);
+    Q_D(QStencilOperationArguments);
     if (d->m_stencilTestFailureOperation != operation) {
         d->m_stencilTestFailureOperation = operation;
         Q_EMIT stencilTestFailureOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::stencilTestFailureOperation() const
+QStencilOperationArguments::Operation QStencilOperationArguments::stencilTestFailureOperation() const
 {
-    Q_D(const QStencilOpSeparate);
+    Q_D(const QStencilOperationArguments);
     return d->m_stencilTestFailureOperation;
 }
 
-void QStencilOpSeparate::setDepthTestFailureOperation(QStencilOpSeparate::Operation operation)
+void QStencilOperationArguments::setDepthTestFailureOperation(QStencilOperationArguments::Operation operation)
 {
-    Q_D(QStencilOpSeparate);
+    Q_D(QStencilOperationArguments);
     if (d->m_depthTestFailureOperation != operation) {
         d->m_depthTestFailureOperation = operation;
         Q_EMIT depthTestFailureOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::depthTestFailureOperation() const
+QStencilOperationArguments::Operation QStencilOperationArguments::depthTestFailureOperation() const
 {
-    Q_D(const QStencilOpSeparate);
+    Q_D(const QStencilOperationArguments);
     return d->m_depthTestFailureOperation;
 }
 
-void QStencilOpSeparate::setAllTestsPassOperation(QStencilOpSeparate::Operation operation)
+void QStencilOperationArguments::setAllTestsPassOperation(QStencilOperationArguments::Operation operation)
 {
-    Q_D(QStencilOpSeparate);
+    Q_D(QStencilOperationArguments);
     if (d->m_allTestsPassOperation != operation) {
         d->m_allTestsPassOperation = operation;
         Q_EMIT allTestsPassOperationChanged(operation);
     }
 }
 
-QStencilOpSeparate::Operation QStencilOpSeparate::allTestsPassOperation() const
+QStencilOperationArguments::Operation QStencilOperationArguments::allTestsPassOperation() const
 {
-    Q_D(const QStencilOpSeparate);
+    Q_D(const QStencilOperationArguments);
     return d->m_allTestsPassOperation;
 }
 

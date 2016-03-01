@@ -66,7 +66,7 @@
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstenciloperation.h>
-#include <Qt3DRender/qstencilopseparate.h>
+#include <Qt3DRender/qstenciloperationarguments.h>
 #include <Qt3DRender/qstencilmask.h>
 
 QT_BEGIN_NAMESPACE
@@ -346,8 +346,8 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderState::StencilOp: {
         QStencilOperation *stencilOp = static_cast<QStencilOperation *>(renderState);
-        const QStencilOpSeparate *front = stencilOp->front();
-        const QStencilOpSeparate *back = stencilOp->back();
+        const QStencilOperationArguments *front = stencilOp->front();
+        const QStencilOperationArguments *back = stencilOp->back();
         return getOrCreateRenderStateImpl<StencilOp>(front->stencilTestFailureOperation(), front->depthTestFailureOperation(), front->allTestsPassOperation(),
                                       back->stencilTestFailureOperation(), back->depthTestFailureOperation(), back->allTestsPassOperation());
     }

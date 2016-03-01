@@ -47,20 +47,20 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QStencilOperationPrivate;
-class QStencilOpSeparate;
+class QStencilOperationArguments;
 
 class QT3DRENDERSHARED_EXPORT QStencilOperation : public QRenderState
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *front READ front CONSTANT)
-    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *back READ back CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilOperationArguments *front READ front CONSTANT)
+    Q_PROPERTY(Qt3DRender::QStencilOperationArguments *back READ back CONSTANT)
 
 public:
     explicit QStencilOperation(Qt3DCore::QNode *parent = 0);
     ~QStencilOperation();
 
-    QStencilOpSeparate *front() const;
-    QStencilOpSeparate *back() const;
+    QStencilOperationArguments *front() const;
+    QStencilOperationArguments *back() const;
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
