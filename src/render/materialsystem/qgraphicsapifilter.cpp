@@ -59,7 +59,7 @@ public:
 
     Q_DECLARE_PUBLIC(QGraphicsApiFilter)
     QGraphicsApiFilter::Api m_api;
-    QGraphicsApiFilter::Profile m_profile;
+    QGraphicsApiFilter::OpenGLProfile m_profile;
     int m_minor;
     int m_major;
     QStringList m_extensions;
@@ -153,7 +153,7 @@ QGraphicsApiFilter::Api QGraphicsApiFilter::api() const
   \value CompatibilityProfile QSurfaceFormat::CompatibilityProfile
 */
 
-QGraphicsApiFilter::Profile QGraphicsApiFilter::profile() const
+QGraphicsApiFilter::OpenGLProfile QGraphicsApiFilter::profile() const
 {
     Q_D(const QGraphicsApiFilter);
     return d->m_profile;
@@ -233,7 +233,7 @@ void QGraphicsApiFilter::setApi(QGraphicsApiFilter::Api api)
     }
 }
 
-void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::Profile profile)
+void QGraphicsApiFilter::setProfile(QGraphicsApiFilter::OpenGLProfile profile)
 {
     Q_D(QGraphicsApiFilter);
     if (d->m_profile != profile) {

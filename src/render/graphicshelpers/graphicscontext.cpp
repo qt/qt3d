@@ -640,7 +640,7 @@ GraphicsHelperInterface *GraphicsContext::resolveHighestOpenGLFunctions()
     m_contextInfo->setMajorVersion(m_gl->format().version().first);
     m_contextInfo->setMinorVersion(m_gl->format().version().second);
     m_contextInfo->setApi(m_gl->isOpenGLES() ? QGraphicsApiFilter::OpenGLES : QGraphicsApiFilter::OpenGL);
-    m_contextInfo->setProfile(static_cast<QGraphicsApiFilter::Profile>(m_gl->format().profile()));
+    m_contextInfo->setProfile(static_cast<QGraphicsApiFilter::OpenGLProfile>(m_gl->format().profile()));
     m_contextInfo->setExtensions(extensions);
     m_contextInfo->setVendor(QString::fromUtf8(reinterpret_cast<const char *>(m_gl->functions()->glGetString(GL_VENDOR))));
 
