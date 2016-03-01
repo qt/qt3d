@@ -45,8 +45,6 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-
 namespace {
     struct FilterPriorityPair
     {
@@ -58,7 +56,13 @@ namespace {
     {
         return a.priority < b.priority;
     }
+}
 
+Q_DECLARE_TYPEINFO(FilterPriorityPair, Q_PRIMITIVE_TYPE);
+
+namespace Qt3DCore {
+
+namespace {
     class InternalEventListener;
 }
 

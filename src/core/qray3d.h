@@ -98,6 +98,8 @@ QT3DCORESHARED_EXPORT QDataStream &operator>>(QDataStream &stream, Qt3DCore::QRa
 
 } // namespace Qt3DCore
 
+Q_DECLARE_TYPEINFO(Qt3DCore::QRay3D, Q_MOVABLE_TYPE);
+
 QT_END_NAMESPACE
 
 inline bool qFuzzyCompare(const Qt3DCore::QRay3D &ray1, const Qt3DCore::QRay3D &ray2)
