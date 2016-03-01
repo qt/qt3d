@@ -85,10 +85,10 @@ void QTechnique::copy(const QNode *ref)
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
     d_func()->m_graphicsApiFilter.copy(tech->d_func()->m_graphicsApiFilter);
 
-    Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_annotationList)
+    Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_filterKeys)
         addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(annotation)));
     Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
-        addPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
+        addRenderPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
@@ -108,8 +108,8 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
 void QTechnique::addAnnotation(QAnnotation *criterion)
 {
     Q_D(QTechnique);
-    if (!d->m_annotationList.contains(criterion)) {
-        d->m_annotationList.append(criterion);
+    if (!d->m_filterKeys.contains(criterion)) {
+        d->m_filterKeys.append(criterion);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -120,7 +120,7 @@ void QTechnique::addAnnotation(QAnnotation *criterion)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("annotation");
+            change->setPropertyName("filterKeys");
             change->setValue(QVariant::fromValue(criterion->id()));
             d->notifyObservers(change);
         }
@@ -132,17 +132,17 @@ void QTechnique::removeAnnotation(QAnnotation *criterion)
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("annotation");
+        change->setPropertyName("filterKeys");
         change->setValue(QVariant::fromValue(criterion->id()));
         d->notifyObservers(change);
     }
-    d->m_annotationList.removeOne(criterion);
+    d->m_filterKeys.removeOne(criterion);
 }
 
-QList<QAnnotation *> QTechnique::annotations() const
+QList<QAnnotation *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
-    return d->m_annotationList;
+    return d->m_filterKeys;
 }
 
 void QTechnique::addParameter(QParameter *parameter)
@@ -185,7 +185,7 @@ void QTechnique::removeParameter(QParameter *parameter)
  * QScenePropertyChange notification to the QChangeArbiter with the
  * value being the \a pass and the property name being "pass".
  */
-void QTechnique::addPass(QRenderPass *pass)
+void QTechnique::addRenderPass(QRenderPass *pass)
 {
     Q_D(QTechnique);
     if (!d->m_renderPasses.contains(pass)) {
@@ -212,7 +212,7 @@ void QTechnique::addPass(QRenderPass *pass)
  * QScenePropertyChange notification to the QChangeArbiter with the value
  * being the id of \a pass and the property name being "pass".
  */
-void QTechnique::removePass(QRenderPass *pass)
+void QTechnique::removeRenderPass(QRenderPass *pass)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter) {

@@ -70,7 +70,7 @@ public:
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)
-    QList<QAnnotation *> m_annotationList;
+    QList<QAnnotation *> m_filterKeys;
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
     QGraphicsApiFilter m_graphicsApiFilter;

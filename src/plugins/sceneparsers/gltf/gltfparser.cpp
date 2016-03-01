@@ -1045,7 +1045,7 @@ void GLTFParser::processJSONTechnique(const QString &id, const QJsonObject &json
     }
 
 
-    t->addPass(pass);
+    t->addRenderPass(pass);
 
     m_techniques[id] = t;
 }

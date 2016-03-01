@@ -137,9 +137,9 @@ void QNormalDiffuseMapMaterialPrivate::init()
     m_normalDiffuseGL2RenderPass->setShaderProgram(m_normalDiffuseGL2ES2Shader);
     m_normalDiffuseES2RenderPass->setShaderProgram(m_normalDiffuseGL2ES2Shader);
 
-    m_normalDiffuseGL3Technique->addPass(m_normalDiffuseGL3RenderPass);
-    m_normalDiffuseGL2Technique->addPass(m_normalDiffuseGL2RenderPass);
-    m_normalDiffuseES2Technique->addPass(m_normalDiffuseES2RenderPass);
+    m_normalDiffuseGL3Technique->addRenderPass(m_normalDiffuseGL3RenderPass);
+    m_normalDiffuseGL2Technique->addRenderPass(m_normalDiffuseGL2RenderPass);
+    m_normalDiffuseES2Technique->addRenderPass(m_normalDiffuseES2RenderPass);
 
     m_normalDiffuseEffect->addTechnique(m_normalDiffuseGL3Technique);
     m_normalDiffuseEffect->addTechnique(m_normalDiffuseGL2Technique);

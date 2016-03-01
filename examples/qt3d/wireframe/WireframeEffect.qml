@@ -70,7 +70,7 @@ Effect {
                 minorVersion: 1
             }
 
-            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
+            filterKeys: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
             parameters: [
                 Parameter { name: "light.position"; value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },

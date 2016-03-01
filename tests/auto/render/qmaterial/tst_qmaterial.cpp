@@ -56,7 +56,7 @@ public:
         , m_shaderProgram(new Qt3DRender::QShaderProgram(this))
     {
         m_renderPass->setShaderProgram(m_shaderProgram);
-        m_technique->addPass(m_renderPass);
+        m_technique->addRenderPass(m_renderPass);
         m_effect->addTechnique(m_technique);
         setEffect(m_effect);
     }

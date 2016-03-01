@@ -135,9 +135,9 @@ void QDiffuseSpecularMapMaterialPrivate::init()
     m_diffuseSpecularMapGL2RenderPass->setShaderProgram(m_diffuseSpecularMapGL2ES2Shader);
     m_diffuseSpecularMapES2RenderPass->setShaderProgram(m_diffuseSpecularMapGL2ES2Shader);
 
-    m_diffuseSpecularMapGL3Technique->addPass(m_diffuseSpecularMapGL3RenderPass);
-    m_diffuseSpecularMapGL2Technique->addPass(m_diffuseSpecularMapGL2RenderPass);
-    m_diffuseSpecularMapES2Technique->addPass(m_diffuseSpecularMapES2RenderPass);
+    m_diffuseSpecularMapGL3Technique->addRenderPass(m_diffuseSpecularMapGL3RenderPass);
+    m_diffuseSpecularMapGL2Technique->addRenderPass(m_diffuseSpecularMapGL2RenderPass);
+    m_diffuseSpecularMapES2Technique->addRenderPass(m_diffuseSpecularMapES2RenderPass);
 
     m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapGL3Technique);
     m_diffuseSpecularMapEffect->addTechnique(m_diffuseSpecularMapGL2Technique);

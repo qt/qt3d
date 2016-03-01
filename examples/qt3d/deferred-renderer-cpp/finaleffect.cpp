@@ -81,7 +81,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
 
     m_gl3Pass->addAnnotation(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
-    m_gl3Technique->addPass(m_gl3Pass);
+    m_gl3Technique->addRenderPass(m_gl3Pass);
 
     Qt3DRender::QShaderProgram *gl2Shader = new Qt3DRender::QShaderProgram();
     gl2Shader->setVertexShaderCode(gl2Shader->loadSource(QUrl(QStringLiteral("qrc:/final_gl2.vert"))));
@@ -89,7 +89,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
 
     m_gl2Pass->addAnnotation(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);
-    m_gl2Technique->addPass(m_gl2Pass);
+    m_gl2Technique->addRenderPass(m_gl2Pass);
 
     addTechnique(m_gl3Technique);
     addTechnique(m_gl2Technique);

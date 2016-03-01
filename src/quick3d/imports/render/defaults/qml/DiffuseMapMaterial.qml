@@ -93,7 +93,7 @@ Material {
         techniques: [
             // OpenGL 3.1
             Technique {
-                annotations: [ forward ]
+                filterKeys: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.CoreProfile
@@ -105,7 +105,7 @@ Material {
 
             // OpenGL 2.1
             Technique {
-                annotations: [ forward ]
+                filterKeys: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
                     profile: GraphicsApiFilter.NoProfile
@@ -117,7 +117,7 @@ Material {
 
             // OpenGL ES 2
             Technique {
-                annotations: [ forward ]
+                filterKeys: [ forward ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGLES
                     profile: GraphicsApiFilter.NoProfile

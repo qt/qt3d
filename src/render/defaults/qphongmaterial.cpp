@@ -110,9 +110,9 @@ void QPhongMaterialPrivate::init()
     m_phongGL2RenderPass->setShaderProgram(m_phongGL2ES2Shader);
     m_phongES2RenderPass->setShaderProgram(m_phongGL2ES2Shader);
 
-    m_phongGL3Technique->addPass(m_phongGL3RenderPass);
-    m_phongGL2Technique->addPass(m_phongGL2RenderPass);
-    m_phongES2Technique->addPass(m_phongES2RenderPass);
+    m_phongGL3Technique->addRenderPass(m_phongGL3RenderPass);
+    m_phongGL2Technique->addRenderPass(m_phongGL2RenderPass);
+    m_phongES2Technique->addRenderPass(m_phongES2RenderPass);
 
     Q_Q(QPhongMaterial);
     m_annotation->setParent(q);

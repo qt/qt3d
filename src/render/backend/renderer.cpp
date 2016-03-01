@@ -219,7 +219,7 @@ void Renderer::buildDefaultTechnique()
     m_defaultRenderStateSet->addState(getOrCreateRenderStateImpl<ColorMask>(true, true, true, true));
     //basicPass->setStateSet(m_defaultRenderStateSet);
 
-    m_defaultTechnique->addPass(basicPass);
+    m_defaultTechnique->addRenderPass(basicPass);
 
     QParameter* ka = new QParameter(QStringLiteral("ka"), QVector3D(0.2f, 0.2f, 0.2f));
     m_defaultTechnique->addParameter(ka);

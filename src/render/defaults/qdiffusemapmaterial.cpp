@@ -128,9 +128,9 @@ void QDiffuseMapMaterialPrivate::init()
     m_diffuseMapGL2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
     m_diffuseMapES2RenderPass->setShaderProgram(m_diffuseMapGL2ES2Shader);
 
-    m_diffuseMapGL3Technique->addPass(m_diffuseMapGL3RenderPass);
-    m_diffuseMapGL2Technique->addPass(m_diffuseMapGL2RenderPass);
-    m_diffuseMapES2Technique->addPass(m_diffuseMapES2RenderPass);
+    m_diffuseMapGL3Technique->addRenderPass(m_diffuseMapGL3RenderPass);
+    m_diffuseMapGL2Technique->addRenderPass(m_diffuseMapGL2RenderPass);
+    m_diffuseMapES2Technique->addRenderPass(m_diffuseMapES2RenderPass);
 
     m_diffuseMapEffect->addTechnique(m_diffuseMapGL3Technique);
     m_diffuseMapEffect->addTechnique(m_diffuseMapGL2Technique);

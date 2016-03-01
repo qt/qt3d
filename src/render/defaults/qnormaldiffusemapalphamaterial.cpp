@@ -111,9 +111,9 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseES2RenderPass->addRenderState(m_alphaCoverage);
     m_normalDiffuseES2RenderPass->addRenderState(m_depthTest);
 
-    m_normalDiffuseGL3Technique->addPass(m_normalDiffuseGL3RenderPass);
-    m_normalDiffuseGL2Technique->addPass(m_normalDiffuseGL2RenderPass);
-    m_normalDiffuseES2Technique->addPass(m_normalDiffuseES2RenderPass);
+    m_normalDiffuseGL3Technique->addRenderPass(m_normalDiffuseGL3RenderPass);
+    m_normalDiffuseGL2Technique->addRenderPass(m_normalDiffuseGL2RenderPass);
+    m_normalDiffuseES2Technique->addRenderPass(m_normalDiffuseES2RenderPass);
 
     m_normalDiffuseEffect->addTechnique(m_normalDiffuseGL3Technique);
     m_normalDiffuseEffect->addTechnique(m_normalDiffuseGL2Technique);

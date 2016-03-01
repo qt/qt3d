@@ -145,9 +145,9 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexGL2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);
     m_vertexES2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);
 
-    m_vertexGL3Technique->addPass(m_vertexGL3RenderPass);
-    m_vertexGL2Technique->addPass(m_vertexGL2RenderPass);
-    m_vertexES2Technique->addPass(m_vertexES2RenderPass);
+    m_vertexGL3Technique->addRenderPass(m_vertexGL3RenderPass);
+    m_vertexGL2Technique->addRenderPass(m_vertexGL2RenderPass);
+    m_vertexES2Technique->addRenderPass(m_vertexES2RenderPass);
 
     m_vertexEffect->addTechnique(m_vertexGL3Technique);
     m_vertexEffect->addTechnique(m_vertexGL2Technique);

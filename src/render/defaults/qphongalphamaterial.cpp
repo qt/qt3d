@@ -146,9 +146,9 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2RenderPass->addRenderState(m_blendState);
     m_phongAlphaES2RenderPass->addRenderState(m_blendEquation);
 
-    m_phongAlphaGL3Technique->addPass(m_phongAlphaGL3RenderPass);
-    m_phongAlphaGL2Technique->addPass(m_phongAlphaGL2RenderPass);
-    m_phongAlphaES2Technique->addPass(m_phongAlphaES2RenderPass);
+    m_phongAlphaGL3Technique->addRenderPass(m_phongAlphaGL3RenderPass);
+    m_phongAlphaGL2Technique->addRenderPass(m_phongAlphaGL2RenderPass);
+    m_phongAlphaES2Technique->addRenderPass(m_phongAlphaES2RenderPass);
 
     m_phongEffect->addTechnique(m_phongAlphaGL3Technique);
     m_phongEffect->addTechnique(m_phongAlphaGL2Technique);

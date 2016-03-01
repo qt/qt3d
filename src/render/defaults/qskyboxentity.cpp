@@ -136,9 +136,9 @@ void QSkyboxEntityPrivate::init()
     m_es2RenderPass->addRenderState(cullFront);
     m_es2RenderPass->addRenderState(depthTest);
 
-    m_gl3Technique->addPass(m_gl3RenderPass);
-    m_gl2Technique->addPass(m_gl2RenderPass);
-    m_es2Technique->addPass(m_es2RenderPass);
+    m_gl3Technique->addRenderPass(m_gl3RenderPass);
+    m_gl2Technique->addRenderPass(m_gl2RenderPass);
+    m_es2Technique->addRenderPass(m_es2RenderPass);
 
     m_effect->addTechnique(m_gl3Technique);
     m_effect->addTechnique(m_gl2Technique);

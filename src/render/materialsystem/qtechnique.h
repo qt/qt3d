@@ -66,14 +66,14 @@ public:
 
     void addAnnotation(QAnnotation *criterion);
     void removeAnnotation(QAnnotation *criterion);
-    QList<QAnnotation *> annotations() const;
+    QList<QAnnotation *> filterKeys() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
     QList<QParameter *> parameters() const;
 
-    void addPass(QRenderPass *pass);
-    void removePass(QRenderPass *pass);
+    void addRenderPass(QRenderPass *pass);
+    void removeRenderPass(QRenderPass *pass);
     QList<QRenderPass *> renderPasses() const;
 
     QGraphicsApiFilter *graphicsApiFilter();

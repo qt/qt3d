@@ -95,7 +95,7 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
             m_parameterPack.appendParameter(p->id());
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
             appendRenderPass(rPass->id());
-        Q_FOREACH (QAnnotation *annotation, technique->annotations())
+        Q_FOREACH (QAnnotation *annotation, technique->filterKeys())
             appendAnnotation(annotation->id());
 
         // Copy GraphicsApiFilter info from frontend GraphicsApiFilter

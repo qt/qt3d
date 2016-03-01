@@ -125,9 +125,9 @@ void QGoochMaterialPrivate::init()
     m_gl2RenderPass->setShaderProgram(m_gl2ES2Shader);
     m_es2RenderPass->setShaderProgram(m_gl2ES2Shader);
 
-    m_gl3Technique->addPass(m_gl3RenderPass);
-    m_gl2Technique->addPass(m_gl2RenderPass);
-    m_es2Technique->addPass(m_es2RenderPass);
+    m_gl3Technique->addRenderPass(m_gl3RenderPass);
+    m_gl2Technique->addRenderPass(m_gl2RenderPass);
+    m_es2Technique->addRenderPass(m_es2RenderPass);
 
     m_effect->addTechnique(m_gl3Technique);
     m_effect->addTechnique(m_gl2Technique);
