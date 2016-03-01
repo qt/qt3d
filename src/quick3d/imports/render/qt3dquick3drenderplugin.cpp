@@ -271,7 +271,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderTargetSelector, Qt3DRender::Render::Quick::Quick3DRenderTargetSelector>("QRenderTargetSelector", "Qt3D.Render/RenderTargetSelector", uri, 2, 0, "RenderTargetSelector");
     qmlRegisterType<Qt3DRender::QClearBuffer>(uri, 2, 0, "ClearBuffer");
     qmlRegisterUncreatableType<Qt3DRender::QFrameGraphNode>(uri, 2, 0, "FrameGraphNode", QStringLiteral("FrameGraphNode is a base class"));
-    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QStateSet", "Qt3D.Render/StateSet", uri, 2, 0, "StateSet");
+    Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QRenderStateSet", "Qt3D.Render/RenderStateSet", uri, 2, 0, "RenderStateSet");
     qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3DRender::QFrameGraph>(uri, 2, 0, "FrameGraph");
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");

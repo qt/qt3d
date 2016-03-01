@@ -63,7 +63,7 @@
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qshaderdata.h>
-#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/qnodraw.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qattribute.h>
@@ -276,7 +276,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_renderer, d->m_nodeManagers->parameterManager())));
     registerBackendType<QShaderData>(QBackendNodeMapperPtr(new Render::RenderShaderDataFunctor(d->m_renderer, d->m_nodeManagers)));
     registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(d->m_renderer, d->m_nodeManagers->textureManager(), d->m_nodeManagers->textureImageManager(), d->m_nodeManagers->textureDataManager())));
-    registerBackendType<QStateSet>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QStateSet>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
+    registerBackendType<QRenderStateSet>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QRenderStateSet>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QNoDraw>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QBuffer>(QBackendNodeMapperPtr(new Render::BufferFunctor(d->m_renderer, d->m_nodeManagers->bufferManager())));
     registerBackendType<QAttribute>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Attribute, Render::AttributeManager>(d->m_renderer, d->m_nodeManagers->attributeManager())));

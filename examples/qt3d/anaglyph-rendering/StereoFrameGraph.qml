@@ -70,7 +70,7 @@ Viewport {
         // Draw with left eye
         CameraSelector {
             id: leftCameraSelector
-            StateSet {
+            RenderStateSet {
                 renderStates: [
                     ColorMask { red: true; green: false; blue: false; alpha: false },
                     DepthTest { depthFunction: DepthTest.Less }
@@ -83,7 +83,7 @@ Viewport {
             buffers: ClearBuffer.DepthBuffer
             CameraSelector {
                 id: rightCameraSelector
-                StateSet {
+                RenderStateSet {
                     renderStates: [
                         ColorMask { red: false; green: true; blue: true; alpha: false },
                         DepthTest { depthFunction: DepthTest.Less }

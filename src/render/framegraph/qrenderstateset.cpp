@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qstateset.h"
-#include "qstateset_p.h"
+#include "qrenderstateset.h"
+#include "qrenderstateset_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qrenderstate.h>
@@ -49,22 +49,22 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-QStateSetPrivate::QStateSetPrivate()
+QRenderStateSetPrivate::QRenderStateSetPrivate()
     : QFrameGraphNodePrivate()
 {
 }
 
 /*!
- * \class Qt3DRender::QStateSet
+ * \class Qt3DRender::QRenderStateSet
  * \inmodule Qt3DRender
  *
- * \brief The QStateSet \l {QFrameGraphNode}{FrameGraph} node offers a way of
+ * \brief The QRenderStateSet \l {QFrameGraphNode}{FrameGraph} node offers a way of
  * specifying a set of QRenderState objects to be applied during the execution
  * of a framegraph branch.
  *
- * States set on a QStateSet are set globally, contrary to the per-material
+ * States set on a QRenderStateSet are set globally, contrary to the per-material
  * states that can be set on a QRenderPass. By default, an empty
- * QStateSet will result in all render states being disabled when
+ * QRenderStateSet will result in all render states being disabled when
  * executed. Adding a QRenderState state explicitly enables that render
  * state at runtime.
  *
@@ -73,39 +73,39 @@ QStateSetPrivate::QStateSetPrivate()
  * \sa QRenderState, QRenderPass
  */
 
-QStateSet::QStateSet(QNode *parent)
-    : QFrameGraphNode(*new QStateSetPrivate, parent)
+QRenderStateSet::QRenderStateSet(QNode *parent)
+    : QFrameGraphNode(*new QRenderStateSetPrivate, parent)
 {
 }
 
-QStateSet::QStateSet(QStateSetPrivate &dd, QNode *parent)
+QRenderStateSet::QRenderStateSet(QRenderStateSetPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
 }
 
-QStateSet::~QStateSet()
+QRenderStateSet::~QRenderStateSet()
 {
     QNode::cleanup();
 }
 
-void QStateSet::copy(const QNode *ref)
+void QRenderStateSet::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
-    const QStateSet *other = static_cast<const QStateSet*>(ref);
+    const QRenderStateSet *other = static_cast<const QRenderStateSet*>(ref);
 
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
         addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
 }
 
 /*!
- * Adds a new QRenderState \a state to the QStateSet instance.
+ * Adds a new QRenderState \a state to the QRenderStateSet instance.
  *
- * \note Not setting any QRenderState state on a QStateSet instance
+ * \note Not setting any QRenderState state on a QRenderStateSet instance
  * implies all the render states will be disabled at render time.
  */
-void QStateSet::addRenderState(QRenderState *state)
+void QRenderStateSet::addRenderState(QRenderState *state)
 {
-    Q_D(QStateSet);
+    Q_D(QRenderStateSet);
 
     if (!d->m_renderStates.contains(state)) {
         d->m_renderStates.append(state);
@@ -124,11 +124,11 @@ void QStateSet::addRenderState(QRenderState *state)
 }
 
 /*!
- * Removes the QRenderState \a state from the QStateSet instance.
+ * Removes the QRenderState \a state from the QRenderStateSet instance.
  */
-void QStateSet::removeRenderState(QRenderState *state)
+void QRenderStateSet::removeRenderState(QRenderState *state)
 {
-    Q_D(QStateSet);
+    Q_D(QRenderStateSet);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         change->setPropertyName("renderState");
@@ -139,11 +139,11 @@ void QStateSet::removeRenderState(QRenderState *state)
 }
 
 /*!
- * Returns the list of QRenderState objects that compose the QStateSet instance.
+ * Returns the list of QRenderState objects that compose the QRenderStateSet instance.
  */
-QList<QRenderState *> QStateSet::renderStates() const
+QList<QRenderState *> QRenderStateSet::renderStates() const
 {
-    Q_D(const QStateSet);
+    Q_D(const QRenderStateSet);
     return d->m_renderStates;
 }
 

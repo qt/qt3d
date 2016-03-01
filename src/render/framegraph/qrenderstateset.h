@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSTATESET_H
-#define QT3DRENDER_QSTATESET_H
+#ifndef QT3DRENDER_QRENDERSTATESET_H
+#define QT3DRENDER_QRENDERSTATESET_H
 
 #include <Qt3DRender/qframegraphnode.h>
 
@@ -46,32 +46,32 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStateSetPrivate;
+class QRenderStateSetPrivate;
 class QRenderState;
 
-class QT3DRENDERSHARED_EXPORT QStateSet : public QFrameGraphNode
+class QT3DRENDERSHARED_EXPORT QRenderStateSet : public QFrameGraphNode
 {
     Q_OBJECT
 
 public:
-    explicit QStateSet(Qt3DCore::QNode *parent = 0);
-    ~QStateSet();
+    explicit QRenderStateSet(Qt3DCore::QNode *parent = 0);
+    ~QRenderStateSet();
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);
     QList<QRenderState *> renderStates() const;
 
 protected:
-    QStateSet(QStateSetPrivate &dd, Qt3DCore::QNode *parent = 0);
+    QRenderStateSet(QRenderStateSetPrivate &dd, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    Q_DECLARE_PRIVATE(QStateSet)
-    QT3D_CLONEABLE(QStateSet)
+    Q_DECLARE_PRIVATE(QRenderStateSet)
+    QT3D_CLONEABLE(QRenderStateSet)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSTATESET_H
+#endif // QT3DRENDER_QRENDERSTATESET_H

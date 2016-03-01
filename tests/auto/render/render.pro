@@ -32,7 +32,7 @@ contains(QT_CONFIG, private_tests) {
         qrendertargetselector \
         qsortcriterion \
         qsortmethod \
-        qstateset \
+        qrenderstateset \
         qtechniquefilter \
         qviewport \
         framegraphnode \

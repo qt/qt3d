@@ -31,7 +31,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/qrenderstate_p.h>
 #include <Qt3DRender/qrenderstate.h>
 
@@ -67,11 +67,11 @@ private:
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QStateSet: public Qt3DCore::QNode
+class tst_QRenderStateSet: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    ~tst_QStateSet()
+    ~tst_QRenderStateSet()
     {
         QNode::cleanup();
     }
@@ -80,20 +80,20 @@ private Q_SLOTS:
 
     void checkSaneDefaults()
     {
-        QScopedPointer<Qt3DRender::QStateSet> defaultstateSet(new Qt3DRender::QStateSet);
+        QScopedPointer<Qt3DRender::QRenderStateSet> defaultstateSet(new Qt3DRender::QRenderStateSet);
 
         QVERIFY(defaultstateSet->renderStates().isEmpty());
     }
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3DRender::QStateSet *>("stateSet");
+        QTest::addColumn<Qt3DRender::QRenderStateSet *>("stateSet");
         QTest::addColumn<QList<Qt3DRender::QRenderState *> >("states");
 
-        Qt3DRender::QStateSet *defaultConstructed = new Qt3DRender::QStateSet();
+        Qt3DRender::QRenderStateSet *defaultConstructed = new Qt3DRender::QRenderStateSet();
         QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QRenderState *>();
 
-        Qt3DRender::QStateSet *stateSetWithStates = new Qt3DRender::QStateSet();
+        Qt3DRender::QRenderStateSet *stateSetWithStates = new Qt3DRender::QRenderStateSet();
         Qt3DRender::QRenderState *state1 = new MyStateSet();
         Qt3DRender::QRenderState *state2 = new MyStateSet();
         QList<Qt3DRender::QRenderState *> states = QList<Qt3DRender::QRenderState *>() << state1 << state2;
@@ -105,14 +105,14 @@ private Q_SLOTS:
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3DRender::QStateSet*, stateSet);
+        QFETCH(Qt3DRender::QRenderStateSet*, stateSet);
         QFETCH(QList<Qt3DRender::QRenderState *>, states);
 
         // THEN
         QCOMPARE(stateSet->renderStates(), states);
 
         // WHEN
-        Qt3DRender::QStateSet *clone = static_cast<Qt3DRender::QStateSet *>(QNode::clone(stateSet));
+        Qt3DRender::QRenderStateSet *clone = static_cast<Qt3DRender::QRenderStateSet *>(QNode::clone(stateSet));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
@@ -135,7 +135,7 @@ private Q_SLOTS:
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::QStateSet> stateSet(new Qt3DRender::QStateSet());
+        QScopedPointer<Qt3DRender::QRenderStateSet> stateSet(new Qt3DRender::QRenderStateSet());
         TestArbiter arbiter(stateSet.data());
 
         // WHEN
@@ -185,6 +185,6 @@ protected:
 
 };
 
-QTEST_MAIN(tst_QStateSet)
+QTEST_MAIN(tst_QRenderStateSet)
 
-#include "tst_qstateset.moc"
+#include "tst_qrenderstateset.moc"

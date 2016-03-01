@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
-#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qrenderstateset.h>
 #include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
@@ -70,7 +70,7 @@ public:
     ~Quick3DStateSet();
 
     QQmlListProperty<QRenderState> renderStateList();
-    inline QStateSet *parentStateSet() const { return qobject_cast<QStateSet *>(parent()); }
+    inline QRenderStateSet *parentStateSet() const { return qobject_cast<QRenderStateSet *>(parent()); }
 
 private:
     static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);

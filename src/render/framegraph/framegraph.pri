@@ -29,8 +29,8 @@ HEADERS += \
     $$PWD/qsortcriterion_p.h \
     $$PWD/qsortmethod.h \
     $$PWD/qsortmethod_p.h \
-    $$PWD/qstateset.h \
-    $$PWD/qstateset_p.h \
+    $$PWD/qrenderstateset.h \
+    $$PWD/qrenderstateset_p.h \
     $$PWD/qtechniquefilter.h \
     $$PWD/qtechniquefilter_p.h \
     $$PWD/qviewport.h \
@@ -72,7 +72,7 @@ SOURCES += \
     $$PWD/qrendertargetselector.cpp \
     $$PWD/qsortcriterion.cpp \
     $$PWD/qsortmethod.cpp \
-    $$PWD/qstateset.cpp \
+    $$PWD/qrenderstateset.cpp \
     $$PWD/qtechniquefilter.cpp \
     $$PWD/qviewport.cpp \
     $$PWD/renderpassfilternode.cpp \

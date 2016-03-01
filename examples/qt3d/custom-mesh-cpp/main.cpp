@@ -58,7 +58,7 @@
 
 #include <Qt3DInput/QInputAspect>
 
-#include <Qt3DRender/QStateSet>
+#include <Qt3DRender/QRenderStateSet>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>

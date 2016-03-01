@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSTATESET_P_H
-#define QT3DRENDER_QSTATESET_P_H
+#ifndef QT3DRENDER_QRENDERSTATESET_P_H
+#define QT3DRENDER_QRENDERSTATESET_P_H
 
 //
 //  W A R N I N G
@@ -57,15 +57,15 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStateSet;
+class QRenderStateSet;
 class QRenderState;
 
-class QStateSetPrivate : public QFrameGraphNodePrivate
+class QRenderStateSetPrivate : public QFrameGraphNodePrivate
 {
 public:
-    QStateSetPrivate();
+    QRenderStateSetPrivate();
 
-    Q_DECLARE_PUBLIC(QStateSet)
+    Q_DECLARE_PUBLIC(QRenderStateSet)
     QList<QRenderState *> m_renderStates;
 };
 
@@ -73,5 +73,5 @@ public:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSTATESET_P_H
+#endif // QT3DRENDER_QRENDERSTATESET_P_H
 

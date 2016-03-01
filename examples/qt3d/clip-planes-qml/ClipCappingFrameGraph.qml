@@ -61,7 +61,7 @@ Viewport {
         CameraSelector {
             id: cameraSelector
 
-            StateSet {
+            RenderStateSet {
                 // Enable 3 clipping planes
                 renderStates: [
                     ClipPlane { plane: 0 },
@@ -87,7 +87,7 @@ Viewport {
                 ClearBuffer {
                     // Enable and fill Stencil to later generate caps
                     buffers: ClearBuffer.StencilBuffer
-                    StateSet {
+                    RenderStateSet {
                         // Disable depth culling
                         // Incr for back faces
                         // Decr for front faces
@@ -121,7 +121,7 @@ Viewport {
             }
 
             // Branch 3
-            StateSet {
+            RenderStateSet {
                 // Draw caps using stencil buffer
                 LayerFilter {
                     layers: "caps"

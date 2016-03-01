@@ -40,7 +40,7 @@
 #include "statesetnode_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qstateset.h>
+#include <Qt3DRender/qrenderstateset.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 
@@ -62,7 +62,7 @@ StateSetNode::~StateSetNode()
 
 void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QStateSet *stateSet = static_cast<QStateSet*>(peer);
+    QRenderStateSet *stateSet = static_cast<QRenderStateSet*>(peer);
 
     setEnabled(stateSet->isEnabled());
     Q_FOREACH (QRenderState *renderState, stateSet->renderStates())
