@@ -84,7 +84,7 @@ public:
     };
     Q_ENUM(AttachmentPoint)
 
-    explicit QRenderTargetOutput(Qt3DCore::QNode *parent = 0);
+    explicit QRenderTargetOutput(Qt3DCore::QNode *parent = nullptr);
 
     AttachmentPoint attachmentPoint() const;
     QAbstractTexture *texture() const;
@@ -107,7 +107,7 @@ Q_SIGNALS:
     void faceChanged(QAbstractTexture::CubeMapFace face);
 
 protected:
-    QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

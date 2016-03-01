@@ -57,7 +57,7 @@ class QT3DINPUTSHARED_EXPORT QKeyboardDevice : public Qt3DInput::QAbstractPhysic
     Q_PROPERTY(Qt3DInput::QKeyboardHandler *activeInput READ activeInput NOTIFY activeInputChanged)
 
 public:
-    explicit QKeyboardDevice(QNode *parent = 0);
+    explicit QKeyboardDevice(QNode *parent = nullptr);
 
     QKeyboardHandler *activeInput() const;
 
@@ -69,7 +69,7 @@ public:
     int buttonIdentifier(const QString &name) const Q_DECL_FINAL;
 
 protected:
-    QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent = 0);
+    explicit QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent = nullptr);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:

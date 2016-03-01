@@ -100,7 +100,7 @@ Q_SIGNALS:
     void faceModeChanged(StencilFaceMode faceMode);
 
 private:
-    explicit QStencilTestArguments(StencilFaceMode face, QObject *parent = 0);
+    explicit QStencilTestArguments(StencilFaceMode face, QObject *parent = nullptr);
 
     friend class QStencilTestPrivate;
 

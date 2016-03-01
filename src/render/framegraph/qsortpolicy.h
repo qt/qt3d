@@ -53,7 +53,7 @@ class QT3DRENDERSHARED_EXPORT QSortPolicy : public QFrameGraphNode
     Q_OBJECT
     Q_PROPERTY(QVariantList sortTypes READ sortTypeList WRITE setSortTypes NOTIFY sortTypesChanged)
 public:
-    explicit QSortPolicy(Qt3DCore::QNode *parent = 0);
+    explicit QSortPolicy(Qt3DCore::QNode *parent = nullptr);
 
     enum SortType {
         StateChangeCost = (1 << 0),
@@ -76,7 +76,7 @@ Q_SIGNALS:
     void sortTypesChanged(QVariantList sortTypes);
 
 protected:
-    QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QSortPolicy(QSortPolicyPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

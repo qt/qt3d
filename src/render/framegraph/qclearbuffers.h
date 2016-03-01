@@ -58,7 +58,7 @@ class QT3DRENDERSHARED_EXPORT QClearBuffers : public QFrameGraphNode
     Q_PROPERTY(float clearDepthValue READ clearDepthValue WRITE setClearDepthValue NOTIFY clearDepthValueChanged)
     Q_PROPERTY(int clearStencilValue READ clearStencilValue WRITE setClearStencilValue NOTIFY clearStencilValueChanged)
 public:
-    explicit QClearBuffers(Qt3DCore::QNode *parent = 0);
+    explicit QClearBuffers(Qt3DCore::QNode *parent = nullptr);
 
     enum BufferType {
         None = 0,
@@ -91,7 +91,7 @@ Q_SIGNALS:
     void clearStencilValueChanged(int clearStencilValue);
 
 protected:
-    QClearBuffers(QClearBuffersPrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QClearBuffers(QClearBuffersPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:

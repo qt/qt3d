@@ -56,7 +56,7 @@ class QT3DRENDERSHARED_EXPORT QStencilOperation : public QRenderState
     Q_PROPERTY(Qt3DRender::QStencilOperationArguments *back READ back CONSTANT)
 
 public:
-    explicit QStencilOperation(Qt3DCore::QNode *parent = 0);
+    explicit QStencilOperation(Qt3DCore::QNode *parent = nullptr);
 
     QStencilOperationArguments *front() const;
     QStencilOperationArguments *back() const;
