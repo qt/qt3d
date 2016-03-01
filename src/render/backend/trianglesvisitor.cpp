@@ -277,7 +277,7 @@ void traverseTriangleAdjacencyIndexed(index *indices,
     while (i < indexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             uint idx = indices[i + u] * verticesStride;
-            ndx[u] = idx;
+            ndx[u / 2] = idx;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
@@ -303,7 +303,7 @@ void traverseTriangleAdjacency(Vertex *vertices,
     while (i < vertexInfo.count) {
         for (uint u = 0; u < 6; u += 2) {
             uint idx = (i + u) * verticesStride;
-            ndx[u] = idx;
+            ndx[u / 2] = idx;
             for (uint j = 0; j < maxVerticesDataSize; ++j) {
                 abc[u / 2][j] = vertices[idx + j];
             }
