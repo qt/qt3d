@@ -47,23 +47,23 @@ namespace Qt3DRender {
 class QStencilOpSeparatePrivate : public QObjectPrivate
 {
 public:
-    QStencilOpSeparatePrivate(QStencilOpSeparate::StencilFaceMode mode)
+    QStencilOpSeparatePrivate(QStencilOpSeparate::FaceMode mode)
         : QObjectPrivate()
         , m_face(mode)
-        , m_stencilFailOp(QStencilOpSeparate::Keep)
-        , m_depthFailOp(QStencilOpSeparate::Keep)
-        , m_stencilDepthPassOp(QStencilOpSeparate::Keep)
+        , m_stencilFailOperation(QStencilOpSeparate::Keep)
+        , m_depthFailOperation(QStencilOpSeparate::Keep)
+        , m_stencilDepthPassOperation(QStencilOpSeparate::Keep)
     {
 
     }
 
-    QStencilOpSeparate::StencilFaceMode m_face;
-    QStencilOpSeparate::StencilOp m_stencilFailOp;
-    QStencilOpSeparate::StencilOp m_depthFailOp;
-    QStencilOpSeparate::StencilOp m_stencilDepthPassOp;
+    QStencilOpSeparate::FaceMode m_face;
+    QStencilOpSeparate::Operation m_stencilFailOperation;
+    QStencilOpSeparate::Operation m_depthFailOperation;
+    QStencilOpSeparate::Operation m_stencilDepthPassOperation;
 };
 
-QStencilOpSeparate::QStencilOpSeparate(StencilFaceMode mode, QObject *parent)
+QStencilOpSeparate::QStencilOpSeparate(FaceMode mode, QObject *parent)
     : QObject(*new QStencilOpSeparatePrivate(mode), parent)
 {
 }
@@ -72,55 +72,55 @@ QStencilOpSeparate::~QStencilOpSeparate()
 {
 }
 
-QStencilOpSeparate::StencilFaceMode QStencilOpSeparate::faceMode() const
+QStencilOpSeparate::FaceMode QStencilOpSeparate::faceMode() const
 {
     Q_D(const QStencilOpSeparate);
     return d->m_face;
 }
 
-void QStencilOpSeparate::setStencilFail(QStencilOpSeparate::StencilOp op)
+void QStencilOpSeparate::setStencilFail(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_stencilFailOp != op) {
-        d->m_stencilFailOp = op;
-        Q_EMIT stencilFailChanged(op);
+    if (d->m_stencilFailOperation != operation) {
+        d->m_stencilFailOperation = operation;
+        Q_EMIT stencilFailChanged(operation);
     }
 }
 
-QStencilOpSeparate::StencilOp QStencilOpSeparate::stencilFail() const
+QStencilOpSeparate::Operation QStencilOpSeparate::stencilFail() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_stencilFailOp;
+    return d->m_stencilFailOperation;
 }
 
-void QStencilOpSeparate::setDepthFail(QStencilOpSeparate::StencilOp op)
+void QStencilOpSeparate::setDepthFail(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_depthFailOp != op) {
-        d->m_depthFailOp = op;
-        Q_EMIT depthFailChanged(op);
+    if (d->m_depthFailOperation != operation) {
+        d->m_depthFailOperation = operation;
+        Q_EMIT depthFailChanged(operation);
     }
 }
 
-QStencilOpSeparate::StencilOp QStencilOpSeparate::depthFail() const
+QStencilOpSeparate::Operation QStencilOpSeparate::depthFail() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_depthFailOp;
+    return d->m_depthFailOperation;
 }
 
-void QStencilOpSeparate::setStencilDepthPass(QStencilOpSeparate::StencilOp op)
+void QStencilOpSeparate::setStencilDepthPass(QStencilOpSeparate::Operation operation)
 {
     Q_D(QStencilOpSeparate);
-    if (d->m_stencilDepthPassOp != op) {
-        d->m_stencilDepthPassOp = op;
-        Q_EMIT stencilDepthPassChanged(op);
+    if (d->m_stencilDepthPassOperation != operation) {
+        d->m_stencilDepthPassOperation = operation;
+        Q_EMIT stencilDepthPassChanged(operation);
     }
 }
 
-QStencilOpSeparate::StencilOp QStencilOpSeparate::stencilDepthPass() const
+QStencilOpSeparate::Operation QStencilOpSeparate::stencilDepthPass() const
 {
     Q_D(const QStencilOpSeparate);
-    return d->m_stencilDepthPassOp;
+    return d->m_stencilDepthPassOperation;
 }
 
 } // namespace Qt3DRender

@@ -53,54 +53,54 @@ class QStencilOpSeparatePrivate;
 class QT3DRENDERSHARED_EXPORT QStencilOpSeparate : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(StencilFaceMode faceMode READ faceMode NOTIFY faceModeChanged)
-    Q_PROPERTY(StencilOp stencilFail READ stencilFail WRITE setStencilFail NOTIFY stencilFailChanged)
-    Q_PROPERTY(StencilOp depthFail READ depthFail WRITE setDepthFail NOTIFY depthFailChanged)
-    Q_PROPERTY(StencilOp stencilDepthPass READ stencilDepthPass WRITE setStencilDepthPass NOTIFY stencilDepthPassChanged)
+    Q_PROPERTY(FaceMode faceMode READ faceMode NOTIFY faceModeChanged)
+    Q_PROPERTY(Operation stencilFail READ stencilFail WRITE setStencilFail NOTIFY stencilFailChanged)
+    Q_PROPERTY(Operation depthFail READ depthFail WRITE setDepthFail NOTIFY depthFailChanged)
+    Q_PROPERTY(Operation stencilDepthPass READ stencilDepthPass WRITE setStencilDepthPass NOTIFY stencilDepthPassChanged)
 
 public:
-    enum StencilFaceMode
+    enum FaceMode
     {
         Front = 0x0404,
         Back = 0x0405,
         FrontAndBack = 0x0408
     };
-    Q_ENUM(StencilFaceMode)
+    Q_ENUM(FaceMode)
 
-    enum StencilOp
+    enum Operation
     {
         Zero = 0,
         Keep = 0x1E00,
         Replace = 0x1E01,
-        Incr = 0x1E02,
-        Decr = 0x1E03,
-        IncrWrap = 0x8507,
-        DecrWrap = 0x8508,
+        Increment = 0x1E02,
+        Decrement = 0x1E03,
+        IncrementWrap = 0x8507,
+        DecrementWrap = 0x8508,
         Invert = 0x150A
     };
-    Q_ENUM(StencilOp)
+    Q_ENUM(Operation)
 
     ~QStencilOpSeparate();
 
-    StencilFaceMode faceMode() const;
+    FaceMode faceMode() const;
 
-    StencilOp stencilFail() const;
-    StencilOp depthFail() const;
-    StencilOp stencilDepthPass() const;
+    Operation stencilFail() const;
+    Operation depthFail() const;
+    Operation stencilDepthPass() const;
 
 public Q_SLOTS:
-    void setStencilFail(StencilOp op);
-    void setDepthFail(StencilOp op);
-    void setStencilDepthPass(StencilOp op);
+    void setStencilFail(Operation operation);
+    void setDepthFail(Operation operation);
+    void setStencilDepthPass(Operation operation);
 
 Q_SIGNALS:
-    void stencilFailChanged(StencilOp stencilFail);
-    void depthFailChanged(StencilOp depthFail);
-    void stencilDepthPassChanged(StencilOp stencilDepthPass);
-    void faceModeChanged(StencilFaceMode faceMode);
+    void stencilFailChanged(Operation stencilFail);
+    void depthFailChanged(Operation depthFail);
+    void stencilDepthPassChanged(Operation stencilDepthPass);
+    void faceModeChanged(FaceMode faceMode);
 
 private:
-    explicit QStencilOpSeparate(StencilFaceMode mode, QObject *parent = 0);
+    explicit QStencilOpSeparate(FaceMode mode, QObject *parent = 0);
     Q_DECLARE_PRIVATE(QStencilOpSeparate)
 
     friend class QStencilOpPrivate;
