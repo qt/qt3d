@@ -96,11 +96,11 @@ Viewport {
                             StencilTest {
                                 front {
                                     stencilFunction: StencilTestSeparate.Always
-                                    referenceValue: 0; mask: 0
+                                    referenceValue: 0; comparisonMask: 0
                                 }
                                 back {
                                     stencilFunction: StencilTestSeparate.Always
-                                    referenceValue: 0; mask: 0
+                                    referenceValue: 0; comparisonMask: 0
                                 }
                             },
                             StencilOp {
@@ -135,11 +135,11 @@ Viewport {
                     StencilTest {
                         front {
                             stencilFunction: StencilTestSeparate.NotEqual
-                            referenceValue: 0; mask: ~0
+                            referenceValue: 0; comparisonMask: ~0
                         }
                         back {
                             stencilFunction: StencilTestSeparate.NotEqual
-                            referenceValue: 0; mask: ~0
+                            referenceValue: 0; comparisonMask: ~0
                         }
                     }
                 ]
