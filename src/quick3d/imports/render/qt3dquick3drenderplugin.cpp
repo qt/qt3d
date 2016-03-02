@@ -91,7 +91,7 @@
 #include <Qt3DRender/qnodraw.h>
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
-#include <Qt3DRender/qstencilop.h>
+#include <Qt3DRender/qstenciloperation.h>
 #include <Qt3DRender/qstencilopseparate.h>
 #include <Qt3DRender/qstencilmask.h>
 #include <Qt3DRender/qattribute.h>
@@ -310,7 +310,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QClipPlane>(uri, 2, 0, "ClipPlane");
     qmlRegisterUncreatableType<Qt3DRender::QStencilOpSeparate>(uri, 2, 0, "StencilOpSeparate", QStringLiteral("StencilOpSeparate cannot be instanciated on its own"));
     qmlRegisterType<Qt3DRender::QSeamlessCubemap>(uri, 2, 0, "SeamlessCubemap");
-    qmlRegisterType<Qt3DRender::QStencilOp>(uri, 2, 0, "StencilOp");
+    qmlRegisterType<Qt3DRender::QStencilOperation>(uri, 2, 0, "StencilOperation");
     qmlRegisterType<Qt3DRender::QStencilMask>(uri, 2, 0, "StencilMask");
 
     // Register types provided as QML files compiled into the plugin

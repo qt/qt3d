@@ -65,7 +65,7 @@
 #include <Qt3DRender/qstenciltestarguments.h>
 #include <Qt3DRender/qclipplane.h>
 #include <Qt3DRender/qseamlesscubemap.h>
-#include <Qt3DRender/qstencilop.h>
+#include <Qt3DRender/qstenciloperation.h>
 #include <Qt3DRender/qstencilopseparate.h>
 #include <Qt3DRender/qstencilmask.h>
 
@@ -345,7 +345,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         return getOrCreateRenderStateImpl<SeamlessCubemap>(seamlessCubemap->isEnabled());
     }
     case QRenderState::StencilOp: {
-        QStencilOp *stencilOp = static_cast<QStencilOp *>(renderState);
+        QStencilOperation *stencilOp = static_cast<QStencilOperation *>(renderState);
         const QStencilOpSeparate *front = stencilOp->front();
         const QStencilOpSeparate *back = stencilOp->back();
         return getOrCreateRenderStateImpl<StencilOp>(front->stencilFail(), front->depthFail(), front->stencilDepthPass(),

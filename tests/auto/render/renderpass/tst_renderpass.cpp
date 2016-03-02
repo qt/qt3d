@@ -51,7 +51,7 @@
 #include <Qt3DRender/QStencilTest>
 #include <Qt3DRender/QStencilTestArguments>
 #include <Qt3DRender/QStencilMask>
-#include <Qt3DRender/QStencilOp>
+#include <Qt3DRender/QStencilOperation>
 #include <Qt3DRender/QStencilOpSeparate>
 #include <Qt3DRender/QClipPlane>
 

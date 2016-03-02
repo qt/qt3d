@@ -37,41 +37,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSTENCILOP_H
-#define QT3DRENDER_QSTENCILOP_H
-
-#include <Qt3DRender/qrenderstate.h>
+#include "qstenciloperation.h"
+#include "qstencilopseparate.h"
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilOpPrivate;
-class QStencilOpSeparate;
-
-class QT3DRENDERSHARED_EXPORT QStencilOp : public QRenderState
+class QStencilOperationPrivate : public QRenderStatePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *front READ front CONSTANT)
-    Q_PROPERTY(Qt3DRender::QStencilOpSeparate *back READ back CONSTANT)
-
 public:
-    explicit QStencilOp(Qt3DCore::QNode *parent = 0);
-    ~QStencilOp();
+    QStencilOperationPrivate()
+        : QRenderStatePrivate(QRenderState::StencilOp)
+        , m_front(new QStencilOpSeparate(QStencilOpSeparate::Front, q_ptr))
+        , m_back(new QStencilOpSeparate(QStencilOpSeparate::Back, q_ptr))
+    {}
 
-    QStencilOpSeparate *front() const;
-    QStencilOpSeparate *back() const;
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_FINAL;
-
-private:
-    Q_DECLARE_PRIVATE(QStencilOp)
-    QT3D_CLONEABLE(QStencilOp)
+    QStencilOpSeparate *m_front;
+    QStencilOpSeparate *m_back;
 };
+
+
+QStencilOperation::QStencilOperation(QNode *parent)
+    : QRenderState(*new QStencilOperationPrivate(), parent)
+{
+}
+
+QStencilOperation::~QStencilOperation()
+{
+    QNode::cleanup();
+}
+
+QStencilOpSeparate *QStencilOperation::front() const
+{
+    Q_D(const QStencilOperation);
+    return d->m_front;
+}
+
+QStencilOpSeparate *QStencilOperation::back() const
+{
+    Q_D(const QStencilOperation);
+    return d->m_back;
+}
+
+void QStencilOperation::copy(const QNode *ref)
+{
+    QRenderState::copy(ref);
+    const QStencilOperation *refState = static_cast<const QStencilOperation*>(ref);
+    d_func()->m_back->setDepthFail(refState->d_func()->m_back->depthFail());
+    d_func()->m_back->setStencilFail(refState->d_func()->m_back->stencilFail());
+    d_func()->m_back->setStencilDepthPass(refState->d_func()->m_back->stencilDepthPass());
+    d_func()->m_front->setDepthFail(refState->d_func()->m_front->depthFail());
+    d_func()->m_front->setStencilFail(refState->d_func()->m_front->stencilFail());
+    d_func()->m_front->setStencilDepthPass(refState->d_func()->m_front->stencilDepthPass());
+}
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QSTENCILOP_H

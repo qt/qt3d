@@ -103,7 +103,7 @@ Viewport {
                                     referenceValue: 0; comparisonMask: 0
                                 }
                             },
-                            Operation {
+                            StencilOperation {
                                 front.stencilDepthPass: StencilOpSeparate.Decrement
                                 back.stencilDepthPass: StencilOpSeparate.Increment
                             },

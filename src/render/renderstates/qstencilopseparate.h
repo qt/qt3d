@@ -47,7 +47,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QStencilOpPrivate;
+class QStencilOperationPrivate;
 class QStencilOpSeparatePrivate;
 
 class QT3DRENDERSHARED_EXPORT QStencilOpSeparate : public QObject
@@ -103,7 +103,7 @@ private:
     explicit QStencilOpSeparate(FaceMode mode, QObject *parent = 0);
     Q_DECLARE_PRIVATE(QStencilOpSeparate)
 
-    friend class QStencilOpPrivate;
+    friend class QStencilOperationPrivate;
 };
 
 } // namespace Qt3DRender
