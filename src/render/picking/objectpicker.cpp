@@ -55,7 +55,7 @@ ObjectPicker::ObjectPicker()
     , m_isDirty(false)
     , m_isPressed(false)
     , m_hoverEnabled(false)
-    , m_mouseTrackingEnabled(false)
+    , m_dragEnabled(false)
 {
 }
 
@@ -68,15 +68,15 @@ void ObjectPicker::cleanup()
     m_isDirty = false;
     m_isPressed = false;
     m_hoverEnabled = false;
-    m_mouseTrackingEnabled = false;
+    m_dragEnabled = false;
 }
 
 void ObjectPicker::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QObjectPicker *picker = static_cast<QObjectPicker *>(peer);
     if (picker) {
-        m_hoverEnabled = picker->hoverEnabled();
-        m_mouseTrackingEnabled = picker->mouseTrackingEnabled();
+        m_hoverEnabled = picker->isHoverEnabled();
+        m_dragEnabled = picker->isDragEnabled();
         m_isDirty = true;
     }
 }
@@ -91,8 +91,8 @@ void ObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_hoverEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }
-        if (propertyName == QByteArrayLiteral("mouseTrackingEnabled")) {
-            m_mouseTrackingEnabled = propertyChange->value().toBool();
+        if (propertyName == QByteArrayLiteral("dragEnabled")) {
+            m_dragEnabled = propertyChange->value().toBool();
             m_isDirty = true;
         }
         markDirty(AbstractRenderer::AllDirty);
@@ -119,14 +119,14 @@ void ObjectPicker::makeDirty()
     m_isDirty = true;
 }
 
-bool ObjectPicker::hoverEnabled() const
+bool ObjectPicker::isHoverEnabled() const
 {
     return m_hoverEnabled;
 }
 
-bool ObjectPicker::mouseTrackingEnabled() const
+bool ObjectPicker::isDragEnabled() const
 {
-    return m_mouseTrackingEnabled;
+    return m_dragEnabled;
 }
 
 void ObjectPicker::onClicked(QPickEventPtr event)

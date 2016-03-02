@@ -95,7 +95,7 @@ private Q_SLOTS:
         // THEN
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(objectPicker->id(), clone->id());
-        QCOMPARE(objectPicker->hoverEnabled(), clone->hoverEnabled());
+        QCOMPARE(objectPicker->isHoverEnabled(), clone->isHoverEnabled());
         QCOMPARE(objectPicker->isPressed(), clone->isPressed());
         QCOMPARE(objectPicker->containsMouse(), clone->containsMouse());
     }

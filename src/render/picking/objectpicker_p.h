@@ -75,8 +75,8 @@ public:
     bool isPressed() const;
     void unsetDirty();
     void makeDirty();
-    bool hoverEnabled() const;
-    bool mouseTrackingEnabled() const;
+    bool isHoverEnabled() const;
+    bool isDragEnabled() const;
 
     void onClicked(QPickEventPtr event);
     void onMoved(QPickEventPtr event);
@@ -89,7 +89,7 @@ private:
     bool m_isDirty;
     bool m_isPressed;
     bool m_hoverEnabled;
-    bool m_mouseTrackingEnabled;
+    bool m_dragEnabled;
 };
 
 } // Render

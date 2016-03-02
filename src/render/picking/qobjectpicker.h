@@ -54,8 +54,8 @@ class QPickEvent;
 class QT3DRENDERSHARED_EXPORT QObjectPicker : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
-    Q_PROPERTY(bool mouseTrackingEnabled READ mouseTrackingEnabled WRITE setMouseTrackingEnabled NOTIFY mouseTrackingEnabledChanged)
+    Q_PROPERTY(bool hoverEnabled READ isHoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
+    Q_PROPERTY(bool dragEnabled READ isDragEnabled WRITE setDragEnabled NOTIFY dragEnabledChanged)
     Q_PROPERTY(bool pressed READ isPressed NOTIFY pressedChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
@@ -63,15 +63,15 @@ public:
     explicit QObjectPicker(QNode *parent = Q_NULLPTR);
     ~QObjectPicker();
 
-    bool hoverEnabled() const;
-    bool mouseTrackingEnabled() const;
+    bool isHoverEnabled() const;
+    bool isDragEnabled() const;
 
     bool containsMouse() const;
     bool isPressed() const;
 
 public Q_SLOTS:
     void setHoverEnabled(bool hoverEnabled);
-    void setMouseTrackingEnabled(bool mouseTrackingEnabled);
+    void setDragEnabled(bool dragEnabled);
 
 Q_SIGNALS:
     void pressed(Qt3DRender::QPickEvent *pick);
@@ -81,7 +81,7 @@ Q_SIGNALS:
     void entered();
     void exited();
     void hoverEnabledChanged(bool hoverEnabled);
-    void mouseTrackingEnabledChanged(bool mouseTrackingEnabled);
+    void dragEnabledChanged(bool dragEnabled);
     void pressedChanged(bool pressed);
     void containsMouseChanged(bool containsMouse);
 
@@ -90,9 +90,6 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
-    void setPressed(bool pressed);
-    void setContainsMouse(bool containsMouse);
-
     QT3D_CLONEABLE(QObjectPicker)
     Q_DECLARE_PRIVATE(QObjectPicker)
 };

@@ -94,7 +94,7 @@ public:
     QObjectPickerPrivate()
         : QComponentPrivate()
         , m_hoverEnabled(false)
-        , m_mouseTrackingEnabled(false)
+        , m_dragEnabled(false)
         , m_pressed(false)
         , m_containsMouse(false)
         , m_acceptedLastPressedEvent(true)
@@ -104,7 +104,7 @@ public:
 
     Q_DECLARE_PUBLIC(QObjectPicker)
     bool m_hoverEnabled;
-    bool m_mouseTrackingEnabled;
+    bool m_dragEnabled;
     bool m_pressed;
     bool m_containsMouse;
     bool m_acceptedLastPressedEvent;
@@ -122,6 +122,9 @@ public:
     void clickedEvent(QPickEvent *event);
     void movedEvent(QPickEvent *event);
     void releasedEvent(QPickEvent *event);
+
+    void setPressed(bool pressed);
+    void setContainsMouse(bool containsMouse);
 };
 
 QObjectPicker::QObjectPicker(Qt3DCore::QNode *parent)
@@ -146,28 +149,28 @@ void QObjectPicker::setHoverEnabled(bool hoverEnabled)
 /*!
     \qmlproperty bool Qt3D.Render::ObjectPicker::hoverEnabled
 */
-bool QObjectPicker::hoverEnabled() const
+bool QObjectPicker::isHoverEnabled() const
 {
     Q_D(const QObjectPicker);
     return d->m_hoverEnabled;
 }
 
-void QObjectPicker::setMouseTrackingEnabled(bool mouseTrackingEnabled)
+void QObjectPicker::setDragEnabled(bool dragEnabled)
 {
     Q_D(QObjectPicker);
-    if (mouseTrackingEnabled != d->m_mouseTrackingEnabled) {
-        d->m_mouseTrackingEnabled = mouseTrackingEnabled;
-        emit mouseTrackingEnabledChanged(mouseTrackingEnabled);
+    if (dragEnabled != d->m_dragEnabled) {
+        d->m_dragEnabled = dragEnabled;
+        emit dragEnabledChanged(dragEnabled);
     }
 }
 
 /*!
-    \qmlproperty bool Qt3D.Render::ObjectPicker::mouseTrackingEnabled
+    \qmlproperty bool Qt3D.Render::ObjectPicker::dragEnabled
 */
-bool QObjectPicker::mouseTrackingEnabled() const
+bool QObjectPicker::isDragEnabled() const
 {
     Q_D(const QObjectPicker);
-    return d->m_mouseTrackingEnabled;
+    return d->m_dragEnabled;
 }
 
 /*!
@@ -193,7 +196,7 @@ void QObjectPicker::copy(const QNode *ref)
     QComponent::copy(ref);
     const QObjectPicker *picker = static_cast<const QObjectPicker *>(ref);
     d_func()->m_hoverEnabled = picker->d_func()->m_hoverEnabled;
-    d_func()->m_mouseTrackingEnabled = picker->d_func()->m_mouseTrackingEnabled;
+    d_func()->m_dragEnabled = picker->d_func()->m_dragEnabled;
 }
 
 void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
@@ -218,39 +221,42 @@ void QObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             d->movedEvent(ev.data());
         } else if (propertyName == QByteArrayLiteral("entered")) {
             emit entered();
-            setContainsMouse(true);
+            d->setContainsMouse(true);
         } else if (propertyName == QByteArrayLiteral("exited")) {
-            setContainsMouse(false);
+            d->setContainsMouse(false);
             emit exited();
         }
-    }
-}
-
-void QObjectPicker::setPressed(bool pressed)
-{
-    Q_D(QObjectPicker);
-    if (d->m_pressed != pressed) {
-        const bool blocked = blockNotifications(true);
-        d->m_pressed = pressed;
-        emit pressedChanged(pressed);
-        blockNotifications(blocked);
-    }
-}
-
-void QObjectPicker::setContainsMouse(bool containsMouse)
-{
-    Q_D(QObjectPicker);
-    if (d->m_containsMouse != containsMouse) {
-        const bool blocked = blockNotifications(true);
-        d->m_containsMouse = containsMouse;
-        emit containsMouseChanged(containsMouse);
-        blockNotifications(blocked);
     }
 }
 
 /*!
     \internal
  */
+void QObjectPickerPrivate::setPressed(bool pressed)
+{
+    Q_Q(QObjectPicker);
+    if (m_pressed != pressed) {
+        const bool blocked = q->blockNotifications(true);
+        m_pressed = pressed;
+        emit q->pressedChanged(pressed);
+        q->blockNotifications(blocked);
+    }
+}
+
+/*!
+    \internal
+*/
+void QObjectPickerPrivate::setContainsMouse(bool containsMouse)
+{
+    Q_Q(QObjectPicker);
+    if (m_containsMouse != containsMouse) {
+        const bool blocked = q->blockNotifications(true);
+        m_containsMouse = containsMouse;
+        emit q->containsMouseChanged(containsMouse);
+        q->blockNotifications(blocked);
+    }
+}
+
 void QObjectPickerPrivate::propagateEvent(QPickEvent *event, EventType type)
 {
     if (!m_entities.isEmpty()) {
@@ -297,7 +303,7 @@ void QObjectPickerPrivate::pressedEvent(QPickEvent *event)
         // Travel parents to transmit the event
         propagateEvent(event, EventType::Pressed);
     } else {
-        q->setPressed(true);
+        setPressed(true);
     }
 }
 
@@ -331,7 +337,7 @@ void QObjectPickerPrivate::releasedEvent(QPickEvent *event)
     Q_Q(QObjectPicker);
     if (m_acceptedLastPressedEvent) {
         emit q->released(event);
-        q->setPressed(false);
+        setPressed(false);
     } else {
         event->setAccepted(false);
         propagateEvent(event, EventType::Released);

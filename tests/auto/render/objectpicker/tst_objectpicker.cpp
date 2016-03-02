@@ -52,7 +52,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(!objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), true);
+        QCOMPARE(objectPicker.isHoverEnabled(), true);
         QCOMPARE(objectPicker.isDirty(), true);
     }
 
@@ -63,7 +63,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), false);
+        QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
 
         // GIVEN
@@ -76,7 +76,7 @@ private Q_SLOTS:
 
         // THEN
         QVERIFY(objectPicker.peerUuid().isNull());
-        QCOMPARE(objectPicker.hoverEnabled(), false);
+        QCOMPARE(objectPicker.isHoverEnabled(), false);
         QCOMPARE(objectPicker.isDirty(), false);
     }
 
@@ -96,7 +96,7 @@ private Q_SLOTS:
         objectPicker.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(objectPicker.hoverEnabled(), true);
+        QCOMPARE(objectPicker.isHoverEnabled(), true);
         QVERIFY(objectPicker.isDirty());
         QVERIFY(renderer.dirtyBits() != 0);
 
