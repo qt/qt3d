@@ -107,7 +107,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
 {
     Q_D(QForwardRenderer);
     QObject::connect(d->m_viewport, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
-    QObject::connect(d->m_viewport, SIGNAL(rectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
+    QObject::connect(d->m_viewport, SIGNAL(normalizedRectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
     QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
     QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QSurface *)), this, SIGNAL(surfaceChanged(QSurface *)));
     d->init();
