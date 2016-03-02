@@ -61,13 +61,10 @@
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
-class QRay3D;
-}
-
 class QAbstractCollisionQueryServicePrivate;
 namespace Qt3DRender {
 
+class QRay3D;
 class QBoundingVolume;
 class QBoundingVolumeProvider;
 
@@ -87,8 +84,8 @@ public:
         AllHits
     };
 
-    virtual QQueryHandle query(const Qt3DCore::QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) = 0;
-    virtual QCollisionQueryResult::Hit query(const Qt3DCore::QRay3D &ray, const QBoundingVolume* volume) = 0;
+    virtual QQueryHandle query(const QRay3D &ray, QueryMode mode, QBoundingVolumeProvider *provider) = 0;
+    virtual QCollisionQueryResult::Hit query(const QRay3D &ray, const QBoundingVolume* volume) = 0;
 
     virtual QCollisionQueryResult fetchResult(const QQueryHandle &handle) = 0;
     virtual QVector<QCollisionQueryResult> fetchAllResults() const = 0;

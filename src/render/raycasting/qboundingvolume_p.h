@@ -55,12 +55,8 @@
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
-
-namespace Qt3DCore {
-class QRay3D;
-}
-
 namespace Qt3DRender {
+class QRay3D;
 
 class QT3DRENDERSHARED_EXPORT QBoundingVolume
 {
@@ -74,7 +70,7 @@ public:
     };
 
     virtual Qt3DCore::QNodeId id() const = 0;
-    virtual bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q = Q_NULLPTR) const = 0;
+    virtual bool intersects(const QRay3D &ray, QVector3D *q = Q_NULLPTR) const = 0;
 
     virtual Type type() const = 0;
 };

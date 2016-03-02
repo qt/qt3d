@@ -53,9 +53,9 @@
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
-#include <Qt3DCore/qray3d.h>
 #include <QSurface>
 #include <Qt3DRender/private/job_common_p.h>
 
@@ -171,10 +171,10 @@ public:
     typedef QVector<QCollisionQueryResult::Hit> HitList;
     HitList hits;
 
-    CollisionVisitor(NodeManagers* manager, const Entity *root, const Qt3DCore::QRay3D& ray) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0) { }
+    CollisionVisitor(NodeManagers* manager, const Entity *root, const QRay3D& ray) : TrianglesVisitor(manager), m_root(root), m_ray(ray), m_triangleIndex(0) { }
 private:
     const Entity *m_root;
-    Qt3DCore::QRay3D m_ray;
+    QRay3D m_ray;
     Qt3DRender::QRayCastingService rayCasting;
     uint m_triangleIndex;
 
@@ -202,7 +202,7 @@ struct CollisionGathererFunctor
 {
     CollisionGathererFunctor() : m_renderer(0) { }
     Renderer *m_renderer;
-    Qt3DCore::QRay3D m_ray;
+    QRay3D m_ray;
 
     typedef CollisionVisitor::HitList result_type;
 
@@ -297,16 +297,16 @@ void PickBoundingVolumeJob::setRoot(Entity *root)
     m_node = root;
 }
 
-Qt3DCore::QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
+QRay3D PickBoundingVolumeJob::intersectionRay(const QPoint &pos, const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix, const QRect &viewport)
 {
     QVector3D nearPos = QVector3D(pos.x(), pos.y(), 0.0f);
     nearPos = nearPos.unproject(viewMatrix, projectionMatrix, viewport);
     QVector3D farPos = QVector3D(pos.x(), pos.y(), 1.0f);
     farPos = farPos.unproject(viewMatrix, projectionMatrix, viewport);
 
-    return Qt3DCore::QRay3D(nearPos,
-                            (farPos - nearPos).normalized(),
-                            (farPos - nearPos).length());
+    return QRay3D(nearPos,
+                  (farPos - nearPos).normalized(),
+                  (farPos - nearPos).length());
 }
 
 void PickBoundingVolumeJob::run()
@@ -477,9 +477,9 @@ QRect PickBoundingVolumeJob::windowViewport(const QRectF &relativeViewport) cons
     return QRect();
 }
 
-Qt3DCore::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &pos,
-                                                                const QRectF &relativeViewport,
-                                                                Qt3DCore::QNodeId cameraId) const
+QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &pos,
+                                                      const QRectF &relativeViewport,
+                                                      Qt3DCore::QNodeId cameraId) const
 {
     QMatrix4x4 viewMatrix;
     QMatrix4x4 projectionMatrix;
@@ -491,7 +491,7 @@ Qt3DCore::QRay3D PickBoundingVolumeJob::rayForViewportAndCamera(const QPoint &po
     // // In GL the y is inverted compared to Qt
     // const QPoint glCorrectPos = s.isValid() ? QPoint(pos.x(), s.height() - pos.y()) : pos;
     const QPoint glCorrectPos = pos;
-    const Qt3DCore::QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
+    const QRay3D ray = intersectionRay(glCorrectPos, viewMatrix, projectionMatrix, viewport);
     return ray;
 }
 

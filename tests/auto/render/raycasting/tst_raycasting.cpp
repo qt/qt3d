@@ -33,7 +33,7 @@
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/pickboundingvolumejob_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qcamera.h>
 
 using namespace Qt3DCore;
@@ -323,10 +323,10 @@ void tst_RayCasting::mousePicking()
     const QRectF viewport(0.0f, 0.0f, 800.0f, 600.0f);
 
     // Window center on near plane
-    Qt3DCore::QRay3D ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.center().toPoint(),
-                                                                                      camera.viewMatrix(),
-                                                                                      camera.projectionMatrix(),
-                                                                                      viewport.toRect());
+    QRay3D ray = Qt3DRender::Render::PickBoundingVolumeJob::intersectionRay(viewport.center().toPoint(),
+                                                                            camera.viewMatrix(),
+                                                                            camera.projectionMatrix(),
+                                                                            viewport.toRect());
     Qt3DRender::Render::Sphere s(QVector3D(0.0f, 0.5f, 0.0f), 1.0f);
 
     // WHEN

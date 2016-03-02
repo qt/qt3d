@@ -39,7 +39,7 @@
 
 #include "qraycastingservice_p.h"
 
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/sphere_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 
@@ -74,7 +74,7 @@ bool compareHitsDistance(const Hit &a, const Hit &b)
     return a.distance < b.distance;
 }
 
-Hit volumeRayIntersection(const QBoundingVolume *volume, const Qt3DCore::QRay3D &ray)
+Hit volumeRayIntersection(const QBoundingVolume *volume, const QRay3D &ray)
 {
     Hit hit;
     if ((hit.intersects = volume->intersects(ray, &hit.intersection))) {
@@ -105,7 +105,7 @@ QVector<Hit> reduceToAllHits(QVector<Hit> &results, const Hit &intermediate)
 
 struct CollisionGathererFunctor
 {
-    Qt3DCore::QRay3D ray;
+    QRay3D ray;
 
     typedef Hit result_type;
 
@@ -118,7 +118,7 @@ struct CollisionGathererFunctor
 } // anonymous
 
 
-QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, QBoundingVolumeProvider *provider,
+QCollisionQueryResult QRayCastingServicePrivate::collides(const QRay3D &ray, QBoundingVolumeProvider *provider,
                                                           QAbstractCollisionQueryService::QueryMode mode, const QQueryHandle &handle)
 {
     Q_Q(QRayCastingService);
@@ -144,7 +144,7 @@ QCollisionQueryResult QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D
     return result;
 }
 
-QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const Qt3DCore::QRay3D &ray, const Qt3DRender::QBoundingVolume *volume)
+QCollisionQueryResult::Hit QRayCastingServicePrivate::collides(const QRay3D &ray, const Qt3DRender::QBoundingVolume *volume)
 {
     QCollisionQueryResult::Hit result;
     Hit hit = volumeRayIntersection(volume, ray);
@@ -168,7 +168,7 @@ QRayCastingService::QRayCastingService()
 {
 }
 
-QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
+QQueryHandle QRayCastingService::query(const QRay3D &ray,
                                        QAbstractCollisionQueryService::QueryMode mode,
                                        QBoundingVolumeProvider *provider)
 {
@@ -186,7 +186,7 @@ QQueryHandle QRayCastingService::query(const Qt3DCore::QRay3D &ray,
     return handle;
 }
 
-QCollisionQueryResult::Hit QRayCastingService::query(const Qt3DCore::QRay3D &ray, const QBoundingVolume *volume)
+QCollisionQueryResult::Hit QRayCastingService::query(const QRay3D &ray, const QBoundingVolume *volume)
 {
     Q_D(QRayCastingService);
 

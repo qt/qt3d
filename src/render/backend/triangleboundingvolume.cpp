@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "triangleboundingvolume_p.h"
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,7 +48,7 @@ namespace Render {
 
 // Note: a, b, c in clockwise order
 // RealTime Collision Detection page 192
-bool intersectsSegmentTriangle(const Qt3DCore::QRay3D &ray,
+bool intersectsSegmentTriangle(const QRay3D &ray,
                                const QVector3D &a,
                                const QVector3D &b,
                                const QVector3D &c,
@@ -112,7 +112,7 @@ Qt3DCore::QNodeId TriangleBoundingVolume::id() const
     return m_id;
 }
 
-bool TriangleBoundingVolume::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
+bool TriangleBoundingVolume::intersects(const QRay3D &ray, QVector3D *q) const
 {
     float t = 0.0f;
     QVector3D uvw;

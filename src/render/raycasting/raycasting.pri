@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/qboundingvolume_p.h \
     $$PWD/qboundingvolumeprovider_p.h \
     $$PWD/qcollisionqueryresult_p.h \
+    $$PWD/qray3d_p.h \
     $$PWD/qraycastingservice_p.h
 
 SOURCES += \
@@ -14,4 +15,5 @@ SOURCES += \
     $$PWD/qboundingvolume.cpp \
     $$PWD/qboundingvolumeprovider.cpp \
     $$PWD/qcollisionqueryresult.cpp \
+    $$PWD/qray3d.cpp \
     $$PWD/qraycastingservice.cpp

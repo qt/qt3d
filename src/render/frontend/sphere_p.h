@@ -106,7 +106,7 @@ public:
     }
 
     Qt3DCore::QNodeId id() const Q_DECL_FINAL;
-    bool intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
+    bool intersects(const QRay3D &ray, QVector3D *q) const Q_DECL_FINAL;
     Type type() const Q_DECL_FINAL;
 
     static Sphere fromPoints(const QVector<QVector3D> &points);

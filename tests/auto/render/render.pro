@@ -28,6 +28,7 @@ contains(QT_CONFIG, private_tests) {
         qframegraph \
         qlayerfilter \
         qlight \
+        qray3d \
         qrenderpassfilter \
         qrendertargetselector \
         qsortcriterion \

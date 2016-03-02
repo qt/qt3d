@@ -52,7 +52,7 @@
 //
 
 #include <Qt3DCore/qaspectjob.h>
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/private/qboundingvolumeprovider_p.h>
 #include <Qt3DRender/private/qcollisionqueryresult_p.h>
@@ -82,10 +82,10 @@ public:
 
     void setRoot(Entity *root);
 
-    static Qt3DCore::QRay3D intersectionRay(const QPoint &pos,
-                                            const QMatrix4x4 &viewMatrix,
-                                            const QMatrix4x4 &projectionMatrix,
-                                            const QRect &viewport);
+    static QRay3D intersectionRay(const QPoint &pos,
+                                  const QMatrix4x4 &viewMatrix,
+                                  const QMatrix4x4 &projectionMatrix,
+                                  const QRect &viewport);
 protected:
     void run() Q_DECL_FINAL;
 
@@ -99,9 +99,9 @@ private:
                              QMatrix4x4 &viewMatrix,
                              QMatrix4x4 &projectionMatrix) const;
     QRect windowViewport(const QRectF &relativeViewport) const;
-    Qt3DCore::QRay3D rayForViewportAndCamera(const QPoint &pos,
-                                             const QRectF &relativeViewport,
-                                             Qt3DCore::QNodeId cameraId) const;
+    QRay3D rayForViewportAndCamera(const QPoint &pos,
+                                   const QRectF &relativeViewport,
+                                   Qt3DCore::QNodeId cameraId) const;
     void clearPreviouslyHoveredPickers();
     HObjectPicker m_currentPicker;
     QVector<HObjectPicker> m_hoveredPickers;

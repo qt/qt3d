@@ -39,7 +39,7 @@
 
 #include "sphere_p.h"
 
-#include <Qt3DCore/qray3d.h>
+#include <Qt3DRender/private/qray3d_p.h>
 
 #include <QPair>
 
@@ -53,7 +53,7 @@ namespace {
 
 // Intersects ray r = p + td, |d| = 1, with sphere s and, if intersecting,
 // returns true and intersection point q; false otherwise
-bool intersectRaySphere(const Qt3DCore::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = Q_NULLPTR)
+bool intersectRaySphere(const Qt3DRender::QRay3D &ray, const Qt3DRender::Render::Sphere &s, QVector3D *q = Q_NULLPTR)
 {
     const QVector3D p = ray.origin();
     const QVector3D d = ray.direction();
@@ -222,7 +222,7 @@ Qt3DCore::QNodeId Sphere::id() const
     return m_id;
 }
 
-bool Sphere::intersects(const Qt3DCore::QRay3D &ray, QVector3D *q) const
+bool Sphere::intersects(const QRay3D &ray, QVector3D *q) const
 {
     return intersectRaySphere(ray, *this, q);
 }

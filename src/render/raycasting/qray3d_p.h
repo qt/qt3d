@@ -38,18 +38,29 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QRAY3D_H
-#define QT3DCORE_QRAY3D_H
+#ifndef QT3DRENDER_QRAY3D_H
+#define QT3DRENDER_QRAY3D_H
 
-#include <Qt3DCore/qt3dcore_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/qt3drender_global.h>
 #include <QtGui/qvector3d.h>
 #include <QtGui/qmatrix4x4.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DRender {
 
-class QT3DCORESHARED_EXPORT QRay3D
+class QT3DRENDERSHARED_EXPORT QRay3D
 {
 public:
     QRay3D();
@@ -88,26 +99,26 @@ private:
 };
 
 #ifndef QT_NO_DEBUG_STREAM
-QT3DCORESHARED_EXPORT QDebug operator<<(QDebug dbg, const Qt3DCore::QRay3D &ray);
+QT3DRENDERSHARED_EXPORT QDebug operator<<(QDebug dbg, const QRay3D &ray);
 #endif
 
 #ifndef QT_NO_DATASTREAM
-QT3DCORESHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const Qt3DCore::QRay3D &ray);
-QT3DCORESHARED_EXPORT QDataStream &operator>>(QDataStream &stream, Qt3DCore::QRay3D &ray);
+QT3DRENDERSHARED_EXPORT QDataStream &operator<<(QDataStream &stream, const QRay3D &ray);
+QT3DRENDERSHARED_EXPORT QDataStream &operator>>(QDataStream &stream, QRay3D &ray);
 #endif
 
-} // namespace Qt3DCore
+} // namespace Qt3DRender
 
-Q_DECLARE_TYPEINFO(Qt3DCore::QRay3D, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Qt3DRender::QRay3D, Q_MOVABLE_TYPE);
 
 QT_END_NAMESPACE
 
-inline bool qFuzzyCompare(const Qt3DCore::QRay3D &ray1, const Qt3DCore::QRay3D &ray2)
+inline bool qFuzzyCompare(const Qt3DRender::QRay3D &ray1, const Qt3DRender::QRay3D &ray2)
 {
     return qFuzzyCompare(ray1.origin(), ray2.origin()) &&
            qFuzzyCompare(ray1.direction(), ray2.direction());
 }
 
-Q_DECLARE_METATYPE(Qt3DCore::QRay3D)
+Q_DECLARE_METATYPE(Qt3DRender::QRay3D)
 
-#endif // QT3DCORE_QRAY3D_H
+#endif // QT3DRENDER_QRAY3D_H
