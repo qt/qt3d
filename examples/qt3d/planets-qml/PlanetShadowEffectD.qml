@@ -86,7 +86,7 @@ Effect {
                     }
 
                     renderStates: [
-                        PolygonOffset { factor: 4; units: 4 },
+                        PolygonOffset { scaleFactor: 4; units: 4 },
                         DepthTest { depthFunction: DepthTest.Less }
                     ]
                 },
