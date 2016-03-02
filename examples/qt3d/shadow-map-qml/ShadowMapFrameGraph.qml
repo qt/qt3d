@@ -70,7 +70,7 @@ FrameGraph {
                 target: RenderTarget {
                     attachments: [
                         RenderTargetOutput {
-                            name: "depth"
+                            objectName: "depth"
                             attachmentPoint: RenderTargetOutput.Depth
                             texture: Texture2D {
                                 id: depthTexture
