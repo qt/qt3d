@@ -37,7 +37,7 @@
 #include <Qt3DRender/qspheremesh.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qspheregeometry.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -80,7 +80,7 @@ public:
         Qt3DRender::QBuffer *vertexBuffer = static_cast<Qt3DRender::QBuffer *>(positionAttr->buffer());
 
         // Load the geometry
-        const QByteArray data = (*vertexBuffer->bufferFunctor())();
+        const QByteArray data = (*vertexBuffer->dataGenerator())();
         vertexBuffer->setData(data);
 
         transform->setTranslation(position);

@@ -33,7 +33,7 @@
 #include "testpostmanarbiter.h"
 #include "testrenderer.h"
 
-class TestFunctor : public Qt3DRender::QBufferFunctor
+class TestFunctor : public Qt3DRender::QBufferDataGenerator
 {
 public:
     explicit TestFunctor(int size)
@@ -45,7 +45,7 @@ public:
         return QByteArrayLiteral("454");
     }
 
-    bool operator ==(const Qt3DRender::QBufferFunctor &other) const
+    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -71,7 +71,7 @@ private Q_SLOTS:
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("Corvette"));
-        buffer.setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(883)));
+        buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(883)));
 
         // WHEN
         renderBuffer.setPeer(&buffer);
@@ -82,8 +82,8 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.type(), buffer.type());
         QCOMPARE(renderBuffer.usage(), buffer.usage());
         QCOMPARE(renderBuffer.data(), buffer.data());
-        QCOMPARE(renderBuffer.bufferFunctor(), buffer.bufferFunctor());
-        QVERIFY(*renderBuffer.bufferFunctor() == *buffer.bufferFunctor());
+        QCOMPARE(renderBuffer.dataGenerator(), buffer.dataGenerator());
+        QVERIFY(*renderBuffer.dataGenerator() == *buffer.dataGenerator());
     }
 
     void checkInitialAndCleanedUpState()
@@ -97,13 +97,13 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
         QVERIFY(renderBuffer.peerId().isNull());
-        QVERIFY(renderBuffer.bufferFunctor().isNull());
+        QVERIFY(renderBuffer.dataGenerator().isNull());
 
         // GIVEN
         Qt3DRender::QBuffer buffer(Qt3DRender::QBuffer::IndexBuffer);
         buffer.setUsage(Qt3DRender::QBuffer::DynamicCopy);
         buffer.setData(QByteArrayLiteral("C7"));
-        buffer.setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(73)));
+        buffer.setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(73)));
 
         // WHEN
         renderBuffer.updateFromPeer(&buffer);
@@ -114,7 +114,7 @@ private Q_SLOTS:
         QCOMPARE(renderBuffer.type(), Qt3DRender::QBuffer::VertexBuffer);
         QCOMPARE(renderBuffer.usage(), Qt3DRender::QBuffer::StaticDraw);
         QVERIFY(renderBuffer.data().isEmpty());
-        QVERIFY(renderBuffer.bufferFunctor().isNull());
+        QVERIFY(renderBuffer.dataGenerator().isNull());
     }
 
     void checkPropertyChanges()
@@ -173,14 +173,14 @@ private Q_SLOTS:
 
 
         // WHEN
-        Qt3DRender::QBufferFunctorPtr functor(new TestFunctor(355));
+        Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(functor));
-        updateChange->setPropertyName("bufferFunctor");
+        updateChange->setPropertyName("dataGenerator");
         renderBuffer.sceneChangeEvent(updateChange);
 
         // THEN
-        QCOMPARE(renderBuffer.bufferFunctor(), functor);
+        QCOMPARE(renderBuffer.dataGenerator(), functor);
         QVERIFY(renderBuffer.isDirty());
 
         renderBuffer.unsetDirty();

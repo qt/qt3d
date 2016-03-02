@@ -44,7 +44,7 @@
 #include "qconegeometry.h"
 #include "qconegeometry_p.h"
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <QVector3D>
 #include <cmath>
@@ -196,7 +196,7 @@ void createDiscIndices(quint16 *&indicesPtr,
 } // anonymous
 
 
-class ConeVertexDataFunctor : public QBufferFunctor
+class ConeVertexDataFunctor : public QBufferDataGenerator
 {
 public:
     ConeVertexDataFunctor(bool hasTopEndcap, bool hasBottomEndcap, int rings, int slices,
@@ -233,7 +233,7 @@ public:
         return verticesData;
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const ConeVertexDataFunctor *otherFunctor = functor_cast<ConeVertexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -259,7 +259,7 @@ private:
     float m_length;
 };
 
-class ConeIndexDataFunctor : public QBufferFunctor
+class ConeIndexDataFunctor : public QBufferDataGenerator
 {
 public:
     ConeIndexDataFunctor(bool hasTopEndcap, bool hasBottomEndcap, int rings, int slices,
@@ -296,7 +296,7 @@ public:
         return indicesBytes;
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const ConeIndexDataFunctor *otherFunctor = functor_cast<ConeIndexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -388,9 +388,9 @@ void QConeGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new ConeVertexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
+    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeVertexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
                                                                                  m_topRadius, m_bottomRadius, m_length)));
-    m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new ConeIndexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
+    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeIndexDataFunctor(m_hasTopEndcap, m_hasBottomEndcap, m_rings, m_slices,
                                                                                m_length)));
 
     q->addAttribute(m_positionAttribute);
@@ -425,7 +425,7 @@ void QConeGeometry::updateVertices()
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new ConeVertexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
+    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeVertexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
                                                                                     d->m_topRadius, d->m_bottomRadius, d->m_length)));
 }
 
@@ -438,7 +438,7 @@ void QConeGeometry::updateIndices()
             + d->m_slices * (d->m_hasTopEndcap + d->m_hasBottomEndcap); // 2 x endcaps
 
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new ConeIndexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
+    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new ConeIndexDataFunctor(d->m_hasTopEndcap, d->m_hasBottomEndcap, d->m_rings, d->m_slices,
                                                                                   d->m_length)));
 }
 

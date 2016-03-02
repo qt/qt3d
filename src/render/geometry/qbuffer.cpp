@@ -77,7 +77,7 @@ QBufferPrivate::QBufferPrivate()
  * \qmlproperty bool Buffer::syncData
  *
  * Holds the syncData flag. When syncData is true, this will force data created
- * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
+ * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
  * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data
@@ -139,7 +139,7 @@ QBufferPrivate::QBufferPrivate()
  */
 
 /*!
- * \typedef Qt3DRender::QBufferFunctorPtr
+ * \typedef Qt3DRender::QBufferDataGeneratorPtr
  * \relates QBuffer
  */
 
@@ -244,7 +244,7 @@ QBuffer::BufferType QBuffer::type() const
 /*!
  * Sets the buffer \a functor.
  */
-void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
+void QBuffer::setDataGenerator(const QBufferDataGeneratorPtr &functor)
 {
     Q_D(QBuffer);
     if (functor && d->m_functor && *functor == *d->m_functor)
@@ -252,7 +252,7 @@ void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
     d->m_functor = functor;
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName("bufferFunctor");
+        change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(d->m_functor));
         d->notifyObservers(change);
     }
@@ -261,7 +261,7 @@ void QBuffer::setBufferFunctor(const QBufferFunctorPtr &functor)
 /*!
  * \return the buffer functor.
  */
-QBufferFunctorPtr QBuffer::bufferFunctor() const
+QBufferDataGeneratorPtr QBuffer::dataGenerator() const
 {
     Q_D(const QBuffer);
     return d->m_functor;
@@ -271,7 +271,7 @@ QBufferFunctorPtr QBuffer::bufferFunctor() const
  * \property QBuffer::syncData
  *
  * Holds the syncData flag. When syncData is true, this will force data created
- * by a Qt3DRender::QBufferFunctor to also be updated on the frontend
+ * by a Qt3DRender::QBufferDataGenerator to also be updated on the frontend
  * Qt3DRender::QBuffer node. By default syncData is false.
  *
  * \note: This has no effect if the buffer's data was set directly using the data

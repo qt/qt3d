@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -80,7 +80,7 @@ public:
     inline QBuffer::UsageType usage() const { return m_usage; }
     inline QByteArray data() const { return m_data; }
     inline bool isDirty() const { return m_bufferDirty; }
-    inline QBufferFunctorPtr bufferFunctor() const { return m_functor; }
+    inline QBufferDataGeneratorPtr dataGenerator() const { return m_functor; }
     inline bool isSyncData() const { return m_syncData; }
     void unsetDirty();
 
@@ -90,7 +90,7 @@ private:
     QByteArray m_data;
     bool m_bufferDirty;
     bool m_syncData;
-    QBufferFunctorPtr m_functor;
+    QBufferDataGeneratorPtr m_functor;
     BufferManager *m_manager;
 };
 

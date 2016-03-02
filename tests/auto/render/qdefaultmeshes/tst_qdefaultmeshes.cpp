@@ -33,7 +33,7 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 
 #include <Qt3DRender/qspheremesh.h>
 #include <Qt3DRender/qcylindermesh.h>
@@ -117,11 +117,11 @@ private Q_SLOTS:
                 QCOMPARE(buffer->data(), clonedBuffer->data());
                 QCOMPARE(buffer->usage(), clonedBuffer->usage());
                 QCOMPARE(buffer->type(), clonedBuffer->type());
-                QCOMPARE(buffer->bufferFunctor(), clonedBuffer->bufferFunctor());
+                QCOMPARE(buffer->dataGenerator(), clonedBuffer->dataGenerator());
                 QCOMPARE(buffer->isSyncData(), clonedBuffer->isSyncData());
-                if (buffer->bufferFunctor()) {
-                    QVERIFY(clonedBuffer->bufferFunctor());
-                    QVERIFY(*clonedBuffer->bufferFunctor() == *buffer->bufferFunctor());
+                if (buffer->dataGenerator()) {
+                    QVERIFY(clonedBuffer->dataGenerator());
+                    QVERIFY(*clonedBuffer->dataGenerator() == *buffer->dataGenerator());
                 }
             }
         }

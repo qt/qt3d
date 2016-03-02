@@ -9,7 +9,6 @@ HEADERS += \
     $$PWD/geometryrenderermanager_p.h \
     $$PWD/qbuffer.h \
     $$PWD/qbuffer_p.h \
-    $$PWD/qbufferfunctor.h \
     $$PWD/qconegeometry.h \
     $$PWD/qconegeometry_p.h \
     $$PWD/qconemesh.h \
@@ -37,7 +36,8 @@ HEADERS += \
     $$PWD/qplanegeometry_p.h \
     $$PWD/qboundingvolumespecifier.h \
     $$PWD/qattribute_p.h \
-    $$PWD/qattribute.h
+    $$PWD/qattribute.h \
+    $$PWD/qbufferdatagenerator.h
 
 SOURCES += \
     $$PWD/attribute.cpp \

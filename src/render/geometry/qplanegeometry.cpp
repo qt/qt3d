@@ -41,7 +41,7 @@
 #include "qplanegeometry_p.h"
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <limits>
 
 QT_BEGIN_NAMESPACE
@@ -142,7 +142,7 @@ QByteArray createPlaneIndexData(const QSize &resolution)
 
 } // anonymous
 
-class PlaneVertexBufferFunctor : public QBufferFunctor
+class PlaneVertexBufferFunctor : public QBufferDataGenerator
 {
 public:
     explicit PlaneVertexBufferFunctor(float w, float h, const QSize &resolution)
@@ -158,7 +158,7 @@ public:
         return createPlaneVertexData(m_width, m_height, m_resolution);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -176,7 +176,7 @@ public:
     QSize m_resolution;
 };
 
-class PlaneIndexBufferFunctor : public QBufferFunctor
+class PlaneIndexBufferFunctor : public QBufferDataGenerator
 {
 public:
     explicit PlaneIndexBufferFunctor(const QSize &resolution)
@@ -190,7 +190,7 @@ public:
         return createPlaneIndexData(m_resolution);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -305,7 +305,7 @@ void QPlaneGeometry::updateVertices()
     d->m_normalAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneVertexBufferFunctor(d->m_width, d->m_height, d->m_meshResolution)));
+    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneVertexBufferFunctor(d->m_width, d->m_height, d->m_meshResolution)));
 }
 
 /*!
@@ -317,7 +317,7 @@ void QPlaneGeometry::updateIndices()
     const int faces = 2 * (d->m_meshResolution.width() - 1) * (d->m_meshResolution.height() - 1);
     // Each primitive has 3 vertices
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneIndexBufferFunctor(d->m_meshResolution)));
+    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneIndexBufferFunctor(d->m_meshResolution)));
 
 }
 
@@ -512,8 +512,8 @@ void QPlaneGeometryPrivate::init()
     // Each primitive has 3 vertives
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneVertexBufferFunctor(m_width, m_height, m_meshResolution)));
-    m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new PlaneIndexBufferFunctor(m_meshResolution)));
+    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneVertexBufferFunctor(m_width, m_height, m_meshResolution)));
+    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new PlaneIndexBufferFunctor(m_meshResolution)));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);

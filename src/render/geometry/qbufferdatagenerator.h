@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QBUFFERFUNCTOR
-#define QT3DRENDER_QBUFFERFUNCTOR
+#ifndef QT3DRENDER_QBUFFERDATAGENERATOR
+#define QT3DRENDER_QBUFFERDATAGENERATOR
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qabstractfunctor.h>
@@ -48,21 +48,21 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QT3DRENDERSHARED_EXPORT QBufferFunctor : public QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QBufferDataGenerator : public QAbstractFunctor
 {
 public:
-    virtual ~QBufferFunctor() {}
+    virtual ~QBufferDataGenerator() {}
     virtual QByteArray operator()() = 0;
-    virtual bool operator ==(const QBufferFunctor &other) const = 0;
+    virtual bool operator ==(const QBufferDataGenerator &other) const = 0;
 };
 
-typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
+typedef QSharedPointer<QBufferDataGenerator> QBufferDataGeneratorPtr;
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QBufferFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QBufferDataGeneratorPtr)
 
-#endif // QT3DRENDER_QBUFFERFUNCTOR
+#endif // QT3DRENDER_QBUFFERDATAGENERATOR
 

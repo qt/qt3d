@@ -40,7 +40,7 @@
 #include "qtorusgeometry.h"
 #include "qtorusgeometry_p.h"
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <qmath.h>
 #include <QVector3D>
@@ -123,7 +123,7 @@ QByteArray createTorusIndexData(int rings, int sides)
 
 } // anonymous
 
-class TorusVertexDataFunctor : public QBufferFunctor
+class TorusVertexDataFunctor : public QBufferDataGenerator
 {
 public:
     TorusVertexDataFunctor(int rings, int slices, float radius, float minorRadius)
@@ -139,7 +139,7 @@ public:
         return createTorusVertexData(m_radius, m_minorRadius, m_rings, m_sides);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const TorusVertexDataFunctor *otherFunctor = functor_cast<TorusVertexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -159,7 +159,7 @@ private:
     float m_minorRadius;
 };
 
-class TorusIndexDataFunctor : public QBufferFunctor
+class TorusIndexDataFunctor : public QBufferDataGenerator
 {
 public:
     TorusIndexDataFunctor(int rings, int slices)
@@ -173,7 +173,7 @@ public:
         return createTorusIndexData(m_rings, m_sides);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const TorusIndexDataFunctor *otherFunctor = functor_cast<TorusIndexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -251,8 +251,8 @@ void QTorusGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusVertexDataFunctor(m_rings, m_slices, m_radius, m_minorRadius)));
-    m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusIndexDataFunctor(m_rings, m_slices)));
+    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new TorusVertexDataFunctor(m_rings, m_slices, m_radius, m_minorRadius)));
+    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new TorusIndexDataFunctor(m_rings, m_slices)));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -359,7 +359,7 @@ void QTorusGeometry::updateVertices()
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
-    d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius)));
+    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new TorusVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_minorRadius)));
 }
 
 /*!
@@ -370,7 +370,7 @@ void QTorusGeometry::updateIndices()
     Q_D(QTorusGeometry);
     const int faces = (d->m_slices * 2) * d->m_rings;
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new TorusIndexDataFunctor(d->m_rings, d->m_slices)));
+    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new TorusIndexDataFunctor(d->m_rings, d->m_slices)));
 
 }
 

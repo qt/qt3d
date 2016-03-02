@@ -31,11 +31,11 @@
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 
 #include "testpostmanarbiter.h"
 
-class TestFunctor : public Qt3DRender::QBufferFunctor
+class TestFunctor : public Qt3DRender::QBufferDataGenerator
 {
 public:
     explicit TestFunctor(int size)
@@ -47,7 +47,7 @@ public:
         return QByteArray();
     }
 
-    bool operator ==(const Qt3DRender::QBufferFunctor &other) const
+    bool operator ==(const Qt3DRender::QBufferDataGenerator &other) const
     {
         const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -84,13 +84,13 @@ private Q_SLOTS:
         Qt3DRender::QBuffer *buffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer);
         buffer->setUsage(Qt3DRender::QBuffer::DynamicRead);
         buffer->setData(QByteArrayLiteral("There's no replacement"));
-        buffer->setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(883)));
+        buffer->setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(883)));
         QTest::newRow("vertex") << buffer;
 
         Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer);
         indexBuffer->setUsage(Qt3DRender::QBuffer::StaticCopy);
         indexBuffer->setData(QByteArrayLiteral("For displacement"));
-        indexBuffer->setBufferFunctor(Qt3DRender::QBufferFunctorPtr(new TestFunctor(1340)));
+        indexBuffer->setDataGenerator(Qt3DRender::QBufferDataGeneratorPtr(new TestFunctor(1340)));
         indexBuffer->setSyncData(true);
         QTest::newRow("index") << indexBuffer;
     }
@@ -110,11 +110,11 @@ private Q_SLOTS:
         QCOMPARE(buffer->data(), clone->data());
         QCOMPARE(buffer->usage(), clone->usage());
         QCOMPARE(buffer->type(), clone->type());
-        QCOMPARE(buffer->bufferFunctor(), clone->bufferFunctor());
+        QCOMPARE(buffer->dataGenerator(), clone->dataGenerator());
         QCOMPARE(buffer->isSyncData(), clone->isSyncData());
-        if (buffer->bufferFunctor()) {
-            QVERIFY(clone->bufferFunctor());
-            QVERIFY(*clone->bufferFunctor() == *buffer->bufferFunctor());
+        if (buffer->dataGenerator()) {
+            QVERIFY(clone->dataGenerator());
+            QVERIFY(*clone->dataGenerator() == *buffer->dataGenerator());
         }
     }
 
@@ -161,15 +161,15 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3DRender::QBufferFunctorPtr functor(new TestFunctor(355));
-        buffer->setBufferFunctor(functor);
+        Qt3DRender::QBufferDataGeneratorPtr functor(new TestFunctor(355));
+        buffer->setDataGenerator(functor);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "bufferFunctor");
-        QCOMPARE(change->value().value<Qt3DRender::QBufferFunctorPtr>(), functor);
+        QCOMPARE(change->propertyName(), "dataGenerator");
+        QCOMPARE(change->value().value<Qt3DRender::QBufferDataGeneratorPtr>(), functor);
 
         arbiter.events.clear();
 

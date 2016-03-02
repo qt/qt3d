@@ -44,7 +44,7 @@
 #include "qconemesh.h"
 #include "qconegeometry.h"
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <qmath.h>
 #include <QVector3D>

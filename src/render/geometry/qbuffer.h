@@ -49,8 +49,8 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QBufferPrivate;
-class QBufferFunctor;
-typedef QSharedPointer<QBufferFunctor> QBufferFunctorPtr;
+class QBufferDataGenerator;
+typedef QSharedPointer<QBufferDataGenerator> QBufferDataGeneratorPtr;
 
 class QT3DRENDERSHARED_EXPORT QBuffer : public Qt3DCore::QNode
 {
@@ -95,8 +95,8 @@ public:
     void setData(const QByteArray &bytes);
     QByteArray data() const;
 
-    void setBufferFunctor(const QBufferFunctorPtr &functor);
-    QBufferFunctorPtr bufferFunctor() const;
+    void setDataGenerator(const QBufferDataGeneratorPtr &functor);
+    QBufferDataGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
     void setType(BufferType type);

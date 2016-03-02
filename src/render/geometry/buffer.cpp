@@ -102,7 +102,7 @@ void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
         m_type = buffer->type();
         m_usage = buffer->usage();
         m_data = buffer->data();
-        m_functor = buffer->bufferFunctor();
+        m_functor = buffer->dataGenerator();
         // Add to dirty list in the manager
         if (m_functor && m_manager != Q_NULLPTR)
             m_manager->addDirtyBuffer(peerId());
@@ -126,10 +126,10 @@ void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("usage")) {
             m_usage = static_cast<QBuffer::UsageType>(propertyChange->value().value<int>());
             m_bufferDirty = true;
-        } else if (propertyName == QByteArrayLiteral("bufferFunctor")) {
-            QBufferFunctorPtr newFunctor = propertyChange->value().value<QBufferFunctorPtr>();
-            m_bufferDirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
-            m_functor = newFunctor;
+        } else if (propertyName == QByteArrayLiteral("dataGenerator")) {
+            QBufferDataGeneratorPtr newGenerator = propertyChange->value().value<QBufferDataGeneratorPtr>();
+            m_bufferDirty |= !(newGenerator && m_functor && *newGenerator == *m_functor);
+            m_functor = newGenerator;
             if (m_functor && m_manager != Q_NULLPTR)
                 m_manager->addDirtyBuffer(peerId());
         } else if (propertyName == QByteArrayLiteral("syncData")) {

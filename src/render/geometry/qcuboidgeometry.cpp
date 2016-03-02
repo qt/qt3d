@@ -41,7 +41,7 @@
 #include "qcuboidgeometry_p.h"
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <limits>
 
@@ -314,7 +314,7 @@ QByteArray createCuboidIndexData(const QSize &yzResolution,
 
 } // anonymous
 
-class CuboidVertexBufferFunctor : public QBufferFunctor
+class CuboidVertexBufferFunctor : public QBufferDataGenerator
 {
 public:
     explicit CuboidVertexBufferFunctor(float xExtent,
@@ -339,7 +339,7 @@ public:
                                       m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const CuboidVertexBufferFunctor *otherFunctor = functor_cast<CuboidVertexBufferFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -363,7 +363,7 @@ private:
     QSize m_xyFaceResolution;
 };
 
-class CuboidIndexBufferFunctor : public QBufferFunctor
+class CuboidIndexBufferFunctor : public QBufferDataGenerator
 {
 public:
     explicit CuboidIndexBufferFunctor(const QSize &yzResolution,
@@ -381,7 +381,7 @@ public:
         return createCuboidIndexData(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution);
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_FINAL
     {
         const CuboidIndexBufferFunctor *otherFunctor = functor_cast<CuboidIndexBufferFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -481,9 +481,9 @@ void QCuboidGeometryPrivate::init()
 
     m_indexAttribute->setCount(indexCount);
 
-    m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new CuboidVertexBufferFunctor(m_xExtent, m_yExtent, m_zExtent,
+    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidVertexBufferFunctor(m_xExtent, m_yExtent, m_zExtent,
                                                                                      m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution)));
-    m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new CuboidIndexBufferFunctor(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution)));
+    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidIndexBufferFunctor(m_yzFaceResolution, m_xzFaceResolution, m_xyFaceResolution)));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -612,7 +612,7 @@ void QCuboidGeometry::updateIndices()
     const int indexCount = 2 * (yzIndices + xzIndices + xyIndices);
 
     d->m_indexAttribute->setCount(indexCount);
-    d->m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new CuboidIndexBufferFunctor(d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution)));
+    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidIndexBufferFunctor(d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution)));
 
 }
 
@@ -632,7 +632,7 @@ void QCuboidGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_tangentAttribute->setCount(nVerts);
 
-    d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new CuboidVertexBufferFunctor(d->m_xExtent, d->m_yExtent, d->m_zExtent,
+    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CuboidVertexBufferFunctor(d->m_xExtent, d->m_yExtent, d->m_zExtent,
                                                                                         d->m_yzFaceResolution, d->m_xzFaceResolution, d->m_xyFaceResolution)));
 }
 

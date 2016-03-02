@@ -44,7 +44,7 @@
 #include "qcylindergeometry.h"
 #include "qcylindergeometry_p.h"
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qbufferfunctor.h>
+#include <Qt3DRender/qbufferdatagenerator.h>
 #include <Qt3DRender/qattribute.h>
 #include <qmath.h>
 #include <QVector3D>
@@ -166,7 +166,7 @@ void createDiscIndices(quint16 *&indicesPtr,
 } // anonymous
 
 
-class CylinderVertexDataFunctor : public QBufferFunctor
+class CylinderVertexDataFunctor : public QBufferDataGenerator
 {
 public:
     CylinderVertexDataFunctor(int rings, int slices, float radius, float length)
@@ -193,7 +193,7 @@ public:
         return verticesData;
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const CylinderVertexDataFunctor *otherFunctor = functor_cast<CylinderVertexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -213,7 +213,7 @@ private:
     float m_length;
 };
 
-class CylinderIndexDataFunctor : public QBufferFunctor
+class CylinderIndexDataFunctor : public QBufferDataGenerator
 {
 public:
     CylinderIndexDataFunctor(int rings, int slices, float length)
@@ -242,7 +242,7 @@ public:
         return indicesBytes;
     }
 
-    bool operator ==(const QBufferFunctor &other) const Q_DECL_OVERRIDE
+    bool operator ==(const QBufferDataGenerator &other) const Q_DECL_OVERRIDE
     {
         const CylinderIndexDataFunctor *otherFunctor = functor_cast<CylinderIndexDataFunctor>(&other);
         if (otherFunctor != Q_NULLPTR)
@@ -324,8 +324,8 @@ void QCylinderGeometryPrivate::init()
 
     m_indexAttribute->setCount(faces * 3);
 
-    m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new CylinderVertexDataFunctor(m_rings, m_slices, m_radius, m_length)));
-    m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new CylinderIndexDataFunctor(m_rings, m_slices, m_length)));
+    m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CylinderVertexDataFunctor(m_rings, m_slices, m_radius, m_length)));
+    m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CylinderIndexDataFunctor(m_rings, m_slices, m_length)));
 
     q->addAttribute(m_positionAttribute);
     q->addAttribute(m_texCoordAttribute);
@@ -433,7 +433,7 @@ void QCylinderGeometry::updateVertices()
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
 
-    d->m_vertexBuffer->setBufferFunctor(QBufferFunctorPtr(new CylinderVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_length)));
+    d->m_vertexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CylinderVertexDataFunctor(d->m_rings, d->m_slices, d->m_radius, d->m_length)));
 }
 
 /*!
@@ -444,7 +444,7 @@ void QCylinderGeometry::updateIndices()
     Q_D(QCylinderGeometry);
     const int faces = (d->m_slices * 2) * d->m_rings + (2 * d->m_slices);
     d->m_indexAttribute->setCount(faces * 3);
-    d->m_indexBuffer->setBufferFunctor(QBufferFunctorPtr(new CylinderIndexDataFunctor(d->m_rings, d->m_slices, d->m_length)));
+    d->m_indexBuffer->setDataGenerator(QBufferDataGeneratorPtr(new CylinderIndexDataFunctor(d->m_rings, d->m_slices, d->m_length)));
 }
 
 void QCylinderGeometry::setRings(int rings)
