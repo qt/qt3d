@@ -54,8 +54,8 @@
 
 int main(int argc, char* argv[])
 {
-    Qt3DQuickWindow view;
     QGuiApplication app(argc, argv);
+    Qt3DQuickWindow view;
 
     view.setSource(QUrl("qrc:/main.qml"));
     view.show();
