@@ -62,8 +62,9 @@ public:
     ~QAbstractSceneLoader();
 
     enum Status {
-        Loading = 0,
-        Loaded,
+        None = 0,
+        Loading,
+        Ready,
         Error
     };
     Q_ENUM(Status)

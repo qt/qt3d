@@ -93,7 +93,7 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     notifyObservers(e);
     QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e2->setPropertyName("status");
-    e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Loaded : QAbstractSceneLoader::Error);
+    e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Ready : QAbstractSceneLoader::Error);
     e2->setTargetNode(peerId());
     notifyObservers(e2);
 }

@@ -141,7 +141,7 @@ Entity
                 source: "qrc:/assets/test_scene.dae"
                 onStatusChanged: {
                     console.log("SceneLoader status: " + status);
-                    if (status == SceneLoader.Loaded) {
+                    if (status == SceneLoader.Ready) {
                         console.log("Scene is ready");
 
                         // Now find the torus and animate one of the material effect's parameters.

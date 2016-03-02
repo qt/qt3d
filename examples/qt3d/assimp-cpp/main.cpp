@@ -78,7 +78,7 @@ private:
 void SceneWalker::onStatusChanged()
 {
     qDebug() << "Status changed:" << m_loader->status();
-    if (m_loader->status() != Qt3DRender::QSceneLoader::Loaded)
+    if (m_loader->status() != Qt3DRender::QSceneLoader::Ready)
         return;
 
     // The QSceneLoader instance is a component of an entity. The loaded scene
