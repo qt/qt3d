@@ -59,7 +59,7 @@ Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 class QT3DRENDERSHARED_EXPORT QAbstractSceneParser : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(ParserStatus parserStatus READ parserStatus NOTIFY parserStatusChanged)
+    Q_PROPERTY(ParserStatus status READ status NOTIFY statusChanged)
     Q_PROPERTY(QStringList errors READ errors NOTIFY errorsChanged)
 
 public:
@@ -75,24 +75,24 @@ public:
     virtual ~QAbstractSceneParser();
 
     virtual void setSource(const QUrl &source) = 0;
-    virtual bool isExtensionSupported(const QUrl &source) const = 0;
+    virtual bool isFileTypeSupported(const QUrl &source) const = 0;
     virtual Qt3DCore::QEntity *scene(const QString &id = QString()) = 0;
     virtual Qt3DCore::QEntity *node(const QString &id) = 0;
 
-    ParserStatus parserStatus() const;
+    ParserStatus status() const;
     QStringList errors() const;
 
 Q_SIGNALS:
-    void parserStatusChanged(ParserStatus parserStatus);
+    void statusChanged(ParserStatus status);
     void errorsChanged(const QStringList &errors);
 
 protected:
-    void setParserStatus(ParserStatus parserStatus);
+    void setStatus(ParserStatus status);
     void logError(const QString &error);
     void logInfo(const QString &info);
 
 private:
-    ParserStatus m_parserStatus;
+    ParserStatus m_status;
     QStringList m_errors;
 };
 

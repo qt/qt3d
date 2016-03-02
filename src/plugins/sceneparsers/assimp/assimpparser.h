@@ -92,7 +92,7 @@ public:
 
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
-    bool isExtensionSupported(const QUrl &source) const Q_DECL_OVERRIDE;
+    bool isFileTypeSupported(const QUrl &source) const Q_DECL_OVERRIDE;
     Qt3DCore::QEntity *scene(const QString &id = QString()) Q_DECL_OVERRIDE;
     Qt3DCore::QEntity *node(const QString &id) Q_DECL_OVERRIDE;
 

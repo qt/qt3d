@@ -223,7 +223,7 @@ void GLTFParser::setSource(const QUrl &source)
  * Returns true if the extension of \a path is supported by the
  * GLTF parser.
  */
-bool GLTFParser::isExtensionSupported(const QUrl &source) const
+bool GLTFParser::isFileTypeSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return GLTFParser::isGLTFPath(path);

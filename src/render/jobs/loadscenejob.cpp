@@ -62,7 +62,7 @@ void LoadSceneJob::run()
     Qt3DCore::QEntity *sceneTree = m_managers->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
         Q_FOREACH (QAbstractSceneParser *parser, m_parsers) {
-            if (parser->isExtensionSupported(m_source)) {
+            if (parser->isFileTypeSupported(m_source)) {
                 parser->setSource(m_source);
                 sceneTree = parser->scene();
                 m_managers->sceneManager()->addLoadedSceneTree(m_source, sceneTree);

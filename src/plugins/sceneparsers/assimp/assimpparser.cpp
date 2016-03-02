@@ -336,7 +336,7 @@ void AssimpParser::setSource(const QUrl &source)
  * Returns \c true if the extension of \a source is supported by
  * the assimp parser.
  */
-bool AssimpParser::isExtensionSupported(const QUrl &source) const
+bool AssimpParser::isFileTypeSupported(const QUrl &source) const
 {
     const QString path = QUrlHelper::urlToLocalFileOrQrc(source);
     return AssimpParser::isAssimpPath(path);

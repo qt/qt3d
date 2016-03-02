@@ -46,7 +46,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 QAbstractSceneParser::QAbstractSceneParser() : QObject(),
-    m_parserStatus(Empty)
+    m_status(Empty)
 {
 }
 
@@ -54,9 +54,9 @@ QAbstractSceneParser::~QAbstractSceneParser()
 {
 }
 
-QAbstractSceneParser::ParserStatus QAbstractSceneParser::parserStatus() const
+QAbstractSceneParser::ParserStatus QAbstractSceneParser::status() const
 {
-    return m_parserStatus;
+    return m_status;
 }
 
 QStringList QAbstractSceneParser::errors() const
@@ -64,11 +64,11 @@ QStringList QAbstractSceneParser::errors() const
     return m_errors;
 }
 
-void QAbstractSceneParser::setParserStatus(ParserStatus parserStatus)
+void QAbstractSceneParser::setStatus(ParserStatus status)
 {
-    if (parserStatus != m_parserStatus) {
-        m_parserStatus = parserStatus;
-        emit parserStatusChanged(parserStatus);
+    if (status != m_status) {
+        m_status = status;
+        emit statusChanged(status);
     }
 }
 
