@@ -73,7 +73,7 @@ Entity {
         id : external_forward_renderer
         activeFrameGraph : ForwardRenderer {
             camera: camera
-            clearColor: "black"
+            clearColor: "lightsteelblue"
         }
     }
 
