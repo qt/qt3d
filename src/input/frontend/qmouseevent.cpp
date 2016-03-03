@@ -129,13 +129,13 @@ QMouseEvent::~QMouseEvent()
 QMouseEvent::Buttons QMouseEvent::button() const
 {
     switch (m_event.button()) {
-    case Qt::MouseButton::LeftButton:
+    case Qt::LeftButton:
         return QMouseEvent::LeftButton;
-    case Qt::MouseButton::RightButton:
+    case Qt::RightButton:
         return QMouseEvent::RightButton;
-    case Qt::MouseButton::MiddleButton:
+    case Qt::MiddleButton:
         return QMouseEvent::MiddleButton;
-    case Qt::MouseButton::BackButton:
+    case Qt::BackButton:
         return QMouseEvent::BackButton;
     default:
         return QMouseEvent::NoButton;

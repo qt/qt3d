@@ -67,7 +67,7 @@ public:
  */
 
 QPointSize::QPointSize(Qt3DCore::QNode *parent)
-    : QRenderState(*new QPointSizePrivate(Specification::Programmable, 0.f), parent)
+    : QRenderState(*new QPointSizePrivate(Programmable, 0.f), parent)
 {
 }
 
@@ -90,7 +90,7 @@ float QPointSize::value() const
 
 bool QPointSize::isProgrammable() const
 {
-    return (specification() == QPointSize::Specification::Programmable);
+    return (specification() == QPointSize::Programmable);
 }
 
 void QPointSize::setSpecification(Specification spec)
