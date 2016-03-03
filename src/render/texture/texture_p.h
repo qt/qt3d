@@ -113,7 +113,7 @@ public:
     inline QAbstractTextureProvider::Target target() const { return m_target; }
     inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
 
-    inline QTextureDataFunctorPtr dataFunctor() const { return m_dataFunctor; }
+    inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_dataFunctor; }
     void setTextureDataHandle(HTextureData handle) { m_textureDataHandle = handle; }
 
 private:
@@ -141,7 +141,7 @@ private:
     QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
     QAbstractTextureProvider::ComparisonMode m_comparisonMode;
 
-    QTextureDataFunctorPtr m_dataFunctor;
+    QTextureImageDataGeneratorPtr m_dataFunctor;
     HTextureData m_textureDataHandle;
 
     QVector<HTextureImage> m_textureImages;

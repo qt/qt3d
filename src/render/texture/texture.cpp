@@ -148,7 +148,7 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
         m_comparisonMode = texture->comparisonMode();
         m_layers = texture->maximumLayers();
         m_unique = texture->isUnique();
-        m_dataFunctor = texture->dataFunctor();
+        m_dataFunctor = texture->dataGenerator();
 
         if (m_dataFunctor)
             addToPendingTextureJobs();

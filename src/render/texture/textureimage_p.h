@@ -93,17 +93,17 @@ public:
     void unsetDirty();
 
     inline bool isDirty() const { return m_dirty; }
-    inline QTextureDataFunctorPtr textureDataFunctor() const { return m_functor; }
+    inline QTextureImageDataGeneratorPtr textureDataGenerator() const { return m_generator; }
 
     void setTextureDataHandle(HTextureData handle);
 
     inline HTextureData textureDataHandle() const { return m_textureDataHandle; }
-    inline QTextureDataFunctorPtr dataFunctor() const { return m_functor; }
+    inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_generator; }
 
 private:
     void updateDNA();
 
-    QTextureDataFunctorPtr m_functor;
+    QTextureImageDataGeneratorPtr m_generator;
     HTextureData m_textureDataHandle;
     TextureManager *m_textureManager;
     TextureImageManager *m_textureImageManager;

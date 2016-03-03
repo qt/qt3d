@@ -85,7 +85,7 @@ public :
     int m_maximumLayers;
     bool m_unique;
 
-    QTextureDataFunctorPtr m_dataFunctor;
+    QTextureImageDataGeneratorPtr m_dataFunctor;
 };
 
 } // QT3D

@@ -68,7 +68,7 @@ namespace Qt3DRender {
     QAbstractTextureProvider. It contains the necessary information: mipmap
     level, layer, cube face load at the proper place data into an OpenGL texture.
 
-    The actual data is provided through a QTextureDataFunctor that will be
+    The actual data is provided through a QTextureImageDataGenerator that will be
     executed by Aspect jobs in the backend. QAbstractTextureImage should be
     subclassed to provide a functor and eventual additional properties needed by
     the functor to load actual data.
@@ -196,7 +196,7 @@ void QAbstractTextureImage::update()
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
         change->setPropertyName("dataFunctor");
-        change->setValue(QVariant::fromValue(dataFunctor()));
+        change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);
     }
 }

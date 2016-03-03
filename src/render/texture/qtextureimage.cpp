@@ -132,12 +132,12 @@ void QTextureImage::setSource(const QUrl &source)
 }
 
 /*!
-    Returns the Qt3DRender::QTextureDataFunctorPtr functor to be used by the
+    Returns the Qt3DRender::QTextureImageDataGeneratorPtr functor to be used by the
     backend to load the texture image data into an OpenGL texture object.
  */
-QTextureDataFunctorPtr QTextureImage::dataFunctor() const
+QTextureImageDataGeneratorPtr QTextureImage::dataGenerator() const
 {
-    return QTextureDataFunctorPtr(new QImageTextureDataFunctor(source()));
+    return QTextureImageDataGeneratorPtr(new QImageTextureDataFunctor(source()));
 }
 
 /*!

@@ -60,7 +60,7 @@ public:
 
     QUrl source() const;
 
-    QTextureDataFunctorPtr dataFunctor() const Q_DECL_OVERRIDE;
+    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void setSource(const QUrl &source);

@@ -65,8 +65,8 @@ namespace Qt3DRender {
 
 namespace Render {
 
-typedef QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > FunctorImageHandlesPair;
-typedef QPair<QTextureDataFunctorPtr, HTextureData> FunctorTextureDataPair;
+typedef QPair<QTextureImageDataGeneratorPtr, QVector<HTextureImage> > FunctorImageHandlesPair;
+typedef QPair<QTextureImageDataGeneratorPtr, HTextureData> FunctorTextureDataPair;
 
 class TextureDataManager : public Qt3DCore::QResourceManager<QTexImageData,
                                                          Qt3DCore::QNodeId,
@@ -80,11 +80,11 @@ public:
 
     QVector<Qt3DCore::QNodeId> texturesPending();
 
-    HTextureData textureDataFromFunctor(const QTextureDataFunctorPtr &functor) const;
-    void addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureDataFunctorPtr &functor);
-    void removeTextureDataFunctor(const QTextureDataFunctorPtr &functor);
+    HTextureData textureDataFromFunctor(const QTextureImageDataGeneratorPtr &functor) const;
+    void addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureImageDataGeneratorPtr &functor);
+    void removeTextureDataFunctor(const QTextureImageDataGeneratorPtr &functor);
 
-    void assignFunctorToTextureImage(const QTextureDataFunctorPtr &functor, HTextureImage imageHandle);
+    void assignFunctorToTextureImage(const QTextureImageDataGeneratorPtr &functor, HTextureImage imageHandle);
 
     QMutex *mutex() const;
     void cleanup();

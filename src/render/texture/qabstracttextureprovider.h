@@ -51,9 +51,9 @@ namespace Qt3DRender {
 class QAbstractTextureProviderPrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
-class QTextureDataFunctor;
+class QTextureImageDataGenerator;
 
-typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
+typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
 
 class QT3DRENDERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
 {
@@ -295,7 +295,7 @@ public:
     int depth() const;
     int maximumLayers() const;
     bool isUnique() const;
-    QTextureDataFunctorPtr dataFunctor() const;
+    QTextureImageDataGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
     void setFormat(TextureFormat format);

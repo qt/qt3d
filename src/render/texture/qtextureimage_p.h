@@ -58,11 +58,11 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QImageTextureDataFunctor : public QTextureDataFunctor
+class QImageTextureDataFunctor : public QTextureImageDataGenerator
 {
 public:
     QImageTextureDataFunctor(const QUrl &url)
-        : QTextureDataFunctor()
+        : QTextureImageDataGenerator()
         , m_url(url)
     {}
 
@@ -88,7 +88,7 @@ public:
         return dataPtr;
     }
 
-    bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL
+    bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL
     {
         const QImageTextureDataFunctor *otherFunctor = functor_cast<QImageTextureDataFunctor>(&other);
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);

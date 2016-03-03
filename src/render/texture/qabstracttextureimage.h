@@ -51,15 +51,15 @@ namespace Qt3DRender {
 // We might also get rid of the layer, face, mipmap level from
 // TexImageDataPtr and store that in the functor directly
 // or use the QTextureImage instead
-class QT3DRENDERSHARED_EXPORT QTextureDataFunctor : public QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QTextureImageDataGenerator : public QAbstractFunctor
 {
 public:
-    virtual ~QTextureDataFunctor() {}
+    virtual ~QTextureImageDataGenerator() {}
     virtual QTexImageDataPtr operator()() = 0;
-    virtual bool operator ==(const QTextureDataFunctor &other) const = 0;
+    virtual bool operator ==(const QTextureImageDataGenerator &other) const = 0;
 };
 
-typedef QSharedPointer<QTextureDataFunctor> QTextureDataFunctorPtr;
+typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
 
 class QAbstractTextureImagePrivate;
 
@@ -78,7 +78,7 @@ public:
     QAbstractTextureProvider::CubeMapFace face() const;
 
     void update();
-    virtual QTextureDataFunctorPtr dataFunctor() const = 0;
+    virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
 
 public Q_SLOTS:
     void setMipLevel(int level);
@@ -102,6 +102,6 @@ private:
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QTextureDataFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QTextureImageDataGeneratorPtr)
 
 #endif // QT3DRENDER_QABSTRACTTEXTUREIMAGE_H

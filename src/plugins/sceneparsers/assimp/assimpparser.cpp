@@ -263,7 +263,7 @@ class AssimpRawTextureImage : public QAbstractTextureImage
 public:
     explicit AssimpRawTextureImage(QNode *parent = 0);
 
-    QTextureDataFunctorPtr dataFunctor() const Q_DECL_FINAL;
+    QTextureImageDataGeneratorPtr dataGenerator() const Q_DECL_FINAL;
 
     void setData(const QByteArray &data);
 
@@ -271,13 +271,13 @@ private:
     QByteArray m_data;
     QT3D_CLONEABLE(AssimpRawTextureImage)
 
-    class AssimpRawTextureImageFunctor : public QTextureDataFunctor
+    class AssimpRawTextureImageFunctor : public QTextureImageDataGenerator
     {
     public:
         explicit AssimpRawTextureImageFunctor(const QByteArray &data);
 
         QTexImageDataPtr operator()() Q_DECL_FINAL;
-        bool operator ==(const QTextureDataFunctor &other) const Q_DECL_FINAL;
+        bool operator ==(const QTextureImageDataGenerator &other) const Q_DECL_FINAL;
 
         QT3D_FUNCTOR(AssimpRawTextureImageFunctor)
     private:
@@ -882,9 +882,9 @@ AssimpRawTextureImage::AssimpRawTextureImage(QNode *parent)
 {
 }
 
-QTextureDataFunctorPtr AssimpRawTextureImage::dataFunctor() const
+QTextureImageDataGeneratorPtr AssimpRawTextureImage::dataGenerator() const
 {
-    return QTextureDataFunctorPtr(new AssimpRawTextureImageFunctor(m_data));
+    return QTextureImageDataGeneratorPtr(new AssimpRawTextureImageFunctor(m_data));
 }
 
 void AssimpRawTextureImage::setData(const QByteArray &data)
@@ -896,7 +896,7 @@ void AssimpRawTextureImage::setData(const QByteArray &data)
 }
 
 AssimpRawTextureImage::AssimpRawTextureImageFunctor::AssimpRawTextureImageFunctor(const QByteArray &data)
-    : QTextureDataFunctor()
+    : QTextureImageDataGenerator()
     , m_data(data)
 {
 }
@@ -908,7 +908,7 @@ QTexImageDataPtr AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator()
     return dataPtr;
 }
 
-bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTextureDataFunctor &other) const
+bool AssimpRawTextureImage::AssimpRawTextureImageFunctor::operator ==(const QTextureImageDataGenerator &other) const
 {
     const AssimpRawTextureImageFunctor *otherFunctor = functor_cast<AssimpRawTextureImageFunctor>(&other);
     return (otherFunctor != Q_NULLPTR && otherFunctor->m_data == m_data);

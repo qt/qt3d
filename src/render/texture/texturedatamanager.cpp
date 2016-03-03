@@ -69,7 +69,7 @@ QVector<Qt3DCore::QNodeId> TextureDataManager::texturesPending()
 }
 
 // Called from LoadMeshDataJob threads
-HTextureData TextureDataManager::textureDataFromFunctor(const QTextureDataFunctorPtr &functor) const
+HTextureData TextureDataManager::textureDataFromFunctor(const QTextureImageDataGeneratorPtr &functor) const
 {
     QMutexLocker lock(&m_mutex);
     for (int i = 0, m = m_textureDataFunctors.size(); i < m; ++i) {
@@ -80,14 +80,14 @@ HTextureData TextureDataManager::textureDataFromFunctor(const QTextureDataFuncto
 }
 
 // Called from LoadMeshDataJob threads
-void TextureDataManager::addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureDataFunctorPtr &functor)
+void TextureDataManager::addTextureDataForFunctor(HTextureData textureDataHandle, const QTextureImageDataGeneratorPtr &functor)
 {
     QMutexLocker lock(&m_mutex);
     m_textureDataFunctors.push_back(qMakePair(functor, textureDataHandle));
 }
 
 // Called from LoadMeshDataJob threads
-void TextureDataManager::removeTextureDataFunctor(const QTextureDataFunctorPtr &functor)
+void TextureDataManager::removeTextureDataFunctor(const QTextureImageDataGeneratorPtr &functor)
 {
     QMutexLocker lock(&m_mutex);
     for (int i = 0, m = m_textureDataFunctors.size(); i < m; ++i) {
@@ -99,16 +99,16 @@ void TextureDataManager::removeTextureDataFunctor(const QTextureDataFunctorPtr &
 }
 
 // Called from LoadMeshDataJob threads
-void TextureDataManager::assignFunctorToTextureImage(const QTextureDataFunctorPtr &newFunctor, HTextureImage imageHandle)
+void TextureDataManager::assignFunctorToTextureImage(const QTextureImageDataGeneratorPtr &newFunctor, HTextureImage imageHandle)
 {
     QMutexLocker lock(&m_mutex);
-    QVector<QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > >::iterator it = m_texturesImagesPerFunctor.begin();
+    QVector<QPair<QTextureImageDataGeneratorPtr, QVector<HTextureImage> > >::iterator it = m_texturesImagesPerFunctor.begin();
 
     bool newFunctorAlreadyExists = false;
     bool oldFunctorWasRemoved = false;
     while (it != m_texturesImagesPerFunctor.end()) {
-        QPair<QTextureDataFunctorPtr, QVector<HTextureImage> > &entry = *it;
-        QTextureDataFunctorPtr functor = entry.first;
+        QPair<QTextureImageDataGeneratorPtr, QVector<HTextureImage> > &entry = *it;
+        QTextureImageDataGeneratorPtr functor = entry.first;
         QVector<HTextureImage> &imageHandles = entry.second;
         const bool functorMatchesNewFunctor = (*functor == *newFunctor);
         bool removed = false;
