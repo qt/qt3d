@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -88,7 +88,7 @@ public:
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
     inline bool isEnabled() const { return m_enabled; }
-    inline QGeometryFunctorPtr geometryFunctor() const { return m_functor; }
+    inline QGeometryFactoryPtr geometryFactory() const { return m_geometryFactory; }
     void unsetDirty();
 
     // Build triangle data Job thread
@@ -108,7 +108,7 @@ private:
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
     bool m_enabled;
-    QGeometryFunctorPtr m_functor;
+    QGeometryFactoryPtr m_geometryFactory;
     GeometryRendererManager *m_manager;
     QVector<QBoundingVolume *> m_triangleVolumes;
 };

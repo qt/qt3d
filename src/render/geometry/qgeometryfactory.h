@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QGEOMETRYFUNCTOR
-#define QT3DRENDER_QGEOMETRYFUNCTOR
+#ifndef QT3DRENDER_QGEOMETRYFACTORY
+#define QT3DRENDER_QGEOMETRYFACTORY
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DRender/qabstractfunctor.h>
@@ -50,21 +50,21 @@ namespace Qt3DRender {
 
 class QGeometry;
 
-class QT3DRENDERSHARED_EXPORT QGeometryFunctor : public QAbstractFunctor
+class QT3DRENDERSHARED_EXPORT QGeometryFactory : public QAbstractFunctor
 {
 public:
-    virtual ~QGeometryFunctor() {}
+    virtual ~QGeometryFactory() {}
     virtual QGeometry *operator()() = 0;
-    virtual bool operator ==(const QGeometryFunctor &other) const = 0;
+    virtual bool operator ==(const QGeometryFactory &other) const = 0;
 };
 
-typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
+typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QGeometryFunctorPtr)
+Q_DECLARE_METATYPE(Qt3DRender::QGeometryFactoryPtr)
 
-#endif // QT3DRENDER_QGEOMETRYFUNCTOR
+#endif // QT3DRENDER_QGEOMETRYFACTORY
 

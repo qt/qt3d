@@ -49,9 +49,9 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QGeometryRendererPrivate;
-class QGeometryFunctor;
+class QGeometryFactory;
 
-typedef QSharedPointer<QGeometryFunctor> QGeometryFunctorPtr;
+typedef QSharedPointer<QGeometryFactory> QGeometryFactoryPtr;
 
 class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 {
@@ -99,8 +99,8 @@ public:
     QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
 
-    QGeometryFunctorPtr geometryFunctor() const;
-    void setGeometryFunctor(const QGeometryFunctorPtr &functor);
+    QGeometryFactoryPtr geometryFactory() const;
+    void setGeometryFactory(const QGeometryFactoryPtr &factory);
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);

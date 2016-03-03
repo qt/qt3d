@@ -84,7 +84,7 @@ void GeometryRenderer::cleanup()
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
     m_enabled = true;
-    m_functor.reset();
+    m_geometryFactory.reset();
     qDeleteAll(m_triangleVolumes);
     m_triangleVolumes.clear();
 }
@@ -109,8 +109,8 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
         m_enabled = geometryRenderer->isEnabled();
         if (geometryRenderer->geometry() != Q_NULLPTR)
             m_geometryId = geometryRenderer->geometry()->id();
-        m_functor = geometryRenderer->geometryFunctor();
-        if (m_functor && m_manager != Q_NULLPTR)
+        m_geometryFactory = geometryRenderer->geometryFactory();
+        if (m_geometryFactory && m_manager != Q_NULLPTR)
             m_manager->addDirtyGeometryRenderer(peerId());
         m_dirty = true;
     }
@@ -150,11 +150,11 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         } else if (propertyName == QByteArrayLiteral("primitiveType")) {
             m_primitiveType = static_cast<QGeometryRenderer::PrimitiveType>(propertyChange->value().value<int>());
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("geometryFunctor")) {
-            QGeometryFunctorPtr newFunctor = propertyChange->value().value<QGeometryFunctorPtr>();
-            m_dirty |= !(newFunctor && m_functor && *newFunctor == *m_functor);
-            m_functor = newFunctor;
-            if (m_functor && m_manager != Q_NULLPTR)
+        } else if (propertyName == QByteArrayLiteral("geometryFactory")) {
+            QGeometryFactoryPtr newFunctor = propertyChange->value().value<QGeometryFactoryPtr>();
+            m_dirty |= !(newFunctor && m_geometryFactory && *newFunctor == *m_geometryFactory);
+            m_geometryFactory = newFunctor;
+            if (m_geometryFactory && m_manager != Q_NULLPTR)
                 m_manager->addDirtyGeometryRenderer(peerId());
         }
         break;
@@ -187,8 +187,8 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 
 void GeometryRenderer::executeFunctor()
 {
-    Q_ASSERT(m_functor);
-    QGeometry *geometry = (*m_functor)();
+    Q_ASSERT(m_geometryFactory);
+    QGeometry *geometry = (*m_geometryFactory)();
 
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e->setPropertyName("geometry");

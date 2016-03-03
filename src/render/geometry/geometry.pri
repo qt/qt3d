@@ -18,7 +18,7 @@ HEADERS += \
     $$PWD/qcylindermesh.h \
     $$PWD/qgeometry.h \
     $$PWD/qgeometry_p.h \
-    $$PWD/qgeometryfunctor.h \
+    $$PWD/qgeometryfactory.h \
     $$PWD/qgeometryrenderer.h \
     $$PWD/qgeometryrenderer_p.h \
     $$PWD/qmesh.h \

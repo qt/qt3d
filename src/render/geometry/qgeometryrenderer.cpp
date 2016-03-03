@@ -276,10 +276,10 @@ QGeometryRenderer::PrimitiveType QGeometryRenderer::primitiveType() const
 /*!
  * \return the geometry functor.
  */
-QGeometryFunctorPtr QGeometryRenderer::geometryFunctor() const
+QGeometryFactoryPtr QGeometryRenderer::geometryFactory() const
 {
     Q_D(const QGeometryRenderer);
-    return d->m_functor;
+    return d->m_geometryFactory;
 }
 
 void QGeometryRenderer::setInstanceCount(int instanceCount)
@@ -393,16 +393,16 @@ void QGeometryRenderer::setPrimitiveType(QGeometryRenderer::PrimitiveType primit
 /*!
  * Sets the geometry \a functor.
  */
-void QGeometryRenderer::setGeometryFunctor(const QGeometryFunctorPtr &functor)
+void QGeometryRenderer::setGeometryFactory(const QGeometryFactoryPtr &factory)
 {
     Q_D(QGeometryRenderer);
-    if (functor && d->m_functor && *functor == *d->m_functor)
+    if (factory && d->m_geometryFactory && *factory == *d->m_geometryFactory)
         return;
-    d->m_functor = functor;
+    d->m_geometryFactory = factory;
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName("geometryFunctor");
-        change->setValue(QVariant::fromValue(d->m_functor));
+        change->setPropertyName("geometryFactory");
+        change->setValue(QVariant::fromValue(d->m_geometryFactory));
         d->notifyObservers(change);
     }
 }
@@ -423,7 +423,7 @@ void QGeometryRenderer::copy(const QNode *ref)
     d_func()->m_primitiveType = other->d_func()->m_primitiveType;
     d_func()->m_verticesPerPatch = other->d_func()->m_verticesPerPatch;
     d_func()->m_geometry = static_cast<QGeometry *>(QNode::clone(other->d_func()->m_geometry));
-    d_func()->m_functor = other->d_func()->m_functor;
+    d_func()->m_geometryFactory = other->d_func()->m_geometryFactory;
 }
 
 /*!

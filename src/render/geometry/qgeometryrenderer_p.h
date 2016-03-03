@@ -53,7 +53,7 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -74,7 +74,7 @@ public:
     bool m_primitiveRestart;
     QGeometry *m_geometry;
     QGeometryRenderer::PrimitiveType m_primitiveType;
-    QGeometryFunctorPtr m_functor;
+    QGeometryFactoryPtr m_geometryFactory;
 };
 
 } // namespace Qt3DRender

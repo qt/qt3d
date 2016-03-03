@@ -29,7 +29,7 @@
 #include <QtTest/QTest>
 
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
@@ -84,10 +84,10 @@ private Q_SLOTS:
         QCOMPARE(clone->primitiveRestart(), geomRenderer->primitiveRestart());
         QCOMPARE(clone->primitiveType(), geomRenderer->primitiveType());
 
-        QCOMPARE(clone->geometryFunctor(), geomRenderer->geometryFunctor());
-        if (geomRenderer->geometryFunctor()) {
-            QVERIFY(clone->geometryFunctor());
-            QVERIFY(*clone->geometryFunctor() == *geomRenderer->geometryFunctor());
+        QCOMPARE(clone->geometryFactory(), geomRenderer->geometryFactory());
+        if (geomRenderer->geometryFactory()) {
+            QVERIFY(clone->geometryFactory());
+            QVERIFY(*clone->geometryFactory() == *geomRenderer->geometryFactory());
         }
 
         if (geomRenderer->geometry() != Q_NULLPTR) {

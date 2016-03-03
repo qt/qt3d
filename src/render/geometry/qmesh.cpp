@@ -52,12 +52,12 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class MeshFunctor : public QGeometryFunctor
+class MeshFunctor : public QGeometryFactory
 {
 public :
     MeshFunctor(const QUrl &sourcePath, const QString &meshName = QString());
     QGeometry *operator()() Q_DECL_OVERRIDE;
-    bool operator ==(const QGeometryFunctor &other) const Q_DECL_OVERRIDE;
+    bool operator ==(const QGeometryFactory &other) const Q_DECL_OVERRIDE;
     QT3D_FUNCTOR(MeshFunctor)
 
 private:
@@ -128,7 +128,7 @@ void QMesh::setSource(const QUrl& source)
         return;
     d->m_source = source;
     // update the functor
-    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
     emit sourceChanged(source);
 }
 
@@ -150,7 +150,7 @@ void QMesh::setMeshName(const QString &meshName)
         return;
     d->m_meshName = meshName;
     // update the functor
-    QGeometryRenderer::setGeometryFunctor(QGeometryFunctorPtr(new MeshFunctor(d->m_source, d->m_meshName)));
+    QGeometryRenderer::setGeometryFactory(QGeometryFactoryPtr(new MeshFunctor(d->m_source, d->m_meshName)));
     emit meshNameChanged(meshName);
 }
 
@@ -169,7 +169,7 @@ QString QMesh::meshName() const
  * \internal
  */
 MeshFunctor::MeshFunctor(const QUrl &sourcePath, const QString& meshName)
-    : QGeometryFunctor()
+    : QGeometryFactory()
     , m_sourcePath(sourcePath)
     , m_meshName(meshName)
 {
@@ -205,7 +205,7 @@ QGeometry *MeshFunctor::operator()()
 /*!
  * \internal
  */
-bool MeshFunctor::operator ==(const QGeometryFunctor &other) const
+bool MeshFunctor::operator ==(const QGeometryFactory &other) const
 {
     const MeshFunctor *otherFunctor = functor_cast<MeshFunctor>(&other);
     if (otherFunctor != Q_NULLPTR)

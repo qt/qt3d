@@ -31,17 +31,17 @@
 #include <Qt3DCore/private/qscene_p.h>
 
 #include <Qt3DRender/qgeometryrenderer.h>
-#include <Qt3DRender/qgeometryfunctor.h>
+#include <Qt3DRender/qgeometryfactory.h>
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 
 #include "testpostmanarbiter.h"
 
-class TestFunctor : public Qt3DRender::QGeometryFunctor
+class TestFactory : public Qt3DRender::QGeometryFactory
 {
 public:
-    explicit TestFunctor(int size)
+    explicit TestFactory(int size)
         : m_size(size)
     {}
 
@@ -50,15 +50,15 @@ public:
         return Q_NULLPTR;
     }
 
-    bool operator ==(const Qt3DRender::QGeometryFunctor &other) const
+    bool operator ==(const Qt3DRender::QGeometryFactory &other) const
     {
-        const TestFunctor *otherFunctor = functor_cast<TestFunctor>(&other);
-        if (otherFunctor != Q_NULLPTR)
-            return otherFunctor->m_size == m_size;
+        const TestFactory *otherFactory = functor_cast<TestFactory>(&other);
+        if (otherFactory != Q_NULLPTR)
+            return otherFactory->m_size == m_size;
         return false;
     }
 
-    QT3D_FUNCTOR(TestFunctor)
+    QT3D_FUNCTOR(TestFactory)
 
 private:
     int m_size;
@@ -94,7 +94,7 @@ private Q_SLOTS:
         geometry1->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
         geometry1->setPrimitiveCount(15);
         geometry1->setVerticesPerPatch(2);
-        geometry1->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(383)));
+        geometry1->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(383)));
         QTest::newRow("triangle") << geometry1;
 
         Qt3DRender::QGeometryRenderer *geometry2 = new Qt3DRender::QGeometryRenderer();
@@ -107,7 +107,7 @@ private Q_SLOTS:
         geometry2->setPrimitiveRestart(true);
         geometry2->setVerticesPerPatch(3);
         geometry2->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-        geometry2->setGeometryFunctor(Qt3DRender::QGeometryFunctorPtr(new TestFunctor(305)));
+        geometry2->setGeometryFactory(Qt3DRender::QGeometryFactoryPtr(new TestFactory(305)));
         QTest::newRow("lines with restart") << geometry2;
     }
 
@@ -137,10 +137,10 @@ private Q_SLOTS:
             QCOMPARE(clone->geometry()->id(), geometryRenderer->geometry()->id());
         }
 
-        QCOMPARE(clone->geometryFunctor(), geometryRenderer->geometryFunctor());
-        if (geometryRenderer->geometryFunctor()) {
-            QVERIFY(clone->geometryFunctor());
-            QVERIFY(*clone->geometryFunctor() == *geometryRenderer->geometryFunctor());
+        QCOMPARE(clone->geometryFactory(), geometryRenderer->geometryFactory());
+        if (geometryRenderer->geometryFactory()) {
+            QVERIFY(clone->geometryFactory());
+            QVERIFY(*clone->geometryFactory() == *geometryRenderer->geometryFactory());
         }
     }
 
@@ -255,15 +255,15 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3DRender::QGeometryFunctorPtr functor(new TestFunctor(555));
-        geometryRenderer->setGeometryFunctor(functor);
+        Qt3DRender::QGeometryFactoryPtr factory(new TestFactory(555));
+        geometryRenderer->setGeometryFactory(factory);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "geometryFunctor");
-        QCOMPARE(change->value().value<Qt3DRender::QGeometryFunctorPtr>(), functor);
+        QCOMPARE(change->propertyName(), "geometryFactory");
+        QCOMPARE(change->value().value<Qt3DRender::QGeometryFactoryPtr>(), factory);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
