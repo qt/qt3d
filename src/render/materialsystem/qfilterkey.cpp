@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qannotation.h"
-#include "qannotation_p.h"
+#include "qfilterkey.h"
+#include "qfilterkey_p.h"
 #include <private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -47,21 +47,21 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 
-QAnnotationPrivate::QAnnotationPrivate()
+QFilterKeyPrivate::QFilterKeyPrivate()
     : QNodePrivate()
 {
 }
 
 /*!
-    \class Qt3DRender::QAnnotation
+    \class Qt3DRender::QFilterKey
     \inmodule Qt3DRender
     \since 5.5
-    \brief The QAnnotation class provides ...
+    \brief The QFilterKey class provides ...
 */
 
 /*!
     \qmltype Annotation
-    \instantiates Qt3DRender::QAnnotation
+    \instantiates Qt3DRender::QFilterKey
     \inherits Node
     \inqmlmodule Qt3D.Render
     \since 5.5
@@ -71,10 +71,10 @@ QAnnotationPrivate::QAnnotationPrivate()
 /*!
   Copies the annotation in \a ref into this annotation.
  */
-void QAnnotation::copy(const QNode *ref)
+void QFilterKey::copy(const QNode *ref)
 {
     QNode::copy(ref);
-    const QAnnotation *criterion = static_cast<const QAnnotation*>(ref);
+    const QFilterKey *criterion = static_cast<const QFilterKey*>(ref);
     d_func()->m_name = criterion->d_func()->m_name;
     d_func()->m_value = criterion->d_func()->m_value;
 }
@@ -82,28 +82,28 @@ void QAnnotation::copy(const QNode *ref)
 /*!
   The constructor creats a new annotation under \a parent.
  */
-QAnnotation::QAnnotation(QNode *parent)
-    : QNode(*new QAnnotationPrivate, parent)
+QFilterKey::QFilterKey(QNode *parent)
+    : QNode(*new QFilterKeyPrivate, parent)
 {
 }
 
-QAnnotation::~QAnnotation()
+QFilterKey::~QFilterKey()
 {
     QNode::cleanup();
 }
 
-void QAnnotation::setValue(const QVariant &value)
+void QFilterKey::setValue(const QVariant &value)
 {
-    Q_D(QAnnotation);
+    Q_D(QFilterKey);
     if (value != d->m_value) {
         d->m_value = value;
         emit valueChanged(value);
     }
 }
 
-void QAnnotation::setName(const QString &name)
+void QFilterKey::setName(const QString &name)
 {
-    Q_D(QAnnotation);
+    Q_D(QFilterKey);
     if (name != d->m_name) {
         d->m_name = name;
         emit nameChanged(name);
@@ -111,7 +111,7 @@ void QAnnotation::setName(const QString &name)
 }
 
 /*!
-  \property QAnnotation::value
+  \property QFilterKey::value
 
 */
 
@@ -119,14 +119,14 @@ void QAnnotation::setName(const QString &name)
   \qmlproperty variant Qt3D.Render::Annotation::value
 */
 
-QVariant QAnnotation::value() const
+QVariant QFilterKey::value() const
 {
-    Q_D(const QAnnotation);
+    Q_D(const QFilterKey);
     return d->m_value;
 }
 
 /*!
-  \property QAnnotation::name
+  \property QFilterKey::name
 
  */
 
@@ -134,9 +134,9 @@ QVariant QAnnotation::value() const
   \qmlproperty string Qt3D.Render::Annotation::name
  */
 
-QString QAnnotation::name() const
+QString QFilterKey::name() const
 {
-    Q_D(const QAnnotation);
+    Q_D(const QFilterKey);
     return d->m_name;
 }
 

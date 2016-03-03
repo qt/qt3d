@@ -39,7 +39,7 @@
 
 #include "qphongalphamaterial.h"
 #include "qphongalphamaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtechnique.h>
@@ -77,7 +77,7 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_depthMask(new QDepthMask())
     , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
 }
 
@@ -116,13 +116,13 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     Q_Q(QPhongAlphaMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_phongAlphaGL3Technique->addAnnotation(m_annotation);
-    m_phongAlphaGL2Technique->addAnnotation(m_annotation);
-    m_phongAlphaES2Technique->addAnnotation(m_annotation);
+    m_phongAlphaGL3Technique->addFilterKey(m_filterKey);
+    m_phongAlphaGL2Technique->addFilterKey(m_filterKey);
+    m_phongAlphaES2Technique->addFilterKey(m_filterKey);
 
     m_depthMask->setMask(false);
 

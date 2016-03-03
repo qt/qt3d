@@ -59,14 +59,14 @@ class SceneEffect : public Qt3DRender::QEffect
 public:
     explicit SceneEffect(Qt3DCore::QNode *parent = 0);
 
-    QList<Qt3DRender::QAnnotation *> passCriteria() const;
+    QList<Qt3DRender::QFilterKey *> passCriteria() const;
 
 private:
     Qt3DRender::QTechnique *m_gl3Technique;
     Qt3DRender::QTechnique *m_gl2Technique;
     Qt3DRender::QRenderPass *m_gl2Pass;
     Qt3DRender::QRenderPass *m_gl3Pass;
-    Qt3DRender::QAnnotation *m_passCriterion;
+    Qt3DRender::QFilterKey *m_passCriterion;
 };
 
 #endif // SCENEEFFECT_H

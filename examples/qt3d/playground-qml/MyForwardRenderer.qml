@@ -69,8 +69,8 @@ TechniqueFilter {
     property alias clearColor: viewport.clearColor
 
     matchAll : [
-        Annotation { name: "RenderingStyle"; value: "forward";},
-        Annotation { name: "Enabled"; value: true;}
+        FilterKey { name: "RenderingStyle"; value: "forward";},
+        FilterKey { name: "Enabled"; value: true;}
     ]
 
     ClearBuffer {
@@ -87,7 +87,7 @@ TechniqueFilter {
                 LayerFilter {
                     id: layerFilter
                     RenderPassFilter { includes: [
-                            Annotation {name : "Name"; value : "Texture"}
+                            FilterKey {name : "Name"; value : "Texture"}
                         ] }
                 }
             }
@@ -101,7 +101,7 @@ TechniqueFilter {
         CameraSelector {
             id: detailCameraSelector
             RenderPassFilter {
-                includes: [ Annotation { name: "Name"; value: "ColorMaterial"; } ]
+                includes: [ FilterKey { name: "Name"; value: "ColorMaterial"; } ]
             }
         }
     }

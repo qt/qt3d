@@ -89,13 +89,13 @@ void QNormalDiffuseMapAlphaMaterialPrivate::init()
     m_normalDiffuseES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     Q_Q(QNormalDiffuseMapMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_normalDiffuseGL3Technique->addAnnotation(m_annotation);
-    m_normalDiffuseGL2Technique->addAnnotation(m_annotation);
-    m_normalDiffuseES2Technique->addAnnotation(m_annotation);
+    m_normalDiffuseGL3Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseGL2Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseES2Technique->addFilterKey(m_filterKey);
 
     m_depthTest->setDepthFunction(QDepthTest::Less);
 

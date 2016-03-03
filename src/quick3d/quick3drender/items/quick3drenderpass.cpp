@@ -51,13 +51,13 @@ Quick3DRenderPass::Quick3DRenderPass(QObject *parent)
 {
 }
 
-QQmlListProperty<QAnnotation> Quick3DRenderPass::annotationList()
+QQmlListProperty<QFilterKey> Quick3DRenderPass::filterKeyList()
 {
-    return QQmlListProperty<QAnnotation>(this, 0,
-                                         &Quick3DRenderPass::appendAnnotation,
-                                         &Quick3DRenderPass::annotationsCount,
-                                         &Quick3DRenderPass::annotationAt,
-                                         &Quick3DRenderPass::clearAnnotations);
+    return QQmlListProperty<QFilterKey>(this, 0,
+                                         &Quick3DRenderPass::appendFilterKey,
+                                         &Quick3DRenderPass::filterKeysCount,
+                                         &Quick3DRenderPass::filterKeyAt,
+                                         &Quick3DRenderPass::clearFilterKey);
 }
 
 QQmlListProperty<QRenderState> Quick3DRenderPass::renderStateList()
@@ -78,29 +78,29 @@ QQmlListProperty<QParameter> Quick3DRenderPass::parameterList()
                                         &Quick3DRenderPass::clearParameterList);
 }
 
-void Quick3DRenderPass::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
+void Quick3DRenderPass::appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilterKey *filterKey)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    rPass->parentRenderPass()->addAnnotation(annotation);
+    rPass->parentRenderPass()->addFilterKey(filterKey);
 }
 
-QAnnotation *Quick3DRenderPass::annotationAt(QQmlListProperty<QAnnotation> *list, int index)
+QFilterKey *Quick3DRenderPass::filterKeyAt(QQmlListProperty<QFilterKey> *list, int index)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->annotations().at(index);
+    return rPass->parentRenderPass()->filterKeys().at(index);
 }
 
-int Quick3DRenderPass::annotationsCount(QQmlListProperty<QAnnotation> *list)
+int Quick3DRenderPass::filterKeysCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    return rPass->parentRenderPass()->annotations().count();
+    return rPass->parentRenderPass()->filterKeys().count();
 }
 
-void Quick3DRenderPass::clearAnnotations(QQmlListProperty<QAnnotation> *list)
+void Quick3DRenderPass::clearFilterKey(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPass *rPass = qobject_cast<Quick3DRenderPass *>(list->object);
-    Q_FOREACH (QAnnotation *c, rPass->parentRenderPass()->annotations())
-        rPass->parentRenderPass()->removeAnnotation(c);
+    Q_FOREACH (QFilterKey *c, rPass->parentRenderPass()->filterKeys())
+        rPass->parentRenderPass()->removeFilterKey(c);
 }
 
 void Quick3DRenderPass::appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state)

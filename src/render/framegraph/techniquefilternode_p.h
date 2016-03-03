@@ -62,7 +62,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotation;
+class QFilterKey;
 class QTechniqueFilter;
 
 template <typename T, uint INDEXBITS>

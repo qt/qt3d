@@ -59,7 +59,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QTechnique;
-class QAnnotation;
+class QFilterKey;
 class QParameter;
 class QRenderPass;
 
@@ -70,7 +70,7 @@ public:
     ~QTechniquePrivate();
 
     Q_DECLARE_PUBLIC(QTechnique)
-    QList<QAnnotation *> m_filterKeys;
+    QList<QFilterKey *> m_filterKeys;
     QList<QParameter *> m_parameters;
     QList<QRenderPass*> m_renderPasses;
     QGraphicsApiFilter m_graphicsApiFilter;

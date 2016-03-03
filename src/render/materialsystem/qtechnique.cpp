@@ -85,8 +85,8 @@ void QTechnique::copy(const QNode *ref)
     const QTechnique *tech = static_cast<const QTechnique*>(ref);
     d_func()->m_graphicsApiFilter.copy(tech->d_func()->m_graphicsApiFilter);
 
-    Q_FOREACH (QAnnotation *annotation, tech->d_func()->m_filterKeys)
-        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(annotation)));
+    Q_FOREACH (QFilterKey *annotation, tech->d_func()->m_filterKeys)
+        addFilterKey(qobject_cast<QFilterKey *>(QNode::clone(annotation)));
     Q_FOREACH (QRenderPass *pass, tech->d_func()->m_renderPasses)
         addRenderPass(qobject_cast<QRenderPass *>(QNode::clone(pass)));
     Q_FOREACH (QParameter *p, tech->d_func()->m_parameters)
@@ -105,7 +105,7 @@ void QTechniquePrivate::_q_graphicsApiFilterChanged()
     }
 }
 
-void QTechnique::addAnnotation(QAnnotation *criterion)
+void QTechnique::addFilterKey(QFilterKey *criterion)
 {
     Q_D(QTechnique);
     if (!d->m_filterKeys.contains(criterion)) {
@@ -127,7 +127,7 @@ void QTechnique::addAnnotation(QAnnotation *criterion)
     }
 }
 
-void QTechnique::removeAnnotation(QAnnotation *criterion)
+void QTechnique::removeFilterKey(QFilterKey *criterion)
 {
     Q_D(QTechnique);
     if (d->m_changeArbiter != Q_NULLPTR) {
@@ -139,7 +139,7 @@ void QTechnique::removeAnnotation(QAnnotation *criterion)
     d->m_filterKeys.removeOne(criterion);
 }
 
-QList<QAnnotation *> QTechnique::filterKeys() const
+QList<QFilterKey *> QTechnique::filterKeys() const
 {
     Q_D(const QTechnique);
     return d->m_filterKeys;

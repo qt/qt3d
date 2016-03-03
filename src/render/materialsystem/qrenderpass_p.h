@@ -62,7 +62,7 @@ namespace Qt3DRender {
 class QParameter;
 class QParameterMapping;
 class QRenderState;
-class QAnnotation;
+class QFilterKey;
 typedef QList<QParameter*> ParameterList;
 
 namespace Render
@@ -81,7 +81,7 @@ public:
 
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
-    QList<QAnnotation *> m_annotationList;
+    QList<QFilterKey *> m_filterKeyList;
     QList<QParameterMapping *> m_bindings;
     QList<QRenderState *> m_renderStates;
     QList<QParameter *> m_parameters;

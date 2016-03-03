@@ -37,49 +37,39 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QANNOTATION_H
-#define QT3DRENDER_QANNOTATION_H
+#ifndef QT3DRENDER_QFILTERKEY_P_H
+#define QT3DRENDER_QFILTERKEY_P_H
 
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QVariant>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DRender/qfilterkey.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotationPrivate;
-
-class QT3DRENDERSHARED_EXPORT QAnnotation : public Qt3DCore::QNode
+class QFilterKeyPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
-    Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
-    explicit QAnnotation(Qt3DCore::QNode *parent = 0);
-    ~QAnnotation();
+    QFilterKeyPrivate();
 
-    QVariant value() const;
-    QString name() const;
-
-public Q_SLOTS:
-    void setValue(const QVariant &value);
-    void setName(const QString &customType);
-
-Q_SIGNALS:
-    void nameChanged(const QString &name);
-    void valueChanged(const QVariant &value);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAnnotation)
-    QT3D_CLONEABLE(QAnnotation)
+    Q_DECLARE_PUBLIC(QFilterKey)
+    QString m_name;
+    QVariant m_value;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QANNOTATION_H
+#endif // QT3DRENDER_QFILTERKEY_P_H

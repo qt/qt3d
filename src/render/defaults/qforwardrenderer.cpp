@@ -43,7 +43,7 @@
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qclearbuffer.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
 
@@ -75,7 +75,7 @@ void QForwardRendererPrivate::init()
     m_viewport->setClearColor(Qt::white);
     m_clearBuffer->setBuffers(QClearBuffer::ColorDepthBuffer);
 
-    QAnnotation *forwardRenderingStyle = new QAnnotation(q);
+    QFilterKey *forwardRenderingStyle = new QFilterKey(q);
     forwardRenderingStyle->setName(QStringLiteral("renderingStyle"));
     forwardRenderingStyle->setValue(QStringLiteral("forward"));
     q->addMatch(forwardRenderingStyle);

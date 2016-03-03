@@ -65,7 +65,7 @@ Effect {
                 }
             }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "final" }
+                filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL3
                     vertexShaderCode:
@@ -133,7 +133,7 @@ Effect {
                             }
                         }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "final" }
+                filterKeys : FilterKey { name : "pass"; value : "final" }
                 shaderProgram : ShaderProgram {
                     id : finalShaderGL2
                     vertexShaderCode:

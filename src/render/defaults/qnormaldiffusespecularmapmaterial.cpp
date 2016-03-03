@@ -39,7 +39,7 @@
 
 #include "qnormaldiffusespecularmapmaterial.h"
 #include "qnormaldiffusespecularmapmaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
@@ -76,7 +76,7 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
     , m_normalDiffuseSpecularES2RenderPass(new QRenderPass())
     , m_normalDiffuseSpecularGL3Shader(new QShaderProgram())
     , m_normalDiffuseSpecularGL2ES2Shader(new QShaderProgram())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
     m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
@@ -132,13 +132,13 @@ void QNormalDiffuseSpecularMapMaterialPrivate::init()
     m_normalDiffuseSpecularES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     Q_Q(QNormalDiffuseSpecularMapMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_normalDiffuseSpecularGL3Technique->addAnnotation(m_annotation);
-    m_normalDiffuseSpecularGL2Technique->addAnnotation(m_annotation);
-    m_normalDiffuseSpecularES2Technique->addAnnotation(m_annotation);
+    m_normalDiffuseSpecularGL3Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseSpecularGL2Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseSpecularES2Technique->addFilterKey(m_filterKey);
 
     m_normalDiffuseSpecularGL3RenderPass->setShaderProgram(m_normalDiffuseSpecularGL3Shader);
     m_normalDiffuseSpecularGL2RenderPass->setShaderProgram(m_normalDiffuseSpecularGL2ES2Shader);

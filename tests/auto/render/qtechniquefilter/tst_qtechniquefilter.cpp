@@ -33,7 +33,7 @@
 
 #include <Qt3DRender/qtechniquefilter.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 
 #include "testpostmanarbiter.h"
 
@@ -62,10 +62,10 @@ private Q_SLOTS:
     {
         QTest::addColumn<Qt3DRender::QTechniqueFilter *>("techniqueFilter");
         QTest::addColumn<QList<Qt3DRender::QParameter *> >("parameters");
-        QTest::addColumn<QList<Qt3DRender::QAnnotation *> >("annotations");
+        QTest::addColumn<QList<Qt3DRender::QFilterKey *> >("filterKeys");
 
         Qt3DRender::QTechniqueFilter *defaultConstructed = new Qt3DRender::QTechniqueFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QParameter *>() << QList<Qt3DRender::QAnnotation *>();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QParameter *>() << QList<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithParams = new Qt3DRender::QTechniqueFilter();
         Qt3DRender::QParameter *parameter1 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 454.0f);
@@ -73,36 +73,36 @@ private Q_SLOTS:
         QList<Qt3DRender::QParameter *> params1 = QList<Qt3DRender::QParameter *>() << parameter1 << parameter2;
         techniqueFilterWithParams->addParameter(parameter1);
         techniqueFilterWithParams->addParameter(parameter2);
-        QTest::newRow("techniqueFilterWithParams") << techniqueFilterWithParams << params1 << QList<Qt3DRender::QAnnotation *>();
+        QTest::newRow("techniqueFilterWithParams") << techniqueFilterWithParams << params1 << QList<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithAnnotations = new Qt3DRender::QTechniqueFilter();
-        Qt3DRender::QAnnotation *annotation1 = new Qt3DRender::QAnnotation();
-        Qt3DRender::QAnnotation *annotation2 = new Qt3DRender::QAnnotation();
-        annotation1->setName(QStringLiteral("hasSuperCharger"));
-        annotation1->setValue(true);
-        annotation1->setName(QStringLiteral("hasNitroKit"));
-        annotation1->setValue(false);
-        QList<Qt3DRender::QAnnotation *> annotations1 = QList<Qt3DRender::QAnnotation *>() << annotation1 << annotation2;
-        techniqueFilterWithAnnotations->addMatch(annotation1);
-        techniqueFilterWithAnnotations->addMatch(annotation2);
-        QTest::newRow("techniqueFilterWithAnnotations") << techniqueFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << annotations1;
+        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey2 = new Qt3DRender::QFilterKey();
+        filterKey1->setName(QStringLiteral("hasSuperCharger"));
+        filterKey1->setValue(true);
+        filterKey1->setName(QStringLiteral("hasNitroKit"));
+        filterKey1->setValue(false);
+        QList<Qt3DRender::QFilterKey *> filterKeys1 = QList<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
+        techniqueFilterWithAnnotations->addMatch(filterKey1);
+        techniqueFilterWithAnnotations->addMatch(filterKey2);
+        QTest::newRow("techniqueFilterWithAnnotations") << techniqueFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << filterKeys1;
 
         Qt3DRender::QTechniqueFilter *techniqueFilterWithParamsAndAnnotations = new Qt3DRender::QTechniqueFilter();
         Qt3DRender::QParameter *parameter3 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 383.0f);
         Qt3DRender::QParameter *parameter4 = new Qt3DRender::QParameter(QStringLiteral("torque"), 555);
-        Qt3DRender::QAnnotation *annotation3 = new Qt3DRender::QAnnotation();
-        Qt3DRender::QAnnotation *annotation4 = new Qt3DRender::QAnnotation();
-        annotation3->setName(QStringLiteral("hasSuperCharger"));
-        annotation3->setValue(false);
-        annotation4->setName(QStringLiteral("hasNitroKit"));
-        annotation4->setValue(true);
+        Qt3DRender::QFilterKey *filterKey3 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey4 = new Qt3DRender::QFilterKey();
+        filterKey3->setName(QStringLiteral("hasSuperCharger"));
+        filterKey3->setValue(false);
+        filterKey4->setName(QStringLiteral("hasNitroKit"));
+        filterKey4->setValue(true);
         QList<Qt3DRender::QParameter *> params2 = QList<Qt3DRender::QParameter *>() << parameter3 << parameter4;
-        QList<Qt3DRender::QAnnotation *> annotations2 = QList<Qt3DRender::QAnnotation *>() << annotation3 << annotation4;
+        QList<Qt3DRender::QFilterKey *> filterKeys2 = QList<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter3);
         techniqueFilterWithParamsAndAnnotations->addParameter(parameter4);
-        techniqueFilterWithParamsAndAnnotations->addMatch(annotation3);
-        techniqueFilterWithParamsAndAnnotations->addMatch(annotation4);
-        QTest::newRow("techniqueFilterWithParamsAndAnnotations") << techniqueFilterWithParamsAndAnnotations << params2 << annotations2;
+        techniqueFilterWithParamsAndAnnotations->addMatch(filterKey3);
+        techniqueFilterWithParamsAndAnnotations->addMatch(filterKey4);
+        QTest::newRow("techniqueFilterWithParamsAndAnnotations") << techniqueFilterWithParamsAndAnnotations << params2 << filterKeys2;
     }
 
     void checkCloning()
@@ -110,11 +110,11 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DRender::QTechniqueFilter*, techniqueFilter);
         QFETCH(QList<Qt3DRender::QParameter *>, parameters);
-        QFETCH(QList<Qt3DRender::QAnnotation *>, annotations);
+        QFETCH(QList<Qt3DRender::QFilterKey *>, filterKeys);
 
         // THEN
         QCOMPARE(techniqueFilter->parameters(), parameters);
-        QCOMPARE(techniqueFilter->criteria(), annotations);
+        QCOMPARE(techniqueFilter->criteria(), filterKeys);
 
         // WHEN
         Qt3DRender::QTechniqueFilter *clone = static_cast<Qt3DRender::QTechniqueFilter *>(QNode::clone(techniqueFilter));
@@ -136,9 +136,9 @@ private Q_SLOTS:
             QVERIFY(pOrig->parent() == techniqueFilter);
         }
 
-        for (int i = 0, m = annotations.count(); i < m; ++i) {
-            Qt3DRender::QAnnotation *aClone = clone->criteria().at(i);
-            Qt3DRender::QAnnotation *aOrig = annotations.at(i);
+        for (int i = 0, m = filterKeys.count(); i < m; ++i) {
+            Qt3DRender::QFilterKey *aClone = clone->criteria().at(i);
+            Qt3DRender::QFilterKey *aOrig = filterKeys.at(i);
             QCOMPARE(aOrig->id(),aClone->id());
             QCOMPARE(aOrig->name(), aClone->name());
             QCOMPARE(aOrig->value(), aClone->value());
@@ -193,8 +193,8 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3DRender::QAnnotation *annotation1 = new Qt3DRender::QAnnotation();
-        techniqueFilter->addMatch(annotation1);
+        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
+        techniqueFilter->addMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
@@ -202,20 +202,20 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "require");
         QCOMPARE(change->subjectId(),techniqueFilter->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), annotation1->id());
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN
-        techniqueFilter->addMatch(annotation1);
+        techniqueFilter->addMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        techniqueFilter->removeMatch(annotation1);
+        techniqueFilter->removeMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
@@ -223,7 +223,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "require");
         QCOMPARE(change->subjectId(), techniqueFilter->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), annotation1->id());
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
 
         arbiter.events.clear();

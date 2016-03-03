@@ -54,7 +54,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/parameterpack_p.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <QVector>
 #include <QStringList>
 
@@ -65,7 +65,7 @@ namespace Qt3DRender {
 class QTechnique;
 class QParameter;
 class QGraphicsApiFilter;
-class QAnnotation;
+class QFilterKey;
 class QRenderPass;
 
 namespace Render {
@@ -87,10 +87,10 @@ public:
     void appendRenderPass(Qt3DCore::QNodeId renderPassId);
     void removeRenderPass(Qt3DCore::QNodeId renderPassId);
 
-    void appendAnnotation(Qt3DCore::QNodeId criterionId);
-    void removeAnnotation(Qt3DCore::QNodeId criterionId);
+    void appendFilterKey(Qt3DCore::QNodeId criterionId);
+    void removeFilterKey(Qt3DCore::QNodeId criterionId);
 
-    QVector<Qt3DCore::QNodeId> annotations() const;
+    QVector<Qt3DCore::QNodeId> filterKeys() const;
     QVector<Qt3DCore::QNodeId> renderPasses() const;
     QGraphicsApiFilter *graphicsApiFilter() const;
 
@@ -98,7 +98,7 @@ private:
     QGraphicsApiFilter *m_graphicsApiFilter;
 
     ParameterPack m_parameterPack;
-    QVector<Qt3DCore::QNodeId> m_annotationList;
+    QVector<Qt3DCore::QNodeId> m_filterKeyList;
     QVector<Qt3DCore::QNodeId> m_renderPasses;
 };
 

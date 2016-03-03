@@ -31,7 +31,7 @@
 
 #include <Qt3DCore/QScenePropertyChange>
 
-#include <Qt3DRender/QAnnotation>
+#include <Qt3DRender/QFilterKey>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QParameter>
@@ -82,7 +82,7 @@ private slots:
 
         // THEN
         QVERIFY(backend.shaderProgram().isNull());
-        QVERIFY(backend.annotations().isEmpty());
+        QVERIFY(backend.filterKeys().isEmpty());
         QVERIFY(backend.renderStates(m_renderStateManager).isEmpty());
         QVERIFY(backend.parameters().isEmpty());
     }
@@ -93,7 +93,7 @@ private slots:
         QRenderPass frontend;
         frontend.setShaderProgram(new QShaderProgram(&frontend));
 
-        frontend.addAnnotation(new QAnnotation(&frontend));
+        frontend.addFilterKey(new QFilterKey(&frontend));
 
         frontend.addParameter(new QParameter(&frontend));
 
@@ -112,8 +112,8 @@ private slots:
         // THEN
         QCOMPARE(backend.shaderProgram(), frontend.shaderProgram()->id());
 
-        QCOMPARE(backend.annotations().size(), 1);
-        QCOMPARE(backend.annotations().first(), frontend.annotations().first()->id());
+        QCOMPARE(backend.filterKeys().size(), 1);
+        QCOMPARE(backend.filterKeys().first(), frontend.filterKeys().first()->id());
 
         QCOMPARE(backend.parameters().size(), 1);
         QCOMPARE(backend.parameters().first(), frontend.parameters().first()->id());
@@ -154,7 +154,7 @@ private slots:
     void shouldHandleAnnotationsPropertyChangeEvents()
     {
         // GIVEN
-        QScopedPointer<QAnnotation> annotation(new QAnnotation);
+        QScopedPointer<QFilterKey> annotation(new QFilterKey);
 
         RenderPass backend;
         TestRenderer renderer;
@@ -163,22 +163,22 @@ private slots:
         // WHEN
         QScenePropertyChangePtr addChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, annotation->id()));
         addChange->setValue(QVariant::fromValue(annotation->id()));
-        addChange->setPropertyName("annotation");
+        addChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(addChange);
 
         // THEN
-        QCOMPARE(backend.annotations().size(), 1);
-        QCOMPARE(backend.annotations().first(), annotation->id());
+        QCOMPARE(backend.filterKeys().size(), 1);
+        QCOMPARE(backend.filterKeys().first(), annotation->id());
         QVERIFY(renderer.dirtyBits() != 0);
 
         // WHEN
         QScenePropertyChangePtr removeChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, annotation->id()));
         removeChange->setValue(QVariant::fromValue(annotation->id()));
-        removeChange->setPropertyName("annotation");
+        removeChange->setPropertyName("filterKeys");
         backend.sceneChangeEvent(removeChange);
 
         // THEN
-        QVERIFY(backend.annotations().isEmpty());
+        QVERIFY(backend.filterKeys().isEmpty());
     }
 
     void shouldHandleParametersPropertyChangeEvents()

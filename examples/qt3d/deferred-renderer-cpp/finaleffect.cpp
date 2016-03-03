@@ -60,7 +60,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
     , m_gl2Technique(new Qt3DRender::QTechnique())
     , m_gl2Pass(new Qt3DRender::QRenderPass())
     , m_gl3Pass(new Qt3DRender::QRenderPass())
-    , m_passCriterion(new Qt3DRender::QAnnotation(this))
+    , m_passCriterion(new Qt3DRender::QFilterKey(this))
 {
     m_gl3Technique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
     m_gl3Technique->graphicsApiFilter()->setMajorVersion(3);
@@ -79,7 +79,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
     gl3Shader->setVertexShaderCode(gl3Shader->loadSource(QUrl(QStringLiteral("qrc:/final_gl3.vert"))));
     gl3Shader->setFragmentShaderCode(gl3Shader->loadSource(QUrl(QStringLiteral("qrc:/final_gl3.frag"))));
 
-    m_gl3Pass->addAnnotation(m_passCriterion);
+    m_gl3Pass->addFilterKey(m_passCriterion);
     m_gl3Pass->setShaderProgram(gl3Shader);
     m_gl3Technique->addRenderPass(m_gl3Pass);
 
@@ -87,7 +87,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
     gl2Shader->setVertexShaderCode(gl2Shader->loadSource(QUrl(QStringLiteral("qrc:/final_gl2.vert"))));
     gl2Shader->setFragmentShaderCode(gl2Shader->loadSource(QUrl(QStringLiteral("qrc:/final_gl2.frag"))));
 
-    m_gl2Pass->addAnnotation(m_passCriterion);
+    m_gl2Pass->addFilterKey(m_passCriterion);
     m_gl2Pass->setShaderProgram(gl2Shader);
     m_gl2Technique->addRenderPass(m_gl2Pass);
 
@@ -95,7 +95,7 @@ FinalEffect::FinalEffect(Qt3DCore::QNode *parent)
     addTechnique(m_gl2Technique);
 }
 
-QList<Qt3DRender::QAnnotation *> FinalEffect::passCriteria() const
+QList<Qt3DRender::QFilterKey *> FinalEffect::passCriteria() const
 {
-    return QList<Qt3DRender::QAnnotation *>() << m_passCriterion;
+    return QList<Qt3DRender::QFilterKey *>() << m_passCriterion;
 }

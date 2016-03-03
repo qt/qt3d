@@ -41,7 +41,7 @@
 #include "qrenderpass.h"
 #include "qrenderpass_p.h"
 #include "qparameter.h"
-#include "qannotation.h"
+#include "qfilterkey.h"
 #include "qscenepropertychange.h"
 #include "qrenderstate.h"
 #include "private/qnode_p.h"
@@ -64,8 +64,8 @@ void QRenderPass::copy(const QNode *ref)
     const QRenderPass *other = static_cast<const QRenderPass*>(ref);
     d_func()->m_shader = qobject_cast<QShaderProgram *>(QNode::clone(other->d_func()->m_shader));
 
-    Q_FOREACH (QAnnotation *crit, other->d_func()->m_annotationList)
-        addAnnotation(qobject_cast<QAnnotation *>(QNode::clone(crit)));
+    Q_FOREACH (QFilterKey *crit, other->d_func()->m_filterKeyList)
+        addFilterKey(qobject_cast<QFilterKey *>(QNode::clone(crit)));
     Q_FOREACH (QRenderState *renderState, other->d_func()->m_renderStates)
         addRenderState(qobject_cast<QRenderState *>(QNode::clone(renderState)));
     Q_FOREACH (QParameter *p, other->d_func()->m_parameters)
@@ -142,44 +142,44 @@ QShaderProgram *QRenderPass::shaderProgram() const
     return d->m_shader;
 }
 
-void QRenderPass::addAnnotation(QAnnotation *annotation)
+void QRenderPass::addFilterKey(QFilterKey *filterKey)
 {
     Q_D(QRenderPass);
-    if (!d->m_annotationList.contains(annotation)) {
-        d->m_annotationList.append(annotation);
+    if (!d->m_filterKeyList.contains(filterKey)) {
+        d->m_filterKeyList.append(filterKey);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!annotation->parent())
-            annotation->setParent(this);
+        if (!filterKey->parent())
+            filterKey->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr change(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            change->setPropertyName("annotation");
-            change->setValue(QVariant::fromValue(annotation->id()));
+            change->setPropertyName("filterKeys");
+            change->setValue(QVariant::fromValue(filterKey->id()));
             d->notifyObservers(change);
         }
     }
 }
 
-void QRenderPass::removeAnnotation(QAnnotation *annotation)
+void QRenderPass::removeFilterKey(QFilterKey *filterKey)
 {
     Q_D(QRenderPass);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        change->setPropertyName("annotation");
-        change->setValue(QVariant::fromValue(annotation->id()));
+        change->setPropertyName("filterKeys");
+        change->setValue(QVariant::fromValue(filterKey->id()));
         d->notifyObservers(change);
     }
-    d->m_annotationList.removeOne(annotation);
+    d->m_filterKeyList.removeOne(filterKey);
 }
 
-QList<QAnnotation *> QRenderPass::annotations() const
+QList<QFilterKey *> QRenderPass::filterKeys() const
 {
     Q_D(const QRenderPass);
-    return d->m_annotationList;
+    return d->m_filterKeyList;
 }
 
 /*!

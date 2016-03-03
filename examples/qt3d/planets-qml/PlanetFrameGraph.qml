@@ -64,11 +64,11 @@ RenderSettings {
         clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
         TechniqueFilter {
-            matchAll: [ Annotation { name: "name"; value: "Desktop" } ]
+            matchAll: [ FilterKey { name: "name"; value: "Desktop" } ]
 
 
             RenderPassFilter {
-                includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                includes: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                 RenderTargetSelector {
                     target: RenderTarget {
@@ -107,7 +107,7 @@ RenderSettings {
         }
 
         RenderPassFilter {
-            includes: [ Annotation { name: "pass"; value: "forward" } ]
+            includes: [ FilterKey { name: "pass"; value: "forward" } ]
 
             ClearBuffer {
                 buffers: ClearBuffer.ColorDepthBuffer

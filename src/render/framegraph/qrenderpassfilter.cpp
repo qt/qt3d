@@ -41,7 +41,7 @@
 #include "qrenderpassfilter_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
 
 QT_BEGIN_NAMESPACE
@@ -66,52 +66,52 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QList<QAnnotation *> QRenderPassFilter::includes() const
+QList<QFilterKey *> QRenderPassFilter::includes() const
 {
     Q_D(const QRenderPassFilter);
     return d->m_includeList;
 }
 
-void QRenderPassFilter::addInclude(QAnnotation *annotation)
+void QRenderPassFilter::addInclude(QFilterKey *keyFilter)
 {
     Q_D(QRenderPassFilter);
-    if (!d->m_includeList.contains(annotation)) {
-        d->m_includeList.append(annotation);
+    if (!d->m_includeList.contains(keyFilter)) {
+        d->m_includeList.append(keyFilter);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
         // 1) The backend gets notified about it's creation
         // 2) When the current node is destroyed, it gets destroyed as well
-        if (!annotation->parent())
-            annotation->setParent(this);
+        if (!keyFilter->parent())
+            keyFilter->setParent(this);
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
             propertyChange->setPropertyName("include");
-            propertyChange->setValue(QVariant::fromValue(annotation->id()));
+            propertyChange->setValue(QVariant::fromValue(keyFilter->id()));
             d->notifyObservers(propertyChange);
         }
     }
 }
 
-void QRenderPassFilter::removeInclude(QAnnotation *annotation)
+void QRenderPassFilter::removeInclude(QFilterKey *filterKey)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("include");
-        propertyChange->setValue(QVariant::fromValue(annotation->id()));
+        propertyChange->setValue(QVariant::fromValue(filterKey->id()));
         d->notifyObservers(propertyChange);
     }
-    d->m_includeList.removeOne(annotation);
+    d->m_includeList.removeOne(filterKey);
 }
 
 void QRenderPassFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    for (QAnnotation *c : other->d_func()->m_includeList)
-        addInclude(qobject_cast<QAnnotation *>(QNode::clone(c)));
+    Q_FOREACH (QFilterKey *c, other->d_func()->m_includeList)
+        addInclude(qobject_cast<QFilterKey *>(QNode::clone(c)));
     for (QParameter *p : other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }

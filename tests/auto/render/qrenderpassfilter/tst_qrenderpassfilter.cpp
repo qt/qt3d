@@ -33,7 +33,7 @@
 
 #include <Qt3DRender/qrenderpassfilter.h>
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 
 #include "testpostmanarbiter.h"
 
@@ -62,10 +62,10 @@ private Q_SLOTS:
     {
         QTest::addColumn<Qt3DRender::QRenderPassFilter *>("renderPassFilter");
         QTest::addColumn<QList<Qt3DRender::QParameter *> >("parameters");
-        QTest::addColumn<QList<Qt3DRender::QAnnotation *> >("annotations");
+        QTest::addColumn<QList<Qt3DRender::QFilterKey *> >("filterKeys");
 
         Qt3DRender::QRenderPassFilter *defaultConstructed = new Qt3DRender::QRenderPassFilter();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QParameter *>() << QList<Qt3DRender::QAnnotation *>();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QParameter *>() << QList<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QRenderPassFilter *renderPassFilterWithParams = new Qt3DRender::QRenderPassFilter();
         Qt3DRender::QParameter *parameter1 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 454.0f);
@@ -73,36 +73,36 @@ private Q_SLOTS:
         QList<Qt3DRender::QParameter *> params1 = QList<Qt3DRender::QParameter *>() << parameter1 << parameter2;
         renderPassFilterWithParams->addParameter(parameter1);
         renderPassFilterWithParams->addParameter(parameter2);
-        QTest::newRow("renderPassFilterWithParams") << renderPassFilterWithParams << params1 << QList<Qt3DRender::QAnnotation *>();
+        QTest::newRow("renderPassFilterWithParams") << renderPassFilterWithParams << params1 << QList<Qt3DRender::QFilterKey *>();
 
         Qt3DRender::QRenderPassFilter *renderPassFilterWithAnnotations = new Qt3DRender::QRenderPassFilter();
-        Qt3DRender::QAnnotation *annotation1 = new Qt3DRender::QAnnotation();
-        Qt3DRender::QAnnotation *annotation2 = new Qt3DRender::QAnnotation();
-        annotation1->setName(QStringLiteral("hasSuperCharger"));
-        annotation1->setValue(true);
-        annotation1->setName(QStringLiteral("hasNitroKit"));
-        annotation1->setValue(false);
-        QList<Qt3DRender::QAnnotation *> annotations1 = QList<Qt3DRender::QAnnotation *>() << annotation1 << annotation2;
-        renderPassFilterWithAnnotations->addInclude(annotation1);
-        renderPassFilterWithAnnotations->addInclude(annotation2);
-        QTest::newRow("renderPassFilterWithAnnotations") << renderPassFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << annotations1;
+        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey2 = new Qt3DRender::QFilterKey();
+        filterKey1->setName(QStringLiteral("hasSuperCharger"));
+        filterKey1->setValue(true);
+        filterKey1->setName(QStringLiteral("hasNitroKit"));
+        filterKey1->setValue(false);
+        QList<Qt3DRender::QFilterKey *> filterKeys1 = QList<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
+        renderPassFilterWithAnnotations->addInclude(filterKey1);
+        renderPassFilterWithAnnotations->addInclude(filterKey2);
+        QTest::newRow("renderPassFilterWithAnnotations") << renderPassFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << filterKeys1;
 
         Qt3DRender::QRenderPassFilter *renderPassFilterWithParamsAndAnnotations = new Qt3DRender::QRenderPassFilter();
         Qt3DRender::QParameter *parameter3 = new Qt3DRender::QParameter(QStringLiteral("displacement"), 383.0f);
         Qt3DRender::QParameter *parameter4 = new Qt3DRender::QParameter(QStringLiteral("torque"), 555);
-        Qt3DRender::QAnnotation *annotation3 = new Qt3DRender::QAnnotation();
-        Qt3DRender::QAnnotation *annotation4 = new Qt3DRender::QAnnotation();
-        annotation3->setName(QStringLiteral("hasSuperCharger"));
-        annotation3->setValue(false);
-        annotation4->setName(QStringLiteral("hasNitroKit"));
-        annotation4->setValue(true);
+        Qt3DRender::QFilterKey *filterKey3 = new Qt3DRender::QFilterKey();
+        Qt3DRender::QFilterKey *filterKey4 = new Qt3DRender::QFilterKey();
+        filterKey3->setName(QStringLiteral("hasSuperCharger"));
+        filterKey3->setValue(false);
+        filterKey4->setName(QStringLiteral("hasNitroKit"));
+        filterKey4->setValue(true);
         QList<Qt3DRender::QParameter *> params2 = QList<Qt3DRender::QParameter *>() << parameter3 << parameter4;
-        QList<Qt3DRender::QAnnotation *> annotations2 = QList<Qt3DRender::QAnnotation *>() << annotation3 << annotation4;
+        QList<Qt3DRender::QFilterKey *> filterKeys2 = QList<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
         renderPassFilterWithParamsAndAnnotations->addParameter(parameter3);
         renderPassFilterWithParamsAndAnnotations->addParameter(parameter4);
-        renderPassFilterWithParamsAndAnnotations->addInclude(annotation3);
-        renderPassFilterWithParamsAndAnnotations->addInclude(annotation4);
-        QTest::newRow("renderPassFilterWithParamsAndAnnotations") << renderPassFilterWithParamsAndAnnotations << params2 << annotations2;
+        renderPassFilterWithParamsAndAnnotations->addInclude(filterKey3);
+        renderPassFilterWithParamsAndAnnotations->addInclude(filterKey4);
+        QTest::newRow("renderPassFilterWithParamsAndAnnotations") << renderPassFilterWithParamsAndAnnotations << params2 << filterKeys2 ;
     }
 
     void checkCloning()
@@ -110,11 +110,11 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DRender::QRenderPassFilter*, renderPassFilter);
         QFETCH(QList<Qt3DRender::QParameter *>, parameters);
-        QFETCH(QList<Qt3DRender::QAnnotation *>, annotations);
+        QFETCH(QList<Qt3DRender::QFilterKey *>, filterKeys);
 
         // THEN
         QCOMPARE(renderPassFilter->parameters(), parameters);
-        QCOMPARE(renderPassFilter->includes(), annotations);
+        QCOMPARE(renderPassFilter->includes(), filterKeys);
 
         // WHEN
         Qt3DRender::QRenderPassFilter *clone = static_cast<Qt3DRender::QRenderPassFilter *>(QNode::clone(renderPassFilter));
@@ -136,9 +136,9 @@ private Q_SLOTS:
             QVERIFY(pOrig->parent() == renderPassFilter);
         }
 
-        for (int i = 0, m = annotations.count(); i < m; ++i) {
-            Qt3DRender::QAnnotation *aClone = clone->includes().at(i);
-            Qt3DRender::QAnnotation *aOrig = annotations.at(i);
+        for (int i = 0, m = filterKeys.count(); i < m; ++i) {
+            Qt3DRender::QFilterKey *aClone = clone->includes().at(i);
+            Qt3DRender::QFilterKey *aOrig = filterKeys.at(i);
             QCOMPARE(aOrig->id(),aClone->id());
             QCOMPARE(aOrig->name(), aClone->name());
             QCOMPARE(aOrig->value(), aClone->value());
@@ -193,8 +193,8 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        Qt3DRender::QAnnotation *annotation1 = new Qt3DRender::QAnnotation();
-        renderPassFilter->addInclude(annotation1);
+        Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
+        renderPassFilter->addInclude(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
@@ -202,20 +202,20 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "include");
         QCOMPARE(change->subjectId(),renderPassFilter->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), annotation1->id());
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN
-        renderPassFilter->addInclude(annotation1);
+        renderPassFilter->addInclude(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        renderPassFilter->removeInclude(annotation1);
+        renderPassFilter->removeInclude(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
@@ -223,7 +223,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "include");
         QCOMPARE(change->subjectId(), renderPassFilter->id());
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), annotation1->id());
+        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
 
         arbiter.events.clear();

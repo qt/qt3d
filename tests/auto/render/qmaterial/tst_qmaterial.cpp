@@ -129,7 +129,7 @@ private:
 
         compareParameters(original->parameters(), clone->parameters());
         compareRenderStates(original->renderStates(), clone->renderStates());
-        compareAnnotations(original->annotations(), clone->annotations());
+        compareFilterKeys(original->filterKeys(), clone->filterKeys());
         compareShaderPrograms(original->shaderProgram(), clone->shaderProgram());
     }
 
@@ -146,14 +146,14 @@ private:
         }
     }
 
-    void compareAnnotations(const QList<Qt3DRender::QAnnotation *> &original, const QList<Qt3DRender::QAnnotation *> &clone)
+    void compareFilterKeys(const QList<Qt3DRender::QFilterKey *> &original, const QList<Qt3DRender::QFilterKey *> &clone)
     {
         const int annotationsCount = original.size();
         QCOMPARE(annotationsCount, clone.size());
 
         for (int i = 0; i < annotationsCount; ++i) {
-            const Qt3DRender::QAnnotation *origAnnotation = original.at(i);
-            const Qt3DRender::QAnnotation *cloneAnnotation = clone.at(i);
+            const Qt3DRender::QFilterKey *origAnnotation = original.at(i);
+            const Qt3DRender::QFilterKey *cloneAnnotation = clone.at(i);
             QCOMPARE(origAnnotation->id(), cloneAnnotation->id());
             QCOMPARE(origAnnotation->name(), cloneAnnotation->name());
             QCOMPARE(origAnnotation->value(), cloneAnnotation->value());

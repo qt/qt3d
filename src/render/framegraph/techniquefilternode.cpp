@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "techniquefilternode_p.h"
-#include "qannotation.h"
+#include "qfilterkey.h"
 #include "qtechniquefilter.h"
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -62,7 +62,7 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     m_filters.clear();
     m_parameterPack.clear();
     const auto criteria = filter->criteria();
-    for (QAnnotation *criterion : criteria)
+    for (QFilterKey *criterion : criteria)
         appendFilter(criterion->id());
     const auto parameters = filter->parameters();
     for (QParameter *p : parameters)

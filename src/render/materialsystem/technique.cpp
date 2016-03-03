@@ -76,14 +76,14 @@ void Technique::cleanup()
     m_graphicsApiFilter = Q_NULLPTR;
     m_parameterPack.clear();
     m_renderPasses.clear();
-    m_annotationList.clear();
+    m_filterKeyList.clear();
 }
 
 void Technique::updateFromPeer(Qt3DCore::QNode *peer)
 {
     m_parameterPack.clear();
     m_renderPasses.clear();
-    m_annotationList.clear();
+    m_filterKeyList.clear();
 
     if (m_graphicsApiFilter == Q_NULLPTR)
         m_graphicsApiFilter = new QGraphicsApiFilter();
@@ -95,8 +95,8 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
             m_parameterPack.appendParameter(p->id());
         Q_FOREACH (QRenderPass *rPass, technique->renderPasses())
             appendRenderPass(rPass->id());
-        Q_FOREACH (QAnnotation *annotation, technique->filterKeys())
-            appendAnnotation(annotation->id());
+        Q_FOREACH (QFilterKey *filterKey, technique->filterKeys())
+            appendFilterKey(filterKey->id());
 
         // Copy GraphicsApiFilter info from frontend GraphicsApiFilter
         QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
@@ -127,8 +127,8 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.appendParameter(propertyChange->value().value<QNodeId>());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            appendAnnotation(propertyChange->value().value<QNodeId>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("filterKeys")) {
+            appendFilterKey(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -140,8 +140,8 @@ void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("parameter")) {
             m_parameterPack.removeParameter(propertyChange->value().value<QNodeId>());
         }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("annotation")) {
-            removeAnnotation(propertyChange->value().value<QNodeId>());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("filterKeys")) {
+            removeFilterKey(propertyChange->value().value<QNodeId>());
         }
         break;
     }
@@ -168,9 +168,9 @@ void Technique::removeRenderPass(Qt3DCore::QNodeId renderPassId)
     m_renderPasses.removeOne(renderPassId);
 }
 
-QVector<Qt3DCore::QNodeId> Technique::annotations() const
+QVector<Qt3DCore::QNodeId> Technique::      filterKeys() const
 {
-    return m_annotationList;
+    return m_filterKeyList;
 }
 
 QVector<Qt3DCore::QNodeId> Technique::renderPasses() const
@@ -183,15 +183,15 @@ QGraphicsApiFilter *Technique::graphicsApiFilter() const
     return m_graphicsApiFilter;
 }
 
-void Technique::appendAnnotation(Qt3DCore::QNodeId criterionId)
+void Technique::appendFilterKey(Qt3DCore::QNodeId criterionId)
 {
-    if (!m_annotationList.contains(criterionId))
-        m_annotationList.append(criterionId);
+    if (!m_filterKeyList.contains(criterionId))
+        m_filterKeyList.append(criterionId);
 }
 
-void Technique::removeAnnotation(Qt3DCore::QNodeId criterionId)
+void Technique::removeFilterKey(Qt3DCore::QNodeId criterionId)
 {
-    m_annotationList.removeOne(criterionId);
+    m_filterKeyList.removeOne(criterionId);
 }
 
 } // namespace Render

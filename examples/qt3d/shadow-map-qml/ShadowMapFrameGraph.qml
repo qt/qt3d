@@ -65,7 +65,7 @@ RenderSettings {
 
         RenderSurfaceSelector {
             RenderPassFilter {
-                includes: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                includes: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                 RenderTargetSelector {
                     target: RenderTarget {
@@ -102,8 +102,8 @@ RenderSettings {
                 }
             }
 
-            RenderPassFilter {
-                includes: [ Annotation { name: "pass"; value: "forward" } ]
+        RenderPassFilter {
+            includes: [ FilterKey { name: "pass"; value: "forward" } ]
 
                 ClearBuffer {
                     buffers: ClearBuffer.ColorDepthBuffer

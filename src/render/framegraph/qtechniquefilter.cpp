@@ -40,7 +40,7 @@
 
 #include "qtechniquefilter.h"
 #include "qtechniquefilter_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qparameter.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -60,8 +60,8 @@ void QTechniqueFilter::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QTechniqueFilter *other = static_cast<const QTechniqueFilter*>(ref);
 
-    for (QAnnotation *crit : other->d_func()->m_matchList)
-        addMatch(qobject_cast<QAnnotation *>(QNode::clone(crit)));
+    Q_FOREACH (QFilterKey *crit, other->d_func()->m_matchList)
+        addMatch(qobject_cast<QFilterKey *>(QNode::clone(crit)));
     for (QParameter *p : other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }
@@ -82,13 +82,13 @@ QTechniqueFilter::QTechniqueFilter(QTechniqueFilterPrivate &dd, QNode *parent)
 {
 }
 
-QList<QAnnotation *> QTechniqueFilter::criteria() const
+QList<QFilterKey *> QTechniqueFilter::criteria() const
 {
     Q_D(const QTechniqueFilter);
     return d->m_matchList;
 }
 
-void QTechniqueFilter::addMatch(QAnnotation *criterion)
+void QTechniqueFilter::addMatch(QFilterKey *criterion)
 {
     Q_D(QTechniqueFilter);
     if (!d->m_matchList.contains(criterion)) {
@@ -110,7 +110,7 @@ void QTechniqueFilter::addMatch(QAnnotation *criterion)
     }
 }
 
-void QTechniqueFilter::removeMatch(QAnnotation *criterion)
+void QTechniqueFilter::removeMatch(QFilterKey *criterion)
 {
     Q_D(QTechniqueFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {

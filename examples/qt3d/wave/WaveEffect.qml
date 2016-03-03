@@ -78,7 +78,7 @@ Effect {
                 minorVersion: 2
             }
 
-            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
+            filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
             uniforms: [
                 Parameter { name: "light.position"; value: Qt.vector4d( 0.0, 0.0, 0.0, 1.0 ) },

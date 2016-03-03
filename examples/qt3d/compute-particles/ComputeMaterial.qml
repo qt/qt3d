@@ -84,8 +84,8 @@ Material {
                         ]
                     }
                 ]
-                annotations: [
-                    Annotation { name: "type"; value: "compute" }
+                filterKeys: [
+                    FilterKey { name: "type"; value: "compute" }
                 ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL
@@ -102,8 +102,8 @@ Material {
                         // Vertex buffers attributes that will be used to position and color
                     }
                 ]
-                annotations: [
-                    Annotation { name: "type"; value: "draw" }
+                filterKeys: [
+                    FilterKey { name: "type"; value: "draw" }
                 ]
                 graphicsApiFilter {
                     api: GraphicsApiFilter.OpenGL

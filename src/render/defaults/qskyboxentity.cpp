@@ -41,7 +41,7 @@
 #include "qskyboxentity_p.h"
 
 #include <Qt3DCore/qtransform.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qmaterial.h>
@@ -70,7 +70,7 @@ QSkyboxEntityPrivate::QSkyboxEntityPrivate()
     , m_gl2Technique(new QTechnique())
     , m_es2Technique(new QTechnique())
     , m_gl3Technique(new QTechnique())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
     , m_gl2RenderPass(new QRenderPass())
     , m_es2RenderPass(new QRenderPass())
     , m_gl3RenderPass(new QRenderPass())
@@ -112,13 +112,13 @@ void QSkyboxEntityPrivate::init()
     m_es2Technique->graphicsApiFilter()->setMajorVersion(0);
     m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_annotation->setParent(m_effect);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(m_effect);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_gl3Technique->addAnnotation(m_annotation);
-    m_gl2Technique->addAnnotation(m_annotation);
-    m_es2Technique->addAnnotation(m_annotation);
+    m_gl3Technique->addFilterKey(m_filterKey);
+    m_gl2Technique->addFilterKey(m_filterKey);
+    m_es2Technique->addFilterKey(m_filterKey);
 
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2es2Shader);

@@ -45,7 +45,7 @@
 
 #include <Qt3DRender/qshaderprogram.h>
 #include <Qt3DRender/qrenderstate.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 
 #include <QHash>
 #include <QList>
@@ -77,9 +77,9 @@ public:
 
     QShaderProgram *shaderProgram() const;
 
-    void addAnnotation(QAnnotation *criterion);
-    void removeAnnotation(QAnnotation *criterion);
-    QList<QAnnotation *> annotations() const;
+    void addFilterKey(QFilterKey*filterKey);
+    void removeFilterKey(QFilterKey*filterKey);
+    QList<QFilterKey*> filterKeys() const;
 
     void addRenderState(QRenderState *state);
     void removeRenderState(QRenderState *state);

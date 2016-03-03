@@ -43,7 +43,7 @@
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qrenderpass.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <QList>
 #include <QSharedPointer>
 
@@ -64,9 +64,9 @@ public:
     explicit QTechnique(Qt3DCore::QNode *parent = 0);
     ~QTechnique();
 
-    void addAnnotation(QAnnotation *criterion);
-    void removeAnnotation(QAnnotation *criterion);
-    QList<QAnnotation *> filterKeys() const;
+    void addFilterKey(QFilterKey*criterion);
+    void removeFilterKey(QFilterKey*criterion);
+    QList<QFilterKey*> filterKeys() const;
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);

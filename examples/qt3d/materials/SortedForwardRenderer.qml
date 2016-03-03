@@ -60,7 +60,7 @@ TechniqueFilter {
     property alias window: surfaceSelector.window
 
     // Select the forward rendering Technique of any used Effect
-    matchAll: [ Annotation { name: "renderingStyle"; value: "forward" } ]
+    matchAll: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
 
     RenderSurfaceSelector {
         id: surfaceSelector

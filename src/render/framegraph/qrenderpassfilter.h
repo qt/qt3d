@@ -50,7 +50,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QRenderPassFilterPrivate;
-class QAnnotation;
+class QFilterKey;
 class QParameter;
 
 class QT3DRENDERSHARED_EXPORT QRenderPassFilter : public QFrameGraphNode
@@ -61,9 +61,9 @@ public:
     explicit QRenderPassFilter(Qt3DCore::QNode *parent = 0);
     ~QRenderPassFilter();
 
-    QList<QAnnotation *> includes() const;
-    void addInclude(QAnnotation *criterion);
-    void removeInclude(QAnnotation *criterion);
+    QList<QFilterKey*> includes() const;
+    void addInclude(QFilterKey*keyFilter);
+    void removeInclude(QFilterKey*criterion);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);

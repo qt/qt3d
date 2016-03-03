@@ -39,7 +39,7 @@
 
 #include "qnormaldiffusemapmaterial.h"
 #include "qnormaldiffusemapmaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qtechnique.h>
@@ -75,7 +75,7 @@ QNormalDiffuseMapMaterialPrivate::QNormalDiffuseMapMaterialPrivate()
     , m_normalDiffuseES2RenderPass(new QRenderPass())
     , m_normalDiffuseGL3Shader(new QShaderProgram())
     , m_normalDiffuseGL2ES2Shader(new QShaderProgram())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
     m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
     m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
@@ -125,13 +125,13 @@ void QNormalDiffuseMapMaterialPrivate::init()
     m_normalDiffuseES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     Q_Q(QNormalDiffuseMapMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_normalDiffuseGL3Technique->addAnnotation(m_annotation);
-    m_normalDiffuseGL2Technique->addAnnotation(m_annotation);
-    m_normalDiffuseES2Technique->addAnnotation(m_annotation);
+    m_normalDiffuseGL3Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseGL2Technique->addFilterKey(m_filterKey);
+    m_normalDiffuseES2Technique->addFilterKey(m_filterKey);
 
     m_normalDiffuseGL3RenderPass->setShaderProgram(m_normalDiffuseGL3Shader);
     m_normalDiffuseGL2RenderPass->setShaderProgram(m_normalDiffuseGL2ES2Shader);

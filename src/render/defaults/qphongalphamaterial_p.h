@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotation;
+class QFilterKey;
 class QEffect;
 class QTechnique;
 class QParameter;
@@ -100,7 +100,7 @@ public:
     QDepthMask *m_depthMask;
     QBlendEquationArguments *m_blendState;
     QBlendEquation *m_blendEquation;
-    QAnnotation *m_annotation;
+    QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QPhongAlphaMaterial)
 };

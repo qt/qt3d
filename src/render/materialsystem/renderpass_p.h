@@ -65,7 +65,7 @@ namespace Qt3DRender {
 class QRenderPass;
 class QAbstractShader;
 class QParameterMapping;
-class QAnnotation;
+class QFilterKey;
 class QRenderState;
 
 namespace Render {
@@ -85,7 +85,7 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
     Qt3DCore::QNodeId shaderProgram() const;
-    QVector<Qt3DCore::QNodeId> annotations() const;
+    QVector<Qt3DCore::QNodeId> filterKeys() const;
     QVector<Qt3DCore::QNodeId> parameters() const;
 
 private:
@@ -93,7 +93,7 @@ private:
     void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
     Qt3DCore::QNodeId m_shaderUuid;
-    QVector<Qt3DCore::QNodeId> m_annotationList;
+    QVector<Qt3DCore::QNodeId> m_filterKeyList;
     ParameterPack m_parameterPack;
 };
 

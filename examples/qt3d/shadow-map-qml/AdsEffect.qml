@@ -84,7 +84,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/shadowmap.vert")
@@ -98,7 +98,7 @@ Effect {
                 },
 
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/ads.vert")
@@ -118,7 +118,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es3/shadowmap.vert")
@@ -132,7 +132,7 @@ Effect {
                 },
 
                 RenderPass {
-                    annotations: [ Annotation { name : "pass"; value : "forward" } ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/es3/ads.vert")

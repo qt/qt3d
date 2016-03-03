@@ -192,7 +192,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QAbstractTextureProvider>(QBackendNodeMapperPtr(new Render::TextureFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
     q->registerBackendType<QShaderProgram>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(m_renderer, m_nodeManagers->shaderManager())));
     q->registerBackendType<QEffect>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(m_renderer, m_nodeManagers->effectManager())));
-    q->registerBackendType<QAnnotation>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(m_renderer, m_nodeManagers->criterionManager())));
+    q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(m_renderer, m_nodeManagers->criterionManager())));
     q->registerBackendType<Qt3DRender::QCameraLens>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(m_renderer, m_nodeManagers->cameraManager())));
     q->registerBackendType<QLayer>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(m_renderer, m_nodeManagers->layerManager())));
     q->registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(m_renderer, m_nodeManagers->renderPassManager())));

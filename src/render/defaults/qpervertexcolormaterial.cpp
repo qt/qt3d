@@ -39,7 +39,7 @@
 
 #include "qpervertexcolormaterial.h"
 #include "qpervertexcolormaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtechnique.h>
@@ -66,7 +66,7 @@ QPerVertexColorMaterialPrivate::QPerVertexColorMaterialPrivate()
     , m_vertexES2RenderPass(new QRenderPass())
     , m_vertexGL3Shader(new QShaderProgram())
     , m_vertexGL2ES2Shader(new QShaderProgram())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
 }
 
@@ -133,13 +133,13 @@ void QPerVertexColorMaterialPrivate::init()
     m_vertexES2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
     Q_Q(QPerVertexColorMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_vertexGL3Technique->addAnnotation(m_annotation);
-    m_vertexGL2Technique->addAnnotation(m_annotation);
-    m_vertexES2Technique->addAnnotation(m_annotation);
+    m_vertexGL3Technique->addFilterKey(m_filterKey);
+    m_vertexGL2Technique->addFilterKey(m_filterKey);
+    m_vertexES2Technique->addFilterKey(m_filterKey);
 
     m_vertexGL3RenderPass->setShaderProgram(m_vertexGL3Shader);
     m_vertexGL2RenderPass->setShaderProgram(m_vertexGL2ES2Shader);

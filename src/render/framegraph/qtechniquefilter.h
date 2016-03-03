@@ -48,7 +48,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QTechniqueFilterPrivate;
-class QAnnotation;
+class QFilterKey;
 class QParameter;
 
 class QT3DRENDERSHARED_EXPORT QTechniqueFilter : public QFrameGraphNode
@@ -58,9 +58,9 @@ public:
     explicit QTechniqueFilter(Qt3DCore::QNode *parent = 0);
     ~QTechniqueFilter();
 
-    QList<QAnnotation *> criteria() const;
-    void addMatch(QAnnotation *criterion);
-    void removeMatch(QAnnotation *criterion);
+    QList<QFilterKey*> criteria() const;
+    void addMatch(QFilterKey*criterion);
+    void removeMatch(QFilterKey*criterion);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);

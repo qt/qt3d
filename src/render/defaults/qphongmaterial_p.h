@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAnnotation;
+class QFilterKey;
 class QEffect;
 class QTechnique;
 class QParameter;
@@ -92,7 +92,7 @@ public:
     QRenderPass *m_phongES2RenderPass;
     QShaderProgram *m_phongGL3Shader;
     QShaderProgram *m_phongGL2ES2Shader;
-    QAnnotation *m_annotation;
+    QFilterKey *m_filterKey;
 
     Q_DECLARE_PUBLIC(QPhongMaterial)
 };

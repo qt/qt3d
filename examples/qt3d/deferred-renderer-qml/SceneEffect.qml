@@ -58,7 +58,7 @@ Effect {
         Technique {
             graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "geometry" }
+                filterKeys : FilterKey { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL3
                     vertexShaderCode:
@@ -109,7 +109,7 @@ Effect {
         Technique {
             graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 0; majorVersion : 2 }
             renderPasses : RenderPass {
-                annotations : Annotation { name : "pass"; value : "geometry" }
+                filterKeys : FilterKey { name : "pass"; value : "geometry" }
                 shaderProgram : ShaderProgram {
                     id : sceneShaderGL2
                     vertexShaderCode:

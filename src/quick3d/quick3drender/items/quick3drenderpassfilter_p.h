@@ -53,7 +53,7 @@
 
 #include <Qt3DQuick/private/quick3dnode_p.h>
 #include <Qt3DRender/qrenderpassfilter.h>
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
 #include <QQmlListProperty>
 
@@ -66,22 +66,22 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> includes READ includeList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> includes READ includeList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
     explicit Quick3DRenderPassFilter(QObject *parent = 0);
 
-    QQmlListProperty<QAnnotation> includeList();
+    QQmlListProperty<QFilterKey> includeList();
     QQmlListProperty<QParameter> parameterList();
 
     inline QRenderPassFilter *parentRenderPassFilter() const { return qobject_cast<Qt3DRender::QRenderPassFilter*>(parent()); }
 
 private:
-    static void appendInclude(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *includeAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int includesCount(QQmlListProperty<QAnnotation> *list);
-    static void clearIncludes(QQmlListProperty<QAnnotation> *list);
+    static void appendInclude(QQmlListProperty<QFilterKey> *list, QFilterKey *criterion);
+    static QFilterKey *includeAt(QQmlListProperty<QFilterKey> *list, int index);
+    static int includesCount(QQmlListProperty<QFilterKey> *list);
+    static void clearIncludes(QQmlListProperty<QFilterKey> *list);
 
     static void appendParameter(QQmlListProperty<QParameter> *list, QParameter *param);
     static QParameter *parameterAt(QQmlListProperty<QParameter> *list, int index);

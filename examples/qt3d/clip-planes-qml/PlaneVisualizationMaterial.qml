@@ -103,7 +103,7 @@ Material {
                         },
                         BlendEquation {blendFunction: BlendEquation.Add}
                     ]
-                    annotations: Annotation { name: "pass"; value: "material" }
+                    filterKeys: FilterKey { name: "pass"; value: "material" }
                 }
             },
 
@@ -125,7 +125,7 @@ Material {
                         },
                         BlendEquation {blendFunction: BlendEquation.Add}
                     ]
-                    annotations: Annotation { name: "pass"; value: "material" }
+                    filterKeys: FilterKey { name: "pass"; value: "material" }
                 }
             }
         ]

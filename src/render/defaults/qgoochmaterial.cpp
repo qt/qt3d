@@ -39,7 +39,7 @@
 
 #include "qgoochmaterial.h"
 #include "qgoochmaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qparameter.h>
@@ -70,7 +70,7 @@ QGoochMaterialPrivate::QGoochMaterialPrivate()
     , m_es2RenderPass(new QRenderPass)
     , m_gl3Shader(new QShaderProgram)
     , m_gl2ES2Shader(new QShaderProgram)
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
 }
 
@@ -113,13 +113,13 @@ void QGoochMaterialPrivate::init()
     m_es2Technique->graphicsApiFilter()->setMinorVersion(0);
     m_es2Technique->graphicsApiFilter()->setProfile(QGraphicsApiFilter::NoProfile);
 
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_gl3Technique->addAnnotation(m_annotation);
-    m_gl2Technique->addAnnotation(m_annotation);
-    m_es2Technique->addAnnotation(m_annotation);
+    m_gl3Technique->addFilterKey(m_filterKey);
+    m_gl2Technique->addFilterKey(m_filterKey);
+    m_es2Technique->addFilterKey(m_filterKey);
 
     m_gl3RenderPass->setShaderProgram(m_gl3Shader);
     m_gl2RenderPass->setShaderProgram(m_gl2ES2Shader);

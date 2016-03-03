@@ -47,7 +47,7 @@ Effect {
         Technique {
             renderPasses: [
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "shadowmap" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "shadowmap" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/shadowmap.vert")
@@ -61,7 +61,7 @@ Effect {
                 },
 
                 RenderPass {
-                    annotations: [ Annotation { name: "pass"; value: "forward" } ]
+                    filterKeys: [ FilterKey { name: "pass"; value: "forward" } ]
 
                     bindings: [
                         ParameterMapping { parameterName: "ambient";    shaderVariableName: "ka"; bindingType: ParameterMapping.Uniform },

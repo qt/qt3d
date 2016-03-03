@@ -52,14 +52,14 @@ import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Technique {
-    annotations : [
-        Annotation { name : "RenderingStyle"; value : "forward"},
-        Annotation { name : "Enabled"; value : true}
+    filterKeys : [
+        FilterKey { name : "RenderingStyle"; value : "forward"},
+        FilterKey { name : "Enabled"; value : true}
     ]
     graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
     renderPasses : [
         RenderPass {
-            annotations : [Annotation {name : "Name"; value : "TextureLighting" }]
+            filterKeys : [FilterKey {name : "Name"; value : "TextureLighting" }]
 
             shaderProgram : ShaderProgram {
                 id : textureShaderLighting
@@ -117,7 +117,7 @@ Technique {
             }
         },
         RenderPass {
-            annotations : [Annotation {name : "Name"; value : "Texture" }]
+            filterKeys : [FilterKey {name : "Name"; value : "Texture" }]
             shaderProgram : ShaderProgram {
                 vertexShaderCode : "
                 #version 140
@@ -147,7 +147,7 @@ Technique {
             }
         },
         RenderPass {
-            annotations : [Annotation {name : "Name"; value : "Lighting" }]
+            filterKeys : [FilterKey {name : "Name"; value : "Lighting" }]
             renderStates : [BlendEquationArguments {sourceRgb: BlendEquationArguments.One; destinationRgb : BlendEquationArguments.One},
                 BlendEquation {blendFunction: BlendEquation.Add},
                 CullFace { mode : CullFace.Back },
@@ -204,7 +204,7 @@ Technique {
             }
         },
         RenderPass {
-            annotations : Annotation {name : "Name"; value : "Final" }
+            filterKeys : FilterKey {name : "Name"; value : "Final" }
             shaderProgram : ShaderProgram {
                 vertexShaderCode: "
                 #version 140

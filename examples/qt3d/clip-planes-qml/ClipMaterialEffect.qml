@@ -78,7 +78,7 @@ Effect {
 
                 // Draw mesh with PhongMaterial and additional clipping planes
                 RenderPass {
-                    annotations: Annotation { name: "pass"; value: "material" }
+                    filterKeys: FilterKey { name: "pass"; value: "material" }
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/phong-clip.vert")
                         fragmentShaderCode: loadSource("qrc:/phong-clip.frag")
@@ -87,7 +87,7 @@ Effect {
 
                 // Basic stencil fill pass
                 RenderPass {
-                    annotations: Annotation { name: "pass"; value: "stencilFill" }
+                    filterKeys: FilterKey { name: "pass"; value: "stencilFill" }
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/phong-clip.vert")
                         fragmentShaderCode: loadSource("qrc:/passthrough.frag")

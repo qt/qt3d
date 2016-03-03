@@ -126,26 +126,26 @@ void Quick3DTechnique::clearRenderPasses(QQmlListProperty<QRenderPass> *list)
     }
 }
 
-QQmlListProperty<QAnnotation> Quick3DTechnique::annotationList()
+QQmlListProperty<QFilterKey> Quick3DTechnique::filterKeyList()
 {
-    return QQmlListProperty<QAnnotation>(this, 0,
-                                         &Quick3DTechnique::appendAnnotation,
-                                         &Quick3DTechnique::annotationCount,
-                                         &Quick3DTechnique::annotationAt,
-                                         &Quick3DTechnique::clearAnnotationList);
+    return QQmlListProperty<QFilterKey>(this, 0,
+                                         &Quick3DTechnique::appendFilterKey,
+                                         &Quick3DTechnique::filterKeyCount,
+                                         &Quick3DTechnique::filterKeyAt,
+                                         &Quick3DTechnique::clearFilterKeyList);
 }
 
-void Quick3DTechnique::appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
+void Quick3DTechnique::appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilterKey *filterKey)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        if (!annotation->parent())
-            annotation->setParent(technique->parentTechnique());
-        technique->parentTechnique()->addAnnotation(annotation);
+        if (!filterKey->parent())
+            filterKey->setParent(technique->parentTechnique());
+        technique->parentTechnique()->addFilterKey(filterKey);
     }
 }
 
-QAnnotation *Quick3DTechnique::annotationAt(QQmlListProperty<QAnnotation> *list, int index)
+QFilterKey *Quick3DTechnique::filterKeyAt(QQmlListProperty<QFilterKey> *list, int index)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -153,7 +153,7 @@ QAnnotation *Quick3DTechnique::annotationAt(QQmlListProperty<QAnnotation> *list,
     return 0;
 }
 
-int Quick3DTechnique::annotationCount(QQmlListProperty<QAnnotation> *list)
+int Quick3DTechnique::filterKeyCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique)
@@ -161,12 +161,12 @@ int Quick3DTechnique::annotationCount(QQmlListProperty<QAnnotation> *list)
     return 0;
 }
 
-void Quick3DTechnique::clearAnnotationList(QQmlListProperty<QAnnotation> *list)
+void Quick3DTechnique::clearFilterKeyList(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DTechnique *technique = qobject_cast<Quick3DTechnique *>(list->object);
     if (technique) {
-        Q_FOREACH (QAnnotation *a, technique->parentTechnique()->filterKeys())
-            technique->parentTechnique()->removeAnnotation(a);
+        Q_FOREACH (QFilterKey *a, technique->parentTechnique()->filterKeys())
+            technique->parentTechnique()->removeFilterKey(a);
     }
 }
 

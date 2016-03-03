@@ -50,9 +50,9 @@ Quick3DRenderPassFilter::Quick3DRenderPassFilter(QObject *parent)
 {
 }
 
-QQmlListProperty<QAnnotation> Quick3DRenderPassFilter::includeList()
+QQmlListProperty<QFilterKey> Quick3DRenderPassFilter::includeList()
 {
-    return QQmlListProperty<QAnnotation>(this, 0,
+    return QQmlListProperty<QFilterKey>(this, 0,
                                          &Quick3DRenderPassFilter::appendInclude,
                                          &Quick3DRenderPassFilter::includesCount,
                                          &Quick3DRenderPassFilter::includeAt,
@@ -69,7 +69,7 @@ QQmlListProperty<QParameter> Quick3DRenderPassFilter::parameterList()
 
 }
 
-void Quick3DRenderPassFilter::appendInclude(QQmlListProperty<QAnnotation> *list, QAnnotation *annotation)
+void Quick3DRenderPassFilter::appendInclude(QQmlListProperty<QFilterKey> *list, QFilterKey *annotation)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
@@ -78,7 +78,7 @@ void Quick3DRenderPassFilter::appendInclude(QQmlListProperty<QAnnotation> *list,
     }
 }
 
-QAnnotation *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QAnnotation> *list, int index)
+QFilterKey *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QFilterKey> *list, int index)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -86,7 +86,7 @@ QAnnotation *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QAnnotation> *l
     return 0;
 }
 
-int Quick3DRenderPassFilter::includesCount(QQmlListProperty<QAnnotation> *list)
+int Quick3DRenderPassFilter::includesCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
@@ -94,11 +94,11 @@ int Quick3DRenderPassFilter::includesCount(QQmlListProperty<QAnnotation> *list)
     return 0;
 }
 
-void Quick3DRenderPassFilter::clearIncludes(QQmlListProperty<QAnnotation> *list)
+void Quick3DRenderPassFilter::clearIncludes(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QAnnotation *criterion, filter->parentRenderPassFilter()->includes())
+        Q_FOREACH (QFilterKey *criterion, filter->parentRenderPassFilter()->includes())
             filter->parentRenderPassFilter()->removeInclude(criterion);
     }
 }

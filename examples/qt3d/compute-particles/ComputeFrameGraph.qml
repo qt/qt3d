@@ -68,7 +68,7 @@ Viewport {
             workGroupX: 1024; workGroupY: 1; workGroupZ: 1
             TechniqueFilter {
                 matchAll: [
-                    Annotation { name: "type"; value: "compute"}
+                    FilterKey { name: "type"; value: "compute"}
                 ]
             }
         }
@@ -78,7 +78,7 @@ Viewport {
             id: selector
             TechniqueFilter {
                 matchAll: [
-                    Annotation { name: "type"; value: "draw"}
+                    FilterKey { name: "type"; value: "draw"}
                 ]
             }
         }

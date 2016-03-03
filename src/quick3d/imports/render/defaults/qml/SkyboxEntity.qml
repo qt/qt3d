@@ -90,7 +90,7 @@ Entity {
         parameters: Parameter { name: "skyboxTexture"; value: skyboxTexture}
 
         effect: Effect {
-            Annotation {
+            FilterKey {
                 id: forward
                 name: "renderingStyle"
                 value: "forward"

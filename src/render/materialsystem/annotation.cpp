@@ -63,7 +63,7 @@ void Annotation::cleanup()
 
 void Annotation::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QAnnotation *criterion = static_cast<QAnnotation *>(peer);
+    QFilterKey *criterion = static_cast<QFilterKey *>(peer);
 
     m_value = criterion->value();
     m_name = criterion->name();

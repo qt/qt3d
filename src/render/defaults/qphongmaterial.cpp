@@ -39,7 +39,7 @@
 
 #include "qphongmaterial.h"
 #include "qphongmaterial_p.h"
-#include <Qt3DRender/qannotation.h>
+#include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qmaterial.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qtechnique.h>
@@ -70,7 +70,7 @@ QPhongMaterialPrivate::QPhongMaterialPrivate()
     , m_phongES2RenderPass(new QRenderPass())
     , m_phongGL3Shader(new QShaderProgram())
     , m_phongGL2ES2Shader(new QShaderProgram())
-    , m_annotation(new QAnnotation)
+    , m_filterKey(new QFilterKey)
 {
 }
 
@@ -115,13 +115,13 @@ void QPhongMaterialPrivate::init()
     m_phongES2Technique->addRenderPass(m_phongES2RenderPass);
 
     Q_Q(QPhongMaterial);
-    m_annotation->setParent(q);
-    m_annotation->setName(QStringLiteral("renderingStyle"));
-    m_annotation->setValue(QStringLiteral("forward"));
+    m_filterKey->setParent(q);
+    m_filterKey->setName(QStringLiteral("renderingStyle"));
+    m_filterKey->setValue(QStringLiteral("forward"));
 
-    m_phongGL3Technique->addAnnotation(m_annotation);
-    m_phongGL2Technique->addAnnotation(m_annotation);
-    m_phongES2Technique->addAnnotation(m_annotation);
+    m_phongGL3Technique->addFilterKey(m_filterKey);
+    m_phongGL2Technique->addFilterKey(m_filterKey);
+    m_phongES2Technique->addFilterKey(m_filterKey);
 
     m_phongEffect->addTechnique(m_phongGL3Technique);
     m_phongEffect->addTechnique(m_phongGL2Technique);

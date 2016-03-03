@@ -5,8 +5,8 @@ HEADERS += \
     $$PWD/effect_p.h \
     $$PWD/material_p.h \
     $$PWD/parameter_p.h \
-    $$PWD/qannotation.h \
-    $$PWD/qannotation_p.h \
+    $$PWD/qfilterkey.h \
+    $$PWD/qfilterkey_p.h \
     $$PWD/qeffect.h \
     $$PWD/qeffect_p.h \
     $$PWD/qmaterial.h \
@@ -32,7 +32,7 @@ SOURCES += \
     $$PWD/effect.cpp \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \
-    $$PWD/qannotation.cpp \
+    $$PWD/qfilterkey.cpp \
     $$PWD/qeffect.cpp \
     $$PWD/qmaterial.cpp \
     $$PWD/qparameter.cpp \

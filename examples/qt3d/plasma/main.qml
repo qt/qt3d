@@ -74,7 +74,7 @@ Entity {
 
                 effect: Effect {
                     techniques: Technique {
-                        annotations: [ Annotation{ name: "renderingStyle"; value: "forward" } ]
+                        filterKeys: [ FilterKey{ name: "renderingStyle"; value: "forward" } ]
 
                         graphicsApiFilter {
                             minorVersion: 3

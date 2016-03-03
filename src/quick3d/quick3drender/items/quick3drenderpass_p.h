@@ -65,23 +65,23 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderPass : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QAnnotation> annotations READ annotationList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> filterKeys READ filterKeyList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QRenderState> renderStates READ renderStateList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 public:
     explicit Quick3DRenderPass(QObject *parent = 0);
 
-    QQmlListProperty<QAnnotation> annotationList();
+    QQmlListProperty<QFilterKey> filterKeyList();
     QQmlListProperty<QRenderState> renderStateList();
     QQmlListProperty<QParameter> parameterList();
 
     inline QRenderPass *parentRenderPass() const { return qobject_cast<QRenderPass *>(parent()); }
 
 private:
-    static void appendAnnotation(QQmlListProperty<QAnnotation> *list, QAnnotation *criterion);
-    static QAnnotation *annotationAt(QQmlListProperty<QAnnotation> *list, int index);
-    static int annotationsCount(QQmlListProperty<QAnnotation> *list);
-    static void clearAnnotations(QQmlListProperty<QAnnotation> *list);
+    static void appendFilterKey(QQmlListProperty<QFilterKey> *list, QFilterKey *filterKey);
+    static QFilterKey *filterKeyAt(QQmlListProperty<QFilterKey> *list, int index);
+    static int filterKeysCount(QQmlListProperty<QFilterKey> *list);
+    static void clearFilterKey(QQmlListProperty<QFilterKey> *list);
 
     static void appendRenderState(QQmlListProperty<QRenderState> *list, QRenderState *state);
     static QRenderState *renderStateAt(QQmlListProperty<QRenderState> *list, int index);

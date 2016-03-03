@@ -136,7 +136,7 @@ Entity {
         }
 
         effect:  Effect {
-            Annotation {
+            FilterKey {
                 id: forward
                 name: "renderingStyle"
                 value: "forward"
@@ -186,7 +186,7 @@ Entity {
                 },
                 Technique
                 {
-                    annotations: [ forward ]
+                    filterKeys: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile

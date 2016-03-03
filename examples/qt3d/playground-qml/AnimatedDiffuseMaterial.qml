@@ -149,9 +149,9 @@ Material {
             Technique {
                 graphicsApiFilter {api : GraphicsApiFilter.OpenGL; profile : GraphicsApiFilter.CoreProfile; minorVersion : 1; majorVersion : 3 }
 
-                annotations: [
-                    Annotation { name : "RenderingStyle"; value : "forward"},
-                    Annotation { name : "Enabled"; value: enabled }
+                filterKeys: [
+                    FilterKey { name : "RenderingStyle"; value : "forward"},
+                    FilterKey { name : "Enabled"; value: enabled }
                 ]
 
                 parameters : Parameter { name : "lightPos"; value : Qt.vector4d(10.0, 10.0, 0.0, 1.0)}
@@ -159,7 +159,7 @@ Material {
                 renderPasses : [
                     // COLOR PASS
                     RenderPass {
-                        annotations: Annotation {name: "Name"; value: "ColorMaterial"}
+                        filterKeys: FilterKey {name: "Name"; value: "ColorMaterial"}
 
                         shaderProgram: ShaderProgram {
                             id: diffuseShader
@@ -169,7 +169,7 @@ Material {
                     },
                     // TEXTURE PASS + UBO
                     RenderPass {
-                        annotations : [Annotation {name : "Name"; value : "Texture" }]
+                        filterKeys : [Annotation {name : "Name"; value : "Texture" }]
 
                         renderStates : [BlendEquationArguments {sourceRgb: BlendEquationArguments.One; destinationRgb : BlendEquationArguments.One},
                                         BlendEquation {blendFunction: BlendEquation.Add},

@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "renderpassfilternode_p.h"
-#include "qannotation.h"
+#include "qfilterkey.h"
 #include "qrenderpassfilter.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qparameter.h>
@@ -62,7 +62,7 @@ void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
     m_parameterPack.clear();
     setEnabled(filter->isEnabled());
     const auto criteria = filter->includes();
-    for (QAnnotation *criterion : criteria)
+    for (QFilterKey *criterion : criteria)
         appendFilter(criterion->id());
     const auto parameters = filter->parameters();
     for (QParameter *p : parameters)
