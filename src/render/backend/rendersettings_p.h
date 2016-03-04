@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERERSETTINGS_P_H
-#define QT3DRENDER_QRENDERERSETTINGS_P_H
+#ifndef QT3DRENDER_RENDER_RENDERSETTINGS_H
+#define QT3DRENDER_RENDER_RENDERSETTINGS_H
 
 //
 //  W A R N I N G
@@ -51,24 +51,45 @@
 // We mean it.
 //
 
-#include <Qt3DCore/private/qcomponent_p.h>
-#include <Qt3DRender/qrenderersettings.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/qrendersettings.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
 
-class QRendererSettingsPrivate : public Qt3DCore::QComponentPrivate
+class AbstractRenderer;
+
+class RenderSettings : public BackendNode
 {
 public:
-    QRendererSettingsPrivate();
+    RenderSettings();
 
-    QRendererSettings::PickMethod m_pickMethod;
-    QRendererSettings::PickResultMode m_pickResultMode;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void cleanup();
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+private:
+    QRenderSettings::PickMethod m_pickMethod;
+    QRenderSettings::PickResultMode m_pickResultMode;
 };
 
-} // namespace Qt3Drender
+class RenderSettingsFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit RenderSettingsFunctor(AbstractRenderer *renderer);
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+
+private:
+    AbstractRenderer *m_renderer;
+};
+
+} // namespace Render
+} // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERERSETTINGS_P_H
+#endif // QT3DRENDER_RENDER_RENDERSETTINGS_H

@@ -17,10 +17,10 @@ HEADERS += \
     $$PWD/qcamera.h \
     $$PWD/qcameralens.h \
     $$PWD/qcameralens_p.h \
-    $$PWD/qrenderersettings.h \
-    $$PWD/qrenderersettings_p.h \
     $$PWD/qrendertargetoutput.h \
-    $$PWD/qrendertargetoutput_p.h
+    $$PWD/qrendertargetoutput_p.h \
+    $$PWD/qrendersettings.h \
+    $$PWD/qrendersettings_p.h
 
 SOURCES += \
     $$PWD/qabstractfunctor.cpp \
@@ -33,5 +33,5 @@ SOURCES += \
     $$PWD/qcomputejob.cpp \
     $$PWD/qcamera.cpp \
     $$PWD/qcameralens.cpp \
-    $$PWD/qrenderersettings.cpp \
+    $$PWD/qrendersettings.cpp \
     $$PWD/qrendertargetoutput.cpp

@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "renderersettings_p.h"
+#include "rendersettings_p.h"
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/abstractrenderer_p.h>
@@ -49,64 +49,64 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-RendererSettings::RendererSettings()
+RenderSettings::RenderSettings()
     : BackendNode()
 {
 }
 
-void RendererSettings::updateFromPeer(Qt3DCore::QNode *peer)
+void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QRendererSettings *settings = static_cast<QRendererSettings *>(peer);
+    QRenderSettings *settings = static_cast<QRenderSettings *>(peer);
     m_pickMethod = settings->pickMethod();
     m_pickResultMode = settings->pickResultMode();
 }
 
-void RendererSettings::cleanup()
+void RenderSettings::cleanup()
 {
-    m_pickMethod = QRendererSettings::BoundingVolumePicking;
-    m_pickResultMode = QRendererSettings::NearestPick;
+    m_pickMethod = QRenderSettings::BoundingVolumePicking;
+    m_pickResultMode = QRenderSettings::NearestPick;
 }
 
-void RendererSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("pickMethod"))
-            m_pickMethod = propertyChange->value().value<QRendererSettings::PickMethod>();
+            m_pickMethod = propertyChange->value().value<QRenderSettings::PickMethod>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
-            m_pickResultMode = propertyChange->value().value<QRendererSettings::PickResultMode>();
+            m_pickResultMode = propertyChange->value().value<QRenderSettings::PickResultMode>();
         markDirty(AbstractRenderer::AllDirty);
     }
 }
 
 
-RendererSettingsFunctor::RendererSettingsFunctor(AbstractRenderer *renderer)
+RenderSettingsFunctor::RenderSettingsFunctor(AbstractRenderer *renderer)
     : m_renderer(renderer)
 {
 }
 
-Qt3DCore::QBackendNode *RendererSettingsFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNode *frontend) const
 {
-    QRendererSettings *settingsFrontend = static_cast<QRendererSettings *>(frontend);
+    QRenderSettings *settingsFrontend = static_cast<QRenderSettings *>(frontend);
     if (m_renderer->settings() != Q_NULLPTR) {
         qWarning() << "Renderer settings already exists";
         return Q_NULLPTR;
     }
 
-    RendererSettings *settings = new RendererSettings;
+    RenderSettings *settings = new RenderSettings;
     settings->setPeer(settingsFrontend);
     settings->setRenderer(m_renderer);
     m_renderer->setSettings(settings);
     return settings;
 }
 
-Qt3DCore::QBackendNode *RendererSettingsFunctor::get(Qt3DCore::QNodeId id) const
+Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     return Q_NULLPTR;
 }
 
-void RendererSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
+void RenderSettingsFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
     // Deletes the old settings object

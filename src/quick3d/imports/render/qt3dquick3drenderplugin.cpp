@@ -115,7 +115,7 @@
 #include <Qt3DRender/qcomputejob.h>
 #include <Qt3DRender/qcameralens.h>
 #include <Qt3DRender/qcamera.h>
-#include <Qt3DRender/qrenderersettings.h>
+#include <Qt3DRender/qrendersettings.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>
@@ -181,7 +181,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     QMetaType::registerConverter<Qt3DRender::Render::Quick::Quick3DShaderDataArray*, QVariantList>(Quick3DShaderDataArrayToVariantListConverter);
 
     // Renderer setttings
-    qmlRegisterType<Qt3DRender::QRendererSettings>(uri, 2, 0, "RendererSettings");
+    qmlRegisterType<Qt3DRender::QRenderSettings>(uri, 2, 0, "RenderSettings");
 
     // @uri Qt3D.Render
     qmlRegisterUncreatableType<Qt3DRender::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");

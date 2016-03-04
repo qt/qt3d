@@ -37,50 +37,50 @@
 **
 ****************************************************************************/
 
-#include "qrenderersettings.h"
-#include "qrenderersettings_p.h"
+#include "qrendersettings.h"
+#include "qrendersettings_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QRendererSettingsPrivate::QRendererSettingsPrivate()
+QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
-    , m_pickMethod(QRendererSettings::BoundingVolumePicking)
-    , m_pickResultMode(QRendererSettings::NearestPick)
+    , m_pickMethod(QRenderSettings::BoundingVolumePicking)
+    , m_pickResultMode(QRenderSettings::NearestPick)
 {
 }
 
-QRendererSettings::QRendererSettings(Qt3DCore::QNode *parent)
-    : Qt3DCore::QComponent(*new QRendererSettingsPrivate, parent)
+QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
+    : Qt3DCore::QComponent(*new QRenderSettingsPrivate, parent)
 {
 }
 
-QRendererSettings::QRendererSettings(QRendererSettingsPrivate &dd, Qt3DCore::QNode *parent)
+QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
 }
 
-QRendererSettings::~QRendererSettings()
+QRenderSettings::~QRenderSettings()
 {
     QNode::cleanup();
 }
 
-QRendererSettings::PickMethod QRendererSettings::pickMethod() const
+QRenderSettings::PickMethod QRenderSettings::pickMethod() const
 {
-    Q_D(const QRendererSettings);
+    Q_D(const QRenderSettings);
     return d->m_pickMethod;
 }
 
-QRendererSettings::PickResultMode QRendererSettings::pickResultMode() const
+QRenderSettings::PickResultMode QRenderSettings::pickResultMode() const
 {
-    Q_D(const QRendererSettings);
+    Q_D(const QRenderSettings);
     return d->m_pickResultMode;
 }
 
-void QRendererSettings::setPickMethod(QRendererSettings::PickMethod pickMethod)
+void QRenderSettings::setPickMethod(QRenderSettings::PickMethod pickMethod)
 {
-    Q_D(QRendererSettings);
+    Q_D(QRenderSettings);
     if (d->m_pickMethod == pickMethod)
         return;
 
@@ -88,9 +88,9 @@ void QRendererSettings::setPickMethod(QRendererSettings::PickMethod pickMethod)
     emit pickMethodChanged(pickMethod);
 }
 
-void QRendererSettings::setPickResultMode(QRendererSettings::PickResultMode pickResultMode)
+void QRenderSettings::setPickResultMode(QRenderSettings::PickResultMode pickResultMode)
 {
-    Q_D(QRendererSettings);
+    Q_D(QRenderSettings);
     if (d->m_pickResultMode == pickResultMode)
         return;
 
@@ -98,10 +98,10 @@ void QRendererSettings::setPickResultMode(QRendererSettings::PickResultMode pick
     emit pickResultModeChanged(pickResultMode);
 }
 
-void QRendererSettings::copy(const QNode *ref)
+void QRenderSettings::copy(const QNode *ref)
 {
     QComponent::copy(ref);
-    const QRendererSettings *object = static_cast<const QRendererSettings *>(ref);
+    const QRenderSettings *object = static_cast<const QRenderSettings *>(ref);
     d_func()->m_pickMethod = object->d_func()->m_pickMethod;
     d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
 }

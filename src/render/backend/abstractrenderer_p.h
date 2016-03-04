@@ -77,7 +77,7 @@ namespace Render {
 class NodeManagers;
 class Entity;
 class FrameGraphNode;
-class RendererSettings;
+class RenderSettings;
 class BackendNode;
 
 
@@ -142,8 +142,8 @@ public:
     virtual Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const = 0;
     virtual void registerEventFilter(Qt3DCore::QEventFilterService *service) = 0;
 
-    virtual void setSettings(RendererSettings *settings) = 0;
-    virtual RendererSettings *settings() const = 0;
+    virtual void setSettings(RenderSettings *settings) = 0;
+    virtual RenderSettings *settings() const = 0;
 
 };
 

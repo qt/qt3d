@@ -64,8 +64,8 @@ public:
     Qt3DRender::Render::FrameGraphNode *frameGraphRoot() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
     Qt3DCore::QAbstractFrameAdvanceService *frameAdvanceService() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
     void registerEventFilter(Qt3DCore::QEventFilterService *service) Q_DECL_OVERRIDE { Q_UNUSED(service); }
-    void setSettings(Qt3DRender::Render::RendererSettings *settings) Q_DECL_OVERRIDE { Q_UNUSED(settings); }
-    Qt3DRender::Render::RendererSettings *settings() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
+    void setSettings(Qt3DRender::Render::RenderSettings *settings) Q_DECL_OVERRIDE { Q_UNUSED(settings); }
+    Qt3DRender::Render::RenderSettings *settings() const Q_DECL_OVERRIDE { return Q_NULLPTR; }
 
     void markDirty(Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet changes, Qt3DRender::Render::BackendNode *node) Q_DECL_OVERRIDE;
     Qt3DRender::Render::AbstractRenderer::BackendNodeDirtySet dirtyBits() Q_DECL_OVERRIDE;

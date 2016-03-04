@@ -107,7 +107,7 @@ namespace Render {
 
 const QString SCENE_PARSERS_PATH = QStringLiteral("/sceneparsers");
 
-const RendererSettings Renderer::ms_defaultSettings;
+const RenderSettings Renderer::ms_defaultSettings;
 
 /*!
     \internal
@@ -144,7 +144,7 @@ Renderer::Renderer(QRenderAspect::RenderType type)
     , m_glContext(Q_NULLPTR)
     , m_pickBoundingVolumeJob(Q_NULLPTR)
     , m_time(0)
-    , m_settings(const_cast<RendererSettings *>(&ms_defaultSettings))
+    , m_settings(const_cast<RenderSettings *>(&ms_defaultSettings))
 {
     // Set renderer as running - it will wait in the context of the
     // RenderThread for RenderViews to be submitted
@@ -439,17 +439,17 @@ void Renderer::registerEventFilter(QEventFilterService *service)
     service->registerEventFilter(m_pickEventFilter.data(), 1024);
 }
 
-void Renderer::setSettings(RendererSettings *settings)
+void Renderer::setSettings(RenderSettings *settings)
 {
     // If default settings not in use, clean up
     if (m_settings != &ms_defaultSettings)
         delete m_settings;
 
     // If removing settings, restore to default
-    m_settings = (settings != Q_NULLPTR) ? settings : const_cast<RendererSettings *>(&ms_defaultSettings);
+    m_settings = (settings != Q_NULLPTR) ? settings : const_cast<RenderSettings *>(&ms_defaultSettings);
 }
 
-RendererSettings *Renderer::settings() const
+RenderSettings *Renderer::settings() const
 {
     return m_settings;
 }

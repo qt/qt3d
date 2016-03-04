@@ -37,59 +37,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERERSETTINGS_H
-#define QT3DRENDER_RENDER_RENDERERSETTINGS_H
+#ifndef QT3DRENDER_QRENDERSETTINGS_H
+#define QT3DRENDER_QRENDERSETTINGS_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/backendnode_p.h>
-#include <Qt3DRender/qrenderersettings.h>
+#include <Qt3DCore/qcomponent.h>
+#include <Qt3DRender/qt3drender_global.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-namespace Render {
 
-class AbstractRenderer;
+class QRenderSettingsPrivate;
 
-class RendererSettings : public BackendNode
+class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
 {
-public:
-    RendererSettings();
+    Q_OBJECT
+    Q_PROPERTY(PickMethod pickMethod READ pickMethod WRITE setPickMethod NOTIFY pickMethodChanged)
+    Q_PROPERTY(PickResultMode pickResultMode READ pickResultMode WRITE setPickResultMode NOTIFY pickResultModeChanged)
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void cleanup();
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+public:
+    explicit QRenderSettings(Qt3DCore::QNode *parent = nullptr);
+    ~QRenderSettings();
+
+    enum PickMethod {
+        BoundingVolumePicking,
+        TrianglePicking
+    };
+    Q_ENUM(PickMethod)
+
+    enum PickResultMode {
+        NearestPick,
+        AllPicks
+    };
+    Q_ENUM(PickResultMode)
+
+    PickMethod pickMethod() const;
+    PickResultMode pickResultMode() const;
+
+public Q_SLOTS:
+    void setPickMethod(PickMethod pickMethod);
+    void setPickResultMode(PickResultMode pickResultMode);
+
+Q_SIGNALS:
+    void pickMethodChanged(PickMethod pickMethod);
+    void pickResultModeChanged(PickResultMode pickResult);
+
+protected:
+    Q_DECLARE_PRIVATE(QRenderSettings)
+    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
 
 private:
-    QRendererSettings::PickMethod m_pickMethod;
-    QRendererSettings::PickResultMode m_pickResultMode;
+    QT3D_CLONEABLE(QRenderSettings)
 };
 
-class RendererSettingsFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit RendererSettingsFunctor(AbstractRenderer *renderer);
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-
-private:
-    AbstractRenderer *m_renderer;
-};
-
-} // namespace Render
-} // namespace Qt3DRender
+} // namespace Qt3Drender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERERSETTINGS_H
+#endif // QT3DRENDER_QRENDERSETTINGS_H

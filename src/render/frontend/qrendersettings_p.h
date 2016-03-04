@@ -37,62 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERERSETTINGS_H
-#define QT3DRENDER_QRENDERERSETTINGS_H
+#ifndef QT3DRENDER_QRENDERSETTINGS_P_H
+#define QT3DRENDER_QRENDERSETTINGS_P_H
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DRender/qrendersettings.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QRendererSettingsPrivate;
-
-class QT3DRENDERSHARED_EXPORT QRendererSettings : public Qt3DCore::QComponent
+class QRenderSettingsPrivate : public Qt3DCore::QComponentPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(PickMethod pickMethod READ pickMethod WRITE setPickMethod NOTIFY pickMethodChanged)
-    Q_PROPERTY(PickResultMode pickResultMode READ pickResultMode WRITE setPickResultMode NOTIFY pickResultModeChanged)
-
 public:
-    explicit QRendererSettings(Qt3DCore::QNode *parent = nullptr);
-    ~QRendererSettings();
+    QRenderSettingsPrivate();
 
-    enum PickMethod {
-        BoundingVolumePicking,
-        TrianglePicking
-    };
-    Q_ENUM(PickMethod)
-
-    enum PickResultMode {
-        NearestPick,
-        AllPicks
-    };
-    Q_ENUM(PickResultMode)
-
-    PickMethod pickMethod() const;
-    PickResultMode pickResultMode() const;
-
-public Q_SLOTS:
-    void setPickMethod(PickMethod pickMethod);
-    void setPickResultMode(PickResultMode pickResultMode);
-
-Q_SIGNALS:
-    void pickMethodChanged(PickMethod pickMethod);
-    void pickResultModeChanged(PickResultMode pickResult);
-
-protected:
-    Q_DECLARE_PRIVATE(QRendererSettings)
-    QRendererSettings(QRendererSettingsPrivate &dd, Qt3DCore::QNode *parent = nullptr);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    QT3D_CLONEABLE(QRendererSettings)
+    QRenderSettings::PickMethod m_pickMethod;
+    QRenderSettings::PickResultMode m_pickResultMode;
 };
 
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERERSETTINGS_H
+#endif // QT3DRENDER_QRENDERSETTINGS_P_H
