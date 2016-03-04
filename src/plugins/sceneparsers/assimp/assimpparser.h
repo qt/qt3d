@@ -56,7 +56,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRender/qsceneiohandler.h>
+#include <Qt3DRender/private/qsceneiohandler_p.h>
 #include "assimphelpers.h"
 
 #include <QMap>

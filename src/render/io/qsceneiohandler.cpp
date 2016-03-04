@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qsceneiohandler.h"
+#include "qsceneiohandler_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QStringList>
 

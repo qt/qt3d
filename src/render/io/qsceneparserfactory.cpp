@@ -39,7 +39,7 @@
 
 #include "qsceneparserfactory_p.h"
 #include "qsceneparserplugin.h"
-#include "qsceneiohandler.h"
+#include "qsceneiohandler_p.h"
 
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>

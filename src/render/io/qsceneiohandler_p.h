@@ -44,7 +44,7 @@
 #include <QStringList>
 #include <QLoggingCategory>
 #include <QUrl>
-#include <Qt3DRender/qt3drender_global.h>
+#include <private/qt3drender_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -56,7 +56,7 @@ namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
-class QT3DRENDERSHARED_EXPORT QSceneIOHandler : public QObject
+class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneIOHandler : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ParserStatus status READ status NOTIFY statusChanged)

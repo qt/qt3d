@@ -49,8 +49,8 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qrenderaspect.h>
 #include <Qt3DRender/qeffect.h>
-#include <Qt3DRender/qsceneiohandler.h>
 
+#include <Qt3DRender/private/qsceneiohandler_p.h>
 #include <Qt3DRender/private/renderviewjob_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>

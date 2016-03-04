@@ -43,7 +43,7 @@
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DRender/private/job_common_p.h>
-#include <Qt3DRender/qsceneiohandler.h>
+#include <Qt3DRender/private/qsceneiohandler_p.h>
 
 QT_BEGIN_NAMESPACE
 

@@ -39,7 +39,7 @@
 
 #include "qabstractsceneloader.h"
 #include "qabstractsceneloader_p.h"
-#include "qsceneiohandler.h"
+#include "qsceneiohandler_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
