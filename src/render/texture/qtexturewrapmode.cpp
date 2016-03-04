@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qwrapmode.h"
+#include "qtexturewrapmode.h"
 #include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE

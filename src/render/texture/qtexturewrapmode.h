@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QWRAPMODE_H
-#define QT3DRENDER_QWRAPMODE_H
+#ifndef QT3DRENDER_QTEXTUREWRAPMODE_H
+#define QT3DRENDER_QTEXTUREWRAPMODE_H
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <QObject>

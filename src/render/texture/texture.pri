@@ -8,7 +8,7 @@ HEADERS += \
     $$PWD/qtexture.h \
     $$PWD/qtextureimage.h \
     $$PWD/qtextureproviders.h \
-    $$PWD/qwrapmode.h \
+    $$PWD/qtexturewrapmode.h \
     $$PWD/texture_p.h \
     $$PWD/texturedatamanager_p.h \
     $$PWD/textureimage_p.h \
@@ -20,7 +20,7 @@ SOURCES += \
     $$PWD/qabstracttextureprovider.cpp \
     $$PWD/qtextureimage.cpp \
     $$PWD/qtextureproviders.cpp \
-    $$PWD/qwrapmode.cpp \
+    $$PWD/qtexturewrapmode.cpp \
     $$PWD/texture.cpp \
     $$PWD/texturedatamanager.cpp \
     $$PWD/textureimage.cpp \
