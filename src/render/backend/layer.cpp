@@ -68,6 +68,7 @@ void Layer::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QLayer *layer = static_cast<QLayer *>(peer);
     m_layers = layer->names();
+    m_layerIds.clear();
     m_layerIds.reserve(m_layers.size());
     Q_FOREACH (const QString &name, m_layers)
         m_layerIds.push_back(StringToInt::lookupId(name));
