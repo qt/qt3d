@@ -90,7 +90,7 @@ public:
     inline Qt3DCore::QNodeId currentFocusItem() const { return m_currentFocusItem; }
     inline Qt3DCore::QNodeId lastKeyboardInputRequester() const { return m_lastRequester; }
     inline QVector<Qt3DCore::QNodeId> keyboardInputs() const { return m_keyboardInputs; }
-    inline QVector<HKeyboardInput> keyboardInputsHandles() const { return m_keyboardInputHandles; }
+    inline QVector<HKeyboardHandler> keyboardInputsHandles() const { return m_keyboardInputHandles; }
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &) Q_DECL_OVERRIDE;
@@ -100,7 +100,7 @@ private:
 
     InputHandler *m_inputHandler;
     QVector<Qt3DCore::QNodeId> m_keyboardInputs;
-    QVector<HKeyboardInput> m_keyboardInputHandles;
+    QVector<HKeyboardHandler> m_keyboardInputHandles;
     Qt3DCore::QNodeId m_lastRequester;
     Qt3DCore::QNodeId m_currentFocusItem;
 

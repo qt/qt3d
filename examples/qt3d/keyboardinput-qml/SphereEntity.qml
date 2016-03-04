@@ -74,7 +74,7 @@ Entity {
         }
     }
 
-    KeyboardInput { id: input }
+    KeyboardHandler { id: input }
 
     components: [material, sphereMesh, transform, input]
 }

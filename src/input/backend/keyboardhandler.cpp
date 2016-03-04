@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "keyboardinput_p.h"
-#include "qkeyboardinput.h"
+#include "keyboardhandler_p.h"
+#include "qkeyboardhandler.h"
 #include "qkeyboardcontroller.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
@@ -53,37 +53,37 @@ using namespace Qt3DCore;
 namespace Qt3DInput {
 namespace Input {
 
-KeyboardInput::KeyboardInput()
+KeyboardHandler::KeyboardHandler()
     : QBackendNode(QBackendNode::ReadWrite)
     , m_inputHandler(Q_NULLPTR)
     , m_focus(false)
 {
 }
 
-void KeyboardInput::updateFromPeer(Qt3DCore::QNode *peer)
+void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QKeyboardInput *input = static_cast<QKeyboardInput *>(peer);
-    if (input->controller() != Q_NULLPTR)
-        setController(input->controller()->id());
+    QKeyboardHandler *input = static_cast<QKeyboardHandler *>(peer);
+    if (input->sourceDevice() != Q_NULLPTR)
+        setController(input->sourceDevice()->id());
     m_focus = false;
     m_enabled = input->isEnabled();
     if (input->focus())
         requestFocus();
 }
 
-Qt3DCore::QNodeId KeyboardInput::keyboardController() const
+Qt3DCore::QNodeId KeyboardHandler::keyboardController() const
 {
     return m_keyboardController;
 }
 
-void KeyboardInput::setInputHandler(InputHandler *handler)
+void KeyboardHandler::setInputHandler(InputHandler *handler)
 {
     m_inputHandler = handler;
 }
 
-// Called by the KeyboadController when the focus for the KeyboardInput has changed
+// Called by the KeyboadController when the focus for the KeyboardHandler has changed
 // Sends a change notification so that the frontend can update itself
-void KeyboardInput::setFocus(bool focus)
+void KeyboardHandler::setFocus(bool focus)
 {
     if (focus != m_focus) {
         m_focus = focus;
@@ -95,7 +95,7 @@ void KeyboardInput::setFocus(bool focus)
     }
 }
 
-void KeyboardInput::keyEvent(const QKeyEventPtr &event)
+void KeyboardHandler::keyEvent(const QKeyEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
@@ -104,7 +104,7 @@ void KeyboardInput::keyEvent(const QKeyEventPtr &event)
     notifyObservers(e);
 }
 
-void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
+void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
 {
     bool focusRequest = false;
     if (e->type() == NodeUpdated) {
@@ -125,14 +125,14 @@ void KeyboardInput::sceneChangeEvent(const QSceneChangePtr &e)
         requestFocus();
 }
 
-void KeyboardInput::requestFocus()
+void KeyboardHandler::requestFocus()
 {
     KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
     if (controller && m_enabled)
         controller->requestFocusForInput(peerUuid());
 }
 
-void KeyboardInput::setController(QNodeId controller)
+void KeyboardHandler::setController(QNodeId controller)
 {
     if (!m_keyboardController.isNull()) {
         KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
@@ -147,25 +147,25 @@ void KeyboardInput::setController(QNodeId controller)
     }
 }
 
-KeyboardInputFunctor::KeyboardInputFunctor(InputHandler *handler)
+KeyboardHandlerFunctor::KeyboardHandlerFunctor(InputHandler *handler)
     : m_handler(handler)
 {
 }
 
-QBackendNode *KeyboardInputFunctor::create(QNode *frontend) const
+QBackendNode *KeyboardHandlerFunctor::create(QNode *frontend) const
 {
-    KeyboardInput *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->id());
+    KeyboardHandler *input = m_handler->keyboardInputManager()->getOrCreateResource(frontend->id());
     input->setInputHandler(m_handler);
     input->setPeer(frontend);
     return input;
 }
 
-QBackendNode *KeyboardInputFunctor::get(QNodeId id) const
+QBackendNode *KeyboardHandlerFunctor::get(QNodeId id) const
 {
     return m_handler->keyboardInputManager()->lookupResource(id);
 }
 
-void KeyboardInputFunctor::destroy(QNodeId id) const
+void KeyboardHandlerFunctor::destroy(QNodeId id) const
 {
     m_handler->keyboardInputManager()->releaseResource(id);
 }

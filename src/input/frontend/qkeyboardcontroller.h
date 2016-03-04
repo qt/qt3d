@@ -48,18 +48,18 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QKeyboardControllerPrivate;
-class QKeyboardInput;
+class QKeyboardHandler;
 
 class QT3DINPUTSHARED_EXPORT QKeyboardController : public Qt3DInput::QAbstractPhysicalDevice
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QKeyboardInput *activeInput READ activeInput NOTIFY activeInputChanged)
+    Q_PROPERTY(Qt3DInput::QKeyboardHandler *activeInput READ activeInput NOTIFY activeInputChanged)
 
 public:
     explicit QKeyboardController(QNode *parent = 0);
     ~QKeyboardController();
 
-    QKeyboardInput *activeInput() const;
+    QKeyboardHandler *activeInput() const;
 
     int axisCount() const Q_DECL_FINAL;
     int buttonCount() const Q_DECL_FINAL;
@@ -73,12 +73,12 @@ protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
-    void activeInputChanged(QKeyboardInput *activeInput);
+    void activeInputChanged(QKeyboardHandler *activeInput);
 
 private:
     Q_DECLARE_PRIVATE(QKeyboardController)
     QT3D_CLONEABLE(QKeyboardController)
-    void setActiveInput(QKeyboardInput *activeInput);
+    void setActiveInput(QKeyboardHandler *activeInput);
 };
 
 } // namespace Qt3DInput

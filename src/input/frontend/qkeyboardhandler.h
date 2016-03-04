@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_QKEYBOARDINPUT_H
-#define QT3DINPUT_INPUT_QKEYBOARDINPUT_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDHANDLER_H
+#define QT3DINPUT_INPUT_QKEYBOARDHANDLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/qkeyevent.h>
@@ -49,26 +49,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QKeyboardController;
-class QKeyboardInputPrivate;
+class QKeyboardHandlerPrivate;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardInput : public Qt3DCore::QComponent
+class QT3DINPUTSHARED_EXPORT QKeyboardHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QKeyboardController *controller READ controller WRITE setController NOTIFY controllerChanged)
+    Q_PROPERTY(Qt3DInput::QKeyboardController *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 public:
-    explicit QKeyboardInput(QNode *parent = 0);
-    ~QKeyboardInput();
+    explicit QKeyboardHandler(QNode *parent = 0);
+    ~QKeyboardHandler();
 
-    QKeyboardController *controller() const;
+    QKeyboardController *sourceDevice() const;
     bool focus() const;
 
 public Q_SLOTS:
-    void setController(QKeyboardController *controller);
+    void setSourceDevice(QKeyboardController *sourceDevice);
     void setFocus(bool focus);
 
 Q_SIGNALS:
-    void controllerChanged(QKeyboardController *controller);
+    void sourceDeviceChanged(QKeyboardController *sourceDevice);
     void focusChanged(bool focus);
 
     void digit0Pressed(Qt3DInput::QKeyEvent *event);
@@ -116,18 +116,16 @@ Q_SIGNALS:
     void released(Qt3DInput::QKeyEvent *event);
 
 protected:
-    QKeyboardInput(QKeyboardInputPrivate &dd, QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-    void keyEvent(QKeyEvent *event);
 
 private:
-    Q_DECLARE_PRIVATE(QKeyboardInput)
-    QT3D_CLONEABLE(QKeyboardInput)
+    Q_DECLARE_PRIVATE(QKeyboardHandler)
+    QT3D_CLONEABLE(QKeyboardHandler)
 };
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_QKEYBOARDINPUT_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDHANDLER_H

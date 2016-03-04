@@ -39,7 +39,7 @@
 
 #include "assignkeyboardfocusjob_p.h"
 #include "keyboardcontroller_p.h"
-#include "keyboardinput_p.h"
+#include "keyboardhandler_p.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 
@@ -63,8 +63,8 @@ void AssignKeyboardFocusJob::setInputHandler(InputHandler *handler)
 void AssignKeyboardFocusJob::run()
 {
     KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-    Q_FOREACH (const HKeyboardInput handle, controller->keyboardInputsHandles()) {
-        KeyboardInput *input = m_inputHandler->keyboardInputManager()->data(handle);
+    Q_FOREACH (const HKeyboardHandler handle, controller->keyboardInputsHandles()) {
+        KeyboardHandler *input = m_inputHandler->keyboardInputManager()->data(handle);
         if (input) {
             bool hasFocus = input->peerUuid() == controller->lastKeyboardInputRequester();
             input->setFocus(hasFocus);

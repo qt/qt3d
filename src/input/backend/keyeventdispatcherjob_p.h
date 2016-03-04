@@ -71,7 +71,7 @@ public:
 
 private:
     InputHandler *m_inputHandler;
-    const Qt3DCore::QNodeId m_keyboardInput;
+    const Qt3DCore::QNodeId m_keyboardHandler;
     const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_events;
 };
 

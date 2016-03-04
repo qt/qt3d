@@ -1,6 +1,6 @@
 HEADERS += \
     $$PWD/keyboardcontroller_p.h \
-    $$PWD/keyboardinput_p.h \
+    $$PWD/keyboardhandler_p.h \
     $$PWD/inputhandler_p.h \
     $$PWD/inputmanagers_p.h \
     $$PWD/handle_types_p.h \
@@ -31,7 +31,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/keyboardcontroller.cpp \
-    $$PWD/keyboardinput.cpp \
+    $$PWD/keyboardhandler.cpp \
     $$PWD/inputhandler.cpp \
     $$PWD/keyboardeventfilter.cpp \
     $$PWD/assignkeyboardfocusjob.cpp \

@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_KEYBOARDINPUT_P_H
-#define QT3DINPUT_INPUT_KEYBOARDINPUT_P_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDHANDLER_P_H
+#define QT3DINPUT_INPUT_QKEYBOARDHANDLER_P_H
 
 //
 //  W A R N I N G
@@ -51,58 +51,29 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DCore/qnodeid.h>
-#include <Qt3DInput/qkeyevent.h>
+#include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-namespace Input {
+class QKeyboardHandler;
+class QKeyboardController;
 
-class InputHandler;
-
-class KeyboardInput : public Qt3DCore::QBackendNode
+class QKeyboardHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
-    KeyboardInput();
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeId keyboardController() const;
-    void setInputHandler(InputHandler *handler);
-    void setFocus(bool focus);
-    void keyEvent(const QKeyEventPtr &event);
+    QKeyboardHandlerPrivate();
 
-    inline bool isEnabled() const { return m_enabled; }
+    void keyEvent(QKeyEvent *event);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void requestFocus();
-    void setController(Qt3DCore::QNodeId controller);
-
-private:
-    InputHandler *m_inputHandler;
-    Qt3DCore::QNodeId m_keyboardController;
+    Q_DECLARE_PUBLIC(QKeyboardHandler)
+    QKeyboardController *m_sourceDevice;
     bool m_focus;
-    bool m_enabled;
 };
 
-class KeyboardInputFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit KeyboardInputFunctor(InputHandler *handler);
-
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-
-private:
-    InputHandler *m_handler;
-};
-
-} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_KEYBOARDINPUT_P_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDHANDLER_P_H

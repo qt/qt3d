@@ -41,11 +41,11 @@
 #include "qinputaspect_p.h"
 #include "inputhandler_p.h"
 #include "keyboardcontroller_p.h"
-#include "keyboardinput_p.h"
+#include "keyboardhandler_p.h"
 #include "mousecontroller_p.h"
 #include "mousehandler_p.h"
 #include <Qt3DInput/qkeyboardcontroller.h>
-#include <Qt3DInput/qkeyboardinput.h>
+#include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DInput/qmousehandler.h>
 #include <Qt3DInput/qinputdeviceintegration.h>
@@ -111,7 +111,7 @@ QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
     registerBackendType<QKeyboardController>(QBackendNodeMapperPtr(new Input::KeyboardControllerFunctor(this, d_func()->m_inputHandler.data())));
-    registerBackendType<QKeyboardInput>(QBackendNodeMapperPtr(new Input::KeyboardInputFunctor(d_func()->m_inputHandler.data())));
+    registerBackendType<QKeyboardHandler>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseController>(QBackendNodeMapperPtr(new Input::MouseControllerFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QAxis>(QBackendNodeMapperPtr(new Input::InputNodeFunctor<Input::Axis, Input::AxisManager>(d_func()->m_inputHandler->axisManager())));

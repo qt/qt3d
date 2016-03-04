@@ -60,7 +60,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QKeyboardController;
-class QKeyboardInput;
+class QKeyboardHandler;
 
 class QKeyboardControllerPrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
 {
@@ -68,7 +68,7 @@ public:
     QKeyboardControllerPrivate();
 
     Q_DECLARE_PUBLIC(QKeyboardController)
-    QKeyboardInput *m_activeInput;
+    QKeyboardHandler *m_activeInput;
     QHash<QString, int> m_keyMap;
     QStringList m_keyNames;
 };

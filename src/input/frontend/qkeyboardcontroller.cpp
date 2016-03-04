@@ -39,7 +39,7 @@
 
 #include "qkeyboardcontroller.h"
 #include "qkeyboardcontroller_p.h"
-#include "qkeyboardinput.h"
+#include "qkeyboardhandler.h"
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
@@ -226,10 +226,10 @@ QKeyboardController::~QKeyboardController()
 }
 
 /*!
-    \qmlproperty KeyboardInput Qt3D.Input::KeyboardController::activeInput
+    \qmlproperty KeyboardHandler Qt3D.Input::KeyboardController::activeInput
     \readonly
 */
-QKeyboardInput *QKeyboardController::activeInput() const
+QKeyboardHandler *QKeyboardController::activeInput() const
 {
     Q_D(const QKeyboardController);
     return d->m_activeInput;
@@ -281,11 +281,11 @@ void QKeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &chan
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
         QNodeId activeInputId = e->value().value<QNodeId>();
-        setActiveInput(qobject_cast<QKeyboardInput *>(d->scene()->lookupNode(activeInputId)));
+        setActiveInput(qobject_cast<QKeyboardHandler *>(d->scene()->lookupNode(activeInputId)));
     }
 }
 
-void QKeyboardController::setActiveInput(QKeyboardInput *activeInput)
+void QKeyboardController::setActiveInput(QKeyboardHandler *activeInput)
 {
     Q_D(QKeyboardController);
     if (d->m_activeInput != activeInput) {

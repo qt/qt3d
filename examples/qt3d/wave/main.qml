@@ -58,7 +58,7 @@ Entity {
 
     KeyboardController { id: keyboard1 }
 
-    KeyboardInput {
+    KeyboardHandler {
         id: input
         controller: keyboard1
         focus: true

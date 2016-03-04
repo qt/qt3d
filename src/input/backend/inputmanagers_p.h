@@ -54,7 +54,7 @@
 #include <QtGlobal>
 #include <Qt3DInput/private/handle_types_p.h>
 #include <Qt3DInput/private/keyboardcontroller_p.h>
-#include <Qt3DInput/private/keyboardinput_p.h>
+#include <Qt3DInput/private/keyboardhandler_p.h>
 #include <Qt3DInput/private/mousecontroller_p.h>
 #include <Qt3DInput/private/mousehandler_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
@@ -74,7 +74,7 @@ namespace Qt3DInput {
 namespace Input {
 
 class KeyboardInputManager : public Qt3DCore::QResourceManager<
-        KeyboardInput,
+        KeyboardHandler,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy>

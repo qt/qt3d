@@ -69,14 +69,14 @@ Entity {
 
     KeyboardController {id: keyboardController}
 
-    KeyboardInput {
-        id: keyboardInput
+    KeyboardHandler {
+        id: keyboardHandler
         controller: keyboardController
         focus: true
         onTabPressed: root.detailCamera = !root.detailCamera;
     }
 
-    components: [external_forward_renderer, keyboardInput]
+    components: [external_forward_renderer, keyboardHandler]
 
     FirstPersonCameraController { camera: mainView.camera }
 

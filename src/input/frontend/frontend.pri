@@ -2,8 +2,8 @@ HEADERS += \
     $$PWD/qinputaspect.h \
     $$PWD/qkeyboardcontroller.h \
     $$PWD/qkeyboardcontroller_p.h \
-    $$PWD/qkeyboardinput.h \
-    $$PWD/qkeyboardinput_p.h \
+    $$PWD/qkeyboardhandler.h \
+    $$PWD/qkeyboardhandler_p.h \
     $$PWD/qinputaspect_p.h \
     $$PWD/qkeyevent.h \
     $$PWD/qmousecontroller.h \
@@ -35,7 +35,7 @@ HEADERS += \
 SOURCES += \
     $$PWD/qinputaspect.cpp \
     $$PWD/qkeyboardcontroller.cpp \
-    $$PWD/qkeyboardinput.cpp \
+    $$PWD/qkeyboardhandler.cpp \
     $$PWD/qkeyevent.cpp \
     $$PWD/qmousehandler.cpp \
     $$PWD/qmousecontroller.cpp \
