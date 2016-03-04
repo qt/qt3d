@@ -743,7 +743,9 @@ bool Renderer::shouldRender()
 {
     // Only render if something changed during the last frame, or the last frame
     // was not rendered successfully
-    return (m_changeSet != 0 || !m_lastFrameCorrect.load());
+    // TODO: Reinstate the proper logic here when it catches all cases
+    return true;
+    //return (m_changeSet != 0 || !m_lastFrameCorrect.load());
 }
 
 void Renderer::skipNextFrame()
