@@ -100,8 +100,8 @@ Entity {
             scale: sphere1.scaleFactor
         }
 
-        property MouseInput mouseInput : MouseInput {
-            controller: mouseController
+        property MouseHandler mouseHandler : MouseHandler {
+            sourceDevice: mouseController
 
             onClicked: {
                 //Signal not implemented yet
@@ -120,6 +120,6 @@ Entity {
             }
         }
 
-        components: [sphereMesh, material, transform, mouseInput]
+        components: [sphereMesh, material, transform, mouseHandler]
     }
 }

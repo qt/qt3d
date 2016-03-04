@@ -71,7 +71,7 @@ QEntityPrivate::QEntityPrivate()
     backend aspect will be able to interpret and process an Entity by
     recognizing which components it is made up of. One aspect may decide to only
     process entities composed of a single Qt3DCore::QTransform component whilst
-    another may focus on Qt3DCore::QMouseInput.
+    another may focus on Qt3DCore::QMouseHandler.
 
     \sa Qt3DCore::QComponent, Qt3DCore::QTransform
 */

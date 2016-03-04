@@ -57,9 +57,9 @@ QMouseControllerPrivate::QMouseControllerPrivate()
  * \instantiates Qt3DInput::QMouseController
  * \inqmlmodule Qt3D.Input
  * \since 5.5
- * \brief Delegates mouse events to the attached MouseInput objects.
+ * \brief Delegates mouse events to the attached MouseHandler objects.
  * \TODO
- * \sa MouseInput
+ * \sa MouseHandler
  */
 
 /*!
@@ -67,10 +67,10 @@ QMouseControllerPrivate::QMouseControllerPrivate()
  * \inmodule Qt3DInput
  *
  * \brief QMouseController is in charge of dispatching mouse events to
- * attached QMouseInput objects.
+ * attached QMouseHandler objects.
  *
  * \since 5.5
- * \sa QMouseInput
+ * \sa QMouseHandler
  */
 QMouseController::QMouseController(QNode *parent)
     : QAbstractPhysicalDevice(*new QMouseControllerPrivate, parent)

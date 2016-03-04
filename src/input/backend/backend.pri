@@ -8,7 +8,7 @@ HEADERS += \
     $$PWD/assignkeyboardfocusjob_p.h \
     $$PWD/keyeventdispatcherjob_p.h \
     $$PWD/mousecontroller_p.h \
-    $$PWD/mouseinput_p.h \
+    $$PWD/mousehandler_p.h \
     $$PWD/mouseeventdispatcherjob_p.h \
     $$PWD/mouseeventfilter_p.h \
     $$PWD/axisinput_p.h \
@@ -37,7 +37,7 @@ SOURCES += \
     $$PWD/assignkeyboardfocusjob.cpp \
     $$PWD/keyeventdispatcherjob.cpp \
     $$PWD/mousecontroller.cpp \
-    $$PWD/mouseinput.cpp \
+    $$PWD/mousehandler.cpp \
     $$PWD/mouseeventfilter.cpp \
     $$PWD/mouseeventdispatcherjob.cpp \
     $$PWD/axisinput.cpp \

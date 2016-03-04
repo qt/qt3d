@@ -56,7 +56,7 @@
 #include <Qt3DInput/private/keyboardcontroller_p.h>
 #include <Qt3DInput/private/keyboardinput_p.h>
 #include <Qt3DInput/private/mousecontroller_p.h>
-#include <Qt3DInput/private/mouseinput_p.h>
+#include <Qt3DInput/private/mousehandler_p.h>
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DInput/private/actioninput_p.h>
 #include <Qt3DInput/private/inputsequence_p.h>
@@ -104,7 +104,7 @@ public:
 };
 
 class MouseInputManager : public Qt3DCore::QResourceManager<
-        MouseInput,
+        MouseHandler,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy>

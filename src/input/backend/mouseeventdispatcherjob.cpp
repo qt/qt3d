@@ -39,7 +39,7 @@
 
 #include "mouseeventdispatcherjob_p.h"
 #include "inputhandler_p.h"
-#include "mouseinput_p.h"
+#include "mousehandler_p.h"
 #include "inputmanagers_p.h"
 
 QT_BEGIN_NAMESPACE
@@ -62,7 +62,7 @@ void MouseEventDispatcherJob::setInputHandler(InputHandler *handler)
 
 void MouseEventDispatcherJob::run()
 {
-    MouseInput *input = m_inputHandler->mouseInputManager()->lookupResource(m_mouseInput);
+    MouseHandler *input = m_inputHandler->mouseInputManager()->lookupResource(m_mouseInput);
     if (input) {
         Q_FOREACH (const QT_PREPEND_NAMESPACE(QMouseEvent) &e, m_events) {
             // Send events to frontend

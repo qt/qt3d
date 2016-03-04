@@ -37,12 +37,12 @@
 **
 ****************************************************************************/
 
-#include "mouseinput_p.h"
+#include "mousehandler_p.h"
 #include "mousecontroller_p.h"
 #include "inputmanagers_p.h"
 #include "inputhandler_p.h"
 
-#include <Qt3DInput/qmouseinput.h>
+#include <Qt3DInput/qmousehandler.h>
 #include <Qt3DInput/qmousecontroller.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -54,36 +54,36 @@ using namespace Qt3DCore;
 namespace Qt3DInput {
 namespace Input {
 
-MouseInput::MouseInput()
+MouseHandler::MouseHandler()
     : QBackendNode(ReadWrite)
     , m_enabled(false)
     , m_inputHandler(Q_NULLPTR)
 {
 }
 
-MouseInput::~MouseInput()
+MouseHandler::~MouseHandler()
 {
 }
 
-void MouseInput::updateFromPeer(Qt3DCore::QNode *peer)
+void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QMouseInput *input = static_cast<QMouseInput *>(peer);
-    if (input->controller() != Q_NULLPTR)
-        setController(input->controller()->id());
+    QMouseHandler *input = static_cast<QMouseHandler *>(peer);
+    if (input->sourceDevice() != Q_NULLPTR)
+        setController(input->sourceDevice()->id());
     m_enabled = input->isEnabled();
 }
 
-Qt3DCore::QNodeId MouseInput::mouseController() const
+Qt3DCore::QNodeId MouseHandler::mouseController() const
 {
     return m_mouseController;
 }
 
-void MouseInput::setInputHandler(InputHandler *handler)
+void MouseHandler::setInputHandler(InputHandler *handler)
 {
     m_inputHandler = handler;
 }
 
-void MouseInput::mouseEvent(const QMouseEventPtr &event)
+void MouseHandler::mouseEvent(const QMouseEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
@@ -92,7 +92,7 @@ void MouseInput::mouseEvent(const QMouseEventPtr &event)
     notifyObservers(e);
 }
 
-void MouseInput::wheelEvent(const QWheelEventPtr &event)
+void MouseHandler::wheelEvent(const QWheelEventPtr &event)
 {
     QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerUuid()));
     e->setTargetNode(peerUuid());
@@ -101,7 +101,7 @@ void MouseInput::wheelEvent(const QWheelEventPtr &event)
     notifyObservers(e);
 }
 
-void MouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -114,7 +114,7 @@ void MouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 }
 
-void MouseInput::setController(Qt3DCore::QNodeId controller)
+void MouseHandler::setController(Qt3DCore::QNodeId controller)
 {
     if (!m_mouseController.isNull()) {
         MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
@@ -129,25 +129,25 @@ void MouseInput::setController(Qt3DCore::QNodeId controller)
     }
 }
 
-MouseInputFunctor::MouseInputFunctor(InputHandler *handler)
+MouseHandlerFunctor::MouseHandlerFunctor(InputHandler *handler)
     : m_handler(handler)
 {
 }
 
-Qt3DCore::QBackendNode *MouseInputFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *MouseHandlerFunctor::create(Qt3DCore::QNode *frontend) const
 {
-    MouseInput *input = m_handler->mouseInputManager()->getOrCreateResource(frontend->id());
+    MouseHandler *input = m_handler->mouseInputManager()->getOrCreateResource(frontend->id());
     input->setInputHandler(m_handler);
     input->setPeer(frontend);
     return input;
 }
 
-Qt3DCore::QBackendNode *MouseInputFunctor::get(Qt3DCore::QNodeId id) const
+Qt3DCore::QBackendNode *MouseHandlerFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->mouseInputManager()->lookupResource(id);
 }
 
-void MouseInputFunctor::destroy(Qt3DCore::QNodeId id) const
+void MouseHandlerFunctor::destroy(Qt3DCore::QNodeId id) const
 {
     m_handler->mouseInputManager()->releaseResource(id);
 }

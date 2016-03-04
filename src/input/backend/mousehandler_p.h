@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QMOUSEINPUT_P_H
-#define QT3DINPUT_QMOUSEINPUT_P_H
+#ifndef QT3DINPUT_INPUT_MOUSEHANDLER_H
+#define QT3DINPUT_INPUT_MOUSEHANDLER_H
 
 //
 //  W A R N I N G
@@ -51,29 +51,56 @@
 // We mean it.
 //
 
-#include <private/qcomponent_p.h>
+#include <Qt3DCore/qbackendnode.h>
+#include <Qt3DInput/qmouseevent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
+namespace Input {
 
-class QMouseInput;
-class QMouseController;
+class InputHandler;
 
-class QMouseInputPrivate : public Qt3DCore::QComponentPrivate
+class MouseHandler : public Qt3DCore::QBackendNode
 {
 public:
-    QMouseInputPrivate();
+    MouseHandler();
+    ~MouseHandler();
 
-    QMouseController *m_controller;
-    bool m_containsMouse;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeId mouseController() const;
+    void setInputHandler(InputHandler *handler);
+    void mouseEvent(const QMouseEventPtr &event);
+    void wheelEvent(const QWheelEventPtr &event);
 
-    Q_DECLARE_PUBLIC(QMouseInput)
+    inline bool isEnabled() const { return m_enabled; }
+
+protected:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    void setController(Qt3DCore::QNodeId controller);
+
+private:
+    bool m_enabled;
+    Qt3DCore::QNodeId m_mouseController;
+    InputHandler *m_inputHandler;
 };
 
+class MouseHandlerFunctor : public Qt3DCore::QBackendNodeMapper
+{
+public:
+    explicit MouseHandlerFunctor(InputHandler *handler);
+
+    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
+    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
+
+private:
+    InputHandler *m_handler;
+};
+
+} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QMOUSEINPUT_P_H
-
+#endif // QT3DINPUT_INPUT_MOUSEHANDLER_H

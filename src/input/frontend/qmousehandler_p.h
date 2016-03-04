@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_MOUSEINPUT_H
-#define QT3DINPUT_INPUT_MOUSEINPUT_H
+#ifndef QT3DINPUT_QMOUSEHANDLER_P_H
+#define QT3DINPUT_QMOUSEHANDLER_P_H
 
 //
 //  W A R N I N G
@@ -51,56 +51,31 @@
 // We mean it.
 //
 
-#include <Qt3DCore/qbackendnode.h>
-#include <Qt3DInput/qmouseevent.h>
+#include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-namespace Input {
 
-class InputHandler;
+class QMouseHandler;
+class QMouseController;
 
-class MouseInput : public Qt3DCore::QBackendNode
+class QMouseHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
-    MouseInput();
-    ~MouseInput();
+    QMouseHandlerPrivate();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeId mouseController() const;
-    void setInputHandler(InputHandler *handler);
-    void mouseEvent(const QMouseEventPtr &event);
-    void wheelEvent(const QWheelEventPtr &event);
+    QMouseController *m_sourceDevice;
+    bool m_containsMouse;
 
-    inline bool isEnabled() const { return m_enabled; }
+    void mouseEvent(Qt3DInput::QMouseEvent *event);
 
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setController(Qt3DCore::QNodeId controller);
-
-private:
-    bool m_enabled;
-    Qt3DCore::QNodeId m_mouseController;
-    InputHandler *m_inputHandler;
+    Q_DECLARE_PUBLIC(QMouseHandler)
 };
 
-class MouseInputFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit MouseInputFunctor(InputHandler *handler);
-
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-
-private:
-    InputHandler *m_handler;
-};
-
-} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // MOUSEINPUT_H
+#endif // QT3DINPUT_QMOUSEHANDLER_P_H
+

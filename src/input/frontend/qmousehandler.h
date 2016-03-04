@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QMOUSEINPUT_H
-#define QT3DINPUT_QMOUSEINPUT_H
+#ifndef QT3DINPUT_QMOUSEHANDLER_H
+#define QT3DINPUT_QMOUSEHANDLER_H
 
 #include <Qt3DInput/qt3dinput_global.h>
 #include <Qt3DInput/qmouseevent.h>
@@ -49,26 +49,26 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QMouseController;
-class QMouseInputPrivate;
+class QMouseHandlerPrivate;
 
-class QT3DINPUTSHARED_EXPORT QMouseInput : public Qt3DCore::QComponent
+class QT3DINPUTSHARED_EXPORT QMouseHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QMouseController *controller READ controller WRITE setController NOTIFY controllerChanged)
+    Q_PROPERTY(Qt3DInput::QMouseController *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
-    explicit QMouseInput(QNode *parent = 0);
-    ~QMouseInput();
+    explicit QMouseHandler(QNode *parent = 0);
+    ~QMouseHandler();
 
-    QMouseController *controller() const;
+    QMouseController *sourceDevice() const;
     bool containsMouse() const;
 
 public Q_SLOTS:
-    void setController(QMouseController *controller);
+    void setSourceDevice(QMouseController *sourceDevice);
 
 Q_SIGNALS:
-    void controllerChanged(QMouseController *controller);
+    void sourceDeviceChanged(QMouseController *sourceDevice);
     void containsMouseChanged(bool containsMouse);
 
     void clicked(Qt3DInput::QMouseEvent *mouse);
@@ -85,19 +85,17 @@ Q_SIGNALS:
     void wheel(Qt3DInput::QWheelEvent *wheel);
 
 protected:
-    QMouseInput(QMouseInputPrivate &dd, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-    void mouseEvent(Qt3DInput::QMouseEvent *event);
     void setContainsMouse(bool contains);
 
 private:
-    Q_DECLARE_PRIVATE(QMouseInput)
-    QT3D_CLONEABLE(QMouseInput)
+    Q_DECLARE_PRIVATE(QMouseHandler)
+    QT3D_CLONEABLE(QMouseHandler)
 };
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QMOUSEINPUT_H
+#endif // QT3DINPUT_QMOUSEHANDLER_H

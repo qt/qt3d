@@ -61,7 +61,7 @@ namespace Qt3DInput {
  * traversing the view, originating from the mouse position intersects with one
  * or more elements of the scene.
  *
- * \sa KeyEvent, WheelEvent, MouseInput
+ * \sa KeyEvent, WheelEvent, MouseHandler
  */
 
 /*!
@@ -76,7 +76,7 @@ namespace Qt3DInput {
  *
  * \since 5.5
  *
- * \sa QKeyEvent, QWheelEvent, QMouseInput
+ * \sa QKeyEvent, QWheelEvent, QMouseHandler
  *
  */
 
@@ -184,7 +184,7 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
  *
  * Mouse wheel events occur when the mouse wheel is rotated.
  *
- * \sa KeyEvent, MouseEvent, MouseInput
+ * \sa KeyEvent, MouseEvent, MouseHandler
  *
  */
 
@@ -198,7 +198,7 @@ QMouseEvent::Modifiers QMouseEvent::modifier() const
  *
  * \since 5.5
  *
- * \sa QKeyEvent, QMouseEvent, QMouseInput
+ * \sa QKeyEvent, QMouseEvent, QMouseHandler
  *
  */
 

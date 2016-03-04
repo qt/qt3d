@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qmouseinput.h"
-#include "qmouseinput_p.h"
+#include "qmousehandler.h"
+#include "qmousehandler_p.h"
 #include "qmousecontroller.h"
 #include "qmouseevent.h"
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -49,17 +49,44 @@ using namespace Qt3DCore;
 
 namespace Qt3DInput {
 /*! \internal */
-QMouseInputPrivate::QMouseInputPrivate()
+QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
-    , m_controller(Q_NULLPTR)
+    , m_sourceDevice(Q_NULLPTR)
     , m_containsMouse(false)
 {
     m_shareable = false;
 }
 
+void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
+{
+    Q_Q(QMouseHandler);
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+        if (event->wasHeld())
+            emit q->pressAndHold(event);
+        else
+            emit q->pressed(event);
+        break;
+    case QEvent::MouseButtonRelease:
+        emit q->released(event);
+        break;
+    case Qt::TapGesture:
+        emit q->clicked(event);
+        break;
+    case QEvent::MouseButtonDblClick:
+        emit q->doubleClicked(event);
+        break;
+    case QEvent::MouseMove:
+        emit q->positionChanged(event);
+        break;
+    default:
+        break;
+    }
+}
+
 /*!
- * \qmltype MouseInput
- * \instantiates Qt3DInput::QMouseInput
+ * \qmltype MouseHandler
+ * \instantiates Qt3DInput::QMouseHandler
  * \inqmlmodule Qt3D.Input
  * \since 5.5
  * \brief Provides mouse event notification
@@ -69,7 +96,7 @@ QMouseInputPrivate::QMouseInputPrivate()
  */
 
 /*!
- * \class Qt3DInput::QMouseInput
+ * \class Qt3DInput::QMouseHandler
  * \inmodule Qt3DInput
  *
  * \brief Provides a means of being notified about mouse events when attached to
@@ -77,130 +104,97 @@ QMouseInputPrivate::QMouseInputPrivate()
  *
  * \since 5.5
  *
- * \note QMouseInput components shouldn't be shared, not respecting that
+ * \note QMouseHandler components shouldn't be shared, not respecting that
  * condition will most likely result in undefined behaviors.
  *
  * \sa QMouseController
  */
 
 /*!
- * Constructs a new QMouseInput instance with parent \a parent.
+ * Constructs a new QMouseHandler instance with parent \a parent.
  */
-QMouseInput::QMouseInput(QNode *parent)
-    : QComponent(*new QMouseInputPrivate, parent)
+QMouseHandler::QMouseHandler(QNode *parent)
+    : QComponent(*new QMouseHandlerPrivate, parent)
 {
 }
 
 /*!
-    \internal
+   Destroys this QMouseHandler object
 */
-QMouseInput::QMouseInput(QMouseInputPrivate &dd, QNode *parent)
-    : QComponent(dd, parent)
-{
-}
-
-/*!
-   Destroys this QMouseInput object
-*/
-QMouseInput::~QMouseInput()
+QMouseHandler::~QMouseHandler()
 {
     QNode::cleanup();
 }
 
 /*!
- * Sets the mouse controller of the QMouseInput instance to \a controller.
+ * Sets the mouse source device of the QMouseHandler instance to \a sourceDevice.
  */
-void QMouseInput::setController(QMouseController *controller)
+void QMouseHandler::setSourceDevice(QMouseController *sourceDevice)
 {
-    Q_D(QMouseInput);
-    if (d->m_controller != controller) {
-        d->m_controller = controller;
-        emit controllerChanged(controller);
+    Q_D(QMouseHandler);
+    if (d->m_sourceDevice != sourceDevice) {
+        d->m_sourceDevice = sourceDevice;
+        emit sourceDeviceChanged(sourceDevice);
     }
 }
 
 /*!
- * Returns the current mouse controller of the QMouseInput instance.
+ * Returns the current mouse source device of the QMouseHandler instance.
  */
-QMouseController *QMouseInput::controller() const
+QMouseController *QMouseHandler::sourceDevice() const
 {
-    Q_D(const QMouseInput);
-    return d->m_controller;
+    Q_D(const QMouseHandler);
+    return d->m_sourceDevice;
 }
 
 /*!
- * Returns \c true if the QMouseInput currently contains the mouse.
+ * Returns \c true if the QMouseHandler currently contains the mouse.
  *
  * \note In this context, contains mean that the ray originating from the
  * mouse is intersecting with the Qt3DCore::QEntity that aggregates the current
- * QMouseInput instance component.
+ * QMouseHandler instance component.
  */
-bool QMouseInput::containsMouse() const
+bool QMouseHandler::containsMouse() const
 {
-    Q_D(const QMouseInput);
+    Q_D(const QMouseHandler);
     return d->m_containsMouse;
 }
 
-void QMouseInput::copy(const QNode *ref)
+void QMouseHandler::setContainsMouse(bool contains)
 {
-    Q_D(QMouseInput);
-    const QMouseInput *refInput = static_cast<const QMouseInput *>(ref);
+    Q_D(QMouseHandler);
+    if (contains != d->m_containsMouse) {
+        d->m_containsMouse = contains;
+        emit containsMouseChanged(contains);
+    }
+}
+
+void QMouseHandler::copy(const QNode *ref)
+{
+    Q_D(QMouseHandler);
+    const QMouseHandler *refInput = static_cast<const QMouseHandler *>(ref);
     d->m_containsMouse = refInput->containsMouse();
 
     // TODO: We may want to store the controller id and only send a clone when we are the parent
     // of the controller.
     // Perhaps it's time to investigate sending a "kernel" or "seed" over to the backend rather
     // than a complete clone.
-    if (refInput && refInput->controller() && refInput->controller()->parent() == ref)
-        d->m_controller = static_cast<QMouseController *>(QNode::clone(refInput->controller()));
+    if (refInput && refInput->sourceDevice() && refInput->sourceDevice()->parent() == ref)
+        d->m_sourceDevice = static_cast<QMouseController *>(QNode::clone(refInput->sourceDevice()));
 }
 
-void QMouseInput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
+    Q_D(QMouseHandler);
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("mouse")) {
             QMouseEventPtr ev = e->value().value<QMouseEventPtr>();
-            mouseEvent(ev.data());
+            d->mouseEvent(ev.data());
         } else if (e->propertyName() == QByteArrayLiteral("wheel")) {
             QWheelEventPtr ev = e->value().value<QWheelEventPtr>();
             emit wheel(ev.data());
         }
-    }
-}
-
-void QMouseInput::mouseEvent(QMouseEvent *event)
-{
-    switch (event->type()) {
-    case QEvent::MouseButtonPress:
-        if (event->wasHeld())
-            emit pressAndHold(event);
-        else
-            emit pressed(event);
-        break;
-    case QEvent::MouseButtonRelease:
-        emit released(event);
-        break;
-    case Qt::TapGesture:
-        emit clicked(event);
-        break;
-    case QEvent::MouseButtonDblClick:
-        emit doubleClicked(event);
-        break;
-    case QEvent::MouseMove:
-        emit positionChanged(event);
-        break;
-    default:
-        break;
-    }
-}
-
-void QMouseInput::setContainsMouse(bool contains)
-{
-    Q_D(QMouseInput);
-    if (contains != d->m_containsMouse) {
-        d->m_containsMouse = contains;
-        emit containsMouseChanged(contains);
     }
 }
 
