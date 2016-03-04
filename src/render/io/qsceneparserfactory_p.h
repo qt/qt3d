@@ -58,13 +58,13 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractSceneParser;
+class QSceneIOHandler;
 
 class QT3DRENDERSHARED_PRIVATE_EXPORT QSceneParserFactory
 {
 public:
     static QStringList keys(const QString &pluginPath = QString());
-    static QAbstractSceneParser *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
+    static QSceneIOHandler *create(const QString &name, const QStringList &args, const QString &pluginPath = QString());
 };
 
 } // namespace Qt3DRender

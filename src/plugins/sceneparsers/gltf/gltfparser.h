@@ -57,7 +57,7 @@
 
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qabstractsceneparser.h>
+#include <Qt3DRender/qsceneiohandler.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -82,7 +82,7 @@ class QGeometryRenderer;
 
 Q_DECLARE_LOGGING_CATEGORY(GLTFParserLog)
 
-class GLTFParser : public QAbstractSceneParser
+class GLTFParser : public QSceneIOHandler
 {
     Q_OBJECT
 

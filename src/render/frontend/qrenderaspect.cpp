@@ -362,7 +362,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         const QVector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->pendingSceneLoaderJobs();
         Q_FOREACH (const Render::LoadSceneJobPtr &job, sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
-            job->setSceneParsers(d->m_sceneParsers);
+            job->setSceneIOHandlers(d->m_sceneIOHandler);
             jobs.append(job);
         }
 
@@ -500,10 +500,10 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::createGeometryRendererJobs()
 void QRenderAspectPrivate::loadSceneParsers()
 {
     QStringList keys = QSceneParserFactory::keys();
-    Q_FOREACH (const QString &key, keys) {
-        QAbstractSceneParser *sceneParser = QSceneParserFactory::create(key, QStringList());
-        if (sceneParser != Q_NULLPTR)
-            m_sceneParsers.append(sceneParser);
+    Q_FOREACH (QString key, keys) {
+        QSceneIOHandler *sceneIOHandler = QSceneParserFactory::create(key, QStringList());
+        if (sceneIOHandler != Q_NULLPTR)
+            m_sceneIOHandler.append(sceneIOHandler);
     }
 }
 

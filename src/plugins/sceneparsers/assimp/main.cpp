@@ -48,7 +48,7 @@ class AssimpSceneParserPlugin : public Qt3DRender::QSceneParserPlugin
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QSceneParserFactoryInterface_iid FILE "assimp.json")
 
-    Qt3DRender::QAbstractSceneParser *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
+    Qt3DRender::QSceneIOHandler *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)

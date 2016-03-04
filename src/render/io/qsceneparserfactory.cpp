@@ -39,7 +39,7 @@
 
 #include "qsceneparserfactory_p.h"
 #include "qsceneparserplugin.h"
-#include "qabstractsceneparser.h"
+#include "qsceneiohandler.h"
 
 #include <QtCore/private/qfactoryloader_p.h>
 #include <QtCore/QCoreApplication>
@@ -77,15 +77,15 @@ QStringList QSceneParserFactory::keys(const QString &pluginPath)
 #endif
 }
 
-QAbstractSceneParser *QSceneParserFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
+QSceneIOHandler *QSceneParserFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
 #ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
-        if (QAbstractSceneParser *ret = qLoadPlugin<QAbstractSceneParser, QSceneParserPlugin>(directLoader(), name, args))
+        if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneParserPlugin>(directLoader(), name, args))
             return ret;
     }
-    if (QAbstractSceneParser *ret = qLoadPlugin<QAbstractSceneParser, QSceneParserPlugin>(loader(), name, args))
+    if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneParserPlugin>(loader(), name, args))
         return ret;
 #endif
     return Q_NULLPTR;

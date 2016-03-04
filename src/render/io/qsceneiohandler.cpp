@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qabstractsceneparser.h"
+#include "qsceneiohandler.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <QStringList>
 
@@ -45,26 +45,26 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QAbstractSceneParser::QAbstractSceneParser() : QObject(),
+QSceneIOHandler::QSceneIOHandler() : QObject(),
     m_status(Empty)
 {
 }
 
-QAbstractSceneParser::~QAbstractSceneParser()
+QSceneIOHandler::~QSceneIOHandler()
 {
 }
 
-QAbstractSceneParser::ParserStatus QAbstractSceneParser::status() const
+QSceneIOHandler::ParserStatus QSceneIOHandler::status() const
 {
     return m_status;
 }
 
-QStringList QAbstractSceneParser::errors() const
+QStringList QSceneIOHandler::errors() const
 {
     return m_errors;
 }
 
-void QAbstractSceneParser::setStatus(ParserStatus status)
+void QSceneIOHandler::setStatus(ParserStatus status)
 {
     if (status != m_status) {
         m_status = status;
@@ -72,13 +72,13 @@ void QAbstractSceneParser::setStatus(ParserStatus status)
     }
 }
 
-void QAbstractSceneParser::logError(const QString &error)
+void QSceneIOHandler::logError(const QString &error)
 {
     m_errors.append(error);
     emit errorsChanged(m_errors);
 }
 
-void QAbstractSceneParser::logInfo(const QString &info)
+void QSceneIOHandler::logInfo(const QString &info)
 {
     qCDebug(Render::Io) << info;
 }

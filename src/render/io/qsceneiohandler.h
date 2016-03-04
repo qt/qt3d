@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef ABSTRACTSCENEPARSER_H
-#define ABSTRACTSCENEPARSER_H
+#ifndef QT3DRENDER_QSCENE_IOHANDLER_H
+#define QT3DRENDER_QSCENE_IOHANDLER_H
 
 #include <QObject>
 #include <QStringList>
@@ -56,7 +56,7 @@ namespace Qt3DRender {
 
 Q_DECLARE_LOGGING_CATEGORY(SceneParsers)
 
-class QT3DRENDERSHARED_EXPORT QAbstractSceneParser : public QObject
+class QT3DRENDERSHARED_EXPORT QSceneIOHandler : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(ParserStatus status READ status NOTIFY statusChanged)
@@ -71,8 +71,8 @@ public:
     };
     Q_ENUM(ParserStatus)
 
-    QAbstractSceneParser();
-    virtual ~QAbstractSceneParser();
+    QSceneIOHandler();
+    virtual ~QSceneIOHandler();
 
     virtual void setSource(const QUrl &source) = 0;
     virtual bool isFileTypeSupported(const QUrl &source) const = 0;
@@ -100,4 +100,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // ABSTRACTSCENEPARSER_H
+#endif // QT3DRENDER_QSCENE_IOHANDLER_H

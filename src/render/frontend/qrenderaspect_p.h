@@ -66,8 +66,7 @@ class QSurface;
 
 namespace Qt3DRender {
 
-class QAbstractSceneParser;
-
+class QSceneIOHandler;
 namespace Render {
 class AbstractRenderer;
 class NodeManagers;
@@ -99,7 +98,8 @@ public:
     Render::UpdateWorldTransformJobPtr m_worldTransformJob;
     Render::UpdateBoundingVolumeJobPtr m_updateBoundingVolumeJob;
     Render::CalculateBoundingVolumeJobPtr m_calculateBoundingVolumeJob;
-    QList<QAbstractSceneParser *> m_sceneParsers;
+    QList<QSceneIOHandler *> m_sceneIOHandler;
+
 };
 
 }

@@ -52,7 +52,7 @@ namespace Qt3DRender {
 
 #define QSceneParserFactoryInterface_iid "org.qt-project.Qt3DRender.QSceneParserFactoryInterface 5.6"
 
-class QAbstractSceneParser;
+class QSceneIOHandler;
 
 class QT3DRENDERSHARED_EXPORT QSceneParserPlugin : public QObject
 {
@@ -61,7 +61,7 @@ public:
     explicit QSceneParserPlugin(QObject *parent = 0);
     ~QSceneParserPlugin();
 
-    virtual QAbstractSceneParser *create(const QString &key, const QStringList &paramList);
+    virtual QSceneIOHandler *create(const QString &key, const QStringList &paramList);
 };
 
 } // namespace Qt3DRender

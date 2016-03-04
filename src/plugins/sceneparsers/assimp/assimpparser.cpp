@@ -288,7 +288,7 @@ private:
 /*!
  *  Constructor. Initializes a new instance of AssimpParser.
  */
-AssimpParser::AssimpParser() : QAbstractSceneParser(),
+AssimpParser::AssimpParser() : QSceneIOHandler(),
     m_sceneParsed(false),
     m_scene(Q_NULLPTR)
 {

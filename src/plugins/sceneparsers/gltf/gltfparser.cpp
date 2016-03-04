@@ -162,7 +162,7 @@ const QString KEY_TECHNIQUE_GL2   = QStringLiteral("techniqueGL2");
 
 } // of anonymous namespace
 
-GLTFParser::GLTFParser() : QAbstractSceneParser(),
+GLTFParser::GLTFParser() : QSceneIOHandler(),
     m_parseDone(false)
 {
 }

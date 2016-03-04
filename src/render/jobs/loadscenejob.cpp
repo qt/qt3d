@@ -42,8 +42,8 @@
 #include <private/nodemanagers_p.h>
 #include <private/scenemanager_p.h>
 #include <Qt3DCore/qentity.h>
-#include <Qt3DRender/qabstractsceneparser.h>
 #include <Qt3DRender/private/job_common_p.h>
+#include <Qt3DRender/qsceneiohandler.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,10 +63,10 @@ void LoadSceneJob::run()
 {
     Qt3DCore::QEntity *sceneTree = m_managers->sceneManager()->sceneTreeFromSource(m_source);
     if (sceneTree == Q_NULLPTR) {
-        Q_FOREACH (QAbstractSceneParser *parser, m_parsers) {
-            if (parser->isFileTypeSupported(m_source)) {
-                parser->setSource(m_source);
-                sceneTree = parser->scene();
+        Q_FOREACH (QSceneIOHandler *sceneIOHandler, m_sceneIOHandlers) {
+            if (sceneIOHandler->isFileTypeSupported(m_source)) {
+                sceneIOHandler->setSource(m_source);
+                sceneTree = sceneIOHandler->scene();
                 m_managers->sceneManager()->addLoadedSceneTree(m_source, sceneTree);
             }
         }

@@ -56,7 +56,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/DefaultLogger.hpp>
-#include <Qt3DRender/qabstractsceneparser.h>
+#include <Qt3DRender/qsceneiohandler.h>
 #include "assimphelpers.h"
 
 #include <QMap>
@@ -82,7 +82,7 @@ class QGeometryRenderer;
 
 Q_DECLARE_LOGGING_CATEGORY(AssimpParserLog)
 
-class AssimpParser : public QAbstractSceneParser
+class AssimpParser : public QSceneIOHandler
 {
     Q_OBJECT
 

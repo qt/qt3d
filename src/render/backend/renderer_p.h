@@ -96,7 +96,7 @@ class QMesh;
 class QRenderPass;
 class QAbstractShapeMesh;
 class QGraphicsApiFilter;
-class QAbstractSceneParser;
+class QSceneIOHandler;
 
 namespace Render {
 
