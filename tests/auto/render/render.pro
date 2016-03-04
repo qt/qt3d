@@ -32,7 +32,7 @@ contains(QT_CONFIG, private_tests) {
         qrenderpassfilter \
         qrendertargetselector \
         qsortcriterion \
-        qsortmethod \
+        qsortpolicy \
         qrenderstateset \
         qtechniquefilter \
         qviewport \

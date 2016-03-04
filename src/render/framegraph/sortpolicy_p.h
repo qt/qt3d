@@ -37,55 +37,47 @@
 **
 ****************************************************************************/
 
-#include "sortmethod_p.h"
-#include <Qt3DRender/qsortcriterion.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3DRENDER_RENDER_SORTPOLICY_P_H
+#define QT3DRENDER_RENDER_SORTPOLICY_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/qsortpolicy.h>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
+
 namespace Render {
 
-SortMethod::SortMethod()
-    : FrameGraphNode(FrameGraphNode::SortMethod)
+class SortPolicy : public FrameGraphNode
 {
-}
+public:
+    SortPolicy();
 
-void SortMethod::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    QSortMethod *sortMethod = static_cast<QSortMethod *>(peer);
-    m_criteria.clear();
-    const auto criteria = sortMethod->criteria();
-    for (QSortCriterion *c : criteria)
-        m_criteria.append(c->id());
-    setEnabled(sortMethod->isEnabled());
-}
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
-void SortMethod::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
-        const QNodeId cId = propertyChange->value().value<QNodeId>();
-        if (!cId.isNull()) {
-            if (e->type() == NodeAdded)
-                m_criteria.append(cId);
-            else if (e->type() == NodeRemoved)
-                m_criteria.removeAll(cId);
-        }
-    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
-        setEnabled(propertyChange->value().toBool());
-    }
-    markDirty(AbstractRenderer::AllDirty);
-}
+    QVector<Qt3DCore::QNodeId> criteria() const;
 
-QVector<QNodeId> SortMethod::criteria() const
-{
-    return m_criteria;
-}
+private:
+    QVector<Qt3DCore::QNodeId> m_criteria;
+};
 
-} // namepace Render
+} // namespace Render
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_RENDER_SORTPOLICY_P_H

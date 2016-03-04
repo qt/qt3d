@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qsortmethod.h"
-#include "qsortmethod_p.h"
+#include "qsortpolicy.h"
+#include "qsortpolicy_p.h"
 #include "qsortcriterion_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qsortcriterion.h>
@@ -49,38 +49,38 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
-QSortMethodPrivate::QSortMethodPrivate()
+QSortPolicyPrivate::QSortPolicyPrivate()
     : QFrameGraphNodePrivate()
 {
 }
 
-void QSortMethod::copy(const QNode *ref)
+void QSortPolicy::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
-    const QSortMethod *other = static_cast<const QSortMethod*>(ref);
-    for (QSortCriterion *c : other->d_func()->m_criteria)
+    const QSortPolicy *other = static_cast<const QSortPolicy*>(ref);
+    Q_FOREACH (QSortCriterion *c, other->d_func()->m_criteria)
         addCriterion(qobject_cast<QSortCriterion *>(QNode::clone(c)));
 }
 
-QSortMethod::QSortMethod(QNode *parent)
-    : QFrameGraphNode(*new QSortMethodPrivate, parent)
+QSortPolicy::QSortPolicy(QNode *parent)
+    : QFrameGraphNode(*new QSortPolicyPrivate, parent)
 {
 }
 
-QSortMethod::~QSortMethod()
+QSortPolicy::~QSortPolicy()
 {
     QNode::cleanup();
 }
 
 /*! \internal */
-QSortMethod::QSortMethod(QSortMethodPrivate &dd, QNode *parent)
+QSortPolicy::QSortPolicy(QSortPolicyPrivate &dd, QNode *parent)
     : QFrameGraphNode(dd, parent)
 {
 }
 
-void QSortMethod::addCriterion(QSortCriterion *criterion)
+void QSortPolicy::addCriterion(QSortCriterion *criterion)
 {
-    Q_D(QSortMethod);
+    Q_D(QSortPolicy);
     if (!d->m_criteria.contains(criterion)) {
         d->m_criteria.append(criterion);
 
@@ -96,9 +96,9 @@ void QSortMethod::addCriterion(QSortCriterion *criterion)
     }
 }
 
-void QSortMethod::removeCriterion(QSortCriterion *criterion)
+void QSortPolicy::removeCriterion(QSortCriterion *criterion)
 {
-    Q_D(QSortMethod);
+    Q_D(QSortPolicy);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
         propertyChange->setPropertyName("sortCriterion");
@@ -108,9 +108,9 @@ void QSortMethod::removeCriterion(QSortCriterion *criterion)
     d->m_criteria.removeOne(criterion);
 }
 
-QList<QSortCriterion *> QSortMethod::criteria() const
+QList<QSortCriterion *> QSortPolicy::criteria() const
 {
-    Q_D(const QSortMethod);
+    Q_D(const QSortPolicy);
     return d->m_criteria;
 }
 

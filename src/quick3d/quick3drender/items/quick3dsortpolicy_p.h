@@ -37,41 +37,53 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSORTMETHOD_H
-#define QT3DRENDER_QSORTMETHOD_H
+#ifndef QT3DRENDER_RENDER_QUICK_QUICK3DSORTPOLICY_P_H
+#define QT3DRENDER_RENDER_QUICK_QUICK3DSORTPOLICY_P_H
 
-#include <Qt3DRender/qframegraphnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DQuickRender/private/qt3dquickrender_global_p.h>
+#include <Qt3DRender/qsortpolicy.h>
+#include <Qt3DRender/qsortcriterion.h>
+#include <QQmlListProperty>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+namespace Render {
+namespace Quick {
 
-class QSortCriterion;
-class QSortMethodPrivate;
-
-class QT3DRENDERSHARED_EXPORT QSortMethod : public QFrameGraphNode
+class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DSortPolicy : public QObject
 {
     Q_OBJECT
-
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QSortCriterion> criteria READ criteriaList)
 public:
-    explicit QSortMethod(Qt3DCore::QNode *parent = 0);
-    ~QSortMethod();
+    explicit Quick3DSortPolicy(QObject *parent = 0);
 
-    void addCriterion(QSortCriterion *criterion);
-    void removeCriterion(QSortCriterion *criterion);
-    QList<QSortCriterion *> criteria() const;
+    inline QSortPolicy *parentSortPolicy() const { return qobject_cast<QSortPolicy *>(parent()); }
 
-protected:
-    QSortMethod(QSortMethodPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    QQmlListProperty<QSortCriterion> criteriaList();
 
 private:
-    Q_DECLARE_PRIVATE(QSortMethod)
-    QT3D_CLONEABLE(QSortMethod)
+    static void appendCriterion(QQmlListProperty<QSortCriterion> *list, QSortCriterion *criterion);
+    static QSortCriterion *criterionAt(QQmlListProperty<QSortCriterion> *list, int index);
+    static int criteriaCount(QQmlListProperty<QSortCriterion> *list);
+    static void clearCriteria(QQmlListProperty<QSortCriterion> *list);
 };
 
+} // namespace Quick
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QSORTMETHOD_H
+#endif // QT3DRENDER_RENDER_QUICK_QUICK3DSORTPOLICY_P_H

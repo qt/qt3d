@@ -31,18 +31,18 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qentity.h>
 
-#include <Qt3DRender/qsortmethod.h>
+#include <Qt3DRender/qsortpolicy.h>
 #include <Qt3DRender/qsortcriterion.h>
 
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QSortMethod: public Qt3DCore::QNode
+class tst_QSortPolicy: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    ~tst_QSortMethod()
+    ~tst_QSortPolicy()
     {
         QNode::cleanup();
     }
@@ -51,47 +51,47 @@ private Q_SLOTS:
 
     void checkSaneDefaults()
     {
-        QScopedPointer<Qt3DRender::QSortMethod> defaultsortMethod(new Qt3DRender::QSortMethod);
+        QScopedPointer<Qt3DRender::QSortPolicy> defaultsortPolicy(new Qt3DRender::QSortPolicy);
 
-        QVERIFY(defaultsortMethod->criteria().isEmpty());
+        QVERIFY(defaultsortPolicy->criteria().isEmpty());
     }
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3DRender::QSortMethod *>("sortMethod");
+        QTest::addColumn<Qt3DRender::QSortPolicy *>("sortPolicy");
         QTest::addColumn<QList<Qt3DRender::QSortCriterion *> >("criteria");
 
-        Qt3DRender::QSortMethod *defaultConstructed = new Qt3DRender::QSortMethod();
+        Qt3DRender::QSortPolicy *defaultConstructed = new Qt3DRender::QSortPolicy();
         QTest::newRow("defaultConstructed") << defaultConstructed << QList<Qt3DRender::QSortCriterion *>();
 
-        Qt3DRender::QSortMethod *sortMethodWithCriteria = new Qt3DRender::QSortMethod();
+        Qt3DRender::QSortPolicy *sortPolicyWithCriteria = new Qt3DRender::QSortPolicy();
         Qt3DRender::QSortCriterion *criterion1 = new Qt3DRender::QSortCriterion();
         Qt3DRender::QSortCriterion *criterion2 = new Qt3DRender::QSortCriterion();
         criterion1->setSort(Qt3DRender::QSortCriterion::BackToFront);
         criterion2->setSort(Qt3DRender::QSortCriterion::Material);
         QList<Qt3DRender::QSortCriterion *> criteria = QList<Qt3DRender::QSortCriterion *>() << criterion1 << criterion2;
-        sortMethodWithCriteria->addCriterion(criterion1);
-        sortMethodWithCriteria->addCriterion(criterion2);
-        QTest::newRow("sortMethodWithCriteria") << sortMethodWithCriteria << criteria;
+        sortPolicyWithCriteria->addCriterion(criterion1);
+        sortPolicyWithCriteria->addCriterion(criterion2);
+        QTest::newRow("sortPolicyWithCriteria") << sortPolicyWithCriteria << criteria;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3DRender::QSortMethod*, sortMethod);
+        QFETCH(Qt3DRender::QSortPolicy*, sortPolicy);
         QFETCH(QList<Qt3DRender::QSortCriterion *>, criteria);
 
         // THEN
-        QCOMPARE(sortMethod->criteria(), criteria);
+        QCOMPARE(sortPolicy->criteria(), criteria);
 
         // WHEN
-        Qt3DRender::QSortMethod *clone = static_cast<Qt3DRender::QSortMethod *>(QNode::clone(sortMethod));
+        Qt3DRender::QSortPolicy *clone = static_cast<Qt3DRender::QSortPolicy *>(QNode::clone(sortPolicy));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(sortMethod->id(), clone->id());
+        QCOMPARE(sortPolicy->id(), clone->id());
 
-        QCOMPARE(sortMethod->criteria().count(), clone->criteria().count());
+        QCOMPARE(sortPolicy->criteria().count(), clone->criteria().count());
 
         for (int i = 0, m = criteria.count(); i < m; ++i) {
             Qt3DRender::QSortCriterion *cClone = clone->criteria().at(i);
@@ -99,50 +99,50 @@ private Q_SLOTS:
             QCOMPARE(cOrig->id(),cClone->id());
             QCOMPARE(cOrig->sort(), cClone->sort());
             QVERIFY(cClone->parent() == clone);
-            QVERIFY(cOrig->parent() == sortMethod);
+            QVERIFY(cOrig->parent() == sortPolicy);
         }
 
-        delete sortMethod;
+        delete sortPolicy;
         delete clone;
     }
 
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::QSortMethod> sortMethod(new Qt3DRender::QSortMethod());
-        TestArbiter arbiter(sortMethod.data());
+        QScopedPointer<Qt3DRender::QSortPolicy> sortPolicy(new Qt3DRender::QSortPolicy());
+        TestArbiter arbiter(sortPolicy.data());
 
         // WHEN
         Qt3DRender::QSortCriterion *criterion1 = new Qt3DRender::QSortCriterion();
-        sortMethod->addCriterion(criterion1);
+        sortPolicy->addCriterion(criterion1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "sortCriterion");
-        QCOMPARE(change->subjectId(),sortMethod->id());
+        QCOMPARE(change->subjectId(),sortPolicy->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), criterion1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
 
         arbiter.events.clear();
 
         // WHEN
-        sortMethod->addCriterion(criterion1);
+        sortPolicy->addCriterion(criterion1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        sortMethod->removeCriterion(criterion1);
+        sortPolicy->removeCriterion(criterion1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "sortCriterion");
-        QCOMPARE(change->subjectId(), sortMethod->id());
+        QCOMPARE(change->subjectId(), sortPolicy->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), criterion1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
 
@@ -157,6 +157,6 @@ protected:
 
 };
 
-QTEST_MAIN(tst_QSortMethod)
+QTEST_MAIN(tst_QSortPolicy)
 
-#include "tst_qsortmethod.moc"
+#include "tst_qsortpolicy.moc"

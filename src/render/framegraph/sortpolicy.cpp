@@ -37,39 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QSORTMETHOD_P_H
-#define QT3DRENDER_QSORTMETHOD_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qframegraphnode_p.h>
+#include "sortpolicy_p.h"
+#include <Qt3DRender/qsortcriterion.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
+
 namespace Qt3DRender {
+namespace Render {
 
-class QSortMethod;
-class QSortCriterion;
-
-class QSortMethodPrivate : public QFrameGraphNodePrivate
+SortPolicy::SortPolicy()
+    : FrameGraphNode(FrameGraphNode::SortMethod)
 {
-public:
-    QSortMethodPrivate();
-    Q_DECLARE_PUBLIC(QSortMethod)
-    QList<QSortCriterion *> m_criteria;
-};
+}
 
+void SortPolicy::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    QSortPolicy *sortPolicy = static_cast<QSortPolicy *>(peer);
+    m_criteria.clear();
+    Q_FOREACH (QSortCriterion *c, sortPolicy->criteria())
+        m_criteria.append(c->id());
+    setEnabled(sortPolicy->isEnabled());
+}
+
+void SortPolicy::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+    if (propertyChange->propertyName() == QByteArrayLiteral("sortCriterion")) {
+        const QNodeId cId = propertyChange->value().value<QNodeId>();
+        if (!cId.isNull()) {
+            if (e->type() == NodeAdded)
+                m_criteria.append(cId);
+            else if (e->type() == NodeRemoved)
+                m_criteria.removeAll(cId);
+        }
+    } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled") && e->type() == NodeUpdated) {
+        setEnabled(propertyChange->value().toBool());
+    }
+    markDirty(AbstractRenderer::AllDirty);
+}
+
+QVector<QNodeId> SortPolicy::criteria() const
+{
+    return m_criteria;
+}
+
+} // namepace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QSORTMETHOD_P_H

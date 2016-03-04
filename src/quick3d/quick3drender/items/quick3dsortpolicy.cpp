@@ -37,47 +37,62 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_SORTMETHOD_P_H
-#define QT3DRENDER_RENDER_SORTMETHOD_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DRender/qsortmethod.h>
+#include "quick3dsortpolicy_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
 namespace Render {
+namespace Quick {
 
-class SortMethod : public FrameGraphNode
+Quick3DSortPolicy::Quick3DSortPolicy(QObject *parent)
+    : QObject(parent)
 {
-public:
-    SortMethod();
+}
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+QQmlListProperty<QSortCriterion> Quick3DSortPolicy::criteriaList()
+{
+    return QQmlListProperty<QSortCriterion>(this, 0,
+                                            &Quick3DSortPolicy::appendCriterion,
+                                            &Quick3DSortPolicy::criteriaCount,
+                                            &Quick3DSortPolicy::criterionAt,
+                                            &Quick3DSortPolicy::clearCriteria);
+}
 
-    QVector<Qt3DCore::QNodeId> criteria() const;
+void Quick3DSortPolicy::appendCriterion(QQmlListProperty<QSortCriterion> *list, QSortCriterion *criterion)
+{
+    Quick3DSortPolicy *sM = qobject_cast<Quick3DSortPolicy *>(list->object);
+    if (sM != Q_NULLPTR)
+        sM->parentSortPolicy()->addCriterion(criterion);
+}
 
-private:
-    QVector<Qt3DCore::QNodeId> m_criteria;
-};
+QSortCriterion *Quick3DSortPolicy::criterionAt(QQmlListProperty<QSortCriterion> *list, int index)
+{
+    Quick3DSortPolicy *sM = qobject_cast<Quick3DSortPolicy *>(list->object);
+    if (sM != Q_NULLPTR)
+        return sM->parentSortPolicy()->criteria().at(index);
+    return Q_NULLPTR;
+}
 
+int Quick3DSortPolicy::criteriaCount(QQmlListProperty<QSortCriterion> *list)
+{
+    Quick3DSortPolicy *sM = qobject_cast<Quick3DSortPolicy *>(list->object);
+    if (sM != Q_NULLPTR)
+        return sM->parentSortPolicy()->criteria().count();
+    return -1;
+}
+
+void Quick3DSortPolicy::clearCriteria(QQmlListProperty<QSortCriterion> *list)
+{
+    Quick3DSortPolicy *sM = qobject_cast<Quick3DSortPolicy *>(list->object);
+    if (sM != Q_NULLPTR) {
+        Q_FOREACH (QSortCriterion *c, sM->parentSortPolicy()->criteria())
+            sM->parentSortPolicy()->removeCriterion(c);
+    }
+}
+
+} // namespace Quick
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_SORTMETHOD_P_H

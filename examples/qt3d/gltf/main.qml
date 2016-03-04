@@ -77,7 +77,7 @@ Entity {
                 camera: camera
                 ClearBuffer {
                     buffers : ClearBuffer.ColorDepthBuffer
-                    SortMethod {
+                    SortPolicy {
                         criteria: [
                             SortCriterion { sort: SortCriterion.BackToFront }
                         ]

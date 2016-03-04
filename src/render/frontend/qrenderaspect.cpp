@@ -93,7 +93,7 @@
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/clearbuffer_p.h>
-#include <Qt3DRender/private/sortmethod_p.h>
+#include <Qt3DRender/private/sortpolicy_p.h>
 #include <Qt3DRender/private/sortcriterion_p.h>
 #include <Qt3DRender/private/framegraphsubtreeselector_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -270,7 +270,7 @@ void QRenderAspect::registerBackendTypes()
     registerBackendType<QRenderTargetSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QRenderSurfaceSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QLayerFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
-    registerBackendType<QSortMethod>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortMethod, QSortMethod>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
+    registerBackendType<QSortPolicy>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QFrameGraphSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(d->m_renderer, d->m_nodeManagers->frameGraphManager())));
     registerBackendType<QFrameGraph>(QBackendNodeMapperPtr(new Render::FrameGraphComponentFunctor(d->m_renderer)));
     registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(d->m_renderer, d->m_nodeManagers->parameterManager())));

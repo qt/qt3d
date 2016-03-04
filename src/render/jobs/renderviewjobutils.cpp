@@ -53,7 +53,7 @@
 #include <Qt3DRender/private/renderstateset_p.h>
 #include <Qt3DRender/private/rendertargetselectornode_p.h>
 #include <Qt3DRender/private/renderview_p.h>
-#include <Qt3DRender/private/sortmethod_p.h>
+#include <Qt3DRender/private/sortpolicy_p.h>
 #include <Qt3DRender/private/techniquefilternode_p.h>
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/shadervariables_p.h>
@@ -177,8 +177,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
             }
 
             case FrameGraphNode::SortMethod: {
-                const Render::SortMethod *sortMethod = static_cast<const Render::SortMethod *>(node);
-                rv->addSortCriteria(sortMethod->criteria());
+                const Render::SortPolicy *sortPolicy = static_cast<const Render::SortPolicy *>(node);
+                rv->addSortCriteria(sortPolicy->criteria());
                 break;
             }
 
