@@ -110,6 +110,7 @@ QInputAspectPrivate::QInputAspectPrivate()
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
+    setObjectName(QStringLiteral("Input Aspect"));
     registerBackendType<QKeyboardDevice>(QBackendNodeMapperPtr(new Input::KeyboardDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QKeyboardHandler>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));

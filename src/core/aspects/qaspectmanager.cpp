@@ -216,8 +216,10 @@ void QAspectManager::exec()
             // We are about to enter the simulation loop. Give aspects a chance to do any last
             // pieces of initialization
             qCDebug(Aspects) << "Calling onEngineStartup() for each aspect";
-            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+                qCDebug(Aspects) << "\t" << aspect->objectName();
                 aspect->onEngineStartup();
+            }
             qCDebug(Aspects) << "Done calling onEngineStartup() for each aspect";
         }
 
@@ -255,8 +257,10 @@ void QAspectManager::exec()
             // Give aspects a chance to perform any shutdown actions. This may include unqueuing
             // any blocking work on the main thread that could potentially deadlock during shutdown.
             qCDebug(Aspects) << "Calling onEngineShutdown() for each aspect";
-            for (QAbstractAspect *aspect : qAsConst(m_aspects))
+            for (QAbstractAspect *aspect : qAsConst(m_aspects)) {
+                qCDebug(Aspects) << "\t" << aspect->objectName();
                 aspect->onEngineShutdown();
+            }
             qCDebug(Aspects) << "Done calling onEngineShutdown() for each aspect";
         }
     } // End of main loop

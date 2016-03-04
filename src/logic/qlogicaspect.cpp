@@ -80,6 +80,7 @@ void QLogicAspectPrivate::onEngineAboutToShutdown()
 QLogicAspect::QLogicAspect(QObject *parent)
     : QAbstractAspect(*new QLogicAspectPrivate(), parent)
 {
+    setObjectName(QStringLiteral("Logic Aspect"));
     registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
 }
@@ -88,6 +89,7 @@ QLogicAspect::QLogicAspect(QObject *parent)
 QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
+    setObjectName(QStringLiteral("Logic Aspect"));
     registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
 }
