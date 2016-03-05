@@ -171,8 +171,8 @@ void QBoundingVolumeDebugPrivate::updateSubtree()
 
         // Insert into scene
         if (q->entities().size() > 0) {
-            Qt3DCore::QEntity *rootEntity = findRootEntity(q->entities().first());
-            m_debugSubtree->setParent(rootEntity ? rootEntity : q->entities().first());
+            Qt3DCore::QEntity *rootEntity = findRootEntity(q->entities().constFirst());
+            m_debugSubtree->setParent(rootEntity ? rootEntity : q->entities().constFirst());
         }
     } else {
         // Just update the mesh

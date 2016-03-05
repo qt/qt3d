@@ -415,8 +415,8 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     factory->createBackendNode(m_defaultMaterial);
     factory->createBackendNode(m_defaultMaterial->effect());
     factory->createBackendNode(m_defaultTechnique);
-    factory->createBackendNode(m_defaultTechnique->renderPasses().first());
-    factory->createBackendNode(m_defaultTechnique->renderPasses().first()->shaderProgram());
+    factory->createBackendNode(m_defaultTechnique->renderPasses().constFirst());
+    factory->createBackendNode(m_defaultTechnique->renderPasses().constFirst()->shaderProgram());
 
     // We create backend resources for all the parameters
     Q_FOREACH (QParameter *p, m_defaultMaterial->parameters())
@@ -429,8 +429,8 @@ void Renderer::setSceneRoot(QBackendNodeFactory *factory, Entity *sgRoot)
     m_defaultMaterialHandle = nodeManagers()->lookupHandle<Material, MaterialManager, HMaterial>(m_defaultMaterial->id());
     m_defaultEffectHandle = nodeManagers()->lookupHandle<Effect, EffectManager, HEffect>(m_defaultMaterial->effect()->id());
     m_defaultTechniqueHandle = nodeManagers()->lookupHandle<Technique, TechniqueManager, HTechnique>(m_defaultTechnique->id());
-    m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().first()->id());
-    m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().first()->shaderProgram()->id());
+    m_defaultRenderPassHandle = nodeManagers()->lookupHandle<RenderPass, RenderPassManager, HRenderPass>(m_defaultTechnique->renderPasses().constFirst()->id());
+    m_defaultRenderShader = nodeManagers()->lookupResource<Shader, ShaderManager>(m_defaultTechnique->renderPasses().constFirst()->shaderProgram()->id());
 }
 
 void Renderer::registerEventFilter(QEventFilterService *service)
