@@ -53,6 +53,7 @@ namespace Render {
 RenderSettings::RenderSettings()
     : BackendNode()
 {
+    cleanup();
 }
 
 void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)

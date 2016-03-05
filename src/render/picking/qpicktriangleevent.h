@@ -37,79 +37,41 @@
 **
 ****************************************************************************/
 
-#include "qpickevent.h"
-#include "qpickevent_p.h"
-#include <private/qobject_p.h>
+#ifndef QT3DRENDER_QPICKTRIANGLEEVENT_H
+#define QT3DRENDER_QPICKTRIANGLEEVENT_H
+
+#include <Qt3DRender/qpickevent.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+class QPickTriangleEventPrivate;
 
-QPickEvent::QPickEvent()
-    : QObject(*new QPickEventPrivate())
+class QT3DRENDERSHARED_EXPORT QPickTriangleEvent : public QPickEvent
 {
-}
+    Q_OBJECT
+    Q_PROPERTY(uint triangleIndex READ triangleIndex CONSTANT)
+    Q_PROPERTY(uint vertex1Index READ vertex1Index CONSTANT)
+    Q_PROPERTY(uint vertex2Index READ vertex2Index CONSTANT)
+    Q_PROPERTY(uint vertex3Index READ vertex3Index CONSTANT)
+public:
+    QPickTriangleEvent();
+    QPickTriangleEvent(const QPointF &position, const QVector3D& worldIntersection, const QVector3D& localIntersection, float distance,
+                       uint triangleIndex, uint vertex1Index, uint vertex2Index, uint vertex3Index);
+    ~QPickTriangleEvent();
 
-QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
-    : QObject(*new QPickEventPrivate())
-{
-    Q_D(QPickEvent);
-    d->m_position = position;
-    d->m_distance = distance;
-    d->m_worldIntersection = intersection;
-    d->m_localIntersection = localIntersection;
-}
+public:
+    uint triangleIndex() const;
+    uint vertex1Index() const;
+    uint vertex2Index() const;
+    uint vertex3Index() const;
 
-QPickEvent::QPickEvent(QObjectPrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-
-}
-
-QPickEvent::~QPickEvent()
-{
-}
-
-bool QPickEvent::isAccepted() const
-{
-    Q_D(const QPickEvent);
-    return d->m_accepted;
-}
-
-void QPickEvent::setAccepted(bool accepted)
-{
-    Q_D(QPickEvent);
-    if (accepted != d->m_accepted) {
-        d->m_accepted = accepted;
-        emit acceptedChanged(accepted);
-    }
-}
-
-QPointF QPickEvent::position() const
-{
-    Q_D(const QPickEvent);
-    return d->m_position;
-}
-
-float QPickEvent::distance() const
-{
-    Q_D(const QPickEvent);
-    return d->m_distance;
-}
-
-QVector3D QPickEvent::worldIntersection() const
-{
-    Q_D(const QPickEvent);
-    return d->m_worldIntersection;
-}
-
-QVector3D QPickEvent::localIntersection() const
-{
-    Q_D(const QPickEvent);
-    return d->m_localIntersection;
-}
+private:
+    Q_DECLARE_PRIVATE(QPickTriangleEvent)
+};
 
 } // Qt3DRender
 
 QT_END_NAMESPACE
 
+#endif // QT3DRENDER_QPICKTRIANGLEEVENT_H

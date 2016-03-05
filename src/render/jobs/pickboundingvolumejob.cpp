@@ -39,6 +39,7 @@
 
 #include "pickboundingvolumejob_p.h"
 #include "qpickevent.h"
+#include "qpicktriangleevent.h"
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
@@ -53,6 +54,8 @@
 #include <Qt3DRender/private/trianglesvisitor_p.h>
 #include <Qt3DRender/private/triangleboundingvolume_p.h>
 #include <Qt3DRender/private/qraycastingservice_p.h>
+#include <Qt3DRender/private/rendersurfaceselector_p.h>
+#include <Qt3DRender/private/rendersettings_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
 #include <Qt3DRender/private/qray3d_p.h>
 #include <Qt3DRender/qgeometryrenderer.h>
@@ -203,9 +206,11 @@ private:
     }
 };
 
-struct CollisionGathererFunctor
+struct AbstractCollisionGathererFunctor
 {
-    CollisionGathererFunctor() : m_renderer(0) { }
+    AbstractCollisionGathererFunctor() : m_renderer(0) { }
+    virtual ~AbstractCollisionGathererFunctor() { }
+
     Renderer *m_renderer;
     QRay3D m_ray;
 
@@ -227,15 +232,41 @@ struct CollisionGathererFunctor
 
         ObjectPicker *objectPicker = m_renderer->nodeManagers()->objectPickerManager()->data(objectPickerHandle);
         if (objectPicker == Q_NULLPTR)
-            return result;  // don't bother picking entities that don't have an object picker
+            return result_type();  // don't bother picking entities that don't have an object picker
+
+        Qt3DRender::QRayCastingService rayCasting;
+
+        return pick(&rayCasting, entity);
+    }
+
+    virtual result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const = 0;
+};
+
+struct EntityCollisionGathererFunctor : public AbstractCollisionGathererFunctor
+{
+    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE
+    {
+        result_type result;
+
+        const QCollisionQueryResult::Hit queryResult = rayCasting->query(m_ray, entity->worldBoundingVolume());
+        if (queryResult.m_distance >= 0.f)
+            result.push_back(queryResult);
+
+        return result;
+    }
+};
+
+struct TriangleCollisionGathererFunctor : public AbstractCollisionGathererFunctor
+{
+    result_type pick(QAbstractCollisionQueryService *rayCasting, const Entity *entity) const Q_DECL_OVERRIDE
+    {
+        result_type result;
 
         GeometryRenderer *gRenderer = entity->renderComponent<GeometryRenderer>();
         if (!gRenderer)
             return result;
 
-        Qt3DRender::QRayCastingService rayCasting;
-
-        if (rayHitsEntity(&rayCasting, entity)) {
+        if (rayHitsEntity(rayCasting, entity)) {
             CollisionVisitor visitor(m_renderer->nodeManagers(), entity, m_ray);
             visitor.apply(gRenderer, entity->peerId());
             result = visitor.hits;
@@ -331,11 +362,21 @@ void PickBoundingVolumeJob::run()
             ObjectPicker *lastCurrentPicker = m_manager->objectPickerManager()->data(m_currentPicker);
 
             Q_FOREACH (const ViewportCameraAreaTriplet &vca, vcaTriplets) {
-                typedef CollisionGathererFunctor::result_type HitList;
-                CollisionGathererFunctor gathererFunctor;
-                gathererFunctor.m_renderer = m_renderer;
-                gathererFunctor.m_ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
-                HitList sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reduceToAllHits);
+                typedef AbstractCollisionGathererFunctor::result_type HitList;
+                HitList sphereHits;
+                QRay3D ray = rayForViewportAndCamera(vca.area, event.pos(), vca.viewport, vca.cameraId);
+                auto reducerOp = m_renderer->settings() && m_renderer->settings()->pickResultMode() == QPickingSettings::AllPicks ? reduceToAllHits : reduceToFirstHit;
+                if (m_renderer->settings() && m_renderer->settings()->pickMethod() == QPickingSettings::TrianglePicking) {
+                    TriangleCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_renderer = m_renderer;
+                    gathererFunctor.m_ray = ray;
+                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
+                } else {
+                    EntityCollisionGathererFunctor gathererFunctor;
+                    gathererFunctor.m_renderer = m_renderer;
+                    gathererFunctor.m_ray = ray;
+                    sphereHits = QtConcurrent::blockingMappedReduced<HitList>(entitiesGatherer.entities(), gathererFunctor, reducerOp);
+                }
 
                 // If we have hits
                 if (!sphereHits.isEmpty()) {
@@ -366,8 +407,13 @@ void PickBoundingVolumeJob::run()
                             QVector3D localIntersection = hit.m_intersection;
                             if (entity && entity->worldTransform())
                                 localIntersection = hit.m_intersection * entity->worldTransform()->inverted();
-                            QPickEventPtr pickEvent(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
-                                                                   hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2]));
+                            QPickEventPtr pickEvent;
+                            if (m_renderer->settings() && m_renderer->settings()->pickMethod() == QPickingSettings::TrianglePicking) {
+                                pickEvent.reset(new QPickTriangleEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance,
+                                                                       hit.m_triangleIndex, hit.m_vertexIndex[0], hit.m_vertexIndex[1], hit.m_vertexIndex[2]));
+                            } else {
+                                pickEvent.reset(new QPickEvent(event.localPos(), hit.m_intersection, localIntersection, hit.m_distance));
+                            }
 
                             switch (event.type()) {
                             case QEvent::MouseButtonPress: {
@@ -375,8 +421,8 @@ void PickBoundingVolumeJob::run()
                                 m_currentPicker = objectPickerHandle;
                                 // Send pressed event to m_currentPicker
                                 objectPicker->onPressed(pickEvent);
-                            }
                                 break;
+                            }
 
                             case QEvent::MouseButtonRelease: {
                                 // Send release event to m_currentPicker

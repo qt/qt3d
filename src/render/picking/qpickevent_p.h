@@ -37,77 +37,39 @@
 **
 ****************************************************************************/
 
-#include "qpickevent.h"
-#include "qpickevent_p.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
 #include <private/qobject_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QPickEvent::QPickEvent()
-    : QObject(*new QPickEventPrivate())
+class QPickEventPrivate : public QObjectPrivate
 {
-}
-
-QPickEvent::QPickEvent(const QPointF &position, const QVector3D &intersection, const QVector3D &localIntersection, float distance)
-    : QObject(*new QPickEventPrivate())
-{
-    Q_D(QPickEvent);
-    d->m_position = position;
-    d->m_distance = distance;
-    d->m_worldIntersection = intersection;
-    d->m_localIntersection = localIntersection;
-}
-
-QPickEvent::QPickEvent(QObjectPrivate &dd, QObject *parent)
-    : QObject(dd, parent)
-{
-
-}
-
-QPickEvent::~QPickEvent()
-{
-}
-
-bool QPickEvent::isAccepted() const
-{
-    Q_D(const QPickEvent);
-    return d->m_accepted;
-}
-
-void QPickEvent::setAccepted(bool accepted)
-{
-    Q_D(QPickEvent);
-    if (accepted != d->m_accepted) {
-        d->m_accepted = accepted;
-        emit acceptedChanged(accepted);
+public:
+    QPickEventPrivate()
+        : QObjectPrivate()
+        , m_accepted(true)
+        , m_distance(-1.f)
+    {
     }
-}
 
-QPointF QPickEvent::position() const
-{
-    Q_D(const QPickEvent);
-    return d->m_position;
-}
-
-float QPickEvent::distance() const
-{
-    Q_D(const QPickEvent);
-    return d->m_distance;
-}
-
-QVector3D QPickEvent::worldIntersection() const
-{
-    Q_D(const QPickEvent);
-    return d->m_worldIntersection;
-}
-
-QVector3D QPickEvent::localIntersection() const
-{
-    Q_D(const QPickEvent);
-    return d->m_localIntersection;
-}
+    bool m_accepted;
+    QPointF m_position;
+    QVector3D m_worldIntersection;
+    QVector3D m_localIntersection;
+    float m_distance;
+};
 
 } // Qt3DRender
 
