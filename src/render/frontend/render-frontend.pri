@@ -10,7 +10,7 @@ HEADERS += \
     $$PWD/qrendertarget.h \
     $$PWD/qrendertarget_p.h \
     $$PWD/sphere_p.h \
-    $$PWD/qboundingvolumedebug.h \
+    $$PWD/qboundingvolumedebug_p.h \
     $$PWD/qcamera_p.h \
     $$PWD/qcamera.h \
     $$PWD/qcameralens.h \

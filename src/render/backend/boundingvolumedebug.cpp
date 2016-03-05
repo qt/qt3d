@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "boundingvolumedebug_p.h"
-#include <Qt3DRender/qboundingvolumedebug.h>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE

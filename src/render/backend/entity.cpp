@@ -49,8 +49,8 @@
 #include <Qt3DRender/qshaderdata.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
-#include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qcomputecommand.h>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
 #include <Qt3DRender/qcameralens.h>

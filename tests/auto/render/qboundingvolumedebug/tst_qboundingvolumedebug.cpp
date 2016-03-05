@@ -31,7 +31,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRender/QBoundingVolumeDebug>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 
 #include "testpostmanarbiter.h"
 

@@ -107,7 +107,6 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qboundingvolumespecifier.h>
-#include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
@@ -116,6 +115,7 @@
 #include <Qt3DRender/qcamera.h>
 #include <Qt3DRender/qrendersettings.h>
 #include <Qt3DRender/qpickingsettings.h>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DQuickRender/private/quick3dtechnique_p.h>
 #include <Qt3DQuickRender/private/quick3dmaterial_p.h>
 #include <Qt3DQuickRender/private/quick3dtechniquefilter_p.h>

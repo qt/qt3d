@@ -28,7 +28,7 @@
 
 #include <QtTest/QTest>
 #include <Qt3DRender/private/boundingvolumedebug_p.h>
-#include <Qt3DRender/qboundingvolumedebug.h>
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DCore/private/qbackendnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include "testpostmanarbiter.h"

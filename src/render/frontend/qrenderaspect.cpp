@@ -70,7 +70,6 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qgeometryrenderer.h>
 #include <Qt3DRender/qobjectpicker.h>
-#include <Qt3DRender/qboundingvolumedebug.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlight.h>
 #include <Qt3DRender/qlighting.h>
@@ -79,6 +78,7 @@
 #include <Qt3DRender/qrendersurfaceselector.h>
 #include <Qt3DRender/qrendersettings.h>
 
+#include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/annotation_p.h>
