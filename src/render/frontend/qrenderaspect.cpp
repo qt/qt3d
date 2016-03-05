@@ -360,7 +360,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // One for urgent jobs that are mandatory for the rendering of a frame
         // Another for jobs that can span across multiple frames (Scene/Mesh loading)
         const QVector<Render::LoadSceneJobPtr> sceneJobs = manager->sceneManager()->pendingSceneLoaderJobs();
-        Q_FOREACH (Render::LoadSceneJobPtr job, sceneJobs) {
+        Q_FOREACH (const Render::LoadSceneJobPtr &job, sceneJobs) {
             job->setNodeManagers(d->m_nodeManagers);
             job->setSceneParsers(d->m_sceneParsers);
             jobs.append(job);
@@ -369,7 +369,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // Clear any previous temporary dependency
         d->m_calculateBoundingVolumeJob->removeDependency(QWeakPointer<QAspectJob>());
         const QVector<QAspectJobPtr> bufferJobs = createRenderBufferJobs();
-        Q_FOREACH (const QAspectJobPtr bufferJob, bufferJobs)
+        Q_FOREACH (const QAspectJobPtr &bufferJob, bufferJobs)
             d->m_calculateBoundingVolumeJob->addDependency(bufferJob);
         jobs.append(bufferJobs);
 
@@ -500,7 +500,7 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::createGeometryRendererJobs()
 void QRenderAspectPrivate::loadSceneParsers()
 {
     QStringList keys = QSceneParserFactory::keys();
-    Q_FOREACH (QString key, keys) {
+    Q_FOREACH (const QString &key, keys) {
         QAbstractSceneParser *sceneParser = QSceneParserFactory::create(key, QStringList());
         if (sceneParser != Q_NULLPTR)
             m_sceneParsers.append(sceneParser);

@@ -1014,7 +1014,7 @@ void GraphicsContext::setParameters(ShaderParameterPack &parameterPack)
     // TO DO: Convert ShaderData to Buffer so that we can use that generic process
     const QVector<BlockToUBO> blockToUBOs = parameterPack.uniformBuffers();
     int uboIndex = 0;
-    Q_FOREACH (const BlockToUBO b, blockToUBOs) {
+    Q_FOREACH (const BlockToUBO &b, blockToUBOs) {
         Buffer *cpuBuffer = m_renderer->nodeManagers()->bufferManager()->lookupResource(b.m_bufferID);
         GLBuffer *ubo = glBufferForRenderBuffer(cpuBuffer);
         bindUniformBlock(shader->programId(), b.m_blockIndex, uboIndex);
