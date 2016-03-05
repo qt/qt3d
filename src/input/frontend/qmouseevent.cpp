@@ -155,9 +155,9 @@ int QMouseEvent::buttons() const
 }
 
 /*!
- * Returns the keyboard modifier that may be accompanying the mouse event.
+ * Returns the keyboard modifiers that may be accompanying the mouse event.
  */
-QMouseEvent::Modifiers QMouseEvent::modifier() const
+QMouseEvent::Modifiers QMouseEvent::modifiers() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
@@ -267,9 +267,9 @@ int QWheelEvent::buttons() const
 }
 
 /*!
- * Returns the keyboard modifier that may be accompanying the wheel event.
+ * Returns the keyboard modifiers that may be accompanying the wheel event.
  */
-QWheelEvent::Modifiers QWheelEvent::modifier() const
+QWheelEvent::Modifiers QWheelEvent::modifiers() const
 {
     switch (m_event.modifiers()) {
     case Qt::ShiftModifier:
