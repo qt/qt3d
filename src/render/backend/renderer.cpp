@@ -158,6 +158,8 @@ Renderer::~Renderer()
     // CLean up settings if not using defaults
     if (m_settings != &ms_defaultSettings)
         delete m_settings;
+
+    delete m_renderQueue;
 }
 
 qint64 Renderer::time() const
