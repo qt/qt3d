@@ -89,9 +89,6 @@ void createSidesVertices(float *&verticesPtr,
             *verticesPtr++ = n.x();
             *verticesPtr++ = n.y();
             *verticesPtr++ = n.z();
-
-            if (slice == slices)
-                continue;
         }
     }
 }
@@ -159,9 +156,6 @@ void createDiscVertices(float *&verticesPtr,
         *verticesPtr++ = 0.0f;
         *verticesPtr++ = yNormal;
         *verticesPtr++ = 0.0f;
-
-        if (slice == slices)
-            continue;
     }
 }
 
