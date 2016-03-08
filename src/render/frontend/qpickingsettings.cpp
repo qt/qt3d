@@ -37,64 +37,75 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERSETTINGS_H
-#define QT3DRENDER_QRENDERSETTINGS_H
-
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
-#include <Qt3DRender/qpickingsettings.h>
+#include "qpickingsettings.h"
+#include "qpickingsettings_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QFrameGraphNode;
-class QRenderSettingsPrivate;
-
-class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
+QPickingSettingsPrivate::QPickingSettingsPrivate()
+    : Qt3DCore::QNodePrivate()
+    , m_pickMethod(QPickingSettings::BoundingVolumePicking)
+    , m_pickResultMode(QPickingSettings::NearestPick)
 {
-    Q_OBJECT
+}
 
-    Q_PROPERTY(QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
-    Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
-    Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
-    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
+QPickingSettings::QPickingSettings(Qt3DCore::QNode *parent)
+    : Qt3DCore::QNode(*new QPickingSettingsPrivate, parent)
+{
+}
 
-public:
-    explicit QRenderSettings(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QRenderSettings();
+QPickingSettings::QPickingSettings(QPickingSettingsPrivate &dd, Qt3DCore::QNode *parent)
+    : Qt3DCore::QNode(dd, parent)
+{
+}
 
-    enum RenderPolicy {
-        OnDemand,
-        Always
-    };
-    Q_ENUM(RenderPolicy)
+QPickingSettings::~QPickingSettings()
+{
+    QNode::cleanup();
+}
 
-    QPickingSettings* pickingSettings();
-    QFrameGraphNode *activeFrameGraph() const;
-    RenderPolicy renderPolicy() const;
+QPickingSettings::PickMethod QPickingSettings::pickMethod() const
+{
+    Q_D(const QPickingSettings);
+    return d->m_pickMethod;
+}
 
-public Q_SLOTS:
-    void setActiveFrameGraph(QFrameGraphNode *activeFrameGraph);
-    void setRenderPolicy(RenderPolicy renderPolicy);
+QPickingSettings::PickResultMode QPickingSettings::pickResultMode() const
+{
+    Q_D(const QPickingSettings);
+    return d->m_pickResultMode;
+}
 
-Q_SIGNALS:
-    void activeFrameGraphChanged(QFrameGraphNode *activeFrameGraph);
-    void renderPolicyChanged(RenderPolicy renderPolicy);
+void QPickingSettings::setPickMethod(QPickingSettings::PickMethod pickMethod)
+{
+    Q_D(QPickingSettings);
+    if (d->m_pickMethod == pickMethod)
+        return;
 
-protected:
-    Q_DECLARE_PRIVATE(QRenderSettings)
-    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    d->m_pickMethod = pickMethod;
+    emit pickMethodChanged(pickMethod);
+}
 
-private:
-    QT3D_CLONEABLE(QRenderSettings)
-    Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))
-    Q_PRIVATE_SLOT(d_func(), void _q_onPickResultModeChanged(QPickingSettings::PickResultMode))
-};
+void QPickingSettings::setPickResultMode(QPickingSettings::PickResultMode pickResultMode)
+{
+    Q_D(QPickingSettings);
+    if (d->m_pickResultMode == pickResultMode)
+        return;
+
+    d->m_pickResultMode = pickResultMode;
+    emit pickResultModeChanged(pickResultMode);
+}
+
+void QPickingSettings::copy(const QNode *ref)
+{
+    QNode::copy(ref);
+    const QPickingSettings *object = static_cast<const QPickingSettings *>(ref);
+    d_func()->m_pickMethod = object->d_func()->m_pickMethod;
+    d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
+}
 
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QRENDERSETTINGS_H

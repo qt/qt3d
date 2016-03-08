@@ -37,64 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QRENDERSETTINGS_H
-#define QT3DRENDER_QRENDERSETTINGS_H
+#ifndef QT3DRENDER_QPICKINGSETTINGS_P_H
+#define QT3DRENDER_QPICKINGSETTINGS_P_H
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DRender/qt3drender_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DRender/qpickingsettings.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QFrameGraphNode;
-class QRenderSettingsPrivate;
-
-class QT3DRENDERSHARED_EXPORT QRenderSettings : public Qt3DCore::QComponent
+class QPickingSettingsPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-
-    Q_PROPERTY(QPickingSettings* pickingSettings READ pickingSettings CONSTANT)
-    Q_PROPERTY(RenderPolicy renderPolicy READ renderPolicy WRITE setRenderPolicy NOTIFY renderPolicyChanged)
-    Q_PROPERTY(Qt3DRender::QFrameGraphNode *activeFrameGraph READ activeFrameGraph WRITE setActiveFrameGraph NOTIFY activeFrameGraphChanged)
-    Q_CLASSINFO("DefaultProperty", "activeFrameGraph")
-
 public:
-    explicit QRenderSettings(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QRenderSettings();
+    QPickingSettingsPrivate();
 
-    enum RenderPolicy {
-        OnDemand,
-        Always
-    };
-    Q_ENUM(RenderPolicy)
-
-    QPickingSettings* pickingSettings();
-    QFrameGraphNode *activeFrameGraph() const;
-    RenderPolicy renderPolicy() const;
-
-public Q_SLOTS:
-    void setActiveFrameGraph(QFrameGraphNode *activeFrameGraph);
-    void setRenderPolicy(RenderPolicy renderPolicy);
-
-Q_SIGNALS:
-    void activeFrameGraphChanged(QFrameGraphNode *activeFrameGraph);
-    void renderPolicyChanged(RenderPolicy renderPolicy);
-
-protected:
-    Q_DECLARE_PRIVATE(QRenderSettings)
-    QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    QT3D_CLONEABLE(QRenderSettings)
-    Q_PRIVATE_SLOT(d_func(), void _q_onPickingMethodChanged(QPickingSettings::PickMethod))
-    Q_PRIVATE_SLOT(d_func(), void _q_onPickResultModeChanged(QPickingSettings::PickResultMode))
+    QPickingSettings::PickMethod m_pickMethod;
+    QPickingSettings::PickResultMode m_pickResultMode;
 };
 
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QRENDERSETTINGS_H
+#endif // QT3DRENDER_QPICKINGSETTINGS_P_H

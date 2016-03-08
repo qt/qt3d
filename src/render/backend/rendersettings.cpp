@@ -58,16 +58,16 @@ RenderSettings::RenderSettings()
 void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderSettings *settings = static_cast<QRenderSettings *>(peer);
-    m_pickMethod = settings->pickMethod();
-    m_pickResultMode = settings->pickResultMode();
+    m_pickMethod = settings->pickingSettings()->pickMethod();
+    m_pickResultMode = settings->pickingSettings()->pickResultMode();
     m_activeFrameGraph = settings->activeFrameGraph()->id();
     m_renderPolicy = settings->renderPolicy();
 }
 
 void RenderSettings::cleanup()
 {
-    m_pickMethod = QRenderSettings::BoundingVolumePicking;
-    m_pickResultMode = QRenderSettings::NearestPick;
+    m_pickMethod = QPickingSettings::BoundingVolumePicking;
+    m_pickResultMode = QPickingSettings::NearestPick;
     m_activeFrameGraph = Qt3DCore::QNodeId();
     m_renderPolicy = QRenderSettings::OnDemand;
 }
@@ -77,9 +77,9 @@ void RenderSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("pickMethod"))
-            m_pickMethod = propertyChange->value().value<QRenderSettings::PickMethod>();
+            m_pickMethod = propertyChange->value().value<QPickingSettings::PickMethod>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("pickResult"))
-            m_pickResultMode = propertyChange->value().value<QRenderSettings::PickResultMode>();
+            m_pickResultMode = propertyChange->value().value<QPickingSettings::PickResultMode>();
         else if (propertyChange->propertyName() == QByteArrayLiteral("activeFrameGraph"))
             m_activeFrameGraph = propertyChange->value().value<QNodePtr>()->id();
         else if (propertyChange->propertyName() == QByteArrayLiteral("renderPolicy"))

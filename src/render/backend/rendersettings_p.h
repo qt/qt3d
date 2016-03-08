@@ -53,6 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/qrendersettings.h>
+#include <Qt3DRender/qpickingsettings.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,11 +73,13 @@ public:
 
     Qt3DCore::QNodeId activeFrameGraphID() const { return m_activeFrameGraph; }
     QRenderSettings::RenderPolicy renderPolicy() const { return m_renderPolicy; }
+    QPickingSettings::PickMethod pickMethod() const { return m_pickMethod; }
+    QPickingSettings::PickResultMode pickResultMode() const { return m_pickResultMode; }
 
 private:
     QRenderSettings::RenderPolicy m_renderPolicy;
-    QRenderSettings::PickMethod m_pickMethod;
-    QRenderSettings::PickResultMode m_pickResultMode;
+    QPickingSettings::PickMethod m_pickMethod;
+    QPickingSettings::PickResultMode m_pickResultMode;
     Qt3DCore::QNodeId m_activeFrameGraph;
 };
 

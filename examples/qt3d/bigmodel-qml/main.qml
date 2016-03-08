@@ -63,6 +63,9 @@ Entity {
             activeFrameGraph:ForwardRenderer {
                 camera: mainCamera
             }
+            pickingSettings {
+                pickMethod: PickingSettings.TrianglePicking
+            }
         },
         // Event Source will be set by the Qt3DQuickWindow
         InputSettings { }

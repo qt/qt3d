@@ -19,6 +19,8 @@ HEADERS += \
     $$PWD/qrendertargetoutput_p.h \
     $$PWD/qrendersettings.h \
     $$PWD/qrendersettings_p.h \
+    $$PWD/qpickingsettings.h \
+    $$PWD/qpickingsettings_p.h \
     $$PWD/qcomputecommand_p.h \
     $$PWD/qcomputecommand.h
 
@@ -33,6 +35,7 @@ SOURCES += \
     $$PWD/qcamera.cpp \
     $$PWD/qcameralens.cpp \
     $$PWD/qrendersettings.cpp \
+    $$PWD/qpickingsettings.cpp \
     $$PWD/qrendertargetoutput.cpp \
     $$PWD/qcomputecommand.cpp
 

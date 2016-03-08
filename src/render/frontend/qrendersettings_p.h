@@ -53,6 +53,7 @@
 
 #include <Qt3DCore/private/qcomponent_p.h>
 #include <Qt3DRender/qrendersettings.h>
+#include <Qt3DRender/qpickingsettings.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,10 +64,16 @@ class QRenderSettingsPrivate : public Qt3DCore::QComponentPrivate
 public:
     QRenderSettingsPrivate();
 
+    void init();
+
+    QPickingSettings m_pickingSettings;
     QFrameGraphNode *m_activeFrameGraph;
-    QRenderSettings::PickMethod m_pickMethod;
-    QRenderSettings::PickResultMode m_pickResultMode;
     QRenderSettings::RenderPolicy m_renderPolicy;
+
+    void _q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod);
+    void _q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode);
+
+    Q_DECLARE_PUBLIC(QRenderSettings)
 };
 
 } // namespace Qt3Drender

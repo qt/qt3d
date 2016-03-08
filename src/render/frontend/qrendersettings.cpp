@@ -48,20 +48,41 @@ namespace Qt3DRender {
 QRenderSettingsPrivate::QRenderSettingsPrivate()
     : Qt3DCore::QComponentPrivate()
     , m_activeFrameGraph(Q_NULLPTR)
-    , m_pickMethod(QRenderSettings::BoundingVolumePicking)
-    , m_pickResultMode(QRenderSettings::NearestPick)
     , m_renderPolicy(QRenderSettings::OnDemand)
 {
+}
+
+void QRenderSettingsPrivate::init()
+{
+    Q_Q(QRenderSettings);
+    QObject::connect(&m_pickingSettings, SIGNAL(pickMethodChanged(QPickingSettings::PickMethod)),
+                     q, SLOT(_q_onPickingMethodChanged(QPickingSettings::PickMethod)));
+    QObject::connect(&m_pickingSettings, SIGNAL(pickResultModeChanged(QPickingSettings::PickResultMode)),
+                     q, SLOT(_q_onPickResultModeChanged(QPickingSettings::PickResultMode)));
+}
+
+void QRenderSettingsPrivate::_q_onPickingMethodChanged(QPickingSettings::PickMethod pickMethod)
+{
+    notifyPropertyChange("pickMethod", pickMethod);
+}
+
+void QRenderSettingsPrivate::_q_onPickResultModeChanged(QPickingSettings::PickResultMode pickResultMode)
+{
+    notifyPropertyChange("pickResultMode", pickResultMode);
 }
 
 QRenderSettings::QRenderSettings(Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(*new QRenderSettingsPrivate, parent)
 {
+    Q_D(QRenderSettings);
+    d->init();
 }
 
 QRenderSettings::QRenderSettings(QRenderSettingsPrivate &dd, Qt3DCore::QNode *parent)
     : Qt3DCore::QComponent(dd, parent)
 {
+    Q_D(QRenderSettings);
+    d->init();
 }
 
 QRenderSettings::~QRenderSettings()
@@ -69,22 +90,16 @@ QRenderSettings::~QRenderSettings()
     QNode::cleanup();
 }
 
+QPickingSettings *QRenderSettings::pickingSettings()
+{
+    Q_D(QRenderSettings);
+    return &(d->m_pickingSettings);
+}
+
 QFrameGraphNode *QRenderSettings::activeFrameGraph() const
 {
     Q_D(const QRenderSettings);
     return d->m_activeFrameGraph;
-}
-
-QRenderSettings::PickMethod QRenderSettings::pickMethod() const
-{
-    Q_D(const QRenderSettings);
-    return d->m_pickMethod;
-}
-
-QRenderSettings::PickResultMode QRenderSettings::pickResultMode() const
-{
-    Q_D(const QRenderSettings);
-    return d->m_pickResultMode;
 }
 
 QRenderSettings::RenderPolicy QRenderSettings::renderPolicy() const
@@ -105,26 +120,6 @@ void QRenderSettings::setActiveFrameGraph(QFrameGraphNode *activeFrameGraph)
     emit activeFrameGraphChanged(activeFrameGraph);
 }
 
-void QRenderSettings::setPickMethod(QRenderSettings::PickMethod pickMethod)
-{
-    Q_D(QRenderSettings);
-    if (d->m_pickMethod == pickMethod)
-        return;
-
-    d->m_pickMethod = pickMethod;
-    emit pickMethodChanged(pickMethod);
-}
-
-void QRenderSettings::setPickResultMode(QRenderSettings::PickResultMode pickResultMode)
-{
-    Q_D(QRenderSettings);
-    if (d->m_pickResultMode == pickResultMode)
-        return;
-
-    d->m_pickResultMode = pickResultMode;
-    emit pickResultModeChanged(pickResultMode);
-}
-
 void QRenderSettings::setRenderPolicy(QRenderSettings::RenderPolicy renderPolicy)
 {
     Q_D(QRenderSettings);
@@ -141,11 +136,11 @@ void QRenderSettings::copy(const QNode *ref)
     const QRenderSettings *object = static_cast<const QRenderSettings *>(ref);
     setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNode::clone(object->activeFrameGraph())));
 
-    d_func()->m_pickMethod = object->d_func()->m_pickMethod;
-    d_func()->m_pickResultMode = object->d_func()->m_pickResultMode;
     d_func()->m_renderPolicy = object->d_func()->m_renderPolicy;
 }
 
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
+
+#include "moc_qrendersettings.cpp"
