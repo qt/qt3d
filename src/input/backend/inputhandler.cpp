@@ -58,7 +58,7 @@ namespace Input {
 InputHandler::InputHandler()
     : m_keyboardControllerManager(new KeyboardControllerManager())
     , m_keyboardInputManager(new KeyboardInputManager())
-    , m_mouseControllerManager(new MouseControllerManager())
+    , m_mouseDeviceManager(new MouseDeviceManager())
     , m_mouseInputManager(new MouseInputManager())
     , m_keyboardEventFilter(new KeyboardEventFilter())
     , m_mouseEventFilter(new MouseEventFilter())
@@ -148,14 +148,14 @@ void InputHandler::removeKeyboardController(HKeyboardController controller)
     m_activeKeyboardControllers.removeAll(controller);
 }
 
-void InputHandler::appendMouseController(HMouseController controller)
+void InputHandler::appendMouseDevice(HMouseDevice device)
 {
-    m_activeMouseControllers.append(controller);
+    m_activeMouseDevices.append(device);
 }
 
-void InputHandler::removeMouseController(HMouseController controller)
+void InputHandler::removeMouseDevice(HMouseDevice device)
 {
-    m_activeMouseControllers.removeAll(controller);
+    m_activeMouseDevices.removeAll(device);
 }
 
 void Qt3DInput::Input::InputHandler::appendGenericDevice(HGenericDeviceBackendNode device)
@@ -206,8 +206,8 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::mouseJobs()
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> events = pendingMouseEvents();
 
-    Q_FOREACH (const HMouseController cHandle, m_activeMouseControllers) {
-        MouseController *controller = m_mouseControllerManager->data(cHandle);
+    Q_FOREACH (const HMouseDevice cHandle, m_activeMouseDevices) {
+        MouseDevice *controller = m_mouseDeviceManager->data(cHandle);
 
         controller->updateMouseEvents(events);
         // Event dispacthing job

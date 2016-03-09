@@ -68,7 +68,7 @@ public:
     ~MouseHandler();
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeId mouseController() const;
+    Qt3DCore::QNodeId mouseDevice() const;
     void setInputHandler(InputHandler *handler);
     void mouseEvent(const QMouseEventPtr &event);
     void wheelEvent(const QWheelEventPtr &event);
@@ -77,11 +77,11 @@ public:
 
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    void setController(Qt3DCore::QNodeId controller);
+    void setDevice(Qt3DCore::QNodeId device);
 
 private:
     bool m_enabled;
-    Qt3DCore::QNodeId m_mouseController;
+    Qt3DCore::QNodeId m_mouseDevice;
     InputHandler *m_inputHandler;
 };
 

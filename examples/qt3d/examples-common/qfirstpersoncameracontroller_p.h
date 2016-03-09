@@ -68,7 +68,7 @@ class QLogicComponent;
 namespace Qt3DInput {
 
 class QKeyboardController;
-class QMouseController;
+class QMouseDevice;
 class QLogicalDevice;
 class QAction;
 class QActionInput;
@@ -107,7 +107,7 @@ public:
     QAxisInput *m_keyboardTzNegInput;
 
     QKeyboardController *m_keyboardController;
-    QMouseController *m_mouseController;
+    QMouseDevice *m_mouseDevice;
 
     QLogicalDevice *m_logicalDevice;
 

@@ -57,7 +57,8 @@
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
 #include <Qt3DInput/QKeyboardController>
-#include <Qt3DInput/QMouseController>
+#include <Qt3DInput/QMouseDevice>
+#include <Qt3DInput/QMouseEvent>
 #include <Qt3DLogic/QLogicComponent>
 
 QT_BEGIN_NAMESPACE
@@ -86,7 +87,7 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_keyboardTyNegInput(new QAxisInput())
     , m_keyboardTzNegInput(new QAxisInput())
     , m_keyboardController(new QKeyboardController())
-    , m_mouseController(new QMouseController())
+    , m_mouseDevice(new QMouseDevice())
     , m_logicalDevice(new QLogicalDevice())
     , m_logicComponent(new Qt3DLogic::QLogicComponent())
     , m_linearSpeed(10.0f)
@@ -99,8 +100,8 @@ void QFirstPersonCameraControllerPrivate::init()
     //// Actions
 
     // Left Mouse Button Action
-    m_leftMouseButtonInput->setButtons(QVariantList() << QMouseController::Left);
-    m_leftMouseButtonInput->setSourceDevice(m_mouseController);
+    m_leftMouseButtonInput->setButtons(QVariantList() << QMouseEvent::LeftButton);
+    m_leftMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
 
     // Fine Motion Action
@@ -111,13 +112,13 @@ void QFirstPersonCameraControllerPrivate::init()
     //// Axes
 
     // Mouse X
-    m_mouseRxInput->setAxis(QMouseController::X);
-    m_mouseRxInput->setSourceDevice(m_mouseController);
+    m_mouseRxInput->setAxis(QMouseDevice::X);
+    m_mouseRxInput->setSourceDevice(m_mouseDevice);
     m_rxAxis->addInput(m_mouseRxInput);
 
     // Mouse Y
-    m_mouseRyInput->setAxis(QMouseController::Y);
-    m_mouseRyInput->setSourceDevice(m_mouseController);
+    m_mouseRyInput->setAxis(QMouseDevice::Y);
+    m_mouseRyInput->setSourceDevice(m_mouseDevice);
     m_ryAxis->addInput(m_mouseRyInput);
 
     // Keyboard Pos Tx

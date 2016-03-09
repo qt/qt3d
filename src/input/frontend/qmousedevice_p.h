@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_MOUSECONTROLLER_H
-#define QT3DINPUT_INPUT_MOUSECONTROLLER_H
+#ifndef QT3DINPUT_QMOUSEDEVICE_P_H
+#define QT3DINPUT_QMOUSEDEVICE_P_H
 
 //
 //  W A R N I N G
@@ -51,84 +51,27 @@
 // We mean it.
 //
 
-#include <Qt3DInput/qabstractphysicaldevicebackendnode.h>
-#include <QMouseEvent>
+#include <private/qabstractphysicaldevice_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QInputAspect;
+class QMouseDevice;
 
-namespace Input {
-
-class InputHandler;
-
-class MouseController : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
+class QMouseDevicePrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
 {
 public:
-    MouseController();
-    ~MouseController();
+    QMouseDevicePrivate();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void setInputHandler(InputHandler *handler);
+    Q_DECLARE_PUBLIC(QMouseDevice)
 
-    void addMouseInput(Qt3DCore::QNodeId input);
-    void removeMouseInput(Qt3DCore::QNodeId input);
-
-    float axisValue(int axisIdentifier) const Q_DECL_OVERRIDE;
-    bool isButtonPressed(int buttonIdentifier) const Q_DECL_OVERRIDE;
-
-    QVector<Qt3DCore::QNodeId> mouseInputs() const;
-
-    void updateMouseEvents(const QList<QT_PREPEND_NAMESPACE(QMouseEvent)> &events);
-
-protected:
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-private:
-    QVector<Qt3DCore::QNodeId> m_mouseInputs;
-    InputHandler *m_inputHandler;
-
-    struct MouseState {
-
-        MouseState()
-            : xAxis(0.0f)
-            , yAxis(0.0f)
-            , leftPressed(false)
-            , rightPressed(false)
-            , centerPressed(false)
-        {}
-
-        float xAxis;
-        float yAxis;
-        bool leftPressed;
-        bool rightPressed;
-        bool centerPressed;
-    };
-
-    MouseState m_mouseState;
-    QPointF m_previousPos;
     float m_sensitivity;
 };
 
-class MouseControllerFunctor : public Qt3DCore::QBackendNodeMapper
-{
-public:
-    explicit MouseControllerFunctor(Qt3DInput::QInputAspect *inputAspect, InputHandler *handler);
-
-    Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
-    Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-    void destroy(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
-
-private:
-    QInputAspect *m_inputAspect;
-    InputHandler *m_handler;
-};
-
-} // namespace Input
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // MOUSECONTROLLER_H
+#endif // QT3DINPUT_QMOUSEDEVICE_P_H
+

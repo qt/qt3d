@@ -79,7 +79,7 @@ Entity {
         id: keyboardSourceDevice
     }
 
-    MouseController {
+    MouseDevice {
         id: mouseSourceDevice
         sensitivity: d.fineMotion ? 0.01 : 0.1
     }
@@ -93,7 +93,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        buttons: [MouseController.Left]
+                        buttons: [MouseEvent.LeftButton]
                     }
                 ]
             },
@@ -102,7 +102,7 @@ Entity {
                 inputs: [
                     ActionInput {
                         sourceDevice: mouseSourceDevice
-                        buttons: [MouseController.Right]
+                        buttons: [MouseEvent.RightButton]
                     }
                 ]
             },
@@ -125,7 +125,7 @@ Entity {
                 inputs: [
                     AxisInput {
                         sourceDevice: mouseSourceDevice
-                        axis: MouseController.X
+                        axis: MouseDevice.X
                     }
                 ]
             },
@@ -134,7 +134,7 @@ Entity {
                 inputs: [
                     AxisInput {
                         sourceDevice: mouseSourceDevice
-                        axis: MouseController.Y
+                        axis: MouseDevice.Y
                     }
                 ]
             },

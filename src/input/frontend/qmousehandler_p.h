@@ -58,14 +58,14 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QMouseHandler;
-class QMouseController;
+class QMouseDevice;
 
 class QMouseHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
 public:
     QMouseHandlerPrivate();
 
-    QMouseController *m_sourceDevice;
+    QMouseDevice *m_mouseDevice;
     bool m_containsMouse;
 
     void mouseEvent(Qt3DInput::QMouseEvent *event);

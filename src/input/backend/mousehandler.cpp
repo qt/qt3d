@@ -38,12 +38,12 @@
 ****************************************************************************/
 
 #include "mousehandler_p.h"
-#include "mousecontroller_p.h"
 #include "inputmanagers_p.h"
 #include "inputhandler_p.h"
+#include "mousedevice_p.h"
 
 #include <Qt3DInput/qmousehandler.h>
-#include <Qt3DInput/qmousecontroller.h>
+#include <Qt3DInput/qmousedevice.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
@@ -69,13 +69,13 @@ void MouseHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QMouseHandler *input = static_cast<QMouseHandler *>(peer);
     if (input->sourceDevice() != Q_NULLPTR)
-        setController(input->sourceDevice()->id());
+        setDevice(input->sourceDevice()->id());
     m_enabled = input->isEnabled();
 }
 
-Qt3DCore::QNodeId MouseHandler::mouseController() const
+Qt3DCore::QNodeId MouseHandler::mouseDevice() const
 {
-    return m_mouseController;
+    return m_mouseDevice;
 }
 
 void MouseHandler::setInputHandler(InputHandler *handler)
@@ -105,27 +105,27 @@ void MouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("controller")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();
-            if (m_mouseController != newId) {
-                setController(newId);
+            if (m_mouseDevice != newId) {
+                setDevice(newId);
             }
         }
     }
 }
 
-void MouseHandler::setController(Qt3DCore::QNodeId controller)
+void MouseHandler::setDevice(Qt3DCore::QNodeId device)
 {
-    if (!m_mouseController.isNull()) {
-        MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
-        if (controller)
-            controller->removeMouseInput(peerId());
+    if (!m_mouseDevice.isNull()) {
+        MouseDevice *device = m_inputHandler->mouseDeviceManager()->lookupResource(m_mouseDevice);
+        if (device)
+            device->removeMouseInput(peerId());
     }
-    m_mouseController = controller;
-    if (!m_mouseController.isNull()) {
-        MouseController *controller = m_inputHandler->mouseControllerManager()->lookupResource(m_mouseController);
-        if (controller)
-            controller->addMouseInput(peerId());
+    m_mouseDevice = device;
+    if (!m_mouseDevice.isNull()) {
+        MouseDevice *device = m_inputHandler->mouseDeviceManager()->lookupResource(m_mouseDevice);
+        if (device)
+            device->addMouseInput(peerId());
     }
 }
 

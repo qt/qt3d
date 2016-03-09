@@ -48,27 +48,27 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QMouseController;
+class QMouseDevice;
 class QMouseHandlerPrivate;
 
 class QT3DINPUTSHARED_EXPORT QMouseHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QMouseController *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
+    Q_PROPERTY(Qt3DInput::QMouseDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(bool containsMouse READ containsMouse NOTIFY containsMouseChanged)
 
 public:
     explicit QMouseHandler(QNode *parent = 0);
     ~QMouseHandler();
 
-    QMouseController *sourceDevice() const;
+    QMouseDevice *sourceDevice() const;
     bool containsMouse() const;
 
 public Q_SLOTS:
-    void setSourceDevice(QMouseController *sourceDevice);
+    void setSourceDevice(QMouseDevice *mouseDevice);
 
 Q_SIGNALS:
-    void sourceDeviceChanged(QMouseController *sourceDevice);
+    void sourceDeviceChanged(QMouseDevice *mouseDevice);
     void containsMouseChanged(bool containsMouse);
 
     void clicked(Qt3DInput::QMouseEvent *mouse);

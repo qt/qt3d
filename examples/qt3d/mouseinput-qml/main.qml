@@ -90,8 +90,8 @@ Entity {
         diffuse: "green"
     }
 
-    MouseController {
-        id: mouseController
+    MouseDevice {
+        id: mouseDevice
     }
 
     Entity {
@@ -105,7 +105,7 @@ Entity {
         }
 
         property MouseHandler mouseHandler : MouseHandler {
-            sourceDevice: mouseController
+            sourceDevice: mouseDevice
 
             onClicked: {
                 //Signal not implemented yet

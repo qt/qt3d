@@ -42,7 +42,7 @@
 #include <Qt3DInput/qkeyboardcontroller.h>
 #include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qkeyevent.h>
-#include <Qt3DInput/qmousecontroller.h>
+#include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmousehandler.h>
 #include <Qt3DInput/qmouseevent.h>
 
@@ -80,7 +80,7 @@ void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Qt3DInput::QMouseEvent>(uri, 2, 0, "MouseEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterUncreatableType<Qt3DInput::QWheelEvent>(uri, 2, 0, "WheelEvent", QStringLiteral("Events cannot be created"));
     qmlRegisterType<Qt3DInput::QMouseHandler>(uri, 2, 0, "MouseHandler");
-    qmlRegisterType<Qt3DInput::QMouseController>(uri, 2, 0, "MouseController");
+    qmlRegisterType<Qt3DInput::QMouseDevice>(uri, 2, 0, "MouseDevice");
 
     qmlRegisterExtendedType<Qt3DInput::QLogicalDevice, Qt3DInput::Input::Quick::Quick3DLogicalDevice>(uri, 2, 0, "LogicalDevice");
     qmlRegisterUncreatableType<Qt3DInput::QAbstractActionInput>(uri, 2, 0, "AbstractActionInput", QStringLiteral("AbstractActionInput is abstract"));

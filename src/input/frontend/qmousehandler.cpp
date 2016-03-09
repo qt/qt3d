@@ -39,7 +39,7 @@
 
 #include "qmousehandler.h"
 #include "qmousehandler_p.h"
-#include "qmousecontroller.h"
+#include "qmousedevice.h"
 #include "qmouseevent.h"
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
@@ -51,7 +51,7 @@ namespace Qt3DInput {
 /*! \internal */
 QMouseHandlerPrivate::QMouseHandlerPrivate()
     : QComponentPrivate()
-    , m_sourceDevice(Q_NULLPTR)
+    , m_mouseDevice(Q_NULLPTR)
     , m_containsMouse(false)
 {
     m_shareable = false;
@@ -92,7 +92,7 @@ void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
  * \brief Provides mouse event notification
  *
  * \TODO
- * \sa MouseController
+ * \sa MouseDevice
  */
 
 /*!
@@ -100,14 +100,14 @@ void QMouseHandlerPrivate::mouseEvent(QMouseEvent *event)
  * \inmodule Qt3DInput
  *
  * \brief Provides a means of being notified about mouse events when attached to
- * a QMouseController instance.
+ * a QMouseDevice instance.
  *
  * \since 5.5
  *
  * \note QMouseHandler components shouldn't be shared, not respecting that
  * condition will most likely result in undefined behaviors.
  *
- * \sa QMouseController
+ * \sa QMouseDevice
  */
 
 /*!
@@ -127,24 +127,24 @@ QMouseHandler::~QMouseHandler()
 }
 
 /*!
- * Sets the mouse source device of the QMouseHandler instance to \a sourceDevice.
+ * Sets the mouse device of the QMouseHandler instance to \a mouseDevice.
  */
-void QMouseHandler::setSourceDevice(QMouseController *sourceDevice)
+void QMouseHandler::setSourceDevice(QMouseDevice *mouseDevice)
 {
     Q_D(QMouseHandler);
-    if (d->m_sourceDevice != sourceDevice) {
-        d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged(sourceDevice);
+    if (d->m_mouseDevice != mouseDevice) {
+        d->m_mouseDevice = mouseDevice;
+        emit sourceDeviceChanged(mouseDevice);
     }
 }
 
 /*!
  * Returns the current mouse source device of the QMouseHandler instance.
  */
-QMouseController *QMouseHandler::sourceDevice() const
+QMouseDevice *QMouseHandler::sourceDevice() const
 {
     Q_D(const QMouseHandler);
-    return d->m_sourceDevice;
+    return d->m_mouseDevice;
 }
 
 /*!
@@ -175,12 +175,12 @@ void QMouseHandler::copy(const QNode *ref)
     const QMouseHandler *refInput = static_cast<const QMouseHandler *>(ref);
     d->m_containsMouse = refInput->containsMouse();
 
-    // TODO: We may want to store the controller id and only send a clone when we are the parent
-    // of the controller.
+    // TODO: We may want to store the device id and only send a clone when we are the parent
+    // of the device.
     // Perhaps it's time to investigate sending a "kernel" or "seed" over to the backend rather
     // than a complete clone.
     if (refInput && refInput->sourceDevice() && refInput->sourceDevice()->parent() == ref)
-        d->m_sourceDevice = static_cast<QMouseController *>(QNode::clone(refInput->sourceDevice()));
+        d->m_mouseDevice = static_cast<QMouseDevice *>(QNode::clone(refInput->sourceDevice()));
 }
 
 void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)

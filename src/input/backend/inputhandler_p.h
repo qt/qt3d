@@ -72,7 +72,7 @@ namespace Input {
 class KeyboardInputManager;
 class KeyboardControllerManager;
 class KeyboardEventFilter;
-class MouseControllerManager;
+class MouseDeviceManager;
 class MouseInputManager;
 class MouseEventFilter;
 class AxisManager;
@@ -96,7 +96,7 @@ public:
 
     inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
-    inline MouseControllerManager *mouseControllerManager() const { return m_mouseControllerManager; }
+    inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
     inline AxisManager *axisManager() const { return m_axisManager; }
     inline ActionManager *actionManager() const { return m_actionManager; }
@@ -120,8 +120,8 @@ public:
     void appendKeyboardController(HKeyboardController controller);
     void removeKeyboardController(HKeyboardController controller);
 
-    void appendMouseController(HMouseController controller);
-    void removeMouseController(HMouseController controller);
+    void appendMouseDevice(HMouseDevice device);
+    void removeMouseDevice(HMouseDevice device);
 
     void appendGenericDevice(HGenericDeviceBackendNode device);
     void removeGenericDevice(HGenericDeviceBackendNode device);
@@ -141,11 +141,11 @@ public:
 private:
     KeyboardControllerManager *m_keyboardControllerManager;
     KeyboardInputManager *m_keyboardInputManager;
-    MouseControllerManager *m_mouseControllerManager;
+    MouseDeviceManager *m_mouseDeviceManager;
     MouseInputManager *m_mouseInputManager;
 
     QVector<HKeyboardController> m_activeKeyboardControllers;
-    QVector<HMouseController> m_activeMouseControllers;
+    QVector<HMouseDevice> m_activeMouseDevices;
     QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     KeyboardEventFilter *m_keyboardEventFilter;
     QList<QT_PREPEND_NAMESPACE(QKeyEvent)> m_pendingEvents;

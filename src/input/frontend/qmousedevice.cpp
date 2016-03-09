@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qmousecontroller.h"
-#include "qmousecontroller_p.h"
+#include "qmousedevice.h"
+#include "qmousedevice_p.h"
 
 #include <Qt3DCore/qentity.h>
 
@@ -47,14 +47,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 /*! \internal */
-QMouseControllerPrivate::QMouseControllerPrivate()
+QMouseDevicePrivate::QMouseDevicePrivate()
     : QAbstractPhysicalDevicePrivate()
     , m_sensitivity(0.1f)
 {
 }
 /*!
- * \qmltype MouseController
- * \instantiates Qt3DInput::QMouseController
+ * \qmltype MouseDevice
+ * \instantiates Qt3DInput::QMouseDevice
  * \inqmlmodule Qt3D.Input
  * \since 5.5
  * \brief Delegates mouse events to the attached MouseHandler objects.
@@ -63,55 +63,47 @@ QMouseControllerPrivate::QMouseControllerPrivate()
  */
 
 /*!
- * \class Qt3DInput::QMouseController
+ * \class Qt3DInput::QMouseDevice
  * \inmodule Qt3DInput
  *
- * \brief QMouseController is in charge of dispatching mouse events to
+ * \brief QMouseDevice is in charge of dispatching mouse events to
  * attached QMouseHandler objects.
  *
  * \since 5.5
  * \sa QMouseHandler
  */
-QMouseController::QMouseController(QNode *parent)
-    : QAbstractPhysicalDevice(*new QMouseControllerPrivate, parent)
+QMouseDevice::QMouseDevice(QNode *parent)
+    : QAbstractPhysicalDevice(*new QMouseDevicePrivate, parent)
 {
 }
 
 /*!
-    \internal
+   Destroys this QMouseDevice object.
 */
-QMouseController::QMouseController(QMouseControllerPrivate &dd, QNode *parent)
-    : QAbstractPhysicalDevice(dd, parent)
-{
-}
-
-/*!
-   Destroys this QMouseController object.
-*/
-QMouseController::~QMouseController()
+QMouseDevice::~QMouseDevice()
 {
     QNode::cleanup();
 }
 
-int QMouseController::axisCount() const
+int QMouseDevice::axisCount() const
 {
     // TO DO: we could have mouse wheel later on
     return 2;
 }
 
-int QMouseController::buttonCount() const
+int QMouseDevice::buttonCount() const
 {
     return 3;
 }
 
-QStringList QMouseController::axisNames() const
+QStringList QMouseDevice::axisNames() const
 {
     return QStringList()
             << QStringLiteral("X")
             << QStringLiteral("Y");
 }
 
-QStringList QMouseController::buttonNames() const
+QStringList QMouseDevice::buttonNames() const
 {
     return QStringList()
             << QStringLiteral("Left")
@@ -119,7 +111,7 @@ QStringList QMouseController::buttonNames() const
             << QStringLiteral("Center");
 }
 
-int QMouseController::axisIdentifier(const QString &name) const
+int QMouseDevice::axisIdentifier(const QString &name) const
 {
     if (name == QStringLiteral("X"))
         return X;
@@ -128,26 +120,15 @@ int QMouseController::axisIdentifier(const QString &name) const
     return -1;
 }
 
-int QMouseController::buttonIdentifier(const QString &name) const
+float QMouseDevice::sensitivity() const
 {
-    if (name == QStringLiteral("Left"))
-        return Left;
-    else if (name == QStringLiteral("Right"))
-        return Right;
-    else if (name == QStringLiteral("Center"))
-        return Center;
-    return -1;
-}
-
-float QMouseController::sensitivity() const
-{
-    Q_D(const QMouseController);
+    Q_D(const QMouseDevice);
     return d->m_sensitivity;
 }
 
-void QMouseController::setSensitivity(float value)
+void QMouseDevice::setSensitivity(float value)
 {
-    Q_D(QMouseController);
+    Q_D(QMouseDevice);
     if (qFuzzyCompare(value, d->m_sensitivity))
         return;
 
@@ -155,14 +136,14 @@ void QMouseController::setSensitivity(float value)
     emit sensitivityChanged(value);
 }
 
-void QMouseController::copy(const Qt3DCore::QNode *ref)
+void QMouseDevice::copy(const Qt3DCore::QNode *ref)
 {
     QNode::copy(ref);
-    const QMouseController *object = static_cast<const QMouseController *>(ref);
+    const QMouseDevice *object = static_cast<const QMouseDevice *>(ref);
     d_func()->m_sensitivity = object->d_func()->m_sensitivity;
 }
 
-void QMouseController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change);
     // TODO: To be completed as the mouse input aspect takes shape
