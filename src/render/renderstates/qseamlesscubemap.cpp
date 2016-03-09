@@ -70,7 +70,6 @@ QSeamlessCubemap::~QSeamlessCubemap()
 void QSeamlessCubemap::copy(const QNode *ref)
 {
     QRenderState::copy(ref);
-    const QSeamlessCubemap *refState = static_cast<const QSeamlessCubemap*>(ref);
 }
 
 } // namespace Qt3DRender

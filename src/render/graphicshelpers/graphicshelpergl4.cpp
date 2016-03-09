@@ -924,7 +924,7 @@ void GraphicsHelperGL4::disableClipPlane(int clipPlane)
     m_funcs->glDisable(GL_CLIP_DISTANCE0 + clipPlane);
 }
 
-void GraphicsHelperGL4::setClipPlane(int clipPlane, const QVector3D &normal, float distance)
+void GraphicsHelperGL4::setClipPlane(int, const QVector3D &, float)
 {
     // deprecated
 }
