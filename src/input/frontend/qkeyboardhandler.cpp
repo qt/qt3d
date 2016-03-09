@@ -39,7 +39,7 @@
 
 #include "qkeyboardhandler.h"
 #include "qkeyboardhandler_p.h"
-#include "qkeyboardcontroller.h"
+#include "qkeyboarddevice.h"
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -49,6 +49,7 @@ using namespace Qt3DCore;
 namespace Qt3DInput {
 
 namespace {
+
 
 // SigMap and the sigMap table are taken from QQ2 QQuickKeysAttached
 struct SigMap {
@@ -107,7 +108,7 @@ const QByteArray keyToSignal(int key)
 
 QKeyboardHandlerPrivate::QKeyboardHandlerPrivate()
     : QComponentPrivate()
-    , m_sourceDevice(Q_NULLPTR)
+    , m_keyboardDevice(Q_NULLPTR)
     , m_focus(false)
 {
     m_shareable = false;
@@ -167,10 +168,10 @@ void QKeyboardHandler::copy(const QNode *ref)
     QComponent::copy(ref);
     const QKeyboardHandler *input = static_cast<const QKeyboardHandler *>(ref);
 
-    // TO DO: We may want to store the controller id and only send a clone when we are the parent
-    // of the controller
-    if (input->d_func()->m_sourceDevice != Q_NULLPTR && input->d_func()->m_sourceDevice->parent() == ref)
-        setSourceDevice(qobject_cast<QKeyboardController *>(QNode::clone(input->d_func()->m_sourceDevice)));
+    // TO DO: We may want to store the keyboard device id and only send a clone when we are the parent
+    // of the keyboard device
+    if (input->d_func()->m_keyboardDevice != Q_NULLPTR && input->d_func()->m_keyboardDevice->parent() == ref)
+        setSourceDevice(qobject_cast<QKeyboardDevice *>(QNode::clone(input->d_func()->m_keyboardDevice)));
 }
 
 void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
@@ -190,33 +191,33 @@ void QKeyboardHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 }
 
 /*!
-    \qmlproperty KeyboardController Qt3D.Input::KeyboardHandler::controller
+    \qmlproperty KeyboardDevice Qt3D.Input::KeyboardHandler::device
 */
 
 /*!
-    Sets the keyboard controller to \a controller. Without a valid controller,
+    Sets the keyboard device to \a keyboardDevice. Without a valid device,
     the QKeyboardHandler won't receive any event.
  */
-void QKeyboardHandler::setSourceDevice(QKeyboardController *sourceDevice)
+void QKeyboardHandler::setSourceDevice(QKeyboardDevice *keyboardDevice)
 {
     Q_D(QKeyboardHandler);
-    if (d->m_sourceDevice != sourceDevice) {
+    if (d->m_keyboardDevice != keyboardDevice) {
 
-        if (sourceDevice && !sourceDevice->parent())
-            sourceDevice->setParent(this);
+        if (keyboardDevice && !keyboardDevice->parent())
+            keyboardDevice->setParent(this);
 
-        d->m_sourceDevice = sourceDevice;
-        emit sourceDeviceChanged(sourceDevice);
+        d->m_keyboardDevice = keyboardDevice;
+        emit sourceDeviceChanged(keyboardDevice);
     }
 }
 
 /*!
-    Returns the current keyboard controller.
+    Returns the current keyboard device.
  */
-QKeyboardController *QKeyboardHandler::sourceDevice() const
+QKeyboardDevice *QKeyboardHandler::sourceDevice() const
 {
     Q_D(const QKeyboardHandler);
-    return d->m_sourceDevice;
+    return d->m_keyboardDevice;
 }
 
 /*!

@@ -40,11 +40,11 @@
 #include "qinputaspect.h"
 #include "qinputaspect_p.h"
 #include "inputhandler_p.h"
-#include "keyboardcontroller_p.h"
+#include "keyboarddevice_p.h"
 #include "keyboardhandler_p.h"
 #include "mousedevice_p.h"
 #include "mousehandler_p.h"
-#include <Qt3DInput/qkeyboardcontroller.h>
+#include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmousehandler.h>
@@ -110,7 +110,7 @@ QInputAspectPrivate::QInputAspectPrivate()
 QInputAspect::QInputAspect(QObject *parent)
     : QAbstractAspect(*new QInputAspectPrivate, parent)
 {
-    registerBackendType<QKeyboardController>(QBackendNodeMapperPtr(new Input::KeyboardControllerFunctor(this, d_func()->m_inputHandler.data())));
+    registerBackendType<QKeyboardDevice>(QBackendNodeMapperPtr(new Input::KeyboardDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QKeyboardHandler>(QBackendNodeMapperPtr(new Input::KeyboardHandlerFunctor(d_func()->m_inputHandler.data())));
     registerBackendType<QMouseDevice>(QBackendNodeMapperPtr(new Input::MouseDeviceFunctor(this, d_func()->m_inputHandler.data())));
     registerBackendType<QMouseHandler>(QBackendNodeMapperPtr(new Input::MouseHandlerFunctor(d_func()->m_inputHandler.data())));
@@ -133,7 +133,7 @@ QInputAspect::QInputAspect(QObject *parent)
     // Plugins are QInputDeviceIntegration instances
     d->loadInputDevicePlugins();
 
-    // KeyboardController and MouseDevice also provide their own QInputDeviceIntegration
+    // KeyboardDevice and MouseDevice also provide their own QInputDeviceIntegration
     d->m_inputHandler->addInputDeviceIntegration(d->m_keyboardMouseIntegration.data());
 }
 

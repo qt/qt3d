@@ -67,7 +67,7 @@ class QFrameAction;
 
 namespace Qt3DInput {
 
-class QKeyboardController;
+class QKeyboardDevice;
 class QMouseDevice;
 class QLogicalDevice;
 class QAction;
@@ -106,7 +106,7 @@ public:
     QAxisInput *m_keyboardTyNegInput;
     QAxisInput *m_keyboardTzNegInput;
 
-    QKeyboardController *m_keyboardController;
+    QKeyboardDevice *m_keyboardDevice;
     QMouseDevice *m_mouseDevice;
 
     QLogicalDevice *m_logicalDevice;

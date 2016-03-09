@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qkeyboardcontroller.h"
-#include "qkeyboardcontroller_p.h"
+#include "qkeyboarddevice.h"
+#include "qkeyboarddevice_p.h"
 #include "qkeyboardhandler.h"
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
@@ -49,7 +49,7 @@ using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
-QKeyboardControllerPrivate::QKeyboardControllerPrivate()
+QKeyboardDevicePrivate::QKeyboardDevicePrivate()
     : QAbstractPhysicalDevicePrivate()
 {
     m_keyMap[QStringLiteral("escape")] = Qt::Key_Escape;
@@ -202,82 +202,82 @@ QKeyboardControllerPrivate::QKeyboardControllerPrivate()
 }
 
 /*!
-    \class Qt3DInput::QKeyboardController
+    \class Qt3DInput::QKeyboardDevice
     \inmodule Qt3DInput
     \since 5.5
 */
 
 /*!
-    \qmltype KeyboardController
+    \qmltype KeyboardDevice
     \inqmlmodule Qt3D.Input
     \since 5.5
-    \instantiates Qt3DInput::QKeyboardController
+    \instantiates Qt3DInput::QKeyboardDevice
     \inherits Node
 */
 
-QKeyboardController::QKeyboardController(QNode *parent)
-    : QAbstractPhysicalDevice(*new QKeyboardControllerPrivate, parent)
+QKeyboardDevice::QKeyboardDevice(QNode *parent)
+    : QAbstractPhysicalDevice(*new QKeyboardDevicePrivate, parent)
 {
 }
 
-QKeyboardController::~QKeyboardController()
+QKeyboardDevice::~QKeyboardDevice()
 {
     QNode::cleanup();
 }
 
 /*!
-    \qmlproperty KeyboardHandler Qt3D.Input::KeyboardController::activeInput
+    \qmlproperty KeyboardHandler Qt3D.Input::KeyboardDevice::activeInput
     \readonly
 */
-QKeyboardHandler *QKeyboardController::activeInput() const
+QKeyboardHandler *QKeyboardDevice::activeInput() const
 {
-    Q_D(const QKeyboardController);
+    Q_D(const QKeyboardDevice);
     return d->m_activeInput;
 }
 
-int QKeyboardController::axisCount() const
+int QKeyboardDevice::axisCount() const
 {
     return 0;
 }
 
-int QKeyboardController::buttonCount() const
+int QKeyboardDevice::buttonCount() const
 {
-    Q_D(const QKeyboardController);
+    Q_D(const QKeyboardDevice);
     return d->m_keyNames.size();
 }
 
-QStringList QKeyboardController::axisNames() const
+QStringList QKeyboardDevice::axisNames() const
 {
     return QStringList();
 }
 
-QStringList QKeyboardController::buttonNames() const
+QStringList QKeyboardDevice::buttonNames() const
 {
-    Q_D(const QKeyboardController);
+    Q_D(const QKeyboardDevice);
     return d->m_keyNames;
 }
 
-int QKeyboardController::axisIdentifier(const QString &name) const
+int QKeyboardDevice::axisIdentifier(const QString &name) const
 {
     Q_UNUSED(name);
     return 0;
 }
 
-int QKeyboardController::buttonIdentifier(const QString &name) const
+int QKeyboardDevice::buttonIdentifier(const QString &name) const
 {
-    Q_D(const QKeyboardController);
+    Q_D(const QKeyboardDevice);
     return d->m_keyMap.value(name, 0);
 }
 
 /*! \internal */
-QKeyboardController::QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent)
+QKeyboardDevice::QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent)
     : QAbstractPhysicalDevice(dd, parent)
 {
 }
 
-void QKeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
+void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    Q_D(QKeyboardController);
+    Q_D(QKeyboardDevice);
     QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
     if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
         QNodeId activeInputId = e->value().value<QNodeId>();
@@ -285,9 +285,9 @@ void QKeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &chan
     }
 }
 
-void QKeyboardController::setActiveInput(QKeyboardHandler *activeInput)
+void QKeyboardDevice::setActiveInput(QKeyboardHandler *activeInput)
 {
-    Q_D(QKeyboardController);
+    Q_D(QKeyboardDevice);
     if (d->m_activeInput != activeInput) {
         d->m_activeInput = activeInput;
         emit activeInputChanged(activeInput);

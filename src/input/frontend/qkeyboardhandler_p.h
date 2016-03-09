@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 
 class QKeyboardHandler;
-class QKeyboardController;
+class QKeyboardDevice;
 
 class QKeyboardHandlerPrivate : public Qt3DCore::QComponentPrivate
 {
@@ -68,7 +68,7 @@ public:
     void keyEvent(QKeyEvent *event);
 
     Q_DECLARE_PUBLIC(QKeyboardHandler)
-    QKeyboardController *m_sourceDevice;
+    QKeyboardDevice *m_keyboardDevice;
     bool m_focus;
 };
 

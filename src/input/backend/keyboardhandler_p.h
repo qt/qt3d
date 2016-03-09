@@ -68,7 +68,7 @@ class KeyboardHandler : public Qt3DCore::QBackendNode
 public:
     KeyboardHandler();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeId keyboardController() const;
+    Qt3DCore::QNodeId keyboardDevice() const;
     void setInputHandler(InputHandler *handler);
     void setFocus(bool focus);
     void keyEvent(const QKeyEventPtr &event);
@@ -78,11 +78,11 @@ public:
 protected:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void requestFocus();
-    void setController(Qt3DCore::QNodeId controller);
+    void setSourcerDevice(Qt3DCore::QNodeId device);
 
 private:
     InputHandler *m_inputHandler;
-    Qt3DCore::QNodeId m_keyboardController;
+    Qt3DCore::QNodeId m_keyboardDevice;
     bool m_focus;
     bool m_enabled;
 };

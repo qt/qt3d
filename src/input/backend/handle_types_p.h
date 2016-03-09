@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DInput {
 namespace Input {
 
-class KeyboardController;
+class KeyboardDevice;
 class KeyboardHandler;
 class MouseHandler;
 class MouseDevice;
@@ -73,7 +73,7 @@ class InputChord;
 class LogicalDevice;
 class GenericDeviceBackendNode;
 
-typedef Qt3DCore::QHandle<KeyboardController, 8> HKeyboardController;
+typedef Qt3DCore::QHandle<KeyboardDevice, 8> HKeyboardDevice;
 typedef Qt3DCore::QHandle<KeyboardHandler, 16> HKeyboardHandler;
 typedef Qt3DCore::QHandle<MouseHandler, 16> HMouseHandler;
 typedef Qt3DCore::QHandle<MouseDevice, 8> HMouseDevice;

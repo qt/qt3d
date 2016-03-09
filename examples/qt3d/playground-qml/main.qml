@@ -67,11 +67,11 @@ Entity {
         }
     }
 
-    KeyboardController {id: keyboardController}
+    KeyboardDevice {id: keyboardDevice}
 
     KeyboardHandler {
         id: keyboardHandler
-        sourceDevice: keyboardController
+        sourceDevice: keyboardDevice
         focus: true
         onTabPressed: root.detailCamera = !root.detailCamera;
     }

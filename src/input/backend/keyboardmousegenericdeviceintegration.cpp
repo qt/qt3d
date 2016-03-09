@@ -75,13 +75,13 @@ QAbstractPhysicalDevice *KeyboardMouseGenericDeviceIntegration::createPhysicalDe
 
 QVector<Qt3DCore::QNodeId> KeyboardMouseGenericDeviceIntegration::physicalDevices() const
 {
-    // TO DO: could return the ids of active KeyboardController/MouseDevice
+    // TO DO: could return the ids of active KeyboardDevice/MouseDevice
     return QVector<Qt3DCore::QNodeId>();
 }
 
 QAbstractPhysicalDeviceBackendNode *KeyboardMouseGenericDeviceIntegration::physicalDevice(Qt3DCore::QNodeId id) const
 {
-    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardControllerManager()->lookupResource(id);
+    QAbstractPhysicalDeviceBackendNode *device = m_handler->keyboardDeviceManager()->lookupResource(id);
     if (!device)
         device = m_handler->mouseDeviceManager()->lookupResource(id);
     if (!device)

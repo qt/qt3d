@@ -39,7 +39,7 @@
 
 #include <QtQml>
 #include <Qt3DInput/qgenericinputdevice.h>
-#include <Qt3DInput/qkeyboardcontroller.h>
+#include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qkeyevent.h>
 #include <Qt3DInput/qmousedevice.h>
@@ -73,7 +73,7 @@ QT_BEGIN_NAMESPACE
 void Qt3DQuick3DInputPlugin::registerTypes(const char *uri)
 {
     qmlRegisterUncreatableType<Qt3DInput::QKeyEvent>(uri, 2, 0, "KeyEvent", QStringLiteral("Events cannot be created"));
-    qmlRegisterType<Qt3DInput::QKeyboardController>(uri, 2, 0, "KeyboardController");
+    qmlRegisterType<Qt3DInput::QKeyboardDevice>(uri, 2, 0, "KeyboardDevice");
     qmlRegisterType<Qt3DInput::QKeyboardHandler>(uri, 2, 0, "KeyboardHandler");
     qmlRegisterType<Qt3DInput::QInputSettings>(uri, 2, 0, "InputSettings");
 

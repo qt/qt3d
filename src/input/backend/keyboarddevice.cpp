@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "keyboardcontroller_p.h"
+#include "keyboarddevice_p.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include <Qt3DCore/qnode.h>
@@ -355,7 +355,7 @@ QPair<int, int> getKeyPosition(int key)
 
 // TO DO: Send change to frontend when activeInput changes
 
-KeyboardController::KeyboardController()
+KeyboardDevice::KeyboardDevice()
     : QAbstractPhysicalDeviceBackendNode(QBackendNode::ReadOnly)
     , m_inputHandler(Q_NULLPTR)
 {
@@ -366,12 +366,12 @@ KeyboardController::KeyboardController()
     m_keyStates.keys[4] = 0;
 }
 
-void KeyboardController::updateFromPeer(Qt3DCore::QNode *peer)
+void KeyboardDevice::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QAbstractPhysicalDeviceBackendNode::updateFromPeer(peer);
 }
 
-void KeyboardController::cleanup()
+void KeyboardDevice::cleanup()
 {
     QAbstractPhysicalDeviceBackendNode::cleanup();
     m_keyStates.keys[0] = 0;
@@ -381,7 +381,7 @@ void KeyboardController::cleanup()
     m_keyStates.keys[4] = 0;
 }
 
-void KeyboardController::requestFocusForInput(Qt3DCore::QNodeId inputId)
+void KeyboardDevice::requestFocusForInput(Qt3DCore::QNodeId inputId)
 {
     // Saves the last inputId, this will then be used in an Aspect Job to determine which
     // input will have the focus. This in turn will call KeyboardInput::setFocus which will
@@ -389,12 +389,12 @@ void KeyboardController::requestFocusForInput(Qt3DCore::QNodeId inputId)
     m_lastRequester = inputId;
 }
 
-void KeyboardController::setInputHandler(InputHandler *handler)
+void KeyboardDevice::setInputHandler(InputHandler *handler)
 {
     m_inputHandler = handler;
 }
 
-void KeyboardController::addKeyboardInput(Qt3DCore::QNodeId input)
+void KeyboardDevice::addKeyboardInput(Qt3DCore::QNodeId input)
 {
     if (!m_keyboardInputs.contains(input)) {
         m_keyboardInputs.append(input);
@@ -402,24 +402,24 @@ void KeyboardController::addKeyboardInput(Qt3DCore::QNodeId input)
     }
 }
 
-void KeyboardController::removeKeyboardInput(Qt3DCore::QNodeId input)
+void KeyboardDevice::removeKeyboardInput(Qt3DCore::QNodeId input)
 {
     m_keyboardInputs.removeAll(input);
     m_keyboardInputHandles.removeAll(m_inputHandler->keyboardInputManager()->lookupHandle(input));
 }
 
-void KeyboardController::setCurrentFocusItem(Qt3DCore::QNodeId input)
+void KeyboardDevice::setCurrentFocusItem(Qt3DCore::QNodeId input)
 {
     m_currentFocusItem = input;
 }
 
-float KeyboardController::axisValue(int axisIdentifier) const
+float KeyboardDevice::axisValue(int axisIdentifier) const
 {
     Q_UNUSED(axisIdentifier);
     return 0.0f;
 }
 
-bool KeyboardController::isButtonPressed(int buttonIdentifier) const
+bool KeyboardDevice::isButtonPressed(int buttonIdentifier) const
 {
     QPair<int, int> position = getKeyPosition(buttonIdentifier);
     if (position.first != -1 && position.second != -1)
@@ -427,7 +427,7 @@ bool KeyboardController::isButtonPressed(int buttonIdentifier) const
     return false;
 }
 
-void KeyboardController::setButtonValue(int key, bool value)
+void KeyboardDevice::setButtonValue(int key, bool value)
 {
     QPair<int, int> position = getKeyPosition(key);
     if (position.first != -1 && position.second != -1) {
@@ -438,42 +438,42 @@ void KeyboardController::setButtonValue(int key, bool value)
     }
 }
 
-void KeyboardController::updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
+void KeyboardDevice::updateKeyEvents(const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> &events)
 {
     Q_FOREACH (const QT_PREPEND_NAMESPACE(QKeyEvent) &e, events)
         setButtonValue(e.key(), e.type() == QT_PREPEND_NAMESPACE(QKeyEvent)::KeyPress ? true : false);
 }
 
 
-void KeyboardController::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
+void KeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &)
 {
 }
 
-KeyboardControllerFunctor::KeyboardControllerFunctor(QInputAspect *inputaspect, InputHandler *handler)
+KeyboardDeviceFunctor::KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHandler *handler)
     : m_inputAspect(inputaspect)
     , m_handler(handler)
 {
 }
 
-Qt3DCore::QBackendNode *KeyboardControllerFunctor::create(Qt3DCore::QNode *frontend) const
+Qt3DCore::QBackendNode *KeyboardDeviceFunctor::create(Qt3DCore::QNode *frontend) const
 {
-    KeyboardController *controller = m_handler->keyboardControllerManager()->getOrCreateResource(frontend->id());
-    controller->setInputAspect(m_inputAspect);
-    controller->setInputHandler(m_handler);
-    controller->setPeer(frontend);
-    m_handler->appendKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(frontend->id()));
-    return controller;
+    KeyboardDevice *keyboardDevice = m_handler->keyboardDeviceManager()->getOrCreateResource(frontend->id());
+    keyboardDevice->setInputAspect(m_inputAspect);
+    keyboardDevice->setInputHandler(m_handler);
+    keyboardDevice->setPeer(frontend);
+    m_handler->appendKeyboardDevice(m_handler->keyboardDeviceManager()->lookupHandle(frontend->id()));
+    return keyboardDevice;
 }
 
-Qt3DCore::QBackendNode *KeyboardControllerFunctor::get(Qt3DCore::QNodeId id) const
+Qt3DCore::QBackendNode *KeyboardDeviceFunctor::get(Qt3DCore::QNodeId id) const
 {
-    return m_handler->keyboardControllerManager()->lookupResource(id);
+    return m_handler->keyboardDeviceManager()->lookupResource(id);
 }
 
-void KeyboardControllerFunctor::destroy(Qt3DCore::QNodeId id) const
+void KeyboardDeviceFunctor::destroy(Qt3DCore::QNodeId id) const
 {
-    m_handler->removeKeyboardController(m_handler->keyboardControllerManager()->lookupHandle(id));
-    m_handler->keyboardControllerManager()->releaseResource(id);
+    m_handler->removeKeyboardDevice(m_handler->keyboardDeviceManager()->lookupHandle(id));
+    m_handler->keyboardDeviceManager()->releaseResource(id);
 }
 
 } // namespace Inputs

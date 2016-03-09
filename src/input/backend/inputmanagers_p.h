@@ -53,7 +53,7 @@
 
 #include <QtGlobal>
 #include <Qt3DInput/private/handle_types_p.h>
-#include <Qt3DInput/private/keyboardcontroller_p.h>
+#include <Qt3DInput/private/keyboarddevice_p.h>
 #include <Qt3DInput/private/keyboardhandler_p.h>
 #include <Qt3DInput/private/mousehandler_p.h>
 #include <Qt3DInput/private/mousedevice_p.h>
@@ -83,14 +83,14 @@ public:
     KeyboardInputManager() {}
 };
 
-class KeyboardControllerManager : public Qt3DCore::QResourceManager<
-        KeyboardController,
+class KeyboardDeviceManager : public Qt3DCore::QResourceManager<
+        KeyboardDevice,
         Qt3DCore::QNodeId,
         8,
         Qt3DCore::ArrayAllocatingPolicy>
 {
 public:
-    KeyboardControllerManager() {}
+    KeyboardDeviceManager() {}
 };
 
 class MouseDeviceManager : public Qt3DCore::QResourceManager<

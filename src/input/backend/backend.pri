@@ -1,5 +1,5 @@
 HEADERS += \
-    $$PWD/keyboardcontroller_p.h \
+    $$PWD/keyboarddevice_p.h \
     $$PWD/keyboardhandler_p.h \
     $$PWD/inputhandler_p.h \
     $$PWD/inputmanagers_p.h \
@@ -30,7 +30,7 @@ HEADERS += \
     $$PWD/eventsourcesetterhelper_p.h
 
 SOURCES += \
-    $$PWD/keyboardcontroller.cpp \
+    $$PWD/keyboarddevice.cpp \
     $$PWD/keyboardhandler.cpp \
     $$PWD/inputhandler.cpp \
     $$PWD/keyboardeventfilter.cpp \

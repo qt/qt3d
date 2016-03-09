@@ -56,7 +56,7 @@ import Qt3D.Input 2.0
 Entity {
     id: root
 
-    KeyboardController { id: keyboard1 }
+    KeyboardDevice { id: keyboard1 }
 
     KeyboardHandler {
         id: input

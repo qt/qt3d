@@ -39,7 +39,7 @@
 
 #include "keyboardhandler_p.h"
 #include "qkeyboardhandler.h"
-#include "qkeyboardcontroller.h"
+#include "qkeyboarddevice.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
 #include <QVariant>
@@ -64,16 +64,16 @@ void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QKeyboardHandler *input = static_cast<QKeyboardHandler *>(peer);
     if (input->sourceDevice() != Q_NULLPTR)
-        setController(input->sourceDevice()->id());
+        setSourcerDevice(input->sourceDevice()->id());
     m_focus = false;
     m_enabled = input->isEnabled();
     if (input->focus())
         requestFocus();
 }
 
-Qt3DCore::QNodeId KeyboardHandler::keyboardController() const
+Qt3DCore::QNodeId KeyboardHandler::keyboardDevice() const
 {
-    return m_keyboardController;
+    return m_keyboardDevice;
 }
 
 void KeyboardHandler::setInputHandler(InputHandler *handler)
@@ -81,7 +81,7 @@ void KeyboardHandler::setInputHandler(InputHandler *handler)
     m_inputHandler = handler;
 }
 
-// Called by the KeyboadController when the focus for the KeyboardHandler has changed
+// Called by the KeyboadDevice when the focus for the KeyboardHandler has changed
 // Sends a change notification so that the frontend can update itself
 void KeyboardHandler::setFocus(bool focus)
 {
@@ -109,10 +109,10 @@ void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
     bool focusRequest = false;
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("controller")) {
+        if (propertyChange->propertyName() == QByteArrayLiteral("device")) {
             const QNodeId newId = propertyChange->value().value<QNodeId>();
-            if (m_keyboardController != newId) {
-                setController(newId);
+            if (m_keyboardDevice != newId) {
+                setSourcerDevice(newId);
                 focusRequest = m_focus;
             }
         } else if (propertyChange->propertyName() == QByteArrayLiteral("focus")) {
@@ -127,23 +127,23 @@ void KeyboardHandler::sceneChangeEvent(const QSceneChangePtr &e)
 
 void KeyboardHandler::requestFocus()
 {
-    KeyboardController *controller = m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-    if (controller && m_enabled)
-        controller->requestFocusForInput(peerId());
+    KeyboardDevice *keyboardDevice = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
+    if (keyboardDevice && m_enabled)
+        keyboardDevice->requestFocusForInput(peerId());
 }
 
-void KeyboardHandler::setController(QNodeId controller)
+void KeyboardHandler::setSourcerDevice(QNodeId device)
 {
-    if (!m_keyboardController.isNull()) {
-        KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-        if (controller)
-            controller->removeKeyboardInput(peerId());
+    if (!m_keyboardDevice.isNull()) {
+        KeyboardDevice *device = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
+        if (device)
+            device->removeKeyboardInput(peerId());
     }
-    m_keyboardController = controller;
-    if (!m_keyboardController.isNull()) {
-        KeyboardController *controller =  m_inputHandler->keyboardControllerManager()->lookupResource(m_keyboardController);
-        if (controller)
-            controller->addKeyboardInput(peerId());
+    m_keyboardDevice = device;
+    if (!m_keyboardDevice.isNull()) {
+        KeyboardDevice *device = m_inputHandler->keyboardDeviceManager()->lookupResource(m_keyboardDevice);
+        if (device)
+            device->addKeyboardInput(peerId());
     }
 }
 

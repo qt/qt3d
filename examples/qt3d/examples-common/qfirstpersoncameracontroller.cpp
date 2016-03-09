@@ -56,7 +56,7 @@
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
-#include <Qt3DInput/QKeyboardController>
+#include <Qt3DInput/QKeyboardDevice>
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
 #include <Qt3DLogic/QFrameAction>
@@ -86,7 +86,7 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_keyboardTxNegInput(new QAxisInput())
     , m_keyboardTyNegInput(new QAxisInput())
     , m_keyboardTzNegInput(new QAxisInput())
-    , m_keyboardController(new QKeyboardController())
+    , m_keyboardDevice(new QKeyboardDevice())
     , m_mouseDevice(new QMouseDevice())
     , m_logicalDevice(new QLogicalDevice())
     , m_frameAction(new Qt3DLogic::QFrameAction())
@@ -106,7 +106,7 @@ void QFirstPersonCameraControllerPrivate::init()
 
     // Fine Motion Action
     m_fineMotionKeyInput->setButtons(QVariantList() << Qt::Key_Shift);
-    m_fineMotionKeyInput->setSourceDevice(m_keyboardController);
+    m_fineMotionKeyInput->setSourceDevice(m_keyboardDevice);
     m_fineMotionAction->addInput(m_fineMotionKeyInput);
 
     //// Axes
@@ -124,37 +124,37 @@ void QFirstPersonCameraControllerPrivate::init()
     // Keyboard Pos Tx
     m_keyboardTxPosInput->setButtons(QVariantList() << Qt::Key_Right);
     m_keyboardTxPosInput->setScale(1.0f);
-    m_keyboardTxPosInput->setSourceDevice(m_keyboardController);
+    m_keyboardTxPosInput->setSourceDevice(m_keyboardDevice);
     m_txAxis->addInput(m_keyboardTxPosInput);
 
     // Keyboard Pos Ty
     m_keyboardTyPosInput->setButtons(QVariantList() << Qt::Key_PageUp);
     m_keyboardTyPosInput->setScale(1.0f);
-    m_keyboardTyPosInput->setSourceDevice(m_keyboardController);
+    m_keyboardTyPosInput->setSourceDevice(m_keyboardDevice);
     m_tyAxis->addInput(m_keyboardTyPosInput);
 
     // Keyboard Pos Tz
     m_keyboardTzPosInput->setButtons(QVariantList() << Qt::Key_Up);
     m_keyboardTzPosInput->setScale(1.0f);
-    m_keyboardTzPosInput->setSourceDevice(m_keyboardController);
+    m_keyboardTzPosInput->setSourceDevice(m_keyboardDevice);
     m_tzAxis->addInput(m_keyboardTzPosInput);
 
     // Keyboard Neg Tx
     m_keyboardTxNegInput->setButtons(QVariantList() << Qt::Key_Left);
     m_keyboardTxNegInput->setScale(-1.0f);
-    m_keyboardTxNegInput->setSourceDevice(m_keyboardController);
+    m_keyboardTxNegInput->setSourceDevice(m_keyboardDevice);
     m_txAxis->addInput(m_keyboardTxNegInput);
 
     // Keyboard Neg Ty
     m_keyboardTyNegInput->setButtons(QVariantList() << Qt::Key_PageDown);
     m_keyboardTyNegInput->setScale(-1.0f);
-    m_keyboardTyNegInput->setSourceDevice(m_keyboardController);
+    m_keyboardTyNegInput->setSourceDevice(m_keyboardDevice);
     m_tyAxis->addInput(m_keyboardTyNegInput);
 
     // Keyboard Neg Tz
     m_keyboardTzNegInput->setButtons(QVariantList() << Qt::Key_Down);
     m_keyboardTzNegInput->setScale(-1.0f);
-    m_keyboardTzNegInput->setSourceDevice(m_keyboardController);
+    m_keyboardTzNegInput->setSourceDevice(m_keyboardDevice);
     m_tzAxis->addInput(m_keyboardTzNegInput);
 
     //// Logical Device

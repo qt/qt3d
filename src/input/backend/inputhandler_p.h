@@ -70,7 +70,7 @@ class QInputDeviceIntegration;
 namespace Input {
 
 class KeyboardInputManager;
-class KeyboardControllerManager;
+class KeyboardDeviceManager;
 class KeyboardEventFilter;
 class MouseDeviceManager;
 class MouseInputManager;
@@ -94,7 +94,7 @@ public:
     InputHandler();
     ~InputHandler();
 
-    inline KeyboardControllerManager *keyboardControllerManager() const { return m_keyboardControllerManager; }
+    inline KeyboardDeviceManager *keyboardDeviceManager() const { return m_keyboardDeviceManager; }
     inline KeyboardInputManager *keyboardInputManager() const  { return m_keyboardInputManager; }
     inline MouseDeviceManager *mouseDeviceManager() const { return m_mouseDeviceManager; }
     inline MouseInputManager *mouseInputManager() const { return m_mouseInputManager; }
@@ -117,8 +117,8 @@ public:
     QList<QMouseEvent> pendingMouseEvents();
     void clearPendingMouseEvents();
 
-    void appendKeyboardController(HKeyboardController controller);
-    void removeKeyboardController(HKeyboardController controller);
+    void appendKeyboardDevice(HKeyboardDevice device);
+    void removeKeyboardDevice(HKeyboardDevice device);
 
     void appendMouseDevice(HMouseDevice device);
     void removeMouseDevice(HMouseDevice device);
@@ -139,12 +139,12 @@ public:
     void updateEventSource();
 
 private:
-    KeyboardControllerManager *m_keyboardControllerManager;
+    KeyboardDeviceManager *m_keyboardDeviceManager;
     KeyboardInputManager *m_keyboardInputManager;
     MouseDeviceManager *m_mouseDeviceManager;
     MouseInputManager *m_mouseInputManager;
 
-    QVector<HKeyboardController> m_activeKeyboardControllers;
+    QVector<HKeyboardDevice> m_activeKeyboardDevices;
     QVector<HMouseDevice> m_activeMouseDevices;
     QVector<HGenericDeviceBackendNode> m_activeGenericPhysicalDevices;
     KeyboardEventFilter *m_keyboardEventFilter;

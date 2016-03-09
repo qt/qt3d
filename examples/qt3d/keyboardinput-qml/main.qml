@@ -79,8 +79,8 @@ Entity {
         InputSettings { }
     ]
 
-    KeyboardController {
-        id: keyboardController
+    KeyboardDevice {
+        id: keyboardDevice
     }
 
     SphereEntity {
@@ -89,14 +89,14 @@ Entity {
         color: "red"
         input.onTabPressed: sphere2.input.focus = true
         input.focus: true
-        input.sourceDevice: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 
     SphereEntity {
         id: sphere2
         color: "green"
         input.onTabPressed: sphere3.input.focus = true
-        input.sourceDevice: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 
     SphereEntity {
@@ -104,6 +104,6 @@ Entity {
         position: Qt.vector3d(5, 0, 0)
         color: "blue"
         input.onTabPressed: sphere1.input.focus = true
-        input.sourceDevice: keyboardController
+        input.sourceDevice: keyboardDevice
     }
 }

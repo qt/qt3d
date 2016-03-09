@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H
-#define QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H
+#ifndef QT3DINPUT_INPUT_KEYBOARDDEVICE_P_H
+#define QT3DINPUT_INPUT_KEYBOARDDEVICE_P_H
 
 //
 //  W A R N I N G
@@ -66,10 +66,10 @@ namespace Input {
 
 class InputHandler;
 
-class KeyboardController : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
+class KeyboardDevice : public Qt3DInput::QAbstractPhysicalDeviceBackendNode
 {
 public:
-    KeyboardController();
+    KeyboardDevice();
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
     void cleanup() Q_DECL_OVERRIDE;
@@ -270,10 +270,10 @@ private:
     KeyStates m_keyStates;
 };
 
-class KeyboardControllerFunctor : public Qt3DCore::QBackendNodeMapper
+class KeyboardDeviceFunctor : public Qt3DCore::QBackendNodeMapper
 {
 public:
-    explicit KeyboardControllerFunctor(QInputAspect *inputaspect, InputHandler *handler);
+    explicit KeyboardDeviceFunctor(QInputAspect *inputaspect, InputHandler *handler);
 
     Qt3DCore::QBackendNode *create(Qt3DCore::QNode *frontend) const Q_DECL_OVERRIDE;
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_OVERRIDE;
@@ -289,4 +289,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_KEYBOARDCONTROLLER_P_H
+#endif // QT3DINPUT_INPUT_KEYBOARDDEVICE_P_H

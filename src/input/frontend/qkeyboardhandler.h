@@ -48,27 +48,27 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QKeyboardController;
+class QKeyboardDevice;
 class QKeyboardHandlerPrivate;
 
 class QT3DINPUTSHARED_EXPORT QKeyboardHandler : public Qt3DCore::QComponent
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QKeyboardController *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
+    Q_PROPERTY(Qt3DInput::QKeyboardDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
     Q_PROPERTY(bool focus READ focus WRITE setFocus NOTIFY focusChanged)
 public:
     explicit QKeyboardHandler(QNode *parent = 0);
     ~QKeyboardHandler();
 
-    QKeyboardController *sourceDevice() const;
+    Qt3DInput::QKeyboardDevice *sourceDevice() const;
     bool focus() const;
 
 public Q_SLOTS:
-    void setSourceDevice(QKeyboardController *sourceDevice);
+    void setSourceDevice(Qt3DInput::QKeyboardDevice *keyboardDevice);
     void setFocus(bool focus);
 
 Q_SIGNALS:
-    void sourceDeviceChanged(QKeyboardController *sourceDevice);
+    void sourceDeviceChanged(QKeyboardDevice *keyboardDevice);
     void focusChanged(bool focus);
 
     void digit0Pressed(Qt3DInput::QKeyEvent *event);

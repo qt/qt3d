@@ -72,7 +72,7 @@ Entity {
         readonly property bool fineMotion: fineMotionAction.active
     }
 
-    KeyboardController {
+    KeyboardDevice {
         id: keyboardSourceDevice
     }
 

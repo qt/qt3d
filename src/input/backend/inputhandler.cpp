@@ -56,7 +56,7 @@ namespace Qt3DInput {
 namespace Input {
 
 InputHandler::InputHandler()
-    : m_keyboardControllerManager(new KeyboardControllerManager())
+    : m_keyboardDeviceManager(new KeyboardDeviceManager())
     , m_keyboardInputManager(new KeyboardInputManager())
     , m_mouseDeviceManager(new MouseDeviceManager())
     , m_mouseInputManager(new MouseInputManager())
@@ -138,14 +138,14 @@ void InputHandler::clearPendingMouseEvents()
     m_pendingMouseEvents.clear();
 }
 
-void InputHandler::appendKeyboardController(HKeyboardController controller)
+void InputHandler::appendKeyboardDevice(HKeyboardDevice device)
 {
-    m_activeKeyboardControllers.append(controller);
+    m_activeKeyboardDevices.append(device);
 }
 
-void InputHandler::removeKeyboardController(HKeyboardController controller)
+void InputHandler::removeKeyboardDevice(HKeyboardDevice device)
 {
-    m_activeKeyboardControllers.removeAll(controller);
+    m_activeKeyboardDevices.removeAll(device);
 }
 
 void InputHandler::appendMouseDevice(HMouseDevice device)
@@ -172,17 +172,17 @@ void Qt3DInput::Input::InputHandler::removeGenericDevice(HGenericDeviceBackendNo
 // Handles all dependencies between jobs
 QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
 {
-    // One job for Keyboard focus change event per Keyboard Controller
+    // One job for Keyboard focus change event per Keyboard device
     QVector<QAspectJobPtr> jobs;
     const QList<QT_PREPEND_NAMESPACE(QKeyEvent)> events = pendingKeyEvents();
 
-    Q_FOREACH (const HKeyboardController cHandle, m_activeKeyboardControllers) {
-        KeyboardController *controller = m_keyboardControllerManager->data(cHandle);
-        if (controller) {
-            controller->updateKeyEvents(events);
+    Q_FOREACH (const HKeyboardDevice cHandle, m_activeKeyboardDevices) {
+        KeyboardDevice *keyboardDevice = m_keyboardDeviceManager->data(cHandle);
+        if (keyboardDevice) {
+            keyboardDevice->updateKeyEvents(events);
             QAspectJobPtr focusChangeJob;
-            if (controller->lastKeyboardInputRequester() != controller->currentFocusItem()) {
-                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(controller->peerId());
+            if (keyboardDevice->lastKeyboardInputRequester() != keyboardDevice->currentFocusItem()) {
+                AssignKeyboardFocusJob *job = new AssignKeyboardFocusJob(keyboardDevice->peerId());
                 job->setInputHandler(this);
                 focusChangeJob.reset(job);
                 jobs.append(focusChangeJob);
@@ -190,7 +190,7 @@ QVector<Qt3DCore::QAspectJobPtr> InputHandler::keyboardJobs()
             }
             // Event dispacthing job
             if (!events.isEmpty()) {
-                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(controller->currentFocusItem(), events);
+                KeyEventDispatcherJob *job = new KeyEventDispatcherJob(keyboardDevice->currentFocusItem(), events);
                 job->setInputHandler(this);
                 if (focusChangeJob)
                     job->addDependency(focusChangeJob);

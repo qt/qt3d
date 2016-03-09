@@ -75,7 +75,7 @@ Entity {
         property bool fineMotion: false
     }
 
-    KeyboardController {
+    KeyboardDevice {
         id: keyboardSourceDevice
     }
 

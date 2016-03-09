@@ -37,52 +37,44 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
-#define QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
+#ifndef QT3DINPUT_INPUT_QKEYBOARDDEVICE_P_H
+#define QT3DINPUT_INPUT_QKEYBOARDDEVICE_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DInput/qabstractphysicaldevice.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qabstractphysicaldevice_p.h>
+#include <QtCore/qhash.h>
+#include <QtCore/qstring.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QKeyboardControllerPrivate;
+class QKeyboardDevice;
 class QKeyboardHandler;
 
-class QT3DINPUTSHARED_EXPORT QKeyboardController : public Qt3DInput::QAbstractPhysicalDevice
+class QKeyboardDevicePrivate : public Qt3DInput::QAbstractPhysicalDevicePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QKeyboardHandler *activeInput READ activeInput NOTIFY activeInputChanged)
-
 public:
-    explicit QKeyboardController(QNode *parent = 0);
-    ~QKeyboardController();
+    QKeyboardDevicePrivate();
 
-    QKeyboardHandler *activeInput() const;
-
-    int axisCount() const Q_DECL_FINAL;
-    int buttonCount() const Q_DECL_FINAL;
-    QStringList axisNames() const Q_DECL_FINAL;
-    QStringList buttonNames() const Q_DECL_FINAL;
-    int axisIdentifier(const QString &name) const Q_DECL_FINAL;
-    int buttonIdentifier(const QString &name) const Q_DECL_FINAL;
-
-protected:
-    QKeyboardController(QKeyboardControllerPrivate &dd, QNode *parent = 0);
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-
-Q_SIGNALS:
-    void activeInputChanged(QKeyboardHandler *activeInput);
-
-private:
-    Q_DECLARE_PRIVATE(QKeyboardController)
-    QT3D_CLONEABLE(QKeyboardController)
-    void setActiveInput(QKeyboardHandler *activeInput);
+    Q_DECLARE_PUBLIC(QKeyboardDevice)
+    QKeyboardHandler *m_activeInput;
+    QHash<QString, int> m_keyMap;
+    QStringList m_keyNames;
 };
 
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_INPUT_QKEYBOARDCONTROLLER_H
+#endif // QT3DINPUT_INPUT_QKEYBOARDDEVICE_P_H
