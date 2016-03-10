@@ -37,48 +37,38 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DLOGIC_QLOGICCOMPONENT_H
-#define QT3DLOGIC_QLOGICCOMPONENT_H
+#ifndef QT3DLOGIC_QFRAMEACTION_P_H
+#define QT3DLOGIC_QFRAMEACTION_P_H
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DLogic/qt3dlogic_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qcomponent_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 
-class QLogicAspect;
-class QLogicComponentPrivate;
+class QFrameAction;
 
-namespace Logic {
-class Executor;
-}
-
-class QT3DLOGICSHARED_EXPORT QLogicComponent : public Qt3DCore::QComponent
+class QFrameActionPrivate : public Qt3DCore::QComponentPrivate
 {
-    Q_OBJECT
-
 public:
-    explicit QLogicComponent(Qt3DCore::QNode *parent = 0);
-    ~QLogicComponent();
+    QFrameActionPrivate();
 
-protected:
-    QLogicComponent(QLogicComponentPrivate &dd, QNode *parent = 0);
-
-Q_SIGNALS:
-    void frameUpdate(float dt);
-
-private:
-    Q_DECLARE_PRIVATE(QLogicComponent)
-    QT3D_CLONEABLE(QLogicComponent)
-
-    virtual void onFrameUpdate(float dt);
-
-    friend class Logic::Executor;
+    Q_DECLARE_PUBLIC(QFrameAction)
 };
 
 } // namespace Qt3DLogic
 
 QT_END_NAMESPACE
 
-#endif // QT3DLOGIC_QLOGICCOMPONENT_H
+#endif // QT3DLOGIC_QFRAMEACTION_P_H

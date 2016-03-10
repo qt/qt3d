@@ -272,8 +272,8 @@ Entity {
             }
         },
 
-        LogicComponent {
-            onFrameUpdate: {
+        FrameAction {
+            onTriggered: {
                 // The time difference since the last frame is passed in as the
                 // argument dt. It is a floating point value in units of seconds.
                 root.camera.translate(Qt.vector3d(d.vx, d.vy, d.vz).times(dt))

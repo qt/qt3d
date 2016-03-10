@@ -62,7 +62,7 @@ class QCamera;
 }
 
 namespace Qt3DLogic {
-class QLogicComponent;
+class QFrameAction;
 }
 
 namespace Qt3DInput {
@@ -111,13 +111,13 @@ public:
 
     QLogicalDevice *m_logicalDevice;
 
-    Qt3DLogic::QLogicComponent *m_logicComponent;
+    Qt3DLogic::QFrameAction *m_frameAction;
 
     float m_linearSpeed;
     float m_lookSpeed;
     QVector3D m_firstPersonUp;
 
-    void _q_onFrameUpdate(float);
+    void _q_onTriggered(float);
 
     Q_DECLARE_PUBLIC(QFirstPersonCameraController)
 };

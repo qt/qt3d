@@ -37,59 +37,59 @@
 **
 ****************************************************************************/
 
-#include "qlogiccomponent.h"
-#include "qlogiccomponent_p.h"
+#include "qframeaction.h"
+#include "qframeaction_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DLogic {
 
-QLogicComponentPrivate::QLogicComponentPrivate()
+QFrameActionPrivate::QFrameActionPrivate()
     : QComponentPrivate()
 {
 }
 
 /*!
-    \class Qt3DLogic::QLogicComponent
+    \class Qt3DLogic::QFrameAction
     \inmodule Qt3DLogic
     \since 5.5
     \brief Provides a way to have a synchronous function executed each frame.
 
-    The QLogicComponent provides a way to perform tasks each frame in
+    The QFrameAction provides a way to perform tasks each frame in
     synchronized with the Qt3D backend. This is useful to implement some
     aspects of application logic and to prototype functionality that can later
     be folded into an additional Qt3D aspect.
 
-    For example, the QLogicComponent can be used to animate a property in sync
+    For example, the QFrameAction can be used to animate a property in sync
     with the Qt3D engine where a Qt Quick animation element is not perfectly
     synchronized and may lead to stutters in some cases.
 
-    To execute your own code each frame override the onFrameUpdate function.
+    To execute your own code each frame override the onTriggered function.
 */
 
 /*!
-    \qmltype LogicComponent
+    \qmltype FrameAction
     \inqmlmodule Qt3D.Logic
-    \instantiates Qt3DLogic::QLogicComponent
+    \instantiates Qt3DLogic::QFrameAction
     \inherits Component3D
     \since 5.5
 */
 
 /*!
-    Constructs a new QLogicComponent instance with parent \a parent.
+    Constructs a new QFrameAction instance with parent \a parent.
  */
-QLogicComponent::QLogicComponent(QNode *parent)
-    : QComponent(*new QLogicComponentPrivate, parent)
+QFrameAction::QFrameAction(QNode *parent)
+    : QComponent(*new QFrameActionPrivate, parent)
 {
 }
 
 /*! \internal */
-QLogicComponent::QLogicComponent(QLogicComponentPrivate &dd, QNode *parent)
+QFrameAction::QFrameAction(QFrameActionPrivate &dd, QNode *parent)
     : QComponent(dd, parent)
 {
 }
 
-QLogicComponent::~QLogicComponent()
+QFrameAction::~QFrameAction()
 {
     QNode::cleanup();
 }
@@ -98,11 +98,11 @@ QLogicComponent::~QLogicComponent()
     This virtual function will be called in a synchronous manner once each frame by
     the Logic aspect.
 */
-void QLogicComponent::onFrameUpdate(float dt)
+void QFrameAction::onTriggered(float dt)
 {
-    // Emit signal so that QML instances get the onFrameUpdate() signal
+    // Emit signal so that QML instances get the onTriggered() signal
     // handler called
-    emit frameUpdate(dt);
+    emit triggered(dt);
 }
 
 } // namespace Qt3DLogic

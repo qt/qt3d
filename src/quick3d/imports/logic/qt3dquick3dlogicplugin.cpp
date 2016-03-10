@@ -38,14 +38,14 @@
 ****************************************************************************/
 
 #include <QtQml>
-#include <Qt3DLogic/qlogiccomponent.h>
+#include <Qt3DLogic/qframeaction.h>
 #include "qt3dquick3dlogicplugin.h"
 
 QT_BEGIN_NAMESPACE
 
 void Qt3DQuick3DLogicPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterType<Qt3DLogic::QLogicComponent>(uri, 2, 0, "LogicComponent");
+    qmlRegisterType<Qt3DLogic::QFrameAction>(uri, 2, 0, "FrameAction");
 }
 
 QT_END_NAMESPACE

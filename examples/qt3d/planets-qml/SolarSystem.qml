@@ -115,8 +115,8 @@ Entity {
     property real actualScale
 
     // Animate solar system with LogicComponent
-    LogicComponent {
-        onFrameUpdate: {
+    FrameAction {
+        onTriggered: {
             frames++
             animate(focusedPlanet)
         }

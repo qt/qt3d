@@ -42,7 +42,7 @@
 #include "executor_p.h"
 #include "handler_p.h"
 #include "manager_p.h"
-#include "qlogiccomponent.h"
+#include "qframeaction.h"
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
@@ -87,7 +87,7 @@ QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
 
 void QLogicAspect::registerBackendTypes()
 {
-    registerBackendType<QLogicComponent>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
+    registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)

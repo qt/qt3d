@@ -59,7 +59,7 @@
 #include <Qt3DInput/QKeyboardController>
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
-#include <Qt3DLogic/QLogicComponent>
+#include <Qt3DLogic/QFrameAction>
 
 QT_BEGIN_NAMESPACE
 
@@ -89,7 +89,7 @@ QFirstPersonCameraControllerPrivate::QFirstPersonCameraControllerPrivate()
     , m_keyboardController(new QKeyboardController())
     , m_mouseDevice(new QMouseDevice())
     , m_logicalDevice(new QLogicalDevice())
-    , m_logicComponent(new Qt3DLogic::QLogicComponent())
+    , m_frameAction(new Qt3DLogic::QFrameAction())
     , m_linearSpeed(10.0f)
     , m_lookSpeed(180.0f)
     , m_firstPersonUp(QVector3D(0.0f, 1.0f, 0.0f))
@@ -168,16 +168,16 @@ void QFirstPersonCameraControllerPrivate::init()
     m_logicalDevice->addAxis(m_tzAxis);
 
     Q_Q(QFirstPersonCameraController);
-    //// LogicComponent
+    //// FrameAction
 
-    QObject::connect(m_logicComponent, SIGNAL(frameUpdate(float)),
-                     q, SLOT(_q_onFrameUpdate(float)));
+    QObject::connect(m_frameAction, SIGNAL(triggered(float)),
+                     q, SLOT(_q_onTriggered(float)));
 
-    q->addComponent(m_logicComponent);
+    q->addComponent(m_frameAction);
     q->addComponent(m_logicalDevice);
 }
 
-void QFirstPersonCameraControllerPrivate::_q_onFrameUpdate(float dt)
+void QFirstPersonCameraControllerPrivate::_q_onTriggered(float dt)
 {
     if (m_camera != Q_NULLPTR) {
         m_camera->translate(QVector3D(m_txAxis->value() * m_linearSpeed,
