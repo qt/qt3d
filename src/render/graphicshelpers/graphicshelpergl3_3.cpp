@@ -397,8 +397,8 @@ void GraphicsHelperGL3_3::drawBuffers(GLsizei n, const int *bufs)
 
 void GraphicsHelperGL3_3::bindFragDataLocation(GLuint shader, const QHash<QString, int> &outputs)
 {
-    Q_FOREACH (const QString &name, outputs.keys())
-        m_funcs->glBindFragDataLocation(shader, outputs.value(name), name.toStdString().c_str());
+    for (auto it = outputs.begin(), end = outputs.end(); it != end; ++it)
+        m_funcs->glBindFragDataLocation(shader, it.value(), it.key().toStdString().c_str());
 }
 
 void GraphicsHelperGL3_3::bindUniform(const QVariant &v, const ShaderUniform &description)
