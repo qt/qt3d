@@ -98,6 +98,8 @@ protected:
     // TODO: add timestamp from central clock and priority level
     // These can be used to resolve any conflicts between events
     // posted from different aspects
+private:
+    Q_DISABLE_COPY(QSceneChange)
 };
 
 typedef QSharedPointer<QSceneChange> QSceneChangePtr;

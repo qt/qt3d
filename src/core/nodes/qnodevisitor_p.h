@@ -98,6 +98,7 @@ public:
     void pop_back();
 
 private:
+    Q_DISABLE_COPY(QNodeVisitor)
     QNodeVector m_path;
 
     template<typename NodeVisitorFunctor>

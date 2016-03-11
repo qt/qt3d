@@ -90,6 +90,7 @@ protected:
     QBackendNodePrivate *d_ptr;
 
 private:
+    Q_DISABLE_COPY(QBackendNode)
     friend class QBackendScenePropertyChange;
 };
 

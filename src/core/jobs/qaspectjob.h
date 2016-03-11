@@ -67,6 +67,7 @@ protected:
     QAspectJob(QAspectJobPrivate &dd);
 
 private:
+    Q_DISABLE_COPY(QAspectJob)
     Q_DECLARE_PRIVATE(QAspectJob)
     QAspectJobPrivate *d_ptr;
 };

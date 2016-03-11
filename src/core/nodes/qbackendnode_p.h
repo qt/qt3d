@@ -82,6 +82,9 @@ public:
 
     QLockableObserverInterface *m_arbiter;
     QNodeId m_peerId;
+
+private:
+    Q_DISABLE_COPY(QBackendNodePrivate)
 };
 
 } // Qt3D
