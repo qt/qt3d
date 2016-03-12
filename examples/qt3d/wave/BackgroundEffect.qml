@@ -63,7 +63,7 @@ Effect {
                 minorVersion: 1
             }
 
-            filterKeys: Annotation { name: "renderingStyle"; value: "forward" }
+            annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
 
             renderPasses: [
                 RenderPass {

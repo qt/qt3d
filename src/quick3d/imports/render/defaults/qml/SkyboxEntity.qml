@@ -99,7 +99,7 @@ Entity {
             techniques: [
                 // GL3 Technique
                 Technique {
-                    filterKeys: [ forward ]
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.CoreProfile
@@ -116,7 +116,7 @@ Entity {
                     }
                 },
                 Technique {
-                    filterKeys: [ forward ]
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.NoProfile
@@ -132,7 +132,7 @@ Entity {
                     }
                 },
                 Technique {
-                    filterKeys: [ forward ]
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile

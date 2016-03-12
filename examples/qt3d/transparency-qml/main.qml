@@ -161,7 +161,7 @@ Entity {
             techniques: [
                 Technique
                 {
-                    filterKeys: forward
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGL
                         profile: GraphicsApiFilter.NoProfile
@@ -186,7 +186,7 @@ Entity {
                 },
                 Technique
                 {
-                    annotations: forward
+                    annotations: [ forward ]
                     graphicsApiFilter {
                         api: GraphicsApiFilter.OpenGLES
                         profile: GraphicsApiFilter.NoProfile

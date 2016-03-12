@@ -99,7 +99,7 @@ Entity {
                     minorVersion: 2
                     majorVersion: 3
                 }
-                filterKeys: Annotation { name: "renderingStyle"; value: "forward" }
+                annotations: [ Annotation { name: "renderingStyle"; value: "forward" } ]
                 renderPasses: RenderPass {
                     shaderProgram: ShaderProgram {
                         vertexShaderCode: loadSource("qrc:/instanced.vert")
