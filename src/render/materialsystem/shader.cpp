@@ -289,7 +289,7 @@ QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
         // Compile shaders
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         if (!m_shaderCode[type].isEmpty() && !p->addShaderFromSourceCode(shaderType(type), m_shaderCode[type]))
-            qWarning() << "Failed to compile shader:" << p->log();
+            qWarning().noquote() << "Failed to compile shader:" << p->log();
     }
 
     // Call glBindFragDataLocation and link the program
@@ -297,7 +297,7 @@ QOpenGLShaderProgram *Shader::createProgram(GraphicsContext *context)
     // fragOutputs, they should all be the same for a given shader
     context->bindFragOutputs(p->programId(), m_fragOutputs);
     if (!p->link()) {
-        qWarning() << "Failed to link shader program:" << p->log();
+        qWarning().noquote() << "Failed to link shader program:" << p->log();
         return Q_NULLPTR;
     }
 
