@@ -69,7 +69,7 @@ RenderSettings {
 
                 RenderTargetSelector {
                     target: RenderTarget {
-                        outputs: [
+                        attachments: [
                             RenderTargetOutput {
                                 objectName: "depth"
                                 attachmentPoint: RenderTargetOutput.Depth
