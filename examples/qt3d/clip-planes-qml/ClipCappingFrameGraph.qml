@@ -64,9 +64,9 @@ Viewport {
             RenderStateSet {
                 // Enable 3 clipping planes
                 renderStates: [
-                    ClipPlane { plane: 0 },
-                    ClipPlane { plane: 1 },
-                    ClipPlane { plane: 2 },
+                    ClipPlane { planeIndex: 0 },
+                    ClipPlane { planeIndex: 1 },
+                    ClipPlane { planeIndex: 2 },
                     DepthTest { depthFunction: DepthTest.LessOrEqual }
                 ]
 
