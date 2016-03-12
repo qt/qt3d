@@ -76,10 +76,10 @@ protected:
 private:
     virtual QVariant executeCommand(const QStringList &args);
 
-    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time) = 0;
+    virtual QVector<QAspectJobPtr> jobsToExecute(qint64 time);
 
-    virtual void onInitialize() = 0;
-    virtual void onCleanup() = 0;
+    virtual void onInitialize();
+    virtual void onCleanup();
 
     virtual void onStartup();
     virtual void onShutdown();

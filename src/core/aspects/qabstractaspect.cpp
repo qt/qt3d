@@ -127,6 +127,20 @@ QVariant QAbstractAspect::executeCommand(const QStringList &args)
     return QVariant();
 }
 
+QVector<QAspectJobPtr> QAbstractAspect::jobsToExecute(qint64 time)
+{
+    Q_UNUSED(time);
+    return QVector<QAspectJobPtr>();
+}
+
+void QAbstractAspect::onInitialize()
+{
+}
+
+void QAbstractAspect::onCleanup()
+{
+}
+
 QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
 {
     const QMetaObject *metaObj = frontend->metaObject();
