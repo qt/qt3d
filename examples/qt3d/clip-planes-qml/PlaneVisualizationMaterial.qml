@@ -62,13 +62,13 @@ Material {
 
     ShaderProgram {
         id: gl3PhongAlphaShader
-        vertexShaderCode: loadSource("qrc:/shaders/gl3/phongalpha.vert")
+        vertexShaderCode: loadSource("qrc:/shaders/gl3/phong.vert")
         fragmentShaderCode: loadSource("qrc:/shaders/gl3/phongalpha.frag")
     }
 
     ShaderProgram {
         id: gl2es2PhongAlphaShader
-        vertexShaderCode: loadSource("qrc:/shaders/es2/phongalpha.vert")
+        vertexShaderCode: loadSource("qrc:/shaders/es2/phong.vert")
         fragmentShaderCode: loadSource("qrc:/shaders/es2/phongalpha.frag")
     }
 
