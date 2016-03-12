@@ -67,23 +67,15 @@ public:
     explicit QRenderAspect(QObject *parent = 0);
     explicit QRenderAspect(RenderType type, QObject *parent = 0);
 
-    void renderInitialize(QOpenGLContext *context);
-    void renderSynchronous();
-    void renderShutdown();
-
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
 protected:
-    void registerBackendTypes();
     QRenderAspect(QRenderAspectPrivate &dd, QObject *parent);
     Q_DECLARE_PRIVATE(QRenderAspect)
 
     void onRootEntityChanged(Qt3DCore::QEntity *rootObject) Q_DECL_OVERRIDE;
     void onInitialize() Q_DECL_OVERRIDE;
     void onCleanup() Q_DECL_OVERRIDE;
-
-    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
-    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
 private:
     friend class Render::Renderer;

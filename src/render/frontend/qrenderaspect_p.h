@@ -72,15 +72,21 @@ class AbstractRenderer;
 class NodeManagers;
 }
 
-class QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
+class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
 {
 public:
     QRenderAspectPrivate(QRenderAspect::RenderType type);
 
     Q_DECLARE_PUBLIC(QRenderAspect)
 
+    void registerBackendTypes();
     void setSurface(QSurface *surface);
     void loadSceneParsers();
+    void renderInitialize(QOpenGLContext *context);
+    void renderSynchronous();
+    void renderShutdown();
+    QVector<Qt3DCore::QAspectJobPtr> createRenderBufferJobs();
+    QVector<Qt3DCore::QAspectJobPtr> createGeometryRendererJobs();
 
     Render::NodeManagers *m_nodeManagers;
     Render::AbstractRenderer *m_renderer;

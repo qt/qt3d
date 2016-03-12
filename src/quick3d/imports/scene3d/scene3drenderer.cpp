@@ -44,6 +44,7 @@
 #include "scene3dsgnode_p.h"
 
 #include <Qt3DRender/qrenderaspect.h>
+#include <Qt3DRender/private/qrenderaspect_p.h>
 #include <Qt3DCore/qaspectengine.h>
 
 #include <QtQuick/qquickwindow.h>
@@ -128,7 +129,7 @@ Scene3DRenderer::Scene3DRenderer(Scene3DItem *item, Qt3DCore::QAspectEngine *asp
     QObject::connect(m_item, &QQuickItem::windowChanged, this, &Scene3DRenderer::onWindowChangedQueued, Qt::QueuedConnection);
 
     ContextSaver saver;
-    m_renderAspect->renderInitialize(saver.context());
+    static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderInitialize(saver.context());
     scheduleRootEntityChange();
 }
 
@@ -179,7 +180,7 @@ void Scene3DRenderer::shutdown()
     // Shutdown the Renderer Aspect while the OpenGL context
     // is still valid
     if (m_renderAspect)
-        m_renderAspect->renderShutdown();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
 }
 
 // SGThread
@@ -254,7 +255,7 @@ void Scene3DRenderer::render()
         m_multisampledFBO->bind();
 
         // Render Qt3D Scene
-        m_renderAspect->renderSynchronous();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
         // We may have called doneCurrent() so restore the context.
         if (saver.context()->surface() != saver.surface())
@@ -277,7 +278,7 @@ void Scene3DRenderer::render()
         m_finalFBO->bind();
 
         // Render Qt3D Scene
-        m_renderAspect->renderSynchronous();
+        static_cast<QRenderAspectPrivate*>(QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
         // We may have called doneCurrent() so restore the context.
         if (saver.context()->surface() != saver.surface())
