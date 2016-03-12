@@ -202,7 +202,7 @@ Entity {
         }
 
         Entity {
-            id: sphere3
+            id: light3
             property PointLight light : PointLight {
                 color : "white"
                 intensity : 2.0
