@@ -60,7 +60,7 @@ Entity {
 
     KeyboardHandler {
         id: input
-        controller: keyboard1
+        sourceDevice: keyboard1
         focus: true
 
         onTabPressed: {
