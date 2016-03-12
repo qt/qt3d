@@ -97,7 +97,7 @@ Effect {
                         DepthMask { mask: true },
                         BlendEquationArguments {
                             sourceRgb: BlendEquationArguments.One
-                            destinationRgb: BlendEquationArguments.OneMinusSrcColor
+                            destinationRgb: BlendEquationArguments.OneMinusSourceColor
                         }
                     ]
 

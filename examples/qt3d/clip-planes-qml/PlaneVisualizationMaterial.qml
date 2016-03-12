@@ -101,7 +101,7 @@ Material {
                             sourceRgb: BlendEquationArguments.SourceAlpha
                             destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
                         },
-                        BlendEquation {blendFunction: BlendEquation.FuncAdd}
+                        BlendEquation {blendFunction: BlendEquation.Add}
                     ]
                     annotations: Annotation { name: "pass"; value: "material" }
                 }
