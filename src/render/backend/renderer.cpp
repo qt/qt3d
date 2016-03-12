@@ -808,8 +808,8 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
     if (rGeometryRenderer->primitiveType() == QGeometryRenderer::Patches)
         m_graphicsContext->setVerticesPerPatch(rGeometryRenderer->verticesPerPatch());
 
-    if (rGeometryRenderer->primitiveRestart())
-        m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndex());
+    if (rGeometryRenderer->primitiveRestartEnabled())
+        m_graphicsContext->enablePrimitiveRestart(rGeometryRenderer->restartIndexValue());
 
     // TO DO: Add glMulti Draw variants
     if (drawIndexed)
@@ -818,10 +818,10 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
                                                  indexType,
                                                  reinterpret_cast<void*>(quintptr(indexAttribute->byteOffset())),
                                                  rGeometryRenderer->instanceCount(),
-                                                 rGeometryRenderer->baseVertex());
+                                                 rGeometryRenderer->indexOffset());
     else
         m_graphicsContext->drawArraysInstanced(primType,
-                                               rGeometryRenderer->baseInstance(),
+                                               rGeometryRenderer->firstInstance(),
                                                primitiveCount,
                                                rGeometryRenderer->instanceCount());
 
@@ -831,7 +831,7 @@ void Renderer::performDraw(GeometryRenderer *rGeometryRenderer, GLsizei primitiv
         qCWarning(Rendering) << "GL error after drawing mesh:" << QString::number(err, 16);
 #endif
 
-    if (rGeometryRenderer->primitiveRestart())
+    if (rGeometryRenderer->primitiveRestartEnabled())
         m_graphicsContext->disablePrimitiveRestart();
 
     // Unset dirtiness on rGeometryRenderer only
@@ -944,7 +944,7 @@ bool Renderer::executeCommands(const RenderView *rv)
             Attribute *indexAttribute = Q_NULLPTR;
             bool specified = false;
             const bool requiresVAOUpdate = (!vao || !vao->isSpecified()) || (rGeometry->isDirty() || rGeometryRenderer->isDirty());
-            GLsizei primitiveCount = rGeometryRenderer->primitiveCount();
+            GLsizei primitiveCount = rGeometryRenderer->vertexCount();
 
             // Append dirty Geometry to temporary vector
             // so that its dirtiness can be unset later

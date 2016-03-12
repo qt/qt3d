@@ -235,12 +235,12 @@ int main(int argc, char* argv[])
     customGeometry->addAttribute(indexAttribute);
 
     customMeshRenderer->setInstanceCount(1);
-    customMeshRenderer->setBaseVertex(0);
-    customMeshRenderer->setBaseInstance(0);
+    customMeshRenderer->setIndexOffset(0);
+    customMeshRenderer->setFirstInstance(0);
     customMeshRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Triangles);
     customMeshRenderer->setGeometry(customGeometry);
     // 4 faces of 3 points
-    customMeshRenderer->setPrimitiveCount(12);
+    customMeshRenderer->setVertexCount(12);
 
     customMeshEntity->addComponent(customMeshRenderer);
     customMeshEntity->addComponent(transform);

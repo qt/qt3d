@@ -160,8 +160,8 @@ Entity {
     GeometryRenderer {
         id: customMesh
         instanceCount: 1
-        baseVertex: 0
-        baseInstance: 0
+        indexOffset: 0
+        firstInstance: 0
         primitiveType: GeometryRenderer.Triangles
         Buffer {
             id: vertexBuffer

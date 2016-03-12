@@ -54,12 +54,12 @@ namespace Render {
 GeometryRenderer::GeometryRenderer()
     : BackendNode(ReadWrite)
     , m_instanceCount(0)
-    , m_primitiveCount(0)
-    , m_baseVertex(0)
-    , m_baseInstance(0)
-    , m_restartIndex(-1)
+    , m_vertexCount(0)
+    , m_indexOffset(0)
+    , m_firstInstance(0)
+    , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
-    , m_primitiveRestart(false)
+    , m_primitiveRestartEnabled(false)
     , m_primitiveType(QGeometryRenderer::Triangles)
     , m_dirty(false)
     , m_enabled(true)
@@ -74,12 +74,12 @@ GeometryRenderer::~GeometryRenderer()
 void GeometryRenderer::cleanup()
 {
     m_instanceCount = 0;
-    m_primitiveCount = 0;
-    m_baseVertex = 0;
-    m_baseInstance = 0;
-    m_restartIndex = -1;
+    m_vertexCount = 0;
+    m_indexOffset = 0;
+    m_firstInstance = 0;
+    m_restartIndexValue = -1;
     m_verticesPerPatch = 0;
-    m_primitiveRestart = false;
+    m_primitiveRestartEnabled = false;
     m_primitiveType = QGeometryRenderer::Triangles;
     m_geometryId = Qt3DCore::QNodeId();
     m_dirty = false;
@@ -99,12 +99,12 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
     QGeometryRenderer *geometryRenderer = static_cast<QGeometryRenderer *>(peer);
     if (geometryRenderer) {
         m_instanceCount = geometryRenderer->instanceCount();
-        m_primitiveCount = geometryRenderer->primitiveCount();
-        m_baseVertex = geometryRenderer->baseVertex();
-        m_baseInstance = geometryRenderer->baseInstance();
-        m_restartIndex = geometryRenderer->restartIndex();
+        m_vertexCount = geometryRenderer->vertexCount();
+        m_indexOffset = geometryRenderer->indexOffset();
+        m_firstInstance = geometryRenderer->firstInstance();
+        m_restartIndexValue = geometryRenderer->restartIndexValue();
         m_verticesPerPatch = geometryRenderer->verticesPerPatch();
-        m_primitiveRestart = geometryRenderer->primitiveRestart();
+        m_primitiveRestartEnabled = geometryRenderer->primitiveRestartEnabled();
         m_primitiveType = geometryRenderer->primitiveType();
         m_enabled = geometryRenderer->isEnabled();
         if (geometryRenderer->geometry() != Q_NULLPTR)
@@ -127,23 +127,23 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         if (propertyName == QByteArrayLiteral("instanceCount")) {
             m_instanceCount = propertyChange->value().value<int>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("primitiveCount")) {
-            m_primitiveCount = propertyChange->value().value<int>();
+        } else if (propertyName == QByteArrayLiteral("vertexCount")) {
+            m_vertexCount = propertyChange->value().value<int>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("baseVertex")) {
-            m_baseVertex = propertyChange->value().value<int>();
+        } else if (propertyName == QByteArrayLiteral("indexOffset")) {
+            m_indexOffset = propertyChange->value().value<int>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("baseInstance")) {
-            m_baseInstance = propertyChange->value().value<int>();
+        } else if (propertyName == QByteArrayLiteral("firstInstance")) {
+            m_firstInstance = propertyChange->value().value<int>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("restartIndex")) {
-            m_restartIndex = propertyChange->value().value<int>();
+        } else if (propertyName == QByteArrayLiteral("restartIndexValue")) {
+            m_restartIndexValue = propertyChange->value().value<int>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("verticesPerPatch")) {
             m_verticesPerPatch = propertyChange->value().value<int>();
             m_dirty = true;
-        } else if (propertyName == QByteArrayLiteral("primitiveRestart")) {
-            m_primitiveRestart = propertyChange->value().value<bool>();
+        } else if (propertyName == QByteArrayLiteral("primitiveRestartEnabled")) {
+            m_primitiveRestartEnabled = propertyChange->value().value<bool>();
             m_dirty = true;
         } else if (propertyName == QByteArrayLiteral("enabled")) {
             m_enabled = propertyChange->value().value<bool>();

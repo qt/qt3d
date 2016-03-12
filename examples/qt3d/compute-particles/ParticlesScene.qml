@@ -220,8 +220,8 @@ Entity {
         id: particleRenderEntity
         readonly property GeometryRenderer particlesRenderer: GeometryRenderer {
             instanceCount: particlesCount
-            baseVertex: 0
-            baseInstance: 0
+            indexOffset: 0
+            firstInstance: 0
             primitiveType: GeometryRenderer.Triangles
             geometry:  {
                 switch (particlesShape) {

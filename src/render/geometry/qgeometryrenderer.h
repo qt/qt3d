@@ -57,12 +57,12 @@ class QT3DRENDERSHARED_EXPORT QGeometryRenderer : public Qt3DCore::QComponent
 {
     Q_OBJECT
     Q_PROPERTY(int instanceCount READ instanceCount WRITE setInstanceCount NOTIFY instanceCountChanged)
-    Q_PROPERTY(int primitiveCount READ primitiveCount WRITE setPrimitiveCount NOTIFY primitiveCountChanged)
-    Q_PROPERTY(int baseVertex READ baseVertex WRITE setBaseVertex NOTIFY baseVertexChanged)
-    Q_PROPERTY(int baseInstance READ baseInstance WRITE setBaseInstance NOTIFY baseInstanceChanged)
-    Q_PROPERTY(int restartIndex READ restartIndex WRITE setRestartIndex NOTIFY restartIndexChanged)
+    Q_PROPERTY(int vertexCount READ vertexCount WRITE setVertexCount NOTIFY vertexCountChanged)
+    Q_PROPERTY(int indexOffset READ indexOffset WRITE setIndexOffset NOTIFY indexOffsetChanged)
+    Q_PROPERTY(int firstInstance READ firstInstance WRITE setFirstInstance NOTIFY firstInstanceChanged)
+    Q_PROPERTY(int restartIndexValue READ restartIndexValue WRITE setRestartIndexValue NOTIFY restartIndexValueChanged)
     Q_PROPERTY(int verticesPerPatch READ verticesPerPatch WRITE setVerticesPerPatch NOTIFY verticesPerPatchChanged)
-    Q_PROPERTY(bool primitiveRestart READ primitiveRestart WRITE setPrimitiveRestart NOTIFY primitiveRestartChanged)
+    Q_PROPERTY(bool primitiveRestartEnabled READ primitiveRestartEnabled WRITE setPrimitiveRestartEnabled NOTIFY primitiveRestartEnabledChanged)
     Q_PROPERTY(Qt3DRender::QGeometry* geometry READ geometry WRITE setGeometry NOTIFY geometryChanged)
     Q_PROPERTY(PrimitiveType primitiveType READ primitiveType WRITE setPrimitiveType NOTIFY primitiveTypeChanged)
 
@@ -90,12 +90,12 @@ public:
     // also how to figure out which attribute(s?) hold the indices?
 
     int instanceCount() const;
-    int primitiveCount() const;
-    int baseVertex() const;
-    int baseInstance() const;
-    int restartIndex() const;
+    int vertexCount() const;
+    int indexOffset() const;
+    int firstInstance() const;
+    int restartIndexValue() const;
     int verticesPerPatch() const;
-    bool primitiveRestart() const;
+    bool primitiveRestartEnabled() const;
     QGeometry *geometry() const;
     PrimitiveType primitiveType() const;
 
@@ -104,23 +104,23 @@ public:
 
 public Q_SLOTS:
     void setInstanceCount(int instanceCount);
-    void setPrimitiveCount(int primitiveCount);
-    void setBaseVertex(int baseVertex);
-    void setBaseInstance(int baseInstance);
-    void setRestartIndex(int index);
+    void setVertexCount(int vertexCount);
+    void setIndexOffset(int indexOffset);
+    void setFirstInstance(int firstInstance);
+    void setRestartIndexValue(int index);
     void setVerticesPerPatch(int verticesPerPatch);
-    void setPrimitiveRestart(bool enabled);
+    void setPrimitiveRestartEnabled(bool enabled);
     void setGeometry(QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
 
 Q_SIGNALS:
     void instanceCountChanged(int instanceCount);
-    void primitiveCountChanged(int primitiveCount);
-    void baseVertexChanged(int baseVertex);
-    void baseInstanceChanged(int baseInstance);
-    void restartIndexChanged(int restartIndex);
+    void vertexCountChanged(int vertexCount);
+    void indexOffsetChanged(int indexOffset);
+    void firstInstanceChanged(int firstInstance);
+    void restartIndexValueChanged(int restartIndexValue);
     void verticesPerPatchChanged(int verticesPerPatch);
-    void primitiveRestartChanged(bool primitiveRestart);
+    void primitiveRestartEnabledChanged(bool primitiveRestartEnabled);
     void geometryChanged(QGeometry *geometry);
     void primitiveTypeChanged(PrimitiveType primitiveType);
 

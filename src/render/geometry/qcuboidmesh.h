@@ -92,11 +92,11 @@ private:
     // to modify the QGeometryRenderer's properties
 
     void setInstanceCount(int instanceCount);
-    void setPrimitiveCount(int primitiveCount);
-    void setBaseVertex(int baseVertex);
-    void setBaseInstance(int baseInstance);
-    void setRestartIndex(int index);
-    void setPrimitiveRestart(bool enabled);
+    void setVertexCount(int vertexCount);
+    void setIndexOffset(int indexOffset);
+    void setFirstInstance(int firstInstance);
+    void setRestartIndexValue(int index);
+    void setPrimitiveRestartEnabled(bool enabled);
     void setGeometry(QGeometry *geometry);
     void setPrimitiveType(PrimitiveType primitiveType);
 };

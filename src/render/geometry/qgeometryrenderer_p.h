@@ -66,10 +66,10 @@ public:
     Q_DECLARE_PUBLIC(QGeometryRenderer)
 
     int m_instanceCount;
-    int m_primitiveCount;
-    int m_baseVertex;
-    int m_baseInstance;
-    int m_restartIndex;
+    int m_vertexCount;
+    int m_indexOffset;
+    int m_firstInstance;
+    int m_restartIndexValue;
     int m_verticesPerPatch;
     bool m_primitiveRestart;
     QGeometry *m_geometry;

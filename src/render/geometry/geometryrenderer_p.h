@@ -79,12 +79,12 @@ public:
 
     inline Qt3DCore::QNodeId geometryId() const { return m_geometryId; }
     inline int instanceCount() const { return m_instanceCount; }
-    inline int primitiveCount() const { return m_primitiveCount; }
-    inline int baseVertex() const { return m_baseVertex; }
-    inline int baseInstance() const { return m_baseInstance; }
-    inline int restartIndex() const { return m_restartIndex; }
+    inline int vertexCount() const { return m_vertexCount; }
+    inline int indexOffset() const { return m_indexOffset; }
+    inline int firstInstance() const { return m_firstInstance; }
+    inline int restartIndexValue() const { return m_restartIndexValue; }
     inline int verticesPerPatch() const { return m_verticesPerPatch; }
-    inline bool primitiveRestart() const { return m_primitiveRestart; }
+    inline bool primitiveRestartEnabled() const { return m_primitiveRestartEnabled; }
     inline QGeometryRenderer::PrimitiveType primitiveType() const { return m_primitiveType; }
     inline bool isDirty() const { return m_dirty; }
     inline bool isEnabled() const { return m_enabled; }
@@ -99,12 +99,12 @@ public:
 private:
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
-    int m_primitiveCount;
-    int m_baseVertex;
-    int m_baseInstance;
-    int m_restartIndex;
+    int m_vertexCount;
+    int m_indexOffset;
+    int m_firstInstance;
+    int m_restartIndexValue;
     int m_verticesPerPatch;
-    bool m_primitiveRestart;
+    bool m_primitiveRestartEnabled;
     QGeometryRenderer::PrimitiveType m_primitiveType;
     bool m_dirty;
     bool m_enabled;

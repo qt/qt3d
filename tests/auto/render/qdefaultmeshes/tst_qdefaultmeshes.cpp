@@ -77,11 +77,11 @@ private Q_SLOTS:
 
         QCOMPARE(clone->id(), geomRenderer->id());
         QCOMPARE(clone->instanceCount(), geomRenderer->instanceCount());
-        QCOMPARE(clone->primitiveCount(), geomRenderer->primitiveCount());
-        QCOMPARE(clone->baseVertex(), geomRenderer->baseVertex());
-        QCOMPARE(clone->baseInstance(), geomRenderer->baseInstance());
-        QCOMPARE(clone->restartIndex(), geomRenderer->restartIndex());
-        QCOMPARE(clone->primitiveRestart(), geomRenderer->primitiveRestart());
+        QCOMPARE(clone->vertexCount(), geomRenderer->vertexCount());
+        QCOMPARE(clone->indexOffset(), geomRenderer->indexOffset());
+        QCOMPARE(clone->firstInstance(), geomRenderer->firstInstance());
+        QCOMPARE(clone->restartIndexValue(), geomRenderer->restartIndexValue());
+        QCOMPARE(clone->primitiveRestartEnabled(), geomRenderer->primitiveRestartEnabled());
         QCOMPARE(clone->primitiveType(), geomRenderer->primitiveType());
 
         QCOMPARE(clone->geometryFactory(), geomRenderer->geometryFactory());

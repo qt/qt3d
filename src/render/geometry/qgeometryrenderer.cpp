@@ -52,10 +52,10 @@ namespace Qt3DRender {
 QGeometryRendererPrivate::QGeometryRendererPrivate()
     : QComponentPrivate()
     , m_instanceCount(1)
-    , m_primitiveCount(0)
-    , m_baseVertex(0)
-    , m_baseInstance(0)
-    , m_restartIndex(-1)
+    , m_vertexCount(0)
+    , m_indexOffset(0)
+    , m_firstInstance(0)
+    , m_restartIndexValue(-1)
     , m_verticesPerPatch(0)
     , m_primitiveRestart(false)
     , m_geometry(Q_NULLPTR)
@@ -76,19 +76,19 @@ QGeometryRendererPrivate::QGeometryRendererPrivate()
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::primitiveCount
+ * \qmlproperty int GeometryRenderer::vertexCount
  *
- * Holds the primitive count.
+ * Holds the vertex count.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::baseVertex
+ * \qmlproperty int GeometryRenderer::indexOffset
  *
  * Holds the base vertex.
  */
 
 /*!
- * \qmlproperty int GeometryRenderer::baseInstance
+ * \qmlproperty int GeometryRenderer::firstInstance
  *
  * Holds the base instance.
  */
@@ -186,36 +186,36 @@ int QGeometryRenderer::instanceCount() const
 }
 
 /*!
- * \property QGeometryRenderer::primitiveCount
+ * \property QGeometryRenderer::vertexCount
  *
  * Holds the primitive count.
  */
-int QGeometryRenderer::primitiveCount() const
+int QGeometryRenderer::vertexCount() const
 {
     Q_D(const QGeometryRenderer);
-    return d->m_primitiveCount;
+    return d->m_vertexCount;
 }
 
 /*!
- * \property QGeometryRenderer::baseVertex
+ * \property QGeometryRenderer::indexOffset
  *
  * Holds the base vertex.
  */
-int QGeometryRenderer::baseVertex() const
+int QGeometryRenderer::indexOffset() const
 {
     Q_D(const QGeometryRenderer);
-    return d->m_baseVertex;
+    return d->m_indexOffset;
 }
 
 /*!
- * \property QGeometryRenderer::baseInstance
+ * \property QGeometryRenderer::firstInstance
  *
  * Holds the base instance.
  */
-int QGeometryRenderer::baseInstance() const
+int QGeometryRenderer::firstInstance() const
 {
     Q_D(const QGeometryRenderer);
-    return d->m_baseInstance;
+    return d->m_firstInstance;
 }
 
 /*!
@@ -223,10 +223,10 @@ int QGeometryRenderer::baseInstance() const
  *
  * Holds the restart index.
  */
-int QGeometryRenderer::restartIndex() const
+int QGeometryRenderer::restartIndexValue() const
 {
     Q_D(const QGeometryRenderer);
-    return d->m_restartIndex;
+    return d->m_restartIndexValue;
 }
 
 /*!
@@ -245,7 +245,7 @@ int QGeometryRenderer::verticesPerPatch() const
  *
  * Holds the primitive restart flag.
  */
-bool QGeometryRenderer::primitiveRestart() const
+bool QGeometryRenderer::primitiveRestartEnabled() const
 {
     Q_D(const QGeometryRenderer);
     return d->m_primitiveRestart;
@@ -292,44 +292,44 @@ void QGeometryRenderer::setInstanceCount(int instanceCount)
     emit instanceCountChanged(instanceCount);
 }
 
-void QGeometryRenderer::setPrimitiveCount(int primitiveCount)
+void QGeometryRenderer::setVertexCount(int vertexCount)
 {
     Q_D(QGeometryRenderer);
-    if (d->m_primitiveCount == primitiveCount)
+    if (d->m_vertexCount == vertexCount)
         return;
 
-    d->m_primitiveCount = primitiveCount;
-    emit primitiveCountChanged(primitiveCount);
+    d->m_vertexCount = vertexCount;
+    emit vertexCountChanged(vertexCount);
 }
 
-void QGeometryRenderer::setBaseVertex(int baseVertex)
+void QGeometryRenderer::setIndexOffset(int indexOffset)
 {
     Q_D(QGeometryRenderer);
-    if (d->m_baseVertex == baseVertex)
+    if (d->m_indexOffset == indexOffset)
         return;
 
-    d->m_baseVertex = baseVertex;
-    emit baseVertexChanged(baseVertex);
+    d->m_indexOffset = indexOffset;
+    emit indexOffsetChanged(indexOffset);
 }
 
-void QGeometryRenderer::setBaseInstance(int baseInstance)
+void QGeometryRenderer::setFirstInstance(int firstInstance)
 {
     Q_D(QGeometryRenderer);
-    if (d->m_baseInstance == baseInstance)
+    if (d->m_firstInstance == firstInstance)
         return;
 
-    d->m_baseInstance = baseInstance;
-    emit baseInstanceChanged(baseInstance);
+    d->m_firstInstance = firstInstance;
+    emit firstInstanceChanged(firstInstance);
 }
 
-void QGeometryRenderer::setRestartIndex(int index)
+void QGeometryRenderer::setRestartIndexValue(int index)
 {
     Q_D(QGeometryRenderer);
-    if (index == d->m_restartIndex)
+    if (index == d->m_restartIndexValue)
         return;
 
-    d->m_restartIndex = index;
-    emit restartIndexChanged(index);
+    d->m_restartIndexValue = index;
+    emit restartIndexValueChanged(index);
 }
 
 void QGeometryRenderer::setVerticesPerPatch(int verticesPerPatch)
@@ -341,14 +341,14 @@ void QGeometryRenderer::setVerticesPerPatch(int verticesPerPatch)
     }
 }
 
-void QGeometryRenderer::setPrimitiveRestart(bool enabled)
+void QGeometryRenderer::setPrimitiveRestartEnabled(bool enabled)
 {
     Q_D(QGeometryRenderer);
     if (enabled == d->m_primitiveRestart)
         return;
 
     d->m_primitiveRestart = enabled;
-    emit primitiveRestartChanged(enabled);
+    emit primitiveRestartEnabledChanged(enabled);
 }
 
 void QGeometryRenderer::setGeometry(QGeometry *geometry)
@@ -415,10 +415,10 @@ void QGeometryRenderer::copy(const QNode *ref)
     QComponent::copy(ref);
     const QGeometryRenderer *other = static_cast<const QGeometryRenderer *>(ref);
     d_func()->m_instanceCount = other->d_func()->m_instanceCount;
-    d_func()->m_primitiveCount = other->d_func()->m_primitiveCount;
-    d_func()->m_baseVertex = other->d_func()->m_baseVertex;
-    d_func()->m_baseInstance = other->d_func()->m_baseInstance;
-    d_func()->m_restartIndex = other->d_func()->m_restartIndex;
+    d_func()->m_vertexCount = other->d_func()->m_vertexCount;
+    d_func()->m_indexOffset = other->d_func()->m_indexOffset;
+    d_func()->m_firstInstance = other->d_func()->m_firstInstance;
+    d_func()->m_restartIndexValue = other->d_func()->m_restartIndexValue;
     d_func()->m_primitiveRestart = other->d_func()->m_primitiveRestart;
     d_func()->m_primitiveType = other->d_func()->m_primitiveType;
     d_func()->m_verticesPerPatch = other->d_func()->m_verticesPerPatch;
