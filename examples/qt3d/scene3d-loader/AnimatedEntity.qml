@@ -61,10 +61,9 @@ Entity {
         id: camera
         projectionType: CameraLens.PerspectiveProjection
         fieldOfView: 45
-        aspectRatio: 16/9
         nearPlane : 0.1
         farPlane : 1000.0
-        position: Qt.vector3d( 0.0, 0.0, -40.0 )
+        position: Qt.vector3d( 0.0, 0.0, 40.0 )
         upVector: Qt.vector3d( 0.0, 1.0, 0.0 )
         viewCenter: Qt.vector3d( 0.0, 0.0, 0.0 )
     }
@@ -73,19 +72,9 @@ Entity {
 
     components: [
         RenderSettings {
-            activeFrameGraph: Viewport {
-                id: viewport
-                normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0) // From Top Left
+            activeFrameGraph: ForwardRenderer {
+                camera: camera
                 clearColor: "transparent"
-
-                CameraSelector {
-                    id : cameraSelector
-                    camera: camera
-
-                    ClearBuffer {
-                        buffers : ClearBuffer.ColorDepthBuffer
-                    }
-                }
             }
         }
     ]
@@ -121,8 +110,12 @@ Entity {
     Transform {
         id: sphereTransform
         property real userAngle: 0.0
-        translation: Qt.vector3d(20, 0, 0)
-        rotation: fromAxisAndAngle(Qt.vector3d(0, 1, 0), userAngle)
+        matrix: {
+            var m = Qt.matrix4x4();
+            m.rotate(userAngle, Qt.vector3d(0, 1, 0))
+            m.translate(Qt.vector3d(20, 0, 0));
+            return m;
+        }
     }
 
     QQ2.NumberAnimation {
