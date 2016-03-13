@@ -44,6 +44,7 @@
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qnodeid.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qabstractnodefactory.h>
 
 #define Q_NODE_NULLPTR static_cast<Qt3DCore::QNode *>(Q_NULLPTR)
@@ -113,6 +114,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QNode)
     virtual QNode *doClone() const = 0;
+    // TODO: Make this pure virtual once all classes have been adapted
+    virtual QNodeCreatedChangeBasePtr createNodeCreationChange() const;
 
     // We only want setParent(QNode *) to be callable
     // when dealing with QNode objects
