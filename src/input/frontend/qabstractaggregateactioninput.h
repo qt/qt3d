@@ -55,7 +55,6 @@ class QT3DINPUTSHARED_EXPORT QAbstractAggregateActionInput : public Qt3DInput::Q
 {
     Q_OBJECT
 public:
-    explicit QAbstractAggregateActionInput(Qt3DInput::QAbstractAggregateActionInputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     ~QAbstractAggregateActionInput();
 
     void addInput(QAbstractActionInput *input);
@@ -63,6 +62,7 @@ public:
     QVector<QAbstractActionInput *> inputs() const;
 
 protected:
+    explicit QAbstractAggregateActionInput(Qt3DInput::QAbstractAggregateActionInputPrivate &dd, Qt3DCore::QNode *parent = nullptr);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     Q_DECLARE_PRIVATE(QAbstractAggregateActionInput)
 };
