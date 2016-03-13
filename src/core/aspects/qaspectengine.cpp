@@ -98,6 +98,19 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
     }
 }
 
+void QAspectEnginePrivate::generateCreationChanges(QNode *root)
+{
+    m_creationChanges.clear();
+    QNodeVisitor creationVisitor;
+    creationVisitor.traverse(root, this, &QAspectEnginePrivate::createCreationChange);
+}
+
+void QAspectEnginePrivate::createCreationChange(QNode *node)
+{
+    const auto creationChange = node->createNodeCreationChange();
+    m_creationChanges.push_back(creationChange);
+}
+
 QAspectEngine::QAspectEngine(QObject *parent)
     : QObject(*new QAspectEnginePrivate, parent)
 {
@@ -311,6 +324,9 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // TODO: We probably need a call symmetric to this one above in order to
     // deregister the nodes from the scene
     d->initNodeTree(root.data());
+
+    // Traverse tree to generate a vector of creation changes
+    d->generateCreationChanges(root.data());
 
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the aspects to get synchronized before the

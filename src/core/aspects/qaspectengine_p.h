@@ -52,6 +52,7 @@
 //
 
 #include <private/qobject_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qaspectfactory_p.h>
 #include <QtCore/qsharedpointer.h>
 
@@ -87,6 +88,10 @@ public:
     void initNodeTree(QNode *node);
     void initNode(QNode *node);
     void initEntity(QEntity *entity);
+
+    void generateCreationChanges(QNode *rootNode);
+    void createCreationChange(QNode *node); // visitor function
+    QVector<QNodeCreatedChangeBasePtr> m_creationChanges;
 };
 
 } // Qt3D

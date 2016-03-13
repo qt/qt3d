@@ -125,6 +125,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_removeChild(Qt3DCore::QNode *))
 
     friend class QAspectEngine;
+    friend class QAspectEnginePrivate;
     friend class QPostman;
     friend class QScene;
 };
