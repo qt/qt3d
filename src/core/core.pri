@@ -32,7 +32,9 @@ HEADERS += \
     $$PWD/qchangearbiter_p.h \
     $$PWD/qbackendnodefactory_p.h \
     $$PWD/qt3dcore_global_p.h \
-    $$PWD/qscene_p.h
+    $$PWD/qscene_p.h \
+    $$PWD/qnodecreatedchange_p.h \
+    $$PWD/qnodecreatedchange.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -48,4 +50,5 @@ SOURCES += \
     $$PWD/qpostman.cpp \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
-    $$PWD/qbackendnodefactory.cpp
+    $$PWD/qbackendnodefactory.cpp \
+    $$PWD/qnodecreatedchange.cpp
