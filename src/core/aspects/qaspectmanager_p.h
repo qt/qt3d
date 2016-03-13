@@ -52,6 +52,7 @@
 //
 
 #include <QObject>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/qt3dcore_global_p.h>
 #include <QList>
 #include <QScopedPointer>
@@ -89,7 +90,7 @@ public Q_SLOTS:
     void initialize();
     void shutdown();
 
-    void setRootEntity(Qt3DCore::QEntity *root);
+    void setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
 
     void exec();

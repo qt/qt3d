@@ -80,7 +80,7 @@ class QT3DCORE_PRIVATE_EXPORT QAbstractAspectPrivate
 public:
     QAbstractAspectPrivate();
 
-    void setRootAndCreateNodes(QEntity *rootObject);
+    void setRootAndCreateNodes(QEntity *rootObject, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes);
 
     QServiceLocator *services() const;
     QAbstractAspectJobManager *jobManager() const;
@@ -88,6 +88,9 @@ public:
     QVector<QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
     QBackendNode *createBackendNode(QNode *frontend) const Q_DECL_OVERRIDE;
+    // TODO: Rename this to createBackendNode when new system is fully in place
+    QBackendNode *createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
+
     void clearBackendNode(QNode *frontend) const;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

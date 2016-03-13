@@ -125,6 +125,13 @@ void QBackendNode::notifyObservers(const QSceneChangePtr &e)
     d->notifyObservers(e);
 }
 
+void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    // TODO: Put a warning/assert in here?
+    // Uncomment to see any backend nodes that do not implement this function yet
+    //qDebug() << Q_FUNC_INFO << change->metaObject()->className();
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

@@ -233,7 +233,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.worldTransformJob();
@@ -256,7 +257,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.updateBoundingJob();
@@ -279,7 +281,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.calculateBoundingVolumeJob();
@@ -302,7 +305,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.framePreparationJob();
@@ -325,7 +329,8 @@ private Q_SLOTS:
         QFETCH(Qt3DCore::QEntity*, rootEntity);
         TestAspect aspect;
 
-        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity));
+        Qt3DCore::QAbstractAspectPrivate::get(&aspect)->setRootAndCreateNodes(qobject_cast<Qt3DCore::QEntity *>(rootEntity),
+                                                                              QVector<Qt3DCore::QNodeCreatedChangeBasePtr>());
 
         // WHEN
         QVector<Qt3DCore::QAspectJobPtr> jobs = aspect.frameCleanupJob();

@@ -181,6 +181,44 @@ QBackendNode *QAbstractAspectPrivate::createBackendNode(QNode *frontend) const
     return Q_NULLPTR;
 }
 
+QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const
+{
+    const QMetaObject *metaObj = change->metaObject();
+    QBackendNodeMapperPtr backendNodeMapper;
+    while (metaObj != Q_NULLPTR && backendNodeMapper.isNull()) {
+        backendNodeMapper = m_backendCreatorFunctors.value(metaObj);
+        metaObj = metaObj->superClass();
+    }
+
+    if (!backendNodeMapper)
+        return nullptr;
+
+    QBackendNode *backend = backendNodeMapper->get(change->subjectId());
+    if (backend != Q_NULLPTR)
+        return backend;
+    backend = backendNodeMapper->create(change);
+
+    // TODO: Find some place else to do all of this function from the arbiter
+    if (backend)
+        backend->initializeFromPeer(change);
+
+    // Backend could be null if the user decides that his functor should only
+    // perform some action when encountering a given type of item but doesn't need to
+    // return a QBackendNode pointer.
+    if (!backend)
+        return nullptr;
+
+    QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+    // TO DO: Find a way to specify the changes to observe
+    // Register backendNode with QChangeArbiter
+    if (m_arbiter != Q_NULLPTR) { // Unit tests may not have the arbiter registered
+        m_arbiter->registerObserver(backendPriv, backend->peerId(), AllChanges);
+        if (backend->mode() == QBackendNode::ReadWrite)
+            m_arbiter->scene()->addObservable(backendPriv, backend->peerId());
+    }
+    return backend;
+}
+
 void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
 {
     const QMetaObject *metaObj = frontend->metaObject();
@@ -202,7 +240,7 @@ void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
     }
 }
 
-void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject)
+void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QVector<QNodeCreatedChangeBasePtr> &changes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "rootObject =" << rootObject;
     if (rootObject == m_root)
@@ -211,8 +249,15 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject)
     m_root = rootObject;
     m_rootId = rootObject->id();
 
-    QNodeVisitor visitor;
-    visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
+    // Use old method for now, unless user explicitly requests new method
+    const auto useNewMethod = qEnvironmentVariableIsSet("QT3D_NO_CLONE");
+    if (!useNewMethod) {
+        QNodeVisitor visitor;
+        visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
+    } else {
+        for (const auto &change : changes)
+            createBackendNodeNoClone(change);
+    }
 }
 
 QServiceLocator *QAbstractAspectPrivate::services() const

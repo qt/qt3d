@@ -331,11 +331,15 @@ void QAspectEngine::setRootEntity(QEntityPtr root)
     // Finally, tell the aspects about the new scene object tree. This is done
     // in a blocking manner to allow the aspects to get synchronized before the
     // main thread starts triggering potentially more notifications
+
+    // TODO: Pass the creation changes via the arbiter rather than relying upon
+    // an invokeMethod call.
     qCDebug(Aspects) << "Begin setting scene root on aspect manager";
     QMetaObject::invokeMethod(d->m_aspectThread->aspectManager(),
                               "setRootEntity",
                               Qt::BlockingQueuedConnection,
-                              Q_ARG(Qt3DCore::QEntity *, root.data()));
+                              Q_ARG(Qt3DCore::QEntity *, root.data()),
+                              Q_ARG(QVector<Qt3DCore::QNodeCreatedChangeBasePtr>, d->m_creationChanges));
     qCDebug(Aspects) << "Done setting scene root on aspect manager";
 
     d->m_aspectThread->aspectManager()->enterSimulationLoop();

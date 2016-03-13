@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qt3dcore_global.h>
 #include <Qt3DCore/qscenechange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
@@ -57,6 +58,13 @@ class QT3DCORESHARED_EXPORT QBackendNodeMapper
 public:
     virtual ~QBackendNodeMapper() {}
     virtual QBackendNode *create(QNode *frontend) const = 0;
+    // TODO: Make this pure virtual and remove QNode* overload
+    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const
+    {
+        Q_UNUSED(change);
+        //qDebug() << "Functor with unimplemented create() function";
+        return nullptr;
+    }
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;
 };
@@ -79,6 +87,10 @@ public:
 
     Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;
+
+    // TODO: Make pure virtual
+    // TODO: Make protected/private
+    virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
 
 protected:
     void notifyObservers(const QSceneChangePtr &e);

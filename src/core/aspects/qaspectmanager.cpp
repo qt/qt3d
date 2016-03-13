@@ -148,7 +148,7 @@ void QAspectManager::shutdown()
     // Aspects must be deleted in the Thread they were created in
 }
 
-void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
+void QAspectManager::setRootEntity(Qt3DCore::QEntity *root, const QVector<Qt3DCore::QNodeCreatedChangeBasePtr> &changes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO;
 
@@ -164,7 +164,7 @@ void QAspectManager::setRootEntity(Qt3DCore::QEntity *root)
 
     if (m_root) {
         for (QAbstractAspect *aspect : qAsConst(m_aspects))
-            aspect->d_func()->setRootAndCreateNodes(m_root);
+            aspect->d_func()->setRootAndCreateNodes(m_root, changes);
     }
 }
 
