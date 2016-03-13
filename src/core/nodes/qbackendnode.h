@@ -103,7 +103,9 @@ protected:
 
 private:
     Q_DISABLE_COPY(QBackendNode)
+    void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
     friend class QBackendScenePropertyChange;
+    friend class QAbstractAspectPrivate;
 };
 
 

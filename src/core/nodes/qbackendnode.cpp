@@ -100,6 +100,12 @@ void QBackendNode::setPeer(QNode *peer)
     updateFromPeer(peer);
 }
 
+void QBackendNode::setPeerId(QNodeId id) Q_DECL_NOEXCEPT
+{
+    Q_D(QBackendNode);
+    d->m_peerId = id;
+}
+
 QNodeId QBackendNode::peerId() const Q_DECL_NOEXCEPT
 {
     Q_D(const QBackendNode);

@@ -199,8 +199,10 @@ QBackendNode *QAbstractAspectPrivate::createBackendNodeNoClone(const QNodeCreate
     backend = backendNodeMapper->create(change);
 
     // TODO: Find some place else to do all of this function from the arbiter
-    if (backend)
+    if (backend) {
+        backend->setPeerId(change->subjectId());
         backend->initializeFromPeer(change);
+    }
 
     // Backend could be null if the user decides that his functor should only
     // perform some action when encountering a given type of item but doesn't need to
