@@ -92,10 +92,10 @@ public:
     QCameraLens *lens() const;
     Qt3DCore::QTransform *transform() const;
 
-    QQuaternion tiltRotation(float angle) const;
-    QQuaternion panRotation(float angle) const;
-    QQuaternion rollRotation(float angle) const;
-    QQuaternion rotation(float angle, const QVector3D &axis) const;
+    Q_INVOKABLE QQuaternion tiltRotation(float angle) const;
+    Q_INVOKABLE QQuaternion panRotation(float angle) const;
+    Q_INVOKABLE QQuaternion rollRotation(float angle) const;
+    Q_INVOKABLE QQuaternion rotation(float angle, const QVector3D &axis) const;
 
     // Translate relative to camera orientation axes
     Q_INVOKABLE void translate(const QVector3D& vLocal, CameraTranslationOption option = TranslateViewCenter);
