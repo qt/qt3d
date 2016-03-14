@@ -39,9 +39,8 @@
 
 #include "qmousedevice.h"
 #include "qmousedevice_p.h"
-
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/qentity.h>
-
 
 QT_BEGIN_NAMESPACE
 
@@ -147,6 +146,17 @@ void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change);
     // TODO: To be completed as the mouse input aspect takes shape
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QMouseDevice::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMouseDeviceData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QMouseDevice);
+    data.sensitivity = d->m_sensitivity;
+
+    return creationChange;
 }
 
 } // namespace Qt3DInput

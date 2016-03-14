@@ -87,6 +87,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QMouseDevice)
     QT3D_CLONEABLE(QMouseDevice)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DInput

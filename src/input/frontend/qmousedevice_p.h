@@ -69,6 +69,11 @@ public:
     float m_sensitivity;
 };
 
+struct QMouseDeviceData
+{
+    float sensitivity;
+};
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
