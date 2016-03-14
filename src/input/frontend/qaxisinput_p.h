@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,60 +37,57 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAXISINPUT_H
-#define QT3DINPUT_QAXISINPUT_H
+#ifndef QT3DINPUT_QAXISINPUT_P_H
+#define QT3DINPUT_QAXISINPUT_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <QVector3D>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qnodeid.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
 class QAbstractPhysicalDevice;
-class QAxisInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QAxisInput : public Qt3DCore::QNode
+class QAxisInputPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
-    Q_PROPERTY(float scale READ scale WRITE setScale NOTIFY scaleChanged)
-    Q_PROPERTY(int axis READ axis WRITE setAxis NOTIFY axisChanged)
-    Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
-
 public:
-    explicit QAxisInput(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxisInput();
+    QAxisInputPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_sourceDevice(Q_NULLPTR)
+        , m_scale(0.0f)
+        , m_axis(-1)
+    {}
 
-    QAbstractPhysicalDevice *sourceDevice() const;
-    float scale() const;
-    int axis() const;
-    QVariantList buttons() const;
+    QVariantList m_buttons;
+    QAbstractPhysicalDevice *m_sourceDevice;
+    float m_scale;
+    int m_axis;
+};
 
-public Q_SLOTS:
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
-    void setScale(float scale);
-    void setAxis(int axis);
-    void setButtons(const QVariantList &buttons);
-
-Q_SIGNALS:
-    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
-    void scaleChanged(float scale);
-    void axisChanged(int axis);
-    void buttonsChanged(const QVariantList &buttons);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAxisInput)
-    QT3D_CLONEABLE(QAxisInput)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+struct QAxisInputData
+{
+    Qt3DCore::QNodeId sourceDeviceId;
+    QVariantList buttons; // TODO: Replace with QVector<int>
+    int axis;
+    float scale;
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QQT3DINPUT_AXISINPUT_H
+#endif // QT3DINPUT_QAXISINPUT_P_H
+

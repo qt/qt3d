@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/qinputsettings_p.h \
     $$PWD/qaction_p.h \
     $$PWD/qactioninput_p.h \
-    $$PWD/qaxis_p.h
+    $$PWD/qaxis_p.h \
+    $$PWD/qaxisinput_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \

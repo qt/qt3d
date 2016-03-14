@@ -38,28 +38,13 @@
 ****************************************************************************/
 
 #include "qaxisinput.h"
+#include "qaxisinput_p.h"
 #include <Qt3DInput/qabstractphysicaldevice.h>
-#include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QAxisInputPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QAxisInputPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(Q_NULLPTR)
-        , m_scale(0.0f)
-        , m_axis(-1)
-    {}
-
-    QVariantList m_buttons;
-    QAbstractPhysicalDevice *m_sourceDevice;
-    float m_scale;
-    int m_axis;
-};
 
 /*!
  * \qmltype AxisInput
@@ -159,6 +144,20 @@ void QAxisInput::copy(const Qt3DCore::QNode *ref)
     d_func()->m_buttons = input->d_func()->m_buttons;
     d_func()->m_scale = input->d_func()->m_scale;
     d_func()->m_axis = input->d_func()->m_axis;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAxisInput::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisInputData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QAxisInput);
+    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
+    data.axis = d->m_axis;
+    data.buttons = d->m_buttons;
+    data.scale = d->m_scale;
+
+    return creationChange;
 }
 
 } // Qt3DInput
