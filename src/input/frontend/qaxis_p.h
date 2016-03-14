@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -34,50 +34,61 @@
 ** https://www.gnu.org/licenses/gpl-3.0.html.
 **
 ** $QT_END_LICENSE$
+**
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAXIS_H
-#define QT3DINPUT_QAXIS_H
+#ifndef QT3DINPUT_QAXIS_P_H
+#define QT3DINPUT_QAXIS_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisPrivate;
 class QAxisInput;
 
-class QT3DINPUTSHARED_EXPORT QAxis : public Qt3DCore::QNode
+class QAxisPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(float value READ value NOTIFY valueChanged)
 public:
-    explicit QAxis(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxis();
+    QAxisPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_value(0.0f)
+    {}
 
-    void addInput(QAxisInput *input);
-    void removeInput(QAxisInput *input);
-    QVector<QAxisInput *> inputs() const;
+    Q_DECLARE_PUBLIC(QAxis)
 
-    float value() const;
+    QVector<QAxisInput *> m_inputs;
+    float m_value;
 
-Q_SIGNALS:
-    void valueChanged(float value);
+    void setValue(float value)
+    {
+        if (value != m_value) {
+            m_value = value;
+            q_func()->valueChanged(m_value);
+        }
+    }
+};
 
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAxis)
-    QT3D_CLONEABLE(QAxis)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+struct QAxisData
+{
+    QVector<Qt3DCore::QNodeId> inputIds;
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QAXIS_H
+#endif // QT3DINPUT_QAXIS_P_H
+

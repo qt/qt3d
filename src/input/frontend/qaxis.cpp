@@ -37,35 +37,14 @@
 ****************************************************************************/
 
 #include "qaxis.h"
-#include <Qt3DCore/private/qnode_p.h>
+#include "qaxis_p.h"
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QAxisPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QAxisPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_value(0.0f)
-    {}
-
-    Q_DECLARE_PUBLIC(QAxis)
-
-    QVector<QAxisInput *> m_inputs;
-    float m_value;
-
-    void setValue(float value)
-    {
-        if (value != m_value) {
-            m_value = value;
-            q_func()->valueChanged(m_value);
-        }
-    }
-};
 
 /*!
  * \qmltype Axis
@@ -155,6 +134,14 @@ void QAxis::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("value")) {
         d->setValue(e->value().toFloat());
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAxis::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisData>::create(this);
+    auto &data = creationChange->data;
+    data.inputIds = qIdsForNodes(inputs());
+    return creationChange;
 }
 
 } // Qt3DInput
