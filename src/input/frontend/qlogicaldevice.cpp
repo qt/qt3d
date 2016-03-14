@@ -38,27 +38,15 @@
 ****************************************************************************/
 
 #include "qlogicaldevice.h"
-#include <Qt3DCore/private/qcomponent_p.h>
+#include "qlogicaldevice_p.h"
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \internal
-*/
-class QLogicalDevicePrivate : public Qt3DCore::QComponentPrivate
-{
-public:
-    QLogicalDevicePrivate()
-        : Qt3DCore::QComponentPrivate()
-    {}
-
-    QVector<QAction *> m_actions;
-    QVector<QAxis *> m_axes;
-};
 
 /*!
     \class Qt3DInput::QLogicalDevice
@@ -276,6 +264,15 @@ void QLogicalDevice::copy(const Qt3DCore::QNode *ref)
         d_func()->m_actions.push_back(qobject_cast<QAction *>(QNode::clone(action)));
     Q_FOREACH (QAxis *axis, device->axes())
         d_func()->m_axes.push_back(qobject_cast<QAxis *>(QNode::clone(axis)));
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QLogicalDevice::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLogicalDeviceData>::create(this);
+    auto &data = creationChange->data;
+    data.actionIds = qIdsForNodes(actions());
+    data.axisIds = qIdsForNodes(axes());
+    return creationChange;
 }
 
 } // Qt3DInput

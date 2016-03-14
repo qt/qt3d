@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,46 +37,50 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QLOGICALDEVICE_H
-#define QT3DINPUT_QLOGICALDEVICE_H
+#ifndef QT3DINPUT_QLOGICALDEVICE_P_H
+#define QT3DINPUT_QLOGICALDEVICE_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qcomponent.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qcomponent_p.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QLogicalDevicePrivate;
-class QAction;
-class QAxis;
-
-class QT3DINPUTSHARED_EXPORT QLogicalDevice : public Qt3DCore::QComponent
+/*!
+    \internal
+*/
+class QLogicalDevicePrivate : public Qt3DCore::QComponentPrivate
 {
-    Q_OBJECT
 public:
-    explicit QLogicalDevice(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QLogicalDevice();
+    QLogicalDevicePrivate()
+        : Qt3DCore::QComponentPrivate()
+    {}
 
-    void addAction(QAction *action);
-    void removeAction(QAction *action);
-    QVector<QAction *> actions() const;
-
-    void addAxis(QAxis *axis);
-    void removeAxis(QAxis *axis);
-    QVector<QAxis *> axes() const;
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QLogicalDevice)
-    QT3D_CLONEABLE(QLogicalDevice)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    QVector<QAction *> m_actions;
+    QVector<QAxis *> m_axes;
 };
 
-} // Qt3DInput
+struct QLogicalDeviceData
+{
+    QVector<Qt3DCore::QNodeId> actionIds;
+    QVector<Qt3DCore::QNodeId> axisIds;
+};
+
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QLOGICALDEVICE_H
+#endif // QT3DINPUT_QLOGICALDEVICE_P_H
+
