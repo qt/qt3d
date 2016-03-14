@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/qinputsequence.h \
     $$PWD/qabstractaggregateactioninput_p.h \
     $$PWD/qinputsettings.h \
-    $$PWD/qinputsettings_p.h
+    $$PWD/qinputsettings_p.h \
+    $$PWD/qaction_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \

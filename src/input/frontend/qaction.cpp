@@ -38,38 +38,15 @@
 ****************************************************************************/
 
 #include "qaction.h"
+#include "qaction_p.h"
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QActionPrivate
-    \internal
-*/
-class QActionPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QActionPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_active(false)
-    {}
-
-    Q_DECLARE_PUBLIC(QAction)
-
-    QVector<QAbstractActionInput *> m_inputs;
-    bool m_active;
-
-    void setActive(bool active)
-    {
-        if (active != m_active) {
-            m_active = active;
-            q_func()->activeChanged(active);
-        }
-    }
-};
 
 /*!
     \class Qt3DInput::QActionInput
@@ -201,6 +178,14 @@ void QAction::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("active")) {
         d->setActive(e->value().toBool());
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAction::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionData>::create(this);
+    auto &data = creationChange->data;
+    data.inputIds = qIdsForNodes(inputs());
+    return creationChange;
 }
 
 } // Qt3DInput

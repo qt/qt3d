@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,48 +37,60 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QACTION_H
-#define QT3DINPUT_QACTION_H
+#ifndef QT3DINPUT_QACTION_P_H
+#define QT3DINPUT_QACTION_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QActionPrivate;
-class QAbstractActionInput;
-
-class QT3DINPUTSHARED_EXPORT QAction : public Qt3DCore::QNode
+/*!
+    \class Qt3DInput::QActionPrivate
+    \internal
+*/
+class QActionPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
 public:
-    explicit QAction(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAction();
+    QActionPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_active(false)
+    {}
 
-    bool isActive() const;
+    Q_DECLARE_PUBLIC(QAction)
 
-    void addInput(QAbstractActionInput *input);
-    void removeInput(QAbstractActionInput *input);
-    QVector<QAbstractActionInput *> inputs() const;
+    QVector<QAbstractActionInput *> m_inputs;
+    bool m_active;
 
-Q_SIGNALS:
-    void activeChanged(bool isActive);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAction)
-    QT3D_CLONEABLE(QAction)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    void setActive(bool active)
+    {
+        if (active != m_active) {
+            m_active = active;
+            q_func()->activeChanged(active);
+        }
+    }
 };
 
-} // Qt3DInput
+struct QActionData
+{
+    QVector<Qt3DCore::QNodeId> inputIds;
+};
+
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QACTION_H
+#endif // QT3DINPUT_QACTION_P_H
+
