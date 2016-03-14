@@ -42,10 +42,9 @@
 #include "qkeyboardhandler.h"
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
+#include <Qt3DCore/qbackendscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
-
-using namespace Qt3DCore;
 
 namespace Qt3DInput {
 
@@ -278,9 +277,9 @@ QKeyboardDevice::QKeyboardDevice(QKeyboardDevicePrivate &dd, QNode *parent)
 void QKeyboardDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_D(QKeyboardDevice);
-    QBackendScenePropertyChangePtr e = qSharedPointerCast<QBackendScenePropertyChange>(change);
-    if (e->type() == NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
-        QNodeId activeInputId = e->value().value<QNodeId>();
+    Qt3DCore::QBackendScenePropertyChangePtr e = qSharedPointerCast<Qt3DCore::QBackendScenePropertyChange>(change);
+    if (e->type() == Qt3DCore::NodeUpdated && e->propertyName() == QByteArrayLiteral("activeInput")) {
+        Qt3DCore::QNodeId activeInputId = e->value().value<Qt3DCore::QNodeId>();
         setActiveInput(qobject_cast<QKeyboardHandler *>(d->scene()->lookupNode(activeInputId)));
     }
 }
@@ -292,6 +291,17 @@ void QKeyboardDevice::setActiveInput(QKeyboardHandler *activeInput)
         d->m_activeInput = activeInput;
         emit activeInputChanged(activeInput);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardDevice::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QKeyboardDeviceData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QKeyboardDevice);
+    data.activeInputId = qIdForNode(d->m_activeInput);
+
+    return creationChange;
 }
 
 } // namespace Qt3DInput

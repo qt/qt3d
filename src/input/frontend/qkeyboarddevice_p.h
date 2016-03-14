@@ -52,6 +52,7 @@
 //
 
 #include <private/qabstractphysicaldevice_p.h>
+#include <Qt3DCore/qnodeid.h>
 #include <QtCore/qhash.h>
 #include <QtCore/qstring.h>
 
@@ -71,6 +72,11 @@ public:
     QKeyboardHandler *m_activeInput;
     QHash<QString, int> m_keyMap;
     QStringList m_keyNames;
+};
+
+struct QKeyboardDeviceData
+{
+    Qt3DCore::QNodeId activeInputId;
 };
 
 } // namespace Qt3DInput
