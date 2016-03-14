@@ -99,6 +99,7 @@ private:
     quint64 m_id;
 };
 
+typedef QVector<QNodeId> QNodeIdVector;
 
 #ifndef QT_NO_DEBUG_STREAM
 QT3DCORESHARED_EXPORT QDebug operator<<(QDebug d, QNodeId id);

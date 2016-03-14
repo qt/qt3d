@@ -129,6 +129,16 @@ private:
     friend class QScene;
 };
 
+template<typename T>
+inline QNodeIdVector qIdsForNodes(const T &nodes)
+{
+    QNodeIdVector ids;
+    ids.reserve(nodes.size());
+    for (const auto n : nodes)
+        ids.push_back(n->id());
+    return ids;
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
