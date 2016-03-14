@@ -37,7 +37,8 @@ HEADERS += \
     $$PWD/qaxisinput_p.h \
     $$PWD/qlogicaldevice_p.h \
     $$PWD/qaxissetting_p.h \
-    $$PWD/qinputsequence_p.h
+    $$PWD/qinputsequence_p.h \
+    $$PWD/qinputchord_p.h
 
 SOURCES += \
     $$PWD/qinputaspect.cpp \

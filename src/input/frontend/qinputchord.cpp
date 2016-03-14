@@ -37,27 +37,14 @@
 ****************************************************************************/
 
 #include "qinputchord.h"
-#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include "qinputchord_p.h"
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qabstractaggregateactioninput.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QInputChordPrivate
-    \internal
-*/
-class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
-{
-public:
-    QInputChordPrivate()
-        : Qt3DInput::QAbstractAggregateActionInputPrivate()
-        , m_timeout(0)
-    {}
-
-    int m_timeout;
-};
 
 /*!
     \class Qt3DInput::QInputChord
@@ -166,6 +153,18 @@ void QInputChord::copy(const Qt3DCore::QNode *ref)
     QAbstractAggregateActionInput::copy(ref);
     const QInputChord *input = static_cast<const QInputChord *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QInputChord::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputChordData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QInputChord);
+    data.inputIds = qIdsForNodes(inputs());
+    data.timeout = d->m_timeout;
+
+    return creationChange;
 }
 
 } // Qt3DInput

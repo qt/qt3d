@@ -37,48 +37,51 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTCHORD_H
-#define QT3DINPUT_QINPUTCHORD_H
+#ifndef QT3DINPUT_QINPUTCHORD_P_H
+#define QT3DINPUT_QINPUTCHORD_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDevice;
-class QInputChordPrivate;
-
-class QT3DINPUTSHARED_EXPORT QInputChord : public Qt3DInput::QAbstractAggregateActionInput
+/*!
+    \class Qt3DInput::QInputChordPrivate
+    \internal
+*/
+class QInputChordPrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
-
 public:
-    explicit QInputChord(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QInputChord();
+    QInputChordPrivate()
+        : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        , m_timeout(0)
+    {}
 
-    int timeout() const;
+    int m_timeout;
+};
 
-public Q_SLOTS:
-    void setTimeout(int timeout);
-
-Q_SIGNALS:
-    void timeoutChanged(int timeout);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QInputChord)
-    QT3D_CLONEABLE(QInputChord)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+struct QInputChordData
+{
+    Qt3DCore::QNodeIdVector inputIds;
+    int timeout;
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTCHORD_H
+#endif // QT3DINPUT_QINPUTCHORD_P_H
+
