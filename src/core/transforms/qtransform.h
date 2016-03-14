@@ -120,6 +120,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTransform)
     QT3D_CLONEABLE(QTransform)
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DCore

@@ -321,6 +321,19 @@ QMatrix4x4 QTransform::rotateAround(const QVector3D &point, float angle, const Q
     return m;
 }
 
+QNodeCreatedChangeBasePtr QTransform::createNodeCreationChange() const
+{
+    auto creationChange = QNodeCreatedChangePtr<QTransformData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QTransform);
+    data.rotation = d->m_rotation;
+    data.scale = d->m_scale;
+    data.translation = d->m_translation;
+
+    return creationChange;
+}
+
 } // namespace Qt3DCore
 
 QT_END_NAMESPACE
