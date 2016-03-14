@@ -76,6 +76,28 @@ public :
     mutable QNodeId m_parentEntityId;
 };
 
+struct QNodeIdTypePair
+{
+    QNodeIdTypePair() Q_DECL_NOEXCEPT
+        : id()
+        , type(nullptr)
+    {}
+
+    explicit QNodeIdTypePair(QNodeId _id, const QMetaObject *_type) Q_DECL_NOEXCEPT
+        : id(_id)
+        , type(_type)
+    {}
+
+    QNodeId id;
+    const QMetaObject *type;
+};
+
+struct QEntityData
+{
+    Qt3DCore::QNodeId parentEntityId;
+    QVector<QNodeIdTypePair> componentIdsAndTypes;
+};
+
 }
 
 QT_END_NAMESPACE

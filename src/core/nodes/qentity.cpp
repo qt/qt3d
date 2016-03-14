@@ -44,6 +44,7 @@
 
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DCore/private/corelogging_p.h>
 #include <QMetaObject>
 #include <QMetaProperty>
@@ -235,6 +236,23 @@ QNodeId QEntityPrivate::parentEntityId() const
     if (m_parentEntityId.isNull())
         q->parentEntity();
     return m_parentEntityId;
+}
+
+QNodeCreatedChangeBasePtr QEntity::createNodeCreationChange() const
+{
+    auto creationChange = QNodeCreatedChangePtr<QEntityData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QEntity);
+    data.parentEntityId = parentEntity() ? parentEntity()->id() : Qt3DCore::QNodeId();
+    data.componentIdsAndTypes.reserve(d->m_components.size());
+    const QComponentVector &components = d->m_components;
+    for (const auto &c : components) {
+        const auto idAndType = QNodeIdTypePair(c->id(), c->metaObject());
+        data.componentIdsAndTypes.push_back(idAndType);
+    }
+
+    return creationChange;
 }
 
 } // namespace Qt3DCore

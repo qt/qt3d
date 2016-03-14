@@ -75,6 +75,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QEntity)
     QT3D_CLONEABLE(QEntity)
+    QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 typedef QSharedPointer<QEntity> QEntityPtr;
