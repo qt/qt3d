@@ -39,6 +39,7 @@
 
 #include "qinputsettings.h"
 #include "qinputsettings_p.h"
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +74,17 @@ void QInputSettings::setEventSource(QObject *eventSource)
         d->m_eventSource = eventSource;
         emit eventSourceChanged(eventSource);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QInputSettings::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSettingsData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QInputSettings);
+    data.eventSource = d->m_eventSource;
+
+    return creationChange;
 }
 
 } // Qt3DInput

@@ -68,6 +68,7 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QInputSettings)
     QT3D_CLONEABLE(QInputSettings)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput
