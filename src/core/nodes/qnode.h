@@ -130,6 +130,8 @@ private:
     friend class QScene;
 };
 
+inline QNodeId qIdForNode(QNode *node){ return node ? node->id() : QNodeId(); }
+
 template<typename T>
 inline QNodeIdVector qIdsForNodes(const T &nodes)
 {

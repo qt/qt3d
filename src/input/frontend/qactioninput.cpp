@@ -37,28 +37,14 @@
 ****************************************************************************/
 
 #include "qactioninput.h"
-#include <Qt3DCore/private/qnode_p.h>
+#include "qactioninput_p.h"
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/QAbstractActionInput>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QActionInputPrivate
-    \internal
-*/
-class QActionInputPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QActionInputPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_sourceDevice(Q_NULLPTR)
-    {}
-
-    QVariantList m_buttons;
-    QAbstractPhysicalDevice *m_sourceDevice;
-};
 
 /*!
     \class Qt3DInput::QActionInput
@@ -205,6 +191,18 @@ void QActionInput::copy(const Qt3DCore::QNode *ref)
     const QActionInput *input = static_cast<const QActionInput *>(ref);
     d_func()->m_sourceDevice = qobject_cast<QAbstractPhysicalDevice *>(QNode::clone(input->d_func()->m_sourceDevice));
     d_func()->m_buttons = input->d_func()->m_buttons;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QActionInput::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QActionInputData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QActionInput);
+    data.sourceDeviceId = qIdForNode(d->m_sourceDevice);
+    data.buttons = d->m_buttons;
+
+    return creationChange;
 }
 
 } // Qt3DInput

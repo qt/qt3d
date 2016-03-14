@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,52 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QACTIONINPUT_H
-#define QT3DINPUT_QACTIONINPUT_H
+#ifndef QT3DINPUT_QACTIONINPUT_P_H
+#define QT3DINPUT_QACTIONINPUT_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractactioninput.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DCore/private/qnode_p.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
 class QAbstractPhysicalDevice;
-class QActionInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QActionInput : public Qt3DInput::QAbstractActionInput
+/*!
+    \class Qt3DInput::QActionInputPrivate
+    \internal
+*/
+class QActionInputPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(Qt3DInput::QAbstractPhysicalDevice *sourceDevice READ sourceDevice WRITE setSourceDevice NOTIFY sourceDeviceChanged)
-    Q_PROPERTY(QVariantList buttons READ buttons WRITE setButtons NOTIFY buttonsChanged)
-
 public:
-    explicit QActionInput(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QActionInput();
+    QActionInputPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_sourceDevice(Q_NULLPTR)
+    {}
 
-    QAbstractPhysicalDevice *sourceDevice() const;
-    QVariantList buttons() const;
+    QVariantList m_buttons;
+    QAbstractPhysicalDevice *m_sourceDevice;
+};
 
-public Q_SLOTS:
-    void setSourceDevice(QAbstractPhysicalDevice *sourceDevice);
-    void setButtons(const QVariantList &buttons);
-
-Q_SIGNALS:
-    void sourceDeviceChanged(QAbstractPhysicalDevice *sourceDevice);
-    void buttonsChanged(const QVariantList &buttons);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QActionInput)
-    QT3D_CLONEABLE(QActionInput)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+struct QActionInputData
+{
+    Qt3DCore::QNodeId sourceDeviceId;
+    QVariantList buttons; // TODO: Replace with QVector<int>
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QACTIONINPUT_H
+#endif // QT3DINPUT_QACTIONINPUT_P_H
+
