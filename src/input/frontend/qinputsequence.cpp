@@ -37,30 +37,15 @@
 ****************************************************************************/
 
 #include "qinputsequence.h"
+#include "qinputsequence_p.h"
 #include <Qt3DCore/private/qnode_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/QAbstractAggregateActionInput>
-#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-/*!
-    \class Qt3DInput::QInputChordSequence
-    \internal
-*/
-class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
-{
-public:
-    QInputSequencePrivate()
-        : Qt3DInput::QAbstractAggregateActionInputPrivate()
-        , m_timeout(0)
-        , m_buttonInterval(0)
-    {}
-
-    int m_timeout;
-    int m_buttonInterval;
-};
 
 /*!
     \class Qt3DInput::QInputSequence
@@ -208,6 +193,19 @@ void QInputSequence::copy(const Qt3DCore::QNode *ref)
     const QInputSequence *input = static_cast<const QInputSequence *>(ref);
     d_func()->m_timeout = input->d_func()->m_timeout;
     d_func()->m_buttonInterval = input->d_func()->m_buttonInterval;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QInputSequence::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QInputSequenceData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QInputSequence);
+    data.inputIds = qIdsForNodes(inputs());
+    data.timeout = d->m_timeout;
+    data.buttonInterval = d->m_buttonInterval;
+
+    return creationChange;
 }
 
 } // Qt3DInput

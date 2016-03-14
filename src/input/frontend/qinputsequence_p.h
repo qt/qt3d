@@ -37,52 +37,54 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QINPUTSEQUENCE_H
-#define QT3DINPUT_QINPUTSEQUENCE_H
+#ifndef QT3DINPUT_QINPUTSEQUENCE_P_H
+#define QT3DINPUT_QINPUTSEQUENCE_P_H
 
-#include <Qt3DInput/qt3dinput_global.h>
-#include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qabstractaggregateactioninput.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DInput/private/qabstractaggregateactioninput_p.h>
+#include <Qt3DCore/qnodeid.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAbstractPhysicalDevice;
-class QInputSequencePrivate;
-
-class QT3DINPUTSHARED_EXPORT QInputSequence : public Qt3DInput::QAbstractAggregateActionInput
+/*!
+    \class Qt3DInput::QInputChordSequence
+    \internal
+*/
+class QInputSequencePrivate : public Qt3DInput::QAbstractAggregateActionInputPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
-    Q_PROPERTY(int buttonInterval READ buttonInterval WRITE setButtonInterval NOTIFY buttonIntervalChanged)
-
 public:
-    explicit QInputSequence(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QInputSequence();
+    QInputSequencePrivate()
+        : Qt3DInput::QAbstractAggregateActionInputPrivate()
+        , m_timeout(0)
+        , m_buttonInterval(0)
+    {}
 
-    int timeout() const;
-    int buttonInterval() const;
+    int m_timeout;
+    int m_buttonInterval;
+};
 
-public Q_SLOTS:
-    void setTimeout(int timeout);
-    void setButtonInterval(int buttonInterval);
-
-Q_SIGNALS:
-    void timeoutChanged(int timeout);
-    void buttonIntervalChanged(int buttonInterval);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QInputSequence)
-    QT3D_CLONEABLE(QInputSequence)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+struct QInputSequenceData
+{
+    Qt3DCore::QNodeIdVector inputIds;
+    int timeout;
+    int buttonInterval;
 };
 
 } // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QINPUTSEQUENCE_H
+#endif // QT3DINPUT_QINPUTSEQUENCE_P_H
+
