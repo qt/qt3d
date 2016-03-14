@@ -38,26 +38,12 @@
 ****************************************************************************/
 
 #include "qaxissetting.h"
-#include <Qt3DCore/private/qnode_p.h>
+#include "qaxissetting_p.h"
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
-
-class QAxisSettingPrivate : public Qt3DCore::QNodePrivate
-{
-public:
-    QAxisSettingPrivate()
-        : Qt3DCore::QNodePrivate()
-        , m_deadZoneRadius(0.0f)
-        , m_axes()
-        , m_smooth(false)
-    {}
-
-    float m_deadZoneRadius;
-    QVariantList m_axes;
-    bool m_smooth;
-};
 
 /*!
  * \qmltype AxisSetting
@@ -75,7 +61,6 @@ public:
  * \TODO
  *
  */
-
 
 QAxisSetting::QAxisSetting(Qt3DCore::QNode *parent)
     : QNode(*new QAxisSettingPrivate(), parent)
@@ -142,6 +127,19 @@ void QAxisSetting::copy(const Qt3DCore::QNode *ref)
     d_func()->m_deadZoneRadius = setting->d_func()->m_deadZoneRadius;
     d_func()->m_axes = setting->d_func()->m_axes;
     d_func()->m_smooth = setting->d_func()->m_smooth;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAxisSetting::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAxisSettingData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QAxisSetting);
+    data.deadZoneRadius = d->m_deadZoneRadius;
+    data.axes = d->m_axes;
+    data.smooth = d->m_smooth;
+
+    return creationChange;
 }
 
 } // namespace Qt3DInput

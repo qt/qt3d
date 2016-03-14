@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2015 Klaralvdalens Datakonsult AB (KDAB).
+** Copyright (C) 2016 Klaralvdalens Datakonsult AB (KDAB).
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt3D module of the Qt Toolkit.
@@ -37,56 +37,52 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DINPUT_QAXISSETTING_H
-#define QT3DINPUT_QAXISSETTING_H
+#ifndef QT3DINPUT_QAXISSETTING_P_H
+#define QT3DINPUT_QAXISSETTING_P_H
 
-#include <Qt3DCore/qnode.h>
-#include <Qt3DInput/qt3dinput_global.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
-#include <QtCore/qvector.h>
+#include <Qt3DCore/private/qnode_p.h>
+#include <QtCore/qvariant.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 
-class QAxisSettingPrivate;
-
-class QT3DINPUTSHARED_EXPORT QAxisSetting : public Qt3DCore::QNode
+class QAxisSettingPrivate : public Qt3DCore::QNodePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(float deadZoneRadius READ deadZoneRadius WRITE setDeadZoneRadius NOTIFY deadZoneRadiusChanged)
-    Q_PROPERTY(QVariantList axes READ axes WRITE setAxes NOTIFY axesChanged)
-    Q_PROPERTY(bool smooth READ isSmoothEnabled WRITE setSmoothEnabled NOTIFY smoothChanged)
-
 public:
-    explicit QAxisSetting(Qt3DCore::QNode *parent = Q_NULLPTR);
-    ~QAxisSetting();
+    QAxisSettingPrivate()
+        : Qt3DCore::QNodePrivate()
+        , m_deadZoneRadius(0.0f)
+        , m_axes()
+        , m_smooth(false)
+    {}
 
-    float deadZoneRadius() const;
-    QVariantList axes() const;
-    bool isSmoothEnabled() const;
-
-public Q_SLOTS:
-    void setDeadZoneRadius(float deadZoneRadius);
-    void setAxes(const QVariantList &axes);
-    void setSmoothEnabled(bool enabled);
-
-Q_SIGNALS:
-    void deadZoneRadiusChanged(float deadZoneRadius);
-    void axesChanged(QVariantList axes);
-    void smoothChanged(bool smooth);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAxisSetting)
-    QT3D_CLONEABLE(QAxisSetting)
-    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
+    float m_deadZoneRadius;
+    QVariantList m_axes;
+    bool m_smooth;
 };
 
-} // namespace Qt3DInput
+struct QAxisSettingData
+{
+    float deadZoneRadius;
+    QVariantList axes;
+    bool smooth;
+};
+
+} // Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DINPUT_QAXISSETTING_H
+#endif // QT3DINPUT_QAXISSETTING_P_H
+
