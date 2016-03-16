@@ -29,6 +29,7 @@
 #include <QtTest/QTest>
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QMaterial>
@@ -166,10 +167,10 @@ private:
         QCOMPARE(renderStatesCount, clone.size());
 
         for (int i = 0; i < renderStatesCount; ++i) {
-            const Qt3DRender::QRenderState *originState = original.at(i);
-            const Qt3DRender::QRenderState *cloneState = clone.at(i);
+            Qt3DRender::QRenderState *originState = original.at(i);
+            Qt3DRender::QRenderState *cloneState = clone.at(i);
             QCOMPARE(originState->id(), originState->id());
-            QVERIFY(originState->type() == cloneState->type());
+            QVERIFY(Qt3DRender::QRenderStatePrivate::get(originState)->m_type == Qt3DRender::QRenderStatePrivate::get(cloneState)->m_type);
         }
     }
 

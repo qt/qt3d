@@ -51,7 +51,7 @@ class QDepthMaskPrivate : public QRenderStatePrivate
 {
 public:
     QDepthMaskPrivate()
-        : QRenderStatePrivate(QRenderState::DepthMask)
+        : QRenderStatePrivate(QRenderStatePrivate::DepthMask)
         , m_mask(false)
     {
     }

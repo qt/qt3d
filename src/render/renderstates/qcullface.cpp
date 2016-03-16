@@ -51,7 +51,7 @@ class QCullFacePrivate : public QRenderStatePrivate
 {
 public:
     QCullFacePrivate()
-        : QRenderStatePrivate(QRenderState::CullFace)
+        : QRenderStatePrivate(QRenderStatePrivate::CullFace)
         , m_mode(QCullFace::Back)
     {
     }

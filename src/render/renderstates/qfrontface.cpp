@@ -51,7 +51,7 @@ class QFrontFacePrivate : public QRenderStatePrivate
 {
 public:
     QFrontFacePrivate()
-        : QRenderStatePrivate(QRenderState::FrontFace)
+        : QRenderStatePrivate(QRenderStatePrivate::FrontFace)
         , m_direction(QFrontFace::ClockWise)
     {
     }

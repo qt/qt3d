@@ -110,7 +110,7 @@ Q_SIGNALS:
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-    QBlendEquationArguments(QRenderState::Type type, Qt3DCore::QNode *parent = 0);
+    QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);
 
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)

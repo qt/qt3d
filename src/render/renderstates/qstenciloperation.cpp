@@ -49,7 +49,7 @@ class QStencilOperationPrivate : public QRenderStatePrivate
 {
 public:
     QStencilOperationPrivate()
-        : QRenderStatePrivate(QRenderState::StencilOp)
+        : QRenderStatePrivate(QRenderStatePrivate::StencilOp)
         , m_front(new QStencilOperationArguments(QStencilOperationArguments::Front, q_ptr))
         , m_back(new QStencilOperationArguments(QStencilOperationArguments::Back, q_ptr))
     {}

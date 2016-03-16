@@ -51,7 +51,7 @@ class QDitheringPrivate : public QRenderStatePrivate
 {
 public:
     QDitheringPrivate()
-        : QRenderStatePrivate(QRenderState::Dithering)
+        : QRenderStatePrivate(QRenderStatePrivate::Dithering)
     {}
 
     Q_DECLARE_PUBLIC(QDithering)

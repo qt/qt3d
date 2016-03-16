@@ -53,7 +53,7 @@ class QDepthTestPrivate : public QRenderStatePrivate
 {
 public :
     QDepthTestPrivate()
-        : QRenderStatePrivate(QRenderState::DepthTest)
+        : QRenderStatePrivate(QRenderStatePrivate::DepthTest)
         , m_depthFunction(QDepthTest::Never)
     {
     }

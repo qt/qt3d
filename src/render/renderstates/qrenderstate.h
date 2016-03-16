@@ -55,32 +55,7 @@ class QT3DRENDERSHARED_EXPORT QRenderState : public Qt3DCore::QNode
     Q_OBJECT
 
 public:
-    enum Type {
-        AlphaCoverage,
-        AlphaTest,
-        BlendEquation,
-        BlendEquationArguments,
-        BlendStateSeparate,
-        ColorMask,
-        CullFace,
-        DepthMask,
-        DepthTest,
-        Dithering,
-        FrontFace,
-        PointSize,
-        PolygonOffset,
-        ScissorTest,
-        StencilTest,
-        StencilMask,
-        StencilOp,
-        ClipPlane,
-        SeamlessCubemap
-    };
-    Q_ENUM(Type)
-
     ~QRenderState();
-
-    Type type() const;
 
 protected:
     QRenderState(QRenderStatePrivate &dd, Qt3DCore::QNode *parent = Q_NULLPTR);

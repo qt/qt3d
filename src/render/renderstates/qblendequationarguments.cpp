@@ -50,7 +50,7 @@ namespace Qt3DRender {
 class QBlendEquationArgumentsPrivate : public QRenderStatePrivate
 {
 public:
-    QBlendEquationArgumentsPrivate(QRenderState::Type type = QRenderState::BlendEquationArguments)
+    QBlendEquationArgumentsPrivate(QRenderStatePrivate::Type type = QRenderStatePrivate::BlendEquationArguments)
         : QRenderStatePrivate(type)
         , m_sourceRgb(QBlendEquationArguments::Zero)
         , m_sourceAlpha(QBlendEquationArguments::Zero)
@@ -129,8 +129,8 @@ void QBlendEquationArguments::copy(const QNode *ref)
 /*!
   \internal
 */
-QBlendEquationArguments::QBlendEquationArguments(QRenderState::Type type, QNode *parent)
-    : QRenderState(*new QBlendEquationArgumentsPrivate(type), parent)
+QBlendEquationArguments::QBlendEquationArguments(QBlendEquationArgumentsPrivate &dd, QNode *parent)
+    : QRenderState(dd, parent)
 {
 }
 
@@ -303,7 +303,7 @@ void QBlendEquationArguments::setBufferIndex(int bufferIndex)
   specified \a parent.
  */
 QBlendStateSeparate::QBlendStateSeparate(QNode *parent)
-    : QBlendEquationArguments(QRenderState::BlendStateSeparate, parent)
+    : QBlendEquationArguments(*new QBlendEquationArgumentsPrivate(QRenderStatePrivate::BlendStateSeparate), parent)
 {
 }
 

@@ -47,6 +47,7 @@
 
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>
@@ -259,16 +260,16 @@ bool RenderStateSet::contains(RenderStateImpl *ds) const
 
 RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
 {
-    switch (renderState->type()) {
-    case QRenderState::AlphaTest: {
+    switch (QRenderStatePrivate::get(renderState)->m_type) {
+    case QRenderStatePrivate::AlphaTest: {
         QAlphaTest *alphaTest = static_cast<QAlphaTest *>(renderState);
         return getOrCreateRenderStateImpl<AlphaFunc>(alphaTest->alphaFunction(), alphaTest->referenceValue());
     }
-    case QRenderState::BlendEquation: {
+    case QRenderStatePrivate::BlendEquation: {
         QBlendEquation *blendEquation = static_cast<QBlendEquation *>(renderState);
         return getOrCreateRenderStateImpl<BlendEquation>(blendEquation->blendFunction());
     }
-    case QRenderState::BlendEquationArguments: {
+    case QRenderStatePrivate::BlendEquationArguments: {
         QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
         // just use the same values for RGB and Alpha
         return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
@@ -276,39 +277,39 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
                                        blendState->isEnabled(),
                                        blendState->bufferIndex());
     }
-    case QRenderState::BlendStateSeparate: {
+    case QRenderStatePrivate::BlendStateSeparate: {
         QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
         return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
                                        blendState->sourceAlpha(), blendState->destinationAlpha(),
                                        blendState->isEnabled(),
                                        blendState->bufferIndex());
     }
-    case QRenderState::CullFace: {
+    case QRenderStatePrivate::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
         return getOrCreateRenderStateImpl<CullFace>(cullFace->mode());
     }
-    case QRenderState::DepthMask: {
+    case QRenderStatePrivate::DepthMask: {
         QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
         return getOrCreateRenderStateImpl<DepthMask>(depthMask->mask());
     }
-    case QRenderState::DepthTest: {
+    case QRenderStatePrivate::DepthTest: {
         QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);
         return getOrCreateRenderStateImpl<DepthTest>(depthTest->depthFunction());
     }
-    case QRenderState::AlphaCoverage:
-    case QRenderState::Dithering:
-    case QRenderState::FrontFace: {
+    case QRenderStatePrivate::AlphaCoverage:
+    case QRenderStatePrivate::Dithering:
+    case QRenderStatePrivate::FrontFace: {
         QFrontFace *frontFace = static_cast<QFrontFace *>(renderState);
         return getOrCreateRenderStateImpl<FrontFace>(frontFace->direction());
     }
-    case QRenderState::ScissorTest: {
+    case QRenderStatePrivate::ScissorTest: {
         QScissorTest *scissorTest = static_cast<QScissorTest *>(renderState);
         return getOrCreateRenderStateImpl<ScissorTest>(scissorTest->left(),
                                         scissorTest->bottom(),
                                         scissorTest->width(),
                                         scissorTest->height());
     }
-    case QRenderState::StencilTest: {
+    case QRenderStatePrivate::StencilTest: {
         QStencilTest *stencilTest = static_cast<QStencilTest *>(renderState);
         return getOrCreateRenderStateImpl<StencilTest>(stencilTest->front()->stencilFunction(),
                                         stencilTest->front()->referenceValue(),
@@ -317,41 +318,41 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
                                         stencilTest->back()->referenceValue(),
                                         stencilTest->back()->comparisonMask());
     }
-    case QRenderState::PointSize: {
+    case QRenderStatePrivate::PointSize: {
         QPointSize *pointSize = static_cast<QPointSize *>(renderState);
         const bool isProgrammable = (pointSize->sizeMode() == QPointSize::Programmable);
         return getOrCreateRenderStateImpl<PointSize>(isProgrammable, pointSize->value());
     }
-    case QRenderState::PolygonOffset: {
+    case QRenderStatePrivate::PolygonOffset: {
         QPolygonOffset *polygonOffset = static_cast<QPolygonOffset *>(renderState);
         return getOrCreateRenderStateImpl<PolygonOffset>(polygonOffset->scaleFactor(),
                                           polygonOffset->depthSteps());
     }
-    case QRenderState::ColorMask: {
+    case QRenderStatePrivate::ColorMask: {
         QColorMask *colorMask = static_cast<QColorMask *>(renderState);
         return getOrCreateRenderStateImpl<ColorMask>(colorMask->isRedMasked(),
                                       colorMask->isGreenMasked(),
                                       colorMask->isBlueMasked(),
                                       colorMask->isAlphaMasked());
     }
-    case QRenderState::ClipPlane: {
+    case QRenderStatePrivate::ClipPlane: {
         QClipPlane *clipPlane = static_cast<QClipPlane *>(renderState);
         return getOrCreateRenderStateImpl<ClipPlane>(clipPlane->planeIndex(),
                                                      clipPlane->normal(),
                                                      clipPlane->distance());
     }
-    case QRenderState::SeamlessCubemap: {
+    case QRenderStatePrivate::SeamlessCubemap: {
         QSeamlessCubemap *seamlessCubemap = static_cast<QSeamlessCubemap *>(renderState);
         return getOrCreateRenderStateImpl<SeamlessCubemap>(seamlessCubemap->isEnabled());
     }
-    case QRenderState::StencilOp: {
+    case QRenderStatePrivate::StencilOp: {
         QStencilOperation *stencilOp = static_cast<QStencilOperation *>(renderState);
         const QStencilOperationArguments *front = stencilOp->front();
         const QStencilOperationArguments *back = stencilOp->back();
         return getOrCreateRenderStateImpl<StencilOp>(front->stencilTestFailureOperation(), front->depthTestFailureOperation(), front->allTestsPassOperation(),
                                       back->stencilTestFailureOperation(), back->depthTestFailureOperation(), back->allTestsPassOperation());
     }
-    case QRenderState::StencilMask: {
+    case QRenderStatePrivate::StencilMask: {
         QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);
         return getOrCreateRenderStateImpl<StencilMask>(stencilMask->frontOutputMask(), stencilMask->backOutputMask());
      }

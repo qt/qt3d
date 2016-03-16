@@ -49,7 +49,7 @@ class QAlphaCoveragePrivate : public QRenderStatePrivate
 {
 public :
     QAlphaCoveragePrivate()
-        : QRenderStatePrivate(QRenderState::AlphaCoverage)
+        : QRenderStatePrivate(QRenderStatePrivate::AlphaCoverage)
     {}
 
     Q_DECLARE_PUBLIC(QAlphaCoverage)

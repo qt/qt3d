@@ -63,10 +63,35 @@ namespace Qt3DRender {
 class QT3DRENDERSHARED_PRIVATE_EXPORT QRenderStatePrivate : public Qt3DCore::QNodePrivate
 {
 public:
-    QRenderStatePrivate(QRenderState::Type type);
+    enum Type {
+        AlphaCoverage,
+        AlphaTest,
+        BlendEquation,
+        BlendEquationArguments,
+        BlendStateSeparate,
+        ColorMask,
+        CullFace,
+        DepthMask,
+        DepthTest,
+        Dithering,
+        FrontFace,
+        PointSize,
+        PolygonOffset,
+        ScissorTest,
+        StencilTest,
+        StencilMask,
+        StencilOp,
+        ClipPlane,
+        SeamlessCubemap
+    };
+
+    QRenderStatePrivate(Type type);
     Q_DECLARE_PUBLIC(QRenderState)
 
-    const QRenderState::Type m_type;
+
+    const Type m_type;
+
+    static QRenderStatePrivate *get(QRenderState *state);
 };
 
 }

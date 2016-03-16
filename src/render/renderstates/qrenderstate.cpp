@@ -45,21 +45,20 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-QRenderStatePrivate::QRenderStatePrivate(QRenderState::Type type)
+QRenderStatePrivate::QRenderStatePrivate(Type type)
     : QNodePrivate(),
       m_type(type)
 {
 }
 
+QRenderStatePrivate *QRenderStatePrivate::get(QRenderState *state)
+{
+    return state->d_func();
+}
+
 QRenderState::~QRenderState()
 {
     Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QRenderState subclass didn't call QNode::cleanup in its destructor");
-}
-
-QRenderState::Type QRenderState::type() const
-{
-    Q_D(const QRenderState);
-    return d->m_type;
 }
 
 /*! \internal */
