@@ -339,6 +339,8 @@ void GraphicsContext::activateGLHelper()
     if (!m_glHelper) {
         m_glHelper = resolveHighestOpenGLFunctions();
         m_glHelpers.insert(m_surface, m_glHelper);
+        // Note: OpenGLContext is current at this point
+        m_gl->functions()->glDisable(GL_DITHER);
     }
 }
 
