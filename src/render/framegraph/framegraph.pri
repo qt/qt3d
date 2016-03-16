@@ -4,7 +4,6 @@ HEADERS += \
     $$PWD/cameraselectornode_p.h \
     $$PWD/clearbuffer_p.h \
     $$PWD/framegraphnode_p.h \
-    $$PWD/framegraphsubtreeselector_p.h \
     $$PWD/framegraphvisitor_p.h \
     $$PWD/layerfilternode_p.h \
     $$PWD/nodraw_p.h \
@@ -14,8 +13,6 @@ HEADERS += \
     $$PWD/qclearbuffer_p.h \
     $$PWD/qframegraphnode.h \
     $$PWD/qframegraphnode_p.h \
-    $$PWD/qframegraphselector.h \
-    $$PWD/qframegraphselector_p.h \
     $$PWD/qlayerfilter.h \
     $$PWD/qlayerfilter_p.h \
     $$PWD/qnodraw.h \
@@ -55,14 +52,12 @@ SOURCES += \
     $$PWD/cameraselectornode.cpp \
     $$PWD/clearbuffer.cpp \
     $$PWD/framegraphnode.cpp \
-    $$PWD/framegraphsubtreeselector.cpp \
     $$PWD/framegraphvisitor.cpp \
     $$PWD/layerfilternode.cpp \
     $$PWD/nodraw.cpp \
     $$PWD/qcameraselector.cpp \
     $$PWD/qclearbuffer.cpp \
     $$PWD/qframegraphnode.cpp \
-    $$PWD/qframegraphselector.cpp \
     $$PWD/qlayerfilter.cpp \
     $$PWD/qnodraw.cpp \
     $$PWD/qrenderpassfilter.cpp \

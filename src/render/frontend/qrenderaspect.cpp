@@ -94,7 +94,6 @@
 #include <Qt3DRender/private/clearbuffer_p.h>
 #include <Qt3DRender/private/sortpolicy_p.h>
 #include <Qt3DRender/private/sortcriterion_p.h>
-#include <Qt3DRender/private/framegraphsubtreeselector_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DRender/private/nodefunctor_p.h>
 #include <Qt3DRender/private/framegraphnode_p.h>
@@ -206,7 +205,6 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderSurfaceSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QLayerFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QSortPolicy>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QFrameGraphSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrameGraphSubtreeSelector, QFrameGraphSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(m_renderer, m_nodeManagers->parameterManager())));
     q->registerBackendType<QShaderData>(QBackendNodeMapperPtr(new Render::RenderShaderDataFunctor(m_renderer, m_nodeManagers)));
     q->registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
