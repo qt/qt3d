@@ -30,17 +30,17 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 
 #include "testpostmanarbiter.h"
 
 // We need to call QNode::clone which is protected
 // So we sublcass QNode instead of QObject
-class tst_QClearBuffer: public Qt3DCore::QNode
+class tst_QClearBuffers: public Qt3DCore::QNode
 {
     Q_OBJECT
 public:
-    ~tst_QClearBuffer()
+    ~tst_QClearBuffers()
     {
         QNode::cleanup();
     }
@@ -49,54 +49,54 @@ private Q_SLOTS:
 
     void checkCloning_data()
     {
-        QTest::addColumn<Qt3DRender::QClearBuffer *>("clearBuffer");
-        QTest::addColumn<Qt3DRender::QClearBuffer::BufferType>("bufferType");
+        QTest::addColumn<Qt3DRender::QClearBuffers *>("clearBuffers");
+        QTest::addColumn<Qt3DRender::QClearBuffers::BufferType>("bufferType");
 
-        Qt3DRender::QClearBuffer *defaultConstructed = new Qt3DRender::QClearBuffer();
-        QTest::newRow("defaultConstructed") << defaultConstructed << Qt3DRender::QClearBuffer::None;
+        Qt3DRender::QClearBuffers *defaultConstructed = new Qt3DRender::QClearBuffers();
+        QTest::newRow("defaultConstructed") << defaultConstructed << Qt3DRender::QClearBuffers::None;
 
-        Qt3DRender::QClearBuffer *allBuffers = new Qt3DRender::QClearBuffer();
-        allBuffers->setBuffers(Qt3DRender::QClearBuffer::AllBuffers);
-        QTest::newRow("allBuffers") << allBuffers << Qt3DRender::QClearBuffer::AllBuffers;
+        Qt3DRender::QClearBuffers *allBuffers = new Qt3DRender::QClearBuffers();
+        allBuffers->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
+        QTest::newRow("allBuffers") << allBuffers << Qt3DRender::QClearBuffers::AllBuffers;
 
-        Qt3DRender::QClearBuffer *depthBuffer = new Qt3DRender::QClearBuffer();
-        depthBuffer->setBuffers(Qt3DRender::QClearBuffer::DepthBuffer);
-        QTest::newRow("depthBuffer") << depthBuffer << Qt3DRender::QClearBuffer::DepthBuffer;
+        Qt3DRender::QClearBuffers *depthBuffer = new Qt3DRender::QClearBuffers();
+        depthBuffer->setBuffers(Qt3DRender::QClearBuffers::DepthBuffer);
+        QTest::newRow("depthBuffer") << depthBuffer << Qt3DRender::QClearBuffers::DepthBuffer;
 
-        Qt3DRender::QClearBuffer *colorDepthBuffer = new Qt3DRender::QClearBuffer();
-        colorDepthBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
-        QTest::newRow("colorDepthBuffer") << colorDepthBuffer << Qt3DRender::QClearBuffer::ColorDepthBuffer;
+        Qt3DRender::QClearBuffers *colorDepthBuffer = new Qt3DRender::QClearBuffers();
+        colorDepthBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+        QTest::newRow("colorDepthBuffer") << colorDepthBuffer << Qt3DRender::QClearBuffers::ColorDepthBuffer;
     }
 
     void checkCloning()
     {
         // GIVEN
-        QFETCH(Qt3DRender::QClearBuffer *, clearBuffer);
-        QFETCH(Qt3DRender::QClearBuffer::BufferType, bufferType);
+        QFETCH(Qt3DRender::QClearBuffers *, clearBuffers);
+        QFETCH(Qt3DRender::QClearBuffers::BufferType, bufferType);
 
         // THEN
-        QCOMPARE(clearBuffer->buffers(), bufferType);
+        QCOMPARE(clearBuffers->buffers(), bufferType);
 
         // WHEN
-        Qt3DRender::QClearBuffer *clone = static_cast<Qt3DRender::QClearBuffer *>(QNode::clone(clearBuffer));
+        Qt3DRender::QClearBuffers *clone = static_cast<Qt3DRender::QClearBuffers *>(QNode::clone(clearBuffers));
 
         // THEN
         QVERIFY(clone != Q_NULLPTR);
-        QCOMPARE(clearBuffer->id(), clone->id());
-        QCOMPARE(clearBuffer->buffers(), clone->buffers());
+        QCOMPARE(clearBuffers->id(), clone->id());
+        QCOMPARE(clearBuffers->buffers(), clone->buffers());
 
-        delete clearBuffer;
+        delete clearBuffers;
         delete clone;
     }
 
     void checkPropertyUpdates()
     {
         // GIVEN
-        QScopedPointer<Qt3DRender::QClearBuffer> clearBuffer(new Qt3DRender::QClearBuffer());
+        QScopedPointer<Qt3DRender::QClearBuffers> clearBuffer(new Qt3DRender::QClearBuffers());
         TestArbiter arbiter(clearBuffer.data());
 
         // WHEN
-        clearBuffer->setBuffers(Qt3DRender::QClearBuffer::AllBuffers);
+        clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
         QCoreApplication::processEvents();
 
         // THEN
@@ -104,20 +104,20 @@ private Q_SLOTS:
         Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "buffers");
         QCOMPARE(change->subjectId(), clearBuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QClearBuffer::BufferType>(), Qt3DRender::QClearBuffer::AllBuffers);
+        QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::AllBuffers);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
 
         // WHEN
-        clearBuffer->setBuffers(Qt3DRender::QClearBuffer::AllBuffers);
+        clearBuffer->setBuffers(Qt3DRender::QClearBuffers::AllBuffers);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        clearBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
+        clearBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
         QCoreApplication::processEvents();
 
         // THEN
@@ -125,7 +125,7 @@ private Q_SLOTS:
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "buffers");
         QCOMPARE(change->subjectId(), clearBuffer->id());
-        QCOMPARE(change->value().value<Qt3DRender::QClearBuffer::BufferType>(), Qt3DRender::QClearBuffer::ColorDepthBuffer);
+        QCOMPARE(change->value().value<Qt3DRender::QClearBuffers::BufferType>(), Qt3DRender::QClearBuffers::ColorDepthBuffer);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
@@ -139,6 +139,6 @@ protected:
 
 };
 
-QTEST_MAIN(tst_QClearBuffer)
+QTEST_MAIN(tst_QClearBuffers)
 
-#include "tst_qclearbuffer.moc"
+#include "tst_qclearbuffers.moc"

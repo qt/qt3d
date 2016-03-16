@@ -37,59 +37,47 @@
 **
 ****************************************************************************/
 
-#include "qclearbuffer.h"
-#include <private/qclearbuffer_p.h>
+#include "clearbuffers_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
+using namespace Qt3DCore;
+
 namespace Qt3DRender {
+namespace Render {
 
-QClearBufferPrivate::QClearBufferPrivate()
-    : QFrameGraphNodePrivate()
-    , m_buffersType(QClearBuffer::None)
+ClearBuffers::ClearBuffers()
+    : FrameGraphNode(FrameGraphNode::ClearBuffers)
+    , m_type(QClearBuffers::None)
 {
 }
 
-void QClearBuffer::copy(const QNode *ref)
+void ClearBuffers::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QFrameGraphNode::copy(ref);
-    const QClearBuffer *b = static_cast<const QClearBuffer*>(ref);
-    d_func()->m_buffersType = b->d_func()->m_buffersType;
+    QClearBuffers *clearBuffers = static_cast<QClearBuffers *>(peer);
+    m_type = clearBuffers->buffers();
+    setEnabled(clearBuffers->isEnabled());
 }
 
-QClearBuffer::QClearBuffer(QNode *parent)
-    : QFrameGraphNode(*new QClearBufferPrivate, parent)
+void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-}
-
-QClearBuffer::~QClearBuffer()
-{
-    QNode::cleanup();
-}
-
-/*! \internal */
-QClearBuffer::QClearBuffer(QClearBufferPrivate &dd, QNode *parent)
-    : QFrameGraphNode(dd, parent)
-{
-}
-
-
-QClearBuffer::BufferType QClearBuffer::buffers() const
-{
-    Q_D(const QClearBuffer);
-    return d->m_buffersType;
-}
-
-void QClearBuffer::setBuffers(QClearBuffer::BufferType buffers)
-{
-    Q_D(QClearBuffer);
-    if (d->m_buffersType != buffers) {
-        d->m_buffersType = buffers;
-        emit buffersChanged(buffers);
+    if (e->type() == NodeUpdated) {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
+            m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
+            setEnabled(propertyChange->value().toBool());
+        markDirty(AbstractRenderer::AllDirty);
     }
 }
 
+QClearBuffers::BufferType ClearBuffers::type() const
+{
+    return m_type;
+}
+
+} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

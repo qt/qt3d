@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_CLEARBUFFER_P_H
-#define QT3DRENDER_RENDER_CLEARBUFFER_P_H
+#ifndef QT3DRENDER_QCLEARBUFFERS_P_H
+#define QT3DRENDER_QCLEARBUFFERS_P_H
 
 //
 //  W A R N I N G
@@ -51,34 +51,24 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/framegraphnode_p.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <private/qframegraphnode_p.h>
+#include <Qt3DRender/qclearbuffers.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-namespace Render {
-
-class FrameGraphManager;
-
-class ClearBuffer : public FrameGraphNode
+class QClearBuffersPrivate : public QFrameGraphNodePrivate
 {
 public:
-    ClearBuffer();
+    QClearBuffersPrivate();
 
-    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    QClearBuffer::BufferType type() const;
-
-private:
-    QClearBuffer::BufferType m_type;
+    Q_DECLARE_PUBLIC(QClearBuffers)
+    QClearBuffers::BufferType m_buffersType;
 };
-
-} // namespace Render
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_CLEARBUFFER_P_H
+#endif // QT3DRENDER_QCLEARBUFFERS_P_H

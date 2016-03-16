@@ -2,15 +2,15 @@ INCLUDEPATH += $$PWD
 
 HEADERS += \
     $$PWD/cameraselectornode_p.h \
-    $$PWD/clearbuffer_p.h \
+    $$PWD/clearbuffers_p.h \
     $$PWD/framegraphnode_p.h \
     $$PWD/framegraphvisitor_p.h \
     $$PWD/layerfilternode_p.h \
     $$PWD/nodraw_p.h \
     $$PWD/qcameraselector.h \
     $$PWD/qcameraselector_p.h \
-    $$PWD/qclearbuffer.h \
-    $$PWD/qclearbuffer_p.h \
+    $$PWD/qclearbuffers.h \
+    $$PWD/qclearbuffers_p.h \
     $$PWD/qframegraphnode.h \
     $$PWD/qframegraphnode_p.h \
     $$PWD/qlayerfilter.h \
@@ -50,13 +50,13 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/cameraselectornode.cpp \
-    $$PWD/clearbuffer.cpp \
+    $$PWD/clearbuffers.cpp \
     $$PWD/framegraphnode.cpp \
     $$PWD/framegraphvisitor.cpp \
     $$PWD/layerfilternode.cpp \
     $$PWD/nodraw.cpp \
     $$PWD/qcameraselector.cpp \
-    $$PWD/qclearbuffer.cpp \
+    $$PWD/qclearbuffers.cpp \
     $$PWD/qframegraphnode.cpp \
     $$PWD/qlayerfilter.cpp \
     $$PWD/qnodraw.cpp \

@@ -45,7 +45,7 @@
 #include <Qt3DRender/qshaderdata.h>
 
 #include <Qt3DRender/private/cameraselectornode_p.h>
-#include <Qt3DRender/private/clearbuffer_p.h>
+#include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/effect_p.h>
@@ -152,8 +152,8 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
-            case FrameGraphNode::ClearBuffer:
-                rv->setClearBuffer(static_cast<const ClearBuffer *>(node)->type());
+            case FrameGraphNode::ClearBuffers:
+                rv->setClearBuffer(static_cast<const ClearBuffers *>(node)->type());
                 break;
 
             case FrameGraphNode::TechniqueFilter:

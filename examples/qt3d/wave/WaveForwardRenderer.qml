@@ -73,8 +73,8 @@ TechniqueFilter {
             CameraSelector {
                 id: cameraSelector
 
-                ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
                     LayerFilter { layers: "background" }
                 }
 

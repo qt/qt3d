@@ -225,16 +225,16 @@ bool GraphicsContext::beginDrawing(QSurface *surface, const QColor &color)
     return true;
 }
 
-void GraphicsContext::clearBackBuffer(QClearBuffer::BufferType buffers)
+void GraphicsContext::clearBackBuffer(QClearBuffers::BufferType buffers)
 {
-    if (buffers != QClearBuffer::None) {
+    if (buffers != QClearBuffers::None) {
         GLbitfield mask = 0;
 
-        if (buffers & QClearBuffer::ColorBuffer)
+        if (buffers & QClearBuffers::ColorBuffer)
             mask |= GL_COLOR_BUFFER_BIT;
-        if (buffers & QClearBuffer::DepthBuffer)
+        if (buffers & QClearBuffers::DepthBuffer)
             mask |= GL_DEPTH_BUFFER_BIT;
-        if (buffers & QClearBuffer::StencilBuffer)
+        if (buffers & QClearBuffers::StencilBuffer)
             mask |= GL_STENCIL_BUFFER_BIT;
 
         m_gl->functions()->glClear(mask);

@@ -52,7 +52,7 @@
 #define DEFERREDRENDERER_H
 
 #include <Qt3DRender/QViewport>
-#include <Qt3DRender/QClearBuffer>
+#include <Qt3DRender/QClearBuffers>
 #include <Qt3DRender/QLayerFilter>
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QRenderTargetSelector>
@@ -76,9 +76,9 @@ private:
     Qt3DRender::QRenderSurfaceSelector *m_surfaceSelector;
     Qt3DRender::QLayerFilter *m_sceneFilter;
     Qt3DRender::QLayerFilter *m_screenQuadFilter;
-    Qt3DRender::QClearBuffer *m_clearScreenQuad;
+    Qt3DRender::QClearBuffers *m_clearScreenQuad;
     Qt3DRender::QRenderTargetSelector *m_gBufferTargetSelector;
-    Qt3DRender::QClearBuffer *m_clearGBuffer;
+    Qt3DRender::QClearBuffers *m_clearGBuffer;
     Qt3DRender::QRenderPassFilter *m_geometryPassFilter;
     Qt3DRender::QRenderPassFilter *m_finalPassFilter;
     Qt3DRender::QCameraSelector *m_sceneCameraSelector;

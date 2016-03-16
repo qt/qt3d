@@ -58,8 +58,8 @@ Viewport {
         id: surfaceSelector
 
         // Clear Buffer
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
+        ClearBuffers {
+            buffers: ClearBuffers.ColorDepthBuffer
             NoDraw {}
         }
 

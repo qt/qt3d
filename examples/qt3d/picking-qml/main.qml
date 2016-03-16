@@ -95,8 +95,8 @@ Entity {
                 normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
 
                 RenderSurfaceSelector {
-                    ClearBuffer {
-                        buffers : ClearBuffer.ColorDepthBuffer
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
                         NoDraw {}
                     }
 

@@ -71,7 +71,7 @@
 #include <Qt3DRender/qtechniquefilter.h>
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qrenderaspect.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include "qt3dwindow.h"
 #include "qfirstpersoncameracontroller.h"
 

@@ -37,47 +37,59 @@
 **
 ****************************************************************************/
 
-#include "clearbuffer_p.h"
+#include "qclearbuffers.h"
+#include <private/qclearbuffers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
-using namespace Qt3DCore;
-
 namespace Qt3DRender {
-namespace Render {
 
-ClearBuffer::ClearBuffer()
-    : FrameGraphNode(FrameGraphNode::ClearBuffer)
-    , m_type(QClearBuffer::None)
+QClearBuffersPrivate::QClearBuffersPrivate()
+    : QFrameGraphNodePrivate()
+    , m_buffersType(QClearBuffers::None)
 {
 }
 
-void ClearBuffer::updateFromPeer(Qt3DCore::QNode *peer)
+void QClearBuffers::copy(const QNode *ref)
 {
-    QClearBuffer *clearBuffer = static_cast<QClearBuffer *>(peer);
-    m_type = clearBuffer->buffers();
-    setEnabled(clearBuffer->isEnabled());
+    QFrameGraphNode::copy(ref);
+    const QClearBuffers *b = static_cast<const QClearBuffers*>(ref);
+    d_func()->m_buffersType = b->d_func()->m_buffersType;
 }
 
-void ClearBuffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+QClearBuffers::QClearBuffers(QNode *parent)
+    : QFrameGraphNode(*new QClearBuffersPrivate, parent)
 {
-    if (e->type() == NodeUpdated) {
-        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-        if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
-            m_type = static_cast<QClearBuffer::BufferType>(propertyChange->value().toInt());
-        else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
-            setEnabled(propertyChange->value().toBool());
-        markDirty(AbstractRenderer::AllDirty);
+}
+
+QClearBuffers::~QClearBuffers()
+{
+    QNode::cleanup();
+}
+
+/*! \internal */
+QClearBuffers::QClearBuffers(QClearBuffersPrivate &dd, QNode *parent)
+    : QFrameGraphNode(dd, parent)
+{
+}
+
+
+QClearBuffers::BufferType QClearBuffers::buffers() const
+{
+    Q_D(const QClearBuffers);
+    return d->m_buffersType;
+}
+
+void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
+{
+    Q_D(QClearBuffers);
+    if (d->m_buffersType != buffers) {
+        d->m_buffersType = buffers;
+        emit buffersChanged(buffers);
     }
 }
 
-QClearBuffer::BufferType ClearBuffer::type() const
-{
-    return m_type;
-}
-
-} // namespace Render
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

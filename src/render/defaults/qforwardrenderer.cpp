@@ -42,7 +42,7 @@
 
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qcameraselector.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/qfilterkey.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -56,7 +56,7 @@ QForwardRendererPrivate::QForwardRendererPrivate()
     , m_surfaceSelector(new QRenderSurfaceSelector)
     , m_viewport(new QViewport())
     , m_cameraSelector(new QCameraSelector())
-    , m_clearBuffer(new QClearBuffer())
+    , m_clearBuffer(new QClearBuffers())
     , m_frustumCulling(new QFrustumCulling())
 {
 }
@@ -73,7 +73,7 @@ void QForwardRendererPrivate::init()
 
     m_viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     m_viewport->setClearColor(Qt::white);
-    m_clearBuffer->setBuffers(QClearBuffer::ColorDepthBuffer);
+    m_clearBuffer->setBuffers(QClearBuffers::ColorDepthBuffer);
 
     QFilterKey *forwardRenderingStyle = new QFilterKey(q);
     forwardRenderingStyle->setName(QStringLiteral("renderingStyle"));
@@ -92,7 +92,7 @@ void QForwardRendererPrivate::init()
 
     Internally the Qt3DRender::QForwardRenderer is a subclass of Qt3DRender::QTechniqueFilter.
     This a is a single leaf Framegraph tree which contains a Qt3DRender::QViewport, a Qt3DRender::QCameraSelector
-    and a Qt3DRender::QClearBuffer.
+    and a Qt3DRender::QClearBuffers.
     The Qt3DRender::QForwardRenderer has a default requirement annotation whose name is "renderingStyle" and value "forward".
     If you need to filter out your techniques, you should do so based on that annotation.
 

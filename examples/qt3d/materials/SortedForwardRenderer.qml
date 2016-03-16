@@ -76,8 +76,8 @@ TechniqueFilter {
             CameraSelector {
                 id : cameraSelector
                 objectName : "cameraSelector"
-                ClearBuffer {
-                    buffers : ClearBuffer.ColorDepthBuffer
+                ClearBuffers {
+                    buffers : ClearBuffers.ColorDepthBuffer
                     SortPolicy {
                         criteria: [
                             SortCriterion { sort: SortCriterion.StateChangeCost },

@@ -65,8 +65,8 @@ Entity {
 
                 RenderSurfaceSelector {
 
-                    ClearBuffer {
-                        buffers : ClearBuffer.ColorDepthBuffer
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
                         enabled: counter !== 6
                     }
 

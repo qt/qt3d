@@ -64,8 +64,8 @@ Viewport {
             RenderTargetSelector {
                 id : gBufferTargetSelector
 
-                ClearBuffer {
-                    buffers: ClearBuffer.ColorDepthBuffer
+                ClearBuffers {
+                    buffers: ClearBuffers.ColorDepthBuffer
 
                     RenderPassFilter {
                         id : geometryPass
@@ -82,8 +82,8 @@ Viewport {
         LayerFilter {
             layers : "screenQuad"
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers: ClearBuffers.ColorDepthBuffer
 
                 RenderPassFilter {
                     id : finalPass

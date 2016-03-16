@@ -67,8 +67,8 @@ RenderSettings {
             id: mainViewport
             normalizedRect: Qt.rect(0, 0, 1, 1)
 
-            ClearBuffer {
-                buffers: ClearBuffer.ColorDepthBuffer
+            ClearBuffers {
+                buffers: ClearBuffers.ColorDepthBuffer
             }
 
             Viewport {

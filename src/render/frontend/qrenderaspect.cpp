@@ -58,7 +58,7 @@
 #include <Qt3DRender/qtechniquefilter.h>
 #include <Qt3DRender/qviewport.h>
 #include <Qt3DRender/qrendertarget.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/qtexture.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qshaderdata.h>
@@ -91,7 +91,7 @@
 #include <Qt3DRender/private/viewportnode_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
-#include <Qt3DRender/private/clearbuffer_p.h>
+#include <Qt3DRender/private/clearbuffers_p.h>
 #include <Qt3DRender/private/sortpolicy_p.h>
 #include <Qt3DRender/private/sortcriterion_p.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -196,7 +196,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QRenderTarget>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(m_renderer, m_nodeManagers->renderTargetManager())));
     q->registerBackendType<QRenderTargetOutput>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager>(m_renderer, m_nodeManagers->attachmentManager())));
     q->registerBackendType<QSortCriterion>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(m_renderer, m_nodeManagers->sortCriterionManager())));
-    q->registerBackendType<QClearBuffer>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffer, QClearBuffer>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QClearBuffers>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QTechniqueFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QViewport>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QRenderPassFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(m_renderer, m_nodeManagers->frameGraphManager())));

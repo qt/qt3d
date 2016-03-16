@@ -73,8 +73,8 @@ TechniqueFilter {
         FilterKey { name: "Enabled"; value: true;}
     ]
 
-    ClearBuffer {
-        buffers: ClearBuffer.ColorDepthBuffer
+    ClearBuffers {
+        buffers: ClearBuffers.ColorDepthBuffer
 
         // Main Viewport
         Viewport {

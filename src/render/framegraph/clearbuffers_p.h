@@ -37,56 +37,48 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QCLEARBUFFER_H
-#define QT3DRENDER_QCLEARBUFFER_H
+#ifndef QT3DRENDER_RENDER_CLEARBUFFERS_P_H
+#define QT3DRENDER_RENDER_CLEARBUFFERS_P_H
 
-#include <Qt3DRender/qframegraphnode.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <Qt3DRender/private/framegraphnode_p.h>
+#include <Qt3DRender/qclearbuffers.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QClearBufferPrivate;
+namespace Render {
 
-class QT3DRENDERSHARED_EXPORT QClearBuffer : public QFrameGraphNode
+class FrameGraphManager;
+
+class ClearBuffers : public FrameGraphNode
 {
-    Q_OBJECT
-    Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
 public:
-    explicit QClearBuffer(Qt3DCore::QNode *parent = 0);
-    ~QClearBuffer();
+    ClearBuffers();
 
-    enum BufferType {
-        None = 0,
-        ColorBuffer = (1 << 0),
-        DepthBuffer = (1 << 1),
-        StencilBuffer = (1 << 2),
-        DepthStencilBuffer = (1 << 1) | (1 << 2),
-        ColorDepthBuffer = ColorBuffer | DepthBuffer,
-        ColorDepthStencilBuffer = ColorBuffer | DepthStencilBuffer,
-        AllBuffers = 0xFFFFFFFF
-    };
-    Q_ENUM(BufferType)
-
-    BufferType buffers() const;
-
-public Q_SLOTS:
-    void setBuffers(BufferType buffers);
-
-Q_SIGNALS:
-    void buffersChanged(BufferType buffers);
-
-protected:
-    QClearBuffer(QClearBufferPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+    QClearBuffers::BufferType type() const;
 
 private:
-    Q_DECLARE_PRIVATE(QClearBuffer)
-    QT3D_CLONEABLE(QClearBuffer)
+    QClearBuffers::BufferType m_type;
 };
+
+} // namespace Render
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QCLEARBUFFER_H
+#endif // QT3DRENDER_RENDER_CLEARBUFFERS_P_H

@@ -53,7 +53,7 @@
 //
 
 #include <Qt3DRender/qparameter.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
@@ -218,8 +218,8 @@ public:
         return *m_clearColor;
     }
 
-    inline void setClearBuffer(QClearBuffer::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
-    inline QClearBuffer::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
+    inline void setClearBuffer(QClearBuffers::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
+    inline QClearBuffers::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
 
     RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
@@ -289,7 +289,7 @@ private:
     HTarget m_renderTarget;
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
-    QClearBuffer::BufferType m_clearBuffer;
+    QClearBuffers::BufferType m_clearBuffer;
     RenderStateSet *m_stateSet;
     bool m_noDraw:1;
     bool m_compute:1;

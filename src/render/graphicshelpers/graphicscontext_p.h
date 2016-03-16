@@ -60,7 +60,7 @@
 #include <QMatrix4x4>
 #include <QBitArray>
 #include <Qt3DRender/private/quniformvalue_p.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qclearbuffers.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/private/handle_types_p.h>
@@ -107,7 +107,7 @@ public:
     int id() const; // unique, small integer ID of this context
 
     bool beginDrawing(QSurface *surface, const QColor &color);
-    void clearBackBuffer(QClearBuffer::BufferType buffers);
+    void clearBackBuffer(QClearBuffers::BufferType buffers);
     void endDrawing(bool swapBuffers);
 
     void setViewport(const QRectF &viewport, const QSize &surfaceSize);

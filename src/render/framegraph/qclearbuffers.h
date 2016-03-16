@@ -37,38 +37,56 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QCLEARBUFFER_P_H
-#define QT3DRENDER_QCLEARBUFFER_P_H
+#ifndef QT3DRENDER_QCLEARBUFFERS_H
+#define QT3DRENDER_QCLEARBUFFERS_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <private/qframegraphnode_p.h>
-#include <Qt3DRender/qclearbuffer.h>
+#include <Qt3DRender/qframegraphnode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QClearBufferPrivate : public QFrameGraphNodePrivate
-{
-public:
-    QClearBufferPrivate();
+class QClearBuffersPrivate;
 
-    Q_DECLARE_PUBLIC(QClearBuffer)
-    QClearBuffer::BufferType m_buffersType;
+class QT3DRENDERSHARED_EXPORT QClearBuffers : public QFrameGraphNode
+{
+    Q_OBJECT
+    Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
+public:
+    explicit QClearBuffers(Qt3DCore::QNode *parent = 0);
+    ~QClearBuffers();
+
+    enum BufferType {
+        None = 0,
+        ColorBuffer = (1 << 0),
+        DepthBuffer = (1 << 1),
+        StencilBuffer = (1 << 2),
+        DepthStencilBuffer = (1 << 1) | (1 << 2),
+        ColorDepthBuffer = ColorBuffer | DepthBuffer,
+        ColorDepthStencilBuffer = ColorBuffer | DepthStencilBuffer,
+        AllBuffers = 0xFFFFFFFF
+    };
+    Q_ENUM(BufferType)
+
+    BufferType buffers() const;
+
+public Q_SLOTS:
+    void setBuffers(BufferType buffers);
+
+Q_SIGNALS:
+    void buffersChanged(BufferType buffers);
+
+protected:
+    QClearBuffers(QClearBuffersPrivate &dd, Qt3DCore::QNode *parent = 0);
+    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+
+private:
+    Q_DECLARE_PRIVATE(QClearBuffers)
+    QT3D_CLONEABLE(QClearBuffers)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QCLEARBUFFER_P_H
+#endif // QT3DRENDER_QCLEARBUFFERS_H

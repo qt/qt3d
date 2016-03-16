@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 class QForwardRenderer;
 class QViewport;
-class QClearBuffer;
+class QClearBuffers;
 class QCameraSelector;
 class QFrustumCulling;
 class QRenderSurfaceSelector;
@@ -72,7 +72,7 @@ public:
     QRenderSurfaceSelector *m_surfaceSelector;
     QViewport *m_viewport;
     QCameraSelector *m_cameraSelector;
-    QClearBuffer *m_clearBuffer;
+    QClearBuffers *m_clearBuffer;
     QFrustumCulling *m_frustumCulling;
 
     void init();

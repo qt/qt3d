@@ -75,8 +75,8 @@ Viewport {
                     // Render entities with their regular material
                     // Fills depth buffer for entities that are clipped
                     layers: ["content", "visualization"]
-                    ClearBuffer {
-                        buffers: ClearBuffer.ColorDepthBuffer
+                    ClearBuffers {
+                        buffers: ClearBuffers.ColorDepthBuffer
                         RenderPassFilter {
                             includes: FilterKey { name: "pass"; value: "material" }
                         }
@@ -84,9 +84,9 @@ Viewport {
                 }
 
                 // Branch 2
-                ClearBuffer {
+                ClearBuffers {
                     // Enable and fill Stencil to later generate caps
-                    buffers: ClearBuffer.StencilBuffer
+                    buffers: ClearBuffers.StencilBuffer
                     RenderStateSet {
                         // Disable depth culling
                         // Incr for back faces

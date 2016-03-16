@@ -63,8 +63,8 @@ TechniqueFilter {
             CameraSelector {
                 id : cameraSelector
                 FrustumCulling {
-                    ClearBuffer {
-                        buffers : ClearBuffer.ColorDepthBuffer
+                    ClearBuffers {
+                        buffers : ClearBuffers.ColorDepthBuffer
                     }
                 }
             }

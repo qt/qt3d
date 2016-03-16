@@ -56,15 +56,15 @@ DeferredRenderer::DeferredRenderer(Qt3DCore::QNode *parent)
     , m_surfaceSelector(new Qt3DRender::QRenderSurfaceSelector(this))
     , m_sceneFilter(new Qt3DRender::QLayerFilter(m_surfaceSelector))
     , m_screenQuadFilter(new Qt3DRender::QLayerFilter(m_surfaceSelector))
-    , m_clearScreenQuad(new Qt3DRender::QClearBuffer(m_screenQuadFilter))
+    , m_clearScreenQuad(new Qt3DRender::QClearBuffers(m_screenQuadFilter))
     , m_gBufferTargetSelector(new Qt3DRender::QRenderTargetSelector(m_sceneFilter))
-    , m_clearGBuffer(new Qt3DRender::QClearBuffer(m_gBufferTargetSelector))
+    , m_clearGBuffer(new Qt3DRender::QClearBuffers(m_gBufferTargetSelector))
     , m_geometryPassFilter(new Qt3DRender::QRenderPassFilter(m_clearGBuffer))
     , m_finalPassFilter(new Qt3DRender::QRenderPassFilter(m_clearScreenQuad))
     , m_sceneCameraSelector(new Qt3DRender::QCameraSelector(m_geometryPassFilter))
 {
-    m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
-    m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffer::ColorDepthBuffer);
+    m_clearGBuffer->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
+    m_clearScreenQuad->setBuffers(Qt3DRender::QClearBuffers::ColorDepthBuffer);
 }
 
 void DeferredRenderer::setSceneCamera(Qt3DCore::QEntity *camera)

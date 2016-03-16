@@ -62,8 +62,8 @@ Viewport {
 
         // ColorMask is reset by default
         // By default reset to the default if not specified
-        ClearBuffer {
-            buffers: ClearBuffer.ColorDepthBuffer
+        ClearBuffers {
+            buffers: ClearBuffers.ColorDepthBuffer
             NoDraw {} // We just want to clear the buffers
         }
 
@@ -79,8 +79,8 @@ Viewport {
         }
 
         // Draw with right eye
-        ClearBuffer {
-            buffers: ClearBuffer.DepthBuffer
+        ClearBuffers {
+            buffers: ClearBuffers.DepthBuffer
             CameraSelector {
                 id: rightCameraSelector
                 RenderStateSet {

@@ -23,7 +23,7 @@ contains(QT_CONFIG, private_tests) {
         geometryrenderer \
         raycasting \
         qcameraselector \
-        qclearbuffer \
+        qclearbuffers \
         qframegraphnode \
         qlayerfilter \
         qlight \
