@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qitemmodelbuffer.h"
+#include "qitemmodelbuffer_p.h"
 #include <Qt3DRender/private/graphicscontext_p.h>
 #include <QDebug>
 #include <QColor>

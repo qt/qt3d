@@ -4,7 +4,7 @@ HEADERS += \
     $$PWD/qabstractfunctor.h \
     $$PWD/qrenderaspect.h \
     $$PWD/qrenderaspect_p.h \
-    $$PWD/qitemmodelbuffer.h \
+    $$PWD/qitemmodelbuffer_p.h \
     $$PWD/qlayer.h \
     $$PWD/qlayer_p.h \
     $$PWD/qrendertarget.h \
