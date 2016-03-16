@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qsceneloader.h"
-#include "qabstractsceneloader_p.h"
+#include "qsceneloader_p.h"
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qentity.h>
@@ -51,8 +51,21 @@ using namespace Qt3DCore;
 
 namespace Qt3DRender {
 
+QSceneLoaderPrivate::QSceneLoaderPrivate()
+    : QComponentPrivate()
+    , m_status(QSceneLoader::Loading)
+{
+    m_shareable = false;
+}
+
+
 QSceneLoader::QSceneLoader(QNode *parent)
-    : QAbstractSceneLoader(parent)
+    : Qt3DCore::QComponent(*new QSceneLoaderPrivate, parent)
+{
+}
+
+QSceneLoader::QSceneLoader(QSceneLoaderPrivate &dd, QNode *parent)
+    : Qt3DCore::QComponent(dd, parent)
 {
 }
 
@@ -64,7 +77,7 @@ QSceneLoader::~QSceneLoader()
 // Called in main thread
 void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
-    QAbstractSceneLoaderPrivate *d = static_cast<QAbstractSceneLoaderPrivate*>(QNodePrivate::get(this));
+    Q_D(QSceneLoader);
     QScenePropertyChangePtr e = qSharedPointerCast<QScenePropertyChange>(change);
     if (e->type() == NodeUpdated) {
         if (e->propertyName() == QByteArrayLiteral("scene")) {
@@ -85,8 +98,44 @@ void QSceneLoader::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
             }
         }
         else if (e->propertyName() == QByteArrayLiteral("status")) {
-            QAbstractSceneLoader::setStatus(static_cast<QAbstractSceneLoader::Status>(e->value().toInt()));
+            setStatus(static_cast<QSceneLoader::Status>(e->value().toInt()));
         }
+    }
+}
+
+void QSceneLoader::copy(const QNode *ref)
+{
+    const QSceneLoader *s = static_cast<const QSceneLoader*>(ref);
+    d_func()->m_source = s->d_func()->m_source;
+}
+
+QUrl QSceneLoader::source() const
+{
+    Q_D(const QSceneLoader);
+    return d->m_source;
+}
+
+void QSceneLoader::setSource(const QUrl &arg)
+{
+    Q_D(QSceneLoader);
+    if (d->m_source != arg) {
+        d->m_source = arg;
+        emit sourceChanged(arg);
+    }
+}
+
+QSceneLoader::Status QSceneLoader::status() const
+{
+    Q_D(const QSceneLoader);
+    return d->m_status;
+}
+
+void QSceneLoader::setStatus(QSceneLoader::Status status)
+{
+    Q_D(QSceneLoader);
+    if (d->m_status != status) {
+        d->m_status = status;
+        emit statusChanged(status);
     }
 }
 

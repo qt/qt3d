@@ -43,7 +43,7 @@
 #include <Qt3DCore/private/qnode_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
-#include <Qt3DRender/qabstractsceneloader.h>
+#include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -61,7 +61,7 @@ Scene::Scene()
 
 void Scene::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QAbstractSceneLoader *loader = static_cast<QAbstractSceneLoader *>(peer);
+    QSceneLoader *loader = static_cast<QSceneLoader *>(peer);
 
     m_source = loader->source();
     m_sceneManager->addSceneData(m_source, peerId());
@@ -93,7 +93,7 @@ void Scene::setSceneSubtree(Qt3DCore::QEntity *subTree)
     notifyObservers(e);
     QBackendScenePropertyChangePtr e2(new QBackendScenePropertyChange(NodeUpdated, peerId()));
     e2->setPropertyName("status");
-    e2->setValue(subTree != Q_NULLPTR ? QAbstractSceneLoader::Ready : QAbstractSceneLoader::Error);
+    e2->setValue(subTree != Q_NULLPTR ? QSceneLoader::Ready : QSceneLoader::Error);
     e2->setTargetNode(peerId());
     notifyObservers(e2);
 }

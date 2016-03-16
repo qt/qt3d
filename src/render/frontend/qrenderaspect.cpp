@@ -46,7 +46,7 @@
 #include <Qt3DRender/private/scenemanager_p.h>
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 
-#include <Qt3DRender/qabstractsceneloader.h>
+#include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/qcameraselector.h>
 #include <Qt3DRender/qlayer.h>
 #include <Qt3DRender/qlayerfilter.h>
@@ -193,7 +193,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<Qt3DRender::QCameraLens>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(m_renderer, m_nodeManagers->cameraManager())));
     q->registerBackendType<QLayer>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(m_renderer, m_nodeManagers->layerManager())));
     q->registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(m_renderer, m_nodeManagers->renderPassManager())));
-    q->registerBackendType<QAbstractSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(m_renderer, m_nodeManagers->sceneManager())));
+    q->registerBackendType<QSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(m_renderer, m_nodeManagers->sceneManager())));
     q->registerBackendType<QRenderTarget>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(m_renderer, m_nodeManagers->renderTargetManager())));
     q->registerBackendType<QRenderTargetOutput>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager>(m_renderer, m_nodeManagers->attachmentManager())));
     q->registerBackendType<QSortCriterion>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(m_renderer, m_nodeManagers->sortCriterionManager())));

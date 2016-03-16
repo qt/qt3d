@@ -37,59 +37,42 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTSCENELOADER_H
-#define QT3DRENDER_QABSTRACTSCENELOADER_H
+#ifndef QT3DRENDER_QSCENELOADER_P_H
+#define QT3DRENDER_QSCENELOADER_P_H
 
-#include <Qt3DCore/qcomponent.h>
-#include <Qt3DCore/qscenechange.h>
-#include <Qt3DRender/qt3drender_global.h>
-#include <QUrl>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include <private/qcomponent_p.h>
+#include <Qt3DRender/qsceneloader.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractSceneLoader;
-class QAbstractSceneLoaderPrivate;
+class QSceneIOHandler;
 
-class QT3DRENDERSHARED_EXPORT QAbstractSceneLoader : public Qt3DCore::QComponent
+class QSceneLoaderPrivate : public Qt3DCore::QComponentPrivate
 {
-    Q_OBJECT
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
-    explicit QAbstractSceneLoader(Qt3DCore::QNode *parent = 0);
-    ~QAbstractSceneLoader();
+    QSceneLoaderPrivate();
 
-    enum Status {
-        None = 0,
-        Loading,
-        Ready,
-        Error
-    };
-    Q_ENUM(Status)
+    Q_DECLARE_PUBLIC(QSceneLoader)
 
-    QUrl source() const;
-    Status status() const;
-
-public Q_SLOTS:
-    void setSource(const QUrl &arg);
-    void setStatus(Status status);
-
-Q_SIGNALS:
-    void sourceChanged(const QUrl &source);
-    void statusChanged(Status status);
-
-protected:
-    QAbstractSceneLoader(QAbstractSceneLoaderPrivate &dd, Qt3DCore::QNode *parent = 0);
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QAbstractSceneLoader)
+    QUrl m_source;
+    QSceneLoader::Status m_status;
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QABSTRACTSCENELOADER_H
+#endif // QT3DRENDER_QSCENELOADER_P_H

@@ -39,7 +39,6 @@
 ****************************************************************************/
 
 #include "qt3dquick3drenderplugin.h"
-#include <Qt3DRender/qabstractsceneloader.h>
 #include <Qt3DRender/qsceneloader.h>
 #include <Qt3DRender/qmesh.h>
 #include <Qt3DRender/qrenderpass.h>
@@ -185,7 +184,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QPickingSettings>(uri, 2, 0, "PickingSettings");
 
     // @uri Qt3D.Render
-    qmlRegisterUncreatableType<Qt3DRender::QAbstractSceneLoader>(uri, 2, 0, "QAbstractSceneLoader", "QAbstractScene is abstract");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QSceneLoader, Qt3DRender::Render::Quick::Quick3DScene>("QSceneLoader", "Qt3D.Render/SceneLoader", uri, 2, 0, "SceneLoader");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QEffect, Qt3DRender::Render::Quick::Quick3DEffect>("QEffect", "Qt3D.Render/Effect", uri, 2, 0, "Effect");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QTechnique, Qt3DRender::Render::Quick::Quick3DTechnique>("QTechnique", "Qt3D.Render/Technique", uri, 2, 0, "Technique");
