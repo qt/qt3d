@@ -173,7 +173,7 @@ Entity {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
                             DepthTest { depthFunction: DepthTest.Less },
-                            DepthMask { mask: false },
+                            NoDepthMask { },
                             BlendEquationArguments {
                                 sourceRgb: BlendEquationArguments.SourceAlpha
                                 destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
@@ -198,7 +198,7 @@ Entity {
                         renderStates: [
                             CullFace { mode : CullFace.Back },
                             DepthTest { depthFunction: DepthTest.Less },
-                            DepthMask { mask: false },
+                            NoDepthMask { },
                             BlendEquationArguments {
                                 sourceRgb: BlendEquationArguments.SourceAlpha
                                 destinationRgb: BlendEquationArguments.OneMinusSourceAlpha

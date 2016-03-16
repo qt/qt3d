@@ -71,7 +71,7 @@ public:
         BlendStateSeparate,
         ColorMask,
         CullFace,
-        DepthMask,
+        NoDepthMask,
         DepthTest,
         Dithering,
         FrontFace,

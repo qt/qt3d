@@ -38,43 +38,36 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QDEPTHMASK_H
-#define QT3DRENDER_QDEPTHMASK_H
-
-#include <Qt3DRender/qrenderstate.h>
+#include "qnodepthmask.h"
+#include "qrenderstate_p.h"
+#include <private/qnode_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QDepthMaskPrivate;
-
-class QT3DRENDERSHARED_EXPORT  QDepthMask : public QRenderState
+class QNoDepthMaskPrivate : public QRenderStatePrivate
 {
-    Q_OBJECT
-    Q_PROPERTY (bool mask READ mask WRITE setMask NOTIFY maskChanged)
 public:
-    explicit QDepthMask(Qt3DCore::QNode *parent = 0);
-    ~QDepthMask();
+    QNoDepthMaskPrivate()
+        : QRenderStatePrivate(QRenderStatePrivate::NoDepthMask)
+    {
+    }
 
-    bool mask() const;
-
-public Q_SLOTS:
-    void setMask(bool mask);
-
-Q_SIGNALS:
-    void maskChanged(bool mask);
-
-protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
-
-private:
-    Q_DECLARE_PRIVATE(QDepthMask)
-    QT3D_CLONEABLE(QDepthMask)
+    Q_DECLARE_PUBLIC(QNoDepthMask)
 };
+
+QNoDepthMask::QNoDepthMask(QNode *parent)
+    : QRenderState(*new QNoDepthMaskPrivate, parent)
+{
+}
+
+QNoDepthMask::~QNoDepthMask()
+{
+    QNode::cleanup();
+}
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_QDEPTHMASK_H

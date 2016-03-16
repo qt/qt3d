@@ -64,7 +64,7 @@ class QParameter;
 class QShaderProgram;
 class QRenderPass;
 class QParameterMapping;
-class QDepthMask;
+class QNoDepthMask;
 class QBlendEquationArguments;
 class QBlendEquation;
 
@@ -97,7 +97,7 @@ public:
     QRenderPass *m_phongAlphaES2RenderPass;
     QShaderProgram *m_phongAlphaGL3Shader;
     QShaderProgram *m_phongAlphaGL2ES2Shader;
-    QDepthMask *m_depthMask;
+    QNoDepthMask *m_noDepthMask;
     QBlendEquationArguments *m_blendState;
     QBlendEquation *m_blendEquation;
     QFilterKey *m_filterKey;

@@ -38,60 +38,31 @@
 **
 ****************************************************************************/
 
-#include "qdepthmask.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#ifndef QT3DRENDER_QNODEPTHMASK_H
+#define QT3DRENDER_QNODEPTHMASK_H
+
+#include <Qt3DRender/qrenderstate.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QDepthMaskPrivate : public QRenderStatePrivate
+class QNoDepthMaskPrivate;
+
+class QT3DRENDERSHARED_EXPORT  QNoDepthMask : public QRenderState
 {
+    Q_OBJECT
 public:
-    QDepthMaskPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::DepthMask)
-        , m_mask(false)
-    {
-    }
+    explicit QNoDepthMask(Qt3DCore::QNode *parent = Q_NULLPTR);
+    ~QNoDepthMask();
 
-    Q_DECLARE_PUBLIC(QDepthMask)
-    bool m_mask;
+private:
+    Q_DECLARE_PRIVATE(QNoDepthMask)
+    QT3D_CLONEABLE(QNoDepthMask)
 };
-
-QDepthMask::QDepthMask(QNode *parent)
-    : QRenderState(*new QDepthMaskPrivate, parent)
-{
-}
-
-QDepthMask::~QDepthMask()
-{
-    QNode::cleanup();
-}
-
-void QDepthMask::copy(const QNode *ref)
-{
-    QRenderState::copy(ref);
-    const QDepthMask *refState = static_cast<const QDepthMask*>(ref);
-    d_func()->m_mask = refState->d_func()->m_mask;
-}
-
-bool QDepthMask::mask() const
-{
-    Q_D(const QDepthMask);
-    return d->m_mask;
-}
-
-void QDepthMask::setMask(bool mask)
-{
-    Q_D(QDepthMask);
-    if (d->m_mask != mask) {
-        d->m_mask = mask;
-        emit maskChanged(mask);
-    }
-}
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
+
+#endif // QT3DRENDER_QNODEPTHMASK_H

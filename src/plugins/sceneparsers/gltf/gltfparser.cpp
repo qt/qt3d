@@ -58,7 +58,7 @@
 #include <Qt3DRender/QBlendStateSeparate>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthMask>
+#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QFrontFace>
@@ -1512,8 +1512,11 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
     }
 
     if (functionName == QStringLiteral("depthMask")) {
-        QDepthMask *depthMask = new QDepthMask;
-        depthMask->setMask(values.at(0).toBool(true));
+        if (!values.at(0).toBool(true)) {
+            QNoDepthMask *depthMask = new QNoDepthMask;
+            return depthMask;
+        }
+        return Q_NULLPTR;
     }
 
     if (functionName == QStringLiteral("depthRange")) {

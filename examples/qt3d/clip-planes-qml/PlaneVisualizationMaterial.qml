@@ -96,7 +96,7 @@ Material {
                 renderPasses: RenderPass {
                     shaderProgram: gl3PhongAlphaShader
                     renderStates: [
-                        DepthMask { mask: false },
+                        NoDepthMask { },
                         BlendEquationArguments {
                             sourceRgb: BlendEquationArguments.SourceAlpha
                             destinationRgb: BlendEquationArguments.OneMinusSourceAlpha
@@ -118,7 +118,7 @@ Material {
                 renderPasses: RenderPass {
                     shaderProgram: gl2es2PhongAlphaShader
                     renderStates: [
-                        DepthMask { mask: false },
+                        NoDepthMask { },
                         BlendEquationArguments {
                             sourceRgb: BlendEquationArguments.SourceAlpha
                             destinationRgb: BlendEquationArguments.OneMinusSourceAlpha

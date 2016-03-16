@@ -72,7 +72,7 @@
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qalphatest.h>
 #include <Qt3DRender/qdepthtest.h>
-#include <Qt3DRender/qdepthmask.h>
+#include <Qt3DRender/qnodepthmask.h>
 #include <Qt3DRender/qcullface.h>
 #include <Qt3DRender/qfrontface.h>
 #include <Qt3DRender/qstenciltest.h>
@@ -294,7 +294,7 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     qmlRegisterType<Qt3DRender::QBlendEquation>(uri, 2, 0, "BlendEquation");
     qmlRegisterType<Qt3DRender::QAlphaTest>(uri, 2, 0, "AlphaTest");
     qmlRegisterType<Qt3DRender::QDepthTest>(uri, 2, 0, "DepthTest");
-    qmlRegisterType<Qt3DRender::QDepthMask>(uri, 2, 0, "DepthMask");
+    qmlRegisterType<Qt3DRender::QNoDepthMask>(uri, 2, 0, "NoDepthMask");
     qmlRegisterType<Qt3DRender::QCullFace>(uri, 2, 0, "CullFace");
     qmlRegisterType<Qt3DRender::QFrontFace>(uri, 2, 0, "FrontFace");
     qmlRegisterUncreatableType<Qt3DRender::QStencilTestArguments>(uri, 2, 0, "StencilTestArguments", QStringLiteral("QStencilTestArguments cannot be instantiated on its own"));

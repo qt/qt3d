@@ -42,7 +42,7 @@
 #include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthMask>
+#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QDithering>
 #include <Qt3DRender/QFrontFace>

@@ -94,7 +94,6 @@ Effect {
                     // Disable depth testing and use simple additive blending
                     renderStates: [
                         DepthTest { depthFunction: DepthTest.Always },
-                        DepthMask { mask: true },
                         BlendEquationArguments {
                             sourceRgb: BlendEquationArguments.One
                             destinationRgb: BlendEquationArguments.OneMinusSourceColor

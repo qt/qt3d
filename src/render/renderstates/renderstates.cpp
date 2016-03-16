@@ -186,12 +186,12 @@ void FrontFace::updateProperty(const char *name, const QVariant &value)
     if (name == QByteArrayLiteral("direction")) m_1 = value.toInt();
 }
 
-void DepthMask::apply(GraphicsContext *gc) const
+void NoDepthMask::apply(GraphicsContext *gc) const
 {
    gc->depthMask(m_1);
 }
 
-void DepthMask::updateProperty(const char *name, const QVariant &value)
+void NoDepthMask::updateProperty(const char *name, const QVariant &value)
 {
     if (name == QByteArrayLiteral("mask")) m_1 = value.toBool();
 }

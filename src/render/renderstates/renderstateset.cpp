@@ -55,7 +55,7 @@
 #include <Qt3DRender/qblendequationarguments.h>
 #include <Qt3DRender/qcolormask.h>
 #include <Qt3DRender/qcullface.h>
-#include <Qt3DRender/qdepthmask.h>
+#include <Qt3DRender/qnodepthmask.h>
 #include <Qt3DRender/qdepthtest.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qfrontface.h>
@@ -288,9 +288,8 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
         return getOrCreateRenderStateImpl<CullFace>(cullFace->mode());
     }
-    case QRenderStatePrivate::DepthMask: {
-        QDepthMask *depthMask = static_cast<QDepthMask *>(renderState);
-        return getOrCreateRenderStateImpl<DepthMask>(depthMask->mask());
+    case QRenderStatePrivate::NoDepthMask: {
+        return getOrCreateRenderStateImpl<NoDepthMask>(false);
     }
     case QRenderStatePrivate::DepthTest: {
         QDepthTest *depthTest = static_cast<QDepthTest *>(renderState);

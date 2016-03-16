@@ -127,7 +127,7 @@ public:
     void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT DepthMask : public GenericState1<DepthMask, DepthWriteStateMask, GLboolean>
+class Q_AUTOTEST_EXPORT NoDepthMask : public GenericState1<NoDepthMask, DepthWriteStateMask, GLboolean>
 {
 public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;

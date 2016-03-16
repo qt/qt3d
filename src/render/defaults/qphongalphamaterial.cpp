@@ -49,7 +49,7 @@
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/qblendequation.h>
 #include <Qt3DRender/qblendequationarguments.h>
-#include <Qt3DRender/qdepthmask.h>
+#include <Qt3DRender/qnodepthmask.h>
 #include <QUrl>
 #include <QVector3D>
 #include <QVector4D>
@@ -74,7 +74,7 @@ QPhongAlphaMaterialPrivate::QPhongAlphaMaterialPrivate()
     , m_phongAlphaES2RenderPass(new QRenderPass())
     , m_phongAlphaGL3Shader(new QShaderProgram())
     , m_phongAlphaGL2ES2Shader(new QShaderProgram())
-    , m_depthMask(new QDepthMask())
+    , m_noDepthMask(new QNoDepthMask())
     , m_blendState(new QBlendEquationArguments())
     , m_blendEquation(new QBlendEquation())
     , m_filterKey(new QFilterKey)
@@ -124,8 +124,6 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaGL2Technique->addFilterKey(m_filterKey);
     m_phongAlphaES2Technique->addFilterKey(m_filterKey);
 
-    m_depthMask->setMask(false);
-
     m_blendState->setSourceRgb(QBlendEquationArguments::SourceAlpha);
     m_blendState->setDestinationRgb(QBlendEquationArguments::OneMinusSourceAlpha);
     m_blendEquation->setBlendFunction(QBlendEquation::Add);
@@ -134,15 +132,15 @@ void QPhongAlphaMaterialPrivate::init()
     m_phongAlphaGL2RenderPass->setShaderProgram(m_phongAlphaGL2ES2Shader);
     m_phongAlphaES2RenderPass->setShaderProgram(m_phongAlphaGL2ES2Shader);
 
-    m_phongAlphaGL3RenderPass->addRenderState(m_depthMask);
+    m_phongAlphaGL3RenderPass->addRenderState(m_noDepthMask);
     m_phongAlphaGL3RenderPass->addRenderState(m_blendState);
     m_phongAlphaGL3RenderPass->addRenderState(m_blendEquation);
 
-    m_phongAlphaGL2RenderPass->addRenderState(m_depthMask);
+    m_phongAlphaGL2RenderPass->addRenderState(m_noDepthMask);
     m_phongAlphaGL2RenderPass->addRenderState(m_blendState);
     m_phongAlphaGL2RenderPass->addRenderState(m_blendEquation);
 
-    m_phongAlphaES2RenderPass->addRenderState(m_depthMask);
+    m_phongAlphaES2RenderPass->addRenderState(m_noDepthMask);
     m_phongAlphaES2RenderPass->addRenderState(m_blendState);
     m_phongAlphaES2RenderPass->addRenderState(m_blendEquation);
 
