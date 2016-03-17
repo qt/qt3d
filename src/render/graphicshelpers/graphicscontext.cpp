@@ -852,6 +852,16 @@ void GraphicsContext::clearColor(const QColor &color)
     m_gl->functions()->glClearColor(color.redF(), color.greenF(), color.blueF(), color.alphaF());
 }
 
+void GraphicsContext::clearDepthValue(float depth)
+{
+    m_gl->functions()->glClearDepthf(depth);
+}
+
+void GraphicsContext::clearStencilValue(int stencil)
+{
+    m_gl->functions()->glClearStencil(stencil);
+}
+
 void GraphicsContext::enableClipPlane(int clipPlane)
 {
     m_glHelper->enableClipPlane(clipPlane);

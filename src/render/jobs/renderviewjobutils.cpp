@@ -152,9 +152,15 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 break;
             }
 
-            case FrameGraphNode::ClearBuffers:
-                rv->setClearBuffer(static_cast<const ClearBuffers *>(node)->type());
+            case FrameGraphNode::ClearBuffers: {
+                const ClearBuffers* cbNode = static_cast<const ClearBuffers *>(node);
+                rv->setClearBuffer(cbNode->type());
+                rv->setClearDepthValue(cbNode->clearDepthValue());
+                rv->setClearStencilValue(cbNode->clearStencilValue());
+                if (cbNode->clearColor().isValid())
+                    rv->setClearColor(cbNode->clearColor());
                 break;
+            }
 
             case FrameGraphNode::TechniqueFilter:
                 // Can be set once
@@ -169,10 +175,6 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                 // a subregion relative to that of the parent viewport
                 const ViewportNode *vpNode = static_cast<const ViewportNode *>(node);
                 rv->setViewport(computeViewport(rv->viewport(), vpNode));
-
-                // We take the clear color from the viewport node nearest the leaf
-                if (!rv->clearColor().isValid())
-                    rv->setClearColor(vpNode->clearColor());
                 break;
             }
 

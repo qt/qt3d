@@ -187,6 +187,8 @@ public:
     GLuint  boundFrameBufferObject();
     void    buildUniformBuffer(const QVariant &v, const ShaderUniform &description, QByteArray &buffer);
     void    clearColor(const QColor &color);
+    void    clearDepthValue(float depth);
+    void    clearStencilValue(int stencil);
     void    cullFace(GLenum mode);
     void    depthMask(GLenum mode);
     void    depthTest(GLenum mode);

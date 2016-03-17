@@ -41,6 +41,7 @@
 #define QT3DRENDER_QCLEARBUFFERS_H
 
 #include <Qt3DRender/qframegraphnode.h>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 
@@ -52,6 +53,9 @@ class QT3DRENDERSHARED_EXPORT QClearBuffers : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(BufferType buffers READ buffers WRITE setBuffers NOTIFY buffersChanged)
+    Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
+    Q_PROPERTY(float clearDepthValue READ clearDepthValue WRITE setClearDepthValue NOTIFY clearDepthValueChanged)
+    Q_PROPERTY(int clearStencilValue READ clearStencilValue WRITE setClearStencilValue NOTIFY clearStencilValueChanged)
 public:
     explicit QClearBuffers(Qt3DCore::QNode *parent = 0);
     ~QClearBuffers();
@@ -69,12 +73,21 @@ public:
     Q_ENUM(BufferType)
 
     BufferType buffers() const;
+    QColor clearColor() const;
+    float clearDepthValue() const;
+    int clearStencilValue() const;
 
 public Q_SLOTS:
     void setBuffers(BufferType buffers);
+    void setClearColor(const QColor& color);
+    void setClearDepthValue(float clearDepthValue);
+    void setClearStencilValue(int clearStencilValue);
 
 Q_SIGNALS:
     void buffersChanged(BufferType buffers);
+    void clearColorChanged(const QColor& color);
+    void clearDepthValueChanged(float clearDepthValue);
+    void clearStencilValueChanged(int clearStencilValue);
 
 protected:
     QClearBuffers(QClearBuffersPrivate &dd, Qt3DCore::QNode *parent = 0);

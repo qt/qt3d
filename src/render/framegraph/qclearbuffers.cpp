@@ -48,6 +48,8 @@ namespace Qt3DRender {
 QClearBuffersPrivate::QClearBuffersPrivate()
     : QFrameGraphNodePrivate()
     , m_buffersType(QClearBuffers::None)
+    , m_clearDepthValue(1.f)
+    , m_clearStencilValue(0)
 {
 }
 
@@ -56,6 +58,9 @@ void QClearBuffers::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QClearBuffers *b = static_cast<const QClearBuffers*>(ref);
     d_func()->m_buffersType = b->d_func()->m_buffersType;
+    d_func()->m_clearColor = b->d_func()->m_clearColor;
+    d_func()->m_clearDepthValue = b->d_func()->m_clearDepthValue;
+    d_func()->m_clearStencilValue = b->d_func()->m_clearStencilValue;
 }
 
 QClearBuffers::QClearBuffers(QNode *parent)
@@ -81,12 +86,59 @@ QClearBuffers::BufferType QClearBuffers::buffers() const
     return d->m_buffersType;
 }
 
+QColor QClearBuffers::clearColor() const
+{
+    Q_D(const QClearBuffers);
+    return d->m_clearColor;
+}
+
+float QClearBuffers::clearDepthValue() const
+{
+    Q_D(const QClearBuffers);
+    return d->m_clearDepthValue;
+}
+
+int QClearBuffers::clearStencilValue() const
+{
+    Q_D(const QClearBuffers);
+    return d->m_clearStencilValue;
+}
+
 void QClearBuffers::setBuffers(QClearBuffers::BufferType buffers)
 {
     Q_D(QClearBuffers);
     if (d->m_buffersType != buffers) {
         d->m_buffersType = buffers;
         emit buffersChanged(buffers);
+    }
+}
+
+void QClearBuffers::setClearColor(const QColor &color)
+{
+    Q_D(QClearBuffers);
+    if (d->m_clearColor != color) {
+        d->m_clearColor = color;
+        emit clearColorChanged(color);
+    }
+}
+
+void QClearBuffers::setClearDepthValue(float clearDepthValue)
+{
+    Q_D(QClearBuffers);
+    if (d->m_clearDepthValue != clearDepthValue) {
+        if (clearDepthValue >= 0.f && clearDepthValue <= 1.f) {
+            d->m_clearDepthValue = clearDepthValue;
+            emit clearDepthValueChanged(clearDepthValue);
+        } else qWarning() << "Invalid clear depth value";
+    }
+}
+
+void QClearBuffers::setClearStencilValue(int clearStencilValue)
+{
+    Q_D(QClearBuffers);
+    if (d->m_clearStencilValue != clearStencilValue) {
+        d->m_clearStencilValue = clearStencilValue;
+        emit clearStencilValueChanged(clearStencilValue);
     }
 }
 

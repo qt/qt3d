@@ -70,9 +70,15 @@ public:
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     QClearBuffers::BufferType type() const;
+    QColor clearColor() const;
+    float clearDepthValue() const;
+    int clearStencilValue() const;
 
 private:
     QClearBuffers::BufferType m_type;
+    QColor m_clearColor;
+    float m_clearDepthValue;
+    int m_clearStencilValue;
 };
 
 } // namespace Render

@@ -221,6 +221,12 @@ public:
     inline void setClearBuffer(QClearBuffers::BufferType clearBuffer) Q_DECL_NOEXCEPT { m_clearBuffer = clearBuffer; }
     inline QClearBuffers::BufferType clearBuffer() const Q_DECL_NOEXCEPT { return m_clearBuffer; }
 
+    inline void setClearDepthValue(float clearDepthValue) Q_DECL_NOEXCEPT { m_clearDepthValue = clearDepthValue; }
+    inline float clearDepthValue() const Q_DECL_NOEXCEPT { return m_clearDepthValue; }
+
+    inline void setClearStencilValue(int clearStencilValue) Q_DECL_NOEXCEPT { m_clearStencilValue = clearStencilValue; }
+    inline int clearStencilValue() const Q_DECL_NOEXCEPT { return m_clearStencilValue; }
+
     RenderRenderPassList passesAndParameters(ParameterInfoList *parameter, Entity *node, bool useDefaultMaterials = true);
 
     void buildRenderCommands(Entity *rootEntity, const Plane *planes);
@@ -290,6 +296,8 @@ private:
     QSurface *m_surface;
     AttachmentPack m_attachmentPack;
     QClearBuffers::BufferType m_clearBuffer;
+    float m_clearDepthValue;
+    int m_clearStencilValue;
     RenderStateSet *m_stateSet;
     bool m_noDraw:1;
     bool m_compute:1;

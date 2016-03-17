@@ -50,6 +50,8 @@ namespace Render {
 ClearBuffers::ClearBuffers()
     : FrameGraphNode(FrameGraphNode::ClearBuffers)
     , m_type(QClearBuffers::None)
+    , m_clearDepthValue(1.f)
+    , m_clearStencilValue(0)
 {
 }
 
@@ -57,6 +59,9 @@ void ClearBuffers::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QClearBuffers *clearBuffers = static_cast<QClearBuffers *>(peer);
     m_type = clearBuffers->buffers();
+    m_clearColor = clearBuffers->clearColor();
+    m_clearDepthValue = clearBuffers->clearDepthValue();
+    m_clearStencilValue = clearBuffers->clearStencilValue();
     setEnabled(clearBuffers->isEnabled());
 }
 
@@ -66,6 +71,12 @@ void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("buffers"))
             m_type = static_cast<QClearBuffers::BufferType>(propertyChange->value().toInt());
+        else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor"))
+            m_clearColor = propertyChange->value().value<QColor>();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("clearDepthValue"))
+            m_clearDepthValue = propertyChange->value().toFloat();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("clearStencilValue"))
+            m_clearStencilValue = propertyChange->value().toInt();
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         markDirty(AbstractRenderer::AllDirty);
@@ -75,6 +86,21 @@ void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 QClearBuffers::BufferType ClearBuffers::type() const
 {
     return m_type;
+}
+
+QColor ClearBuffers::clearColor() const
+{
+    return m_clearColor;
+}
+
+float ClearBuffers::clearDepthValue() const
+{
+    return m_clearDepthValue;
+}
+
+int ClearBuffers::clearStencilValue() const
+{
+    return m_clearStencilValue;
 }
 
 } // namespace Render

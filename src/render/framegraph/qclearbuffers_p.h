@@ -65,6 +65,9 @@ public:
 
     Q_DECLARE_PUBLIC(QClearBuffers)
     QClearBuffers::BufferType m_buffersType;
+    QColor m_clearColor;
+    float m_clearDepthValue;
+    int m_clearStencilValue;
 };
 
 } // namespace Qt3DRender

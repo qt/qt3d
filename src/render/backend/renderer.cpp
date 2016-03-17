@@ -644,6 +644,8 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
     bool boundFboIdValid = false;
     uint lastBoundFBOId = 0;
     QColor previousClearColor = renderViews.first()->clearColor();
+    float previousClearDepthValue = renderViews.first()->clearDepthValue();
+    int previousClearStencilValue = renderViews.first()->clearStencilValue();
     QSurface *surface = Q_NULLPTR;
     QSurface *previousSurface = Q_NULLPTR;
     for (int i = 0; i < renderViewsCount; ++i) {
@@ -709,6 +711,18 @@ Renderer::ViewSubmissionResultData Renderer::submitRenderViews(const QVector<Ren
         if (previousClearColor != renderView->clearColor()) {
             previousClearColor = renderView->clearColor();
             m_graphicsContext->clearColor(previousClearColor);
+        }
+
+        // Set clear depth value if different
+        if (previousClearDepthValue != renderView->clearDepthValue()) {
+            previousClearDepthValue = renderView->clearDepthValue();
+            m_graphicsContext->clearDepthValue(previousClearDepthValue);
+        }
+
+        // Set clear stencil value if different
+        if (previousClearStencilValue != renderView->clearStencilValue()) {
+            previousClearStencilValue = renderView->clearStencilValue();
+            m_graphicsContext->clearStencilValue(previousClearStencilValue);
         }
 
         // Clear BackBuffer
