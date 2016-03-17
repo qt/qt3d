@@ -1924,6 +1924,12 @@ void GltfExporter::exportParameter(QJsonObject &dst, const QVector<ProgramInfo::
     }
 }
 
+struct ProgramNames
+{
+    QString name;
+    QString coreName;
+};
+
 void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
 {
     if (!opts.shaders)
@@ -1981,11 +1987,6 @@ void GltfExporter::exportTechniques(QJsonObject &obj, const QString &basename)
     obj["shaders"] = shaders;
 
     QJsonObject programs;
-    struct ProgramNames
-    {
-        QString name;
-        QString coreName;
-    };
 
     QHash<ProgramInfo *, ProgramNames> programMap;
     foreach (ProgramInfo *prog, m_usedPrograms) {
