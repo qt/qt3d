@@ -214,8 +214,8 @@ void Scene3DItem::setWindowSurface(QObject *rootObject)
 
     // Set the item's window surface if it appears
     // the surface wasn't set on the surfaceSelector
-    if (!surfaceSelector->window())
-        surfaceSelector->setWindow(this->window());
+    if (!surfaceSelector->surface())
+        surfaceSelector->setSurface(this->window());
 }
 
 void Scene3DItem::setItemArea(const QSize &area)

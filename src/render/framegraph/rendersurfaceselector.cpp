@@ -65,7 +65,7 @@ RenderSurfaceSelector::RenderSurfaceSelector()
 void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
-    m_surface = selector->surface();
+    m_surface = reinterpret_cast<QSurface *>(selector->surface());
     setEnabled(selector->isEnabled());
     setRenderTargetSize(selector->externalRenderTargetSize());
     if (m_surface) {

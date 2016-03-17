@@ -55,7 +55,7 @@ class QForwardRendererPrivate;
 class QT3DRENDERSHARED_EXPORT QForwardRenderer : public QTechniqueFilter
 {
     Q_OBJECT
-    Q_PROPERTY(QSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
+    Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
     Q_PROPERTY(QRectF viewportRect READ viewportRect WRITE setViewportRect NOTIFY viewportRectChanged)
     Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
     Q_PROPERTY(Qt3DCore::QEntity *camera READ camera WRITE setCamera NOTIFY cameraChanged)
@@ -66,19 +66,19 @@ public:
     QRectF viewportRect() const;
     QColor clearColor() const;
     Qt3DCore::QEntity *camera() const;
-    QSurface *surface() const;
+    QObject *surface() const;
 
 public Q_SLOTS:
     void setViewportRect(const QRectF &viewportRect);
     void setClearColor(const QColor &clearColor);
     void setCamera(Qt3DCore::QEntity *camera);
-    void setSurface(QSurface * surface);
+    void setSurface(QObject * surface);
 
 Q_SIGNALS:
     void viewportRectChanged(const QRectF &viewportRect);
     void clearColorChanged(const QColor &clearColor);
     void cameraChanged(Qt3DCore::QEntity *camera);
-    void surfaceChanged(QSurface *surface);
+    void surfaceChanged(QObject *surface);
 
 private:
     Q_DECLARE_PRIVATE(QForwardRenderer)

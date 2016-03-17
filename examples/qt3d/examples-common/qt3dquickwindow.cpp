@@ -213,7 +213,7 @@ void Qt3DQuickWindow::setWindowSurface(QObject *rootObject)
         return;
     }
 
-    surfaceSelector->setWindow(this);
+    surfaceSelector->setSurface(this);
 }
 
 void Qt3DQuickWindow::setCameraAspectModeHelper()

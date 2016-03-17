@@ -109,7 +109,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     QObject::connect(d->m_viewport, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
     QObject::connect(d->m_viewport, SIGNAL(normalizedRectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
     QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
-    QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QSurface *)), this, SIGNAL(surfaceChanged(QSurface *)));
+    QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QObject *)), this, SIGNAL(surfaceChanged(QObject *)));
     d->init();
 }
 
@@ -143,7 +143,7 @@ void QForwardRenderer::setCamera(Qt3DCore::QEntity *camera)
     d->m_cameraSelector->setCamera(camera);
 }
 
-void QForwardRenderer::setSurface(QSurface *surface)
+void QForwardRenderer::setSurface(QObject *surface)
 {
     Q_D(QForwardRenderer);
     d->m_surfaceSelector->setSurface(surface);
@@ -184,7 +184,7 @@ Qt3DCore::QEntity *QForwardRenderer::camera() const
     return d->m_cameraSelector->camera();
 }
 
-QSurface *QForwardRenderer::surface() const
+QObject *QForwardRenderer::surface() const
 {
     Q_D(const QForwardRenderer);
     return d->m_surfaceSelector->surface();

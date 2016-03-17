@@ -56,26 +56,22 @@ class QRenderSurfaceSelectorPrivate;
 class QT3DRENDERSHARED_EXPORT QRenderSurfaceSelector : public Qt3DRender::QFrameGraphNode
 {
     Q_OBJECT
-    Q_PROPERTY(QSurface *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
-    Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(QObject *surface READ surface WRITE setSurface NOTIFY surfaceChanged)
     Q_PROPERTY(QSize externalRenderTargetSize READ externalRenderTargetSize NOTIFY externalRenderTargetSizeChanged)
 
 public:
     explicit QRenderSurfaceSelector(Qt3DCore::QNode *parent = nullptr);
     ~QRenderSurfaceSelector();
 
-    QSurface *surface() const;
-    QWindow *window() const;
+    QObject *surface() const;
     QSize externalRenderTargetSize() const;
     void setExternalRenderTargetSize(const QSize &size);
 
 public Q_SLOTS:
-    void setSurface(QSurface *surface);
-    void setWindow(QWindow *window);
+    void setSurface(QObject *surface);
 
 Q_SIGNALS:
-    void surfaceChanged(QSurface *surface);
-    void windowChanged(QWindow *window);
+    void surfaceChanged(QObject *surface);
     void externalRenderTargetSizeChanged(const QSize &size);
 
 protected:

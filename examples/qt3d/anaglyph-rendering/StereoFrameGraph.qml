@@ -55,7 +55,7 @@ Viewport {
 
     property alias leftCamera: leftCameraSelector.camera
     property alias rightCamera: rightCameraSelector.camera
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
 
     RenderSurfaceSelector {
         id: surfaceSelector
