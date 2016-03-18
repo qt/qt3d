@@ -47,14 +47,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QRenderTargetOutputPrivate;
 
 class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(AttachmentPoint attachmentPoint READ attachmentPoint WRITE setAttachmentPoint NOTIFY attachmentPointChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *texture READ texture WRITE setTexture NOTIFY textureChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
     Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
@@ -97,21 +97,21 @@ public:
     ~QRenderTargetOutput();
 
     AttachmentPoint attachmentPoint() const;
-    QAbstractTextureProvider *texture() const;
+    QAbstractTexture *texture() const;
     int mipLevel() const;
     int layer() const;
     CubeMapFace face() const;
 
 public Q_SLOTS:
     void setAttachmentPoint(AttachmentPoint attachmentPoint);
-    void setTexture(QAbstractTextureProvider *texture);
+    void setTexture(QAbstractTexture *texture);
     void setMipLevel(int level);
     void setLayer(int layer);
     void setFace(CubeMapFace face);
 
 Q_SIGNALS:
     void attachmentPointChanged(AttachmentPoint attachmentPoint);
-    void textureChanged(QAbstractTextureProvider *texture);
+    void textureChanged(QAbstractTexture *texture);
     void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
     void faceChanged(CubeMapFace face);

@@ -78,19 +78,19 @@ QNormalDiffuseSpecularMapMaterialPrivate::QNormalDiffuseSpecularMapMaterialPriva
     , m_normalDiffuseSpecularGL2ES2Shader(new QShaderProgram())
     , m_filterKey(new QFilterKey)
 {
-    m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
-    m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
+    m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_diffuseTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_diffuseTexture->setGenerateMipMaps(true);
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
 
-    m_normalTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
-    m_normalTexture->setMinificationFilter(QAbstractTextureProvider::Linear);
+    m_normalTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_normalTexture->setMinificationFilter(QAbstractTexture::Linear);
     m_normalTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_normalTexture->setMaximumAnisotropy(16.0f);
 
-    m_specularTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
-    m_specularTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
+    m_specularTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_specularTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
     m_specularTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_specularTexture->setGenerateMipMaps(true);
     m_specularTexture->setMaximumAnisotropy(16.0f);
@@ -171,19 +171,19 @@ void QNormalDiffuseSpecularMapMaterialPrivate::handleAmbientChanged(const QVaria
 void QNormalDiffuseSpecularMapMaterialPrivate::handleDiffuseChanged(const QVariant &var)
 {
     Q_Q(QNormalDiffuseSpecularMapMaterial);
-    emit q->diffuseChanged(var.value<QAbstractTextureProvider *>());
+    emit q->diffuseChanged(var.value<QAbstractTexture *>());
 }
 
 void QNormalDiffuseSpecularMapMaterialPrivate::handleNormalChanged(const QVariant &var)
 {
     Q_Q(QNormalDiffuseSpecularMapMaterial);
-    emit q->normalChanged(var.value<QAbstractTextureProvider *>());
+    emit q->normalChanged(var.value<QAbstractTexture *>());
 }
 
 void QNormalDiffuseSpecularMapMaterialPrivate::handleSpecularChanged(const QVariant &var)
 {
     Q_Q(QNormalDiffuseSpecularMapMaterial);
-    emit q->specularChanged(var.value<QAbstractTextureProvider *>());
+    emit q->specularChanged(var.value<QAbstractTexture *>());
 }
 
 void QNormalDiffuseSpecularMapMaterialPrivate::handleShininessChanged(const QVariant &var)
@@ -269,10 +269,10 @@ QColor QNormalDiffuseSpecularMapMaterial::ambient() const
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::diffuse() const
+QAbstractTexture *QNormalDiffuseSpecularMapMaterial::diffuse() const
 {
     Q_D(const QNormalDiffuseSpecularMapMaterial);
-    return d->m_diffuseParameter->value().value<QAbstractTextureProvider *>();
+    return d->m_diffuseParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -288,10 +288,10 @@ QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::diffuse() const
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::normal() const
+QAbstractTexture *QNormalDiffuseSpecularMapMaterial::normal() const
 {
     Q_D(const QNormalDiffuseSpecularMapMaterial);
-    return d->m_normalParameter->value().value<QAbstractTextureProvider *>();
+    return d->m_normalParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -308,10 +308,10 @@ QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::normal() const
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTextureProvider *QNormalDiffuseSpecularMapMaterial::specular() const
+QAbstractTexture *QNormalDiffuseSpecularMapMaterial::specular() const
 {
     Q_D(const QNormalDiffuseSpecularMapMaterial);
-    return d->m_specularParameter->value().value<QAbstractTextureProvider *>();
+    return d->m_specularParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -342,19 +342,19 @@ void QNormalDiffuseSpecularMapMaterial::setAmbient(const QColor &ambient)
     d->m_ambientParameter->setValue(ambient);
 }
 
-void QNormalDiffuseSpecularMapMaterial::setDiffuse(QAbstractTextureProvider *diffuse)
+void QNormalDiffuseSpecularMapMaterial::setDiffuse(QAbstractTexture *diffuse)
 {
     Q_D(QNormalDiffuseSpecularMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuse));
 }
 
-void QNormalDiffuseSpecularMapMaterial::setNormal(QAbstractTextureProvider *normal)
+void QNormalDiffuseSpecularMapMaterial::setNormal(QAbstractTexture *normal)
 {
     Q_D(QNormalDiffuseSpecularMapMaterial);
     d->m_normalParameter->setValue(QVariant::fromValue(normal));
 }
 
-void QNormalDiffuseSpecularMapMaterial::setSpecular(QAbstractTextureProvider *specular)
+void QNormalDiffuseSpecularMapMaterial::setSpecular(QAbstractTexture *specular)
 {
     Q_D(QNormalDiffuseSpecularMapMaterial);
     d->m_specularParameter->setValue(QVariant::fromValue(specular));

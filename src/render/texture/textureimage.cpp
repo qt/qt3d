@@ -53,7 +53,7 @@ TextureImage::TextureImage()
     : BackendNode()
     , m_layer(0)
     , m_mipLevel(0)
-    , m_face(QAbstractTextureProvider::CubeMapPositiveX)
+    , m_face(QAbstractTexture::CubeMapPositiveX)
     , m_dirty(true)
     , m_textureManager(Q_NULLPTR)
     , m_textureImageManager(Q_NULLPTR)
@@ -67,7 +67,7 @@ void TextureImage::cleanup()
     m_layer = 0;
     m_mipLevel = 0;
     m_dirty = true;
-    m_face = QAbstractTextureProvider::CubeMapPositiveX;
+    m_face = QAbstractTexture::CubeMapPositiveX;
     m_generator.reset();
     m_textureManager = Q_NULLPTR;
     m_textureImageManager = Q_NULLPTR;
@@ -85,7 +85,7 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
     m_generator = textureImage->dataGenerator();
     // Notify the Texture that we are one of its TextureImage
     if (!peer->parentNode()) {
-        qWarning() << "Not QAbstractTextureProvider parent found";
+        qWarning() << "Not QAbstractTexture parent found";
     } else {
         m_textureProviderId = peer->parentNode()->id();
         m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
@@ -109,7 +109,7 @@ void TextureImage::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_mipLevel = propertyChange->value().toInt();
             m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
-            m_face = static_cast<QAbstractTextureProvider::CubeMapFace>(propertyChange->value().toInt());
+            m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
             m_dirty = true;
         } else if (propertyChange->propertyName() == QByteArrayLiteral("dataFunctor")) {
             m_generator = propertyChange->value().value<QTextureImageDataGeneratorPtr>();

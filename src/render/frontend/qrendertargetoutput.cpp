@@ -60,7 +60,7 @@ void QRenderTargetOutput::copy(const QNode *ref)
     QNode::copy(ref);
     const QRenderTargetOutput *rA = static_cast<const QRenderTargetOutput*>(ref);
     d_func()->m_attachmentPoint = rA->d_func()->m_attachmentPoint;
-    setTexture(qobject_cast<QAbstractTextureProvider *>(QNode::clone(rA->d_func()->m_texture)));
+    setTexture(qobject_cast<QAbstractTexture *>(QNode::clone(rA->d_func()->m_texture)));
 }
 
 QRenderTargetOutput::QRenderTargetOutput(QNode *parent)
@@ -94,7 +94,7 @@ QRenderTargetOutput::AttachmentPoint QRenderTargetOutput::attachmentPoint() cons
     return d->m_attachmentPoint;
 }
 
-void QRenderTargetOutput::setTexture(QAbstractTextureProvider *texture)
+void QRenderTargetOutput::setTexture(QAbstractTexture *texture)
 {
     Q_D(QRenderTargetOutput);
     if (texture != d->m_texture) {
@@ -107,7 +107,7 @@ void QRenderTargetOutput::setTexture(QAbstractTextureProvider *texture)
     }
 }
 
-QAbstractTextureProvider *QRenderTargetOutput::texture() const
+QAbstractTexture *QRenderTargetOutput::texture() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_texture;

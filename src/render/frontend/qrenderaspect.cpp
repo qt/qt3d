@@ -181,6 +181,7 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     q->registerBackendType<Qt3DCore::QEntity>(QBackendNodeMapperPtr(new Render::RenderEntityFunctor(m_renderer, m_nodeManagers)));
     q->registerBackendType<Qt3DCore::QTransform>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Transform, Render::TransformManager>(m_renderer, m_nodeManagers->transformManager())));
+
     q->registerBackendType<Qt3DRender::QCameraLens>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(m_renderer, m_nodeManagers->cameraManager())));
     q->registerBackendType<QLayer>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(m_renderer, m_nodeManagers->layerManager())));
     q->registerBackendType<QSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(m_renderer, m_nodeManagers->sceneManager())));
@@ -198,7 +199,7 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QGeometryRenderer>(QBackendNodeMapperPtr(new Render::GeometryRendererFunctor(m_renderer, m_nodeManagers->geometryRendererManager())));
 
     // Textures
-    q->registerBackendType<QAbstractTextureProvider>(QBackendNodeMapperPtr(new Render::TextureFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
+    q->registerBackendType<QAbstractTexture>(QBackendNodeMapperPtr(new Render::TextureFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
     q->registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
 
     // Material system

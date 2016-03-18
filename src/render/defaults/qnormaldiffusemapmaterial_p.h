@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 class QFilterKey;
 class QEffect;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
@@ -82,8 +82,8 @@ public:
     void handleTextureScaleChanged(const QVariant &var);
 
     QEffect *m_normalDiffuseEffect;
-    QAbstractTextureProvider *m_diffuseTexture;
-    QAbstractTextureProvider *m_normalTexture;
+    QAbstractTexture *m_diffuseTexture;
+    QAbstractTexture *m_normalTexture;
     QParameter *m_ambientParameter;
     QParameter *m_diffuseParameter;
     QParameter *m_normalParameter;

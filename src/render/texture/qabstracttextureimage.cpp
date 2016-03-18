@@ -65,7 +65,7 @@ namespace Qt3DRender {
     \brief Encapsulates the necessary information to create an OpenGL texture image.
 
     QAbstractTextureImage should be used as the means of providing image data to a
-    QAbstractTextureProvider. It contains the necessary information: mipmap
+    QAbstractTexture. It contains the necessary information: mipmap
     level, layer, cube face load at the proper place data into an OpenGL texture.
 
     The actual data is provided through a QTextureImageDataGenerator that will be
@@ -141,8 +141,8 @@ int QAbstractTextureImage::layer() const
     \value CubeMapNegativeZ 0x851A   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 
     \note The cube map face has a meaning only for
-    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMap} and
-    \l [CPP] {Qt3DRender::QAbstractTextureProvider::}{TargetCubeMapArray}.
+    \l [CPP] {Qt3DRender::QAbstractTexture::}{TargetCubeMap} and
+    \l [CPP] {Qt3DRender::QAbstractTexture::}{TargetCubeMapArray}.
  */
 
 /*!
@@ -151,10 +151,10 @@ int QAbstractTextureImage::layer() const
     Holds the cube map face of the texture image.
 
     \note The cube map face has a meaning only for
-    \l {QAbstractTextureProvider::}{TargetCubeMap} and
-    \l {QAbstractTextureProvider::}{TargetCubeMapArray}.
+    \l {QAbstractTexture::}{TargetCubeMap} and
+    \l {QAbstractTexture::}{TargetCubeMapArray}.
  */
-QAbstractTextureProvider::CubeMapFace QAbstractTextureImage::face() const
+QAbstractTexture::CubeMapFace QAbstractTextureImage::face() const
 {
     Q_D(const QAbstractTextureImage);
     return d->m_face;
@@ -178,7 +178,7 @@ void QAbstractTextureImage::setLayer(int layer)
     }
 }
 
-void QAbstractTextureImage::setFace(QAbstractTextureProvider::CubeMapFace face)
+void QAbstractTextureImage::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QAbstractTextureImage);
     if (face != d->m_face) {

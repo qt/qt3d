@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QParameterPrivate;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 
 class QT3DRENDERSHARED_EXPORT QParameter : public Qt3DCore::QNode
 {
@@ -61,7 +61,7 @@ public:
     explicit QParameter(Qt3DCore::QNode *parent = 0);
     ~QParameter();
     QParameter(const QString &name, const QVariant& value, Qt3DCore::QNode *parent = 0);
-    QParameter(const QString &name, QAbstractTextureProvider *texture, Qt3DCore::QNode *parent = 0);
+    QParameter(const QString &name, QAbstractTexture *texture, Qt3DCore::QNode *parent = 0);
 
     QString name() const;
 

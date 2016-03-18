@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
-#define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
+#ifndef QT3DRENDER_QABSTRACTTEXTURE_H
+#define QT3DRENDER_QABSTRACTTEXTURE_H
 
 #include <Qt3DRender/qtexturedata.h>
 #include <Qt3DRender/qt3drender_global.h>
@@ -48,14 +48,14 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProviderPrivate;
+class QAbstractTexturePrivate;
 class QTextureWrapMode;
 class QAbstractTextureImage;
 class QTextureImageDataGenerator;
 
 typedef QSharedPointer<QTextureImageDataGenerator> QTextureImageDataGeneratorPtr;
 
-class QT3DRENDERSHARED_EXPORT QAbstractTextureProvider : public Qt3DCore::QNode
+class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(Target target READ target CONSTANT)
@@ -266,7 +266,7 @@ public:
     };
     Q_ENUM(ComparisonMode)
 
-    ~QAbstractTextureProvider();
+    ~QAbstractTexture();
 
     Target target() const;
 
@@ -327,21 +327,21 @@ Q_SIGNALS:
     void uniqueChanged(bool unique);
 
 protected:
-    explicit QAbstractTextureProvider(Qt3DCore::QNode *parent = 0);
-    explicit QAbstractTextureProvider(Target target, Qt3DCore::QNode *parent = 0);
-    QAbstractTextureProvider(QAbstractTextureProviderPrivate &dd, Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTexture(Qt3DCore::QNode *parent = 0);
+    explicit QAbstractTexture(Target target, Qt3DCore::QNode *parent = 0);
+    QAbstractTexture(QAbstractTexturePrivate &dd, Qt3DCore::QNode *parent = 0);
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
 private:
-    Q_DECLARE_PRIVATE(QAbstractTextureProvider)
-    QT3D_CLONEABLE(QAbstractTextureProvider)
+    Q_DECLARE_PRIVATE(QAbstractTexture)
+    QT3D_CLONEABLE(QAbstractTexture)
 };
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-Q_DECLARE_METATYPE(Qt3DRender::QAbstractTextureProvider *)
+Q_DECLARE_METATYPE(Qt3DRender::QAbstractTexture *)
 
-#endif // QT3DRENDER_QABSTRACTTEXTUREPROVIDER_H
+#endif // QT3DRENDER_QABSTRACTTEXTURE_H

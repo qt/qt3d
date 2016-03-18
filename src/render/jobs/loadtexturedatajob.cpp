@@ -108,15 +108,15 @@ void LoadTextureDataJob::run()
             if (!data)
                 return;
 
-            if (txt->target() == QAbstractTextureProvider::TargetAutomatic)
-                txt->setTarget(static_cast<QAbstractTextureProvider::Target>(data->target()));
+            if (txt->target() == QAbstractTexture::TargetAutomatic)
+                txt->setTarget(static_cast<QAbstractTexture::Target>(data->target()));
 
             if (!txt->isAutoMipMapGenerationEnabled())
                 txt->setMipLevels(data->mipLevels());
 
             txt->setSize(data->width(), data->height(), data->depth());
             txt->setLayers(data->layers());
-            txt->setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(data->format()));
+            txt->setFormat(static_cast<QAbstractTexture::TextureFormat>(data->format()));
             txt->setTextureDataHandle(textureDataHandle);
         }
 
@@ -140,7 +140,7 @@ void LoadTextureDataJob::run()
                 // Set texture size of texture if the first layer / level / face has a valid size
                 // otherwise assume the size was set on the texture itself
                 if (texImg->layer() == 0 && texImg->mipLevel() == 0 &&
-                        texImg->face() == QAbstractTextureProvider::CubeMapPositiveX) {
+                        texImg->face() == QAbstractTexture::CubeMapPositiveX) {
 
                     if (data == Q_NULLPTR) {
                         qWarning() << "Texture data is null, texture data failed to load";
@@ -152,8 +152,8 @@ void LoadTextureDataJob::run()
                             txt->setSize(data->width(), data->height(), data->depth());
                         }
                         // Set the format of the texture if the texture format is set to Automatic
-                        if (txt->format() == QAbstractTextureProvider::Automatic) {
-                            txt->setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(data->format()));
+                        if (txt->format() == QAbstractTexture::Automatic) {
+                            txt->setFormat(static_cast<QAbstractTexture::TextureFormat>(data->format()));
                         }
                     }
                 }

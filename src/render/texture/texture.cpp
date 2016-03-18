@@ -66,16 +66,16 @@ Texture::Texture()
     , m_layers(1)
     , m_mipLevels(1)
     , m_generateMipMaps(false)
-    , m_target(QAbstractTextureProvider::Target2D)
-    , m_format(QAbstractTextureProvider::RGBA8_UNorm)
-    , m_magnificationFilter(QAbstractTextureProvider::Nearest)
-    , m_minificationFilter(QAbstractTextureProvider::Nearest)
+    , m_target(QAbstractTexture::Target2D)
+    , m_format(QAbstractTexture::RGBA8_UNorm)
+    , m_magnificationFilter(QAbstractTexture::Nearest)
+    , m_minificationFilter(QAbstractTexture::Nearest)
     , m_wrapModeX(QTextureWrapMode::ClampToEdge)
     , m_wrapModeY(QTextureWrapMode::ClampToEdge)
     , m_wrapModeZ(QTextureWrapMode::ClampToEdge)
     , m_maximumAnisotropy(1.0f)
-    , m_comparisonFunction(QAbstractTextureProvider::CompareLessEqual)
-    , m_comparisonMode(QAbstractTextureProvider::CompareNone)
+    , m_comparisonFunction(QAbstractTexture::CompareLessEqual)
+    , m_comparisonMode(QAbstractTexture::CompareNone)
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
@@ -101,16 +101,16 @@ void Texture::cleanup()
     m_layers = 1;
     m_mipLevels = 1;
     m_generateMipMaps = false;
-    m_target = QAbstractTextureProvider::Target2D;
-    m_format = QAbstractTextureProvider::RGBA8_UNorm;
-    m_magnificationFilter = QAbstractTextureProvider::Nearest;
-    m_minificationFilter = QAbstractTextureProvider::Nearest;
+    m_target = QAbstractTexture::Target2D;
+    m_format = QAbstractTexture::RGBA8_UNorm;
+    m_magnificationFilter = QAbstractTexture::Nearest;
+    m_minificationFilter = QAbstractTexture::Nearest;
     m_wrapModeX = QTextureWrapMode::ClampToEdge;
     m_wrapModeY = QTextureWrapMode::ClampToEdge;
     m_wrapModeZ = QTextureWrapMode::ClampToEdge;
     m_maximumAnisotropy = 1.0f;
-    m_comparisonFunction = QAbstractTextureProvider::CompareLessEqual;
-    m_comparisonMode = QAbstractTextureProvider::CompareNone;
+    m_comparisonFunction = QAbstractTexture::CompareLessEqual;
+    m_comparisonMode = QAbstractTexture::CompareNone;
     m_isDirty = false;
     m_filtersAndWrapUpdated = false;
     m_dataUploadRequired = false;
@@ -127,7 +127,7 @@ void Texture::cleanup()
 // AspectThread
 void Texture::updateFromPeer(Qt3DCore::QNode *peer)
 {
-    QAbstractTextureProvider *texture = static_cast<QAbstractTextureProvider *>(peer);
+    QAbstractTexture *texture = static_cast<QAbstractTexture *>(peer);
 
     QMutexLocker lock(&m_lock);
     if (texture != Q_NULLPTR) {
@@ -239,30 +239,30 @@ QOpenGLTexture *Texture::buildGLTexture()
         return Q_NULLPTR;
     }
 
-    if (m_target == QAbstractTextureProvider::TargetAutomatic) {
+    if (m_target == QAbstractTexture::TargetAutomatic) {
         qWarning() << Q_FUNC_INFO << "something went wrong, target shouldn't be automatic at this point";
         return Q_NULLPTR;
     }
 
     QOpenGLTexture* glTex = new QOpenGLTexture(static_cast<QOpenGLTexture::Target>(m_target));
 
-    if (m_format == QAbstractTextureProvider::Automatic)
+    if (m_format == QAbstractTexture::Automatic)
         qWarning() << Q_FUNC_INFO << "something went wrong, format shouldn't be automatic at this point";
 
     // m_format may not be ES2 compatible. Now it's time to convert it, if necessary.
-    QAbstractTextureProvider::TextureFormat format = m_format;
+    QAbstractTexture::TextureFormat format = m_format;
     if (ctx->isOpenGLES() && ctx->format().majorVersion() < 3) {
         switch (m_format) {
         case QOpenGLTexture::RGBA8_UNorm:
         case QOpenGLTexture::RGBAFormat:
-            format = QAbstractTextureProvider::RGBAFormat;
+            format = QAbstractTexture::RGBAFormat;
             break;
         case QOpenGLTexture::RGB8_UNorm:
         case QOpenGLTexture::RGBFormat:
-            format = QAbstractTextureProvider::RGBFormat;
+            format = QAbstractTexture::RGBFormat;
             break;
         case QOpenGLTexture::DepthFormat:
-            format = QAbstractTextureProvider::DepthFormat;
+            format = QAbstractTexture::DepthFormat;
             break;
         default:
             qWarning() << Q_FUNC_INFO << "could not find a matching OpenGL ES 2.0 unsized texture format";
@@ -273,23 +273,23 @@ QOpenGLTexture *Texture::buildGLTexture()
     // Map ETC1 to ETC2 when supported. This allows using features like
     // immutable storage as ETC2 is standard in GLES 3.0, while the ETC1 extension
     // is written against GLES 1.0.
-    if (m_format == QAbstractTextureProvider::RGB8_ETC1) {
+    if (m_format == QAbstractTexture::RGB8_ETC1) {
         if ((ctx->isOpenGLES() && ctx->format().majorVersion() >= 3)
                 || ctx->hasExtension(QByteArrayLiteral("GL_OES_compressed_ETC2_RGB8_texture"))
                 || ctx->hasExtension(QByteArrayLiteral("GL_ARB_ES3_compatibility")))
-            format = m_format = QAbstractTextureProvider::RGB8_ETC2;
+            format = m_format = QAbstractTexture::RGB8_ETC2;
     }
 
-    glTex->setFormat(format == QAbstractTextureProvider::Automatic ?
+    glTex->setFormat(format == QAbstractTexture::Automatic ?
                          QOpenGLTexture::NoFormat :
                          static_cast<QOpenGLTexture::TextureFormat>(format));
     glTex->setSize(m_width, m_height, m_depth);
     // Set layers count if texture array
-    if (m_target == QAbstractTextureProvider::Target1DArray ||
-        m_target == QAbstractTextureProvider::Target2DArray ||
-        m_target == QAbstractTextureProvider::Target3D ||
-        m_target == QAbstractTextureProvider::Target2DMultisampleArray ||
-        m_target == QAbstractTextureProvider::TargetCubeMapArray) {
+    if (m_target == QAbstractTexture::Target1DArray ||
+        m_target == QAbstractTexture::Target2DArray ||
+        m_target == QAbstractTexture::Target3D ||
+        m_target == QAbstractTexture::Target2DMultisampleArray ||
+        m_target == QAbstractTexture::TargetCubeMapArray) {
         glTex->setLayers(m_layers);
     }
 
@@ -407,11 +407,11 @@ void Texture::setToGLTexture(TextureImage *rImg, QTexImageData *imgData)
 void Texture::updateWrapAndFilters()
 {
     m_gl->setWrapMode(QOpenGLTexture::DirectionS, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeX));
-    if (m_target != QAbstractTextureProvider::Target1D &&
-            m_target != QAbstractTextureProvider::Target1DArray &&
-            m_target != QAbstractTextureProvider::TargetBuffer)
+    if (m_target != QAbstractTexture::Target1D &&
+            m_target != QAbstractTexture::Target1DArray &&
+            m_target != QAbstractTexture::TargetBuffer)
         m_gl->setWrapMode(QOpenGLTexture::DirectionT, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeY));
-    if (m_target == QAbstractTextureProvider::Target3D)
+    if (m_target == QAbstractTexture::Target3D)
         m_gl->setWrapMode(QOpenGLTexture::DirectionR, static_cast<QOpenGLTexture::WrapMode>(m_wrapModeZ));
     m_gl->setMinMagFilters(static_cast<QOpenGLTexture::Filter>(m_minificationFilter),
                            static_cast<QOpenGLTexture::Filter>(m_magnificationFilter));
@@ -459,7 +459,7 @@ bool Texture::isTextureReset() const
     return m_isDirty;
 }
 
-void Texture::setTarget(QAbstractTextureProvider::Target target)
+void Texture::setTarget(QAbstractTexture::Target target)
 {
     if (target != m_target) {
         m_target = target;
@@ -483,7 +483,7 @@ void Texture::setSize(int width, int height, int depth)
     }
 }
 
-void Texture::setFormat(QAbstractTextureProvider::TextureFormat format)
+void Texture::setFormat(QAbstractTexture::TextureFormat format)
 {
     if (format != m_format) {
         m_format = format;
@@ -528,12 +528,12 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_generateMipMaps = propertyChange->value().toBool();
             m_isDirty |= (oldMipMaps != m_generateMipMaps);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("minificationFilter")) {
-            QAbstractTextureProvider::Filter oldMinFilter = m_minificationFilter;
-            m_minificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
+            QAbstractTexture::Filter oldMinFilter = m_minificationFilter;
+            m_minificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldMinFilter != m_minificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("magnificationFilter")) {
-            QAbstractTextureProvider::Filter oldMagFilter = m_magnificationFilter;
-            m_magnificationFilter = static_cast<QAbstractTextureProvider::Filter>(propertyChange->value().toInt());
+            QAbstractTexture::Filter oldMagFilter = m_magnificationFilter;
+            m_magnificationFilter = static_cast<QAbstractTexture::Filter>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldMagFilter != m_magnificationFilter);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("wrapModeX")) {
             QTextureWrapMode::WrapMode oldWrapModeX = m_wrapModeX;
@@ -548,22 +548,22 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_wrapModeZ =static_cast<QTextureWrapMode::WrapMode>(propertyChange->value().toInt());
             m_filtersAndWrapUpdated |= (oldWrapModeZ != m_wrapModeZ);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("format")) {
-            setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(propertyChange->value().toInt()));
+            setFormat(static_cast<QAbstractTexture::TextureFormat>(propertyChange->value().toInt()));
         } else if (propertyChange->propertyName() == QByteArrayLiteral("target")) {
-            QAbstractTextureProvider::Target oldTarget = m_target;
-            m_target = static_cast<QAbstractTextureProvider::Target>(propertyChange->value().toInt());
+            QAbstractTexture::Target oldTarget = m_target;
+            m_target = static_cast<QAbstractTexture::Target>(propertyChange->value().toInt());
             m_isDirty |= (oldTarget != m_target);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumAnisotropy")) {
             float oldMaximumAnisotropy = m_maximumAnisotropy;
             m_maximumAnisotropy = propertyChange->value().toFloat();
             m_filtersAndWrapUpdated |= !qFuzzyCompare(oldMaximumAnisotropy, m_maximumAnisotropy);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonFunction")) {
-            QAbstractTextureProvider::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
-            m_comparisonFunction = propertyChange->value().value<QAbstractTextureProvider::ComparisonFunction>();
+            QAbstractTexture::ComparisonFunction oldComparisonFunction = m_comparisonFunction;
+            m_comparisonFunction = propertyChange->value().value<QAbstractTexture::ComparisonFunction>();
             m_filtersAndWrapUpdated |= (oldComparisonFunction != m_comparisonFunction);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("comparisonMode")) {
-            QAbstractTextureProvider::ComparisonMode oldComparisonMode = m_comparisonMode;
-            m_comparisonMode = propertyChange->value().value<QAbstractTextureProvider::ComparisonMode>();
+            QAbstractTexture::ComparisonMode oldComparisonMode = m_comparisonMode;
+            m_comparisonMode = propertyChange->value().value<QAbstractTexture::ComparisonMode>();
             m_filtersAndWrapUpdated |= (oldComparisonMode != m_comparisonMode);
         } else if (propertyChange->propertyName() == QByteArrayLiteral("maximumLayers")) {
             const int oldLayers = m_layers;

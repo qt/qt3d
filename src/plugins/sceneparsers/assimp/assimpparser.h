@@ -76,7 +76,7 @@ namespace Qt3DRender {
 class QMaterial;
 class QShaderProgram;
 class QEffect;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QMesh;
 class QGeometryRenderer;
 
@@ -134,8 +134,8 @@ private:
         QMap<uint, QGeometryRenderer *> m_meshes;
         QMap<uint, QMaterial*> m_materials;
         QMap<uint, QEffect *> m_effects;
-        QMap<uint, QAbstractTextureProvider *> m_embeddedTextures;
-        QMap<QString, QAbstractTextureProvider *> m_materialTextures;
+        QMap<uint, QAbstractTexture *> m_embeddedTextures;
+        QMap<QString, QAbstractTexture *> m_materialTextures;
         QMap<aiNode*, Qt3DCore::QEntity*> m_cameras;
         QHash<aiTextureType, QString> m_textureToParameterName;
 //    QMap<aiNode*, Light*> m_lights;

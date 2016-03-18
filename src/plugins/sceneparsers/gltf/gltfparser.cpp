@@ -847,7 +847,7 @@ void GLTFParser::cleanup()
     }
     m_techniques.clear();
     //Check for Textures with no parent
-    Q_FOREACH (QAbstractTextureProvider *texture, m_textures.values()) {
+    Q_FOREACH (QAbstractTexture *texture, m_textures.values()) {
         if (texture->parent() == Q_NULLPTR)
             delete texture;
     }
@@ -1164,7 +1164,7 @@ void GLTFParser::processJSONTexture(const QString &id, const QJsonObject &jsonOb
     //int pixelFormat = jsonObj.value(KEY_FORMAT).toInt(GL_RGBA);
     int internalFormat = jsonObject.value(KEY_INTERNAL_FORMAT).toInt(GL_RGBA);
 
-    tex->setFormat(static_cast<QAbstractTextureProvider::TextureFormat>(internalFormat));
+    tex->setFormat(static_cast<QAbstractTexture::TextureFormat>(internalFormat));
 
     QString samplerId = jsonObject.value(KEY_SAMPLER).toString();
     QString source = jsonObject.value(KEY_SOURCE).toString();
@@ -1186,15 +1186,15 @@ void GLTFParser::processJSONTexture(const QString &id, const QJsonObject &jsonOb
     QJsonObject sampler = samplersDict.value(samplerId).toObject();
 
     tex->setWrapMode(QTextureWrapMode(static_cast<QTextureWrapMode::WrapMode>(sampler.value(KEY_WRAP_S).toInt())));
-    tex->setMinificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
-    if (tex->minificationFilter() == QAbstractTextureProvider::NearestMipMapLinear ||
-        tex->minificationFilter() == QAbstractTextureProvider::LinearMipMapNearest ||
-        tex->minificationFilter() == QAbstractTextureProvider::NearestMipMapNearest ||
-        tex->minificationFilter() == QAbstractTextureProvider::LinearMipMapLinear) {
+    tex->setMinificationFilter(static_cast<QAbstractTexture::Filter>(sampler.value(KEY_MIN_FILTER).toInt()));
+    if (tex->minificationFilter() == QAbstractTexture::NearestMipMapLinear ||
+        tex->minificationFilter() == QAbstractTexture::LinearMipMapNearest ||
+        tex->minificationFilter() == QAbstractTexture::NearestMipMapNearest ||
+        tex->minificationFilter() == QAbstractTexture::LinearMipMapLinear) {
 
         tex->setGenerateMipMaps(true);
     }
-    tex->setMagnificationFilter(static_cast<QAbstractTextureProvider::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
+    tex->setMagnificationFilter(static_cast<QAbstractTexture::Filter>(sampler.value(KEY_MAG_FILTER).toInt()));
 
     m_textures[id] = tex;
 }
@@ -1238,7 +1238,7 @@ QVariant GLTFParser::parameterValueFromJSON(int type, const QJsonValue &value) c
     } else if (value.isString()) {
         if (type == GL_SAMPLER_2D) {
             //Textures are special because we need to do a lookup to return the
-            //QAbstractTextureProvider
+            //QAbstractTexture
             QString textureId = value.toString();
             if (!m_textures.contains(textureId)) {
                 qCWarning(GLTFParserLog) << "unknown texture" << textureId;

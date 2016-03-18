@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
-#define QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
+#ifndef QT3DRENDER_QABSTRACTTEXTURE_P_H
+#define QT3DRENDER_QABSTRACTTEXTURE_P_H
 
 //
 //  W A R N I N G
@@ -53,34 +53,34 @@
 
 #include <Qt3DRender/qt3drender_global.h>
 #include <Qt3DCore/private/qnode_p.h>
-#include <Qt3DRender/qabstracttextureprovider.h>
+#include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qtexturewrapmode.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProviderPrivate : public Qt3DCore::QNodePrivate
+class QAbstractTexturePrivate : public Qt3DCore::QNodePrivate
 {
 public :
-    QAbstractTextureProviderPrivate();
+    QAbstractTexturePrivate();
 
-    Q_DECLARE_PUBLIC(QAbstractTextureProvider)
+    Q_DECLARE_PUBLIC(QAbstractTexture)
 
-    QAbstractTextureProvider::Target m_target;
-    QAbstractTextureProvider::TextureFormat m_format;
+    QAbstractTexture::Target m_target;
+    QAbstractTexture::TextureFormat m_format;
     int m_width, m_height, m_depth;
     bool m_autoMipMap;
 
     QList<QTexImageDataPtr> m_data;
 
-    QAbstractTextureProvider::Filter m_minFilter, m_magFilter;
+    QAbstractTexture::Filter m_minFilter, m_magFilter;
     // FIXME, store per direction
     QTextureWrapMode m_wrapMode;
-    QAbstractTextureProvider::Status m_status;
+    QAbstractTexture::Status m_status;
     float m_maximumAnisotropy;
-    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
-    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
+    QAbstractTexture::ComparisonFunction m_comparisonFunction;
+    QAbstractTexture::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
     int m_maximumLayers;
     bool m_unique;
@@ -92,5 +92,5 @@ public :
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_QABSTRACTTEXTUREPROVIDER_P_H
+#endif // QT3DRENDER_QABSTRACTTEXTURE_P_H
 

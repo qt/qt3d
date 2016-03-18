@@ -53,7 +53,7 @@
 
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
-#include <Qt3DRender/qabstracttextureprovider.h>
+#include <Qt3DRender/qabstracttexture.h>
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <qglobal.h>
 
@@ -79,13 +79,13 @@ public:
 
     int m_layer;
     int m_mipLevel;
-    QAbstractTextureProvider::CubeMapFace m_face;
+    QAbstractTexture::CubeMapFace m_face;
     bool m_dirty;
     inline TextureImageDNA dna() const { return m_dna; }
 
     inline int layer() const { return m_layer; }
     inline int mipLevel() const { return m_mipLevel; }
-    inline QAbstractTextureProvider::CubeMapFace face() const { return m_face; }
+    inline QAbstractTexture::CubeMapFace face() const { return m_face; }
 
     void setTextureManager(TextureManager *manager);
     void setTextureImageManager(TextureImageManager *manager);

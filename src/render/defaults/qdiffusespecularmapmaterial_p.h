@@ -59,7 +59,7 @@ namespace Qt3DRender {
 
 class QFilterKey;
 class QEffect;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QTechnique;
 class QParameter;
 class QShaderProgram;
@@ -81,8 +81,8 @@ public:
     void handleTextureScaleChanged(const QVariant &var);
 
     QEffect *m_diffuseSpecularMapEffect;
-    QAbstractTextureProvider *m_diffuseTexture;
-    QAbstractTextureProvider *m_specularTexture;
+    QAbstractTexture *m_diffuseTexture;
+    QAbstractTexture *m_specularTexture;
     QParameter *m_ambientParameter;
     QParameter *m_diffuseParameter;
     QParameter *m_specularParameter;

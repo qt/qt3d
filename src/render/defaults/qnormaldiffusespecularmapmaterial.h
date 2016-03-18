@@ -53,9 +53,9 @@ class QT3DRENDERSHARED_EXPORT QNormalDiffuseSpecularMapMaterial : public QMateri
 {
     Q_OBJECT
     Q_PROPERTY(QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *normal READ normal WRITE setNormal NOTIFY normalChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider *specular READ specular WRITE setSpecular NOTIFY specularChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *diffuse READ diffuse WRITE setDiffuse NOTIFY diffuseChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *normal READ normal WRITE setNormal NOTIFY normalChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture *specular READ specular WRITE setSpecular NOTIFY specularChanged)
     Q_PROPERTY(float shininess READ shininess WRITE setShininess NOTIFY shininessChanged)
     Q_PROPERTY(float textureScale READ textureScale WRITE setTextureScale NOTIFY textureScaleChanged)
 
@@ -64,25 +64,25 @@ public:
     ~QNormalDiffuseSpecularMapMaterial();
 
     QColor ambient() const;
-    QAbstractTextureProvider *diffuse() const;
-    QAbstractTextureProvider *normal() const;
-    QAbstractTextureProvider *specular() const;
+    QAbstractTexture *diffuse() const;
+    QAbstractTexture *normal() const;
+    QAbstractTexture *specular() const;
     float shininess() const;
     float textureScale() const;
 
 public Q_SLOTS:
     void setAmbient(const QColor &ambient);
-    void setDiffuse(QAbstractTextureProvider *diffuse);
-    void setNormal(QAbstractTextureProvider *normal);
-    void setSpecular(QAbstractTextureProvider *specular);
+    void setDiffuse(QAbstractTexture *diffuse);
+    void setNormal(QAbstractTexture *normal);
+    void setSpecular(QAbstractTexture *specular);
     void setShininess(float shininess);
     void setTextureScale(float textureScale);
 
 Q_SIGNALS:
     void ambientChanged(const QColor &ambient);
-    void diffuseChanged(QAbstractTextureProvider *diffuse);
-    void normalChanged(QAbstractTextureProvider *normal);
-    void specularChanged(QAbstractTextureProvider *specular);
+    void diffuseChanged(QAbstractTexture *diffuse);
+    void normalChanged(QAbstractTexture *normal);
+    void specularChanged(QAbstractTexture *specular);
     void shininessChanged(float shininess);
     void textureScaleChanged(float textureScale);
 

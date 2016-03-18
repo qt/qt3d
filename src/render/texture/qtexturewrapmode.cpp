@@ -66,7 +66,7 @@ public:
     \inmodule Qt3DRender
     \since 5.5
 
-    \brief Defines the wrap mode a Qt3DRender::QAbstractTextureProvider
+    \brief Defines the wrap mode a Qt3DRender::QAbstractTexture
     should apply to a texture.
  */
 

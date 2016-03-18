@@ -75,8 +75,8 @@ QDiffuseMapMaterialPrivate::QDiffuseMapMaterialPrivate()
     , m_diffuseMapGL2ES2Shader(new QShaderProgram())
     , m_filterKey(new QFilterKey)
 {
-    m_diffuseTexture->setMagnificationFilter(QAbstractTextureProvider::Linear);
-    m_diffuseTexture->setMinificationFilter(QAbstractTextureProvider::LinearMipMapLinear);
+    m_diffuseTexture->setMagnificationFilter(QAbstractTexture::Linear);
+    m_diffuseTexture->setMinificationFilter(QAbstractTexture::LinearMipMapLinear);
     m_diffuseTexture->setWrapMode(QTextureWrapMode(QTextureWrapMode::Repeat));
     m_diffuseTexture->setGenerateMipMaps(true);
     m_diffuseTexture->setMaximumAnisotropy(16.0f);
@@ -154,7 +154,7 @@ void QDiffuseMapMaterialPrivate::handleAmbientChanged(const QVariant &var)
 void QDiffuseMapMaterialPrivate::handleDiffuseChanged(const QVariant &var)
 {
     Q_Q(QDiffuseMapMaterial);
-    emit q->diffuseChanged(var.value<QAbstractTextureProvider *>());
+    emit q->diffuseChanged(var.value<QAbstractTexture *>());
 }
 
 void QDiffuseMapMaterialPrivate::handleSpecularChanged(const QVariant &var)
@@ -261,10 +261,10 @@ float QDiffuseMapMaterial::shininess() const
         \li Maximum anisotropy of 16.0
     \endlist
 */
-QAbstractTextureProvider *QDiffuseMapMaterial::diffuse() const
+QAbstractTexture *QDiffuseMapMaterial::diffuse() const
 {
     Q_D(const QDiffuseMapMaterial);
-    return d->m_diffuseParameter->value().value<QAbstractTextureProvider *>();
+    return d->m_diffuseParameter->value().value<QAbstractTexture *>();
 }
 
 /*!
@@ -297,7 +297,7 @@ void QDiffuseMapMaterial::setShininess(float shininess)
     d->m_shininessParameter->setValue(shininess);
 }
 
-void QDiffuseMapMaterial::setDiffuse(QAbstractTextureProvider *diffuseMap)
+void QDiffuseMapMaterial::setDiffuse(QAbstractTexture *diffuseMap)
 {
     Q_D(QDiffuseMapMaterial);
     d->m_diffuseParameter->setValue(QVariant::fromValue(diffuseMap));

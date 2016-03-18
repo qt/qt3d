@@ -74,7 +74,7 @@ class QCameraLens;
 class QMaterial;
 class QShaderProgram;
 class QEffect;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QRenderState;
 class QTechnique;
 class QParameter;
@@ -201,7 +201,7 @@ private:
     QMap<QString, QTechnique *> m_techniques;
     QMap<QParameter*, ParameterData> m_parameterDataDict;
 
-    QMap<QString, QAbstractTextureProvider*> m_textures;
+    QMap<QString, QAbstractTexture*> m_textures;
     QMap<QString, QString> m_imagePaths;
 };
 

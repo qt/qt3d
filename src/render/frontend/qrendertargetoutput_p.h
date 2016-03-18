@@ -58,7 +58,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 
 class QRenderTargetOutputPrivate : public Qt3DCore::QNodePrivate
 {
@@ -67,7 +67,7 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderTargetOutput)
 
-    QAbstractTextureProvider *m_texture;
+    QAbstractTexture *m_texture;
     QRenderTargetOutput::AttachmentPoint m_attachmentPoint;
     int m_mipLevel;
     int m_layer;

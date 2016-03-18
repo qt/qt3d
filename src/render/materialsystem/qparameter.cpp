@@ -97,7 +97,7 @@ QParameter::QParameter(const QString &name, const QVariant &value, QNode *parent
     setValue(value);
 }
 
-QParameter::QParameter(const QString &name, QAbstractTextureProvider *texture, QNode *parent)
+QParameter::QParameter(const QString &name, QAbstractTexture *texture, QNode *parent)
     : QNode(*new QParameterPrivate, parent)
 {
     Q_D(QParameter);

@@ -41,7 +41,7 @@
 #define QT3DRENDER_QABSTRACTTEXTUREIMAGE_H
 
 #include <Qt3DRender/qabstractfunctor.h>
-#include <Qt3DRender/qabstracttextureprovider.h>
+#include <Qt3DRender/qabstracttexture.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -72,24 +72,24 @@ class QT3DRENDERSHARED_EXPORT QAbstractTextureImage : public Qt3DCore::QNode
     Q_OBJECT
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTextureProvider::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
+    Q_PROPERTY(Qt3DRender::QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 public:
     explicit QAbstractTextureImage(Qt3DCore::QNode *parent = 0);
     virtual ~QAbstractTextureImage();
 
     int mipLevel() const;
     int layer() const;
-    QAbstractTextureProvider::CubeMapFace face() const;
+    QAbstractTexture::CubeMapFace face() const;
 
 public Q_SLOTS:
     void setMipLevel(int level);
     void setLayer(int layer);
-    void setFace(QAbstractTextureProvider::CubeMapFace face);
+    void setFace(QAbstractTexture::CubeMapFace face);
 
 Q_SIGNALS:
     void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
-    void faceChanged(QAbstractTextureProvider::CubeMapFace face);
+    void faceChanged(QAbstractTexture::CubeMapFace face);
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;

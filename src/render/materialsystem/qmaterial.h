@@ -49,7 +49,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 class QParameter;
 class QMaterialPrivate;
 class QEffect;

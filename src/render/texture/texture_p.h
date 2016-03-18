@@ -64,7 +64,7 @@ class QOpenGLTexture;
 
 namespace Qt3DRender {
 
-class QAbstractTextureProvider;
+class QAbstractTexture;
 
 namespace Render {
 
@@ -102,15 +102,15 @@ public:
 
     void requestTextureDataUpdate();
     void addToPendingTextureJobs();
-    void setTarget(QAbstractTextureProvider::Target target);
+    void setTarget(QAbstractTexture::Target target);
     void setSize(int width, int height, int depth);
-    void setFormat(QAbstractTextureProvider::TextureFormat format);
+    void setFormat(QAbstractTexture::TextureFormat format);
     void setMipLevels(int mipmapLevels);
     void setLayers(int layers);
 
     inline QVector<HTextureImage> textureImages() const { return m_textureImages; }
-    inline QAbstractTextureProvider::TextureFormat format() const { return m_format; }
-    inline QAbstractTextureProvider::Target target() const { return m_target; }
+    inline QAbstractTexture::TextureFormat format() const { return m_format; }
+    inline QAbstractTexture::Target target() const { return m_target; }
     inline bool isAutoMipMapGenerationEnabled() const { return m_generateMipMaps; }
 
     inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_dataFunctor; }
@@ -132,16 +132,16 @@ private:
     int m_layers;
     int m_mipLevels;
     bool m_generateMipMaps;
-    QAbstractTextureProvider::Target m_target;
-    QAbstractTextureProvider::TextureFormat m_format;
-    QAbstractTextureProvider::Filter m_magnificationFilter;
-    QAbstractTextureProvider::Filter m_minificationFilter;
+    QAbstractTexture::Target m_target;
+    QAbstractTexture::TextureFormat m_format;
+    QAbstractTexture::Filter m_magnificationFilter;
+    QAbstractTexture::Filter m_minificationFilter;
     QTextureWrapMode::WrapMode m_wrapModeX;
     QTextureWrapMode::WrapMode m_wrapModeY;
     QTextureWrapMode::WrapMode m_wrapModeZ;
     float m_maximumAnisotropy;
-    QAbstractTextureProvider::ComparisonFunction m_comparisonFunction;
-    QAbstractTextureProvider::ComparisonMode m_comparisonMode;
+    QAbstractTexture::ComparisonFunction m_comparisonFunction;
+    QAbstractTexture::ComparisonMode m_comparisonMode;
 
     QTextureImageDataGeneratorPtr m_dataFunctor;
     HTextureData m_textureDataHandle;
