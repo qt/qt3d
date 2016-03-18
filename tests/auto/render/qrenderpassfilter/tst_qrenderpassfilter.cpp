@@ -54,7 +54,7 @@ private Q_SLOTS:
     {
         QScopedPointer<Qt3DRender::QRenderPassFilter> defaultRenderPassFilter(new Qt3DRender::QRenderPassFilter);
 
-        QCOMPARE(defaultRenderPassFilter->includes().count(), 0);
+        QCOMPARE(defaultRenderPassFilter->matchAny().count(), 0);
         QCOMPARE(defaultRenderPassFilter->parameters().count(), 0);
     }
 
@@ -83,8 +83,8 @@ private Q_SLOTS:
         filterKey1->setName(QStringLiteral("hasNitroKit"));
         filterKey1->setValue(false);
         QList<Qt3DRender::QFilterKey *> filterKeys1 = QList<Qt3DRender::QFilterKey *>() << filterKey1 << filterKey2;
-        renderPassFilterWithAnnotations->addInclude(filterKey1);
-        renderPassFilterWithAnnotations->addInclude(filterKey2);
+        renderPassFilterWithAnnotations->addMatch(filterKey1);
+        renderPassFilterWithAnnotations->addMatch(filterKey2);
         QTest::newRow("renderPassFilterWithAnnotations") << renderPassFilterWithAnnotations << QList<Qt3DRender::QParameter *>() << filterKeys1;
 
         Qt3DRender::QRenderPassFilter *renderPassFilterWithParamsAndAnnotations = new Qt3DRender::QRenderPassFilter();
@@ -100,8 +100,8 @@ private Q_SLOTS:
         QList<Qt3DRender::QFilterKey *> filterKeys2 = QList<Qt3DRender::QFilterKey *>() << filterKey3 << filterKey4;
         renderPassFilterWithParamsAndAnnotations->addParameter(parameter3);
         renderPassFilterWithParamsAndAnnotations->addParameter(parameter4);
-        renderPassFilterWithParamsAndAnnotations->addInclude(filterKey3);
-        renderPassFilterWithParamsAndAnnotations->addInclude(filterKey4);
+        renderPassFilterWithParamsAndAnnotations->addMatch(filterKey3);
+        renderPassFilterWithParamsAndAnnotations->addMatch(filterKey4);
         QTest::newRow("renderPassFilterWithParamsAndAnnotations") << renderPassFilterWithParamsAndAnnotations << params2 << filterKeys2 ;
     }
 
@@ -114,7 +114,7 @@ private Q_SLOTS:
 
         // THEN
         QCOMPARE(renderPassFilter->parameters(), parameters);
-        QCOMPARE(renderPassFilter->includes(), filterKeys);
+        QCOMPARE(renderPassFilter->matchAny(), filterKeys);
 
         // WHEN
         Qt3DRender::QRenderPassFilter *clone = static_cast<Qt3DRender::QRenderPassFilter *>(QNode::clone(renderPassFilter));
@@ -123,7 +123,7 @@ private Q_SLOTS:
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(renderPassFilter->id(), clone->id());
 
-        QCOMPARE(renderPassFilter->includes().count(), clone->includes().count());
+        QCOMPARE(renderPassFilter->matchAny().count(), clone->matchAny().count());
         QCOMPARE(renderPassFilter->parameters().count(), clone->parameters().count());
 
         for (int i = 0, m = parameters.count(); i < m; ++i) {
@@ -137,7 +137,7 @@ private Q_SLOTS:
         }
 
         for (int i = 0, m = filterKeys.count(); i < m; ++i) {
-            Qt3DRender::QFilterKey *aClone = clone->includes().at(i);
+            Qt3DRender::QFilterKey *aClone = clone->matchAny().at(i);
             Qt3DRender::QFilterKey *aOrig = filterKeys.at(i);
             QCOMPARE(aOrig->id(),aClone->id());
             QCOMPARE(aOrig->name(), aClone->name());
@@ -194,13 +194,13 @@ private Q_SLOTS:
 
         // WHEN
         Qt3DRender::QFilterKey *filterKey1 = new Qt3DRender::QFilterKey();
-        renderPassFilter->addInclude(filterKey1);
+        renderPassFilter->addMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "include");
+        QCOMPARE(change->propertyName(), "match");
         QCOMPARE(change->subjectId(),renderPassFilter->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeAdded);
@@ -208,20 +208,20 @@ private Q_SLOTS:
         arbiter.events.clear();
 
         // WHEN
-        renderPassFilter->addInclude(filterKey1);
+        renderPassFilter->addMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 0);
 
         // WHEN
-        renderPassFilter->removeInclude(filterKey1);
+        renderPassFilter->removeMatch(filterKey1);
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
         change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "include");
+        QCOMPARE(change->propertyName(), "match");
         QCOMPARE(change->subjectId(), renderPassFilter->id());
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), filterKey1->id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);

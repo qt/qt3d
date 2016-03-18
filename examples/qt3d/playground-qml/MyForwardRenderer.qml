@@ -87,9 +87,8 @@ TechniqueFilter {
 
                 LayerFilter {
                     id: layerFilter
-                    RenderPassFilter { includes: [
-                            FilterKey {name : "Name"; value : "Texture"}
-                        ] }
+                    RenderPassFilter {
+                        matchAny: [ FilterKey {name : "Name"; value : "Texture"; } ] }
                 }
             }
         }
@@ -102,7 +101,7 @@ TechniqueFilter {
         CameraSelector {
             id: detailCameraSelector
             RenderPassFilter {
-                includes: [ FilterKey { name: "Name"; value: "ColorMaterial"; } ]
+                matchAny: [ FilterKey { name: "Name"; value: "ColorMaterial"; } ]
             }
         }
     }

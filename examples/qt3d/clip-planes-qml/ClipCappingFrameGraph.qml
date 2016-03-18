@@ -78,7 +78,7 @@ Viewport {
                     ClearBuffers {
                         buffers: ClearBuffers.ColorDepthBuffer
                         RenderPassFilter {
-                            includes: FilterKey { name: "pass"; value: "material" }
+                            matchAny: FilterKey { name: "pass"; value: "material" }
                         }
                     }
                 }
@@ -113,7 +113,7 @@ Viewport {
                         LayerFilter {
                             layers: "content"
                             RenderPassFilter {
-                                includes: FilterKey { name: "pass"; value: "stencilFill"; }
+                                matchAny: FilterKey { name: "pass"; value: "stencilFill"; }
                             }
                         }
                     }
@@ -126,7 +126,7 @@ Viewport {
                 LayerFilter {
                     layers: "caps"
                     RenderPassFilter {
-                        includes: FilterKey { name: "pass"; value: "capping"; }
+                        matchAny: FilterKey { name: "pass"; value: "capping"; }
                     }
                 }
 

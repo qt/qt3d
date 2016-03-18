@@ -66,17 +66,17 @@ QRenderPassFilter::QRenderPassFilter(QRenderPassFilterPrivate &dd, QNode *parent
 {
 }
 
-QList<QFilterKey *> QRenderPassFilter::includes() const
+QList<QFilterKey *> QRenderPassFilter::matchAny() const
 {
     Q_D(const QRenderPassFilter);
-    return d->m_includeList;
+    return d->m_matchList;
 }
 
-void QRenderPassFilter::addInclude(QFilterKey *keyFilter)
+void QRenderPassFilter::addMatch(QFilterKey *keyFilter)
 {
     Q_D(QRenderPassFilter);
-    if (!d->m_includeList.contains(keyFilter)) {
-        d->m_includeList.append(keyFilter);
+    if (!d->m_matchList.contains(keyFilter)) {
+        d->m_matchList.append(keyFilter);
 
         // We need to add it as a child of the current node if it has been declared inline
         // Or not previously added as a child of the current node so that
@@ -87,31 +87,31 @@ void QRenderPassFilter::addInclude(QFilterKey *keyFilter)
 
         if (d->m_changeArbiter != Q_NULLPTR) {
             QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeAdded, QSceneChange::Node, id()));
-            propertyChange->setPropertyName("include");
+            propertyChange->setPropertyName("match");
             propertyChange->setValue(QVariant::fromValue(keyFilter->id()));
             d->notifyObservers(propertyChange);
         }
     }
 }
 
-void QRenderPassFilter::removeInclude(QFilterKey *filterKey)
+void QRenderPassFilter::removeMatch(QFilterKey *filterKey)
 {
     Q_D(QRenderPassFilter);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr propertyChange(new QScenePropertyChange(NodeRemoved, QSceneChange::Node, id()));
-        propertyChange->setPropertyName("include");
+        propertyChange->setPropertyName("match");
         propertyChange->setValue(QVariant::fromValue(filterKey->id()));
         d->notifyObservers(propertyChange);
     }
-    d->m_includeList.removeOne(filterKey);
+    d->m_matchList.removeOne(filterKey);
 }
 
 void QRenderPassFilter::copy(const QNode *ref)
 {
     QFrameGraphNode::copy(ref);
     const QRenderPassFilter *other = static_cast<const QRenderPassFilter*>(ref);
-    Q_FOREACH (QFilterKey *c, other->d_func()->m_includeList)
-        addInclude(qobject_cast<QFilterKey *>(QNode::clone(c)));
+    Q_FOREACH (QFilterKey *c, other->d_func()->m_matchList)
+        addMatch(qobject_cast<QFilterKey *>(QNode::clone(c)));
     for (QParameter *p : other->d_func()->m_parameters)
         addParameter(qobject_cast<QParameter *>(QNode::clone(p)));
 }

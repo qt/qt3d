@@ -68,7 +68,7 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPassFilter)
     QString m_renderPassName;
-    QList<QFilterKey *> m_includeList;
+    QList<QFilterKey *> m_matchList;
     QList<QParameter *> m_parameters;
 };
 

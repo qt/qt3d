@@ -74,7 +74,7 @@ void Quick3DRenderPassFilter::appendInclude(QQmlListProperty<QFilterKey> *list, 
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
         annotation->setParent(filter->parentRenderPassFilter());
-        filter->parentRenderPassFilter()->addInclude(annotation);
+        filter->parentRenderPassFilter()->addMatch(annotation);
     }
 }
 
@@ -82,7 +82,7 @@ QFilterKey *Quick3DRenderPassFilter::includeAt(QQmlListProperty<QFilterKey> *lis
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
-        return filter->parentRenderPassFilter()->includes().at(index);
+        return filter->parentRenderPassFilter()->matchAny().at(index);
     return 0;
 }
 
@@ -90,7 +90,7 @@ int Quick3DRenderPassFilter::includesCount(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter)
-        return filter->parentRenderPassFilter()->includes().count();
+        return filter->parentRenderPassFilter()->matchAny().count();
     return 0;
 }
 
@@ -98,8 +98,8 @@ void Quick3DRenderPassFilter::clearIncludes(QQmlListProperty<QFilterKey> *list)
 {
     Quick3DRenderPassFilter *filter = qobject_cast<Quick3DRenderPassFilter *>(list->object);
     if (filter) {
-        Q_FOREACH (QFilterKey *criterion, filter->parentRenderPassFilter()->includes())
-            filter->parentRenderPassFilter()->removeInclude(criterion);
+        Q_FOREACH (QFilterKey *criterion, filter->parentRenderPassFilter()->matchAny())
+            filter->parentRenderPassFilter()->removeMatch(criterion);
     }
 }
 

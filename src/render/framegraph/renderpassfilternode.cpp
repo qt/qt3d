@@ -61,7 +61,7 @@ void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
     m_filters.clear();
     m_parameterPack.clear();
     setEnabled(filter->isEnabled());
-    const auto criteria = filter->includes();
+    const auto criteria = filter->matchAny();
     for (QFilterKey *criterion : criteria)
         appendFilter(criterion->id());
     const auto parameters = filter->parameters();

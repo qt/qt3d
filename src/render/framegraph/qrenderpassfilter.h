@@ -61,9 +61,9 @@ public:
     explicit QRenderPassFilter(Qt3DCore::QNode *parent = 0);
     ~QRenderPassFilter();
 
-    QList<QFilterKey*> includes() const;
-    void addInclude(QFilterKey*keyFilter);
-    void removeInclude(QFilterKey*criterion);
+    QList<QFilterKey*> matchAny() const;
+    void addMatch(QFilterKey*keyFilter);
+    void removeMatch(QFilterKey*criterion);
 
     void addParameter(QParameter *p);
     void removeParameter(QParameter *p);
