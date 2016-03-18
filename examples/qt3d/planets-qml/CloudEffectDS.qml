@@ -76,7 +76,7 @@ Effect {
 
             renderPasses: [
                 RenderPass {
-                    filterKeys: [ Annotation { name : "pass"; value : "forward" } ]
+                    filterKeys: [ FilterKey { name : "pass"; value : "forward" } ]
 
                     shaderProgram: ShaderProgram {
                         vertexShaderCode:   loadSource("qrc:/shaders/gl3/planetD.vert")

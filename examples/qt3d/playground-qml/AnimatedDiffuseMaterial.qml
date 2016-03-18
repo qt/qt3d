@@ -169,7 +169,7 @@ Material {
                     },
                     // TEXTURE PASS + UBO
                     RenderPass {
-                        filterKeys : [Annotation {name : "Name"; value : "Texture" }]
+                        filterKeys : [FilterKey {name : "Name"; value : "Texture" }]
 
                         renderStates : [BlendEquationArguments {sourceRgb: BlendEquationArguments.One; destinationRgb : BlendEquationArguments.One},
                                         BlendEquation {blendFunction: BlendEquation.Add},
