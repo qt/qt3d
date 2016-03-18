@@ -51,20 +51,24 @@
 // We mean it.
 //
 
-#include <private/qpointlight_p.h>
+#include <private/qlight_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QSpotLightPrivate : public QPointLightPrivate
+class QSpotLight;
+
+class QSpotLightPrivate : public QLightPrivate
 {
 public:
     QSpotLightPrivate();
 
     Q_DECLARE_PUBLIC(QSpotLight)
+    QVector3D m_attenuation;
+    QVector3D m_localDirection;
     float m_cutOffAngle;
-    QVector3D m_direction;
+
 };
 
 } // namespace Qt3DRender

@@ -54,7 +54,7 @@ namespace Qt3DRender {
   struct SpotLight
   {
    vec3 position;
-   vec3 direction;
+   vec3 localDirection;
    vec4 color;
    float intensity;
    float cutOffAngle;
@@ -66,9 +66,10 @@ namespace Qt3DRender {
  */
 
 QSpotLightPrivate::QSpotLightPrivate()
-    : QPointLightPrivate(QLight::SpotLight)
+    : QLightPrivate(QLight::SpotLight)
+    , m_attenuation(0.0f, 0.0f, 0.002f)
+    , m_localDirection(0.0f, -1.0f, 0.0f)
     , m_cutOffAngle(45.0f)
-    , m_direction(0.0f, -1.0f, 0.0f)
 {
 }
 
@@ -95,7 +96,7 @@ QSpotLightPrivate::QSpotLightPrivate()
 void QSpotLight::copy(const QNode *ref)
 {
     const QSpotLight *light = static_cast<const QSpotLight*>(ref);
-    d_func()->m_direction = light->d_func()->m_direction;
+    d_func()->m_localDirection = light->d_func()->m_localDirection;
     d_func()->m_cutOffAngle = light->d_func()->m_cutOffAngle;
     QLight::copy(ref);
 }
@@ -106,30 +107,54 @@ void QSpotLight::copy(const QNode *ref)
   Constructs a new QSpotLight with the specified \a parent.
  */
 QSpotLight::QSpotLight(QNode *parent)
-    : QPointLight(*new QSpotLightPrivate, parent)
+    : QLight(*new QSpotLightPrivate, parent)
 {
 }
 
 /*! \internal */
 QSpotLight::QSpotLight(QSpotLightPrivate &dd, QNode *parent)
-    : QPointLight(dd, parent)
+    : QLight(dd, parent)
 {
 }
 
 /*!
-  \qmlproperty vector3d Qt3D.Render::SpotLight::direction
+  \qmlproperty vector3d Qt3D.Render::SpotLight::localDirection
 
 */
 
 /*!
-  \property Qt3DRender::QSpotLight::direction
+  \property Qt3DRender::QSpotLight::localDirection
 
  */
 
-    QVector3D QSpotLight::direction() const
+QVector3D QSpotLight::attenuation() const
 {
     Q_D(const QSpotLight);
-    return d->m_direction;
+    return d->m_attenuation;
+}
+
+float QSpotLight::constantAttenuation() const
+{
+    Q_D(const QSpotLight);
+    return d->m_attenuation.x();
+}
+
+float QSpotLight::linearAttenuation() const
+{
+    Q_D(const QSpotLight);
+    return d->m_attenuation.y();
+}
+
+float QSpotLight::quadraticAttenuation() const
+{
+    Q_D(const QSpotLight);
+    return d->m_attenuation.z();
+}
+
+    QVector3D QSpotLight::localDirection() const
+{
+    Q_D(const QSpotLight);
+    return d->m_localDirection;
 }
 
 
@@ -148,12 +173,48 @@ float QSpotLight::cutOffAngle() const
     return d->m_cutOffAngle;
 }
 
-void QSpotLight::setDirection(const QVector3D &direction)
+void QSpotLight::setAttenuation(const QVector3D &value)
 {
     Q_D(QSpotLight);
-    if (direction != d->m_direction) {
-        d->m_direction = direction;
-        emit directionChanged(direction);
+    if (d->m_attenuation != value) {
+        d->m_attenuation = value;
+        emit attenuationChanged(value);
+    }
+}
+
+void QSpotLight::setConstantAttenuation(float value)
+{
+    Q_D(QSpotLight);
+    if (d->m_attenuation.x() != value) {
+        d->m_attenuation.setX(value);
+        emit attenuationChanged(d->m_attenuation);
+    }
+}
+
+void QSpotLight::setLinearAttenuation(float value)
+{
+    Q_D(QSpotLight);
+    if (d->m_attenuation.y() != value) {
+        d->m_attenuation.setY(value);
+        emit attenuationChanged(d->m_attenuation);
+    }
+}
+
+void QSpotLight::setQuadraticAttenuation(float value)
+{
+    Q_D(QSpotLight);
+    if (d->m_attenuation.z() != value) {
+        d->m_attenuation.setZ(value);
+        emit attenuationChanged(d->m_attenuation);
+    }
+}
+
+void QSpotLight::setLocalDirection(const QVector3D &localDirection)
+{
+    Q_D(QSpotLight);
+    if (localDirection != d->m_localDirection) {
+        d->m_localDirection = localDirection;
+        emit localDirectionChanged(localDirection);
     }
 }
 

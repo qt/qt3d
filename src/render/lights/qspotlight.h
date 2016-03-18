@@ -40,7 +40,7 @@
 #ifndef QT3DRENDER_QSPOTLIGHT_H
 #define QT3DRENDER_QSPOTLIGHT_H
 
-#include <Qt3DRender/qpointlight.h>
+#include <Qt3DRender/qlight.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -48,24 +48,37 @@ namespace Qt3DRender {
 
 class QSpotLightPrivate;
 
-class QT3DRENDERSHARED_EXPORT QSpotLight : public QPointLight
+class QT3DRENDERSHARED_EXPORT QSpotLight : public QLight
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D direction READ direction WRITE setDirection NOTIFY directionChanged)
+    Q_PROPERTY(QVector3D attenuation READ attenuation WRITE setAttenuation NOTIFY attenuationChanged)
+    Q_PROPERTY(QVector3D localDirection READ localDirection WRITE setLocalDirection NOTIFY localDirectionChanged)
     Q_PROPERTY(float cutOffAngle READ cutOffAngle WRITE setCutOffAngle NOTIFY cutOffAngleChanged)
 
 public:
     explicit QSpotLight(Qt3DCore::QNode *parent = 0);
 
-    QVector3D direction() const;
+    QVector3D attenuation() const;
+    QVector3D localDirection() const;
     float cutOffAngle() const;
 
+    float constantAttenuation() const;
+    void setConstantAttenuation(float value);
+
+    float linearAttenuation() const;
+    void setLinearAttenuation(float value);
+
+    float quadraticAttenuation() const;
+    void setQuadraticAttenuation(float value);
+
 public Q_SLOTS:
-    void setDirection(const QVector3D &direction);
+    void setAttenuation(const QVector3D &value);
+    void setLocalDirection(const QVector3D &localDirection);
     void setCutOffAngle(float cutOffAngle);
 
 Q_SIGNALS:
-    void directionChanged(const QVector3D &direction);
+    void attenuationChanged(const QVector3D &attenuation);
+    void localDirectionChanged(const QVector3D &localDirection);
     void cutOffAngleChanged(float cutOffAngle);
 
 protected:

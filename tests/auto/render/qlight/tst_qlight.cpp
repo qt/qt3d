@@ -100,7 +100,7 @@ private Q_SLOTS:
         QCOMPARE(spotLight.type(), Qt3DRender::QLight::SpotLight);
         spotLight.setColor(Qt::lightGray);
         spotLight.setIntensity(0.5f);
-        spotLight.setDirection(QVector3D(0, 0, -1));
+        spotLight.setLocalDirection(QVector3D(0, 0, -1));
         spotLight.setCutOffAngle(0.75f);
 
         QScopedPointer<Qt3DRender::QSpotLight> spotLightClone(static_cast<Qt3DRender::QSpotLight *>(QNode::clone(&spotLight)));
@@ -108,7 +108,7 @@ private Q_SLOTS:
         QCOMPARE(spotLightClone->type(), Qt3DRender::QLight::SpotLight);
         QCOMPARE(spotLight.color(), spotLightClone->color());
         QCOMPARE(spotLight.intensity(), spotLightClone->intensity());
-        QCOMPARE(spotLight.direction(), spotLightClone->direction());
+        QCOMPARE(spotLight.localDirection(), spotLightClone->localDirection());
         QCOMPARE(spotLight.cutOffAngle(), spotLightClone->cutOffAngle());
     }
 
@@ -210,7 +210,7 @@ private Q_SLOTS:
 
         spotLight->setColor(Qt::lightGray);
         spotLight->setIntensity(0.5f);
-        spotLight->setDirection(QVector3D(0.5f, 0.0f, -1.0f));
+        spotLight->setLocalDirection(QVector3D(0.5f, 0.0f, -1.0f));
         spotLight->setCutOffAngle(0.75f);
         QCoreApplication::processEvents();
 
@@ -226,7 +226,7 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
         change = spotLightArbiter.events[2].staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "direction");
+        QCOMPARE(change->propertyName(), "localDirection");
         QCOMPARE(change->subjectId(), spotLight->id());
         QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, -1.0f));
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
