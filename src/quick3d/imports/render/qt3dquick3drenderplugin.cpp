@@ -106,7 +106,6 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qpickevent.h>
 #include <Qt3DRender/qfrustumculling.h>
-#include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qcameralens.h>
@@ -271,7 +270,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QRenderStateSet, Qt3DRender::Render::Quick::Quick3DStateSet>("QRenderStateSet", "Qt3D.Render/RenderStateSet", uri, 2, 0, "RenderStateSet");
     qmlRegisterType<Qt3DRender::QNoDraw>(uri, 2, 0, "NoDraw");
     qmlRegisterType<Qt3DRender::QFrustumCulling>(uri, 2, 0, "FrustumCulling");
-    qmlRegisterType<Qt3DRender::QLighting>(uri, 2, 0, "Lighting");
     qmlRegisterType<Qt3DRender::QDispatchCompute>(uri, 2, 0, "DispatchCompute");
 
     // RenderTarget

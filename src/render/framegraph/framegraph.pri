@@ -39,9 +39,6 @@ HEADERS += \
     $$PWD/viewportnode_p.h \
     $$PWD/qfrustumculling.h \
     $$PWD/frustumculling_p.h \
-    $$PWD/qlighting.h \
-    $$PWD/qlighting_p.h \
-    $$PWD/lighting_p.h \
     $$PWD/qdispatchcompute.h \
     $$PWD/dispatchcompute_p.h \
     $$PWD/qrendersurfaceselector.h \
@@ -76,8 +73,6 @@ SOURCES += \
     $$PWD/viewportnode.cpp \
     $$PWD/qfrustumculling.cpp \
     $$PWD/frustumculling.cpp \
-    $$PWD/qlighting.cpp \
-    $$PWD/lighting.cpp \
     $$PWD/qdispatchcompute.cpp \
     $$PWD/dispatchcompute.cpp \
     $$PWD/qrendersurfaceselector.cpp \

@@ -72,7 +72,6 @@
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlight.h>
-#include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
 #include <Qt3DRender/qcomputecommand.h>
 #include <Qt3DRender/qrendersurfaceselector.h>
@@ -118,7 +117,6 @@
 #include <Qt3DRender/private/qsceneparserfactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
-#include <Qt3DRender/private/lighting_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
 #include <Qt3DRender/private/computecommand_p.h>
 #include <Qt3DRender/private/rendersurfaceselector_p.h>
@@ -218,7 +216,6 @@ void QRenderAspectPrivate::registerBackendTypes()
     q->registerBackendType<QBoundingVolumeDebug>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(m_renderer, m_nodeManagers->boundingVolumeDebugManager())));
     q->registerBackendType<QFrustumCulling>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
-    q->registerBackendType<QLighting>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::Lighting, QLighting>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QDispatchCompute>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(m_renderer, m_nodeManagers->frameGraphManager())));
     q->registerBackendType<QComputeCommand>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager>(m_renderer, m_nodeManagers->computeJobManager())));
     q->registerBackendType<QRenderSettings>(QBackendNodeMapperPtr(new Render::RenderSettingsFunctor(m_renderer)));
