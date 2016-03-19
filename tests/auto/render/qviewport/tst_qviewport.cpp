@@ -51,15 +51,13 @@ private Q_SLOTS:
     {
         QTest::addColumn<Qt3DRender::QViewport *>("viewport");
         QTest::addColumn<QRectF>("normalizedRect");
-        QTest::addColumn<QColor>("color");
 
         Qt3DRender::QViewport *defaultConstructed = new Qt3DRender::QViewport();
-        QTest::newRow("defaultConstructed") << defaultConstructed << QRectF(0.0f, 0.0f, 1.0f, 1.0f) << QColor();
+        QTest::newRow("defaultConstructed") << defaultConstructed << QRectF(0.0f, 0.0f, 1.0f, 1.0f);
 
         Qt3DRender::QViewport *smallGreenViewport = new Qt3DRender::QViewport();
         smallGreenViewport->setNormalizedRect(QRectF(0.2f, 0.2f, 0.6f, 0.6f));
-        smallGreenViewport->setClearColor(QColor(Qt::green));
-        QTest::newRow("smallGreenViewport") << smallGreenViewport << QRectF(0.2f, 0.2f, 0.6f, 0.6f) << QColor(Qt::green);
+        QTest::newRow("smallGreenViewport") << smallGreenViewport << QRectF(0.2f, 0.2f, 0.6f, 0.6f);
 
     }
 
@@ -68,11 +66,9 @@ private Q_SLOTS:
         // GIVEN
         QFETCH(Qt3DRender::QViewport *, viewport);
         QFETCH(QRectF, normalizedRect);
-        QFETCH(QColor, color);
 
         // THEN
         QCOMPARE(viewport->normalizedRect(), normalizedRect);
-        QCOMPARE(viewport->clearColor(), color);
 
         // WHEN
         Qt3DRender::QViewport *clone = static_cast<Qt3DRender::QViewport *>(QNode::clone(viewport));
@@ -81,7 +77,6 @@ private Q_SLOTS:
         QVERIFY(clone != Q_NULLPTR);
         QCOMPARE(viewport->id(), clone->id());
         QCOMPARE(viewport->normalizedRect(), clone->normalizedRect());
-        QCOMPARE(viewport->clearColor(), clone->clearColor());
 
         delete viewport;
         delete clone;
@@ -94,47 +89,12 @@ private Q_SLOTS:
         TestArbiter arbiter(viewport.data());
 
         // WHEN
-        viewport->setClearColor(Qt::red);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "clearColor");
-        QCOMPARE(change->subjectId(), viewport->id());
-        QCOMPARE(change->value().value<QColor>(), QColor(Qt::red));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
-        viewport->setClearColor(Qt::red);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 0);
-
-        // WHEN
-        viewport->setClearColor(Qt::blue);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "clearColor");
-        QCOMPARE(change->subjectId(), viewport->id());
-        QCOMPARE(change->value().value<QColor>(), QColor(Qt::blue));
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
-
-        arbiter.events.clear();
-
-        // WHEN
         viewport->setNormalizedRect(QRectF(0.5f, 0.5f, 1.0f, 1.0f));
         QCoreApplication::processEvents();
 
         // THEN
         QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
+        Qt3DCore::QScenePropertyChangePtr change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "normalizedRect");
         QCOMPARE(change->subjectId(), viewport->id());
         QCOMPARE(change->value().value<QRectF>(), QRectF(0.5f, 0.5f, 1.0f, 1.0f));

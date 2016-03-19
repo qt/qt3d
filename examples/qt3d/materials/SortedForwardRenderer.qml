@@ -70,7 +70,6 @@ TechniqueFilter {
             id: viewport
             objectName : "viewport"
             normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-            clearColor: "white"
 
             // Use the specified camera
             CameraSelector {
@@ -78,6 +77,7 @@ TechniqueFilter {
                 objectName : "cameraSelector"
                 ClearBuffers {
                     buffers : ClearBuffers.ColorDepthBuffer
+                    clearColor: "white"
                     SortPolicy {
                         criteria: [
                             SortCriterion { sort: SortCriterion.StateChangeCost },

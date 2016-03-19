@@ -43,7 +43,7 @@ import Qt3D.Render 2.0
 TechniqueFilter {
     // Expose camera to allow user to choose which camera to use for rendering
     property alias camera: cameraSelector.camera
-    property alias clearColor: viewport.clearColor
+    property alias clearColor: clearBuffers.clearColor
     property alias viewportRect: viewport.normalizedRect
     property alias window: surfaceSelector.window
 
@@ -64,6 +64,7 @@ TechniqueFilter {
                 id : cameraSelector
                 FrustumCulling {
                     ClearBuffers {
+                        id: clearBuffers
                         buffers : ClearBuffers.ColorDepthBuffer
                     }
                 }

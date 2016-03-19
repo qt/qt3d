@@ -57,7 +57,6 @@ void QViewport::copy(const QNode *ref)
     QFrameGraphNode::copy(ref);
     const QViewport *viewport = static_cast<const QViewport*>(ref);
     d_func()->m_normalizedRect = viewport->d_func()->m_normalizedRect;
-    d_func()->m_clearColor = viewport->d_func()->m_clearColor;
 }
 
 QViewport::QViewport(QNode *parent)
@@ -88,21 +87,6 @@ void QViewport::setNormalizedRect(const QRectF &normalizedRect)
     if (normalizedRect != d->m_normalizedRect) {
         d->m_normalizedRect = normalizedRect;
         emit normalizedRectChanged(normalizedRect);
-    }
-}
-
-QColor QViewport::clearColor() const
-{
-    Q_D(const QViewport);
-    return d->m_clearColor;
-}
-
-void QViewport::setClearColor(const QColor &color)
-{
-    Q_D(QViewport);
-    if (color != d->m_clearColor) {
-        d->m_clearColor = color;
-        emit clearColorChanged(color);
     }
 }
 

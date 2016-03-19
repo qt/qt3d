@@ -66,7 +66,7 @@ TechniqueFilter {
     property alias mainCamera: mainCameraSelector.camera
     property alias detailCamera: detailCameraSelector.camera
     property alias layerFilters: layerFilter.layers
-    property alias clearColor: viewport.clearColor
+    property alias clearColor: clearBuffers.clearColor
 
     matchAll : [
         FilterKey { name: "RenderingStyle"; value: "forward";},
@@ -74,6 +74,7 @@ TechniqueFilter {
     ]
 
     ClearBuffers {
+        id: clearBuffers
         buffers: ClearBuffers.ColorDepthBuffer
 
         // Main Viewport

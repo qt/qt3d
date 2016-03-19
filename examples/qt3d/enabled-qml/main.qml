@@ -60,13 +60,13 @@ Entity {
         RenderSettings {
             activeFrameGraph: Viewport {
                 normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-                clearColor: "white"
                 enabled: counter !== 5
 
                 RenderSurfaceSelector {
 
                     ClearBuffers {
                         buffers : ClearBuffers.ColorDepthBuffer
+                        clearColor: "white"
                         enabled: counter !== 6
                     }
 

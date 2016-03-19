@@ -126,7 +126,6 @@ int main(int ac, char **av)
 
     // FrameGraph
     DeferredRenderer *deferredRenderer = new DeferredRenderer();
-    deferredRenderer->setClearColor(Qt::black);
     deferredRenderer->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
     deferredRenderer->setFinalPassCriteria(finalEffect->passCriteria());
     deferredRenderer->setGeometryPassCriteria(sceneEffect->passCriteria());

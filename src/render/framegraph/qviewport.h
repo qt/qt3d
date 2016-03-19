@@ -54,22 +54,18 @@ class QT3DRENDERSHARED_EXPORT QViewport : public QFrameGraphNode
 {
     Q_OBJECT
     Q_PROPERTY(QRectF normalizedRect READ normalizedRect WRITE setNormalizedRect NOTIFY normalizedRectChanged)
-    Q_PROPERTY(QColor clearColor READ clearColor WRITE setClearColor NOTIFY clearColorChanged)
 
 public:
     explicit QViewport(Qt3DCore::QNode *parent = 0);
     ~QViewport();
 
     QRectF normalizedRect() const;
-    QColor clearColor() const;
 
 public Q_SLOTS:
     void setNormalizedRect(const QRectF& normalizedRect);
-    void setClearColor(const QColor &color);
 
 Q_SIGNALS:
     void normalizedRectChanged(const QRectF& normalizedRect);
-    void clearColorChanged(const QColor &clearColor);
 
 protected:
     QViewport(QViewportPrivate &dd, Qt3DCore::QNode *parent = 0);

@@ -61,7 +61,10 @@ RenderSettings {
 
     activeFrameGraph: Viewport {
         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-        clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
+
+        ClearBuffers {
+            clearColor: Qt.rgba(0.0, 0.4, 0.7, 1.0)
+        }
 
         RenderSurfaceSelector {
             RenderPassFilter {

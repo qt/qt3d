@@ -61,11 +61,9 @@ RenderSettings {
 
     activeFrameGraph: Viewport {
         normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-        clearColor: Qt.rgba(0.0, 0.0, 0.0, 1.0)
 
         TechniqueFilter {
             matchAll: [ FilterKey { name: "name"; value: "Desktop" } ]
-
 
             RenderPassFilter {
                 includes: [ FilterKey { name: "pass"; value: "shadowmap" } ]
@@ -97,6 +95,7 @@ RenderSettings {
 
                     ClearBuffers {
                         buffers: ClearBuffers.DepthBuffer
+                        clearColor: Qt.rgba(0., 0., 0., 1.)
 
                         CameraSelector {
                             id: lightCameraSelector

@@ -72,11 +72,11 @@ Entity {
     RenderSettings {
         id : renderSettings
         activeFrameGraph : Viewport {
-            clearColor: "black"
             CameraSelector {
                 camera: camera
                 ClearBuffers {
                     buffers : ClearBuffers.ColorDepthBuffer
+                    clearColor: "black"
                     SortPolicy {
                         criteria: [
                             SortCriterion { sort: SortCriterion.BackToFront }

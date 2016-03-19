@@ -64,7 +64,6 @@ void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
     setXMax(viewport->normalizedRect().width());
     setYMin(viewport->normalizedRect().y());
     setYMax(viewport->normalizedRect().height());
-    m_clearColor = viewport->clearColor();
     setEnabled(viewport->isEnabled());
 }
 
@@ -105,11 +104,6 @@ void ViewportNode::setYMax(float yMax)
     m_yMax = yMax;
 }
 
-QColor ViewportNode::clearColor() const
-{
-    return m_clearColor;
-}
-
 void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     if (e->type() == NodeUpdated) {
@@ -120,9 +114,6 @@ void ViewportNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             setYMin(normalizedRect.y());
             setXMax(normalizedRect.width());
             setYMax(normalizedRect.height());
-        }
-        else if (propertyChange->propertyName() == QByteArrayLiteral("clearColor")) {
-            m_clearColor = propertyChange->value().value<QColor>();
         } else if (propertyChange->propertyName() == QByteArrayLiteral("enabled")) {
             setEnabled(propertyChange->value().toBool());
         }

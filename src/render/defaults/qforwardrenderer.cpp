@@ -72,7 +72,7 @@ void QForwardRendererPrivate::init()
     m_surfaceSelector->setParent(q);
 
     m_viewport->setNormalizedRect(QRectF(0.0f, 0.0f, 1.0f, 1.0f));
-    m_viewport->setClearColor(Qt::white);
+    m_clearBuffer->setClearColor(Qt::white);
     m_clearBuffer->setBuffers(QClearBuffers::ColorDepthBuffer);
 
     QFilterKey *forwardRenderingStyle = new QFilterKey(q);
@@ -106,7 +106,7 @@ QForwardRenderer::QForwardRenderer(QNode *parent)
     : QTechniqueFilter(*new QForwardRendererPrivate, parent)
 {
     Q_D(QForwardRenderer);
-    QObject::connect(d->m_viewport, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
+    QObject::connect(d->m_clearBuffer, SIGNAL(clearColorChanged(const QColor &)), this, SIGNAL(clearColorChanged(const QColor &)));
     QObject::connect(d->m_viewport, SIGNAL(normalizedRectChanged(const QRectF &)), this, SIGNAL(viewportRectChanged(const QRectF &)));
     QObject::connect(d->m_cameraSelector, SIGNAL(cameraChanged(Qt3DCore::QEntity *)), this, SIGNAL(cameraChanged(Qt3DCore::QEntity *)));
     QObject::connect(d->m_surfaceSelector, SIGNAL(surfaceChanged(QObject *)), this, SIGNAL(surfaceChanged(QObject *)));
@@ -129,7 +129,7 @@ void QForwardRenderer::setViewportRect(const QRectF &viewportRect)
 void QForwardRenderer::setClearColor(const QColor &clearColor)
 {
     Q_D(QForwardRenderer);
-    d->m_viewport->setClearColor(clearColor);
+    d->m_clearBuffer->setClearColor(clearColor);
 }
 
 /*!
@@ -168,7 +168,7 @@ QRectF QForwardRenderer::viewportRect() const
 QColor QForwardRenderer::clearColor() const
 {
     Q_D(const QForwardRenderer);
-    return d->m_viewport->clearColor();
+    return d->m_clearBuffer->clearColor();
 }
 
 /*!
