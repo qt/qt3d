@@ -185,25 +185,25 @@ QVector<QAxisSetting *> QAbstractPhysicalDevice::axisSettings() const
 /*!
     Used to notify observers that an axis value has been changed.
  */
-void QAbstractPhysicalDevice::postAxisEvent(int axis, qreal value)
+void QAbstractPhysicalDevicePrivate::postAxisEvent(int axis, qreal value)
 {
-    Q_D(QAbstractPhysicalDevice);
-    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
+    Q_Q(QAbstractPhysicalDevice);
+    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, q->id()));
     change->setPropertyName("axisEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(axis, value)));
-    d->notifyObservers(change);
+    notifyObservers(change);
 }
 
 /*!
     Used to notify observers that an button value has been changed.
  */
-void QAbstractPhysicalDevice::postButtonEvent(int button, qreal value)
+void QAbstractPhysicalDevicePrivate::postButtonEvent(int button, qreal value)
 {
-    Q_D(QAbstractPhysicalDevice);
-    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, id()));
+    Q_Q(QAbstractPhysicalDevice);
+    Qt3DCore::QScenePropertyChangePtr change(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, q->id()));
     change->setPropertyName("buttonEvent");
     change->setValue(QVariant::fromValue(QPair<int, qreal>(button, value)));
-    d->notifyObservers(change);
+    notifyObservers(change);
 }
 
 void QAbstractPhysicalDevice::copy(const QNode *ref)

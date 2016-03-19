@@ -72,9 +72,6 @@ public:
     void removeAxisSetting(QAxisSetting *axisSetting);
     QVector<QAxisSetting *> axisSettings() const;
 
-    Q_INVOKABLE void postAxisEvent(int axis, qreal value);
-    Q_INVOKABLE void postButtonEvent(int button, qreal value);
-
 protected:
     QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
     Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)

@@ -73,17 +73,17 @@ QGamepadInput::QGamepadInput(Qt3DCore::QNode *parent)
         else if (metaEnum.name() == std::string("GamepadAxis"))
             setValuesFromEnum(d->m_axesHash, metaEnum);
     }
-    connect(QGamepadManager::instance(), &QGamepadManager::gamepadAxisEvent, this, [this](int deviceId, QGamepadManager::GamepadAxis axis, double value) {
+    connect(QGamepadManager::instance(), &QGamepadManager::gamepadAxisEvent, this, [this, d](int deviceId, QGamepadManager::GamepadAxis axis, double value) {
         if (deviceId == d_func()->m_deviceId)
-            postAxisEvent(axis, value);
+            d->postAxisEvent(axis, value);
     });
-    connect(QGamepadManager::instance(), &QGamepadManager::gamepadButtonPressEvent, this, [this](int deviceId, QGamepadManager::GamepadButton button, double value) {
+    connect(QGamepadManager::instance(), &QGamepadManager::gamepadButtonPressEvent, this, [this, d](int deviceId, QGamepadManager::GamepadButton button, double value) {
         if (deviceId == d_func()->m_deviceId)
-            postButtonEvent(button, value);
+            d->postButtonEvent(button, value);
     });
-    connect(QGamepadManager::instance(), &QGamepadManager::gamepadButtonReleaseEvent, this, [this](int deviceId, QGamepadManager::GamepadButton button) {
+    connect(QGamepadManager::instance(), &QGamepadManager::gamepadButtonReleaseEvent, this, [this, d](int deviceId, QGamepadManager::GamepadButton button) {
         if (deviceId == d_func()->m_deviceId)
-            postButtonEvent(button, 0);
+            d->postButtonEvent(button, 0);
     });
 }
 
