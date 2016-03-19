@@ -60,7 +60,7 @@ SOURCES += \
 qtHaveModule(gamepad) {
     QT += gamepad
     DEFINES += HAVE_QGAMEPAD
-    HEADERS += $$PWD/qgamepadinput.h
+    HEADERS += $$PWD/qgamepadinput_p.h
     SOURCES += $$PWD/qgamepadinput.cpp
 }
 

@@ -34,7 +34,7 @@
 **
 ****************************************************************************/
 
-#include "qgamepadinput.h"
+#include "qgamepadinput_p.h"
 #include "qabstractphysicaldevice_p.h"
 
 #include <QGamepadManager>

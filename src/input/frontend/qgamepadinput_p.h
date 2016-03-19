@@ -34,17 +34,29 @@
 **
 ****************************************************************************/
 
-#ifndef QGAMEPADINPUT_H
-#define QGAMEPADINPUT_H
+#ifndef QGAMEPADINPUT_P_H
+#define QGAMEPADINPUT_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of other Qt classes.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qt3dinput_global_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DInput {
 class QGamepadInputPrivate;
 
-class QT3DINPUTSHARED_EXPORT QGamepadInput : public QAbstractPhysicalDevice
+class QT3DINPUTSHARED_PRIVATE_EXPORT QGamepadInput : public QAbstractPhysicalDevice
 {
     Q_OBJECT
     Q_PROPERTY(int deviceId READ deviceId WRITE setDeviceId NOTIFY deviceIdChanged)
@@ -70,4 +82,4 @@ private:
 } // Qt3DInput
 QT_END_NAMESPACE
 
-#endif // QGAMEPADINPUT_H
+#endif // QGAMEPADINPUT_P_H
