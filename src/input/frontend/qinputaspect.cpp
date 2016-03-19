@@ -49,8 +49,8 @@
 #include <Qt3DInput/qmousedevice.h>
 #include <Qt3DInput/qmousehandler.h>
 #include <Qt3DInput/qinputdeviceintegration.h>
-#include <Qt3DInput/qgenericinputdevice.h>
 #include <Qt3DInput/qinputsettings.h>
+#include <Qt3DInput/private/qgenericinputdevice_p.h>
 #include <Qt3DInput/private/qinputdeviceintegrationfactory_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 #include <Qt3DCore/private/qeventfilterservice_p.h>

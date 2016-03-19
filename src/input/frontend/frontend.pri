@@ -23,7 +23,7 @@ HEADERS += \
     $$PWD/qinputdeviceintegrationfactory_p.h \
     $$PWD/qaxissetting.h \
     $$PWD/qabstractphysicaldevice_p.h \
-    $$PWD/qgenericinputdevice.h \
+    $$PWD/qgenericinputdevice_p.h \
     $$PWD/qabstractactioninput.h \
     $$PWD/qabstractaggregateactioninput.h \
     $$PWD/qinputchord.h \

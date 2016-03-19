@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "qgenericinputdevice.h"
+#include "qgenericinputdevice_p.h"
 
 #include "qabstractphysicaldevice_p.h"
 

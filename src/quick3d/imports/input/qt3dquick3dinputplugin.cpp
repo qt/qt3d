@@ -38,7 +38,6 @@
 ****************************************************************************/
 
 #include <QtQml>
-#include <Qt3DInput/qgenericinputdevice.h>
 #include <Qt3DInput/qkeyboarddevice.h>
 #include <Qt3DInput/qkeyboardhandler.h>
 #include <Qt3DInput/qkeyevent.h>
@@ -56,6 +55,7 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
 #include <Qt3DInput/qinputsettings.h>
+#include <Qt3DInput/private/qgenericinputdevice_p.h>
 #include <Qt3DQuickInput/private/quick3daxis_p.h>
 #include <Qt3DQuickInput/private/quick3daction_p.h>
 #include <Qt3DQuickInput/private/quick3daggregateaction_p.h>
