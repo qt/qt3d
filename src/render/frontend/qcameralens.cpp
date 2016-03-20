@@ -106,6 +106,17 @@ QCameraLens::QCameraLens(QCameraLensPrivate &dd, QNode *parent)
 }
 
 /*!
+ * \enum Qt3DRender::QCameraLens::ProjectionType
+ *
+ * Specifies which parameters of Qt3DRender::QCameraLens are used to compute the projection matrix.
+ *
+ * \value OrthographicProjection
+ * \value PerspectiveProjection
+ * \value FrustumProjection
+ * \value CustomProjection
+ */
+
+/*!
  * Sets the lens' projection type \a projectionType.
  *
  * \note Qt3DRender::QCameraLens::Frustum and
@@ -409,6 +420,22 @@ float QCameraLens::top() const
 {
     Q_D(const QCameraLens);
     return d->m_top;
+}
+
+/*!
+ * Sets the project matrix.
+ *
+ * \note This will set the projection type to Qt3DRender::QCameraLens::CustomProjection and thus
+ * ignore all other camera parameters that might have been specified.
+ */
+void QCameraLens::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
+{
+    Q_D(QCameraLens);
+    setProjectionType(CustomProjection);
+    if (qFuzzyCompare(d->m_projectionMatrix, projectionMatrix))
+        return;
+    d->m_projectionMatrix = projectionMatrix;
+    emit projectionMatrixChanged(projectionMatrix);
 }
 
 /*!

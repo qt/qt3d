@@ -79,6 +79,8 @@ public:
         case QCameraLens::FrustumProjection:
             updateFrustumProjection();
             break;
+        case QCameraLens::CustomProjection:
+            break;
         }
     }
 

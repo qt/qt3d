@@ -401,8 +401,13 @@ float QCamera::top() const
 
 /*!
     \qmlproperty matrix4x4 Qt3DCore::Camera::projectionMatrix
-    \readonly
 */
+void QCamera::setProjectionMatrix(const QMatrix4x4 &projectionMatrix)
+{
+    Q_D(QCamera);
+    d->m_lens->setProjectionMatrix(projectionMatrix);
+}
+
 QMatrix4x4 QCamera::projectionMatrix() const
 {
     Q_D(const QCamera);
