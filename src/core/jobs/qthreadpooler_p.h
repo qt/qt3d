@@ -68,7 +68,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QThreadPooler : public QObject
+class QT3DCORE_PRIVATE_EXPORT QThreadPooler : public QObject
 {
     Q_OBJECT
 

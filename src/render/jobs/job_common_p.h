@@ -73,7 +73,8 @@ namespace JobTypes {
         PickBoundingVolume,
         RenderView,
         UpdateTransform,
-        UpdateBoundingVolume
+        UpdateBoundingVolume,
+        FrameSubmission
     };
 
 } // JobTypes

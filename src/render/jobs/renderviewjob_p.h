@@ -69,6 +69,7 @@ class Q_AUTOTEST_EXPORT RenderViewJob : public Qt3DCore::QAspectJob
 {
 public:
     RenderViewJob();
+    ~RenderViewJob();
 
     inline void setRenderer(Renderer *renderer) { m_renderer = renderer; }
     inline void setSurfaceSize(const QSize &size) { m_surfaceSize = size; }

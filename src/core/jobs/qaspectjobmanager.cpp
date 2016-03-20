@@ -111,9 +111,6 @@ void QAspectJobManager::enqueueJobs(const QVector<QAspectJobPtr> &jobQueue)
 void QAspectJobManager::waitForAllJobs()
 {
     m_threadPooler->future().waitForFinished();
-#ifdef QT3D_JOBS_RUN_STATS
-    QThreadPooler::writeFrameJobLogStats();
-#endif
 }
 
 void QAspectJobManager::waitForPerThreadFunction(JobFunction func, void *arg)

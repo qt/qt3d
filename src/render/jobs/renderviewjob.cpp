@@ -52,13 +52,24 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 namespace Render {
 
+namespace {
+// only accessed in ctor and dtor of RenderViewJob
+// which are always being called in a non concurrent manner
+int renderViewInstanceCounter = 0;
+} // anonymous
+
 RenderViewJob::RenderViewJob()
     : m_renderer(0)
     , m_devicePixelRatio(1.)
     , m_fgLeaf(0)
     , m_index(0)
 {
-    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, 0);
+    SET_JOB_RUN_STAT_TYPE(this, JobTypes::RenderView, renderViewInstanceCounter++);
+}
+
+RenderViewJob::~RenderViewJob()
+{
+    renderViewInstanceCounter--;
 }
 
 void RenderViewJob::run()

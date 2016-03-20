@@ -201,7 +201,6 @@ void QThreadPooler::starNewFrameJobLogsStats()
         storage->clear();
         storage->reserve(oldSize);
     }
-    QThreadPooler::m_jobsStatTimer.restart();
 }
 
 // Called after jobs have been executed

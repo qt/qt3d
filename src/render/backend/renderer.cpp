@@ -99,6 +99,12 @@
 // For Debug purposes only
 #include <QThread>
 
+
+#ifdef QT3D_JOBS_RUN_STATS
+#include <Qt3DCore/private/qthreadpooler_p.h>
+#include <Qt3DRender/private/job_common_p.h>
+#endif
+
 QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
@@ -471,6 +477,16 @@ void Renderer::doRender()
     Renderer::ViewSubmissionResultData submissionData;
 
     if (isReadyToSubmit()) {
+
+#ifdef QT3D_JOBS_RUN_STATS
+        // Save start of frame
+        JobRunStats submissionStats;
+        submissionStats.jobId.typeAndInstance[0] = JobTypes::FrameSubmission;
+        submissionStats.jobId.typeAndInstance[1] = 0;
+        submissionStats.threadId = reinterpret_cast<quint64>(QThread::currentThreadId());
+        submissionStats.startTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+#endif
+
         // Lock the mutex to protect access to m_surface and check if we are still set
         // to the running state and that we have a valid surface on which to draw
         // TO DO: Is that still needed given the surface changes
@@ -492,6 +508,15 @@ void Renderer::doRender()
         // Delete all the RenderViews which will clear the allocators
         // that were used for their allocation
         qDeleteAll(renderViews);
+
+#ifdef QT3D_JOBS_RUN_STATS
+        // Save submission elapsed time
+        submissionStats.endTime = QThreadPooler::m_jobsStatTimer.nsecsElapsed();
+        // Note this is safe since proceedToNextFrame is the one going to trigger
+        // the write to the file, and this is performed after this step
+        Qt3DCore::QThreadPooler::addJobLogStatsEntry(submissionStats);
+        QThreadPooler::writeFrameJobLogStats();
+#endif
     }
 
     // Note: submissionSucceeded is false when
