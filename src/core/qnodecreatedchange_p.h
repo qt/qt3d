@@ -51,7 +51,7 @@
 #include <private/qscenechange_p.h>
 #include <Qt3DCore/qnodeid.h>
 
-class QMetaObject;
+struct QMetaObject;
 
 QT_BEGIN_NAMESPACE
 
