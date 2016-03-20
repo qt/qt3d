@@ -103,7 +103,7 @@ bool PlatformSurfaceFilter::eventFilter(QObject *obj, QEvent *e)
         case QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed:
             // set validity to false
         {
-            SurfaceLocker lock();
+            SurfaceLocker lock(m_surface);
             // If we remove it, the call to isSurfaceValid will
             // implicitely return false
             PlatformSurfaceFilter::m_surfacesValidity.remove(m_surface);

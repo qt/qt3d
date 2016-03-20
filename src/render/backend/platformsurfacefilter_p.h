@@ -110,8 +110,7 @@ class SurfaceLocker
 public:
     explicit SurfaceLocker(QSurface *surface);
     ~SurfaceLocker();
-    bool isSurfaceValid() const
-;
+    bool isSurfaceValid() const;
 
 private:
     QSurface *m_surface;
