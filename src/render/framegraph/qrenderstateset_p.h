@@ -69,6 +69,11 @@ public:
     QList<QRenderState *> m_renderStates;
 };
 
+struct QRenderStateSetData
+{
+    Qt3DCore::QNodeIdVector renderStateIds;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

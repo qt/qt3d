@@ -147,6 +147,15 @@ QList<QRenderState *> QRenderStateSet::renderStates() const
     return d->m_renderStates;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderStateSet::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderStateSetData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderStateSet);
+    data.renderStateIds = qIdsForNodes(d->m_renderStates);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
