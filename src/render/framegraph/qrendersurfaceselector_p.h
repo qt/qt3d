@@ -55,6 +55,7 @@
 #include <Qt3DRender/private/platformsurfacefilter_p.h>
 #include <QtGui/qsurface.h>
 #include <QtGui/qwindow.h>
+#include <QtCore/qpointer.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -71,6 +72,12 @@ public:
     QSurface *m_surface;
     QSize m_externalRenderTargetSize;
     QScopedPointer<Qt3DRender::Render::PlatformSurfaceFilter> m_surfaceEventFilter;
+};
+
+struct QRenderSurfaceSelectorData
+{
+    QPointer<QObject> surface;
+    QSize externalRenderTargetSize;
 };
 
 } // namespace Qt3DRender

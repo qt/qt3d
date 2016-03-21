@@ -241,6 +241,16 @@ void QRenderSurfaceSelector::copy(const QNode *ref)
     d_func()->m_externalRenderTargetSize = object->d_func()->m_externalRenderTargetSize;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderSurfaceSelector);
+    data.surface = QPointer<QObject>(reinterpret_cast<QObject*>(d->m_surface));
+    data.externalRenderTargetSize = d->m_externalRenderTargetSize;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
