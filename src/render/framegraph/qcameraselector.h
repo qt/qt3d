@@ -73,6 +73,7 @@ protected:
 private:
     QT3D_CLONEABLE(QCameraSelector)
     Q_DECLARE_PRIVATE(QCameraSelector)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

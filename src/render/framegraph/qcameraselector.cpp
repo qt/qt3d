@@ -106,6 +106,15 @@ Qt3DCore::QEntity *QCameraSelector::camera() const
     return d->m_camera;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QCameraSelector::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QCameraSelector);
+    data.cameraId = qIdForNode(d->m_camera);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
