@@ -122,6 +122,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QKeyboardHandler)
     QT3D_CLONEABLE(QKeyboardHandler)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DInput

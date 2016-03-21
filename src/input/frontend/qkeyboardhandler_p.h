@@ -72,6 +72,11 @@ public:
     bool m_focus;
 };
 
+struct QKeyboardHandlerData
+{
+    Qt3DCore::QNodeId keyboardDeviceId;
+};
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE

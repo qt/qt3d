@@ -246,6 +246,17 @@ void QKeyboardHandler::setFocus(bool focus)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QKeyboardHandlerData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QKeyboardHandler);
+    data.keyboardDeviceId = qIdForNode(d->m_keyboardDevice);
+
+    return creationChange;
+}
+
 /*!
     \qmlsignal Qt3D.Input::KeyboardHandler::digit0Pressed(KeyEvent event)
 */
