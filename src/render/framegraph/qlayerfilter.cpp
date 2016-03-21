@@ -121,6 +121,14 @@ QStringList QLayerFilter::layers() const
     return d->m_layers;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QLayerFilter::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QLayerFilterData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QLayerFilter);
+    data.layers = d->m_layers;
+    return creationChange;
+}
 
 } // namespace Qt3DRender
 

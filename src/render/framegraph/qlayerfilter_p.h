@@ -68,6 +68,11 @@ public:
     QStringList m_layers;
 };
 
+struct QLayerFilterData
+{
+    QStringList layers;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
