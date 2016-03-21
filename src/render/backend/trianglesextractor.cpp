@@ -70,7 +70,7 @@ bool isTriangleBased(Qt3DRender::QGeometryRenderer::PrimitiveType type) Q_DECL_N
 struct BufferInfo
 {
     BufferInfo()
-        : type(QAttribute::DataType::Float)
+        : type(QAttribute::Float)
         , dataSize(0)
         , count(0)
         , byteStride(0)
