@@ -72,6 +72,12 @@ public:
     QList<QParameter *> m_parameters;
 };
 
+struct QRenderPassFilterData
+{
+    Qt3DCore::QNodeIdVector matchIds;
+    Qt3DCore::QNodeIdVector parameterIds;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
