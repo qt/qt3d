@@ -56,7 +56,7 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DCore {
 
-class QAbstractAspectJobManager : public QObject
+class QT3DCORESHARED_EXPORT QAbstractAspectJobManager : public QObject
 {
     Q_OBJECT
 public:
