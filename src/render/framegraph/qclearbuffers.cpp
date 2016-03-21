@@ -38,7 +38,7 @@
 ****************************************************************************/
 
 #include "qclearbuffers.h"
-#include <private/qclearbuffers_p.h>
+#include "qclearbuffers_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -140,6 +140,15 @@ void QClearBuffers::setClearStencilValue(int clearStencilValue)
         d->m_clearStencilValue = clearStencilValue;
         emit clearStencilValueChanged(clearStencilValue);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QClearBuffersData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QClearBuffers);
+    data.buffersType = d->m_buffersType;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

@@ -70,6 +70,11 @@ public:
     int m_clearStencilValue;
 };
 
+struct QClearBuffersData
+{
+    QClearBuffers::BufferType buffersType;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
