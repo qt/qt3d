@@ -73,6 +73,11 @@ public:
     Q_DECLARE_PUBLIC(QMouseHandler)
 };
 
+struct QMouseHandlerData
+{
+    Qt3DCore::QNodeId mouseDeviceId;
+};
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE

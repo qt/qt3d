@@ -198,6 +198,17 @@ void QMouseHandler::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QMouseHandler::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMouseHandlerData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QMouseHandler);
+    data.mouseDeviceId = qIdForNode(d->m_mouseDevice);
+
+    return creationChange;
+}
+
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
