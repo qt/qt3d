@@ -70,6 +70,12 @@ public:
     QList<QRenderTargetOutput::AttachmentPoint> m_outputs;
 };
 
+struct QRenderTargetSelectorData
+{
+    Qt3DCore::QNodeId targetId;
+    QVector<QRenderTargetOutput::AttachmentPoint> outputs;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

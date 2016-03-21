@@ -135,6 +135,16 @@ QRenderTargetSelector::QRenderTargetSelector(QRenderTargetSelectorPrivate &dd, Q
 {
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderTargetSelector::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderTargetSelectorData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderTargetSelector);
+    data.targetId = qIdForNode(d->m_target);
+    data.outputs = d->m_outputs.toVector();
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
