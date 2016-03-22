@@ -163,7 +163,7 @@ QAttribute *QGeometry::boundingVolumePositionAttribute() const
 /*!
  * \return the list of attributes in this geometry.
  */
-QAttributeList QGeometry::attributes() const
+QVector<QAttribute *> QGeometry::attributes() const
 {
     Q_D(const QGeometry);
     return d->m_attributes;

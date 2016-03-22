@@ -50,8 +50,6 @@ namespace Qt3DRender {
 class QAttribute;
 class QGeometryPrivate;
 
-typedef QVector<QAttribute *> QAttributeList;
-
 class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
@@ -60,7 +58,7 @@ public:
     explicit QGeometry(Qt3DCore::QNode *parent = 0);
     ~QGeometry();
 
-    QAttributeList attributes() const;
+    QVector<QAttribute *> attributes() const;
     void addAttribute(QAttribute *attribute);
     void removeAttribute(QAttribute *attribute);
 

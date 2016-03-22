@@ -66,7 +66,8 @@ public:
         , m_boundingVolumePositionAttribute(Q_NULLPTR)
     {}
 
-    QAttributeList m_attributes;
+
+    QVector<QAttribute *> m_attributes;
     QAttribute *m_boundingVolumePositionAttribute;
 };
 
