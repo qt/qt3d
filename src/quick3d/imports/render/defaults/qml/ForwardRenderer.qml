@@ -45,7 +45,7 @@ TechniqueFilter {
     property alias camera: cameraSelector.camera
     property alias clearColor: clearBuffers.clearColor
     property alias viewportRect: viewport.normalizedRect
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
 
     // Select the forward rendering Technique of any used Effect
     matchAll: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
@@ -57,7 +57,6 @@ TechniqueFilter {
         Viewport {
             id: viewport
             normalizedRect: Qt.rect(0.0, 0.0, 1.0, 1.0)
-            clearColor: "white"
 
             // Use the specified camera
             CameraSelector {
@@ -66,6 +65,7 @@ TechniqueFilter {
                     ClearBuffers {
                         id: clearBuffers
                         buffers : ClearBuffers.ColorDepthBuffer
+                        clearColor: "white"
                     }
                 }
             }
