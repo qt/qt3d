@@ -179,6 +179,16 @@ QList<QParameter *> QMaterial::parameters() const
     return d->m_parameters;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QMaterial::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMaterialData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QMaterial);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.effectId = qIdForNode(d->m_effect);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -70,6 +70,12 @@ public:
     QEffect *m_effect;
 };
 
+struct QMaterialData
+{
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeId effectId;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
