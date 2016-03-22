@@ -68,6 +68,12 @@ public:
     QVariant m_value;
 };
 
+struct QFilterKeyData
+{
+    QString name;
+    QVariant value;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
