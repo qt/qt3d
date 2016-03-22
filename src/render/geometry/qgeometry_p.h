@@ -70,6 +70,12 @@ public:
     QAttribute *m_boundingVolumePositionAttribute;
 };
 
+struct QGeometryData
+{
+    Qt3DCore::QNodeIdVector attributeIds;
+    Qt3DCore::QNodeId boundingVolumePositionAttributeId;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

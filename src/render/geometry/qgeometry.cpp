@@ -183,6 +183,16 @@ void QGeometry::copy(const QNode *ref)
         d_func()->m_boundingVolumePositionAttribute = qobject_cast<QAttribute *>(QNode::clone(geometry->d_func()->m_boundingVolumePositionAttribute));
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QGeometry::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QGeometryData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QGeometry);
+    data.attributeIds = qIdsForNodes(d->m_attributes);
+    data.boundingVolumePositionAttributeId = qIdForNode(d->m_boundingVolumePositionAttribute);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
