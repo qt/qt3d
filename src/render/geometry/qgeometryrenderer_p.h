@@ -77,6 +77,20 @@ public:
     QGeometryFactoryPtr m_geometryFactory;
 };
 
+struct QGeometryRendererData
+{
+    int instanceCount;
+    int vertexCount;
+    int indexOffset;
+    int firstInstance;
+    int restartIndexValue;
+    int verticesPerPatch;
+    bool primitiveRestart;
+    Qt3DCore::QNodeId geometryId;
+    QGeometryRenderer::PrimitiveType primitiveType;
+    QGeometryFactoryPtr geometryFactory;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -132,6 +132,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGeometryRenderer)
     QT3D_CLONEABLE(QGeometryRenderer)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender
