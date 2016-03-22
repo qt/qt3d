@@ -177,6 +177,15 @@ QList<QTechnique *> QEffect::techniques() const
     return d->m_techniques;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QEffect::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QEffectData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QEffect);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.techniqueIds = qIdsForNodes(d->m_techniques);
+    return creationChange;
+}
 
 } // namespace Qt3DRender
 

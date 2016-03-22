@@ -72,6 +72,12 @@ public :
     QList<QTechnique *> m_techniques;
 };
 
+struct QEffectData
+{
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeIdVector techniqueIds;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
