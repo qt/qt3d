@@ -116,6 +116,7 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QBuffer)
     QT3D_CLONEABLE(QBuffer)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

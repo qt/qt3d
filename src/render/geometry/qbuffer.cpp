@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qbuffer_p.h"
 #include "qbuffer.h"
+#include "qbuffer_p.h"
 #include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -299,6 +299,19 @@ void QBuffer::setType(QBuffer::BufferType type)
         d->m_type = type;
         emit typeChanged(type);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QBuffer::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QBufferData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QBuffer);
+    data.data = d->m_data;
+    data.type = d->m_type;
+    data.usage = d->m_usage;
+    data.functor = d->m_functor;
+    data.syncData = d->m_syncData;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

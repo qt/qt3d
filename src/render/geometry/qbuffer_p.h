@@ -76,6 +76,15 @@ public:
     bool m_syncData;
 };
 
+struct QBufferData
+{
+    QByteArray data;
+    QBuffer::BufferType type;
+    QBuffer::UsageType usage;
+    QBufferDataGeneratorPtr functor;
+    bool syncData;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
