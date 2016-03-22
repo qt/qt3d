@@ -69,6 +69,11 @@ public :
     QColor m_clearColor;
 };
 
+struct QViewportData
+{
+    QRectF normalizedRect;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

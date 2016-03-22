@@ -90,6 +90,15 @@ void QViewport::setNormalizedRect(const QRectF &normalizedRect)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QViewport::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QViewportData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QViewport);
+    data.normalizedRect = d->m_normalizedRect;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
