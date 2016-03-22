@@ -69,6 +69,12 @@ public :
     QList<QParameter *> m_parameters;
 };
 
+struct QTechniqueFilterData
+{
+    Qt3DCore::QNodeIdVector matchIds;
+    Qt3DCore::QNodeIdVector parameterIds;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -163,6 +163,16 @@ QList<QParameter *> QTechniqueFilter::parameters() const
     return d->m_parameters;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QTechniqueFilter::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueFilterData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QTechniqueFilter);
+    data.matchIds = qIdsForNodes(d->m_matchList);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
