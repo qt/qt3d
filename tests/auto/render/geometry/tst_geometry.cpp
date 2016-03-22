@@ -31,7 +31,6 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DCore/qscenepropertychange.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
 #include "testrenderer.h"
 
 class tst_RenderGeometry : public QObject
@@ -54,7 +53,7 @@ private Q_SLOTS:
         geometry.addAttribute(&attr2);
         geometry.addAttribute(&attr3);
         geometry.addAttribute(&attr4);
-        geometry.boundingVolumeSpecifier()->setPositionAttribute(&attr1);
+        geometry.setBoundingVolumePositionAttribute(&attr1);
 
         // WHEN
         renderGeometry.setPeer(&geometry);
@@ -86,7 +85,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute attr2;
         Qt3DRender::QAttribute attr4;
         Qt3DRender::QAttribute attr3;
-        geometry.boundingVolumeSpecifier()->setPositionAttribute(&attr1);
+        geometry.setBoundingVolumePositionAttribute(&attr1);
 
         geometry.addAttribute(&attr1);
         geometry.addAttribute(&attr2);
@@ -141,7 +140,7 @@ private Q_SLOTS:
         const Qt3DCore::QNodeId boundingAttrId = Qt3DCore::QNodeId::createId();
         updateChange.reset(new Qt3DCore::QScenePropertyChange(Qt3DCore::NodeUpdated, Qt3DCore::QSceneChange::Node, Qt3DCore::QNodeId()));
         updateChange->setValue(QVariant::fromValue(boundingAttrId));
-        updateChange->setPropertyName("boundingVolumeSpecifierPositionAttribute");
+        updateChange->setPropertyName("boundingVolumePositionAttribute");
         renderGeometry.sceneChangeEvent(updateChange);
 
         // THEN

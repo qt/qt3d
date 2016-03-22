@@ -49,14 +49,13 @@ namespace Qt3DRender {
 
 class QAttribute;
 class QGeometryPrivate;
-class QBoundingVolumeSpecifier;
 
 typedef QVector<QAttribute *> QAttributeList;
 
 class QT3DRENDERSHARED_EXPORT QGeometry : public Qt3DCore::QNode
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QBoundingVolumeSpecifier *boundingVolumeSpecifier READ boundingVolumeSpecifier CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAttribute *boundingVolumePositionAttribute READ boundingVolumePositionAttribute WRITE setBoundingVolumePositionAttribute NOTIFY boundingVolumePositionAttributeChanged)
 public:
     explicit QGeometry(Qt3DCore::QNode *parent = 0);
     ~QGeometry();
@@ -65,7 +64,13 @@ public:
     void addAttribute(QAttribute *attribute);
     void removeAttribute(QAttribute *attribute);
 
-    QBoundingVolumeSpecifier *boundingVolumeSpecifier();
+    QAttribute *boundingVolumePositionAttribute() const;
+
+public Q_SLOTS:
+    void setBoundingVolumePositionAttribute(QAttribute *boundingVolumePositionAttribute);
+
+Q_SIGNALS:
+    void boundingVolumePositionAttributeChanged(QAttribute *boundingVolumePositionAttribute);
 
 protected:
     QGeometry(QGeometryPrivate &dd, Qt3DCore::QNode *parent = 0);
@@ -74,7 +79,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QGeometry)
     QT3D_CLONEABLE(QGeometry)
-    Q_PRIVATE_SLOT(d_func(), void _q_boundingVolumeSpecifierChanged(QAttribute *))
 };
 
 } // namespace Qt3DRender

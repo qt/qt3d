@@ -33,7 +33,6 @@
 #include <Qt3DRender/qgeometry.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
 
 #include "testpostmanarbiter.h"
 
@@ -62,7 +61,7 @@ private Q_SLOTS:
         Qt3DRender::QAttribute *attribute = new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr1"), Qt3DRender::QAttribute::Float, 4, 454);
         geometry1->addAttribute(attribute);
         geometry1->addAttribute(new Qt3DRender::QAttribute(Q_NULLPTR, QStringLiteral("Attr2"), Qt3DRender::QAttribute::Float, 4, 555));
-        geometry1->boundingVolumeSpecifier()->setPositionAttribute(attribute);
+        geometry1->setBoundingVolumePositionAttribute(attribute);
         QTest::newRow("2 attributes") << geometry1 << 2;
 
 
@@ -90,8 +89,8 @@ private Q_SLOTS:
         QCOMPARE(geometry->id(), clone->id());
         QCOMPARE(attributeCount, geometry->attributes().count());
         QCOMPARE(attributeCount, clone->attributes().count());
-        if (geometry->boundingVolumeSpecifier()->positionAttribute())
-                QCOMPARE(geometry->boundingVolumeSpecifier()->positionAttribute()->id(), clone->boundingVolumeSpecifier()->positionAttribute()->id());
+        if (geometry->boundingVolumePositionAttribute())
+                QCOMPARE(geometry->boundingVolumePositionAttribute()->id(), clone->boundingVolumePositionAttribute()->id());
 
         for (int i = 0; i < attributeCount; ++i) {
             Qt3DRender::QAttribute *originalAttribute = static_cast<Qt3DRender::QAttribute *>(geometry->attributes()[i]);
@@ -145,19 +144,6 @@ private Q_SLOTS:
         QCOMPARE(change->propertyName(), "attribute");
         QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
         QCOMPARE(change->type(), Qt3DCore::NodeRemoved);
-
-        arbiter.events.clear();
-
-        // WHEN
-        geometry->boundingVolumeSpecifier()->setPositionAttribute(&attr);
-        QCoreApplication::processEvents();
-
-        // THEN
-        QCOMPARE(arbiter.events.size(), 1);
-        change = arbiter.events.first().staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "boundingVolumeSpecifierPositionAttribute");
-        QCOMPARE(change->value().value<Qt3DCore::QNodeId>(), attr.id());
-        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         arbiter.events.clear();
     }

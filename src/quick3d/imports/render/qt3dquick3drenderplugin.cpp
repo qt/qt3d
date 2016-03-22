@@ -105,7 +105,6 @@
 #include <Qt3DRender/qcylindergeometry.h>
 #include <Qt3DRender/qobjectpicker.h>
 #include <Qt3DRender/qpickevent.h>
-#include <Qt3DRender/qboundingvolumespecifier.h>
 #include <Qt3DRender/qfrustumculling.h>
 #include <Qt3DRender/qlighting.h>
 #include <Qt3DRender/qdispatchcompute.h>
@@ -225,7 +224,6 @@ void Qt3DQuick3DRenderPlugin::registerTypes(const char *uri)
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QBuffer, Qt3DRender::Render::Quick::Quick3DBuffer>("QBuffer", "Qt3D.Render/Buffer", uri, 2, 0, "Buffer");
     Qt3DRender::Quick::registerExtendedType<Qt3DRender::QGeometry, Qt3DRender::Render::Quick::Quick3DGeometry>("QGeometry", "Qt3D.Render/Geometry", uri, 2, 0, "Geometry");
     qmlRegisterType<Qt3DRender::QGeometryRenderer>(uri, 2, 0, "GeometryRenderer");
-    qmlRegisterUncreatableType<Qt3DRender::QBoundingVolumeSpecifier>(uri, 2, 0, "QBoundingVolumeSpecifier", QStringLiteral("QBoundingVolumeSpecifier is used as a grouped property"));
 
     // Debug components
     qmlRegisterType<Qt3DRender::QBoundingVolumeDebug>(uri, 2, 0, "BoundingVolumeDebug");

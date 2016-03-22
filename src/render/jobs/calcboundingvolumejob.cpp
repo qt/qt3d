@@ -100,7 +100,7 @@ void calculateLocalBoundingVolume(NodeManagers *manager, Entity *node)
                         || pickVolumeAttribute->attributeType() != QAttribute::VertexAttribute
                         || pickVolumeAttribute->vertexBaseType() != QAttribute::Float
                         || pickVolumeAttribute->vertexSize() < 3) {
-                    qWarning() << "QBoundingVolumeSpecifier pickVolume Attribute not suited for bounding volume computation";
+                    qWarning() << "QGeometry::boundingVolumePositionAttribute pickVolume Attribute not suited for bounding volume computation";
                     return;
                 }
 
