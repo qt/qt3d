@@ -397,6 +397,23 @@ QString QAttribute::defaultTangentAttributeName()
     return QStringLiteral("vertexTangent");
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QAttribute::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAttributeData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAttribute);
+    data.bufferId = qIdForNode(d->m_buffer);
+    data.name = d->m_name;
+    data.dataType = d->m_dataType;
+    data.dataSize = d->m_dataSize;
+    data.count = d->m_count;
+    data.byteStride = d->m_byteStride;
+    data.byteOffset = d->m_byteOffset;
+    data.divisor = d->m_divisor;
+    data.attributeType = d->m_attributeType;
+    return creationChange;
+}
+
 } // Qt3DRender
 
 QT_END_NAMESPACE

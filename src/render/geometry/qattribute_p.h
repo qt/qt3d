@@ -80,6 +80,19 @@ public:
     QAttribute::AttributeType m_attributeType;
 };
 
+struct QAttributeData
+{
+    Qt3DCore::QNodeId bufferId;
+    QString name;
+    QAttribute::VertexBaseType dataType;
+    uint dataSize;
+    uint count;
+    uint byteStride;
+    uint byteOffset;
+    uint divisor;
+    QAttribute::AttributeType attributeType;
+};
+
 } // Qt3DRender
 
 QT_END_NAMESPACE
