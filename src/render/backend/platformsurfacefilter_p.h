@@ -82,13 +82,15 @@ public:
     template<class T>
     void setSurface(T *surface)
     {
+        Q_ASSERT(surface);
         if (m_obj == surface)
             return;
 
         if (m_obj)
             m_obj->removeEventFilter(this);
 
-        m_surface = surface;
+        // Surface is offset from QWindow/QOffscreenSurface due to multiple inheritance
+        m_surface = static_cast<QSurface *>(surface);
         m_obj = surface;
 
         if (m_obj) {

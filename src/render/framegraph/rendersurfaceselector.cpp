@@ -50,6 +50,24 @@ QT_BEGIN_NAMESPACE
 
 using namespace Qt3DCore;
 
+namespace {
+
+QSurface *surfaceFromQObject(QObject *o)
+{
+    QSurface *surface = nullptr;
+    QWindow *window = qobject_cast<QWindow *>(o);
+    if (window) {
+        surface = static_cast<QSurface *>(window);
+    } else {
+        QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(o);
+        if (offscreen)
+            surface = static_cast<QSurface *>(offscreen);
+    }
+    return surface;
+}
+
+}
+
 namespace Qt3DRender {
 namespace Render {
 
@@ -65,7 +83,7 @@ RenderSurfaceSelector::RenderSurfaceSelector()
 void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QRenderSurfaceSelector *selector = static_cast<QRenderSurfaceSelector *>(peer);
-    m_surface = reinterpret_cast<QSurface *>(selector->surface());
+    m_surface = surfaceFromQObject(selector->surface());
     setEnabled(selector->isEnabled());
     setRenderTargetSize(selector->externalRenderTargetSize());
     if (m_surface) {
@@ -85,7 +103,7 @@ void RenderSurfaceSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     if (e->type() == NodeUpdated) {
         QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
         if (propertyChange->propertyName() == QByteArrayLiteral("surface"))
-            m_surface = propertyChange->value().value<QSurface *>();
+            m_surface = surfaceFromQObject(propertyChange->value().value<QObject *>());
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("externalRenderTargetSize"))
