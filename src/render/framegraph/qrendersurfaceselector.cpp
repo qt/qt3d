@@ -253,7 +253,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QRenderSurfaceSelector::createNodeCreationCh
     auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSurfaceSelectorData>::create(this);
     auto &data = creationChange->data;
     Q_D(const QRenderSurfaceSelector);
-    data.surface = QPointer<QObject>(reinterpret_cast<QObject*>(d->m_surface));
+    data.surface = QPointer<QObject>(surface());
     data.externalRenderTargetSize = d->m_externalRenderTargetSize;
     return creationChange;
 }
