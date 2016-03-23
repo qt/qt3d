@@ -50,6 +50,7 @@ namespace Qt3DInput {
 
 QKeyboardDevicePrivate::QKeyboardDevicePrivate()
     : QAbstractPhysicalDevicePrivate()
+    , m_activeInput(nullptr)
 {
     m_keyMap[QStringLiteral("escape")] = Qt::Key_Escape;
     m_keyMap[QStringLiteral("tab")] = Qt::Key_Tab;
