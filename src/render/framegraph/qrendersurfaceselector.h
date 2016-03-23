@@ -68,7 +68,7 @@ public:
     void setExternalRenderTargetSize(const QSize &size);
 
 public Q_SLOTS:
-    void setSurface(QObject *surface);
+    void setSurface(QObject *surfaceObject);
 
 Q_SIGNALS:
     void surfaceChanged(QObject *surface);

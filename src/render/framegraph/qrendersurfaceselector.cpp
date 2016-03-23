@@ -83,18 +83,6 @@ namespace Qt3DRender {
  * Holds the size of the external render target.
  */
 
-namespace {
-
-QSurface *surface_cast(QObject *obj)
-{
-    // QSurface can only be a QWindow or a QOffscreenSurface
-    if (qobject_cast<QWindow *>(obj) != Q_NULLPTR)
-        return static_cast<QWindow *>(obj);
-     return qobject_cast<QOffscreenSurface *>(obj);
-}
-
-} // anonymous
-
 QRenderSurfaceSelectorPrivate::QRenderSurfaceSelectorPrivate()
     : Qt3DRender::QFrameGraphNodePrivate()
     , m_surface(Q_NULLPTR)
@@ -134,29 +122,48 @@ QRenderSurfaceSelector::~QRenderSurfaceSelector()
 QObject *QRenderSurfaceSelector::surface() const
 {
     Q_D(const QRenderSurfaceSelector);
-    // All implementations of QSurface are also subclasses QObject
-    // so there's no risky business involved when doing this
-    return reinterpret_cast<QObject *>(d->m_surface);
+    QObject *surfaceObj = nullptr;
+    if (!d->m_surface)
+        return surfaceObj;
+
+    switch (d->m_surface->surfaceClass()) {
+    case QSurface::Window:
+        surfaceObj = static_cast<QWindow *>(d->m_surface);
+        break;
+
+    case QSurface::Offscreen:
+        surfaceObj = static_cast<QOffscreenSurface *>(d->m_surface);
+        break;
+    }
+
+    return surfaceObj;
 }
 
 /*! \property QRenderSurfaceSelector::surface
  *
  * Sets \a surface.
  */
-void QRenderSurfaceSelector::setSurface(QObject *surface)
+void QRenderSurfaceSelector::setSurface(QObject *surfaceObject)
 {
     Q_D(QRenderSurfaceSelector);
-    QSurface *surfaceObj = Q_NULLPTR;
+    QSurface *surface = nullptr;
+    if (surfaceObject) {
+        QWindow *window = qobject_cast<QWindow *>(surfaceObject);
+        if (window) {
+            surface = static_cast<QSurface *>(window);
+        } else {
+            QOffscreenSurface *offscreen = qobject_cast<QOffscreenSurface *>(surfaceObject);
+            if (offscreen)
+                surface = static_cast<QSurface *>(offscreen);
+        }
 
-    if (surface) {
-        surfaceObj = surface_cast(surface);
-        Q_ASSERT_X(surfaceObj, Q_FUNC_INFO, "surface is not a valid QSurface * object");
+        Q_ASSERT_X(surface, Q_FUNC_INFO, "surfaceObject is not a valid QSurface * object");
     }
 
-    if (d->m_surface == surfaceObj)
+    if (d->m_surface == surface)
         return;
+    d->m_surface = surface;
 
-    d->m_surface = surfaceObj;
     // The platform surface filter only deals with QObject
     // We assume therefore that our surface is actually a QObject underneath
     if (d->m_surface) {
@@ -209,7 +216,7 @@ void QRenderSurfaceSelector::setSurface(QObject *surface)
         QWindow *nullWindow = Q_NULLPTR;
         d->m_surfaceEventFilter->setSurface(nullWindow);
     }
-    emit surfaceChanged(surface);
+    emit surfaceChanged(surfaceObject);
 }
 
 QSize QRenderSurfaceSelector::externalRenderTargetSize() const
