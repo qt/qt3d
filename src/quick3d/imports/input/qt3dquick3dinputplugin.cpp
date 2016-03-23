@@ -63,7 +63,7 @@
 #include <Qt3DQuickInput/private/quick3dphysicaldevice_p.h>
 
 #ifdef HAVE_QGAMEPAD
-# include <Qt3DInput/qgamepadinput.h>
+# include <Qt3DInput/private/qgamepadinput_p.h>
 #endif
 
 #include "qt3dquick3dinputplugin.h"

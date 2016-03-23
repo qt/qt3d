@@ -85,7 +85,7 @@
 #include <Qt3DInput/private/eventsourcesetterhelper_p.h>
 
 #ifdef HAVE_QGAMEPAD
-# include <Qt3DInput/qgamepadinput.h>
+# include <Qt3DInput/private/qgamepadinput_p.h>
 #endif
 
 QT_BEGIN_NAMESPACE
