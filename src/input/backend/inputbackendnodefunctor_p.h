@@ -76,6 +76,12 @@ public:
         return backend;
     }
 
+    Qt3DCore::QBackendNode *create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const Q_DECL_FINAL
+    {
+        Backend *backend = m_manager->getOrCreateResource(change->subjectId());
+        return backend;
+    }
+
     Qt3DCore::QBackendNode *get(Qt3DCore::QNodeId id) const Q_DECL_FINAL
     {
         return m_manager->lookupResource(id);
