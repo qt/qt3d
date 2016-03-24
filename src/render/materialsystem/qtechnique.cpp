@@ -245,6 +245,27 @@ QGraphicsApiFilter *QTechnique::graphicsApiFilter()
     return &d->m_graphicsApiFilter;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QTechnique::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QTechniqueData>::create(this);
+    auto &data = creationChange->data;
+
+    Q_D(const QTechnique);
+    const QGraphicsApiFilter &filter = d->m_graphicsApiFilter;
+    data.api = filter.api();
+    data.profile = filter.profile();
+    data.majorVersion = filter.majorVersion();
+    data.minorVersion = filter.minorVersion();
+    data.extensions = filter.extensions();
+    data.vendor = filter.vendor();
+
+    data.filterKeyIds = qIdsForNodes(d->m_filterKeys);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.renderPassIds = qIdsForNodes(d->m_renderPasses);
+
+    return creationChange;
+}
+
 } // of namespace Qt3DRender
 
 QT_END_NAMESPACE

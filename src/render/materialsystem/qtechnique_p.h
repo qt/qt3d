@@ -79,6 +79,20 @@ private:
     void _q_graphicsApiFilterChanged();
 };
 
+struct QTechniqueData
+{
+    QGraphicsApiFilter::Api api;
+    QGraphicsApiFilter::OpenGLProfile profile;
+    int majorVersion;
+    int minorVersion;
+    QStringList extensions;
+    QString vendor;
+
+    Qt3DCore::QNodeIdVector filterKeyIds;
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeIdVector renderPassIds;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
