@@ -110,6 +110,14 @@ Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::create(Qt3DCore::QNode *fro
     return backendNode;
 }
 
+Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    GenericDeviceBackendNode *backendNode = m_handler->genericDeviceBackendNodeManager()->getOrCreateResource(change->subjectId());
+    backendNode->setInputAspect(m_inputAspect);
+    m_handler->appendGenericDevice(m_handler->genericDeviceBackendNodeManager()->lookupHandle(change->subjectId()));
+    return backendNode;
+}
+
 Qt3DCore::QBackendNode *GenericDeviceBackendFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->genericDeviceBackendNodeManager()->lookupResource(id);
