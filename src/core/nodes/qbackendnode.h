@@ -58,13 +58,7 @@ class QT3DCORESHARED_EXPORT QBackendNodeMapper
 public:
     virtual ~QBackendNodeMapper() {}
     virtual QBackendNode *create(QNode *frontend) const = 0;
-    // TODO: Make this pure virtual and remove QNode* overload
-    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const
-    {
-        Q_UNUSED(change);
-        //qDebug() << "Functor with unimplemented create() function";
-        return nullptr;
-    }
+    virtual QBackendNode *create(const QNodeCreatedChangeBasePtr &change) const = 0;
     virtual QBackendNode *get(QNodeId id) const = 0;
     virtual void destroy(QNodeId id) const = 0;
 };
