@@ -107,6 +107,14 @@ Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(Qt3DCore::QNode *fronte
     return backend;
 }
 
+Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    HLogicalDevice handle = m_manager->getOrAcquireHandle(change->subjectId());
+    LogicalDevice *backend = m_manager->data(handle);
+    m_manager->addActiveDevice(handle);
+    return backend;
+}
+
 Qt3DCore::QBackendNode *LogicalDeviceNodeFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
