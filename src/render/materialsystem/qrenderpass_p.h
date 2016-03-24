@@ -88,6 +88,14 @@ public:
     QShaderProgram *m_shader;
 };
 
+struct QRenderPassData
+{
+    Qt3DCore::QNodeIdVector filterKeyIds;
+    Qt3DCore::QNodeIdVector parameterIds;
+    Qt3DCore::QNodeIdVector renderStateIds;
+    Qt3DCore::QNodeId shaderId;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

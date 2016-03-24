@@ -276,6 +276,18 @@ QList<QParameter *> QRenderPass::parameters() const
     return d->m_parameters;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderPass::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderPassData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderPass);
+    data.filterKeyIds = qIdsForNodes(d->m_filterKeyList);
+    data.parameterIds = qIdsForNodes(d->m_parameters);
+    data.renderStateIds = qIdsForNodes(d->m_renderStates);
+    data.shaderId = qIdForNode(d->m_shader);
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -102,6 +102,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QRenderPass)
     QT3D_CLONEABLE(QRenderPass)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }
