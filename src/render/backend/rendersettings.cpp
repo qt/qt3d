@@ -109,6 +109,20 @@ Qt3DCore::QBackendNode *RenderSettingsFunctor::create(Qt3DCore::QNode *frontend)
     return settings;
 }
 
+Qt3DCore::QBackendNode *RenderSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    Q_UNUSED(change);
+    if (m_renderer->settings() != Q_NULLPTR) {
+        qWarning() << "Renderer settings already exists";
+        return Q_NULLPTR;
+    }
+
+    RenderSettings *settings = new RenderSettings;
+    settings->setRenderer(m_renderer);
+    m_renderer->setSettings(settings);
+    return settings;
+}
+
 Qt3DCore::QBackendNode *RenderSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     Q_UNUSED(id);
