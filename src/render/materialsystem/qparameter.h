@@ -86,6 +86,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QParameter)
     QT3D_CLONEABLE(QParameter)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender
