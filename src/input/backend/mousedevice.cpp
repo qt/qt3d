@@ -159,6 +159,15 @@ Qt3DCore::QBackendNode *MouseDeviceFunctor::create(Qt3DCore::QNode *frontend) co
     return controller;
 }
 
+Qt3DCore::QBackendNode *MouseDeviceFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    MouseDevice *controller = m_handler->mouseDeviceManager()->getOrCreateResource(change->subjectId());
+    controller->setInputAspect(m_inputAspect);
+    controller->setInputHandler(m_handler);
+    m_handler->appendMouseDevice(m_handler->mouseDeviceManager()->lookupHandle(change->subjectId()));
+    return controller;
+}
+
 Qt3DCore::QBackendNode *MouseDeviceFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->mouseDeviceManager()->lookupResource(id);
