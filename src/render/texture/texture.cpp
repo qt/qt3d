@@ -696,6 +696,16 @@ Qt3DCore::QBackendNode *TextureFunctor::create(Qt3DCore::QNode *frontend) const
     return backend;
 }
 
+Qt3DCore::QBackendNode *TextureFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    Texture *backend = m_textureManager->getOrCreateResource(change->subjectId());
+    backend->setTextureManager(m_textureManager);
+    backend->setTextureImageManager(m_textureImageManager);
+    backend->setTextureDataManager(m_textureDataManager);
+    backend->setRenderer(m_renderer);
+    return backend;
+}
+
 Qt3DCore::QBackendNode *TextureFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_textureManager->lookupResource(id);
