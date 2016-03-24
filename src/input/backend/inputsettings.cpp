@@ -88,6 +88,19 @@ Qt3DCore::QBackendNode *InputSettingsFunctor::create(Qt3DCore::QNode *frontend) 
     return settings;
 }
 
+Qt3DCore::QBackendNode *InputSettingsFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    Q_UNUSED(change);
+    if (m_handler->inputSettings() != Q_NULLPTR) {
+        qWarning() << "Input settings already specified";
+        return Q_NULLPTR;
+    }
+
+    InputSettings *settings = new InputSettings();
+    m_handler->setInputSettings(settings);
+    return settings;
+}
+
 Qt3DCore::QBackendNode *InputSettingsFunctor::get(Qt3DCore::QNodeId id) const
 {
     InputSettings *settings = m_handler->inputSettings();
