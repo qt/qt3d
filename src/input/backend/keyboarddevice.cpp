@@ -465,6 +465,15 @@ Qt3DCore::QBackendNode *KeyboardDeviceFunctor::create(Qt3DCore::QNode *frontend)
     return keyboardDevice;
 }
 
+Qt3DCore::QBackendNode *KeyboardDeviceFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    KeyboardDevice *keyboardDevice = m_handler->keyboardDeviceManager()->getOrCreateResource(change->subjectId());
+    keyboardDevice->setInputAspect(m_inputAspect);
+    keyboardDevice->setInputHandler(m_handler);
+    m_handler->appendKeyboardDevice(m_handler->keyboardDeviceManager()->lookupHandle(change->subjectId()));
+    return keyboardDevice;
+}
+
 Qt3DCore::QBackendNode *KeyboardDeviceFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_handler->keyboardDeviceManager()->lookupResource(id);
