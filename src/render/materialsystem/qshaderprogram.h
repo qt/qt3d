@@ -109,6 +109,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QShaderProgram)
     QT3D_CLONEABLE(QShaderProgram)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 }

@@ -265,6 +265,20 @@ QByteArray QShaderProgram::loadSource(const QUrl &sourceUrl)
     return deincludify(Qt3DRender::QUrlHelper::urlToLocalFileOrQrc(sourceUrl));
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QShaderProgram::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QShaderProgramData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QShaderProgram);
+    data.vertexShaderCode = d->m_vertexShaderCode;
+    data.tessellationControlShaderCode = d->m_tessControlShaderCode;
+    data.tessellationEvaluationShaderCode = d->m_tessEvalShaderCode;
+    data.geometryShaderCode = d->m_geometryShaderCode;
+    data.fragmentShaderCode = d->m_fragmentShaderCode;
+    data.computeShaderCode = d->m_computeShaderCode;
+    return creationChange;
+}
+
 } // of namespace Qt3DRender
 
 QT_END_NAMESPACE

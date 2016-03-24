@@ -79,6 +79,16 @@ public:
     QByteArray m_computeShaderCode;
 };
 
+struct QShaderProgramData
+{
+    QByteArray vertexShaderCode;
+    QByteArray tessellationControlShaderCode;
+    QByteArray tessellationEvaluationShaderCode;
+    QByteArray geometryShaderCode;
+    QByteArray fragmentShaderCode;
+    QByteArray computeShaderCode;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
