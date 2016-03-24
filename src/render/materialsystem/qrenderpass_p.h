@@ -60,7 +60,6 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 class QParameter;
-class QParameterMapping;
 class QRenderState;
 class QFilterKey;
 
@@ -79,7 +78,6 @@ public:
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
     QList<QFilterKey *> m_filterKeyList;
-    QList<QParameterMapping *> m_bindings;
     QList<QRenderState *> m_renderStates;
     QList<QParameter *> m_parameters;
     QShaderProgram *m_shader;

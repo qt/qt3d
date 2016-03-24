@@ -64,7 +64,6 @@ namespace Qt3DRender {
 
 class QRenderPass;
 class QAbstractShader;
-class QParameterMapping;
 class QFilterKey;
 class QRenderState;
 

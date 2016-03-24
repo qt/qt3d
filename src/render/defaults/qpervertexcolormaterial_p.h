@@ -63,7 +63,6 @@ class QTechnique;
 class QParameter;
 class QShaderProgram;
 class QRenderPass;
-class QParameterMapping;
 
 class QPerVertexColorMaterial;
 

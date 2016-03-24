@@ -56,7 +56,6 @@ namespace Qt3DRender {
 
 class QParameter;
 class QRenderState;
-class QParameterMapping;
 typedef QList<QParameter*> ParameterList;
 
 class QRenderPassPrivate;
