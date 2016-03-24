@@ -160,6 +160,13 @@ QBackendNode *KeyboardHandlerFunctor::create(QNode *frontend) const
     return input;
 }
 
+Qt3DCore::QBackendNode *KeyboardHandlerFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    KeyboardHandler *input = m_handler->keyboardInputManager()->getOrCreateResource(change->subjectId());
+    input->setInputHandler(m_handler);
+    return input;
+}
+
 QBackendNode *KeyboardHandlerFunctor::get(QNodeId id) const
 {
     return m_handler->keyboardInputManager()->lookupResource(id);
