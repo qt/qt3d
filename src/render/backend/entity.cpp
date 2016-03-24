@@ -535,6 +535,16 @@ Qt3DCore::QBackendNode *RenderEntityFunctor::create(Qt3DCore::QNode *frontend) c
     return entity;
 }
 
+Qt3DCore::QBackendNode *RenderEntityFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    HEntity renderNodeHandle = m_nodeManagers->renderNodesManager()->getOrAcquireHandle(change->subjectId());
+    Entity *entity = m_nodeManagers->renderNodesManager()->data(renderNodeHandle);
+    entity->setNodeManagers(m_nodeManagers);
+    entity->setHandle(renderNodeHandle);
+    entity->setRenderer(m_renderer);
+    return entity;
+}
+
 Qt3DCore::QBackendNode *RenderEntityFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_nodeManagers->renderNodesManager()->lookupResource(id);
