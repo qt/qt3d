@@ -341,6 +341,14 @@ Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(Qt3DCore::QNode *fronten
     return backend;
 }
 
+Qt3DCore::QBackendNode *RenderShaderDataFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    ShaderData *backend = m_managers->shaderDataManager()->getOrCreateResource(change->subjectId());
+    backend->setManagers(m_managers);
+    backend->setRenderer(m_renderer);
+    return backend;
+}
+
 Qt3DCore::QBackendNode *RenderShaderDataFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_managers->shaderDataManager()->lookupResource(id);
