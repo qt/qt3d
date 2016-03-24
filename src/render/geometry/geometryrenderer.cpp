@@ -232,6 +232,14 @@ Qt3DCore::QBackendNode *GeometryRendererFunctor::create(Qt3DCore::QNode *fronten
     return geometryRenderer;
 }
 
+Qt3DCore::QBackendNode *GeometryRendererFunctor::create(const Qt3DCore::QNodeCreatedChangeBasePtr &change) const
+{
+    GeometryRenderer *geometryRenderer = m_manager->getOrCreateResource(change->subjectId());
+    geometryRenderer->setManager(m_manager);
+    geometryRenderer->setRenderer(m_renderer);
+    return geometryRenderer;
+}
+
 Qt3DCore::QBackendNode *GeometryRendererFunctor::get(Qt3DCore::QNodeId id) const
 {
     return m_manager->lookupResource(id);
