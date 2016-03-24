@@ -72,9 +72,6 @@ public:
 
     QString glslNameForParameter(QString paramName) const;
 
-    ParameterList attributes() const;
-    ParameterList uniforms() const;
-
     QShaderProgram *shaderProgram() const;
 
     void addFilterKey(QFilterKey*filterKey);

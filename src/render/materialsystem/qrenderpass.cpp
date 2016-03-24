@@ -88,18 +88,6 @@ QRenderPass::QRenderPass(QRenderPassPrivate &dd, QNode *parent)
 {
 }
 
-ParameterList QRenderPass::attributes() const
-{
-    Q_D(const QRenderPass);
-    return d->m_attributes;
-}
-
-ParameterList QRenderPass::uniforms() const
-{
-    Q_D(const QRenderPass);
-    return d->m_uniforms;
-}
-
 /*!
  * Sets the pass's \a shaderProgram. This posts a ComponentUpdated
  * QScenePropertyChange to the QChangeArbiter. The value is set to

@@ -63,7 +63,6 @@ class QParameter;
 class QParameterMapping;
 class QRenderState;
 class QFilterKey;
-typedef QList<QParameter*> ParameterList;
 
 namespace Render
 {
@@ -76,8 +75,6 @@ public:
     QRenderPassPrivate();
 
     Q_DECLARE_PUBLIC(QRenderPass)
-    ParameterList m_attributes;
-    ParameterList m_uniforms;
 
     // map Parameter names to GLSL names
     QHash<QString, QString> m_parameterNameDict;
