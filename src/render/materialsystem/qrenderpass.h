@@ -69,8 +69,6 @@ public:
     explicit QRenderPass(Qt3DCore::QNode *parent = 0);
     ~QRenderPass();
 
-    QString glslNameForParameter(QString paramName) const;
-
     QShaderProgram *shaderProgram() const;
 
     void addFilterKey(QFilterKey*filterKey);

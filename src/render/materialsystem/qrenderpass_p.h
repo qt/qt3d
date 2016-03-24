@@ -63,11 +63,6 @@ class QParameter;
 class QRenderState;
 class QFilterKey;
 
-namespace Render
-{
-class RenderStateSet;
-}
-
 class QRenderPassPrivate : public Qt3DCore::QNodePrivate
 {
 public:
@@ -75,8 +70,6 @@ public:
 
     Q_DECLARE_PUBLIC(QRenderPass)
 
-    // map Parameter names to GLSL names
-    QHash<QString, QString> m_parameterNameDict;
     QList<QFilterKey *> m_filterKeyList;
     QList<QRenderState *> m_renderStates;
     QList<QParameter *> m_parameters;
