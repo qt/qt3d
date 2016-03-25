@@ -40,6 +40,7 @@
 #include "actioninput_p.h"
 #include <Qt3DInput/qactioninput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qactioninput_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -75,6 +76,15 @@ void ActionInput::updateFromPeer(Qt3DCore::QNode *peer)
     m_buttons = listToIntArray(input->buttons());
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
+}
+
+void ActionInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionInputData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_buttons = listToIntArray(data.buttons);
+    m_sourceDevice = data.sourceDeviceId;
 }
 
 void ActionInput::cleanup()
