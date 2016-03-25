@@ -39,6 +39,7 @@
 
 #include "axissetting_p.h"
 #include <Qt3DInput/qaxissetting.h>
+#include <Qt3DInput/private/qaxissetting_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -74,6 +75,15 @@ void AxisSetting::updateFromPeer(Qt3DCore::QNode *peer)
     m_deadZoneRadius = setting->deadZoneRadius();
     m_axes = variantListToVector(setting->axes());
     m_smooth = setting->isSmoothEnabled();
+}
+
+void AxisSetting::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisSettingData>>(change);
+    const auto &data = typedChange->data;
+    m_deadZoneRadius = data.deadZoneRadius;
+    m_axes = variantListToVector(data.axes);
+    m_smooth = data.smooth;
 }
 
 void AxisSetting::cleanup()
