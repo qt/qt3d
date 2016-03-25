@@ -38,7 +38,9 @@ HEADERS += \
     $$PWD/qlogicaldevice_p.h \
     $$PWD/qaxissetting_p.h \
     $$PWD/qinputsequence_p.h \
-    $$PWD/qinputchord_p.h
+    $$PWD/qinputchord_p.h \
+    $$PWD/qphysicaldevicecreatedchange.h \
+    $$PWD/qphysicaldevicecreatedchange_p.h
 
 
 SOURCES += \
@@ -64,7 +66,8 @@ SOURCES += \
     $$PWD/qabstractaggregateactioninput.cpp \
     $$PWD/qinputchord.cpp \
     $$PWD/qinputsequence.cpp \
-    $$PWD/qinputsettings.cpp
+    $$PWD/qinputsettings.cpp \
+    $$PWD/qphysicaldevicecreatedchange.cpp
 
 qtHaveModule(gamepad) {
     QT += gamepad

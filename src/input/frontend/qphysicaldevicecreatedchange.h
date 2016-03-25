@@ -34,44 +34,61 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODECREATEDCHANGE_P_H
-#define QT3DCORE_QNODECREATEDCHANGE_P_H
+#ifndef QT3DINPUT_QPHYSICALDEVICECREATIONCHANGEBASE_H
+#define QT3DINPUT_QPHYSICALDEVICECREATIONCHANGEBASE_H
 
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <private/qscenechange_p.h>
-#include <Qt3DCore/qnodeid.h>
-
-struct QMetaObject;
+#include <Qt3DInput/qt3dinput_global.h>
+#include <Qt3DCore/qnodecreatedchange.h>
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DInput {
 
-class QNode;
+class QAbstractPhysicalDevice;
+class QPhysicalDeviceCreatedChangeBasePrivate;
 
-class QT3DCORE_PRIVATE_EXPORT QNodeCreatedChangeBasePrivate : public QSceneChangePrivate
+class QT3DINPUTSHARED_EXPORT QPhysicalDeviceCreatedChangeBase : public Qt3DCore::QNodeCreatedChangeBase
 {
 public:
-    QNodeCreatedChangeBasePrivate(const QNode *node);
+    explicit QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device, Priority priority = QSceneChange::Standard);
 
-    QNodeId m_parentId;
-    const QMetaObject *m_metaObject;
-    bool m_nodeEnabled;
+    Qt3DCore::QNodeIdVector axisSettingIds() const;
+
+private:
+    Q_DECLARE_PRIVATE(QPhysicalDeviceCreatedChangeBase)
 };
 
-} // namespace Qt3DCore
+typedef QSharedPointer<QPhysicalDeviceCreatedChangeBase> QPhysicalDeviceCreatedChangeBasePtr;
+
+template<typename T>
+class QPhysicalDeviceCreatedChange : public QPhysicalDeviceCreatedChangeBase
+{
+public:
+    explicit QPhysicalDeviceCreatedChange(const QAbstractPhysicalDevice *_device, Priority _priority = QSceneChange::Standard)
+        : QPhysicalDeviceCreatedChangeBase(_device, _priority)
+        , data()
+    {
+    }
+
+    T data;
+};
+
+#if defined(Q_COMPILER_TEMPLATE_ALIAS)
+template<typename T>
+using QPhysicalDeviceCreatedChangePtr = QSharedPointer<QPhysicalDeviceCreatedChange<T>>;
+#else
+template <typename T>
+struct QPhysicalDeviceCreatedChangePtr
+{
+    static QSharedPointer<QPhysicalDeviceCreatedChange<T> > create(const QAbstractPhysicalDevice *device)
+    {
+        return QSharedPointer<QPhysicalDeviceCreatedChange<T> >::create(device);
+    }
+};
+#endif
+
+} // namespace Qt3DInput
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODECREATEDCHANGE_P_H
+#endif // QT3DINPUT_QPHYSICALDEVICECREATIONCHANGEBASE_H

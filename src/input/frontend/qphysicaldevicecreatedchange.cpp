@@ -34,44 +34,34 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DCORE_QNODECREATEDCHANGE_P_H
-#define QT3DCORE_QNODECREATEDCHANGE_P_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DCore/private/qt3dcore_global_p.h>
-#include <private/qscenechange_p.h>
+#include "qphysicaldevicecreatedchange.h"
+#include "qphysicaldevicecreatedchange_p.h"
+#include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/qaxissetting.h>
 #include <Qt3DCore/qnodeid.h>
-
-struct QMetaObject;
 
 QT_BEGIN_NAMESPACE
 
-namespace Qt3DCore {
+namespace Qt3DInput {
 
-class QNode;
-
-class QT3DCORE_PRIVATE_EXPORT QNodeCreatedChangeBasePrivate : public QSceneChangePrivate
+QPhysicalDeviceCreatedChangeBasePrivate::QPhysicalDeviceCreatedChangeBasePrivate(const QAbstractPhysicalDevice *device)
+    : Qt3DCore::QNodeCreatedChangeBasePrivate(device)
+    , m_axisSettingIds(Qt3DCore::qIdsForNodes(device->axisSettings()))
 {
-public:
-    QNodeCreatedChangeBasePrivate(const QNode *node);
 
-    QNodeId m_parentId;
-    const QMetaObject *m_metaObject;
-    bool m_nodeEnabled;
-};
+}
 
-} // namespace Qt3DCore
+QPhysicalDeviceCreatedChangeBase::QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device, Priority priority)
+    : Qt3DCore::QNodeCreatedChangeBase(device, priority)
+{
+}
+
+Qt3DCore::QNodeIdVector QPhysicalDeviceCreatedChangeBase::axisSettingIds() const
+{
+    Q_D(const QPhysicalDeviceCreatedChangeBase);
+    return d->m_axisSettingIds;
+}
 
 QT_END_NAMESPACE
 
-#endif // QT3DCORE_QNODECREATEDCHANGE_P_H
+} // namespace Qt3DInput
