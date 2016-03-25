@@ -253,6 +253,7 @@ Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardHandler::createNodeCreationChange()
 
     Q_D(const QKeyboardHandler);
     data.keyboardDeviceId = qIdForNode(d->m_keyboardDevice);
+    data.focus = d->m_focus;
 
     return creationChange;
 }

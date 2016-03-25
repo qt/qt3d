@@ -75,6 +75,7 @@ public:
 struct QKeyboardHandlerData
 {
     Qt3DCore::QNodeId keyboardDeviceId;
+    bool focus;
 };
 
 } // namespace Qt3DInput
