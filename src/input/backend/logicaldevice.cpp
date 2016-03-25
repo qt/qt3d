@@ -41,8 +41,9 @@
 #include <Qt3DInput/qlogicaldevice.h>
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaction.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/private/inputmanagers_p.h>
+#include <Qt3DInput/private/qlogicaldevice_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -64,6 +65,15 @@ void LogicalDevice::updateFromPeer(Qt3DCore::QNode *peer)
         m_axes.push_back(axis->id());
     Q_FOREACH (QAction *action, device->actions())
         m_actions.push_back(action->id());
+}
+
+void LogicalDevice::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLogicalDeviceData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_actions = data.actionIds;
+    m_axes = data.axisIds;
 }
 
 void LogicalDevice::cleanup()
