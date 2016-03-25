@@ -40,6 +40,7 @@
 #include "action_p.h"
 #include <Qt3DInput/qaction.h>
 #include <Qt3DInput/qabstractactioninput.h>
+#include <Qt3DInput/private/qaction_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
@@ -62,6 +63,13 @@ void Action::updateFromPeer(Qt3DCore::QNode *peer)
     m_enabled = action->isEnabled();
     Q_FOREACH (QAbstractActionInput *input, action->inputs())
         m_inputs.push_back(input->id());
+}
+
+void Action::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QActionData>>(change);
+    const auto &data = typedChange->data;
+    m_inputs = data.inputIds;
 }
 
 void Action::cleanup()
