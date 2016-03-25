@@ -40,6 +40,7 @@
 #include "axis_p.h"
 #include <Qt3DInput/qaxis.h>
 #include <Qt3DInput/qaxisinput.h>
+#include <Qt3DInput/private/qaxis_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 
@@ -62,6 +63,14 @@ void Axis::updateFromPeer(Qt3DCore::QNode *peer)
     m_enabled = axis->isEnabled();
     Q_FOREACH (QAxisInput *input, axis->inputs())
         m_inputs.push_back(input->id());
+}
+
+void Axis::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_inputs = data.inputIds;
 }
 
 void Axis::cleanup()
