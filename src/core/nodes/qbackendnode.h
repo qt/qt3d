@@ -82,10 +82,6 @@ public:
     Mode mode() const Q_DECL_NOEXCEPT;
     virtual void updateFromPeer(QNode *peer) = 0;
 
-    // TODO: Make pure virtual
-    // TODO: Make protected/private
-    virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
-
 protected:
     void notifyObservers(const QSceneChangePtr &e);
     virtual void sceneChangeEvent(const QSceneChangePtr &e) = 0;
@@ -98,6 +94,9 @@ protected:
 private:
     Q_DISABLE_COPY(QBackendNode)
     void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
+    // TODO: Make pure virtual
+    virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
+
     friend class QBackendScenePropertyChange;
     friend class QAbstractAspectPrivate;
 };
