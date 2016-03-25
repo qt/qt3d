@@ -38,13 +38,14 @@
 ****************************************************************************/
 
 #include "keyboardhandler_p.h"
-#include "qkeyboardhandler.h"
+#include <Qt3DInput/qkeyboardhandler.h>
+#include <Qt3DInput/private/qkeyboardhandler_p.h>
 #include "qkeyboarddevice.h"
 #include "inputhandler_p.h"
 #include "inputmanagers_p.h"
-#include <QVariant>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
+#include <QVariant>
 
 QT_BEGIN_NAMESPACE
 
@@ -68,6 +69,16 @@ void KeyboardHandler::updateFromPeer(Qt3DCore::QNode *peer)
     m_focus = false;
     m_enabled = input->isEnabled();
     if (input->focus())
+        requestFocus();
+}
+
+void KeyboardHandler::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QKeyboardHandlerData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_focus = false;
+    if (data.focus)
         requestFocus();
 }
 
