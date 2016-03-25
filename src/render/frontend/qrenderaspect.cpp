@@ -181,45 +181,55 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     q->registerBackendType<Qt3DCore::QEntity>(QBackendNodeMapperPtr(new Render::RenderEntityFunctor(m_renderer, m_nodeManagers)));
     q->registerBackendType<Qt3DCore::QTransform>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Transform, Render::TransformManager>(m_renderer, m_nodeManagers->transformManager())));
-    q->registerBackendType<QMaterial>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(m_renderer, m_nodeManagers->materialManager())));
-    q->registerBackendType<QTechnique>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Technique, Render::TechniqueManager>(m_renderer, m_nodeManagers->techniqueManager())));
-    q->registerBackendType<QAbstractTextureProvider>(QBackendNodeMapperPtr(new Render::TextureFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
-    q->registerBackendType<QShaderProgram>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(m_renderer, m_nodeManagers->shaderManager())));
-    q->registerBackendType<QEffect>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(m_renderer, m_nodeManagers->effectManager())));
-    q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(m_renderer, m_nodeManagers->criterionManager())));
     q->registerBackendType<Qt3DRender::QCameraLens>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::CameraLens, Render::CameraManager>(m_renderer, m_nodeManagers->cameraManager())));
     q->registerBackendType<QLayer>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Layer, Render::LayerManager>(m_renderer, m_nodeManagers->layerManager())));
-    q->registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(m_renderer, m_nodeManagers->renderPassManager())));
     q->registerBackendType<QSceneLoader>(QBackendNodeMapperPtr(new Render::RenderSceneFunctor(m_renderer, m_nodeManagers->sceneManager())));
     q->registerBackendType<QRenderTarget>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTarget, Render::RenderTargetManager>(m_renderer, m_nodeManagers->renderTargetManager())));
     q->registerBackendType<QRenderTargetOutput>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderTargetOutput, Render::AttachmentManager>(m_renderer, m_nodeManagers->attachmentManager())));
     q->registerBackendType<QSortCriterion>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::SortCriterion, Render::SortCriterionManager>(m_renderer, m_nodeManagers->sortCriterionManager())));
-    q->registerBackendType<QClearBuffers>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QTechniqueFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QViewport>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QRenderPassFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QCameraSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QRenderTargetSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QRenderSurfaceSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QLayerFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QSortPolicy>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(m_renderer, m_nodeManagers->parameterManager())));
-    q->registerBackendType<QShaderData>(QBackendNodeMapperPtr(new Render::RenderShaderDataFunctor(m_renderer, m_nodeManagers)));
-    q->registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
-    q->registerBackendType<QRenderStateSet>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QRenderStateSet>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QNoDraw>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QBuffer>(QBackendNodeMapperPtr(new Render::BufferFunctor(m_renderer, m_nodeManagers->bufferManager())));
-    q->registerBackendType<QAttribute>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Attribute, Render::AttributeManager>(m_renderer, m_nodeManagers->attributeManager())));
-    q->registerBackendType<QGeometry>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Geometry, Render::GeometryManager>(m_renderer, m_nodeManagers->geometryManager())));
-    q->registerBackendType<QGeometryRenderer>(QBackendNodeMapperPtr(new Render::GeometryRendererFunctor(m_renderer, m_nodeManagers->geometryRendererManager())));
-    q->registerBackendType<QObjectPicker>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(m_renderer, m_nodeManagers->objectPickerManager())));
-    q->registerBackendType<QBoundingVolumeDebug>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(m_renderer, m_nodeManagers->boundingVolumeDebugManager())));
-    q->registerBackendType<QFrustumCulling>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
-    q->registerBackendType<QDispatchCompute>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(m_renderer, m_nodeManagers->frameGraphManager())));
-    q->registerBackendType<QComputeCommand>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager>(m_renderer, m_nodeManagers->computeJobManager())));
     q->registerBackendType<QRenderSettings>(QBackendNodeMapperPtr(new Render::RenderSettingsFunctor(m_renderer)));
     q->registerBackendType<QRenderState>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderStateNode, Render::RenderStateManager>(m_renderer, m_nodeManagers->renderStateManager())));
+
+    // Geometry + Compute
+    q->registerBackendType<QAttribute>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Attribute, Render::AttributeManager>(m_renderer, m_nodeManagers->attributeManager())));
+    q->registerBackendType<QBuffer>(QBackendNodeMapperPtr(new Render::BufferFunctor(m_renderer, m_nodeManagers->bufferManager())));
+    q->registerBackendType<QComputeCommand>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ComputeCommand, Render::ComputeCommandManager>(m_renderer, m_nodeManagers->computeJobManager())));
+    q->registerBackendType<QGeometry>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Geometry, Render::GeometryManager>(m_renderer, m_nodeManagers->geometryManager())));
+    q->registerBackendType<QGeometryRenderer>(QBackendNodeMapperPtr(new Render::GeometryRendererFunctor(m_renderer, m_nodeManagers->geometryRendererManager())));
+
+    // Textures
+    q->registerBackendType<QAbstractTextureProvider>(QBackendNodeMapperPtr(new Render::TextureFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
+    q->registerBackendType<QAbstractTextureImage>(QBackendNodeMapperPtr(new Render::TextureImageFunctor(m_renderer, m_nodeManagers->textureManager(), m_nodeManagers->textureImageManager(), m_nodeManagers->textureDataManager())));
+
+    // Material system
+    q->registerBackendType<QEffect>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(m_renderer, m_nodeManagers->effectManager())));
+    q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(m_renderer, m_nodeManagers->criterionManager())));
+    q->registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
+    q->registerBackendType<QMaterial>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(m_renderer, m_nodeManagers->materialManager())));
+    q->registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(m_renderer, m_nodeManagers->parameterManager())));
+    q->registerBackendType<QRenderPass>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::RenderPass, Render::RenderPassManager>(m_renderer, m_nodeManagers->renderPassManager())));
+    q->registerBackendType<QShaderData>(QBackendNodeMapperPtr(new Render::RenderShaderDataFunctor(m_renderer, m_nodeManagers)));
+    q->registerBackendType<QShaderProgram>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Shader, Render::ShaderManager>(m_renderer, m_nodeManagers->shaderManager())));
+    q->registerBackendType<QTechnique>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Technique, Render::TechniqueManager>(m_renderer, m_nodeManagers->techniqueManager())));
+
+    // Framegraph
+    q->registerBackendType<QCameraSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::CameraSelector, QCameraSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QClearBuffers>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ClearBuffers, QClearBuffers>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QDispatchCompute>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::DispatchCompute, QDispatchCompute>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QFrustumCulling>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::FrustumCulling, QFrustumCulling>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QLayerFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::LayerFilterNode, QLayerFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QNoDraw>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::NoDraw, QNoDraw>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QRenderPassFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderPassFilter, QRenderPassFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QRenderStateSet>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::StateSetNode, QRenderStateSet>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QRenderSurfaceSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderSurfaceSelector, QRenderSurfaceSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QRenderTargetSelector>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::RenderTargetSelector, QRenderTargetSelector>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QSortPolicy>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::SortPolicy, QSortPolicy>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QTechniqueFilter>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::TechniqueFilter, QTechniqueFilter>(m_renderer, m_nodeManagers->frameGraphManager())));
+    q->registerBackendType<QViewport>(QBackendNodeMapperPtr(new Render::FrameGraphNodeFunctor<Render::ViewportNode, QViewport>(m_renderer, m_nodeManagers->frameGraphManager())));
+
+    // Picking
+    q->registerBackendType<QBoundingVolumeDebug>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::BoundingVolumeDebug, Render::BoundingVolumeDebugManager>(m_renderer, m_nodeManagers->boundingVolumeDebugManager())));
+    q->registerBackendType<QObjectPicker>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::ObjectPicker, Render::ObjectPickerManager>(m_renderer, m_nodeManagers->objectPickerManager())));
 }
 
 QRenderAspect::QRenderAspect(QObject *parent)
