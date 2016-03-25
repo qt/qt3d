@@ -40,6 +40,7 @@
 #include "inputsequence_p.h"
 #include <Qt3DInput/qinputsequence.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qinputsequence_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <QDateTime>
 
@@ -69,6 +70,16 @@ void InputSequence::updateFromPeer(Qt3DCore::QNode *peer)
     m_buttonInterval = input->buttonInterval();
     Q_FOREACH (QAbstractActionInput *i, input->inputs())
         m_inputs.push_back(i->id());
+}
+
+void InputSequence::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSequenceData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_inputs = data.inputIds;
+    m_timeout = data.timeout;
+    m_buttonInterval = data.buttonInterval;
 }
 
 void InputSequence::cleanup()
