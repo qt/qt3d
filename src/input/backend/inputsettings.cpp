@@ -39,8 +39,9 @@
 
 #include "inputsettings_p.h"
 #include <Qt3DInput/qinputsettings.h>
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DInput/private/inputhandler_p.h>
+#include <Qt3DInput/private/qinputsettings_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -59,6 +60,13 @@ void InputSettings::updateFromPeer(Qt3DCore::QNode *peer)
     QInputSettings *settings = static_cast<QInputSettings *>(peer);
     m_eventSource = settings->eventSource();
     // Does it make sense to check for the enabled property for such a node ?
+}
+
+void InputSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputSettingsData>>(change);
+    const auto &data = typedChange->data;
+    m_eventSource = data.eventSource;
 }
 
 void InputSettings::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
