@@ -39,6 +39,7 @@
 
 #include "inputchord_p.h"
 #include <Qt3DInput/qinputchord.h>
+#include <Qt3DInput/private/qinputchord_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,6 +65,15 @@ void InputChord::updateFromPeer(Qt3DCore::QNode *peer)
     m_timeout = input->timeout();
     Q_FOREACH (QAbstractActionInput *i, input->inputs())
         m_inputs.push_back(i->id());
+}
+
+void InputChord::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QInputChordData>>(change);
+    const auto &data = typedChange->data;
+    m_enabled = change->isNodeEnabled();
+    m_inputs = data.inputIds;
+    m_timeout = data.timeout;
 }
 
 void InputChord::cleanup()

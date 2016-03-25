@@ -75,7 +75,10 @@ public:
     void reset();
     bool actionTriggered(Qt3DCore::QNodeId input);
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DCore::QNodeId> m_inputs;
     QVector<Qt3DCore::QNodeId> m_inputsToTrigger;
     int m_timeout;
