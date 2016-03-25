@@ -55,6 +55,8 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
+#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DCore/private/qentity_p.h>
 #include <Qt3DCore/private/qhandle_p.h>
 #include <QVector>
 
@@ -110,6 +112,7 @@ public:
     Sphere *worldBoundingVolumeWithChildren() const { return m_worldBoundingVolumeWithChildren.data(); }
 
     void addComponent(Qt3DCore::QComponent *component);
+    void addComponent(Qt3DCore::QNodeIdTypePair idAndType);
     void removeComponent(Qt3DCore::QNodeId nodeId);
 
     bool isEnabled() const;
@@ -155,6 +158,8 @@ public:
     }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     NodeManagers *m_nodeManagers;
     HEntity m_handle;
     HEntity m_parentHandle;

@@ -176,6 +176,45 @@ void Entity::updateFromPeer(Qt3DCore::QNode *peer)
     m_enabled = entity->isEnabled();
 }
 
+void Entity::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<QNodeCreatedChange<Qt3DCore::QEntityData>>(change);
+    const auto &data = typedChange->data;
+
+    // Note this is *not* the parentId as that is the ID of the parent QNode, which is not
+    // necessarily the same as the parent QEntity (which may be further up the tree).
+    const QNodeId parentEntityId = data.parentEntityId;
+    qCDebug(Render::RenderNodes) << "Creating Entity id =" << peerId() << "parentId =" << parentEntityId;
+
+    // TODO: Store string id instead and only in debug mode
+    //m_objectName = peer->objectName();
+    m_worldTransform = m_nodeManagers->worldMatrixManager()->getOrAcquireHandle(peerId());
+
+    // TODO: Suboptimal -> Maybe have a Hash<QComponent, QEntityList> instead
+    m_transformComponent = QNodeId();
+    m_materialComponent = QNodeId();
+    m_cameraComponent = QNodeId();
+    m_geometryRendererComponent = QNodeId();
+    m_objectPickerComponent = QNodeId();
+    m_boundingVolumeDebugComponent = QNodeId();
+    m_layerComponents.clear();
+    m_shaderDataComponents.clear();
+    m_lightComponents.clear();
+    m_localBoundingVolume.reset(new Sphere(peerId()));
+    m_worldBoundingVolume.reset(new Sphere(peerId()));
+    m_worldBoundingVolumeWithChildren.reset(new Sphere(peerId()));
+
+    for (const auto &idAndType : qAsConst(data.componentIdsAndTypes))
+        addComponent(idAndType);
+
+    if (!parentEntityId.isNull())
+        setParentHandle(m_nodeManagers->renderNodesManager()->lookupHandle(parentEntityId));
+    else
+        qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "No parent entity found for Entity" << peerId();
+
+    m_enabled = change->isNodeEnabled();
+}
+
 void Entity::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
@@ -289,6 +328,37 @@ void Entity::addComponent(Qt3DCore::QComponent *component)
         m_boundingVolumeDebugComponent = component->id();
     } else if (qobject_cast<QComputeCommand *>(component) != Q_NULLPTR) {
         m_computeComponent = component->id();
+    }
+}
+
+void Entity::addComponent(Qt3DCore::QNodeIdTypePair idAndType)
+{
+    // The backend element is always created when this method is called
+    // If that's not the case something has gone wrong
+    const auto type = idAndType.type;
+    const auto id = idAndType.id;
+    qCDebug(Render::RenderNodes) << Q_FUNC_INFO << "id =" << id << type->className();
+    if (type->inherits(&Qt3DCore::QTransform::staticMetaObject)) {
+        m_transformComponent = id;
+    } else if (type->inherits(&QCameraLens::staticMetaObject)) {
+        m_cameraComponent = id;
+    } else if (type->inherits(&QLayer::staticMetaObject)) {
+        m_layerComponents.append(id);
+    } else if (type->inherits(&QMaterial::staticMetaObject)) {
+        m_materialComponent = id;
+    } else if (type->inherits(&QLight::staticMetaObject)) { // QLight subclasses QShaderData
+        m_lightComponents.append(id);
+    } else if (type->inherits(&QShaderData::staticMetaObject)) {
+        m_shaderDataComponents.append(id);
+    } else if (type->inherits(&QGeometryRenderer::staticMetaObject)) {
+        m_geometryRendererComponent = id;
+        m_boundingDirty = true;
+    } else if (type->inherits(&QObjectPicker::staticMetaObject)) {
+        m_objectPickerComponent = id;
+    } else if (type->inherits(&QBoundingVolumeDebug::staticMetaObject)) {
+        m_boundingVolumeDebugComponent = id;
+    } else if (type->inherits(&QComputeCommand::staticMetaObject)) {
+        m_computeComponent = id;
     }
 }
 
