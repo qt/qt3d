@@ -40,6 +40,7 @@
 #include "axisinput_p.h"
 #include <Qt3DInput/qaxisinput.h>
 #include <Qt3DInput/qabstractphysicaldevice.h>
+#include <Qt3DInput/private/qaxisinput_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -81,6 +82,17 @@ void AxisInput::updateFromPeer(Qt3DCore::QNode *peer)
     m_buttons = listToIntArray(input->buttons());
     if (input->sourceDevice())
         m_sourceDevice = input->sourceDevice()->id();
+}
+
+void AxisInput::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAxisInputData>>(change);
+    const auto &data = typedChange->data;
+    m_sourceDevice = data.sourceDeviceId;
+    m_buttons = listToIntArray(data.buttons);
+    m_axis = data.axis;
+    m_scale = data.scale;
+    m_enabled = change->isNodeEnabled();
 }
 
 void AxisInput::cleanup()

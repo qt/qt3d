@@ -75,6 +75,8 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     int m_axis;
     QVector<int> m_buttons;
     Qt3DCore::QNodeId m_sourceDevice;
