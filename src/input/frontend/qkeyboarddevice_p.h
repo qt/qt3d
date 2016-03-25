@@ -74,11 +74,6 @@ public:
     QStringList m_keyNames;
 };
 
-struct QKeyboardDeviceData
-{
-    Qt3DCore::QNodeId activeInputId;
-};
-
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE

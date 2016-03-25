@@ -294,17 +294,6 @@ void QKeyboardDevice::setActiveInput(QKeyboardHandler *activeInput)
     }
 }
 
-Qt3DCore::QNodeCreatedChangeBasePtr QKeyboardDevice::createNodeCreationChange() const
-{
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QKeyboardDeviceData>::create(this);
-    auto &data = creationChange->data;
-
-    Q_D(const QKeyboardDevice);
-    data.activeInputId = qIdForNode(d->m_activeInput);
-
-    return creationChange;
-}
-
 } // namespace Qt3DInput
 
 QT_END_NAMESPACE
