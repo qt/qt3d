@@ -66,7 +66,7 @@ namespace Quick {
 class QT3DQUICKRENDERSHARED_PRIVATE_EXPORT Quick3DRenderPassFilter : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> includes READ includeList)
+    Q_PROPERTY(QQmlListProperty<Qt3DRender::QFilterKey> matchAny READ includeList)
     Q_PROPERTY(QQmlListProperty<Qt3DRender::QParameter> parameters READ parameterList)
 
 public:
