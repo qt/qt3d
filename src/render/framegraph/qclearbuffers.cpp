@@ -148,6 +148,9 @@ Qt3DCore::QNodeCreatedChangeBasePtr QClearBuffers::createNodeCreationChange() co
     auto &data = creationChange->data;
     Q_D(const QClearBuffers);
     data.buffersType = d->m_buffersType;
+    data.clearColor = d->m_clearColor;
+    data.clearDepthValue = d->m_clearDepthValue;
+    data.clearStencilValue = d->m_clearStencilValue;
     return creationChange;
 }
 

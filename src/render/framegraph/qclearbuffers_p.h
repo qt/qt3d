@@ -73,6 +73,9 @@ public:
 struct QClearBuffersData
 {
     QClearBuffers::BufferType buffersType;
+    QColor clearColor;
+    float clearDepthValue;
+    int clearStencilValue;
 };
 
 } // namespace Qt3DRender

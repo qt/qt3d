@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "clearbuffers_p.h"
+#include <Qt3DRender/private/qclearbuffers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -63,6 +64,17 @@ void ClearBuffers::updateFromPeer(Qt3DCore::QNode *peer)
     m_clearDepthValue = clearBuffers->clearDepthValue();
     m_clearStencilValue = clearBuffers->clearStencilValue();
     setEnabled(clearBuffers->isEnabled());
+}
+
+void ClearBuffers::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QClearBuffersData>>(change);
+    const auto &data = typedChange->data;
+    m_type = data.buffersType;
+    m_clearColor = data.clearColor;
+    m_clearDepthValue = data.clearDepthValue;
+    m_clearStencilValue = data.clearStencilValue;
+    setEnabled(change->isNodeEnabled());
 }
 
 void ClearBuffers::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

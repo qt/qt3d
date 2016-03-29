@@ -75,6 +75,8 @@ public:
     int clearStencilValue() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QClearBuffers::BufferType m_type;
     QColor m_clearColor;
     float m_clearDepthValue;
