@@ -66,6 +66,14 @@ void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
     setEnabled(selector->isEnabled());
 }
 
+void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraSelectorData>>(change);
+    const auto &data = typedChange->data;
+    m_cameraUuid = data.cameraId;
+    setEnabled(change->isNodeEnabled());
+}
+
 void CameraSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     qCDebug(Render::Framegraph) << Q_FUNC_INFO;

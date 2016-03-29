@@ -75,6 +75,8 @@ public:
     Qt3DCore::QNodeId cameraUuid() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_cameraUuid;
 };
 
