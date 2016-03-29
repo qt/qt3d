@@ -85,7 +85,7 @@ Entity {
         return u.x + u.y + u.z;
     }
 
-    KeyboardController {
+    KeyboardDevice {
         id: keyboardSourceDevice
     }
 
