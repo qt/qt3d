@@ -53,7 +53,7 @@ import Qt3D.Render 2.0
 
 Viewport {
     property alias camera: cameraSelector.camera
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
 
     RenderSurfaceSelector {
         id: surfaceSelector

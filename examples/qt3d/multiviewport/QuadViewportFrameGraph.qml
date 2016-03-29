@@ -58,7 +58,7 @@ RenderSettings {
     property alias topRightCamera: cameraSelectorTopRightViewport.camera;
     property alias bottomLeftCamera: cameraSelectorBottomLeftViewport.camera;
     property alias bottomRightCamera: cameraSelectorBottomRightViewport.camera;
-    property alias window: surfaceSelector.window
+    property alias window: surfaceSelector.surface
 
     activeFrameGraph: RenderSurfaceSelector {
         id: surfaceSelector
