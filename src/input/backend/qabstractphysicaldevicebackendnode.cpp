@@ -45,6 +45,7 @@
 #include "inputmanagers_p.h"
 
 #include <Qt3DInput/qinputaspect.h>
+#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DInput/private/qinputaspect_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
@@ -159,6 +160,17 @@ void QAbstractPhysicalDeviceBackendNode::updateFromPeer(Qt3DCore::QNode *peer)
         Q_FOREACH (int axisId, variantListToVector(axisSetting->axes()))
             d->addAxisSetting(axisId, axisSetting->id());
     }
+}
+
+void QAbstractPhysicalDeviceBackendNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto deviceChange = qSharedPointerCast<QPhysicalDeviceCreatedChangeBase>(change);
+    Q_D(QAbstractPhysicalDeviceBackendNode);
+    d->m_enabled = change->isNodeEnabled();
+    // Store the axis setting Ids. We will update the settings themselves from
+    // a job scheduled on the next frame.
+    // TODO: Create such a job once all types can be created this way.
+    d->m_pendingAxisSettingIds = deviceChange->axisSettingIds();
 }
 
 void QAbstractPhysicalDeviceBackendNode::cleanup()

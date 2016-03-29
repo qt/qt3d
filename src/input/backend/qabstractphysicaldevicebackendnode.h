@@ -71,6 +71,9 @@ public:
 
 protected:
     QAbstractPhysicalDeviceBackendNode(QAbstractPhysicalDeviceBackendNodePrivate &dd);
+
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
+
     Q_DECLARE_PRIVATE(QAbstractPhysicalDeviceBackendNode)
 };
 
