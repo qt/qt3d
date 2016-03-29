@@ -135,8 +135,8 @@ Entity
                 translation: Qt.vector3d(-5.0, 40.0, -5.0)
             },
             SpotLight {
-                direction: Qt.vector3d(1.0, -4.0, 0.0)
-                Quick.SequentialAnimation on direction.x {
+                localDirection: Qt.vector3d(1.0, -4.0, 0.0)
+                Quick.SequentialAnimation on localDirection.x {
                     Quick.NumberAnimation { from: -4.0; to: 4.0; duration: 5000 }
                     Quick.NumberAnimation { from: 4.0; to: -4.0; duration: 5000 }
                     loops: Quick.Animation.Infinite
