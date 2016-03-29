@@ -39,7 +39,7 @@
 
 #include "qmousedevice.h"
 #include "qmousedevice_p.h"
-#include <Qt3DCore/qnodecreatedchange.h>
+#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DCore/qentity.h>
 
 QT_BEGIN_NAMESPACE
@@ -150,7 +150,7 @@ void QMouseDevice::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 
 Qt3DCore::QNodeCreatedChangeBasePtr QMouseDevice::createNodeCreationChange() const
 {
-    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QMouseDeviceData>::create(this);
+    auto creationChange = QPhysicalDeviceCreatedChangePtr<QMouseDeviceData>::create(this);
     auto &data = creationChange->data;
 
     Q_D(const QMouseDevice);
