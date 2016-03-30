@@ -40,6 +40,7 @@
 #include "techniquefilternode_p.h"
 #include "qfilterkey.h"
 #include "qtechniquefilter.h"
+#include <Qt3DRender/private/qtechniquefilter_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qparameter.h>
@@ -68,6 +69,15 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
     for (QParameter *p : parameters)
         m_parameterPack.appendParameter(p->id());
     setEnabled(filter->isEnabled());
+}
+
+void TechniqueFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueFilterData>>(change);
+    const auto &data = typedChange->data;
+    m_filters = data.matchIds;
+    m_parameterPack.setParameters(data.parameterIds);
+    setEnabled(change->isNodeEnabled());
 }
 
 QVector<Qt3DCore::QNodeId> TechniqueFilter::parameters() const
