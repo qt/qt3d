@@ -39,6 +39,7 @@
 
 #include "viewportnode_p.h"
 #include <Qt3DRender/qviewport.h>
+#include <Qt3DRender/private/qviewport_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -65,6 +66,17 @@ void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
     setYMin(viewport->normalizedRect().y());
     setYMax(viewport->normalizedRect().height());
     setEnabled(viewport->isEnabled());
+}
+
+void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QViewportData>>(change);
+    const auto &data = typedChange->data;
+    m_xMin = data.normalizedRect.x();
+    m_xMin = data.normalizedRect.width();
+    m_yMin = data.normalizedRect.y();
+    m_yMax = data.normalizedRect.height();
+    setEnabled(change->isNodeEnabled());
 }
 
 float ViewportNode::xMin() const
