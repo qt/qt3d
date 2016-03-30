@@ -498,7 +498,7 @@ void GraphicsContext::activateDrawBuffers(const AttachmentPack &attachments)
     int activeDrawBuffers[QRenderTargetOutput::Color15 + 1];
     int i = 0;
 
-    const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers = attachments.drawBuffers();
+    const auto &drawBuffers = attachments.drawBuffers();
 
     // If drawBuffers is empty, use all the attachments as draw buffers
     if (drawBuffers.isEmpty()) {

@@ -236,7 +236,7 @@ public:
     void gatherLights(Entity *preprocessedTreeRoot);
 
     void addRenderAttachment(Attachment attachment) { m_attachmentPack.addAttachment(attachment); }
-    void setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
+    void setDrawBuffers(const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers) { m_attachmentPack.setDrawBuffers(drawBuffers); }
     const AttachmentPack &attachmentPack() const;
 
     void setRenderTargetHandle(HTarget renderTargetHandle) Q_DECL_NOEXCEPT { m_renderTarget = renderTargetHandle; }

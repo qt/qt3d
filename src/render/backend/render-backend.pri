@@ -46,7 +46,6 @@ SOURCES += \
     $$PWD/renderqueue.cpp \
     $$PWD/parameterpack.cpp \
     $$PWD/rendertarget.cpp \
-    $$PWD/attachmentpack.cpp \
     $$PWD/managers.cpp \
     $$PWD/platformsurfacefilter.cpp \
     $$PWD/cameralens.cpp \

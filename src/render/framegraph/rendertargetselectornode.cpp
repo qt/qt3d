@@ -66,7 +66,7 @@ void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
     if (selector->target() != Q_NULLPTR)
         m_renderTargetUuid = selector->target()->id();
     setEnabled(selector->isEnabled());
-    m_outputs = selector->outputs();
+    m_outputs = selector->outputs().toVector();
 }
 
 void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
@@ -75,7 +75,7 @@ void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChange
     const auto &data = typedChange->data;
     setEnabled(change->isNodeEnabled());
     m_renderTargetUuid = data.targetId;
-    m_outputs = data.outputs.toList();
+    m_outputs = data.outputs;
 }
 
 void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
@@ -88,19 +88,9 @@ void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
         else if (propertyChange->propertyName() == QByteArrayLiteral("enabled"))
             setEnabled(propertyChange->value().toBool());
         else if (propertyChange->propertyName() == QByteArrayLiteral("outputs"))
-            m_outputs = propertyChange->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >();
+            m_outputs = propertyChange->value().value<QList<Qt3DRender::QRenderTargetOutput::AttachmentPoint> >().toVector();
         markDirty(AbstractRenderer::AllDirty);
     }
-}
-
-Qt3DCore::QNodeId RenderTargetSelector::renderTargetUuid() const
-{
-    return m_renderTargetUuid;
-}
-
-QList<QRenderTargetOutput::AttachmentPoint> RenderTargetSelector::outputs() const
-{
-    return m_outputs;
 }
 
 } // namespace Render

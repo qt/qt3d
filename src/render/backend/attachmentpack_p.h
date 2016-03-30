@@ -61,7 +61,13 @@ namespace Render {
 
 struct Attachment
 {
-    Attachment();
+    Attachment()
+        : m_mipLevel(0)
+        , m_layer(0)
+        , m_point(QRenderTargetOutput::Color0)
+        , m_face(QRenderTargetOutput::CubeMapNegativeX)
+    {}
+
     QString m_name;
     int m_mipLevel;
     int m_layer;
@@ -73,17 +79,29 @@ struct Attachment
 class AttachmentPack
 {
 public:
-    AttachmentPack();
+    void addAttachment(const Attachment &attachment)
+    {
+        m_attachments.append(attachment);
+    }
 
-    void addAttachment(const Attachment &attachment);
-    QVector<Attachment> attachments() const;
-    QList<QRenderTargetOutput::AttachmentPoint> drawBuffers() const;
+    QVector<Attachment> attachments() const
+    {
+        return m_attachments;
+    }
 
-    void setDrawBuffers(const QList<QRenderTargetOutput::AttachmentPoint> &drawBuffers);
+    QVector<QRenderTargetOutput::AttachmentPoint> drawBuffers() const
+    {
+        return m_drawBuffers;
+    }
+
+    void setDrawBuffers(const QVector<QRenderTargetOutput::AttachmentPoint> &drawBuffers)
+    {
+        m_drawBuffers = drawBuffers;
+    }
 
 private:
     QVector<Attachment> m_attachments;
-    QList<QRenderTargetOutput::AttachmentPoint> m_drawBuffers;
+    QVector<QRenderTargetOutput::AttachmentPoint> m_drawBuffers;
 };
 
 } // namespace Render

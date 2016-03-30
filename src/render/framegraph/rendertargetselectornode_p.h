@@ -68,14 +68,15 @@ public:
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    Qt3DCore::QNodeId renderTargetUuid() const;
-    QList<QRenderTargetOutput::AttachmentPoint> outputs() const;
+
+    Qt3DCore::QNodeId renderTargetUuid() const { return m_renderTargetUuid; }
+    QVector<QRenderTargetOutput::AttachmentPoint> outputs() const { return m_outputs; }
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
     Qt3DCore::QNodeId m_renderTargetUuid;
-    QList<QRenderTargetOutput::AttachmentPoint> m_outputs;
+    QVector<QRenderTargetOutput::AttachmentPoint> m_outputs;
 };
 
 } // namespace Render
