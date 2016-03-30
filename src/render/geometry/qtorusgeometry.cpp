@@ -355,7 +355,7 @@ QTorusGeometry::~QTorusGeometry()
 void QTorusGeometry::updateVertices()
 {
     Q_D(QTorusGeometry);
-    const int nVerts = (d->m_slices + 1) * (d->m_rings + 1);
+    const int nVerts = d->m_slices * (d->m_rings + 1);
     d->m_positionAttribute->setCount(nVerts);
     d->m_texCoordAttribute->setCount(nVerts);
     d->m_normalAttribute->setCount(nVerts);
