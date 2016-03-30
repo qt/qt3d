@@ -41,6 +41,7 @@
 #include "qbackendnode_p.h"
 #include "qaspectengine.h"
 #include "qnode.h"
+#include <Qt3DCore/private/corelogging_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -133,9 +134,8 @@ void QBackendNode::notifyObservers(const QSceneChangePtr &e)
 
 void QBackendNode::initializeFromPeer(const QNodeCreatedChangeBasePtr &change)
 {
-    // TODO: Put a warning/assert in here?
-    // Uncomment to see any backend nodes that do not implement this function yet
-    //qDebug() << Q_FUNC_INFO << change->metaObject()->className();
+    Q_UNUSED(change);
+    qCDebug(Nodes) << Q_FUNC_INFO << change->metaObject()->className() << "does not override";
 }
 
 } // Qt3D

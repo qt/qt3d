@@ -94,7 +94,6 @@ protected:
 private:
     Q_DISABLE_COPY(QBackendNode)
     void setPeerId(QNodeId id) Q_DECL_NOEXCEPT;
-    // TODO: Make pure virtual
     virtual void initializeFromPeer(const QNodeCreatedChangeBasePtr &change);
 
     friend class QBackendScenePropertyChange;
