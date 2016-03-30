@@ -39,6 +39,7 @@
 
 #include "layerfilternode_p.h"
 #include "qlayerfilter.h"
+#include <Qt3DRender/private/qlayerfilter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 
@@ -59,6 +60,14 @@ void LayerFilterNode::updateFromPeer(Qt3DCore::QNode *peer)
     QLayerFilter *layerFilter = static_cast<QLayerFilter *>(peer);
     setLayers(layerFilter->layers());
     setEnabled(layerFilter->isEnabled());
+}
+
+void LayerFilterNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QLayerFilterData>>(change);
+    const auto &data = typedChange->data;
+    setLayers(data.layers);
+    setEnabled(change->isNodeEnabled());
 }
 
 void LayerFilterNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

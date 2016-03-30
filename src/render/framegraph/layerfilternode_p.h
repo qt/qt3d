@@ -76,6 +76,8 @@ public:
     void setLayers(const QStringList &list);
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QStringList m_layers;
     QVector<int> m_layerIds;
 };
