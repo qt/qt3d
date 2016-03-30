@@ -77,6 +77,8 @@ public:
     inline float devicePixelRatio() const Q_DECL_NOEXCEPT { return m_devicePixelRatio; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QSurface *m_surface;
     QSize m_renderTargetSize;
     int m_width;

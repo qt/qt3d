@@ -39,7 +39,7 @@
 
 #include "rendersurfaceselector_p.h"
 #include <Qt3DRender/qrendersurfaceselector.h>
-
+#include <Qt3DRender/private/qrendersurfaceselector_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 #include <QtGui/qwindow.h>
@@ -94,6 +94,22 @@ void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
             if (window->screen())
                 m_devicePixelRatio = window->screen()->devicePixelRatio();
         }
+    }
+}
+
+void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSurfaceSelectorData>>(change);
+    const auto &data = typedChange->data;
+    setEnabled(change->isNodeEnabled());
+    m_surface = surfaceFromQObject(data.surface);
+    m_renderTargetSize = data.externalRenderTargetSize;
+    if (m_surface && m_surface->surfaceClass() == QSurface::Window) {
+        QWindow *window = static_cast<QWindow *>(m_surface);
+        m_width = window->width();
+        m_height = window->height();
+        if (window->screen())
+            m_devicePixelRatio = window->screen()->devicePixelRatio();
     }
 }
 
