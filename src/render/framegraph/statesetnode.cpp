@@ -41,6 +41,7 @@
 
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qrenderstateset.h>
+#include <Qt3DRender/private/qrenderstateset_p.h>
 #include <Qt3DRender/private/genericstate_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 
@@ -68,6 +69,15 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
     const auto renderStates = stateSet->renderStates();
     for (QRenderState *renderState : renderStates)
         appendRenderState(renderState->id());
+}
+
+void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
+    const auto &data = typedChange->data;
+    setEnabled(change->isNodeEnabled());
+    for (const auto &stateId : qAsConst(data.renderStateIds))
+        appendRenderState(stateId);
 }
 
 void StateSetNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
