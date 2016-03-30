@@ -40,6 +40,7 @@
 #include "renderpassfilternode_p.h"
 #include "qfilterkey.h"
 #include "qrenderpassfilter.h"
+#include <Qt3DRender/private/qrenderpassfilter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qparameter.h>
 
@@ -67,6 +68,15 @@ void RenderPassFilter::updateFromPeer(Qt3DCore::QNode *peer)
     const auto parameters = filter->parameters();
     for (QParameter *p : parameters)
         m_parameterPack.appendParameter(p->id());
+}
+
+void RenderPassFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassFilterData>>(change);
+    const auto &data = typedChange->data;
+    setEnabled(change->isNodeEnabled());
+    m_filters = data.matchIds;
+    m_parameterPack.setParameters(data.parameterIds);
 }
 
 QVector<Qt3DCore::QNodeId> RenderPassFilter::filters() const
