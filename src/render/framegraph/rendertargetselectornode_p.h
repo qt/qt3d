@@ -72,6 +72,8 @@ public:
     QList<QRenderTargetOutput::AttachmentPoint> outputs() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_renderTargetUuid;
     QList<QRenderTargetOutput::AttachmentPoint> m_outputs;
 };

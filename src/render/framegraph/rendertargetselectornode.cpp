@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DRender/qrendertargetselector.h>
+#include <Qt3DRender/private/qrendertargetselector_p.h>
 #include <Qt3DRender/qrendertarget.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/renderlogging_p.h>
@@ -66,6 +67,15 @@ void RenderTargetSelector::updateFromPeer(Qt3DCore::QNode *peer)
         m_renderTargetUuid = selector->target()->id();
     setEnabled(selector->isEnabled());
     m_outputs = selector->outputs();
+}
+
+void RenderTargetSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderTargetSelectorData>>(change);
+    const auto &data = typedChange->data;
+    setEnabled(change->isNodeEnabled());
+    m_renderTargetUuid = data.targetId;
+    m_outputs = data.outputs.toList();
 }
 
 void RenderTargetSelector::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
