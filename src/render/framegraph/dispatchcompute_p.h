@@ -75,6 +75,8 @@ public:
     inline int z() const Q_DECL_NOEXCEPT { return m_workGroups[2]; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     int m_workGroups[3];
 };
 

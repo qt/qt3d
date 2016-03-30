@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "dispatchcompute_p.h"
+#include <Qt3DRender/private/qdispatchcompute_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
@@ -71,6 +72,15 @@ void DispatchCompute::updateFromPeer(Qt3DCore::QNode *peer)
     m_workGroups[0] = computeDispatch->workGroupX();
     m_workGroups[1] = computeDispatch->workGroupY();
     m_workGroups[2] = computeDispatch->workGroupZ();
+}
+
+void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QDispatchComputeData>>(change);
+    const auto &data = typedChange->data;
+    m_workGroups[0] = data.workGroupX;
+    m_workGroups[1] = data.workGroupY;
+    m_workGroups[2] = data.workGroupZ;
 }
 
 void DispatchCompute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
