@@ -78,10 +78,14 @@ Qt3DQuickWindow::Qt3DQuickWindow(QWindow *parent)
     resize(1024, 768);
 
     QSurfaceFormat format;
+#ifdef QT_OPENGL_ES_2
+    format.setRenderableType(QSurfaceFormat::OpenGLES);
+#else
     if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
         format.setVersion(4, 3);
         format.setProfile(QSurfaceFormat::CoreProfile);
     }
+#endif
     format.setDepthBufferSize(24);
     format.setSamples(4);
     format.setStencilBufferSize(8);
