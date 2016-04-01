@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/qeffect.h>
 #include <Qt3DRender/qparameter.h>
+#include <Qt3DRender/private/qeffect_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -79,6 +80,14 @@ void Effect::updateFromPeer(Qt3DCore::QNode *peer)
 
     Q_FOREACH (QParameter *p, effect->parameters())
         m_parameterPack.appendParameter(p->id());
+}
+
+void Effect::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QEffectData>>(change);
+    const auto &data = typedChange->data;
+    m_techniques = data.techniqueIds;
+    m_parameterPack.setParameters(data.parameterIds);
 }
 
 void Effect::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
