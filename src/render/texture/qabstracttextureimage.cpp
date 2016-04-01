@@ -219,6 +219,18 @@ QAbstractTextureImage::QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Q
 {
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTextureImage::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractTextureImageData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAbstractTextureImage);
+    data.mipLevel = d->m_mipLevel;
+    data.layer = d->m_layer;
+    data.face = d->m_face;
+    data.generator = dataGenerator();
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

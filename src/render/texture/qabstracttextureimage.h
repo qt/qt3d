@@ -100,6 +100,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)
     friend class Render::TextureImage;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

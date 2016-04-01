@@ -41,6 +41,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/qabstracttextureimage_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -94,6 +95,28 @@ void TextureImage::updateFromPeer(Qt3DCore::QNode *peer)
         txt->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
         if (txt != Q_NULLPTR)
             txt->addToPendingTextureJobs();
+    }
+}
+
+void TextureImage::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureImageData>>(change);
+    const auto &data = typedChange->data;
+    m_mipLevel = data.mipLevel;
+    m_layer = data.layer;
+    m_face = data.face;
+    m_generator = data.generator;
+
+    if (!change->parentId()) {
+        qWarning() << "No QAbstractTextureProvider parent found";
+    } else {
+        m_textureProviderId = change->parentId();
+        m_textureProvider = m_textureManager->lookupHandle(m_textureProviderId);
+        Texture *texture = m_textureManager->data(m_textureProvider);
+        Q_ASSERT(texture);
+        // Notify the Texture that it has a new TextureImage and needs an update
+        texture->addTextureImageData(m_textureImageManager->lookupHandle(peerId()));
+        texture->addToPendingTextureJobs();
     }
 }
 

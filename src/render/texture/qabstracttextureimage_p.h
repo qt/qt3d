@@ -79,6 +79,14 @@ public:
     QAbstractTexture::CubeMapFace m_face;
 };
 
+struct QAbstractTextureImageData
+{
+    int mipLevel;
+    int layer;
+    QAbstractTexture::CubeMapFace face;
+    QTextureImageDataGeneratorPtr generator;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

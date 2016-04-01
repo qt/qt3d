@@ -101,6 +101,8 @@ public:
     inline QTextureImageDataGeneratorPtr dataGenerator() const { return m_generator; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     void updateDNA();
 
     QTextureImageDataGeneratorPtr m_generator;
