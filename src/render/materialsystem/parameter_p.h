@@ -77,6 +77,8 @@ public:
     int nameId() const Q_DECL_NOEXCEPT;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QString m_name;
     QVariant m_value;
     int m_nameId;

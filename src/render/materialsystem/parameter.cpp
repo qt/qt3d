@@ -70,6 +70,15 @@ void Parameter::updateFromPeer(Qt3DCore::QNode *peer)
     m_value = static_cast<QParameterPrivate *>(QNodePrivate::get(param))->m_backendValue;
 }
 
+void Parameter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QParameterData>>(change);
+    const auto &data = typedChange->data;
+    m_name = data.name;
+    m_nameId = StringToInt::lookupId(m_name);
+    m_value = data.backendValue;
+}
+
 void Parameter::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);

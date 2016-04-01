@@ -77,7 +77,6 @@ public:
 struct QParameterData
 {
     QString name;
-    QVariant value;
     QVariant backendValue;
 };
 

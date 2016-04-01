@@ -153,7 +153,6 @@ Qt3DCore::QNodeCreatedChangeBasePtr QParameter::createNodeCreationChange() const
     auto &data = creationChange->data;
     Q_D(const QParameter);
     data.name = d->m_name;
-    data.value = d->m_value;
     data.backendValue = d->m_backendValue;
     return creationChange;
 }
