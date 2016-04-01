@@ -77,6 +77,8 @@ public:
     void unsetDirty();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector<Qt3DCore::QNodeId> m_attributes;
     bool m_geometryDirty;
     Qt3DCore::QNodeId m_boundingPositionAttribute;

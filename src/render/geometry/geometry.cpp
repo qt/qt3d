@@ -41,6 +41,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qgeometry.h>
+#include <Qt3DRender/private/qgeometry_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -77,6 +78,15 @@ void Geometry::updateFromPeer(Qt3DCore::QNode *peer)
         if (geometry->boundingVolumePositionAttribute() != Q_NULLPTR)
             m_boundingPositionAttribute = geometry->boundingVolumePositionAttribute()->id();
     }
+}
+
+void Geometry::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QGeometryData>>(change);
+    const auto &data = typedChange->data;
+    m_attributes = data.attributeIds;
+    m_boundingPositionAttribute = data.boundingVolumePositionAttributeId;
+    m_geometryDirty = true;
 }
 
 void Geometry::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
