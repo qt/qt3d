@@ -40,6 +40,7 @@
 #include "attribute_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/qbuffer.h>
+#include <Qt3DRender/private/qattribute_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -99,6 +100,23 @@ void Attribute::updateFromPeer(Qt3DCore::QNode *peer)
             m_bufferId = attribute->buffer()->id();
         m_attributeDirty = true;
     }
+}
+
+void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAttributeData>>(change);
+    const auto &data = typedChange->data;
+    m_bufferId = data.bufferId;
+    m_name = data.name;
+    m_nameId = StringToInt::lookupId(m_name);
+    m_vertexDataType = data.dataType;
+    m_vertexSize = data.dataSize;
+    m_count = data.count;
+    m_byteStride = data.byteStride;
+    m_byteOffset = data.byteOffset;
+    m_divisor = data.divisor;
+    m_attributeType = data.attributeType;
+    m_attributeDirty = true;
 }
 
 void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
