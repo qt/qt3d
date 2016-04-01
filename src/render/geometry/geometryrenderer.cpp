@@ -43,6 +43,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/private/qboundingvolume_p.h>
+#include <Qt3DRender/private/qgeometryrenderer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -114,6 +115,29 @@ void GeometryRenderer::updateFromPeer(Qt3DCore::QNode *peer)
             m_manager->addDirtyGeometryRenderer(peerId());
         m_dirty = true;
     }
+}
+
+void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QGeometryRendererData>>(change);
+    const auto &data = typedChange->data;
+    m_geometryId = data.geometryId;
+    m_instanceCount = data.instanceCount;
+    m_vertexCount = data.vertexCount;
+    m_indexOffset = data.indexOffset;
+    m_firstInstance = data.firstInstance;
+    m_restartIndexValue = data.restartIndexValue;
+    m_verticesPerPatch = data.verticesPerPatch;
+    m_primitiveRestartEnabled = data.primitiveRestart;
+    m_primitiveType = data.primitiveType;
+    m_enabled = change->isNodeEnabled();
+
+    Q_ASSERT(m_manager);
+    m_geometryFactory = data.geometryFactory;
+    if (m_geometryFactory)
+        m_manager->addDirtyGeometryRenderer(peerId());
+
+    m_dirty = true;
 }
 
 void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)

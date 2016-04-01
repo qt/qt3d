@@ -97,6 +97,8 @@ public:
     QVector<QBoundingVolume *> triangleData() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_geometryId;
     int m_instanceCount;
     int m_vertexCount;
