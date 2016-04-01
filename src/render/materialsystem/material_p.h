@@ -87,6 +87,8 @@ public:
     Qt3DCore::QNodeId effect() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     ParameterPack m_parameterPack;
     Qt3DCore::QNodeId m_effectUuid;
     bool m_enabled;

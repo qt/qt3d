@@ -45,6 +45,7 @@
 #include "qtechnique.h"
 #include "qmaterial.h"
 #include "qeffect.h"
+#include <Qt3DRender/private/qmaterial_p.h>
 
 #include <Qt3DCore/qscenepropertychange.h>
 
@@ -80,6 +81,15 @@ void Material::updateFromPeer(Qt3DCore::QNode *node)
         m_effectUuid = mat->effect()->id();
     Q_FOREACH (QParameter *p, mat->parameters())
         m_parameterPack.appendParameter(p->id());
+}
+
+void Material::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QMaterialData>>(change);
+    const auto &data = typedChange->data;
+    m_effectUuid = data.effectId;
+    m_parameterPack.setParameters(data.parameterIds);
+    m_enabled = change->isNodeEnabled();
 }
 
 void Material::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
