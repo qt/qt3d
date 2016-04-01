@@ -49,6 +49,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/qabstracttexture_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -150,6 +151,39 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
         if (m_dataFunctor)
             addToPendingTextureJobs();
     }
+}
+
+void Texture::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QAbstractTextureData>>(change);
+    const auto &data = typedChange->data;
+
+    QMutexLocker lock(&m_lock);
+    m_target = data.target;
+    m_format = data.format;
+    m_width = data.width;
+    m_height = data.height;
+    m_depth = data.depth;
+    m_generateMipMaps = data.autoMipMap;
+    m_minificationFilter = data.minFilter;
+    m_magnificationFilter = data.magFilter;
+    m_wrapModeX = data.wrapModeX;
+    m_wrapModeY = data.wrapModeY;
+    m_wrapModeZ = data.wrapModeZ;
+    m_maximumAnisotropy = data.maximumAnisotropy;
+    m_comparisonFunction = data.comparisonFunction;
+    m_comparisonMode = data.comparisonMode;
+    m_layers = data.layers;
+    m_dataFunctor = data.dataFunctor;
+    if (m_dataFunctor)
+        addToPendingTextureJobs();
+
+    // TODO: Handle texture image ids better. At the moment we rely upon the assumption
+    // in the TextureImage that its parent is a Texture. Better to set the ids from here
+    // I think, and do it consistently with other types that refer to other nodes.
+    //data.textureImageIds
+
+    m_isDirty = true;
 }
 
 // RenderTread
