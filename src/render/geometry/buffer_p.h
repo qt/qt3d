@@ -85,6 +85,8 @@ public:
     void unsetDirty();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QBuffer::BufferType m_type;
     QBuffer::UsageType m_usage;
     QByteArray m_data;

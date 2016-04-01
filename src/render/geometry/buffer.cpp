@@ -41,6 +41,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/private/buffermanager_p.h>
+#include <Qt3DRender/private/qbuffer_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -109,6 +110,22 @@ void Buffer::updateFromPeer(Qt3DCore::QNode *peer)
         m_bufferDirty = true;
         m_syncData = buffer->isSyncData();
     }
+}
+
+void Buffer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QBufferData>>(change);
+    const auto &data = typedChange->data;
+    m_data = data.data;
+    m_type = data.type;
+    m_usage = data.usage;
+    m_syncData = data.syncData;
+    m_bufferDirty = true;
+
+    m_functor = data.functor;
+    Q_ASSERT(m_manager);
+    if (m_functor)
+        m_manager->addDirtyBuffer(peerId());
 }
 
 void Buffer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
