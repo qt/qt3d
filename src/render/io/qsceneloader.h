@@ -87,6 +87,7 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(QSceneLoader)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

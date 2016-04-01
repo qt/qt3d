@@ -44,6 +44,7 @@
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DRender/qsceneloader.h>
+#include <Qt3DRender/private/qsceneloader_p.h>
 #include <Qt3DRender/private/scenemanager_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -64,6 +65,15 @@ void Scene::updateFromPeer(Qt3DCore::QNode *peer)
     QSceneLoader *loader = static_cast<QSceneLoader *>(peer);
 
     m_source = loader->source();
+    m_sceneManager->addSceneData(m_source, peerId());
+}
+
+void Scene::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QSceneLoaderData>>(change);
+    const auto &data = typedChange->data;
+    m_source = data.source;
+    Q_ASSERT(m_sceneManager);
     m_sceneManager->addSceneData(m_source, peerId());
 }
 

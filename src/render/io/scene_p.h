@@ -80,6 +80,8 @@ public:
     void setSceneManager(SceneManager *manager);
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     SceneManager *m_sceneManager;
     QUrl m_source;
 };

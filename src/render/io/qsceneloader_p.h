@@ -71,6 +71,11 @@ public:
     QSceneLoader::Status m_status;
 };
 
+struct QSceneLoaderData
+{
+    QUrl source;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

@@ -139,6 +139,14 @@ void QSceneLoader::setStatus(QSceneLoader::Status status)
     }
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QSceneLoader::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QSceneLoaderData>::create(this);
+    auto &data = creationChange->data;
+    data.source = d_func()->m_source;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
