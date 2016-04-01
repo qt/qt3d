@@ -115,6 +115,8 @@ public:
     ShaderStorageBlock storageBlockForBlockName(const QString &blockName);
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QOpenGLShaderProgram *m_program;
 
     QOpenGLShaderProgram *createProgram(GraphicsContext *context);

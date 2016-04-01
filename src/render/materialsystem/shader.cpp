@@ -45,10 +45,11 @@
 #include <QOpenGLShaderProgram>
 #include <QMutexLocker>
 #include <qshaderprogram.h>
-#include <Qt3DRender/private/graphicscontext_p.h>
 #include <Qt3DRender/private/attachmentpack_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/graphicscontext_p.h>
+#include <Qt3DRender/private/qshaderprogram_p.h>
 #include <Qt3DRender/private/stringtoint_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -101,6 +102,24 @@ void Shader::updateFromPeer(Qt3DCore::QNode *peer)
         QShaderProgram::ShaderType type = static_cast<const QShaderProgram::ShaderType>(i);
         m_shaderCode[i] = shader->shaderCode(type);
     }
+    updateDNA();
+}
+
+void Shader::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QShaderProgramData>>(change);
+    const auto &data = typedChange->data;
+
+    for (int i = QShaderProgram::Vertex; i <= QShaderProgram::Compute; ++i)
+        m_shaderCode[i].clear();
+
+    m_shaderCode[QShaderProgram::Vertex] = data.vertexShaderCode;
+    m_shaderCode[QShaderProgram::TessellationControl] = data.tessellationControlShaderCode;
+    m_shaderCode[QShaderProgram::TessellationEvaluation] = data.tessellationEvaluationShaderCode;
+    m_shaderCode[QShaderProgram::Geometry] = data.geometryShaderCode;
+    m_shaderCode[QShaderProgram::Fragment] = data.fragmentShaderCode;
+    m_shaderCode[QShaderProgram::Compute] = data.computeShaderCode;
+    m_isLoaded = false;
     updateDNA();
 }
 
