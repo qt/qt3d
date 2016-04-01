@@ -95,6 +95,8 @@ public:
     QGraphicsApiFilter *graphicsApiFilter() const;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QGraphicsApiFilter *m_graphicsApiFilter;
 
     ParameterPack m_parameterPack;

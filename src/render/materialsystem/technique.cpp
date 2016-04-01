@@ -45,6 +45,7 @@
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/filterkey_p.h>
+#include <Qt3DRender/private/qtechnique_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>
@@ -102,6 +103,26 @@ void Technique::updateFromPeer(Qt3DCore::QNode *peer)
         QGraphicsApiFilter *peerFilter = technique->graphicsApiFilter();
         m_graphicsApiFilter->copy(*peerFilter);
     }
+}
+
+void Technique::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueData>>(change);
+    const auto &data = typedChange->data;
+
+    // TODO: Replace this with a value backend type
+    if (m_graphicsApiFilter == Q_NULLPTR)
+        m_graphicsApiFilter = new QGraphicsApiFilter();
+    m_graphicsApiFilter->setApi(data.api);
+    m_graphicsApiFilter->setProfile(data.profile);
+    m_graphicsApiFilter->setMajorVersion(data.majorVersion);
+    m_graphicsApiFilter->setMinorVersion(data.minorVersion);
+    m_graphicsApiFilter->setExtensions(data.extensions);
+    m_graphicsApiFilter->setVendor(data.vendor);
+
+    m_filterKeyList = data.filterKeyIds;
+    m_parameterPack.setParameters(data.parameterIds);
+    m_renderPasses = data.renderPassIds;
 }
 
 void Technique::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
