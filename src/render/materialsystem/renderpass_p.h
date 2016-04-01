@@ -91,6 +91,8 @@ private:
     void appendAnnotation(Qt3DCore::QNodeId criterionId);
     void removeAnnotation(Qt3DCore::QNodeId criterionId);
 
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     Qt3DCore::QNodeId m_shaderUuid;
     QVector<Qt3DCore::QNodeId> m_filterKeyList;
     ParameterPack m_parameterPack;

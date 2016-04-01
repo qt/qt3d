@@ -44,6 +44,7 @@
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qparameter.h>
 
+#include <Qt3DRender/private/qrenderpass_p.h>
 #include <Qt3DRender/private/renderstates_p.h>
 #include <Qt3DRender/private/renderstateset_p.h>
 
@@ -85,6 +86,17 @@ void RenderPass::updateFromPeer(Qt3DCore::QNode *peer)
         appendRenderState(renderState->id());
     Q_FOREACH (QParameter *p, pass->parameters())
         m_parameterPack.appendParameter(p->id());
+}
+
+void RenderPass::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderPassData>>(change);
+    const auto &data = typedChange->data;
+    m_filterKeyList = data.filterKeyIds;
+    m_parameterPack.setParameters(data.parameterIds);
+    for (const auto &renderStateId : qAsConst(data.renderStateIds))
+        appendRenderState(renderStateId);
+    m_shaderUuid = data.shaderId;
 }
 
 void RenderPass::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
