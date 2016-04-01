@@ -39,6 +39,7 @@
 
 #include "annotation_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DRender/private/qfilterkey_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,14 @@ void Annotation::updateFromPeer(Qt3DCore::QNode *peer)
 
     m_value = criterion->value();
     m_name = criterion->name();
+}
+
+void Annotation::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QFilterKeyData>>(change);
+    const auto &data = typedChange->data;
+    m_name = data.name;
+    m_value = data.value;
 }
 
 QVariant Annotation::criterionValue() const
