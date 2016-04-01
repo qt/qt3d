@@ -87,6 +87,27 @@ public :
     QTextureImageDataGeneratorPtr m_dataFunctor;
 };
 
+struct QAbstractTextureData
+{
+    QAbstractTexture::Target target;
+    QAbstractTexture::TextureFormat format;
+    int width;
+    int height;
+    int depth;
+    bool autoMipMap;
+    QAbstractTexture::Filter minFilter;
+    QAbstractTexture::Filter magFilter;
+    QTextureWrapMode::WrapMode wrapModeX;
+    QTextureWrapMode::WrapMode wrapModeY;
+    QTextureWrapMode::WrapMode wrapModeZ;
+    float maximumAnisotropy;
+    QAbstractTexture::ComparisonFunction comparisonFunction;
+    QAbstractTexture::ComparisonMode comparisonMode;
+    Qt3DCore::QNodeIdVector textureImageIds;
+    int layers;
+    QTextureImageDataGeneratorPtr dataFunctor;
+};
+
 } // QT3D
 
 QT_END_NAMESPACE

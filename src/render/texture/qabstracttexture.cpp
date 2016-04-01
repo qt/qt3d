@@ -500,6 +500,31 @@ QTextureImageDataGeneratorPtr QAbstractTexture::dataGenerator() const
     return d->m_dataFunctor;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractTexture::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QAbstractTextureData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAbstractTexture);
+    data.target = d->m_target;
+    data.format = d->m_format;
+    data.width = d->m_width;
+    data.height = d->m_height;
+    data.depth = d->m_depth;
+    data.autoMipMap = d->m_autoMipMap;
+    data.minFilter = d->m_minFilter;
+    data.magFilter = d->m_magFilter;
+    data.wrapModeX = d->m_wrapMode.x();
+    data.wrapModeY = d->m_wrapMode.y();
+    data.wrapModeZ = d->m_wrapMode.z();
+    data.maximumAnisotropy = d->m_maximumAnisotropy;
+    data.comparisonFunction = d->m_comparisonFunction;
+    data.comparisonMode = d->m_comparisonMode;
+    data.textureImageIds = qIdsForNodes(d->m_textureImages);
+    data.layers = d->m_layers;
+    data.dataFunctor = d->m_dataFunctor;
+    return creationChange;
+}
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
