@@ -362,10 +362,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspect::jobsToExecute(qint64 time)
         // Traverse the current framegraph and create jobs to populate
         // RenderBins with RenderCommands
         QVector<QAspectJobPtr> renderBinJobs = d->m_renderer->renderBinJobs();
-        // TODO: Add wrapper around ThreadWeaver::Collection
         for (int i = 0; i < renderBinJobs.size(); ++i) {
             QAspectJobPtr renderBinJob = renderBinJobs.at(i);
-            //renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
+            renderBinJob->addDependency(d->m_updateBoundingVolumeJob);
             jobs.append(renderBinJob);
             d->m_cleanupJob->addDependency(renderBinJob);
         }
