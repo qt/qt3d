@@ -72,9 +72,6 @@ public:
 
     void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
 
-    void setClearColor();
-    QVector4D clearColor() const { return m_clearColor; }
-
     void setProjection(const QMatrix4x4 &projection);
     inline QMatrix4x4 projection() const { return m_projection; }
 
@@ -85,7 +82,6 @@ public:
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
 
-    QVector4D m_clearColor;
     QMatrix4x4 m_projection;
     bool m_enabled;
 };
