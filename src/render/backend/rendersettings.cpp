@@ -39,9 +39,10 @@
 
 #include "rendersettings_p.h"
 
-#include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/QFrameGraphNode>
 #include <Qt3DRender/private/abstractrenderer_p.h>
+#include <Qt3DRender/private/qrendersettings_p.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,6 +64,16 @@ void RenderSettings::updateFromPeer(Qt3DCore::QNode *peer)
     m_pickResultMode = settings->pickingSettings()->pickResultMode();
     m_activeFrameGraph = settings->activeFrameGraph()->id();
     m_renderPolicy = settings->renderPolicy();
+}
+
+void RenderSettings::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSettingsData>>(change);
+    const auto &data = typedChange->data;
+    m_activeFrameGraph = data.activeFrameGraphId;
+    m_renderPolicy = data.renderPolicy;
+    m_pickMethod = data.pickMethod;
+    m_pickResultMode = data.pickResultMode;
 }
 
 void RenderSettings::cleanup()

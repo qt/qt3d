@@ -77,6 +77,8 @@ public:
     QPickingSettings::PickResultMode pickResultMode() const { return m_pickResultMode; }
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QRenderSettings::RenderPolicy m_renderPolicy;
     QPickingSettings::PickMethod m_pickMethod;
     QPickingSettings::PickResultMode m_pickResultMode;
