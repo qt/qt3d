@@ -56,6 +56,12 @@ QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node, Priority prior
 {
 }
 
+QNodeCreatedChangeBase::QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd)
+    : QSceneChange(dd)
+{
+
+}
+
 QNodeCreatedChangeBase::~QNodeCreatedChangeBase()
 {
 }

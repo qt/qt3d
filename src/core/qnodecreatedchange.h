@@ -58,6 +58,9 @@ public:
     const QMetaObject *metaObject() const Q_DECL_NOEXCEPT;
     bool isNodeEnabled() const Q_DECL_NOEXCEPT;
 
+protected:
+    QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd);
+
 private:
     Q_DECLARE_PRIVATE(QNodeCreatedChangeBase)
 };
