@@ -38,12 +38,12 @@
 ****************************************************************************/
 
 #include "cameralens_p.h"
-#include <Qt3DRender/private/renderlogging_p.h>
-
-#include <Qt3DCore/qtransform.h>
 #include <Qt3DRender/qcameralens.h>
+#include <Qt3DRender/private/qcameralens_p.h>
+#include <Qt3DRender/private/renderlogging_p.h>
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
+#include <Qt3DCore/qtransform.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -73,6 +73,14 @@ void CameraLens::updateFromPeer(Qt3DCore::QNode *peer)
     QCameraLens *lens = static_cast<QCameraLens *>(peer);
     setProjection(lens->projectionMatrix());
     m_enabled = lens->isEnabled();
+}
+
+void CameraLens::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraLensData>>(change);
+    const auto &data = typedChange->data;
+    m_projection = data.projectionMatrix;
+    m_enabled = change->isNodeEnabled();
 }
 
 void CameraLens::setProjection(const QMatrix4x4 &projection)

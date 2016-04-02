@@ -83,6 +83,8 @@ public:
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QVector4D m_clearColor;
     QMatrix4x4 m_projection;
     bool m_enabled;
