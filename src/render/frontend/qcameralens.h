@@ -133,6 +133,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QCameraLens)
     QT3D_CLONEABLE(QCameraLens)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DRender

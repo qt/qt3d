@@ -127,6 +127,11 @@ private:
     }
 };
 
+struct QCameraLensData
+{
+    QMatrix4x4 projectionMatrix;
+};
+
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE

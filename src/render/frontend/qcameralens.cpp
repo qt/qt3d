@@ -447,6 +447,14 @@ QMatrix4x4 QCameraLens::projectionMatrix() const
     return d->m_projectionMatrix;
 }
 
+Qt3DCore::QNodeCreatedChangeBasePtr QCameraLens::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QCameraLensData>::create(this);
+    auto &data = creationChange->data;
+    data.projectionMatrix = d_func()->m_projectionMatrix;
+    return creationChange;
+}
+
 } // Qt3DRender
 
 /*!
