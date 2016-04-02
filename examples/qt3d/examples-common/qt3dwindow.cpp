@@ -102,6 +102,7 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     m_aspectEngine->registerAspect(m_inputAspect);
     m_aspectEngine->registerAspect(m_logicAspect);
 
+    m_defaultCamera->setParent(m_root);
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
@@ -140,6 +141,7 @@ Qt3DWindow::Qt3DWindow(QWindow *parent)
     m_aspectEngine->registerAspect(m_inputAspect);
     m_aspectEngine->registerAspect(m_logicAspect);
 
+    m_defaultCamera->setParent(m_root);
     m_forwardRenderer->setCamera(m_defaultCamera);
     m_forwardRenderer->setSurface(this);
     m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
