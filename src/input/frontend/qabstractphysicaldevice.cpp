@@ -39,6 +39,7 @@
 
 #include "qabstractphysicaldevice.h"
 #include "qabstractphysicaldevice_p.h"
+#include <Qt3DInput/qphysicaldevicecreatedchange.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qnode_p.h>
 
@@ -213,6 +214,12 @@ void QAbstractPhysicalDevice::copy(const QNode *ref)
     d_func()->m_axisSettings = physicalDevice->d_func()->m_axisSettings;
     d_func()->m_axesHash = physicalDevice->d_func()->m_axesHash;
     d_func()->m_buttonsHash = physicalDevice->d_func()->m_buttonsHash;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAbstractPhysicalDevice::createNodeCreationChange() const
+{
+    auto creationChange = QPhysicalDeviceCreatedChangeBasePtr::create(this);
+    return creationChange;
 }
 
 }

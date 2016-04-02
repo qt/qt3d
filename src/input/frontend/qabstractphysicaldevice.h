@@ -76,6 +76,7 @@ protected:
     QAbstractPhysicalDevice(QAbstractPhysicalDevicePrivate &dd, Qt3DCore::QNode *parent = 0);
     Q_DECLARE_PRIVATE(QAbstractPhysicalDevice)
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // Qt3DInput
