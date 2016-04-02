@@ -37,9 +37,9 @@
 **
 ****************************************************************************/
 
-#include "qframegraphnode.h"
 #include "qrendersettings.h"
 #include "qrendersettings_p.h"
+#include "qframegraphnode.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -137,6 +137,18 @@ void QRenderSettings::copy(const QNode *ref)
     setActiveFrameGraph(qobject_cast<QFrameGraphNode *>(QNode::clone(object->activeFrameGraph())));
 
     d_func()->m_renderPolicy = object->d_func()->m_renderPolicy;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QRenderSettings::createNodeCreationChange() const
+{
+    auto creationChange = Qt3DCore::QNodeCreatedChangePtr<QRenderSettingsData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QRenderSettings);
+    data.activeFrameGraphId = qIdForNode(d->m_activeFrameGraph);
+    data.renderPolicy = d->m_renderPolicy;
+    data.pickMethod = d->m_pickingSettings.pickMethod();
+    data.pickResultMode = d->m_pickingSettings.pickResultMode();
+    return creationChange;
 }
 
 } // namespace Qt3Drender

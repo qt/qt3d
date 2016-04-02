@@ -76,6 +76,14 @@ public:
     Q_DECLARE_PUBLIC(QRenderSettings)
 };
 
+struct QRenderSettingsData
+{
+    Qt3DCore::QNodeId activeFrameGraphId;
+    QRenderSettings::RenderPolicy renderPolicy;
+    QPickingSettings::PickMethod pickMethod;
+    QPickingSettings::PickResultMode pickResultMode;
+};
+
 } // namespace Qt3Drender
 
 QT_END_NAMESPACE
