@@ -42,6 +42,7 @@
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qtransform.h>
+#include <Qt3DCore/private/qtransform_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -67,6 +68,17 @@ void Transform::updateFromPeer(Qt3DCore::QNode *peer)
     m_translation = transform->translation();
     updateMatrix();
     m_enabled = transform->isEnabled();
+}
+
+void Transform::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTransformData>>(change);
+    const auto &data = typedChange->data;
+    m_rotation = data.rotation;
+    m_scale = data.scale;
+    m_translation = data.translation;
+    updateMatrix();
+    m_enabled = change->isNodeEnabled();
 }
 
 QMatrix4x4 Transform::transformMatrix() const

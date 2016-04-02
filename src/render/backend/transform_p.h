@@ -78,6 +78,8 @@ public:
     void updateMatrix();
 
 private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     QMatrix4x4 m_transformMatrix;
     QQuaternion m_rotation;
     QVector3D m_scale;
