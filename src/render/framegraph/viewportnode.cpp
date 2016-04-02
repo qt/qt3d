@@ -70,6 +70,7 @@ void ViewportNode::updateFromPeer(Qt3DCore::QNode *peer)
 
 void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QViewportData>>(change);
     const auto &data = typedChange->data;
     m_xMin = data.normalizedRect.x();

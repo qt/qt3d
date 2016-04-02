@@ -99,6 +99,7 @@ void RenderSurfaceSelector::updateFromPeer(Qt3DCore::QNode *peer)
 
 void RenderSurfaceSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderSurfaceSelectorData>>(change);
     const auto &data = typedChange->data;
     setEnabled(change->isNodeEnabled());

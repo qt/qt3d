@@ -68,6 +68,7 @@ void CameraSelector::updateFromPeer(Qt3DCore::QNode *peer)
 
 void CameraSelector::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QCameraSelectorData>>(change);
     const auto &data = typedChange->data;
     m_cameraUuid = data.cameraId;

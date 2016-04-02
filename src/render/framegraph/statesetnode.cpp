@@ -73,6 +73,7 @@ void StateSetNode::updateFromPeer(Qt3DCore::QNode *peer)
 
 void StateSetNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QRenderStateSetData>>(change);
     const auto &data = typedChange->data;
     setEnabled(change->isNodeEnabled());

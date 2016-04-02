@@ -76,6 +76,7 @@ void DispatchCompute::updateFromPeer(Qt3DCore::QNode *peer)
 
 void DispatchCompute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QDispatchComputeData>>(change);
     const auto &data = typedChange->data;
     m_workGroups[0] = data.workGroupX;

@@ -73,6 +73,7 @@ void TechniqueFilter::updateFromPeer(Qt3DCore::QNode *peer)
 
 void TechniqueFilter::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
+    FrameGraphNode::initializeFromPeer(change);
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QTechniqueFilterData>>(change);
     const auto &data = typedChange->data;
     m_filters = data.matchIds;

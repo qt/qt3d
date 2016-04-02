@@ -65,6 +65,13 @@ FrameGraphNode::~FrameGraphNode()
 {
 }
 
+void FrameGraphNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+{
+    // Set up the parent child relationship and enabled state
+    setParentId(change->parentId());
+    setEnabled(change->isNodeEnabled());
+}
+
 void FrameGraphNode::setFrameGraphManager(FrameGraphManager *manager)
 {
     if (m_manager != manager)

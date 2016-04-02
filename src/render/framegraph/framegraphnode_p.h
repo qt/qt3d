@@ -111,6 +111,7 @@ public:
 
 protected:
     FrameGraphNode(FrameGraphNodeType nodeType);
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_OVERRIDE;
 
 private:
     FrameGraphNodeType m_nodeType;
@@ -179,8 +180,6 @@ protected:
             Backend *backend = new Backend();
             backend->setFrameGraphManager(m_manager);
             backend->setRenderer(m_renderer);
-            backend->setEnabled(change->isNodeEnabled());
-            backend->setParentId(change->parentId());
             m_manager->appendNode(change->subjectId(), backend);
             return backend;
         }
