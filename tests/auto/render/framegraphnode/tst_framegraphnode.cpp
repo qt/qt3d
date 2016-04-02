@@ -101,7 +101,7 @@ private Q_SLOTS:
         const Qt3DCore::QNodeId childId = Qt3DCore::QNodeId::createId();
         QScopedPointer<Qt3DRender::Render::FrameGraphNode> c(new MyFrameGraphNode());
         setIdInternal(c.data(), childId);
-        manager->appendNode(c.data());
+        manager->appendNode(childId, c.data());
         n->appendChildId(childId);
         // THEN
         QCOMPARE(n->childrenIds().count(), 1);
@@ -124,8 +124,8 @@ private Q_SLOTS:
         setIdInternal(parent1, parentId);
         setIdInternal(child, childId);
 
-        manager->appendNode(parent1);
-        manager->appendNode(child);
+        manager->appendNode(parentId, parent1);
+        manager->appendNode(childId, child);
 
         parent1->setFrameGraphManager(manager.data());
         child->setFrameGraphManager(manager.data());

@@ -147,7 +147,7 @@ public:
     FrameGraphManager() {}
 
     bool containsNode(Qt3DCore::QNodeId id) const;
-    void appendNode(FrameGraphNode *node);
+    void appendNode(Qt3DCore::QNodeId id, FrameGraphNode *node);
     FrameGraphNode* lookupNode(Qt3DCore::QNodeId id) const;
     void releaseNode(Qt3DCore::QNodeId id);
 

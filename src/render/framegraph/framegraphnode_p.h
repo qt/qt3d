@@ -165,7 +165,7 @@ protected:
                 QFrameGraphNode *parentFGNode = static_cast<QFrameGraphNode *>(n)->parentFrameGraphNode();
                 if (parentFGNode)
                     backend->setParentId(parentFGNode->id());
-                m_manager->appendNode(backend);
+                m_manager->appendNode(backend->peerId(), backend);
                 return backend;
             }
             return static_cast<Backend *>(m_manager->lookupNode(n->id()));
@@ -181,7 +181,7 @@ protected:
             backend->setRenderer(m_renderer);
             backend->setEnabled(change->isNodeEnabled());
             backend->setParentId(change->parentId());
-            m_manager->appendNode(backend);
+            m_manager->appendNode(change->subjectId(), backend);
             return backend;
         }
         return static_cast<Backend *>(m_manager->lookupNode(change->subjectId()));
