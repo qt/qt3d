@@ -39,28 +39,12 @@
 ****************************************************************************/
 
 #include "qalphatest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qalphatest_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QAlphaTestPrivate : public QRenderStatePrivate
-{
-public:
-    QAlphaTestPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::AlphaTest)
-        , m_alphaFunction(QAlphaTest::Never)
-        , m_referenceValue(0.0f)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QAlphaTest)
-    QAlphaTest::AlphaFunction m_alphaFunction;
-    float m_referenceValue;
-};
 
 QAlphaTest::QAlphaTest(QNode *parent)
     : QRenderState(*new QAlphaTestPrivate, parent)
@@ -108,6 +92,16 @@ void QAlphaTest::setReferenceValue(float referenceValue)
         d->m_referenceValue = referenceValue;
         emit referenceValueChanged(referenceValue);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QAlphaTest::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QAlphaTestData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QAlphaTest);
+    data.alphaFunction = d->m_alphaFunction;
+    data.referenceValue = d->m_referenceValue;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

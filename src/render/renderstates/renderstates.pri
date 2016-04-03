@@ -27,7 +27,8 @@ HEADERS += \
     $$PWD/renderstatecollection_p.h \
     $$PWD/qseamlesscubemap.h \
     $$PWD/qdepthtest.h \
-    $$PWD/qnodepthmask.h
+    $$PWD/qnodepthmask.h \
+    $$PWD/qalphatest_p.h
 
 
 SOURCES += \
