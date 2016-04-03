@@ -38,24 +38,12 @@
 ****************************************************************************/
 
 #include "qstencilmask.h"
-#include <Qt3DRender/private/qrenderstate_p.h>
+#include "qstencilmask_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QStencilMaskPrivate : public QRenderStatePrivate
-{
-public:
-    QStencilMaskPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::StencilMask)
-        , m_frontOutputMask(0)
-        , m_backOutputMask(0)
-    {}
-
-    uint m_frontOutputMask;
-    uint m_backOutputMask;
-};
 
 /*!
  * QStencilMask::QStencilMask
@@ -107,6 +95,16 @@ void QStencilMask::copy(const QNode *ref)
     const QStencilMask *otherRef = static_cast<const QStencilMask *>(ref);
     d_func()->m_frontOutputMask = otherRef->frontOutputMask();
     d_func()->m_backOutputMask = otherRef->backOutputMask();
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QStencilMask::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QStencilMaskData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QStencilMask);
+    data.frontOutputMask = d->m_frontOutputMask;
+    data.backOutputMask = d->m_backOutputMask;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

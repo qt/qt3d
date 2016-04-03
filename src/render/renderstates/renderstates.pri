@@ -38,7 +38,8 @@ HEADERS += \
     $$PWD/qfrontface_p.h \
     $$PWD/qpointsize_p.h \
     $$PWD/qpolygonoffset_p.h \
-    $$PWD/qscissortest_p.h
+    $$PWD/qscissortest_p.h \
+    $$PWD/qstencilmask_p.h
 
 
 SOURCES += \
