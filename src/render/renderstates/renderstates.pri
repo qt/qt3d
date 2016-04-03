@@ -39,7 +39,9 @@ HEADERS += \
     $$PWD/qpointsize_p.h \
     $$PWD/qpolygonoffset_p.h \
     $$PWD/qscissortest_p.h \
-    $$PWD/qstencilmask_p.h
+    $$PWD/qstencilmask_p.h \
+    $$PWD/qstenciloperation_p.h \
+    $$PWD/qstenciloperationarguments_p.h
 
 
 SOURCES += \

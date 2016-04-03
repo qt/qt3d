@@ -38,30 +38,11 @@
 ****************************************************************************/
 
 #include "qstenciloperationarguments.h"
-#include <private/qobject_p.h>
+#include "qstenciloperationarguments_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QStencilOperationArgumentsPrivate : public QObjectPrivate
-{
-public:
-    QStencilOperationArgumentsPrivate(QStencilOperationArguments::FaceMode mode)
-        : QObjectPrivate()
-        , m_face(mode)
-        , m_stencilTestFailureOperation(QStencilOperationArguments::Keep)
-        , m_depthTestFailureOperation(QStencilOperationArguments::Keep)
-        , m_allTestsPassOperation(QStencilOperationArguments::Keep)
-    {
-
-    }
-
-    QStencilOperationArguments::FaceMode m_face;
-    QStencilOperationArguments::Operation m_stencilTestFailureOperation;
-    QStencilOperationArguments::Operation m_depthTestFailureOperation;
-    QStencilOperationArguments::Operation m_allTestsPassOperation;
-};
 
 QStencilOperationArguments::QStencilOperationArguments(FaceMode mode, QObject *parent)
     : QObject(*new QStencilOperationArgumentsPrivate(mode), parent)

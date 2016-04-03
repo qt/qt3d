@@ -38,26 +38,13 @@
 ****************************************************************************/
 
 #include "qstenciloperation.h"
+#include "qstenciloperation_p.h"
 #include "qstenciloperationarguments.h"
-#include <Qt3DRender/private/qrenderstate_p.h>
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QStencilOperationPrivate : public QRenderStatePrivate
-{
-public:
-    QStencilOperationPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::StencilOp)
-        , m_front(new QStencilOperationArguments(QStencilOperationArguments::Front, q_ptr))
-        , m_back(new QStencilOperationArguments(QStencilOperationArguments::Back, q_ptr))
-    {}
-
-    QStencilOperationArguments *m_front;
-    QStencilOperationArguments *m_back;
-};
-
 
 QStencilOperation::QStencilOperation(QNode *parent)
     : QRenderState(*new QStencilOperationPrivate(), parent)
@@ -91,6 +78,22 @@ void QStencilOperation::copy(const QNode *ref)
     d_func()->m_front->setDepthTestFailureOperation(refState->d_func()->m_front->depthTestFailureOperation());
     d_func()->m_front->setStencilTestFailureOperation(refState->d_func()->m_front->stencilTestFailureOperation());
     d_func()->m_front->setAllTestsPassOperation(refState->d_func()->m_front->allTestsPassOperation());
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QStencilOperation::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QStencilOperationData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QStencilOperation);
+    data.front.face = d->m_front->faceMode();
+    data.front.stencilTestFailureOperation = d->m_front->stencilTestFailureOperation();
+    data.front.depthTestFailureOperation = d->m_front->depthTestFailureOperation();
+    data.front.allTestsPassOperation = d->m_front->allTestsPassOperation();
+    data.back.face = d->m_back->faceMode();
+    data.back.stencilTestFailureOperation = d->m_back->stencilTestFailureOperation();
+    data.back.depthTestFailureOperation = d->m_back->depthTestFailureOperation();
+    data.back.allTestsPassOperation = d->m_back->allTestsPassOperation();
+    return creationChange;
 }
 
 } // namespace Qt3DRender
