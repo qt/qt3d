@@ -69,6 +69,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QStencilTest)
     QT3D_CLONEABLE(QStencilTest)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

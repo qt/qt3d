@@ -41,7 +41,9 @@ HEADERS += \
     $$PWD/qscissortest_p.h \
     $$PWD/qstencilmask_p.h \
     $$PWD/qstenciloperation_p.h \
-    $$PWD/qstenciloperationarguments_p.h
+    $$PWD/qstenciloperationarguments_p.h \
+    $$PWD/qstenciltest_p.h \
+    $$PWD/qstenciltestarguments_p.h
 
 
 SOURCES += \

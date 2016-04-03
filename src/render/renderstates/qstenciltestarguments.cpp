@@ -38,31 +38,11 @@
 ****************************************************************************/
 
 #include "qstenciltestarguments.h"
-#include <private/qobject_p.h>
+#include "qstenciltestarguments_p.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QStencilTestArgumentsPrivate : public QObjectPrivate
-{
-public:
-    QStencilTestArgumentsPrivate(QStencilTestArguments::StencilFaceMode face)
-        : QObjectPrivate()
-        , m_face(face)
-        , m_comparisonMask(0)
-        , m_referenceValue(0)
-        , m_stencilFunction(QStencilTestArguments::Never)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QStencilTestArguments)
-    QStencilTestArguments::StencilFaceMode m_face;
-    uint m_comparisonMask;
-    int m_referenceValue;
-    QStencilTestArguments::StencilFunction m_stencilFunction;
-};
-
 
 QStencilTestArguments::QStencilTestArguments(QStencilTestArguments::StencilFaceMode face, QObject *parent)
     : QObject(*new QStencilTestArgumentsPrivate(face), parent)
