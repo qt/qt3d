@@ -38,30 +38,12 @@
 ****************************************************************************/
 
 #include "qcolormask.h"
-#include <Qt3DRender/private/qrenderstate_p.h>
+#include "qcolormask_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QColorMaskPrivate : public QRenderStatePrivate
-{
-public:
-    QColorMaskPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::ColorMask)
-        , m_redMasked(true)
-        , m_greenMasked(true)
-        , m_blueMasked(true)
-        , m_alphaMasked(true)
-    {}
-
-    bool m_redMasked;
-    bool m_greenMasked;
-    bool m_blueMasked;
-    bool m_alphaMasked;
-
-    Q_DECLARE_PUBLIC(QColorMask)
-};
 
 /*!
     \class Qt3DRender::QColorMask
@@ -174,6 +156,18 @@ void QColorMask::copy(const QNode *ref)
     d_func()->m_greenMasked = refState->d_func()->m_greenMasked;
     d_func()->m_blueMasked = refState->d_func()->m_blueMasked;
     d_func()->m_alphaMasked = refState->d_func()->m_alphaMasked;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QColorMask::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QColorMaskData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QColorMask);
+    data.redMasked = d->m_redMasked;
+    data.greenMasked = d->m_greenMasked;
+    data.blueMasked = d->m_blueMasked;
+    data.alphaMasked = d->m_alphaMasked;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
