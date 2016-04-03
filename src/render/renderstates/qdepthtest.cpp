@@ -39,28 +39,12 @@
 ****************************************************************************/
 
 #include "qdepthtest.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qdepthtest_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QDepthTest;
-
-class QDepthTestPrivate : public QRenderStatePrivate
-{
-public :
-    QDepthTestPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::DepthTest)
-        , m_depthFunction(QDepthTest::Never)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QDepthTest)
-    QDepthTest::DepthFunction m_depthFunction;
-};
 
 void QDepthTest::copy(const QNode *ref)
 {
@@ -92,6 +76,15 @@ void QDepthTest::setDepthFunction(QDepthTest::DepthFunction depthFunction)
         d->m_depthFunction = depthFunction;
         emit depthFunctionChanged(depthFunction);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QDepthTest::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QDepthTestData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QDepthTest);
+    data.depthFunction = d->m_depthFunction;
+    return creationChange;
 }
 
 } // namespace Qt3DRender

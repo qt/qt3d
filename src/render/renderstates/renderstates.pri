@@ -33,7 +33,8 @@ HEADERS += \
     $$PWD/qblendequationarguments_p.h \
     $$PWD/qclipplane_p.h \
     $$PWD/qcolormask_p.h \
-    $$PWD/qcullface_p.h
+    $$PWD/qcullface_p.h \
+    $$PWD/qdepthtest_p.h
 
 
 SOURCES += \
