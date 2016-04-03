@@ -38,26 +38,12 @@
 ****************************************************************************/
 
 #include "qclipplane.h"
-#include <Qt3DRender/private/qrenderstate_p.h>
+#include "qclipplane_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QClipPlanePrivate : public QRenderStatePrivate
-{
-public:
-    QClipPlanePrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::ClipPlane)
-        , m_planeIndex(0)
-        , m_normal()
-        , m_distance(0.0f)
-    {}
-
-    int m_planeIndex;
-    QVector3D m_normal;
-    float m_distance;
-};
 
 /*!
     \class Qt3DRender::QClipPlane
@@ -157,6 +143,17 @@ void QClipPlane::copy(const QNode *ref)
     d_func()->m_planeIndex = refClip->planeIndex();
     d_func()->m_normal = refClip->normal();
     d_func()->m_distance = refClip->distance();
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QClipPlane::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QClipPlaneData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QClipPlane);
+    data.normal = d->m_normal;
+    data.distance = d->m_distance;
+    data.planeIndex = d->m_planeIndex;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
