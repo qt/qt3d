@@ -38,27 +38,12 @@
 ****************************************************************************/
 
 #include "qpolygonoffset.h"
-#include <private/qrenderstate_p.h>
+#include "qpolygonoffset_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QPolygonOffsetPrivate : public QRenderStatePrivate
-{
-public:
-    QPolygonOffsetPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::PolygonOffset)
-        , m_scaleFactor(0)
-        , m_depthSteps(0)
-    {
-    }
-
-    float m_scaleFactor;
-    float m_depthSteps;
-
-    Q_DECLARE_PUBLIC(QPolygonOffset)
-};
 
 QPolygonOffset::QPolygonOffset(QNode *parent)
     : QRenderState(*new QPolygonOffsetPrivate, parent)
@@ -106,6 +91,16 @@ void QPolygonOffset::copy(const QNode *ref)
     const QPolygonOffset *refState = static_cast<const QPolygonOffset *>(ref);
     d_func()->m_scaleFactor = refState->d_func()->m_scaleFactor;
     d_func()->m_depthSteps = refState->d_func()->m_depthSteps;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QPolygonOffset::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QPolygonOffsetData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QPolygonOffset);
+    data.scaleFactor = d->m_scaleFactor;
+    data.depthSteps = d->m_depthSteps;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
