@@ -29,7 +29,8 @@ HEADERS += \
     $$PWD/qdepthtest.h \
     $$PWD/qnodepthmask.h \
     $$PWD/qalphatest_p.h \
-    $$PWD/qblendequation_p.h
+    $$PWD/qblendequation_p.h \
+    $$PWD/qblendequationarguments_p.h
 
 
 SOURCES += \

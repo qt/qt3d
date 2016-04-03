@@ -119,6 +119,7 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)
     QT3D_CLONEABLE(QBlendEquationArguments)
+    Qt3DCore::QNodeCreatedChangeBasePtr createNodeCreationChange() const Q_DECL_OVERRIDE;
 };
 
 } // namespace Qt3DRender

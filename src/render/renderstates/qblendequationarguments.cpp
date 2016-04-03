@@ -39,35 +39,12 @@
 ****************************************************************************/
 
 #include "qblendequationarguments.h"
-#include "qrenderstate_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
-#include <private/qnode_p.h>
+#include "qblendequationarguments_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QBlendEquationArgumentsPrivate : public QRenderStatePrivate
-{
-public:
-    QBlendEquationArgumentsPrivate(QRenderStatePrivate::Type type = QRenderStatePrivate::BlendEquationArguments)
-        : QRenderStatePrivate(type)
-        , m_sourceRgb(QBlendEquationArguments::Zero)
-        , m_sourceAlpha(QBlendEquationArguments::Zero)
-        , m_destinationRgb(QBlendEquationArguments::Zero)
-        , m_destinationAlpha(QBlendEquationArguments::Zero)
-        , m_bufferIndex(-1)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QBlendEquationArguments)
-
-    QBlendEquationArguments::Blending m_sourceRgb;
-    QBlendEquationArguments::Blending m_sourceAlpha;
-    QBlendEquationArguments::Blending m_destinationRgb;
-    QBlendEquationArguments::Blending m_destinationAlpha;
-    int m_bufferIndex;
-};
 
 /*!
     \class Qt3DRender::QBlendEquationArguments
@@ -304,6 +281,19 @@ void QBlendEquationArguments::setBufferIndex(int bufferIndex)
         d->m_bufferIndex = bufferIndex;
         emit bufferIndexChanged(bufferIndex);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquationArguments::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QBlendEquationArgumentsData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QBlendEquationArguments);
+    data.sourceRgb = d->m_sourceRgb;
+    data.sourceAlpha = d->m_sourceAlpha;
+    data.destinationRgb = d->m_destinationRgb;
+    data.destinationAlpha = d->m_destinationAlpha;
+    data.bufferIndex = d->m_bufferIndex;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
