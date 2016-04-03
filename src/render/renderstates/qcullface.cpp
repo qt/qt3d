@@ -39,26 +39,12 @@
 ****************************************************************************/
 
 #include "qcullface.h"
-#include <private/qnode_p.h>
-#include "qrenderstate_p.h"
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qcullface_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QCullFacePrivate : public QRenderStatePrivate
-{
-public:
-    QCullFacePrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::CullFace)
-        , m_mode(QCullFace::Back)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QCullFace)
-    QCullFace::CullingMode m_mode;
-};
 
 QCullFace::QCullFace(QNode *parent)
     : QRenderState(*new QCullFacePrivate, parent)
@@ -90,6 +76,15 @@ void QCullFace::setMode(QCullFace::CullingMode mode)
         d->m_mode = mode;
         emit modeChanged(mode);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QCullFace::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QCullFaceData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QCullFace);
+    data.mode = d->m_mode;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
