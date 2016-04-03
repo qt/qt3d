@@ -39,26 +39,12 @@
 ****************************************************************************/
 
 #include "qfrontface.h"
-#include "qrenderstate_p.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qfrontface_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QFrontFacePrivate : public QRenderStatePrivate
-{
-public:
-    QFrontFacePrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::FrontFace)
-        , m_direction(QFrontFace::ClockWise)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QFrontFace)
-    QFrontFace::WindingDirection m_direction;
-};
 
 QFrontFace::QFrontFace(QNode *parent)
     : QRenderState(*new QFrontFacePrivate, parent)
@@ -90,6 +76,15 @@ void QFrontFace::setDirection(QFrontFace::WindingDirection direction)
         d->m_direction = direction;
         emit directionChanged(direction);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QFrontFace::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QFrontFaceData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QFrontFace);
+    data.direction = d->m_direction;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
