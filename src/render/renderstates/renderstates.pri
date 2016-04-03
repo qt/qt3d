@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/qcolormask_p.h \
     $$PWD/qcullface_p.h \
     $$PWD/qdepthtest_p.h \
-    $$PWD/qfrontface_p.h
+    $$PWD/qfrontface_p.h \
+    $$PWD/qpointsize_p.h
 
 
 SOURCES += \

@@ -36,27 +36,14 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 #include "qpointsize.h"
-#include "qrenderstate_p.h"
+#include "qpointsize_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QPointSizePrivate : public QRenderStatePrivate
-{
-public:
-    QPointSizePrivate(QPointSize::SizeMode sizeMode, float value)
-        : QRenderStatePrivate(QRenderStatePrivate::PointSize)
-        , m_sizeMode(sizeMode)
-        , m_value(value)
-    {}
-
-    QPointSize::SizeMode m_sizeMode;
-    float m_value;
-
-    Q_DECLARE_PUBLIC(QPointSize)
-};
 
 /*!
     \class Qt3DRender::QPointSize
@@ -114,6 +101,16 @@ void QPointSize::copy(const Qt3DCore::QNode *ref)
     Q_D(QPointSize);
     d->m_value = refState->d_func()->m_value;
     d->m_sizeMode = refState->d_func()->m_sizeMode;
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QPointSize::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QPointSizeData>::create(this);
+    auto &data = creationChange->data;
+    Q_D(const QPointSize);
+    data.sizeMode = d->m_sizeMode;
+    data.value = d->m_value;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
