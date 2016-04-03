@@ -28,7 +28,8 @@ HEADERS += \
     $$PWD/qseamlesscubemap.h \
     $$PWD/qdepthtest.h \
     $$PWD/qnodepthmask.h \
-    $$PWD/qalphatest_p.h
+    $$PWD/qalphatest_p.h \
+    $$PWD/qblendequation_p.h
 
 
 SOURCES += \

@@ -38,27 +38,13 @@
 **
 ****************************************************************************/
 
-#include "qrenderstate_p.h"
 #include "qblendequation.h"
-#include <private/qnode_p.h>
-#include <Qt3DCore/qscenepropertychange.h>
+#include "qblendequation_p.h"
+#include <Qt3DRender/private/qrenderstatecreatedchange_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QBlendEquationPrivate : public QRenderStatePrivate
-{
-public:
-    QBlendEquationPrivate()
-        : QRenderStatePrivate(QRenderStatePrivate::BlendEquation)
-        , m_blendFunction(QBlendEquation::Add)
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QBlendEquation)
-    QBlendEquation::BlendFunction m_blendFunction;
-};
 
 void QBlendEquation::copy(const QNode *ref)
 {
@@ -90,6 +76,14 @@ void QBlendEquation::setBlendFunction(QBlendEquation::BlendFunction blendFunctio
         d->m_blendFunction = blendFunction;
         emit blendFunctionChanged(blendFunction);
     }
+}
+
+Qt3DCore::QNodeCreatedChangeBasePtr QBlendEquation::createNodeCreationChange() const
+{
+    auto creationChange = QRenderStateCreatedChangePtr<QBlendEquationData>::create(this);
+    auto &data = creationChange->data;
+    data.blendFunction = d_func()->m_blendFunction;
+    return creationChange;
 }
 
 } // namespace Qt3DRender
