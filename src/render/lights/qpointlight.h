@@ -51,27 +51,26 @@ class QPointLightPrivate;
 class QT3DRENDERSHARED_EXPORT QPointLight : public QLight
 {
     Q_OBJECT
-    Q_PROPERTY(QVector3D attenuation READ attenuation WRITE setAttenuation NOTIFY attenuationChanged)
+    Q_PROPERTY(float constantAttenuation READ constantAttenuation WRITE setConstantAttenuation NOTIFY constantAttenuationChanged)
+    Q_PROPERTY(float linearAttenuation READ linearAttenuation WRITE setLinearAttenuation NOTIFY linearAttenuationChanged)
+    Q_PROPERTY(float quadraticAttenuation READ quadraticAttenuation WRITE setQuadraticAttenuation NOTIFY quadraticAttenuationChanged)
 
 public:
     explicit QPointLight(Qt3DCore::QNode *parent = 0);
 
-    QVector3D attenuation() const;
-
     float constantAttenuation() const;
-    void setConstantAttenuation(float value);
-
     float linearAttenuation() const;
-    void setLinearAttenuation(float value);
-
     float quadraticAttenuation() const;
-    void setQuadraticAttenuation(float value);
 
 public Q_SLOTS:
-    void setAttenuation(const QVector3D &value);
+    void setConstantAttenuation(float value);
+    void setLinearAttenuation(float value);
+    void setQuadraticAttenuation(float value);
 
 Q_SIGNALS:
-    void attenuationChanged(const QVector3D &attenuation);
+    void constantAttenuationChanged(float constantAttenuation);
+    void linearAttenuationChanged(float linearAttenuation);
+    void quadraticAttenuationChanged(float quadraticAttenuation);
 
 protected:
     Q_DECLARE_PRIVATE(QPointLight)

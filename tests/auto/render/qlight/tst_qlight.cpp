@@ -68,14 +68,18 @@ private Q_SLOTS:
         QCOMPARE(pointLight.type(), Qt3DRender::QLight::PointLight);
         pointLight.setColor(Qt::green);
         pointLight.setIntensity(0.5f);
-        pointLight.setAttenuation(QVector3D(0.5f, 0.0f, 1.0f));
+        pointLight.setConstantAttenuation(0.5f);
+        pointLight.setLinearAttenuation(0.0f);      // No actual event triggered as 0.0f is default
+        pointLight.setQuadraticAttenuation(1.0f);
 
         QScopedPointer<Qt3DRender::QPointLight> pointLightClone(static_cast<Qt3DRender::QPointLight *>(QNode::clone(&pointLight)));
         QVERIFY(pointLightClone.data());
         QCOMPARE(pointLightClone->type(), Qt3DRender::QLight::PointLight);
         QCOMPARE(pointLight.color(), pointLightClone->color());
         QCOMPARE(pointLight.intensity(), pointLightClone->intensity());
-        QCOMPARE(pointLight.attenuation(), pointLightClone->attenuation());
+        QCOMPARE(pointLight.constantAttenuation(), pointLightClone->constantAttenuation());
+        QCOMPARE(pointLight.linearAttenuation(), pointLightClone->linearAttenuation());
+        QCOMPARE(pointLight.quadraticAttenuation(), pointLightClone->quadraticAttenuation());
     }
 
     void checkDirectionalLightCloning()
@@ -150,10 +154,12 @@ private Q_SLOTS:
 
         pointLight->setColor(Qt::green);
         pointLight->setIntensity(0.5f);
-        pointLight->setAttenuation(QVector3D(0.5f, 0.0f, 1.0f));
+        pointLight->setConstantAttenuation(0.5f);
+        pointLight->setLinearAttenuation(0.0f);     // No actual event triggered as 0.0f is default
+        pointLight->setQuadraticAttenuation(1.0f);
         QCoreApplication::processEvents();
 
-        QCOMPARE(pointLightArbiter.events.size(), 3);
+        QCOMPARE(pointLightArbiter.events.size(), 4);
         Qt3DCore::QScenePropertyChangePtr change = pointLightArbiter.events[0].staticCast<Qt3DCore::QScenePropertyChange>();
         QCOMPARE(change->propertyName(), "color");
         QCOMPARE(change->subjectId(), pointLight->id());
@@ -165,9 +171,14 @@ private Q_SLOTS:
         QCOMPARE(change->value().value<float>(), 0.5f);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
         change = pointLightArbiter.events[2].staticCast<Qt3DCore::QScenePropertyChange>();
-        QCOMPARE(change->propertyName(), "attenuation");
+        QCOMPARE(change->propertyName(), "constantAttenuation");
         QCOMPARE(change->subjectId(), pointLight->id());
-        QCOMPARE(change->value().value<QVector3D>(), QVector3D(0.5f, 0.0f, 1.0f));
+        QCOMPARE(change->value().value<float>(), 0.5f);
+        QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
+        change = pointLightArbiter.events[3].staticCast<Qt3DCore::QScenePropertyChange>();
+        QCOMPARE(change->propertyName(), "quadraticAttenuation");
+        QCOMPARE(change->subjectId(), pointLight->id());
+        QCOMPARE(change->value().value<float>(), 1.0f);
         QCOMPARE(change->type(), Qt3DCore::NodeUpdated);
 
         pointLightArbiter.events.clear();

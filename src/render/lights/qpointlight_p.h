@@ -64,7 +64,9 @@ class QPointLightPrivate : public QLightPrivate
 public:
     QPointLightPrivate(QLight::Type type = QLight::PointLight);
 
-    QVector3D m_attenuation;
+    float m_constantAttenuation;
+    float m_linearAttenuation;
+    float m_quadraticAttenuation;
 
     Q_DECLARE_PUBLIC(QPointLight)
 };

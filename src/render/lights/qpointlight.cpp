@@ -63,7 +63,9 @@ namespace Qt3DRender {
 
 QPointLightPrivate::QPointLightPrivate(QLight::Type type)
     : QLightPrivate(type)
-    , m_attenuation(0.0f, 0.0f, 0.002f)
+    , m_constantAttenuation(0.0f)
+    , m_linearAttenuation(0.0f)
+    , m_quadraticAttenuation(0.002f)
 {
 }
 
@@ -98,63 +100,48 @@ QPointLight::QPointLight(QPointLightPrivate &dd, QNode *parent)
 {
 }
 
-QVector3D QPointLight::attenuation() const
-{
-    Q_D(const QPointLight);
-    return d->m_attenuation;
-}
-
-void QPointLight::setAttenuation(const QVector3D &value)
-{
-    Q_D(QPointLight);
-    if (d->m_attenuation != value) {
-        d->m_attenuation = value;
-        emit attenuationChanged(value);
-    }
-}
-
 float QPointLight::constantAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.x();
+    return d->m_constantAttenuation;
 }
 
 void QPointLight::setConstantAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.x() != value) {
-        d->m_attenuation.setX(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (d->m_constantAttenuation != value) {
+        d->m_constantAttenuation = value;
+        emit constantAttenuationChanged(value);
     }
 }
 
 float QPointLight::linearAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.y();
+    return d->m_linearAttenuation;
 }
 
 void QPointLight::setLinearAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.y() != value) {
-        d->m_attenuation.setY(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (d->m_linearAttenuation != value) {
+        d->m_linearAttenuation = value;
+        emit linearAttenuationChanged(value);
     }
 }
 
 float QPointLight::quadraticAttenuation() const
 {
     Q_D(const QPointLight);
-    return d->m_attenuation.z();
+    return d->m_quadraticAttenuation;
 }
 
 void QPointLight::setQuadraticAttenuation(float value)
 {
     Q_D(QPointLight);
-    if (d->m_attenuation.z() != value) {
-        d->m_attenuation.setZ(value);
-        emit attenuationChanged(d->m_attenuation);
+    if (d->m_quadraticAttenuation != value) {
+        d->m_quadraticAttenuation = value;
+        emit quadraticAttenuationChanged(value);
     }
 }
 
