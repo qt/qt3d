@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_TEXTUREIMAGE_P_H
-#define QT3DRENDER_TEXTUREIMAGE_P_H
+#ifndef QT3DRENDER_QTEXTUREIMAGE_P_H
+#define QT3DRENDER_QTEXTUREIMAGE_P_H
 
 //
 //  W A R N I N G
@@ -51,12 +51,28 @@
 // We mean it.
 //
 
-#include "qabstracttextureimage.h"
+#include <Qt3DRender/private/qabstracttextureimage_p.h>
+#include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/private/qurlhelper_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
+
+class QTextureImagePrivate : public QAbstractTextureImagePrivate
+{
+public:
+    QTextureImagePrivate()
+        : QAbstractTextureImagePrivate()
+        , m_status(QTextureImage::Loading)
+    {
+    }
+
+    Q_DECLARE_PUBLIC(QTextureImage)
+
+    QUrl m_source;
+    QTextureImage::Status m_status;
+};
 
 class QImageTextureDataFunctor : public QTextureImageDataGenerator
 {
@@ -104,4 +120,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_TEXTUREIMAGE_P_H
+#endif // QT3DRENDER_QTEXTUREIMAGE_P_H

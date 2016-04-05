@@ -45,18 +45,6 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-class QTextureImagePrivate : public QAbstractTextureImagePrivate
-{
-public:
-    QTextureImagePrivate()
-        : QAbstractTextureImagePrivate()
-    {
-    }
-
-    Q_DECLARE_PUBLIC(QTextureImage)
-    QUrl m_source;
-};
-
 /*!
     \class Qt3DRender::QTextureImage
     \inmodule Qt3DRender
@@ -103,6 +91,12 @@ QUrl QTextureImage::source() const
     return d->m_source;
 }
 
+QTextureImage::Status QTextureImage::status() const
+{
+    Q_D(const QTextureImage);
+    return d->m_status;
+}
+
 /*!
   \property Qt3DRender::QTextureImage::source
 
@@ -128,6 +122,15 @@ void QTextureImage::setSource(const QUrl &source)
         d->m_source = source;
         emit sourceChanged(source);
         notifyDataGeneratorChanged();
+    }
+}
+
+void QTextureImage::setStatus(Status status)
+{
+    Q_D(QTextureImage);
+    if (status != d->m_status) {
+        d->m_status = status;
+        emit statusChanged(status);
     }
 }
 
