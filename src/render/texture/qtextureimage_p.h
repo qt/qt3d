@@ -94,7 +94,6 @@ public:
             QImage img;
             if (img.load(source)) {
                 dataPtr->setImage(img);
-
                 return dataPtr;
             }
             dataPtr.reset();

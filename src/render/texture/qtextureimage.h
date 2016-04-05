@@ -78,6 +78,7 @@ Q_SIGNALS:
     void statusChanged(Status status);
 
 protected:
+    void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void setStatus(Status status);
 
