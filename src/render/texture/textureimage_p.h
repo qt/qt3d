@@ -54,6 +54,7 @@
 #include <Qt3DRender/private/backendnode_p.h>
 #include <Qt3DRender/private/handle_types_p.h>
 #include <Qt3DRender/qabstracttexture.h>
+#include <Qt3DRender/qtextureimage.h>
 #include <Qt3DRender/qabstracttextureimage.h>
 #include <qglobal.h>
 
@@ -90,6 +91,7 @@ public:
     void setTextureManager(TextureManager *manager);
     void setTextureImageManager(TextureImageManager *manager);
     void setTextureDataManager(TextureDataManager *manager);
+    void setStatus(QTextureImage::Status status);
     void unsetDirty();
 
     inline bool isDirty() const { return m_dirty; }

@@ -88,6 +88,14 @@ public:
     }
 };
 
+template<class T>
+const T *functor_cast(const QAbstractFunctor *other)
+{
+    if (other->id() == functorTypeId<T>())
+        return static_cast<const T *>(other);
+    return Q_NULLPTR;
+}
+
 } // Qt3D
 
 QT_END_NAMESPACE

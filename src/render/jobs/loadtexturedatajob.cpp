@@ -41,6 +41,7 @@
 #include <Qt3DRender/private/nodemanagers_p.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
+#include <Qt3DRender/private/qtextureimage_p.h>
 #include <Qt3DRender/qtexturedata.h>
 #include <QThread>
 #include <Qt3DRender/private/job_common_p.h>
@@ -60,7 +61,8 @@ LoadTextureDataJob::~LoadTextureDataJob()
 {
 }
 
-static QPair<HTextureData, QTexImageData *> textureDataFromGenerator(TextureDataManager *textureDataManager, QTextureImageDataGeneratorPtr generator)
+static QPair<HTextureData, QTexImageData *> textureDataFromGenerator(TextureDataManager *textureDataManager,
+                                                                     QTextureImageDataGeneratorPtr generator)
 {
     HTextureData textureDataHandle;
     QTexImageData *data = Q_NULLPTR;
@@ -127,6 +129,11 @@ void LoadTextureDataJob::run()
                 QTextureImageDataGeneratorPtr generator = texImg->dataGenerator();
 
                 QPair<HTextureData, QTexImageData *> handleData = textureDataFromGenerator(textureDataManager, generator);
+
+                // If using QTextureImage, notify the frontend of the change in status
+                const QImageTextureDataFunctor *imageGenerator = functor_cast<QImageTextureDataFunctor>(generator.data());
+                if (imageGenerator)
+                    texImg->setStatus(imageGenerator->status());
 
                 HTextureData textureDataHandle = handleData.first;
                 QTexImageData *data = handleData.second;

@@ -38,6 +38,7 @@
 ****************************************************************************/
 
 #include "textureimage_p.h"
+#include <Qt3DCore/qbackendscenepropertychange.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/managers_p.h>
 #include <Qt3DRender/private/texturedatamanager_p.h>
@@ -174,6 +175,16 @@ void TextureImage::setTextureDataHandle(HTextureData handle)
 {
     m_textureDataHandle = handle;
     updateDNA();
+}
+
+void TextureImage::setStatus(QTextureImage::Status status)
+{
+    // Notify the frontend
+    QBackendScenePropertyChangePtr e(new QBackendScenePropertyChange(NodeUpdated, peerId()));
+    e->setPropertyName("status");
+    e->setValue(status);
+    e->setTargetNode(peerId());
+    notifyObservers(e);
 }
 
 void TextureImage::updateDNA()

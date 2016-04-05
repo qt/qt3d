@@ -94,6 +94,7 @@ public:
             QImage img;
             if (img.load(source)) {
                 dataPtr->setImage(img);
+
                 return dataPtr;
             }
             dataPtr.reset();
@@ -110,10 +111,16 @@ public:
         return (otherFunctor != Q_NULLPTR && otherFunctor->m_url == m_url);
     }
 
+    QTextureImage::Status status() const
+    {
+        return m_status;
+    }
+
     QT3D_FUNCTOR(QImageTextureDataFunctor)
 
 private:
     QUrl m_url;
+    QTextureImage::Status m_status;
 };
 
 } // namespace Qt3DRender
