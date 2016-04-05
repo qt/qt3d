@@ -891,7 +891,7 @@ void AssimpRawTextureImage::setData(const QByteArray &data)
 {
     if (data != m_data) {
         m_data = data;
-        update();
+        notifyDataGeneratorChanged();
     }
 }
 

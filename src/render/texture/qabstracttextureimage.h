@@ -47,6 +47,10 @@ QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
+namespace Render {
+class TextureImage;
+}
+
 // TO DO TexImageDataPtr -> QImageDataPtr + d_ptr
 // We might also get rid of the layer, face, mipmap level from
 // TexImageDataPtr and store that in the functor directly
@@ -77,9 +81,6 @@ public:
     int layer() const;
     QAbstractTextureProvider::CubeMapFace face() const;
 
-    void update();
-    virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
-
 public Q_SLOTS:
     void setMipLevel(int level);
     void setLayer(int layer);
@@ -92,10 +93,13 @@ Q_SIGNALS:
 
 protected:
     void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
+    void notifyDataGeneratorChanged();
+    virtual QTextureImageDataGeneratorPtr dataGenerator() const = 0;
     QAbstractTextureImage(QAbstractTextureImagePrivate &dd, Qt3DCore::QNode *parent = 0);
 
 private:
     Q_DECLARE_PRIVATE(QAbstractTextureImage)
+    friend class Render::TextureImage;
 };
 
 } // namespace Qt3DRender

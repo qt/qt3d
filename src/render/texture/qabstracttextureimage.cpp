@@ -188,14 +188,14 @@ void QAbstractTextureImage::setFace(QAbstractTextureProvider::CubeMapFace face)
 }
 
 /*!
-    Triggers an update of the data functor that is sent to the backend.
+    Triggers an update of the data generator that is sent to the backend.
  */
-void QAbstractTextureImage::update()
+void QAbstractTextureImage::notifyDataGeneratorChanged()
 {
     Q_D(QAbstractTextureImage);
     if (d->m_changeArbiter != Q_NULLPTR) {
         QScenePropertyChangePtr change(new QScenePropertyChange(NodeUpdated, QSceneChange::Node, id()));
-        change->setPropertyName("dataFunctor");
+        change->setPropertyName("dataGenerator");
         change->setValue(QVariant::fromValue(dataGenerator()));
         d->notifyObservers(change);
     }
