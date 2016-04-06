@@ -113,7 +113,7 @@
 #include <Qt3DRender/private/geometryrenderermanager_p.h>
 #include <Qt3DRender/private/loadbufferjob_p.h>
 #include <Qt3DRender/private/loadgeometryjob_p.h>
-#include <Qt3DRender/private/qsceneparserfactory_p.h>
+#include <Qt3DRender/private/qsceneiofactory_p.h>
 #include <Qt3DRender/private/frustumculling_p.h>
 #include <Qt3DRender/private/light_p.h>
 #include <Qt3DRender/private/dispatchcompute_p.h>
@@ -472,9 +472,9 @@ QVector<Qt3DCore::QAspectJobPtr> QRenderAspectPrivate::createGeometryRendererJob
 
 void QRenderAspectPrivate::loadSceneParsers()
 {
-    const QStringList keys = QSceneParserFactory::keys();
-    for (const QString &key : keys) {
-        QSceneIOHandler *sceneIOHandler = QSceneParserFactory::create(key, QStringList());
+    QStringList keys = QSceneIOFactory::keys();
+    Q_FOREACH (QString key, keys) {
+        QSceneIOHandler *sceneIOHandler = QSceneIOFactory::create(key, QStringList());
         if (sceneIOHandler != nullptr)
             m_sceneIOHandler.append(sceneIOHandler);
     }

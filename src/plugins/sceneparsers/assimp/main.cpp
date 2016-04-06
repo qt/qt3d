@@ -37,22 +37,22 @@
 **
 ****************************************************************************/
 
-#include "assimpparser.h"
+#include "assimpio.h"
 
-#include <Qt3DRender/QSceneParserPlugin>
+#include <Qt3DRender/QSceneIOPlugin>
 
 QT_BEGIN_NAMESPACE
 
-class AssimpSceneParserPlugin : public Qt3DRender::QSceneParserPlugin
+class AssimpSceneIOPlugin : public Qt3DRender::QSceneIOPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QSceneParserFactoryInterface_iid FILE "assimp.json")
+    Q_PLUGIN_METADATA(IID QSceneIOFactoryInterface_iid FILE "assimp.json")
 
     Qt3DRender::QSceneIOHandler *create(const QString &key, const QStringList &paramList) Q_DECL_OVERRIDE
     {
         Q_UNUSED(key)
         Q_UNUSED(paramList)
-        return new Qt3DRender::AssimpParser();
+        return new Qt3DRender::AssimpIO();
     }
 };
 

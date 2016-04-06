@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3D_ASSIMPPARSER_H
-#define QT3D_ASSIMPPARSER_H
+#ifndef QT3D_ASSIMPIO_H
+#define QT3D_ASSIMPIO_H
 
 //
 //  W A R N I N G
@@ -80,15 +80,15 @@ class QAbstractTexture;
 class QMesh;
 class QGeometryRenderer;
 
-Q_DECLARE_LOGGING_CATEGORY(AssimpParserLog)
+Q_DECLARE_LOGGING_CATEGORY(AssimpIOLog)
 
-class AssimpParser : public QSceneIOHandler
+class AssimpIO : public QSceneIOHandler
 {
     Q_OBJECT
 
 public:
-    AssimpParser();
-    ~AssimpParser();
+    AssimpIO();
+    ~AssimpIO();
 
     // SceneParserInterface interface
     void setSource(const QUrl& source) Q_DECL_OVERRIDE;
@@ -143,7 +143,7 @@ private:
 
     QDir     m_sceneDir;
     bool     m_sceneParsed;
-    AssimpParser::SceneImporter *m_scene;
+    AssimpIO::SceneImporter *m_scene;
     static QStringList assimpSupportedFormatsList;
 };
 
@@ -151,4 +151,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3D_ASSIMPPARSER_H
+#endif // QT3D_ASSIMPIO_H

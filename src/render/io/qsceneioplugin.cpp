@@ -37,35 +37,30 @@
 **
 ****************************************************************************/
 
-#ifndef QSCENEPARSERPLUGIN_H
-#define QSCENEPARSERPLUGIN_H
-
-#include <QtCore/QObject>
-#include <QtCore/QtPlugin>
-#include <QtCore/QFactoryInterface>
-
-#include <Qt3DRender/qt3drender_global.h>
+#include "qsceneioplugin.h"
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
 
-#define QSceneParserFactoryInterface_iid "org.qt-project.Qt3DRender.QSceneParserFactoryInterface 5.6"
-
-class QSceneIOHandler;
-
-class QT3DRENDERSHARED_EXPORT QSceneParserPlugin : public QObject
+QSceneIOPlugin::QSceneIOPlugin(QObject *parent) : QObject(parent)
 {
-    Q_OBJECT
-public:
-    explicit QSceneParserPlugin(QObject *parent = nullptr);
-    ~QSceneParserPlugin();
 
-    virtual QSceneIOHandler *create(const QString &key, const QStringList &paramList);
-};
+}
+
+QSceneIOPlugin::~QSceneIOPlugin()
+{
+
+}
+
+QSceneIOHandler *QSceneIOPlugin::create(const QString &key, const QStringList &paramList)
+{
+    Q_UNUSED(key)
+    Q_UNUSED(paramList)
+    return nullptr;
+}
 
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QSCENEPARSERPLUGIN_H

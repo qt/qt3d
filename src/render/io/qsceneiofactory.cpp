@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#include "qsceneparserfactory_p.h"
-#include "qsceneparserplugin.h"
+#include "qsceneiofactory_p.h"
+#include "qsceneioplugin.h"
 #include "qsceneiohandler_p.h"
 
 #include <QtCore/private/qfactoryloader_p.h>
@@ -50,11 +50,11 @@ QT_BEGIN_NAMESPACE
 namespace Qt3DRender {
 
 #ifndef QT_NO_LIBRARY
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneParserFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
-Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneParserFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QSceneIOFactoryInterface_iid, QLatin1String("/sceneparsers"), Qt::CaseInsensitive))
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, directLoader, (QSceneIOFactoryInterface_iid, QLatin1String(""), Qt::CaseInsensitive))
 #endif
 
-QStringList QSceneParserFactory::keys(const QString &pluginPath)
+QStringList QSceneIOFactory::keys(const QString &pluginPath)
 {
 #ifndef QT_NO_LIBRARY
     QStringList list;
@@ -77,15 +77,15 @@ QStringList QSceneParserFactory::keys(const QString &pluginPath)
 #endif
 }
 
-QSceneIOHandler *QSceneParserFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
+QSceneIOHandler *QSceneIOFactory::create(const QString &name, const QStringList &args, const QString &pluginPath)
 {
 #ifndef QT_NO_LIBRARY
     if (!pluginPath.isEmpty()) {
         QCoreApplication::addLibraryPath(pluginPath);
-        if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneParserPlugin>(directLoader(), name, args))
+        if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneIOPlugin>(directLoader(), name, args))
             return ret;
     }
-    if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneParserPlugin>(loader(), name, args))
+    if (QSceneIOHandler *ret = qLoadPlugin<QSceneIOHandler, QSceneIOPlugin>(loader(), name, args))
         return ret;
 #endif
     return nullptr;

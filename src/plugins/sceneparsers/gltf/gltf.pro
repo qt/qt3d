@@ -1,17 +1,16 @@
-TARGET = gltfsceneparser
-
+TARGET = gltfsceneio
 QT += core-private 3dcore 3dcore-private 3drender 3drender-private 3dextras
 
 HEADERS += \
-    gltfparser.h
+    gltfio.h
 
 SOURCES += \
-    gltfparser.cpp \
-    main.cpp
+    main.cpp \
+    gltfio.cpp
 
 DISTFILES += \
     gltf.json
 
 PLUGIN_TYPE = sceneparsers
-PLUGIN_CLASS_NAME = GLTFSceneParserPlugin
+PLUGIN_CLASS_NAME = GLTFSceneIOPlugin
 load(qt_plugin)

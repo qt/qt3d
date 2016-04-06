@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef GLTFPARSER_H
-#define GLTFPARSER_H
+#ifndef GLTFIO_H
+#define GLTFIO_H
 
 //
 //  W A R N I N G
@@ -80,15 +80,15 @@ class QTechnique;
 class QParameter;
 class QGeometryRenderer;
 
-Q_DECLARE_LOGGING_CATEGORY(GLTFParserLog)
+Q_DECLARE_LOGGING_CATEGORY(GLTFIOLog)
 
-class GLTFParser : public QSceneIOHandler
+class GLTFIO : public QSceneIOHandler
 {
     Q_OBJECT
 
 public:
-    GLTFParser();
-    ~GLTFParser();
+    GLTFIO();
+    ~GLTFIO();
 
     void setBasePath(const QString& path);
     bool setJSON( const QJsonDocument &json );
@@ -209,4 +209,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // GLTFPARSER_H
+#endif // GLTFIO_H
