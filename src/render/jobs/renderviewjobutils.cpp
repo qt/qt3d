@@ -283,13 +283,13 @@ Technique *findTechniqueForEffect(Renderer *renderer,
 
             // Iterate through the filter criteria and for each one search for a criteria on the
             // technique that satisfies it
-            Q_FOREACH (QNodeId filterAnnotationId, techniqueFilter->filters()) {
+            Q_FOREACH (QNodeId filterKeyId, techniqueFilter->filters()) {
                 foundMatch = false;
-                Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
+                FilterKey *filterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                Q_FOREACH (QNodeId techniqueAnnotationId, technique->filterKeys()) {
-                    Annotation *techniqueAnnotation = manager->criterionManager()->lookupResource(techniqueAnnotationId);
-                    if ((foundMatch = (*techniqueAnnotation == *filterAnnotation)))
+                Q_FOREACH (QNodeId techniqueFilterKeyId, technique->filterKeys()) {
+                    FilterKey *techniqueFilterKey = manager->filterKeyManager()->lookupResource(techniqueFilterKeyId);
+                    if ((foundMatch = (*techniqueFilterKey == *filterKey)))
                         break;
                 }
 
@@ -329,13 +329,13 @@ RenderRenderPassList findRenderPassesForTechnique(NodeManagers *manager,
             if (!foundMatch && renderPass->filterKeys().size() >= passFilter->filters().size()) {
 
                 // Iterate through the filter criteria and look for render passes with criteria that satisfy them
-                Q_FOREACH (QNodeId filterAnnotationId, passFilter->filters()) {
+                Q_FOREACH (QNodeId filterKeyId, passFilter->filters()) {
                     foundMatch = false;
-                    Annotation *filterAnnotation = manager->criterionManager()->lookupResource(filterAnnotationId);
+                    FilterKey *filterFilterKey = manager->filterKeyManager()->lookupResource(filterKeyId);
 
-                    Q_FOREACH (QNodeId passAnnotationId, renderPass->filterKeys()) {
-                        Annotation *passAnnotation = manager->criterionManager()->lookupResource(passAnnotationId);
-                        if ((foundMatch = (*passAnnotation == *filterAnnotation)))
+                    Q_FOREACH (QNodeId passFilterKeyId, renderPass->filterKeys()) {
+                        FilterKey *passFilterKey = manager->filterKeyManager()->lookupResource(passFilterKeyId);
+                        if ((foundMatch = (*passFilterKey == *filterFilterKey)))
                             break;
                     }
 

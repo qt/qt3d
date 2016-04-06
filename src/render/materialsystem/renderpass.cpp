@@ -39,7 +39,7 @@
 ****************************************************************************/
 
 #include "renderpass_p.h"
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/qrenderstate.h>
 #include <Qt3DRender/qrenderpass.h>
 #include <Qt3DRender/qparameter.h>

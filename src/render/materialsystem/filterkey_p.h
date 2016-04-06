@@ -37,8 +37,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERANNOTATION_P_H
-#define QT3DRENDER_RENDER_RENDERANNOTATION_P_H
+#ifndef QT3DRENDER_RENDER_RENDERFILTERKEY_P_H
+#define QT3DRENDER_RENDER_RENDERFILTERKEY_P_H
 
 //
 //  W A R N I N G
@@ -62,21 +62,21 @@ class QFilterKey;
 
 namespace Render {
 
-class CriterionManager;
+class FilterKeyManager;
 
-class Annotation : public BackendNode
+class FilterKey : public BackendNode
 {
 public:
-    Annotation();
-    ~Annotation();
+    FilterKey();
+    ~FilterKey();
     void cleanup();
     void updateFromPeer(Qt3DCore::QNode *criterion) Q_DECL_OVERRIDE;
 
     QVariant criterionValue() const;
     QString criterionName() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-    bool operator ==(const Annotation &other);
-    bool operator !=(const Annotation &other);
+    bool operator ==(const FilterKey &other);
+    bool operator !=(const FilterKey &other);
 
 private:
     void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
@@ -91,4 +91,4 @@ private:
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERANNOTATION_P_H
+#endif // QT3DRENDER_RENDER_RENDERFILTERKEY_P_H

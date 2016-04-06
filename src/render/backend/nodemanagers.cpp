@@ -66,7 +66,7 @@ NodeManagers::NodeManagers()
     , m_textureManager(new TextureManager())
     , m_textureDataManager(new TextureDataManager())
     , m_layerManager(new LayerManager())
-    , m_criterionManager(new CriterionManager())
+    , m_filterKeyManager(new FilterKeyManager())
     , m_frameGraphManager(new FrameGraphManager())
     , m_transformManager(new TransformManager())
     , m_renderTargetManager(new RenderTargetManager())
@@ -162,9 +162,9 @@ LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT
 }
 
 template<>
-CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT
+FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT
 {
-    return m_criterionManager;
+    return m_filterKeyManager;
 }
 
 template<>

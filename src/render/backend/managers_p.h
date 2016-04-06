@@ -54,7 +54,7 @@
 #include <Qt3DCore/private/qresourcemanager_p.h>
 #include <Qt3DRender/private/rendertargetoutput_p.h>
 #include <Qt3DRender/private/cameralens_p.h>
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/effect_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/layer_p.h>
@@ -107,8 +107,8 @@ public:
     CameraManager() {}
 };
 
-class CriterionManager : public Qt3DCore::QResourceManager<
-        Annotation,
+class FilterKeyManager : public Qt3DCore::QResourceManager<
+        FilterKey,
         Qt3DCore::QNodeId,
         16,
         Qt3DCore::ArrayAllocatingPolicy,
@@ -116,7 +116,7 @@ class CriterionManager : public Qt3DCore::QResourceManager<
 
 {
 public:
-    CriterionManager() {}
+    FilterKeyManager() {}
 };
 
 class EffectManager : public Qt3DCore::QResourceManager<
@@ -381,7 +381,7 @@ class RenderStateManager : public Qt3DCore::QResourceManager<
 } // namespace Render
 } // namespace Qt3DRender
 
-Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Annotation, Q_REQUIRES_CLEANUP)
+Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::FilterKey, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Effect, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Entity, Q_REQUIRES_CLEANUP)
 Q_DECLARE_RESOURCE_INFO(Qt3DRender::Render::Layer, Q_REQUIRES_CLEANUP)

@@ -88,7 +88,7 @@ class ParameterManager;
 class ShaderDataManager;
 class GLBufferManager;
 class TextureImageManager;
-class CriterionManager;
+class FilterKeyManager;
 class FrameGraphManager;
 class TransformManager;
 class TextureManager;
@@ -99,7 +99,6 @@ class ComputeCommandManager;
 class RenderStateManager;
 
 class FrameGraphNode;
-class Annotation;
 class Entity;
 class CameraLens;
 class Material;
@@ -109,7 +108,7 @@ class Effect;
 class RenderPass;
 class Texture;
 class Layer;
-class Annotation;
+class FilterKey;
 class FrameGraphNode;
 class Transform;
 class Scene;
@@ -181,7 +180,7 @@ public:
     inline TextureManager *textureManager() const Q_DECL_NOEXCEPT { return m_textureManager; }
     inline TextureDataManager *textureDataManager() const Q_DECL_NOEXCEPT { return m_textureDataManager; }
     inline LayerManager *layerManager() const Q_DECL_NOEXCEPT { return m_layerManager; }
-    inline CriterionManager *criterionManager() const Q_DECL_NOEXCEPT { return m_criterionManager; }
+    inline FilterKeyManager *filterKeyManager() const Q_DECL_NOEXCEPT { return m_filterKeyManager; }
     inline FrameGraphManager *frameGraphManager() const Q_DECL_NOEXCEPT { return m_frameGraphManager; }
     inline TransformManager *transformManager() const Q_DECL_NOEXCEPT { return m_transformManager; }
     inline RenderTargetManager *renderTargetManager() const Q_DECL_NOEXCEPT { return m_renderTargetManager; }
@@ -215,7 +214,7 @@ private:
     TextureManager *m_textureManager;
     TextureDataManager *m_textureDataManager;
     LayerManager *m_layerManager;
-    CriterionManager *m_criterionManager;
+    FilterKeyManager *m_filterKeyManager;
     FrameGraphManager *m_frameGraphManager;
     TransformManager *m_transformManager;
     RenderTargetManager *m_renderTargetManager;
@@ -276,7 +275,7 @@ template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT LayerManager *NodeManagers::manager<Layer>() const Q_DECL_NOEXCEPT;
 
 template<>
-QT3DRENDERSHARED_PRIVATE_EXPORT CriterionManager *NodeManagers::manager<Annotation>() const Q_DECL_NOEXCEPT;
+QT3DRENDERSHARED_PRIVATE_EXPORT FilterKeyManager *NodeManagers::manager<FilterKey>() const Q_DECL_NOEXCEPT;
 
 template<>
 QT3DRENDERSHARED_PRIVATE_EXPORT FrameGraphManager *NodeManagers::manager<FrameGraphNode*>() const Q_DECL_NOEXCEPT;

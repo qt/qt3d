@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#include "annotation_p.h"
+#include "filterkey_p.h"
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DRender/private/qfilterkey_p.h>
 
@@ -48,21 +48,21 @@ using namespace Qt3DCore;
 namespace Qt3DRender {
 namespace Render {
 
-Annotation::Annotation()
+FilterKey::FilterKey()
     : BackendNode()
 {
 }
 
-Annotation::~Annotation()
+FilterKey::~FilterKey()
 {
     cleanup();
 }
 
-void Annotation::cleanup()
+void FilterKey::cleanup()
 {
 }
 
-void Annotation::updateFromPeer(Qt3DCore::QNode *peer)
+void FilterKey::updateFromPeer(Qt3DCore::QNode *peer)
 {
     QFilterKey *criterion = static_cast<QFilterKey *>(peer);
 
@@ -70,7 +70,7 @@ void Annotation::updateFromPeer(Qt3DCore::QNode *peer)
     m_name = criterion->name();
 }
 
-void Annotation::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
+void FilterKey::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change)
 {
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QFilterKeyData>>(change);
     const auto &data = typedChange->data;
@@ -78,17 +78,17 @@ void Annotation::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &c
     m_value = data.value;
 }
 
-QVariant Annotation::criterionValue() const
+QVariant FilterKey::criterionValue() const
 {
     return m_value;
 }
 
-QString Annotation::criterionName() const
+QString FilterKey::criterionName() const
 {
     return m_name;
 }
 
-void Annotation::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
     QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
     if (propertyChange->propertyName() == QByteArrayLiteral("value"))
@@ -99,7 +99,7 @@ void Annotation::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     markDirty(AbstractRenderer::AllDirty);
 }
 
-bool Annotation::operator ==(const Annotation &other)
+bool FilterKey::operator ==(const FilterKey &other)
 {
     if (&other == this)
         return true;
@@ -107,7 +107,7 @@ bool Annotation::operator ==(const Annotation &other)
             (other.criterionValue() == criterionValue()));
 }
 
-bool Annotation::operator !=(const Annotation &other)
+bool FilterKey::operator !=(const FilterKey &other)
 {
     return !operator ==(other);
 }

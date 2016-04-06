@@ -66,7 +66,7 @@ namespace Render {
 
 class RenderTargetOutput;
 class CameraLens;
-class Annotation;
+class FilterKey;
 class Effect;
 class Entity;
 class Shader;
@@ -96,7 +96,7 @@ class RenderStateNode;
 
 typedef Qt3DCore::QHandle<RenderTargetOutput, 16> HAttachment;
 typedef Qt3DCore::QHandle<CameraLens, 8> HCamera;
-typedef Qt3DCore::QHandle<Annotation, 16> HCriterion;
+typedef Qt3DCore::QHandle<FilterKey, 16> HFilterKey;
 typedef Qt3DCore::QHandle<Effect, 16> HEffect;
 typedef Qt3DCore::QHandle<Entity, 16> HEntity;
 typedef Qt3DCore::QHandle<FrameGraphNode *, 8> HFrameGraphNode;

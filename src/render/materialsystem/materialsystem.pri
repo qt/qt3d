@@ -1,7 +1,7 @@
 INCLUDEPATH += $$PWD
 
 HEADERS += \
-    $$PWD/annotation_p.h \
+    $$PWD/filterkey_p.h \
     $$PWD/effect_p.h \
     $$PWD/material_p.h \
     $$PWD/parameter_p.h \
@@ -28,7 +28,7 @@ HEADERS += \
     $$PWD/qgraphicsapifilter.h
 
 SOURCES += \
-    $$PWD/annotation.cpp \
+    $$PWD/filterkey.cpp \
     $$PWD/effect.cpp \
     $$PWD/material.cpp \
     $$PWD/parameter.cpp \

@@ -44,7 +44,7 @@
 #include <Qt3DRender/qtechnique.h>
 #include <Qt3DRender/qgraphicsapifilter.h>
 #include <Qt3DRender/private/renderer_p.h>
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/shader_p.h>
 #include <Qt3DCore/private/qchangearbiter_p.h>
 #include <Qt3DCore/qscenepropertychange.h>

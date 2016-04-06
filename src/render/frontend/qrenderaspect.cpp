@@ -80,7 +80,7 @@
 #include <Qt3DRender/private/qboundingvolumedebug_p.h>
 #include <Qt3DRender/private/cameraselectornode_p.h>
 #include <Qt3DRender/private/layerfilternode_p.h>
-#include <Qt3DRender/private/annotation_p.h>
+#include <Qt3DRender/private/filterkey_p.h>
 #include <Qt3DRender/private/entity_p.h>
 #include <Qt3DRender/private/renderer_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
@@ -203,7 +203,7 @@ void QRenderAspectPrivate::registerBackendTypes()
 
     // Material system
     q->registerBackendType<QEffect>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Effect, Render::EffectManager>(m_renderer, m_nodeManagers->effectManager())));
-    q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Annotation, Render::CriterionManager>(m_renderer, m_nodeManagers->criterionManager())));
+    q->registerBackendType<QFilterKey>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::FilterKey, Render::FilterKeyManager>(m_renderer, m_nodeManagers->filterKeyManager())));
     q->registerBackendType<QLight>(QBackendNodeMapperPtr(new Render::RenderLightFunctor(m_renderer, m_nodeManagers)));
     q->registerBackendType<QMaterial>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Material, Render::MaterialManager>(m_renderer, m_nodeManagers->materialManager())));
     q->registerBackendType<QParameter>(QBackendNodeMapperPtr(new Render::NodeFunctor<Render::Parameter, Render::ParameterManager>(m_renderer, m_nodeManagers->parameterManager())));
