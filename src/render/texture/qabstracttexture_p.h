@@ -82,7 +82,7 @@ public :
     QAbstractTexture::ComparisonFunction m_comparisonFunction;
     QAbstractTexture::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
-    int m_maximumLayers;
+    int m_layers;
     bool m_unique;
 
     QTextureImageDataGeneratorPtr m_dataFunctor;

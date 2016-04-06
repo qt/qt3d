@@ -58,11 +58,11 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     , m_autoMipMap(false)
     , m_minFilter(QAbstractTexture::Nearest)
     , m_magFilter(QAbstractTexture::Nearest)
-    , m_status(QAbstractTexture::Loading)
+    , m_status(QAbstractTexture::None)
     , m_maximumAnisotropy(1.0f)
     , m_comparisonFunction(QAbstractTexture::CompareLessEqual)
     , m_comparisonMode(QAbstractTexture::CompareNone)
-    , m_maximumLayers(1)
+    , m_layers(1)
     , m_unique(false)
 {
 }
@@ -85,7 +85,7 @@ void QAbstractTexture::copy(const QNode *ref)
     d_func()->m_maximumAnisotropy = t->d_func()->m_maximumAnisotropy;
     d_func()->m_comparisonFunction = t->d_func()->m_comparisonFunction;
     d_func()->m_comparisonMode = t->d_func()->m_comparisonMode;
-    d_func()->m_maximumLayers = t->d_func()->m_maximumLayers;
+    d_func()->m_layers = t->d_func()->m_layers;
 }
 
 /*!
@@ -197,7 +197,7 @@ int QAbstractTexture::depth() const
 }
 
 /*!
-    \property Qt3DRender::QAbstractTexture::maximumLayers
+    \property Qt3DRender::QAbstractTexture::layers
 
     Holds the maximum layer count of the texture provider. By default, the
     maximum layer count is 1.
@@ -205,12 +205,12 @@ int QAbstractTexture::depth() const
     \note this has a meaning only for texture providers that have 3D or
     array target formats.
  */
-void QAbstractTexture::setMaximumLayers(int maximumLayers)
+void QAbstractTexture::setLayers(int layers)
 {
     Q_D(QAbstractTexture);
-    if (d->m_maximumLayers != maximumLayers) {
-        d->m_maximumLayers = maximumLayers;
-        emit maximumLayersChanged(maximumLayers);
+    if (d->m_layers != layers) {
+        d->m_layers = layers;
+        emit layersChanged(layers);
     }
 }
 
@@ -220,10 +220,10 @@ void QAbstractTexture::setMaximumLayers(int maximumLayers)
     \note this has a meaning only for texture providers that have 3D or
      array target formats.
  */
-int QAbstractTexture::maximumLayers() const
+int QAbstractTexture::layers() const
 {
     Q_D(const QAbstractTexture);
-    return d->m_maximumLayers;
+    return d->m_layers;
 }
 
 /*!

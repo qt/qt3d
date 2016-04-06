@@ -71,14 +71,15 @@ class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(float maximumAnisotropy READ maximumAnisotropy WRITE setMaximumAnisotropy NOTIFY maximumAnisotropyChanged)
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
-    Q_PROPERTY(int maximumLayers READ maximumLayers WRITE setMaximumLayers NOTIFY maximumLayersChanged)
+    Q_PROPERTY(int layers READ layers WRITE setLayers NOTIFY layersChanged)
     Q_PROPERTY(bool unique READ isUnique WRITE setUnique NOTIFY uniqueChanged)
 
 public:
 
     enum Status {
-        Loading = 0,
-        Loaded,
+        None = 0,
+        Loading,
+        Ready,
         Error
     };
     Q_ENUM(Status)
@@ -293,7 +294,7 @@ public:
     int width() const;
     int height() const;
     int depth() const;
-    int maximumLayers() const;
+    int layers() const;
     bool isUnique() const;
     QTextureImageDataGeneratorPtr dataGenerator() const;
 
@@ -308,7 +309,7 @@ public Q_SLOTS:
     void setMaximumAnisotropy(float anisotropy);
     void setComparisonFunction(ComparisonFunction function);
     void setComparisonMode(ComparisonMode mode);
-    void setMaximumLayers(int maximumLayers);
+    void setLayers(int layers);
     void setUnique(bool unique);
 
 Q_SIGNALS:
@@ -323,7 +324,7 @@ Q_SIGNALS:
     void maximumAnisotropyChanged(float maximumAnisotropy);
     void comparisonFunctionChanged(ComparisonFunction comparisonFunction);
     void comparisonModeChanged(ComparisonMode comparisonMode);
-    void maximumLayersChanged(int maximumLayers);
+    void layersChanged(int layers);
     void uniqueChanged(bool unique);
 
 protected:

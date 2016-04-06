@@ -146,7 +146,7 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
         m_maximumAnisotropy = texture->maximumAnisotropy();
         m_comparisonFunction = texture->comparisonFunction();
         m_comparisonMode = texture->comparisonMode();
-        m_layers = texture->maximumLayers();
+        m_layers = texture->layers();
         m_unique = texture->isUnique();
         m_dataFunctor = texture->dataGenerator();
 
