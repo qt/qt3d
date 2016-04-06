@@ -71,6 +71,7 @@ class QLogicAspectPrivate : public Qt3DCore::QAbstractAspectPrivate
     Q_DECLARE_PUBLIC(QLogicAspect)
 
     void onEngineAboutToShutdown() Q_DECL_OVERRIDE;
+    void registerBackendTypes();
 
     qint64 m_time;
     bool m_initialized;

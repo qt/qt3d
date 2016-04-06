@@ -77,11 +77,18 @@ void QLogicAspectPrivate::onEngineAboutToShutdown()
     m_executor->clearQueueAndProceed();
 }
 
+void QLogicAspectPrivate::registerBackendTypes()
+{
+    Q_Q(QLogicAspect);
+    q->registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(m_manager.data())));
+}
+
 QLogicAspect::QLogicAspect(QObject *parent)
     : QAbstractAspect(*new QLogicAspectPrivate(), parent)
 {
+    Q_D(QLogicAspect);
     setObjectName(QStringLiteral("Logic Aspect"));
-    registerBackendTypes();
+    d->registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
 }
 
@@ -89,14 +96,10 @@ QLogicAspect::QLogicAspect(QObject *parent)
 QLogicAspect::QLogicAspect(QLogicAspectPrivate &dd, QObject *parent)
     : QAbstractAspect(dd, parent)
 {
+    Q_D(QLogicAspect);
     setObjectName(QStringLiteral("Logic Aspect"));
-    registerBackendTypes();
+    d->registerBackendTypes();
     d_func()->m_manager->setLogicAspect(this);
-}
-
-void QLogicAspect::registerBackendTypes()
-{
-    registerBackendType<QFrameAction>(QBackendNodeMapperPtr(new Logic::HandlerFunctor(d_func()->m_manager.data())));
 }
 
 QVector<QAspectJobPtr> QLogicAspect::jobsToExecute(qint64 time)

@@ -57,9 +57,6 @@ public:
 
     QVector<Qt3DCore::QAspectJobPtr> jobsToExecute(qint64 time) Q_DECL_OVERRIDE;
 
-protected:
-    void registerBackendTypes();
-
 private:
     void onRegistered() Q_DECL_OVERRIDE;
     void onEngineStartup() Q_DECL_OVERRIDE;
