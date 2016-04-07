@@ -66,7 +66,7 @@
 #include <Qt3DRender/private/transform_p.h>
 #include <Qt3DRender/private/rendertarget_p.h>
 #include <Qt3DRender/private/renderpass_p.h>
-#include <Qt3DRender/private/genericstate_p.h>
+#include <Qt3DRender/private/renderstatenode_p.h>
 #include <Qt3DRender/private/parameter_p.h>
 #include <Qt3DRender/private/shaderdata_p.h>
 #include <Qt3DRender/private/handle_types_p.h>

@@ -34,8 +34,8 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
-#define QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
+#ifndef QT3DRENDER_RENDER_RENDERSTATENODE_H
+#define QT3DRENDER_RENDER_RENDERSTATENODE_H
 
 //
 //  W A R N I N G
@@ -48,47 +48,36 @@
 // We mean it.
 //
 
-#include <Qt3DRender/private/renderstatenode_p.h>
+#include <Qt3DRender/private/backendnode_p.h>
+#include <Qt3DRender/private/genericstate_p.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QRenderState;
-
 namespace Render {
 
-class RenderStateManager;
-
-class Q_AUTOTEST_EXPORT RenderStateCollection
+class Q_AUTOTEST_EXPORT RenderStateNode : public BackendNode
 {
 public:
-    RenderStateCollection();
-    ~RenderStateCollection();
+    RenderStateNode();
+    virtual ~RenderStateNode();
 
-    QVector<RenderStateNode*> renderStates(RenderStateManager *manager) const;
-    bool hasRenderStates() const;
+    virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
+    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
+
+    void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
+    StateMaskSet mask() const { return m_impl->mask(); }
+    RenderStateImpl *impl() const { return m_impl; }
 
 protected:
-    void appendRenderState(Qt3DCore::QNodeId renderStateId);
-    void removeRenderState(Qt3DCore::QNodeId renderStateId);
+    void cleanup();
 
-private:
-    QVector<Qt3DCore::QNodeId> m_renderStateIds;
-
-    // Cached RenderStateNodes corresponding to the stored node IDs
-    //
-    // we need these two to be mutable, because the RenderView accesses const
-    // instances of this class when we need to update the cached RenderStateNodes
-    mutable QVector<RenderStateNode*> m_renderStateNodes;
-    mutable bool m_dirty;
+    RenderStateImpl *m_impl;
 };
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
 
-#endif // QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
-
+#endif // QT3DRENDER_RENDER_RENDERSTATENODE_H

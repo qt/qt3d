@@ -123,27 +123,6 @@ public:
     virtual void updateProperty(const char *name, const QVariant &value);
 };
 
-/**
- * @brief Backend Render State Node
- */
-class Q_AUTOTEST_EXPORT RenderStateNode : public BackendNode
-{
-public:
-    RenderStateNode();
-    virtual ~RenderStateNode();
-
-    virtual void updateFromPeer(Qt3DCore::QNode *peer) Q_DECL_OVERRIDE;
-    virtual void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
-
-    void apply(GraphicsContext* gc) const { m_impl->apply(gc); }
-    StateMaskSet mask() const { return m_impl->mask(); }
-    RenderStateImpl *impl() const { return m_impl; }
-
-protected:
-    void cleanup();
-
-    RenderStateImpl *m_impl;
-};
 
 template <class State>
 State *getOrCreateRenderStateEqualTo(const State &prototype)

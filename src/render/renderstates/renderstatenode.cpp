@@ -34,61 +34,58 @@
 **
 ****************************************************************************/
 
-#ifndef QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
-#define QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
-
-//
-//  W A R N I N G
-//  -------------
-//
-// This file is not part of the Qt API.  It exists for the convenience
-// of other Qt classes.  This header file may change from version to
-// version without notice, or even be removed.
-//
-// We mean it.
-//
-
-#include <Qt3DRender/private/renderstatenode_p.h>
+#include "renderstatenode_p.h"
+#include <Qt3DRender/qrenderstate.h>
+#include <Qt3DCore/qscenepropertychange.h>
 
 QT_BEGIN_NAMESPACE
 
 namespace Qt3DRender {
-
-class QRenderState;
-
 namespace Render {
 
-class RenderStateManager;
-
-class Q_AUTOTEST_EXPORT RenderStateCollection
+RenderStateNode::RenderStateNode()
+    : BackendNode()
+    , m_impl(NULL)
 {
-public:
-    RenderStateCollection();
-    ~RenderStateCollection();
+}
 
-    QVector<RenderStateNode*> renderStates(RenderStateManager *manager) const;
-    bool hasRenderStates() const;
+RenderStateNode::~RenderStateNode()
+{
+    cleanup();
+}
 
-protected:
-    void appendRenderState(Qt3DCore::QNodeId renderStateId);
-    void removeRenderState(Qt3DCore::QNodeId renderStateId);
+void RenderStateNode::cleanup()
+{
+    if (m_impl != Q_NULLPTR) {
+        if (!m_impl->isPooledImpl())
+            delete m_impl;
+        m_impl = Q_NULLPTR;
+    }
+}
 
-private:
-    QVector<Qt3DCore::QNodeId> m_renderStateIds;
+void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
+{
+    cleanup();
 
-    // Cached RenderStateNodes corresponding to the stored node IDs
-    //
-    // we need these two to be mutable, because the RenderView accesses const
-    // instances of this class when we need to update the cached RenderStateNodes
-    mutable QVector<RenderStateNode*> m_renderStateNodes;
-    mutable bool m_dirty;
-};
+    QRenderState *renderState = static_cast<QRenderState *>(peer);
+    m_impl = RenderStateImpl::getOrCreateState(renderState);
+}
+
+void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
+{
+    if (e->type() == Qt3DCore::NodeUpdated) {
+        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
+
+        if (m_impl->isPooledImpl()) {
+            m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());
+        } else {
+            m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
+        }
+        markDirty(AbstractRenderer::AllDirty);
+    }
+}
 
 } // namespace Render
-
 } // namespace Qt3DRender
 
 QT_END_NAMESPACE
-
-#endif // QT3DRENDER_RENDER_RENDERSTATECOLLECTION_H
-

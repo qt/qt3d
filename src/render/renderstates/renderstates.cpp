@@ -61,48 +61,6 @@ bool RenderStateImpl::isPooledImpl() const Q_DECL_NOEXCEPT
     return true;
 }
 
-RenderStateNode::RenderStateNode()
-    : BackendNode()
-    , m_impl(NULL)
-{
-}
-
-RenderStateNode::~RenderStateNode()
-{
-    cleanup();
-}
-
-void RenderStateNode::cleanup()
-{
-    if (m_impl != Q_NULLPTR) {
-        if (!m_impl->isPooledImpl())
-            delete m_impl;
-        m_impl = Q_NULLPTR;
-    }
-}
-
-void RenderStateNode::updateFromPeer(Qt3DCore::QNode *peer)
-{
-    cleanup();
-
-    QRenderState *renderState = static_cast<QRenderState *>(peer);
-    m_impl = RenderStateImpl::getOrCreateState(renderState);
-}
-
-void RenderStateNode::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
-{
-    if (e->type() == Qt3DCore::NodeUpdated) {
-        Qt3DCore::QScenePropertyChangePtr propertyChange = qSharedPointerCast<Qt3DCore::QScenePropertyChange>(e);
-
-        if (m_impl->isPooledImpl()) {
-            m_impl = m_impl->getOrCreateWithPropertyChange(propertyChange->propertyName(), propertyChange->value());
-        } else {
-            m_impl->updateProperty(propertyChange->propertyName(), propertyChange->value());
-        }
-        markDirty(AbstractRenderer::AllDirty);
-    }
-}
-
 void BlendEquationArguments::apply(GraphicsContext* gc) const
 {
     // Un-indexed BlendEquationArguments -> Use normal GL1.0 functions
