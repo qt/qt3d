@@ -72,6 +72,9 @@ public:
 protected:
     void cleanup();
 
+private:
+    void initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &change) Q_DECL_FINAL;
+
     RenderStateImpl *m_impl;
 };
 

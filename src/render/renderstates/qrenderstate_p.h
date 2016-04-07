@@ -68,7 +68,6 @@ public:
         AlphaTest,
         BlendEquation,
         BlendEquationArguments,
-        BlendStateSeparate,
         ColorMask,
         CullFace,
         NoDepthMask,

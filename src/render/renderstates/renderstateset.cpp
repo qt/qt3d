@@ -51,24 +51,40 @@
 
 #include <Qt3DRender/qalphacoverage.h>
 #include <Qt3DRender/qalphatest.h>
+#include <Qt3DRender/private/qalphatest_p.h>
 #include <Qt3DRender/qblendequation.h>
+#include <Qt3DRender/private/qblendequation_p.h>
 #include <Qt3DRender/qblendequationarguments.h>
+#include <Qt3DRender/private/qblendequationarguments_p.h>
 #include <Qt3DRender/qcolormask.h>
+#include <Qt3DRender/private/qcolormask_p.h>
 #include <Qt3DRender/qcullface.h>
+#include <Qt3DRender/private/qcullface_p.h>
 #include <Qt3DRender/qnodepthmask.h>
 #include <Qt3DRender/qdepthtest.h>
+#include <Qt3DRender/private/qdepthtest_p.h>
 #include <Qt3DRender/qdithering.h>
 #include <Qt3DRender/qfrontface.h>
+#include <Qt3DRender/private/qfrontface_p.h>
 #include <Qt3DRender/qpointsize.h>
+#include <Qt3DRender/private/qpointsize_p.h>
 #include <Qt3DRender/qpolygonoffset.h>
+#include <Qt3DRender/private/qpolygonoffset_p.h>
 #include <Qt3DRender/qscissortest.h>
+#include <Qt3DRender/private/qscissortest_p.h>
 #include <Qt3DRender/qstenciltest.h>
+#include <Qt3DRender/private/qstenciltest_p.h>
 #include <Qt3DRender/qstenciltestarguments.h>
+#include <Qt3DRender/private/qstenciltestarguments_p.h>
 #include <Qt3DRender/qclipplane.h>
+#include <Qt3DRender/private/qclipplane_p.h>
 #include <Qt3DRender/qseamlesscubemap.h>
 #include <Qt3DRender/qstenciloperation.h>
+#include <Qt3DRender/private/qstenciloperation_p.h>
 #include <Qt3DRender/qstenciloperationarguments.h>
+#include <Qt3DRender/private/qstenciloperationarguments_p.h>
 #include <Qt3DRender/qstencilmask.h>
+#include <Qt3DRender/private/qstencilmask_p.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -271,18 +287,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
     }
     case QRenderStatePrivate::BlendEquationArguments: {
         QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
-        // just use the same values for RGB and Alpha
         return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
-                                       blendState->sourceRgb(), blendState->destinationRgb(),
-                                       blendState->isEnabled(),
-                                       blendState->bufferIndex());
-    }
-    case QRenderStatePrivate::BlendStateSeparate: {
-        QBlendEquationArguments *blendState = static_cast<QBlendEquationArguments *>(renderState);
-        return getOrCreateRenderStateImpl<BlendEquationArguments>(blendState->sourceRgb(), blendState->destinationRgb(),
-                                       blendState->sourceAlpha(), blendState->destinationAlpha(),
-                                       blendState->isEnabled(),
-                                       blendState->bufferIndex());
+                                                                  blendState->sourceAlpha(), blendState->destinationAlpha(),
+                                                                  blendState->isEnabled(),
+                                                                  blendState->bufferIndex());
     }
     case QRenderStatePrivate::CullFace: {
         QCullFace *cullFace = static_cast<QCullFace *>(renderState);
@@ -355,6 +363,131 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
         QStencilMask *stencilMask = static_cast<QStencilMask *>(renderState);
         return getOrCreateRenderStateImpl<StencilMask>(stencilMask->frontOutputMask(), stencilMask->backOutputMask());
      }
+
+    default:
+        Q_UNREACHABLE();
+        qFatal("Should not happen");
+        return Q_NULLPTR;
+    }
+}
+
+RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change)
+{
+    switch (change->type()) {
+    case QRenderStatePrivate::AlphaTest: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QAlphaTestData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<AlphaFunc>(data.alphaFunction, data.referenceValue);
+    }
+
+    case QRenderStatePrivate::BlendEquation: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QBlendEquationData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<BlendEquation>(data.blendFunction);
+    }
+
+    case QRenderStatePrivate::BlendEquationArguments: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QBlendEquationArgumentsData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<BlendEquationArguments>(
+            data.sourceRgb, data.destinationRgb,
+            data.sourceAlpha, data.destinationAlpha,
+            change->isNodeEnabled(),
+            data.bufferIndex);
+    }
+
+    case QRenderStatePrivate::CullFace: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QCullFaceData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<CullFace>(data.mode);
+    }
+
+    case QRenderStatePrivate::NoDepthMask: {
+        return getOrCreateRenderStateImpl<NoDepthMask>(false);
+    }
+
+    case QRenderStatePrivate::DepthTest: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QDepthTestData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<DepthTest>(data.depthFunction);
+    }
+
+    // TODO: Fix AlphaCoverage and Dithering states
+    case QRenderStatePrivate::AlphaCoverage:
+    case QRenderStatePrivate::Dithering:
+    case QRenderStatePrivate::FrontFace: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QFrontFaceData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<FrontFace>(data.direction);
+    }
+
+    case QRenderStatePrivate::ScissorTest: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QScissorTestData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<ScissorTest>(data.left, data.bottom,
+                                                       data.width, data.height);
+    }
+
+    case QRenderStatePrivate::StencilTest: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilTestData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<StencilTest>(data.front.stencilFunction,
+                                                       data.front.referenceValue,
+                                                       data.front.comparisonMask,
+                                                       data.back.stencilFunction,
+                                                       data.back.referenceValue,
+                                                       data.back.comparisonMask);
+    }
+
+    case QRenderStatePrivate::PointSize: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QPointSizeData>>(change);
+        const auto &data = typedChange->data;
+        const bool isProgrammable = (data.sizeMode == QPointSize::Programmable);
+        return getOrCreateRenderStateImpl<PointSize>(isProgrammable, data.value);
+    }
+
+    case QRenderStatePrivate::PolygonOffset: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QPolygonOffsetData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<PolygonOffset>(data.scaleFactor, data.depthSteps);
+    }
+
+    case QRenderStatePrivate::ColorMask: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QColorMaskData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<ColorMask>(data.redMasked, data.greenMasked,
+                                                     data.blueMasked, data.alphaMasked);
+    }
+
+    case QRenderStatePrivate::ClipPlane: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QClipPlaneData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<ClipPlane>(data.planeIndex,
+                                                     data.normal,
+                                                     data.distance);
+    }
+
+    case QRenderStatePrivate::SeamlessCubemap: {
+        return getOrCreateRenderStateImpl<SeamlessCubemap>(change->isNodeEnabled());
+    }
+
+    case QRenderStatePrivate::StencilOp: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilOperationData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<StencilOp>(data.front.stencilTestFailureOperation,
+                                                     data.front.depthTestFailureOperation,
+                                                     data.front.allTestsPassOperation,
+                                                     data.back.stencilTestFailureOperation,
+                                                     data.back.depthTestFailureOperation,
+                                                     data.back.allTestsPassOperation);
+    }
+
+    case QRenderStatePrivate::StencilMask: {
+        const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QStencilMaskData>>(change);
+        const auto &data = typedChange->data;
+        return getOrCreateRenderStateImpl<StencilMask>(data.frontOutputMask,
+                                                       data.backOutputMask);
+    }
 
     default:
         Q_UNREACHABLE();
