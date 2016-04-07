@@ -59,7 +59,7 @@ public:
     bool isNodeEnabled() const Q_DECL_NOEXCEPT;
 
 protected:
-    QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd);
+    QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node, Priority priority);
 
 private:
     Q_DECLARE_PRIVATE(QNodeCreatedChangeBase)

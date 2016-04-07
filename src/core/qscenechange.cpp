@@ -62,7 +62,12 @@ namespace Qt3DCore {
 */
 
 QSceneChangePrivate::QSceneChangePrivate()
-    : q_ptr(Q_NULLPTR)
+    : q_ptr(nullptr)
+    , m_subjectId()
+    , m_subjectType(QSceneChange::Node)
+    , m_type(AllChanges)
+    , m_priority(QSceneChange::Standard)
+    , m_timestamp(QDateTime::currentMSecsSinceEpoch())
 {
 }
 
@@ -80,11 +85,6 @@ QSceneChange::QSceneChange(ChangeFlag type, ObservableType observableType, QNode
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
     d->m_subjectType = observableType;
-}
-
-QSceneChange::~QSceneChange()
-{
-    delete d_ptr;
 }
 
 /*! \internal */
@@ -105,6 +105,11 @@ QSceneChange::QSceneChange(QSceneChangePrivate &dd, ChangeFlag type, ObservableT
     d->m_timestamp = QDateTime::currentMSecsSinceEpoch();
     d->m_subjectId = subjectId;
     d->m_subjectType = observableType;
+}
+
+QSceneChange::~QSceneChange()
+{
+    delete d_ptr;
 }
 
 ChangeFlag QSceneChange::type() const

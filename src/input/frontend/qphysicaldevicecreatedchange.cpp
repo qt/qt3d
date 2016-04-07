@@ -52,9 +52,8 @@ QPhysicalDeviceCreatedChangeBasePrivate::QPhysicalDeviceCreatedChangeBasePrivate
 }
 
 QPhysicalDeviceCreatedChangeBase::QPhysicalDeviceCreatedChangeBase(const QAbstractPhysicalDevice *device, Priority priority)
-    : Qt3DCore::QNodeCreatedChangeBase(*new QPhysicalDeviceCreatedChangeBasePrivate(device))
+    : Qt3DCore::QNodeCreatedChangeBase(*new QPhysicalDeviceCreatedChangeBasePrivate(device), device, priority)
 {
-    d_func()->m_priority = priority;
 }
 
 Qt3DCore::QNodeIdVector QPhysicalDeviceCreatedChangeBase::axisSettingIds() const

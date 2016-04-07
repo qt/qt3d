@@ -56,10 +56,9 @@ QNodeCreatedChangeBase::QNodeCreatedChangeBase(const QNode *node, Priority prior
 {
 }
 
-QNodeCreatedChangeBase::QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd)
-    : QSceneChange(dd)
+QNodeCreatedChangeBase::QNodeCreatedChangeBase(QNodeCreatedChangeBasePrivate &dd, const QNode *node, Priority priority)
+    : QSceneChange(dd, NodeCreated, QSceneChange::Node, node->id(), priority)
 {
-
 }
 
 QNodeCreatedChangeBase::~QNodeCreatedChangeBase()

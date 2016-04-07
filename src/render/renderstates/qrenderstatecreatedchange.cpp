@@ -55,9 +55,8 @@ public:
 };
 
 QRenderStateCreatedChangeBase::QRenderStateCreatedChangeBase(const QRenderState *renderState, Priority priority)
-    : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState))
+    : QNodeCreatedChangeBase(*new QRenderStateCreatedChangeBasePrivate(renderState), renderState, priority)
 {
-    d_func()->m_priority = priority;
 }
 
 QRenderStatePrivate::Type QRenderStateCreatedChangeBase::type() const
