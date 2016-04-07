@@ -63,7 +63,6 @@ QAbstractTexturePrivate::QAbstractTexturePrivate()
     , m_comparisonFunction(QAbstractTexture::CompareLessEqual)
     , m_comparisonMode(QAbstractTexture::CompareNone)
     , m_layers(1)
-    , m_unique(false)
 {
 }
 
@@ -224,39 +223,6 @@ int QAbstractTexture::layers() const
 {
     Q_D(const QAbstractTexture);
     return d->m_layers;
-}
-
-/*!
-    \property Qt3DRender::QAbstractTexture::unique
-
-    Sets whether this texture provider should be unique by reading \a unique.
-    By default this is false.
-
-    By default the renderer based on the attributes of texture providers is
-    able to compare them and detect duplicates (same size, format and image
-    sources) and smartly avoid unnecessary computations. In some cases however
-    (texture providers used as Qt3DCore::RenderTarget attachments) you don't want
-    the renderer to perform these comparison, in which case you can set is
-    unique to true.
- */
-void QAbstractTexture::setUnique(bool unique)
-{
-    Q_D(QAbstractTexture);
-    if (d->m_unique != unique) {
-        d->m_unique = unique;
-        emit uniqueChanged(unique);
-    }
-}
-
-/*!
-    Returns whether the texture should be shared with other textures in the
-    renderer or not. Defaults to false as this allow in most cases the renderer
-    to be faster.
- */
-bool QAbstractTexture::isUnique() const
-{
-    Q_D(const QAbstractTexture);
-    return d->m_unique;
 }
 
 /*!

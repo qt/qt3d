@@ -72,7 +72,6 @@ class QT3DRENDERSHARED_EXPORT QAbstractTexture : public Qt3DCore::QNode
     Q_PROPERTY(ComparisonFunction comparisonFunction READ comparisonFunction WRITE setComparisonFunction NOTIFY comparisonFunctionChanged)
     Q_PROPERTY(ComparisonMode comparisonMode READ comparisonMode WRITE setComparisonMode NOTIFY comparisonModeChanged)
     Q_PROPERTY(int layers READ layers WRITE setLayers NOTIFY layersChanged)
-    Q_PROPERTY(bool unique READ isUnique WRITE setUnique NOTIFY uniqueChanged)
 
 public:
 
@@ -295,7 +294,6 @@ public:
     int height() const;
     int depth() const;
     int layers() const;
-    bool isUnique() const;
     QTextureImageDataGeneratorPtr dataGenerator() const;
 
 public Q_SLOTS:
@@ -310,7 +308,6 @@ public Q_SLOTS:
     void setComparisonFunction(ComparisonFunction function);
     void setComparisonMode(ComparisonMode mode);
     void setLayers(int layers);
-    void setUnique(bool unique);
 
 Q_SIGNALS:
     void formatChanged(TextureFormat format);
@@ -325,7 +322,6 @@ Q_SIGNALS:
     void comparisonFunctionChanged(ComparisonFunction comparisonFunction);
     void comparisonModeChanged(ComparisonMode comparisonMode);
     void layersChanged(int layers);
-    void uniqueChanged(bool unique);
 
 protected:
     explicit QAbstractTexture(Qt3DCore::QNode *parent = 0);

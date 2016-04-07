@@ -79,7 +79,6 @@ Texture::Texture()
     , m_isDirty(false)
     , m_filtersAndWrapUpdated(false)
     , m_dataUploadRequired(false)
-    , m_unique(false)
     , m_textureDNA(0)
     , m_textureManager(Q_NULLPTR)
     , m_textureImageManager(Q_NULLPTR)
@@ -114,7 +113,6 @@ void Texture::cleanup()
     m_isDirty = false;
     m_filtersAndWrapUpdated = false;
     m_dataUploadRequired = false;
-    m_unique = false;
     m_textureDNA = 0;
     m_textureImages.clear();
     m_textureManager = Q_NULLPTR;
@@ -147,7 +145,6 @@ void Texture::updateFromPeer(Qt3DCore::QNode *peer)
         m_comparisonFunction = texture->comparisonFunction();
         m_comparisonMode = texture->comparisonMode();
         m_layers = texture->layers();
-        m_unique = texture->isUnique();
         m_dataFunctor = texture->dataGenerator();
 
         if (m_dataFunctor)
@@ -437,12 +434,18 @@ void Texture::updateDNA()
                          static_cast<int>(m_comparisonFunction) +
                          static_cast<int>(m_comparisonMode);
     m_textureDNA = ::qHash(key) + ::qHash(m_maximumAnisotropy);
+
+    // apply non-unique hashes from texture images or texture data
     Q_FOREACH (HTextureImage imgHandle, m_textureImages) {
         TextureImage *img = m_textureImageManager->data(imgHandle);
         if (img)
             m_textureDNA += img->dna();
     }
-    if (m_unique) // Ensures uniqueness by adding unique QNode id to the dna
+    if (!m_textureDataHandle.isNull())
+        m_textureDNA += ::qHash(m_textureDataHandle.index());
+
+    // if texture contains no potentially shared image data: texture is unique
+    if (m_textureImages.empty() && m_textureDataHandle.isNull()) // Ensures uniqueness by adding unique QNode id to the dna
         m_textureDNA += qHash(peerId());
 }
 
@@ -569,11 +572,6 @@ void Texture::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             const int oldLayers = m_layers;
             m_layers = propertyChange->value().toInt();
             m_isDirty |= (oldLayers != m_layers);
-        } else if (propertyChange->propertyName() == QByteArrayLiteral("unique")) {
-            const bool oldUnique = m_unique;
-            m_unique = propertyChange->value().toBool();
-            // Will force a DNA update
-            m_filtersAndWrapUpdated |= (oldUnique != m_unique);
         }
     }
         break;

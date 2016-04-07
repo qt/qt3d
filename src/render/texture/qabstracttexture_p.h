@@ -83,7 +83,6 @@ public :
     QAbstractTexture::ComparisonMode m_comparisonMode;
     QList<QAbstractTextureImage *> m_textureImages;
     int m_layers;
-    bool m_unique;
 
     QTextureImageDataGeneratorPtr m_dataFunctor;
 };

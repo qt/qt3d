@@ -151,7 +151,6 @@ private:
     bool m_isDirty;
     bool m_filtersAndWrapUpdated;
     bool m_dataUploadRequired;
-    bool m_unique;
 
     mutable QMutex m_lock;
     TextureDNA m_textureDNA;
