@@ -51,7 +51,7 @@ QRenderTargetOutputPrivate::QRenderTargetOutputPrivate()
     , m_attachmentPoint(QRenderTargetOutput::Color0)
     , m_mipLevel(0)
     , m_layer(0)
-    , m_face(QRenderTargetOutput::CubeMapNegativeX)
+    , m_face(QAbstractTexture::CubeMapNegativeX)
 {
 }
 
@@ -143,7 +143,7 @@ int QRenderTargetOutput::layer() const
     return d->m_layer;
 }
 
-void QRenderTargetOutput::setFace(QRenderTargetOutput::CubeMapFace face)
+void QRenderTargetOutput::setFace(QAbstractTexture::CubeMapFace face)
 {
     Q_D(QRenderTargetOutput);
     if (d->m_face != face) {
@@ -152,7 +152,7 @@ void QRenderTargetOutput::setFace(QRenderTargetOutput::CubeMapFace face)
     }
 }
 
-QRenderTargetOutput::CubeMapFace QRenderTargetOutput::face() const
+QAbstractTexture::CubeMapFace QRenderTargetOutput::face() const
 {
     Q_D(const QRenderTargetOutput);
     return d->m_face;

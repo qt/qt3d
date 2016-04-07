@@ -86,7 +86,7 @@ QString RenderTargetOutput::name() const
     return m_attachmentData.m_name;
 }
 
-QRenderTargetOutput::CubeMapFace RenderTargetOutput::face() const
+QAbstractTexture::CubeMapFace RenderTargetOutput::face() const
 {
     return m_attachmentData.m_face;
 }
@@ -113,7 +113,7 @@ void RenderTargetOutput::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
             m_attachmentData.m_layer = propertyChange->value().toInt();
         }
         else if (propertyChange->propertyName() == QByteArrayLiteral("face")) {
-            m_attachmentData.m_face = static_cast<QRenderTargetOutput::CubeMapFace>(propertyChange->value().toInt());
+            m_attachmentData.m_face = static_cast<QAbstractTexture::CubeMapFace>(propertyChange->value().toInt());
         }
         markDirty(AbstractRenderer::AllDirty);
     }

@@ -71,7 +71,7 @@ public:
     QRenderTargetOutput::AttachmentPoint m_attachmentPoint;
     int m_mipLevel;
     int m_layer;
-    QRenderTargetOutput::CubeMapFace m_face;
+    QAbstractTexture::CubeMapFace m_face;
 };
 
 } // namespace Qt3DRender

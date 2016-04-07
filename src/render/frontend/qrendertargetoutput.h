@@ -42,6 +42,7 @@
 
 #include <Qt3DCore/qnode.h>
 #include <Qt3DRender/qt3drender_global.h>
+#include <Qt3DRender/QAbstractTexture>
 
 QT_BEGIN_NAMESPACE
 
@@ -54,10 +55,10 @@ class QT3DRENDERSHARED_EXPORT QRenderTargetOutput : public Qt3DCore::QNode
 {
     Q_OBJECT
     Q_PROPERTY(AttachmentPoint attachmentPoint READ attachmentPoint WRITE setAttachmentPoint NOTIFY attachmentPointChanged)
-    Q_PROPERTY(Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
+    Q_PROPERTY(QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged)
     Q_PROPERTY(int mipLevel READ mipLevel WRITE setMipLevel NOTIFY mipLevelChanged)
     Q_PROPERTY(int layer READ layer WRITE setLayer NOTIFY layerChanged)
-    Q_PROPERTY(CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
+    Q_PROPERTY(QAbstractTexture::CubeMapFace face READ face WRITE setFace NOTIFY faceChanged)
 
 public:
     enum AttachmentPoint {
@@ -83,16 +84,6 @@ public:
     };
     Q_ENUM(AttachmentPoint)
 
-    enum CubeMapFace {
-        CubeMapPositiveX = 0x8515,  // GL_TEXTURE_CUBE_MAP_POSITIVE_X
-        CubeMapNegativeX = 0x8516,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_X
-        CubeMapPositiveY = 0x8517,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Y
-        CubeMapNegativeY = 0x8518,  // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
-        CubeMapPositiveZ = 0x8519,  // GL_TEXTURE_CUBE_MAP_POSITIVE_Z
-        CubeMapNegativeZ = 0x851A   // GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
-    };
-    Q_ENUM(CubeMapFace)
-
     explicit QRenderTargetOutput(Qt3DCore::QNode *parent = 0);
     ~QRenderTargetOutput();
 
@@ -100,21 +91,21 @@ public:
     QAbstractTexture *texture() const;
     int mipLevel() const;
     int layer() const;
-    CubeMapFace face() const;
+    QAbstractTexture::CubeMapFace face() const;
 
 public Q_SLOTS:
     void setAttachmentPoint(AttachmentPoint attachmentPoint);
     void setTexture(QAbstractTexture *texture);
     void setMipLevel(int level);
     void setLayer(int layer);
-    void setFace(CubeMapFace face);
+    void setFace(QAbstractTexture::CubeMapFace face);
 
 Q_SIGNALS:
     void attachmentPointChanged(AttachmentPoint attachmentPoint);
     void textureChanged(QAbstractTexture *texture);
     void mipLevelChanged(int mipLevel);
     void layerChanged(int layer);
-    void faceChanged(CubeMapFace face);
+    void faceChanged(QAbstractTexture::CubeMapFace face);
 
 protected:
     QRenderTargetOutput(QRenderTargetOutputPrivate &dd, Qt3DCore::QNode *parent = 0);

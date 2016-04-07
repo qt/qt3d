@@ -65,7 +65,7 @@ struct Attachment
         : m_mipLevel(0)
         , m_layer(0)
         , m_point(QRenderTargetOutput::Color0)
-        , m_face(QRenderTargetOutput::CubeMapNegativeX)
+        , m_face(QAbstractTexture::CubeMapNegativeX)
     {}
 
     QString m_name;
@@ -73,7 +73,7 @@ struct Attachment
     int m_layer;
     Qt3DCore::QNodeId m_textureUuid;
     QRenderTargetOutput::AttachmentPoint m_point;
-    QRenderTargetOutput::CubeMapFace m_face;
+    QAbstractTexture::CubeMapFace m_face;
 };
 
 class AttachmentPack

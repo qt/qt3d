@@ -76,7 +76,7 @@ public:
     int mipLevel() const;
     int layer() const;
     QString name() const;
-    QRenderTargetOutput::CubeMapFace face() const;
+    QAbstractTexture::CubeMapFace face() const;
     QRenderTargetOutput::AttachmentPoint point() const;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     Attachment attachment() const;
