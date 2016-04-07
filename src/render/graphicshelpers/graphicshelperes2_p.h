@@ -85,7 +85,6 @@ public:
     void cullFace(GLenum mode) Q_DECL_OVERRIDE;
     void depthMask(GLenum mode) Q_DECL_OVERRIDE;
     void depthTest(GLenum mode) Q_DECL_OVERRIDE;
-    void disableAlphaCoverage() Q_DECL_OVERRIDE;
     void disableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
     void disablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void disablePrimitiveRestart() Q_DECL_OVERRIDE;
@@ -95,7 +94,6 @@ public:
     void drawBuffers(GLsizei n, const int *bufs) Q_DECL_OVERRIDE;
     void drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLint baseVertex = 0) Q_DECL_OVERRIDE;
     void drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void *indices, GLsizei instances, GLint baseVertex = 0,  GLint baseInstance = 0) Q_DECL_OVERRIDE;
-    void enableAlphaCoverage() Q_DECL_OVERRIDE;
     void enableClipPlane(int clipPlane) Q_DECL_OVERRIDE;
     void enablei(GLenum cap, GLuint index) Q_DECL_OVERRIDE;
     void enablePrimitiveRestart(int primitiveRestartIndex) Q_DECL_OVERRIDE;
@@ -110,6 +108,7 @@ public:
     QVector<ShaderUniform> programUniformsAndLocations(GLuint programId) Q_DECL_OVERRIDE;
     QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) Q_DECL_OVERRIDE;
     void releaseFrameBufferObject(GLuint frameBufferId) Q_DECL_OVERRIDE;
+    void setAlphaCoverageEnabled(bool enable) Q_DECL_OVERRIDE;
     void setClipPlane(int clipPlane, const QVector3D &normal, float distance) Q_DECL_OVERRIDE;
     void setSeamlessCubemap(bool enable) Q_DECL_OVERRIDE;
     void setVerticesPerPatch(GLint verticesPerPatch) Q_DECL_OVERRIDE;

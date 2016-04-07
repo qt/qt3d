@@ -298,14 +298,10 @@ void GraphicsHelperGL4::frontFace(GLenum mode)
 
 }
 
-void GraphicsHelperGL4::enableAlphaCoverage()
+void GraphicsHelperGL4::setAlphaCoverageEnabled(bool enabled)
 {
-    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-}
-
-void GraphicsHelperGL4::disableAlphaCoverage()
-{
-    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+            : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
 GLuint GraphicsHelperGL4::createFrameBufferObject()

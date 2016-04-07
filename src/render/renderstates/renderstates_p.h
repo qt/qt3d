@@ -168,10 +168,11 @@ public:
     virtual void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
 };
 
-class Q_AUTOTEST_EXPORT AlphaCoverage : public MaskedRenderState<AlphaCoverage, AlphaCoverageStateMask>
+class Q_AUTOTEST_EXPORT AlphaCoverage : public GenericState1<AlphaCoverage, AlphaCoverageStateMask, GLboolean>
 {
 public:
     void apply(GraphicsContext *gc) const Q_DECL_OVERRIDE;
+    void updateProperty(const char *name, const QVariant &value) Q_DECL_OVERRIDE;
 };
 
 class Q_AUTOTEST_EXPORT PointSize : public GenericState2<PointSize, PointSizeMask, bool, GLfloat>

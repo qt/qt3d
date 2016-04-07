@@ -98,7 +98,6 @@ public:
     virtual void    cullFace(GLenum mode) = 0;
     virtual void    depthMask(GLenum mode) = 0;
     virtual void    depthTest(GLenum mode) = 0;
-    virtual void    disableAlphaCoverage() = 0;
     virtual void    disableClipPlane(int clipPlane) = 0;
     virtual void    disablei(GLenum cap, GLuint index) = 0;
     virtual void    disablePrimitiveRestart() = 0;
@@ -108,7 +107,6 @@ public:
     virtual void    drawBuffers(GLsizei n, const int *bufs) = 0;
     virtual void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0) = 0;
     virtual void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0) = 0;
-    virtual void    enableAlphaCoverage() = 0;
     virtual void    enableClipPlane(int clipPlane) = 0;
     virtual void    enablei(GLenum cap, GLuint index) = 0;
     virtual void    enablePrimitiveRestart(int primitiveRestartIndex) = 0;
@@ -123,6 +121,7 @@ public:
     virtual QVector<ShaderUniformBlock> programUniformBlocks(GLuint programId) = 0;
     virtual QVector<ShaderStorageBlock> programShaderStorageBlocks(GLuint programId) = 0;
     virtual void    releaseFrameBufferObject(GLuint frameBufferId) = 0;
+    virtual void    setAlphaCoverageEnabled(bool enable) = 0;
     virtual void    setClipPlane(int clipPlane, const QVector3D &normal, float distance) = 0;
     virtual void    setSeamlessCubemap(bool enable) = 0;
     virtual void    setVerticesPerPatch(GLint verticesPerPatch) = 0;

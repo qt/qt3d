@@ -832,14 +832,9 @@ void GraphicsContext::buildUniformBuffer(const QVariant &v, const ShaderUniform 
     m_glHelper->buildUniformBuffer(v, description, buffer);
 }
 
-void GraphicsContext::enableAlphaCoverage()
+void GraphicsContext::setAlphaCoverageEnabled(bool enabled)
 {
-    m_glHelper->enableAlphaCoverage();
-}
-
-void GraphicsContext::disableAlphaCoverage()
-{
-    m_glHelper->disableAlphaCoverage();
+    m_glHelper->setAlphaCoverageEnabled(enabled);
 }
 
 GLuint GraphicsContext::boundFrameBufferObject()

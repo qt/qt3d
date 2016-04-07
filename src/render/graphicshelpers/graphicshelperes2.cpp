@@ -277,14 +277,10 @@ void GraphicsHelperES2::frontFace(GLenum mode)
     m_funcs->glFrontFace(mode);
 }
 
-void GraphicsHelperES2::enableAlphaCoverage()
+void GraphicsHelperES2::setAlphaCoverageEnabled(bool enabled)
 {
-    m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-}
-
-void GraphicsHelperES2::disableAlphaCoverage()
-{
-    m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+    enabled ? m_funcs->glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE)
+            : m_funcs->glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 }
 
 GLuint GraphicsHelperES2::createFrameBufferObject()

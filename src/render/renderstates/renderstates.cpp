@@ -182,7 +182,13 @@ void StencilTest::apply(GraphicsContext *gc) const
 
 void AlphaCoverage::apply(GraphicsContext *gc) const
 {
-    gc->enableAlphaCoverage();
+    gc->setAlphaCoverageEnabled(m_1);
+}
+
+void AlphaCoverage::updateProperty(const char *name, const QVariant &value)
+{
+    if (name == QByteArrayLiteral("enabled"))
+        m_1 = value.toBool();
 }
 
 void PointSize::apply(GraphicsContext *gc) const

@@ -192,7 +192,6 @@ public:
     void    cullFace(GLenum mode);
     void    depthMask(GLenum mode);
     void    depthTest(GLenum mode);
-    void    disableAlphaCoverage();
     void    disableClipPlane(int clipPlane);
     void    disablei(GLenum cap, GLuint index);
     void    disablePrimitiveRestart();
@@ -201,13 +200,13 @@ public:
     void    drawArraysInstanced(GLenum primitiveType, GLint first, GLsizei count, GLsizei instances);
     void    drawElements(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLint baseVertex = 0);
     void    drawElementsInstanced(GLenum primitiveType, GLsizei primitiveCount, GLint indexType, void * indices, GLsizei instances, GLint baseVertex = 0, GLint baseInstance = 0);
-    void    enableAlphaCoverage();
     void    enableClipPlane(int clipPlane);
     void    enablei(GLenum cap, GLuint index);
     void    enablePrimitiveRestart(int restartIndex);
     void    frontFace(GLenum mode);
     GLint   maxClipPlaneCount();
     void    pointSize(bool programmable, GLfloat value);
+    void    setAlphaCoverageEnabled(bool enabled);
     void    setClipPlane(int clipPlane, const QVector3D &normal, float distance);
     void    setSeamlessCubemap(bool enable);
     void    setVerticesPerPatch(GLint verticesPerPatch);

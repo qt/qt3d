@@ -229,7 +229,7 @@ void RenderStateSet::resetMasked(StateMaskSet maskOfStatesToReset, GraphicsConte
     }
 
     if (maskOfStatesToReset & AlphaCoverageStateMask) {
-        gc->disableAlphaCoverage();
+        gc->setAlphaCoverageEnabled(false);
     }
 
     if (maskOfStatesToReset & PointSizeMask) {
@@ -374,6 +374,10 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(QRenderState *renderState)
 RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStateCreatedChangeBasePtr change)
 {
     switch (change->type()) {
+    case QRenderStatePrivate::AlphaCoverage: {
+        return getOrCreateRenderStateImpl<AlphaCoverage>(change->isNodeEnabled());
+    }
+
     case QRenderStatePrivate::AlphaTest: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QAlphaTestData>>(change);
         const auto &data = typedChange->data;
@@ -412,8 +416,7 @@ RenderStateImpl* RenderStateImpl::getOrCreateState(const Qt3DRender::QRenderStat
         return getOrCreateRenderStateImpl<DepthTest>(data.depthFunction);
     }
 
-    // TODO: Fix AlphaCoverage and Dithering states
-    case QRenderStatePrivate::AlphaCoverage:
+    // TODO: Fix Dithering state
     case QRenderStatePrivate::Dithering:
     case QRenderStatePrivate::FrontFace: {
         const auto typedChange = qSharedPointerCast<Qt3DRender::QRenderStateCreatedChange<QFrontFaceData>>(change);
