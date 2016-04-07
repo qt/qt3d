@@ -179,6 +179,9 @@ void QBlendEquationArguments::setSourceRgb(QBlendEquationArguments::Blending sou
     if (d->m_sourceRgb != sourceRgb) {
         d->m_sourceRgb = sourceRgb;
         emit sourceRgbChanged(sourceRgb);
+
+        if (d->m_sourceAlpha == sourceRgb)
+            emit sourceRgbaChanged(sourceRgb);
     }
 }
 
@@ -203,6 +206,9 @@ void QBlendEquationArguments::setDestinationRgb(QBlendEquationArguments::Blendin
     if (d->m_destinationRgb != destinationRgb) {
         d->m_destinationRgb = destinationRgb;
         emit destinationRgbChanged(destinationRgb);
+
+        if (d->m_destinationAlpha == destinationRgb)
+            emit destinationRgbaChanged(destinationRgb);
     }
 }
 
@@ -227,6 +233,9 @@ void QBlendEquationArguments::setSourceAlpha(QBlendEquationArguments::Blending s
     if (d->m_sourceAlpha != sourceAlpha) {
         d->m_sourceAlpha = sourceAlpha;
         emit sourceAlphaChanged(sourceAlpha);
+
+        if (d->m_sourceRgb == sourceAlpha)
+            emit sourceRgbaChanged(sourceAlpha);
     }
 }
 
@@ -251,7 +260,22 @@ void QBlendEquationArguments::setDestinationAlpha(QBlendEquationArguments::Blend
     if (d->m_destinationAlpha != destinationAlpha) {
         d->m_destinationAlpha = destinationAlpha;
         emit destinationAlphaChanged(destinationAlpha);
+
+        if (d->m_destinationRgb == destinationAlpha)
+            emit destinationRgbaChanged(destinationAlpha);
     }
+}
+
+void QBlendEquationArguments::setSourceRgba(Blending sourceRgba)
+{
+    setSourceRgb(sourceRgba);
+    setSourceAlpha(sourceRgba);
+}
+
+void QBlendEquationArguments::setDestinationRgba(Blending destinationRgba)
+{
+    setDestinationRgb(destinationRgba);
+    setDestinationAlpha(destinationRgba);
 }
 
 /*!
@@ -280,31 +304,6 @@ void QBlendEquationArguments::setBufferIndex(int bufferIndex)
         d->m_bufferIndex = bufferIndex;
         emit bufferIndexChanged(bufferIndex);
     }
-}
-
-/*!
-    \class Qt3DRender::QBlendSeparate
-    \inmodule Qt3DRender
-    \since 5.5
-    \brief Encapsulates blending information.
- */
-
-/*!
-    \qmltype BlendStateSeparate
-    \instantiates Qt3DRender::QBlendStateSeparate
-    \inherits RenderState
-    \inqmlmodule Qt3D.Render
-    \since 5.5
-    \brief Encapsulates blending information.
-*/
-
-/*!
-  The constructor creates a QBlendStateSeparate instance with the
-  specified \a parent.
- */
-QBlendStateSeparate::QBlendStateSeparate(QNode *parent)
-    : QBlendEquationArguments(*new QBlendEquationArgumentsPrivate(QRenderStatePrivate::BlendStateSeparate), parent)
-{
 }
 
 } // namespace Qt3DRender

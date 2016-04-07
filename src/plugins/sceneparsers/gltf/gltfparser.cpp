@@ -55,7 +55,7 @@
 
 #include <Qt3DRender/QAlphaCoverage>
 #include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QBlendStateSeparate>
+#include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QColorMask>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QNoDepthMask>
@@ -1480,12 +1480,12 @@ QRenderState* GLTFParser::buildState(const QString& functionName, const QJsonVal
 
     if (functionName == QStringLiteral("blendFuncSeparate")) {
         type = GL_BLEND;
-        QBlendStateSeparate *blendState = new QBlendStateSeparate;
-        blendState->setSourceRgb((QBlendEquationArguments::Blending)values.at(0).toInt(GL_ONE));
-        blendState->setSourceAlpha((QBlendEquationArguments::Blending)values.at(1).toInt(GL_ONE));
-        blendState->setDestinationRgb((QBlendEquationArguments::Blending)values.at(2).toInt(GL_ZERO));
-        blendState->setDestinationAlpha((QBlendEquationArguments::Blending)values.at(3).toInt(GL_ZERO));
-        return blendState;
+        QBlendEquationArguments *blendArgs = new QBlendEquationArguments;
+        blendArgs->setSourceRgb((QBlendEquationArguments::Blending)values.at(0).toInt(GL_ONE));
+        blendArgs->setSourceAlpha((QBlendEquationArguments::Blending)values.at(1).toInt(GL_ONE));
+        blendArgs->setDestinationRgb((QBlendEquationArguments::Blending)values.at(2).toInt(GL_ZERO));
+        blendArgs->setDestinationAlpha((QBlendEquationArguments::Blending)values.at(3).toInt(GL_ZERO));
+        return blendArgs;
     }
 
     if (functionName == QStringLiteral("colorMask")) {

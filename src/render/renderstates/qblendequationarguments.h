@@ -99,6 +99,8 @@ public Q_SLOTS:
     void setDestinationRgb(Blending destinationRgb);
     void setSourceAlpha(Blending sourceAlpha);
     void setDestinationAlpha(Blending destinationAlpha);
+    void setSourceRgba(Blending sourceRgba);
+    void setDestinationRgba(Blending destinationRgba);
     void setBufferIndex(int index);
 
 Q_SIGNALS:
@@ -106,6 +108,8 @@ Q_SIGNALS:
     void sourceAlphaChanged(Blending sourceAlpha);
     void destinationRgbChanged(Blending destinationRgb);
     void destinationAlphaChanged(Blending destinationAlpha);
+    void sourceRgbaChanged(Blending sourceRgba);
+    void destinationRgbaChanged(Blending destinationRgba);
     void bufferIndexChanged(int index);
 
 protected:
@@ -115,13 +119,6 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QBlendEquationArguments)
     QT3D_CLONEABLE(QBlendEquationArguments)
-};
-
-class QT3DRENDERSHARED_EXPORT QBlendStateSeparate : public QBlendEquationArguments
-{
-    Q_OBJECT
-public:
-    explicit QBlendStateSeparate(Qt3DCore::QNode *parent = 0);
 };
 
 } // namespace Qt3DRender
