@@ -20,6 +20,7 @@ HEADERS += \
     $$PWD/qstenciloperationarguments.h \
     $$PWD/qstenciltest.h \
     $$PWD/qstenciltestarguments.h \
+    $$PWD/qrenderstatecreatedchange_p.h \
     $$PWD/renderstates_p.h \
     $$PWD/renderstateset_p.h \
     $$PWD/qpointsize.h \
@@ -53,4 +54,5 @@ SOURCES += \
     $$PWD/qpointsize.cpp \
     $$PWD/renderstatecollection.cpp \
     $$PWD/qseamlesscubemap.cpp \
-    $$PWD/qnodepthmask.cpp
+    $$PWD/qnodepthmask.cpp \
+    $$PWD/qrenderstatecreatedchange.cpp

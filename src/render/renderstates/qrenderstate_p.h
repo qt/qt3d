@@ -92,6 +92,7 @@ public:
     const Type m_type;
 
     static QRenderStatePrivate *get(QRenderState *state);
+    static const QRenderStatePrivate *get(const QRenderState *state);
 };
 
 }

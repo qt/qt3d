@@ -56,6 +56,11 @@ QRenderStatePrivate *QRenderStatePrivate::get(QRenderState *state)
     return state->d_func();
 }
 
+const QRenderStatePrivate *QRenderStatePrivate::get(const QRenderState *state)
+{
+    return state->d_func();
+}
+
 QRenderState::~QRenderState()
 {
     Q_ASSERT_X(Qt3DCore::QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DRender::QRenderState subclass didn't call QNode::cleanup in its destructor");
