@@ -74,7 +74,7 @@ void ViewportNode::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr 
     const auto typedChange = qSharedPointerCast<Qt3DCore::QNodeCreatedChange<QViewportData>>(change);
     const auto &data = typedChange->data;
     m_xMin = data.normalizedRect.x();
-    m_xMin = data.normalizedRect.width();
+    m_xMax = data.normalizedRect.width();
     m_yMin = data.normalizedRect.y();
     m_yMax = data.normalizedRect.height();
     setEnabled(change->isNodeEnabled());
