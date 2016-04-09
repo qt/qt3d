@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/qnodeid.h \
     $$PWD/qnodevisitor_p.h \
     $$PWD/qabstractnodefactory.h \
-    $$PWD/propertychangehandler_p.h
+    $$PWD/propertychangehandler_p.h \
+    $$PWD/qdestructionidandtypecollector_p.h
 
 SOURCES += \
     $$PWD/qnode.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
     $$PWD/qnodeid.cpp \
     $$PWD/qnodevisitor.cpp \
     $$PWD/qabstractnodefactory.cpp \
-    $$PWD/propertychangehandler.cpp
+    $$PWD/propertychangehandler.cpp \
+    $$PWD/qdestructionidandtypecollector.cpp

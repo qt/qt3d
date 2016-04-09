@@ -34,7 +34,8 @@ HEADERS += \
     $$PWD/qt3dcore_global_p.h \
     $$PWD/qscene_p.h \
     $$PWD/qnodecreatedchange_p.h \
-    $$PWD/qnodecreatedchange.h
+    $$PWD/qnodecreatedchange.h \
+    $$PWD/qnodedestroyedchange_p.h
 
 SOURCES += \
     $$PWD/qtickclock.cpp \
@@ -51,4 +52,5 @@ SOURCES += \
     $$PWD/qscene.cpp \
     $$PWD/qbackendscenepropertychange.cpp \
     $$PWD/qbackendnodefactory.cpp \
-    $$PWD/qnodecreatedchange.cpp
+    $$PWD/qnodecreatedchange.cpp \
+    $$PWD/qnodedestroyedchange.cpp

@@ -109,6 +109,13 @@ void QAspectEnginePrivate::createCreationChange(QNode *node)
 {
     const auto creationChange = node->createNodeCreationChange();
     m_creationChanges.push_back(creationChange);
+
+    // Store the metaobject of the node in the QNode so that we have it available
+    // to us during destruction in the QNode destructor. This allows us to send
+    // the QNodeId and the metaobject as typeinfo to the backend aspects so they
+    // in turn can find the correct QBackendNodeMapper object to handle the destruction
+    // of the corresponding backend nodes.
+    QNodePrivate::get(node)->m_typeInfo = const_cast<QMetaObject*>(creationChange->metaObject());
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)

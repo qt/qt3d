@@ -85,10 +85,12 @@ public:
     // For now this just protects access to the m_changeArbiter.
     // Later on we may decide to extend support for multiple observers.
     QAbstractArbiter *m_changeArbiter;
+    QMetaObject *m_typeInfo;
     QScene *m_scene;
     mutable QNodeId m_id;
     bool m_blockNotifications;
     bool m_wasCleanedUp;
+    bool m_destroyedChangeCreated;
     bool m_enabled;
 
     static QNodePrivate *get(QNode *q);

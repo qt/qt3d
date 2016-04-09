@@ -43,6 +43,8 @@
 #include <Qt3DCore/qentity.h>
 #include <Qt3DCore/qscenepropertychange.h>
 #include <Qt3DCore/qaspectengine.h>
+#include <Qt3DCore/private/qdestructionidandtypecollector_p.h>
+#include <Qt3DCore/private/qnodedestroyedchange_p.h>
 #include <Qt3DCore/private/qscene_p.h>
 #include <Qt3DCore/private/qpostman_p.h>
 #include <QEvent>
@@ -66,6 +68,7 @@ QNodePrivate::QNodePrivate()
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
     , m_wasCleanedUp(false)
+    , m_destroyedChangeCreated(false)
     , m_enabled(true)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -467,6 +470,15 @@ void QNode::copy(const QNode *ref)
 QNode::~QNode()
 {
     Q_ASSERT_X(QNodePrivate::get(this)->m_wasCleanedUp, Q_FUNC_INFO, "QNode::cleanup should have been called by now. A Qt3DCore::QNode subclass didn't call QNode::cleanup in its destructor");
+
+    // Create a QNodeDestroyedChange for this node that informs the backend that
+    // this node and all of its children are going away
+    Q_D(QNode);
+    if (!d->m_destroyedChangeCreated) {
+        const QDestructionIdAndTypeCollector collector(this);
+        const auto destroyedChange = QNodeDestroyedChangePtr::create(this, collector.subtreeIdsAndTypes());
+        d->notifyObservers(destroyedChange);
+    }
 }
 
 /*!
