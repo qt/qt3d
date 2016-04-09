@@ -66,6 +66,7 @@
 #include <Qt3DRender/private/renderviewjobutils_p.h>
 
 #include <QVector>
+#include <QSurface>
 #include <QMutex>
 #include <QColor>
 
@@ -244,7 +245,7 @@ public:
 
     void addSortCriteria(const QVector<Qt3DCore::QNodeId> &sortMethodUid) { m_data->m_sortingCriteria.append(sortMethodUid); }
 
-    void setSurface(QSurface *surface) { m_surface = surface; }
+    void setSurface(QSurface *surface) { m_surface = surface; m_surfaceSize = surface->size(); }
     QSurface *surface() const { return m_surface; }
 
     // Helps making the size of RenderView smaller
