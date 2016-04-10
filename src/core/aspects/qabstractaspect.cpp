@@ -59,6 +59,7 @@ QAbstractAspectPrivate::QAbstractAspectPrivate()
     , m_aspectManager(Q_NULLPTR)
     , m_jobManager(Q_NULLPTR)
     , m_arbiter(Q_NULLPTR)
+    , m_useCloning(!qEnvironmentVariableIsSet("QT3D_NO_CLONE"))
 {
 }
 
@@ -252,8 +253,7 @@ void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QV
     m_rootId = rootObject->id();
 
     // Use old method for now, unless user explicitly requests new method
-    const auto useNewMethod = qEnvironmentVariableIsSet("QT3D_NO_CLONE");
-    if (!useNewMethod) {
+    if (m_useCloning) {
         QNodeVisitor visitor;
         visitor.traverse(rootObject, this, &QAbstractAspectPrivate::createBackendNode);
     } else {
