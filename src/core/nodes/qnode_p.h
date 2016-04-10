@@ -90,7 +90,7 @@ public:
     mutable QNodeId m_id;
     bool m_blockNotifications;
     bool m_wasCleanedUp;
-    bool m_destroyedChangeCreated;
+    bool m_hasBackendNode;
     bool m_enabled;
 
     static QNodePrivate *get(QNode *q);

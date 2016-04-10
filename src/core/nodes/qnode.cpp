@@ -70,7 +70,7 @@ QNodePrivate::QNodePrivate()
     , m_id(QNodeId::createId())
     , m_blockNotifications(false)
     , m_wasCleanedUp(false)
-    , m_destroyedChangeCreated(false)
+    , m_hasBackendNode(false)
     , m_enabled(true)
     , m_propertyChangesSetup(false)
     , m_signals(this)
@@ -132,37 +132,47 @@ void QNodePrivate::_q_addChild(QNode *childNode)
 void QNodePrivate::_q_removeChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode->parent() != q_func())
-        qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
-    // Notify only if child isn't a clone
-    if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
-        e->setPropertyName("node");
-        // We need to clone the parent of the childNode we send
-        //        QNode *parentClone = QNode::clone(childNode->parentNode());
-        //        QNode *childClone = Q_NULLPTR;
-        //        Q_FOREACH (QObject *c, parentClone->children()) {
-        //            QNode *clone = qobject_cast<QNode *>(c);
-        //            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
-        //                childClone = clone;
-        //                break;
-        //            }
-        //        }
+    if (ms_useCloning) {
+        if (childNode->parent() != q_func())
+            qCWarning(Nodes) << Q_FUNC_INFO << "not a child of " << this;
 
-        // We cannot clone the parent as it seems that the childNode is already removed
-        // from the parent when the ChildRemoved event is triggered
-        // and that would therefore return us a childNode NULL (because not found in the parent's children list)
-        // and crash the backend
+        // Notify only if child isn't a clone
+        if (m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeAboutToBeDeleted, QSceneChange::Node, m_id));
+            e->setPropertyName("node");
+            // We need to clone the parent of the childNode we send
+            //        QNode *parentClone = QNode::clone(childNode->parentNode());
+            //        QNode *childClone = Q_NULLPTR;
+            //        Q_FOREACH (QObject *c, parentClone->children()) {
+            //            QNode *clone = qobject_cast<QNode *>(c);
+            //            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
+            //                childClone = clone;
+            //                break;
+            //            }
+            //        }
 
-        QNode *childClone = QNode::clone(childNode);
-        e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
-        notifyObservers(e);
+            // We cannot clone the parent as it seems that the childNode is already removed
+            // from the parent when the ChildRemoved event is triggered
+            // and that would therefore return us a childNode NULL (because not found in the parent's children list)
+            // and crash the backend
+
+            QNode *childClone = QNode::clone(childNode);
+            e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
+            notifyObservers(e);
+        }
+
+        // Recursively unset the scene on all children
+        QNodeVisitor visitor;
+        visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
+    } else {
+        auto childNodePrivate = get(childNode);
+        if (!childNodePrivate->m_hasBackendNode) {
+            const QDestructionIdAndTypeCollector collector(childNode);
+            auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
+            notifyObservers(destroyedChange);
+        }
     }
-
-    // Recursively unset the scene on all children
-    QNodeVisitor visitor;
-    visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
 }
 
 void QNodePrivate::registerNotifiedProperties()
@@ -487,7 +497,7 @@ QNode::~QNode()
     // Create a QNodeDestroyedChange for this node that informs the backend that
     // this node and all of its children are going away
     Q_D(QNode);
-    if (!d->m_destroyedChangeCreated) {
+    if (!d->m_hasBackendNode) {
         const QDestructionIdAndTypeCollector collector(this);
         const auto destroyedChange = QNodeDestroyedChangePtr::create(this, collector.subtreeIdsAndTypes());
         d->notifyObservers(destroyedChange);
