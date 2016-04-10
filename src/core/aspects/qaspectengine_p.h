@@ -90,7 +90,6 @@ public:
     void initEntity(QEntity *entity);
 
     void generateCreationChanges(QNode *rootNode);
-    void createCreationChange(QNode *node); // visitor function
     QVector<QNodeCreatedChangeBasePtr> m_creationChanges;
 };
 

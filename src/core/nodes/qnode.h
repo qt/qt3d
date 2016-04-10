@@ -126,6 +126,7 @@ private:
 
     friend class QAspectEngine;
     friend class QAspectEnginePrivate;
+    friend class QNodeCreatedChangeGenerator;
     friend class QPostman;
     friend class QScene;
 };

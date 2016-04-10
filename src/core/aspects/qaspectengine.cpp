@@ -56,6 +56,7 @@
 #include "qentity.h"
 #include "qcomponent.h"
 #include <Qt3DCore/private/qeventfilterservice_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qservicelocator_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -100,22 +101,8 @@ void QAspectEnginePrivate::initEntity(QEntity *entity)
 
 void QAspectEnginePrivate::generateCreationChanges(QNode *root)
 {
-    m_creationChanges.clear();
-    QNodeVisitor creationVisitor;
-    creationVisitor.traverse(root, this, &QAspectEnginePrivate::createCreationChange);
-}
-
-void QAspectEnginePrivate::createCreationChange(QNode *node)
-{
-    const auto creationChange = node->createNodeCreationChange();
-    m_creationChanges.push_back(creationChange);
-
-    // Store the metaobject of the node in the QNode so that we have it available
-    // to us during destruction in the QNode destructor. This allows us to send
-    // the QNodeId and the metaobject as typeinfo to the backend aspects so they
-    // in turn can find the correct QBackendNodeMapper object to handle the destruction
-    // of the corresponding backend nodes.
-    QNodePrivate::get(node)->m_typeInfo = const_cast<QMetaObject*>(creationChange->metaObject());
+    const QNodeCreatedChangeGenerator generator(root);
+    m_creationChanges = generator.creationChanges();
 }
 
 QAspectEngine::QAspectEngine(QObject *parent)
