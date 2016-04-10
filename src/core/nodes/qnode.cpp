@@ -118,6 +118,9 @@ void QNodePrivate::_q_addChild(QNode *childNode)
         // Handle Entity - Components
         visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
     } else {
+        if (!m_scene)
+            return;
+
         QNodeCreatedChangeGenerator generator(childNode);
         const auto creationChanges = generator.creationChanges();
         // TODO: Wrap all creation changes into a single aggregate change to avoid
@@ -125,6 +128,13 @@ void QNodePrivate::_q_addChild(QNode *childNode)
         // all of the aspects.
         for (const auto &change : creationChanges)
             notifyObservers(change);
+
+        // Update the scene
+        // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
+        // traverse the sub tree three times!
+        QNodeVisitor visitor;
+        visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
+        visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
     }
 }
 
@@ -172,6 +182,12 @@ void QNodePrivate::_q_removeChild(QNode *childNode)
             auto destroyedChange = QNodeDestroyedChangePtr::create(childNode, collector.subtreeIdsAndTypes());
             notifyObservers(destroyedChange);
         }
+
+        // Update the scene
+        // TODO: Fold this into the QNodeCreatedChangeGenerator so we don't have to
+        // traverse the sub tree twice
+        QNodeVisitor visitor;
+        visitor.traverse(childNode, this, &QNodePrivate::unsetSceneHelper);
     }
 }
 
