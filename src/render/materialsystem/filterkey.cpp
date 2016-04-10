@@ -90,13 +90,20 @@ QString FilterKey::criterionName() const
 
 void FilterKey::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    if (propertyChange->propertyName() == QByteArrayLiteral("value"))
-        m_value = propertyChange->value();
-    else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
-        m_name = propertyChange->value().toString();
+    switch (e->type()) {
+    case NodeUpdated: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        if (propertyChange->propertyName() == QByteArrayLiteral("value"))
+            m_value = propertyChange->value();
+        else if (propertyChange->propertyName() == QByteArrayLiteral("name"))
+            m_name = propertyChange->value().toString();
 
-    markDirty(AbstractRenderer::AllDirty);
+        markDirty(AbstractRenderer::AllDirty);
+    }
+
+    default:
+        break;
+    }
 }
 
 bool FilterKey::operator ==(const FilterKey &other)
