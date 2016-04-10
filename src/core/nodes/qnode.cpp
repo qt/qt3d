@@ -53,6 +53,7 @@
 #include <QMetaProperty>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/private/corelogging_p.h>
+#include <Qt3DCore/private/qnodecreatedchangegenerator_p.h>
 #include <Qt3DCore/private/qnodevisitor_p.h>
 
 QT_BEGIN_NAMESPACE
@@ -80,40 +81,51 @@ QNodePrivate::QNodePrivate()
 void QNodePrivate::_q_addChild(QNode *childNode)
 {
     Q_ASSERT(childNode);
-    if (childNode == q_func())
-        return ;
 
-    // If the scene is null it means that the current node is part of a subtree
-    // that has been pre-prepared. Therefore the node shouldn't be added by
-    // itself but only when the root of the said subtree is inserted into an
-    // existing node whose m_scene member is valid
-    if (m_scene == Q_NULLPTR)
-        return;
+    if (ms_useCloning) {
+        if (childNode == q_func())
+            return;
 
-    QNodeVisitor visitor;
-    // Recursively set scene and change arbiter for the node subtree
-    visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
+        // If the scene is null it means that the current node is part of a subtree
+        // that has been pre-prepared. Therefore the node shouldn't be added by
+        // itself but only when the root of the said subtree is inserted into an
+        // existing node whose m_scene member is valid
+        if (m_scene == Q_NULLPTR)
+            return;
 
-    // We notify only if we have a QChangeArbiter
-    if (m_changeArbiter != Q_NULLPTR) {
-        QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, QSceneChange::Node, m_id));
-        e->setPropertyName("node");
-        // We need to clone the parent of the childNode we send
-        QNode *parentClone = QNode::clone(q_func());
-        QNode *childClone = Q_NULLPTR;
-        for (QObject *c : parentClone->children()) {
-            QNode *clone = qobject_cast<QNode *>(c);
-            if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
-                childClone = clone;
-                break;
+        QNodeVisitor visitor;
+        // Recursively set scene and change arbiter for the node subtree
+        visitor.traverse(childNode, this, &QNodePrivate::setSceneHelper);
+
+        // We notify only if we have a QChangeArbiter
+        if (m_changeArbiter != Q_NULLPTR) {
+            QScenePropertyChangePtr e(new QScenePropertyChange(NodeCreated, QSceneChange::Node, m_id));
+            e->setPropertyName("node");
+            // We need to clone the parent of the childNode we send
+            QNode *parentClone = QNode::clone(q_func());
+            QNode *childClone = Q_NULLPTR;
+            for (QObject *c : parentClone->children()) {
+                QNode *clone = qobject_cast<QNode *>(c);
+                if (clone != Q_NULLPTR && clone->id() == childNode->id()) {
+                    childClone = clone;
+                    break;
+                }
             }
+            e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
+            notifyObservers(e);
         }
-        e->setValue(QVariant::fromValue(QNodePtr(childClone, &QNodePrivate::nodePtrDeleter)));
-        notifyObservers(e);
-    }
 
-    // Handle Entity - Components
-    visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
+        // Handle Entity - Components
+        visitor.traverse(childNode, this, &QNodePrivate::addEntityComponentToScene);
+    } else {
+        QNodeCreatedChangeGenerator generator(childNode);
+        const auto creationChanges = generator.creationChanges();
+        // TODO: Wrap all creation changes into a single aggregate change to avoid
+        // hamemring the change arbiter when all of these need to be delivered to
+        // all of the aspects.
+        for (const auto &change : creationChanges)
+            notifyObservers(change);
+    }
 }
 
 // Called by setParent or cleanup (main thread) (could be other thread if created on the backend in a job)
