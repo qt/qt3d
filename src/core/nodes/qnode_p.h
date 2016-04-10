@@ -112,6 +112,9 @@ private:
     PropertyChangeHandler<QNodePrivate> m_signals;
 
     static QHash<QNodeId, QNode *> m_clonesLookupTable;
+
+    // Temporary flag so QNode know's whether to use cloning or not
+    static const bool ms_useCloning;
 };
 
 } // namespace Qt3DCore
