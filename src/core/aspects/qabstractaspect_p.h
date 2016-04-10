@@ -55,6 +55,7 @@
 #include <private/qaspectjobproviderinterface_p.h>
 #include <private/qbackendnode_p.h>
 #include <private/qbackendnodefactory_p.h>
+#include <private/qnodedestroyedchange_p.h>
 #include <private/qsceneobserverinterface_p.h>
 #include <private/qt3dcore_global_p.h>
 #include <Qt3DCore/qabstractaspect.h>
@@ -92,6 +93,8 @@ public:
     QBackendNode *createBackendNodeNoClone(const QNodeCreatedChangeBasePtr &change) const Q_DECL_OVERRIDE;
 
     void clearBackendNode(QNode *frontend) const;
+    // TODO: Rename this to clearBackendNode (or deleteBackendNode) when new system is fully in place
+    void clearBackendNodeNoClone(const QNodeDestroyedChangePtr &change) const;
 
     void sceneNodeAdded(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;
     void sceneNodeRemoved(Qt3DCore::QSceneChangePtr &e) Q_DECL_OVERRIDE;

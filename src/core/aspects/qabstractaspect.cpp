@@ -243,6 +243,38 @@ void QAbstractAspectPrivate::clearBackendNode(QNode *frontend) const
     }
 }
 
+void QAbstractAspectPrivate::clearBackendNodeNoClone(const QNodeDestroyedChangePtr &change) const
+{
+    // Each QNodeDestroyedChange may contain info about a whole sub-tree of nodes that
+    // are being destroyed. Iterate over them and process each in turn
+    for (const auto &idAndType : change->subtreeIdsAndTypes()) {
+        const QMetaObject *metaObj = idAndType.type;
+        QBackendNodeMapperPtr backendNodeMapper;
+
+        // Find backend node mapper for this type
+        while (metaObj != Q_NULLPTR && backendNodeMapper.isNull()) {
+            backendNodeMapper = m_backendCreatorFunctors.value(metaObj);
+            metaObj = metaObj->superClass();
+        }
+
+        if (!backendNodeMapper) {
+            qWarning() << "Failed to find backend node mapper for node id"
+                       << idAndType.id << "of type" << idAndType.type->className();
+            continue;
+        }
+
+        // Request the mapper to destroy the corresponding backend node
+        QBackendNode *backend = backendNodeMapper->get(idAndType.id);
+        if (backend) {
+            QBackendNodePrivate *backendPriv = QBackendNodePrivate::get(backend);
+            m_arbiter->unregisterObserver(backendPriv, backend->peerId());
+            if (backend->mode() == QBackendNode::ReadWrite)
+                m_arbiter->scene()->removeObservable(backendPriv, backend->peerId());
+            backendNodeMapper->destroy(idAndType.id);
+        }
+    }
+}
+
 void QAbstractAspectPrivate::setRootAndCreateNodes(QEntity *rootObject, const QVector<QNodeCreatedChangeBasePtr> &changes)
 {
     qCDebug(Aspects) << Q_FUNC_INFO << "rootObject =" << rootObject;
