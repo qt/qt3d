@@ -109,45 +109,6 @@ Qt3DWindow::Qt3DWindow(QScreen *screen)
     m_inputSettings->setEventSource(this);
 }
 
-Qt3DWindow::Qt3DWindow(QWindow *parent)
-    : QWindow(parent)
-    , m_aspectEngine(new Qt3DCore::QAspectEngine)
-    , m_renderAspect(new Qt3DRender::QRenderAspect)
-    , m_inputAspect(new Qt3DInput::QInputAspect)
-    , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_renderSettings(new Qt3DRender::QRenderSettings)
-    , m_defaultCamera(new Qt3DRender::QCamera)
-    , m_inputSettings(new Qt3DInput::QInputSettings)
-    , m_root(new Qt3DCore::QEntity)
-    , m_userRoot(nullptr)
-    , m_initialized(false)
-{
-    setSurfaceType(QSurface::OpenGLSurface);
-
-    resize(1024, 768);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize(24);
-    format.setSamples(4);
-    format.setStencilBufferSize(8);
-    setFormat(format);
-    create();
-
-    m_aspectEngine->registerAspect(m_renderAspect);
-    m_aspectEngine->registerAspect(m_inputAspect);
-    m_aspectEngine->registerAspect(m_logicAspect);
-
-    m_defaultCamera->setParent(m_root);
-    m_forwardRenderer->setCamera(m_defaultCamera);
-    m_forwardRenderer->setSurface(this);
-    m_renderSettings->setActiveFrameGraph(m_forwardRenderer);
-    m_inputSettings->setEventSource(this);
-}
-
 Qt3DWindow::~Qt3DWindow()
 {
 }

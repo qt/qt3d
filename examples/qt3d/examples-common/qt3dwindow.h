@@ -83,7 +83,6 @@ class Qt3DWindow : public QWindow
     Q_OBJECT
 public:
     Qt3DWindow(QScreen *screen = nullptr);
-    Qt3DWindow(QWindow *parent);
     ~Qt3DWindow();
 
     void registerAspect(Qt3DCore::QAbstractAspect *aspect);
