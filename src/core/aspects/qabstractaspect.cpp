@@ -122,21 +122,31 @@ void QAbstractAspect::registerBackendType(const QMetaObject &obj, const QBackend
     d->m_backendCreatorFunctors.insert(&obj, functor);
 }
 
-void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeAdded(QSceneChangePtr &change)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    QNodeVisitor visitor;
-    visitor.traverse(n, this, &QAbstractAspectPrivate::createBackendNode);
+    if (m_useCloning) {
+        QScenePropertyChangePtr propertyChange = change.staticCast<QScenePropertyChange>();
+        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+        QNode *n = nodePtr.data();
+        QNodeVisitor visitor;
+        visitor.traverse(n, this, &QAbstractAspectPrivate::createBackendNode);
+    } else {
+        QNodeCreatedChangeBasePtr creationChange = qSharedPointerCast<QNodeCreatedChangeBase>(change);
+        createBackendNodeNoClone(creationChange);
+    }
 }
 
-void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &e)
+void QAbstractAspectPrivate::sceneNodeRemoved(QSceneChangePtr &change)
 {
-    QScenePropertyChangePtr propertyChange = e.staticCast<QScenePropertyChange>();
-    QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
-    QNode *n = nodePtr.data();
-    clearBackendNode(n);
+    if (m_useCloning) {
+        QScenePropertyChangePtr propertyChange = change.staticCast<QScenePropertyChange>();
+        QNodePtr nodePtr = propertyChange->value().value<QNodePtr>();
+        QNode *n = nodePtr.data();
+        clearBackendNode(n);
+    } else {
+        QNodeDestroyedChangePtr destructionChange = qSharedPointerCast<QNodeDestroyedChange>(change);
+        clearBackendNodeNoClone(destructionChange);
+    }
 }
 
 QVariant QAbstractAspect::executeCommand(const QStringList &args)
