@@ -121,12 +121,11 @@ void Attribute::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBasePtr &ch
 
 void Attribute::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QByteArray propertyName = propertyChange->propertyName();
-
     switch (e->type()) {
-
     case NodeUpdated: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+
         if (propertyName == QByteArrayLiteral("name")) {
             m_name = propertyChange->value().value<QString>();
             m_nameId = StringToInt::lookupId(m_name);
