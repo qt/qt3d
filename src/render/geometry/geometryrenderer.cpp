@@ -142,12 +142,11 @@ void GeometryRenderer::initializeFromPeer(const Qt3DCore::QNodeCreatedChangeBase
 
 void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
 {
-    QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
-    QByteArray propertyName = propertyChange->propertyName();
-
     switch (e->type()) {
-
     case NodeUpdated: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+
         if (propertyName == QByteArrayLiteral("instanceCount")) {
             m_instanceCount = propertyChange->value().value<int>();
             m_dirty = true;
@@ -185,6 +184,9 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeAdded: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+
         if (propertyName == QByteArrayLiteral("geometry")) {
             m_geometryId = propertyChange->value().value<QNodeId>();
             m_dirty = true;
@@ -193,6 +195,9 @@ void GeometryRenderer::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &e)
     }
 
     case NodeRemoved: {
+        QScenePropertyChangePtr propertyChange = qSharedPointerCast<QScenePropertyChange>(e);
+        QByteArray propertyName = propertyChange->propertyName();
+
         if (propertyName == QByteArrayLiteral("geometry")) {
             m_geometryId = QNodeId();
             m_dirty = true;
