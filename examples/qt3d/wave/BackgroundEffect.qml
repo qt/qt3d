@@ -71,6 +71,10 @@ Effect {
                         vertexShaderCode:   loadSource( "qrc:/shaders/background.vert" )
                         fragmentShaderCode: loadSource( "qrc:/shaders/background.frag" )
                     }
+
+                    renderStates: [
+                        DepthTest { depthFunction: DepthTest.Always }
+                    ]
                 }
             ]
         }

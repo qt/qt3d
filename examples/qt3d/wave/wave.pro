@@ -18,6 +18,7 @@ OTHER_FILES += \
     WaveEffect.qml \
     WaveMaterial.qml \
     Background.qml \
+    BackgroundEffect.qml \
     shaders/background.vert \
     shaders/background.frag
 
