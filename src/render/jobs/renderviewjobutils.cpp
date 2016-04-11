@@ -232,6 +232,7 @@ void setRenderViewConfigFromFrameGraphLeafNode(RenderView *rv, const FrameGraphN
                     const Render::RenderSurfaceSelector *surfaceSelector
                             = static_cast<const Render::RenderSurfaceSelector *>(node);
                     rv->setSurface(surfaceSelector->surface());
+                    rv->setSurfaceSize(surfaceSelector->renderTargetSize());
                 }
                 break;
             }
